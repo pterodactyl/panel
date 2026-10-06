@@ -1,0 +1,81 @@
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_d4115f9d96b565::t_ad509d71625530 93-94,117
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_666ef4c84a40d6::t_09a510395c42f2 252-266
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_666ef4c84a40d6::t_f2ec01ad3e458c 44-56
+tests/Integration/Api/Application/Nodes/NodeCrudTest.php
+  s_666ef4c84a40d6::t_fe314aeedece42 1-129
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_d4115f9d96b565::t_d0294658b5ef4f 1-284
+tests/Integration/Api/Client/ActivityLogControllerTest.php
+  s_666ef4c84a40d6::t_74b1fd3175795c 1-75
+tests/Integration/Api/Remote/RemoteServersApiTest.php
+  s_666ef4c84a40d6::t_fb24ae70c38f63 1-207
+tests/Integration/Http/Controllers/Auth/LoginControllerTest.php
+  s_666ef4c84a40d6::t_58ee2c6c894655 1-144
+tests/Integration/Http/Controllers/Base/BaseRoutesTest.php
+  s_666ef4c84a40d6::t_f28a196c664562 1-38
+database/Factories/BackupFactory.php
+  s_d4115f9d96b565::t_5bf0c169a6725d 27
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_d4115f9d96b565::t_7c1d7f41d1ea73 14-17
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_d4115f9d96b565::t_3662d2e886f97d 22-24,129,150,195-197,202,236,253
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_d4115f9d96b565::t_1ad43474e8f591 1-169
+tests/Integration/Api/Client/Server/Database/DatabaseControllerTest.php
+  s_d4115f9d96b565::t_2398543d331016 1-87
+tests/Integration/Api/Client/Server/Files/FileControllerTest.php
+  s_d4115f9d96b565::t_f8bd185a89ff1f 1-265
+tests/Integration/Api/Client/Server/GetServerTest.php
+  s_d4115f9d96b565::t_91b4e1cd99027b 1-47
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateScheduleTaskTest.php
+  s_d4115f9d96b565::t_90ff1ceefa34b1 1-135
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_d4115f9d96b565::t_834dc3b52ea068 115-174
+tests/Integration/Api/Client/Server/Subuser/GetSubusersTest.php
+  s_d4115f9d96b565::t_5b9bd55ddee2f3 1-43
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_d4115f9d96b565::t_f38c9f80ad9c60 102-107,113
+tests/Integration/Http/Controllers/Auth/LoginCheckpointControllerTest.php
+  s_d4115f9d96b565::t_6c80887c9776c8 128
+tests/Integration/Http/Controllers/Auth/PasswordResetTest.php
+  s_d4115f9d96b565::t_09e87af53d4f2c 1-150
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_d4115f9d96b565::t_a40d575ab74394 146,157
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_d4115f9d96b565::t_6581136cd7591a 53,108,135
+tests/Integration/Services/Deployment/FindViableNodesServiceTest.php
+  s_d4115f9d96b565::t_2ccda5843d5b12 29,37
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_d4115f9d96b565::t_2a6e98568f16e2 63
+tests/TestCase.php
+  s_d4115f9d96b565::t_da05b695fe2725 8-9,20-31
+tests/Unit/Services/Helpers/AssetHashServiceTest.php
+  s_d4115f9d96b565::t_368c89507c66dd 15-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "4a62ba37d7aab321f32c536f77d4f6a41abfb458",
+  "prompts": {},
+  "sessions": {
+    "s_666ef4c84a40d6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03a10-a8f5-7ae1-9da1-6bfdb8fde223",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

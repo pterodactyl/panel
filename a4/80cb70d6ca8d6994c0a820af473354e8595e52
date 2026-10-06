@@ -1,0 +1,19 @@
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_0717e852bcfa2c::t_27d9512d4e3013 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a480cb70d6ca8d6994c0a820af473354e8595e52",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

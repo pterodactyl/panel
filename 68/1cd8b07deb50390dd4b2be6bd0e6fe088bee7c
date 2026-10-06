@@ -1,0 +1,28 @@
+composer.json
+  s_731111b3bfaced::t_286d7bb86904e4 89,92-93
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_dbf7351d926ff3 1-89
+scripts/check-openapi-client-contract.php
+  s_731111b3bfaced::t_a3cb1335562bdb 40
+  s_731111b3bfaced::t_020ecefc992164 1-39,41-193
+config/scribe.php
+  s_731111b3bfaced::t_aa92c50ec355ee 9,180-182
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_9e01db11d29afe 53,75,78,82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "681cd8b07deb50390dd4b2be6bd0e6fe088bee7c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

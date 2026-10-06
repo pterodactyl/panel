@@ -1,0 +1,48 @@
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 6,95-97
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 8,258-260
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 5-11,36,38
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 9-10,54-56
+  s_731111b3bfaced::t_7c7c824a16bf71 68-70
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 4-6,54,56,58,60
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_731111b3bfaced::t_7c7c824a16bf71 72-75
+  s_731111b3bfaced::t_ecb464a2a35b75 3-7,68-71,76-78
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_731111b3bfaced::t_7c7c824a16bf71 37-40
+  s_731111b3bfaced::t_ecb464a2a35b75 4-8,33-36,41-43
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 6
+  s_731111b3bfaced::t_7c7c824a16bf71 558-560
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_ba3507cd0f0a03 114-125,130-215,530,553,575,599,622,651,707,729,754,778,805,831-833,854,876
+  s_731111b3bfaced::t_7c7c824a16bf71 1,126-129,680-682
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 9,71-74,78-80
+  s_731111b3bfaced::t_7c7c824a16bf71 75-77
+resources/scripts/components/admin/servers/ServerRow.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 8,61
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_731111b3bfaced::t_ecb464a2a35b75 8-9
+  s_731111b3bfaced::t_7c7c824a16bf71 43-45,49-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "5ea195869290a0dedef99d25ffecabba7d1e47b1",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_be04b879a75a03::t_2c18d2fc630759 78-83
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_2c18d2fc630759 31
+phpstan.neon
+  s_be04b879a75a03::t_4079fa3cf13f68 37
+app/Services/Allocations/AssignmentService.php
+  s_be04b879a75a03::t_4079fa3cf13f68 40,50-52,57,72-77,82-87,93,101-102,107-109,116-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c3398af96eba3688bbcb69442a59e379524aa363",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

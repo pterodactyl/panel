@@ -1,0 +1,28 @@
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_bc87ef5eab4a00 12
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_febb5599af88a1 33,39,54-90,136-167
+  s_731111b3bfaced::t_43a26a761656c2 168
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_bc87ef5eab4a00 17
+resources/scripts/components/admin/nests/NestRow.tsx
+  s_731111b3bfaced::t_bc87ef5eab4a00 8
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_731111b3bfaced::t_febb5599af88a1 8-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "d304d292b127855e63d3e6bce9a8fd6410770c72",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_e04bd537d862f0 1
+tools/phpstan/anti-slop/tests/Rules/NoChainedVarTagsRuleTest.php
+  s_5eb93878083371::t_ae0169b1561d78 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ca39947d40e78d7575339eec7a531110cd0bd1f4",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

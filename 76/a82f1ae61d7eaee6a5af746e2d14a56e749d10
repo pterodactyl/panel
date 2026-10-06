@@ -1,0 +1,44 @@
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_53916ba32af787::t_cd66eed091d408 8,25-26,37,44,53
+app/Services/Locations/LocationCreationService.php
+  s_53916ba32af787::t_cd66eed091d408 12,18
+app/Services/Locations/LocationUpdateService.php
+  s_53916ba32af787::t_cd66eed091d408 12,16,18,20
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_53916ba32af787::t_cd66eed091d408 101-121
+app/Services/Locations/LocationDeletionService.php
+  s_53916ba32af787::t_cd66eed091d408 13,17,19,23
+app/Http/Requests/Api/Application/Locations/StoreLocationRequest.php
+  s_53916ba32af787::t_cd66eed091d408 24
+tests/Integration/Console/Commands/Location/LocationCommandsTest.php
+  s_53916ba32af787::t_cd66eed091d408 1-32
+resources/scripts/api/generated/types.gen.ts
+  s_53916ba32af787::t_e6b23cf29d8d04 2726-2729
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_53916ba32af787::t_cd66eed091d408 18
+app/Models/Location.php
+  s_53916ba32af787::t_cd66eed091d408 12,44-56
+  s_53916ba32af787::t_95042867608101 57-58
+app/Http/Requests/Api/Admin/Locations/StoreLocationRequest.php
+  s_53916ba32af787::t_cd66eed091d408 23,25
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_53916ba32af787::t_cd66eed091d408 8-9,32,37-45,54-55
+app/Http/Requests/Api/Admin/Locations/UpdateLocationRequest.php
+  s_53916ba32af787::t_cd66eed091d408 22,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "76a82f1ae61d7eaee6a5af746e2d14a56e749d10",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

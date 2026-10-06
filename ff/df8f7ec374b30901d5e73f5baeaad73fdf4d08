@@ -1,0 +1,28 @@
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_360902aa6c087a 262-269
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_5f5e418407cd8a 537
+  s_731111b3bfaced::t_d2aa8ee3e5426d 112,530,548,553
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_72a24a5e34a30d 400,445-482,484-487,511,513,517-518
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_d7ac45a286ea5a 56-58,68-70,74-75,81,83,85,121-122,125,130,285-287,290,294,323
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_a8db783caf070a 186,802
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "ffdf8f7ec374b30901d5e73f5baeaad73fdf4d08",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

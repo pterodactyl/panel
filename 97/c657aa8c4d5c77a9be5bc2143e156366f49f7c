@@ -1,0 +1,41 @@
+.ai/rules/api.md
+  s_53916ba32af787::t_fcf195282d6043 18
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 30,55
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 54,58,78,82,100,102
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_53916ba32af787::t_13564f82103c03 65
+  s_53916ba32af787::t_9dc6109b5d0cdc 26,45-46,53,76,78
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 13,15
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 87,91,115,127,150,154
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 43,48
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 46,48,71,93
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 28,49
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_53916ba32af787::t_13564f82103c03 102
+  s_53916ba32af787::t_9dc6109b5d0cdc 99,188,194,211,222,246,259
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_53916ba32af787::t_9dc6109b5d0cdc 27,36,46,55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "97c657aa8c4d5c77a9be5bc2143e156366f49f7c",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

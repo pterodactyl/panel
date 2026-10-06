@@ -1,0 +1,36 @@
+resources/scripts/api/admin/users/deleteUser.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4
+resources/scripts/api/admin/database-hosts/deleteDatabaseHost.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4
+resources/scripts/api/admin/users/updateUser.ts
+  s_731111b3bfaced::t_c3c506e2b121a6 14-15
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,5,8-13,16-20,22
+resources/scripts/api/admin/database-hosts/updateDatabaseHost.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4,7-17,19
+resources/scripts/api/admin/database-hosts/createDatabaseHost.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,3,15-23,26
+resources/scripts/api/admin/locations/updateLocation.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4,7-10,12
+resources/scripts/api/admin/locations/createLocation.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,3,11,13
+resources/scripts/api/admin/users/createUser.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4,17,25,27-29
+resources/scripts/api/admin/locations/deleteLocation.ts
+  s_731111b3bfaced::t_b03cf1dff1f0d9 1,4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "86cd7e00cf018e3a22e7b25c3fc1ca06ba92cc47",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_1987c4c7a2db6b::t_c2d2140a61b9f6 137-144
+tests/Unit/Console/Commands/Environment/AppSettingsCommandTest.php
+  s_1987c4c7a2db6b::t_e7c7cd13470906 14,18,35
+  s_1987c4c7a2db6b::t_662b24f512af7a 7-8,15-16,19-20,23-25,27,29-32,34,36-50,52-56
+  s_1987c4c7a2db6b::t_e2a67817732525 1-6,9-13,17,21-22,26,28,33,51,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a0007f227e8be4c7a1ff49f7e8a522752f96b930",
+  "prompts": {},
+  "sessions": {
+    "s_1987c4c7a2db6b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a546e5c2-5c0a-4525-8b68-fc36bc85da6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

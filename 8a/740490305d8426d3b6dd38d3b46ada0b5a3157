@@ -1,0 +1,32 @@
+app/Contracts/Criteria/CriteriaInterface.php
+  s_be04b879a75a03::t_3694d2b7bbcf5f 15
+app/Exceptions/DisplayException.php
+  s_be04b879a75a03::t_3694d2b7bbcf5f 93-100
+  s_be04b879a75a03::t_21c54f7b4e902a 77
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_be04b879a75a03::t_3694d2b7bbcf5f 8,33,76,79-81,83,85
+  s_be04b879a75a03::t_21c54f7b4e902a 75,78,82,84
+app/Extensions/Hashids.php
+  s_be04b879a75a03::t_3694d2b7bbcf5f 13
+app/Contracts/Extensions/HashidsInterface.php
+  s_be04b879a75a03::t_3694d2b7bbcf5f 17
+tests/Unit/Exceptions/Http/Connection/DaemonConnectionExceptionTest.php
+  s_be04b879a75a03::t_39721a73014858 3,5,7-15,17-33,35-46
+  s_be04b879a75a03::t_02d7c6a0e619f4 1-2,4,6,16,34,47-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8a740490305d8426d3b6dd38d3b46ada0b5a3157",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

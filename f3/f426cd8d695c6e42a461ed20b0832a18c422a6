@@ -1,0 +1,54 @@
+app/Http/Requests/Api/Remote/SftpAuthenticationFormRequest.php
+  s_be04b879a75a03::t_0fa936c388dfc1 37,41-45
+app/Http/Requests/Api/Admin/Servers/UpdateServerDetailsRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 37,42-45
+phpstan.neon
+  s_be04b879a75a03::t_0fa936c388dfc1 71
+  s_be04b879a75a03::t_07592f6c44a928 72-76
+app/Http/Requests/FrontendUserFormRequest.php
+  s_be04b879a75a03::t_0fa936c388dfc1 29,36
+app/Http/Requests/Concerns/ParsesServerStartupData.php
+  s_be04b879a75a03::t_abbb4d73363ce3 1-36
+app/Http/Requests/Api/Admin/Settings/UpdateGeneralSettingsRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 49,54-56
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 12,73,80,83-101
+  s_be04b879a75a03::t_6df9b5aa792fb9 102
+app/Http/Requests/Api/Application/Servers/UpdateServerDetailsRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 32,37-40
+app/Http/Requests/Api/Admin/Settings/UpdateAdvancedSettingsRequest.php
+  s_be04b879a75a03::t_0fa936c388dfc1 9,67,71-74
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_be04b879a75a03::t_0fa936c388dfc1 15,69-74,82-84,87-92
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 44-48,54,58-69,71-79,81,101-117
+  s_be04b879a75a03::t_64c8e69ed0406e 118
+app/Http/Requests/Api/Admin/Settings/UpdateMailSettingsRequest.php
+  s_be04b879a75a03::t_07592f6c44a928 40,45-50,54
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_be04b879a75a03::t_abbb4d73363ce3 8,13-14,41,45
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_be04b879a75a03::t_89f8addf82a1be 8
+  s_be04b879a75a03::t_50e571c45b57e5 59,63-81,83,85-93,127,131-158
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_be04b879a75a03::t_db8d5137366d8a 9,52,56,58-59,62-83,123-142
+  s_be04b879a75a03::t_50e571c45b57e5 111,115-122
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_be04b879a75a03::t_abbb4d73363ce3 8,14-15,41,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f3f426cd8d695c6e42a461ed20b0832a18c422a6",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+tests/Integration/Database/V1MigrationPilotTest.php
+  s_1987c4c7a2db6b::t_4b8c58430cde5b 19
+  s_876043628da193::t_b3289827bcd2aa 1-2
+  s_1987c4c7a2db6b::t_d3faa76bf932b4 23,68,76
+  s_876043628da193::t_ab5e2db0d9cc2b 3-18,20-22,24-28,30,36-67,69-75,77-93
+  s_1987c4c7a2db6b::t_898cabfb295b58 29,31-35
+tests/Integration/Database/LegacyMigrationHistoryGuardTest.php
+  s_1987c4c7a2db6b::t_d3faa76bf932b4 21,25
+  s_1987c4c7a2db6b::t_ab830e5fb6e29c 1-20,22-24,26-32
+database/migrations/2026_05_30_000000_require_complete_legacy_migration_history.php
+  s_1987c4c7a2db6b::t_669903e1666bf8 1-42
+.github/docker/migration-pilot.sh
+  s_876043628da193::t_d0bf0153e24fd2 44
+  s_876043628da193::t_d11d49728a8c0f 66,77
+  s_876043628da193::t_fbf70ca14fd72e 76
+  s_876043628da193::t_653d35fbd0775a 1-43,45-65,67-75,78
+.github/docker/README.md
+  s_876043628da193::t_7e0f27cb7b12b9 94-105,107-109
+  s_1987c4c7a2db6b::t_7b85cf475983b1 106
+.ai/rules/index.md
+  s_bf99a93e97ab76::t_a550e773cf3785 18
+.ai/rules/migrations.md
+  s_bf99a93e97ab76::t_f80fd3974e6208 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b2ecf0f400615a1c8d67f454ce7bd03214aba5e5",
+  "prompts": {},
+  "sessions": {
+    "s_1987c4c7a2db6b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a546e5c2-5c0a-4525-8b68-fc36bc85da6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_876043628da193": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0c565-b02e-7541-9ade-ad7ccac6fbd0",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_bf99a93e97ab76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3306d217-ef25-4a58-aa1a-8bdfdb5da12f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

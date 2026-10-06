@@ -1,0 +1,38 @@
+tools/phpstan/anti-slop/extension.neon
+  s_5eb93878083371::t_b49d9af69ef0fa 1-162
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_681409f0f7bb1c 1
+tools/phpstan/anti-slop/phpstan.neon
+  s_5eb93878083371::t_f969ba3cfbef84 22-30
+  s_5eb93878083371::t_b49d9af69ef0fa 1-21
+tools/phpstan/anti-slop/src/Support/NodeChildren.php
+  s_5eb93878083371::t_8926ea353867b3 1-66
+tools/phpstan/anti-slop/src/Support/TypeClassifier.php
+  s_5eb93878083371::t_bbfcdfa0d378f1 16-18,38,93-94,96,109,117-118,126-134,140-141,144-148,151
+tools/phpstan/anti-slop/src/Rules/NoChainedVarTagsRule.php
+  s_5eb93878083371::t_7810afe0faa765 8,73-74
+tools/phpstan/anti-slop/src/Support/AssertionForms.php
+  s_5eb93878083371::t_7810afe0faa765 36-38,124-128,145-148,150-151
+tools/phpstan/anti-slop/src/Rules/NoWidenThenAssertRule.php
+  s_5eb93878083371::t_7810afe0faa765 8,104-105
+tools/phpstan/anti-slop/laravel/extension.neon
+  s_5eb93878083371::t_b49d9af69ef0fa 1-40
+tools/phpstan/anti-slop/src/Support/SignatureResolver.php
+  s_5eb93878083371::t_7810afe0faa765 66,114-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c1a6e66fdf13cbab06404c5c8d3e26eac09ab165",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

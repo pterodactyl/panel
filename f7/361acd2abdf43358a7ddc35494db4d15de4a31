@@ -1,0 +1,29 @@
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_65341f88405bf8 7856-7865,7885-7888,9855-9864,9899-9902
+  s_731111b3bfaced::t_759e8425a48731 1854-1889,1913-1916,2473-2490,2514-2517,2532-2579,2603-2606,2621-2644,2668-2671,2849-2862,2896-2899,3042-3059,3083-3086,3617-3682,3706-3709,4345-4354,4378-4381,4572-4597,4621-4624,6357-6382,6416-6419,6941-6998,7000,7021-7024,7423-7488,7518-7521,8222-8239,8259-8262,8274-8355,8385-8388,8400-8423,8443-8446,8697-8710,8740-8743
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_731111b3bfaced::t_dfb238f7607a97 5-7,37,48,93-106,108-110
+  s_731111b3bfaced::t_3d059ba519cacc 9,39-47,49-63,65-68,73
+  s_731111b3bfaced::t_021749b5f0b559 107
+  s_731111b3bfaced::t_a6c8d48e265f6c 74
+  s_731111b3bfaced::t_a280839701a41a 111
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_65341f88405bf8 1635-1639,2205-2209
+  s_731111b3bfaced::t_759e8425a48731 117-121,259-263,275-279,291-295,355-359,405-409,543-547,730-734,797-801,1265-1269,1423-1427,1530-1534,1718-1722,1734-1738,1750-1754,1822-1826
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f7361acd2abdf43358a7ddc35494db4d15de4a31",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

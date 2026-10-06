@@ -1,0 +1,29 @@
+app/Models/ActivityLog.php
+  s_be04b879a75a03::t_314d99c747af3b 23,130-139
+  s_be04b879a75a03::t_43371ad2258746 140
+  s_be04b879a75a03::t_71b694d0d16c77 141-142
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_a523a3751fdc48 34
+  s_be04b879a75a03::t_314d99c747af3b 33
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_be04b879a75a03::t_11339ed15fe9f0 12,67
+  s_be04b879a75a03::t_45ed669a905a24 30,78,93
+  s_be04b879a75a03::t_8486079a3194b9 134
+  s_be04b879a75a03::t_314d99c747af3b 65-66,70,108-109,117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5ac167418f570509402817b61e7f6ba5f87570a9",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+resources/scripts/api/admin/eggs/queries.ts
+  s_6c510947b78fa5::t_df8c04870ccee5 13,29,48-49,148-160
+  s_6c510947b78fa5::t_d8505e78da4ca3 161
+resources/scripts/api/http.ts
+  s_6c510947b78fa5::t_5d5f3e8e41ebec 19,21-22
+  s_6c510947b78fa5::t_91dc7b3d1c3f25 20
+resources/scripts/components/admin/eggs/EggsContainer.spec.tsx
+  s_6c510947b78fa5::t_4c09544ccc1451 1-71,78-86,91,93-114,116,124-168,170-173
+  s_6c510947b78fa5::t_d80c8cd155804f 72-77,123
+  s_6c510947b78fa5::t_7908f1e443fedf 117-122
+  s_6c510947b78fa5::t_5d5f3e8e41ebec 87-90,92,115,169
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_6c510947b78fa5::t_df8c04870ccee5 7,82-83
+resources/scripts/components/admin/eggs/ImportEggButton.tsx
+  s_6c510947b78fa5::t_df8c04870ccee5 1-40
+resources/scripts/components/admin/eggs/EggFileDialog.tsx
+  s_6c510947b78fa5::t_df8c04870ccee5 1-96
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_6c510947b78fa5::t_df8c04870ccee5 3,11,14-15,26-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d38bd98202ca6d0f19d56e88da42059c29ca6671",
+  "prompts": {},
+  "sessions": {
+    "s_6c510947b78fa5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a605-71c6-7ad1-a245-4c364cf98552",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

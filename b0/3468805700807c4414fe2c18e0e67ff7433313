@@ -1,0 +1,130 @@
+resources/scripts/components/server/backups/CreateBackupButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 14
+resources/scripts/components/server/databases/RotatePasswordButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 12
+resources/scripts/components/server/schedules/DeleteScheduleButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 15
+resources/scripts/components/server/console/StatGraphs.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 32
+resources/scripts/components/server/schedules/RunScheduleButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 8
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_731111b3bfaced::t_201c25bc17e116 14
+resources/scripts/components/server/InstallListener.tsx
+  s_731111b3bfaced::t_1c15bb378fcae2 16,29
+  s_731111b3bfaced::t_201c25bc17e116 10
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 20,22
+  s_731111b3bfaced::t_2281b6ab2b0057 39
+resources/scripts/components/elements/ServerContentBlock.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 10
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_731111b3bfaced::t_201c25bc17e116 19
+resources/scripts/components/server/settings/RenameServerBox.tsx
+  s_731111b3bfaced::t_201c25bc17e116 14-15,20-21
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_731111b3bfaced::t_201c25bc17e116 24
+resources/scripts/components/server/schedules/ScheduleTaskRow.tsx
+  s_731111b3bfaced::t_201c25bc17e116 31
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_731111b3bfaced::t_201c25bc17e116 27
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 42-44
+resources/scripts/components/server/users/RemoveSubuserButton.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 19
+resources/scripts/components/server/console/Console.tsx
+  s_731111b3bfaced::t_201c25bc17e116 114-115
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 15-16
+resources/scripts/components/server/settings/SettingsContainer.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 18-21
+resources/scripts/components/server/backups/BackupRow.tsx
+  s_731111b3bfaced::t_201c25bc17e116 25
+resources/scripts/api/server/backups/queries.ts
+  s_731111b3bfaced::t_1c15bb378fcae2 161-164
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 17-19
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 17
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 27
+resources/scripts/api/server/queries.ts
+  s_731111b3bfaced::t_2281b6ab2b0057 55-57,62-63
+  s_731111b3bfaced::t_0fb96cc61d4d60 27-28,51,86-90,103,130-137
+resources/scripts/components/server/databases/DatabaseRow.tsx
+  s_731111b3bfaced::t_201c25bc17e116 27
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 63-64
+resources/scripts/components/server/network/DeleteAllocationButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 16
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 41,44
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_731111b3bfaced::t_201c25bc17e116 18
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 16,25,53,68
+resources/scripts/components/server/ConflictStateRenderer.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 10-12
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_731111b3bfaced::t_201c25bc17e116 18
+resources/scripts/components/server/files/UploadButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 29
+resources/scripts/components/server/console/ServerConsoleContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 16-21
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_731111b3bfaced::t_d5c3b0d061f2d4 37-40,85-86
+  s_731111b3bfaced::t_201c25bc17e116 76
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_731111b3bfaced::t_201c25bc17e116 15
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_731111b3bfaced::t_201c25bc17e116 12
+resources/scripts/components/server/settings/ReinstallServerBox.tsx
+  s_731111b3bfaced::t_201c25bc17e116 14
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_731111b3bfaced::t_201c25bc17e116 15
+resources/scripts/router/routeTree.ts
+  s_731111b3bfaced::t_5f547a72c5b219 209,211-213,221,225,234,236,244,246,254,257,274,278,289,291,299,301,309,311,329,332
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_731111b3bfaced::t_2281b6ab2b0057 15
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_731111b3bfaced::t_201c25bc17e116 27
+resources/scripts/api/server/activity/queries.ts
+  s_731111b3bfaced::t_201c25bc17e116 43
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
+  s_731111b3bfaced::t_201c25bc17e116 43-44
+resources/scripts/components/server/TransferListener.tsx
+  s_731111b3bfaced::t_1c15bb378fcae2 15-18,23-26
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_731111b3bfaced::t_201c25bc17e116 14
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_731111b3bfaced::t_201c25bc17e116 12
+resources/scripts/components/server/network/AllocationRow.tsx
+  s_731111b3bfaced::t_201c25bc17e116 36
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_731111b3bfaced::t_201c25bc17e116 16
+  s_731111b3bfaced::t_2281b6ab2b0057 15
+resources/scripts/components/server/files/useFileActions.tsx
+  s_731111b3bfaced::t_201c25bc17e116 31
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_731111b3bfaced::t_201c25bc17e116 24,26
+resources/scripts/api/server/startup/queries.ts
+  s_731111b3bfaced::t_1c15bb378fcae2 60-63
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_731111b3bfaced::t_201c25bc17e116 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b03468805700807c4414fe2c18e0e67ff7433313",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

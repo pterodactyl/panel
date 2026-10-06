@@ -1,0 +1,45 @@
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_be04b879a75a03::t_e9aeec2447da01 57,59,61-64,104,106,108-111,133-136,140,146,162,180
+app/Services/Extensions/ExtensionManifest.php
+  s_be04b879a75a03::t_e9aeec2447da01 46
+phpstan.neon
+  s_be04b879a75a03::t_e9aeec2447da01 29
+  s_be04b879a75a03::t_031a7e809fbf80 30
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_be04b879a75a03::t_031a7e809fbf80 545-551
+  s_be04b879a75a03::t_f2564e4eff4014 65,324-328,346-355,518-519,536-544,552-579
+  s_be04b879a75a03::t_3c99cbe3a28412 99,129,220,240,256,306,391,409,435,477,500
+  s_421ae2f039e76e::t_bacad7752b129a 580-581
+tests/Unit/Services/Extensions/Porting/BlueprintPorterTest.php
+  s_be04b879a75a03::t_2f54c5a7ad2dcc 1-2,4,6,13,82-83
+  s_be04b879a75a03::t_54a7741094ee8d 3,5,7-12,14-81
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_f2564e4eff4014 32
+  s_be04b879a75a03::t_e9aeec2447da01 31
+.ai/rules/extensions.md
+  s_be04b879a75a03::t_8ed2cc68070c87 10-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a864fc465660fde43599ee295cd4fde4fa881f10",
+  "prompts": {},
+  "sessions": {
+    "s_421ae2f039e76e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4415058-582a-4592-8c64-04fcf1fb7246",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

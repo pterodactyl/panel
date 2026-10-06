@@ -1,0 +1,23 @@
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_be04b879a75a03::t_af17dea5106213 35-37
+  s_be04b879a75a03::t_a02699e0dea904 7-8,11
+  s_be04b879a75a03::t_88851878550e53 38-39
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_be04b879a75a03::t_a02699e0dea904 85,113,121,156,183,202,225-226,234,260,275,279
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f87eddbd8dd85a939131c972ea77e71c05738892",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

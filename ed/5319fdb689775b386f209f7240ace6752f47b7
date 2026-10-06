@@ -1,0 +1,20 @@
+app/Http/Controllers/Api/Admin/Nests/EggController.php
+  s_731111b3bfaced::t_257a73a194118c 10-15,21,30-31,34-95,110-115,126-132,145-162,188-206,226-232
+  s_731111b3bfaced::t_502c3e1745bc95 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ed5319fdb689775b386f209f7240ace6752f47b7",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

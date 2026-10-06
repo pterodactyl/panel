@@ -1,0 +1,41 @@
+app/Support/JsonValueGuard.php
+  s_be04b879a75a03::t_f822b1313fb655 3-4,6-7,9,11-21,43,45,47-57
+  s_be04b879a75a03::t_420b0377bfe801 1-2,5,8,10,42,44,46,64-65
+  s_be04b879a75a03::t_d89dca095dfccc 31-41
+  s_be04b879a75a03::t_2c1242e9d0383c 22-30,58-63
+tests/Unit/JsonValueTreeTest.php
+  s_be04b879a75a03::t_0625848adfdd13 1-2,4,6,11,32,36-37
+  s_be04b879a75a03::t_8695d42f8cbc70 3,5,7-10,12-25,27-31,33-35
+  s_be04b879a75a03::t_5edc40818c54f4 26
+app/Support/JsonValueTree.php
+  s_be04b879a75a03::t_2c1242e9d0383c 55-60
+  s_be04b879a75a03::t_91671627ad70a0 1-2,5-6,11,71-72
+  s_be04b879a75a03::t_db229ea3a801cb 3-4,7-10,12-54,67-70
+  s_be04b879a75a03::t_d89dca095dfccc 61-66
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_be04b879a75a03::t_f822b1313fb655 7,16,24
+tests/Unit/JsonValueGuardTest.php
+  s_be04b879a75a03::t_3a00aa067942f1 1-2,4,6,14,42-43
+  s_be04b879a75a03::t_08a41723baa2da 3,5,7-13,15-41
+phpstan.neon
+  s_be04b879a75a03::t_f822b1313fb655 25
+  s_be04b879a75a03::t_2c1242e9d0383c 26-29
+.ai/rules/support.md
+  s_be04b879a75a03::t_85caeae43bceec 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7002c2dff161ca383463e56bc2aa92309dcbed3a",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

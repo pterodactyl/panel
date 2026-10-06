@@ -1,0 +1,57 @@
+package.json
+  s_42c7145df94982::t_53afa98cb4ef32 86-87,99
+packages/hello-world/package.json
+  s_42c7145df94982::t_53afa98cb4ef32 1-11
+packages/hello-world/src/client/HelloWorldCard.tsx
+  s_42c7145df94982::t_53afa98cb4ef32 1-58
+packages/hello-world/vite.config.mjs
+  s_42c7145df94982::t_53afa98cb4ef32 1-3
+packages/hello-world/extension.json
+  s_42c7145df94982::t_53afa98cb4ef32 1-7
+packages/hello-world/vitest.config.ts
+  s_42c7145df94982::t_53afa98cb4ef32 1-16
+packages/hello-world/src/client/index.tsx
+  s_42c7145df94982::t_53afa98cb4ef32 1-20
+packages/hello-world/src/client/HelloWorldScreen.tsx
+  s_42c7145df94982::t_53afa98cb4ef32 1-18
+packages/hello-world/tsconfig.json
+  s_42c7145df94982::t_53afa98cb4ef32 1-14
+packages/hello-world/.gitignore
+  s_42c7145df94982::t_53afa98cb4ef32 1-2
+packages/hello-world/src/client/SubuserPresets.tsx
+  s_42c7145df94982::t_8ed478ae5a6659 1-71
+packages/hello-world/src/client/examples.spec.tsx
+  s_42c7145df94982::t_67995e87d1f429 1-177
+packages/sdk/slot-coverage.spec.ts
+  s_42c7145df94982::t_ac46f7221e059c 24
+packages/sdk/types/index.d.ts
+  s_42c7145df94982::t_4d62f6840399c1 62,162-169,194-200
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_42c7145df94982::t_9b73056aa5ab22 2-4,107-122,216
+resources/scripts/components/server/users/permissionSelection.spec.ts
+  s_42c7145df94982::t_577f332c0e147b 1-33
+resources/scripts/components/server/users/permissionSelection.ts
+  s_42c7145df94982::t_51c398477ecaa6 1-12
+resources/scripts/extensions/registry.ts
+  s_42c7145df94982::t_7cb26c809d7003 76,189-196
+resources/scripts/sdk/index.ts
+  s_42c7145df94982::t_c68b3b147c9d1b 8-14,58,77-83
+vitest.config.ts
+  s_42c7145df94982::t_461c67e9b31eb5 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f7f85dd2a6a2f2cb3fa5f74df721a95e82bd7e45",
+  "prompts": {},
+  "sessions": {
+    "s_42c7145df94982": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0bb8c-03e0-7943-b5e5-d41512acd0fe",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

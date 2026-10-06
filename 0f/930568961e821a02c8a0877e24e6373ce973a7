@@ -1,0 +1,118 @@
+resources/scripts/api/account/two-factor/queries.ts
+  s_5bc182bfd13a1f::t_4863a32e7249ea 1-2,4,11,18-19,21-42
+resources/scripts/api/account/api-keys/queries.spec.tsx
+  s_5bc182bfd13a1f::t_b7bc69ee34f470 33,85-87
+  s_5bc182bfd13a1f::t_c9435c2836466e 1-32,34-84,88-95
+resources/scripts/api/server/backups/queries.spec.tsx
+  s_5bc182bfd13a1f::t_c253163786accc 66-70
+  s_5bc182bfd13a1f::t_b7bc69ee34f470 34-37
+  s_5bc182bfd13a1f::t_c9435c2836466e 1-33,38-65,71-104
+resources/scripts/components/server/settings/RenameServerBox.tsx
+  s_5bc182bfd13a1f::t_4863a32e7249ea 10
+resources/scripts/api/server/databases/queries.ts
+  s_5bc182bfd13a1f::t_b8689d76e8e9c1 1-2,4,21,64-65,67-73,76-77,79,82-83,85-93,95-96,98-122
+resources/scripts/api/account/queries.ts
+  s_5bc182bfd13a1f::t_4863a32e7249ea 1-2,10,42-43,45-51,53,55-60
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 34
+resources/scripts/sdk/api.ts
+  s_5bc182bfd13a1f::t_32c76687932ce1 368
+packages/sdk/types/api.d.ts
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 1
+resources/scripts/api/server/schedules/queries.ts
+  s_5bc182bfd13a1f::t_6bd285a86b5415 217,229,241,256,271,283,295
+  s_5bc182bfd13a1f::t_b8689d76e8e9c1 1-2,4,33,145-146,148-150,152-163,165-166,216,218-226,228,230-238,240,242-253,255,257-260,263-268,270,272-282,284-294,296-304
+package.json
+  s_5bc182bfd13a1f::t_4b068c83e19884 73
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_5bc182bfd13a1f::t_041ee290f569c3 1-2,6,28,155-166,168-182,184-199
+resources/scripts/api/admin/extensions/queries.ts
+  s_5bc182bfd13a1f::t_d0796c49f5b873 1-2,24,85-157
+resources/scripts/api/admin/users/queries.ts
+  s_5bc182bfd13a1f::t_041ee290f569c3 1-2,6,27,132-143,145-157,159-172
+resources/scripts/api/admin/mounts/queries.ts
+  s_5bc182bfd13a1f::t_9f1b17c5ffd85d 1-2,6,32,160-167,169-170,173-185,187-200,202-213,215-226,228-236,240-244,246-254,258-262
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 237-239,255-257
+resources/scripts/api/server/startup/queries.ts
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 62-65,69-73
+  s_5bc182bfd13a1f::t_b8689d76e8e9c1 1-2,5,17,36-41,46,48-49,52-53,55-61,67-68,74-81
+  s_5bc182bfd13a1f::t_7c5f004155c3e3 66
+resources/scripts/api/server/users/queries.ts
+  s_5bc182bfd13a1f::t_b8689d76e8e9c1 1-2,4,22,62-63,65,68-69,71,74-75,77-82,84-95,97-105,107
+resources/scripts/api/server/files/queries.ts
+  s_5bc182bfd13a1f::t_ce142ce829453a 1,6,140,144,146-147,231-238,241-247,249-250,252-266,268-276,278-279,281-288,302-310,312-313,315-328,330-331,333-343,345-358,360-361,363-373,381-392
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 239-240,289-300
+resources/scripts/api/admin/settings/queries.ts
+  s_5bc182bfd13a1f::t_d0796c49f5b873 1-2,20,118-167
+resources/scripts/api/admin/settings/queries.spec.tsx
+  s_5bc182bfd13a1f::t_c9435c2836466e 1-46
+resources/scripts/api/queryData.spec.ts
+  s_5bc182bfd13a1f::t_b7bc69ee34f470 16-22,40-45,56-60,64-81
+  s_5bc182bfd13a1f::t_4b068c83e19884 1-15,23-39,46-55,61-63,82-83
+resources/scripts/api/server/backups/queries.ts
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 110-111,138-139
+  s_5bc182bfd13a1f::t_313f502928182a 1-2,5,87-90,93-94,96-99,101-105,107-109,112-113,115-120,122-123,125-128,130-133,136-137,140-141,143-146,148,153-154,160-162,164,168-177,179
+resources/scripts/api/admin/eggs/queries.ts
+  s_5bc182bfd13a1f::t_dae08d6c84c3b9 1-2,4,35,172-186,188-202,204-219,221-236,241-256,258-271,273-286,288-302
+resources/scripts/api/account/api-keys/queries.ts
+  s_5bc182bfd13a1f::t_4863a32e7249ea 1-2,4,17,25-65
+.github/workflows/ci.yaml
+  s_5bc182bfd13a1f::t_4b068c83e19884 9-24
+resources/scripts/api/admin/nests/queries.ts
+  s_5bc182bfd13a1f::t_030ac593ed9970 1-2
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 176-178
+  s_5bc182bfd13a1f::t_041ee290f569c3 6,29,142-153,155-167,169-175,179-185,187-203
+resources/scripts/api/queryData.ts
+  s_5bc182bfd13a1f::t_27d08dc7eaf5cd 1
+  s_5bc182bfd13a1f::t_e3b3bdd0fcb322 5-7,9-11,24,26,29,31-32,36,38
+resources/scripts/api/server/network/queries.ts
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 68
+  s_5bc182bfd13a1f::t_b8689d76e8e9c1 1-2,4,22,65-66,71-72,74,77-78,80-90,92-93,95-136
+resources/scripts/api/mutationUtils.spec.ts
+  s_5bc182bfd13a1f::t_c72bcab089d39e 1
+  s_5bc182bfd13a1f::t_4b068c83e19884 2-7,14-16,20-47
+  s_5bc182bfd13a1f::t_a34ba2323c8dab 8-13,17-19
+resources/scripts/api/mutationUtils.ts
+  s_5bc182bfd13a1f::t_b7bc69ee34f470 31
+  s_5bc182bfd13a1f::t_27d08dc7eaf5cd 1-30,32-34
+resources/scripts/api/admin/api-keys/queries.ts
+  s_5bc182bfd13a1f::t_041ee290f569c3 1-2,6,19,112-118,120-125,127-140
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 119
+resources/scripts/api/server/queries.ts
+  s_5bc182bfd13a1f::t_4863a32e7249ea 1,4,14,69-71,77-78,80-106
+resources/scripts/api/queryClient.ts
+  s_5bc182bfd13a1f::t_27d08dc7eaf5cd 1
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_5bc182bfd13a1f::t_4863a32e7249ea 1-2,4,17,28-29,31-68
+resources/scripts/api/admin/nodes/queries.ts
+  s_5bc182bfd13a1f::t_28161890c6af54 1-2,6,48,239-243,375-386,388-400,402-415,417-421,423-429,431-433,435-442,444-451,453-459,461-463,465-477
+packages/sdk/types-drift.spec.ts
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 66-69,91-94
+  s_5bc182bfd13a1f::t_4b068c83e19884 77-90,95-101
+scripts/check-api-layer-native.php
+  s_5bc182bfd13a1f::t_4b068c83e19884 55-63
+  s_5bc182bfd13a1f::t_e75a238902df9a 50,88
+  s_5bc182bfd13a1f::t_c622640a1bbffb 89-91
+resources/scripts/api/admin/servers/queries.ts
+  s_5bc182bfd13a1f::t_d69383b8d2be4a 1-2,6,63,271,329-330,338-339,396-407,409-422,424-447,449-464,466-481,483-498,500-517,519-532,534-548,550-564,566-575,579,581-582,585-594,598-602,604-617,619-632,634-653
+  s_5bc182bfd13a1f::t_e1159cbbf17ceb 577-578,595-597
+resources/scripts/api/admin/locations/queries.ts
+  s_5bc182bfd13a1f::t_041ee290f569c3 1-2,6,24,114-115,117-126,128-129,131-157
+package-lock.json
+  s_5bc182bfd13a1f::t_ebeb5f2ce3a7cf 75,107-127,736-850,3923-3936,4065-4115,4139-4145,4303-4315,4633-4645,4655-4678,4738-4750,4828-4834,4907-5007,5438-5444,5588-5600,5751-5760,6003-6009,6023-6042,6163-6169,6266-6298,6634-6646,6660-6683,6727-6748,6766-6782
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "0f930568961e821a02c8a0877e24e6373ce973a7",
+  "prompts": {},
+  "sessions": {
+    "s_5bc182bfd13a1f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fcd6e-dc5a-7231-b92e-ab4f7d82c746",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

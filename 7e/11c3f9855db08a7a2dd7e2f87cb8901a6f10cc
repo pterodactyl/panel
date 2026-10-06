@@ -1,0 +1,23 @@
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_db377b9fda6302 54,56,63,66,75,86-96,98-101,103-104,108,111,113-115,117,119-121,123-125,128-136,138-140,143,145-152,158-170,188,194-198,201-204,209-211,213-218,221,224-227,229,231,233-236
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_731111b3bfaced::t_d24b1097496349 61-74,78,93,129-139
+  s_731111b3bfaced::t_9367495b13363d 43-46
+  s_731111b3bfaced::t_b1a4924a03f8cd 140-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "7e11c3f9855db08a7a2dd7e2f87cb8901a6f10cc",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

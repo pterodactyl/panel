@@ -1,0 +1,27 @@
+app/Http/Controllers/Api/Admin/Nests/EggController.php
+  s_731111b3bfaced::t_e7041c2e4b459d 76-81
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_6f66f2fde3bc15 218
+resources/scripts/api/admin/servers/getEggForServer.ts
+  s_731111b3bfaced::t_9254f8ed7ab931 1,25,36-44
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_9fd624d29368f9 15,33-34,62-64,299-303,531-538,542-546,548
+  s_731111b3bfaced::t_7b3ff876e3644d 547
+  s_731111b3bfaced::t_d61368657de0ae 556-564
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "8b53866b5eda1b2ce6c0d1b1ca6d095bb42f53f5",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

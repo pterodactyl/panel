@@ -1,0 +1,163 @@
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_e0e1f29c4d9e27::t_ae7592b28f4051 38-40,42,44-52,58-62,112,119-120,122
+  s_da21e0e806e8da::t_6dcec6391f78a7 54,63-111,113-118
+  s_e0e1f29c4d9e27::t_6ea0def0666a00 1
+  s_da21e0e806e8da::t_ea36ce14f04613 53
+resources/scripts/components/admin/nodes/NodeTable.tsx
+  s_d26068c42427fa::t_57c78c1c6b5d6d 16
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_e0e1f29c4d9e27::t_dc486b98436722 109-121,123-187
+  s_e0e1f29c4d9e27::t_2072afdabaaade 239,241-242
+  s_e0e1f29c4d9e27::t_a234577c1cdd57 1
+  s_e0e1f29c4d9e27::t_9d8a1d1b1d154e 59-61
+  s_e0e1f29c4d9e27::t_34702c4434e10a 62
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_d26068c42427fa::t_e4324477258c46 5-6
+resources/scripts/components/admin/servers/ServerStatusBadge.tsx
+  s_d26068c42427fa::t_d72b8ee799f696 1-38
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_3067184b1e35ef::t_5cbafe04039918 39-40
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_12526a39d85b91::t_a772434d13111e 1
+  s_12526a39d85b91::t_471b090390bc7f 26,28
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_e0e1f29c4d9e27::t_5d8b1108eda4d7 93,95
+  s_e0e1f29c4d9e27::t_3458466bcbe99e 1
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_12526a39d85b91::t_24f15f2705cbfc 24
+  s_12526a39d85b91::t_ac0af4d3a73a3e 45
+resources/scripts/components/server/ConflictStateRenderer.tsx
+  s_3067184b1e35ef::t_808f790f89e918 7-63,69-72
+resources/scripts/components/admin/nodes/NodeStatusBadge.tsx
+  s_d26068c42427fa::t_aaac6fc810c344 1-40
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_12526a39d85b91::t_f28fc993806245 22
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_3067184b1e35ef::t_c8bec9e31eeb8b 64
+  s_3067184b1e35ef::t_dee63880aa1475 50-63,65-83,85-175,177-226,228-259
+  s_3067184b1e35ef::t_73c63b7e9393fe 4,10-25
+  s_3067184b1e35ef::t_d2f2eea7ee5e67 84
+  s_3067184b1e35ef::t_2b9e7d073583b9 176,227
+  s_3067184b1e35ef::t_655234ea047e09 267-272,277,280-281
+  s_3067184b1e35ef::t_7744b448789259 26
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_da21e0e806e8da::t_8e431dca3bd267 1-2,18-103,105-162,164-199,201-206,208-232,234-240,242-259,261-269
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_12526a39d85b91::t_b95322b6940c9d 21,23
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_e0e1f29c4d9e27::t_08a44ec736b401 1
+  s_e0e1f29c4d9e27::t_a2dfe477fbf398 166,215,217-218
+  s_e0e1f29c4d9e27::t_6d9fc9ae5a79da 247,284,292-293
+  s_da21e0e806e8da::t_6dcec6391f78a7 167-214,216,248-283,285-291
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_da21e0e806e8da::t_6dcec6391f78a7 26-64,66-68,70-87,89
+  s_e0e1f29c4d9e27::t_0b75bc3bc23afd 1
+  s_e0e1f29c4d9e27::t_d04bf8aaec34ab 24-25,65,69,88,90-91,93
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_12526a39d85b91::t_5aff9f0b93c155 1
+  s_12526a39d85b91::t_b30a5753a1eca4 18
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_da21e0e806e8da::t_6dcec6391f78a7 431-457,459-556,574,576-580,582-584,588,605,608-622
+  s_3067184b1e35ef::t_fb1cda4d0a2926 458
+resources/scripts/components/admin/nodes/NodeTable.spec.tsx
+  s_d26068c42427fa::t_de1f9e6cba63ba 5-6
+resources/scripts/components/server/console/useConsoleSocketLogs.ts
+  s_a1fd6c79aae8c1::t_85f81591c32c53 21-22
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_e0e1f29c4d9e27::t_bd87a6f4b25588 1
+  s_e0e1f29c4d9e27::t_c2ff990749f547 62,64
+resources/scripts/components/dashboard/ssh/AccountSSHContainer.tsx
+  s_12526a39d85b91::t_7fcfa65a1cb6ce 15,17
+  s_12526a39d85b91::t_974e985ce62fab 1
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_12526a39d85b91::t_4aa2fd13a581c7 1
+  s_12526a39d85b91::t_71b17edee738d0 19
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_e0e1f29c4d9e27::t_49ca50fe1dd788 221-222,265-266,268
+  s_e0e1f29c4d9e27::t_0044f035e59016 1
+  s_da21e0e806e8da::t_6dcec6391f78a7 223-264
+resources/scripts/components/ui/Select.tsx
+  s_3067184b1e35ef::t_898159bc7101db 236-259,263,266,268-271,273-282,284-303,305,307,309-383,385-415,421,424,429-430,433,451-452,462,525-526
+  s_3067184b1e35ef::t_39fa0d93c7b7da 479-524
+  s_da21e0e806e8da::t_7fb370884e65fb 463-478
+resources/scripts/components/elements/Button.tsx
+  s_d26068c42427fa::t_441626cb239d82 159-168
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_d26068c42427fa::t_2b8a59b142c2c9 128-132
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_3067184b1e35ef::t_3b4c0c28e3e729 38
+  s_3067184b1e35ef::t_4bcb3d92664c5e 44
+  s_3067184b1e35ef::t_2b9e7d073583b9 26
+  s_da21e0e806e8da::t_6dcec6391f78a7 2,22-25,27-37,39-43,45-177,188-189,220-225
+  s_3067184b1e35ef::t_b5223ba0cd8434 5
+resources/scripts/state/server/context.ts
+  s_d26068c42427fa::t_02e7bf2ff5a414 1-8
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_a1fd6c79aae8c1::t_b2f9b35ad23856 61-62
+resources/scripts/components/admin/servers/ServerTable.spec.tsx
+  s_d26068c42427fa::t_ddfbc85dd474fb 5-6
+resources/scripts/components/admin/servers/ServerTable.tsx
+  s_d26068c42427fa::t_2e0de442f2812b 8
+resources/scripts/state/server/index.tsx
+  s_d26068c42427fa::t_88c58511683898 75
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_3067184b1e35ef::t_ec334868d5c48a 116
+  s_3067184b1e35ef::t_355f0b0e2e4681 38-78
+  s_3067184b1e35ef::t_ed84093d3f7cc5 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8898c74fbe6b16e76bf93001658a15c83cba567b",
+  "prompts": {},
+  "sessions": {
+    "s_12526a39d85b91": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59529c47ffeOaCSOAHNGLmqRr",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_3067184b1e35ef": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59529c32ffeFc53BlkvbxLRtr",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a1fd6c79aae8c1": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f5c2fccb6ffeZKfrDqmzeykTTx",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_d26068c42427fa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59529c3affeXfEXQI7qyo1TKW",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_da21e0e806e8da": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59529c1affe25pm5GiwWaeACl",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_e0e1f29c4d9e27": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59529c51ffeZX3tktjQQTszTn",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

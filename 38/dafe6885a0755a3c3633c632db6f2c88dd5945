@@ -1,0 +1,77 @@
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_be04b879a75a03::t_68e9babe10cee8 45
+app/Services/Helpers/SoftwareVersionService.php
+  s_be04b879a75a03::t_68e9babe10cee8 108,115
+app/Extensions/Backups/BackupManager.php
+  s_be04b879a75a03::t_68e9babe10cee8 190,210
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_be04b879a75a03::t_68e9babe10cee8 329
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_be04b879a75a03::t_68e9babe10cee8 121
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_be04b879a75a03::t_68e9babe10cee8 29
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_be04b879a75a03::t_68e9babe10cee8 126,135
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_be04b879a75a03::t_257af1c5fd02f9 105-106,109,122,134
+  s_be04b879a75a03::t_68e9babe10cee8 104,108,132
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_be04b879a75a03::t_68e9babe10cee8 92
+  s_421ae2f039e76e::t_3dc5ef334de0a8 80
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_be04b879a75a03::t_68e9babe10cee8 82,89
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_be04b879a75a03::t_68e9babe10cee8 203,1224,1351,1766,2538
+app/Services/Servers/ServerCreationService.php
+  s_be04b879a75a03::t_68e9babe10cee8 166,231
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_be04b879a75a03::t_68e9babe10cee8 37,49,57
+app/Transformers/Api/Application/BaseTransformer.php
+  s_be04b879a75a03::t_68e9babe10cee8 128
+  s_421ae2f039e76e::t_5e6970e60be276 127
+rector.php
+  s_be04b879a75a03::t_39a623a7e96329 10-12,27-39
+  s_be04b879a75a03::t_bb83faacff3a96 7,24-26
+  s_421ae2f039e76e::t_bdd90a46538bb5 9
+app/Console/Commands/User/DeleteUserCommand.php
+  s_be04b879a75a03::t_68e9babe10cee8 33
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_be04b879a75a03::t_68e9babe10cee8 115
+  s_421ae2f039e76e::t_39341234013db6 84
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_be04b879a75a03::t_68e9babe10cee8 196
+app/Services/Helpers/AssetHashService.php
+  s_be04b879a75a03::t_68e9babe10cee8 240,252
+app/Services/Backups/InitiateBackupService.php
+  s_421ae2f039e76e::t_9d1a61cf784cbe 107
+app/Services/Deployment/AllocationSelectionService.php
+  s_421ae2f039e76e::t_28e6e01b5cff32 105
+app/Services/Nodes/NodeJWTService.php
+  s_421ae2f039e76e::t_e00550b59ecefb 128
+app/Services/Tags/TagBackfiller.php
+  s_421ae2f039e76e::t_466f68bd017480 92,103-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "38dafe6885a0755a3c3633c632db6f2c88dd5945",
+  "prompts": {},
+  "sessions": {
+    "s_421ae2f039e76e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4415058-582a-4592-8c64-04fcf1fb7246",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+resources/scripts/api/admin/mounts/queries.ts
+  s_731111b3bfaced::t_c032971ef87208 27,37-38,58-98,153-189
+  s_731111b3bfaced::t_71a1bc6adebf97 190
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_731111b3bfaced::t_c032971ef87208 8-10
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_731111b3bfaced::t_c032971ef87208 2
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_731111b3bfaced::t_c032971ef87208 2
+resources/scripts/components/admin/mounts/MountRow.tsx
+  s_731111b3bfaced::t_fda69c9fe790ba 7-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6d21ad66b0f556d83c496e617c2c2991600f5aa2",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+scripts/check-api-layer-native.php
+  s_731111b3bfaced::t_74753a441348a5 1-105
+package.json
+  s_731111b3bfaced::t_f668417c081831 75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "ac2451600dd44db523868b017b7f42c3051fb5a3",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

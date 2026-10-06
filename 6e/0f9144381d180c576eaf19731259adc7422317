@@ -1,0 +1,43 @@
+tests/Integration/Console/Commands/User/MakeUserCommandTest.php
+  s_0717e852bcfa2c::t_1832da784e8413 19
+  s_0717e852bcfa2c::t_c74eb03da85a25 1-18,20-51
+app/Validation/UserRules.php
+  s_0717e852bcfa2c::t_fb5f24cf5f7821 15-20,34
+  s_0717e852bcfa2c::t_13a473eefddde5 14
+resources/lang/en/command/messages.php
+  s_0717e852bcfa2c::t_fb5f24cf5f7821 27
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_0717e852bcfa2c::t_a261cd03e366e2 136-147
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_0717e852bcfa2c::t_87309371821ecf 28
+  s_0717e852bcfa2c::t_c124bc5c4e7199 169
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_0717e852bcfa2c::t_fe3843b9c70c4e 1361,1397,2355,2389
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_0717e852bcfa2c::t_a261cd03e366e2 8,88-97
+  s_0717e852bcfa2c::t_1cd9e76aaeabb8 98
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_0717e852bcfa2c::t_fb5f24cf5f7821 11,37
+app/Http/Requests/Auth/ResetPasswordRequest.php
+  s_0717e852bcfa2c::t_fb5f24cf5f7821 8,25
+resources/scripts/components/admin/users/UserFormFields.tsx
+  s_0717e852bcfa2c::t_c124bc5c4e7199 6-15,104
+resources/scripts/api/generated/types.gen.ts
+  s_0717e852bcfa2c::t_fe3843b9c70c4e 1513,1550,2550,2585
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6e0f9144381d180c576eaf19731259adc7422317",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

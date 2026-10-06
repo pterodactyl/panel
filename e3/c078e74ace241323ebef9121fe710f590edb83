@@ -1,0 +1,19 @@
+.github/workflows/release.yaml
+  s_41c12f1c80ed78::t_9ce983af6bed55 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e3c078e74ace241323ebef9121fe710f590edb83",
+  "prompts": {},
+  "sessions": {
+    "s_41c12f1c80ed78": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e26-2fdd-7963-bb7e-80612c705ccb",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_be04b879a75a03::t_7cf1fff20effef 7,80-81,88-91,96
+  s_be04b879a75a03::t_e6b9920ffa6c58 17,75-76,78
+app/Data/AllocationRange.php
+  s_be04b879a75a03::t_7cf1fff20effef 3-4,6-7,9,11-15,20-31,33,35-39,41-47
+  s_be04b879a75a03::t_4f705f238bd47e 1-2,5,8,10,34,48-49
+  s_be04b879a75a03::t_e6b9920ffa6c58 16-19,32,40
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_be04b879a75a03::t_51c155f769a44f 68-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f39b2ee5f9ed13aa78c0b8fa5bb3781ade82fc4a",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_731111b3bfaced::t_a82610dcdf4fbf 35-39,46-47,49
+resources/scripts/components/server/network/AllocationRow.tsx
+  s_731111b3bfaced::t_64e2ad20b56cac 17,30,34,44,50,60-61,63,67-68,71,74,83,89,96
+resources/scripts/api/server/network/queries.ts
+  s_731111b3bfaced::t_f0784ec98d2f2b 26-27,36,54,58,61-63,65,67-73,79-90,102,109,112-114,116,121-122,134,140,144,146,176,178-182
+  s_731111b3bfaced::t_a06f0ca786021f 147-153
+  s_731111b3bfaced::t_0ad8a6231009ef 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6e1d48332464704dd2c3539814d031275270d478",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

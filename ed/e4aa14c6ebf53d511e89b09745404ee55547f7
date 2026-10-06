@@ -1,0 +1,39 @@
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_12b43e4d15578a::t_742dd191d1f5d7 40
+resources/scripts/helpers.spec.ts
+  s_12b43e4d15578a::t_2cb8b5302cf34e 9
+  s_12b43e4d15578a::t_4457674e008138 1-8,10-23
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_12b43e4d15578a::t_4457674e008138 8
+resources/scripts/state/server/index.tsx
+  s_12b43e4d15578a::t_70b31ecf0aabb9 97,99
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_12b43e4d15578a::t_4457674e008138 22,76
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_12b43e4d15578a::t_2cb8b5302cf34e 49,137-142,148-153
+  s_12b43e4d15578a::t_4457674e008138 33,70,80,88,111,118,126-127,131,135
+resources/scripts/components/elements/LazyCodemirrorEditor.tsx
+  s_12b43e4d15578a::t_4457674e008138 4,13
+resources/scripts/helpers.ts
+  s_12b43e4d15578a::t_4457674e008138 48-51
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_12b43e4d15578a::t_742dd191d1f5d7 64,69-74
+resources/scripts/components/elements/codemirror/layout.ts
+  s_12b43e4d15578a::t_4457674e008138 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ede4aa14c6ebf53d511e89b09745404ee55547f7",
+  "prompts": {},
+  "sessions": {
+    "s_12b43e4d15578a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a046d7-204a-7681-9c85-bc77826436d7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

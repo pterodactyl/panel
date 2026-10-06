@@ -1,0 +1,287 @@
+app/Enum/EggSpecificTags.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 12-13,39-40
+resources/scripts/components/server/console/StatBlock.tsx
+  s_a8d8e651ce8586::t_495bb80f0bcbbf 10,16-17,26-44,48-50
+app/Models/Objects/DeploymentObject.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 29
+app/Extensions/ExtensionProvider.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 73,129,178
+app/Services/Servers/ServerConfigurationStructureService.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 79
+app/Services/Tags/TagBackfiller.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 134,136
+resources/scripts/components/elements/AppToaster.tsx
+  s_a8d8e651ce8586::t_01e544d0d23bf6 16
+  s_a8d8e651ce8586::t_0a56e19c497d13 20
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 122
+resources/scripts/components/admin/databases/DatabaseHostsContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 100
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_a8d8e651ce8586::t_3cdc2cfdca69d7 16,22-28,132-166
+  s_a8d8e651ce8586::t_085981edd94ef7 17-21
+resources/scripts/router/layouts/RootLayout.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 5
+resources/scripts/components/elements/Button.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 141
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_a8d8e651ce8586::t_29c5069e3d2936 57
+packages/sdk/runtime-stub.mjs
+  s_a8d8e651ce8586::t_71d1a0a14183fb 2
+resources/scripts/router/routeTree.ts
+  s_a8d8e651ce8586::t_af64b09b6ab23c 38,84,614,887-902
+  s_a8d8e651ce8586::t_99d6cc18507e96 546,561
+  s_a8d8e651ce8586::t_29c5069e3d2936 616-621
+  s_a8d8e651ce8586::t_71d1a0a14183fb 144,968
+  s_a8d8e651ce8586::t_d9783e7b594613 615
+resources/scripts/router/layouts/AccountLayout.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 8
+app/Transformers/Api/Admin/EggTransformer.php
+  s_a8d8e651ce8586::t_6b08aec68157b9 14,32,96-103
+  s_a8d8e651ce8586::t_b0f8b4a679bfe0 104-106
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_a8d8e651ce8586::t_01055f65c16243 2625
+  s_a8d8e651ce8586::t_71d1a0a14183fb 256-257,2473
+app/Models/Tag.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 74,90,136
+app/Console/Commands/Themes/ResetCommand.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 20
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 91
+packages/sdk/types-drift.spec.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 23
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 17
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 47
+resources/scripts/components/auth/LoginFormContainer.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 5
+app/Console/Commands/Extensions/PortCommand.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 35
+app/Models/Traits/HasAccessTokens.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 35
+resources/scripts/components/server/backups/BackupTable.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 87
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 101
+resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 49
+app/Extensions/Compat/Blueprint/BlueprintExtensionLibrary.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 18
+resources/scripts/ext-runtime/tanstack-react-query.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 1
+resources/scripts/components/server/console/StatGraphs.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 25
+app/Models/Model.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 92
+resources/scripts/api/admin/eggs/queries.ts
+  s_a8d8e651ce8586::t_af64b09b6ab23c 104
+routes/api-admin.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 212-213
+resources/scripts/components/admin/overview/OverviewContainer.tsx
+  s_a8d8e651ce8586::t_8fd5b58a0fbcbb 46
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 58
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 105
+resources/scripts/ext-runtime/react-dom-client.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 1
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_a8d8e651ce8586::t_746b7bb13949e6 28,67-68,94,101-102,105-128,130-131,133-139,143-144,156-157,197,200-201
+  s_a8d8e651ce8586::t_9d2cf26f9abfcc 24-27,29-32,56,64-66,69-71,78,96-97,99-100,103-104,152-155,158-160,168,187,191-193,195-196,198-199,202-205,210,231,235-236
+  s_a8d8e651ce8586::t_d23b523d896521 149
+resources/scripts/assets/tailwind.css
+  s_a8d8e651ce8586::t_71d1a0a14183fb 19-20,30,71,182,230
+  s_a8d8e651ce8586::t_9d2cf26f9abfcc 55,57,59,97,99
+app/Transformers/Api/Admin/TagTransformer.php
+  s_a8d8e651ce8586::t_6b08aec68157b9 15
+resources/scripts/router/layouts/AdminLayout.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 11
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 50
+app/Extensions/Scribe/Attributes/ResponseField.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 21
+resources/scripts/components/form/Form.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 4
+resources/scripts/components/admin/mounts/MountsContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 92
+app/Models/Server.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 411
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 261
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 76
+  s_a8d8e651ce8586::t_768b5e08e20d19 39,49,88-92
+  s_a8d8e651ce8586::t_2b67db095ee33b 29-33
+resources/scripts/lib/dayjs.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 8
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_a8d8e651ce8586::t_9e1bec2c50ed33 10,58-60
+app/Services/Tags/TagResolutionService.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 38
+packages/sdk/types/index.d.ts
+  s_a8d8e651ce8586::t_d50c398cceacca 144-145,150-151
+  s_a8d8e651ce8586::t_cf13018e26ed40 168
+  s_a8d8e651ce8586::t_71d1a0a14183fb 3,198,498
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 113
+app/Services/Extensions/ExtensionInstaller.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 25,136,170
+resources/scripts/router/view-transitions.css
+  s_a8d8e651ce8586::t_71d1a0a14183fb 7
+resources/scripts/components/elements/InvisibleRecaptcha.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 15,39
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_a8d8e651ce8586::t_1cbf667c30449c 262-361,608,612-615,617-619,621,623,705,707-712,714,717-726,747-756,762,765
+  s_a8d8e651ce8586::t_b61f34ad6b85eb 582
+  s_a8d8e651ce8586::t_71d1a0a14183fb 408
+  s_a8d8e651ce8586::t_29291f09f89193 745
+  s_a8d8e651ce8586::t_9c4c1ccd9a1323 362-364
+resources/scripts/components/server/console/AreaChart.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 21,138,150
+config/addons.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 14
+resources/scripts/components/form/fields.tsx
+  s_a8d8e651ce8586::t_ef3aa477c90fba 179,192,215
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 22-23
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 16-17,253,280,285,291,299,339,378,556,628
+resources/scripts/extensions/registry.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 9,225,277,283,366
+  s_a8d8e651ce8586::t_9e1bec2c50ed33 147,168-169,174-175
+resources/scripts/router/search.ts
+  s_a8d8e651ce8586::t_af64b09b6ab23c 10,20,44,53,169-171,249
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
+  s_a8d8e651ce8586::t_495bb80f0bcbbf 7,17,22,24,89,99
+  s_a8d8e651ce8586::t_cb3cabf0d4fee1 106,113
+resources/scripts/api/generated/index.ts
+  s_a8d8e651ce8586::t_9644e2b053c0c9 5
+resources/scripts/sdk/index.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 3,14,37,130
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 94
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_a8d8e651ce8586::t_9d2cf26f9abfcc 12,16,28
+resources/scripts/components/admin/tags/TagsContainer.tsx
+  s_a8d8e651ce8586::t_bee87a85a5a2da 12
+  s_a8d8e651ce8586::t_35e2e1d0e48671 1-11,13-146
+resources/scripts/components/admin/tags/TagTable.tsx
+  s_a8d8e651ce8586::t_bee87a85a5a2da 4,24-30,63-64
+  s_a8d8e651ce8586::t_35e2e1d0e48671 1-3,5-23,31-62,65-113
+app/Rules/TagSlug.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 19,23-24
+resources/scripts/components/elements/PageHeading.tsx
+  s_a8d8e651ce8586::t_1cbf667c30449c 16
+resources/scripts/extensions/ExtensionBoundary.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 15
+resources/scripts/ext-runtime/react.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 6
+resources/scripts/extensions/screen.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 11
+packages/sdk/vite.mjs
+  s_a8d8e651ce8586::t_71d1a0a14183fb 5,13
+resources/scripts/ext-runtime/react-dom.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 1
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 546
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 70
+app/Models/User.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 163,265
+app/Console/Commands/Themes/ListCommand.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 32
+resources/scripts/ext-runtime/react-jsx-runtime.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 1
+app/Providers/RouteServiceProvider.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 30
+resources/scripts/router/nav.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 6
+config/extensions.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 13
+resources/scripts/api/generated/types.gen.ts
+  s_a8d8e651ce8586::t_7e6502195be7ae 173,196,201-215,262-275,649,758,1481,1483,1485,1487,1496-1503,1518,1520,1522,1524,1533-1540,1796-1799,1824-1827,1845,1847,1853,1855,1857,1859,1863-1866,1891-1894,1912,1914,1920,1922,1924,1926,2006,2010,2434-2437,2470-2472,2516-2519,2532-2535,2551-2554,2567-2570,2582-2585,2610-2613,2631,2633,2639,2641,2643,2645,2649-2652,2677-2680,2698,2700,2706,2708,2710,2712,2732-2735,3495,3502
+  s_a8d8e651ce8586::t_9644e2b053c0c9 1763,1767,1771
+app/Transformers/Api/Application/BaseTransformer.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 71
+resources/scripts/components/admin/tags/TagFormDialog.tsx
+  s_a8d8e651ce8586::t_0b1b5f9eea9ada 60-62,64,66,133
+  s_a8d8e651ce8586::t_35e2e1d0e48671 1-59,63,65,67-132,134-151
+resources/scripts/components/admin/AdminContentBlock.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 11
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 27,100
+resources/scripts/components/elements/table/DataTable.tsx
+  s_a8d8e651ce8586::t_768b5e08e20d19 16,31,43
+resources/scripts/components/server/schedules/ScheduleTaskTable.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 124
+resources/scripts/extensions/registry.spec.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 12
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 39
+resources/scripts/lib/clipboard.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 2,12
+resources/scripts/components/admin/tags/CreateTagButton.tsx
+  s_a8d8e651ce8586::t_35e2e1d0e48671 1-21
+resources/scripts/plugins/Websocket.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 17
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 184
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 49
+app/Jobs/Schedule/RunTaskJob.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 56
+app/Services/Themes/ThemeService.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 16
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 16,50,89,183
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 50
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 99
+resources/scripts/components/form/errors.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 5
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_a8d8e651ce8586::t_82aaba15df989e 6
+  s_a8d8e651ce8586::t_9e1bec2c50ed33 28
+  s_a8d8e651ce8586::t_29c5069e3d2936 1-5,7-27,29-105
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_a8d8e651ce8586::t_71d1a0a14183fb 45
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_a8d8e651ce8586::t_6b08aec68157b9 86
+app/Console/Commands/Extensions/InstallCommand.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 34
+app/Models/AuditLog.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 12
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_a8d8e651ce8586::t_6b08aec68157b9 8,24-34
+  s_a8d8e651ce8586::t_692d7b1fe0634a 35
+resources/scripts/components/admin/api/ApiKeysContainer.tsx
+  s_a8d8e651ce8586::t_29291f09f89193 99
+resources/scripts/api/admin/tags/queries.ts
+  s_a8d8e651ce8586::t_29c5069e3d2936 1,101-102,114,117,119-122,172
+  s_a8d8e651ce8586::t_af64b09b6ab23c 2-100,103-111,113,123-171,173-178
+  s_a8d8e651ce8586::t_0b1b5f9eea9ada 112,115-116,118
+app/Http/ViewComposers/AssetComposer.php
+  s_a8d8e651ce8586::t_71d1a0a14183fb 41
+resources/scripts/extensions/loader.ts
+  s_a8d8e651ce8586::t_71d1a0a14183fb 71,83
+resources/scripts/components/admin/tags/TagBadge.tsx
+  s_a8d8e651ce8586::t_35e2e1d0e48671 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0a87334ea7b545abeb86545d740de726e5788b26",
+  "prompts": {},
+  "sessions": {
+    "s_a8d8e651ce8586": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0594e-63fd-7bc3-8401-68dce978e0d7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

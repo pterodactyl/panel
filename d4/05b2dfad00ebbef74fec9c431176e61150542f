@@ -1,0 +1,37 @@
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_33b02236b6a848 1289
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_33b02236b6a848 2280,2287,2300-2330
+  s_731111b3bfaced::t_4a3ee7ac78e358 2331
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_33b02236b6a848 44,6580,6584,6588,6592-6596,6600
+resources/scripts/api/admin/api-keys/getApiKeys.ts
+  s_731111b3bfaced::t_ba1f51fbe2d4ef 1,32
+resources/scripts/api/admin/api-keys/queries.ts
+  s_731111b3bfaced::t_ba1f51fbe2d4ef 9,11-28,36-83,86-88,91-95,97-104,107,110,120,124-133,151,155-159
+  s_731111b3bfaced::t_1210612d74d4bc 109
+  s_731111b3bfaced::t_1073169798a7f7 108
+resources/scripts/api/admin/api-keys/createApiKey.ts
+  s_731111b3bfaced::t_ba1f51fbe2d4ef 1-2,9,11,13-18,20
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_731111b3bfaced::t_db4760109be0a4 112-116
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_db4760109be0a4 87,106-121
+  s_731111b3bfaced::t_29138459d35a44 122-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "d405b2dfad00ebbef74fec9c431176e61150542f",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

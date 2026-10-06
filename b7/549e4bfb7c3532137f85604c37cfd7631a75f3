@@ -1,0 +1,28 @@
+resources/scripts/api/definitions/user/models.d.ts
+  s_731111b3bfaced::t_d1575137082d97 2
+resources/scripts/api/server/users/queries.ts
+  s_731111b3bfaced::t_1fccb289a8b610 18,24-36
+  s_731111b3bfaced::t_c808379ebc093f 37
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_731111b3bfaced::t_1fccb289a8b610 2
+resources/scripts/components/server/users/RemoveSubuserButton.tsx
+  s_731111b3bfaced::t_d1575137082d97 8
+resources/scripts/components/server/users/UserRow.tsx
+  s_731111b3bfaced::t_d1575137082d97 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b7549e4bfb7c3532137f85604c37cfd7631a75f3",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+tests/Integration/Api/Admin/ApiKeyAccessTest.php
+  s_0717e852bcfa2c::t_9466d17b73ca0d 1-6,8-15,17-21,25-47,49-54
+  s_0717e852bcfa2c::t_317f670fac6c8e 22-24
+  s_0717e852bcfa2c::t_c4a852d1d8dfbc 7,16,48
+app/Http/Middleware/Api/Admin/AuthenticateAdmin.php
+  s_0717e852bcfa2c::t_8303c8a8f27edf 9-11,18-19,23-24,28-34
+config/scribe.php
+  s_0717e852bcfa2c::t_4e7262853e40a1 151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b207b2dfd10395aeceec2749b358c1ebf59a51f2",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

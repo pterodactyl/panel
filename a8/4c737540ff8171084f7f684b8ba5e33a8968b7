@@ -1,0 +1,68 @@
+resources/scripts/sdk/progress.ts
+  s_68f0ff11e08ed5::t_b1786cb0d57363 6-7,10
+  s_68f0ff11e08ed5::t_09a2336abae316 2,5,18
+resources/scripts/api/extensionTypes.ts
+  s_68f0ff11e08ed5::t_b1786cb0d57363 14-16
+  s_68f0ff11e08ed5::t_5aab5046700132 1-13
+resources/scripts/api/extensionProgress.ts
+  s_68f0ff11e08ed5::t_b1786cb0d57363 3
+  s_68f0ff11e08ed5::t_6499f032f5ab3d 1-2,4-17
+.github/docker/smoke-test.sh
+  s_68f0ff11e08ed5::t_6802d762c5deb5 207-209
+packages/sdk/types-drift.spec.ts
+  s_68f0ff11e08ed5::t_c9ff68786edcbf 140-149
+packages/sdk/types/api/extensionTypes.d.ts
+  s_bf99a93e97ab76::t_e14a83dabe14c3 1-5
+packages/sdk/types/api/server/queryDomains.d.ts
+  s_bf99a93e97ab76::t_2bb8631d4b7437 1-4
+packages/sdk/types/extensions/registry.d.ts
+  s_bf99a93e97ab76::t_3be4fc7ecb00e9 7
+packages/sdk/types/extensions/resourceContext.d.ts
+  s_bf99a93e97ab76::t_b94b09a00d3218 2
+packages/sdk/types/extensions/tableTypes.d.ts
+  s_bf99a93e97ab76::t_66b755031ccba9 3
+packages/sdk/types/sdk/progress.d.ts
+  s_bf99a93e97ab76::t_8ba6c32b18e8eb 3,5
+packages/sdk/types/sdk/server.d.ts
+  s_bf99a93e97ab76::t_d0ce318b7958ac 3-4,24
+resources/scripts/api/server/queryDomains.ts
+  s_68f0ff11e08ed5::t_bacc84233cb70b 1-27
+resources/scripts/extensions/nativeForm.spec.tsx
+  s_68f0ff11e08ed5::t_e2bca71732f419 4,77
+resources/scripts/extensions/registry.ts
+  s_68f0ff11e08ed5::t_ffbf5abd4a9f85 9
+resources/scripts/extensions/resourceContext.ts
+  s_68f0ff11e08ed5::t_0033032e38cf92 2
+resources/scripts/extensions/tableTypes.ts
+  s_68f0ff11e08ed5::t_453409860779f6 2
+resources/scripts/sdk/queryOptions.ts
+  s_68f0ff11e08ed5::t_4d4053f8b6f8e5 1-22
+resources/scripts/sdk/server.ts
+  s_68f0ff11e08ed5::t_11e88c5e4ba6c2 1-2,11-12,18,71,76-78
+scripts/build-sdk-testing.mjs
+  s_68f0ff11e08ed5::t_2d53a5e4288129 2,18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a84c737540ff8171084f7f684b8ba5e33a8968b7",
+  "prompts": {},
+  "sessions": {
+    "s_68f0ff11e08ed5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe47-43c3-7613-9dbc-50c0bca9d979",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_bf99a93e97ab76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3306d217-ef25-4a58-aa1a-8bdfdb5da12f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

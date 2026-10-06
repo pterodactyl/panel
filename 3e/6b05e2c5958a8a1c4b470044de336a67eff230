@@ -1,0 +1,27 @@
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_1e4e38747bb289::t_8cda6bc7f824b8 1-2,12-13,16-18,33,36,39-46,72-79
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_1e4e38747bb289::t_8df95da77eaa0a 12,50,70
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_1e4e38747bb289::t_1309e9c7d393a0 1,7,12,15-18,34,37,40-48,72-80
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_ee9e20090b4eec 58,168-170,172-176,320-322,326-330
+resources/scripts/router/search.ts
+  s_1e4e38747bb289::t_910174f5154fb9 22-26,50-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "3e6b05e2c5958a8a1c4b470044de336a67eff230",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

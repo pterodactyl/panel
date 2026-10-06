@@ -1,0 +1,84 @@
+app/Services/Extensions/ExtensionManifest.php
+  s_df7dc93e661050::t_066789e4f54ddf 41-42,44-55,58,88
+app/Console/Commands/Extensions/InstallCommand.php
+  s_df7dc93e661050::t_d8d3af1da00427 13-15,37-42
+  s_df7dc93e661050::t_46faa911233ffe 43
+tests/Unit/Services/Extensions/ExtensionInstallerTest.php
+  s_df7dc93e661050::t_80ea1f7c537d1b 1-129
+app/Services/Extensions/ExtensionInstaller.php
+  s_df7dc93e661050::t_434b28ac779e71 5,9-16,26-30,52-54,69-70,86,95-96,106-107,116-117,121-124,127-128,134
+app/Events/Extensions/ExtensionRemoved.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-10
+app/Events/Extensions/ExtensionEnabled.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_df7dc93e661050::t_ad8790714c3d0b 1-139
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_df7dc93e661050::t_ad8790714c3d0b 1-5,7-58,66-95,117-166
+  s_df7dc93e661050::t_0d3855db1a4c7d 6,59-65,96-116
+app/Services/Extensions/Diagnostics/ExtensionDiagnosticsReport.php
+  s_df7dc93e661050::t_49a3b8ca3107f4 1-91
+app/Console/Commands/Extensions/EnableCommand.php
+  s_df7dc93e661050::t_d8d3af1da00427 11-14,30-35
+  s_df7dc93e661050::t_6490a056921b45 36
+composer.json
+  s_df7dc93e661050::t_f4b03f3e4e328d 62-63
+tests/Unit/Services/Extensions/ExtensionDoctorTest.php
+  s_df7dc93e661050::t_80ea1f7c537d1b 1-181
+app/Services/Extensions/ExtensionRepository.php
+  s_df7dc93e661050::t_ad8790714c3d0b 1-15,17-21,23-36,39-45,47-57,59-70,72-170
+  s_df7dc93e661050::t_7e1badd01f08c6 16,22,37-38,46,58,71
+app/Services/Extensions/ExtensionManager.php
+  s_df7dc93e661050::t_160b7f3c3598bc 10-14,18-25,29,37,40-42,45,50,58,66,74,79,84,89
+app/Events/Extensions/ExtensionDisabled.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_df7dc93e661050::t_d8d3af1da00427 1-58
+tests/Unit/Services/Extensions/ExtensionManagerTest.php
+  s_df7dc93e661050::t_6df2082dffea6c 6,8,11-12,42,54,64-65,94-95,97,99,111-127,129-132
+  s_df7dc93e661050::t_4d49a51ba181fa 128
+app/Events/Extensions/ExtensionLoadFailed.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-15
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_df7dc93e661050::t_ad8790714c3d0b 1-55
+app/Events/Extensions/ExtensionRemoving.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Events/Extensions/ExtensionInstalling.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-14
+app/Events/Extensions/ExtensionInstalled.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Events/Extensions/ExtensionDisabling.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Events/Extensions/ExtensionEnabling.php
+  s_df7dc93e661050::t_5759703f4a6da1 1-11
+app/Extensions/ExtensionProvider.php
+  s_df7dc93e661050::t_434b28ac779e71 75-82
+  s_df7dc93e661050::t_23b979d2cba624 72-74
+  s_df7dc93e661050::t_dc0d99fddaad17 71
+app/Services/Extensions/ExtensionDoctor.php
+  s_df7dc93e661050::t_00821d9614ee35 121,160-162,287-295
+  s_df7dc93e661050::t_49a3b8ca3107f4 1-120,122-159,163-286,296-297
+app/Services/Extensions/Diagnostics/ExtensionDiagnostic.php
+  s_df7dc93e661050::t_99158d1e1ab639 8,10,22-24
+  s_df7dc93e661050::t_49a3b8ca3107f4 1-7,9,11-21,25-44
+app/Providers/ExtensionServiceProvider.php
+  s_df7dc93e661050::t_434b28ac779e71 6,8-10,16-19
+composer.lock
+  s_df7dc93e661050::t_119c3e6eff8fed 7,8992-9130,9592-9638,11565-11645
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7fd237c7af5ced2fd5dc05f5f3744928d1b9afd9",
+  "prompts": {},
+  "sessions": {
+    "s_df7dc93e661050": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3dfb-cdf6-72b1-baf7-f9ab54d512df",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_731111b3bfaced::t_9d9d9d543773da 6,8-11,16-17,20-40,56-62
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_731111b3bfaced::t_9d9d9d543773da 6,8-10,20-21,24-54,72-83
+  s_731111b3bfaced::t_9d1b75e5a2c443 14
+app/Http/Controllers/Api/Admin/Settings/TestMailController.php
+  s_731111b3bfaced::t_9d9d9d543773da 6-8,16-17,20-39,43-46
+  s_731111b3bfaced::t_9d1b75e5a2c443 12
+app/Http/Controllers/Api/Admin/Settings/AdvancedController.php
+  s_731111b3bfaced::t_9d9d9d543773da 6,8-11,16-17,20-40,56-67
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_731111b3bfaced::t_9d9d9d543773da 6-9,14-15,18-59,74-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "a28812215f2437fc599d33fea0947f55e3d3e2df",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+resources/scripts/api/auth/queries.ts
+  s_1e4e38747bb289::t_3754b23ae59a3e 5,46-56
+resources/scripts/components/NavigationBar.tsx
+  s_1e4e38747bb289::t_04441217af64a3 7,24,26,30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "a10bb98f6aaf4b6c22bacd25bd3454fcc4bbefb0",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

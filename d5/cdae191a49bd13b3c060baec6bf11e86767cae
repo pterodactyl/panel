@@ -1,0 +1,41 @@
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_731111b3bfaced::t_1fe88aaf4c5692 4,15
+  s_731111b3bfaced::t_5631b580a8f1f6 84-85
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_565cb293c0ea9d 155-157
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_731111b3bfaced::t_c1d0cfdde8ace1 82
+resources/scripts/components/admin/locations/LocationRow.tsx
+  s_731111b3bfaced::t_1e15b111414047 22,29,32,44,83,100,137,144,150,170,173,175-177,180,182,184
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_54026066e73f6c 101-103
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_731111b3bfaced::t_5631b580a8f1f6 52
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_bfd48cc5fcec83 14,360
+resources/scripts/api/admin/locations/queries.ts
+  s_731111b3bfaced::t_5243e66c4e558d 11,49,101,119-120,147,187,191,211,215
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_731111b3bfaced::t_3b40e7e944ee4f 104-107
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_731111b3bfaced::t_67c6e7f22ef0c7 23-24,28-29,39,49,68,116-117,138,141-142,146,149,152,155-157,187-189
+  s_731111b3bfaced::t_5631b580a8f1f6 199-202
+resources/scripts/components/admin/databases/DatabaseHostNodeSelect.tsx
+  s_731111b3bfaced::t_afc36d3b89d407 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "d5cdae191a49bd13b3c060baec6bf11e86767cae",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_731111b3bfaced::t_2dc146152e4933 11-16,34-35,38-114,130-135,152-158,177-183,215-222,237-244,264-273,293-299,314-321,342-349,372-379,400-409,425-435
+  s_731111b3bfaced::t_b844dd41d9977f 19
+app/Http/Controllers/Api/Client/Servers/FileUploadController.php
+  s_731111b3bfaced::t_2dc146152e4933 10-13,15,19-20,23-39,52-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "678250eacc8130a39bde7023317e2533bf90c66c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

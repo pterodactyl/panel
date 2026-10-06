@@ -1,0 +1,19 @@
+routes/base.php
+  s_d4115f9d96b565::t_fe2a2c740145cb 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "2443b53780ff272f83020460a57662685058e5d3",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

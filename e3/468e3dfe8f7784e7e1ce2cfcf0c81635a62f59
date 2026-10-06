@@ -1,0 +1,34 @@
+.gitignore
+  s_3a230dc1efc7c1::t_f56d19f36ecf51 30
+.github/workflows/ci.yaml
+  s_3a230dc1efc7c1::t_04f019c9945026 52
+app/Http/Controllers/Auth/LoginController.php
+  s_3a230dc1efc7c1::t_3cab2181f9e06f 12
+  s_3a230dc1efc7c1::t_0010ad1fb41e09 10-11
+composer.json
+  s_3a230dc1efc7c1::t_04f019c9945026 85-86
+  s_3a230dc1efc7c1::t_ddd25b40fa7805 61
+pint.json
+  s_3a230dc1efc7c1::t_fc1bfb6ae60ad4 1-3
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_3a230dc1efc7c1::t_3cab2181f9e06f 10-12
+  s_3a230dc1efc7c1::t_099cc9892fc60b 9
+composer.lock
+  s_3a230dc1efc7c1::t_e6e8c24909944e 7,8575-8576,8579-8580,8584-8585,8589-8594,8597-8598,8600-8604,8607-8608,8613,8615,8617,8620-8621,8924-8991,9914-9918,9920-9921,9923-9925,9927-9929,9932-9939,9942,9946-9948,9951-9952,9954-9956,9959-9961,9965-9982,9985
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e3468e3dfe8f7784e7e1ce2cfcf0c81635a62f59",
+  "prompts": {},
+  "sessions": {
+    "s_3a230dc1efc7c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e05-5cd9-7643-bc45-824b50386e99",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

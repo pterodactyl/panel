@@ -1,0 +1,24 @@
+resources/scripts/router/routeTree.spec.ts
+  s_0717e852bcfa2c::t_2fc336c1b1f769 2,45-47
+  s_0717e852bcfa2c::t_a9673b3ad439a0 1,3-44,48
+resources/scripts/router/routeTree.ts
+  s_0717e852bcfa2c::t_f71fb68d603da1 1130
+  s_0717e852bcfa2c::t_f670c4d7c5feab 1088
+  s_0717e852bcfa2c::t_381f5838561c71 1089-1090,1092-1094
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b8e5ffe119665af96cbd6f5a12d1f75a54f12d34",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

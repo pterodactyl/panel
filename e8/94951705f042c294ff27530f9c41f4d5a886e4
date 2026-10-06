@@ -1,0 +1,31 @@
+app/Services/Extensions/ExtensionSettings.php
+  s_53916ba32af787::t_6cec072a85e7f1 36,41-42
+app/Validation/AllocationRules.php
+  s_53916ba32af787::t_6cec072a85e7f1 7-10,13-22
+.ai/rules/app.md
+  s_53916ba32af787::t_6cec072a85e7f1 15
+app/Exceptions/DisplayException.php
+  s_53916ba32af787::t_6cec072a85e7f1 74,78
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_6cec072a85e7f1 16,61-62
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_6cec072a85e7f1 16,64-65
+app/Validation/UserRules.php
+  s_53916ba32af787::t_6cec072a85e7f1 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e894951705f042c294ff27530f9c41f4d5a886e4",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

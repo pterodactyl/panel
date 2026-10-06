@@ -1,0 +1,44 @@
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_1e4e38747bb289::t_97a782db6e3c58 219-247
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_1e4e38747bb289::t_fead6a649fdcdd 3-8,28-29,46-47,64-73,139-143,176-181,185-189,194-203,205-209,213-217
+resources/scripts/components/admin/eggs/helpers.ts
+  s_1e4e38747bb289::t_97a782db6e3c58 91,93-95,114-116
+resources/scripts/api/admin/servers/queries.ts
+  s_1e4e38747bb289::t_bab01feda7a686 23,184
+  s_1e4e38747bb289::t_9cc876384cb7fb 115-121,185-189,313
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_1e4e38747bb289::t_bab01feda7a686 106-110,114-116,122-126,129-133,136-140
+  s_1e4e38747bb289::t_a11b5921979ba9 3,59,63-79,85-93,112-113,117-121,141-146
+resources/scripts/api/admin/servers/getServer.ts
+  s_1e4e38747bb289::t_f79b9f6a9e2236 90,204
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_1e4e38747bb289::t_c9664ec2709ef4 18,29,44,121-132,185-208,221-223,248,268,276,293,312-313,320
+  s_1e4e38747bb289::t_f79b9f6a9e2236 45
+  s_1e4e38747bb289::t_bab01feda7a686 314-319
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_1e4e38747bb289::t_67862cf3fb8178 2,38,66-68,81-98,121,161-171,175-181
+  s_1e4e38747bb289::t_bab01feda7a686 172-174
+resources/scripts/api/queryKeys.ts
+  s_1e4e38747bb289::t_9cc876384cb7fb 70
+resources/scripts/api/admin/eggs/getEggs.ts
+  s_1e4e38747bb289::t_67862cf3fb8178 8,15
+resources/scripts/api/admin/servers/getServerTransferProgress.ts
+  s_1e4e38747bb289::t_9cc876384cb7fb 1-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "61eb3baa419a15fd09e6913de8370b3484b45b9c",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

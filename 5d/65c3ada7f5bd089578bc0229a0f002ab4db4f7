@@ -1,0 +1,29 @@
+tools/phpstan/anti-slop/src/Rules/NoKnownValueWideningReturnRule.php
+  s_5eb93878083371::t_ff8fd12ac32127 1-87
+tools/phpstan/anti-slop/tests/Rules/NoKnownValueWideningRuleTest.php
+  s_5eb93878083371::t_ff8fd12ac32127 1-31
+tools/phpstan/anti-slop/tests/Rules/NoKnownValueWideningReturnRuleTest.php
+  s_5eb93878083371::t_ff8fd12ac32127 1-28
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_ff8fd12ac32127 1
+tools/phpstan/anti-slop/src/Rules/NoKnownValueWideningPropertyRule.php
+  s_5eb93878083371::t_ff8fd12ac32127 1-80
+tools/phpstan/anti-slop/tests/Rules/data/no-known-value-widening.php
+  s_5eb93878083371::t_ff8fd12ac32127 1-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5d65c3ada7f5bd089578bc0229a0f002ab4db4f7",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

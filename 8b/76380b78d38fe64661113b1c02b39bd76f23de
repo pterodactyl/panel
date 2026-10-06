@@ -1,0 +1,23 @@
+resources/scripts/api/admin/api-keys/getApiKeys.ts
+  s_731111b3bfaced::t_677b18f357f153 1-4,56-58,60
+resources/scripts/api/admin/api-keys/createApiKey.ts
+  s_731111b3bfaced::t_677b18f357f153 1,3,18-20,23
+resources/scripts/api/admin/api-keys/deleteApiKey.ts
+  s_731111b3bfaced::t_677b18f357f153 1,5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "8b76380b78d38fe64661113b1c02b39bd76f23de",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

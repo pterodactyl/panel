@@ -1,0 +1,42 @@
+resources/scripts/api/admin/nests/getNestEggs.ts
+  s_731111b3bfaced::t_e38a5045de7b5b 1,15,22
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_b78cecec62fb04 192,311-313
+  s_731111b3bfaced::t_0132b8f1ead25e 9,12-16,19-42,50-54,59-117,119-121,125,129-139,141-148,152-159,163-170,175-182,186-191,194-195,200-201,206-207,212-213,221,225-230,246,250-259,275,279-285,287-288,316
+  s_731111b3bfaced::t_f8931f2bdcbbfc 193
+app/Http/Controllers/Api/Admin/Nests/EggController.php
+  s_731111b3bfaced::t_4c68dd5ddc1db9 21,40,64-71,117,130
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_731111b3bfaced::t_454d17213530c9 8
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_7f4108f3895d4f 1802,1809,1822-1852
+  s_731111b3bfaced::t_4703905ded6f6e 1853
+resources/scripts/api/admin/nests/getNestsWithEggs.ts
+  s_731111b3bfaced::t_e38a5045de7b5b 1-2,15-19,21-24
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_dd42568f18534a 24,48-52,56
+app/Http/Controllers/Api/Admin/Nests/NestController.php
+  s_731111b3bfaced::t_4c68dd5ddc1db9 37,40-47,93-97,115
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_7f4108f3895d4f 178,206-208,352,357-359,5188,5192,5378,5382,5511,5515,5519-5523,5527-5531,5646-5651
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_7f4108f3895d4f 1001
+resources/scripts/api/admin/nests/getNest.ts
+  s_731111b3bfaced::t_e38a5045de7b5b 1,15-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "74a53ae11a4a17781f025fc1bf6cfc7ca87edd0c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

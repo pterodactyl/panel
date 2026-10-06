@@ -1,0 +1,50 @@
+resources/scripts/api/server/backups/queries.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 8,14-15,27-28,31-32
+  s_731111b3bfaced::t_9564d915daa217 23-26
+resources/scripts/api/server/databases/createServerDatabase.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2-3,9-11,15-16,18
+resources/scripts/api/server/backups/createServerBackup.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1,4,13-19,22
+resources/scripts/api/server/network/createServerAllocation.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2,4,7,9
+resources/scripts/api/server/databases/rotateDatabasePassword.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2-3,6-8,10
+resources/scripts/api/server/network/setPrimaryServerAllocation.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2,4,7,9
+resources/scripts/api/server/network/queries.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 7,13-14,20,22
+resources/scripts/api/server/databases/deleteServerDatabase.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1,4-6
+resources/scripts/api/server/databases/getServerDatabases.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1-3,24-27,29-31
+resources/scripts/api/server/backups/deleteBackup.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1,4
+resources/scripts/api/server/backups/toggleServerBackupLock.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1,4
+resources/scripts/api/server/network/setServerAllocationNotes.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2,4,12
+  s_731111b3bfaced::t_9564d915daa217 7-10
+resources/scripts/api/server/network/deleteServerAllocation.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 2,5-7
+resources/scripts/api/server/backups/index.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1,4-8
+  s_731111b3bfaced::t_e7e6a553b95b0c 9
+resources/scripts/api/server/backups/getBackupDownloadUrl.ts
+  s_731111b3bfaced::t_6cfe171f1465d9 1-2,5,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "0d308daeb81dba2521b4be6674d2fb08d165337b",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

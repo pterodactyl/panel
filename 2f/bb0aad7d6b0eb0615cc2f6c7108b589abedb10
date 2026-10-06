@@ -1,0 +1,42 @@
+app/Http/Controllers/Api/Admin/Servers/RebuildController.php
+  s_731111b3bfaced::t_cec5695c270036 8-12,17-18,34-38
+app/Http/Controllers/Api/Admin/Servers/ToggleInstallController.php
+  s_731111b3bfaced::t_cec5695c270036 8-11,13,17-18,21-30,34-39
+app/Http/Controllers/Api/Admin/Servers/ReinstallController.php
+  s_731111b3bfaced::t_acbb149aedea09 14
+  s_731111b3bfaced::t_cec5695c270036 9-12,18-19,35-39
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_731111b3bfaced::t_691a0ded5a80a6 6-9,11,15-16,22-26
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_731111b3bfaced::t_691a0ded5a80a6 7-11,13,18-19,35-44
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_731111b3bfaced::t_acbb149aedea09 20
+  s_731111b3bfaced::t_cec5695c270036 10,12-15,26-27,30-39,58-67
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_731111b3bfaced::t_acbb149aedea09 21
+  s_731111b3bfaced::t_0599851faf3075 9,12-16,28-29,32-131,147-158,183-187,198-224,247-252
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_731111b3bfaced::t_691a0ded5a80a6 8-12,14,19-20,36-46
+app/Http/Controllers/Api/Admin/Servers/BuildController.php
+  s_731111b3bfaced::t_691a0ded5a80a6 7-11,13,18-19,35-53
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_731111b3bfaced::t_cec5695c270036 7-11,16-17,20-32,36-41
+app/Http/Controllers/Api/Admin/Servers/SuspensionController.php
+  s_731111b3bfaced::t_cec5695c270036 8-12,14,18-19,35-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "2fbb0aad7d6b0eb0615cc2f6c7108b589abedb10",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

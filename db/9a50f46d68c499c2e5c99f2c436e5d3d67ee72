@@ -1,0 +1,27 @@
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_2a466f836ebff9::t_79b299dc6c412a 86-87,89-90
+  s_2a466f836ebff9::t_15afe8896c1cbc 11-13,72-82,84-85,88,91-92,94-100,123,125-137
+  s_2a466f836ebff9::t_e9a79a26541ac3 19,28,32-33,45,61,67,71,83,93,101,105,109,114,122,124,140,143
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_2a466f836ebff9::t_79b299dc6c412a 48-53,58-60
+tests/Unit/Services/Extensions/ExtensionSettingsDefinitionTest.php
+  s_2a466f836ebff9::t_e9a79a26541ac3 16,31,35,41,43,45,49,62,69-71,73-74,76-79,81-84,86-89,92,95
+  s_2a466f836ebff9::t_15afe8896c1cbc 50-60
+  s_2a466f836ebff9::t_5760a97bff04ba 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "db9a50f46d68c499c2e5c99f2c436e5d3d67ee72",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+resources/scripts/api/fractal.ts
+  s_731111b3bfaced::t_ea7df0685e0c78 1,60,63-64
+  s_731111b3bfaced::t_5c178db1575866 2,10,48-52
+  s_731111b3bfaced::t_7e6c272f3305f7 3-9,11-47,53-59,61-62,65-82
+resources/scripts/api/fractal.spec.ts
+  s_731111b3bfaced::t_2b66544a1dad8d 1-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "9e152ba1420a75c08d44159f086cb0aaddb21ea8",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

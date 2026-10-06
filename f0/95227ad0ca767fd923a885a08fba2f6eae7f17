@@ -1,0 +1,21 @@
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_1987c4c7a2db6b::t_28d4dc96b62dfc 40-48
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_1987c4c7a2db6b::t_6e6188ee4e3989 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f095227ad0ca767fd923a885a08fba2f6eae7f17",
+  "prompts": {},
+  "sessions": {
+    "s_1987c4c7a2db6b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a546e5c2-5c0a-4525-8b68-fc36bc85da6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

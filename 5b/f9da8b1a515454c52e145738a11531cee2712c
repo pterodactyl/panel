@@ -1,0 +1,26 @@
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_063ae5be08dff5 3597-3648,5613,7233,7435,8430,9098,9133,9137,9175,9179,9217,10166,10604
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_13674b2ae4953b 19-21,32-35,54,483,544-580,637-646
+  s_731111b3bfaced::t_451779517466ef 647-648
+scripts/check-openapi-client-contract.php
+  s_731111b3bfaced::t_1b6b3e8c9107f4 126-127,256
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_063ae5be08dff5 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "5bf9da8b1a515454c52e145738a11531cee2712c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+app/Support/JsonValueGuard.php
+  s_be04b879a75a03::t_a3efb502e793f0 7,52
+  s_be04b879a75a03::t_55783afbf07430 53-55
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_be04b879a75a03::t_55783afbf07430 104,110
+phpstan.neon
+  s_be04b879a75a03::t_55783afbf07430 18
+app/Transformers/Api/Application/NodeTransformer.php
+  s_be04b879a75a03::t_55783afbf07430 59-60,62-63
+  s_be04b879a75a03::t_7b999536e8ddee 85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "75f4468c8cb5e266c0e5b83bb84f5a4a83b4b9e1",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

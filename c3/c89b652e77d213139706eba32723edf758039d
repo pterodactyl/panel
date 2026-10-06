@@ -1,0 +1,52 @@
+routes/auth.php
+  s_53916ba32af787::t_8ace91df12889a 26
+app/Providers/AppServiceProvider.php
+  s_53916ba32af787::t_f6ad010cd183ca 8,11,16-17,23,36-40
+  s_53916ba32af787::t_1a40e9072f06e9 138-171
+  s_53916ba32af787::t_37919bab1a254d 41
+config/sanctum.php
+  s_53916ba32af787::t_dec7dc71136a68 5-6
+tools/phpstan/anti-slop/extension.neon
+  s_53916ba32af787::t_b0ef94560c1326 36
+public/index.php
+  s_53916ba32af787::t_ef23bb68bcc26b 5,10-12,15,18-19,22
+app/Console/Scheduler.php
+  s_53916ba32af787::t_ef23bb68bcc26b 1-65
+bootstrap/app.php
+  s_53916ba32af787::t_ef23bb68bcc26b 5,7,9-140
+  s_53916ba32af787::t_1a40e9072f06e9 6
+app/Exceptions/DisplayException.php
+  s_53916ba32af787::t_8affd8fe265842 92,96-99
+  s_53916ba32af787::t_8ace91df12889a 9,63,84-85
+artisan
+  s_53916ba32af787::t_ef23bb68bcc26b 4-5,7,9-10,12-14,16
+app/Exceptions/ApiErrorResponse.php
+  s_53916ba32af787::t_b0ef94560c1326 90,125-138
+  s_53916ba32af787::t_ef23bb68bcc26b 1-89,91-124,139-200
+tests/Unit/Exceptions/ApiErrorResponseTest.php
+  s_53916ba32af787::t_dec7dc71136a68 1-50
+bootstrap/providers.php
+  s_53916ba32af787::t_ef23bb68bcc26b 1-16
+app/Console/Commands/UpgradeCommand.php
+  s_53916ba32af787::t_8ace91df12889a 10
+.ai/rules/bootstrap.md
+  s_53916ba32af787::t_777e81087f9fed 1-9
+.ai/rules/index.md
+  s_53916ba32af787::t_e6f5358c12e30c 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c3c89b652e77d213139706eba32723edf758039d",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

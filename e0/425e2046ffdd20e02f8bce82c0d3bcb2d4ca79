@@ -1,0 +1,21 @@
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_32f1d4bc1351fd 51-63
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_be04b879a75a03::t_1ff57daaef36b0 27,59,66,106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e0425e2046ffdd20e02f8bce82c0d3bcb2d4ca79",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

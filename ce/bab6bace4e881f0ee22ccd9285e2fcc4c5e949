@@ -1,0 +1,27 @@
+resources/scripts/api/account/queries.ts
+  s_1e4e38747bb289::t_72efb2133f92ef 8,13
+resources/scripts/api/settings/queries.ts
+  s_1e4e38747bb289::t_459851ccbbef52 4,7
+resources/scripts/bootstrap.ts
+  s_1e4e38747bb289::t_1d3289ed87b56d 1-35
+resources/scripts/components/server/users/UserRow.tsx
+  s_1e4e38747bb289::t_73f5b717f871a4 9,16
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_87b517d42fd594 49,114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "cebab6bace4e881f0ee22ccd9285e2fcc4c5e949",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

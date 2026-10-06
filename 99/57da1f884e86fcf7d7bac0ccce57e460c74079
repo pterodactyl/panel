@@ -1,0 +1,39 @@
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_731111b3bfaced::t_079047bdae7144 20
+  s_731111b3bfaced::t_51adfac3b25bb2 9,11-15,28-29,32-128,145-152,168-172,185-204,227-249,271-276
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_731111b3bfaced::t_960388776c329b 9-12,15,19-20,23-29,45-49
+app/Http/Controllers/Api/Admin/Nodes/UniqueIpsController.php
+  s_731111b3bfaced::t_960388776c329b 7-11,15-16,19-25,29-33
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_731111b3bfaced::t_2dce4712478cd5 6,9-13,18-19,25-34
+app/Http/Controllers/Api/Admin/Nodes/UtilizationController.php
+  s_731111b3bfaced::t_960388776c329b 7-11,16-17,20-30,44-48
+app/Http/Controllers/Api/Admin/Nodes/BulkDeleteAllocationsController.php
+  s_731111b3bfaced::t_2dce4712478cd5 8-13,18-19,35-42
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_731111b3bfaced::t_2dce4712478cd5 8-13,18-19,35-41
+app/Http/Controllers/Api/Admin/Nodes/ConfigurationController.php
+  s_731111b3bfaced::t_960388776c329b 7-11,15-16,19-41,45-49
+app/Http/Controllers/Api/Admin/Nodes/SystemInformationController.php
+  s_731111b3bfaced::t_960388776c329b 7-11,17-18,21-37,51-56
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_731111b3bfaced::t_079047bdae7144 19
+  s_731111b3bfaced::t_84440c07157e80 9,12-14,16-17,20,29-30,33-73,89-99,127-135,161-168,190-196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "9957da1f884e86fcf7d7bac0ccce57e460c74079",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

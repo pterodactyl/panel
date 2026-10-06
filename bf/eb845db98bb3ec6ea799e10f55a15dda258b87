@@ -1,0 +1,37 @@
+resources/scripts/api/admin/version/queries.ts
+  s_731111b3bfaced::t_524ce977824904 1,3,22-28,30-31
+  s_731111b3bfaced::t_a68e147cfe3e4a 2,5-12,14-21
+resources/scripts/components/admin/languageOptions.ts
+  s_731111b3bfaced::t_a68e147cfe3e4a 1
+resources/scripts/components/admin/overview/OverviewContainer.tsx
+  s_731111b3bfaced::t_a68e147cfe3e4a 6
+resources/scripts/api/admin/languages/queries.ts
+  s_731111b3bfaced::t_524ce977824904 1,3,8-9
+  s_731111b3bfaced::t_a68e147cfe3e4a 2,5,7,11-12
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_05fa6f0fd098c7 262-268,580-588,1528,6457
+resources/scripts/components/admin/overview/OverviewVersionCard.tsx
+  s_731111b3bfaced::t_a68e147cfe3e4a 3
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_05fa6f0fd098c7 5
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_8d1e3b8f8ea1cb 33,49-50
+  s_731111b3bfaced::t_f35443dda03303 113-134
+  s_731111b3bfaced::t_e5284649083988 420-445
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "bfeb845db98bb3ec6ea799e10f55a15dda258b87",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

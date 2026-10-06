@@ -1,0 +1,43 @@
+tests/Unit/EggConfigurationServiceTest.php
+  s_be04b879a75a03::t_e547ecb0e6df94 1-2,4,6,15,81-82
+  s_be04b879a75a03::t_8b6dd4c635da26 3,5,7-14,16-80
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_db229ea3a801cb 39
+  s_be04b879a75a03::t_f822b1313fb655 38
+  s_be04b879a75a03::t_9679e6960d2b54 36-37
+app/Services/Servers/ServerConfigurationStructureService.php
+  s_be04b879a75a03::t_9679e6960d2b54 25-26,48,91,103
+  s_be04b879a75a03::t_ab3f3640289335 7-8,116-122
+app/Services/Servers/EnvironmentService.php
+  s_be04b879a75a03::t_9679e6960d2b54 8,14,21,30,41,47-53,59,63-64,66,72,75,117-139,141-150
+  s_be04b879a75a03::t_d43b4cbe865e6c 140
+app/Services/Eggs/EggConfigurationService.php
+  s_be04b879a75a03::t_2c1242e9d0383c 25,27,44-45,86,98,103,113,119,121-124,244
+  s_be04b879a75a03::t_9679e6960d2b54 11-12,32,35,49,54,85,151,153,178-179,188,192,208,213-214,216-225,227-232,234,238-243,245-274,277-278
+  s_be04b879a75a03::t_d89dca095dfccc 207,209,215
+tests/Unit/EnvironmentServiceTest.php
+  s_be04b879a75a03::t_8b6dd4c635da26 3,5,7-76,78-84
+  s_be04b879a75a03::t_f703ac2a05d12b 1-2,4,6,77,85-86
+.ai/rules/anti-slop.md
+  s_be04b879a75a03::t_2c98dad04c0141 1-9
+.ai/rules/eggs-servers.md
+  s_be04b879a75a03::t_ba00f854d0fa11 1-9
+.ai/rules/index.md
+  s_be04b879a75a03::t_1f556016d5843a 7,10,14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "87e7d6140f836470afbbea60708443aee64c8ca5",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

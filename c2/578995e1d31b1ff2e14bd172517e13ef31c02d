@@ -1,0 +1,38 @@
+resources/scripts/api/server/schedules/getServerSchedules.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1-3,72-74,77,79-81
+resources/scripts/api/server/schedules/createOrUpdateScheduleTask.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 2-3,13-27,29
+resources/scripts/api/server/users/getServerSubusers.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1-3,18,20
+resources/scripts/api/server/schedules/createOrUpdateSchedule.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 2-3,8,17-26,28
+resources/scripts/api/server/users/deleteSubuser.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1,4-6
+resources/scripts/api/server/users/createOrUpdateSubuser.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1-2,12-20,22
+resources/scripts/api/server/schedules/deleteSchedule.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1,4
+resources/scripts/api/server/schedules/deleteScheduleTask.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1,4
+resources/scripts/api/server/schedules/triggerScheduleExecution.ts
+  s_731111b3bfaced::t_21dd9d510565da 3,5
+  s_731111b3bfaced::t_96bb864c4f7f62 1,4
+resources/scripts/api/server/schedules/getServerSchedule.ts
+  s_731111b3bfaced::t_96bb864c4f7f62 1-2,6-8,11,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c2578995e1d31b1ff2e14bd172517e13ef31c02d",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

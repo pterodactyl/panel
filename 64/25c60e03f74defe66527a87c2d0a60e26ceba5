@@ -1,0 +1,53 @@
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_627ed58cf12583 5
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_2b183ef2daa1e8 279-282,401
+  s_731111b3bfaced::t_2c58a427a1fe53 275-278,400
+  s_731111b3bfaced::t_0160f8c9849a61 13
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_627ed58cf12583 535,547,644-677
+  s_731111b3bfaced::t_34c37c298bd05b 2286-2290,2294,2298,2302,2306,2310,2314,2318,2322-2330,2334,2542-2547
+  s_731111b3bfaced::t_6f233851a443eb 2444,2463
+  s_731111b3bfaced::t_d27db9e1c8dfd6 540-546,548
+  s_731111b3bfaced::t_86bd63cd9ca120 678
+resources/scripts/api/admin/servers/getServer.ts
+  s_731111b3bfaced::t_22ff0f92a269c8 1-10,108,117,128,137,143,148,153,155,157-158,161-162,165-166,169-170,173-174,177-178,181-182,189
+resources/scripts/api/admin/servers/createServer.ts
+  s_731111b3bfaced::t_0160f8c9849a61 37,61,65
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_34c37c298bd05b 367,374,387-447
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_fcb592ca65245c 182-238,259,286-296,300-307
+  s_731111b3bfaced::t_e7a3d83cfb423f 435,440-441,510-512,630-633
+  s_731111b3bfaced::t_6f71ffb050485c 239-244,260-262,311-312
+  s_731111b3bfaced::t_96b2040c3e1097 12-13,15,35-36,40-41,61-63,72-74,95-112
+  s_731111b3bfaced::t_2c58a427a1fe53 434
+  s_731111b3bfaced::t_56c645b9981220 313
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_34c37c298bd05b 203
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_78723830e2b789 54-57,65-68,116-128,144-161
+  s_731111b3bfaced::t_cf96c65a0f7f4d 162-163
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_731111b3bfaced::t_78723830e2b789 194
+  s_731111b3bfaced::t_84508e99d0f317 71-193,195-214
+  s_731111b3bfaced::t_ebf2d72a04fc31 259-270,297
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_04288f4271a738 190-191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6425c60e03f74defe66527a87c2d0a60e26ceba5",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

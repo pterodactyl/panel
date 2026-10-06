@@ -1,0 +1,27 @@
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_731111b3bfaced::t_8af40686e29f37 10,12-16,18,26-27,30-102,106-111,127-131,144-153,178-189,207-211
+app/Http/Controllers/Api/Admin/Mounts/DetachEggController.php
+  s_731111b3bfaced::t_937ab2c48b70a3 9-13,17-18,24-29
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_731111b3bfaced::t_937ab2c48b70a3 7-11,13,17-18,24-30
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_731111b3bfaced::t_937ab2c48b70a3 7-11,13,17-18,24-30
+app/Http/Controllers/Api/Admin/Mounts/DetachNodeController.php
+  s_731111b3bfaced::t_937ab2c48b70a3 9-13,17-18,24-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "0ba9793c35fb7a84f12667f555b7b8c9582ca9b3",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

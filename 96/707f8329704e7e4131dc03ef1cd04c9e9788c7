@@ -1,0 +1,220 @@
+tools/phpstan/rules/install.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5-23,27-31,35-36,40-42,45-47,50-51,55-60,63-77,81-86,88-108,112
+tools/phpstan/rules/src/Rules/NoMixedParametersRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-90
+tools/phpstan/rules/tests/Rules/NoChainedAssertionsRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-32
+tools/phpstan/rules/src/Support/ResolvedParameter.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-21
+tools/phpstan/rules/tests/Rules/data/no-chained-assertions.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-16
+tools/phpstan/rules/src/Rules/NoChainedVarTagsRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-78
+tools/phpstan/rules/tests/Rules/NoServiceConstructionRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-31
+tests/Unit/ArchTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 30,38
+tools/phpstan/rules/src/Rules/NoObjectParametersRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-58
+tools/phpstan/rules/tests/Rules/data/require-safety-comment.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5,7,9-14,16-17,19-20,22-23,25,27-28,30,32,34
+tools/phpstan/rules/src/Rules/NoInstanceofOnMixedRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5-34,37-40,43-44,47-54,57-59,61,64-70,73
+tools/phpstan/rules/tests/Rules/data/no-forbidden-terms-in-symbol-names.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-31
+tools/phpstan/rules/src/Support/AssertionForms.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5-16,18-38,42-43,45-47,49-58,60-65,68-70,73-74,76-81,83-88,93,96-100,103-105,108-114,117-122,124-129,133-135,139-141,145-146,150-151
+vitest.config.ts
+  s_a6e4d95112d140::t_4fbc994d4ed692 23
+composer.json
+  s_a6e4d95112d140::t_b6440190223525 109
+  s_a6e4d95112d140::t_2b30db49ee679b 78-79,82,94
+  s_a6e4d95112d140::t_744f1a352e8549 116
+PLAN.md
+  s_a6e4d95112d140::t_2b30db49ee679b 151
+tools/phpstan/rules/phpunit.xml
+  s_a6e4d95112d140::t_2b30db49ee679b 1-13
+tools/phpstan/rules/src/Rules/NoConditionalEmptyArraySpreadRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-90
+tools/phpstan/rules/src/Support/ResolvedSignature.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-24
+tools/phpstan/rules/tests/Rules/data/no-unsafe-dictionary-property.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-28
+tools/phpstan/rules/tests/Rules/NoObjectParametersRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-38
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryTypeRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-72
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryTypeRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-41
+tools/phpstan/rules/src/Support/TypeAliasDocblock.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-87
+tools/phpstan/rules/tests/Rules/data/no-chained-var-tags.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-23
+tools/phpstan/rules/src/Rules/NoWidenThenAssertRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-198
+tools/phpstan/rules/tests/Rules/NoConditionalEmptyArraySpreadRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1,3,5,7-9,11-19,21-32
+tools/phpstan/rules/src/Rules/RequireSafetyCommentForAssertionRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-67
+tools/phpstan/rules/tests/Rules/data/no-unsafe-dictionary-type.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-55
+tools/phpstan/rules/src/Rules/NoKnownValueWideningPropertyRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-80
+tools/phpstan/rules/src/Support/NodeChildren.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-66
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryPropertyRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-59
+tools/phpstan/rules/tests/Integration/PackageCoverageTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-64
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryPropertyRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-30
+tools/phpstan/rules/tests/Rules/RequireSafetyCommentForAssertionRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-34
+tools/oxlint/rules/index.ts
+  s_a6e4d95112d140::t_2b30db49ee679b 1,3-16,19-36,39
+tools/phpstan/rules/tests/Rules/data/no-class-loading-mocks.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-57
+tools/phpstan/rules/tests/Rules/data/no-object-parameters.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-29
+tools/phpstan/rules/README.md
+  s_a6e4d95112d140::t_2b30db49ee679b 1-199
+tools/phpstan/rules/src/Rules/NoChainedAssertionsRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-43
+tools/phpstan/rules/src/Rules/NoMixedReturnsRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-87
+tools/phpstan/rules/tests/Rules/data/no-mixed-type-aliases.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-26
+tools/phpstan/rules/tests/Rules/NoMixedTypeAliasesRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-33
+tools/phpstan/rules/tests/Rules/NoForbiddenTermsInSymbolNamesRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-37
+tools/phpstan/rules/src/Rules/NoKnownValueWideningReturnRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-87
+tools/phpstan/rules/tests/Rules/data/no-conditional-empty-array-spread.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-25
+tools/phpstan/rules/tests/Rules/NoInstanceofOnMixedRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1,3-28
+tools/phpstan/rules/tests/Rules/NoWidenThenAssertRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-32
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningReturnRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-28
+.oxlintrc.json
+  s_a6e4d95112d140::t_ff13310be3fde6 52-53,102-103,110,114,123-124,130-131,137-138,226
+  s_a6e4d95112d140::t_508066c1695ca6 4-5,8-9,28-35,50-51,54,65-101,104-109,111-113,115-122,125,127-129,132,134-136,139,141-211,213-225,227,229-232
+  s_a6e4d95112d140::t_2b30db49ee679b 6-7,55-64,126,133,140,212,228
+  s_a6e4d95112d140::t_e1999b205c5133 43-49
+tools/phpstan/rules/phpstan.neon
+  s_a6e4d95112d140::t_2b30db49ee679b 1-30
+tools/phpstan/rules/src/Rules/NoClassLoadingMocksRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-132
+tools/phpstan/rules/src/Rules/NoForbiddenTermsInSymbolNamesRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5-37,39-46,48-55,58,61-74,76,79-80,83-86,89-90,92-93,96-99,101-102,105-106,109-110,113,116-122,124-125
+tools/phpstan/rules/src/Rules/NoMixedTypeAliasesRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-56
+tools/phpstan/rules/src/Support/SignatureResolver.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-129
+tools/phpstan/rules/src/Support/TypeClassifier.php
+  s_a6e4d95112d140::t_8dd1048234a14c 14-15
+  s_a6e4d95112d140::t_2b30db49ee679b 1-13,16-153
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-31
+package.json
+  s_a6e4d95112d140::t_2b30db49ee679b 86
+  s_a6e4d95112d140::t_986f112ae7b49c 87,91,97-99
+  s_a6e4d95112d140::t_ac43a2bf4cda24 94-96
+tools/phpstan/rules/tests/Rules/data/no-mixed-returns.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-72
+tools/phpstan/rules/tests/Integration/data/package-coverage.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-41
+tools/phpstan/rules/tests/Rules/data/no-known-value-widening.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-53
+tools/phpstan/rules/tests/Rules/NoMixedParametersRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-40
+tools/phpstan/rules/tests/Rules/data/no-mixed-parameters.php
+  s_a6e4d95112d140::t_2b30db49ee679b 5,7-9,11,13-16,18,20-26,28,30-32,34,37-39,42-46,49-52,55-58,60,62,64-69
+tools/phpstan/rules/tests/Rules/NoChainedVarTagsRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-28
+tools/phpstan/rules/tests/Rules/NoMixedReturnsRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-40
+tools/phpstan/rules/extension.neon
+  s_a6e4d95112d140::t_2b30db49ee679b 1-225
+tools/phpstan/rules/laravel/extension.neon
+  s_a6e4d95112d140::t_2b30db49ee679b 1-12,14-40
+  s_a6e4d95112d140::t_8dd1048234a14c 13
+tools/phpstan/rules/src/Laravel/Rules/NoServiceConstructionRule.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-43,46-50,53-55,57-65,68-72,74-78,80-86,91-92,94-99,103-104,106-109,113-116,120-121,123-129,131-132,134-141,143-144,146-148,150-151
+tools/phpstan/rules/tests/Rules/data/no-instanceof-on-mixed.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-23
+phpstan-rules.neon
+  s_a6e4d95112d140::t_2b30db49ee679b 1-16,18-29
+  s_a6e4d95112d140::t_8dd1048234a14c 17
+tools/phpstan/rules/tests/Rules/data/no-widen-then-assert.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-56
+tools/phpstan/rules/tests/Rules/NoClassLoadingMocksRuleTest.php
+  s_a6e4d95112d140::t_2b30db49ee679b 1-36
+tests/Architecture/OpenApiContractTest.php
+  s_a6e4d95112d140::t_e7719acb7b20b3 5,7-14,16,18-21,25-38,40-41,43-44,46,52-54,56-85,89-90,92-100,103,105,107-109,111-114,116,118-120,122,124,126-132,136-138,140,142,146-155,157,161-167,170-171,174-175
+  s_a6e4d95112d140::t_cb3006bc94ae32 55
+  s_a6e4d95112d140::t_b6440190223525 23,48,50-51,86,101-102,106,115,123,125,133-135,139,141,158,169
+  s_a6e4d95112d140::t_cc63af93c95e27 45
+  s_a6e4d95112d140::t_12ca724e274c4c 49
+  s_a6e4d95112d140::t_d3e566be882a3d 6
+  s_a6e4d95112d140::t_d9f6b520bf3f25 143-144
+  s_a6e4d95112d140::t_f303082ba26e8a 159
+.github/workflows/ci.yaml
+  s_a6e4d95112d140::t_4fbc994d4ed692 17
+  s_a6e4d95112d140::t_4f961a3b775b25 115-122
+  s_a6e4d95112d140::t_2b30db49ee679b 56,58-59
+tools/oxlint/rules/design-tokens.spec.ts
+  s_a6e4d95112d140::t_8a320cdbcf69d7 1-28,30-38,41
+tools/oxlint/rules/lint.spec.ts
+  s_a6e4d95112d140::t_f982fce060f543 2-18,21-118,120-156,158-171
+tools/oxlint/rules/rules/design-tokens.ts
+  s_a6e4d95112d140::t_870c4c4817246b 1-54
+tools/oxlint/rules/rules/generated-api-imports.ts
+  s_a6e4d95112d140::t_484b216ac929b1 1-39
+tools/oxlint/rules/rules/generated-api-mutations.ts
+  s_a6e4d95112d140::t_1d1e62a466c3f0 1-22
+tools/oxlint/rules/rules/generated-api-types.ts
+  s_a6e4d95112d140::t_7ecc60036bf661 1-23
+tools/oxlint/rules/rules/no-chained-type-assertions.ts
+  s_a6e4d95112d140::t_a44ef49f4015c0 1-2,7,11-15,19-24,28-29,31-34,36,40-42,44-48,50,55-63,65-69,71-75
+tools/oxlint/rules/rules/no-conditional-empty-object-spread.ts
+  s_a6e4d95112d140::t_52ea674c8ceef1 1-2,5-9,13,17-21,26-33,35-38,40-45
+tools/oxlint/rules/rules/no-known-value-widening.ts
+  s_a6e4d95112d140::t_b655eb18e0d9a5 1,4-9,11,16-26,29-36,40-42,46-50,54-56,58-68,72-73,75-77,81-92,96-98,102-107,111-112,116,120,125-217
+tools/oxlint/rules/rules/no-object-parameters.ts
+  s_a6e4d95112d140::t_3dd47ad65e6801 1,3,7-13,16-25,29-31,36-48,50-71,73-84,86-109
+tools/oxlint/rules/rules/no-runtime-typeof.ts
+  s_a6e4d95112d140::t_3cd878b43513cf 1,5-14,16-23
+tools/oxlint/rules/rules/no-shape-in-symbol-names.ts
+  s_a6e4d95112d140::t_f082daaddda5b7 1-2,4,7,12-21,23-31,33-38
+tools/oxlint/rules/rules/no-unknown-parameters.ts
+  s_a6e4d95112d140::t_f2a79d90824f86 1-2,6-12,15-24,28-37,42-51,53-66,68-80
+tools/oxlint/rules/rules/no-unknown-type-aliases.ts
+  s_a6e4d95112d140::t_524095f8cbd5bb 1,3,6-10,15-27,29-41,43-61
+tools/oxlint/rules/rules/no-unsafe-dictionary-type.ts
+  s_a6e4d95112d140::t_4e2779fa919e78 1,4-8,10,13,17,21-26,30-32,36-43,48-69,71-85
+tools/oxlint/rules/rules/no-widen-then-assert.ts
+  s_a6e4d95112d140::t_c4bbbc2e18b665 1-2,4,7,11-15,19-21,25-27,31,35-36,40-49,53-69,72-74,76-80,85-88,91-92,95-97,101,104-109,113-130,134-147,151-156,160-166,168-175,179-182,184,188-191,193-197,199-242,246-247,249-252,254-280,284-287,289-293,298-307,309-338
+tools/oxlint/rules/shared/dictionary-types.ts
+  s_a6e4d95112d140::t_6769823a907b37 1-4,9-10,14-15,18,21,25-27,31-33,37-79,83,87,91-98,102-109,113,117-123,127,130-137,141-143,145-153,157-159,161-169,173-220,224-227,229-275,279-280,282-283,286-291,295-298,300,303-335,339-342,344-360,364-373,377-397
+tools/oxlint/rules/tsconfig.json
+  s_a6e4d95112d140::t_6b82fade46c3bc 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "96707f8329704e7e4131dc03ef1cd04c9e9788c7",
+  "prompts": {},
+  "sessions": {
+    "s_a6e4d95112d140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1059a-8f61-7901-a112-fc4aa27737ae",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

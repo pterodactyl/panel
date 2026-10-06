@@ -1,0 +1,43 @@
+resources/scripts/api/account/queries.ts
+  s_1e4e38747bb289::t_fcc52f52047dab 6
+resources/scripts/api/admin/transformers.ts
+  s_1e4e38747bb289::t_56f597dd90ac4d 2
+resources/scripts/api/admin/users/createUser.ts
+  s_1e4e38747bb289::t_dced1b9f6b02d5 2
+resources/scripts/api/admin/users/getUser.ts
+  s_1e4e38747bb289::t_c08978a5c24f98 2
+resources/scripts/api/admin/users/getUserWithServers.ts
+  s_1e4e38747bb289::t_dc735a209d3dc5 2
+resources/scripts/api/admin/users/getUsers.ts
+  s_1e4e38747bb289::t_8087d734343e79 8
+resources/scripts/api/admin/users/queries.ts
+  s_1e4e38747bb289::t_c54121013be93e 13
+resources/scripts/api/admin/users/updateUser.ts
+  s_1e4e38747bb289::t_496c741f113862 2
+resources/scripts/api/settings/queries.ts
+  s_1e4e38747bb289::t_eee06a9f3eb956 3
+resources/scripts/bootstrap.ts
+  s_1e4e38747bb289::t_f43677f2917d1c 1-2
+resources/scripts/components/admin/README.md
+  s_1e4e38747bb289::t_ea4d98b7223e84 20
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_1e4e38747bb289::t_12e21a21d3e817 13
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_1e4e38747bb289::t_8c995b25397f4b 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "6528c82e2547f067f1ffb4547bfb0233c99e8b6b",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

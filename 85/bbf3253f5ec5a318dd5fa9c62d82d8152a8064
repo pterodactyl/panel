@@ -1,0 +1,34 @@
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_be04b879a75a03::t_437498a04d5a99 13-14,34-38,42-43,52-55,57,59
+  s_be04b879a75a03::t_7b5602e3cc6fd5 62
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_437498a04d5a99 40-41
+app/Models/Egg.php
+  s_be04b879a75a03::t_437498a04d5a99 16,166,179,192,204,216,228,240,255,270
+  s_be04b879a75a03::t_ac5e1176c5d802 334-343
+app/Transformers/Api/Application/NodeTransformer.php
+  s_be04b879a75a03::t_7b5602e3cc6fd5 82
+  s_be04b879a75a03::t_437498a04d5a99 15,67-72,74
+app/Transformers/Api/Application/EggTransformer.php
+  s_be04b879a75a03::t_7b5602e3cc6fd5 90
+  s_be04b879a75a03::t_437498a04d5a99 58,76,78,125-126,128
+app/Transformers/Api/Admin/EggTransformer.php
+  s_be04b879a75a03::t_437498a04d5a99 42,60,62
+  s_be04b879a75a03::t_7b5602e3cc6fd5 74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "85bbf3253f5ec5a318dd5fa9c62d82d8152a8064",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

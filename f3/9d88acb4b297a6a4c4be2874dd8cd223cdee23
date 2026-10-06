@@ -1,0 +1,48 @@
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_53916ba32af787::t_5603b6066bcee2 145
+app/Models/Egg.php
+  s_53916ba32af787::t_16221429d489ea 140-148
+  s_53916ba32af787::t_2c84d2d8424e4a 11,68
+  s_53916ba32af787::t_7be29d9697fcf3 9,57,309-328
+  s_53916ba32af787::t_2a5d11747aa0ca 149,329
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_53916ba32af787::t_5603b6066bcee2 67,113
+app/Services/Eggs/Sharing/EggExporterService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 19,21
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_53916ba32af787::t_5603b6066bcee2 54
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 24-25,28
+app/Services/Eggs/EggUpdateService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 13,21-23,30
+tests/Integration/Api/Admin/Eggs/EggShareControllerTest.php
+  s_53916ba32af787::t_5603b6066bcee2 30,43
+app/Services/Eggs/EggDeletionService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 9,14-15,20,22,26,30
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 22,40-44,46,61
+app/Services/Eggs/EggCreationService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 18,21-22,31-32,35,37-40
+app/Services/Eggs/Variables/VariableCreationService.php
+  s_53916ba32af787::t_9c9b84969f1c5e 10,22,32,45,54-56
+.ai/rules/index.md
+  s_53916ba32af787::t_5f42dcb6cde3da 17
+.ai/rules/services.md
+  s_53916ba32af787::t_1944dde118548f 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f39d88acb4b297a6a4c4be2874dd8cd223cdee23",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

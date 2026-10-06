@@ -1,0 +1,124 @@
+resources/scripts/components/admin/overview/OverviewContainer.tsx
+  s_49a8ce1d5e091e::t_691abd52caf682 23
+resources/scripts/api/admin/servers/queries.ts
+  s_49a8ce1d5e091e::t_fca0b3768cb972 15,44-45,282-283,398-400,405-406,411-412,416
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_49a8ce1d5e091e::t_a21e63fa641218 3,10,12-13,16-17,20,24,26-30,32-33,35-40,46,48-51
+app/Http/Requests/Api/Application/Eggs/GetEggRequest.php
+  s_49a8ce1d5e091e::t_a21e63fa641218 3
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_49a8ce1d5e091e::t_cd19c6fe8fc4d6 23,27,30
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_49a8ce1d5e091e::t_a1979a4e0586aa 3,25,51,81,103,131-132
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_49a8ce1d5e091e::t_cd19c6fe8fc4d6 38
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_49a8ce1d5e091e::t_49456af5d15dd3 7,22,28,32,59,64,74-76
+app/Http/Requests/Api/Admin/Eggs/ImportEggRequest.php
+  s_49a8ce1d5e091e::t_cd19c6fe8fc4d6 20
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_49a8ce1d5e091e::t_8cdf0e9a01bc0d 8-9,3310-3349
+packages/sdk/types/index.d.ts
+  s_49a8ce1d5e091e::t_e82fecfd7e3fdd 138-139
+resources/scripts/api/generated/types.gen.ts
+  s_49a8ce1d5e091e::t_8cdf0e9a01bc0d 477-488,726,755,758-760,2140,3446-3469,3472-3490,3493-3507,3510-3524,4411-4442,8146,8148,8150,10295-10373,11045-11046,11048-11049,11052-11053,11058-11061,11064,11066-11067,11070,11072-11076,11079-11083,11089,11091,11094,11096-11100,11103
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_49a8ce1d5e091e::t_55941808f5c34a 35-38,40-41
+  s_49a8ce1d5e091e::t_e4bccf41cc347c 3,13,15,17-19,22-27,29-30,34,46,50-55,58,62-71,73,76,78,81,85-90
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_49a8ce1d5e091e::t_49456af5d15dd3 171-172
+resources/scripts/api/generated/sdk.gen.ts
+  s_49a8ce1d5e091e::t_8cdf0e9a01bc0d 6,1789-1811
+  s_49a8ce1d5e091e::t_12312f3a6a52a8 1812
+resources/scripts/api/generated/index.ts
+  s_49a8ce1d5e091e::t_8cdf0e9a01bc0d 4-5
+tests/Integration/Api/Admin/IncludesTest.php
+  s_49a8ce1d5e091e::t_8743d825ecc94a 130,148
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_49a8ce1d5e091e::t_7c670263142e22 31
+resources/scripts/api/admin/eggs/queries.ts
+  s_49a8ce1d5e091e::t_f2dddca03c6cd9 47,118
+  s_49a8ce1d5e091e::t_cb31e69edb65b5 102
+  s_49a8ce1d5e091e::t_155d84fadeba09 6-19,22-26,29-32,40-43,45,48,55-56,63-64,68-69,76-77,84-86,94-95,99-100,105-106,109-110,113-114,117,120,122-124,127-129,132-133,140,142-143,145-146,148,153-154,156,167-168,170,181-182,184,196-197,199,208,213,216,228,230,241,243,254,256
+app/Http/Requests/Api/Application/Eggs/GetEggsRequest.php
+  s_49a8ce1d5e091e::t_a21e63fa641218 3
+resources/views/layouts/admin.blade.php
+  s_49a8ce1d5e091e::t_29696f1913ac6b 120-122
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_49a8ce1d5e091e::t_a1979a4e0586aa 3,27-28,66,157,227,258-262
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_49a8ce1d5e091e::t_dca6e583ce8113 24
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_49a8ce1d5e091e::t_35b9000f861a62 173,183,195
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_49a8ce1d5e091e::t_449f62691d857b 11-16
+app/Http/Requests/Api/Admin/Eggs/UpdateEggRequest.php
+  s_49a8ce1d5e091e::t_d49a86d4f9a6a3 14
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_49a8ce1d5e091e::t_7c670263142e22 17-18,20,24,41,45,50,54,57-58
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_49a8ce1d5e091e::t_62305807cc4d34 1,15,99-100,103,109,112,144-148,152,213-214,219,243,245-246,253,310,313
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_49a8ce1d5e091e::t_7c670263142e22 2,27,38,41-42,50-51,58,61,65,67
+resources/views/admin/mounts/view.blade.php
+  s_49a8ce1d5e091e::t_29696f1913ac6b 121
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_49a8ce1d5e091e::t_dca6e583ce8113 39,49,81-82,167-168
+resources/scripts/router/routeTree.ts
+  s_49a8ce1d5e091e::t_691abd52caf682 606,610,621-622,633,643-644,821,882-885,887-889,894-896
+routes/api-admin.php
+  s_49a8ce1d5e091e::t_0d24b20abaa849 287
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_49a8ce1d5e091e::t_a1979a4e0586aa 3,12,38,72,88,97-100,122,133-134,154,166,183,196,220,240-244
+routes/api-application.php
+  s_49a8ce1d5e091e::t_a21e63fa641218 71-82
+  s_49a8ce1d5e091e::t_193bd7244b593b 70
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_49a8ce1d5e091e::t_f2dddca03c6cd9 41
+  s_49a8ce1d5e091e::t_dca6e583ce8113 33
+resources/scripts/extensions/registry.ts
+  s_49a8ce1d5e091e::t_cb31e69edb65b5 147,160-161
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_49a8ce1d5e091e::t_7c670263142e22 33
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_49a8ce1d5e091e::t_decf6c6317c0e7 16,330,332,337-338,344,357,469,473,475-476,483,503,505-506,522,524,572
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_49a8ce1d5e091e::t_dca6e583ce8113 36,45,56
+resources/scripts/components/admin/eggs/ExportEggButton.tsx
+  s_49a8ce1d5e091e::t_7c670263142e22 24
+  s_49a8ce1d5e091e::t_105c0ebcc954d5 33
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_49a8ce1d5e091e::t_dca6e583ce8113 22
+  s_49a8ce1d5e091e::t_f2dddca03c6cd9 17,42
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_49a8ce1d5e091e::t_691abd52caf682 52-57,59
+tests/Integration/Api/Admin/Eggs/EggShareControllerTest.php
+  s_49a8ce1d5e091e::t_a1979a4e0586aa 3,41,96-97,102,106,110-115,152,168,176,178
+  s_49a8ce1d5e091e::t_27833b5e09c7b7 80,85,89-91,93
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_49a8ce1d5e091e::t_d49a86d4f9a6a3 21-22
+resources/scripts/components/admin/eggs/useEggDetail.ts
+  s_49a8ce1d5e091e::t_7c670263142e22 5-6
+resources/views/admin/servers/view/index.blade.php
+  s_49a8ce1d5e091e::t_29696f1913ac6b 47
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_49a8ce1d5e091e::t_cb31e69edb65b5 8,79,82
+  s_49a8ce1d5e091e::t_691abd52caf682 1-4,6,10,12,15-24,26-32,34-53,55-56,58-59,61,70-72,75-76,78,80-81,83
+  s_49a8ce1d5e091e::t_f2dddca03c6cd9 84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "714fdd0688f4b30bb542790729631a3deb8d931f",
+  "prompts": {},
+  "sessions": {
+    "s_49a8ce1d5e091e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02663-4b2d-7683-8c24-e5964354559d",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

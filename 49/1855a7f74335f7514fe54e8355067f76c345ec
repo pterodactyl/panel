@@ -1,0 +1,19 @@
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_2a466f836ebff9::t_1ca919fd8186a0 2,93-101,243-258,260,263-280,553-555,591,595-597,609-610,615,620,626-629,631,634-677
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "491855a7f74335f7514fe54e8355067f76c345ec",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

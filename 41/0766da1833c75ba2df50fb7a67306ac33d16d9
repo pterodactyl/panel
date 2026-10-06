@@ -1,0 +1,64 @@
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 45-50,105-110
+  s_be04b879a75a03::t_bdb7453193b705 74-79,128,132
+app/Http/Requests/Api/Client/Servers/Backups/RestoreBackupRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 9,18
+app/Http/Requests/Api/Client/Servers/Schedules/TriggerScheduleRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Schedules/ViewScheduleRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,15
+app/Http/Requests/Api/Client/Servers/Files/UploadFileRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Databases/RotatePasswordRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+app/Http/Requests/Api/Client/Servers/Files/CreateFolderRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/SendCommandRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+app/Http/Requests/Api/Client/ClientApiRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 21-22,24
+app/Http/Requests/Api/Client/Servers/Startup/UpdateStartupVariableRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Files/CompressFilesRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Network/UpdateAllocationRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+app/Http/Requests/Api/Client/Servers/Startup/GetStartupRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/ApiRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 44-49
+app/Http/Requests/Api/Client/Servers/Network/GetNetworkRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+app/Http/Requests/Api/Client/Servers/Settings/ReinstallServerRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Network/NewAllocationRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Backups/StoreBackupRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Network/DeleteAllocationRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Files/ListFilesRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,11
+app/Http/Requests/Api/Client/Servers/Files/DecompressFilesRequest.php
+  s_be04b879a75a03::t_2a45f363bf5ec7 7,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "410766da1833c75ba2df50fb7a67306ac33d16d9",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

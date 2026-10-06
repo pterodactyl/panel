@@ -1,0 +1,31 @@
+app/Http/Controllers/Api/Client/ClientController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 7,10-12,18-19,22-122,135-143,189-190
+  s_731111b3bfaced::t_a75568d0f4734c 14
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 9-13,15,20-21,24-84,88-89,102-107,135-138
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 7-11,16-17,20-49,54-55,66-70,92-95
+app/Http/Controllers/Api/Client/AccountController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 11-14,17-18,24-25,28-60,74-75,86-92,123-129
+  s_731111b3bfaced::t_a75568d0f4734c 6
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 10-13,16,20-21,24-72,92-94,112-117,148-151
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_731111b3bfaced::t_cee86b1cf40f7a 6,9-12,16-17,20-52,56-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "236c9dc09eb614b64d133a85976142c1e508081c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

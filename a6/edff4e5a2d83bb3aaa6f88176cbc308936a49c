@@ -1,0 +1,27 @@
+tools/phpstan/anti-slop/src/Rules/NoMixedTypeAliasesRule.php
+  s_5eb93878083371::t_7ea50613b75efb 1-56
+tools/phpstan/anti-slop/src/Support/TypeAliasDocblock.php
+  s_5eb93878083371::t_7ea50613b75efb 1-87
+tools/phpstan/anti-slop/tests/Rules/NoMixedTypeAliasesRuleTest.php
+  s_5eb93878083371::t_7ea50613b75efb 1-33
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_eefe57b3bee830 1
+tools/phpstan/anti-slop/tests/Rules/data/no-mixed-type-aliases.php
+  s_5eb93878083371::t_7ea50613b75efb 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a6edff4e5a2d83bb3aaa6f88176cbc308936a49c",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

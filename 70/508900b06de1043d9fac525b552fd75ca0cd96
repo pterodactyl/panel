@@ -1,0 +1,31 @@
+resources/scripts/api/admin/settings/updateAdvancedSettings.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,15-27
+resources/scripts/api/admin/languages/getLanguages.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,6
+resources/scripts/api/admin/settings/testMailSettings.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,4
+resources/scripts/api/admin/settings/getSettings.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,45,47
+resources/scripts/api/admin/settings/updateMailSettings.ts
+  s_731111b3bfaced::t_d8abe48344ccce 1,15,25-27
+resources/scripts/api/admin/version/getVersion.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,33
+resources/scripts/api/admin/settings/updateGeneralSettings.ts
+  s_731111b3bfaced::t_143179e6d00c38 1,10,14-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "70508900b06de1043d9fac525b552fd75ca0cd96",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

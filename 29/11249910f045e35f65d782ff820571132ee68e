@@ -1,0 +1,50 @@
+app/Models/DatabaseHost.php
+  s_53916ba32af787::t_58b19e714b2577 62-77
+  s_53916ba32af787::t_e6b6c6c0f52c34 78
+app/Services/Databases/DatabaseHostGateway.php
+  s_53916ba32af787::t_8c4c43e8028078 1-104
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_53916ba32af787::t_91d5504e36dae6 15,27
+app/Services/Databases/Hosts/HostDeletionService.php
+  s_53916ba32af787::t_8c4c43e8028078 8,13,17,19,23
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_53916ba32af787::t_c16825dfb2252d 43
+app/Extensions/DynamicDatabaseConnection.php
+  s_53916ba32af787::t_8c4c43e8028078 9,31,36
+app/Services/Databases/DatabaseManagementService.php
+  s_53916ba32af787::t_8c4c43e8028078 44,114-115,121-122,132-134,154-156
+app/Services/Databases/DatabasePasswordService.php
+  s_53916ba32af787::t_8c4c43e8028078 23,44-47
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_53916ba32af787::t_58b19e714b2577 17
+  s_53916ba32af787::t_91d5504e36dae6 104
+app/Models/Database.php
+  s_53916ba32af787::t_58b19e714b2577 66-82
+  s_53916ba32af787::t_8ae0d59a90ecf0 83
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_53916ba32af787::t_8c4c43e8028078 220,249
+tests/Integration/Services/Databases/DatabasePasswordServiceTest.php
+  s_53916ba32af787::t_91d5504e36dae6 10,21
+app/Services/Databases/Hosts/HostCreationService.php
+  s_53916ba32af787::t_8c4c43e8028078 38
+app/Http/Requests/Api/Admin/DatabaseHosts/StoreDatabaseHostRequest.php
+  s_53916ba32af787::t_c16825dfb2252d 19,23,25
+app/Services/Databases/Hosts/HostUpdateService.php
+  s_53916ba32af787::t_8c4c43e8028078 33,42-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2911249910f045e35f65d782ff820571132ee68e",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+resources/scripts/components/server/InstallListener.tsx
+  s_731111b3bfaced::t_8f6772336956be 4,16
+resources/scripts/api/transformers.ts
+  s_731111b3bfaced::t_893968ed03c708 3-9,15,26
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_731111b3bfaced::t_9a966665e8c20b 6
+resources/scripts/api/server/files/queries.ts
+  s_731111b3bfaced::t_893968ed03c708 2,9,11-36,47-49,54-69,73-80,102,106-114,116-117,119-122,131-139,141-142,147,150-160,172,174-186,190-208,219,221-230,232-233,246-254,256-257,268-280,282-283,294,296-308
+  s_731111b3bfaced::t_8f6772336956be 52-53
+  s_731111b3bfaced::t_3802c8ac053ac1 50-51
+resources/scripts/components/server/files/FileActionItems.tsx
+  s_731111b3bfaced::t_9a966665e8c20b 5
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_731111b3bfaced::t_9a966665e8c20b 7
+resources/scripts/components/server/files/useFileActions.tsx
+  s_731111b3bfaced::t_9a966665e8c20b 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "926885edc0ff1626f12b4119d088cc4bf85be66a",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

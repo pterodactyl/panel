@@ -1,0 +1,20 @@
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_731111b3bfaced::t_0c896826c9c2c3 12-18,30-31,34-144,161-167,185-189,203-208,236-246,275-287,320-324
+  s_731111b3bfaced::t_c9eff154c16c50 6,10,311
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "4b4bc05c37b0616d08089cb9d949f5c8e500516a",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

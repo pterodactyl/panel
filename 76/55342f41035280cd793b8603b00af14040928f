@@ -1,0 +1,23 @@
+.ai/rules/general.md
+  s_53916ba32af787::t_dbe13d6c15724d 9
+.github/workflows/ci.yaml
+  s_53916ba32af787::t_9d908f69ca100d 108
+composer.json
+  s_53916ba32af787::t_54c72a6942dff9 97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7655342f41035280cd793b8603b00af14040928f",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

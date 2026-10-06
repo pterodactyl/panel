@@ -1,0 +1,730 @@
+app/Services/Deployment/FindViableNodesService.php
+  s_53916ba32af787::t_f721d573f0bacf 51
+app/Services/Nodes/NodeJWTService.php
+  s_53916ba32af787::t_f721d573f0bacf 91,94,118
+  s_53916ba32af787::t_6803a1a486308d 120
+app/Services/Subusers/SubuserDeletionService.php
+  s_53916ba32af787::t_f721d573f0bacf 27
+app/Extensions/Scribe/Strategies/InferPterodactylUrlParameters.php
+  s_53916ba32af787::t_f721d573f0bacf 10,27
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_53916ba32af787::t_f721d573f0bacf 7,41,83,100,103
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_53916ba32af787::t_f721d573f0bacf 148
+  s_53916ba32af787::t_cd313dddebdd26 32
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_53916ba32af787::t_cd313dddebdd26 36,42,50
+  s_53916ba32af787::t_f721d573f0bacf 8-9,18-31,160,199
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 28-32
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_53916ba32af787::t_f721d573f0bacf 99
+  s_53916ba32af787::t_6803a1a486308d 91
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 26,54
+database/Factories/MountFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 12-14,32
+app/Console/Commands/UpgradeCommand.php
+  s_53916ba32af787::t_6803a1a486308d 106,124,143,174
+  s_53916ba32af787::t_f721d573f0bacf 9-10,18-19,24-27,149
+app/Http/Requests/Api/Remote/ReportBackupCompleteRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 19-25,53,57
+app/Models/DatabaseHost.php
+  s_53916ba32af787::t_f721d573f0bacf 9-10,27-30
+  s_53916ba32af787::t_cd313dddebdd26 40
+routes/api-client.php
+  s_53916ba32af787::t_f721d573f0bacf 8-28,43-44,48-51,54,57,59,61-63,66-68,88,90,92,95-96,99,101-103,107-117,119-120,124,126-134,138,140-143,147,149-152,156-160,162-163,167-168,172-174
+app/Services/Schedules/TaskCreationService.php
+  s_53916ba32af787::t_f721d573f0bacf 30
+app/Services/Subusers/SubuserUpdateService.php
+  s_53916ba32af787::t_f721d573f0bacf 29
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_53916ba32af787::t_f721d573f0bacf 12,41-42,50,54,60
+app/Repositories/Wings/DaemonConfigurationRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 11,14-15
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_53916ba32af787::t_f721d573f0bacf 116
+app/Http/Requests/Concerns/ParsesServerStartupData.php
+  s_53916ba32af787::t_f721d573f0bacf 15,19
+app/Services/Users/TwoFactorSetupService.php
+  s_53916ba32af787::t_cd313dddebdd26 15
+app/Models/Schedule.php
+  s_53916ba32af787::t_f721d573f0bacf 12,38-51
+  s_53916ba32af787::t_cd313dddebdd26 63
+app/Models/MountNode.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,11-12
+routes/base.php
+  s_53916ba32af787::t_f721d573f0bacf 6-7,10-11,15,19
+app/Rules/Username.php
+  s_53916ba32af787::t_cd313dddebdd26 15
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_53916ba32af787::t_cd313dddebdd26 33
+app/Models/Node.php
+  s_53916ba32af787::t_f721d573f0bacf 9-10,56-64,203,349
+  s_53916ba32af787::t_cd313dddebdd26 78,80,82,85,88
+app/Http/Requests/Api/Client/Servers/Files/ChmodFilesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24-27
+config/cors.php
+  s_53916ba32af787::t_f721d573f0bacf 33
+app/Http/Requests/Api/Admin/Nodes/Allocations/StoreAllocationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25-29
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 32,35
+database/Factories/DatabaseFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 8,14-16,40-41
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_53916ba32af787::t_cd313dddebdd26 13,24,34,44
+app/Http/Controllers/Api/Application/ApplicationApiController.php
+  s_53916ba32af787::t_6803a1a486308d 26,40
+  s_53916ba32af787::t_f721d573f0bacf 42,45
+app/Models/ExtensionSetting.php
+  s_53916ba32af787::t_9d84866db456df 21
+  s_53916ba32af787::t_f721d573f0bacf 8,20
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 39-40
+app/Http/Requests/Api/Client/Servers/Files/CreateFolderRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 27-28
+app/Repositories/Wings/DaemonRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 72,79
+app/Repositories/Wings/DaemonBackupRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 11-12,15-16
+app/Http/Middleware/RedirectIfAuthenticated.php
+  s_53916ba32af787::t_f721d573f0bacf 10,23-24,29
+app/Services/Extensions/ExtensionSettings.php
+  s_53916ba32af787::t_f721d573f0bacf 72,137-140
+app/Http/Requests/Api/Admin/Eggs/UpdateImportEggRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25
+database/Factories/TagFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 10-12,27,34-35
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_53916ba32af787::t_f721d573f0bacf 114,135,161,197
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_53916ba32af787::t_f721d573f0bacf 15,27
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_53916ba32af787::t_f721d573f0bacf 114
+  s_53916ba32af787::t_9d84866db456df 7,208
+app/Services/Extensions/ExtensionInstaller.php
+  s_53916ba32af787::t_f721d573f0bacf 93,112,115,148
+database/Factories/AllocationFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 12-14,31-32
+app/Http/Controllers/Api/Client/AccountController.php
+  s_53916ba32af787::t_cd313dddebdd26 55
+  s_53916ba32af787::t_f721d573f0bacf 84
+app/Http/Requests/Api/Client/Servers/Files/RenameFileRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 28-32
+database/Factories/ApiKeyFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 8,13-15,39-40
+app/Observers/UserObserver.php
+  s_53916ba32af787::t_f721d573f0bacf 7-10,22,30,38,46
+app/Http/Requests/Api/Client/Servers/Files/CopyFileRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24
+app/Models/Model.php
+  s_53916ba32af787::t_f721d573f0bacf 7,10
+  s_53916ba32af787::t_9d84866db456df 11
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_53916ba32af787::t_6803a1a486308d 73
+  s_53916ba32af787::t_f721d573f0bacf 37,59,105
+app/Observers/SubuserObserver.php
+  s_53916ba32af787::t_f721d573f0bacf 7-10,22,30,44,52
+database/migrations/2026_08_20_000003_make_eggs_nest_id_nullable.php
+  s_53916ba32af787::t_f721d573f0bacf 29
+app/Http/Requests/Api/Admin/Servers/UpdateServerSuspensionRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24
+app/Models/AuditLog.php
+  s_53916ba32af787::t_f721d573f0bacf 7,13-16
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_53916ba32af787::t_f721d573f0bacf 30
+app/Console/Commands/Node/NodeConfigurationCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,12-15
+  s_53916ba32af787::t_bdfe09094466cd 23-24,27-28
+tests/TestCase.php
+  s_53916ba32af787::t_bdfe09094466cd 13,15,51,54,57-59
+  s_53916ba32af787::t_640e366cb78949 60
+app/Console/Commands/Extensions/EnableCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Listeners/RevocationListener.php
+  s_53916ba32af787::t_f721d573f0bacf 9,27
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_53916ba32af787::t_cd313dddebdd26 22
+app/Http/Controllers/Auth/ForgotPasswordController.php
+  s_53916ba32af787::t_6803a1a486308d 57,72
+  s_53916ba32af787::t_f721d573f0bacf 43
+app/Http/Middleware/EnsureStatefulRequests.php
+  s_53916ba32af787::t_6803a1a486308d 17
+app/Repositories/Wings/DaemonCommandRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 10-11,14-15
+app/Http/Controllers/Api/Admin/AdminApiController.php
+  s_53916ba32af787::t_6803a1a486308d 22
+app/Models/Database.php
+  s_53916ba32af787::t_cd313dddebdd26 42
+  s_53916ba32af787::t_f721d573f0bacf 9-10,29-32
+app/Extensions/Lcobucci/JWT/Encoding/TimestampDates.php
+  s_53916ba32af787::t_f721d573f0bacf 32
+app/Transformers/Api/Client/BaseClientTransformer.php
+  s_53916ba32af787::t_6803a1a486308d 44
+  s_53916ba32af787::t_f721d573f0bacf 33,46
+  s_53916ba32af787::t_9d84866db456df 38-43
+routes/api-remote.php
+  s_53916ba32af787::t_f721d573f0bacf 6-12,15,17-19,22-26,30-32
+app/Observers/ServerObserver.php
+  s_53916ba32af787::t_f721d573f0bacf 8-15,27,35,43,51,59,67,75,80
+app/Http/Requests/Api/Client/Servers/Files/WriteFileContentRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 33
+app/Console/Commands/Server/BulkPowerActionCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,17-18,21-23,48-52
+app/Http/Middleware/Api/Client/Server/AuthenticateServerAccess.php
+  s_53916ba32af787::t_f721d573f0bacf 12,32-33,49,60-61
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,15-16,25-28,60,125
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_53916ba32af787::t_f721d573f0bacf 35,42,46
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 39-40
+database/Factories/EggFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 11-13,31-32
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 41-43,99,103
+app/Services/Databases/DeployServerDatabaseService.php
+  s_53916ba32af787::t_f721d573f0bacf 32,34,37,40
+app/Providers/HashidsServiceProvider.php
+  s_53916ba32af787::t_f721d573f0bacf 20
+app/Models/ServerTransfer.php
+  s_53916ba32af787::t_cd313dddebdd26 41
+  s_53916ba32af787::t_f721d573f0bacf 9,31
+rector.php
+  s_53916ba32af787::t_bdfe09094466cd 16,19-32
+  s_53916ba32af787::t_04db681629843f 53
+  s_53916ba32af787::t_d329f94d29e9a5 15,44-51
+  s_53916ba32af787::t_93423903011886 13
+  s_53916ba32af787::t_9d84866db456df 14,42-43
+  s_53916ba32af787::t_49aa538d07c97e 52
+app/Console/Commands/Extensions/DisableCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_53916ba32af787::t_f721d573f0bacf 65
+app/Services/Themes/ThemeService.php
+  s_53916ba32af787::t_cd313dddebdd26 20
+  s_53916ba32af787::t_f721d573f0bacf 81
+database/Factories/BackupFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 13-15,33
+app/Http/Requests/Api/Admin/Servers/StoreServerMountRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24
+app/Http/Requests/Api/Admin/Nodes/Allocations/UpdateAllocationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25
+app/Console/Commands/Extensions/InstallCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-16
+app/Http/Requests/Api/Admin/Settings/UpdateMailSettingsRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 26-27,29-32
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_53916ba32af787::t_f721d573f0bacf 11,15,38,50,58
+database/Factories/EggVariableFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 12-14,31-34
+app/Services/Servers/BuildModificationService.php
+  s_53916ba32af787::t_f721d573f0bacf 118
+database/Factories/ServerFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 8,18-20,40-41,56-57
+routes/auth.php
+  s_53916ba32af787::t_f721d573f0bacf 6-9,22-24,32-33,37,45,49,55
+app/Services/Databases/DatabaseHostGateway.php
+  s_53916ba32af787::t_cd313dddebdd26 15
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_53916ba32af787::t_f721d573f0bacf 31,34
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_53916ba32af787::t_cd313dddebdd26 17,19
+  s_53916ba32af787::t_6803a1a486308d 7,87
+  s_53916ba32af787::t_f721d573f0bacf 41,44,71,90,94,96
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_53916ba32af787::t_f721d573f0bacf 44
+app/Http/Middleware/Api/Application/AuthenticateApplicationUser.php
+  s_53916ba32af787::t_f721d573f0bacf 9,19-20,25
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_53916ba32af787::t_f721d573f0bacf 76,106,133
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 75,86
+app/Models/ServerVariable.php
+  s_53916ba32af787::t_cd313dddebdd26 28
+  s_53916ba32af787::t_f721d573f0bacf 8,21
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_53916ba32af787::t_f721d573f0bacf 136
+app/Http/Controllers/Api/Client/Servers/CommandController.php
+  s_53916ba32af787::t_f721d573f0bacf 52
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25-29
+app/Console/Commands/Extensions/MakeCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,14-15,22-24
+app/Services/Backups/DownloadLinkService.php
+  s_53916ba32af787::t_f721d573f0bacf 53
+app/Http/Requests/Auth/LoginCheckpointRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 28
+app/Http/Requests/Api/Admin/Settings/UpdateGeneralSettingsRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 29-30
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_53916ba32af787::t_f721d573f0bacf 30,32,49
+app/Support/JsonValueGuard.php
+  s_53916ba32af787::t_f721d573f0bacf 35,53,64,67,74,92,105,113,130,138,168,180,183,196,199,212,215,224,227,237,240,247,250,259,262,275,278,286,289,297,300
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 34
+database/Factories/UserSSHKeyFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 36
+app/Repositories/Wings/DaemonFileRepository.php
+  s_53916ba32af787::t_6803a1a486308d 295
+  s_53916ba32af787::t_f721d573f0bacf 13-14,17-18,47
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_53916ba32af787::t_6803a1a486308d 329,443,2078
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_53916ba32af787::t_f721d573f0bacf 32,49
+app/Extensions/Backups/BackupManager.php
+  s_53916ba32af787::t_f721d573f0bacf 143,228
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 33-34,41-42,44
+app/Http/Requests/Api/Client/Servers/Files/CompressFilesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 27-29
+app/Http/Requests/Api/Client/Servers/Files/DeleteFileRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24-26
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_53916ba32af787::t_f721d573f0bacf 39,42
+app/Http/Requests/Api/Admin/Nodes/Allocations/BlockDeleteAllocationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_53916ba32af787::t_f721d573f0bacf 39
+app/Services/Helpers/AssetHashService.php
+  s_53916ba32af787::t_f721d573f0bacf 169,175
+  s_53916ba32af787::t_cd313dddebdd26 14,16,24
+app/Http/Requests/Api/Admin/Nodes/Allocations/BulkDeleteAllocationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25-26
+app/Models/Server.php
+  s_53916ba32af787::t_f721d573f0bacf 10,84-113,115,436-440,451-455,459-460
+  s_53916ba32af787::t_cd313dddebdd26 130,132,134,136,138,140
+  s_53916ba32af787::t_9d84866db456df 456-458,461
+app/Services/Allocations/AssignmentService.php
+  s_53916ba32af787::t_cd313dddebdd26 20,22,24,26,28,30
+  s_53916ba32af787::t_f721d573f0bacf 52,91,101,103,117
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_53916ba32af787::t_6803a1a486308d 26
+routes/api-application.php
+  s_53916ba32af787::t_f721d573f0bacf 6-19,31-33,35-36,38,50-53,55-56,58,61-63,76-77,79-80,82,94-95,107-109,111-113,115-118,120-121,125-126,128-129,131
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_53916ba32af787::t_f721d573f0bacf 45
+app/Http/Controllers/Auth/AbstractLoginController.php
+  s_53916ba32af787::t_6803a1a486308d 30
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 47-49,66-71,75-76,78
+app/Services/Servers/VariableValidatorService.php
+  s_53916ba32af787::t_f721d573f0bacf 53
+app/Extensions/DynamicDatabaseConnection.php
+  s_53916ba32af787::t_cd313dddebdd26 14,16,18
+app/Http/Requests/Api/Remote/InstallationDataRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 22-23
+app/Http/Requests/Api/Client/Servers/Files/GetFileContentsRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 29
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25-26
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_53916ba32af787::t_f721d573f0bacf 106,133-134,138-139,143,153,157,161,165-166,170-171
+app/Http/Requests/Api/ApiRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 37,41,43
+  s_53916ba32af787::t_6803a1a486308d 7,34
+app/Http/Requests/Api/Client/Servers/Backups/RestoreBackupRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 23
+app/Console/Commands/User/DeleteUserCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,15-16
+database/Factories/DatabaseHostFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 12-14,31-32,34-35
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,12,14-15,40
+  s_53916ba32af787::t_cd313dddebdd26 18
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 58
+app/Http/Middleware/Api/Client/SubstituteClientBindings.php
+  s_53916ba32af787::t_f721d573f0bacf 41,52
+  s_53916ba32af787::t_6803a1a486308d 8,34-35
+database/Factories/NodeFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 14-16,35
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_53916ba32af787::t_6803a1a486308d 25,111
+  s_53916ba32af787::t_f721d573f0bacf 73,142,167,184,206,208,239,241
+app/Models/MountServer.php
+  s_53916ba32af787::t_f721d573f0bacf 7-9,12-14
+app/Http/Requests/Api/Admin/Eggs/ImportEggRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25
+app/Services/Servers/ServerCreationService.php
+  s_53916ba32af787::t_f721d573f0bacf 72,77,190
+app/Data/ServerCreationData.php
+  s_53916ba32af787::t_f721d573f0bacf 7,18,111
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_53916ba32af787::t_f721d573f0bacf 15,29-30,48
+app/Http/Requests/Api/Admin/AdminApiRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 9,12
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_53916ba32af787::t_f721d573f0bacf 150
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,15-16
+app/Http/Requests/Api/Client/Servers/Startup/UpdateStartupVariableRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 35
+tests/Unit/ArchTest.php
+  s_53916ba32af787::t_797ba112525696 1-13,15-21,23-30,32-53,55-57,63,69-142,144-146,148-160
+  s_53916ba32af787::t_f6d3e4a633636d 14,54,58-62,64-68,143,147
+  s_53916ba32af787::t_940149a8b01871 22,31
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_53916ba32af787::t_f721d573f0bacf 43,45,48,136
+  s_53916ba32af787::t_6803a1a486308d 112
+app/Console/Commands/User/DisableTwoFactorCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,12-13
+app/Services/Extensions/ExtensionManifest.php
+  s_53916ba32af787::t_cd313dddebdd26 12,14,17,20
+app/Console/Commands/Environment/Addons/RunHooksCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,14-16
+config/trustedproxy.php
+  s_53916ba32af787::t_f721d573f0bacf 29
+config/scribe.php
+  s_53916ba32af787::t_f721d573f0bacf 8-13,241-242,246,257,270-271
+app/Models/ActivityLog.php
+  s_53916ba32af787::t_f721d573f0bacf 9,11,40,61,64-68,145,147
+  s_53916ba32af787::t_cd313dddebdd26 77,83
+  s_53916ba32af787::t_6803a1a486308d 154
+  s_53916ba32af787::t_9d84866db456df 141
+app/Http/Requests/Api/Application/Nodes/GetDeployableNodesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 15-19
+app/Http/Requests/Api/Client/Servers/Files/DecompressFilesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 29-30
+app/Http/Middleware/Api/IsValidJson.php
+  s_53916ba32af787::t_f721d573f0bacf 10,21-22
+app/Transformers/Api/Admin/BaseAdminTransformer.php
+  s_53916ba32af787::t_9d84866db456df 12-19
+  s_53916ba32af787::t_6803a1a486308d 20
+  s_53916ba32af787::t_f721d573f0bacf 22
+app/Models/Setting.php
+  s_53916ba32af787::t_f721d573f0bacf 7-9,17-18
+app/Transformers/Api/Client/EggVariableTransformer.php
+  s_53916ba32af787::t_f721d573f0bacf 25
+app/Exceptions/DisplayException.php
+  s_53916ba32af787::t_6803a1a486308d 79
+  s_53916ba32af787::t_cd313dddebdd26 20,22,24,26
+  s_53916ba32af787::t_f721d573f0bacf 67
+app/Http/Middleware/Activity/TrackAPIKey.php
+  s_53916ba32af787::t_f721d573f0bacf 11,22-23
+app/Http/Requests/Api/Admin/Settings/UpdateAdvancedSettingsRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 25-30
+app/Services/Backups/DeleteBackupService.php
+  s_53916ba32af787::t_f721d573f0bacf 41,56,74
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_53916ba32af787::t_f721d573f0bacf 12,46
+app/Http/Requests/Api/Application/Allocations/StoreAllocationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 23-26,40,44,49
+app/Http/Requests/Api/Client/Servers/Backups/StoreBackupRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24-26
+database/Factories/ScheduleFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 11-13,30
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_53916ba32af787::t_f721d573f0bacf 98,243
+app/Http/Requests/Api/Client/ClientApiRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 10,13
+app/Providers/AppServiceProvider.php
+  s_53916ba32af787::t_f721d573f0bacf 26-41,53,84-100,109,124,190
+app/Services/Tags/TagResolutionService.php
+  s_53916ba32af787::t_f721d573f0bacf 59
+app/Repositories/Wings/DaemonPowerRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 10-11,14-15
+composer.json
+  s_53916ba32af787::t_ebe78231b951af 51,60,64
+  s_53916ba32af787::t_3095b491ad17d5 131
+  s_53916ba32af787::t_bdfe09094466cd 86-104
+app/Console/Commands/Themes/ApplyCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Services/Activity/ActivityLogIngestionService.php
+  s_53916ba32af787::t_f721d573f0bacf 9,43,76,80,88
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 32,35
+app/Console/Commands/Environment/DatabaseSettingsCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,17-18,23-26
+app/Repositories/Wings/DaemonServerRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 10-11,14-15
+app/Services/Schedules/ProcessScheduleService.php
+  s_53916ba32af787::t_f721d573f0bacf 32
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_53916ba32af787::t_f721d573f0bacf 13,26-27,32,35
+app/Models/Allocation.php
+  s_53916ba32af787::t_9d84866db456df 108-109,113,118-119,123
+  s_53916ba32af787::t_f721d573f0bacf 9,12,34-46,48,50,106-107,110-112,114-117,120-122,124
+  s_53916ba32af787::t_cd313dddebdd26 62
+  s_53916ba32af787::t_5c513e3dcc7a34 125
+app/Services/Servers/SuspensionService.php
+  s_53916ba32af787::t_cd313dddebdd26 16,18
+  s_53916ba32af787::t_f721d573f0bacf 34,45
+app/Http/ViewComposers/AssetComposer.php
+  s_53916ba32af787::t_f721d573f0bacf 29-30,33
+app/Providers/ViewComposerServiceProvider.php
+  s_53916ba32af787::t_f721d573f0bacf 7,18
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 47,51,54,58
+app/Http/Requests/Api/Remote/RemoteRequestNode.php
+  s_53916ba32af787::t_f721d573f0bacf 16
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_53916ba32af787::t_6803a1a486308d 7,90
+  s_53916ba32af787::t_f721d573f0bacf 42
+.github/workflows/ci.yaml
+  s_53916ba32af787::t_bdfe09094466cd 108
+app/Console/Commands/Node/NodeListCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7,11,27
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_53916ba32af787::t_f721d573f0bacf 44,51
+config/ide-helper.php
+  s_53916ba32af787::t_f721d573f0bacf 5,8,193-194
+app/Http/Resources/Wings/ServerConfigurationCollection.php
+  s_53916ba32af787::t_f721d573f0bacf 36
+app/Http/Requests/Api/Client/Servers/SendCommandRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 29
+app/Providers/BladeServiceProvider.php
+  s_53916ba32af787::t_04db681629843f 8,17
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_53916ba32af787::t_f721d573f0bacf 20,36-37,43,64,71,81
+app/Models/Filters/MultiFieldServerFilter.php
+  s_53916ba32af787::t_f721d573f0bacf 34,45-46
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_53916ba32af787::t_f721d573f0bacf 79
+database/Factories/ActivityLogFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 8,12-14,31,37
+app/Services/Databases/DatabaseManagementService.php
+  s_53916ba32af787::t_f721d573f0bacf 80,85,89,171
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_53916ba32af787::t_f721d573f0bacf 9,13,25-26,31,35
+app/Http/Requests/Api/Client/Servers/Files/ListFilesRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 28
+app/Models/ActivityLogSubject.php
+  s_53916ba32af787::t_f721d573f0bacf 7-10,26-28,32-34
+app/Console/Commands/Themes/ListCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,12-13
+app/Http/Requests/Api/Application/Servers/GetServersRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 15
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 46-48,51,60,70-75,79,82
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 41-43
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_53916ba32af787::t_93423903011886 65
+app/Services/Backups/PresignBackupUploadService.php
+  s_53916ba32af787::t_f721d573f0bacf 31
+  s_53916ba32af787::t_cd313dddebdd26 16
+app/Models/User.php
+  s_53916ba32af787::t_cd313dddebdd26 123,125,131
+  s_53916ba32af787::t_f721d573f0bacf 8-10,15,68,90,93-108
+app/Models/Tag.php
+  s_53916ba32af787::t_f721d573f0bacf 9-10,32-38
+  s_53916ba32af787::t_cd313dddebdd26 48
+app/Models/UserSSHKey.php
+  s_53916ba32af787::t_cd313dddebdd26 60
+  s_53916ba32af787::t_f721d573f0bacf 8-10,29-30,32-40,43,45,47-52
+app/Exceptions/ApiErrorResponse.php
+  s_53916ba32af787::t_f721d573f0bacf 52,55,160,164
+app/Services/Servers/ServerDeletionService.php
+  s_53916ba32af787::t_f721d573f0bacf 56,66
+app/Http/Controllers/Base/LocaleController.php
+  s_53916ba32af787::t_bdfe09094466cd 40
+  s_53916ba32af787::t_f721d573f0bacf 58
+app/Http/Requests/Api/Client/Servers/Schedules/ViewScheduleRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 29,37
+app/Console/Commands/Extensions/RemoveCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_53916ba32af787::t_f721d573f0bacf 37,39,65
+app/Services/Servers/StartupModificationService.php
+  s_53916ba32af787::t_f721d573f0bacf 65
+app/Jobs/Schedule/RunTaskJob.php
+  s_53916ba32af787::t_f721d573f0bacf 75
+app/Models/Task.php
+  s_53916ba32af787::t_f721d573f0bacf 9-10,30-39
+  s_53916ba32af787::t_cd313dddebdd26 51,56,58,60
+app/Http/Middleware/LanguageMiddleware.php
+  s_53916ba32af787::t_f721d573f0bacf 12,25-26
+app/Http/Requests/Api/Client/Servers/Subusers/StoreSubuserRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 22-24
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 27-28,30-33,35-38
+app/Models/ApiKey.php
+  s_53916ba32af787::t_6803a1a486308d 175,182
+  s_53916ba32af787::t_f721d573f0bacf 8-10,45-66,68,70-78,147,160
+  s_53916ba32af787::t_cd313dddebdd26 88,93,95,98,101,104,109,115
+database/Factories/UserFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 8,28,30-31,37-38
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_53916ba32af787::t_f721d573f0bacf 79-80
+app/Services/Activity/ActivityLogService.php
+  s_53916ba32af787::t_6803a1a486308d 18,115,189
+  s_53916ba32af787::t_f721d573f0bacf 159-160,214,225,229,245,258,260
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_53916ba32af787::t_f721d573f0bacf 9-10,56,77,104
+  s_53916ba32af787::t_6803a1a486308d 95
+app/Console/Commands/TelemetryCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_53916ba32af787::t_cd313dddebdd26 13
+config/backups.php
+  s_53916ba32af787::t_f721d573f0bacf 59
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_53916ba32af787::t_6803a1a486308d 36
+  s_53916ba32af787::t_f721d573f0bacf 22,46-47,99,106,108-109,119-120,142
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_53916ba32af787::t_f721d573f0bacf 8,10
+app/Http/Middleware/Activity/ServerSubject.php
+  s_53916ba32af787::t_f721d573f0bacf 12,27-28
+app/Models/Subuser.php
+  s_53916ba32af787::t_cd313dddebdd26 39
+  s_53916ba32af787::t_f721d573f0bacf 9,26
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 8-9,14-15,22
+database/Factories/SubuserFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 13-15
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_53916ba32af787::t_f721d573f0bacf 17,28,30,36,53,95,97,116,118,121
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_53916ba32af787::t_f721d573f0bacf 98
+app/Http/Middleware/Activity/AccountSubject.php
+  s_53916ba32af787::t_f721d573f0bacf 11,21-22
+app/Http/Requests/Api/Client/Servers/Subusers/UpdateSubuserRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 22-23
+app/Http/Middleware/SetSecurityHeaders.php
+  s_53916ba32af787::t_f721d573f0bacf 9,38-39
+app/Models/Extension.php
+  s_53916ba32af787::t_f721d573f0bacf 8,21,24
+app/Models/Mount.php
+  s_53916ba32af787::t_f721d573f0bacf 8,10,32-33
+  s_53916ba32af787::t_cd313dddebdd26 45
+  s_53916ba32af787::t_6803a1a486308d 52,63
+app/Transformers/Api/Application/BaseTransformer.php
+  s_53916ba32af787::t_f721d573f0bacf 62,67,155,158,168,174
+  s_53916ba32af787::t_cd313dddebdd26 27
+  s_53916ba32af787::t_6803a1a486308d 153
+app/Services/Servers/EnvironmentService.php
+  s_53916ba32af787::t_f721d573f0bacf 122,126
+database/Factories/ServerTransferFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 13-15,34-35
+app/Helpers/Utilities.php
+  s_53916ba32af787::t_9d84866db456df 7,45
+  s_53916ba32af787::t_f721d573f0bacf 10,47
+config/app.php
+  s_53916ba32af787::t_f721d573f0bacf 5,173
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_53916ba32af787::t_f721d573f0bacf 74,76
+app/Rules/Fqdn.php
+  s_53916ba32af787::t_6803a1a486308d 26
+app/Console/Commands/User/MakeUserCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,16-17
+app/Services/Helpers/SoftwareVersionService.php
+  s_53916ba32af787::t_cd313dddebdd26 16
+app/Models/Egg.php
+  s_53916ba32af787::t_9d84866db456df 221,225,238,242,255,259,271,275,287,291,303,307,319,323,336,340,353,357
+  s_53916ba32af787::t_f721d573f0bacf 9,12,65-83,146-150,152,154,158-160,162,164,168-170,172,174,178-180,182,184,188-190,192,194,198-200,202,204,208-210,212,214,218-219,223,226-228,230-231,235-236,240,243-245,247-248,252-253,257,260-265,269,273,276-281,285,289,292-297,301,305,308-313,317,321,324-329,333-334,338,341-346,350-351,355,358-363
+  s_53916ba32af787::t_cd313dddebdd26 96,101,107,109
+app/Http/Requests/Auth/ResetPasswordRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 22-24
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,16-17,33-35,110,120,129
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_53916ba32af787::t_f721d573f0bacf 28,134,149
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 26,45-48,50,146,150
+tools/phpstan/anti-slop/tests/Rules/data/no-mixed-parameters.php
+  s_53916ba32af787::t_3f3d877e8f265e 44
+app/Enum/ResourceLimit.php
+  s_53916ba32af787::t_f721d573f0bacf 35,38
+app/Services/Eggs/Sharing/EggExporterService.php
+  s_53916ba32af787::t_6803a1a486308d 48
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 39-42,130,134
+app/Http/Requests/Api/Client/Servers/Settings/RenameServerRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 34,41
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_53916ba32af787::t_cd313dddebdd26 37
+  s_53916ba32af787::t_f721d573f0bacf 69-70
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_53916ba32af787::t_f721d573f0bacf 151
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_53916ba32af787::t_6803a1a486308d 26,78
+  s_53916ba32af787::t_f721d573f0bacf 79
+app/Services/Eggs/EggParserService.php
+  s_53916ba32af787::t_f721d573f0bacf 22,25
+app/Services/Acl/Api/AdminAcl.php
+  s_53916ba32af787::t_cd313dddebdd26 18,24,26,28,34,36,38,40,42,44,46,48
+app/Models/Location.php
+  s_53916ba32af787::t_cd313dddebdd26 33
+  s_53916ba32af787::t_f721d573f0bacf 9,23
+app/Console/Commands/InfoCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,14-15
+app/Models/EggVariable.php
+  s_53916ba32af787::t_cd313dddebdd26 45,50
+  s_53916ba32af787::t_9d84866db456df 90-92
+  s_53916ba32af787::t_f721d573f0bacf 9-10,35,89,93-95
+  s_53916ba32af787::t_8308d235240cd6 96
+app/Services/Backups/InitiateBackupService.php
+  s_53916ba32af787::t_f6d3e4a633636d 89-90
+app/Repositories/Wings/DaemonTransferRepository.php
+  s_53916ba32af787::t_f721d573f0bacf 11,14-15
+app/Models/Permission.php
+  s_53916ba32af787::t_cd313dddebdd26 19
+  s_53916ba32af787::t_f721d573f0bacf 7-8,11-12
+app/Console/Commands/Schedule/ProcessRunnableCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,16-17
+app/Http/Middleware/Api/Admin/AuthenticateAdmin.php
+  s_53916ba32af787::t_f721d573f0bacf 9,21-22,26
+app/Services/Users/ToggleTwoFactorService.php
+  s_53916ba32af787::t_f721d573f0bacf 46,52
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_53916ba32af787::t_f721d573f0bacf 13,44-45,72
+  s_53916ba32af787::t_cd313dddebdd26 19,21,23
+app/Rules/TagSlug.php
+  s_53916ba32af787::t_cd313dddebdd26 20
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_53916ba32af787::t_6803a1a486308d 24,121
+  s_53916ba32af787::t_f721d573f0bacf 122,148,150
+app/Console/Commands/Themes/ResetCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,12-13
+app/Models/Filters/AdminServerFilter.php
+  s_53916ba32af787::t_f721d573f0bacf 26
+app/Console/Commands/Extensions/ListCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,13-14
+app/Transformers/Api/Client/FileObjectTransformer.php
+  s_53916ba32af787::t_f721d573f0bacf 7,27-28
+database/Factories/TaskFactory.php
+  s_53916ba32af787::t_f721d573f0bacf 19
+app/Http/Requests/Api/Client/Servers/Files/PullFileRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 24-28
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_53916ba32af787::t_f721d573f0bacf 7-8,15-18
+app/Services/Users/UserUpdateService.php
+  s_53916ba32af787::t_f721d573f0bacf 31
+app/Models/Backup.php
+  s_53916ba32af787::t_f721d573f0bacf 9,38
+  s_53916ba32af787::t_cd313dddebdd26 47,49,51
+app/Services/Servers/DetailsModificationService.php
+  s_53916ba32af787::t_f721d573f0bacf 45
+app/Services/Tags/TagBackfiller.php
+  s_53916ba32af787::t_f721d573f0bacf 70,76,168
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_53916ba32af787::t_cd313dddebdd26 35
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_53916ba32af787::t_f721d573f0bacf 40-41
+composer.lock
+  s_53916ba32af787::t_fd6ebb419632e2 7,9001-9058,9780-9858,10323-10391,10783,10786-10787,10843,11334,11338,11342-11343,11348,11379,11387-12533,13632-13690,13800-13856,13926-13928
+.ai/rules/general.md
+  s_53916ba32af787::t_76bf928a03b068 1-9
+.ai/rules/index.md
+  s_53916ba32af787::t_4e76f842941fee 13,24
+.ai/rules/unit.md
+  s_53916ba32af787::t_59259fb6333b73 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "063885d69995d4afa060b0f254b09a2398a7df01",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

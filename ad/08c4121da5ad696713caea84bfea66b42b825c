@@ -1,0 +1,32 @@
+composer.json
+  s_731111b3bfaced::t_12bd6d4f0f0910 87-92
+  s_731111b3bfaced::t_11be7e17d22872 60
+.gitignore
+  s_731111b3bfaced::t_6a15ee5d8ad26e 38-42
+scripts/check-openapi-coverage.php
+  s_731111b3bfaced::t_d85beaddbbcf74 1-9,11-112,114-116
+  s_731111b3bfaced::t_a779703a84386f 113
+  s_731111b3bfaced::t_4607a2da29bfee 10
+config/scribe.php
+  s_731111b3bfaced::t_1ffe10465a2a11 13,16,35-39,74,96,111,115,121,132,240,242
+  s_731111b3bfaced::t_c89942d2525048 1-12,14-15,17-34,40-73,75-95,97-110,112-114,116-120,122-131,133-231,241,243-258
+  s_731111b3bfaced::t_8ffcfc684bedfe 232-239
+composer.lock
+  s_731111b3bfaced::t_f84e2d8054e92c 7,9160-9251,9425-9477,9635-9684,11816-11873,12472-12552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ad08c4121da5ad696713caea84bfea66b42b825c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

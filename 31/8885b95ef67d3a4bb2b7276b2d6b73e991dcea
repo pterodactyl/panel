@@ -1,0 +1,27 @@
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_731111b3bfaced::t_27c21df2f1de42 23,43,48,52,55-56,81-82
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_731111b3bfaced::t_b9eaa2ac40b310 33,78-79
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_731111b3bfaced::t_82f8e8aa79a66d 11,14
+  s_731111b3bfaced::t_6fd853a93389d2 18,21,29,34-35,38-39,45,48,56-59,61,63,65,81,92,96-99,107
+resources/scripts/api/server/startup/queries.ts
+  s_731111b3bfaced::t_b0a43a75cf1fa6 22,74
+  s_731111b3bfaced::t_e76d17f3723b57 32,73,75-78,87-89,94-95,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "318885b95ef67d3a4bb2b7276b2d6b73e991dcea",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

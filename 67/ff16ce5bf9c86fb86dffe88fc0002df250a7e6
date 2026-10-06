@@ -1,0 +1,35 @@
+app/Console/Commands/Node/NodeConfigurationCommand.php
+  s_be04b879a75a03::t_8af4014b0be809 20-21,23
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_8af4014b0be809 53
+app/Console/Commands/Extensions/PortCommand.php
+  s_be04b879a75a03::t_8af4014b0be809 31-33
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_be04b879a75a03::t_8af4014b0be809 41
+app/Providers/HashidsServiceProvider.php
+  s_be04b879a75a03::t_8af4014b0be809 21,25
+app/Enum/EggSpecificTags.php
+  s_be04b879a75a03::t_8af4014b0be809 51
+app/Console/RequiresDatabaseMigrations.php
+  s_be04b879a75a03::t_8af4014b0be809 20
+app/Providers/BroadcastServiceProvider.php
+  s_be04b879a75a03::t_8af4014b0be809 9,23-27
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_be04b879a75a03::t_8af4014b0be809 29-30,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "67ff16ce5bf9c86fb86dffe88fc0002df250a7e6",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

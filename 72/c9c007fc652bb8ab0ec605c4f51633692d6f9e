@@ -1,0 +1,36 @@
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 12,257-260
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_ea4d0d6f11faf7 446,451,453,469,475,477,479,491,497,499,515,521,523,525,538,541,543,545,547-549,553,555,566-567,571,573,575-587,589-603,605-607
+  s_731111b3bfaced::t_51d1fa1c93d15c 126-130
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 4,65-66,71
+resources/scripts/components/admin/servers/ServerRow.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 61-64
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 10,94-97
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 12,71-72,76
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 12,557
+resources/scripts/components/admin/servers/helpers.ts
+  s_731111b3bfaced::t_2bd3aba4c0416b 1-143
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_731111b3bfaced::t_4202b3c53370cb 5,23,29-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "72c9c007fc652bb8ab0ec605c4f51633692d6f9e",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

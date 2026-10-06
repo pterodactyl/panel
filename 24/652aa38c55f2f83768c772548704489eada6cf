@@ -1,0 +1,92 @@
+app/Transformers/Api/Application/EggTransformer.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 96-99
+tests/Integration/Api/Application/Nodes/NodeControllerTest.php
+  s_49a8ce1d5e091e::t_ec4e466b1ca65d 1-26,28-42,44-45
+  s_49a8ce1d5e091e::t_ca3006220f9ef1 43
+  s_49a8ce1d5e091e::t_5be93630c8fd2b 27
+app/Transformers/Api/Application/ServerTransformer.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 156-159,190,240-258
+  s_269d201256c1f4::t_511b79e19fdab1 259
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_49a8ce1d5e091e::t_c16b44375a4f0f 76-86
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_49a8ce1d5e091e::t_dafc27a46afeb7 205-230,234-241
+  s_49a8ce1d5e091e::t_6b959452fffac6 198-202,204,231-232,242-247
+  s_49a8ce1d5e091e::t_b0d9b0f16456b7 187-197,203,233,248-285,1214,1223-1245
+  s_49a8ce1d5e091e::t_75ee81bb27b558 955,2087
+  s_49a8ce1d5e091e::t_4683838c7e3101 1246-1247
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 5,60,73-86,89
+tests/Integration/Api/Application/PaginationValidationTest.php
+  s_49a8ce1d5e091e::t_c16b44375a4f0f 1-4,6-10,13,17,22-27,42-43
+  s_49a8ce1d5e091e::t_223cc24197662a 28
+  s_49a8ce1d5e091e::t_f8375c0d46ee1b 5,11-12,14-16,18-21,29-41
+app/Transformers/Api/Application/NodeTransformer.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 45-53,56-57
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 70,92
+resources/scripts/api/generated/types.gen.ts
+  s_49a8ce1d5e091e::t_2ffb0b8ba4f5e1 726,728,734,743,857,870-872,877,2861,2863,2865-2868,4240,4284,4339,4355,4391,4423,4455,9493,9529-9532,9555-9558,9593-9596,9636-9639,9671-9674,9710-9713,9733,9769-9772,9795-9798,9837,9853-9856,9895-9898,9938-9941,9973-9976,10015-10018,10047,10079-10082,10118-10121,10168-10171,10194,10222-10225,10248-10251,10290-10293,10333-10336,10368-10371,10395,10423-10426,10459-10462,10482,10530-10533,10564-10567,10602-10605,10645-10648,10680-10683,10715-10718,10758-10761,10797-10800,10840-10843,10886-10889,10932-10935,10978-10981,11021-11024,11063-11066,11109-11112,11156-11159,11195-11198,11412-11415,11587-11590,11628-11631,11682-11685,11711-11714,11744-11747,11782-11785,11815-11818,11844-11847,11877-11880,11915-11918,11953-11956,11991-11994,12092-12095,12138-12141,12185-12188,12232-12235,12283-12286,12325-12328,12368-12371,12419-12422,12470-12473,12516-12519,12562-12565,12613-12616,12659-12662,12705-12708,12751-12754,12797-12800,12843-12846,12889-12892,12935-12938,12978-12981,13020-13023,13066-13069,13113-13116,13159-13162,13205-13208,13249-13252,13345-13348,13387-13390,13429-13432,13475-13478,13517-13520,13563-13566,13601-13604,13643-13646,13689-13692,13731-13734,13773-13776,14084-14087,14126-14129,14168-14171,14210-14213,14252-14255,14292-14295
+  s_49a8ce1d5e091e::t_9bbec7d6b18403 735-742,749
+  s_49a8ce1d5e091e::t_85c8af45dfb17c 748,750-751,884
+app/Models/Server.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 79,376-383
+  s_269d201256c1f4::t_18ec9a79736ed7 384-385
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 15-18,63-69,71,76-85
+  s_49a8ce1d5e091e::t_75ee81bb27b558 70
+  s_49a8ce1d5e091e::t_88695b5d34ae96 72-75
+  s_49a8ce1d5e091e::t_aed6b47d3b0734 86
+app/Transformers/Api/Application/ServerTransferTransformer.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 1-29
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 27,38
+tests/Unit/Http/Requests/Api/Application/Servers/StoreServerRequestTest.php
+  s_49a8ce1d5e091e::t_c16b44375a4f0f 1-35
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 64,71-75
+tests/Integration/Api/Application/Servers/ServerControllerTest.php
+  s_49a8ce1d5e091e::t_c16b44375a4f0f 1-10,12-70,72-86,107-108
+  s_49a8ce1d5e091e::t_ca3006220f9ef1 87
+  s_49a8ce1d5e091e::t_5be93630c8fd2b 71
+  s_49a8ce1d5e091e::t_ec4e466b1ca65d 11,88-106
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_49a8ce1d5e091e::t_b0d9b0f16456b7 11,147-150
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 74,87
+app/Services/Servers/EnvironmentService.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 5,36,63-86
+  s_269d201256c1f4::t_54646d65a48129 87-88
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_49a8ce1d5e091e::t_cd8e624f095eef 14,85,94
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 104,114-116,119
+tests/Integration/Api/Application/Nodes/NodeDeploymentControllerTest.php
+  s_49a8ce1d5e091e::t_c16b44375a4f0f 1-29
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_49a8ce1d5e091e::t_92fbe0c0cf7833 77,88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "24652aa38c55f2f83768c772548704489eada6cf",
+  "prompts": {},
+  "sessions": {
+    "s_269d201256c1f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b7b1a6f-221d-4ceb-9c91-23db25a37a95",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_49a8ce1d5e091e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02663-4b2d-7683-8c24-e5964354559d",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

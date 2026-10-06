@@ -1,0 +1,35 @@
+app/Console/Commands/TelemetryCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 20,24
+tests/Unit/Console/GenerateKeyWithoutAppKeyTest.php
+  s_1987c4c7a2db6b::t_220d4af829342a 1-19
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 27,45
+  s_1987c4c7a2db6b::t_eedfb196d5a15e 39
+app/Console/Commands/Server/BulkPowerActionCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 29,35
+app/Console/Commands/User/DeleteUserCommand.php
+  s_1987c4c7a2db6b::t_eedfb196d5a15e 37,51
+  s_1987c4c7a2db6b::t_866167df95d93f 19,65
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 39,93
+app/Console/Commands/User/MakeUserCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 25,50
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_1987c4c7a2db6b::t_866167df95d93f 24,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0ca0100d71424a30ac95d509c977268fc716ff33",
+  "prompts": {},
+  "sessions": {
+    "s_1987c4c7a2db6b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a546e5c2-5c0a-4525-8b68-fc36bc85da6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

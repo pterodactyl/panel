@@ -1,0 +1,80 @@
+tests/Integration/Services/Deployment/FindViableNodesServiceTest.php
+  s_5abe510b694a54::t_2e25143f04f235 28,36,57,65
+  s_5abe510b694a54::t_3cd9beb1be3dba 6
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_5abe510b694a54::t_2e25143f04f235 69
+  s_5abe510b694a54::t_65d243a3c035d5 7
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_5abe510b694a54::t_3cd9beb1be3dba 5
+  s_5abe510b694a54::t_2e25143f04f235 145,156
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_5abe510b694a54::t_65d243a3c035d5 10
+  s_5abe510b694a54::t_2e25143f04f235 48,75
+app/Support/JavaScript/JavaScript.php
+  s_5abe510b694a54::t_3cd9beb1be3dba 7
+  s_5abe510b694a54::t_2e25143f04f235 54
+app/Services/Servers/SuspensionService.php
+  s_5abe510b694a54::t_65d243a3c035d5 5
+  s_5abe510b694a54::t_2e25143f04f235 31
+app/Repositories/Eloquent/EggRepository.php
+  s_5abe510b694a54::t_710b00293088da 54
+  s_5abe510b694a54::t_6655f195740c34 7
+app/Services/Nodes/NodeJWTService.php
+  s_5abe510b694a54::t_65d243a3c035d5 7
+  s_5abe510b694a54::t_2e25143f04f235 100
+app/Services/Databases/DeployServerDatabaseService.php
+  s_5abe510b694a54::t_2e25143f04f235 28,32
+  s_5abe510b694a54::t_65d243a3c035d5 5
+app/Services/Databases/DatabaseManagementService.php
+  s_5abe510b694a54::t_6655f195740c34 7-8
+  s_5abe510b694a54::t_710b00293088da 88
+app/Enum/ResourceLimit.php
+  s_5abe510b694a54::t_3cd9beb1be3dba 9
+  s_5abe510b694a54::t_2e25143f04f235 61
+app/Console/Commands/User/DeleteUserCommand.php
+  s_5abe510b694a54::t_2e25143f04f235 28
+  s_5abe510b694a54::t_3cd9beb1be3dba 6
+app/Services/Deployment/FindViableNodesService.php
+  s_5abe510b694a54::t_2e25143f04f235 26,78,82
+  s_5abe510b694a54::t_65d243a3c035d5 7
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_5abe510b694a54::t_2e25143f04f235 52
+  s_5abe510b694a54::t_3cd9beb1be3dba 5
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_5abe510b694a54::t_2e25143f04f235 28
+  s_5abe510b694a54::t_3cd9beb1be3dba 7
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_5abe510b694a54::t_65d243a3c035d5 5
+  s_5abe510b694a54::t_2e25143f04f235 79,83
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_5abe510b694a54::t_3cd9beb1be3dba 5
+  s_5abe510b694a54::t_2e25143f04f235 80,185
+app/Repositories/Eloquent/EloquentRepository.php
+  s_5abe510b694a54::t_710b00293088da 197,213
+  s_5abe510b694a54::t_6655f195740c34 13
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_5abe510b694a54::t_65d243a3c035d5 8
+  s_5abe510b694a54::t_2e25143f04f235 43
+app/Extensions/Backups/BackupManager.php
+  s_5abe510b694a54::t_2e25143f04f235 72,86,95
+  s_5abe510b694a54::t_3cd9beb1be3dba 11
+app/Services/Servers/ServerCreationService.php
+  s_5abe510b694a54::t_2e25143f04f235 71,79
+  s_5abe510b694a54::t_65d243a3c035d5 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0eb053d1e94b18e7c23821192344a74f1d8cb69f",
+  "prompts": {},
+  "sessions": {
+    "s_5abe510b694a54": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e5a-f0ca-7793-9873-405e50e9f937",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+app/Services/Users/UserCreationService.php
+  s_be04b879a75a03::t_abfa5ef5860066 28
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_be04b879a75a03::t_abfa5ef5860066 24
+app/Services/Servers/DetailsModificationService.php
+  s_be04b879a75a03::t_abfa5ef5860066 28
+app/Services/Databases/Hosts/HostCreationService.php
+  s_be04b879a75a03::t_abfa5ef5860066 32
+app/Services/Users/UserUpdateService.php
+  s_be04b879a75a03::t_abfa5ef5860066 18
+app/Services/Eggs/EggCreationService.php
+  s_be04b879a75a03::t_abfa5ef5860066 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d766b63368508124a5549452f20721247a39d6b4",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

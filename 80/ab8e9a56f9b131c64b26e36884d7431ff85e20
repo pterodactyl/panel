@@ -1,0 +1,21 @@
+.ai/rules/app.md
+  s_5eb93878083371::t_3089021542c2b0 1-17
+.ai/rules/index.md
+  s_5eb93878083371::t_7b45cc574a7b78 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "80ab8e9a56f9b131c64b26e36884d7431ff85e20",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

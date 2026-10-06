@@ -1,0 +1,267 @@
+tests/Integration/Api/Client/Server/Backup/BackupAuthorizationTest.php
+  s_e052fdd0902bf7::t_d7958c454a9eb1 31,35-37
+  s_e052fdd0902bf7::t_6dfd607d145c6b 10,12
+tests/Unit/Services/Helpers/AssetHashServiceTest.php
+  s_e052fdd0902bf7::t_9fd81ad87bfcfe 14,20-38
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_2cc5e1ee220960::t_2aa57b2100174e 19,32,44,50,55,57,62,64,79,91,120
+  s_e052fdd0902bf7::t_6017fe7b86f570 73
+  s_e052fdd0902bf7::t_0a45a7ffd60f1a 106-107,117-119
+  s_e052fdd0902bf7::t_7541cc91666f47 89
+  s_e052fdd0902bf7::t_777d23b8482679 33
+  s_e052fdd0902bf7::t_5316c28e27518c 20
+tests/Integration/Services/Servers/BuildModificationServiceTest.php
+  s_2cc5e1ee220960::t_0cbea64d1717ca 17,26,48,74,88,90,101,109,119,127,133
+tests/Integration/Jobs/RevokeSftpAccessJobTest.php
+  s_e052fdd0902bf7::t_c9fb23384f5112 30-31
+  s_e052fdd0902bf7::t_c4ba44a13c8929 32-39,41
+  s_2cc5e1ee220960::t_2507cf5985ee8e 14,28-29,40,42,46-49,54-57
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_c03f244bd0babe::t_1b760159ada057 101,106-107
+  s_c03f244bd0babe::t_29052dbf9ac21d 121,124-127
+  s_c03f244bd0babe::t_b42da624163ac8 11,13
+  s_c03f244bd0babe::t_7cbb8c25e24ed1 71,77-80,82-84
+tests/Support/Fakes/FakeDaemonPowerRepository.php
+  s_a1fd6c79aae8c1::t_183a2126d2b59d 94-107
+  s_2cc5e1ee220960::t_04fd159e278aec 1-93,108-112
+tests/Integration/Api/Client/Server/Files/CompressFilesTest.php
+  s_c03f244bd0babe::t_da2e309bcd3dbb 20-21,24
+  s_c03f244bd0babe::t_03a14b58e0070c 10
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_c03f244bd0babe::t_5038a5f2871eb0 16
+  s_c03f244bd0babe::t_9f8917c2e51d91 111,115
+  s_c03f244bd0babe::t_f43e0c7ee10908 119,122
+  s_c03f244bd0babe::t_b06c64084b05a9 99,106
+tests/Support/Fakes/FakeBackupManager.php
+  s_605a667230a03d::t_279b6a7a85eefc 1-23
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_5069e0296a144f::t_03a225cae27d88 17,27,76-77,82-91,97-102,104-105
+tests/Integration/Api/Admin/Servers/ServerTransferControllerTest.php
+  s_c03f244bd0babe::t_7a5d27c2c80bb8 13
+  s_c03f244bd0babe::t_14f09792937d46 22,28
+  s_c03f244bd0babe::t_55f9c4cdb11798 38,44
+tests/Integration/Api/Client/Server/Database/DatabaseAuthorizationTest.php
+  s_c03f244bd0babe::t_70d0cbc4117465 48-55
+  s_c03f244bd0babe::t_af2ec979560588 11,13
+  s_c03f244bd0babe::t_d3a43244d3637c 33
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_c03f244bd0babe::t_7b332c7198f1b3 22,26,31,35,39,43,47,50-53
+  s_c03f244bd0babe::t_9025784b77bd9e 93
+  s_c03f244bd0babe::t_949d5e5261ceff 17
+tests/Unit/Services/Helpers/SoftwareVersionServiceTest.php
+  s_605a667230a03d::t_db99993c47b19c 8,11-12
+  s_605a667230a03d::t_8182eb15de144a 9
+  s_605a667230a03d::t_3a7f6ca1e8ed67 32-35
+tests/Unit/Http/Middleware/MaintenanceMiddlewareTest.php
+  s_a1fd6c79aae8c1::t_a22fd35dbc7a8d 13,19-20
+  s_a1fd6c79aae8c1::t_5e2a3da757dca3 39
+  s_e052fdd0902bf7::t_ef6ca47f35cc75 59
+tests/Integration/Api/Admin/Nodes/NodeIntrospectionControllerTest.php
+  s_c03f244bd0babe::t_dc2d0a35c851dc 23-24,29-32
+  s_c03f244bd0babe::t_0a6690a748ad04 13
+tests/Support/Fakes/FakeDatabaseHostGateway.php
+  s_5069e0296a144f::t_a47625b2593e4b 1-14,18-63,65-72,74-86,88-99,101-108,110-117,119-188
+  s_5069e0296a144f::t_f3ed3f1059e3a4 64,73,87,100,109,118
+  s_5069e0296a144f::t_6121dcc121b93f 15-17
+tests/Support/Fakes/FakeDaemonTransferRepository.php
+  s_2cc5e1ee220960::t_22837dd9681672 1-72
+tests/Integration/Jobs/Schedule/RunTaskJobTest.php
+  s_2cc5e1ee220960::t_6ad2aee4ded44f 22,60,62,75-76,81
+tests/Unit/EggConfigurationServiceTest.php
+  s_e052fdd0902bf7::t_68dd61c304ea33 47-48,53-55
+  s_e052fdd0902bf7::t_c9fb23384f5112 44
+  s_a1fd6c79aae8c1::t_57bb1c5a852b4c 7
+  s_a1fd6c79aae8c1::t_9610f2b1b6942f 43,45,49-52
+tests/Traits/Http/RequestMockHelpers.php
+  s_a46fc5339eee17::t_648c61c1ce0e37 101
+  s_a46fc5339eee17::t_b0365d1577822f 8,14
+  s_a46fc5339eee17::t_bf5e69ed718a1d 29,33
+  s_a46fc5339eee17::t_50eca474f14fdb 61-62,66-80,84,88-89
+tests/Integration/Api/Client/Server/PowerControllerTest.php
+  s_e052fdd0902bf7::t_987de36b675743 12
+  s_a1fd6c79aae8c1::t_906ccac56c1e60 48
+  s_e052fdd0902bf7::t_76f76d4d4c6b49 45
+tests/Integration/Api/Client/Server/Files/FileControllerTest.php
+  s_c03f244bd0babe::t_a0e2a7339d7d42 10
+  s_c03f244bd0babe::t_1b015aaa90bc70 25-26,28,32-33,35,39-40,45
+  s_c03f244bd0babe::t_f8bcbe6c49833b 65,67,71,73,78,80,84,86,90,92,96,98,103,105,109,111
+tests/Support/Fakes/FakeDaemonServerRepository.php
+  s_2cc5e1ee220960::t_c42939539733b3 1-183
+tests/Integration/Api/Application/Nodes/NodeController/UpdateNodeTest.php
+  s_c03f244bd0babe::t_37979450455ce7 11,17,20-23
+tests/Unit/Exceptions/Http/Connection/DaemonConnectionExceptionTest.php
+  s_e052fdd0902bf7::t_f6568d3a0610b2 11-13,19-20,23-29,32-33,36-41
+tests/Support/Fakes/ThrowingDispatcher.php
+  s_6c8fe9f0a56279::t_6f1080de90f458 36,49-50,63-64,77-78,93,106,117,126,135,144
+  s_6c8fe9f0a56279::t_3b19f2f23a3d15 1-8,10-17,19,23,34-35,37-48,51-62,65-76,79-92,94-105,107-116,118-125,127-134,136-143,145-149,155-156
+  s_a1fd6c79aae8c1::t_b0c08583c6398b 150-154
+  s_a1fd6c79aae8c1::t_5449b99140ccf9 9,18,20-22,24-33
+tests/Integration/Api/Client/Server/ResourceUtilizationControllerTest.php
+  s_e052fdd0902bf7::t_44b42cd7d45453 10,14,16,20,23,25,33
+tests/Integration/Api/Client/Server/Backup/DeleteBackupTest.php
+  s_c03f244bd0babe::t_71c08dc00df6ec 14,18
+  s_c03f244bd0babe::t_9b913d4cce99e5 33
+tests/Support/Fakes/FakeS3Client.php
+  s_a1fd6c79aae8c1::t_00b5521a6a27aa 1-38
+tests/Support/Fakes/FakeDaemonBackupRepository.php
+  s_2cc5e1ee220960::t_85209bedafba9e 1-158
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_605a667230a03d::t_bc038f6dae1c44 14
+  s_605a667230a03d::t_4b5a149b930f95 90-92
+  s_605a667230a03d::t_baa9496ad2abe3 155,157,159-162
+tests/Integration/Services/Backups/DeleteBackupServiceTest.php
+  s_c03f244bd0babe::t_78696fe245d2ac 18
+  s_605a667230a03d::t_52bae6bcd5fa8c 68-70,72
+  s_605a667230a03d::t_b8ef28c2df22f4 17,19
+  s_c03f244bd0babe::t_1ff4aa930fccce 35,39,44-45,49,54-55,63
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_c03f244bd0babe::t_d4ceb972252a17 32,35-36
+  s_c03f244bd0babe::t_22f0de80cc1278 61,65
+  s_c03f244bd0babe::t_e27fbc63abfbd4 12
+tests/Unit/Http/Middleware/LanguageMiddlewareTest.php
+  s_a46fc5339eee17::t_7700142890b7e0 12,14,18,20,23
+  s_a46fc5339eee17::t_b1be6ed14d99bd 27
+tests/Integration/Services/Databases/DatabasePasswordServiceTest.php
+  s_5069e0296a144f::t_7338678793b88b 30
+  s_5069e0296a144f::t_0dff5c6e888cb3 12,21,28-29,37-42,44-45
+  s_5069e0296a144f::t_1aec0e2af88f66 43
+tests/Integration/Api/Admin/VersionControllerTest.php
+  s_605a667230a03d::t_83a1feabe68517 9,13-19
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_c03f244bd0babe::t_ac63847e7536e2 94-97
+  s_c03f244bd0babe::t_341872105ff155 12
+  s_c03f244bd0babe::t_4c81d0c0a1e2b2 83
+tests/Support/Fakes/FakeSoftwareVersionService.php
+  s_605a667230a03d::t_cb0b9a6e163e61 1-8,10-62
+  s_605a667230a03d::t_a1114576b7700c 9
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_e052fdd0902bf7::t_c374a2dd9c8f05 12,15,24-25
+  s_e052fdd0902bf7::t_e7967f71c7fbaa 64-70,78-84
+tests/Integration/Http/Middleware/Api/Daemon/DaemonAuthenticateTest.php
+  s_a46fc5339eee17::t_42697d649f920e 48-49,55-56
+  s_a46fc5339eee17::t_709693d0c02276 67-68
+  s_a46fc5339eee17::t_12f7f1ccedcefd 26
+  s_a46fc5339eee17::t_f01336e2f33883 61-62
+  s_a46fc5339eee17::t_e1fb3d38edd54f 35-36
+tests/Support/Fakes/FakeDaemonCommandRepository.php
+  s_2cc5e1ee220960::t_edcaba932debcb 1-46,48-76,78-89
+  s_5069e0296a144f::t_06a90bdfc23225 47,77
+tests/Support/Fakes/FakeDaemonConfigurationRepository.php
+  s_2cc5e1ee220960::t_5ebfc97406f3fd 1-99
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_e052fdd0902bf7::t_27e2f7374bce9c 12
+  s_e052fdd0902bf7::t_c1ef74e618353b 48,50
+tests/Traits/Http/MocksMiddlewareClosure.php
+  s_a46fc5339eee17::t_f60e270d497f2e 19
+tests/Integration/Api/Client/Server/Database/DatabaseControllerTest.php
+  s_c03f244bd0babe::t_5e595d7fc90346 11,13
+  s_c03f244bd0babe::t_ff7f0a448e308a 30,32-35
+  s_c03f244bd0babe::t_b21eef2e493ffc 31
+tests/Support/Fakes/FakeResponseFactory.php
+  s_a1fd6c79aae8c1::t_8c64da5a6c5c65 1-102
+tests/Unit/Http/Middleware/RedirectIfAuthenticatedTest.php
+  s_a46fc5339eee17::t_249ff034a1e18a 10,14,23,27
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_a46fc5339eee17::t_2414e0f2e22ebd 19
+  s_a46fc5339eee17::t_ec75bbc311f664 86
+tests/Support/Fakes/FakeDaemonFileRepository.php
+  s_5069e0296a144f::t_06a90bdfc23225 102,127,141,167,181
+  s_c03f244bd0babe::t_964ca8a3ccd6b8 282
+  s_c03f244bd0babe::t_72d228b8854849 375-406
+  s_c03f244bd0babe::t_ec82aaca4b594a 356
+  s_c03f244bd0babe::t_c3761ee892b928 254,256-261,263-281,283-301,303-355,357-362
+  s_2cc5e1ee220960::t_5c22dc6c6f8d22 1-101,103-126,128-140,142-166,168-180,182-253,255,363-374,407
+  s_c03f244bd0babe::t_404e0ff8a1ccc2 302
+  s_c03f244bd0babe::t_97ec0fa20a2de2 262
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_2cc5e1ee220960::t_466e19533b52bf 12,21,29,40
+tests/Support/Fakes/FakeDynamicDatabaseConnection.php
+  s_a1fd6c79aae8c1::t_50660e16045787 27-30
+  s_605a667230a03d::t_0655f6cdd89399 1-26,31-32
+tests/Support/Fakes/FakeS3Filesystem.php
+  s_605a667230a03d::t_ee4eb7e4911b15 1-55
+tests/Integration/Api/Client/Server/CommandControllerTest.php
+  s_c03f244bd0babe::t_4abc20d8f2ca04 15
+  s_c03f244bd0babe::t_04f8d71fb5b668 31,34-37,41-42,47
+tests/Support/Fakes/FakeDaemonRevocationRepository.php
+  s_2cc5e1ee220960::t_c21b9e898ce75a 1-42,44-70,72-91
+  s_5069e0296a144f::t_06a90bdfc23225 43,71
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_c03f244bd0babe::t_9fe40c25d1751a 99,101-104,110,112-113,119,121-124,130
+  s_c03f244bd0babe::t_fb9abcb30d057b 100
+  s_c03f244bd0babe::t_fe671747ac6ff1 14,16-17
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_2cc5e1ee220960::t_953f54e2cb6e61 24,36,62,96,102-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "802914470aa6d9e425e6078ed0644de00519e2f7",
+  "prompts": {},
+  "sessions": {
+    "s_2cc5e1ee220960": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59aade23ffebXOKEC0Nndtaca",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_5069e0296a144f": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59aade13ffeHo7Ez5i6XY0dTf",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_605a667230a03d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59aade05ffegbGNNg0YeJrVVE",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_6c8fe9f0a56279": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59aade39ffeNcheI8gR0F62F4",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a1fd6c79aae8c1": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f5c2fccb6ffeZKfrDqmzeykTTx",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a46fc5339eee17": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59aaddf2ffe1r1xe9Gsl8lq2I",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_c03f244bd0babe": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f599b8ab1ffe2mgWCOtntliU9I",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_e052fdd0902bf7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f59a2c694ffeqPOq5Q7mLL5QF1",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_731111b3bfaced::t_72aa77165facd8 2,5-18,21,23-40,51-57,59-60,62-64,73-74,76-81,83,85-92,99,106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6811b5c988a64dbcb52272f4b6b7481d8b89c11d",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

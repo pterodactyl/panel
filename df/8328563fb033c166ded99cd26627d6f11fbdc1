@@ -1,0 +1,41 @@
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_1e4e38747bb289::t_a92aba0a8a4174 6,20-23
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_1e4e38747bb289::t_0e809aeb8f68f9 122,136-137,140
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_1e4e38747bb289::t_f79b9f6a9e2236 74
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_1e4e38747bb289::t_0e809aeb8f68f9 214-223
+  s_1e4e38747bb289::t_36eceffdacf710 212-213
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_1e4e38747bb289::t_3cb03b86ddd27d 7,100-105,128-133,146-155
+  s_1e4e38747bb289::t_fbfafcbffe1a1f 156-157
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_1e4e38747bb289::t_a92aba0a8a4174 7
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_1e4e38747bb289::t_0e809aeb8f68f9 169-190
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_1e4e38747bb289::t_c87872c7faaddc 76-83
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_1e4e38747bb289::t_0e809aeb8f68f9 147-174
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_1e4e38747bb289::t_0e809aeb8f68f9 173,179,190,192
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_1e4e38747bb289::t_0168293ea53d98 9,118-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "df8328563fb033c166ded99cd26627d6f11fbdc1",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+config/scribe.php
+  s_731111b3bfaced::t_0405259673bd5a 9-10,15
+  s_731111b3bfaced::t_cfe0b8745aa99f 222,259
+  s_731111b3bfaced::t_1b6263fab2a7d5 223
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_731111b3bfaced::t_fdf0d80da0d58b 132,156,220
+  s_731111b3bfaced::t_123c62bcdcd570 18-19
+  s_731111b3bfaced::t_eb9fdf6e7447a2 7,9-13,17,27-28,31-88,105-114,131,133-136,155,157-168,187-198,219,221-223
+app/Http/Controllers/Api/Application/Users/ExternalUserController.php
+  s_731111b3bfaced::t_5c03d55dbca463 10
+  s_731111b3bfaced::t_6c439e51f6348b 6-9,11,16-17,20-39,43-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "b84d6b89aca38bac143fdbdf24b4019de97c5558",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

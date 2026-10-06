@@ -1,0 +1,58 @@
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_0717e852bcfa2c::t_d52caeadf103a0 18,27,32,41,49,56,81,90
+  s_0717e852bcfa2c::t_0c6cb5a3f12482 33-40,42-48
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_0717e852bcfa2c::t_553c6459bcc8ac 97-103
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_0717e852bcfa2c::t_559a83231200a6 32
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_0717e852bcfa2c::t_0c6cb5a3f12482 75-78
+  s_0717e852bcfa2c::t_d52caeadf103a0 21,29,37,46,57,61,67,73,80,109,116,122
+tests/Integration/Console/Commands/User/MakeUserCommandTest.php
+  s_0717e852bcfa2c::t_0c6cb5a3f12482 27-32
+tests/Unit/Lang/ActivityTranslationsTest.php
+  s_0717e852bcfa2c::t_47c561d879e507 1-8,10-16,18-21,24,30-32
+  s_0717e852bcfa2c::t_4b5412c02c7161 22-23,25-29
+  s_0717e852bcfa2c::t_4031b6d314acea 9,17,33-49,52-70
+  s_0717e852bcfa2c::t_d52caeadf103a0 50-51
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_0717e852bcfa2c::t_553c6459bcc8ac 19,108-111
+  s_0717e852bcfa2c::t_23a2205672968f 112
+resources/lang/en/activity.php
+  s_0717e852bcfa2c::t_7d52f039f355bf 26-28,135-222
+  s_0717e852bcfa2c::t_a6f9d604aae952 223
+app/Console/Commands/User/MakeUserCommand.php
+  s_0717e852bcfa2c::t_553c6459bcc8ac 12,59-64
+app/Actions/Subusers/CreateSubuser.php
+  s_0717e852bcfa2c::t_553c6459bcc8ac 28,73
+resources/scripts/plugins/useDebouncedCallback.ts
+  s_0717e852bcfa2c::t_a476fc20150596 1-3,8,24-25,28,30,32-33,38-41
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_0717e852bcfa2c::t_0da5a8d50c8659 208-215
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 12,169-170,200-204,219,225,244-245
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 1,20-21,52-57,75-77,127-128
+resources/scripts/lib/fileDrafts.spec.ts
+  s_0717e852bcfa2c::t_8b5a45437a5255 1-41
+resources/scripts/plugins/useDebouncedCallback.spec.ts
+  s_0717e852bcfa2c::t_da6210a96ef9ed 1-38
+resources/scripts/lib/fileDrafts.ts
+  s_0717e852bcfa2c::t_6bbb689ad5e94d 1-26,28-31
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dbfa8ed7a3514f73927226d96abc63f560385cd1",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

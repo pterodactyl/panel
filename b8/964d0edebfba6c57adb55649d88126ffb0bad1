@@ -1,0 +1,38 @@
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_be04b879a75a03::t_f97e26cb048fb9 29
+  s_be04b879a75a03::t_496266c1d2a17f 65-77
+phpstan.neon
+  s_be04b879a75a03::t_8b3f873da628b0 48-49
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_4a19e3a72b5535 49-50
+  s_be04b879a75a03::t_496266c1d2a17f 48
+app/Extensions/Backups/BackupManager.php
+  s_be04b879a75a03::t_3ba1257b4e6403 16
+  s_be04b879a75a03::t_78de95be50fd37 29
+  s_be04b879a75a03::t_8b3f873da628b0 61,71,155,183-188,190-213,215-216,220-233
+  s_be04b879a75a03::t_4a19e3a72b5535 109-110
+  s_be04b879a75a03::t_496266c1d2a17f 30,120,149,153-154,156-157,163,165,173,177-182,189,214,217-219
+tests/Unit/Extensions/Backups/BackupManagerTest.php
+  s_be04b879a75a03::t_17bf97e838b0f8 7,29
+  s_be04b879a75a03::t_78de95be50fd37 3,5,8-12,14-25,27-28,30-32
+  s_be04b879a75a03::t_352846bb075c11 1-2,4,6,13,26,33-34
+app/Console/Commands/UpgradeCommand.php
+  s_be04b879a75a03::t_4a19e3a72b5535 146-149
+  s_be04b879a75a03::t_496266c1d2a17f 104-108,122-126,174-178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b8964d0edebfba6c57adb55649d88126ffb0bad1",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

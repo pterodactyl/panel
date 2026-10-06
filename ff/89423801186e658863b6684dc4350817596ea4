@@ -1,0 +1,34 @@
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_53916ba32af787::t_c4a14ceec79392 20,127-133
+app/Models/Allocation.php
+  s_53916ba32af787::t_a8b8042b909c5e 175,178-179,182,184,188-190,193-194
+  s_53916ba32af787::t_c4a14ceec79392 9-10,78-93,149-174,176-177,180-181,183,185-187,191-192,195-215
+  s_53916ba32af787::t_c603006a7e1043 94-95
+app/Services/Allocations/AssignmentService.php
+  s_53916ba32af787::t_c4a14ceec79392 15,35,69-85,138
+app/Services/Deployment/AllocationSelectionService.php
+  s_53916ba32af787::t_c4a14ceec79392 7,80,105-107,109-113
+  s_53916ba32af787::t_a8b8042b909c5e 21,23,28-30,32,72,88,93,108
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_53916ba32af787::t_c4a14ceec79392 30
+app/Services/Allocations/AllocationDeletionService.php
+  s_53916ba32af787::t_c4a14ceec79392 13,17,19,23
+app/Http/Requests/Api/Client/Servers/Network/UpdateAllocationRequest.php
+  s_53916ba32af787::t_a8b8042b909c5e 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ff89423801186e658863b6684dc4350817596ea4",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

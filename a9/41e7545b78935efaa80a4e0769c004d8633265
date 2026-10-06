@@ -1,0 +1,35 @@
+app/Services/Nodes/NodeJWTService.php
+  s_be04b879a75a03::t_356d3296ab712b 22,37
+phpstan.neon
+  s_be04b879a75a03::t_356d3296ab712b 42-43
+app/Services/Api/KeyCreationService.php
+  s_be04b879a75a03::t_356d3296ab712b 35-37
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_be04b879a75a03::t_356d3296ab712b 74
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_be04b879a75a03::t_356d3296ab712b 32-33
+app/Rules/Fqdn.php
+  s_be04b879a75a03::t_356d3296ab712b 14,33
+app/Models/Tag.php
+  s_be04b879a75a03::t_356d3296ab712b 83
+  s_be04b879a75a03::t_73bf8d860b51a2 133,137
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_be04b879a75a03::t_356d3296ab712b 43,47-53,55-60
+  s_be04b879a75a03::t_57a07fe14cc16c 11,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a941e7545b78935efaa80a4e0769c004d8633265",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

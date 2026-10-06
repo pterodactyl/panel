@@ -1,0 +1,70 @@
+app/Transformers/Api/Client/UserTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 35
+app/Transformers/Api/Admin/ServerDatabaseTransformer.php
+  s_be04b879a75a03::t_0623fb9c93c6dd 54
+  s_be04b879a75a03::t_9e31319e4b1a84 42,47-48
+app/Transformers/Api/Client/StatsTransformer.php
+  s_be04b879a75a03::t_b9420d40e9c1dc 18,24-25,27-32
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_9e31319e4b1a84 41
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 9,28,36
+app/Transformers/Api/Application/ServerVariableTransformer.php
+  s_be04b879a75a03::t_9e31319e4b1a84 13,39,41-42
+  s_be04b879a75a03::t_4ee4f09701978b 40
+app/Transformers/Api/Client/FileObjectTransformer.php
+  s_be04b879a75a03::t_b9420d40e9c1dc 14,20-28
+app/Transformers/Api/Client/DatabaseTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 47,52-53,67
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 90-93,135
+app/Transformers/Api/Admin/ServerVariableTransformer.php
+  s_be04b879a75a03::t_4ee4f09701978b 25
+  s_be04b879a75a03::t_9e31319e4b1a84 9,24,26-27
+phpstan.neon
+  s_be04b879a75a03::t_b9420d40e9c1dc 66-67
+app/Transformers/Api/Client/ServerTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 21,57,60,90,114,123,137,156-158,168
+app/Support/JsonValueGuard.php
+  s_be04b879a75a03::t_4ee4f09701978b 60-74
+app/Transformers/Api/Application/BaseTransformer.php
+  s_be04b879a75a03::t_9e31319e4b1a84 30,59
+  s_be04b879a75a03::t_940fbed7622139 16,53,117,119-122,127-129
+  s_be04b879a75a03::t_1763f8594d4889 130
+app/Models/User.php
+  s_be04b879a75a03::t_9e31319e4b1a84 59
+app/Repositories/Wings/DaemonFileRepository.php
+  s_be04b879a75a03::t_b9420d40e9c1dc 78-79,198-199
+app/Transformers/Api/Application/EggVariableTransformer.php
+  s_be04b879a75a03::t_4ee4f09701978b 27
+  s_be04b879a75a03::t_9e31319e4b1a84 9,24,26,28-29
+app/Transformers/Api/Admin/ApiKeyTransformer.php
+  s_be04b879a75a03::t_0623fb9c93c6dd 30-32,49
+  s_be04b879a75a03::t_9e31319e4b1a84 10,26-29,33-37
+app/Transformers/Api/Client/BaseClientTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 12,21,37
+app/Transformers/Api/Client/UserSSHKeyTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 27
+app/Repositories/Wings/DaemonServerRepository.php
+  s_be04b879a75a03::t_b9420d40e9c1dc 20-21
+app/Transformers/Api/Admin/UserTransformer.php
+  s_be04b879a75a03::t_0623fb9c93c6dd 46
+app/Transformers/Api/Client/ApiKeyTransformer.php
+  s_be04b879a75a03::t_940fbed7622139 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "59bd789b87ee7a61fb5590d79de1bf976ebbb466",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

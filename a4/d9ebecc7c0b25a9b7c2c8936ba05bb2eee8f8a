@@ -1,0 +1,32 @@
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_b53193f36b4d27 133,140,142,144
+  s_be04b879a75a03::t_a90765ecb72f4c 8,130,137
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_a90765ecb72f4c 7,121,128
+  s_be04b879a75a03::t_b53193f36b4d27 124,131,133,135
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_be04b879a75a03::t_6d5b591c131c10 80,86
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_be04b879a75a03::t_6a345bfa2ebb2b 91
+app/Models/Tag.php
+  s_be04b879a75a03::t_fc8f4560f7af34 143,150
+  s_be04b879a75a03::t_68300042c42d3f 145
+  s_be04b879a75a03::t_6d5b591c131c10 148
+  s_be04b879a75a03::t_68f0711fbfabe7 97-105,179-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a4d9ebecc7c0b25a9b7c2c8936ba05bb2eee8f8a",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

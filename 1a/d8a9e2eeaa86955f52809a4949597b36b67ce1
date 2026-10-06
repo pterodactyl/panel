@@ -1,0 +1,29 @@
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_731111b3bfaced::t_d099af14a27760 18,225
+  s_731111b3bfaced::t_6587635613fd0d 10-14,17,25-26,29-93,108-113,126-132,146-156,190-196
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_731111b3bfaced::t_46bace25858a4d 8-11,14,18-19,25-30
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_731111b3bfaced::t_ca85705073d15f 8-11,13,19-20,23-35,49-54
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_731111b3bfaced::t_99236b6554d182 6,8-11,13,17-18,21-52,56-64
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_731111b3bfaced::t_fba1678035ba87 11-14,19,26-27,30-54,69-74,103-110,135-141
+  s_731111b3bfaced::t_d099af14a27760 10,18,21,176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1ad8a9e2eeaa86955f52809a4949597b36b67ce1",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

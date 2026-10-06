@@ -1,0 +1,39 @@
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_1e4e38747bb289::t_5517da40437bf5 2,26,131,284
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_1e4e38747bb289::t_878704749bee7d 2,5,24,51
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_1e4e38747bb289::t_bf91ad8cb5f81f 10,14,18,29
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_1e4e38747bb289::t_8a96d2d939963c 2
+resources/scripts/components/dashboard/ssh/AccountSSHContainer.tsx
+  s_1e4e38747bb289::t_f4513bfd36df6f 8
+resources/scripts/components/dashboard/ssh/CreateSSHKeyForm.tsx
+  s_1e4e38747bb289::t_71e5a90bfa7f41 5
+resources/scripts/components/dashboard/ssh/DeleteSSHKeyButton.tsx
+  s_1e4e38747bb289::t_3979f950c08444 3
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_1e4e38747bb289::t_90e69737e15ea5 2,7
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_1e4e38747bb289::t_4cff65cb931821 2,13,18,40
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_ffcf8f568e1266 5,8,46,129
+resources/scripts/router/search.ts
+  s_1e4e38747bb289::t_17d74855d3e9af 28-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "524d2ee3ce5ea392d6820795dbd9ff9dd3f02420",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

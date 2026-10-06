@@ -1,0 +1,128 @@
+app/Models/Node.php
+  s_5eb93878083371::t_fdfd212f3f48b4 194-197
+app/Providers/AppServiceProvider.php
+  s_5eb93878083371::t_4e8f45aa1ff00e 98,100-105,110-117
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_5eb93878083371::t_b769116ba6542f 82-85
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_5eb93878083371::t_7e1797ee5388cf 35
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_5eb93878083371::t_054a6eb6114a49 22
+app/Services/Servers/StartupCommandService.php
+  s_5eb93878083371::t_7387df894ca3a4 24,28
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_5eb93878083371::t_129c65d74255f8 93-96
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_5eb93878083371::t_5d01bab67e5de2 107-110
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_5eb93878083371::t_5c10b4a98cf852 82,84
+app/Notifications/RemovedFromServer.php
+  s_5eb93878083371::t_a6f69726763256 16
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_5eb93878083371::t_387b2b9b3198d5 103
+app/Services/Eggs/EggConfigurationService.php
+  s_5eb93878083371::t_087d67bdbbb0ea 92-93,95,111,115,117-118
+  s_5eb93878083371::t_91d118f6f025bf 25,30-35,38
+  s_5eb93878083371::t_ed6af1d31cee7f 224-227,232,236-237,246
+app/Models/Database.php
+  s_5eb93878083371::t_86077af3a2f4ca 95
+app/Console/Commands/UpgradeCommand.php
+  s_5eb93878083371::t_5964f8517c43b5 72-73
+  s_5eb93878083371::t_d42192200730dc 55-56
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_5eb93878083371::t_6b1a553d509b54 41
+  s_5eb93878083371::t_07b67a89950ae1 51,55
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_5eb93878083371::t_7695ce6cc2dfab 112
+  s_5eb93878083371::t_4e844df9e10317 151
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_5eb93878083371::t_9f7a2465a99829 40
+app/Services/Backups/InitiateBackupService.php
+  s_5eb93878083371::t_e9e1dcf532642f 9
+  s_5eb93878083371::t_23d2294f950cd7 85-88
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_5eb93878083371::t_ab77143e46a0f2 40-41,46,49
+  s_5eb93878083371::t_dbe7bc2830547f 102-103,115-124,131-148
+  s_5eb93878083371::t_e394cef5d93c75 8,10,15,18
+  s_5eb93878083371::t_996f47d75e0fd1 149
+app/Services/Activity/ActivityLogService.php
+  s_5eb93878083371::t_c198a71dc68327 68,78
+  s_5eb93878083371::t_3b39b4d328e123 8
+  s_5eb93878083371::t_0a338c0c0462fb 69-72,74,79
+app/Notifications/AddedToServer.php
+  s_5eb93878083371::t_4a31ff1b267986 16
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_5eb93878083371::t_b3345e3555f475 86
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_5eb93878083371::t_85c31b8ad25f6f 75
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_5eb93878083371::t_d3d2156852ee21 63
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_5eb93878083371::t_739b420547bcf8 442-445
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_5eb93878083371::t_17c73d515012a0 72
+phpstan.neon
+  s_5eb93878083371::t_0f4a8907114096 7
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_5eb93878083371::t_a5e1e16abdf3b3 89
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_5eb93878083371::t_ad6f3c6c69e627 217
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_5eb93878083371::t_b80d5031a4d01f 251
+app/Http/Middleware/VerifyReCaptcha.php
+  s_5eb93878083371::t_632c48abfc66ab 73
+app/Services/Nodes/NodeJWTService.php
+  s_5eb93878083371::t_fa65ead75527cc 22
+  s_5eb93878083371::t_cd3367154f3217 85-99,103
+  s_5eb93878083371::t_e04af40c144546 37,48
+  s_5eb93878083371::t_e099694585db88 84
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_5eb93878083371::t_06c21a36ea4804 46
+app/Services/Databases/DatabasePasswordService.php
+  s_5eb93878083371::t_5afa651c3616fd 32
+app/Services/Servers/ServerCreationService.php
+  s_5eb93878083371::t_6aa9bc3225dba7 81
+  s_5eb93878083371::t_72a1a3250f202b 134
+app/Http/Controllers/Api/Client/ClientController.php
+  s_5eb93878083371::t_62e478bebf5f24 102
+app/Services/Eggs/EggParserService.php
+  s_5eb93878083371::t_6bf3293c439d19 30-34,36
+app/Services/Eggs/Sharing/EggExporterService.php
+  s_5eb93878083371::t_e5878b63477986 9,26
+  s_5eb93878083371::t_5abe5a36c6280c 65
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_5eb93878083371::t_77856a2399fe88 70
+app/Services/Acl/Api/AdminAcl.php
+  s_5eb93878083371::t_22911c6beb88fd 77-84
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_5eb93878083371::t_c135372d16ea92 44-47,55-57
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_5eb93878083371::t_766d130aed8b7a 66
+app/Services/Subusers/SubuserCreationService.php
+  s_5eb93878083371::t_efa5ddadfb122f 52-57
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_5eb93878083371::t_c00f0c5fb48571 59
+app/Console/Commands/InfoCommand.php
+  s_5eb93878083371::t_5f478658d9581d 37-38
+  s_5eb93878083371::t_b6ece70b84ffc1 78-81
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_5eb93878083371::t_75ffe149d85b7b 48,60-66
+app/Providers/HashidsServiceProvider.php
+  s_5eb93878083371::t_8c93cc039c07a8 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8569375284fb4bcec93dca0b8445775122071506",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+app/Exceptions/Http/HttpForbiddenException.php
+  s_be04b879a75a03::t_9e77a14fc74511 16
+app/Exceptions/Handler.php
+  s_be04b879a75a03::t_26606a048f8283 229-252
+  s_be04b879a75a03::t_396293e690f3e4 281
+  s_be04b879a75a03::t_9e77a14fc74511 27,123,127-130,132-136,139,165-166
+  s_be04b879a75a03::t_4a07401ed54d70 277-280,282,286-290
+  s_be04b879a75a03::t_1fe15f95f9769d 253-254
+app/Enum/ResourceLimit.php
+  s_be04b879a75a03::t_9e77a14fc74511 34-39
+app/Traits/Helpers/AvailableLanguages.php
+  s_be04b879a75a03::t_9e77a14fc74511 10,24-29,32-33,35
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_be04b879a75a03::t_9e77a14fc74511 120,125-130
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_9e77a14fc74511 35,57
+app/Console/Commands/Environment/Addons/RunHooksCommand.php
+  s_be04b879a75a03::t_9e77a14fc74511 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0f60d37a9f2b4a53803318f5a249d15eee38c23f",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

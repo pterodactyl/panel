@@ -1,0 +1,21 @@
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_d53164e4021536 294,296-302
+  s_731111b3bfaced::t_3cd7fa8f85925f 1,311-314,316-324,352-358
+  s_731111b3bfaced::t_fb2141591d6a46 305,307-309,327,331,335,339,348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "04c14b1c0678049fdb273a75bd525ed423ffdd08",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

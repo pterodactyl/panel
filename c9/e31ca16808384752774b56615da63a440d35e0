@@ -1,0 +1,37 @@
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_be04b879a75a03::t_aae8b0590de75a 15,43,63,71-73,89-105
+  s_be04b879a75a03::t_6e117aa66ad17f 49-58,106
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_be04b879a75a03::t_aae8b0590de75a 133,176
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_ea9796cb0c5ba8 33
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_be04b879a75a03::t_ea9796cb0c5ba8 62-67
+  s_be04b879a75a03::t_ad2858399be7e8 10,30
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_be04b879a75a03::t_815cc12127d24f 46-61
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_be04b879a75a03::t_6e117aa66ad17f 15
+  s_be04b879a75a03::t_d02c6e5f44f6b4 51,81
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_be04b879a75a03::t_815cc12127d24f 92-105,107
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_be04b879a75a03::t_d02c6e5f44f6b4 55,101,154
+  s_be04b879a75a03::t_6e117aa66ad17f 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c9e31ca16808384752774b56615da63a440d35e0",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

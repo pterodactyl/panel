@@ -1,0 +1,36 @@
+resources/scripts/api/activity.ts
+  s_731111b3bfaced::t_1b645c404579a9 1-31
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_74cf19821a2ac1 3598-3629,3838-3868
+  s_731111b3bfaced::t_58480ff4feafea 3869
+resources/scripts/api/account/activity/queries.ts
+  s_731111b3bfaced::t_53b0414e54e62c 19-24
+  s_731111b3bfaced::t_1b645c404579a9 4-14,16,25-31,37-44,46
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_731111b3bfaced::t_1b645c404579a9 41-54,74,78
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_74cf19821a2ac1 1078-1079,1081-1083,1087-1089,9386-9389,9402-9405,9740-9743,9756-9759
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_731111b3bfaced::t_1b645c404579a9 38-51,71,75
+resources/scripts/api/server/activity/queries.ts
+  s_731111b3bfaced::t_1b645c404579a9 4-13,15,17,26-33,40-47,51
+  s_731111b3bfaced::t_53b0414e54e62c 20-25
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_1b645c404579a9 115-152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f7d4b64e142c4385da2c77e633c7221589da3838",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_2e2c22f0a51ecb 56,66,77,126
+  s_731111b3bfaced::t_082ebd30b80159 1-55,57-65,67-76,78-125,127-145,147-163,165-181,183-185,187-215,217-252,254-276
+  s_731111b3bfaced::t_5bb7715ecc69de 146,164,182,186,216,253
+app/Extensions/Scribe/Strategies/InferPterodactylUrlParameters.php
+  s_731111b3bfaced::t_9462f2ee5380f0 1-31
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_731111b3bfaced::t_9462f2ee5380f0 1-12,18-34,40-41,44,51-55
+  s_731111b3bfaced::t_2cd55cb06b9f6c 13-17,35-39
+  s_731111b3bfaced::t_9d02daddda8a95 42-43,45-50
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_731111b3bfaced::t_5bb7715ecc69de 8-9
+  s_731111b3bfaced::t_9462f2ee5380f0 1-7,10-142
+config/scribe.php
+  s_731111b3bfaced::t_57b65475a11e7e 9-10,12,237,243-256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "bffd4fff36e4ae0999504bd630393d03531b2cdc",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

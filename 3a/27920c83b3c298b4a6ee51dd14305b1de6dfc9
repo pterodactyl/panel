@@ -1,0 +1,27 @@
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_731111b3bfaced::t_f874389702915d 1,59,71
+  s_731111b3bfaced::t_b7e145422890f6 54,60-70,72-75,241,263,285
+resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx
+  s_731111b3bfaced::t_896a6e25fcf357 5,33-35
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_731111b3bfaced::t_896a6e25fcf357 9-10,50-52,64
+resources/scripts/components/admin/databases/DatabaseHostRow.tsx
+  s_731111b3bfaced::t_896a6e25fcf357 9-14,50-52,64-66
+  s_731111b3bfaced::t_7b288ce107a5d2 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "3a27920c83b3c298b4a6ee51dd14305b1de6dfc9",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

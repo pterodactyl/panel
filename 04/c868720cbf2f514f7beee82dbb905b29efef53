@@ -1,0 +1,27 @@
+tools/phpstan/anti-slop/src/Support/AssertionForms.php
+  s_5eb93878083371::t_8142d5f14ec6da 1-166
+tools/phpstan/anti-slop/tests/Rules/data/require-safety-comment.php
+  s_5eb93878083371::t_8142d5f14ec6da 1-35
+tools/phpstan/anti-slop/tests/Rules/RequireSafetyCommentForAssertionRuleTest.php
+  s_5eb93878083371::t_8142d5f14ec6da 1-34
+tools/phpstan/anti-slop/src/Rules/RequireSafetyCommentForAssertionRule.php
+  s_5eb93878083371::t_8142d5f14ec6da 1-67
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_8142d5f14ec6da 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "04c868720cbf2f514f7beee82dbb905b29efef53",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

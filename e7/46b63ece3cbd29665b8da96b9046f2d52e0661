@@ -1,0 +1,94 @@
+vite.config.mts
+  s_7a2c691b568e73::t_45a910ce09b9f4 185
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_7a2c691b568e73::t_7bdb2ce7fac6e4 1-67
+app/Http/Controllers/Api/Admin/Extensions/ExtensionAdminSettingsController.php
+  s_7a2c691b568e73::t_480e7d9c268677 1-31
+app/Services/Helpers/AssetHashService.php
+  s_7a2c691b568e73::t_45a910ce09b9f4 30
+scripts/externalize-extension-api-runtime.mjs
+  s_7a2c691b568e73::t_5fe4f9b3b718de 1-46
+scripts/generate-extension-openapi.php
+  s_7a2c691b568e73::t_77d6c8da16d761 1-56,58-67
+  s_7a2c691b568e73::t_c4bffae2d6e354 57,68-112
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_7a2c691b568e73::t_56cad297683440 1236,1238-1244
+  s_7a2c691b568e73::t_fee221b9f3eea4 1250,1253-1270,1272
+  s_7a2c691b568e73::t_6fce9642383528 910-912
+  s_7a2c691b568e73::t_6cd3020c8dc798 1104,1109-1121
+  s_7a2c691b568e73::t_342dd8335d3572 1194-1212
+  s_7a2c691b568e73::t_0b31affd252e32 1214,1218,1249
+  s_7a2c691b568e73::t_9e4de4fc4c9b15 1122-1123
+  s_7a2c691b568e73::t_6a23c263e244f2 1251-1252
+resources/scripts/sdk/api.ts
+  s_7a2c691b568e73::t_602e8976422520 9,14,21-37,42,44-53,55-124,126-202,209-221,228-249,251-284,286-314,316-355
+  s_7a2c691b568e73::t_4df65269379f54 15-20,43,125,203-204,250,285,315
+  s_7a2c691b568e73::t_26975c32687e9d 38-41,205-208
+  s_7a2c691b568e73::t_7295fabdd8bb41 54
+  s_7a2c691b568e73::t_193748bb96b718 10,12,357-366,375-376
+  s_7a2c691b568e73::t_45a910ce09b9f4 1-8,11,13,223-227,356,367-374,377-404
+  s_7a2c691b568e73::t_b2c616b0282f40 222
+packages/sdk/types/index.d.ts
+  s_7a2c691b568e73::t_6f1d7c1f88c004 123-199,243-268,272
+  s_7a2c691b568e73::t_bde8c954f5fe1d 275-288
+scripts/generate-extension-api.mjs
+  s_7a2c691b568e73::t_a823f27d2b4004 1-36
+packages/sdk/types/api.d.ts
+  s_7a2c691b568e73::t_4d2e279501d6ba 6,220,228-230,237
+  s_7a2c691b568e73::t_59a6aaae3d2689 54
+  s_7a2c691b568e73::t_ee88e131f5abf5 184-191
+  s_7a2c691b568e73::t_6f1d7c1f88c004 1-5,7-8,10-19,133-135,139-159,168-179,192-195,199-211,221-227,231-233,238-293,297,301
+  s_7a2c691b568e73::t_b2c616b0282f40 132
+  s_7a2c691b568e73::t_bf79702c96bd47 43
+  s_7a2c691b568e73::t_79ef953caf9262 9,20-37,42,44-53,55-128,136-138
+  s_7a2c691b568e73::t_26975c32687e9d 38-41,129-131,160-167,180-183,196-198,212-219,234-236,294-296,298-300
+.gitignore
+  s_7a2c691b568e73::t_1f14bd3843a6d5 46-48
+packages/sdk/vite.mjs
+  s_7a2c691b568e73::t_a9a5e921533161 31
+  s_7a2c691b568e73::t_45a910ce09b9f4 21
+app/Extensions/ExtensionProvider.php
+  s_7a2c691b568e73::t_45a910ce09b9f4 63-76
+  s_7a2c691b568e73::t_ad6596fca2724b 77-95
+scripts/check-api-layer-native.php
+  s_7a2c691b568e73::t_f0bc192330c9bb 8-13,22-40,63-66,68-71,73-76,78-82,84-88,90-91,93-96,99-101,103-108
+app/Extensions/Scribe/Strategies/InferPterodactylUrlParameters.php
+  s_7a2c691b568e73::t_7930ef274c814e 17-24
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_7a2c691b568e73::t_dcfa1f61eb642a 30,37
+  s_7a2c691b568e73::t_40d61d10613264 1-29,31-36,38-56
+packages/sdk/package.json
+  s_7a2c691b568e73::t_45a910ce09b9f4 13-16,21
+app/Services/Extensions/ExtensionSettings.php
+  s_7a2c691b568e73::t_b832b74dc924b5 50-71
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_7a2c691b568e73::t_45a910ce09b9f4 56-75,150-153
+  s_7a2c691b568e73::t_653779bac85e07 76-98,154-159,171-186
+  s_7a2c691b568e73::t_f78eb2a4b91d4f 187-189
+  s_7a2c691b568e73::t_9afc5334d5677d 190-191
+app/Services/Extensions/Contracts/ManagesExtensionSettings.php
+  s_7a2c691b568e73::t_e102edfab81291 1-15
+resources/scripts/sdk/index.ts
+  s_7a2c691b568e73::t_8128d0814569d3 11,14,49,100-155
+  s_7a2c691b568e73::t_45a910ce09b9f4 31-36,50
+packages/sdk/api-runtime-stub.mjs
+  s_7a2c691b568e73::t_45a910ce09b9f4 1-8
+package.json
+  s_7a2c691b568e73::t_50da4135a8ba12 88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e746b63ece3cbd29665b8da96b9046f2d52e0661",
+  "prompts": {},
+  "sessions": {
+    "s_7a2c691b568e73": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3edc-26ed-7cf1-90ba-d87033ca382c",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

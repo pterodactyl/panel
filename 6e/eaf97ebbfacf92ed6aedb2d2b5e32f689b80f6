@@ -1,0 +1,31 @@
+resources/scripts/api/server/types.d.ts
+  s_731111b3bfaced::t_c5ef3d4cfce23f 1-2,11
+  s_731111b3bfaced::t_920c7bb220d0f9 12-23
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_731111b3bfaced::t_920c7bb220d0f9 4-5
+resources/scripts/api/account/servers/queries.ts
+  s_731111b3bfaced::t_920c7bb220d0f9 2-4,6-24,32-44,46-53,62-69,78-82,84-92,94-101
+  s_731111b3bfaced::t_45cdf80d5a9ef6 5
+  s_731111b3bfaced::t_d1e416b80e699b 109
+  s_731111b3bfaced::t_c5ef3d4cfce23f 83
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_c5ef3d4cfce23f 200-209
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_393b913facb5f7 1552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6eeaf97ebbfacf92ed6aedb2d2b5e32f689b80f6",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

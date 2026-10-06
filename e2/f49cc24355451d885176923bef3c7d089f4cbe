@@ -1,0 +1,31 @@
+tools/phpstan/anti-slop/tests/Rules/NoUnsafeDictionaryPropertyRuleTest.php
+  s_5eb93878083371::t_53306681187681 1-30
+tools/phpstan/anti-slop/tests/Rules/NoUnsafeDictionaryTypeRuleTest.php
+  s_5eb93878083371::t_53306681187681 1-41
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_53306681187681 1
+tools/phpstan/anti-slop/tests/Rules/data/no-unsafe-dictionary-property.php
+  s_5eb93878083371::t_53306681187681 1-28
+tools/phpstan/anti-slop/src/Rules/NoUnsafeDictionaryTypeRule.php
+  s_5eb93878083371::t_53306681187681 1-72
+tools/phpstan/anti-slop/src/Rules/NoUnsafeDictionaryPropertyRule.php
+  s_5eb93878083371::t_53306681187681 1-59
+tools/phpstan/anti-slop/tests/Rules/data/no-unsafe-dictionary-type.php
+  s_5eb93878083371::t_53306681187681 1-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e2f49cc24355451d885176923bef3c7d089f4cbe",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

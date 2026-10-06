@@ -1,0 +1,235 @@
+app/Http/Requests/Api/Client/Servers/Files/PullFileRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Admin/Nodes/Allocations/StoreAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Application/Servers/UpdateServerDetailsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 14
+app/Http/Requests/Api/Client/Servers/Subusers/StoreSubuserRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Remote/ReportBackupCompleteRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 12
+app/Http/Requests/Auth/LoginRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Models/Egg.php
+  s_be04b879a75a03::t_6b84a3c128b89f 83
+app/Http/Requests/Api/Application/Locations/StoreLocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Servers/StoreServerMountRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Admin/Users/UpdateUserRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+  s_be04b879a75a03::t_b049f36b23829d 20
+app/Http/Requests/Api/Application/Nodes/UpdateNodeRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 15
+  s_be04b879a75a03::t_497ced12d5fe05 16
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+  s_be04b879a75a03::t_6b84a3c128b89f 88-89
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Models/ActivityLog.php
+  s_be04b879a75a03::t_6b84a3c128b89f 79
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Mounts/UpdateMountRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+  s_be04b879a75a03::t_b049f36b23829d 20
+app/Http/Requests/Api/Application/Allocations/StoreAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 34
+app/Http/Requests/Api/Client/Servers/Files/ChmodFilesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Client/Servers/Startup/UpdateStartupVariableRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+phpstan.neon
+  s_be04b879a75a03::t_6b84a3c128b89f 10-12
+  s_be04b879a75a03::t_e9ebcc471d2a8c 8-9
+app/Http/Requests/Api/Admin/DatabaseHosts/StoreDatabaseHostRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 21
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Client/Servers/Schedules/TriggerScheduleRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 29
+app/Http/Requests/Api/Admin/Locations/UpdateLocationRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 20
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Remote/InstallationDataRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+  s_be04b879a75a03::t_b049f36b23829d 21
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 60
+app/Models/User.php
+  s_be04b879a75a03::t_6b84a3c128b89f 163
+app/Http/Requests/Api/Client/Servers/Files/CreateFolderRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Client/Servers/Backups/StoreBackupRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Client/Servers/Network/UpdateAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Client/Servers/SendCommandRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Admin/Servers/UpdateServerSuspensionRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Client/Account/UpdateEmailRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 35
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 24
+  s_be04b879a75a03::t_497ced12d5fe05 25
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Admin/Eggs/UpdateImportEggRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 16
+app/Http/Requests/Api/Application/Users/UpdateUserRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 14
+  s_be04b879a75a03::t_497ced12d5fe05 15
+app/Http/Requests/Api/Client/Servers/Settings/RenameServerRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 28
+app/Http/Requests/Api/Client/Servers/Files/CopyFileRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Client/Servers/Files/GetFileContentsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 25
+app/Http/Requests/Api/Client/Servers/Files/ListFilesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Eggs/ImportEggRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 25
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 28
+app/Http/Requests/Api/Client/Servers/Files/WriteFileContentRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 29
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 26
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Base/LocaleRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 12
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Settings/UpdateGeneralSettingsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Client/Servers/Backups/RestoreBackupRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Client/Servers/Files/RenameFileRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Client/Servers/Network/SetPrimaryAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 10
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 20
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Models/Model.php
+  s_be04b879a75a03::t_6b84a3c128b89f 21,35,39-41,51,63,117,119,121-123
+  s_be04b879a75a03::t_61e5827fe9be92 17,120
+app/Http/Requests/Api/Admin/Servers/UpdateServerDetailsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Auth/ResetPasswordRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Auth/LoginCheckpointRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 23
+app/Http/Requests/Api/Client/Servers/Schedules/StoreScheduleRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Admin/Locations/StoreLocationRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 21
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 15
+  s_be04b879a75a03::t_6b84a3c128b89f 106-107
+app/Http/Requests/Api/Client/Servers/Files/CompressFilesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Remote/AuthenticateWebsocketDetailsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Api/Application/Nodes/GetDeployableNodesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 10
+app/Http/Requests/Api/Admin/Settings/UpdateAdvancedSettingsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Models/Server.php
+  s_be04b879a75a03::t_6b84a3c128b89f 140
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 23
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Admin/Extensions/InstallExtensionRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Admin/Nodes/Allocations/BlockDeleteAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Mounts/StoreMountRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 21
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Nodes/Allocations/UpdateAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Nodes/UpdateNodeRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 21
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Settings/UpdateMailSettingsRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 14
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 28
+app/Http/Requests/Api/Client/Servers/Files/DecompressFilesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 24
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Client/Servers/Subusers/UpdateSubuserRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 17
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 18
+app/Http/Requests/Api/Remote/SftpAuthenticationFormRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 22
+app/Http/Requests/Api/Admin/Nodes/Allocations/DeleteAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 25
+app/Http/Requests/Api/Admin/DatabaseHosts/UpdateDatabaseHostRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+  s_be04b879a75a03::t_b049f36b23829d 20
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_be04b879a75a03::t_b049f36b23829d 22
+  s_be04b879a75a03::t_497ced12d5fe05 23
+app/Http/Requests/Api/Application/Servers/GetServersRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 10
+app/Http/Requests/Api/ApiRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 16
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 21
+app/Http/Requests/Api/Client/Servers/Files/DeleteFileRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 19
+app/Http/Requests/Api/Admin/Nodes/Allocations/BulkDeleteAllocationRequest.php
+  s_be04b879a75a03::t_497ced12d5fe05 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "bcf3cd61fa30c8ea639b72b486b8ed8adf2951fb",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

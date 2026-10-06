@@ -1,0 +1,30 @@
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_0717e852bcfa2c::t_244949ee2ea264 99-106
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_0717e852bcfa2c::t_244949ee2ea264 59-69
+app/Rules/UserEmail.php
+  s_0717e852bcfa2c::t_c49254fed99327 1-27
+app/Http/Requests/Api/Client/Servers/Subusers/StoreSubuserRequest.php
+  s_0717e852bcfa2c::t_c49254fed99327 8,23
+app/Validation/UserRules.php
+  s_0717e852bcfa2c::t_c49254fed99327 10,30
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_0717e852bcfa2c::t_c49254fed99327 47
+  s_0717e852bcfa2c::t_244949ee2ea264 42-46,48-49,54-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f28bf968ff08195fd44d2e19d9f60dff1b72561e",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

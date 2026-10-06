@@ -1,0 +1,28 @@
+tools/phpstan/anti-slop/src/Rules/NoWidenThenAssertRule.php
+  s_5eb93878083371::t_ca099021cc56c0 1-200
+tools/phpstan/anti-slop/src/Support/AssertionForms.php
+  s_5eb93878083371::t_55ec960c932367 106
+tools/phpstan/anti-slop/tests/Rules/NoWidenThenAssertRuleTest.php
+  s_5eb93878083371::t_ca099021cc56c0 1-27,30-32
+  s_5eb93878083371::t_55ec960c932367 28-29
+tools/phpstan/anti-slop/tests/Rules/data/no-widen-then-assert.php
+  s_5eb93878083371::t_ca099021cc56c0 1-56
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_55ec960c932367 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "518dd8e86c6141a1308a1e8c019e15c157e42ee2",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

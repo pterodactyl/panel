@@ -1,0 +1,39 @@
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_be04b879a75a03::t_58c184253acfd3 41,43
+app/Http/Controllers/Api/Remote/EggInstallController.php
+  s_be04b879a75a03::t_b9fb8c38418d6c 38
+app/Http/Controllers/Auth/ForgotPasswordController.php
+  s_be04b879a75a03::t_58c184253acfd3 62
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_be04b879a75a03::t_58c184253acfd3 70
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_be04b879a75a03::t_58c184253acfd3 91,94-96,104-106,129
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_be04b879a75a03::t_58c184253acfd3 129-134
+app/Http/Controllers/Auth/AbstractLoginController.php
+  s_be04b879a75a03::t_58c184253acfd3 40
+  s_be04b879a75a03::t_b9fb8c38418d6c 35,37,81
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_be04b879a75a03::t_58c184253acfd3 98-99
+  s_be04b879a75a03::t_b9fb8c38418d6c 8,95-97
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_be04b879a75a03::t_58c184253acfd3 81,92,105,122
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_be04b879a75a03::t_58c184253acfd3 19,39-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d69b0dce068e42599685b1b8fde8699b361faa43",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

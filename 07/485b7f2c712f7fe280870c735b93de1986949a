@@ -1,0 +1,41 @@
+app/Extensions/League/Fractal/Serializers/PterodactylSerializer.php
+  s_be04b879a75a03::t_ba5e369ff52789 14-15,28-29,61
+  s_be04b879a75a03::t_6a44fbc835a343 68,71
+  s_be04b879a75a03::t_873f099c2d5411 60,62,66
+  s_be04b879a75a03::t_2266f807837810 72
+app/Extensions/Lcobucci/JWT/Encoding/TimestampDates.php
+  s_be04b879a75a03::t_6a44fbc835a343 10,20-23,31-36
+app/Http/Requests/FrontendUserFormRequest.php
+  s_be04b879a75a03::t_6a44fbc835a343 8,13,29,33,36-38
+tests/Unit/Extensions/Lcobucci/JWT/Encoding/TimestampDatesTest.php
+  s_be04b879a75a03::t_e39d7f6f8684d7 1-2,4,8,11,13,26,30-31
+  s_be04b879a75a03::t_5625055fdbb7ff 3,5-7,10,12,14-25,27-29
+  s_be04b879a75a03::t_c85786699541b1 9
+tests/Unit/Http/Controllers/Base/LocaleControllerTest.php
+  s_be04b879a75a03::t_5625055fdbb7ff 3,5,7-9,11,13-19
+  s_be04b879a75a03::t_e39d7f6f8684d7 1-2,4,6,10,12,20-21
+app/Http/Controllers/Base/LocaleController.php
+  s_be04b879a75a03::t_6a44fbc835a343 12-13,31-33,49-50,58-61
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_6a44fbc835a343 32
+phpstan.neon
+  s_be04b879a75a03::t_6a44fbc835a343 40-41
+  s_be04b879a75a03::t_ba5e369ff52789 56
+  s_be04b879a75a03::t_873f099c2d5411 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "07485b7f2c712f7fe280870c735b93de1986949a",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

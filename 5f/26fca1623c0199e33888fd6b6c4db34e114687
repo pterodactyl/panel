@@ -1,0 +1,21 @@
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_0717e852bcfa2c::t_6b654b4d36472c 111-118,175,180-183,196-199
+resources/scripts/components/dashboard/ServerRow.spec.tsx
+  s_0717e852bcfa2c::t_91b1a95b76abef 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5f26fca1623c0199e33888fd6b6c4db34e114687",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

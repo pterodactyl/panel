@@ -1,0 +1,50 @@
+resources/scripts/api/admin/nests/importEgg.ts
+  s_731111b3bfaced::t_561821d14116cd 7-9,11,13-17
+app/Http/Controllers/Api/Admin/Nests/EggController.php
+  s_731111b3bfaced::t_196999d499358b 49-57,60-63
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_f7aee247be27dd 183
+app/Http/Controllers/Api/Admin/Nests/EggVariableController.php
+  s_731111b3bfaced::t_196999d499358b 71
+resources/scripts/api/admin/eggs/getEgg.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,39
+resources/scripts/api/admin/eggs/updateEggScript.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,12-18
+resources/scripts/api/admin/eggs/getEggs.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,11
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_561821d14116cd 23-24
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_d313b97292f365 187-195,200-203,4916,4920
+  s_731111b3bfaced::t_96fb5c3e5d6b2f 205,213,761,769
+resources/scripts/api/admin/eggs/updateEggFromFile.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 18
+  s_731111b3bfaced::t_561821d14116cd 14-17
+resources/scripts/api/admin/eggs/getEggVariables.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,17
+resources/scripts/api/admin/eggs/createEgg.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,24
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_ee65ea7ceac2f0 9,12-13,15-17,19-51,78-89,91-94,96,102-103,108,112,126,138,150,154-162,167-168,173-174,182,186-195,197,211,215-224,226,240,244-253,255,276,303,307-313,333,337-346,348,364,368-377,379,393,397-403,405
+  s_731111b3bfaced::t_78fe7bdacc2125 90
+  s_731111b3bfaced::t_112822a8b00572 113-115
+  s_731111b3bfaced::t_f09a3ca0341c9b 119-125,131-137,143-149
+resources/scripts/api/admin/eggs/createEggVariable.ts
+  s_731111b3bfaced::t_e2e428d89e5e68 1,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "4d23bcae9b25e07ccf5234fa252458810083367b",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

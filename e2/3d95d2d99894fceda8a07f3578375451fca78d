@@ -1,0 +1,21 @@
+app/Services/Tags/TagBackfiller.php
+  s_be04b879a75a03::t_9af598ec3f6512 10,69-83,106,115,128,171-176
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_9af598ec3f6512 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e23d95d2d99894fceda8a07f3578375451fca78d",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

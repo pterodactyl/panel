@@ -1,0 +1,44 @@
+tools/phpstan/anti-slop/tests/Rules/data/no-mixed-parameters.php
+  s_5eb93878083371::t_9426e9e66aca91 1-47
+tools/phpstan/anti-slop/phpunit.xml
+  s_5eb93878083371::t_947c95c5e6f2c0 1-13
+tools/phpstan/anti-slop/src/Support/ResolvedSignature.php
+  s_5eb93878083371::t_ee681bd1eaf287 1-24
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_fe845040dc463d 1
+composer.json
+  s_5eb93878083371::t_96b88cc4c52898 73-75
+  s_5eb93878083371::t_7ce12024809902 57,120-122,126-135
+  s_5eb93878083371::t_fe845040dc463d 76-79
+  s_5eb93878083371::t_92d5bc9fa1c01b 58,60-62
+tools/phpstan/anti-slop/src/Support/ResolvedParameter.php
+  s_5eb93878083371::t_8aafa3cd6b18da 1-21
+tools/phpstan/anti-slop/src/Support/TypeClassifier.php
+  s_5eb93878083371::t_66e1577fa1469a 1-148
+tools/phpstan/anti-slop/src/Rules/NoMixedParametersRule.php
+  s_5eb93878083371::t_ae8dbe7cee081f 1-59
+tools/phpstan/anti-slop/src/Support/SignatureResolver.php
+  s_5eb93878083371::t_ed5a4b7c76772a 53,72
+  s_5eb93878083371::t_fe845040dc463d 66
+  s_5eb93878083371::t_3ee43443a26bed 1-52,54-65,67-71,73-127
+tools/phpstan/anti-slop/tests/Rules/NoMixedParametersRuleTest.php
+  s_5eb93878083371::t_6e24f323131c91 1-40
+composer.lock
+  s_5eb93878083371::t_e0f863ca15f1bf 7,9373-9420,9485-9536,11011-11077,11211-11267,11317-11382
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5b9f60ee83ff70da6e8b3dd09786e5a63f72497d",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+app/Rules/ValidRuleSet.php
+  s_53916ba32af787::t_c2e381ee68890d 14
+app/Models/Allocation.php
+  s_53916ba32af787::t_c2e381ee68890d 200
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_53916ba32af787::t_c2e381ee68890d 59
+app/Models/Backup.php
+  s_53916ba32af787::t_c2e381ee68890d 81
+app/Services/Eggs/EggCreationService.php
+  s_53916ba32af787::t_c2e381ee68890d 20
+app/Models/Node.php
+  s_53916ba32af787::t_c2e381ee68890d 134
+app/Models/Location.php
+  s_53916ba32af787::t_c2e381ee68890d 45,47
+app/Models/Egg.php
+  s_53916ba32af787::t_c2e381ee68890d 339
+app/Models/Server.php
+  s_53916ba32af787::t_c2e381ee68890d 194,196
+app/Services/Nodes/NodeCreationService.php
+  s_53916ba32af787::t_c2e381ee68890d 19
+app/Models/Mount.php
+  s_53916ba32af787::t_c2e381ee68890d 90,92
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_53916ba32af787::t_c2e381ee68890d 49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7c0a96a6363684d0b8555e727dd9adfdc8bc7cac",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

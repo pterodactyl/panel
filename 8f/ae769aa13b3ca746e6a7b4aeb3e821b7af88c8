@@ -1,0 +1,22 @@
+app/Http/Controllers/Api/Admin/Nests/ReorderVariablesController.php
+  s_731111b3bfaced::t_de619da30abae5 8-12,14,17,20-21,27-34
+app/Http/Controllers/Api/Admin/Nests/EggVariableController.php
+  s_731111b3bfaced::t_ccfb9a09057055 19
+  s_731111b3bfaced::t_55c7542d98b6d9 11-16,25,31-32,35-70,85-91,104-116,136-149,172-178,197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "8fae769aa13b3ca746e6a7b4aeb3e821b7af88c8",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+resources/scripts/api/server/files/queries.ts
+  s_731111b3bfaced::t_82f7523c003b0f 40-41,58-87,89-119
+  s_731111b3bfaced::t_7b3c6d596cdea9 238-240,262-264,302-305,308,346-348,359-363,391-394,409-412
+  s_731111b3bfaced::t_d9240537048f35 370,374-377,388-390,395,406-408,413
+  s_731111b3bfaced::t_d133936fdcf510 235-237
+  s_731111b3bfaced::t_e75908daeff1e5 299-301,306-307,332,343-345,358,364
+  s_731111b3bfaced::t_8bef8407e63d14 350
+  s_731111b3bfaced::t_398d099e7957ea 88,242-248,269-286,309-330,351-354
+  s_731111b3bfaced::t_97d7523cd37470 259-261,266-267,288
+  s_731111b3bfaced::t_ba75e9522a02c7 120
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_731111b3bfaced::t_45fb6e804ce49f 12,27
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_731111b3bfaced::t_8144cb90c2fc3e 10,31
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_731111b3bfaced::t_fa1356a545f8e3 9,28,39
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_731111b3bfaced::t_d4e5116714e1a4 8,29
+resources/scripts/components/server/files/useFileActions.tsx
+  s_731111b3bfaced::t_9d56617213e2e0 12-15,38,44,51,73,82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "403520c8a760ba1f8af0d4ceacf424a0bb68829c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

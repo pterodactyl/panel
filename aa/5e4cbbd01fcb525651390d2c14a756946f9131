@@ -1,0 +1,29 @@
+resources/scripts/api/account/servers/queries.ts
+  s_731111b3bfaced::t_fac84c56f2235e 16,22
+  s_731111b3bfaced::t_37cf094b64d71a 42,57,77
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_731111b3bfaced::t_147a7f9023f037 51,78
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_731111b3bfaced::t_c52f463ed0e5e0 5,20
+  s_731111b3bfaced::t_0135836cf359e1 21-24,28,31-35,41-51,56,63,71-72,74,86,90,93,96,98,100,114,123,132,144
+  s_731111b3bfaced::t_15629de1d9b794 36-38
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_731111b3bfaced::t_af78943f605a56 39-40,70,72-77,79,89,93,95,99,104
+  s_731111b3bfaced::t_c507ed38ff96ad 80-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "aa5e4cbbd01fcb525651390d2c14a756946f9131",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

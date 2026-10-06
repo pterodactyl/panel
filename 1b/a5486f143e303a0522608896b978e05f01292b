@@ -1,0 +1,158 @@
+app/Models/Egg.php
+  s_3b64ebd9dc4ce1::t_7e09604262dee3 11
+  s_3b64ebd9dc4ce1::t_2c7d454822460d 286-306
+  s_3b64ebd9dc4ce1::t_8299b6c02ee07b 131-132,285
+app/Models/Node.php
+  s_3b64ebd9dc4ce1::t_3f4c096b30d06b 14
+  s_3b64ebd9dc4ce1::t_bee650181d3812 245-298
+app/Providers/AppServiceProvider.php
+  s_3b64ebd9dc4ce1::t_b9cabef6ca5732 55
+app/Models/Server.php
+  s_3b64ebd9dc4ce1::t_f59024f75727a7 12
+  s_3b64ebd9dc4ce1::t_8205c6e6537a1e 303,308-317,319,321,334-352,354
+  s_3b64ebd9dc4ce1::t_0610bad088b4f1 121,304-307,353
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_3b64ebd9dc4ce1::t_97cea0008d534b 7
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_3b64ebd9dc4ce1::t_cf69723eef1c8c 7
+app/Enum/EggSpecificTags.php
+  s_3b64ebd9dc4ce1::t_a9cea9614e945f 1-125
+app/Exceptions/DisplayException.php
+  s_3b64ebd9dc4ce1::t_cc48821342edeb 12
+app/Helpers/Utilities.php
+  s_3b64ebd9dc4ce1::t_e7aa3e830e78ac 8
+app/Http/Controllers/Admin/ApiController.php
+  s_3b64ebd9dc4ce1::t_134eb07fb725d0 15
+app/Http/Controllers/Admin/DatabaseController.php
+  s_3b64ebd9dc4ce1::t_4942308cc7e9aa 18
+app/Http/Controllers/Admin/LocationController.php
+  s_3b64ebd9dc4ce1::t_e22bded737cb50 17
+app/Http/Controllers/Admin/MountController.php
+  s_3b64ebd9dc4ce1::t_a62e236caa9af6 19
+app/Http/Controllers/Admin/Nests/EggController.php
+  s_3b64ebd9dc4ce1::t_fea3ffbe81eaad 21
+app/Http/Controllers/Admin/Nests/EggScriptController.php
+  s_3b64ebd9dc4ce1::t_2d9a0a0756b3bc 16
+app/Http/Controllers/Admin/Nests/EggShareController.php
+  s_3b64ebd9dc4ce1::t_cf18efcbd79cb1 17
+app/Http/Controllers/Admin/Nests/EggVariableController.php
+  s_3b64ebd9dc4ce1::t_5063c7c748daf7 21
+app/Http/Controllers/Admin/Nests/NestController.php
+  s_3b64ebd9dc4ce1::t_2e145b81120c6a 17
+app/Http/Controllers/Admin/NodesController.php
+  s_3b64ebd9dc4ce1::t_9134cda6720b7f 35
+app/Http/Controllers/Admin/Servers/CreateServerController.php
+  s_3b64ebd9dc4ce1::t_eaa1336994e406 20
+app/Http/Controllers/Admin/Servers/ServerTransferController.php
+  s_3b64ebd9dc4ce1::t_d7b4f9cb3d5635 17
+app/Http/Controllers/Admin/ServersController.php
+  s_3b64ebd9dc4ce1::t_8fe5fe141dd3e4 36
+app/Http/Controllers/Admin/Settings/AdvancedController.php
+  s_3b64ebd9dc4ce1::t_aebaa358ecca70 14
+app/Http/Controllers/Admin/Settings/IndexController.php
+  s_3b64ebd9dc4ce1::t_c0c2d13c06c10e 14
+app/Http/Controllers/Admin/Settings/MailController.php
+  s_3b64ebd9dc4ce1::t_dfa71ac186c6e4 10
+app/Http/Controllers/Admin/UserController.php
+  s_3b64ebd9dc4ce1::t_2dde33299c4358 23
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_3b64ebd9dc4ce1::t_e3f058d5d6be2a 9
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_3b64ebd9dc4ce1::t_13504d2605e601 8
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_3b64ebd9dc4ce1::t_c74b7dc07c8455 8
+app/Http/Middleware/VerifyReCaptcha.php
+  s_3b64ebd9dc4ce1::t_43d5273955b3dc 10
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_3b64ebd9dc4ce1::t_a442770b3db3b3 10,16-17,61-65,105-106,145
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_3b64ebd9dc4ce1::t_e0224625f487c5 9,16-17,67-71,117-118,159
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_3b64ebd9dc4ce1::t_24a83be4467f49 1-106
+app/Models/Objects/DeploymentObject.php
+  s_3b64ebd9dc4ce1::t_d15ea004995d4e 13-18,54-71
+app/Models/Tag.php
+  s_3b64ebd9dc4ce1::t_d240ebc070380d 1-155
+app/Providers/SettingsServiceProvider.php
+  s_3b64ebd9dc4ce1::t_9a0433c8830365 9
+app/Rules/ExistingTag.php
+  s_3b64ebd9dc4ce1::t_a314a8e4662bef 1-28
+app/Rules/TagSlug.php
+  s_3b64ebd9dc4ce1::t_07c6adcc92be00 1-49
+app/Services/Allocations/AssignmentService.php
+  s_3b64ebd9dc4ce1::t_a26b30d18f4a2b 6
+app/Services/Api/KeyCreationService.php
+  s_3b64ebd9dc4ce1::t_45e8955ad639e4 6
+app/Services/Databases/Hosts/HostCreationService.php
+  s_3b64ebd9dc4ce1::t_2ee3fb21a6721a 8
+app/Services/Databases/Hosts/HostUpdateService.php
+  s_3b64ebd9dc4ce1::t_b91f6ec0da07f5 8
+app/Services/Deployment/FindViableNodesService.php
+  s_3b64ebd9dc4ce1::t_9f7de374ee51b8 19-29,69-95,133-140
+app/Services/Deployment/NodeTagGate.php
+  s_3b64ebd9dc4ce1::t_77c4f876de1e3d 1-94
+app/Services/Eggs/EggCreationService.php
+  s_3b64ebd9dc4ce1::t_f1c974e5be32a9 6
+app/Services/Eggs/Variables/VariableCreationService.php
+  s_3b64ebd9dc4ce1::t_5408d1cab33fee 6
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_3b64ebd9dc4ce1::t_00efe150299627 6
+app/Services/Nests/NestCreationService.php
+  s_3b64ebd9dc4ce1::t_0f0cd0376e056e 6
+app/Services/Servers/ServerCreationService.php
+  s_3b64ebd9dc4ce1::t_cdf280206c082b 77-78,123-126,131-132
+app/Services/Servers/StartupModificationService.php
+  s_3b64ebd9dc4ce1::t_2a3414ad8be78d 74
+app/Services/Servers/VariableValidatorService.php
+  s_3b64ebd9dc4ce1::t_cece0ff08a5e25 6
+app/Services/Tags/TagBackfiller.php
+  s_3b64ebd9dc4ce1::t_d279e84626b55f 1-221
+app/Services/Tags/TagResolutionService.php
+  s_3b64ebd9dc4ce1::t_0faeb1a36fd2b1 1-55
+app/Services/Users/UserCreationService.php
+  s_3b64ebd9dc4ce1::t_ac1199a09a5bda 8
+app/Services/Users/UserUpdateService.php
+  s_3b64ebd9dc4ce1::t_d3de412053d6d4 6
+app/Traits/Services/ValidatesValidationRules.php
+  s_3b64ebd9dc4ce1::t_2bccfd08f97a35 6
+database/Factories/TagFactory.php
+  s_3b64ebd9dc4ce1::t_9cf68499b28a2b 1-46
+database/Seeders/NestSeeder.php
+  s_3b64ebd9dc4ce1::t_c39a528ac1b395 6
+database/migrations/2026_08_20_000001_create_tags_tables.php
+  s_3b64ebd9dc4ce1::t_674bf7f406a4eb 1-71
+database/migrations/2026_08_20_000002_backfill_tags_from_nests.php
+  s_3b64ebd9dc4ce1::t_f4aa4da698546e 1-31
+database/migrations/2026_08_20_000003_make_eggs_nest_id_nullable.php
+  s_3b64ebd9dc4ce1::t_fac3b40d530b41 1-30
+database/migrations/2026_08_20_000004_drop_nest_id_from_servers_table.php
+  s_3b64ebd9dc4ce1::t_ba917ea84a9971 1-32
+database/migrations/old/2017_09_13_211810_UpdateOldPermissionsToPointToNewScheduleSystem.php
+  s_3b64ebd9dc4ce1::t_6ace683bc3dfbc 4
+database/migrations/old/2017_09_23_173628_RemoveDaemonSecretFromServersTable.php
+  s_3b64ebd9dc4ce1::t_114fab43f29022 8
+database/migrations/old/2017_09_23_185022_RemoveDaemonSecretFromSubusersTable.php
+  s_3b64ebd9dc4ce1::t_6c00bdd8d5d4fb 8
+database/migrations/old/2017_10_02_202007_ChangeToABetterUniqueServiceConfiguration.php
+  s_3b64ebd9dc4ce1::t_2e45c0b24a3ca4 7
+tests/Unit/Enum/EggSpecificTagsTest.php
+  s_3b64ebd9dc4ce1::t_ebe18f427a5190 1-74
+tests/Unit/Services/Deployment/NodeTagGateTest.php
+  s_3b64ebd9dc4ce1::t_c290df7911efc9 1-95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1ba5486f143e303a0522608896b978e05f01292b",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

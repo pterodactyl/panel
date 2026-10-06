@@ -1,0 +1,112 @@
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_6319375f0de147 37-38
+app/Contracts/Repository/SettingsRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 13
+app/Contracts/Repository/ScheduleRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 11
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_be7d5b43eacc89 11,86,92,115
+app/Contracts/Repository/TaskRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+app/Data/ValidatedEggVariable.php
+  s_be04b879a75a03::t_4047f8e115a8f5 1-2,5-6,8,14
+  s_be04b879a75a03::t_78282e7dde1a1f 3-4,7,9-13
+app/Services/Deployment/FindViableNodesService.php
+  s_be04b879a75a03::t_6319375f0de147 19,44-45,49,54,56,59
+  s_be04b879a75a03::t_be7d5b43eacc89 128
+  s_be04b879a75a03::t_7f935d9cb191d6 51,91,105
+  s_be04b879a75a03::t_82e235c7ad7e99 55
+app/Contracts/Repository/SubuserRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+app/Contracts/Repository/ServerRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 12
+tests/Unit/ServerCreationDataTest.php
+  s_be04b879a75a03::t_c6d933ff8bb0d9 3,5,7-11,13-52,54-73
+  s_be04b879a75a03::t_b8de6d7e8654eb 1-2,4,6,12,53,74-75
+app/Contracts/Repository/NodeRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_be7d5b43eacc89 10,81,87,110
+app/Contracts/Repository/PermissionRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 7-9
+app/Contracts/Repository/SessionRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+app/Contracts/Repository/ServerVariableRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 7-9
+app/Contracts/Repository/DatabaseRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 11
+app/Contracts/Repository/ApiPermissionRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 7-9
+app/Contracts/Repository/EggRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 11
+app/Contracts/Repository/RepositoryInterface.php
+  s_be04b879a75a03::t_cda57df3771286 23,30,36,93,103,111,170,177
+  s_be04b879a75a03::t_b40ee69dc1b448 14-17,57-58,64-65,72-76,84,94,140,161
+  s_be04b879a75a03::t_507f0ec5932843 22,83,102,110,120,132,139,151-152,160,185,192
+app/Contracts/Repository/LocationRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 11
+app/Contracts/Repository/DatabaseHostRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+phpstan.neon
+  s_be04b879a75a03::t_cda57df3771286 26
+  s_be04b879a75a03::t_507f0ec5932843 27-28
+  s_be04b879a75a03::t_b9d2699c098107 29
+app/Contracts/Repository/AllocationRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 9
+  s_be04b879a75a03::t_3a340df1c0ca80 23-24
+app/Data/ServerCreationData.php
+  s_be04b879a75a03::t_b9d2699c098107 3-4,6-7,9,11-73,75-121,123-124,126-144,146
+  s_be04b879a75a03::t_82e235c7ad7e99 74
+  s_be04b879a75a03::t_de1228f4d061cc 1-2,5,8,10,122,125,145,147-148
+app/Services/Servers/VariableValidatorService.php
+  s_be04b879a75a03::t_78282e7dde1a1f 11,28-29,57-61
+app/Models/Objects/DeploymentObject.php
+  s_be04b879a75a03::t_7f935d9cb191d6 31,84,92
+  s_be04b879a75a03::t_6319375f0de147 15,23,48,56,66,74
+app/Contracts/Repository/EggVariableRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 10
+app/Services/Deployment/AllocationSelectionService.php
+  s_be04b879a75a03::t_8ad7f0ffa3a650 64
+  s_be04b879a75a03::t_82e235c7ad7e99 72,74,80,86
+  s_be04b879a75a03::t_3a340df1c0ca80 17,24,49,63,75,87
+app/Services/Servers/ServerCreationService.php
+  s_be04b879a75a03::t_82e235c7ad7e99 136,139-140
+  s_be04b879a75a03::t_bfd8b4204ebd30 175,203-209
+  s_be04b879a75a03::t_9e288cbee43d94 13,56,67-68
+  s_be04b879a75a03::t_78282e7dde1a1f 14,221,225
+  s_be04b879a75a03::t_7f935d9cb191d6 145-149,151
+  s_be04b879a75a03::t_be7d5b43eacc89 44,126,159,199
+  s_be04b879a75a03::t_8ad7f0ffa3a650 12
+app/Contracts/Repository/ApiKeyRepositoryInterface.php
+  s_be04b879a75a03::t_eaf22d031f3781 11
+.ai/rules/repository.md
+  s_421ae2f039e76e::t_c9957a1c192ed0 1-9
+.ai/rules/index.md
+  s_be04b879a75a03::t_fc82f32fae8c90 12,15
+.ai/rules/servers.md
+  s_be04b879a75a03::t_727ff2e501f0a5 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9280fb66b5a0bd8ed185d974acad5fb6143900a0",
+  "prompts": {},
+  "sessions": {
+    "s_421ae2f039e76e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4415058-582a-4592-8c64-04fcf1fb7246",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

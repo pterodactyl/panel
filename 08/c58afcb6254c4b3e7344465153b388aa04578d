@@ -1,0 +1,27 @@
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_be04b879a75a03::t_2f7b95a33d14bd 61,69
+  s_be04b879a75a03::t_1d3b30b5897776 25
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_be04b879a75a03::t_2f7b95a33d14bd 37,39-42,44
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_be04b879a75a03::t_2f7b95a33d14bd 26,111-112
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_be04b879a75a03::t_2f7b95a33d14bd 45,47-53,56-68,70-71
+  s_be04b879a75a03::t_1d3b30b5897776 54-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "08c58afcb6254c4b3e7344465153b388aa04578d",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

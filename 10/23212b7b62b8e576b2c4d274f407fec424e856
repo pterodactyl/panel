@@ -1,0 +1,22 @@
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_0717e852bcfa2c::t_2187cead767a5e 75,77-80,82-86
+  s_0717e852bcfa2c::t_8d4aa852ad0560 81
+app/Actions/Backups/RestoreBackup.php
+  s_0717e852bcfa2c::t_36114d26451831 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1023212b7b62b8e576b2c4d274f407fec424e856",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_731111b3bfaced::t_01153290e2567c 3
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 4
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_731111b3bfaced::t_01153290e2567c 6-8
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 3
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_959f0fd2d010e2 12
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_6260eab260b57f 73-173
+  s_731111b3bfaced::t_e3805d44a12b96 340-365
+  s_731111b3bfaced::t_e53c0dec9a1779 14,40-42,45,55-56
+  s_731111b3bfaced::t_7f5848d0de6ebd 182-186,206-271
+  s_731111b3bfaced::t_7c7235209ed693 272
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_731111b3bfaced::t_01153290e2567c 2-7
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 4
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 3
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 4
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_01153290e2567c 7
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_731111b3bfaced::t_01153290e2567c 5
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 8-14
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_959f0fd2d010e2 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "a145bd1adc472efff9bdb76395d29c190ba863cb",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

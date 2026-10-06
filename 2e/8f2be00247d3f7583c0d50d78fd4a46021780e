@@ -1,0 +1,351 @@
+app/Helpers/Utilities.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 19
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Repositories/Wings/DaemonRepository.php
+  s_5abe510b694a54::t_f98da5449d6333 48,52,56,62-79
+app/Http/Requests/Admin/Egg/EggFormRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 46-47
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Repositories/Wings/DaemonFileRepository.php
+  s_5abe510b694a54::t_444f454d0e6fd9 29,33,58,62,80,84,103,107,127,131,151,155,174,178,198,202,227,231,254,258,278,290
+app/Traits/Services/ValidatesValidationRules.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 27
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Http/Requests/Api/ApiRequest.php
+  s_5abe510b694a54::t_5c15d8a66eb8c2 42-47
+  s_5abe510b694a54::t_48f05e778f2566 41
+database/migrations/old/2017_09_23_173628_RemoveDaemonSecretFromServersTable.php
+  s_5abe510b694a54::t_0afface4756c82 3
+  s_5abe510b694a54::t_3db8c0ae8293c9 25
+app/Services/Helpers/AssetHashService.php
+  s_1e681614e629f8::t_dd59aaa05250fa 70-103,106-107,112-113
+  s_5abe510b694a54::t_3db8c0ae8293c9 61
+app/Facades/Alert.php
+  s_5abe510b694a54::t_01f68d04e18eb7 1-17
+app/Services/Databases/DatabaseManagementService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 92
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Repositories/Eloquent/EloquentRepository.php
+  s_5abe510b694a54::t_8ea86ac73bed66 11,269
+  s_5abe510b694a54::t_4609319d19dfe6 195-197,211-216
+database/Seeders/EggSeeder.php
+  s_5abe510b694a54::t_8ea86ac73bed66 7,58
+app/Services/Eggs/EggCreationService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 29,32-33
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Transformers/Api/Admin/BaseAdminTransformer.php
+  s_5abe510b694a54::t_6ae4ddf65799eb 5,13-15
+app/Services/Users/UserCreationService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 42
+resources/views/layouts/admin.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 78,83,89,94,99,104,109,115,120
+database/migrations/old/2017_09_23_185022_RemoveDaemonSecretFromSubusersTable.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 24
+  s_5abe510b694a54::t_0afface4756c82 3
+app/Services/Databases/DeployServerDatabaseService.php
+  s_5abe510b694a54::t_ba8ee6959d6edd 26-32
+tests/Assertions/AssertsActivityLogged.php
+  s_5abe510b694a54::t_6ae4ddf65799eb 38
+database/migrations/old/2017_11_19_122708_MigratePubPrivFormatToSingleKey.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 23
+app/Repositories/Wings/DaemonBackupRepository.php
+  s_5abe510b694a54::t_f98da5449d6333 35,39,60,64,85,89
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_5abe510b694a54::t_24e4b89ab7c9b0 50
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 51-53
+resources/scripts/index.tsx
+  s_1e681614e629f8::t_2daac93896ed52 4-5
+app/Services/Api/KeyCreationService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 43
+app/Services/Eggs/Variables/VariableCreationService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 41-42,49
+app/Http/Controllers/Api/Admin/Nests/ExportEggController.php
+  s_5abe510b694a54::t_8ea86ac73bed66 7,55
+app/Services/Allocations/AssignmentService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_e0be70a30143f3 68,73
+  s_5abe510b694a54::t_3db8c0ae8293c9 89,102
+app/Facades/JavaScript.php
+  s_5abe510b694a54::t_01f68d04e18eb7 1-17
+app/Console/Commands/User/DeleteUserCommand.php
+  s_5abe510b694a54::t_4609319d19dfe6 26-28
+app/Extensions/Backups/BackupManager.php
+  s_5abe510b694a54::t_4609319d19dfe6 84-89
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_5abe510b694a54::t_5c15d8a66eb8c2 84-89
+  s_5abe510b694a54::t_48f05e778f2566 83
+app/Services/Deployment/AllocationSelectionService.php
+  s_5abe510b694a54::t_e0be70a30143f3 58,64
+app/Services/Backups/InitiateBackupService.php
+  s_5abe510b694a54::t_48f05e778f2566 47
+  s_5abe510b694a54::t_5c15d8a66eb8c2 53-55
+app/Http/Controllers/Admin/Nests/EggShareController.php
+  s_5abe510b694a54::t_8ea86ac73bed66 6-7,37
+app/Services/Users/UserUpdateService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 27
+app/Transformers/Api/Application/NodeTransformer.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 39
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_5abe510b694a54::t_5c15d8a66eb8c2 67-69
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 40-41
+database/migrations/old/2017_09_13_211810_UpdateOldPermissionsToPointToNewScheduleSystem.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 17,35
+  s_5abe510b694a54::t_0afface4756c82 3
+resources/views/admin/mounts/view.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 9
+database/migrations/old/2017_10_02_202007_ChangeToABetterUniqueServiceConfiguration.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 55
+  s_5abe510b694a54::t_0afface4756c82 3
+app/Services/Eggs/EggUpdateService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 28,31
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Http/Controllers/Api/Application/ApplicationApiController.php
+  s_5abe510b694a54::t_24e4b89ab7c9b0 60
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 61-63
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 76-79
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_5abe510b694a54::t_5c15d8a66eb8c2 77-83
+app/Models/ApiKey.php
+  s_5abe510b694a54::t_aaec144ff66272 226-228
+app/Traits/Helpers/AvailableLanguages.php
+  s_5abe510b694a54::t_f100d0d36a5d58 6,20
+  s_5abe510b694a54::t_3db8c0ae8293c9 22
+resources/views/admin/api/new.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 28
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 41
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 61
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Services/Databases/Hosts/HostUpdateService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 33
+app/Services/Databases/Hosts/HostCreationService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 35-39,41
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Support/Alerts/AlertsMessageBag.php
+  s_5abe510b694a54::t_01f68d04e18eb7 1-63
+resources/scripts/router/routeTree.ts
+  s_df7dc93e661050::t_e790e5d8f88daa 864
+app/Services/Nests/NestUpdateService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 25
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_5abe510b694a54::t_aaec144ff66272 62-64
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 45
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 40-43
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_5abe510b694a54::t_e0be70a30143f3 26
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 28-29,35-39
+  s_5abe510b694a54::t_0afface4756c82 5
+database/Seeders/NestSeeder.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 45-48
+app/Services/Nodes/NodeJWTService.php
+  s_5abe510b694a54::t_ba8ee6959d6edd 98-100
+app/Services/Servers/VariableValidatorService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 41
+app/Services/Servers/ServerCreationService.php
+  s_5abe510b694a54::t_ba8ee6959d6edd 69-71,77-79
+app/Services/Servers/SuspensionService.php
+  s_5abe510b694a54::t_ba8ee6959d6edd 29-31
+vite.config.mts
+  s_1e681614e629f8::t_5c0db22ff1fe41 10
+  s_1e681614e629f8::t_52a30d92f8acb6 3,137-146
+  s_1e681614e629f8::t_2daac93896ed52 22-33,40,47-56
+  s_1e681614e629f8::t_0bc4288ad52ec2 76,82-90,92-101,103-107,109-113
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 57
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_df7dc93e661050::t_10d7d95121c50b 176,184,189,192,194,202,206-207
+  s_df7dc93e661050::t_223940075ea24e 47-48,111-175,177-183,185-188,190-191,193,195-201,203-204,208-244
+  s_df7dc93e661050::t_8716cedf7db9e9 480-499,504,542-553,555,558-559,562-567,569-614,663,666-671,673-679,685-688
+  s_df7dc93e661050::t_c09ecc53a01168 205
+  s_df7dc93e661050::t_37d0202139ddc0 710,712-717,745,766,769-772
+  s_df7dc93e661050::t_f5bbb2b1fe0bbd 615-624,626-639,642-662,672,680-684,746-748,752-754
+  s_df7dc93e661050::t_b2f7848dce911a 718-736,768
+  s_df7dc93e661050::t_6a5c22ac12b8e0 245
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 121-122
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 69-90
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Repositories/Wings/DaemonPowerRepository.php
+  s_5abe510b694a54::t_f98da5449d6333 22,26
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_5abe510b694a54::t_aaec144ff66272 25-27
+app/Repositories/Eloquent/EggRepository.php
+  s_5abe510b694a54::t_4609319d19dfe6 52-57
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 42
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Providers/SettingsServiceProvider.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 80
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Http/Controllers/Api/Admin/AdminApiController.php
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 23-25
+  s_5abe510b694a54::t_24e4b89ab7c9b0 22
+resources/views/templates/wrapper.blade.php
+  s_1e681614e629f8::t_2daac93896ed52 37-42
+app/Services/Deployment/FindViableNodesService.php
+  s_5abe510b694a54::t_ba8ee6959d6edd 23-27,76-82
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 77-98
+app/Http/Middleware/VerifyReCaptcha.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 69
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 26
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 44-46,56,68
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 36-37
+  s_5abe510b694a54::t_0afface4756c82 5
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 69
+app/Http/Requests/Api/Admin/Nests/Eggs/StoreEggRequest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 52-53
+  s_5abe510b694a54::t_0afface4756c82 5
+tests/Integration/Api/Application/Nests/EggControllerTest.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 43
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_5abe510b694a54::t_aaec144ff66272 71-73
+resources/views/admin/eggs/view.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 8
+resources/views/admin/locations/view.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 8
+resources/views/admin/nests/view.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 8
+composer.json
+  s_5abe510b694a54::t_75a2fba97ebde9 48
+  s_5abe510b694a54::t_98c89d249c1f6e 22
+scripts/build-if-changed.mjs
+  s_1e681614e629f8::t_5c0db22ff1fe41 1-113,115,120-122,129-131,145-208
+  s_1e681614e629f8::t_dd59aaa05250fa 114,116-119,123-128,132-144
+app/Http/Controllers/Admin/Settings/MailController.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 59
+app/Support/JavaScript/JavaScript.php
+  s_5abe510b694a54::t_01f68d04e18eb7 1-55
+resources/views/admin/servers/view/index.blade.php
+  s_5abe510b694a54::t_5e26a9626bd7b5 8,152,164
+config/app.php
+  s_5abe510b694a54::t_01f68d04e18eb7 28-29,261
+app/Repositories/Wings/DaemonCommandRepository.php
+  s_5abe510b694a54::t_f98da5449d6333 22,26
+app/Repositories/Wings/DaemonServerRepository.php
+  s_5abe510b694a54::t_444f454d0e6fd9 22,26,42,47,63,66,79,82,95,100,115,120,139,141,152,156
+app/Services/Servers/EnvironmentService.php
+  s_5abe510b694a54::t_3db8c0ae8293c9 43,50
+app/Services/Activity/ActivityLogService.php
+  s_5abe510b694a54::t_a93dd991dce3f6 227-229
+app/Enum/ResourceLimit.php
+  s_5abe510b694a54::t_4609319d19dfe6 58-61
+app/Transformers/Api/Application/BaseTransformer.php
+  s_5abe510b694a54::t_6ae4ddf65799eb 100-102
+  s_5abe510b694a54::t_24e4b89ab7c9b0 99
+package.json
+  s_1e681614e629f8::t_defaadc6d83c4f 37
+  s_1e681614e629f8::t_d5dfa150235a36 64
+app/Services/Nests/NestCreationService.php
+  s_5abe510b694a54::t_0afface4756c82 5
+  s_5abe510b694a54::t_3db8c0ae8293c9 29-30
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_5abe510b694a54::t_cd8a0c01b9e6ea 45-48,72-75
+app/Services/Servers/StartupModificationService.php
+  s_5abe510b694a54::t_e0be70a30143f3 70
+app/Transformers/Api/Client/BaseClientTransformer.php
+  s_5abe510b694a54::t_6ae4ddf65799eb 5,29-31,38-40
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_5abe510b694a54::t_aaec144ff66272 22-24
+app/Exceptions/DisplayException.php
+  s_5abe510b694a54::t_0ab08913bd1b02 11
+app/Http/Controllers/Admin/ApiController.php
+  s_5abe510b694a54::t_ee69f910e33341 9
+app/Http/Controllers/Admin/DatabaseController.php
+  s_5abe510b694a54::t_20436d2003706d 7
+app/Http/Controllers/Admin/LocationController.php
+  s_5abe510b694a54::t_22f3e9d94f74fc 8
+app/Http/Controllers/Admin/MountController.php
+  s_5abe510b694a54::t_fc46709499a029 10
+app/Http/Controllers/Admin/Nests/EggController.php
+  s_5abe510b694a54::t_7a2483df87b92f 8
+app/Http/Controllers/Admin/Nests/EggScriptController.php
+  s_5abe510b694a54::t_0222272d9a53f4 8
+app/Http/Controllers/Admin/Nests/EggVariableController.php
+  s_5abe510b694a54::t_de1b7f8f7b9dc5 8
+app/Http/Controllers/Admin/Nests/NestController.php
+  s_5abe510b694a54::t_c842d617768160 8
+app/Http/Controllers/Admin/NodesController.php
+  s_5abe510b694a54::t_98d4e175fade0d 11
+app/Http/Controllers/Admin/Servers/CreateServerController.php
+  s_5abe510b694a54::t_602bad0f156c75 8
+app/Http/Controllers/Admin/Servers/ServerTransferController.php
+  s_5abe510b694a54::t_4923ad242ea9b0 9
+app/Http/Controllers/Admin/ServersController.php
+  s_5abe510b694a54::t_9cb306d7d1337c 10
+app/Http/Controllers/Admin/Settings/AdvancedController.php
+  s_5abe510b694a54::t_0f0b7b7bcad0c3 9
+app/Http/Controllers/Admin/Settings/IndexController.php
+  s_5abe510b694a54::t_08ec9c9f63e02e 8
+app/Http/Controllers/Admin/UserController.php
+  s_5abe510b694a54::t_dc7f2ed562f2f9 11
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_5abe510b694a54::t_73a1928c856503 7
+composer.lock
+  s_5abe510b694a54::t_45c59af134bde6 7,11385
+package-lock.json
+  s_1e681614e629f8::t_ca1d24e8b24ef0 39,66,121-247,258-297,307-354,2827-2829,2834,2896-2898,2914-3010,3021-3034,3435-3444,3490-3515,3522-3555,3614-3634,4029-4038,4073-4079,4156-4165,4277-4286,4628-4653,4915-4924,5048-5057,5298-5313,5612-5621,5857-5942,6163-6169,6230-6246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2e8f2be00247d3f7583c0d50d78fd4a46021780e",
+  "prompts": {},
+  "sessions": {
+    "s_1e681614e629f8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e2b-6e67-7391-a605-689e83e38070",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_5abe510b694a54": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e5a-f0ca-7793-9873-405e50e9f937",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_df7dc93e661050": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3dfb-cdf6-72b1-baf7-f9ab54d512df",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

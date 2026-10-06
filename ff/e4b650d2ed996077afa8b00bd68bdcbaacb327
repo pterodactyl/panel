@@ -1,0 +1,42 @@
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_731111b3bfaced::t_e5e8a828e050de 5,46-53
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_e5e8a828e050de 36-37
+resources/scripts/components/admin/eggs/helpers.ts
+  s_731111b3bfaced::t_2d70a30ed3a383 40-41,108-110,120,123,126-131
+  s_731111b3bfaced::t_87f541b0cf5e0b 20-29,42-49,134,136-142
+  s_731111b3bfaced::t_e94199e568e7a9 1,114,135
+  s_731111b3bfaced::t_3e24714091dfd6 4-5
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_f15450d9c97dcc 167,172,174,176,187,192,194,196,207-209,214,216,218,238,240,242,268,273,275,277-278,280
+  s_731111b3bfaced::t_6a89288ba45855 232,335-337
+  s_731111b3bfaced::t_e94199e568e7a9 59-60
+  s_731111b3bfaced::t_ea67c8544f969d 292,298,300,302,314,320,322,324,342,344,346-347,349
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_731111b3bfaced::t_6a89288ba45855 3
+  s_731111b3bfaced::t_9c083388e1662b 4,41-42,61-62
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_731111b3bfaced::t_9c083388e1662b 5,37-40
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_731111b3bfaced::t_e5e8a828e050de 27-28
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_731111b3bfaced::t_e5e8a828e050de 45-46
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_731111b3bfaced::t_e5e8a828e050de 28-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "ffe4b650d2ed996077afa8b00bd68bdcbaacb327",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

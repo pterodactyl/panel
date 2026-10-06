@@ -1,0 +1,87 @@
+resources/scripts/components/elements/LazyCodemirrorEditor.tsx
+  s_a8d8e651ce8586::t_f37910f92f2e38 5,14
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_12b43e4d15578a::t_89dd4c0e63cce0 41-42,46,50
+resources/scripts/components/elements/Button.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 15
+resources/scripts/components/elements/SubNavigation.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 6,13-14
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_12b43e4d15578a::t_89dd4c0e63cce0 26,28,31-32
+resources/scripts/assets/tailwind.css
+  s_a8d8e651ce8586::t_1bba8f52cdb8dc 12-13,17,28,101-111,113-129,132,176-177,304,319
+  s_a8d8e651ce8586::t_144ce02f3b194f 112
+resources/scripts/components/NavigationBar.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 20-21,34
+resources/scripts/components/elements/ContentContainer.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 5
+resources/scripts/components/elements/SpinnerOverlay.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 23,26-30
+resources/scripts/components/server/files/FileManagerStatus.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 23
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 33
+scripts/check-design-token-boundary.php
+  s_a8d8e651ce8586::t_d372e10cf2dd6a 114-121
+  s_a8d8e651ce8586::t_d7b8313b7a8a6e 1-3,5-8,10-13,15-17,19-23,25-27,29-51,54-58,60-67,69-113,122,124-140,143-174
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_a8d8e651ce8586::t_f37910f92f2e38 37
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_a8d8e651ce8586::t_f37910f92f2e38 9,13,26-28,32-33,36-37,40,42,45,48,51,54-56,59,62-63,66,68-69,72,75-76,79,82,85-87,90-91,98-106,109-113,115-116,119-121,161,204
+package.json
+  s_a8d8e651ce8586::t_d7b8313b7a8a6e 87,89
+resources/scripts/components/server/console/useGhosttyTerminal.ts
+  s_a8d8e651ce8586::t_ac310eb784c89a 36,39-40,57-59,61-66,106
+  s_a8d8e651ce8586::t_d372e10cf2dd6a 34-35
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_a8d8e651ce8586::t_f37910f92f2e38 99
+resources/scripts/components/server/console/AreaChart.tsx
+  s_a8d8e651ce8586::t_ac310eb784c89a 7,105-110
+resources/scripts/components/elements/ProgressBar.tsx
+  s_a8d8e651ce8586::t_d924143e23572f 43
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 40
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 43
+resources/scripts/components/auth/LoginFormContainer.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 14
+resources/scripts/components/server/console/Console.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 17-18,22
+resources/scripts/components/ui/Checkbox.tsx
+  s_a8d8e651ce8586::t_bec3dac05b1a0d 21
+.ai/rules/index.md
+  s_b5d36d3ecc876c::t_98213aa15b6d72 15
+.ai/rules/scriptsviews.md
+  s_b5d36d3ecc876c::t_a433cc9c939010 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0a6818b1916732cc5c470fb5f6bda948cc90edd7",
+  "prompts": {},
+  "sessions": {
+    "s_12b43e4d15578a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a046d7-204a-7681-9c85-bc77826436d7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a8d8e651ce8586": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0594e-63fd-7bc3-8401-68dce978e0d7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_b5d36d3ecc876c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0595e-c647-74b2-999f-3cfbc74b5167",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

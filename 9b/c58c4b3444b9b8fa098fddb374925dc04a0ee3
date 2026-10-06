@@ -1,0 +1,25 @@
+.mcp.json
+  s_d4115f9d96b565::t_41c88019cc7670 2-15
+composer.json
+  s_d4115f9d96b565::t_19f93838233b96 54
+boost.json
+  s_d4115f9d96b565::t_41c88019cc7670 1-13
+composer.lock
+  s_d4115f9d96b565::t_019b6dc586e2b3 7,8220-8296,8709-8848,8919-8980
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "9bc58c4b3444b9b8fa098fddb374925dc04a0ee3",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

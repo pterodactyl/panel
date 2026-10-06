@@ -1,0 +1,27 @@
+app/Http/Controllers/Api/Admin/Nests/UpdateImportEggController.php
+  s_731111b3bfaced::t_112d772933b6d7 18
+  s_731111b3bfaced::t_436622f9e03c48 8-12,15,21-22,36-43
+app/Http/Controllers/Api/Admin/Nests/ImportEggController.php
+  s_731111b3bfaced::t_cd4c3fbd4153c8 8-11,14,16,19-20,34-39
+app/Http/Controllers/Api/Admin/Nests/EggScriptController.php
+  s_731111b3bfaced::t_fdbd56139546f0 8-12,15,18,22-23,26-35,47-52,65-77
+app/Http/Controllers/Api/Admin/Nests/ExportEggController.php
+  s_731111b3bfaced::t_112d772933b6d7 14,17
+  s_731111b3bfaced::t_d5d0b6622653b8 8-11,19-20,23-36,48-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ae5c5be4e5c84bcc066de7a74c5def4489e7706b",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

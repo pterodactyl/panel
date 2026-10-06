@@ -1,0 +1,56 @@
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_be04b879a75a03::t_a99c22ffa28d05 31-34
+app/Http/Middleware/VerifyReCaptcha.php
+  s_be04b879a75a03::t_a99c22ffa28d05 28-31
+app/Http/Middleware/Api/Application/AuthenticateApplicationUser.php
+  s_be04b879a75a03::t_a99c22ffa28d05 18-21
+app/Http/Middleware/Api/Admin/AuthenticateAdmin.php
+  s_be04b879a75a03::t_a99c22ffa28d05 19-22
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_be04b879a75a03::t_a99c22ffa28d05 25-28
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_be04b879a75a03::t_a99c22ffa28d05 39-42
+app/Http/Middleware/RedirectIfAuthenticated.php
+  s_be04b879a75a03::t_a99c22ffa28d05 21-24
+app/Http/Middleware/Activity/AccountSubject.php
+  s_be04b879a75a03::t_8cb326b65eaae4 16-18
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_be04b879a75a03::t_a99c22ffa28d05 38-41
+app/Http/Middleware/Activity/ServerSubject.php
+  s_be04b879a75a03::t_a99c22ffa28d05 22-25
+app/Http/Middleware/Api/Client/SubstituteClientBindings.php
+  s_be04b879a75a03::t_cadad2bf1e3494 19-20
+  s_be04b879a75a03::t_a99c22ffa28d05 18,21-22
+app/Http/Middleware/Activity/TrackAPIKey.php
+  s_be04b879a75a03::t_a99c22ffa28d05 20-23
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_be04b879a75a03::t_a99c22ffa28d05 22-25
+app/Http/Middleware/SetSecurityHeaders.php
+  s_be04b879a75a03::t_a99c22ffa28d05 37-40
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_be04b879a75a03::t_a99c22ffa28d05 18-21
+app/Http/Requests/Api/Application/Allocations/StoreAllocationRequest.php
+  s_be04b879a75a03::t_d3b572bdd2883d 9,31,36-55,58-60
+app/Http/Middleware/LanguageMiddleware.php
+  s_be04b879a75a03::t_a99c22ffa28d05 21-24
+app/Http/Middleware/Api/IsValidJson.php
+  s_be04b879a75a03::t_a99c22ffa28d05 19-22
+app/Http/Middleware/Api/Client/Server/AuthenticateServerAccess.php
+  s_be04b879a75a03::t_a99c22ffa28d05 28-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2ae4f11d76847b16c2abfe5c11513e475ea63d03",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

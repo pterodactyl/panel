@@ -1,0 +1,47 @@
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_53916ba32af787::t_4836279cda726f 70
+  s_53916ba32af787::t_7660b965700fa7 21
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_53916ba32af787::t_36be87fa33b387 27
+app/Services/Nodes/NodeDeletionService.php
+  s_53916ba32af787::t_4836279cda726f 17,19-20,23
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_53916ba32af787::t_36be87fa33b387 30
+app/Http/Requests/Api/Application/Nodes/UpdateNodeRequest.php
+  s_53916ba32af787::t_36be87fa33b387 20
+app/Services/Nodes/NodeUpdateService.php
+  s_53916ba32af787::t_4836279cda726f 43-52,55-57
+app/Http/Controllers/Api/Admin/Nodes/UtilizationController.php
+  s_53916ba32af787::t_4836279cda726f 42
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_53916ba32af787::t_4836279cda726f 11,32,59-62
+app/Services/Nodes/NodeCreationService.php
+  s_53916ba32af787::t_4836279cda726f 16,19-20,26-30,32-33
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_53916ba32af787::t_36be87fa33b387 8,10,47,92-100,103-104
+app/Models/Node.php
+  s_53916ba32af787::t_802768c00e6c7a 402-418
+  s_53916ba32af787::t_7f3ab8043b88b7 12,61,74-78,96,98-99,133-136,138-170,347-348,352,356-372,419
+  s_53916ba32af787::t_7660b965700fa7 137
+app/Http/Requests/Api/Admin/Nodes/UpdateNodeRequest.php
+  s_53916ba32af787::t_36be87fa33b387 26
+tests/Integration/Http/Middleware/Api/Daemon/DaemonAuthenticateTest.php
+  s_53916ba32af787::t_36be87fa33b387 1-71,73
+  s_53916ba32af787::t_2390ff13717883 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f86cc0a07ce298a1c96f9a1e9ae96125738de2f4",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

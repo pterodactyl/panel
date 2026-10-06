@@ -1,0 +1,62 @@
+tests/Unit/Services/Extensions/ExtensionPermissionRegistryTest.php
+  s_2a466f836ebff9::t_5d5f96e85d04d0 1-27
+app/Http/Controllers/Api/Client/ClientController.php
+  s_2a466f836ebff9::t_92dc43520ffcb2 18,109-110,114,116,121
+tests/Integration/Api/Client/Server/Subuser/ExtensionSubuserPermissionsTest.php
+  s_2a466f836ebff9::t_73ba9503a16b43 19-22
+  s_2a466f836ebff9::t_5d5f96e85d04d0 1-18,23-35
+resources/scripts/components/server/users/PermissionRow.tsx
+  s_2a466f836ebff9::t_438c41940545ff 10,15,39
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_2a466f836ebff9::t_438c41940545ff 4,130-131,143-152
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_2a466f836ebff9::t_92dc43520ffcb2 17,2091-2094
+app/Services/Servers/SubuserPermissionCatalog.php
+  s_2a466f836ebff9::t_05918d0fcf2e85 33-40
+  s_2a466f836ebff9::t_038d02834f1026 1-32,41-42
+app/Providers/ExtensionServiceProvider.php
+  s_2a466f836ebff9::t_038d02834f1026 11,23
+resources/scripts/plugins/usePermissions.ts
+  s_2a466f836ebff9::t_438c41940545ff 3-8,10-16,19-25
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_2a466f836ebff9::t_038d02834f1026 17,64-65,71
+packages/sdk/README.md
+  s_2a466f836ebff9::t_2f9c322b3da820 58-66
+resources/scripts/api/generated/types.gen.ts
+  s_2a466f836ebff9::t_18e83f93343bc0 1353,3426,3433
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_2a466f836ebff9::t_18e83f93343bc0 3985
+app/Services/Extensions/ExtensionPermissionRegistry.php
+  s_2a466f836ebff9::t_50c45cdb15e00a 24-29
+  s_2a466f836ebff9::t_038d02834f1026 1-23,30-49
+resources/scripts/api/generated/sdk.gen.ts
+  s_2a466f836ebff9::t_18e83f93343bc0 2183
+resources/scripts/components/server/users/permissionSelection.ts
+  s_2a466f836ebff9::t_438c41940545ff 13-25
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_2a466f836ebff9::t_18e83f93343bc0 1221,3191,3197
+app/Extensions/ExtensionProvider.php
+  s_2a466f836ebff9::t_038d02834f1026 15,188-200
+  s_2a466f836ebff9::t_e879216988f5c8 201
+resources/scripts/plugins/usePermissions.spec.ts
+  s_2a466f836ebff9::t_438c41940545ff 1-20
+resources/scripts/components/server/users/permissionSelection.spec.ts
+  s_2a466f836ebff9::t_36910dccb743d7 40-42
+  s_2a466f836ebff9::t_438c41940545ff 2,34-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c65057be81ab674df0fdfd18fc9a8f8327dad434",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

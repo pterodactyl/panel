@@ -1,0 +1,23 @@
+Dockerfile
+  s_2a466f836ebff9::t_d474638dac9a1f 3
+.github/docker/README.md
+  s_2a466f836ebff9::t_32bf0934ab22cd 92
+.github/workflows/docker.yaml
+  s_2a466f836ebff9::t_fa380b2e2d1c6b 20-23,25-26,31,35-39,41-59,64,67-70,73,77-112,115,122-127,133,151-152,154-156,158-159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6d12b4e855e5d5a34cc2d0d9dbbb89aa5a83517a",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

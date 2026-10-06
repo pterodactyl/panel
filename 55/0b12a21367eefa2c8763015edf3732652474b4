@@ -1,0 +1,90 @@
+app/Http/Controllers/Api/Admin/Eggs/EggCatalogController.php
+  s_6c510947b78fa5::t_af6427b5cee174 35
+  s_6c510947b78fa5::t_db06b5713047a8 12,36
+  s_6c510947b78fa5::t_ff4e8b211c07d4 1-2,5-6,18,22,57
+  s_6c510947b78fa5::t_d7125c900bc0bb 37-41
+  s_6c510947b78fa5::t_1f3194d4ac702b 3-4,7-11,13-17,19-21,23-34,42-56
+app/Http/Controllers/Api/Admin/Eggs/ImportCatalogEggController.php
+  s_6c510947b78fa5::t_ff4e8b211c07d4 1-2,5-6,21,25,31,44-45
+  s_6c510947b78fa5::t_1f3194d4ac702b 3-4,7-10,12-20,22-24,26-27,30,32-43
+  s_6c510947b78fa5::t_af6427b5cee174 11,28-29
+app/Data/EggCatalogEntry.php
+  s_6c510947b78fa5::t_9bed11c349396f 83
+  s_6c510947b78fa5::t_fa7c6aaf46a063 1-23,26-82,84-97
+  s_6c510947b78fa5::t_d7125c900bc0bb 24-25
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_6c510947b78fa5::t_e771600e721222 8-9,1868-1930
+  s_6c510947b78fa5::t_758bbd2c516b4b 1931
+resources/scripts/api/generated/sdk.gen.ts
+  s_6c510947b78fa5::t_e771600e721222 6,993-1030
+  s_6c510947b78fa5::t_056f460d8970de 1031
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_6c510947b78fa5::t_b4937183bb47fe 12,28-29,31-32
+resources/scripts/api/generated/types.gen.ts
+  s_6c510947b78fa5::t_7d3ab60f79a932 7942-7945,8004-8007,8012-8015
+  s_6c510947b78fa5::t_e771600e721222 1179,1228,2058-2064,3290-3293,3325-3328,3559,3567,3575-3586,7926-7941,7946-8003,8008-8011,8016-8028,11604-11607,11641-11644,13923-13926
+  s_6c510947b78fa5::t_882f4a01b73fc6 3560-3563
+  s_6c510947b78fa5::t_3a89964479ecee 3564-3566,3568-3574
+resources/scripts/api/generated/index.ts
+  s_6c510947b78fa5::t_e771600e721222 4-5
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_6c510947b78fa5::t_a57e43bdb3575a 3,83-86
+resources/scripts/router/routeTree.ts
+  s_6c510947b78fa5::t_a57e43bdb3575a 920-924
+resources/scripts/components/admin/eggs/EggCatalogContainer.spec.tsx
+  s_6c510947b78fa5::t_148d7a6a20e91d 32
+  s_6c510947b78fa5::t_749df5cb0531d0 42-46,92-96,98-100,102-106,123-125,132-133
+  s_6c510947b78fa5::t_43c0f96ea75348 75,82,107
+  s_6c510947b78fa5::t_ede87424781992 1-31,33-41,47-74,76-81,83-91,97,101,108-122,126-131,134-151
+app/Http/Requests/Api/Admin/Eggs/ImportCatalogEggRequest.php
+  s_6c510947b78fa5::t_ff4e8b211c07d4 1-2,5-6,9,11,13,15-16,18-20,22,28-29
+  s_6c510947b78fa5::t_1f3194d4ac702b 3-4,7-8,10,12,14,17,21,23-27
+app/Services/Eggs/EggCatalogService.php
+  s_6c510947b78fa5::t_fa7c6aaf46a063 11-12,32,37,51-55,57,61
+  s_6c510947b78fa5::t_ff4e8b211c07d4 1-2,5-6,19-20,77-78
+  s_6c510947b78fa5::t_b4937183bb47fe 3-4,7-10,13-14,16,18,21-31,33-36,38-50,56,58-60,62-68,70-72,74-76
+  s_6c510947b78fa5::t_1f3194d4ac702b 17
+  s_ce51cca42e0bed::t_a0fb08e94b75de 15,69,73
+tests/Integration/Api/Admin/Eggs/EggCatalogControllerTest.php
+  s_6c510947b78fa5::t_9bed11c349396f 122
+  s_6c510947b78fa5::t_fa7c6aaf46a063 116,154-155
+  s_6c510947b78fa5::t_1e02c7ef8cbd11 1-115,117-121,123-153,156-190
+resources/scripts/api/admin/eggs/catalog.ts
+  s_6c510947b78fa5::t_a57e43bdb3575a 1-47
+resources/scripts/components/admin/eggs/EggCatalogContainer.tsx
+  s_6c510947b78fa5::t_f4f1b094351d29 68-71,131-135,140-143,145-150,152-154,156-163,176-182,197-206
+  s_6c510947b78fa5::t_a57e43bdb3575a 1-67,72-130,136-139,144,151,155,164-175,183-196,207-211
+routes/api-admin.php
+  s_6c510947b78fa5::t_1f3194d4ac702b 8,13
+  s_6c510947b78fa5::t_af6427b5cee174 286-292
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_6c510947b78fa5::t_eead9c323ecd33 54
+.ai/rules/eggs.md
+  s_6c510947b78fa5::t_68b311751c55d7 1-9
+.ai/rules/index.md
+  s_6c510947b78fa5::t_b9a25bbf75daea 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "550b12a21367eefa2c8763015edf3732652474b4",
+  "prompts": {},
+  "sessions": {
+    "s_6c510947b78fa5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a605-71c6-7ad1-a245-4c364cf98552",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_ce51cca42e0bed": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08920-c06e-7341-9e27-c1c8640fe492",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
