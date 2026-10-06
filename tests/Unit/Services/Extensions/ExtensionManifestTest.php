@@ -185,7 +185,31 @@ test('leaves settings out of the bootstrap payload when config is not included',
     $payload = $repository->frontendPayload(authenticated: false);
     expect($payload[0]['id'])->toBe('example');
     expect($payload[0]['prefix'])->toBeNull();
+    expect($payload[0]['translations'])->toBeNull();
     expect((array) $payload[0]['config'])->toBe([]);
+});
+test('reports a translations revision that changes with the translation files', function (): void {
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js']]);
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+    $repository = Mockery::mock(ExtensionRepository::class, [
+        new ExtensionManifestValidator,
+        resolve(ExtensionAssetPublisher::class),
+        resolve(Dispatcher::class),
+        resolve(ExtensionSettingsRegistry::class),
+        resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
+    ])->makePartial();
+    $repository->shouldReceive('enabled')->andReturn(collect(['example' => $manifest]));
+    $revision = fn (): ?string => $repository->frontendPayload(authenticated: false)[0]['translations'];
+
+    File::ensureDirectoryExists($this->directory.'/resources/lang/en');
+    File::put($this->directory.'/resources/lang/en/messages.php', '<?php return ["welcome" => "Welcome"];');
+    $installed = $revision();
+    expect($installed)->toMatch('/^[a-f0-9]{32}$/')->toBe($revision());
+
+    // What an upgrade does: the same file, with different contents.
+    File::put($this->directory.'/resources/lang/en/messages.php', '<?php return ["welcome" => "Welcome", "summary" => "Summary"];');
+    clearstatcache();
+    expect($revision())->toMatch('/^[a-f0-9]{32}$/')->not->toBe($installed);
 });
 
 test('preserves resource tab parents in validated screen metadata', function (): void {

@@ -6,12 +6,14 @@ namespace Pterodactyl\Services\Extensions;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
 use Pterodactyl\Support\JsonValueGuard;
+use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 class ExtensionRepository
@@ -152,7 +154,7 @@ class ExtensionRepository
      * The enabled frontend extensions for the SPA to load. Signed-in users receive
      * each extension's frontend settings; everyone else only those marked ->public().
      *
-     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
+     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
      */
     public function frontendPayload(bool $authenticated): array
     {
@@ -167,6 +169,7 @@ class ExtensionRepository
             'version' => $manifest->version,
             'entry' => $this->assets->entryUrl($manifest),
             'prefix' => $manifest->uiPrefix,
+            'translations' => $this->translationsRevision($manifest),
             'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
             'screens' => $manifest->screens,
             'components' => $manifest->components,
@@ -222,6 +225,27 @@ class ExtensionRepository
         // One instance per extension per request so the per-instance row cache
         // in ExtensionSettings actually coalesces reads.
         return $this->settings[$identifier] ??= new ExtensionSettings($identifier);
+    }
+
+    /**
+     * Changes whenever the extension's translation files do. The frontend puts it in the
+     * URL it loads those translations from, which lets the browser cache them for as long
+     * as core translations and still pick up an installed or upgraded extension at once.
+     */
+    private function translationsRevision(ExtensionManifest $manifest): ?string
+    {
+        $directory = $manifest->path('resources', 'lang');
+        if (! is_dir($directory)) {
+            return null;
+        }
+
+        $files = array_map(
+            fn (SplFileInfo $file): string => implode("\0", [$file->getRelativePathname(), $file->getSize(), $file->getMTime()]),
+            File::allFiles($directory),
+        );
+        sort($files);
+
+        return hash('xxh128', $manifest->version."\0".implode("\0", $files));
     }
 
     /**
