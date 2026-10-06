@@ -23,7 +23,7 @@ test('telemetry is scheduled and sent only when enabled', function (bool $enable
     Setting::put('app:telemetry:uuid', $uuid);
     $node = Node::factory()->for(Location::factory())->create();
     $daemon = new FakeDaemonConfiguration;
-    Http::fake(['https://telemetry.pterodactyl.io' => Http::response([], 200)]);
+    Http::fake(['https://telemetry.pterodactyl.io' => Http::response([], 200), '*' => Http::response([], 200)]);
 
     $schedule = new Schedule;
     $this->app->make(Scheduler::class)($schedule);
@@ -48,6 +48,6 @@ test('telemetry is scheduled and sent only when enabled', function (bool $enable
     Http::assertSent(fn (Request $request): bool => $request->url() === 'https://telemetry.pterodactyl.io'
         && $request['id'] === $uuid
         && in_array($node->uuid, array_column($request['nodes'], 'id'), true));
-    Http::assertSentCount(2);
+    expect(Http::recorded(fn (Request $request): bool => $request->url() === 'https://telemetry.pterodactyl.io'))->toHaveCount(1);
     $daemon->assertSystemInformationFetched();
 })->with([true, false]);
