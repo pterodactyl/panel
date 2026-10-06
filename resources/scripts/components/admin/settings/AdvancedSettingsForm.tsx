@@ -18,7 +18,7 @@ interface AdvancedSettingsFormValues {
 
 const advancedSettingsFormValues = (settings: AdminSettings): AdvancedSettingsFormValues => ({
     recaptchaEnabled: settings.advanced['recaptcha:enabled'],
-    recaptchaSecretKey: settings.advanced['recaptcha:secret_key'],
+    recaptchaSecretKey: '',
     recaptchaWebsiteKey: settings.advanced['recaptcha:website_key'],
     guzzleTimeout: settings.advanced['pterodactyl:guzzle:timeout'],
     guzzleConnectTimeout: settings.advanced['pterodactyl:guzzle:connect_timeout'],
@@ -52,6 +52,7 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                         allocationsRangeEnd: value.allocationsRangeEnd === '' ? '' : Number(value.allocationsRangeEnd),
                     })
                 );
+                form.reset({ ...value, recaptchaSecretKey: '' });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -94,9 +95,10 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                     <form.AppField name={'recaptchaSecretKey'}>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
+                                type={'password'}
                                 id={'recaptcha_secret_key'}
                                 label={'reCAPTCHA Secret Key'}
+                                description={'Leave blank to keep the existing secret key.'}
                                 disabled={readOnly}
                             />
                         )}

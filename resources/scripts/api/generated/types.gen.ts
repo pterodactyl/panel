@@ -2433,7 +2433,7 @@ export type AdminUpdateAdvancedSettingsRequest = {
     /**
      * The recaptcha:secret key. Must not be greater than 191 characters.
      */
-    'recaptcha:secret_key': string;
+    'recaptcha:secret_key'?: string | null;
     /**
      * The recaptcha:website key. Must not be greater than 191 characters.
      */

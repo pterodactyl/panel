@@ -2369,7 +2369,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                     ],
                     'properties' => [
                         'recaptcha:enabled' => ['type' => 'boolean', 'example' => false],
-                        'recaptcha:secret_key' => ['type' => 'string', 'example' => 'secret'],
+                        'recaptcha:secret_key' => ['type' => 'string', 'example' => ''],
                         'recaptcha:website_key' => ['type' => 'string', 'example' => 'website'],
                         'pterodactyl:guzzle:timeout' => ['type' => 'integer', 'example' => 15],
                         'pterodactyl:guzzle:connect_timeout' => ['type' => 'integer', 'example' => 5],

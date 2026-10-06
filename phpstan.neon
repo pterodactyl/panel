@@ -102,7 +102,7 @@ parameters:
         BackupUploadParts: 'array{parts: list<string>, part_size: int}'
         ServerDetailsModificationData: 'array{external_id: string|null, name: string, owner_id: int, description: string|null}'
         GeneralSettingsData: "array{'app:name': string, 'pterodactyl:auth:2fa_required': int, 'app:locale': string}"
-        AdvancedSettingsData: "array{'recaptcha:enabled': string, 'recaptcha:secret_key': string, 'recaptcha:website_key': string, 'pterodactyl:guzzle:timeout': int, 'pterodactyl:guzzle:connect_timeout': int, 'pterodactyl:client_features:allocations:enabled': string, 'pterodactyl:client_features:allocations:range_start': int|null, 'pterodactyl:client_features:allocations:range_end': int|null}"
+        AdvancedSettingsData: "array{'recaptcha:enabled': string, 'recaptcha:secret_key'?: string, 'recaptcha:website_key': string, 'pterodactyl:guzzle:timeout': int, 'pterodactyl:guzzle:connect_timeout': int, 'pterodactyl:client_features:allocations:enabled': string, 'pterodactyl:client_features:allocations:range_start': int|null, 'pterodactyl:client_features:allocations:range_end': int|null}"
         MailSettingsData: "array{'mail:mailers:smtp:host': string, 'mail:mailers:smtp:port': int, 'mail:mailers:smtp:encryption': string|null, 'mail:mailers:smtp:username': string|null, 'mail:from:address': string, 'mail:from:name': string|null, 'mail:mailers:smtp:password'?: string}"
         ExtensionSettingValue: 'JsonValue'
         ExtensionSettingValues: 'array<string, ExtensionSettingValue>'
