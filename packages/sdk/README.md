@@ -268,11 +268,15 @@ fields, each validated server-side and rendered by the admin Extensions form:
   must pass the item rules.
 - `->file(mimes: ExtensionSettingFiles::IMAGES, maxKilobytes: 1024)`: an admin upload.
   The type is decided from the content against the allow-list (PNG, JPEG, GIF, WebP and
-  AVIF by default; ICO, WOFF, WOFF2 and SVG only when listed, and SVG with active
-  content is refused), the file is stored under a random name on the
-  `extensions.files_disk` disk, and `get()` and `ctx.config` return its URL under
-  `/extension-files/<id>/` or the default (a URL or `null`). Replacing or clearing a file
-  deletes the old one; removing the extension deletes them all. Files are uploaded through
+  AVIF by default; ICO, WOFF, WOFF2 and SVG only when listed). An SVG must be plain SVG:
+  scripts, event handlers, animation, embedded documents, `javascript:` or non-image
+  `data:` links, and elements or attributes from other XML vocabularies (editor metadata
+  included) are refused. The file is stored under a random name on the
+  `extensions.files_disk` disk, which must be private (a public disk is refused, so files
+  are only served with the panel's sandboxing headers), and `get()` and `ctx.config`
+  return its URL under `/extension-files/<id>/` or the default (a URL or `null`).
+  Replacing or clearing a file deletes the old one; removing the extension deletes them
+  all. Files are uploaded through
   `POST`/`DELETE /api/admin/extensions/<id>/settings/<input>/file`, never through a
   settings update.
 
