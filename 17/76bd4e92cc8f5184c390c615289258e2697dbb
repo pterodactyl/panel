@@ -1,0 +1,50 @@
+.github/docker/default_ssl.conf
+  s_70fb9abde21179::t_28d94131d0d7b9 52-60,65-67,69-70
+  s_70fb9abde21179::t_9976032492f2cd 68
+  s_3f4b5347620927::t_e5097925fa5b6c 71-72
+.github/docker/smoke-test.sh
+  s_70fb9abde21179::t_f69c20e9cff024 168
+  s_70fb9abde21179::t_a97436907d62aa 159
+.github/docker/healthcheck.sh
+  s_70fb9abde21179::t_3c1bd4598f3f08 4,6,9,11-18
+resources/scripts/router/routeTree.ts
+  s_70fb9abde21179::t_e81d563c821fe1 157-159
+  s_70fb9abde21179::t_0293403a62ed92 184
+  s_70fb9abde21179::t_fc15915fa2c641 257
+  s_70fb9abde21179::t_51d8e0cccbf2ec 463
+.github/docker/php.ini
+  s_70fb9abde21179::t_6cef64f164fae1 9
+  s_70fb9abde21179::t_6617491fe1d86a 2-3
+Dockerfile
+  s_70fb9abde21179::t_712171c6b4df3a 55-56
+.github/docker/default.conf
+  s_70fb9abde21179::t_6f1077bfadc758 35
+  s_70fb9abde21179::t_f9e148399c4e18 20-28,33-34,36-37
+  s_3f4b5347620927::t_3dde8dd936bdcc 38-39
+.github/docker/README.md
+  s_70fb9abde21179::t_8a79de2699a589 108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1776bd4e92cc8f5184c390c615289258e2697dbb",
+  "prompts": {},
+  "sessions": {
+    "s_3f4b5347620927": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1052f-291b-7aa2-897e-1b9a6fb3f082",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_70fb9abde21179": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ed27f402-f36e-4e8c-a837-b94b547c5f6d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
