@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
@@ -7,7 +7,9 @@ import { JSDOM } from 'jsdom';
 
 const require = createRequire(import.meta.url);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const manifest = JSON.parse(readFileSync(resolve(root, 'public/assets/manifest.json'), 'utf8'));
+const assets = resolve(root, 'public/assets');
+const scope = resolve(assets, 'package.json');
+const manifest = JSON.parse(readFileSync(resolve(assets, 'manifest.json'), 'utf8'));
 const dom = new JSDOM('<div id="extension-runtime-test"></div>', {
     url: 'https://panel.test/',
     pretendToBeVisual: true,
@@ -27,7 +29,7 @@ for (const name of [
 ]) {
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
-const load = (source) => import(pathToFileURL(resolve(root, 'public/assets', manifest[source].file)).href);
+const load = (source) => import(pathToFileURL(resolve(assets, manifest[source].file)).href);
 const modules = [
     [
         'react',
@@ -40,6 +42,8 @@ const modules = [
     ['@tanstack/react-query', 'resources/scripts/ext-runtime/tanstack-react-query.ts', []],
 ];
 try {
+    // Built chunks are ESM; without a scoped package.json Node parses them as CommonJS first and warns.
+    writeFileSync(scope, '{"type":"module"}');
     for (const [specifier, source, excluded] of modules) {
         const built = await load(source);
         const installed = require(specifier);
@@ -80,5 +84,6 @@ try {
     sdk.queryClient.clear();
     console.log('Built extension runtime: exports, React hooks, UI and shared QueryClient verified.');
 } finally {
+    rmSync(scope, { force: true });
     dom.window.close();
 }
