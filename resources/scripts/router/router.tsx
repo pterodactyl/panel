@@ -10,6 +10,7 @@ export const router = createRouter({
     context: { queryClient },
     history: createBrowserHistory(),
     defaultPreload: 'intent',
+    defaultPreloadDelay: 800,
     defaultPreloadStaleTime: 0,
     defaultViewTransition: true,
     scrollRestoration: true,
