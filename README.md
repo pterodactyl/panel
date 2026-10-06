@@ -1,6 +1,13 @@
-[![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
+<p align="center">
+  <a href="https://pterodactyl.io">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-dark.svg">
+      <img alt="Pterodactyl" src=".github/assets/logo-light.svg" height="72">
+    </picture>
+  </a>
+</p>
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pterodactyl/panel/ci.yaml?label=Tests&style=for-the-badge&branch=1.0-develop)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pterodactyl/panel/ci.yaml?label=Tests&style=for-the-badge&branch=2.0-develop)
 ![Discord](https://img.shields.io/discord/122900397965705216?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
 ![GitHub Releases](https://img.shields.io/github/downloads/pterodactyl/panel/latest/total?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
@@ -13,7 +20,20 @@ UI to end users.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
 
-![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
+[![Watch: Introducing Pterodactyl v2](.github/assets/v2-video.jpg)](https://www.youtube.com/watch?v=1ER4kv0jVEU)
+
+## What's new in v2
+
+This branch (`2.0-develop`) is where Pterodactyl v2 is being built. It is under active development; the current
+stable release line lives on [`1.0-develop`](https://github.com/pterodactyl/panel/tree/1.0-develop).
+
+* **Extension SDK** — extend the panel through a versioned API instead of editing core files, so your changes
+  survive updates. Example extensions live in [pterodactyl/extensions](https://github.com/pterodactyl/extensions).
+* **Fully modernized tech stack** — Vite, React 19, TanStack Router and Query, Tailwind 4 and Laravel 13.
+* **Brand new admin area** — the admin and client areas are now a single React application with one design.
+* **One-click egg importer** — browse the egg catalog and import directly from the panel.
+* **Theming with design tokens** — restyle the panel without rebuilding it.
+* **Still 100% free and open source** — MIT licensed, as always.
 
 ## Documentation
 
