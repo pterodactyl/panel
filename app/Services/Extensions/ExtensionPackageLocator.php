@@ -59,7 +59,7 @@ class ExtensionPackageLocator
     {
         $zip = new ZipArchive;
         throw_if($zip->open($archive) !== true, InvalidExtensionException::class, "Unable to open archive {$archive}.");
-        
+
         try {
             $this->assertArchiveWithinLimits($zip, $archive);
         } catch (Throwable $throwable) {
