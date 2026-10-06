@@ -21,14 +21,17 @@ interface DropdownMenuProps {
     /** Rendered inside the trigger `<button>`. */
     triggerContent: React.ReactNode;
     triggerClassName?: string;
+    openOnHover?: boolean;
     children: React.ReactNode;
     className?: string;
 }
 
-function DropdownMenu({ triggerContent, triggerClassName, children, className }: DropdownMenuProps) {
+function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children, className }: DropdownMenuProps) {
     return (
         <Menu.Root>
-            <Menu.Trigger className={triggerClassName}>{triggerContent}</Menu.Trigger>
+            <Menu.Trigger className={triggerClassName} openOnHover={openOnHover} closeDelay={openOnHover ? 150 : 0}>
+                {triggerContent}
+            </Menu.Trigger>
             <Menu.Portal>
                 <Menu.Positioner className={positionerClass} sideOffset={4} align={'end'}>
                     <Menu.Popup className={cn(popupClass, className)}>

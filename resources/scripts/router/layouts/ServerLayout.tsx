@@ -57,35 +57,33 @@ function ServerLayoutInner() {
         <SubNavigationLayout
             navigation={
                 <SubNavigation>
-                    <div>
-                        <Slot name={'server.navigation.before'} data={server} />
-                        {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
-                            <ScreenGate key={segment || '/'} screen={meta.screen}>
-                                {permission ? (
-                                    <Can action={permission} matchAny>
-                                        <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
-                                            <NavigationLabel label={label} {...meta} />
-                                        </NavLink>
-                                    </Can>
-                                ) : (
+                    <Slot name={'server.navigation.before'} data={server} />
+                    {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
+                        <ScreenGate key={segment || '/'} screen={meta.screen}>
+                            {permission ? (
+                                <Can action={permission} matchAny>
                                     <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
                                         <NavigationLabel label={label} {...meta} />
                                     </NavLink>
-                                )}
-                            </ScreenGate>
-                        ))}
-                        {rootAdmin && (
-                            <Link
-                                to={'/panel/servers/$id'}
-                                params={{ id: server.attributes.internal_id }}
-                                aria-label={'Open server administration'}
-                                title={'Open server administration'}
-                            >
-                                <Icon icon={ExternalLink} />
-                            </Link>
-                        )}
-                        <Slot name={'server.navigation.after'} data={server} />
-                    </div>
+                                </Can>
+                            ) : (
+                                <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
+                                    <NavigationLabel label={label} {...meta} />
+                                </NavLink>
+                            )}
+                        </ScreenGate>
+                    ))}
+                    {rootAdmin && (
+                        <Link
+                            to={'/panel/servers/$id'}
+                            params={{ id: server.attributes.internal_id }}
+                            aria-label={'Open server administration'}
+                            title={'Open server administration'}
+                        >
+                            <Icon icon={ExternalLink} />
+                        </Link>
+                    )}
+                    <Slot name={'server.navigation.after'} data={server} />
                 </SubNavigation>
             }
         >

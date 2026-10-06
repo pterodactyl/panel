@@ -59,25 +59,23 @@ export default function EggDetailContainer() {
                 </div>
                 <Slot name='panel.eggs.detail.actions' data={resourceContext} />
                 <SubNavigation className={'mb-4 rounded-sm'}>
-                    <div>
-                        <Link
-                            to={'/panel/eggs/$eggId'}
-                            params={{ eggId }}
-                            activeOptions={{ exact: true, includeSearch: false }}
-                        >
-                            Configuration
-                        </Link>
-                        <Link to={'/panel/eggs/$eggId/tags'} params={{ eggId }}>
-                            Tags
-                        </Link>
-                        <Link to={'/panel/eggs/$eggId/variables'} params={{ eggId }}>
-                            Variables
-                        </Link>
-                        <Link to={'/panel/eggs/$eggId/script'} params={{ eggId }}>
-                            Install Script
-                        </Link>
-                        <ResourceExtensionTabs parent='admin.egg' basePath={`/panel/eggs/${eggId}`} />
-                    </div>
+                    <Link
+                        to={'/panel/eggs/$eggId'}
+                        params={{ eggId }}
+                        activeOptions={{ exact: true, includeSearch: false }}
+                    >
+                        Configuration
+                    </Link>
+                    <Link to={'/panel/eggs/$eggId/tags'} params={{ eggId }}>
+                        Tags
+                    </Link>
+                    <Link to={'/panel/eggs/$eggId/variables'} params={{ eggId }}>
+                        Variables
+                    </Link>
+                    <Link to={'/panel/eggs/$eggId/script'} params={{ eggId }}>
+                        Install Script
+                    </Link>
+                    <ResourceExtensionTabs parent='admin.egg' basePath={`/panel/eggs/${eggId}`} />
                 </SubNavigation>
                 <Outlet />
             </AdminContentBlock>

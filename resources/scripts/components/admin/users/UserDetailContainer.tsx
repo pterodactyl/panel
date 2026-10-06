@@ -379,16 +379,14 @@ export function UserDetailLayout() {
                 </Link>
                 <Slot name={'panel.users.detail.actions'} data={resourceContext} />
                 <SubNavigation className={'mb-6 rounded-sm'}>
-                    <div>
-                        <Link
-                            to={'/panel/users/$id'}
-                            params={{ id: user.attributes.id }}
-                            activeOptions={{ exact: true, includeSearch: false }}
-                        >
-                            About
-                        </Link>
-                        <ResourceExtensionTabs parent={'admin.user'} basePath={`/panel/users/${user.attributes.id}`} />
-                    </div>
+                    <Link
+                        to={'/panel/users/$id'}
+                        params={{ id: user.attributes.id }}
+                        activeOptions={{ exact: true, includeSearch: false }}
+                    >
+                        About
+                    </Link>
+                    <ResourceExtensionTabs parent={'admin.user'} basePath={`/panel/users/${user.attributes.id}`} />
                 </SubNavigation>
                 <Outlet />
             </AdminContentBlock>
