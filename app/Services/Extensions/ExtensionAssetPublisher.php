@@ -128,7 +128,24 @@ class ExtensionAssetPublisher
             return null;
         }
 
-        return $this->missingBuildReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
+        return $this->missingBuildReason($manifest) ?? $this->serverScriptReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
+    }
+
+    /** Published assets are web-served, so nothing in dist may be executable by PHP-FPM. */
+    private function serverScriptReason(ExtensionManifest $manifest): ?string
+    {
+        $dist = $manifest->path('dist');
+        if (! is_dir($dist)) {
+            return null;
+        }
+
+        foreach (File::allFiles($dist, true) as $file) {
+            if (preg_match('/\.(php\d?|phtml|phar|pht|phps)$/i', $file->getFilename()) || mb_strtolower($file->getFilename()) === '.user.ini') {
+                return "Extension \"{$manifest->id}\" ships a server-side script in dist ({$file->getRelativePathname()}); dist may only contain browser assets.";
+            }
+        }
+
+        return null;
     }
 
     public function publishedPath(string $identifier): string
