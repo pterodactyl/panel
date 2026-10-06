@@ -19,6 +19,7 @@ use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Helpers\ThrottlesLogins;
@@ -46,11 +47,16 @@ class SftpAuthenticationController extends Controller
             throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in $seconds seconds.");
         }
 
-        $user = $this->getUser($request, $connection['username']);
-        $server = $this->getServer($request, $connection['server']);
+        $user = User::query()->where('username', $connection['username'])->first();
 
         if ($request->validated('type') !== 'public_key') {
-            if (! Hash::check(JsonValueGuard::string($request->validated('password')), $user->password)) {
+            $password = JsonValueGuard::string($request->validated('password'));
+            if ($user === null) {
+                Hash::make($password);
+                $this->reject($request);
+            }
+
+            if (! Hash::check($password, $user->password)) {
                 Activity::event('auth:sftp.fail')->property('method', 'password')->subject($user)->log();
 
                 $this->reject($request);
@@ -66,12 +72,19 @@ class SftpAuthenticationController extends Controller
                 }
             }
 
-            if (! $key || ! $user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
+            $matched = $key !== null && UserSSHKey::query()
+                ->where('user_id', $user?->id)
+                ->where('fingerprint', $key->getFingerprint('sha256'))
+                ->exists();
+
+            if ($user === null || ! $matched) {
                 // Don't log public key failures - this endpoint is hit once for every key the
                 // user offers, so only the (rarer, more meaningful) bad-password failures are logged.
                 $this->reject($request, ($key) === null);
             }
         }
+
+        $server = $this->getServer($request, $connection['server']);
 
         $this->validateSftpAccess($user, $server, $permissions);
 
@@ -94,16 +107,6 @@ class SftpAuthenticationController extends Controller
             ->first();
 
         return $server ?? $this->reject($request);
-    }
-
-    /**
-     * Finds a user with the given username or increments the login attempts.
-     */
-    protected function getUser(Request $request, string $username): User
-    {
-        $user = User::query()->where('username', $username)->first();
-
-        return $user ?? $this->reject($request);
     }
 
     /**
