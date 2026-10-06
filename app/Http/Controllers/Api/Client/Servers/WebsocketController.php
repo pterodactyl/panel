@@ -40,6 +40,17 @@ class WebsocketController extends ClientApiController
 
         $permissions = $this->permissionsService->handle($server, $user);
 
+        // If the request was authenticated with a permission-scoped API key the
+        // JWT sent to the daemon must not exceed the key's permission set. Without
+        // this, an owner's or admin's scoped key would receive a wildcard grant
+        // and could execute any action directly over the websocket.
+        $token = $user->currentApiKey();
+        if (!is_null($token) && !is_null($token->permissions)) {
+            $permissions = in_array('*', $permissions, true)
+                ? $token->permissions
+                : array_values(array_intersect($permissions, $token->permissions));
+        }
+
         $node = $server->node;
         if (!is_null($server->transfer)) {
             // Check if the user has permissions to receive transfer logs.

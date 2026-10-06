@@ -27,7 +27,7 @@ trait HasAccessTokens
         return $this->hasMany(Sanctum::$personalAccessTokenModel);
     }
 
-    public function createToken(?string $memo, ?array $ips): NewAccessToken
+    public function createToken(?string $memo, ?array $ips, ?array $permissions = null, ?array $servers = null): NewAccessToken
     {
         /** @var ApiKey $token */
         $token = $this->tokens()->forceCreate([
@@ -37,8 +37,22 @@ trait HasAccessTokens
             'token' => encrypt($plain = Str::random(ApiKey::KEY_LENGTH)),
             'memo' => $memo ?? '',
             'allowed_ips' => $ips ?? [],
+            'permissions' => $permissions,
+            'allowed_servers' => $servers,
         ]);
 
         return new NewAccessToken($token, $plain);
+    }
+
+    /**
+     * Returns the client API key used to authenticate the current request, or
+     * null if the request was not authenticated with a client API key (e.g. a
+     * session, or an application key).
+     */
+    public function currentApiKey(): ?ApiKey
+    {
+        $token = $this->currentAccessToken();
+
+        return $token instanceof ApiKey && $token->key_type === ApiKey::TYPE_ACCOUNT ? $token : null;
     }
 }

@@ -24,11 +24,23 @@ class ServerController extends ClientApiController
      */
     public function index(GetServerRequest $request, Server $server): array
     {
+        $permissions = $this->permissionsService->handle($server, $request->user());
+
+        // When the request is authenticated with a permission-scoped API key, the
+        // reported permission set is clamped to the key's scope so the client is
+        // not told it can perform actions the key will actually be denied.
+        $token = $request->user()->currentApiKey();
+        if (!is_null($token) && !is_null($token->permissions)) {
+            $permissions = in_array('*', $permissions, true)
+                ? $token->permissions
+                : array_values(array_intersect($permissions, $token->permissions));
+        }
+
         return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->addMeta([
                 'is_server_owner' => $request->user()->id === $server->owner_id,
-                'user_permissions' => $this->permissionsService->handle($server, $request->user()),
+                'user_permissions' => $permissions,
             ])
             ->toArray();
     }
