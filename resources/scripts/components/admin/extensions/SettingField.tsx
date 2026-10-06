@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowDown, ArrowUp, Plus, X } from 'lucide-react';
 import type { AdminExtensionSettingField, AdminExtensionSettingValue } from '@/api/admin/extensions/queries';
 import Button from '@/components/elements/Button';
@@ -35,6 +35,13 @@ const asText = (value: SettingValue): string => (isString(value) ? value : '');
 const asItems = (value: SettingValue): string[] => (Array.isArray(value) ? value.filter(isString) : []);
 
 const asChoices = (value: SettingValue): Array<string | number> => (Array.isArray(value) ? value : []);
+
+// Row keys continue past the largest existing key so a reset or append never reuses a mounted row.
+const freshKeys = (existing: number[], count: number): number[] => {
+    const start = existing.length > 0 ? Math.max(...existing) + 1 : 0;
+
+    return Array.from({ length: count }, (_, i) => start + i);
+};
 
 export const pickerColor = (value: string): string | null => {
     if (!hexColor.test(value)) {
@@ -139,9 +146,8 @@ function RowButton({
 function ListControl({ field, value, onChange }: ControlProps) {
     const items = asItems(value);
     const maxItems = field.constraints?.max_items ?? undefined;
-    const nextKey = useRef(0);
     const [keys, setKeys] = useState<number[]>([]);
-    const rowKeys = keys.length === items.length ? keys : items.map(() => nextKey.current++);
+    const rowKeys = keys.length === items.length ? keys : freshKeys(keys, items.length);
     if (rowKeys !== keys) {
         setKeys(rowKeys);
     }
@@ -163,7 +169,7 @@ function ListControl({ field, value, onChange }: ControlProps) {
         onChange(swap(items, index, offset));
     };
     const add = () => {
-        setKeys([...rowKeys, nextKey.current++]);
+        setKeys([...rowKeys, ...freshKeys(rowKeys, 1)]);
         onChange([...items, '']);
     };
 

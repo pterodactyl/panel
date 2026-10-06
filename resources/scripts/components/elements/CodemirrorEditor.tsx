@@ -30,9 +30,19 @@ const panelEditorTheme = EditorView.theme(
             fontSize: 'var(--text-xs)',
             height: '100%',
         },
+        // The scroller and the sticky gutters are positioned, so they paint over an outline
+        // on the editor itself: the active line and the line numbers hid the focus ring.
         '&.cm-focused': {
-            outline: '2px solid var(--ring)',
-            outlineOffset: '-2px',
+            outline: 'none',
+        },
+        '&.cm-focused::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '0',
+            border: '2px solid var(--ring)',
+            borderRadius: 'inherit',
+            pointerEvents: 'none',
+            zIndex: '201',
         },
         '.cm-scroller': {
             fontFamily: 'var(--font-mono)',

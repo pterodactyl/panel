@@ -371,6 +371,8 @@ export interface SiteExtensionEntry {
     entry: string;
     /** The Tailwind prefix declared as `ui.prefix`: the extension writes `<prefix>:flex`. */
     prefix?: string | null;
+    /** Changes with the extension's translation files, and is sent when loading them. */
+    translations?: string | null;
     config?: ExtensionConfig;
     screens?: ExtensionScreenDefinition[];
     components?: ComponentName[];

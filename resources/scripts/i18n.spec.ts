@@ -65,3 +65,21 @@ it('follows language changes of the cached current user', async () => {
     expect(instance.language).toBe('nl');
     client.clear();
 });
+
+it('adds the revision of an extension to the URL of its translations only', async () => {
+    (window as BootstrapWindow).SiteConfiguration = {
+        extensions: [
+            { id: 'notes', entry: '/notes.js', translations: 'a1b2' },
+            { id: 'plain', entry: '/plain.js', translations: null },
+        ],
+    };
+    const { localeLoadPath } = await import('@/i18n');
+    const core = '/locales/locale.json?locale={{lng}}&namespace={{ns}}';
+
+    expect(localeLoadPath(['ext-notes::messages'])).toBe(`${core}&revision=a1b2`);
+    expect(localeLoadPath(['strings'])).toBe(core);
+    expect(localeLoadPath(['ext-plain::messages'])).toBe(core);
+    expect(localeLoadPath(['ext-missing::messages'])).toBe(core);
+    // One request for several namespaces has no single revision to carry.
+    expect(localeLoadPath(['ext-notes::messages', 'strings'])).toBe(core);
+});
