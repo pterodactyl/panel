@@ -1,0 +1,37 @@
+packages/sdk/package.json
+  s_bb38cdae517e45::t_795076264dcb70 46-47
+app/Services/Extensions/Scaffolding/stubs/package.stub
+  s_bb38cdae517e45::t_795076264dcb70 24-27
+packages/sdk/README.md
+  s_bb38cdae517e45::t_ec990f0cefa29f 81
+scripts/check-extension-runtime.mjs
+  s_bb38cdae517e45::t_0f29b0e128fcf1 2
+  s_bb38cdae517e45::t_3170e93fb68b95 32
+  s_bb38cdae517e45::t_b55be1706ebfa3 45-46
+  s_bb38cdae517e45::t_6bcfc6c39405e9 10-12
+  s_bb38cdae517e45::t_3208dc4ebab052 87
+resources/scripts/ext-runtime/react.ts
+  s_bb38cdae517e45::t_950d88763ed9c1 11,13
+package.json
+  s_bb38cdae517e45::t_eb67d847683d44 53-54,72-73
+resources/scripts/ext-runtime/react-dom.ts
+  s_bb38cdae517e45::t_cecb57394e24f5 2
+package-lock.json
+  s_bb38cdae517e45::t_9dc075ca198e04 55-56,74-75,3131-3133,3141-3143,3147,5338-5340,5347-5349,5352,5355,5600-5602
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f21c2f07755ec34289da3ac6be07143de082667e",
+  "prompts": {},
+  "sessions": {
+    "s_bb38cdae517e45": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0db92d7-46e6-46b8-b6d3-d553f0360eaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
