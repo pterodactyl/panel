@@ -1,0 +1,23 @@
+.github/docker/default_ssl.conf
+  s_0c078e69478431::t_2566122157617e 51-54
+.github/docker/default.conf
+  s_0c078e69478431::t_08b6dcf0e8d4f2 19-22
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_0c078e69478431::t_656817fbdd1d14 131-148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7efd65cc6ee3f29f8a34898fbd0f165ca0426c07",
+  "prompts": {},
+  "sessions": {
+    "s_0c078e69478431": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "712c1fd7-2642-4677-8ee0-0f91d015a28e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
