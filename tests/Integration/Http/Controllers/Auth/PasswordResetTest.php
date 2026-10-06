@@ -56,6 +56,11 @@ test('reset fails with invalid token', function () {
     $this->assertGuest();
     expect(Hash::check('password', $user->refresh()->password))->toBeTrue();
 });
+test('reset for unknown email returns identical response to invalid token', function () {
+    $this->postJson(route('auth.reset-password'), ['email' => 'unknown@example.com', 'token' => 'invalid-token', 'password' => 'new-password-123', 'password_confirmation' => 'new-password-123'])->assertBadRequest()->assertJsonPath('errors.0.detail', trans('passwords.token'));
+    $this->assertGuest();
+    Event::assertNotDispatched(PasswordReset::class);
+});
 test('reset validates password rules', function () {
     $user = User::factory()->create();
     $token = Password::broker()->createToken($user);

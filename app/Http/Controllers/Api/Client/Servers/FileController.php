@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Knuckles\Scribe\Attributes\Endpoint;
@@ -24,6 +25,7 @@ use Pterodactyl\Contracts\Files\ReadsFileContents;
 use Pterodactyl\Contracts\Files\RenamesFiles;
 use Pterodactyl\Contracts\Files\WritesFileContents;
 use Pterodactyl\Enum\JwtScope;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Facades\Activity;
@@ -197,9 +199,12 @@ class FileController extends ClientApiController
     #[QueryParam('file', 'string', 'Path to the file to write.', required: true, example: '/server.properties')]
     #[ScribeResponse(status: 204, description: 'File contents written.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not write the file.')]
-    public function write(WriteFileContentRequest $request, WritesFileContents $operation, Server $server): JsonResponse
+    public function write(WriteFileContentRequest $request, WritesFileContents $operation, ListsDirectories $lister, Server $server): JsonResponse
     {
         $file = JsonValueGuard::string($request->validated('file'));
+        $permission = $this->fileExists($lister, $server, $file) ? Permissions::FileUpdate : Permissions::FileCreate;
+        throw_unless($request->user()->can($permission->value, $server), AuthorizationException::class);
+
         $operation->write($server, $file, $request->getContent());
 
         Activity::event('server:file.write')->property('file', $file)->log();
@@ -394,5 +399,43 @@ class FileController extends ClientApiController
             ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @throws DaemonConnectionException
+     */
+    private function fileExists(ListsDirectories $lister, Server $server, string $file): bool
+    {
+        $segments = [];
+        foreach (explode('/', $file) as $segment) {
+            if ($segment === '..') {
+                array_pop($segments);
+            } elseif ($segment !== '' && $segment !== '.') {
+                $segments[] = $segment;
+            }
+        }
+
+        $name = array_pop($segments);
+        if ($name === null) {
+            return true;
+        }
+
+        try {
+            $contents = $lister->list($server, '/'.implode('/', $segments));
+        } catch (DaemonConnectionException $daemonConnectionException) {
+            if ($daemonConnectionException->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                return false;
+            }
+
+            throw $daemonConnectionException;
+        }
+
+        foreach ($contents as $entry) {
+            if (($entry['name'] ?? null) === $name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

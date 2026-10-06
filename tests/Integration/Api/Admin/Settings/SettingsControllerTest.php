@@ -23,6 +23,13 @@ test('get settings', function () {
     // The SMTP password must always be redacted to an empty string.
     $response->assertJsonPath('mail.mail:mailers:smtp:password', '');
 });
+test('get settings redacts recaptcha secret key', function () {
+    config()->set('recaptcha.secret_key', 'stored-secret-key');
+    $response = $this->getJson(route('api.admin.settings'));
+    $response->assertStatus(Response::HTTP_OK);
+    $response->assertJsonPath('advanced.recaptcha:secret_key', '');
+    $this->assertStringNotContainsString('stored-secret-key', $response->getContent());
+});
 test('get languages', function () {
     $response = $this->getJson(route('api.admin.languages'));
     $response->assertStatus(Response::HTTP_OK);
@@ -62,6 +69,12 @@ test('update advanced', function () {
     $this->assertDatabaseHas('settings', ['key' => 'settings::recaptcha:secret_key', 'value' => 'secret-key']);
     expect(Setting::fetch('settings::recaptcha:secret_key'))->toBe('secret-key');
     expect((string) Setting::fetch('settings::pterodactyl:client_features:allocations:range_start'))->toBe('5000');
+});
+test('update advanced keeps recaptcha secret key when blank', function () {
+    Setting::put('settings::recaptcha:secret_key', 'existing-secret-key');
+    $response = $this->putJson(route('api.admin.settings.advanced'), array_merge(validAdvancedPayload(), ['recaptcha:secret_key' => '']));
+    $response->assertStatus(Response::HTTP_NO_CONTENT);
+    expect(Setting::fetch('settings::recaptcha:secret_key'))->toBe('existing-secret-key');
 });
 test('invalid payloads return validation errors', function () {
     $response = $this->putJson(route('api.admin.settings.general'), []);

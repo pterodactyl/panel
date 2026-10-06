@@ -146,6 +146,7 @@ export default function useFileManagerModel(data: FileManagerSlotData, listed: b
             },
             extract: async (name) => {
                 allow(canCreate, 'file.create');
+                allow(canUpdate, 'file.update');
                 await decompressFile(decompressFileInput(uuid, directory, name));
             },
             chmod: async (changed) => {
@@ -163,6 +164,7 @@ export default function useFileManagerModel(data: FileManagerSlotData, listed: b
             },
             upload: async (uploaded) => {
                 allow(canCreate, 'file.create');
+                allow(canUpdate, 'file.update');
                 await upload(uploaded);
             },
         };

@@ -6,6 +6,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Http\Controllers\Auth\LoginControll
 
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use PragmaRX\Google2FA\Google2FA;
 use Pterodactyl\Data\LoginCheckpoint;
 use Pterodactyl\Events\ActivityLogged;
@@ -52,6 +53,22 @@ test('unknown user and bad password responses are identical', function () {
     expect($badPassword->getStatusCode())->toBe($unknown->getStatusCode());
     expect($badPassword->json())->toBe($unknown->json());
 });
+test('unknown user login still performs a password hash', function () {
+    Hash::spy();
+    $this->postJson(route('auth.login'), ['user' => 'does-not-exist', 'password' => 'password'])->assertBadRequest();
+    Hash::shouldHaveReceived('make')->once()->with('password');
+});
+test('unknown user and existing user responses are identical without a valid password', function (array $payload) {
+    $user = User::factory()->create();
+    $unknown = $this->postJson(route('auth.login'), ['user' => 'does-not-exist'] + $payload);
+    $existing = $this->postJson(route('auth.login'), ['user' => $user->username] + $payload);
+    $unknown->assertUnprocessable();
+    expect($existing->getStatusCode())->toBe($unknown->getStatusCode());
+    expect($existing->json())->toBe($unknown->json());
+})->with([
+    'missing password' => [[]],
+    'non-string password' => [['password' => ['array']]],
+]);
 test('login with two factor enabled returns confirmation token', function () {
     $user = User::factory()->create(['use_totp' => true, 'totp_secret' => encrypt(str_repeat('a', 16))]);
     $response = $this->postJson(route('auth.login'), ['user' => $user->username, 'password' => 'password']);

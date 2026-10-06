@@ -2433,7 +2433,7 @@ export type AdminUpdateAdvancedSettingsRequest = {
     /**
      * The recaptcha:secret key. Must not be greater than 191 characters.
      */
-    'recaptcha:secret_key': string;
+    'recaptcha:secret_key'?: string | null;
     /**
      * The recaptcha:website key. Must not be greater than 191 characters.
      */
@@ -3154,6 +3154,10 @@ export type AuthResetPasswordRequest = {
      * Confirmation matching the new account password.
      */
     password_confirmation: string;
+    /**
+     * The reCAPTCHA token when reCAPTCHA is enabled.
+     */
+    'g-recaptcha-response'?: string | null;
 };
 
 export type ClientEnableTwoFactorAuthenticationRequest = {
@@ -12012,9 +12016,6 @@ export type AuthResetPasswordData = {
 };
 
 export type AuthResetPasswordErrors = {
-    /**
-     * The reset token is invalid or expired.
-     */
     400: ErrorEnvelope;
     /**
      * Authentication credentials were missing or invalid.

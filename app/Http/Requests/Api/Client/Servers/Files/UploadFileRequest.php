@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Models\Server;
 
-class UploadFileRequest extends ClientApiRequest implements ClientPermissionsRequest
+class UploadFileRequest extends ClientApiRequest
 {
-    public function permission(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function authorize(): bool
     {
-        return Permissions::FileCreate->value;
+        $server = $this->parameter('server', Server::class);
+
+        return $this->user()->can(Permissions::FileCreate->value, $server)
+            && $this->user()->can(Permissions::FileUpdate->value, $server);
     }
 }

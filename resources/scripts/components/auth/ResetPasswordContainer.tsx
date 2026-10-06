@@ -1,18 +1,34 @@
+import { useRef } from 'react';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useAppForm } from '@/components/form';
 import { TextInput } from '@/components/form/controls';
+import type { InvisibleRecaptchaHandle } from '@/components/elements/InvisibleRecaptcha';
+import InvisibleRecaptcha from '@/components/elements/InvisibleRecaptcha';
+import { useSiteSettings } from '@/api/settings/queries';
 import { usePerformPasswordReset } from '@/api/auth/queries';
+import { toast } from 'sonner';
 
 export default function ResetPasswordContainer() {
     const params = useParams({ strict: false });
     const search = useSearch({ from: '/auth/password/reset/$token' });
     const email = search.email ?? '';
+    const recaptchaRef = useRef<InvisibleRecaptchaHandle>(null);
     const resetPassword = usePerformPasswordReset();
+    const { enabled: recaptchaEnabled, siteKey } = useSiteSettings().recaptcha;
 
     const form = useAppForm({
         defaultValues: { password: '', passwordConfirmation: '' },
         onSubmit: async ({ value }) => {
+            let recaptchaToken = '';
+            if (recaptchaEnabled) {
+                recaptchaToken = (await recaptchaRef.current?.execute()) ?? '';
+                if (!recaptchaToken) {
+                    toast.error('Captcha verification failed, please try again.');
+                    return;
+                }
+            }
+
             try {
                 await resetPassword.mutateAsync({
                     body: {
@@ -20,6 +36,7 @@ export default function ResetPasswordContainer() {
                         token: params.token ?? '',
                         password: value.password,
                         password_confirmation: value.passwordConfirmation,
+                        'g-recaptcha-response': recaptchaToken,
                     },
                 });
                 window.location.assign('/');
@@ -74,6 +91,7 @@ export default function ResetPasswordContainer() {
                     <form.SubmitButton size={'xlarge'}>Reset Password</form.SubmitButton>
                 </form.AppForm>
             </div>
+            {recaptchaEnabled && <InvisibleRecaptcha ref={recaptchaRef} siteKey={siteKey || ''} />}
             <div className={'mt-6 text-center'}>
                 <Link
                     to={'/auth/login'}

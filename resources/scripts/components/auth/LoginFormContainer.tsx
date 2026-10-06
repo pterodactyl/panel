@@ -1,5 +1,6 @@
 import React from 'react';
 import Form from '@/components/form/Form';
+import PterodactylMark from '@/components/elements/PterodactylMark';
 
 interface Props {
     form: { handleSubmit: () => unknown };
@@ -15,11 +16,7 @@ export default function LoginFormContainer({ form, title, className, children }:
             <Form form={form} className={className}>
                 <div className={'md:flex w-full bg-card text-card-foreground shadow-lg rounded-lg p-6 md:pl-0 mx-1'}>
                     <div className={'flex-none select-none mb-6 md:mb-0 self-center'}>
-                        <img
-                            src={'/assets/svgs/pterodactyl.svg'}
-                            alt={'Pterodactyl'}
-                            className={'block w-48 md:w-64 mx-auto'}
-                        />
+                        <PterodactylMark className={'block w-32 md:w-56 h-auto mx-auto md:px-12'} />
                     </div>
                     <div className={'flex-1'}>{children}</div>
                 </div>

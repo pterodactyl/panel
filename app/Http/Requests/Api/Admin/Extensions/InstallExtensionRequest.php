@@ -49,7 +49,7 @@ class InstallExtensionRequest extends AdminApiRequest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareForValidation(): void
     {

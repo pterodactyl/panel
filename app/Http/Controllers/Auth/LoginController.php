@@ -18,6 +18,7 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Unauthenticated;
 use Pterodactyl\Contracts\Users\CompletesLogins;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Requests\Auth\LoginRequest;
 use Pterodactyl\Models\User;
 use Pterodactyl\Support\JsonValueGuard;
 
@@ -110,17 +111,19 @@ class LoginController extends AbstractLoginController
     #[ScribeResponse(self::LOGIN_CHECKPOINT_EXAMPLE, description: 'Two-factor checkpoint is required before login can complete.')]
     #[ScribeResponse(self::LOGIN_FAILED_ERROR, status: 400, description: 'The credentials are invalid.')]
     #[ScribeResponse(self::CAPTCHA_FAILED_ERROR, status: 400, description: 'The reCAPTCHA token is invalid or missing.')]
-    public function login(Request $request, CompletesLogins $logins): JsonResponse
+    public function login(LoginRequest $request, CompletesLogins $logins): JsonResponse
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
         }
 
-        $username = JsonValueGuard::nullableString($request->input('user'));
+        $username = JsonValueGuard::string($request->validated('user'));
+        $password = JsonValueGuard::string($request->validated('password'));
 
         $user = User::query()->where($this->getField($username), $username)->first();
-        if (($user) === null) {
+        if ($user === null) {
+            Hash::make($password);
             $this->sendFailedLoginResponse($request);
         }
 
@@ -128,7 +131,7 @@ class LoginController extends AbstractLoginController
         // continue. Previously this was handled in the 2FA checkpoint, however that has
         // a flaw in which you can discover if an account exists simply by seeing if you
         // can proceed to the next step in the login process.
-        if (! Hash::check(JsonValueGuard::string($request->input('password')), $user->password)) {
+        if (! Hash::check($password, $user->password)) {
             $this->sendFailedLoginResponse($request, $user);
         }
 

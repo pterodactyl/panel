@@ -36,7 +36,7 @@ class SettingsController extends AdminApiController
         ],
         'advanced' => [
             'recaptcha:enabled' => false,
-            'recaptcha:secret_key' => 'secret',
+            'recaptcha:secret_key' => '',
             'recaptcha:website_key' => 'website',
             'pterodactyl:guzzle:timeout' => 15,
             'pterodactyl:guzzle:connect_timeout' => 5,
@@ -76,7 +76,7 @@ class SettingsController extends AdminApiController
             ],
             'advanced' => [
                 'recaptcha:enabled' => JsonValueGuard::boolean($config->get('recaptcha.enabled')),
-                'recaptcha:secret_key' => $config->get('recaptcha.secret_key'),
+                'recaptcha:secret_key' => '',
                 'recaptcha:website_key' => $config->get('recaptcha.website_key'),
                 'pterodactyl:guzzle:timeout' => JsonValueGuard::integer($config->get('pterodactyl.guzzle.timeout')),
                 'pterodactyl:guzzle:connect_timeout' => JsonValueGuard::integer($config->get('pterodactyl.guzzle.connect_timeout')),
