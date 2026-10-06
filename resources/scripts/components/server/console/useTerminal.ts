@@ -70,6 +70,37 @@ const terminalProps: ITerminalOptions = {
     rows: 30,
 };
 
+const countLineFeeds = (data: string | Uint8Array) =>
+    (data instanceof Uint8Array ? data : new TextEncoder().encode(data)).filter((byte) => byte === 0x0a).length;
+
+const preserveScrollPositionOnWrite = (term: Terminal) => {
+    const write = term.write.bind(term);
+
+    term.write = (data, callback) => {
+        const viewportY = term.getViewportY();
+        if (viewportY === 0) {
+            write(data, callback);
+            return;
+        }
+
+        const scrollbackLength = term.getScrollbackLength();
+        write(data, callback);
+        const grown = term.getScrollbackLength() - scrollbackLength;
+        term.scrollLines(-(viewportY + (grown < 0 ? countLineFeeds(data) : grown)));
+    };
+};
+
+const renderWholeLines = (term: Terminal) => {
+    const renderer = term.renderer;
+    if (!renderer) {
+        return;
+    }
+
+    const render = renderer.render.bind(renderer);
+    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider, scrollbarOpacity) =>
+        render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, scrollbarOpacity);
+};
+
 const hasStyleChanged = (appliedStyle: string) => {
     try {
         return JSON.stringify(buildTerminalStyle()) !== appliedStyle;
@@ -129,6 +160,8 @@ export const useTerminal = () => {
                 fit.observeResize();
 
                 term.registerLinkProvider(new UrlRegexProvider(term));
+                preserveScrollPositionOnWrite(term);
+                renderWholeLines(term);
 
                 // The canvas has no DOM selection, so copy reads the terminal's own selection.
                 term.attachCustomKeyEventHandler((e: KeyboardEvent) => {
