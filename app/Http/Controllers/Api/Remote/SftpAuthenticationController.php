@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
 use Pterodactyl\Enum\Permissions;
@@ -30,6 +31,9 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
+
+    /** The server resolved for the current request, used to key the lockout. */
+    private ?Server $throttleServer = null;
 
     /**
      * Authenticate a set of credentials and return the associated server details
@@ -106,7 +110,13 @@ class SftpAuthenticationController extends Controller
             ->where('node_id', RemoteRequestNode::get($request)->id)
             ->first();
 
-        return $server ?? $this->reject($request, false);
+        if ($server === null) {
+            $this->reject($request, false);
+        }
+
+        $this->throttleServer = $server;
+
+        return $server;
     }
 
     /**
@@ -157,13 +167,13 @@ class SftpAuthenticationController extends Controller
     }
 
     /**
-     * Get the throttle key for the given request.
+     * Get the throttle key for the given request: normalised requested username plus server UUID
      */
     protected function throttleKey(Request $request): string
     {
         $raw = JsonValueGuard::nullableString($request->input('username', '')) ?? '';
-        $username = explode('.', strrev($raw));
+        $username = Str::transliterate(mb_strtolower(rtrim($this->parseUsername($raw)['username'], ' ')));
 
-        return mb_strtolower(strrev($username[0] ?? '').'|'.$request->ip()); // @phpstan-ignore nullCoalesce.offset
+        return $username.'|'.($this->throttleServer->uuid ?? '');
     }
 }

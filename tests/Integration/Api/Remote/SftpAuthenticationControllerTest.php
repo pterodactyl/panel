@@ -6,6 +6,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Remote\SftpAuthenticationContro
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use phpseclib3\Crypt\EC;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\ActivityLog;
@@ -54,6 +55,50 @@ test('user is throttled if invalid credentials are provided', function () {
     for ($i = 0; $i <= $limit; $i++) {
         $this->postJson('/api/remote/sftp/auth', ['type' => 'public_key', 'username' => getUsername(), 'password' => 'invalid key'])->assertStatus($i === $limit ? 429 : 403);
     }
+});
+test('a locked out user does not lock other users out of the same server', function () {
+    $other = User::factory()->create(['password' => 'foobar', 'root_admin' => true]);
+    $limit = (int) config('auth.lockout.attempts');
+    for ($i = 0; $i <= $limit; $i++) {
+        $this->postJson('/api/remote/sftp/auth', ['username' => getUsername(), 'password' => 'wrong password'])->assertStatus($i === $limit ? 429 : 403);
+    }
+    $this->postJson('/api/remote/sftp/auth', ['username' => $other->username.'.'.$this->server->uuidShort, 'password' => 'foobar'])->assertOk();
+});
+test('a user locked out on one server can still use their other servers', function () {
+    $second = $this->createServerModel(['owner_id' => $this->user->id, 'node_id' => $this->server->node_id]);
+    $limit = (int) config('auth.lockout.attempts');
+    for ($i = 0; $i <= $limit; $i++) {
+        $this->postJson('/api/remote/sftp/auth', ['username' => getUsername(), 'password' => 'wrong password'])->assertStatus($i === $limit ? 429 : 403);
+    }
+    $this->postJson('/api/remote/sftp/auth', ['username' => $this->user->username.'.'.$second->uuidShort, 'password' => 'foobar'])->assertOk();
+});
+test('attempts with the long uuid and the short identifier share one lockout', function () {
+    $limit = (int) config('auth.lockout.attempts');
+    for ($i = 0; $i < $limit; $i++) {
+        $this->postJson('/api/remote/sftp/auth', ['username' => getUsername($i % 2 === 0), 'password' => 'wrong password'])->assertForbidden();
+    }
+    $this->postJson('/api/remote/sftp/auth', ['username' => getUsername(true), 'password' => 'wrong password'])->assertStatus(429);
+    $this->postJson('/api/remote/sftp/auth', ['username' => getUsername(false), 'password' => 'wrong password'])->assertStatus(429);
+});
+test('username spelling variants share one lockout', function (bool $exists) {
+    $base = 'jane_ss_'.mb_strtolower(Str::random(8));
+    if ($exists) {
+        $this->user->update(['username' => $base]);
+    }
+    // The database collation ignores trailing spaces, case and accents, and treats 'ß' as 'ss'.
+    $variants = [$base.' ', mb_strtoupper($base), strtr($base, ['a' => 'ä', 'e' => 'é']), str_replace('ss', 'ß', $base)];
+    config(['auth.lockout.attempts' => count($variants)]);
+    foreach ($variants as $variant) {
+        $this->postJson('/api/remote/sftp/auth', ['username' => $variant.'.'.$this->server->uuidShort, 'password' => 'wrong password'])->assertForbidden();
+    }
+    $this->postJson('/api/remote/sftp/auth', ['username' => $base.'.'.$this->server->uuidShort, 'password' => 'wrong password'])->assertStatus(429);
+})->with(['known user' => [true], 'unknown user' => [false]]);
+test('the lockout does not depend on the requesting ip', function () {
+    $limit = (int) config('auth.lockout.attempts');
+    for ($i = 0; $i < $limit; $i++) {
+        $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.'.($i + 1)])->postJson('/api/remote/sftp/auth', ['username' => getUsername(), 'password' => 'wrong password'])->assertForbidden();
+    }
+    $this->withServerVariables(['REMOTE_ADDR' => '10.0.1.1'])->postJson('/api/remote/sftp/auth', ['username' => getUsername(), 'password' => 'wrong password'])->assertStatus(429);
 });
 test('wrong password for a real user on a real server is logged and counts toward the lockout', function () {
     $limit = (int) config('auth.lockout.attempts');
