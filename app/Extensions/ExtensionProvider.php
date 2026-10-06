@@ -12,7 +12,9 @@ use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Http\Middleware\Activity\ServerSubject;
+use Pterodactyl\Http\Middleware\Api\Application\AuthorizeExtensionApplicationRequest;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
+use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerParameterAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
@@ -34,7 +36,8 @@ use Throwable;
  * the curated backend API surface: routes mounted at the extension's namespaced
  * prefixes with the same middleware stacks core routes use, migrations, views,
  * translations, and typed per-extension settings.
- * Routes, operation listeners, action wrappers, commands, schedules, head tags, settings
+ * Routes (including `Route::bind`, `Route::model` and `Route::pattern` calls in route
+ * files), operation listeners, action wrappers, commands, schedules, head tags, settings
  * and permissions activate after successful provider boot. Direct container mutations
  * and other PHP side effects are not staged.
  */
@@ -76,19 +79,26 @@ abstract class ExtensionProvider extends ServiceProvider
     /**
      * Mount a route file at /api/client/extensions/<id> with the client API
      * middleware stack (session/API-key auth, 2FA requirement, client throttle).
+     * A route that declares a {server} parameter gets the same access and scoping
+     * checks as server routes: the user must own the server, be one of its subusers
+     * or be a root admin, otherwise the request is answered with a 404.
      */
     protected function registerClientApiRoutes(string $path): void
     {
-        $this->registerRouteFile($path, ['api', RequireTwoFactorAuthentication::class, 'client-api', 'throttle:api.client'], '/api/client/extensions/'.$this->id(), 'client');
+        $this->registerRouteFile($path, ['api', RequireTwoFactorAuthentication::class, 'client-api', 'throttle:api.client', AuthenticateServerParameterAccess::class], '/api/client/extensions/'.$this->id(), 'client');
     }
 
     /**
      * Mount a route file at /api/application/extensions/<id> with the application
-     * API middleware stack.
+     * API middleware stack. Extension routes have no API key resource of their own,
+     * so an application API key must grant read access to every resource for GET,
+     * HEAD and OPTIONS requests and write access to every resource for any other
+     * method, otherwise the request is refused with a 403. Root admins using the
+     * panel session or an account API key pass, as they do on core endpoints.
      */
     protected function registerApplicationApiRoutes(string $path): void
     {
-        $this->registerRouteFile($path, ['api', RequireTwoFactorAuthentication::class, 'application-api', 'throttle:api.application'], '/api/application/extensions/'.$this->id(), 'application');
+        $this->registerRouteFile($path, ['api', RequireTwoFactorAuthentication::class, 'application-api', 'throttle:api.application', AuthorizeExtensionApplicationRequest::class], '/api/application/extensions/'.$this->id(), 'application');
     }
 
     /**
@@ -97,6 +107,12 @@ abstract class ExtensionProvider extends ServiceProvider
      * server subject/access/scoping middleware core server routes use. Routes in
      * the file receive the resolved server via route-model binding - type-hint
      * Pterodactyl\Models\Server on controller actions.
+     *
+     * The stack only checks that the user can see the server: the owner, root
+     * admins and every subuser pass, whatever permissions the subuser holds. As on
+     * core endpoints, each route must check its own permission, for example
+     * `$request->user()->can('ext.<id>.<key>', $server)` for a key registered with
+     * registerPermissions(), or a core permission.
      */
     protected function registerServerApiRoutes(string $path): void
     {
