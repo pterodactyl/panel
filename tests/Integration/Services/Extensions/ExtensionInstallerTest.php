@@ -149,6 +149,43 @@ test('invalid archive roots leave no extracted files', function (bool $ambiguous
     expect(glob(storage_path('app/extensions-tmp/*')))->toBeEmpty();
 })->with([false, true]);
 
+test('archives with too many entries are rejected before extraction', function (): void {
+    $this->app->useStoragePath(dirname($this->sourceDirectory).'/storage');
+    $path = $this->sourceDirectory.'/many.zip';
+    $zip = new ZipArchive;
+    $zip->open($path, ZipArchive::CREATE);
+    $zip->addFromString('extension.json', '{}');
+    for ($i = 0; $i < ExtensionPackageLocator::MAX_ARCHIVE_ENTRIES; $i++) {
+        $zip->addFromString("files/{$i}.txt", '');
+    }
+
+    $zip->close();
+
+    expect(fn () => $this->app->make(ExtensionPackageLocator::class)->locate($path))->toThrow(InvalidExtensionException::class, 'more than the allowed '.ExtensionPackageLocator::MAX_ARCHIVE_ENTRIES);
+
+    expect(glob(storage_path('app/extensions-tmp/*')))->toBeEmpty();
+});
+test('archives that expand beyond the size limit are rejected before extraction', function (): void {
+    $this->app->useStoragePath(dirname($this->sourceDirectory).'/storage');
+    $sparse = $this->sourceDirectory.'/zeros.bin';
+    $handle = fopen($sparse, 'wb');
+    ftruncate($handle, ExtensionPackageLocator::MAX_ARCHIVE_UNCOMPRESSED_BYTES + 1);
+    fclose($handle);
+
+    $path = $this->sourceDirectory.'/bomb.zip';
+    $zip = new ZipArchive;
+    $zip->open($path, ZipArchive::CREATE);
+    $zip->addFromString('extension.json', '{}');
+    $zip->addFile($sparse, 'zeros.bin');
+    $zip->close();
+    unlink($sparse);
+
+    expect(filesize($path))->toBeLessThan(ExtensionPackageLocator::MAX_ARCHIVE_UNCOMPRESSED_BYTES / 100);
+    expect(fn () => $this->app->make(ExtensionPackageLocator::class)->locate($path))->toThrow(InvalidExtensionException::class, 'expands to more than the allowed');
+
+    expect(glob(storage_path('app/extensions-tmp/*')))->toBeEmpty();
+});
+
 test('completion observer failures leave a successful install intact', function (): void {
     $source = writeExtension('eventful');
     Exceptions::fake();

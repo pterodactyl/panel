@@ -13,6 +13,10 @@ use ZipArchive;
 
 class ExtensionPackageLocator
 {
+    public const int MAX_ARCHIVE_ENTRIES = 5000;
+
+    public const int MAX_ARCHIVE_UNCOMPRESSED_BYTES = 200 * 1024 * 1024;
+
     /**
      * @template T of object|ApiValue10
      *
@@ -55,6 +59,14 @@ class ExtensionPackageLocator
     {
         $zip = new ZipArchive;
         throw_if($zip->open($archive) !== true, InvalidExtensionException::class, "Unable to open archive {$archive}.");
+        
+        try {
+            $this->assertArchiveWithinLimits($zip, $archive);
+        } catch (Throwable $throwable) {
+            $zip->close();
+
+            throw $throwable;
+        }
 
         $workdir = storage_path('app'.DIRECTORY_SEPARATOR.'extensions-tmp'.DIRECTORY_SEPARATOR.Str::random(12));
         File::ensureDirectoryExists($workdir);
@@ -69,6 +81,23 @@ class ExtensionPackageLocator
             throw $throwable;
         } finally {
             $zip->close();
+        }
+    }
+
+    /**
+     * @throws InvalidExtensionException
+     */
+    private function assertArchiveWithinLimits(ZipArchive $zip, string $archive): void
+    {
+        throw_if($zip->numFiles > self::MAX_ARCHIVE_ENTRIES, InvalidExtensionException::class, sprintf('Archive %s contains %d entries, more than the allowed %d.', $archive, $zip->numFiles, self::MAX_ARCHIVE_ENTRIES));
+
+        $total = 0;
+        for ($index = 0; $index < $zip->numFiles; $index++) {
+            $stat = $zip->statIndex($index);
+            throw_if($stat === false, InvalidExtensionException::class, "Unable to read entry {$index} of archive {$archive}.");
+
+            $total += $stat['size'];
+            throw_if($total > self::MAX_ARCHIVE_UNCOMPRESSED_BYTES, InvalidExtensionException::class, sprintf('Archive %s expands to more than the allowed %d bytes.', $archive, self::MAX_ARCHIVE_UNCOMPRESSED_BYTES));
         }
     }
 
