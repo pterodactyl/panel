@@ -1,28 +1,18 @@
 <?php
 
+$proxies = trim((string) env('TRUSTED_PROXIES', ''));
+
 return [
     /*
-     * Set trusted proxy IP addresses.
+     * SettingsServiceProvider overrides this value when the database
+     * contains settings::trustedproxy:proxies.
      *
-     * Both IPv4 and IPv6 addresses are
-     * supported, along with CIDR notation.
-     *
-     * The "*" character is syntactic sugar
-     * within TrustedProxy to trust any proxy
-     * that connects directly to your server,
-     * a requirement when you cannot know the address
-     * of your proxy (e.g. if using Rackspace balancers).
-     *
-     * The "**" character is syntactic sugar within
-     * TrustedProxy to trust not just any proxy that
-     * connects directly to your server, but also
-     * proxies that connect to those proxies, and all
-     * the way back until you reach the original source
-     * IP. It will mean that $request->getClientIp()
-     * always gets the originating client IP, no matter
-     * how many proxies that client's request has
-     * subsequently passed through.
+     * Keep the environment value as a fallback for existing installations.
      */
-    'proxies' => in_array(env('TRUSTED_PROXIES', []), ['*', '**']) ?
-        env('TRUSTED_PROXIES') : explode(',', env('TRUSTED_PROXIES') ?? ''),
+    'proxies' => in_array($proxies, ['*', '**'], true)
+        ? $proxies
+        : array_values(array_filter(
+            array_map('trim', explode(',', $proxies)),
+            static fn (string $proxy): bool => $proxy !== ''
+        )),
 ];
