@@ -22,6 +22,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use Pterodactyl\Enum\ResourceLimit;
+use Pterodactyl\Extensions\Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\ApiKey;
@@ -108,6 +109,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(DaemonManager::class);
+
+        $this->app->extend('auth.password', fn (): PasswordBrokerManager => new PasswordBrokerManager($this->app));
 
         $this->app->bind(function (): Fractal {
             $requested = JsonValueGuard::stringList(array_values($this->app->make(Request::class)->collect('include')->all()));

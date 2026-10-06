@@ -20,7 +20,6 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Group('Authentication', 'Browser session authentication endpoints used by the panel frontend.', authenticated: false)]
 class ResetPasswordController extends Controller
@@ -37,6 +36,16 @@ class ResetPasswordController extends Controller
                 'code' => 'DisplayException',
                 'status' => '400',
                 'detail' => 'This password reset token is invalid.',
+            ],
+        ],
+    ];
+
+    private const array CAPTCHA_FAILED_ERROR = [
+        'errors' => [
+            [
+                'code' => 'HttpException',
+                'status' => '400',
+                'detail' => 'Failed to validate reCAPTCHA data.',
             ],
         ],
     ];
@@ -59,8 +68,10 @@ class ResetPasswordController extends Controller
     #[BodyParam('token', 'string', 'The password reset token.', required: true, example: 'b6e22f85d63c4d9db9739f9ab0a27a48f51f7ad38ef8c12fd157c4c6f4b2e51d')]
     #[BodyParam('password', 'string', 'The new account password. Must be at least eight characters.', required: true, example: 'correct-horse-battery-staple')]
     #[BodyParam('password_confirmation', 'string', 'Confirmation matching the new account password.', required: true, example: 'correct-horse-battery-staple')]
+    #[BodyParam('g-recaptcha-response', 'string', 'The reCAPTCHA token when reCAPTCHA is enabled.', required: false, example: '03AFcWeA...', nullable: true)]
     #[ScribeResponse(self::RESET_COMPLETE_EXAMPLE, description: 'Password reset completed.')]
     #[ScribeResponse(self::RESET_FAILED_ERROR, status: 400, description: 'The reset token is invalid or expired.')]
+    #[ScribeResponse(self::CAPTCHA_FAILED_ERROR, status: 400, description: 'The reCAPTCHA token is invalid or missing.')]
     public function __invoke(ResetPasswordRequest $request): JsonResponse
     {
         // Here we will attempt to reset the user's password. If it is successful we
@@ -77,7 +88,7 @@ class ResetPasswordController extends Controller
             return $this->sendResetResponse();
         }
 
-        throw new DisplayException(trans(JsonValueGuard::nullableString($response)));
+        throw new DisplayException(trans('passwords.token'));
     }
 
     /**
