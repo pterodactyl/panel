@@ -301,6 +301,31 @@ test('a single claimed prefix can be mounted and undeclared prefixes are refused
     expect(fn () => provider('plain')->rootRoutes($path))->toThrow(InvalidExtensionException::class, 'declares no "routes.root" prefixes');
 });
 
+test('route binders and patterns declared in a staged route file reach the panel router', function (): void {
+    extensions('lookup');
+    $provider = provider('lookup', ['routes' => ['root' => ['lookup']]]);
+    $provider->beginRegistration();
+    $provider->rootRoutes(writeBindingRouteFile());
+    $provider->commitRegistration();
+
+    $this->get('/lookup/abc')->assertOk()->assertContent('ABC');
+    expect(Route::getBindingCallback('code'))->not->toBeNull();
+    expect(Route::getPatterns())->toHaveKey('code', '[a-z]+');
+});
+
+test('route binders and patterns of a provider that fails to commit are discarded', function (): void {
+    extensions('lookup');
+    $provider = provider('lookup', ['routes' => ['root' => ['lookup']]]);
+    $provider->beginRegistration();
+    $provider->rootRoutes(writeBindingRouteFile());
+    $provider->permissions('Broken.', []);
+    expect(fn () => $provider->commitRegistration())->toThrow(InvalidArgumentException::class);
+
+    expect(Route::getPatterns())->not->toHaveKey('code');
+    expect(Route::getBindingCallback('code'))->toBeNull();
+    expect(Route::getRoutes()->match(Request::create('/lookup/abc'))->uri())->toBe('{react}');
+});
+
 /** Marks the given extensions as enabled and collects every failure recorded against one. */
 function extensions(string ...$identifiers): void
 {
@@ -384,6 +409,25 @@ function writeRouteFile(string $filename, string $uri, string $name): string
         use Illuminate\\Support\\Facades\\Route;
 
         Route::get('{$uri}', fn () => 'ok')->name('{$name}');
+        PHP);
+
+        return $path;
+    })->call(pterodactylTestCase());
+}
+
+/** A route file that scopes its parameter through Route::pattern() and Route::bind(). */
+function writeBindingRouteFile(): string
+{
+    return (function (): string {
+        $path = $this->directory.DIRECTORY_SEPARATOR.'binding.php';
+        File::put($path, <<<'PHP'
+        <?php
+
+        use Illuminate\Support\Facades\Route;
+
+        Route::pattern('code', '[a-z]+');
+        Route::bind('code', fn (string $value): string => strtoupper($value));
+        Route::get('/{code}', fn (string $code): string => $code)->name('code');
         PHP);
 
         return $path;
