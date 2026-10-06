@@ -1,0 +1,34 @@
+packages/sdk/package.json
+  s_bb38cdae517e45::t_af315b5d997ac4 52
+resources/scripts/components/admin/extensions/SettingField.tsx
+  s_bb38cdae517e45::t_bf36ef64548272 1
+  s_bb38cdae517e45::t_838b81307bbd54 39-45
+  s_bb38cdae517e45::t_24804032560fe1 150
+  s_bb38cdae517e45::t_b0a5d8626ea24b 172
+package.json
+  s_bb38cdae517e45::t_af315b5d997ac4 40
+resources/scripts/components/form/fields.spec.tsx
+  s_bb38cdae517e45::t_292389c41f7113 13,16-17,20
+  s_bb38cdae517e45::t_527ba5360dde4e 3
+  s_bb38cdae517e45::t_8216f02a3cd4bf 42-44,46
+app/Services/Extensions/Scaffolding/stubs/package.stub
+  s_bb38cdae517e45::t_af315b5d997ac4 21
+package-lock.json
+  s_bb38cdae517e45::t_3d604ed503957f 42,3352-3354,3358
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d3410f85436ea740b7bcf780463f03bf132b4d4e",
+  "prompts": {},
+  "sessions": {
+    "s_bb38cdae517e45": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0db92d7-46e6-46b8-b6d3-d553f0360eaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
