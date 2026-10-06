@@ -22,7 +22,8 @@ class DevCommand extends Command
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
             $publish = function () use ($installer, $manifest): void {
-                $installer->install($manifest->directory, (bool) $this->option('enable'));
+                // Republishing its own source over the installed copy is what this command is for.
+                $installer->install($manifest->directory, (bool) $this->option('enable'), replace: true);
                 $this->components->info('Published '.$manifest->id.'.');
             };
             if (! $manifest->hasUi()) {

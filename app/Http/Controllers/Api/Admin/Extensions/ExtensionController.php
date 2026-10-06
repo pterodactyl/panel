@@ -104,6 +104,7 @@ class ExtensionController extends AdminApiController
     #[Endpoint('Install extension', 'Installs an uploaded .pteroext or .zip extension package.')]
     #[BodyParam('package', 'file', 'Extension archive to install.', required: true)]
     #[BodyParam('enable', 'boolean', 'Enable the extension after installing it.', required: false, example: false)]
+    #[BodyParam('replace', 'boolean', 'Replace an installed extension with the same id. Without it, such a package is rejected with a 409 naming the id and both versions.', required: false, example: false)]
     #[ScribeResponse(['data' => self::EXTENSION_EXAMPLE], status: 201, description: 'Extension installed.')]
     public function store(
         InstallExtensionRequest $request,
@@ -121,7 +122,7 @@ class ExtensionController extends AdminApiController
         $path = $workdir.DIRECTORY_SEPARATOR.$filename;
 
         try {
-            $manifest = $installer->install($path, $payload['enable']);
+            $manifest = $installer->install($path, $payload['enable'], $payload['replace']);
         } finally {
             File::delete($path);
         }
@@ -209,7 +210,7 @@ class ExtensionController extends AdminApiController
         return new JsonResponse(['data' => $this->serializeInstalled($extension, $extensions, $assets)]);
     }
 
-    #[Endpoint('Remove extension', 'Deletes extension files, published assets, and the install record.')]
+    #[Endpoint('Remove extension', 'Deletes extension files, published assets, settings, subuser permission grants, and the install record.')]
     #[ScribeResponse(status: 204, description: 'Extension removed.')]
     public function destroy(DeleteExtensionRequest $request, RemovesExtensions $installer, string $extension): Response
     {

@@ -33,16 +33,29 @@ class ExtensionAssetPublisher
         }
     }
 
-    /** @param Closure(): void $callback */
+    /**
+     * Publish the build, then run the callback. If either fails, `_current` goes back to the
+     * previous build and the build directory this call created is removed, so nothing from a
+     * failed install or enable stays web-served.
+     *
+     * @param  Closure(): void  $callback
+     */
     public function publishWith(ExtensionManifest $manifest, Closure $callback): void
     {
         $previous = $this->currentVersion($manifest->id);
+        $existing = $this->builds($manifest->id);
 
         try {
             $this->publish($manifest);
             $callback();
         } catch (Throwable $throwable) {
             rescue(fn () => $this->activate($manifest->id, $previous));
+            $current = $this->currentVersion($manifest->id);
+            foreach (array_diff($this->builds($manifest->id), $existing) as $build) {
+                if (basename($build) !== $current) {
+                    rescue(fn (): bool => File::deleteDirectory($build));
+                }
+            }
 
             throw $throwable;
         }
@@ -171,6 +184,12 @@ class ExtensionAssetPublisher
         }
 
         return null;
+    }
+
+    /** @return list<string> the published build directories, never the dot-prefixed staging ones */
+    private function builds(string $identifier): array
+    {
+        return glob($this->publishedPath($identifier).DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [];
     }
 
     private function developmentPath(string $identifier): string

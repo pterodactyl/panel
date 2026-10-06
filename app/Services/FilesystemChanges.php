@@ -59,14 +59,16 @@ final class FilesystemChanges
 
     public function delete(string $path): void
     {
-        if (File::isDirectory($path)) {
+        // A link (such as an extension folder linked to its source in development) is removed
+        // itself; deleting it as a directory would empty the folder it points to.
+        if (File::isDirectory($path) && ! is_link($path)) {
             File::deleteDirectory($path);
         } else {
             File::delete($path);
         }
 
         clearstatcache(true, $path);
-        throw_if(File::exists($path), RuntimeException::class, "Unable to remove files at {$path}.");
+        throw_if(File::exists($path) || is_link($path), RuntimeException::class, "Unable to remove files at {$path}.");
     }
 
     private function restore(string $target, ?string $backup): void
