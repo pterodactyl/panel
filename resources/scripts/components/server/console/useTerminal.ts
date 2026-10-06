@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ITerminalOptions, ITheme } from 'ghostty-web';
-import { FitAddon, init, Terminal, UrlRegexProvider } from 'ghostty-web';
+import { FitAddon, Ghostty, Terminal, UrlRegexProvider } from 'ghostty-web';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
 
@@ -70,13 +70,6 @@ const terminalProps: ITerminalOptions = {
     rows: 30,
 };
 
-let ghosttyReady: Promise<void> | undefined;
-const ensureGhostty = () =>
-    (ghosttyReady ??= init().catch((error) => {
-        ghosttyReady = undefined;
-        throw error;
-    }));
-
 const hasStyleChanged = (appliedStyle: string) => {
     try {
         return JSON.stringify(buildTerminalStyle()) !== appliedStyle;
@@ -120,14 +113,14 @@ export const useTerminal = () => {
             return;
         }
 
-        ensureGhostty()
-            .then(() => {
+        Ghostty.load()
+            .then((ghostty) => {
                 if (cancelled) {
                     return;
                 }
 
                 const style = buildTerminalStyle();
-                const term = new Terminal({ ...terminalProps, ...style });
+                const term = new Terminal({ ...terminalProps, ...style, ghostty });
                 const fit = new FitAddon();
 
                 term.open(mount);
