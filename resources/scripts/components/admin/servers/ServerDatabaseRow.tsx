@@ -15,6 +15,7 @@ import Label from '@/components/elements/Label';
 import { TextInput } from '@/components/form/controls';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import SecretInput from '@/components/elements/SecretInput';
 import { DeleteAction, RowActionButton, RowActions } from '@/components/elements/table/RowActions';
 import { relationshipAttributes } from '@/api/relationships';
 
@@ -154,9 +155,7 @@ function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: S
             </div>
             <div className={'mt-6'}>
                 <Label>Password</Label>
-                <CopyOnClick text={password} showInNotification={false}>
-                    <TextInput type={'text'} readOnly value={password} />
-                </CopyOnClick>
+                <SecretInput value={password} label={'Password'} />
             </div>
             <div className={'mt-6'}>
                 <Label>JDBC Connection String</Label>
