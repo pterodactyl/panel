@@ -41,6 +41,8 @@ class SftpAuthenticationController extends Controller
         $connection = $this->parseUsername(JsonValueGuard::string($request->validated('username')));
         throw_if(empty($connection['server']), BadRequestHttpException::class, 'No valid server identifier was included in the request.');
 
+        $server = $this->getServer($request, $connection['server']);
+
         if ($this->hasTooManyLoginAttempts($request)) {
             $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
@@ -84,8 +86,6 @@ class SftpAuthenticationController extends Controller
             }
         }
 
-        $server = $this->getServer($request, $connection['server']);
-
         $this->validateSftpAccess($user, $server, $permissions);
 
         return new JsonResponse([
@@ -106,7 +106,7 @@ class SftpAuthenticationController extends Controller
             ->where('node_id', RemoteRequestNode::get($request)->id)
             ->first();
 
-        return $server ?? $this->reject($request);
+        return $server ?? $this->reject($request, false);
     }
 
     /**
@@ -127,7 +127,7 @@ class SftpAuthenticationController extends Controller
     }
 
     /**
-     * Rejects the request and increments the login attempts.
+     * Rejects the request, optionally incrementing the login attempts.
      */
     protected function reject(Request $request, bool $increment = true): never
     {
