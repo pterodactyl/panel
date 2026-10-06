@@ -6,8 +6,8 @@ type ListItems = [string, React.ComponentType][];
 
 export default function Features({ enabled }: { enabled: string[] }) {
     const enabledFeatures = new Set(enabled.map((value) => value.toLowerCase()));
-    const mapped = getObjectKeys(features).flatMap(
-        (key): ListItems => (enabledFeatures.has(key.toLowerCase()) ? [[key, features[key]]] : [])
+    const mapped = getObjectKeys(features).flatMap((key): ListItems =>
+        enabledFeatures.has(key.toLowerCase()) ? [[key, features[key]]] : []
     );
 
     return (

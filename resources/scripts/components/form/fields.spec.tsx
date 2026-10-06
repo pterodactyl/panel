@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import type React from 'react';
+import { createRef, useImperativeHandle, type FocusEventHandler, type Ref } from 'react';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAppForm, type AppForm } from '@/components/form';
@@ -10,14 +10,14 @@ afterEach(cleanup);
 type Values = { name: string; memory: number | null };
 
 function Harness({
-    onForm,
+    formRef,
     onNameBlur,
 }: {
-    onForm: (form: AppForm<Values>) => void;
-    onNameBlur?: React.FocusEventHandler<HTMLInputElement>;
+    formRef: Ref<AppForm<Values>>;
+    onNameBlur?: FocusEventHandler<HTMLInputElement>;
 }) {
     const form = useAppForm({ defaultValues: { name: '', memory: 512 } as Values });
-    onForm(form);
+    useImperativeHandle(formRef, () => form, [form]);
 
     return (
         <>
@@ -39,11 +39,11 @@ function Harness({
     );
 }
 
-const renderHarness = (onNameBlur?: React.FocusEventHandler<HTMLInputElement>) => {
-    let form: AppForm<Values> | undefined;
-    render(<Harness onForm={(value) => (form = value)} onNameBlur={onNameBlur} />);
+const renderHarness = (onNameBlur?: FocusEventHandler<HTMLInputElement>) => {
+    const formRef = createRef<AppForm<Values>>();
+    render(<Harness formRef={formRef} onNameBlur={onNameBlur} />);
 
-    return () => form!;
+    return () => formRef.current!;
 };
 
 describe('form fields', () => {

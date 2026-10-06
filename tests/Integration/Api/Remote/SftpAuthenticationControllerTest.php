@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Integration\Api\Remote\SftpAuthenticationControllerTest;
 
+use Illuminate\Support\Facades\Hash;
 use phpseclib3\Crypt\EC;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Node;
@@ -58,6 +59,21 @@ test('user is not throttled if no public key matches', function () {
     for ($i = 0; $i <= 10; $i++) {
         $this->postJson('/api/remote/sftp/auth', ['type' => 'public_key', 'username' => getUsername(), 'password' => EC::createKey('Ed25519')->getPublicKey()->toString('OpenSSH')])->assertForbidden();
     }
+});
+test('unknown user is not throttled if no public key matches', function () {
+    for ($i = 0; $i <= 10; $i++) {
+        $this->postJson('/api/remote/sftp/auth', ['type' => 'public_key', 'username' => 'does-not-exist.'.$this->server->uuidShort, 'password' => EC::createKey('Ed25519')->getPublicKey()->toString('OpenSSH')])->assertForbidden();
+    }
+});
+test('unknown user password login still performs a password hash', function () {
+    Hash::spy();
+    $this->postJson('/api/remote/sftp/auth', ['username' => 'does-not-exist.'.$this->server->uuidShort, 'password' => 'foobar'])->assertForbidden();
+    Hash::shouldHaveReceived('make')->once()->with('foobar');
+});
+test('password is checked before the server is looked up', function () {
+    Hash::spy();
+    $this->postJson('/api/remote/sftp/auth', ['username' => $this->user->username.'.doesnotexist', 'password' => 'wrong password'])->assertForbidden();
+    Hash::shouldHaveReceived('check')->once();
 });
 test('an x509 certificate offered as a public key is rejected and throttled', function (): void {
     $certificate = file_get_contents(base_path('tests/Fixtures/keys/x509-certificate.pem'));

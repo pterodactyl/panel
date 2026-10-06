@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Models\Server;
 
-class DecompressFilesRequest extends ClientApiRequest implements ClientPermissionsRequest
+class DecompressFilesRequest extends ClientApiRequest
 {
     /**
-     * Checks that the authenticated user is allowed to create new files for the server. We don't
-     * rely on the archive permission here as it makes more sense to make sure the user can create
-     * additional files rather than make an archive.
+     * {@inheritdoc}
      */
-    public function permission(): string
+    public function authorize(): bool
     {
-        return Permissions::FileCreate->value;
+        $server = $this->parameter('server', Server::class);
+
+        return $this->user()->can(Permissions::FileCreate->value, $server)
+            && $this->user()->can(Permissions::FileUpdate->value, $server);
     }
 
     /**

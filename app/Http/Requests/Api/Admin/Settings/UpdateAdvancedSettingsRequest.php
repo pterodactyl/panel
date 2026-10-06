@@ -23,7 +23,7 @@ class UpdateAdvancedSettingsRequest extends AdminApiRequest
     {
         return [
             'recaptcha:enabled' => ['required', 'in:true,false'],
-            'recaptcha:secret_key' => ['required', 'string', 'max:191'],
+            'recaptcha:secret_key' => ['nullable', 'string', 'max:191'],
             'recaptcha:website_key' => ['required', 'string', 'max:191'],
             'pterodactyl:guzzle:timeout' => ['required', 'integer', 'between:1,60'],
             'pterodactyl:guzzle:connect_timeout' => ['required', 'integer', 'between:1,60'],
@@ -67,9 +67,8 @@ class UpdateAdvancedSettingsRequest extends AdminApiRequest
      */
     public function normalize(?array $only = null): array
     {
-        return [
+        $values = [
             'recaptcha:enabled' => $this->string('recaptcha:enabled')->toString(),
-            'recaptcha:secret_key' => $this->string('recaptcha:secret_key')->toString(),
             'recaptcha:website_key' => $this->string('recaptcha:website_key')->toString(),
             'pterodactyl:guzzle:timeout' => $this->integer('pterodactyl:guzzle:timeout'),
             'pterodactyl:guzzle:connect_timeout' => $this->integer('pterodactyl:guzzle:connect_timeout'),
@@ -81,5 +80,11 @@ class UpdateAdvancedSettingsRequest extends AdminApiRequest
                 ? null
                 : $this->integer('pterodactyl:client_features:allocations:range_end'),
         ];
+
+        if ($this->filled('recaptcha:secret_key')) {
+            $values['recaptcha:secret_key'] = $this->string('recaptcha:secret_key')->toString();
+        }
+
+        return $values;
     }
 }

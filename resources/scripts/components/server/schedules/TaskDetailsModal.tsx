@@ -74,6 +74,13 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
     });
 
     const action = useStore(form.store, (state) => state.values.action);
+    const payloadValidators = {
+        onChangeListenTo: ['action' as const],
+        onChange: ({ value }: { value: string }) =>
+            form.getFieldValue('action') !== 'command' || value.length > 0
+                ? undefined
+                : 'A task payload must be provided.',
+    };
     const setPayloadForAction = (nextAction: Action) => {
         form.setFieldValue(
             'payload',
@@ -137,17 +144,11 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
             </div>
             <div className={'mt-6'}>
                 {action === 'command' ? (
-                    <form.AppField
-                        name={'payload'}
-                        validators={{
-                            onChange: ({ value }) =>
-                                value.length > 0 ? undefined : 'A task payload must be provided.',
-                        }}
-                    >
+                    <form.AppField name={'payload'} validators={payloadValidators}>
                         {(field) => <field.TextAreaField label={'Payload'} rows={6} />}
                     </form.AppField>
                 ) : action === 'power' ? (
-                    <form.AppField name={'payload'}>
+                    <form.AppField name={'payload'} validators={payloadValidators}>
                         {(field) => (
                             <field.SelectField
                                 label={'Payload'}
@@ -161,7 +162,7 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
                         )}
                     </form.AppField>
                 ) : (
-                    <form.AppField name={'payload'}>
+                    <form.AppField name={'payload'} validators={payloadValidators}>
                         {(field) => (
                             <field.TextAreaField
                                 label={'Ignored Files'}

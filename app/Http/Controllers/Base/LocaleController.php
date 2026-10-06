@@ -35,13 +35,23 @@ class LocaleController extends Controller
         JsonValueGuard::assertValue($translations);
         $response[$locale][$namespace] = $this->i18n($translations);
 
-        return new JsonResponse($response, 200, [
-            // Cache this in the browser for an hour, and allow the browser to use a stale
-            // cache for up to a day after it was created while it fetches an updated set
-            // of translation keys.
-            'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=86400',
-            'ETag' => hash('sha256', json_encode($response, JSON_THROW_ON_ERROR)),
+        $json = new JsonResponse($response, 200, [
+            // Core translations only change with a panel build, and the frontend puts the
+            // build hash in the URL: cache them in the browser for an hour, and allow a stale
+            // copy for up to a day while it fetches an updated set of translation keys.
+            //
+            // An extension's translations change whenever it is installed or upgraded, so
+            // the frontend adds their revision to the URL and they are cached the same way.
+            // Without it the URL would stay the same, and the browser has to revalidate.
+            'Cache-Control' => count($segments) === 2 && ! $request->has('revision')
+                ? 'no-cache'
+                : 'public, max-age=3600, stale-while-revalidate=86400',
         ]);
+        $json->setEtag(hash('sha256', json_encode($response, JSON_THROW_ON_ERROR)));
+        // Answers a matching If-None-Match with an empty 304, which keeps revalidation cheap.
+        $json->isNotModified($request);
+
+        return $json;
     }
 
     /**

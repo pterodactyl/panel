@@ -17,6 +17,7 @@ import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import { getAreaNav } from '@/router/nav';
+import { useIsRenderedRoute } from '@/router/renderedRoute';
 import { useCurrentUser } from '@/api/account/queries';
 import Slot from '@/extensions/Slot';
 import NavigationLabel from '@/extensions/NavigationLabel';
@@ -41,7 +42,10 @@ function ServerLayoutInner() {
 
     const to = (segment: string) => `/server/${id}${segment ? `/${segment}` : ''}`;
 
-    const isConsole = location.pathname.replace(/\/+$/, '') === to('');
+    // The console stays mounted and is shown or hidden here, while every other page comes
+    // from <Outlet />. Both have to switch in the same render: following the location
+    // showed the console above the page being left, and hid it before the next one arrived.
+    const isConsole = useIsRenderedRoute(to(''));
 
     useEffect(() => () => clearServerState(), [clearServerState]);
 

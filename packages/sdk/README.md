@@ -78,7 +78,7 @@ Recoverable render/query failures offer Retry. Failed screen chunks offer an exp
 
 ## Types and shared dependencies
 
-The panel currently supports the React 19.2 client API. Server-only caching APIs, development-only `captureOwnerStack`, and unstable cache-refresh APIs are not part of the shared React facade. React, React DOM, JSX runtime, Query, and SDK entry points stay external through the Vite preset.
+The panel currently supports the React 19.3 client API. Server-only caching APIs, development-only `captureOwnerStack`, and unstable cache-refresh APIs are not part of the shared React facade. React, React DOM, JSX runtime, Query, and SDK entry points stay external through the Vite preset.
 
 SDK declarations are generated from the runtime public surface with `npm run sdk:generate` at the panel root. `npm run sdk:check` checks reproducibility and compiles a packed-package consumer, including negative type cases. Component props, form fields, and `useCurrentServer(server => server.attributes.name)` preserve their actual types. SDK peer dependencies include the existing libraries referenced by those declarations; use SDK form hooks/components to share the panel's bound form contexts.
 

@@ -1,4 +1,5 @@
 export {
+    browser,
     createPortal,
     flushSync,
     preconnect,

@@ -6,10 +6,10 @@ import type { notifyThemeChange as NotifyThemeChange } from '@/lib/theme';
 import type { useTerminal as UseTerminal } from './useTerminal';
 
 const terminals: { options: ITerminalOptions; dispose: ReturnType<typeof vi.fn> }[] = [];
-const ghostty = vi.hoisted(() => ({ init: vi.fn<() => Promise<void>>() }));
+const ghostty = vi.hoisted(() => ({ load: vi.fn<() => Promise<object>>() }));
 
 vi.mock('ghostty-web', () => ({
-    init: () => ghostty.init(),
+    Ghostty: { load: () => ghostty.load() },
     FitAddon: class {
         fit() {}
         observeResize() {}
@@ -58,8 +58,8 @@ describe('useTerminal', () => {
         vi.resetModules();
         ({ useTerminal } = await import('./useTerminal'));
         ({ notifyThemeChange } = await import('@/lib/theme'));
-        ghostty.init.mockReset();
-        ghostty.init.mockResolvedValue(undefined);
+        ghostty.load.mockReset();
+        ghostty.load.mockImplementation(async () => ({}));
         fontSize = '12px';
         terminals.length = 0;
         tokens.clear();
@@ -109,12 +109,14 @@ describe('useTerminal', () => {
 
         expect(terminals[0].dispose).toHaveBeenCalledTimes(1);
         expect(terminals[1].options.theme?.foreground).toBe('#f3f5f9');
+        expect(terminals[1].options.ghostty).toBeDefined();
+        expect(terminals[1].options.ghostty).not.toBe(terminals[0].options.ghostty);
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
     });
 
     it('reports a failed module load and loads the module again on retry', async () => {
         vi.spyOn(console, 'error').mockImplementation(() => {});
-        ghostty.init.mockRejectedValueOnce(new Error('WASM unavailable'));
+        ghostty.load.mockRejectedValueOnce(new Error('WASM unavailable'));
         const { container, getByRole } = render(<Harness />);
 
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-error', 'WASM unavailable'));
@@ -124,7 +126,7 @@ describe('useTerminal', () => {
 
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
         expect(container.firstElementChild).toHaveAttribute('data-error', '');
-        expect(ghostty.init).toHaveBeenCalledTimes(2);
+        expect(ghostty.load).toHaveBeenCalledTimes(2);
     });
 
     it('reports terminal styles that cannot be resolved instead of loading forever', async () => {

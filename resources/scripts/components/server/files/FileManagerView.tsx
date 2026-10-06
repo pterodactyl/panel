@@ -60,7 +60,7 @@ function Toolbar({ model }: PartProps) {
                     <div className={managerActionsClass}>
                         <FileManagerStatus />
                         <NewDirectoryButton />
-                        <UploadButton />
+                        {model.permissions.update && <UploadButton />}
                         <Link
                             to={'/server/$id/files/$action'}
                             params={{ id, action: 'new' }}

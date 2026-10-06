@@ -74,6 +74,7 @@ export default function Tooltip({ children, ...props }: Props) {
         useHover(context, {
             restMs: props.rest ?? 30,
             delay: props.delay ?? 0,
+            mouseOnly: true,
             enabled: enabled && interactions.includes('hover'),
         }),
         useFocus(context, { enabled: enabled && interactions.includes('focus') }),

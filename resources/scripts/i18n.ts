@@ -6,7 +6,7 @@ import I18NextHttpBackend from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 import { currentUserQueryKey } from '@/api/account/queries';
 import type { UserData } from '@/api/account/types';
-import { getBootstrapSiteSettings, getBootstrapUser } from '@/bootstrap';
+import { getBootstrapExtensions, getBootstrapSiteSettings, getBootstrapUser } from '@/bootstrap';
 
 interface MultiloadHttpBackendOptions extends HttpBackendOptions {
     allowMultiLoading: boolean;
@@ -14,6 +14,21 @@ interface MultiloadHttpBackendOptions extends HttpBackendOptions {
 
 // Busts the locale cache on every reload under HMR, otherwise once per build.
 const hash = import.meta.hot ? Date.now().toString(16) : import.meta.env.WEBPACK_BUILD_HASH;
+
+const localePath = '/locales/locale.json?locale={{lng}}&namespace={{ns}}';
+
+/**
+ * Extension translations change when the extension is upgraded, not with the panel build,
+ * so their URL also carries the revision the panel reported for that extension.
+ */
+export function localeLoadPath(namespaces: string[]): string {
+    const extensionId = namespaces.length === 1 ? /^ext-(.+)::/.exec(namespaces[0]!)?.[1] : undefined;
+    const revision = extensionId
+        ? getBootstrapExtensions().find((extension) => extension.id === extensionId)?.translations
+        : undefined;
+
+    return revision ? `${localePath}&revision=${revision}` : localePath;
+}
 
 export const initialLanguage = (): string => getBootstrapUser()?.language || getBootstrapSiteSettings()?.locale || 'en';
 
@@ -41,7 +56,7 @@ i18n.use(I18NextMultiloadBackendAdapter)
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {
-                loadPath: '/locales/locale.json?locale={{lng}}&namespace={{ns}}',
+                loadPath: (_languages, namespaces) => localeLoadPath(namespaces),
                 queryStringParams: { hash },
                 allowMultiLoading: true,
             } satisfies MultiloadHttpBackendOptions,

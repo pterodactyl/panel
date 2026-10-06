@@ -91,7 +91,7 @@ export const updateAdminAdvancedSettingsInput = (
 ): Options<AdminUpdateAdvancedSettingsData> => ({
     body: {
         'recaptcha:enabled': values.recaptchaEnabled ? 'true' : 'false',
-        'recaptcha:secret_key': values.recaptchaSecretKey,
+        'recaptcha:secret_key': values.recaptchaSecretKey === '' ? null : values.recaptchaSecretKey,
         'recaptcha:website_key': values.recaptchaWebsiteKey,
         'pterodactyl:guzzle:timeout': values.guzzleTimeout,
         'pterodactyl:guzzle:connect_timeout': values.guzzleConnectTimeout,

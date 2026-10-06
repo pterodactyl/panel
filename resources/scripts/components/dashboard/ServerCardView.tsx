@@ -37,7 +37,7 @@ function Address({ model }: PartProps) {
     return (
         <div className='flex-1 ml-4 lg:block lg:col-span-2 hidden'>
             <div className='flex justify-center'>
-                <EthernetPort size='1em' className='inline-block text-muted-foreground' />
+                <EthernetPort size='1em' className='inline-block shrink-0 text-muted-foreground' />
                 <p className='text-sm text-muted-foreground ml-2'>{model.address}</p>
             </div>
         </div>
