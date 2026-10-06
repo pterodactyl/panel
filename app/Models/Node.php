@@ -92,7 +92,7 @@ class Node extends Model implements Identifiable
         'memory', 'memory_overallocate', 'disk',
         'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
-        'description', 'maintenance_mode',
+        'maintenance_mode',
     ];
 
     public static array $validationRules = [

@@ -90,9 +90,9 @@ const Modal: React.FC<ModalProps> = ({
     return (
         <Fade in={render} timeout={150} appear={appear || true} unmountOnExit onExited={() => onDismissed()}>
             <ModalMask
-                onClick={(e) => e.stopPropagation()}
-                onContextMenu={(e) => e.stopPropagation()}
-                onMouseDown={(e) => {
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+                onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                     if (isDismissable && closeOnBackground) {
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
