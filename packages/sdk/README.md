@@ -356,7 +356,9 @@ throws reaches the caller unchanged, and exceptions of the inner action pass thr
 untouched. A reported exception raised from the extension's package is recorded against
 the extension. The decorator is skipped while the extension is disabled or failed to boot;
 one that throws or returns another type is recorded and skipped, so the core action always
-resolves. Extensions wrap in load order, the last one outermost.
+resolves. Extensions wrap in load order, the last one outermost. The actions that install,
+enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and apply themes
+(`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
 
 Resolve the same contracts from the container to call core behaviour instead of
 reimplementing it. Beside the mutating actions, these read or complete on your behalf:

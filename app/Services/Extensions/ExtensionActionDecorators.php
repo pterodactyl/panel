@@ -24,10 +24,23 @@ use UnexpectedValueException;
  * The object a decorator returns is called directly by core: whatever it throws
  * reaches the caller unchanged, exactly like an exception from the core action, and is
  * attributed to the extension by ExtensionFailureAttributor when it is reported.
+ *
+ * The contracts that install, enable, disable, remove and configure extensions, and
+ * those that apply themes, can never be wrapped: no extender is installed for them, so
+ * they always resolve to the panel's own implementation.
  */
 final class ExtensionActionDecorators
 {
     public const string CONTRACT_NAMESPACE = 'Pterodactyl\\Contracts\\';
+
+    /**
+     * Contracts that manage extension and theme packages. A wrapper could veto its own
+     * extension's disabling or removal, or change other packages as they are installed.
+     */
+    public const array PROTECTED_NAMESPACES = [
+        'Pterodactyl\\Contracts\\Extensions\\',
+        'Pterodactyl\\Contracts\\Themes\\',
+    ];
 
     /** @var array<string, list<array{identifier: string, decorator: Closure, registration: ExtensionRegistration}>> */
     private array $decorators = [];
@@ -52,6 +65,11 @@ final class ExtensionActionDecorators
             str_starts_with($contract, self::CONTRACT_NAMESPACE) && interface_exists($contract) && $this->app->bound($contract) && ! $this->app->isShared($contract),
             InvalidArgumentException::class,
             sprintf('Extension "%s" can only wrap action contracts under %s that the panel binds per caller; "%s" is not one.', $identifier, self::CONTRACT_NAMESPACE, $contract),
+        );
+        throw_if(
+            array_any(self::PROTECTED_NAMESPACES, fn (string $namespace): bool => str_starts_with(mb_strtolower($contract), mb_strtolower($namespace))),
+            InvalidArgumentException::class,
+            sprintf('Extension "%s" cannot wrap "%s": the actions that manage extensions and themes are never wrapped.', $identifier, $contract),
         );
 
         $this->decorators[$contract][] = ['identifier' => $identifier, 'decorator' => $decorator, 'registration' => $registration];

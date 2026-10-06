@@ -258,6 +258,11 @@ abstract class ExtensionProvider extends ServiceProvider
      * decorator that throws or returns anything else is recorded and skipped, so the core
      * action always stays resolvable. Extensions wrap in load order; the last is outermost.
      *
+     * The contracts under `Pterodactyl\Contracts\Extensions\` and `Pterodactyl\Contracts\Themes\`
+     * (installing, enabling, disabling, removing and configuring extensions, applying themes)
+     * cannot be wrapped: asking for one fails the provider's boot like any other contract
+     * that cannot be wrapped.
+     *
      * @template TContract of object
      *
      * @param  class-string<TContract>  $contract

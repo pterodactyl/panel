@@ -15,11 +15,26 @@ use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
+use Pterodactyl\Actions\Extensions\InstallExtension;
+use Pterodactyl\Actions\Extensions\RemoveExtension;
+use Pterodactyl\Actions\Extensions\ReplaceExtensionSettingFile;
+use Pterodactyl\Actions\Extensions\SetExtensionEnabled;
+use Pterodactyl\Actions\Extensions\UpdateExtensionSettings;
+use Pterodactyl\Actions\Themes\ApplyTheme;
+use Pterodactyl\Actions\Themes\ResetTheme;
+use Pterodactyl\Contracts\Extensions\InstallsExtensions;
+use Pterodactyl\Contracts\Extensions\RemovesExtensions;
+use Pterodactyl\Contracts\Extensions\ReplacesExtensionSettingFiles;
+use Pterodactyl\Contracts\Extensions\SetsExtensionEnabled;
+use Pterodactyl\Contracts\Extensions\UpdatesExtensionSettings;
 use Pterodactyl\Contracts\Servers\DeletesServers;
+use Pterodactyl\Contracts\Themes\AppliesThemes;
+use Pterodactyl\Contracts\Themes\ResetsThemes;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
@@ -153,6 +168,37 @@ test('only bound panel contracts can be wrapped', function (string $contract): v
     'a shared panel service' => [\Pterodactyl\Contracts\Extensions\HashidsInterface::class],
     'an interface outside the contracts namespace' => [\Pterodactyl\Services\Extensions\Contracts\ManagesExtensionSettings::class],
 ]);
+
+test('the actions that manage extensions and themes cannot be wrapped and keep resolving to core', function (string $contract, string $implementation): void {
+    extensions('dns');
+    expect(fn () => provider('dns')->wrap($contract, fn (object $inner): object => $inner))->toThrow(InvalidArgumentException::class, 'cannot wrap "'.$contract.'"');
+
+    // A differently cased name is the same interface to PHP and is refused as well.
+    expect(fn () => provider('dns')->wrap(mb_strtolower($contract), fn (object $inner): object => $inner))->toThrow(InvalidArgumentException::class);
+
+    expect($this->app->make(ExtensionActionDecorators::class)->snapshot())->toBe([]);
+    expect($this->app->make($contract))->toBeInstanceOf($implementation);
+})->with([
+    'install' => [InstallsExtensions::class, InstallExtension::class],
+    'remove' => [RemovesExtensions::class, RemoveExtension::class],
+    'enable and disable' => [SetsExtensionEnabled::class, SetExtensionEnabled::class],
+    'settings' => [UpdatesExtensionSettings::class, UpdateExtensionSettings::class],
+    'setting files' => [ReplacesExtensionSettingFiles::class, ReplaceExtensionSettingFile::class],
+    'apply a theme' => [AppliesThemes::class, ApplyTheme::class],
+    'reset the theme' => [ResetsThemes::class, ResetTheme::class],
+]);
+
+test('a provider asking to wrap an extension lifecycle action fails to boot and stages nothing', function (): void {
+    extensions('dns');
+    $provider = provider('dns');
+    $provider->beginRegistration();
+    $provider->wrap(DeletesServers::class, fn (DeletesServers $inner): DeletesServers => new RecordingDeleter($inner));
+    $provider->wrap(SetsExtensionEnabled::class, fn (SetsExtensionEnabled $inner): SetsExtensionEnabled => $inner);
+
+    expect(fn () => $provider->commitRegistration())->toThrow(InvalidArgumentException::class, 'cannot wrap');
+    expect($this->app->make(DeletesServers::class))->toBeInstanceOf(CoreDeleter::class);
+    expect($this->app->make(SetsExtensionEnabled::class))->toBeInstanceOf(SetExtensionEnabled::class);
+});
 
 test('registered commands reach artisan only for available extensions', function (): void {
     extensions('probe');
