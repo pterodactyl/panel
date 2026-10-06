@@ -49,6 +49,15 @@ test('guests load extension bundles with only their public frontend settings', f
         ->assertDontSee('frontend-config-marker', false)
         ->assertDontSee('secret-config-marker', false);
 })->with(['/auth/login', '/']);
+test('setting values cannot change how the inline bootstrap script is parsed', function (): void {
+    $hostile = '</script><!--<script>&\'"';
+    $this->app->make(ExtensionRepository::class)->settings('config-probe')->set('registration', $hostile);
+
+    $html = (string) $this->get('/auth/login')->assertOk()->assertSee('"id":"config-probe"', false)->getContent();
+
+    expect($html)->not->toContain('<!--<script')->not->toContain('</script><!--')
+        ->toContain('"registration":'.json_encode($hostile, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_THROW_ON_ERROR));
+});
 test('guests of an extension without public settings receive an empty config', function (): void {
     $repository = $this->app->make(ExtensionRepository::class);
     $this->app->make(ExtensionSettingsRegistry::class)->register('config-probe', new ExtensionSettingsDefinition($repository->settings('config-probe'), [

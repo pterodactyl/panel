@@ -40,15 +40,17 @@
             {{ $extensionHead }}
         @show
 
+        {{-- @json escapes < > & ' " so a stored value such as "<!--<script" cannot
+             change how the browser parses these inline scripts. --}}
         @section('user-data')
             @if(!is_null(Auth::user()))
                 <script>
-                    window.PterodactylUser = {!! json_encode(Auth::user()->toVueObject()) !!};
+                    window.PterodactylUser = @json(Auth::user()->toVueObject());
                 </script>
             @endif
             @if(!empty($siteConfiguration))
                 <script>
-                    window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
+                    window.SiteConfiguration = @json($siteConfiguration);
                 </script>
             @endif
         @show
