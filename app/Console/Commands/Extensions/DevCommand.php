@@ -41,6 +41,8 @@ class DevCommand extends Command
 
             $publish();
             if ($this->option('watch')) {
+                // Disabled extensions publish no frontend build, so there is nothing to reload.
+                throw_if($assets->currentVersion($manifest->id) === null, InvalidExtensionException::class, "Extension \"{$manifest->id}\" is disabled; pass --enable to watch it.");
                 $assets->watchDevelopment($manifest->id);
                 try {
                     $buffer = '';
