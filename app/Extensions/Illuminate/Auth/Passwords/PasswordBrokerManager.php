@@ -23,17 +23,13 @@ class PasswordBrokerManager extends IlluminatePasswordBrokerManager
         $config = $this->app->make(ConfigRepository::class);
         $prefix = "auth.passwords.{$name}";
 
-        if (! $config->has($prefix)) {
-            throw new InvalidArgumentException("Password resetter [{$name}] is not defined.");
-        }
+        throw_unless($config->has($prefix), InvalidArgumentException::class, "Password resetter [{$name}] is not defined.");
 
         $users = $this->app->make(AuthManager::class)->createUserProvider(
             JsonValueGuard::nullableString($config->get("{$prefix}.provider"))
         );
 
-        if ($users === null) {
-            throw new InvalidArgumentException("Password resetter [{$name}] has no user provider.");
-        }
+        throw_if($users === null, InvalidArgumentException::class, "Password resetter [{$name}] has no user provider.");
 
         $key = JsonValueGuard::string($config->get('app.key'));
 
