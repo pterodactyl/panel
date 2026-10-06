@@ -1,0 +1,19 @@
+.github/workflows/react-doctor.yml
+  s_bb38cdae517e45::t_5d1a53bea8d4a0 1-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "13361880bb029747f778929901691487218f05f7",
+  "prompts": {},
+  "sessions": {
+    "s_bb38cdae517e45": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0db92d7-46e6-46b8-b6d3-d553f0360eaf",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
