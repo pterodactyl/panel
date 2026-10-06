@@ -202,6 +202,7 @@ test('reports a translations revision that changes with the translation files', 
         resolve(Dispatcher::class),
         resolve(ExtensionSettingsRegistry::class),
         resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
+        resolve(ExtensionFormFieldRegistry::class),
     ])->makePartial();
     $repository->shouldReceive('enabled')->andReturn(collect(['example' => $manifest]));
     $revision = fn (): ?string => $repository->frontendPayload(authenticated: false)[0]['translations'];
