@@ -102,6 +102,10 @@ class ResetPasswordController extends Controller
         // fresh login where they'll be prompted to enter a token.
         if (! $user->use_totp) {
             Auth::guard()->login($user);
+
+            if (method_exists(Auth::guard(), 'logoutOtherDevices')) {
+                Auth::guard()->logoutOtherDevices($password);
+            }
         }
 
         $this->hasTwoFactor = $user->use_totp;
