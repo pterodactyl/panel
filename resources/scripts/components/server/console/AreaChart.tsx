@@ -2,34 +2,73 @@ import { lazy, Suspense, useId, useMemo, useRef } from 'react';
 import { type ChartPoint, useAnimationClock, useElementVisible } from '@/components/server/console/chart';
 import type { ChartSeries } from '@/components/server/console/types';
 
-const GRID_COLOR = 'var(--border)';
-const TICK_COLOR = 'var(--muted-foreground)';
-const SANS_FONT = 'var(--font-sans)';
-
-// How far the visible right edge trails real time; just over the ~1s stats cadence.
 const RIGHT_LAG_MS = 1100;
+const HEADROOM = 1.15;
 
 interface Props {
     data: ChartPoint[];
     series: ChartSeries[];
     live: boolean;
     windowMs: number;
-    // Y-axis maximum that grows when the data exceeds it; omit to auto-scale.
-    suggestedMax?: number;
-    tickFormatter?: (value: number) => string;
+    floor?: number;
+    limit?: number;
+    binary?: boolean;
+    tickFormatter: (value: number) => string;
     height?: number;
 }
 
-type YDomain = [number, (dataMax: number) => number] | [number, string];
+const NICE_STEPS = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+const BINARY_STEPS = [1, 2, 3, 4, 5, 6, 8, 10];
 
-interface RechartsAreaChartContentProps {
+export function niceCeil(value: number, binary = false): number {
+    if (!Number.isFinite(value) || value <= 0) return 1;
+
+    const unit = binary && value >= 1024 ? Math.pow(1024, Math.floor(Math.log(value) / Math.log(1024))) : 1;
+    const scaled = value / unit;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(scaled)));
+    const steps = binary ? BINARY_STEPS : NICE_STEPS;
+    const step = steps.find((s) => s * magnitude >= scaled) ?? 10;
+
+    if (binary && step * magnitude >= 1000) {
+        return unit * 1024;
+    }
+
+    return Number((step * magnitude * unit).toPrecision(12));
+}
+
+export function axisMax(data: ChartPoint[], series: ChartSeries[], floor = 0, limit = 0, binary = false): number {
+    let dataMax = 0;
+    for (const point of data) {
+        for (const { dataKey } of series) {
+            const value = point[dataKey];
+            if (value !== null && value !== undefined && value > dataMax) dataMax = value;
+        }
+    }
+
+    const fitted = niceCeil(Math.max(dataMax * HEADROOM, floor), binary);
+
+    if (limit > 0 && dataMax <= limit && fitted > limit) {
+        return limit;
+    }
+
+    return fitted;
+}
+
+interface TickProps {
+    x?: number | string;
+    y?: number | string;
+    payload?: { value: number };
+}
+
+interface ContentProps {
     data: ChartPoint[];
     series: ChartSeries[];
     uid: string;
     height: number;
     xDomain: [number, number];
-    yDomain: YDomain;
-    tickFormatter?: (value: number) => string;
+    yMax: number;
+    limit?: number;
+    tickFormatter: (value: number) => string;
 }
 
 const LazyRechartsAreaChart = lazy(async () => {
@@ -37,7 +76,9 @@ const LazyRechartsAreaChart = lazy(async () => {
         Area,
         AreaChart: RechartsAreaChart,
         CartesianGrid,
+        ReferenceLine,
         ResponsiveContainer,
+        Tooltip,
         XAxis,
         YAxis,
     } = await import('recharts');
@@ -49,12 +90,19 @@ const LazyRechartsAreaChart = lazy(async () => {
             uid,
             height,
             xDomain,
-            yDomain,
+            yMax,
+            limit,
             tickFormatter,
-        }: RechartsAreaChartContentProps) {
+        }: ContentProps) {
+            const showLimit = limit !== undefined && limit > 0 && limit < yMax;
+
             return (
                 <ResponsiveContainer width={'100%'} height={height}>
-                    <RechartsAreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+                    <RechartsAreaChart
+                        data={data}
+                        margin={{ top: 10, right: 0, bottom: 8, left: 16 }}
+                        accessibilityLayer={false}
+                    >
                         <defs>
                             {series.map(({ dataKey, color }) => (
                                 <linearGradient
@@ -65,57 +113,94 @@ const LazyRechartsAreaChart = lazy(async () => {
                                     x2={'0'}
                                     y2={'1'}
                                 >
-                                    <stop offset={'0%'} stopColor={color} stopOpacity={0.45} />
-                                    <stop offset={'100%'} stopColor={color} stopOpacity={0} />
+                                    <stop offset={'0%'} stopColor={color} stopOpacity={0.28} />
+                                    <stop offset={'100%'} stopColor={color} stopOpacity={0.02} />
                                 </linearGradient>
                             ))}
-                            {series.map(({ dataKey, color }) => (
-                                <filter
-                                    key={dataKey}
-                                    id={`${uid}-glow-${dataKey}`}
-                                    x={'-20%'}
-                                    y={'-20%'}
-                                    width={'140%'}
-                                    height={'140%'}
-                                >
-                                    <feDropShadow
-                                        dx={'0'}
-                                        dy={'0'}
-                                        stdDeviation={'2.5'}
-                                        floodColor={color}
-                                        floodOpacity={0.7}
-                                    />
-                                </filter>
-                            ))}
                         </defs>
-                        <CartesianGrid stroke={GRID_COLOR} strokeDasharray={'0'} vertical={false} />
+                        <CartesianGrid
+                            stroke={'var(--muted-foreground)'}
+                            strokeOpacity={0.18}
+                            vertical={false}
+                            syncWithTicks
+                        />
                         <XAxis dataKey={'t'} type={'number'} domain={xDomain} allowDataOverflow hide />
                         <YAxis
-                            width={64}
-                            tickCount={3}
-                            domain={yDomain}
-                            tickFormatter={tickFormatter}
+                            orientation={'right'}
+                            width={72}
+                            domain={[0, yMax]}
+                            ticks={[0, yMax / 2, yMax]}
+                            interval={0}
+                            allowDataOverflow
                             axisLine={false}
                             tickLine={false}
-                            tick={{
-                                fill: TICK_COLOR,
-                                fontFamily: SANS_FONT,
-                                fontSize: 'var(--text-xs)',
-                                fontWeight: 'var(--font-weight-normal)',
+                            tickMargin={10}
+                            tick={({ x, y, payload }: TickProps) => (
+                                <text
+                                    x={Number(x)}
+                                    y={Number(y)}
+                                    dy={4}
+                                    textAnchor={'start'}
+                                    fill={'var(--muted-foreground)'}
+                                    fontFamily={'var(--font-sans)'}
+                                    fontSize={11}
+                                >
+                                    {tickFormatter(payload?.value ?? 0)}
+                                </text>
+                            )}
+                        />
+                        {showLimit && (
+                            <ReferenceLine
+                                y={limit}
+                                stroke={'var(--destructive)'}
+                                strokeOpacity={0.7}
+                                strokeDasharray={'4 4'}
+                                ifOverflow={'hidden'}
+                            />
+                        )}
+                        <Tooltip
+                            isAnimationActive={false}
+                            cursor={{ stroke: 'var(--muted-foreground)', strokeOpacity: 0.6, strokeWidth: 1 }}
+                            content={({ active, payload, label }) => {
+                                if (!active || !payload || payload.length === 0) return null;
+                                const ago = Math.max(0, Math.round((xDomain[1] - Number(label)) / 1000));
+
+                                return (
+                                    <div
+                                        className={
+                                            'rounded-sm border border-border bg-background/95 px-2.5 py-1.5 text-xs shadow-lg tabular-nums'
+                                        }
+                                    >
+                                        {payload.map((row) => (
+                                            <div key={String(row.dataKey)} className={'flex items-center gap-2'}>
+                                                <span
+                                                    className={'h-2 w-2 rounded-full'}
+                                                    style={{ background: row.color }}
+                                                />
+                                                <span className={'font-semibold text-foreground'}>
+                                                    {tickFormatter(Number(row.value ?? 0))}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        <div className={'mt-0.5 text-muted-foreground'}>
+                                            {ago === 0 ? 'now' : `${ago}s ago`}
+                                        </div>
+                                    </div>
+                                );
                             }}
                         />
                         {series.map(({ dataKey, color }) => (
                             <Area
                                 key={dataKey}
-                                type={'monotone'}
+                                type={'monotoneX'}
                                 dataKey={dataKey}
                                 stroke={color}
                                 strokeWidth={2}
+                                strokeLinejoin={'round'}
                                 fill={`url(#${uid}-fill-${dataKey})`}
-                                filter={`url(#${uid}-glow-${dataKey})`}
                                 isAnimationActive={false}
                                 dot={false}
-                                activeDot={false}
+                                activeDot={{ r: 3.5, fill: color, stroke: 'var(--popover)', strokeWidth: 2 }}
                                 connectNulls={false}
                             />
                         ))}
@@ -126,7 +211,17 @@ const LazyRechartsAreaChart = lazy(async () => {
     };
 });
 
-export default function AreaChart({ data, series, live, windowMs, suggestedMax, tickFormatter, height = 180 }: Props) {
+export default function AreaChart({
+    data,
+    series,
+    live,
+    windowMs,
+    floor,
+    limit,
+    binary = false,
+    tickFormatter,
+    height = 132,
+}: Props) {
     const uid = useId().replace(/:/g, '');
     const container = useRef<HTMLDivElement>(null);
     const visible = useElementVisible(container);
@@ -134,13 +229,10 @@ export default function AreaChart({ data, series, live, windowMs, suggestedMax, 
 
     const right = now - RIGHT_LAG_MS;
     const xDomain = useMemo<[number, number]>(() => [right - windowMs, right], [right, windowMs]);
-    const yDomain = useMemo<YDomain>(
-        () => (suggestedMax !== undefined ? [0, (dataMax: number) => Math.max(suggestedMax, dataMax)] : [0, 'auto']),
-        [suggestedMax]
-    );
+    const yMax = useMemo(() => axisMax(data, series, floor, limit, binary), [data, series, floor, limit, binary]);
 
     return (
-        <div ref={container}>
+        <div ref={container} className={'[&_.recharts-wrapper_*:focus]:outline-none'}>
             <Suspense fallback={<div style={{ height }} />}>
                 <LazyRechartsAreaChart
                     data={data}
@@ -148,7 +240,8 @@ export default function AreaChart({ data, series, live, windowMs, suggestedMax, 
                     uid={uid}
                     height={height}
                     xDomain={xDomain}
-                    yDomain={yDomain}
+                    yMax={yMax}
+                    limit={limit}
                     tickFormatter={tickFormatter}
                 />
             </Suspense>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type RefObject } from 'react';
 
-export const CHART_WINDOW_MS = 20_000;
+export const CHART_WINDOW_MS = 60_000;
 
 const RETAIN_MS = CHART_WINDOW_MS + 2_000;
 

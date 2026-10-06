@@ -3,27 +3,38 @@ import { useCurrentServer } from '@/api/server/queries';
 import { useServerStatus } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { CHART_WINDOW_MS, useRollingData } from '@/components/server/console/chart';
+import { CHART_WINDOW_MS, type ChartPoint, useRollingData } from '@/components/server/console/chart';
 import AreaChart from '@/components/server/console/AreaChart';
 import type { ChartSeries } from '@/components/server/console/types';
 import { parseServerStatsPayload } from '@/components/server/console/stats';
 import { bytesToString } from '@/lib/formatters';
 import { CloudDownload, CloudUpload } from 'lucide-react';
 import ChartBlock from '@/components/server/console/ChartBlock';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 const CYAN = 'var(--chart-1)';
 const YELLOW = 'var(--chart-2)';
+const MIB = 1024 * 1024;
 
 const SINGLE_KEYS = ['value'] as const;
 const NETWORK_KEYS = ['tx', 'rx'] as const;
 
-const CPU_SERIES: ChartSeries[] = [{ dataKey: 'value', color: CYAN }];
-const MEMORY_SERIES: ChartSeries[] = [{ dataKey: 'value', color: CYAN }];
+const SINGLE_SERIES: ChartSeries[] = [{ dataKey: 'value', color: CYAN }];
 const NETWORK_SERIES: ChartSeries[] = [
     { dataKey: 'tx', color: CYAN },
     { dataKey: 'rx', color: YELLOW },
 ];
+
+const trim = (value: number, decimals: number) => String(Number(value.toFixed(decimals)));
+
+const formatCpu = (value: number) => `${trim(value, value < 10 ? 1 : 0)}%`;
+const formatBytes = (bytes: number) => (bytes < 1 ? '0 B' : bytesToString(bytes, 1).replace('Bytes', 'B'));
+const formatRate = (bytes: number) => `${formatBytes(bytes)}/s`;
+
+const latest = (data: ChartPoint[], key: string): number | null => {
+    const value = data[data.length - 1]?.[key];
+
+    return value === null || value === undefined ? null : value;
+};
 
 export default function StatGraphs() {
     const status = useServerStatus();
@@ -41,6 +52,7 @@ export default function StatGraphs() {
             clearCpu();
             clearMemory();
             clearNetwork();
+            previous.current = { tx: -1, rx: -1 };
         }
     }, [clearCpu, clearMemory, clearNetwork, status]);
 
@@ -52,7 +64,7 @@ export default function StatGraphs() {
 
         const t = performance.now();
         pushCpu({ value: values.cpu_absolute }, t);
-        pushMemory({ value: Math.floor(values.memory_bytes / 1024 / 1024) }, t);
+        pushMemory({ value: values.memory_bytes }, t);
         pushNetwork(
             {
                 tx: previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
@@ -64,39 +76,70 @@ export default function StatGraphs() {
         previous.current = { tx: values.network.tx_bytes, rx: values.network.rx_bytes };
     });
 
+    const cpuLimit = limits.cpu;
+    const memoryLimitBytes = limits.memory * MIB;
+    const cpu = latest(cpuData, 'value');
+    const memory = latest(memoryData, 'value');
+    const tx = latest(networkData, 'tx');
+    const rx = latest(networkData, 'rx');
+    const offline = <span className={'text-muted-foreground'}>{live ? '—' : 'Offline'}</span>;
+
     return (
         <>
-            <ChartBlock title={'CPU Load'}>
+            <ChartBlock
+                title={'CPU Load'}
+                value={cpu === null ? offline : formatCpu(cpu)}
+                caption={cpuLimit ? `of ${cpuLimit}%` : 'no limit'}
+                usage={cpuLimit && cpu !== null ? cpu / cpuLimit : null}
+            >
                 <AreaChart
                     data={cpuData}
-                    series={CPU_SERIES}
+                    series={SINGLE_SERIES}
                     live={live}
                     windowMs={CHART_WINDOW_MS}
-                    suggestedMax={limits.cpu}
-                    tickFormatter={(value) => `${value.toFixed(2)}%`}
+                    floor={20}
+                    limit={cpuLimit}
+                    tickFormatter={formatCpu}
                 />
             </ChartBlock>
-            <ChartBlock title={'Memory'}>
+            <ChartBlock
+                title={'Memory'}
+                value={memory === null ? offline : formatBytes(memory)}
+                caption={
+                    memoryLimitBytes && memory !== null
+                        ? `of ${formatBytes(memoryLimitBytes)} · ${trim((memory / memoryLimitBytes) * 100, 1)}%`
+                        : 'no limit'
+                }
+                usage={memoryLimitBytes && memory !== null ? memory / memoryLimitBytes : null}
+            >
                 <AreaChart
                     data={memoryData}
-                    series={MEMORY_SERIES}
+                    series={SINGLE_SERIES}
                     live={live}
                     windowMs={CHART_WINDOW_MS}
-                    suggestedMax={limits.memory}
-                    tickFormatter={(value) => `${value}MiB`}
+                    floor={64 * MIB}
+                    limit={memoryLimitBytes}
+                    binary
+                    tickFormatter={formatBytes}
                 />
             </ChartBlock>
             <ChartBlock
                 title={'Network'}
-                legend={
-                    <>
-                        <Tooltip arrow content={'Inbound'}>
-                            <CloudDownload className={'mr-2 w-4 h-4 text-chart-2'} />
-                        </Tooltip>
-                        <Tooltip arrow content={'Outbound'}>
-                            <CloudUpload className={'w-4 h-4 text-chart-1'} />
-                        </Tooltip>
-                    </>
+                value={
+                    rx === null || tx === null ? (
+                        offline
+                    ) : (
+                        <span className={'flex items-baseline gap-4'}>
+                            <span className={'flex items-baseline gap-1.5'} title={'Inbound'}>
+                                <CloudDownload className={'h-4 w-4 self-center text-chart-2'} />
+                                {formatRate(rx)}
+                            </span>
+                            <span className={'flex items-baseline gap-1.5'} title={'Outbound'}>
+                                <CloudUpload className={'h-4 w-4 self-center text-chart-1'} />
+                                {formatRate(tx)}
+                            </span>
+                        </span>
+                    )
                 }
             >
                 <AreaChart
@@ -104,7 +147,9 @@ export default function StatGraphs() {
                     series={NETWORK_SERIES}
                     live={live}
                     windowMs={CHART_WINDOW_MS}
-                    tickFormatter={bytesToString}
+                    floor={1024}
+                    binary
+                    tickFormatter={formatRate}
                 />
             </ChartBlock>
         </>
