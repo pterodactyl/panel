@@ -1,0 +1,39 @@
+app/Services/Extensions/ExtensionStylesheetInspector.php
+  s_0c078e69478431::t_08ea7bed821f31 31-32,36
+  s_0c078e69478431::t_46c69500bb6251 53
+tests/Unit/Services/Extensions/ExtensionDistFilesTest.php
+  s_0c078e69478431::t_d4c319b806c341 39,42,44-50
+  s_0c078e69478431::t_4e361a680eff50 73
+  s_0c078e69478431::t_88362b19853e97 1-38,40-41,43,51-72,74
+.github/docker/default_ssl.conf
+  s_0c078e69478431::t_c917abf8e6e63c 52-55
+.github/docker/entrypoint.sh
+  s_0c078e69478431::t_bee147f5f0894a 67-84
+app/Services/Extensions/ExtensionDistFiles.php
+  s_0c078e69478431::t_3e40a293de45a9 1-7,9-11,14-32,35,38-48,50-57
+  s_0c078e69478431::t_318e61f795b359 8,12-13,33-34,36-37,49
+.github/docker/default.conf
+  s_0c078e69478431::t_444ad451328f35 20-23
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_0c078e69478431::t_326c3f592a47ed 133
+  s_0c078e69478431::t_cf205074a54b27 164-165,167-168
+  s_0c078e69478431::t_6f55c92e77ad37 58,60-62
+  s_0c078e69478431::t_4c6dae98cc1735 72-77
+  s_0c078e69478431::t_1ef9b29d50dbe9 169-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e284c381aa7bcb703893e5480ab72afdff08fb1e",
+  "prompts": {},
+  "sessions": {
+    "s_0c078e69478431": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "712c1fd7-2642-4677-8ee0-0f91d015a28e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
