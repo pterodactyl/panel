@@ -107,6 +107,8 @@ class ExtensionProviderLoader
 
         $loader = require $path;
         throw_unless($loader instanceof ClassLoader, InvalidExtensionException::class, 'Extension vendor/autoload.php must return a Composer ClassLoader.');
+        // Composer registers its loader in front of every other one. Behind the panel's, a
+        // package the extension bundles can never replace the copy the panel loads.
         $loader->unregister();
         $loader->register(prepend: false);
         $this->autoloadedPaths[$path] = true;
@@ -128,8 +130,10 @@ class ExtensionProviderLoader
     private function loader(): ClassLoader
     {
         if (! $this->classLoader instanceof ClassLoader) {
+            // Appended behind the panel's own loader, so the manifest's PSR-4 map only
+            // serves classes the panel and its packages do not provide.
             $this->classLoader = new ClassLoader;
-            $this->classLoader->register();
+            $this->classLoader->register(prepend: false);
         }
 
         return $this->classLoader;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
+use Composer\Autoload\ClassLoader;
 use Composer\Semver\VersionParser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -11,10 +12,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use JsonException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use ReflectionClass;
 use UnexpectedValueException;
 
 class ExtensionManifestValidator
 {
+    /** @var list<string>|null */
+    private ?array $panelNamespaces = null;
+
     public function fromDirectory(string $directory): ExtensionManifest
     {
         $path = mb_rtrim($directory, '/\\').DIRECTORY_SEPARATOR.ExtensionManifest::FILENAME;
@@ -224,7 +229,10 @@ class ExtensionManifestValidator
     {
         $normalized = [];
         foreach ($autoload as $prefix => $src) {
-            throw_if(! is_string($prefix) || ! is_string($src) || ! str_ends_with($prefix, '\\'), InvalidExtensionException::class, 'Manifest "autoload" must map "Vendor\\\\Prefix\\\\" to a source directory.');
+            throw_if(! is_string($prefix) || ! is_string($src) || preg_match(ExtensionManifest::NAMESPACE_REGEX, $prefix) !== 1, InvalidExtensionException::class, 'Manifest "autoload" must map "Vendor\\\\Prefix\\\\" to a source directory.');
+
+            $reserved = array_find($this->panelNamespaces(), fn (string $namespace): bool => ExtensionManifest::namespacesOverlap($prefix, $namespace));
+            throw_if($reserved !== null, InvalidExtensionException::class, "Manifest \"autoload\" namespace \"{$prefix}\" overlaps \"{$reserved}\", which the panel already autoloads.");
 
             throw_if(str_starts_with($src, '/') || str_contains($src, '..'), InvalidExtensionException::class, 'Manifest "autoload" directories must be relative paths inside the package.');
 
@@ -232,6 +240,31 @@ class ExtensionManifestValidator
         }
 
         return $normalized;
+    }
+
+    /**
+     * The namespaces of the panel, its framework and every PSR-4 prefix the panel's own
+     * Composer autoloader maps. Extension class loaders run after the panel's, so they
+     * never replace a class it can load, but a claim here would let an extension add
+     * classes to those namespaces that the panel looks up by name.
+     *
+     * @return list<string>
+     */
+    private function panelNamespaces(): array
+    {
+        if ($this->panelNamespaces !== null) {
+            return $this->panelNamespaces;
+        }
+
+        // Extensions register Composer loaders of their own; the panel's is the one in the
+        // vendor directory this ClassLoader class was loaded from.
+        $file = (new ReflectionClass(ClassLoader::class))->getFileName();
+        $loader = $file === false ? null : ClassLoader::getRegisteredLoaders()[dirname($file, 2)] ?? null;
+
+        return $this->panelNamespaces = array_values(array_unique([
+            ...ExtensionManifest::RESERVED_NAMESPACES,
+            ...array_keys($loader?->getPrefixesPsr4() ?? []),
+        ]));
     }
 
     /**

@@ -52,6 +52,44 @@ test('rejects invalid manifests', function (array $overrides, string $messageFra
     $this->expectExceptionMessageMatches('/'.preg_quote($messageFragment, '/').'/');
     (new ExtensionManifestValidator)->fromDirectory($this->directory);
 })->with('invalidManifestProvider');
+test('rejects autoload namespaces that are not PSR-4 prefixes', function (string $prefix): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => [$prefix => 'src']]);
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, 'Manifest "autoload" must map');
+})->with([
+    'a lone separator' => ['\\'],
+    'a leading separator' => ['\\Acme\\'],
+    'an empty segment' => ['Acme\\\\Billing\\'],
+    'a leading digit' => ['1Acme\\'],
+    'a space' => ['Acme Billing\\'],
+    'a trailing newline' => ["Acme\\\n"],
+]);
+
+test('rejects autoload namespaces the panel or its Composer packages already load', function (string $prefix, string $owner): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => ['Acme\\' => 'lib', $prefix => 'src']]);
+
+    // A parent namespace is reported against whichever of its packages is compared first.
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))
+        ->toThrow(InvalidExtensionException::class, "Manifest \"autoload\" namespace \"{$prefix}\" overlaps \"{$owner}");
+})->with([
+    'the panel namespace' => ['Pterodactyl\\', 'Pterodactyl\\", which'],
+    'inside the panel namespace' => ['Pterodactyl\\Extensions\\Billing\\', 'Pterodactyl\\", which'],
+    'the panel namespace in another case' => ['pterodactyl\\Models\\', 'Pterodactyl\\", which'],
+    'inside the framework' => ['Illuminate\\Support\\', 'Illuminate\\", which'],
+    'a framework vendor' => ['Laravel\\Billing\\', 'Laravel\\", which'],
+    'symfony' => ['Symfony\\Component\\Console\\', 'Symfony\\", which'],
+    'a Composer package' => ['GuzzleHttp\\', 'GuzzleHttp\\'],
+    'inside a Composer package' => ['Carbon\\Billing\\', 'Carbon\\", which'],
+    'a parent of Composer packages' => ['League\\', 'League\\'],
+    'a parent of the panel database namespaces' => ['Database\\', 'Database\\'],
+]);
+
+test('accepts autoload namespaces that only share a name start with the panel', function (): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => ['PterodactylBilling\\' => 'src', 'Acme\\Pterodactyl\\' => 'lib']]);
+
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->autoload)->toBe(['PterodactylBilling\\' => 'src', 'Acme\\Pterodactyl\\' => 'lib']);
+});
+
 test('missing and malformed files', function (string $subdirectory, ?string $contents): void {
     $directory = $this->directory.DIRECTORY_SEPARATOR.$subdirectory;
     if ($contents !== null) {

@@ -310,6 +310,14 @@ not a durable job audit log.
 
 ## Backend provider API
 
+The manifest's `provider` class is loaded through its `autoload` map of PSR-4 prefixes to
+package directories, such as `{ "Acme\\Billing\\": "src" }`. A prefix cannot equal, contain
+or sit inside `Pterodactyl\`, `Illuminate\`, `Laravel\`, `Symfony\` or a namespace of the
+panel's Composer packages, and enabling fails while another enabled extension autoloads an
+overlapping prefix. Extension class loaders are registered behind the panel's, so once an
+extension's `vendor/autoload.php` has returned, a class the panel or its packages provide
+always comes from the panel.
+
 Providers can use `listenToServerOperations` for immutable `provision`, `install`,
 `reinstall`, `backup`, `delete`, `suspend`, `unsuspend`, and `transfer` results. Results
 dispatch after commit and carry identifiers only (`serverUuid`, `operation`, `successful`,
