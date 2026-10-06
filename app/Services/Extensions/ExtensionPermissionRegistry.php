@@ -13,9 +13,9 @@ use InvalidArgumentException;
  */
 class ExtensionPermissionRegistry
 {
-    public const string KEY_REGEX = '/^[a-z][a-z0-9-]{0,47}$/';
+    public const string KEY_REGEX = '/^[a-z][a-z0-9-]{0,47}$/D';
 
-    /** OpenAPI pattern every extension permission matches: `ext.<extension id>.<key>`. */
+    /** OpenAPI pattern every extension permission matches: `ext.<extension id>.<key>`. Wrap it in `/.../D` for PHP. */
     public const string PERMISSION_PATTERN = '^ext\.[a-z][a-z0-9-]{0,47}\.[a-z][a-z0-9-]{0,47}$';
 
     /** @var array<string, array{description: string, keys: array<string, string>}> */

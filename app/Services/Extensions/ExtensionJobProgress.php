@@ -18,7 +18,7 @@ final class ExtensionJobProgress
     public function begin(string $extension, User $user, ?Server $server = null, ?string $permission = null): ExtensionJobSnapshot
     {
         throw_unless(preg_match(ExtensionManifest::ID_REGEX, $extension), InvalidArgumentException::class, 'Invalid extension identifier.');
-        throw_if($permission !== null && (! $server instanceof Server || ! preg_match('/'.ExtensionPermissionRegistry::PERMISSION_PATTERN.'/', $permission) || ! str_starts_with($permission, 'ext.'.$extension.'.')), InvalidArgumentException::class, 'Progress permissions must belong to the extension and require a server.');
+        throw_if($permission !== null && (! $server instanceof Server || ! preg_match('/'.ExtensionPermissionRegistry::PERMISSION_PATTERN.'/D', $permission) || ! str_starts_with($permission, 'ext.'.$extension.'.')), InvalidArgumentException::class, 'Progress permissions must belong to the extension and require a server.');
         $snapshot = new ExtensionJobSnapshot(Str::uuid()->toString(), $extension, $user->uuid, $server?->uuid, $permission, 'running', 0, '', 1, now()->toIso8601String());
         $this->store($snapshot);
 

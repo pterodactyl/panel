@@ -20,11 +20,11 @@ class ExtensionManifest
         'server.files.manager',
     ];
 
-    /** Lowercase slug: starts with a letter, then letters/digits/hyphens, max 48. */
-    public const string ID_REGEX = '/^[a-z][a-z0-9-]{0,47}$/';
+    /** Lowercase slug: starts with a letter, then letters/digits/hyphens, max 48, with no trailing newline. */
+    public const string ID_REGEX = '/^[a-z][a-z0-9-]{0,47}$/D';
 
     /** A lucide icon name (kebab-case), such as "life-buoy" or "grid-2x2". */
-    public const string ICON_REGEX = '/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/';
+    public const string ICON_REGEX = '/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/D';
 
     /** Identifiers that would collide with core routes/assets. */
     public const array RESERVED_IDS = ['pterodactyl', 'panel', 'core'];
@@ -40,7 +40,7 @@ class ExtensionManifest
     public const array RESERVED_NAMESPACES = ['Pterodactyl\\', 'Illuminate\\', 'Laravel\\', 'Symfony\\'];
 
     /** Lowercase slug a top-level URL prefix claimed under `routes.root` must match. */
-    public const string ROOT_PREFIX_REGEX = '/^[a-z][a-z0-9-]{0,47}$/';
+    public const string ROOT_PREFIX_REGEX = '/^[a-z][a-z0-9-]{0,47}$/D';
 
     /**
      * Top-level URL segments an extension can never claim: the SPA's own client-side
