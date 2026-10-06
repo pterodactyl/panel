@@ -1,0 +1,37 @@
+name: React Doctor
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - "2.0-develop"
+  push:
+    branches:
+      - "2.0-develop"
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+
+concurrency:
+  group: react-doctor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  react-doctor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Full history so pull requests can diff against the merge base and only report new issues.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Advisory only: comments, inline review notes, and a commit status, but never fails the check.
+      # Set `blocking: error` to gate merges on new error-level findings.
+      - uses: millionco/react-doctor@v2
+        with:
+          blocking: none
