@@ -28,12 +28,12 @@ final class ExtensionStylesheetInspector
             return null;
         }
 
-        foreach (File::allFiles($manifest->path('dist')) as $file) {
-            if ($file->getExtension() !== 'css') {
+        foreach (ExtensionDistFiles::list($manifest->path('dist')) as $relative => $path) {
+            if (pathinfo($path, PATHINFO_EXTENSION) !== 'css') {
                 continue;
             }
 
-            $foreign = $this->foreign($file->getContents(), $manifest->uiPrefix);
+            $foreign = $this->foreign(File::get($path), $manifest->uiPrefix);
             $found = [...$foreign['utilities'], ...$foreign['theme']];
             if ($found === []) {
                 continue;
@@ -50,7 +50,7 @@ final class ExtensionStylesheetInspector
                 ? "but declares no Tailwind prefix - add \"prefix\": \"{$prefix}\" to \"ui\" in ".ExtensionManifest::FILENAME.', build'
                 : "without its \"{$prefix}\" prefix, which override the panel's or another extension's styles - build";
 
-            return "Extension \"{$manifest->id}\" ships {$what} in dist/{$file->getRelativePathname()} ({$listed}) {$problem} Tailwind with `prefix({$prefix})`, write its classes as `{$prefix}:flex` (see the SDK README, \"Styling\") and rebuild.";
+            return "Extension \"{$manifest->id}\" ships {$what} in dist/{$relative} ({$listed}) {$problem} Tailwind with `prefix({$prefix})`, write its classes as `{$prefix}:flex` (see the SDK README, \"Styling\") and rebuild.";
         }
 
         return null;
