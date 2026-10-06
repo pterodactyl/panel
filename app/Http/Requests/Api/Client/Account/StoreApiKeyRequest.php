@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
 use Closure;
-use Exception;
 use Illuminate\Validation\Validator;
+use InvalidArgumentException;
+use IPTools\Exception\IpException;
+use IPTools\Exception\NetworkException;
 use IPTools\Range;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Validation\ApiKeyRules;
@@ -41,19 +43,21 @@ class StoreApiKeyRequest extends ClientApiRequest
             }
 
             foreach ($ips as $index => $ip) {
-                $valid = false;
                 if (! is_string($ip)) {
                     $validator->errors()->add("allowed_ips.{$index}", 'The IP address or CIDR range must be a string.');
 
                     continue;
                 }
 
+                $valid = false;
                 try {
                     $valid = Range::parse($ip)->valid();
-                } catch (Exception $exception) {
-                    throw_if($exception->getMessage() !== 'Invalid IP address format', $exception);
-                } finally {
-                    $validator->errors()->addIf(! $valid, "allowed_ips.{$index}", '"'.$ip.'" is not a valid IP address or CIDR range.');
+                } catch (IpException | NetworkException | InvalidArgumentException) {
+                    $valid = false;
+                }
+
+                if (! $valid) {
+                    $validator->errors()->add("allowed_ips.{$index}", '"'.$ip.'" is not a valid IP address or CIDR range.');
                 }
             }
         }];
