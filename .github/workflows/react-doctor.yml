@@ -30,8 +30,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      # Advisory only: comments, inline review notes, and a commit status, but never fails the check.
-      # Set `blocking: error` to gate merges on new error-level findings.
+      # Pull requests fail on new error-level findings; pushes only record the score.
       - uses: millionco/react-doctor@v2
         with:
-          blocking: none
+          blocking: error
