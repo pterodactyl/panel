@@ -18,7 +18,7 @@
         "@tanstack/form-core": "^1.33.0",
         "@tanstack/react-form": "^1.33.0",
         "@tanstack/react-router": "^1.170.17",
-        "axios": "^1.18.1",
+        "axios": "^1.20.0",
         "lucide-react": "^1.17.0",
         "sonner": "^2.0.7",
         "@types/react": "^19.3.0",
