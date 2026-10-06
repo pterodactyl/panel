@@ -143,6 +143,20 @@ async function loadRoute(path: string, options: { rootAdmin?: boolean; seed?: (c
     return { router, requests, leaf: router.state.matches.at(-1)! };
 }
 
+it('sends guests to sign in with the page they asked for', { timeout: 20_000 }, async () => {
+    (window as BootstrapWindow).SiteConfiguration = { name: 'Panel', locale: 'en', recaptcha: { enabled: false } };
+    const { buildRouteTree } = await import('@/router/routeTree');
+    const router = createRouter({
+        routeTree: buildRouteTree([]),
+        context: { queryClient: new QueryClient() },
+        history: createMemoryHistory({ initialEntries: ['/panel/nodes/42/settings?tab=network'] }),
+    });
+    await router.load();
+
+    expect(router.state.location.pathname).toBe('/auth/login');
+    expect(router.state.location.search).toEqual({ redirect: '/panel/nodes/42/settings?tab=network' });
+});
+
 it('denies a server tab before its loader requests data the subuser cannot read', { timeout: 20_000 }, async () => {
     const { createTestServer } = await import('@/sdk/testing');
     const { serverQueryOptions } = await import('@/api/server/queries');

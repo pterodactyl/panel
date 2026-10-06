@@ -2,6 +2,7 @@ import { useCallback, type ComponentProps, type ReactElement } from 'react';
 import { Link, useNavigate, useLocation, useParams, useSearch } from '@tanstack/react-router';
 import { getExtensionScreens, resolveScreenPath, type RouteSlotData } from '@/extensions/registry';
 import { routeParamStrings } from '@/router/params';
+import { parseRedirectSearch } from '@/router/redirect';
 import type { ExtensionConfigValue } from './index';
 
 export {
@@ -114,9 +115,15 @@ export function PanelLink({ destination, exact = false, ...props }: PanelLinkPro
 
 export function useOpenLoginCheckpoint(): (confirmationToken: string) => Promise<void> {
     const navigate = useNavigate();
+    const { redirect } = parseRedirectSearch(useSearch({ strict: false }));
     return useCallback(
         (confirmationToken: string) =>
-            navigate({ to: '/auth/login/checkpoint', replace: true, state: { token: confirmationToken } as never }),
-        [navigate]
+            navigate({
+                to: '/auth/login/checkpoint',
+                search: { redirect },
+                replace: true,
+                state: { token: confirmationToken } as never,
+            }),
+        [navigate, redirect]
     );
 }

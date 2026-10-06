@@ -1,10 +1,11 @@
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import { useNavigate, useRouter, type ErrorComponentProps } from '@tanstack/react-router';
+import { useRouter, type ErrorComponentProps } from '@tanstack/react-router';
 import { httpErrorToHuman } from '@/api/http';
 import { endBootstrapSession } from '@/bootstrap';
 import { AccessDenied, NotFound, ServerError } from '@/components/elements/ScreenBlock';
+import { parseRedirectSearch } from '@/router/redirect';
 
 const accessDeniedMessage = 'You do not have permission to access this page.';
 
@@ -22,12 +23,16 @@ const routeErrorStatus = (error: Error): number | undefined => {
 };
 
 function SignInRedirect() {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     useEffect(() => {
         endBootstrapSession();
-        void navigate({ to: '/auth/login', replace: true });
-    }, [navigate]);
+        void router.navigate({
+            to: '/auth/login',
+            search: parseRedirectSearch({ redirect: router.latestLocation.href }),
+            replace: true,
+        });
+    }, [router]);
 
     return null;
 }

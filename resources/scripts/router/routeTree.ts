@@ -75,6 +75,7 @@ import AuthLayout from '@/router/layouts/AuthLayout';
 import RootNotFound from '@/router/RootNotFound';
 import { RouteAccessDenied } from '@/router/RouteError';
 import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
+import { parseRedirectSearch } from '@/router/redirect';
 import { requireServerPermission, serverScreen } from '@/router/serverScreen';
 import { slottedRouteComponent } from '@/router/routeSlots';
 import {
@@ -115,6 +116,7 @@ const authChildren = [
             before: 'auth.login.before',
             after: 'auth.login.after',
         }),
+        validateSearch: parseRedirectSearch,
     }),
     createRoute({
         getParentRoute: () => authRoute,
@@ -123,6 +125,7 @@ const authChildren = [
             before: 'auth.checkpoint.before',
             after: 'auth.checkpoint.after',
         }),
+        validateSearch: parseRedirectSearch,
     }),
     createRoute({
         getParentRoute: () => authRoute,
@@ -146,9 +149,9 @@ const authChildren = [
 const authenticatedRoute = createRoute({
     getParentRoute: () => rootRoute,
     id: 'authenticated',
-    beforeLoad: () => {
+    beforeLoad: ({ location }) => {
         if (!hasBootstrapSession()) {
-            throw redirect({ to: '/auth/login' });
+            throw redirect({ to: '/auth/login', search: parseRedirectSearch({ redirect: location.href }) });
         }
     },
     loader: async ({ context }) => {
