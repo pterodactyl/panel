@@ -87,6 +87,16 @@ test('a server that skips its install script cannot be reinstalled', function ()
     expect($server->refresh()->status)->toBeNull()
         ->and($fake->callsFor('reinstall'))->toBeEmpty();
 });
+test('a blocked reinstall returns an error to clients not requesting json', function (): void {
+    $fake = new FakeDaemonServer;
+    $server = $this->createServerModel(['skip_scripts' => true]);
+
+    $this->post("/api/application/servers/{$server->id}/reinstall", [], ['Accept' => '*/*'])
+        ->assertStatus(Response::HTTP_BAD_REQUEST)
+        ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
+
+    expect($fake->callsFor('reinstall'))->toBeEmpty();
+});
 test('a server that skips its install script can be reinstalled from an unfinished install', function (string $status): void {
     $fake = new FakeDaemonServer;
     $server = $this->createServerModel(['skip_scripts' => true, 'status' => $status]);
