@@ -40,6 +40,17 @@ use Throwable;
  * files), operation listeners, action wrappers, commands, schedules, head tags, settings
  * and permissions activate after successful provider boot. Direct container mutations
  * and other PHP side effects are not staged.
+ *
+ * When register() or boot() throws, the extension is recorded as failed: nothing staged
+ * through these helpers activates, and routes added directly with the Route facade are
+ * removed again unless the panel's routes are cached. Everything else the provider did
+ * before it threw stays in effect for the rest of the process, because neither PHP nor
+ * Laravel can undo it: its classes stay loaded, Laravel keeps the provider instance in its
+ * provider list, and container bindings and extenders, event listeners (view composers
+ * and model observers included), gates, macros, middleware aliases, and commands or
+ * schedules added without these helpers keep working. The provider is loaded again by the
+ * next request or worker, so a provider that keeps failing leaves the same side effects
+ * behind each time.
  */
 abstract class ExtensionProvider extends ServiceProvider
 {
