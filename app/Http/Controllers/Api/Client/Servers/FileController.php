@@ -417,12 +417,12 @@ class FileController extends ClientApiController
 
         try {
             $contents = $lister->list($server, '/'.implode('/', $segments));
-        } catch (DaemonConnectionException $exception) {
-            if ($exception->getStatusCode() === Response::HTTP_NOT_FOUND) {
+        } catch (DaemonConnectionException $daemonConnectionException) {
+            if ($daemonConnectionException->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return false;
             }
 
-            throw $exception;
+            throw $daemonConnectionException;
         }
 
         foreach ($contents as $entry) {

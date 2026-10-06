@@ -64,6 +64,24 @@ if [ ! -f /etc/nginx/http.d/panel.conf ]; then
   fi
   mv /etc/nginx/http.d/panel.conf.tmp /etc/nginx/http.d/panel.conf
 fi
+
+# Configs persisted by older images hand files under /assets/ to PHP-FPM; serve that tree as static files only.
+if ! grep -qF 'location ^~ /assets/' /etc/nginx/http.d/panel.conf; then
+  ASSETS_BLOCK=$(cat <<'EOF'
+    location ^~ /assets/ {
+        location ~ /\. {
+            deny all;
+        }
+
+        try_files $uri =404;
+    }
+EOF
+) awk '!done && index($0, "location ~ \\.php$") { print ENVIRON["ASSETS_BLOCK"]; print ""; done = 1 } { print }' \
+    /etc/nginx/http.d/panel.conf > /etc/nginx/http.d/panel.conf.tmp
+  mv /etc/nginx/http.d/panel.conf.tmp /etc/nginx/http.d/panel.conf
+  grep -qF 'location ^~ /assets/' /etc/nginx/http.d/panel.conf \
+    || echo 'warning: /etc/nginx/http.d/panel.conf has no PHP location; add the /assets/ block from .github/docker/default.conf by hand.' >&2
+fi
 rm -f /etc/nginx/http.d/default.conf
 cp .github/docker/health.conf /etc/nginx/http.d/health.conf
 

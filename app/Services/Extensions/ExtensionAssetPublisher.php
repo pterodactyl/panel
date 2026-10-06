@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Support\JsonValueGuard;
-use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -56,13 +55,11 @@ class ExtensionAssetPublisher
         }
 
         throw_if($reason = $this->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
-        $dist = $manifest->path('dist');
-        $files = File::allFiles($dist);
-        usort($files, fn (SplFileInfo $left, SplFileInfo $right): int => strcmp($left->getRelativePathname(), $right->getRelativePathname()));
+        $files = ExtensionDistFiles::list($manifest->path('dist'));
         $hash = hash_init('sha256');
-        foreach ($files as $file) {
-            hash_update($hash, $file->getRelativePathname()."\0");
-            hash_update_file($hash, $file->getPathname());
+        foreach ($files as $relative => $path) {
+            hash_update($hash, $relative."\0");
+            hash_update_file($hash, $path);
         }
 
         $version = hash_final($hash);
@@ -72,7 +69,12 @@ class ExtensionAssetPublisher
             $staged = $root.DIRECTORY_SEPARATOR.'.staging-'.Str::random(12);
             File::ensureDirectoryExists($root);
             try {
-                throw_unless(File::copyDirectory($dist, $staged), InvalidExtensionException::class, 'Unable to stage extension assets.');
+                // Copy exactly the files that were checked, never the directory itself.
+                foreach ($files as $relative => $path) {
+                    File::ensureDirectoryExists(dirname($staged.DIRECTORY_SEPARATOR.$relative));
+                    throw_unless(File::copy($path, $staged.DIRECTORY_SEPARATOR.$relative), InvalidExtensionException::class, 'Unable to stage extension assets.');
+                }
+
                 throw_unless(File::moveDirectory($staged, $target), InvalidExtensionException::class, 'Unable to publish extension assets.');
             } finally {
                 File::deleteDirectory($staged);
@@ -128,7 +130,7 @@ class ExtensionAssetPublisher
             return null;
         }
 
-        return $this->missingBuildReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
+        return $this->missingBuildReason($manifest) ?? $this->distFilesReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
     }
 
     public function publishedPath(string $identifier): string
@@ -157,6 +159,18 @@ class ExtensionAssetPublisher
         }
 
         return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version];
+    }
+
+    /** Published assets are web-served, so dist may only hold static browser assets. */
+    private function distFilesReason(ExtensionManifest $manifest): ?string
+    {
+        try {
+            ExtensionDistFiles::list($manifest->path('dist'));
+        } catch (InvalidExtensionException $invalidExtensionException) {
+            return "Extension \"{$manifest->id}\" {$invalidExtensionException->getMessage()}";
+        }
+
+        return null;
     }
 
     private function developmentPath(string $identifier): string

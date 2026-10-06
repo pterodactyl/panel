@@ -40,7 +40,7 @@ class PasswordBroker extends IlluminatePasswordBroker
 
             $token = $this->tokens->create($user);
 
-            if ($callback !== null) {
+            if ($callback instanceof Closure) {
                 return JsonValueGuard::nullableString($callback($user, $token)) ?? static::RESET_LINK_SENT;
             }
 
