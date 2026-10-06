@@ -53,7 +53,7 @@ class AuthenticateIPAccess
 
         try {
             $find = new IP($requestIp);
-        } catch (Throwable) {
+        } catch (IpException) {
             throw new AccessDeniedHttpException('The request did not contain a valid IP address.');
         }
 
@@ -62,8 +62,13 @@ class AuthenticateIPAccess
                 if (Range::parse($ip)->contains($find)) {
                     return $next($request);
                 }
-            } catch (Throwable) {
-                // Ignore malformed IP/CIDR entries and continue checking remaining entries
+            } catch (IpException | NetworkException | InvalidArgumentException $exception) {
+                Log::warning('Malformed IP or CIDR range encountered in API key allowed_ips list', [
+                    'identifier' => $token->identifier,
+                    'entry' => $ip,
+                    'error' => $exception->getMessage(),
+                ]);
+
                 continue;
             }
         }
