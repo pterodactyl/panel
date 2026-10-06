@@ -291,6 +291,15 @@ export type AdminEggVariableResource = {
     attributes: AdminEggVariableAttributes;
 };
 
+/**
+ * Values for extension form fields, keyed by extension id and then by field. Each extension validates and stores its own fields; extensions that are omitted keep their current values.
+ */
+export type AdminExtensionFieldValues = {
+    [key: string]: {
+        [key: string]: string | number | boolean | Array<string | number> | null;
+    };
+};
+
 export type AdminExtensionSettingField = {
     input: string;
     label: string;
@@ -1590,6 +1599,7 @@ export type AdminCreateUserRequest = {
          */
         language?: string;
     };
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateUserRequest = {
@@ -1627,6 +1637,7 @@ export type AdminUpdateUserRequest = {
          */
         language?: string;
     };
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminAttachServerMountRequest = {
@@ -1739,6 +1750,7 @@ export type AdminCreateServerRequest = {
      */
     start_on_completion?: boolean;
     secondary_allocations_ids?: Array<number>;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateServerDetailsRequest = {
@@ -1758,6 +1770,7 @@ export type AdminUpdateServerDetailsRequest = {
      * A description for this resource.
      */
     description?: string | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateServerBuildRequest = {
@@ -1940,6 +1953,7 @@ export type AdminCreateNodeRequest = {
      * The daemon base. Must match the regex /^([\/][\d\w.\-\/]+)$/.
      */
     daemon_base?: string;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateNodeRequest = {
@@ -2011,6 +2025,7 @@ export type AdminUpdateNodeRequest = {
      * Whether to rotate the daemon secret.
      */
     reset_secret?: boolean;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminSyncNodeGameTagsRequest = {
@@ -2063,6 +2078,7 @@ export type AdminCreateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateLocationRequest = {
@@ -2074,6 +2090,7 @@ export type AdminUpdateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminCreateMountRequest = {
@@ -2101,6 +2118,7 @@ export type AdminCreateMountRequest = {
      * Whether users can mount this resource.
      */
     user_mountable?: boolean;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateMountRequest = {
@@ -2128,6 +2146,7 @@ export type AdminUpdateMountRequest = {
      * Whether users can mount this resource.
      */
     user_mountable?: boolean;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminAttachEggsToMountRequest = {
@@ -2290,6 +2309,7 @@ export type AdminCreateEggRequest = {
      * The config files. This field is required when <code>config_from</code> is not present. Must be a valid JSON string.
      */
     config_files?: string | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateEggRequest = {
@@ -2341,6 +2361,7 @@ export type AdminUpdateEggRequest = {
      * The config files. This field is required when <code>config_from</code> is not present. Must be a valid JSON string.
      */
     config_files?: string | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminCreateTagRequest = {
@@ -2485,6 +2506,7 @@ export type AdminCreateDatabaseHostRequest = {
      * The node ID. Must match an existing stored value.
      */
     node_id?: number | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminUpdateDatabaseHostRequest = {
@@ -2512,6 +2534,7 @@ export type AdminUpdateDatabaseHostRequest = {
      * The node ID. Must match an existing stored value.
      */
     node_id?: number | null;
+    extensions?: AdminExtensionFieldValues;
 };
 
 export type AdminCreateApiKeyRequest = {
@@ -3601,6 +3624,10 @@ export type AdminGetExtensionSettingsResponseBody = {
     };
 };
 
+export type AdminGetExtensionFormValuesResponseBody = {
+    data: AdminExtensionFieldValues;
+};
+
 export type AdminUpdateExtensionSettingsResponseBody = {
     data: {
         registered: boolean;
@@ -3871,6 +3898,10 @@ export type AdminListActivityPerPageQueryParameter = number;
 export type AdminListActivityIncludeQueryParameter = string;
 
 export type AdminGetExtensionSettingsExtensionPathParameter = string;
+
+export type AdminGetExtensionFormValuesFormPathParameter = string;
+
+export type AdminGetExtensionFormValuesIdPathParameter = number;
 
 export type AdminUpdateExtensionSettingsExtensionIdPathParameter = string;
 
@@ -5361,6 +5392,48 @@ export type AdminGetExtensionSettingsResponses = {
 };
 
 export type AdminGetExtensionSettingsResponse = AdminGetExtensionSettingsResponses[keyof AdminGetExtensionSettingsResponses];
+
+export type AdminGetExtensionFormValuesData = {
+    body?: never;
+    path: {
+        /**
+         * The form.
+         */
+        form: AdminGetExtensionFormValuesFormPathParameter;
+        /**
+         * The resource ID.
+         */
+        id: AdminGetExtensionFormValuesIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/extensions/forms/{form}/{id}';
+};
+
+export type AdminGetExtensionFormValuesErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminGetExtensionFormValuesError = AdminGetExtensionFormValuesErrors[keyof AdminGetExtensionFormValuesErrors];
+
+export type AdminGetExtensionFormValuesResponses = {
+    /**
+     * Extension form values returned.
+     */
+    200: AdminGetExtensionFormValuesResponseBody;
+};
+
+export type AdminGetExtensionFormValuesResponse = AdminGetExtensionFormValuesResponses[keyof AdminGetExtensionFormValuesResponses];
 
 export type AdminUpdateExtensionSettingsData = {
     body: AdminUpdateExtensionSettingsRequest;

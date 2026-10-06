@@ -1,14 +1,10 @@
+import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import type { AdminDatabaseHost } from '@/api/admin/database-hosts/queries';
-import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import type { DatabaseHostFormValues } from '@/components/admin/databases/formValues';
 
-export interface DatabaseHostFormValues {
-    name: string;
-    host: string;
-    port: NumberInputValue;
-    username: string;
-    password: string;
-    nodeId: string;
-}
+export type { DatabaseHostFormValues };
 
 type TextValidator = ({ value }: { value: string }) => string | undefined;
 
@@ -19,15 +15,20 @@ export const newDatabaseHostFormValues = (): DatabaseHostFormValues => ({
     username: '',
     password: '',
     nodeId: '',
+    extensions: newExtensionFieldValues('admin.databaseHost'),
 });
 
-export const databaseHostFormValues = (host: AdminDatabaseHost): DatabaseHostFormValues => ({
+export const databaseHostFormValues = (
+    host: AdminDatabaseHost,
+    extensions: LoadedExtensionFieldValues = {}
+): DatabaseHostFormValues => ({
     name: host.attributes.name,
     host: host.attributes.host,
     port: host.attributes.port,
     username: host.attributes.username,
     password: '',
     nodeId: host.attributes.node_id === null ? '' : String(host.attributes.node_id),
+    extensions,
 });
 
 const validateName: TextValidator = ({ value }) =>
@@ -73,4 +74,5 @@ export const databaseHostBodyFromFormValues = (values: DatabaseHostFormValues) =
     username: values.username,
     password: values.password || undefined,
     node_id: values.nodeId === '' ? null : Number(values.nodeId),
+    extensions: values.extensions,
 });

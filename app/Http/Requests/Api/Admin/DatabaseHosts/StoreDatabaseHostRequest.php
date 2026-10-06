@@ -6,13 +6,24 @@ namespace Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts;
 
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Validation\DatabaseHostRules;
 
 class StoreDatabaseHostRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminDatabaseHostsCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.databaseHost';
     }
 
     /**

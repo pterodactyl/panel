@@ -6,7 +6,7 @@ import {
     updateAdminServerDetailsInput,
     useUpdateAdminServerDetails,
 } from '@/api/admin/servers/queries';
-import { serverDetailsBodyFromFormValues } from '@/components/admin/servers/helpers';
+import { serverDetailsBodyFromFormValues, type ServerDetailsValues } from '@/components/admin/servers/helpers';
 import { useAdminUsers } from '@/api/admin/users/queries';
 import { useServerDetail } from '@/components/admin/servers/useServerDetail';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -14,9 +14,15 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { relationshipAttributes } from '@/api/relationships';
 import { useDebouncedValue } from '@/plugins/useDebouncedValue';
 import type { SelectOption } from '@/components/ui/Select';
+import Spinner from '@/components/elements/Spinner';
+import Slot from '@/extensions/Slot';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
 interface Props {
     server: AdminServer;
+    extensions: LoadedExtensionFieldValues;
+    hidden: readonly string[];
 }
 
 type OwnerOption = {
@@ -60,7 +66,7 @@ const ownerSelectOption = (user: OwnerOption): SelectOption => ({
     ),
 });
 
-function ServerDetailsForm({ server }: Props) {
+function ServerDetailsForm({ server, extensions, hidden }: Props) {
     const { attributes } = server;
     const [search, setSearch] = useState('');
     const [pickedOwner, setPickedOwner] = useState<OwnerOption | null>(null);
@@ -72,13 +78,15 @@ function ServerDetailsForm({ server }: Props) {
         filters: { search: debouncedSearch.trim() },
     });
 
+    const defaultValues: ServerDetailsValues = {
+        name: attributes.name,
+        user: attributes.user,
+        externalId: attributes.external_id ?? '',
+        description: attributes.description ?? '',
+        extensions,
+    };
     const form = useAppForm({
-        defaultValues: {
-            name: attributes.name,
-            user: attributes.user,
-            externalId: attributes.external_id ?? '',
-            description: attributes.description ?? '',
-        },
+        defaultValues,
         onSubmit: async ({ value }) => {
             try {
                 await updateServerDetails.mutateAsync(
@@ -89,6 +97,7 @@ function ServerDetailsForm({ server }: Props) {
                             user: Number(value.user),
                             externalId: value.externalId,
                             description: value.description,
+                            extensions: value.extensions,
                         })
                     )
                 );
@@ -183,6 +192,11 @@ function ServerDetailsForm({ server }: Props) {
                         )}
                     </form.AppField>
                 </div>
+                <Slot
+                    name={'panel.servers.detail.details.form'}
+                    data={{ kind: 'admin.server', mode: 'edit', resource: server, form }}
+                    hidden={hidden}
+                />
                 <div className={'flex justify-end mt-6'}>
                     <form.AppForm>
                         <form.SubmitButton>Update Details</form.SubmitButton>
@@ -195,6 +209,7 @@ function ServerDetailsForm({ server }: Props) {
 
 export default function ServerDetailsTab() {
     const { server } = useServerDetail();
+    const extensions = useExtensionFormFields('admin.server', server.attributes.id);
 
     if (server.attributes.container.installed !== 1) {
         return (
@@ -202,5 +217,16 @@ export default function ServerDetailsTab() {
         );
     }
 
-    return <ServerDetailsForm key={`${server.attributes.id}:${server.attributes.updated_at}`} server={server} />;
+    if (!extensions.ready) {
+        return <Spinner size={'large'} centered />;
+    }
+
+    return (
+        <ServerDetailsForm
+            key={`${server.attributes.id}:${server.attributes.updated_at}`}
+            server={server}
+            extensions={extensions.values}
+            hidden={extensions.hidden}
+        />
+    );
 }

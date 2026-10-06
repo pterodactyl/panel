@@ -18,6 +18,7 @@ use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Contracts\Databases\DeletesDatabaseHosts;
 use Pterodactyl\Contracts\Databases\UpdatesDatabaseHosts;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -31,6 +32,7 @@ use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\UpdateDatabaseHostRequest;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\DatabaseHostTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
@@ -169,13 +171,16 @@ class DatabaseHostController extends AdminApiController
     #[Endpoint('Create database host', 'Creates a database host after validating that the panel can connect to it.')]
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, status: 201, description: 'Database host created.', resourceKey: 'database_host', meta: ['resource' => 'https://panel.example.com/api/admin/database-hosts/1'])]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
-    public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost): JsonResponse
+    #[ExtensionFieldsParam]
+    public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost, ExtensionFormFields $fields): JsonResponse
     {
-        try {
-            $host = $createHost->create($request->payload());
-        } catch (Exception $exception) {
-            $this->handleConnectionException($exception);
-        }
+        $host = $fields->persist('admin.databaseHost', $request->extensionFields(), function () use ($createHost, $request): DatabaseHost {
+            try {
+                return $createHost->create($request->payload());
+            } catch (Exception $exception) {
+                $this->handleConnectionException($exception);
+            }
+        });
 
         $host->load('node')->loadCount('databases');
 
@@ -202,13 +207,16 @@ class DatabaseHostController extends AdminApiController
     #[Endpoint('Update database host', 'Updates a database host after validating that the panel can connect to the supplied host details.')]
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
-    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): array
+    #[ExtensionFieldsParam]
+    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, ExtensionFormFields $fields, DatabaseHost $databaseHost): array
     {
-        try {
-            $host = $updateHost->update($databaseHost, $request->payload());
-        } catch (Exception $exception) {
-            $this->handleConnectionException($exception);
-        }
+        $host = $fields->persist('admin.databaseHost', $request->extensionFields(), function () use ($updateHost, $databaseHost, $request): DatabaseHost {
+            try {
+                return $updateHost->update($databaseHost, $request->payload());
+            } catch (Exception $exception) {
+                $this->handleConnectionException($exception);
+            }
+        });
 
         $host->load('node')->loadCount('databases');
 

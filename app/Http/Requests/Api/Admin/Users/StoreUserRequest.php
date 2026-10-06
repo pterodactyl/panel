@@ -7,15 +7,26 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Users;
 use Illuminate\Support\Arr;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
 use Pterodactyl\Validation\UserRules;
 
 class StoreUserRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminUsersCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.user';
     }
 
     /**

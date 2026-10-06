@@ -34,20 +34,31 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { getPageSearch, usePageSearch } from '@/router/search';
 import { databaseHostDetailRoute } from '@/router/routeTree';
 import { relationshipAttributes } from '@/api/relationships';
+import Slot from '@/extensions/Slot';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
-function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
+function DatabaseHostDetailForm({
+    host,
+    extensions,
+    hidden,
+}: {
+    host: AdminDatabaseHost;
+    extensions: LoadedExtensionFieldValues;
+    hidden: readonly string[];
+}) {
     const navigate = useNavigate();
     const updateDatabaseHost = useUpdateAdminDatabaseHost();
     const deleteDatabaseHost = useDeleteAdminDatabaseHost();
 
     const form = useAppForm({
-        defaultValues: databaseHostFormValues(host),
+        defaultValues: databaseHostFormValues(host, extensions),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateDatabaseHost.mutateAsync(
                     updateAdminDatabaseHostInput(host.attributes.id, databaseHostBodyFromFormValues(value))
                 );
-                form.reset(databaseHostFormValues(updated));
+                form.reset(databaseHostFormValues(updated, value.extensions));
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -135,6 +146,11 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                         The configured account must have WITH GRANT OPTION permission and should not reuse Panel
                         database credentials.
                     </p>
+                    <Slot
+                        name={'panel.databaseHosts.detail.form'}
+                        data={{ kind: 'admin.databaseHost', mode: 'edit', resource: host, form }}
+                        hidden={hidden}
+                    />
                     <div className={'flex justify-end mt-6'}>
                         <Dialog.ConfirmTrigger
                             title={'Delete database host'}
@@ -278,12 +294,13 @@ export default function DatabaseHostDetailContainer() {
     const hostId = loadedHost.attributes.id;
 
     const { data: host = loadedHost, error } = useAdminDatabaseHost(hostId);
+    const extensions = useExtensionFormFields('admin.databaseHost', hostId);
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} />;
     }
 
-    if (!host) {
+    if (!host || !extensions.ready) {
         return (
             <AdminContentBlock title={'Admin · Database Host'} heading={'Database Host'}>
                 <Spinner size={'large'} centered />
@@ -305,7 +322,12 @@ export default function DatabaseHostDetailContainer() {
                 Back to Database Hosts
             </Link>
 
-            <DatabaseHostDetailForm key={`${host.attributes.id}:${host.attributes.updated_at}`} host={host} />
+            <DatabaseHostDetailForm
+                key={`${host.attributes.id}:${host.attributes.updated_at}`}
+                host={host}
+                extensions={extensions.values}
+                hidden={extensions.hidden}
+            />
             <DatabaseHostDatabases hostId={host.attributes.id} />
         </AdminContentBlock>
     );

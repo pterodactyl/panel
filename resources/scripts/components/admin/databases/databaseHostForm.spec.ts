@@ -32,6 +32,7 @@ describe('database host form values', () => {
             username: '',
             password: '',
             nodeId: '',
+            extensions: {},
         });
     });
 
@@ -43,6 +44,7 @@ describe('database host form values', () => {
             username: 'pterodactyl',
             password: '',
             nodeId: '8',
+            extensions: {},
         });
     });
 
@@ -54,6 +56,7 @@ describe('database host form values', () => {
             username: 'pterodactyl',
             password: undefined,
             node_id: null,
+            extensions: {},
         });
     });
 });

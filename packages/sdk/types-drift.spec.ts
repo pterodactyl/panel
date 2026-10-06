@@ -124,6 +124,9 @@ form.setFieldValue('missing', 'value');
 const fields = <Form form={form}><form.AppField name="name">{field => <field.TextField label="Name" />}</form.AppField></Form>;
 // @ts-expect-error Form requires its form instance.
 const invalidForm = <Form />;
+declare module '@pterodactyl/sdk' {
+  interface ExtensionFormFieldMap { 'admin.location': { regions: { region: string } } }
+}
 definePterodactylExtension({ setup({ slots, screens, columns, components }) {
   components.replace('dashboard.serverCard', Card);
   components.replace('dashboard.serverCard', {load: async () => ({default: Card})});
@@ -140,6 +143,12 @@ definePterodactylExtension({ setup({ slots, screens, columns, components }) {
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="username">{field => <field.TextField label="Custom username" />}</data.form.AppField>);
   // @ts-expect-error Native form contributions preserve core field names.
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="unknown">{field => null}</data.form.AppField>);
+  slots.register('panel.locations.detail.form', ({ data }) => <data.form.AppField name="extensions.regions.region">{field => { const region: string | undefined = field.state.value; return <span>{data.resource.attributes.short}{region}</span>; }}</data.form.AppField>);
+  // @ts-expect-error Extension fields are typed by the augmented field map.
+  slots.register('panel.locations.detail.form', ({ data }) => <data.form.AppField name="extensions.regions.unknown">{field => null}</data.form.AppField>);
+  slots.register('panel.nodes.create.form', ({ data }) => <span>{data.mode}</span>);
+  // @ts-expect-error Create forms have no saved resource yet.
+  slots.register('panel.nodes.create.form', ({ data }) => <span>{data.resource.attributes.name}</span>);
   slots.register('server.console.before', ({ data }) => <span>{data.attributes.name}</span>);
   // @ts-expect-error This slot has route data, not server data.
   slots.register('auth.login.before', ({ data }: {data: SdkServer}) => <span>{data.attributes.name}</span>);

@@ -72,6 +72,7 @@ const userValuesToBody = (values: UserValues): AdminCreateUserData['body'] => ({
     password: values.password || undefined,
     root_admin: values.rootAdmin,
     preferences: { language: values.language },
+    extensions: values.extensions,
 });
 
 export const createAdminUserInput = (values: UserValues): Options<AdminCreateUserData> => ({
@@ -147,6 +148,7 @@ export const useUpdateAdminUser = () => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
                 queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.id) }),
+                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             const messages = resourceMutationMessages('user', 'update', user.attributes.email);
             toast.success(messages.success.title, { description: messages.success.description });

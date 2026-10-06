@@ -7,13 +7,24 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Eggs;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Egg;
 
 class StoreEggRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminEggsCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.egg';
     }
 
     /**

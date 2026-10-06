@@ -1,3 +1,5 @@
+import type { ExtensionFieldValues } from '@/extensions/formFields';
+
 export interface UserValues {
     email: string;
     username: string;
@@ -6,4 +8,5 @@ export interface UserValues {
     password: string;
     rootAdmin: boolean;
     language: string;
+    extensions: ExtensionFieldValues<'admin.user'>;
 }

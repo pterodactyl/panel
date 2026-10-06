@@ -106,6 +106,10 @@ parameters:
         MailSettingsData: "array{'mail:mailers:smtp:host': string, 'mail:mailers:smtp:port': int, 'mail:mailers:smtp:encryption': string|null, 'mail:mailers:smtp:username': string|null, 'mail:from:address': string, 'mail:from:name': string|null, 'mail:mailers:smtp:password'?: string}"
         ExtensionSettingValue: 'JsonValue'
         ExtensionSettingValues: 'array<string, ExtensionSettingValue>'
+        ExtensionFieldValue: 'bool|float|int|string|list<int|float|string>|null'
+        ExtensionFieldValues: 'array<string, ExtensionFieldValue>'
+        ExtensionFormValues: 'array<string, ExtensionFieldValues>'
+        ExtensionFormFieldEntry: 'array{rules: NormalizedValidationRules, keys: list<string>, load: \Closure|null, save: \Closure|null, registration: \Pterodactyl\Services\Extensions\ExtensionRegistration}'
         ExtensionSettingField: 'array{input: string, label: string, help: string|null, tab: string|null, field: string, options: list<array{value: string|int|bool, label: string}>, value: ExtensionSettingValue, constraints: array{max_length: int|null, max_items: int|null, max_kilobytes: int|null, accept: list<string>}, visibility: ''admin''|''frontend''|''public''}'
         ExtensionScreenMatcher: 'array{any?: list<string>, all?: list<string>}'
         ExtensionScreenCondition: 'array{eggFeatures?: ExtensionScreenMatcher, eggTags?: ExtensionScreenMatcher, match?: string, runtime?: bool}'

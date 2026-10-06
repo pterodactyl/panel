@@ -31,6 +31,8 @@ import {
     type ExtensionResourceContext,
 } from '@/extensions/resourceContext';
 import Slot from '@/extensions/Slot';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 import { userDetailRoute } from '@/router/routeTree';
 import { languageOptions } from '@/components/admin/languageOptions';
 import { userFormValues, validateUserPassword } from '@/components/admin/users/UserFormFields';
@@ -283,7 +285,15 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
     );
 };
 
-const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
+const UserDetailContent = ({
+    user,
+    extensions,
+    hidden,
+}: {
+    user: AdminUserWithServers;
+    extensions: LoadedExtensionFieldValues;
+    hidden: readonly string[];
+}) => {
     const navigate = useNavigate();
     const userId = user.attributes.id;
 
@@ -294,7 +304,7 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
     const languagesList = languageOptions(languages, user.attributes.language);
 
     const form = useAppForm({
-        defaultValues: userFormValues(user),
+        defaultValues: userFormValues(user, extensions),
         onSubmit: async ({ value }) => {
             try {
                 await updateUser.mutateAsync(updateAdminUserInput(userId, value));
@@ -318,7 +328,11 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
     return (
         <>
             <Form form={form} className={'m-0'}>
-                <Slot name={'panel.users.detail.form'} data={{ kind: 'admin.user', resource: user, form }} />
+                <Slot
+                    name={'panel.users.detail.form'}
+                    data={{ kind: 'admin.user', mode: 'edit', resource: user, form }}
+                    hidden={hidden}
+                />
                 <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4'}>
                     <IdentityCard
                         form={form}
@@ -396,8 +410,18 @@ export function UserDetailLayout() {
     );
 }
 
+function UserDetailFields({ user }: { user: AdminUserWithServers }) {
+    const extensions = useExtensionFormFields('admin.user', user.attributes.id);
+
+    if (!extensions.ready) {
+        return <Spinner size={'large'} centered />;
+    }
+
+    return <UserDetailContent user={user} extensions={extensions.values} hidden={extensions.hidden} />;
+}
+
 export default function UserDetailContainer() {
     const resource = useCurrentResource();
     if (resource?.kind !== 'admin.user') throw new Error('A user detail tab was rendered without its resource.');
-    return <UserDetailContent key={resource.resource.attributes.id} user={resource.resource} />;
+    return <UserDetailFields key={resource.resource.attributes.id} user={resource.resource} />;
 }

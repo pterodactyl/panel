@@ -5,6 +5,7 @@ import {
     adminClearExtensionSettingFileMutation,
     adminDisableExtensionMutation,
     adminEnableExtensionMutation,
+    adminGetExtensionFormValuesOptions,
     adminGetExtensionSettingsOptions,
     adminGetExtensionSettingsQueryKey,
     adminInstallExtensionMutation,
@@ -18,6 +19,7 @@ import type {
     AdminClearExtensionSettingFileData,
     AdminDisableExtensionData,
     AdminEnableExtensionData,
+    AdminExtensionFieldValues,
     AdminGetExtensionSettingsResponse,
     AdminInstallExtensionData,
     AdminListExtensionsResponse,
@@ -30,6 +32,12 @@ import { notifyHttpError } from '@/plugins/notifications';
 
 export type AdminExtensionsResponse = AdminListExtensionsResponse;
 export type AdminExtension = NonNullable<AdminExtensionsResponse['data']>[number];
+export type ExtensionFormValuesResponse = AdminExtensionFieldValues;
+
+export const adminExtensionFormValuesQueryOptions = (form: string, id: number) => ({
+    ...adminGetExtensionFormValuesOptions({ path: { form, id } }),
+    select: (response: { data: AdminExtensionFieldValues }) => response.data,
+});
 
 type AdminExtensionsQueryOptions = { enabled?: boolean };
 

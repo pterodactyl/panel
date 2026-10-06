@@ -140,6 +140,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'AdminEggConfigurationFile' => $this->adminEggConfigurationFileSchema(),
             'AdminEggConfigurationFiles' => $this->adminEggConfigurationFilesSchema(),
             'AdminEggConfigurationFind' => $this->adminEggConfigurationFindSchema(),
+            'AdminExtensionFieldValues' => $this->extensionFieldValuesSchema(),
             'AdminExtensionSettingField' => $this->adminExtensionSettingFieldSchema(),
             'AdminExtensionSettingOption' => $this->adminExtensionSettingOptionSchema(),
             'AdminLanguagesResponse' => $this->adminLanguagesSchema(),
@@ -846,6 +847,26 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             return;
         }
 
+        if (($pathItem['operationId'] ?? null) === 'adminGetExtensionFormValues') {
+            if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
+                return;
+            }
+
+            foreach ($pathItem['responses'] as $status => &$response) {
+                if (str_starts_with($this->arrayKeyString($status), '2') && isset($response['content']['application/json']['schema'])) {
+                    $response['content']['application/json']['schema'] = [
+                        'type' => 'object',
+                        'required' => ['data'],
+                        'properties' => ['data' => ['$ref' => '#/components/schemas/AdminExtensionFieldValues']],
+                    ];
+                }
+            }
+
+            unset($response);
+
+            return;
+        }
+
         $schema = match ($pathItem['operationId'] ?? null) {
             'adminListLanguages' => 'AdminLanguagesResponse',
             'adminGetNodeConfiguration' => 'AdminNodeConfigurationResponse',
@@ -1404,6 +1425,10 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
                 $properties['preferences']['properties'] = $preferenceProperties;
             }
+        }
+
+        if (isset($properties['extensions'])) {
+            $properties['extensions'] = ['$ref' => '#/components/schemas/AdminExtensionFieldValues'];
         }
 
         JsonValueGuard::assertOpenApiSchemaMap($properties);
@@ -2294,6 +2319,25 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ...$this->extensionSettingScalarSchema()['oneOf'],
                 ['type' => 'array', 'items' => ['oneOf' => [['type' => 'string'], ['type' => 'number']]]],
             ],
+        ];
+    }
+
+    /**
+     * @return OpenApiSchema
+     */
+    private function extensionFieldValuesSchema(): array
+    {
+        return [
+            'type' => 'object',
+            'description' => 'Values for extension form fields, keyed by extension id and then by field. Each extension validates and stores its own fields; extensions that are omitted keep their current values.',
+            'additionalProperties' => [
+                'type' => 'object',
+                'additionalProperties' => [
+                    ...$this->extensionSettingValueSchema(),
+                    'nullable' => true,
+                ],
+            ],
+            'example' => ['billing' => ['plan' => 'gold']],
         ];
     }
 

@@ -6,13 +6,24 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Locations;
 
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Validation\LocationRules;
 
 class StoreLocationRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminLocationsCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.location';
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Rules\Fqdn;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
@@ -17,9 +18,19 @@ use Pterodactyl\Validation\NodeRules;
 
 class StoreNodeRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminNodesCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.node';
     }
 
     /**

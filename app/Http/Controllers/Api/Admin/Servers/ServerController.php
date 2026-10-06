@@ -14,6 +14,7 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -24,6 +25,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerRequest;
 use Pterodactyl\Models\Filters\AdminServerFilter;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -266,9 +268,10 @@ class ServerController extends AdminApiController
      */
     #[Endpoint('Create server', 'Creates a server using explicit allocations or automatic deployment constraints.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
-    public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
+    #[ExtensionFieldsParam]
+    public function store(StoreServerRequest $request, CreatesServers $creation, ExtensionFormFields $fields): JsonResponse
     {
-        $server = $creation->create($request->payload(), $request->getDeploymentObject());
+        $server = $fields->persist('admin.server', $request->extensionFields(), fn (): Server => $creation->create($request->payload(), $request->getDeploymentObject()), atomic: false);
 
         Activity::event('admin:server.create')
             ->subject($server)

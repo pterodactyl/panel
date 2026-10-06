@@ -1,3 +1,4 @@
+import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import { useRef, useState } from 'react';
 import { useStore } from '@tanstack/react-form';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -13,9 +14,10 @@ import {
 import {
     allocationLabel,
     createServerBodyFromFormValues,
+    type CreateServerFormValues,
     type CreateServerValues,
 } from '@/components/admin/servers/helpers';
-import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { requiredNumber, submittedNumber } from '@/components/admin/numberInput';
 import { type AdminUser, useAllAdminUsers } from '@/api/admin/users/queries';
 import { type LocationWithNodes, useAdminNodesGroupedByLocation } from '@/api/admin/nodes/queries';
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
@@ -29,20 +31,9 @@ import type { AppForm } from '@/components/form';
 import { useAppForm, Form } from '@/components/form';
 import Select from '@/components/ui/Select';
 import { relationshipData } from '@/api/relationships';
+import Slot from '@/extensions/Slot';
 
-interface Values extends Omit<
-    CreateServerValues,
-    'databaseLimit' | 'allocationLimit' | 'backupLimit' | 'cpu' | 'memory' | 'swap' | 'disk' | 'io'
-> {
-    databaseLimit: NumberInputValue;
-    allocationLimit: NumberInputValue;
-    backupLimit: NumberInputValue;
-    cpu: NumberInputValue;
-    memory: NumberInputValue;
-    swap: NumberInputValue;
-    disk: NumberInputValue;
-    io: NumberInputValue;
-}
+type Values = CreateServerFormValues;
 
 type ServerForm = AppForm<Values>;
 
@@ -74,6 +65,7 @@ const initialValues: Values = {
     startup: '',
 
     environment: {},
+    extensions: {},
 };
 
 const createServerValues = (values: Values): CreateServerValues => ({
@@ -573,8 +565,9 @@ export default function CreateServerForm() {
     const loading = usersLoading || locationsLoading || eggsLoading;
     const hasNodes = locations.some((location) => location.nodes.length > 0);
 
+    const defaultValues: Values = { ...initialValues, extensions: newExtensionFieldValues('admin.server') };
     const form = useAppForm({
-        defaultValues: initialValues,
+        defaultValues,
         onSubmit: async ({ value }) => {
             try {
                 const server = await createServer.mutateAsync(
@@ -619,6 +612,10 @@ export default function CreateServerForm() {
                         <FeatureLimitsBox form={form} />
                         <ResourceManagementBox form={form} />
                         <EggSection form={form} eggs={eggs?.data ?? []} />
+                        <Slot
+                            name={'panel.servers.create.form'}
+                            data={{ kind: 'admin.server', mode: 'create', form }}
+                        />
                         <div className={'flex justify-end'}>
                             <form.AppForm>
                                 <form.SubmitButton>Create Server</form.SubmitButton>

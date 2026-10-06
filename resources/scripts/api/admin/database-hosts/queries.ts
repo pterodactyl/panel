@@ -158,6 +158,7 @@ export const useUpdateAdminDatabaseHost = () => {
                 queryClient.invalidateQueries({
                     queryKey: adminDatabaseHostDetailKey(variables.path.databaseHost_id),
                 }),
+                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             const messages = resourceMutationMessages('database host', 'update', host.attributes.name);
             toast.success(messages.success.title, { description: messages.success.description });

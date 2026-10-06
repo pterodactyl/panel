@@ -26,10 +26,14 @@ import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
 import { cardTitleClass } from '@/components/ui/typography';
+import Slot from '@/extensions/Slot';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
-const locationToValues = (location: AdminLocation): LocationValues => ({
+const locationToValues = (location: AdminLocation, extensions: LocationValues['extensions']): LocationValues => ({
     short: location.attributes.short,
     long: location.attributes.long ?? '',
+    extensions,
 });
 
 type LocationNode = Extract<
@@ -75,7 +79,15 @@ const locationNodeColumns = [
     )),
 ] satisfies ColumnDef<LocationNode>[];
 
-function LocationDetailForm({ location }: { location: AdminLocation }) {
+function LocationDetailForm({
+    location,
+    extensions,
+    hidden,
+}: {
+    location: AdminLocation;
+    extensions: LoadedExtensionFieldValues;
+    hidden: readonly string[];
+}) {
     const { attributes } = location;
     const nodes = relationshipData(attributes.relationships?.nodes);
     const nodeTable = useReactTable({
@@ -89,11 +101,11 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
     const deleteLocation = useDeleteAdminLocation();
 
     const form = useAppForm({
-        defaultValues: locationToValues(location),
+        defaultValues: locationToValues(location, extensions),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateLocation.mutateAsync(updateAdminLocationInput(attributes.id, value));
-                form.reset(locationToValues(updated));
+                form.reset(locationToValues(updated, value.extensions));
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -153,6 +165,11 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                             )}
                         </form.AppField>
                     </div>
+                    <Slot
+                        name={'panel.locations.detail.form'}
+                        data={{ kind: 'admin.location', mode: 'edit', resource: location, form }}
+                        hidden={hidden}
+                    />
                     <div className={'flex justify-end mt-6'}>
                         <Dialog.ConfirmTrigger
                             title={'Delete location'}
@@ -210,12 +227,13 @@ export default function LocationDetailContainer() {
     const locationId = loadedLocation.attributes.id;
 
     const { data: location = loadedLocation, error } = useAdminLocation(locationId);
+    const extensions = useExtensionFormFields('admin.location', locationId);
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} />;
     }
 
-    if (!location) {
+    if (!location || !extensions.ready) {
         return (
             <AdminContentBlock title={'Admin · Location'} heading={'Location'}>
                 <Spinner size={'large'} centered />
@@ -240,6 +258,8 @@ export default function LocationDetailContainer() {
             <LocationDetailForm
                 key={`${location.attributes.id}:${location.attributes.updated_at}`}
                 location={location}
+                extensions={extensions.values}
+                hidden={extensions.hidden}
             />
         </AdminContentBlock>
     );

@@ -15,6 +15,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Eggs\CreatesEggs;
 use Pterodactyl\Contracts\Eggs\DeletesEggs;
 use Pterodactyl\Contracts\Eggs\UpdatesEggs;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -25,6 +26,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\StoreEggRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\UpdateEggRequest;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\EggTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -86,9 +88,10 @@ class EggController extends AdminApiController
      */
     #[Endpoint('Create egg', 'Creates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, status: 201, description: 'Egg created.', resourceKey: 'egg', meta: ['resource' => 'https://panel.example.com/api/admin/eggs/1'])]
-    public function store(StoreEggRequest $request, CreatesEggs $eggs): JsonResponse
+    #[ExtensionFieldsParam]
+    public function store(StoreEggRequest $request, CreatesEggs $eggs, ExtensionFormFields $fields): JsonResponse
     {
-        $egg = $eggs->create($request->payload());
+        $egg = $fields->persist('admin.egg', $request->extensionFields(), fn (): Egg => $eggs->create($request->payload()));
 
         Activity::event('admin:egg.create')
             ->subject($egg)
@@ -110,9 +113,14 @@ class EggController extends AdminApiController
      */
     #[Endpoint('Update egg', 'Updates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg updated.', resourceKey: 'egg')]
-    public function update(UpdateEggRequest $request, UpdatesEggs $eggs, Egg $egg): array
+    #[ExtensionFieldsParam]
+    public function update(UpdateEggRequest $request, UpdatesEggs $eggs, ExtensionFormFields $fields, Egg $egg): array
     {
-        $eggs->update($egg, $request->payload());
+        $fields->persist('admin.egg', $request->extensionFields(), function () use ($eggs, $egg, $request): Egg {
+            $eggs->update($egg, $request->payload());
+
+            return $egg;
+        });
 
         Activity::event('admin:egg.update')
             ->subject($egg)

@@ -5,14 +5,25 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminServersUpdate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.server';
     }
 
     /**

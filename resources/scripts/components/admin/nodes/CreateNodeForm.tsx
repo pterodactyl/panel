@@ -6,6 +6,7 @@ import { newNodeFormValues, nodeValuesFromForm } from '@/components/admin/nodes/
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
+import Slot from '@/extensions/Slot';
 
 export default function CreateNodeForm() {
     const navigate = useNavigate();
@@ -40,6 +41,7 @@ export default function CreateNodeForm() {
             <Form form={form}>
                 <div className={'space-y-6'}>
                     <NodeFormFields form={form} prefix={'create_'} requiresSslScheme={requiresSslScheme} />
+                    <Slot name={'panel.nodes.create.form'} data={{ kind: 'admin.node', mode: 'create', form }} />
                     <div className={'flex justify-end'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Node</form.SubmitButton>

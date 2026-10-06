@@ -80,6 +80,11 @@ export { SLOT_NAMES };
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
 export type {
     AdminUserFormSlotData,
+    CreateFormSlotData,
+    EditFormSlotData,
+    ExtensionFormResources,
+    FormSlotDataMap,
+    FormSlotName,
     FileManagerSlotData,
     FileRowSlotData,
     StartupFormSlotData,
@@ -91,6 +96,12 @@ export type {
     ScreenOptions,
 } from '@/extensions/registry';
 export type { ExtensionTableColumn, ExtensionTableName, ExtensionTableRows } from '@/extensions/tableTypes';
+export type {
+    ExtensionFieldValue,
+    ExtensionFieldValues,
+    ExtensionFormFieldMap,
+    ExtensionFormName,
+} from '@/extensions/formFields';
 
 export type { SlotComponentProps, SlotData } from '@/extensions/registry';
 

@@ -18,6 +18,7 @@ use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
+use Pterodactyl\Services\Extensions\ExtensionFormFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
@@ -323,6 +324,17 @@ abstract class ExtensionProvider extends ServiceProvider
     {
         $this->registration()->defer(function () use ($definition): void {
             $this->app->make(ExtensionSettingsRegistry::class)->register($this->id(), $definition);
+        });
+    }
+
+    /**
+     * @param  ValidationRules  $rules
+     */
+    protected function registerFormFields(string $form, array $rules, ?Closure $load = null, ?Closure $save = null): void
+    {
+        $registration = $this->registration();
+        $registration->defer(function () use ($form, $rules, $load, $save, $registration): void {
+            $this->app->make(ExtensionFormFieldRegistry::class)->register($this->id(), $form, $rules, $load, $save, $registration);
         });
     }
 

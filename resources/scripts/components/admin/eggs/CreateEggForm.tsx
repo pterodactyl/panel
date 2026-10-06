@@ -11,6 +11,7 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import EggConfigurationFields from '@/components/admin/eggs/EggConfigurationForm';
 import { emptyEggFormValues, toApiValues } from '@/components/admin/eggs/helpers';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
+import Slot from '@/extensions/Slot';
 
 export default function CreateEggForm() {
     const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function CreateEggForm() {
                         filesRef={filesEditor}
                         startupRef={startupEditor}
                     />
+                    <Slot name={'panel.eggs.create.form'} data={{ kind: 'admin.egg', mode: 'create', form }} />
                     <div className={'flex justify-end mt-6'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Egg</form.SubmitButton>

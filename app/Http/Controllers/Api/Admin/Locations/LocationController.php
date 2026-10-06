@@ -16,6 +16,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Contracts\Locations\DeletesLocations;
 use Pterodactyl\Contracts\Locations\UpdatesLocations;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -26,6 +27,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Locations\StoreLocationRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Locations\UpdateLocationRequest;
 use Pterodactyl\Models\Location;
+use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\LocationTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -85,9 +87,10 @@ class LocationController extends AdminApiController
      */
     #[Endpoint('Create location', 'Creates a location for grouping nodes and servers.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.com/api/admin/locations/1'])]
-    public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
+    #[ExtensionFieldsParam]
+    public function store(StoreLocationRequest $request, CreatesLocations $locations, ExtensionFormFields $fields): JsonResponse
     {
-        $location = $locations->create($request->payload());
+        $location = $fields->persist('admin.location', $request->extensionFields(), fn (): Location => $locations->create($request->payload()));
 
         Activity::event('admin:location.create')
             ->subject($location)
@@ -111,9 +114,10 @@ class LocationController extends AdminApiController
      */
     #[Endpoint('Update location', 'Updates a location short identifier and description.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, description: 'Location updated.', resourceKey: 'location')]
-    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
+    #[ExtensionFieldsParam]
+    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, ExtensionFormFields $fields, Location $location): array
     {
-        $location = $locations->update($location, $request->payload());
+        $location = $fields->persist('admin.location', $request->extensionFields(), fn (): Location => $locations->update($location, $request->payload()));
 
         Activity::event('admin:location.update')
             ->subject($location)

@@ -1,19 +1,10 @@
+import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import type { AdminEgg, EggConfigurationBody, EggVariableBody } from '@/api/admin/eggs/queries';
 import { isObject } from '@/lib/objects';
+import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import type { EggFormValues } from '@/components/admin/eggs/formValues';
 
-export interface EggFormValues {
-    name: string;
-    description: string;
-    dockerImages: string;
-    startup: string;
-    featuresText: string;
-    forceOutgoingIp: boolean;
-    configFrom: number;
-    configStop: string;
-    configStartup: string;
-    configLogs: string;
-    configFiles: string;
-}
+export type { EggFormValues };
 
 export interface EggVariableValues {
     name: string;
@@ -64,7 +55,7 @@ const prettyJson = <T>(value: T): string => {
     }
 };
 
-export const eggToFormValues = (egg: AdminEgg): EggFormValues => ({
+export const eggToFormValues = (egg: AdminEgg, extensions: LoadedExtensionFieldValues = {}): EggFormValues => ({
     name: egg.attributes.name,
     description: egg.attributes.description ?? '',
     dockerImages: dockerImagesToString(egg.attributes.docker_images),
@@ -76,6 +67,7 @@ export const eggToFormValues = (egg: AdminEgg): EggFormValues => ({
     configStartup: prettyJson(egg.attributes.config.startup),
     configLogs: prettyJson(egg.attributes.config.logs),
     configFiles: prettyJson(egg.attributes.config.files),
+    extensions,
 });
 
 export const emptyEggFormValues = (): EggFormValues => ({
@@ -90,6 +82,7 @@ export const emptyEggFormValues = (): EggFormValues => ({
     configStartup: '',
     configLogs: '',
     configFiles: '',
+    extensions: newExtensionFieldValues('admin.egg'),
 });
 
 export const toApiValues = (
@@ -112,6 +105,7 @@ export const toApiValues = (
         config_startup: nullIfEmpty(json.configStartup),
         config_logs: nullIfEmpty(json.configLogs),
         config_files: nullIfEmpty(json.configFiles),
+        extensions: values.extensions,
     };
 };
 

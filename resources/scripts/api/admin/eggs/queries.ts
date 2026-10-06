@@ -201,6 +201,7 @@ export const useUpdateAdminEgg = () => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, adminEggListOperations),
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
+                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             const messages = resourceMutationMessages('egg', 'update', egg.attributes.name);
             toast.success(messages.success.title, { description: messages.success.description });

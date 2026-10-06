@@ -1,3 +1,4 @@
+import type { LocationValues } from '@/api/admin/locations/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
@@ -30,21 +31,28 @@ import {
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
 
+export type { LocationValues };
+
 type LocationsFilters = 'short' | 'long';
 export type LocationListSort = ListSort<'short' | 'created_at'>;
 type LocationSorts = 'id' | 'short' | 'created_at';
 
 export type AdminLocationsQueryParams = QueryBuilderParams<LocationsFilters, LocationSorts>;
-export type LocationValues = AdminCreateLocationData['body'];
 export type AdminLocation = AdminLocationResource;
 
+const locationBody = (values: LocationValues): AdminCreateLocationData['body'] => ({
+    short: values.short,
+    long: values.long,
+    extensions: values.extensions,
+});
+
 export const createAdminLocationInput = (values: LocationValues): Options<AdminCreateLocationData> => ({
-    body: values,
+    body: locationBody(values),
 });
 
 export const updateAdminLocationInput = (id: number, values: LocationValues): Options<AdminUpdateLocationData> => ({
     path: { id },
-    body: values,
+    body: locationBody(values),
 });
 
 export const deleteAdminLocationInput = (id: number, short?: string): Options<AdminDeleteLocationData> => ({
@@ -126,6 +134,7 @@ export const useUpdateAdminLocation = () => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListLocations']),
                 queryClient.invalidateQueries({ queryKey: adminLocationDetailKey(variables.path.id) }),
+                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             const messages = resourceMutationMessages('location', 'update', location.attributes.short);
             toast.success(messages.success.title, { description: messages.success.description });

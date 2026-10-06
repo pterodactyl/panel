@@ -129,9 +129,10 @@ useNavigationBlocker(dirty, { message: 'Discard your changes to this file?' });
 
 File toolbar, row actions, and selection actions receive typed files, directory,
 selection, and refresh callbacks. `server.startup.form` receives current configuration
-and a guarded Docker image setter. `panel.users.detail.form` supplies the native
-`form`, so contributed `form.AppField` controls share core validation, pending state,
-submission, and persistence. Keep values in that form rather than copying a separate draft. `columns.register('admin.nodes', { id, label,
+and a guarded Docker image setter. Form slots supply the native `form`, so contributed
+`form.AppField` controls share core validation, pending state, submission, and
+persistence; see [Form slots and fields](#form-slots-and-fields). Keep values in that form
+rather than copying a separate draft. `columns.register('admin.nodes', { id, label,
 component })` adds a typed cell to the native table; servers and eggs are also supported.
 Columns commit atomically and render inside local error boundaries. Table, Tooltip,
 DropdownMenu, and Pagination complement the existing form and dialog primitives. `Empty`
@@ -153,6 +154,54 @@ when a stylesheet or an inline property on `<html>` changes; `onThemeChange(list
 canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
 `notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own
 `theme-color` tag follows the token; one registered with `registerHeadTags` is left as rendered.
+
+## Form slots and fields
+
+Every admin create and edit form renders a slot inside its `<form>`:
+
+| Form | Create slot | Edit slot |
+| --- | --- | --- |
+| `admin.user` | `panel.users.create.form` | `panel.users.detail.form` |
+| `admin.node` | `panel.nodes.create.form` | `panel.nodes.detail.settings.form` |
+| `admin.server` | `panel.servers.create.form` | `panel.servers.detail.details.form` |
+| `admin.egg` | `panel.eggs.create.form` | `panel.eggs.detail.configuration.form` |
+| `admin.location` | `panel.locations.create.form` | `panel.locations.detail.form` |
+| `admin.mount` | `panel.mounts.create.form` | `panel.mounts.detail.form` |
+| `admin.databaseHost` | `panel.databaseHosts.create.form` | `panel.databaseHosts.detail.form` |
+
+The slot receives `{ kind, mode, form }`, plus the saved `resource` when `mode` is
+`'edit'`. `form` is the native form: render a core field again, or add validators to it,
+with `form.AppField name="username"`.
+
+To add a field of your own, register it on the backend ([Form fields](#form-fields)) and render it under
+`extensions.<your id>.<field>`. Declare its type once so the field name and value are
+checked:
+
+```tsx
+declare module '@pterodactyl/sdk' {
+    interface ExtensionFormFieldMap {
+        'admin.user': { billing: { plan: string } };
+    }
+}
+
+slots.register('panel.users.create.form', ({ data }) => (
+    <data.form.AppField name={'extensions.billing.plan'} defaultValue={'free'}>
+        {(field) => <field.SelectField label={'Plan'} options={plans} />}
+    </data.form.AppField>
+));
+slots.register('panel.users.detail.form', ({ data }) => (
+    <data.form.AppField name={'extensions.billing.plan'}>
+        {(field) => <field.SelectField label={'Plan'} options={plans} />}
+    </data.form.AppField>
+));
+```
+
+Edit forms load the stored values before they render, and only when some extension has
+registered fields for that form. The values are submitted with the core request and
+saved with it, on create forms too. Only pass `defaultValue` in create slots: a field's
+`defaultValue` replaces the form's value until the field is edited, so on an edit form it
+would overwrite the value that was loaded. Values are strings, numbers, booleans, `null`,
+or lists of strings and numbers.
 
 ## Conditional screens, badges, and icons
 
@@ -362,6 +411,43 @@ reimplementing it. Beside the mutating actions, these read or complete on your b
 
 These actions do not check permissions; authorize the caller first, as the core
 controllers do. They can be wrapped like any other action.
+
+### Form fields
+
+`registerFormFields($form, $rules, $load = null, $save = null)` adds fields to a resource
+form (`admin.user`, `admin.node`, `admin.server`, `admin.egg`, `admin.location`,
+`admin.mount` or `admin.databaseHost`). `$rules` are Laravel validation rules keyed by
+field; the panel prefixes them with `extensions.<id>.` and applies them only when the
+request carries your extension's values, so API clients that omit `extensions` are not
+affected and your stored values stay as they are. A rule that names another field, such
+as `required_if`, must use the full path: `required_if:extensions.<id>.plan,pro`.
+
+```php
+$this->registerFormFields('admin.user', ['plan' => ['required', 'in:free,pro']]);
+
+$this->registerFormFields(
+    'admin.node',
+    ['region' => ['required', 'string', 'max:32']],
+    fn (Node $node): array => ['region' => NodeRegion::for($node)],
+    fn (Node $node, array $values) => NodeRegion::store($node, $values['region']),
+);
+```
+
+Users and servers need no callbacks: values are stored as your settings scoped to that
+user or server, so `$this->settings()->forUser($user)->get('plan')` reads them. Other forms
+require both callbacks. `load` returns the current values for the edit form; values that
+are not strings, numbers, booleans, `null` or lists of strings and numbers are rejected,
+and a `load` that throws is recorded against your extension. The form still renders, but
+your contributions to that slot are hidden so a save cannot overwrite what you stored.
+`save` receives the saved resource and the declared fields that were submitted; a field
+that was never filled in is absent, so read values with a fallback.
+
+Saving runs in the same transaction as the core change, so an exception from `save`
+rolls back the update and reaches the caller. Server creation is the exception: Wings
+reads the new server while it provisions, so your values are saved after provisioning
+succeeds, outside that transaction. Fields of a disabled or failed extension are neither
+validated nor saved. `GET /api/admin/extensions/forms/{form}/{id}` returns the current values
+of every extension, keyed by extension id.
 
 ### Commands and scheduled tasks
 

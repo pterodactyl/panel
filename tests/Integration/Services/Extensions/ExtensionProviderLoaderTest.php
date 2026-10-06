@@ -21,12 +21,14 @@ use Pterodactyl\Models\Extension;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
+use Pterodactyl\Services\Extensions\ExtensionFormFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
+use Pterodactyl\Services\Extensions\ExtensionRegistration;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
@@ -76,15 +78,19 @@ test('failed providers and their dependents expose no registrations while health
         expect(Route::has('extensions.'.$identifier.'.client.status'))->toBeFalse();
         expect($this->app->make(ExtensionSettingsRegistry::class)->has($identifier))->toBeFalse();
         expect($this->app->make(ExtensionPermissionRegistry::class)->all())->not->toHaveKey('ext.'.$identifier);
+        expect($this->app->make(ExtensionFormFieldRegistry::class)->forms($identifier))->toBe([]);
         $this->assertDatabaseHas('extensions', ['identifier' => $identifier, 'enabled' => true]);
     }
 
     expect($this->app->make(ExtensionSettingsRegistry::class)->has('z-healthy'))->toBeTrue();
     expect($this->app->make(ExtensionPermissionRegistry::class)->all()['ext.z-healthy']['keys'])->toBe(['view' => 'View extension data.']);
+    expect($this->app->make(ExtensionFormFieldRegistry::class)->forms('z-healthy'))->toBe(['admin.user']);
+
     $console = $this->app->make(ExtensionConsoleRegistry::class)->snapshot();
     expect($console['commands'])->toBe(['z-healthy' => [RegistrationProbeCommand::class]]);
     expect(array_keys($console['schedules']))->toBe(['z-healthy']);
     expect($this->app->make(ExtensionHeadTags::class)->toHtml())->toBe('<meta name="registration-probe-z-healthy" content="ready">');
+
     $action = $this->app->make(DeletesServers::class);
     expect($action)->toBeInstanceOf(RegistrationProbeDeleter::class);
     expect($action->owner)->toBe('z-healthy');
@@ -104,6 +110,8 @@ test('failed activation restores existing routes and registry entries', function
     $permissions = $this->app->make(ExtensionPermissionRegistry::class);
     $settings->register('a-failed', $definition);
     $permissions->register('a-failed', 'Existing permissions.', ['previous' => 'Existing permission.']);
+    $formFields = $this->app->make(ExtensionFormFieldRegistry::class);
+    $formFields->register('a-failed', 'admin.server', ['previous' => ['string']], null, null, $this->app->make(ExtensionRegistration::class));
     Route::get('/api/registration-preserved', RegistrationProbeController::class)->name('registration-preserved');
     Route::getRoutes()->refreshNameLookups();
 
@@ -111,6 +119,7 @@ test('failed activation restores existing routes and registry entries', function
 
     expect($settings->get('a-failed'))->toBe($definition);
     expect($permissions->all()['ext.a-failed'])->toBe(['description' => 'Existing permissions.', 'keys' => ['previous' => 'Existing permission.']]);
+    expect($formFields->forms('a-failed'))->toBe(['admin.server']);
     expect(Route::has('extensions.a-failed.client.status'))->toBeFalse();
     expect($this->app->make(ExtensionConsoleRegistry::class)->snapshot())->toBe(['commands' => [], 'schedules' => []]);
     expect($this->app->make(ExtensionHeadTags::class)->toHtml())->toBe('');
@@ -184,6 +193,7 @@ test('wrappers, commands and head tags stop applying once their extension is dis
 
     expect($this->app->make(DeletesServers::class))->toBeInstanceOf(DeleteServer::class);
     expect($headTags->toHtml())->toBe('');
+
     $schedule = new Schedule;
     $this->app->make(ExtensionConsoleRegistry::class)->schedule($schedule);
     expect($schedule->events())->toBe([]);
@@ -265,6 +275,7 @@ final class RegistrationProbeProvider extends ExtensionProvider
     {
         $this->registerSettings(new ExtensionSettingsDefinition($this->settings(), []));
         $this->registerPermissions('Extension permissions.', ['view' => 'View extension data.']);
+        $this->registerFormFields('admin.user', ['plan' => ['nullable', 'string']]);
         $this->wrapAction(DeletesServers::class, fn (DeletesServers $inner): DeletesServers => new RegistrationProbeDeleter($inner, $this->id()));
         $this->registerCommands([RegistrationProbeCommand::class]);
         $this->registerSchedule(function (Schedule $schedule): void {

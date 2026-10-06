@@ -3,11 +3,25 @@ import type { Server } from '@/api/server/types';
 import type { ExtensionConfig } from '@/sdk';
 import type { AppForm } from '@/components/form';
 import type { UserValues } from '@/api/admin/users/types';
+import type { NodeFormValues, NodeSettingsValues } from '@/components/admin/nodes/formValues';
+import type { CreateServerFormValues, ServerDetailsValues } from '@/components/admin/servers/formValues';
+import type { EggFormValues } from '@/components/admin/eggs/formValues';
+import type { LocationValues } from '@/api/admin/locations/types';
+import type { MountValues } from '@/api/admin/mounts/types';
+import type { DatabaseHostFormValues } from '@/components/admin/databases/formValues';
 import type { UserData } from '@/api/account/types';
 import type {
+    AdminDatabaseHostResource,
+    AdminEggResource,
+    AdminLocationResource,
+    AdminMountResource,
+    AdminNodeResource,
+    AdminServerResource,
+    AdminUserResource,
     ClientGetStartupConfigurationResponse,
     ClientFileObjectResource as FileObject,
 } from '@/api/extensionTypes';
+import type { ExtensionFormName } from './formFields';
 import type { ExtensionResourceContext } from './resourceContext';
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from './tableTypes';
 import {
@@ -96,17 +110,21 @@ export const SLOT_NAMES = [
     'panel.users.after',
     'panel.users.create.before',
     'panel.users.create.after',
+    'panel.users.create.form',
     'panel.users.detail.before',
     'panel.users.detail.after',
     'panel.locations.before',
     'panel.locations.after',
+    'panel.locations.create.form',
     'panel.locations.detail.before',
     'panel.locations.detail.after',
+    'panel.locations.detail.form',
 
     'panel.nodes.before',
     'panel.nodes.after',
     'panel.nodes.create.before',
     'panel.nodes.create.after',
+    'panel.nodes.create.form',
     'panel.nodes.detail.before',
     'panel.nodes.detail.after',
     'panel.nodes.detail.actions',
@@ -114,6 +132,7 @@ export const SLOT_NAMES = [
     'panel.nodes.detail.about.after',
     'panel.nodes.detail.settings.before',
     'panel.nodes.detail.settings.after',
+    'panel.nodes.detail.settings.form',
     'panel.nodes.detail.configuration.before',
     'panel.nodes.detail.configuration.after',
     'panel.nodes.detail.allocations.before',
@@ -125,6 +144,7 @@ export const SLOT_NAMES = [
     'panel.servers.after',
     'panel.servers.create.before',
     'panel.servers.create.after',
+    'panel.servers.create.form',
     'panel.servers.detail.before',
     'panel.servers.detail.after',
     'panel.servers.detail.actions',
@@ -132,6 +152,7 @@ export const SLOT_NAMES = [
     'panel.servers.detail.about.after',
     'panel.servers.detail.details.before',
     'panel.servers.detail.details.after',
+    'panel.servers.detail.details.form',
     'panel.servers.detail.build.before',
     'panel.servers.detail.build.after',
     'panel.servers.detail.startup.before',
@@ -149,18 +170,23 @@ export const SLOT_NAMES = [
     'panel.databaseHosts.after',
     'panel.databaseHosts.create.before',
     'panel.databaseHosts.create.after',
+    'panel.databaseHosts.create.form',
     'panel.databaseHosts.detail.before',
     'panel.databaseHosts.detail.after',
+    'panel.databaseHosts.detail.form',
     'panel.mounts.before',
     'panel.mounts.after',
     'panel.mounts.create.before',
     'panel.mounts.create.after',
+    'panel.mounts.create.form',
     'panel.mounts.detail.before',
     'panel.mounts.detail.after',
+    'panel.mounts.detail.form',
     'panel.eggs.before',
     'panel.eggs.after',
     'panel.eggs.create.before',
     'panel.eggs.create.after',
+    'panel.eggs.create.form',
     'panel.eggs.detail.before',
     'panel.eggs.detail.after',
     'panel.eggs.detail.actions',
@@ -168,6 +194,7 @@ export const SLOT_NAMES = [
     'panel.users.detail.form',
     'panel.eggs.detail.configuration.before',
     'panel.eggs.detail.configuration.after',
+    'panel.eggs.detail.configuration.form',
     'panel.eggs.detail.tags.before',
     'panel.eggs.detail.tags.after',
     'panel.eggs.detail.variables.before',
@@ -224,9 +251,44 @@ export interface StartupFormSlotData {
     setDockerImage(image: string): Promise<void>;
     refresh(): Promise<void>;
 }
-export type AdminUserFormSlotData = Extract<ExtensionResourceContext, { kind: 'admin.user' }> & {
-    form: AppForm<UserValues>;
-};
+export interface ExtensionFormResources {
+    'admin.user': AdminUserResource;
+    'admin.node': AdminNodeResource;
+    'admin.server': AdminServerResource;
+    'admin.egg': AdminEggResource;
+    'admin.location': AdminLocationResource;
+    'admin.mount': AdminMountResource;
+    'admin.databaseHost': AdminDatabaseHostResource;
+}
+export interface CreateFormSlotData<TForm extends ExtensionFormName, TValues> {
+    kind: TForm;
+    mode: 'create';
+    form: AppForm<TValues>;
+}
+export interface EditFormSlotData<TForm extends ExtensionFormName, TValues> {
+    kind: TForm;
+    mode: 'edit';
+    resource: ExtensionFormResources[TForm];
+    form: AppForm<TValues>;
+}
+export type AdminUserFormSlotData = EditFormSlotData<'admin.user', UserValues>;
+export interface FormSlotDataMap {
+    'panel.users.create.form': CreateFormSlotData<'admin.user', UserValues>;
+    'panel.users.detail.form': AdminUserFormSlotData;
+    'panel.nodes.create.form': CreateFormSlotData<'admin.node', NodeFormValues>;
+    'panel.nodes.detail.settings.form': EditFormSlotData<'admin.node', NodeSettingsValues>;
+    'panel.servers.create.form': CreateFormSlotData<'admin.server', CreateServerFormValues>;
+    'panel.servers.detail.details.form': EditFormSlotData<'admin.server', ServerDetailsValues>;
+    'panel.eggs.create.form': CreateFormSlotData<'admin.egg', EggFormValues>;
+    'panel.eggs.detail.configuration.form': EditFormSlotData<'admin.egg', EggFormValues>;
+    'panel.locations.create.form': CreateFormSlotData<'admin.location', LocationValues>;
+    'panel.locations.detail.form': EditFormSlotData<'admin.location', LocationValues>;
+    'panel.mounts.create.form': CreateFormSlotData<'admin.mount', MountValues>;
+    'panel.mounts.detail.form': EditFormSlotData<'admin.mount', MountValues>;
+    'panel.databaseHosts.create.form': CreateFormSlotData<'admin.databaseHost', DatabaseHostFormValues>;
+    'panel.databaseHosts.detail.form': EditFormSlotData<'admin.databaseHost', DatabaseHostFormValues>;
+}
+export type FormSlotName = keyof FormSlotDataMap;
 type FileManagerSlotName = 'server.files.toolbar' | 'server.files.selectionActions';
 type ResourceActionSlotName =
     | 'panel.nodes.detail.actions'
@@ -259,8 +321,8 @@ type DataLessSlotName =
     | `server.files.${'before' | 'after'}`
     | `panel.navigation.${'before' | 'after'}`
     | `panel.overview.${'before' | 'after'}`;
-export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail.form'
-    ? AdminUserFormSlotData
+export type SlotData<TName extends SlotName> = TName extends FormSlotName
+    ? FormSlotDataMap[TName]
     : TName extends 'server.users.permissions.before'
       ? SubuserPermissionsSlotData
       : TName extends 'server.startup.form'
@@ -284,11 +346,11 @@ export type RouteSlotName = Exclude<
     | FileManagerSlotName
     | 'server.files.rowActions'
     | 'server.startup.form'
-    | 'panel.users.detail.form'
+    | FormSlotName
     | ResourceActionSlotName
 >;
 export type SlotProps =
-    | { name: 'panel.users.detail.form'; data: AdminUserFormSlotData }
+    | { [TName in FormSlotName]: { name: TName; data: FormSlotDataMap[TName] } }[FormSlotName]
     | { name: Extract<SlotName, ServerSlotName>; data: Server }
     | { name: Extract<SlotName, DataLessSlotName>; data?: undefined }
     | { name: 'server.users.permissions.before'; data: SubuserPermissionsSlotData }
@@ -374,6 +436,7 @@ export interface SiteExtensionEntry {
     config?: ExtensionConfig;
     screens?: ExtensionScreenDefinition[];
     components?: ComponentName[];
+    forms?: ExtensionFormName[];
     development?: { url: string; version: string } | null;
 }
 export interface ExtensionRegistryBatch {

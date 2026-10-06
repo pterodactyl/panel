@@ -12,6 +12,7 @@ use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\AllocationRules;
@@ -20,10 +21,19 @@ use Pterodactyl\Validation\ServerRules;
 class StoreServerRequest extends AdminApiRequest
 {
     use FiltersDeployTags;
+    use ValidatesExtensionFields;
 
     public function permissions(): array
     {
         return [Permissions::AdminServersCreate];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function extensionForm(): string
+    {
+        return 'admin.server';
     }
 
     /**

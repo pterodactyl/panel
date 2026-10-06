@@ -8,12 +8,14 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\UpdateServerDetailsRequest;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -27,12 +29,13 @@ class DetailsController extends AdminApiController
      */
     #[Endpoint('Update server details', 'Updates a server name, owner, description, and external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
-    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
+    #[ExtensionFieldsParam]
+    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, ExtensionFormFields $fields, Server $server): array
     {
-        $updated = $details->update(
+        $updated = $fields->persist('admin.server', $request->extensionFields(), fn (): Server => $details->update(
             $server,
             $request->payload()
-        );
+        ));
 
         Activity::event('admin:server.details')
             ->subject($updated)

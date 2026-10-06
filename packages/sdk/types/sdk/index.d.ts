@@ -46,8 +46,9 @@ export { usePermissions } from "../plugins/usePermissions.js";
 export { useExtensionCallback as useExtensionAction } from "../extensions/context.js";
 export { SLOT_NAMES };
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
-export type { AdminUserFormSlotData, FileManagerSlotData, FileRowSlotData, StartupFormSlotData, ScreenParent, ScreenBadgeValue, ScreenCondition, ScreenContext, ScreenMatcher, ScreenOptions, } from "../extensions/registry.js";
+export type { AdminUserFormSlotData, CreateFormSlotData, EditFormSlotData, ExtensionFormResources, FormSlotDataMap, FormSlotName, FileManagerSlotData, FileRowSlotData, StartupFormSlotData, ScreenParent, ScreenBadgeValue, ScreenCondition, ScreenContext, ScreenMatcher, ScreenOptions, } from "../extensions/registry.js";
 export type { ExtensionTableColumn, ExtensionTableName, ExtensionTableRows } from "../extensions/tableTypes.js";
+export type { ExtensionFieldValue, ExtensionFieldValues, ExtensionFormFieldMap, ExtensionFormName, } from "../extensions/formFields.js";
 export type { SlotComponentProps, SlotData } from "../extensions/registry.js";
 export interface ExtensionMeta {
     id: string;

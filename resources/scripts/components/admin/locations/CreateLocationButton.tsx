@@ -1,3 +1,4 @@
+import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import { useStore } from '@tanstack/react-form';
 import { useAppForm, Form } from '@/components/form';
 import { createAdminLocationInput, useCreateAdminLocation } from '@/api/admin/locations/queries';
@@ -5,6 +6,8 @@ import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
 import { NewButton } from '@/components/elements/NewButton';
+import Slot from '@/extensions/Slot';
+import type { LocationValues } from '@/api/admin/locations/queries';
 
 type CreateLocationDialogProps = {
     open: boolean;
@@ -14,8 +17,13 @@ type CreateLocationDialogProps = {
 function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
     const createLocation = useCreateAdminLocation();
 
+    const defaultValues: LocationValues = {
+        short: '',
+        long: '',
+        extensions: newExtensionFieldValues('admin.location'),
+    };
     const form = useAppForm({
-        defaultValues: { short: '', long: '' },
+        defaultValues,
         onSubmit: async ({ value }) => {
             try {
                 await createLocation.mutateAsync(createAdminLocationInput(value));
@@ -76,6 +84,7 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
                         )}
                     </form.AppField>
                 </div>
+                <Slot name={'panel.locations.create.form'} data={{ kind: 'admin.location', mode: 'create', form }} />
                 <div className={'flex flex-wrap justify-end mt-6'}>
                     <Button type={'button'} isSecondary className={'w-full sm:w-auto sm:mr-2'} onClick={onClose}>
                         Cancel

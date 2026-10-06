@@ -58,6 +58,8 @@ final class ExtensionRegistration
         $actions = $this->actions->snapshot();
         $console = $this->console->snapshot();
         $headTags = $this->headTags->snapshot();
+        $formFields = $this->app->make(ExtensionFormFieldRegistry::class);
+        $fields = $formFields->snapshot();
         $router = clone $this->router;
         $routes = $this->router->getRoutes();
         if ($routes instanceof RouteCollection) {
@@ -94,6 +96,7 @@ final class ExtensionRegistration
             $this->actions->restore($actions);
             $this->console->restore($console);
             $this->headTags->restore($headTags);
+            $formFields->restore($fields);
 
             throw $throwable;
         } finally {
