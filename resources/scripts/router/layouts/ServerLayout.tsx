@@ -62,12 +62,22 @@ function ServerLayoutInner() {
                         <ScreenGate key={segment || '/'} screen={meta.screen}>
                             {permission ? (
                                 <Can action={permission} matchAny>
-                                    <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
+                                    <NavLink
+                                        to={to(segment)}
+                                        exact={exact}
+                                        hash={segment === 'files' ? '/' : ''}
+                                        data-core={meta.screen ? undefined : ''}
+                                    >
                                         <NavigationLabel label={label} {...meta} />
                                     </NavLink>
                                 </Can>
                             ) : (
-                                <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
+                                <NavLink
+                                    to={to(segment)}
+                                    exact={exact}
+                                    hash={segment === 'files' ? '/' : ''}
+                                    data-core={meta.screen ? undefined : ''}
+                                >
                                     <NavigationLabel label={label} {...meta} />
                                 </NavLink>
                             )}
@@ -80,7 +90,12 @@ function ServerLayoutInner() {
                             aria-label={'Open server administration'}
                             title={'Open server administration'}
                         >
-                            <Icon icon={ExternalLink} />
+                            <span className={'inline-flex items-center gap-2 align-top'}>
+                                <Icon icon={ExternalLink} />
+                                <span className={'hidden in-data-collapsed:inline in-data-overflowed:inline'}>
+                                    Open Admin Area
+                                </span>
+                            </span>
                         </Link>
                     )}
                     <Slot name={'server.navigation.after'} data={server} />

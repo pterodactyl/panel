@@ -60,19 +60,20 @@ export default function EggDetailContainer() {
                 <Slot name='panel.eggs.detail.actions' data={resourceContext} />
                 <SubNavigation className={'mb-4 rounded-sm'}>
                     <Link
+                        data-core
                         to={'/panel/eggs/$eggId'}
                         params={{ eggId }}
                         activeOptions={{ exact: true, includeSearch: false }}
                     >
                         Configuration
                     </Link>
-                    <Link to={'/panel/eggs/$eggId/tags'} params={{ eggId }}>
+                    <Link data-core to={'/panel/eggs/$eggId/tags'} params={{ eggId }}>
                         Tags
                     </Link>
-                    <Link to={'/panel/eggs/$eggId/variables'} params={{ eggId }}>
+                    <Link data-core to={'/panel/eggs/$eggId/variables'} params={{ eggId }}>
                         Variables
                     </Link>
-                    <Link to={'/panel/eggs/$eggId/script'} params={{ eggId }}>
+                    <Link data-core to={'/panel/eggs/$eggId/script'} params={{ eggId }}>
                         Install Script
                     </Link>
                     <ResourceExtensionTabs parent='admin.egg' basePath={`/panel/eggs/${eggId}`} />

@@ -51,19 +51,24 @@ export default function NodeDetailContainer() {
                 </Link>
                 <Slot name='panel.nodes.detail.actions' data={resourceContext} />
                 <SubNavigation className={'mb-6 rounded-sm'}>
-                    <Link to={'/panel/nodes/$id'} params={params} activeOptions={{ exact: true, includeSearch: false }}>
+                    <Link
+                        data-core
+                        to={'/panel/nodes/$id'}
+                        params={params}
+                        activeOptions={{ exact: true, includeSearch: false }}
+                    >
                         About
                     </Link>
-                    <Link to={'/panel/nodes/$id/settings'} params={params}>
+                    <Link data-core to={'/panel/nodes/$id/settings'} params={params}>
                         Settings
                     </Link>
-                    <Link to={'/panel/nodes/$id/configuration'} params={params}>
+                    <Link data-core to={'/panel/nodes/$id/configuration'} params={params}>
                         Configuration
                     </Link>
-                    <Link to={'/panel/nodes/$id/allocation'} params={params}>
+                    <Link data-core to={'/panel/nodes/$id/allocation'} params={params}>
                         Allocation
                     </Link>
-                    <Link to={'/panel/nodes/$id/servers'} params={params}>
+                    <Link data-core to={'/panel/nodes/$id/servers'} params={params}>
                         Servers
                     </Link>
                     <ResourceExtensionTabs parent='admin.node' basePath={`/panel/nodes/${attributes.id}`} />

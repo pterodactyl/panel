@@ -380,6 +380,7 @@ export function UserDetailLayout() {
                 <Slot name={'panel.users.detail.actions'} data={resourceContext} />
                 <SubNavigation className={'mb-6 rounded-sm'}>
                     <Link
+                        data-core
                         to={'/panel/users/$id'}
                         params={{ id: user.attributes.id }}
                         activeOptions={{ exact: true, includeSearch: false }}

@@ -15,7 +15,11 @@ export default function AccountLayout() {
                     <Slot name={'account.navigation.before'} />
                     {getAreaNav('account').map(({ segment, label, exact = false, ...meta }) => (
                         <ScreenGate key={segment || '/'} screen={meta.screen}>
-                            <NavLink to={`/account${segment ? `/${segment}` : ''}`} exact={exact}>
+                            <NavLink
+                                to={`/account${segment ? `/${segment}` : ''}`}
+                                exact={exact}
+                                data-core={meta.screen ? undefined : ''}
+                            >
                                 <NavigationLabel label={label} {...meta} />
                             </NavLink>
                         </ScreenGate>

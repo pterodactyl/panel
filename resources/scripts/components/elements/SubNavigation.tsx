@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useId, useLayoutEffect, useRef, useState } from 'react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import Icon from '@/components/elements/Icon';
 import DropdownMenu from '@/components/elements/dropdown/DropdownMenu';
@@ -33,6 +33,15 @@ const sideNavigationClass = [
     'side-navigation:[&>div>div:hover]:shadow-none side-navigation:[&>div>div:active]:shadow-none side-navigation:[&>div>div.active]:shadow-none side-navigation:[&>div>div[data-status=active]]:shadow-none',
 ].join(' ');
 
+const collapsedNavigationClass = [
+    '[&[data-collapsed]>button]:flex [&[data-collapsed]:not([data-open])>div]:hidden',
+    '[&[data-collapsed]>div]:flex-col [&[data-collapsed]>div]:items-stretch [&[data-collapsed]>div]:gap-0.5 [&[data-collapsed]>div]:pb-2',
+    '[&[data-collapsed]>div>a]:block! [&[data-collapsed]>div>a]:ml-0! [&[data-collapsed]>div>a]:rounded-md [&[data-collapsed]>div>a]:px-4 [&[data-collapsed]>div>a]:py-2 [&[data-collapsed]>div>a]:shadow-none!',
+    '[&[data-collapsed]>div>div]:block! [&[data-collapsed]>div>div]:ml-0! [&[data-collapsed]>div>div]:rounded-md [&[data-collapsed]>div>div]:px-4 [&[data-collapsed]>div>div]:py-2 [&[data-collapsed]>div>div]:shadow-none!',
+    '[&[data-collapsed]>div>a:hover]:bg-popover/60 [&[data-collapsed]>div>div:hover]:bg-popover/60',
+    '[&[data-collapsed]>div>a[data-status=active]]:bg-popover [&[data-collapsed]>div>div[data-status=active]]:bg-popover',
+].join(' ');
+
 const activeSelector = '.active, [data-status=active], [aria-current=page]';
 
 interface OverflowItem {
@@ -41,6 +50,12 @@ interface OverflowItem {
     html: string;
     label: string;
     active: boolean;
+}
+
+interface OverflowState {
+    items: OverflowItem[];
+    collapsed: boolean;
+    current: string;
 }
 
 const elementKeys = new WeakMap<HTMLElement, number>();
@@ -52,27 +67,41 @@ const keyFor = (element: HTMLElement) => {
     return key;
 };
 
-const sameItems = (previous: OverflowItem[], next: OverflowItem[]) =>
-    previous.length === next.length &&
-    previous.every(
+const isActive = (element: HTMLElement) =>
+    element.matches(activeSelector) || element.querySelector(activeSelector) !== null;
+
+const isCore = (element: HTMLElement) => element.dataset.core !== undefined;
+
+const labelFor = (element: HTMLElement) =>
+    element.textContent?.trim() || element.getAttribute('aria-label') || element.title;
+
+const sameState = (previous: OverflowState, next: OverflowState) =>
+    previous.collapsed === next.collapsed &&
+    previous.current === next.current &&
+    previous.items.length === next.items.length &&
+    previous.items.every(
         (item, index) =>
-            item.element === next[index].element && item.html === next[index].html && item.active === next[index].active
+            item.element === next.items[index].element &&
+            item.html === next.items[index].html &&
+            item.active === next.items[index].active
     );
 
 const activate = (element: HTMLElement) =>
     (element.matches('a, button') ? element : (element.querySelector<HTMLElement>('a, button') ?? element)).click();
 
-function useOverflowItems(
+function useOverflowNavigation(
+    rootRef: React.RefObject<HTMLDivElement | null>,
     rowRef: React.RefObject<HTMLDivElement | null>,
     moreRef: React.RefObject<HTMLSpanElement | null>
 ) {
-    const [items, setItems] = useState<OverflowItem[]>([]);
+    const [state, setState] = useState<OverflowState>({ items: [], collapsed: false, current: '' });
 
     useLayoutEffect(() => {
+        const root = rootRef.current;
         const row = rowRef.current;
         const more = moreRef.current;
 
-        if (!row || !more) {
+        if (!root || !row || !more) {
             return;
         }
 
@@ -84,9 +113,11 @@ function useOverflowItems(
             );
 
             children.forEach((child) => delete child.dataset.overflowed);
+            delete root.dataset.collapsed;
             more.hidden = true;
 
             let overflowed: HTMLElement[] = [];
+            let collapsed = false;
             const style = getComputedStyle(row);
 
             if (style.flexDirection !== 'column') {
@@ -106,44 +137,61 @@ function useOverflowItems(
                     const budget =
                         available - more.getBoundingClientRect().width - parseFloat(getComputedStyle(more).marginLeft);
 
-                    let used = 0;
-                    let count = 0;
-                    while (count < children.length && used + widths[count] <= budget) {
-                        used += widths[count];
-                        count++;
-                    }
-
-                    const visible = children.slice(0, count);
-                    const active = children.findIndex(
-                        (child, index) =>
-                            index >= count &&
-                            (child.matches(activeSelector) || child.querySelector(activeSelector) !== null)
+                    const visible = new Set(children.filter(isCore));
+                    let used = children.reduce(
+                        (sum, child, index) => sum + (visible.has(child) ? widths[index] : 0),
+                        0
                     );
 
-                    if (active !== -1) {
-                        while (visible.length > 0 && used + widths[active] > budget) {
-                            used -= widths[visible.length - 1];
-                            visible.pop();
-                        }
-                        visible.push(children[active]);
-                    }
+                    if (used > budget) {
+                        collapsed = true;
+                    } else {
+                        const active = children.findIndex((child) => !visible.has(child) && isActive(child));
 
-                    overflowed = children.filter((child) => !visible.includes(child));
+                        if (active !== -1 && used + widths[active] <= budget) {
+                            visible.add(children[active]);
+                            used += widths[active];
+                        }
+
+                        for (const [index, child] of children.entries()) {
+                            if (visible.has(child)) {
+                                continue;
+                            }
+
+                            if (used + widths[index] > budget) {
+                                break;
+                            }
+
+                            visible.add(child);
+                            used += widths[index];
+                        }
+
+                        overflowed = children.filter((child) => !visible.has(child));
+                    }
                 }
+            }
+
+            if (collapsed) {
+                root.dataset.collapsed = '';
             }
 
             overflowed.forEach((child) => (child.dataset.overflowed = ''));
             more.hidden = overflowed.length === 0;
 
-            const next = overflowed.map((element) => ({
-                key: keyFor(element),
-                element,
-                html: element.innerHTML,
-                label: element.textContent?.trim() ? '' : element.getAttribute('aria-label') || element.title,
-                active: element.matches(activeSelector) || element.querySelector(activeSelector) !== null,
-            }));
+            const activeChild = children.find(isActive);
+            const next: OverflowState = {
+                collapsed,
+                current: activeChild ? labelFor(activeChild) : '',
+                items: overflowed.map((element) => ({
+                    key: keyFor(element),
+                    element,
+                    html: element.innerHTML,
+                    label: element.textContent?.trim() ? '' : labelFor(element),
+                    active: isActive(element),
+                })),
+            };
 
-            setItems((previous) => (sameItems(previous, next) ? previous : next));
+            setState((previous) => (sameState(previous, next) ? previous : next));
         };
 
         update();
@@ -153,11 +201,11 @@ function useOverflowItems(
             childList: true,
             subtree: true,
             characterData: true,
-            attributeFilter: ['class', 'data-status', 'aria-current'],
+            attributeFilter: ['class', 'data-status', 'aria-current', 'data-core'],
         });
 
         const resizeObserver = new ResizeObserver(update);
-        resizeObserver.observe(row);
+        resizeObserver.observe(root);
 
         document.fonts?.ready.then(() => mounted && update());
 
@@ -166,19 +214,45 @@ function useOverflowItems(
             mutationObserver.disconnect();
             resizeObserver.disconnect();
         };
-    }, [rowRef, moreRef]);
+    }, [rootRef, rowRef, moreRef]);
 
-    return items;
+    return state;
 }
 
 const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'div'>) => {
+    const rootRef = useRef<HTMLDivElement>(null);
     const rowRef = useRef<HTMLDivElement>(null);
     const moreRef = useRef<HTMLSpanElement>(null);
-    const items = useOverflowItems(rowRef, moreRef);
+    const rowId = useId();
+    const [open, setOpen] = useState(false);
+    const { items, collapsed, current } = useOverflowNavigation(rootRef, rowRef, moreRef);
+    const expanded = collapsed && open;
 
     return (
-        <div className={cn(subNavigationClass, sideNavigationClass, className)} {...props}>
-            <div ref={rowRef}>
+        <div
+            ref={rootRef}
+            className={cn(subNavigationClass, sideNavigationClass, collapsedNavigationClass, className)}
+            data-open={expanded ? '' : undefined}
+            {...props}
+        >
+            <button
+                type={'button'}
+                onClick={() => setOpen((value) => !value)}
+                aria-expanded={expanded}
+                aria-controls={rowId}
+                className={
+                    'mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
+                }
+            >
+                <Icon icon={Menu} className={'h-4 w-4 shrink-0'} aria-hidden />
+                <span className={'min-w-0 flex-1 truncate text-left'}>{current || 'Navigation'}</span>
+                <Icon
+                    icon={ChevronDown}
+                    className={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-180')}
+                    aria-hidden
+                />
+            </button>
+            <div ref={rowRef} id={rowId} onClick={() => setOpen(false)}>
                 {children}
                 <span ref={moreRef} className={'ml-2 shrink-0'}>
                     <DropdownMenu
@@ -201,7 +275,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                                 onClick={() => activate(item.element)}
                             >
                                 <span className={'inline-flex items-center gap-2'}>
-                                    <span dangerouslySetInnerHTML={{ __html: item.html }} />
+                                    <span data-overflowed dangerouslySetInnerHTML={{ __html: item.html }} />
                                     {item.label && <span>{item.label}</span>}
                                 </span>
                             </DropdownMenu.Item>
