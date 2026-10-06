@@ -30,7 +30,7 @@ class WriteFileContentRequest extends ClientApiRequest implements ClientPermissi
     public function rules(): array
     {
         return [
-            'file' => ['required', 'string'],
+            'file' => ['required', 'string', 'max:2048'],
         ];
     }
 }

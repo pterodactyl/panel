@@ -21,9 +21,9 @@ class PullFileRequest extends ClientApiRequest implements ClientPermissionsReque
     public function rules(): array
     {
         return [
-            'url' => ['required', 'string', 'url'],
-            'directory' => ['nullable', 'string'],
-            'filename' => ['nullable', 'string'],
+            'url' => ['required', 'string', 'url', 'max:2048'],
+            'directory' => ['nullable', 'string', 'max:2048'],
+            'filename' => ['nullable', 'string', 'max:255'],
             'use_header' => ['boolean'],
             'foreground' => ['boolean'],
         ];

@@ -26,8 +26,8 @@ class DecompressFilesRequest extends ClientApiRequest implements ClientPermissio
     public function rules(): array
     {
         return [
-            'root' => ['sometimes', 'nullable', 'string'],
-            'file' => ['required', 'string'],
+            'root' => ['sometimes', 'nullable', 'string', 'max:2048'],
+            'file' => ['required', 'string', 'max:2048'],
         ];
     }
 }

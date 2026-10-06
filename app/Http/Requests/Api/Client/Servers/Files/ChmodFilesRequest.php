@@ -21,10 +21,10 @@ class ChmodFilesRequest extends ClientApiRequest implements ClientPermissionsReq
     public function rules(): array
     {
         return [
-            'root' => ['required', 'nullable', 'string'],
+            'root' => ['sometimes', 'nullable', 'string', 'max:2048'],
             'files' => ['required', 'array'],
-            'files.*.file' => ['required', 'string'],
-            'files.*.mode' => ['required', 'numeric'],
+            'files.*.file' => ['required', 'string', 'max:2048'],
+            'files.*.mode' => ['required', 'regex:/^[0-7]{3,4}$/'],
         ];
     }
 }

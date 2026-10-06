@@ -24,9 +24,9 @@ class CompressFilesRequest extends ClientApiRequest implements ClientPermissions
     public function rules(): array
     {
         return [
-            'root' => ['sometimes', 'nullable', 'string'],
+            'root' => ['sometimes', 'nullable', 'string', 'max:2048'],
             'files' => ['required', 'array'],
-            'files.*' => ['string'],
+            'files.*' => ['string', 'max:2048'],
         ];
     }
 }
