@@ -44,6 +44,20 @@ test('a root administrator session can use the admin API', function (): void {
 
     $this->getJson('/api/admin/users')->assertOk();
 });
+test('a root administrator account key cannot install extensions', function (): void {
+    $admin = User::factory()->create(['root_admin' => true]);
+    withKey(ApiKey::factory()->create(['user_id' => $admin->id, 'key_type' => ApiKey::TYPE_ACCOUNT]));
+
+    $this->postJson('/api/admin/extensions', [])
+        ->assertForbidden()
+        ->assertJsonPath('errors.0.code', 'AccessDeniedHttpException')
+        ->assertJsonPath('errors.0.detail', 'This action can only be performed from an authenticated panel session, not with an API key.');
+});
+test('a root administrator session can still reach the extension install endpoint', function (): void {
+    $this->actingAs(User::factory()->create(['root_admin' => true]));
+
+    $this->postJson('/api/admin/extensions', [])->assertUnprocessable();
+});
 /**
  * Send the key as a bearer token on the following requests.
  */

@@ -61,6 +61,7 @@ use Pterodactyl\Http\Controllers\Api\Admin\Users\DisableTwoFactorController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\ExternalController as UserExternalController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\UserController;
 use Pterodactyl\Http\Controllers\Api\Admin\VersionController;
+use Pterodactyl\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 
 // Admin API (/api/admin), gated on the global root administrator flag.
 
@@ -79,14 +80,17 @@ Route::get('/activity/filters', ActivityFilterController::class)->name('api.admi
 */
 Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): void {
     Route::get('/', [ExtensionController::class, 'index']);
-    Route::post('/', [ExtensionController::class, 'store'])->name('.install');
     Route::get('/{extension}/settings', [ExtensionController::class, 'settings'])->name('.settings');
-    Route::patch('/{extension}/settings', [ExtensionController::class, 'updateSettings'])->name('.settings.update');
-    Route::post('/{extension}/settings/{input}/file', [ExtensionController::class, 'uploadSettingFile'])->name('.settings.file');
-    Route::delete('/{extension}/settings/{input}/file', [ExtensionController::class, 'clearSettingFile'])->name('.settings.file.clear');
-    Route::post('/{extension}/enable', [ExtensionController::class, 'enable'])->name('.enable');
-    Route::post('/{extension}/disable', [ExtensionController::class, 'disable'])->name('.disable');
-    Route::delete('/{extension}', [ExtensionController::class, 'destroy'])->name('.delete');
+
+    Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
+        Route::post('/', [ExtensionController::class, 'store'])->name('.install');
+        Route::patch('/{extension}/settings', [ExtensionController::class, 'updateSettings'])->name('.settings.update');
+        Route::post('/{extension}/settings/{input}/file', [ExtensionController::class, 'uploadSettingFile'])->name('.settings.file');
+        Route::delete('/{extension}/settings/{input}/file', [ExtensionController::class, 'clearSettingFile'])->name('.settings.file.clear');
+        Route::post('/{extension}/enable', [ExtensionController::class, 'enable'])->name('.enable');
+        Route::post('/{extension}/disable', [ExtensionController::class, 'disable'])->name('.disable');
+        Route::delete('/{extension}', [ExtensionController::class, 'destroy'])->name('.delete');
+    });
 });
 
 /*
