@@ -172,7 +172,7 @@ class SftpAuthenticationController extends Controller
     protected function throttleKey(Request $request): string
     {
         $raw = JsonValueGuard::nullableString($request->input('username', '')) ?? '';
-        $username = Str::transliterate(mb_strtolower(rtrim($this->parseUsername($raw)['username'], ' ')));
+        $username = Str::transliterate(mb_strtolower(mb_rtrim($this->parseUsername($raw)['username'], ' ')));
 
         return $username.'|'.($this->throttleServer->uuid ?? '');
     }
