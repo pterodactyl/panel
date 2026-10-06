@@ -52,7 +52,8 @@ ENV APP_ENV=production \
     LARAVEL_OPTIMIZE=true \
     PHP_FPM_MAX_CHILDREN=9 \
     PHP_FPM_MAX_REQUESTS=200 \
-    PHP_OPCACHE_MEMORY_CONSUMPTION=128
+    PHP_OPCACHE_MEMORY_CONSUMPTION=128 \
+    PHP_OPCACHE_REVALIDATE_FREQ=2
 
 COPY --from=dependencies /app /app
 COPY --from=dependencies /usr/local/bin/composer /usr/local/bin/composer
