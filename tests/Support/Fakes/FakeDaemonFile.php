@@ -6,6 +6,7 @@ namespace Pterodactyl\Tests\Support\Fakes;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Assert;
 
 class FakeDaemonFile extends FakeDaemonHttpClient
@@ -14,6 +15,8 @@ class FakeDaemonFile extends FakeDaemonHttpClient
 
     /** @var list<array<string, mixed>> */
     public array $directory = [];
+
+    public bool $directoryMissing = false;
 
     /** @var array<string, mixed> */
     public array $compressed = [];
@@ -220,6 +223,10 @@ class FakeDaemonFile extends FakeDaemonHttpClient
             'name' => ($request->data()['name'] ?? null),
             'url' => ($request->data()['url'] ?? null),
         ]);
+
+        if ($method === 'getDirectory' && $this->directoryMissing) {
+            return Http::response(['error' => 'The requested resource was not found on the system.'], 404);
+        }
 
         return $this->reply(match ($method) {
             'getContent' => $this->content,

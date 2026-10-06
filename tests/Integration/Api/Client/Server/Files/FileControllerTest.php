@@ -64,16 +64,50 @@ test('download url is signed for the server node', function () {
     expect($url)->toStartWith($server->node->getConnectionAddress().'/download/file?token=');
 });
 test('upload url is signed for the server node', function () {
-    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value, Permissions::FileUpdate->value]);
     $response = $this->actingAs($user)->getJson($this->link($server, '/files/upload'))->assertOk()->assertJsonPath('object', 'signed_url');
     $url = $response->json('attributes.url');
     expect($url)->toStartWith($server->node->getConnectionAddress().'/upload/file?token=');
 });
+test('upload url requires both create and update permission', function (Permissions $permission) {
+    [$user, $server] = $this->generateTestAccount([$permission->value]);
+    $this->actingAs($user)->getJson($this->link($server, '/files/upload'))->assertForbidden();
+})->with(['create only' => Permissions::FileCreate, 'update only' => Permissions::FileUpdate]);
 test('file contents can be written', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file=%2Ftest.txt'), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'new file contents')->assertNoContent();
+    $fake->assertDirectoryListed('/');
     $fake->assertContentPut('/test.txt', 'new file contents');
+});
+test('new file can be written into a directory that does not exist yet', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    $fake = new FakeDaemonFile;
+    $fake->directoryMissing = true;
+    $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file=%2Fnew%2Ftest.txt'), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'new file contents')->assertNoContent();
+    $fake->assertDirectoryListed('/new');
+    $fake->assertContentPut('/new/test.txt', 'new file contents');
+});
+test('existing file cannot be overwritten without update permission', function (string $path) {
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    $fake = new FakeDaemonFile;
+    $fake->directory = [FILE_CONTROLLER_FILE_OBJECT];
+    $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file='.rawurlencode($path)), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'overwritten')->assertForbidden();
+    expect($fake->callsFor('putContent'))->toBeEmpty();
+})->with(['plain' => '/test.txt', 'relative' => 'test.txt', 'dot segments' => '/nested/../test.txt', 'trailing dot' => '/test.txt/.', 'duplicate slashes' => '//test.txt']);
+test('existing file can be overwritten with update permission', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::FileUpdate->value]);
+    $fake = new FakeDaemonFile;
+    $fake->directory = [FILE_CONTROLLER_FILE_OBJECT];
+    $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file=%2Ftest.txt'), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'updated contents')->assertNoContent();
+    $fake->assertContentPut('/test.txt', 'updated contents');
+});
+test('new file cannot be created with only update permission', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::FileUpdate->value]);
+    $fake = new FakeDaemonFile;
+    $fake->directory = [FILE_CONTROLLER_FILE_OBJECT];
+    $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file=%2Fother.txt'), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'new file contents')->assertForbidden();
+    expect($fake->callsFor('putContent'))->toBeEmpty();
 });
 test('folder can be created', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
@@ -95,11 +129,17 @@ test('file can be copied', function () {
     $fake->assertFileCopied('/test.txt');
 });
 test('file can be decompressed', function () {
-    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value, Permissions::FileUpdate->value]);
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->postJson($this->link($server, '/files/decompress'), ['root' => '/', 'file' => 'archive.tar.gz'])->assertNoContent();
     $fake->assertFileDecompressed('/', 'archive.tar.gz');
 });
+test('decompress requires both create and update permission', function (Permissions $permission) {
+    [$user, $server] = $this->generateTestAccount([$permission->value]);
+    $fake = new FakeDaemonFile;
+    $this->actingAs($user)->postJson($this->link($server, '/files/decompress'), ['root' => '/', 'file' => 'archive.tar.gz'])->assertForbidden();
+    expect($fake->callsFor('decompressFile'))->toBeEmpty();
+})->with(['create only' => Permissions::FileCreate, 'update only' => Permissions::FileUpdate]);
 test('files can be deleted', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::FileDelete->value]);
     $fake = new FakeDaemonFile;
@@ -114,12 +154,18 @@ test('file permissions can be updated', function () {
     $fake->assertFilesChmoded('/', $files);
 });
 test('remote file can be pulled', function () {
-    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value, Permissions::FileUpdate->value]);
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->postJson($this->link($server, '/files/pull'), ['url' => 'https://cdn.example.com/file.zip', 'directory' => '/'])->assertNoContent();
     $fake->assertPulled('https://cdn.example.com/file.zip');
 });
+test('pull requires both create and update permission', function (Permissions $permission, array $payload) {
+    [$user, $server] = $this->generateTestAccount([$permission->value]);
+    $fake = new FakeDaemonFile;
+    $this->actingAs($user)->postJson($this->link($server, '/files/pull'), ['url' => 'https://cdn.example.com/file.zip', 'directory' => '/', ...$payload])->assertForbidden();
+    expect($fake->callsFor('pull'))->toBeEmpty();
+})->with(['create only' => Permissions::FileCreate, 'update only' => Permissions::FileUpdate])->with(['explicit filename' => [['filename' => 'server.properties']], 'header filename' => [['use_header' => true]], 'url filename' => [[]]]);
 test('pull requires a valid url', function () {
-    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
+    [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value, Permissions::FileUpdate->value]);
     $this->actingAs($user)->postJson($this->link($server, '/files/pull'), ['url' => 'not-a-url'])->assertUnprocessable()->assertJsonPath('errors.0.meta.source_field', 'url');
 });

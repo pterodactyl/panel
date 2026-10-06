@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Models\Server;
 
-class WriteFileContentRequest extends ClientApiRequest implements ClientPermissionsRequest
+class WriteFileContentRequest extends ClientApiRequest
 {
     /**
-     * Returns the permissions string indicating which permission should be used to
-     * validate that the authenticated user has permission to perform this action aganist
-     * the given resource (server).
+     * {@inheritdoc}
      */
-    public function permission(): string
+    public function authorize(): bool
     {
-        return Permissions::FileCreate->value;
+        $server = $this->parameter('server', Server::class);
+
+        return $this->user()->can(Permissions::FileCreate->value, $server)
+            || $this->user()->can(Permissions::FileUpdate->value, $server);
     }
 
     /**

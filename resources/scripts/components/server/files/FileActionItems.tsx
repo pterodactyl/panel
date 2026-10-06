@@ -49,7 +49,7 @@ export default function FileActionItems({
                 </Can>
             )}
             {isFileObjectArchiveType(file) ? (
-                <Can action={'file.create'}>
+                <Can action={['file.create', 'file.update']}>
                     <DropdownMenuItem onClick={onUnarchive} icon={PackageOpen} description={'Extract contents'}>
                         Unarchive
                     </DropdownMenuItem>
