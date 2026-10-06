@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Themes\AppliesThemes;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use Pterodactyl\Services\Extensions\ExtensionDistFiles;
 use Pterodactyl\Services\FilesystemChanges;
 use Pterodactyl\Services\Themes\ThemeService;
 
@@ -25,23 +26,36 @@ final readonly class ApplyTheme implements AppliesThemes
 
         $tokens = $theme['directory'].DIRECTORY_SEPARATOR.'tokens.css';
         throw_unless(is_file($tokens), InvalidExtensionException::class, "Theme \"{$id}\" has no tokens.css.");
+        throw_if(is_link($tokens), InvalidExtensionException::class, "Theme \"{$id}\" ships tokens.css as a symbolic link; it must be a regular file.");
+
+        // Published assets are web-served, so they get the same checks as an extension build.
+        $assets = $theme['directory'].DIRECTORY_SEPARATOR.'assets';
+        try {
+            $files = is_dir($assets) ? ExtensionDistFiles::list($assets, 'assets') : null;
+        } catch (InvalidExtensionException $invalidExtensionException) {
+            throw new InvalidExtensionException("Theme \"{$id}\" {$invalidExtensionException->getMessage()}", $invalidExtensionException->getCode(), previous: $invalidExtensionException);
+        }
 
         $stylesheet = $this->themes->publishedStylesheet();
         $publishedAssets = $this->themes->publishedAssetsDirectory();
         File::ensureDirectoryExists(dirname($stylesheet));
         $stagedTokens = dirname($stylesheet).'/.staging-'.Str::random(12);
         $stagedAssets = dirname($publishedAssets).'/.staging-'.Str::random(12);
-        $assets = $theme['directory'].DIRECTORY_SEPARATOR.'assets';
 
         try {
             throw_unless(File::copy($tokens, $stagedTokens), InvalidExtensionException::class, 'Unable to stage theme stylesheet.');
-            if (is_dir($assets)) {
-                throw_unless(File::copyDirectory($assets, $stagedAssets), InvalidExtensionException::class, 'Unable to stage theme assets.');
+            if ($files !== null) {
+                // Copy exactly the files that were checked, never the directory itself.
+                File::ensureDirectoryExists($stagedAssets);
+                foreach ($files as $relative => $path) {
+                    File::ensureDirectoryExists(dirname($stagedAssets.DIRECTORY_SEPARATOR.$relative));
+                    throw_unless(File::copy($path, $stagedAssets.DIRECTORY_SEPARATOR.$relative), InvalidExtensionException::class, 'Unable to stage theme assets.');
+                }
             }
 
             $this->files->run([
                 $stylesheet => $stagedTokens,
-                $publishedAssets => is_dir($assets) ? $stagedAssets : null,
+                $publishedAssets => $files !== null ? $stagedAssets : null,
             ], static function (): void {});
         } finally {
             rescue(fn () => $this->files->delete($stagedTokens));

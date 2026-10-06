@@ -56,6 +56,14 @@ it('rejects symbolic links', function () {
     expect(fn () => ExtensionDistFiles::list($this->directory.'/dist'))->toThrow(InvalidExtensionException::class, 'dist/manifest.json, which is a symbolic link');
 });
 
+it('rejects a linked directory, naming it as the caller does', function () {
+    File::ensureDirectoryExists($this->directory.'/theme');
+    symlink($this->directory.'/dist', $this->directory.'/theme/assets');
+
+    expect(fn () => ExtensionDistFiles::list($this->directory.'/theme/assets', 'assets'))->toThrow(InvalidExtensionException::class, 'ships assets, which is a symbolic link; assets may only contain browser assets.')
+        ->and(fn () => ExtensionDistFiles::list($this->directory.'/theme/assets/', 'assets'))->toThrow(InvalidExtensionException::class, 'ships assets, which is a symbolic link');
+});
+
 it('refuses to publish a build with a server-side file and publishes exactly the checked files', function () {
     $publisher = new ExtensionAssetPublisher(new ExtensionStylesheetInspector);
     config()->set('extensions.assets_directory', $this->directory.'/public');
