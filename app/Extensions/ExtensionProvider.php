@@ -278,8 +278,9 @@ abstract class ExtensionProvider extends ServiceProvider
 
     /**
      * Register artisan commands. They exist only while the extension is enabled and
-     * booted successfully; prefix their names with the extension id (`<id>:clean`) so
-     * they cannot shadow a core command.
+     * booted successfully. A command's name and aliases must start with the extension id
+     * (`<id>:clean`) and must not already exist: a command that breaks either rule is
+     * left out and recorded against the extension.
      *
      * @param  list<class-string>  $classes
      */

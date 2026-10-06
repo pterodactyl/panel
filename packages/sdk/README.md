@@ -386,11 +386,13 @@ controllers do. They can be wrapped like any other action.
 ### Commands and scheduled tasks
 
 `registerCommands([CleanLogsCommand::class])` adds artisan commands and
-`registerSchedule(fn (Schedule $schedule) => $schedule->command('logs:clean')->daily())`
+`registerSchedule(fn (Schedule $schedule) => $schedule->command('myext:clean-logs')->daily())`
 defines tasks on the panel's scheduler. Both exist only while the extension is enabled and
-booted successfully. Prefix command names with the extension id. A scheduled task that
-fails, or a schedule callback that throws, is recorded against the extension; a callback
-that throws schedules nothing.
+booted successfully. A command's name and every alias must start with the extension id and
+a colon (`myext:clean-logs`) and must not already exist; a command that breaks either rule
+is left out and recorded against the extension. A scheduled task that fails, or a schedule
+callback that throws, is recorded against the extension; a callback that throws schedules
+nothing.
 
 ### Head tags
 

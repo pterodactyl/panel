@@ -6,8 +6,10 @@ namespace Pterodactyl\Tests\Pest\Unit\Extensions\ExtensionProviderRuntimeTest;
 
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Console\WorkCommand;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -207,6 +209,23 @@ test('registered commands reach artisan only for available extensions', function
 
     expect(Artisan::all())->toHaveKey('probe:run')->not->toHaveKey('disabled:run');
     expect(Artisan::call('probe:run'))->toBe(7);
+});
+
+test('extension commands carry the extension id and never replace an existing command', function (): void {
+    extensions('probe', 'queue');
+    provider('probe')->consoleCommands([UnprefixedCommand::class, AliasedCommand::class, ProbeCommand::class]);
+    provider('queue')->consoleCommands([ShadowingCommand::class, QueueNamespaceCommand::class]);
+
+    $commands = Artisan::all();
+
+    expect($commands)->toHaveKeys(['probe:run', 'queue:drain'])->not->toHaveKeys(['cleanup', 'probe:alias']);
+    expect($commands['migrate'])->toBeInstanceOf(MigrateCommand::class);
+    expect($commands['queue:work'])->toBeInstanceOf(WorkCommand::class);
+    expect($this->failures)->toBe([
+        ['probe', 'Extension "probe" cannot register the command "cleanup": its names must start with "probe:".', 'command'],
+        ['probe', 'Extension "probe" cannot register the command "migrate": its names must start with "probe:".', 'command'],
+        ['queue', 'Extension "queue" cannot register the command "queue:work": a command with that name already exists.', 'command'],
+    ]);
 });
 
 test('only console commands can be registered', function (): void {
@@ -539,6 +558,42 @@ final class ProbeCommand extends Command
 
 #[AsCommand(name: 'disabled:run')]
 final class DisabledProbeCommand extends Command
+{
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return 0;
+    }
+}
+
+#[AsCommand(name: 'cleanup')]
+final class UnprefixedCommand extends Command
+{
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return 0;
+    }
+}
+
+#[AsCommand(name: 'probe:alias', aliases: ['migrate'])]
+final class AliasedCommand extends Command
+{
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return 0;
+    }
+}
+
+#[AsCommand(name: 'queue:work')]
+final class ShadowingCommand extends Command
+{
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return 0;
+    }
+}
+
+#[AsCommand(name: 'queue:drain')]
+final class QueueNamespaceCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
