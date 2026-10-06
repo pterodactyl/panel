@@ -75,7 +75,63 @@ test('field declarations reject defaults and limits that do not fit', function (
     'file unknown type' => [fn () => ExtensionSettingDefinition::make('x', 'x', null)->file(['text/html'])],
     'file without types' => [fn () => ExtensionSettingDefinition::make('x', 'x', null)->file([])],
     'file size' => [fn () => ExtensionSettingDefinition::make('x', 'x', null)->file(maxKilobytes: ExtensionSettingFiles::MAX_KILOBYTES + 1)],
+    'number default' => [fn () => ExtensionSettingDefinition::make('x', 'x', '10')->field('number')],
+    'toggle default' => [fn () => ExtensionSettingDefinition::make('x', 'x', 1)->field('toggle')],
+    'select default' => [fn () => ExtensionSettingDefinition::make('x', 'x', 'c')->field('select', [['value' => 'a', 'label' => 'A']])],
 ]);
+
+test('password fields are always secret and never reach frontend bundles', function (): void {
+    $definition = new ExtensionSettingsDefinition(settings(['token' => 'stored-token']), [
+        ExtensionSettingDefinition::make('token', 'token', '')->field('password')->publicUsing(fn (mixed $value): mixed => $value),
+    ]);
+
+    expect($definition->schema()[0])->toMatchArray(['field' => 'password', 'value' => ExtensionSettingDefinition::MASK, 'visibility' => 'admin']);
+    expect($definition->publicSettings())->toBe(['token' => ExtensionSettingDefinition::MASK]);
+    expect($definition->frontendConfig())->toBe([]);
+    expect(fn () => ExtensionSettingDefinition::make('a', 'a', '')->field('password')->frontend())->toThrow(InvalidArgumentException::class, 'cannot be exposed to frontend bundles');
+    expect(fn () => ExtensionSettingDefinition::make('a', 'a', '')->frontend()->field('password'))->toThrow(InvalidArgumentException::class, 'cannot be exposed to frontend bundles');
+    expect(fn () => ExtensionSettingDefinition::make('a', 'a', '')->secret()->field('text')->frontend())->toThrow(InvalidArgumentException::class, 'cannot be exposed to frontend bundles');
+});
+
+test('a secret keeps its stored value when the mask, a blank or nothing is submitted', function (string $field, ?string $default): void {
+    $definition = new ExtensionSettingsDefinition(settings(['token' => 'stored-token']), [
+        ExtensionSettingDefinition::make('token', 'token', $default)->secret()->field($field, [['value' => 'stored-token', 'label' => 'Stored']]),
+        ExtensionSettingDefinition::make('note', 'note', ''),
+    ]);
+    $masked = $definition->schema()[0]['value'];
+    expect($masked)->toBe(ExtensionSettingDefinition::MASK);
+    expect($definition->withoutBlankSecrets(['token' => $masked, 'note' => 'a']))->toBe(['note' => 'a']);
+
+    foreach ([['token' => $masked], ['token' => ''], ['token' => null], []] as $input) {
+        $definition->update([...$input, 'note' => 'changed']);
+        expect($definition->get('token'))->toBe('stored-token', json_encode($input));
+    }
+
+    $definition->update(['token' => 'stored-token-2']);
+    expect($definition->get('token'))->toBe('stored-token-2');
+})->with([
+    'password' => ['password', ''],
+    'text' => ['text', ''],
+    'select' => ['select', null],
+]);
+
+test('text, number, toggle and select values must match their field type', function (): void {
+    $definition = new ExtensionSettingsDefinition(settings(), [
+        ExtensionSettingDefinition::make('name', 'name', 'Panel'),
+        ExtensionSettingDefinition::make('limit', 'limit', 10)->field('number'),
+        ExtensionSettingDefinition::make('enabled', 'enabled', false)->field('toggle'),
+        ExtensionSettingDefinition::make('size', 'size', 25)->field('select', [['value' => 25, 'label' => '25'], ['value' => 'all', 'label' => 'All'], ['value' => false, 'label' => 'Off']]),
+        ExtensionSettingDefinition::make('token', 'token', '')->secret(),
+    ]);
+
+    foreach ([['name' => 'x'], ['name' => 12], ['name' => null], ['limit' => 2.5], ['limit' => null], ['enabled' => true], ['size' => 'all'], ['size' => false], ['size' => 25], ['token' => 'abc']] as $input) {
+        expect(passes($definition, $input))->toBeTrue(json_encode($input));
+    }
+
+    foreach ([['name' => ['x']], ['name' => true], ['name' => ['a' => 'b']], ['limit' => '10'], ['limit' => [1]], ['limit' => true], ['enabled' => 'yes'], ['enabled' => 1], ['enabled' => '1'], ['size' => '25'], ['size' => 50], ['size' => 0], ['token' => ['abc']], ['token' => false]] as $input) {
+        expect(passes($definition, $input))->toBeFalse(json_encode($input));
+    }
+});
 
 test('color accepts only hex and oklch colours and stores the canonical form', function (): void {
     $definition = richDefinition();
@@ -234,6 +290,11 @@ function settings(array $initial = []): ExtensionSettings
         public function setMany(array $values): void
         {
             $this->values = array_replace($this->values, $values);
+        }
+
+        public function setManySecrets(array $values, array $secretKeys): void
+        {
+            $this->setMany($values);
         }
 
         public function forget(string $key): void

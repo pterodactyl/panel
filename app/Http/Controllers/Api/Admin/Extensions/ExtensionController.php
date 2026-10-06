@@ -80,7 +80,7 @@ class ExtensionController extends AdminApiController
                     'help' => 'Leave blank to keep the stored key.',
                     'field' => 'password',
                     'options' => [],
-                    'value' => '***********9999',
+                    'value' => '********',
                     'constraints' => ['max_length' => null, 'max_items' => null, 'max_kilobytes' => null, 'accept' => []],
                     'visibility' => 'admin',
                 ],
@@ -145,7 +145,7 @@ class ExtensionController extends AdminApiController
         return new JsonResponse(['data' => ['registered' => true, 'schema' => $definition->schema()]]);
     }
 
-    #[Endpoint('Update extension settings', "Validates against the extension's declared rules and persists the submitted values. Omitted fields keep their stored values.")]
+    #[Endpoint('Update extension settings', "Validates against each field's type and the extension's declared rules and persists the submitted values. Omitted fields keep their stored values, as do secrets submitted empty or as their mask.")]
     #[BodyParam('settings', 'object', 'Field values keyed by input name, as described by the settings schema.', required: true, example: ['curseforge_api_key' => 'cf-key'])]
     #[ScribeResponse(self::SETTINGS_EXAMPLE, description: 'Settings updated; fresh schema returned.')]
     public function updateSettings(UpdateExtensionSettingsRequest $request, UpdatesExtensionSettings $updateSettings, ExtensionSettingsRegistry $settingsRegistry, string $extension): JsonResponse

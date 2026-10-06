@@ -241,10 +241,10 @@ recovery. Successful lifecycle changes invalidate routes and signal queue worker
 reload the page to replace already evaluated frontend code.
 
 Backend settings support `forUser($user)` and `forServer($server)`. Mark secrets with
-`->secret()` to encrypt storage, mask admin output, and prohibit frontend exposure;
-a password control alone does not enable encryption. Empty secret updates preserve the
-stored value. `->frontend()->frontendType('boolean')` declares and verifies a public
-value's type. `p:extension:types <path>` generates literal screen ids, registered permissions, and public config
+`->secret()` to encrypt storage, mask admin output as `********`, and prohibit frontend
+exposure; `->field('password')` is always secret. A secret submitted empty, as its mask,
+or not at all keeps the stored value, whatever its field.
+`->frontend()->frontendType('boolean')` declares and verifies a public value's type. `p:extension:types <path>` generates literal screen ids, registered permissions, and public config
 keys. `defineConfiguredExtension` accepts a parser for runtime configuration and these
 generated types. Undeclared value types remain bounded JSON.
 
@@ -254,6 +254,12 @@ anyone may read; `public()` requires `frontend()` and cannot be combined with
 `secret()`. Generated types add `ExtensionPublicConfigKey` and `ExtensionPublicConfig`
 for the keys a guest receives; every other key is absent until the user signs in and
 the page reloads.
+
+Submitted values are checked against their field on the server as well as against the
+definition's rules: `text` and `password` take a string or number, `number` a number,
+`toggle` a boolean, and `select` one of its option values (compared strictly, so `'25'`
+does not match `25`). `null` passes all of them. A `number`, `toggle` or `select` default
+has to pass the same check.
 
 Beyond `text`, `password`, `number`, `toggle`, and `select`, settings have five typed
 fields, each validated server-side and rendered by the admin Extensions form:
