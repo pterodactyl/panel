@@ -1,0 +1,21 @@
+package.json
+  s_bb38cdae517e45::t_146a420ae36626 35
+package-lock.json
+  s_bb38cdae517e45::t_9cbd6af6a136a6 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bb6aaa37b2bde5d03b6cf0a12a8eec4d096b48be",
+  "prompts": {},
+  "sessions": {
+    "s_bb38cdae517e45": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0db92d7-46e6-46b8-b6d3-d553f0360eaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
