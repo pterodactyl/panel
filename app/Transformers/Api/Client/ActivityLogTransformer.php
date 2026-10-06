@@ -54,7 +54,7 @@ class ActivityLogTransformer extends BaseClientTransformer
     /**
      * Determines if the user can view the IP address in the output because they are an
      * administrator, because they are the actor that performed the action, or because
-     * the entry has no actor at all and the action was performed against them. That last
+     * the entry never had an actor and the action was performed against them. That last
      * case covers anonymous attempts such as a failed log in, where the address belongs
      * to whoever made the attempt rather than to an identified user.
      */
@@ -65,9 +65,10 @@ class ActivityLogTransformer extends BaseClientTransformer
             return true;
         }
 
-        $actor = $model->actor;
-        if ($actor instanceof Model) {
-            return $actor->is($user);
+        if ($model->actor_id !== null) {
+            $actor = $model->actor;
+
+            return $actor instanceof Model && $actor->is($user);
         }
 
         return $model->subjects->contains(

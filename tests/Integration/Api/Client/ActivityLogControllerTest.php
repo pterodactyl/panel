@@ -87,6 +87,29 @@ test('an entry with an actor never reveals that actor address to its subject', f
     expect($row['ip'])->toBeNull();
     expect($row['properties']['ip'])->toBe('[hidden]');
 });
+test('an entry whose actor was deleted never reveals that actor address to its subject', function () {
+    $owner = User::factory()->create(['root_admin' => false]);
+    $subuser = User::factory()->create(['root_admin' => false]);
+    Activity::event('server:subuser.create')->actor($owner)->subject($subuser)->withRequestMetadata()->log();
+    User::query()->whereKey($owner->id)->delete();
+
+    $row = $this->actingAs($subuser)->getJson('/api/client/account/activity')->assertOk()->json('data.0.attributes');
+
+    expect($row['event'])->toBe('server:subuser.create');
+    expect($row['ip'])->toBeNull();
+    expect($row['properties']['ip'])->toBe('[hidden]');
+});
+test('an entry on a server whose actor was deleted does not reveal that actor address', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::ActivityRead->value]);
+    $other = User::factory()->create(['root_admin' => false]);
+    Activity::event('server:power.start')->actor($other)->subject($server)->subject($user)->withRequestMetadata()->log();
+    User::query()->whereKey($other->id)->delete();
+
+    $row = $this->actingAs($user)->getJson($this->link($server, '/activity'))->assertOk()->json('data.0.attributes');
+
+    expect($row['ip'])->toBeNull();
+    expect($row['properties']['ip'])->toBe('[hidden]');
+});
 test('an administrator sees the same address in both fields', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::ActivityRead->value]);
     $user->update(['root_admin' => true]);
