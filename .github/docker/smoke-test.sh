@@ -208,7 +208,7 @@ PHP
     version=$(docker exec "$dynamic" cat /app/public/assets/extensions/cache-probe/_current)
     [[ "$version" =~ ^[a-f0-9]{64}$ ]]
     docker exec "$dynamic" curl -fsS "http://127.0.0.1/assets/extensions/cache-probe/$version/client.js" | grep -qx "export const smoke = true;"
-    docker exec "$dynamic" curl -fsSI "http://127.0.0.1/assets/extensions/cache-probe/$version/client.js" | grep -qi '^content-security-policy: sandbox'
+    docker exec "$dynamic" curl -fsSI "http://127.0.0.1/assets/extensions/cache-probe/$version/client.js" | grep -qi '^x-content-type-options: nosniff'
   else
     test "$(docker exec "$dynamic" curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/api/cache-extension-probe)" = 404
   fi

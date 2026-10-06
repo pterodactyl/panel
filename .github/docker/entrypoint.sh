@@ -95,6 +95,11 @@ if ! grep -qF 'location ^~ /assets/extensions/' /etc/nginx/http.d/panel.conf; th
             deny all;
         }
 
+        location ~ \.m?js$ {
+            add_header X-Content-Type-Options nosniff always;
+            try_files $uri =404;
+        }
+
         try_files $uri =404;
     }
 EOF
