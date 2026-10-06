@@ -1,0 +1,22 @@
+tests/Integration/Http/ExtensionFrontendConfigTest.php
+  s_b77d6827942e8a::t_4c838f6487d657 52,55-58,60
+  s_b77d6827942e8a::t_f8ccef5330925e 53-54,59
+resources/views/templates/wrapper.blade.php
+  s_b77d6827942e8a::t_558383d386d8bf 42-43,47,52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c6188a00f652f16df1fe24734652ea988368754d",
+  "prompts": {},
+  "sessions": {
+    "s_b77d6827942e8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "234d9af1-b596-4314-80d6-5cf99aefb656",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
