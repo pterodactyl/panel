@@ -32,3 +32,29 @@ test('correct subuser is deleted from server', function (?string $prefix) {
     'without a numeric prefix' => [null],
     'with a numeric prefix' => ['18180000'],
 ]);
+test('subuser cannot delete a subuser holding permissions they do not have', function () {
+    Bus::fake([RevokeSftpAccessJob::class]);
+    [$user, $server] = $this->generateTestAccount([Permissions::UserDelete->value, Permissions::ControlStart->value]);
+    /** @var Subuser $target */
+    $target = Subuser::factory()->for(User::factory()->create())->for($server)->create(['permissions' => [
+        Permissions::ControlStart->value,
+        Permissions::ControlConsole->value,
+        Permissions::WebsocketConnect->value,
+    ]]);
+
+    $this->actingAs($user)->deleteJson($this->link($server)."/users/{$target->user->uuid}")->assertForbidden();
+    expect(Subuser::query()->whereKey($target->id)->exists())->toBeTrue();
+    Bus::assertNotDispatched(RevokeSftpAccessJob::class);
+});
+test('subuser can delete a subuser whose permissions are a subset of their own', function () {
+    Bus::fake([RevokeSftpAccessJob::class]);
+    [$user, $server] = $this->generateTestAccount([Permissions::UserDelete->value, Permissions::ControlStart->value, Permissions::ControlConsole->value]);
+    /** @var Subuser $target */
+    $target = Subuser::factory()->for(User::factory()->create())->for($server)->create(['permissions' => [
+        Permissions::ControlStart->value,
+        Permissions::WebsocketConnect->value,
+    ]]);
+
+    $this->actingAs($user)->deleteJson($this->link($server)."/users/{$target->user->uuid}")->assertNoContent();
+    expect(Subuser::query()->whereKey($target->id)->exists())->toBeFalse();
+});

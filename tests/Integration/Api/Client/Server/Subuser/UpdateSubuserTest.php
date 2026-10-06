@@ -54,3 +54,55 @@ test('cannot update subuser for different server', function () {
     [$user2] = $this->generateTestAccount(['foo.bar']);
     $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$user2->uuid}", [])->assertNotFound();
 });
+test('subuser cannot strip permissions from a subuser that they do not hold themselves', function () {
+    Bus::fake([RevokeSftpAccessJob::class]);
+    [$user, $server] = $this->generateTestAccount([Permissions::UserUpdate->value, Permissions::ControlStart->value]);
+    /** @var Subuser $subuser */
+    $subuser = Subuser::factory()->for(User::factory()->create())->for($server)->create(['permissions' => [
+        Permissions::ControlConsole->value,
+        Permissions::FileUpdate->value,
+        Permissions::ControlStart->value,
+        Permissions::WebsocketConnect->value,
+    ]]);
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => [Permissions::ControlStart->value]])->assertOk();
+
+    expect($subuser->refresh()->permissions)->toEqualCanonicalizing([
+        Permissions::ControlConsole->value,
+        Permissions::FileUpdate->value,
+        Permissions::ControlStart->value,
+        Permissions::WebsocketConnect->value,
+    ]);
+});
+test('subuser can change the permissions they hold while preserving the ones they do not', function () {
+    Bus::fake([RevokeSftpAccessJob::class]);
+    [$user, $server] = $this->generateTestAccount([Permissions::UserUpdate->value, Permissions::ControlStart->value, Permissions::ControlStop->value]);
+    /** @var Subuser $subuser */
+    $subuser = Subuser::factory()->for(User::factory()->create())->for($server)->create(['permissions' => [
+        Permissions::ControlConsole->value,
+        Permissions::ControlStart->value,
+        Permissions::WebsocketConnect->value,
+    ]]);
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => [
+        Permissions::ControlConsole->value,
+        Permissions::ControlStop->value,
+        Permissions::WebsocketConnect->value,
+    ]])->assertOk();
+
+    expect($subuser->refresh()->permissions)->toEqualCanonicalizing([
+        Permissions::ControlConsole->value,
+        Permissions::ControlStop->value,
+        Permissions::WebsocketConnect->value,
+    ]);
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => [
+        Permissions::ControlStop->value,
+        Permissions::FileRead->value,
+    ]])->assertForbidden();
+    expect($subuser->refresh()->permissions)->toEqualCanonicalizing([
+        Permissions::ControlConsole->value,
+        Permissions::ControlStop->value,
+        Permissions::WebsocketConnect->value,
+    ]);
+});

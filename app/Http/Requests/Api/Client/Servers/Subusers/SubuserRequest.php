@@ -85,20 +85,42 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
      */
     protected function validatePermissionsCanBeAssigned(array $permissions): void
     {
-        $user = $this->user();
-        $server = $this->parameter('server', Server::class);
-
         // If we are a root admin or the server owner, no need to perform these checks.
-        if ($user->root_admin || $user->id === $server->owner_id) {
+        if ($this->requesterHasFullAccess()) {
             return;
         }
 
-        // Otherwise, get the current subuser's permission set, and ensure that the
-        // permissions they are trying to assign are not _more_ than the ones they
-        // already have.
+        $allowed = $this->requesterPermissions();
+        $target = $this->attributes->get('subuser');
+        if ($target instanceof Subuser) {
+            $allowed = array_merge($allowed, $target->permissions);
+        }
+
+        throw_if(count(array_diff($permissions, $allowed)) > 0, HttpForbiddenException::class, 'Cannot assign permissions to a subuser that your account does not actively possess.');
+    }
+
+    /**
+     * Whether the requester is a root admin or the server owner, who may manage any subuser.
+     */
+    protected function requesterHasFullAccess(): bool
+    {
+        $user = $this->user();
+
+        return $user->root_admin || $user->id === $this->parameter('server', Server::class)->owner_id;
+    }
+
+    /**
+     * The permissions the requester holds on this server as a subuser.
+     *
+     * @return list<string>
+     *
+     * @throws BindingResolutionException
+     */
+    protected function requesterPermissions(): array
+    {
         $service = $this->container->make(GetUserPermissionsService::class);
 
-        throw_if(count(array_diff($permissions, $service->handle($server, $user))) > 0, HttpForbiddenException::class, 'Cannot assign permissions to a subuser that your account does not actively possess.');
+        return array_values($service->handle($this->parameter('server', Server::class), $this->user()));
     }
 
     /** @return list<string> */
