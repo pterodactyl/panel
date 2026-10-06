@@ -1,0 +1,20 @@
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_0c078e69478431::t_114b87c8a562b9 162-176
+  s_0c078e69478431::t_144fd0f58fe815 177-178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e1a1483217ad4d80830c0b929659edad02e39133",
+  "prompts": {},
+  "sessions": {
+    "s_0c078e69478431": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "712c1fd7-2642-4677-8ee0-0f91d015a28e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
