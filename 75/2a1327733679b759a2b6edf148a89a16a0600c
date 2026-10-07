@@ -1,0 +1,31 @@
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_b7506fbf20f690::t_ef5d4619fda17d 151-175
+  s_b7506fbf20f690::t_254a557c9acf24 7
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_b7506fbf20f690::t_dc17a11e8b631f 49-71
+packages/sdk/README.md
+  s_b7506fbf20f690::t_a166b8605f8358 333-342
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_b7506fbf20f690::t_4280f09b9a61e1 120-124
+app/Services/Extensions/ExtensionComposerInspector.php
+  s_b7506fbf20f690::t_14346a89f0d940 1-37
+app/Services/Extensions/ExtensionCompatibility.php
+  s_b7506fbf20f690::t_651395ac2b0278 67
+  s_b7506fbf20f690::t_aa74592644b2d3 84-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "752a1327733679b759a2b6edf148a89a16a0600c",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
