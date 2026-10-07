@@ -15,6 +15,15 @@
 
 @section('content')
 <form action="{{ route('admin.databases.view', $host->id) }}" method="POST">
+    @if($host->databases_count > 0 && !$host->enabled)
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> <strong>Note:</strong> This host currently has {{ $host->databases_count }} database(s). Disabling prevents new database creation, but existing databases continue to work.
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-sm-6">
             <div class="box box-primary">
@@ -49,6 +58,13 @@
                             @endforeach
                         </select>
                         <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected node.</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox checkbox-primary no-margin-bottom">
+                            <input id="pEnabled" name="enabled" type="checkbox" value="1" {{ $host->enabled ? 'checked' : '' }} />
+                            <label for="pEnabled" class="strong">Enabled</label>
+                        </div>
+                        <p class="text-muted small">When disabled, this host will not be used for automatic database creation. Existing databases will continue to function normally.</p>
                     </div>
                 </div>
             </div>
