@@ -6,6 +6,7 @@ namespace Pterodactyl\Extensions;
 
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -54,11 +55,25 @@ use Throwable;
  */
 abstract class ExtensionProvider extends ServiceProvider
 {
+    protected ExtensionManifest $extension;
+
     private ?ExtensionRegistration $registration = null;
 
-    public function __construct($app, protected ExtensionManifest $extension)
+    /**
+     * The panel's loader passes the manifest. Laravel constructs a provider from the
+     * application alone, as `$app->register(BillingProvider::class)` in a test does, and the
+     * manifest is then the one of the installed extension that declares this provider.
+     *
+     * @param  Application  $app
+     *
+     * @throws InvalidExtensionException
+     */
+    public function __construct($app, ?ExtensionManifest $extension = null)
     {
         parent::__construct($app);
+        $this->extension = $extension
+            ?? $this->app->make(ExtensionRepository::class)->discovered()->first(fn (ExtensionManifest $manifest): bool => $manifest->provider !== null && strcasecmp(mb_ltrim($manifest->provider, '\\'), static::class) === 0)
+            ?? throw new InvalidExtensionException(sprintf('No installed extension declares %s as its provider.', static::class));
     }
 
     final public function beginRegistration(): void
