@@ -73,6 +73,9 @@ export function defineExtensionConfig({ entry, outDir = 'dist', plugins = [] } =
             // Installs record the file hash; a stable name keeps manifests simple.
             sourcemap: true,
             target: 'es2022',
+            // Vite's preload helper resolves chunk names against the document, so a shared lazy chunk would be requested
+            // from the site root. The chunks import each other with relative URLs, which resolve against the bundle.
+            modulePreload: false,
             rollupOptions: {
                 input: entry,
                 external: SHARED_RUNTIME_MODULES,
