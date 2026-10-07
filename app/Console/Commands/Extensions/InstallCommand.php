@@ -31,7 +31,8 @@ class InstallCommand extends Command
             // anything is downloaded, so the panel never installs from an arbitrary address.
             if ($urls->isUrl($path)) {
                 $this->components->info('Verifying the install URL and downloading the extension.');
-                $path = $download = $urls->download($path);
+                $path = $urls->download($path);
+                $download = $path;
             }
 
             $manifest = $this->install($installer, $path);

@@ -19,6 +19,7 @@ use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 /**
@@ -54,7 +55,7 @@ class ExtensionUrlDownloader
         File::ensureDirectoryExists(dirname($path));
 
         try {
-            $response = Http::withHeaders([self::INSTALL_HEADER => (string) config('extensions.panel_version')])
+            $response = Http::withHeaders([self::INSTALL_HEADER => config()->string('extensions.panel_version')])
                 ->connectTimeout(10)
                 ->timeout(120)
                 ->sink($path)
@@ -67,11 +68,11 @@ class ExtensionUrlDownloader
             rescue(fn () => File::delete($path));
 
             // Guzzle wraps whatever the on_headers check throws.
-            $refusal = $throwable instanceof InvalidExtensionException ? $throwable : $throwable->getPrevious();
+            $refusal = $throwable instanceof InvalidExtensionException ? $throwable : ($throwable->getPrevious() ?? $throwable);
             throw_if($refusal instanceof InvalidExtensionException, $refusal);
             throw_unless($throwable instanceof ConnectionException || $throwable instanceof TransferException, $throwable);
 
-            throw new InvalidExtensionException('Could not download the extension. Please try again.', previous: $throwable);
+            throw new InvalidExtensionException('Could not download the extension. Please try again.', $throwable->getCode(), previous: $throwable);
         }
 
         return $path;
@@ -84,19 +85,21 @@ class ExtensionUrlDownloader
      */
     public function verifiedUrl(string $link): string
     {
-        throw_unless((bool) config('extensions.signed_urls.enabled'), InvalidExtensionException::class, 'Installing extensions from a URL is disabled on this panel.');
+        throw_unless(filter_var(config('extensions.signed_urls.enabled'), FILTER_VALIDATE_BOOLEAN), InvalidExtensionException::class, 'Installing extensions from a URL is disabled on this panel.');
         throw_unless(extension_loaded('sodium'), InvalidExtensionException::class, 'The PHP sodium extension is required to verify signed install URLs.');
 
-        $jwt = Str::afterLast((string) preg_replace('/[?#].*$/', '', trim($link)), '/');
-
+        $jwt = Str::afterLast(Str::before(Str::before(trim($link), '?'), '#'), '/');
         $token = null;
+        $signed = false;
 
-        try {
-            $token = (new Parser(new JoseEncoder))->parse($jwt);
-            $key = InMemory::base64Encoded((string) config('extensions.signed_urls.public_key'));
-            $signed = $token instanceof UnencryptedToken && (new Validator)->validate($token, new SignedWith(new Eddsa, $key));
-        } catch (Throwable) {
-            $signed = false;
+        if ($jwt !== '') {
+            try {
+                $token = (new Parser(new JoseEncoder))->parse($jwt);
+                $key = InMemory::base64Encoded(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.public_key')));
+                $signed = $token instanceof UnencryptedToken && (new Validator)->validate($token, new SignedWith(new Eddsa, $key));
+            } catch (Throwable) {
+                $signed = false;
+            }
         }
 
         // Nothing in the token is trusted, or even reported back, before its signature verifies.
@@ -108,7 +111,7 @@ class ExtensionUrlDownloader
 
         $claims = $token->claims();
         throw_unless(
-            $token->hasBeenIssuedBy((string) config('extensions.signed_urls.issuer')) && $token->isPermittedFor((string) config('extensions.signed_urls.audience')),
+            $token->hasBeenIssuedBy(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.issuer'))) && $token->isPermittedFor(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.audience'))),
             InvalidExtensionException::class,
             'This signed URL is not an extension install URL.',
         );
@@ -119,8 +122,8 @@ class ExtensionUrlDownloader
             'This install URL has expired. Copy a new install command.',
         );
 
-        $base = $claims->get('url');
-        throw_unless(is_string($base) && $this->isUrl($base), InvalidExtensionException::class, 'This install URL does not say where to download the extension from.');
+        $base = rescue(fn (): ?string => JsonValueGuard::nullableString($claims->get('url')), report: false);
+        throw_unless($base !== null && $this->isUrl($base), InvalidExtensionException::class, 'This install URL does not say where to download the extension from.');
 
         return $base.$jwt;
     }
@@ -128,8 +131,9 @@ class ExtensionUrlDownloader
     /** Refuse a package that declares itself too large before any of it is written to disk. */
     private function assertWithinSizeLimit(ResponseInterface $response): void
     {
+        $length = filter_var($response->getHeaderLine('Content-Length'), FILTER_VALIDATE_INT);
         throw_if(
-            (int) $response->getHeaderLine('Content-Length') > self::MAX_PACKAGE_BYTES,
+            $length !== false && $length > self::MAX_PACKAGE_BYTES,
             InvalidExtensionException::class,
             'The extension package is larger than the panel accepts.',
         );
@@ -138,10 +142,9 @@ class ExtensionUrlDownloader
     /** The server explains refusals in a JSON body, which was written to the sink file. */
     private function failureMessage(string $path, int $status): string
     {
-        $body = rescue(fn (): mixed => json_decode(File::get($path), true), report: false);
-        $message = is_array($body) ? ($body['error']['message'] ?? null) : null;
+        $message = rescue(fn (): ?string => JsonValueGuard::nullableString(data_get(JsonValueGuard::decode(File::get($path)), 'error.message')), report: false);
 
-        return is_string($message)
+        return $message !== null
             ? "The download was refused: {$message}"
             : "The download was refused (HTTP {$status}).";
     }

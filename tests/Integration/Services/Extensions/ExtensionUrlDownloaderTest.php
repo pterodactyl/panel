@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Services\Extensions\ExtensionUrlDownloaderTest;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Lcobucci\JWT\Configuration;
@@ -15,6 +16,7 @@ use Pterodactyl\Services\Extensions\ExtensionUrlDownloader;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 uses(IntegrationTestCase::class);
+uses(WithFaker::class);
 
 beforeEach(function (): void {
     $this->keypair = sodium_crypto_sign_keypair();
