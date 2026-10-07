@@ -211,6 +211,17 @@ test('registered commands reach artisan only for available extensions', function
     expect(Artisan::call('probe:run'))->toBe(7);
 });
 
+test('a command that names itself with AsCommand is constructed only when it runs', function (): void {
+    extensions('probe');
+    CountingCommand::$constructed = 0;
+    provider('probe')->consoleCommands([ProbeCommand::class, CountingCommand::class]);
+
+    expect(Artisan::call('probe:run'))->toBe(7);
+    expect(CountingCommand::$constructed)->toBe(0);
+    expect(Artisan::call('probe:count'))->toBe(0);
+    expect(CountingCommand::$constructed)->toBe(1);
+});
+
 test('extension commands carry the extension id and never replace an existing command', function (): void {
     extensions('probe', 'queue');
     provider('probe')->consoleCommands([UnprefixedCommand::class, AliasedCommand::class, ProbeCommand::class]);
@@ -553,6 +564,23 @@ final class ProbeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return 7;
+    }
+}
+
+#[AsCommand(name: 'probe:count')]
+final class CountingCommand extends Command
+{
+    public static int $constructed = 0;
+
+    public function __construct()
+    {
+        self::$constructed++;
+        parent::__construct();
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return 0;
     }
 }
 

@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Console\Kernel;
 
+/**
+ * Runs what an administrator would after changing which extension code runs: route:clear,
+ * since cached routes hold the routes of the extensions enabled when they were cached, and
+ * queue:restart, so long-running workers boot with the new set.
+ */
 final readonly class ExtensionRuntimeRefresher
 {
-    public function __construct(private Application $application) {}
+    public function __construct(private Kernel $artisan) {}
 
     public function refresh(): void
     {
-        File::delete($this->application->getCachedRoutesPath());
-        Cache::forever('illuminate:queue:restart', now()->getTimestamp());
+        $this->artisan->call('route:clear');
+        $this->artisan->call('queue:restart');
     }
 }

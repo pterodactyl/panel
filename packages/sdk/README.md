@@ -430,7 +430,11 @@ booted successfully. A command's name and every alias must start with the extens
 a colon (`myext:clean-logs`) and must not already exist; a command that breaks either rule
 is left out and recorded against the extension. A scheduled task that fails, or a schedule
 callback that throws, is recorded against the extension; a callback that throws schedules
-nothing.
+nothing. As with Laravel's own commands, one that declares its name with `#[AsCommand]` is
+only constructed when it runs; any other is constructed whenever artisan starts.
+
+`php artisan about` lists every installed extension with its version and state under
+"Extensions".
 
 ### Head tags
 

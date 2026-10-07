@@ -7,6 +7,7 @@ namespace Pterodactyl\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\RateLimiter;
@@ -64,6 +65,8 @@ class ExtensionServiceProvider extends ServiceProvider
                 ->by($user instanceof User ? $user->uuid : $request->ip());
         });
 
+        AboutCommand::add('Extensions', fn (): array => $this->about());
+
         if (! config('extensions.enabled')) {
             return;
         }
@@ -85,5 +88,38 @@ class ExtensionServiceProvider extends ServiceProvider
         Exceptions::reportable(function (Throwable $throwable): void {
             $this->app->make(ExtensionFailureAttributor::class)->attribute($throwable);
         });
+    }
+
+    /**
+     * The `php artisan about` rows for extensions: each installed one with its version and
+     * state, the way Laravel packages report themselves there.
+     *
+     * @return array<string, string>
+     */
+    private function about(): array
+    {
+        if (! config('extensions.enabled')) {
+            return ['Status' => 'OFF'];
+        }
+
+        $manager = $this->app->make(ExtensionManager::class);
+        $records = $manager->records();
+        $rows = [];
+        foreach ($manager->discovered() as $manifest) {
+            $record = $records->get($manifest->id);
+            $state = match (true) {
+                $record === null => 'not registered',
+                $record->error !== null => $record->enabled ? 'enabled, failing' : 'disabled, failing',
+                $record->enabled => 'enabled',
+                default => 'disabled',
+            };
+            $rows[$manifest->id] = sprintf('%s (%s)', $manifest->version, $state);
+        }
+
+        foreach (array_keys($manager->discoveryErrors()) as $directory) {
+            $rows[$directory] = 'invalid manifest';
+        }
+
+        return $rows === [] ? ['Installed' => 'none'] : $rows;
     }
 }
