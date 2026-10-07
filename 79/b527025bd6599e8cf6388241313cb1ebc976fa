@@ -1,0 +1,142 @@
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 16-21,24-65,243-259
+  s_b7506fbf20f690::t_9d7220f16b4fdb 260
+app/Http/Middleware/VerifyReCaptcha.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 9,15,40,42,44-45,58-83
+  s_b7506fbf20f690::t_c06a7b1830ce08 84-85
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 9-12,54-59,61-67
+app/Http/Requests/Api/Client/Servers/Files/RenameFileRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 28,31-32
+app/Http/Requests/Api/Client/Servers/Files/GetFileContentsRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 29
+app/Models/Mount.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 15,68-90
+  s_b7506fbf20f690::t_ab174641727216 91
+resources/scripts/api/generated/index.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 4
+  s_b7506fbf20f690::t_d5d442189f4e77 5
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 38-45
+app/Actions/Files/ReadFileContents.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 18
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 438-471
+bootstrap/app.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 49
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 80-82,107,159-160
+packages/sdk/manifest.schema.json
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 46-61
+app/Http/Requests/Api/Client/Servers/Files/PullFileRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 30-32
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 44-45,55-56,108-123,261-262,303-304
+config/extensions.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 36-42
+app/Http/Requests/Api/Client/Servers/Files/CreateFolderRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 27-28
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 370-374
+app/Http/Middleware/SetSecurityHeaders.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 27
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 950-953,962-978
+app/Http/Requests/Api/Client/Servers/Files/CompressFilesRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 27,29
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 35,95-119,123,127
+resources/scripts/api/generated/sdk.gen.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 6,99-110
+  s_b7506fbf20f690::t_7150f6d2763f32 2226
+resources/scripts/router/renderedRoute.spec.tsx
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 33-34,37-45,48,80-85
+  s_b7506fbf20f690::t_fe71cf8e8aa750 86
+app/Http/Requests/Api/Client/Servers/Files/ListFilesRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 28
+app/Http/Requests/Api/Client/Servers/Files/ChmodFilesRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 24,26-27
+resources/scripts/router/renderedRoute.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 15,17-21
+app/Services/Extensions/ExtensionIconCatalog.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 20,26
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 8-9,256-273
+  s_b7506fbf20f690::t_2c5f939671bbd8 274-275
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 37-41
+app/Http/Requests/Api/Client/Servers/Files/DeleteFileRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 24,26
+app/Listeners/RevocationListener.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 10-11,24-40
+  s_b7506fbf20f690::t_2459e02009b50b 41
+tests/Unit/Services/Extensions/ExtensionToolingTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 43,101-144
+  s_b7506fbf20f690::t_8ecbea54ac40e7 145
+routes/api-admin.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 84
+tests/Integration/Http/ReferrerPolicyTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 1-34
+app/Http/Requests/Api/Client/Servers/Files/WriteFileContentRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 34
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 38,292-295,297,300,302-303,307-359
+  s_b7506fbf20f690::t_b9bab0e1d64890 360
+tests/Unit/Actions/Files/ReadFilesTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 64-77
+app/Actions/Backups/InitiateBackup.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 113
+app/Console/Commands/Extensions/InstallCommand.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 10,15,19,24,26-27,29-38,43-46,61
+resources/scripts/components/admin/extensions/ExtensionsContainer.spec.tsx
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 4,9-10,140-184
+  s_b7506fbf20f690::t_ab033a16ced46a 185
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 116-119
+tests/Integration/Services/Extensions/ExtensionUrlDownloaderTest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 1-135
+resources/scripts/api/generated/types.gen.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 3613-3614,3638-3639,3658-3672,3702-3703,3723-3724,3948-3949,5440-5476
+  s_b7506fbf20f690::t_d906943a03ccdb 5477
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 9-11,52,55-60
+app/Rules/NotInPathHierarchy.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 1-37
+app/Services/Extensions/ExtensionManifest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 29-30,105,137,186-194
+  s_b7506fbf20f690::t_d9c2f6687dd427 195
+app/Services/Extensions/ExtensionUrlDownloader.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 1-151
+phpstan.neon
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 117
+config/filesystems.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 36
+app/Validation/MountRules.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 9,22-28,30-44
+packages/sdk/README.md
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 226-237
+app/Http/Requests/Api/Client/Servers/Files/CopyFileRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 24
+app/Http/Requests/Api/Client/Servers/Files/DecompressFilesRequest.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 30-31
+app/Console/Commands/Extensions/PackCommand.php
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 53-57
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_b7506fbf20f690::t_f4e7ddc744f9cd 3363-3364,3387-3388,3405-3416,3443-3444,3463-3464,3667,4775-4807
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79b527025bd6599e8cf6388241313cb1ebc976fa",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
