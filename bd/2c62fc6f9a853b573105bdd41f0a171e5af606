@@ -1,0 +1,42 @@
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_b7506fbf20f690::t_0ed0a063c94cfb 70
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_b7506fbf20f690::t_5afc293ef5a91c 424-434
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_b7506fbf20f690::t_6a9a6e21540986 136-156
+  s_b7506fbf20f690::t_630d6982ba8187 9
+  s_b7506fbf20f690::t_67ee3bd8e02785 27-29
+  s_b7506fbf20f690::t_2bfb4a33c1b1e8 59-64,67
+app/Services/Extensions/Scaffolding/stubs/provider.stub
+  s_b7506fbf20f690::t_3a97b9cb885d3d 21
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_b7506fbf20f690::t_384896fccf261a 7
+  s_b7506fbf20f690::t_4dd00901b42858 73-94
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_b7506fbf20f690::t_ccc7083402999a 176-202
+packages/sdk/README.md
+  s_b7506fbf20f690::t_a909d6fd9ee76e 255-261
+app/Services/Extensions/ExtensionCompatibility.php
+  s_b7506fbf20f690::t_c3524416b169da 78-103
+  s_b7506fbf20f690::t_4f9bd739e8484a 181-190
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_b7506fbf20f690::t_0be823ad68da13 27
+app/Extensions/ExtensionProvider.php
+  s_b7506fbf20f690::t_ec0851ce9b415b 210-214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd2c62fc6f9a853b573105bdd41f0a171e5af606",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
