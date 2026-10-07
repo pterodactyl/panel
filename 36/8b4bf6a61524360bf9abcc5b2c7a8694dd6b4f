@@ -1,0 +1,40 @@
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_b77d6827942e8a::t_d991d987c0ce4d 121
+  s_b77d6827942e8a::t_7006fe6f09a4e4 119
+app/Services/Extensions/ExtensionJobProgress.php
+  s_b77d6827942e8a::t_8d388f933e0f37 21
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_b77d6827942e8a::t_8f62eaf6e44fae 55-68
+  s_b77d6827942e8a::t_441a67cb7543d3 329-330
+  s_b77d6827942e8a::t_6e4db4582f4d75 428
+app/Services/Extensions/ExtensionManifest.php
+  s_b77d6827942e8a::t_b4235355c305cf 23-24,27
+  s_b77d6827942e8a::t_2ad03a349736db 43
+app/Http/Requests/Base/LocaleRequest.php
+  s_b77d6827942e8a::t_ca73acf0912692 17-18,20
+tests/Unit/Http/Controllers/Base/LocaleControllerTest.php
+  s_b77d6827942e8a::t_3b882a3a79cc59 28
+  s_b77d6827942e8a::t_7dc7e320e30759 29-38
+tests/Unit/Services/Extensions/ExtensionJobProgressTest.php
+  s_b77d6827942e8a::t_2d5ea467709325 37-38
+app/Services/Extensions/ExtensionPermissionRegistry.php
+  s_b77d6827942e8a::t_b9dfdf8d7c3d2b 16,18
+tests/Unit/Services/Extensions/ExtensionPermissionRegistryTest.php
+  s_b77d6827942e8a::t_1e1e3952174c35 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "368b4bf6a61524360bf9abcc5b2c7a8694dd6b4f",
+  "prompts": {},
+  "sessions": {
+    "s_b77d6827942e8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "234d9af1-b596-4314-80d6-5cf99aefb656",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+packages/sdk/README.md
+  s_b77d6827942e8a::t_fa571859a1655c 313-316,320
+  s_b77d6827942e8a::t_8489955c3ad34d 317-319
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_b77d6827942e8a::t_435c59fe8e3d60 133-134,136
+  s_b77d6827942e8a::t_f0f99336cf5022 110-111
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_b77d6827942e8a::t_9423ac7d8f84b9 55-70,72,74,85-92
+  s_b77d6827942e8a::t_ae505756164d73 75-80,82-84
+  s_b77d6827942e8a::t_a4dd67bc2c4b72 71,73
+  s_b77d6827942e8a::t_355813e32ac482 81
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_b77d6827942e8a::t_7a50470cf6129d 9-10,15
+  s_b77d6827942e8a::t_d9f8bbe05a08df 48-72
+packages/sdk/manifest.schema.json
+  s_b77d6827942e8a::t_4ac60cd113380c 55,57
+app/Services/Extensions/ExtensionManifest.php
+  s_b77d6827942e8a::t_c1bc546dbd76ff 137-148
+  s_b77d6827942e8a::t_97ec68066fa0b0 32-41
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_b77d6827942e8a::t_15bc2cac38ed72 246-269
+  s_b77d6827942e8a::t_f87813d8f26088 232-235
+  s_b77d6827942e8a::t_db0a1395bb42b3 7,15
+  s_b77d6827942e8a::t_5d47f836633694 20-22
+  s_b77d6827942e8a::t_1361290af24a7e 245
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_b77d6827942e8a::t_16c7d874f6c1c5 121-149
+app/Services/Extensions/ExtensionCompatibility.php
+  s_b77d6827942e8a::t_209c5dd45aa05d 109-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c1b729446955b346550abe81b4136964e1046c8a",
+  "prompts": {},
+  "sessions": {
+    "s_b77d6827942e8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "234d9af1-b596-4314-80d6-5cf99aefb656",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
