@@ -67,6 +67,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
         }
 
         $this->compatibility->assertCompatible($manifest, $this->extensions->configuredEnabled());
+        $this->compatibility->assertMigrationsAreUnique($manifest, $this->extensions->discovered());
         throw_if($reason = $this->assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
     }
 

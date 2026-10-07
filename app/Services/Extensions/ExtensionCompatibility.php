@@ -75,6 +75,32 @@ final class ExtensionCompatibility
         }
     }
 
+    /**
+     * Laravel records a migration by its file name, so a migration named like one of the
+     * panel's or another installed extension's counts as already run and never runs.
+     *
+     * @param  Collection<string, ExtensionManifest>  $installed
+     */
+    public function assertMigrationsAreUnique(ExtensionManifest $manifest, Collection $installed): void
+    {
+        $names = $this->migrationNames($manifest->path('database', 'migrations'));
+        if ($names === []) {
+            return;
+        }
+
+        $owners = ['the panel' => $this->migrationNames(database_path('migrations'))];
+        foreach ($installed as $other) {
+            if ($other->id !== $manifest->id) {
+                $owners[sprintf('extension "%s"', $other->id)] = $this->migrationNames($other->path('database', 'migrations'));
+            }
+        }
+
+        foreach ($owners as $owner => $taken) {
+            $shared = array_intersect($names, $taken);
+            throw_if($shared !== [], InvalidExtensionException::class, sprintf('Extension "%s" cannot run migration "%s": %s has a migration with the same name, which Laravel would treat as already run. Rename the migration file.', $manifest->id, reset($shared), $owner));
+        }
+    }
+
     public function assertRuntimeCompatible(ExtensionManifest $manifest): void
     {
         $reason = $this->runtimeFailureReason($manifest);
@@ -150,6 +176,16 @@ final class ExtensionCompatibility
         }
 
         return null;
+    }
+
+    /**
+     * The migration names the migrator would read from a directory.
+     *
+     * @return list<string>
+     */
+    private function migrationNames(string $directory): array
+    {
+        return array_map(fn (string $file): string => basename($file, '.php'), glob($directory.DIRECTORY_SEPARATOR.'*_*.php') ?: []);
     }
 
     private function runtimeFailureReason(ExtensionManifest $manifest): ?string

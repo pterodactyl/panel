@@ -24,6 +24,7 @@ class DoctorCommand extends Command
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
             $compatibility->assertCompatible($manifest, $extensions->configuredEnabled());
+            $compatibility->assertMigrationsAreUnique($manifest, $extensions->discovered());
             throw_if($reason = $assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
             foreach ($manifest->autoload as $directory) {
                 throw_unless(is_dir($manifest->path($directory)), InvalidExtensionException::class, "Autoload directory \"{$directory}\" is missing.");

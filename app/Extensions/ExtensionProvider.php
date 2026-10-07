@@ -207,7 +207,11 @@ abstract class ExtensionProvider extends ServiceProvider
         }
     }
 
-    /** Register the extension's database/migrations directory with the migrator. */
+    /**
+     * Register the extension's database/migrations directory with the migrator. The panel
+     * already does this for every enabled extension, since enabling one runs its migrations;
+     * calling it again changes nothing.
+     */
     protected function loadExtensionMigrations(): void
     {
         $this->loadMigrationsFrom($this->extensionPath('database', 'migrations'));

@@ -173,6 +173,33 @@ test('rejects a bundled vendor autoloader whose Composer suffix the panel or an 
     }
 });
 
+test('rejects a migration named like one the panel or another installed extension has', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-migrations-'.uniqid();
+    $core = basename((string) (glob(database_path('migrations').'/*_*.php') ?: [''])[0], '.php');
+    $package = function (string $id, string ...$migrations) use ($directory): ExtensionManifest {
+        File::ensureDirectoryExists($directory.'/'.$id.'/database/migrations');
+        foreach ($migrations as $migration) {
+            File::put($directory.'/'.$id.'/database/migrations/'.$migration.'.php', '<?php');
+        }
+
+        return ExtensionManifest::fromValidatedData($directory.'/'.$id, ['id' => $id, 'name' => $id, 'version' => '1.0.0'], [], null, 'native', null);
+    };
+
+    try {
+        $compatibility = resolve(ExtensionCompatibility::class);
+        $ledger = $package('ledger', '2026_01_01_000000_create_ledger_entries_table');
+        $installed = collect(['ledger' => $ledger]);
+
+        expect(fn () => $compatibility->assertMigrationsAreUnique($package('copy', $core), $installed))->toThrow(InvalidExtensionException::class, "Extension \"copy\" cannot run migration \"{$core}\": the panel has a migration with the same name");
+        expect(fn () => $compatibility->assertMigrationsAreUnique($package('rival', '2026_01_01_000000_create_ledger_entries_table'), $installed))->toThrow(InvalidExtensionException::class, 'extension "ledger" has a migration with the same name');
+        // An upgrade keeps its own migrations, and distinct names never clash.
+        $compatibility->assertMigrationsAreUnique($ledger, $installed);
+        $compatibility->assertMigrationsAreUnique($package('audit', '2026_01_01_000000_create_audit_ledger_entries_table'), $installed);
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
 function styled(string $id, ?string $prefix): ExtensionManifest
 {
     return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0', 'ui' => array_filter(['entry' => 'dist/client.js', 'prefix' => $prefix])], [], 'dist/client.js', 'native', null);

@@ -18,8 +18,7 @@ class {{provider}} extends ExtensionProvider
         // routes/admin.php + routes/application.php at their prefixes when added.
         $this->registerApiRoutes();
 
-        // Uncomment as the extension grows:
-        // $this->loadExtensionMigrations();
+        // Uncomment as the extension grows (database/migrations runs without a call):
         // $this->loadExtensionTranslations();
         // $this->registerCommands([...]) and $this->registerSchedule(fn (Schedule $schedule) => ...)
         // $this->wrapAction(Contract::class, fn (Contract $inner): Contract => new Wrapper($inner));

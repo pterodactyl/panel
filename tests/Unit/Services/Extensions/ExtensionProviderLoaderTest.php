@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionProviderLoaderTest;
 
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\File;
 use Mockery;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
@@ -64,6 +65,28 @@ test('a bundled autoloader that shares its Composer suffix with a loaded one fai
     $repository->shouldReceive('clearErrors')->once()->with(['first']);
     try {
         (new ExtensionProviderLoader($this->app, $repository))->registerProviders($manifests);
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
+test('the migrator knows the migrations of every extension that loads', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-migrations-'.uniqid();
+    foreach (['plain', 'broken'] as $id) {
+        File::ensureDirectoryExists($directory.'/'.$id.'/database/migrations');
+        File::put($directory.'/'.$id.'/extension.json', json_encode(['id' => $id, 'name' => $id, 'version' => '1.0.0', 'provider' => $id === 'broken' ? 'Missing\\Provider' : null], JSON_THROW_ON_ERROR));
+    }
+
+    $validator = new ExtensionManifestValidator;
+    $repository = Mockery::mock(ExtensionRepository::class);
+    $repository->shouldReceive('recordFailure')->once()->with('broken', Mockery::type('string'), Mockery::type(Throwable::class), 'register');
+    $repository->shouldReceive('clearErrors')->once()->with(['plain']);
+    try {
+        (new ExtensionProviderLoader($this->app, $repository))->registerProviders(collect(['plain' => $validator->fromDirectory($directory.'/plain'), 'broken' => $validator->fromDirectory($directory.'/broken')]));
+
+        $paths = $this->app->make(Migrator::class)->paths();
+        expect($paths)->toContain($directory.'/plain'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations');
+        expect($paths)->not->toContain($directory.'/broken'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations');
     } finally {
         File::deleteDirectory($directory);
     }

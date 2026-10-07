@@ -421,6 +421,17 @@ test('migration failure leaves a new extension inactive and restores an enabled 
     expect($this->installDirectory.'/eventful')->not->toBeDirectory();
 });
 
+test('enabling refuses a migration Laravel would treat as already run', function (): void {
+    $source = writeExtension('eventful');
+    $core = basename((string) (glob(database_path('migrations').'/*_*.php') ?: [''])[0]);
+    File::ensureDirectoryExists($source.'/database/migrations');
+    File::put($source.'/database/migrations/'.$core, '<?php');
+    Artisan::shouldReceive('call')->never();
+
+    expect(fn () => $this->app->make(InstallsExtensions::class)->install($source, enable: true))->toThrow(InvalidExtensionException::class, 'the panel has a migration with the same name');
+    $this->assertDatabaseMissing('extensions', ['identifier' => 'eventful']);
+});
+
 test('completion observer failures do not undo committed upgrades', function (string $event): void {
     $source = writeExtension('eventful');
     $installer = $this->app->make(InstallsExtensions::class);

@@ -252,6 +252,13 @@ the previous package and asset pointer; partially applied database migrations ne
 recovery. Successful lifecycle changes invalidate routes and signal queue worker restarts;
 reload the page to replace already evaluated frontend code.
 
+Migrations live in `database/migrations`. The panel registers that directory with
+Laravel's migrator for every enabled extension, so `migrate:status` lists the migrations
+and `migrate:rollback` finds them; a provider does not need to call
+`loadExtensionMigrations()`. Laravel records a migration by its file name, so enabling
+refuses an extension with a migration named like one of the panel's or another installed
+extension's, and `p:extension:doctor` reports it.
+
 Backend settings support `forUser($user)` and `forServer($server)`. Mark secrets with
 `->secret()` to encrypt storage, mask admin output as `********`, and prohibit frontend
 exposure; `->field('password')` is always secret. A secret submitted empty, as its mask,
