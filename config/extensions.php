@@ -33,6 +33,13 @@ return [
     // Where enabled extensions' built frontend assets are published.
     'assets_directory' => public_path('assets/extensions'),
 
+    'signed_urls' => [
+        'enabled' => env('PTERODACTYL_EXTENSIONS_URL_INSTALLS_ENABLED', true),
+        'public_key' => 'eMHrvRiVVicU1SwUF8yeV3KXkQq6qAOZpmpilO0dg/o=',
+        'issuer' => 'Infraly, LLC',
+        'audience' => 'pterodactyl-panel',
+    ],
+
     // The filesystem disk that holds files uploaded through `file` settings. They are
     // served by the panel from /extension-files with sandboxing headers, so the disk must
     // be private: a public disk (such as `public`) is refused.
