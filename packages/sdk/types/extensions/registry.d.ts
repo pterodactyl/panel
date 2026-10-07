@@ -86,6 +86,16 @@ interface BatchedSlotRegistration extends SlotRegistration {
 export type ScreenArea = 'account' | 'server' | 'admin';
 export declare const SCREEN_PARENTS: readonly ["admin.node", "admin.server", "admin.egg", "admin.user"];
 export type ScreenParent = (typeof SCREEN_PARENTS)[number];
+/** The panel path each area and resource mounts its extension screens under. */
+export declare const SCREEN_ROOTS: {
+    readonly account: "/account";
+    readonly server: "/server/$id";
+    readonly admin: "/panel";
+    readonly 'admin.node': "/panel/nodes/$id";
+    readonly 'admin.server': "/panel/servers/$id";
+    readonly 'admin.egg': "/panel/eggs/$eggId";
+    readonly 'admin.user': "/panel/users/$id";
+};
 export type ScreenComponentProps = SlotComponentProps<RouteSlotData & {
     resource?: ExtensionResourceContext;
 }>;
@@ -206,6 +216,7 @@ export declare function registerSlotComponent(extensionId: string, name: SlotNam
 export declare function getSlotComponents(name: SlotName): readonly SlotRegistration[];
 export declare function registerExtensionTableColumn(column: ExtensionTableColumnRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[];
+export declare function findExtensionScreen(extensionId: string, id: string): ExtensionScreenRegistration | undefined;
 export declare function registerScreen(extensionId: string, id: string, component: ScreenImporter, batch: ExtensionRegistryBatch, options?: ScreenOptions): void;
 export declare function getExtensionScreens(area: ScreenArea, parent?: ScreenParent): readonly ExtensionScreenRegistration[];
 export declare function clearExtensionError(extensionId: string, context: string): void;

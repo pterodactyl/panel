@@ -294,6 +294,16 @@ interface BatchedSlotRegistration extends SlotRegistration {
 export type ScreenArea = 'account' | 'server' | 'admin';
 export const SCREEN_PARENTS = ['admin.node', 'admin.server', 'admin.egg', 'admin.user'] as const;
 export type ScreenParent = (typeof SCREEN_PARENTS)[number];
+/** The panel path each area and resource mounts its extension screens under. */
+export const SCREEN_ROOTS = {
+    account: '/account',
+    server: '/server/$id',
+    admin: '/panel',
+    'admin.node': '/panel/nodes/$id',
+    'admin.server': '/panel/servers/$id',
+    'admin.egg': '/panel/eggs/$eggId',
+    'admin.user': '/panel/users/$id',
+} as const satisfies Record<ScreenArea | ScreenParent, string>;
 export type ScreenComponentProps = SlotComponentProps<RouteSlotData & { resource?: ExtensionResourceContext }>;
 export type ScreenImporter = () => Promise<{ default: ComponentType<ScreenComponentProps> }>;
 /** Values an egg must carry: every `all` entry and, when listed, at least one `any` entry. */
@@ -697,6 +707,9 @@ export function registerExtensionTableColumn(
 export function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[] {
     return tableColumns.get(name) ?? emptyColumns;
 }
+export function findExtensionScreen(extensionId: string, id: string): ExtensionScreenRegistration | undefined {
+    return screens.find((screen) => screen.extensionId === extensionId && screen.id === id);
+}
 export function registerScreen(
     extensionId: string,
     id: string,
@@ -705,7 +718,7 @@ export function registerScreen(
     options: ScreenOptions = {}
 ): void {
     assertBatchOpen(batch);
-    const screen = screens.find((screen) => screen.extensionId === extensionId && screen.id === id);
+    const screen = findExtensionScreen(extensionId, id);
     if (!screen) throw new Error(`Undeclared screen "${id}"`);
     if (batch.screens.has(id)) throw new Error(`Duplicate implementation for screen "${id}"`);
     const { visible, badge } = options;

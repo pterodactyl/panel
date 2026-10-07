@@ -4,6 +4,7 @@ import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from '@/comp
 import { DefaultFileEditor, FileEditorContext, fileEditorParts } from '@/components/server/files/FileEditorView';
 import { DefaultFileManager, FileManagerContext, fileManagerParts } from '@/components/server/files/FileManagerView';
 import type {
+    ComponentModels,
     ComponentName,
     ReplacementProps,
     ServerCardModel,
@@ -32,6 +33,7 @@ import { Websocket } from '@/plugins/Websocket';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { registerClassPrefixes } from '@/lib/cn';
 import { ExtensionResourceProvider } from '@/extensions/resourceContext';
+import { SCREEN_ROOTS } from '@/extensions/registry';
 import type { ExtensionResourceContext } from '@/extensions/resourceContext';
 import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
@@ -177,16 +179,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
     }
     const root = createRootRoute({ component: Root });
     const authenticated = createRoute({ getParentRoute: () => root, id: 'authenticated', component: Outlet });
-    const paths = [
-        '/server/$id',
-        '/account',
-        '/panel/nodes/$id',
-        '/panel/servers/$id',
-        '/panel/eggs/$eggId',
-        '/panel/users/$id',
-        '/panel',
-    ] as const;
-    const routes = paths.map((path) => {
+    const routes = Object.values(SCREEN_ROOTS).map((path) => {
         const parent = createRoute({ getParentRoute: () => authenticated, path, component: Outlet });
         return parent.addChildren([
             createRoute({ getParentRoute: () => parent, path: '/', component: RenderContent }),
@@ -324,21 +317,15 @@ export interface ComponentTestHost<TName extends ComponentName> {
     /** Call after unmounting the Wrapper. */
     dispose(): void;
 }
-interface ComponentTestModels {
-    'dashboard.serverCard': ServerCardModel;
-    'server.files.details': FileDetailsModel;
-    'server.files.editor': FileEditorModel;
-    'server.files.manager': FileManagerModel;
-}
 const noDispose = () => {};
 /** Test presentation against the native default and parts without issuing core queries. */
 export function createComponentTestHost<TName extends ComponentName>(
     name: TName,
-    options: { model: ComponentTestModels[TName]; extensionId?: string; prefix?: string }
+    options: { model: ComponentModels[TName]; extensionId?: string; prefix?: string }
 ): ComponentTestHost<TName>;
 export function createComponentTestHost(
     name: ComponentName,
-    options: { model: ComponentTestModels[ComponentName]; extensionId?: string; prefix?: string }
+    options: { model: ComponentModels[ComponentName]; extensionId?: string; prefix?: string }
 ): { [TName in ComponentName]: ComponentTestHost<TName> }[ComponentName] {
     const extensionId = options.extensionId ?? 'test-extension';
     registerClassPrefixes([options.prefix]);

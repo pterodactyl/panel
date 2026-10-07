@@ -1,6 +1,6 @@
 import { useCallback, type ComponentProps, type ReactElement } from 'react';
 import { Link, useNavigate, useLocation, useParams, useSearch } from '@tanstack/react-router';
-import { getExtensionScreens, resolveScreenPath, type RouteSlotData } from '@/extensions/registry';
+import { findExtensionScreen, resolveScreenPath, SCREEN_ROOTS, type RouteSlotData } from '@/extensions/registry';
 import { routeParamStrings } from '@/router/params';
 import { parseRedirectSearch } from '@/router/redirect';
 import type { ExtensionConfigValue } from './index';
@@ -59,22 +59,9 @@ export function resolvePanelDestination(destination: PanelDestination): Resolved
     if ('to' in destination) {
         path = destination.to;
     } else {
-        const screen = [
-            ...(['account', 'server', 'admin'] as const).flatMap((area) => getExtensionScreens(area)),
-            ...(['admin.node', 'admin.server', 'admin.egg', 'admin.user'] as const).flatMap((parent) =>
-                getExtensionScreens('admin', parent)
-            ),
-        ].find((screen) => screen.extensionId === destination.extension && screen.id === destination.screen);
+        const screen = findExtensionScreen(destination.extension, destination.screen);
         if (!screen) throw new Error(`Unknown extension screen "${destination.extension}:${destination.screen}".`);
-        const root = screen.parent
-            ? {
-                  'admin.node': '/panel/nodes/$id',
-                  'admin.server': '/panel/servers/$id',
-                  'admin.egg': '/panel/eggs/$eggId',
-                  'admin.user': '/panel/users/$id',
-              }[screen.parent]
-            : { account: '/account', server: '/server/$id', admin: '/panel' }[screen.area];
-        path = `${root}/${screen.path}`;
+        path = `${SCREEN_ROOTS[screen.parent ?? screen.area]}/${screen.path}`;
     }
     const pathname = resolveScreenPath(path, destination.params);
     return { pathname, search: destination.search, hash: destination.hash, replace: destination.replace };
