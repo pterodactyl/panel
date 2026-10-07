@@ -1,10 +1,21 @@
-import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import type { AdminEgg, EggConfigurationBody, EggVariableBody } from '@/api/admin/eggs/queries';
 import { isObject } from '@/lib/objects';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import type { EggFormValues } from '@/components/admin/eggs/formValues';
+import { type ExtensionFormValues, initialExtensionValues } from '@/extensions/forms';
 
-export type { EggFormValues };
+export interface EggFormValues {
+    name: string;
+    description: string;
+    dockerImages: string;
+    startup: string;
+    featuresText: string;
+    forceOutgoingIp: boolean;
+    configFrom: number;
+    configStop: string;
+    configStartup: string;
+    configLogs: string;
+    configFiles: string;
+    extensions: ExtensionFormValues;
+}
 
 export interface EggVariableValues {
     name: string;
@@ -55,7 +66,7 @@ const prettyJson = <T>(value: T): string => {
     }
 };
 
-export const eggToFormValues = (egg: AdminEgg, extensions: LoadedExtensionFieldValues = {}): EggFormValues => ({
+export const eggToFormValues = (egg: AdminEgg): EggFormValues => ({
     name: egg.attributes.name,
     description: egg.attributes.description ?? '',
     dockerImages: dockerImagesToString(egg.attributes.docker_images),
@@ -67,7 +78,7 @@ export const eggToFormValues = (egg: AdminEgg, extensions: LoadedExtensionFieldV
     configStartup: prettyJson(egg.attributes.config.startup),
     configLogs: prettyJson(egg.attributes.config.logs),
     configFiles: prettyJson(egg.attributes.config.files),
-    extensions,
+    extensions: initialExtensionValues(),
 });
 
 export const emptyEggFormValues = (): EggFormValues => ({
@@ -82,7 +93,7 @@ export const emptyEggFormValues = (): EggFormValues => ({
     configStartup: '',
     configLogs: '',
     configFiles: '',
-    extensions: newExtensionFieldValues('admin.egg'),
+    extensions: initialExtensionValues(),
 });
 
 export const toApiValues = (

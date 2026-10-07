@@ -100,6 +100,7 @@ class ServerTransformer extends BaseAdminTransformer
             'relationships' => [],
             $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
             $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),
+            ...$this->extensionFields($server),
         ];
         JsonValueGuard::assertPayload($payload);
 

@@ -10,10 +10,14 @@ use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Throwable;
 
 final readonly class CreateUser implements CreatesUsers
 {
+    public function __construct(private ExtensionFields $extensions) {}
+
     /**
      * Create a new user on the system. When no password is provided a random one is
      * set and a password reset token is generated for the account welcome email.
@@ -27,13 +31,18 @@ final readonly class CreateUser implements CreatesUsers
      */
     public function create(array $data): User
     {
+        // SAFETY: requests put the validated values of each extension under `extensions`.
+        $extensions = ExtensionSettingValueGuard::fieldInput($data['extensions'] ?? []);
+        unset($data['extensions']);
+
         $generateResetToken = empty($data['password']);
         if ($generateResetToken) {
             $data['password'] = Str::random(30);
         }
 
-        [$user, $token] = DB::transaction(function () use ($data, $generateResetToken): array {
+        [$user, $token] = DB::transaction(function () use ($data, $generateResetToken, $extensions): array {
             $user = User::query()->create($data);
+            $this->extensions->save($user, $extensions);
 
             return [$user->refresh(), $generateResetToken ? Password::createToken($user) : null];
         });

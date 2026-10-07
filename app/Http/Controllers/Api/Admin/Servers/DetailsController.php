@@ -15,7 +15,6 @@ use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\UpdateServerDetailsRequest;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -30,12 +29,12 @@ class DetailsController extends AdminApiController
     #[Endpoint('Update server details', 'Updates a server name, owner, description, and external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ExtensionFieldsParam]
-    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, ExtensionFormFields $fields, Server $server): array
+    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
     {
-        $updated = $fields->persist('admin.server', $request->extensionFields(), fn (): Server => $details->update(
+        $updated = $details->update(
             $server,
             $request->payload()
-        ));
+        );
 
         Activity::event('admin:server.details')
             ->subject($updated)
@@ -43,7 +42,7 @@ class DetailsController extends AdminApiController
             ->log();
 
         return Fractal::item($updated)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 }

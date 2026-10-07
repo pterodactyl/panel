@@ -13,6 +13,8 @@ import {
     useUpdateAdminLocation,
 } from '@/api/admin/locations/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -26,14 +28,11 @@ import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
 import { cardTitleClass } from '@/components/ui/typography';
-import Slot from '@/extensions/Slot';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
-const locationToValues = (location: AdminLocation, extensions: LocationValues['extensions']): LocationValues => ({
+const locationToValues = (location: AdminLocation): LocationValues => ({
     short: location.attributes.short,
     long: location.attributes.long ?? '',
-    extensions,
+    extensions: initialExtensionValues(),
 });
 
 type LocationNode = Extract<
@@ -79,15 +78,7 @@ const locationNodeColumns = [
     )),
 ] satisfies ColumnDef<LocationNode>[];
 
-function LocationDetailForm({
-    location,
-    extensions,
-    hidden,
-}: {
-    location: AdminLocation;
-    extensions: LoadedExtensionFieldValues;
-    hidden: readonly string[];
-}) {
+function LocationDetailForm({ location }: { location: AdminLocation }) {
     const { attributes } = location;
     const nodes = relationshipData(attributes.relationships?.nodes);
     const nodeTable = useReactTable({
@@ -101,11 +92,11 @@ function LocationDetailForm({
     const deleteLocation = useDeleteAdminLocation();
 
     const form = useAppForm({
-        defaultValues: locationToValues(location, extensions),
+        defaultValues: locationToValues(location),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateLocation.mutateAsync(updateAdminLocationInput(attributes.id, value));
-                form.reset(locationToValues(updated, value.extensions));
+                form.reset(locationToValues(updated));
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -165,11 +156,17 @@ function LocationDetailForm({
                             )}
                         </form.AppField>
                     </div>
-                    <Slot
-                        name={'panel.locations.detail.form'}
-                        data={{ kind: 'admin.location', mode: 'edit', resource: location, form }}
-                        hidden={hidden}
-                    />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields
+                                form={'admin.location'}
+                                mode={'edit'}
+                                resource={location}
+                                error={updateLocation.error}
+                                className={'mt-6'}
+                            />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end mt-6'}>
                         <Dialog.ConfirmTrigger
                             title={'Delete location'}
@@ -227,13 +224,12 @@ export default function LocationDetailContainer() {
     const locationId = loadedLocation.attributes.id;
 
     const { data: location = loadedLocation, error } = useAdminLocation(locationId);
-    const extensions = useExtensionFormFields('admin.location', locationId);
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} />;
     }
 
-    if (!location || !extensions.ready) {
+    if (!location) {
         return (
             <AdminContentBlock title={'Admin · Location'} heading={'Location'}>
                 <Spinner size={'large'} centered />
@@ -258,8 +254,6 @@ export default function LocationDetailContainer() {
             <LocationDetailForm
                 key={`${location.attributes.id}:${location.attributes.updated_at}`}
                 location={location}
-                extensions={extensions.values}
-                hidden={extensions.hidden}
             />
         </AdminContentBlock>
     );

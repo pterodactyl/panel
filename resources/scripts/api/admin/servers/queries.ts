@@ -449,7 +449,6 @@ export const useUpdateAdminServerDetails = () => {
                 queryClient.invalidateQueries({
                     queryKey: adminServerDetailKey(variables.path.server_admin_identifier),
                 }),
-                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             toast.success('Server details updated', { description: `${server.attributes.name} has been updated.` });
         },

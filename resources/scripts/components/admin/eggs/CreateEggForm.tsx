@@ -5,13 +5,13 @@ import { useAppForm, Form } from '@/components/form';
 import { httpErrorToHuman } from '@/api/http';
 import { createAdminEggInput, useAdminEggs, useCreateAdminEgg } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import Icon from '@/components/elements/Icon';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import EggConfigurationFields from '@/components/admin/eggs/EggConfigurationForm';
 import { emptyEggFormValues, toApiValues } from '@/components/admin/eggs/helpers';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
-import Slot from '@/extensions/Slot';
 
 export default function CreateEggForm() {
     const navigate = useNavigate();
@@ -74,7 +74,17 @@ export default function CreateEggForm() {
                         filesRef={filesEditor}
                         startupRef={startupEditor}
                     />
-                    <Slot name={'panel.eggs.create.form'} data={{ kind: 'admin.egg', mode: 'create', form }} />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields
+                                form={'admin.egg'}
+                                mode={'create'}
+                                error={createEgg.error}
+                                boxed
+                                className={'mt-4'}
+                            />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end mt-6'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Egg</form.SubmitButton>

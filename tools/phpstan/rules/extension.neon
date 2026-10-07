@@ -46,7 +46,6 @@ parameters:
             - app/Data/**
             - app/Extensions/Scribe/**
             - app/Services/Extensions/ExtensionManifestValidator.php
-            - app/Services/Extensions/ExtensionFieldValueGuard.php
             - app/Services/Extensions/ExtensionSettingValueGuard.php
             - app/Services/Extensions/ExtensionSettings.php
             - app/Services/Extensions/Scaffolding/ExtensionScaffolder.php

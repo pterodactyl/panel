@@ -1,10 +1,19 @@
-import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import type { AdminNode, NodeValues } from '@/api/admin/nodes/queries';
-import { requiredNumber, submittedNumber } from '@/components/admin/numberInput';
-import type { NodeFormValues, NodeSettingsValues } from '@/components/admin/nodes/formValues';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
+import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { initialExtensionValues } from '@/extensions/forms';
 
-export type { NodeFormValues, NodeSettingsValues };
+export interface NodeFormValues extends Omit<
+    NodeValues,
+    'memory' | 'memoryOverallocate' | 'disk' | 'diskOverallocate' | 'uploadSize' | 'daemonListen' | 'daemonSftp'
+> {
+    memory: NumberInputValue;
+    memoryOverallocate: NumberInputValue;
+    disk: NumberInputValue;
+    diskOverallocate: NumberInputValue;
+    uploadSize: NumberInputValue;
+    daemonListen: NumberInputValue;
+    daemonSftp: NumberInputValue;
+}
 
 export const newNodeFormValues = (): NodeFormValues => ({
     name: '',
@@ -23,10 +32,10 @@ export const newNodeFormValues = (): NodeFormValues => ({
     daemonListen: 8080,
     daemonSftp: 2022,
     daemonBase: '/var/lib/pterodactyl/volumes',
-    extensions: newExtensionFieldValues('admin.node'),
+    extensions: initialExtensionValues(),
 });
 
-export const nodeFormValues = (node: AdminNode, extensions: LoadedExtensionFieldValues = {}): NodeFormValues => ({
+export const nodeFormValues = (node: AdminNode): NodeFormValues => ({
     name: node.attributes.name,
     description: node.attributes.description ?? '',
     locationId: node.attributes.location_id,
@@ -43,7 +52,7 @@ export const nodeFormValues = (node: AdminNode, extensions: LoadedExtensionField
     daemonListen: node.attributes.daemon_listen,
     daemonSftp: node.attributes.daemon_sftp,
     daemonBase: node.attributes.daemon_base,
-    extensions,
+    extensions: initialExtensionValues(),
 });
 
 export const nodeValuesFromForm = ({

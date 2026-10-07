@@ -4,20 +4,14 @@ import type { Server } from "../api/server/types.js";
 import type { ExtensionConfig } from "../sdk/index.js";
 import type { AppForm } from "../components/form/index.js";
 import type { UserValues } from "../api/admin/users/types.js";
-import type { NodeFormValues, NodeSettingsValues } from "../components/admin/nodes/formValues.js";
-import type { CreateServerFormValues, ServerDetailsValues } from "../components/admin/servers/formValues.js";
-import type { EggFormValues } from "../components/admin/eggs/formValues.js";
-import type { LocationValues } from "../api/admin/locations/types.js";
-import type { MountValues } from "../api/admin/mounts/types.js";
-import type { DatabaseHostFormValues } from "../components/admin/databases/formValues.js";
 import type { UserData } from "../api/account/types.js";
-import type { AdminDatabaseHostResource, AdminEggResource, AdminLocationResource, AdminMountResource, AdminNodeResource, AdminServerResource, AdminUserResource, ClientGetStartupConfigurationResponse, ClientFileObjectResource as FileObject } from "../api/extensionTypes.js";
-import type { ExtensionFormName } from "./formFields.js";
+import type { ClientGetStartupConfigurationResponse, ClientFileObjectResource as FileObject } from "../api/extensionTypes.js";
 import type { ExtensionResourceContext } from "./resourceContext.js";
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from "./tableTypes.js";
+import { type ExtensionFormName, type FormExtensionRegistration } from "./formTypes.js";
 import { type ComponentName, type ComponentReplacement } from "./componentTypes.js";
 /** Every anchor a core <Slot/> renders; registering an unknown name fails at load time. */
-export declare const SLOT_NAMES: readonly ["nav.items.before", "nav.items.after", "auth.login.before", "auth.login.after", "auth.login.form.after", "auth.checkpoint.before", "auth.checkpoint.after", "auth.password.before", "auth.password.after", "auth.passwordReset.before", "auth.passwordReset.after", "dashboard.before", "dashboard.after", "dashboard.serverRow.before", "dashboard.serverRow.after", "dashboard.serverRow.name.after", "dashboard.serverRow.metrics.after", "account.navigation.before", "account.navigation.after", "account.overview.before", "account.overview.after", "account.api.before", "account.api.after", "account.ssh.before", "account.ssh.after", "account.activity.before", "account.activity.after", "server.navigation.before", "server.navigation.after", "server.console.before", "server.console.power.before", "server.console.power.after", "server.console.after", "server.files.before", "server.files.after", "server.files.toolbar", "server.files.rowActions", "server.files.selectionActions", "server.files.editor.before", "server.files.editor.after", "server.databases.before", "server.databases.after", "server.schedules.before", "server.schedules.after", "server.schedules.detail.before", "server.schedules.detail.after", "server.users.before", "server.users.after", "server.users.create.before", "server.users.create.after", "server.users.permissions.before", "server.backups.before", "server.backups.after", "server.network.before", "server.network.after", "server.startup.before", "server.startup.after", "server.startup.form", "server.settings.before", "server.settings.after", "server.activity.before", "server.activity.after", "panel.navigation.before", "panel.navigation.after", "panel.overview.before", "panel.overview.after", "panel.users.before", "panel.users.after", "panel.users.create.before", "panel.users.create.after", "panel.users.create.form", "panel.users.detail.before", "panel.users.detail.after", "panel.locations.before", "panel.locations.after", "panel.locations.create.form", "panel.locations.detail.before", "panel.locations.detail.after", "panel.locations.detail.form", "panel.nodes.before", "panel.nodes.after", "panel.nodes.create.before", "panel.nodes.create.after", "panel.nodes.create.form", "panel.nodes.detail.before", "panel.nodes.detail.after", "panel.nodes.detail.actions", "panel.nodes.detail.about.before", "panel.nodes.detail.about.after", "panel.nodes.detail.settings.before", "panel.nodes.detail.settings.after", "panel.nodes.detail.settings.form", "panel.nodes.detail.configuration.before", "panel.nodes.detail.configuration.after", "panel.nodes.detail.allocations.before", "panel.nodes.detail.allocations.after", "panel.nodes.detail.servers.before", "panel.nodes.detail.servers.after", "panel.servers.before", "panel.servers.after", "panel.servers.create.before", "panel.servers.create.after", "panel.servers.create.form", "panel.servers.detail.before", "panel.servers.detail.after", "panel.servers.detail.actions", "panel.servers.detail.about.before", "panel.servers.detail.about.after", "panel.servers.detail.details.before", "panel.servers.detail.details.after", "panel.servers.detail.details.form", "panel.servers.detail.build.before", "panel.servers.detail.build.after", "panel.servers.detail.startup.before", "panel.servers.detail.startup.after", "panel.servers.detail.databases.before", "panel.servers.detail.databases.after", "panel.servers.detail.mounts.before", "panel.servers.detail.mounts.after", "panel.servers.detail.manage.before", "panel.servers.detail.manage.after", "panel.servers.detail.delete.before", "panel.servers.detail.delete.after", "panel.databaseHosts.before", "panel.databaseHosts.after", "panel.databaseHosts.create.before", "panel.databaseHosts.create.after", "panel.databaseHosts.create.form", "panel.databaseHosts.detail.before", "panel.databaseHosts.detail.after", "panel.databaseHosts.detail.form", "panel.mounts.before", "panel.mounts.after", "panel.mounts.create.before", "panel.mounts.create.after", "panel.mounts.create.form", "panel.mounts.detail.before", "panel.mounts.detail.after", "panel.mounts.detail.form", "panel.eggs.before", "panel.eggs.after", "panel.eggs.create.before", "panel.eggs.create.after", "panel.eggs.create.form", "panel.eggs.detail.before", "panel.eggs.detail.after", "panel.eggs.detail.actions", "panel.users.detail.actions", "panel.users.detail.form", "panel.eggs.detail.configuration.before", "panel.eggs.detail.configuration.after", "panel.eggs.detail.configuration.form", "panel.eggs.detail.tags.before", "panel.eggs.detail.tags.after", "panel.eggs.detail.variables.before", "panel.eggs.detail.variables.after", "panel.eggs.detail.script.before", "panel.eggs.detail.script.after", "panel.tags.before", "panel.tags.after", "panel.activity.before", "panel.activity.after", "panel.settings.before", "panel.settings.after", "panel.extensions.before", "panel.extensions.after", "panel.apiKeys.before", "panel.apiKeys.after"];
+export declare const SLOT_NAMES: readonly ["nav.items.before", "nav.items.after", "auth.login.before", "auth.login.after", "auth.login.form.after", "auth.checkpoint.before", "auth.checkpoint.after", "auth.password.before", "auth.password.after", "auth.passwordReset.before", "auth.passwordReset.after", "dashboard.before", "dashboard.after", "dashboard.serverRow.before", "dashboard.serverRow.after", "dashboard.serverRow.name.after", "dashboard.serverRow.metrics.after", "account.navigation.before", "account.navigation.after", "account.overview.before", "account.overview.after", "account.api.before", "account.api.after", "account.ssh.before", "account.ssh.after", "account.activity.before", "account.activity.after", "server.navigation.before", "server.navigation.after", "server.console.before", "server.console.power.before", "server.console.power.after", "server.console.after", "server.files.before", "server.files.after", "server.files.toolbar", "server.files.rowActions", "server.files.selectionActions", "server.files.editor.before", "server.files.editor.after", "server.databases.before", "server.databases.after", "server.schedules.before", "server.schedules.after", "server.schedules.detail.before", "server.schedules.detail.after", "server.users.before", "server.users.after", "server.users.create.before", "server.users.create.after", "server.users.permissions.before", "server.backups.before", "server.backups.after", "server.network.before", "server.network.after", "server.startup.before", "server.startup.after", "server.startup.form", "server.settings.before", "server.settings.after", "server.activity.before", "server.activity.after", "panel.navigation.before", "panel.navigation.after", "panel.overview.before", "panel.overview.after", "panel.users.before", "panel.users.after", "panel.users.create.before", "panel.users.create.after", "panel.users.detail.before", "panel.users.detail.after", "panel.locations.before", "panel.locations.after", "panel.locations.detail.before", "panel.locations.detail.after", "panel.nodes.before", "panel.nodes.after", "panel.nodes.create.before", "panel.nodes.create.after", "panel.nodes.detail.before", "panel.nodes.detail.after", "panel.nodes.detail.actions", "panel.nodes.detail.about.before", "panel.nodes.detail.about.after", "panel.nodes.detail.settings.before", "panel.nodes.detail.settings.after", "panel.nodes.detail.configuration.before", "panel.nodes.detail.configuration.after", "panel.nodes.detail.allocations.before", "panel.nodes.detail.allocations.after", "panel.nodes.detail.servers.before", "panel.nodes.detail.servers.after", "panel.servers.before", "panel.servers.after", "panel.servers.create.before", "panel.servers.create.after", "panel.servers.detail.before", "panel.servers.detail.after", "panel.servers.detail.actions", "panel.servers.detail.about.before", "panel.servers.detail.about.after", "panel.servers.detail.details.before", "panel.servers.detail.details.after", "panel.servers.detail.build.before", "panel.servers.detail.build.after", "panel.servers.detail.startup.before", "panel.servers.detail.startup.after", "panel.servers.detail.databases.before", "panel.servers.detail.databases.after", "panel.servers.detail.mounts.before", "panel.servers.detail.mounts.after", "panel.servers.detail.manage.before", "panel.servers.detail.manage.after", "panel.servers.detail.delete.before", "panel.servers.detail.delete.after", "panel.databaseHosts.before", "panel.databaseHosts.after", "panel.databaseHosts.create.before", "panel.databaseHosts.create.after", "panel.databaseHosts.detail.before", "panel.databaseHosts.detail.after", "panel.mounts.before", "panel.mounts.after", "panel.mounts.create.before", "panel.mounts.create.after", "panel.mounts.detail.before", "panel.mounts.detail.after", "panel.eggs.before", "panel.eggs.after", "panel.eggs.create.before", "panel.eggs.create.after", "panel.eggs.detail.before", "panel.eggs.detail.after", "panel.eggs.detail.actions", "panel.users.detail.actions", "panel.users.detail.form", "panel.eggs.detail.configuration.before", "panel.eggs.detail.configuration.after", "panel.eggs.detail.tags.before", "panel.eggs.detail.tags.after", "panel.eggs.detail.variables.before", "panel.eggs.detail.variables.after", "panel.eggs.detail.script.before", "panel.eggs.detail.script.after", "panel.tags.before", "panel.tags.after", "panel.activity.before", "panel.activity.after", "panel.settings.before", "panel.settings.after", "panel.extensions.before", "panel.extensions.after", "panel.apiKeys.before", "panel.apiKeys.after"];
 export type SlotName = (typeof SLOT_NAMES)[number];
 export interface SubuserPermissionsSlotData {
     mode: 'create' | 'edit';
@@ -51,44 +45,11 @@ export interface StartupFormSlotData {
     setDockerImage(image: string): Promise<void>;
     refresh(): Promise<void>;
 }
-export interface ExtensionFormResources {
-    'admin.user': AdminUserResource;
-    'admin.node': AdminNodeResource;
-    'admin.server': AdminServerResource;
-    'admin.egg': AdminEggResource;
-    'admin.location': AdminLocationResource;
-    'admin.mount': AdminMountResource;
-    'admin.databaseHost': AdminDatabaseHostResource;
-}
-export interface CreateFormSlotData<TForm extends ExtensionFormName, TValues> {
-    kind: TForm;
-    mode: 'create';
-    form: AppForm<TValues>;
-}
-export interface EditFormSlotData<TForm extends ExtensionFormName, TValues> {
-    kind: TForm;
-    mode: 'edit';
-    resource: ExtensionFormResources[TForm];
-    form: AppForm<TValues>;
-}
-export type AdminUserFormSlotData = EditFormSlotData<'admin.user', UserValues>;
-export interface FormSlotDataMap {
-    'panel.users.create.form': CreateFormSlotData<'admin.user', UserValues>;
-    'panel.users.detail.form': AdminUserFormSlotData;
-    'panel.nodes.create.form': CreateFormSlotData<'admin.node', NodeFormValues>;
-    'panel.nodes.detail.settings.form': EditFormSlotData<'admin.node', NodeSettingsValues>;
-    'panel.servers.create.form': CreateFormSlotData<'admin.server', CreateServerFormValues>;
-    'panel.servers.detail.details.form': EditFormSlotData<'admin.server', ServerDetailsValues>;
-    'panel.eggs.create.form': CreateFormSlotData<'admin.egg', EggFormValues>;
-    'panel.eggs.detail.configuration.form': EditFormSlotData<'admin.egg', EggFormValues>;
-    'panel.locations.create.form': CreateFormSlotData<'admin.location', LocationValues>;
-    'panel.locations.detail.form': EditFormSlotData<'admin.location', LocationValues>;
-    'panel.mounts.create.form': CreateFormSlotData<'admin.mount', MountValues>;
-    'panel.mounts.detail.form': EditFormSlotData<'admin.mount', MountValues>;
-    'panel.databaseHosts.create.form': CreateFormSlotData<'admin.databaseHost', DatabaseHostFormValues>;
-    'panel.databaseHosts.detail.form': EditFormSlotData<'admin.databaseHost', DatabaseHostFormValues>;
-}
-export type FormSlotName = keyof FormSlotDataMap;
+export type AdminUserFormSlotData = Extract<ExtensionResourceContext, {
+    kind: 'admin.user';
+}> & {
+    form: AppForm<UserValues>;
+};
 type FileManagerSlotName = 'server.files.toolbar' | 'server.files.selectionActions';
 type ResourceActionSlotName = 'panel.nodes.detail.actions' | 'panel.servers.detail.actions' | 'panel.eggs.detail.actions' | 'panel.users.detail.actions';
 type ResourceActionSlotData<TName extends ResourceActionSlotName> = Extract<ExtensionResourceContext, {
@@ -101,14 +62,12 @@ export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? 
 };
 type ServerSlotName = `dashboard.serverRow.${string}` | `server.navigation.${'before' | 'after'}` | `server.console.${string}`;
 type DataLessSlotName = `nav.items.${'before' | 'after'}` | `dashboard.${'before' | 'after'}` | `account.navigation.${'before' | 'after'}` | `account.overview.${'before' | 'after'}` | `server.files.${'before' | 'after'}` | `panel.navigation.${'before' | 'after'}` | `panel.overview.${'before' | 'after'}`;
-export type SlotData<TName extends SlotName> = TName extends FormSlotName ? FormSlotDataMap[TName] : TName extends 'server.users.permissions.before' ? SubuserPermissionsSlotData : TName extends 'server.startup.form' ? StartupFormSlotData : TName extends FileManagerSlotName ? FileManagerSlotData : TName extends 'server.files.rowActions' ? FileRowSlotData : TName extends ResourceActionSlotName ? ResourceActionSlotData<TName> : TName extends ServerSlotName ? Server : TName extends DataLessSlotName ? undefined : RouteSlotData;
-export type RouteSlotName = Exclude<SlotName, ServerSlotName | DataLessSlotName | 'server.users.permissions.before' | FileManagerSlotName | 'server.files.rowActions' | 'server.startup.form' | FormSlotName | ResourceActionSlotName>;
+export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail.form' ? AdminUserFormSlotData : TName extends 'server.users.permissions.before' ? SubuserPermissionsSlotData : TName extends 'server.startup.form' ? StartupFormSlotData : TName extends FileManagerSlotName ? FileManagerSlotData : TName extends 'server.files.rowActions' ? FileRowSlotData : TName extends ResourceActionSlotName ? ResourceActionSlotData<TName> : TName extends ServerSlotName ? Server : TName extends DataLessSlotName ? undefined : RouteSlotData;
+export type RouteSlotName = Exclude<SlotName, ServerSlotName | DataLessSlotName | 'server.users.permissions.before' | FileManagerSlotName | 'server.files.rowActions' | 'server.startup.form' | 'panel.users.detail.form' | ResourceActionSlotName>;
 export type SlotProps = {
-    [TName in FormSlotName]: {
-        name: TName;
-        data: FormSlotDataMap[TName];
-    };
-}[FormSlotName] | {
+    name: 'panel.users.detail.form';
+    data: AdminUserFormSlotData;
+} | {
     name: Extract<SlotName, ServerSlotName>;
     data: Server;
 } | {
@@ -215,7 +174,6 @@ export interface SiteExtensionEntry {
     config?: ExtensionConfig;
     screens?: ExtensionScreenDefinition[];
     components?: ComponentName[];
-    forms?: ExtensionFormName[];
     development?: {
         url: string;
         version: string;
@@ -227,6 +185,7 @@ export interface ExtensionRegistryBatch {
     screens: Map<string, ScreenImporter>;
     screenOptions: Map<string, ScreenOptions>;
     columns: ExtensionTableColumnRegistration[];
+    forms: FormExtensionRegistration[];
     components: Map<ComponentName, ComponentReplacement<ComponentName>>;
 }
 export interface ExtensionRuntimeState {
@@ -262,6 +221,8 @@ export declare function registerSlotComponent(extensionId: string, name: SlotNam
 export declare function getSlotComponents(name: SlotName): readonly SlotRegistration[];
 export declare function registerExtensionTableColumn(column: ExtensionTableColumnRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[];
+export declare function registerFormExtension(registration: FormExtensionRegistration, batch: ExtensionRegistryBatch): void;
+export declare function getFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[];
 export declare function registerScreen(extensionId: string, id: string, component: ScreenImporter, batch: ExtensionRegistryBatch, options?: ScreenOptions): void;
 export declare function getExtensionScreens(area: ScreenArea, parent?: ScreenParent): readonly ExtensionScreenRegistration[];
 export declare function clearExtensionError(extensionId: string, context: string): void;

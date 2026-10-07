@@ -11,7 +11,7 @@ use UnexpectedValueException;
 
 uses(TestCase::class);
 test('normalizes validated scalar values', function () {
-    expect(ServerCreationData::parse(validData()))->toBe(['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => 10, 'egg_id' => 20, 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => 1024, 'swap' => 0, 'disk' => 4096, 'io' => 500, 'cpu' => 100, 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => 1, 'allocation_additional' => [2, 3], 'start_on_completion' => true, 'database_limit' => 1, 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false]);
+    expect(ServerCreationData::parse(validData()))->toBe(['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => 10, 'egg_id' => 20, 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => 1024, 'swap' => 0, 'disk' => 4096, 'io' => 500, 'cpu' => 100, 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => 1, 'allocation_additional' => [2, 3], 'start_on_completion' => true, 'database_limit' => 1, 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false, 'extensions' => ['billing' => ['plan' => 'pro']]]);
 });
 test('defaults omitted optional booleans to false', function () {
     $data = validData();
@@ -53,5 +53,5 @@ test('rejects invalid typed fields', function (string $field, mixed $value, stri
 /** @return array<string, JsonValue> */
 function validData(): array
 {
-    return ['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => '10', 'egg_id' => '20', 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => '1024', 'swap' => '0', 'disk' => '4096', 'io' => '500', 'cpu' => '100', 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => '1', 'allocation_additional' => ['2', 3], 'start_on_completion' => 1, 'database_limit' => '1', 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false];
+    return ['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => '10', 'egg_id' => '20', 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => '1024', 'swap' => '0', 'disk' => '4096', 'io' => '500', 'cpu' => '100', 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => '1', 'allocation_additional' => ['2', 3], 'start_on_completion' => 1, 'database_limit' => '1', 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false, 'extensions' => ['billing' => ['plan' => 'pro']]];
 }

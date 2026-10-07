@@ -26,7 +26,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\StoreEggRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\UpdateEggRequest;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\EggTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -79,7 +78,7 @@ class EggController extends AdminApiController
     public function show(GetEggRequest $request, Egg $egg): array
     {
         return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -89,9 +88,9 @@ class EggController extends AdminApiController
     #[Endpoint('Create egg', 'Creates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, status: 201, description: 'Egg created.', resourceKey: 'egg', meta: ['resource' => 'https://panel.example.com/api/admin/eggs/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreEggRequest $request, CreatesEggs $eggs, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreEggRequest $request, CreatesEggs $eggs): JsonResponse
     {
-        $egg = $fields->persist('admin.egg', $request->extensionFields(), fn (): Egg => $eggs->create($request->payload()));
+        $egg = $eggs->create($request->payload());
 
         Activity::event('admin:egg.create')
             ->subject($egg)
@@ -99,7 +98,7 @@ class EggController extends AdminApiController
             ->log();
 
         return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.eggs.view', ['egg' => $egg->id]),
             ])
@@ -114,13 +113,9 @@ class EggController extends AdminApiController
     #[Endpoint('Update egg', 'Updates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg updated.', resourceKey: 'egg')]
     #[ExtensionFieldsParam]
-    public function update(UpdateEggRequest $request, UpdatesEggs $eggs, ExtensionFormFields $fields, Egg $egg): array
+    public function update(UpdateEggRequest $request, UpdatesEggs $eggs, Egg $egg): array
     {
-        $fields->persist('admin.egg', $request->extensionFields(), function () use ($eggs, $egg, $request): Egg {
-            $eggs->update($egg, $request->payload());
-
-            return $egg;
-        });
+        $eggs->update($egg, $request->payload());
 
         Activity::event('admin:egg.update')
             ->subject($egg)
@@ -128,7 +123,7 @@ class EggController extends AdminApiController
             ->log();
 
         return Fractal::item($egg->refresh())
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

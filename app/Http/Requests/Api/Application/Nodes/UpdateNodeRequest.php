@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
+use Pterodactyl\Models\Node;
 use Pterodactyl\Validation\NodeRules;
 
 class UpdateNodeRequest extends StoreNodeRequest
@@ -21,5 +22,13 @@ class UpdateNodeRequest extends StoreNodeRequest
             ...parent::rules(NodeRules::rules()),
             'reset_secret' => ['sometimes', 'boolean'],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Node
+    {
+        return $this->parameter('node', Node::class);
     }
 }

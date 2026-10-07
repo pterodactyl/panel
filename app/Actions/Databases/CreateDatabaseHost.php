@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
 {
-    public function __construct(private DynamicDatabaseConnection $dynamic) {}
+    public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
     /**
      * Create a new database host on the Panel.
@@ -36,6 +38,8 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
                 'max_databases' => null,
                 'node_id' => JsonValueGuard::nullableInteger(Arr::get($data, 'node_id')),
             ]);
+            // SAFETY: requests put the validated values of each extension under `extensions`.
+            $this->extensions->save($host, ExtensionSettingValueGuard::fieldInput($data['extensions'] ?? []));
 
             // Confirm access using the provided credentials before saving data.
             $this->dynamic->set('dynamic', $host);

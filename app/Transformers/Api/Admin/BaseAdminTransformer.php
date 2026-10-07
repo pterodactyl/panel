@@ -10,6 +10,15 @@ use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 abstract class BaseAdminTransformer extends BaseTransformer
 {
     /**
+     * The admin API returns every extension's fields; the Application API only those marked
+     * #[ApplicationApi].
+     */
+    protected function exposesAllExtensionFields(): bool
+    {
+        return true;
+    }
+
+    /**
      * Assert child transformers are also admin transformers so the admin API never leaks application/client ones.
      *
      * @template T of BaseAdminTransformer

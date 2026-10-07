@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\AllocationRules;
@@ -20,6 +23,7 @@ use Pterodactyl\Validation\ServerRules;
 class StoreServerRequest extends ApplicationApiRequest
 {
     use FiltersDeployTags;
+    use ValidatesExtensionFields;
 
     protected ?string $resource = AdminAcl::RESOURCE_SERVERS;
 
@@ -114,6 +118,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'allocation_limit' => Arr::get($data, 'feature_limits.allocations'),
             'backup_limit' => Arr::get($data, 'feature_limits.backups'),
             'oom_disabled' => Arr::get($data, 'oom_disabled'),
+            'extensions' => $this->extensionValues(),
         ];
         JsonValueGuard::assertPayload9($payload);
 
@@ -144,6 +149,14 @@ class StoreServerRequest extends ApplicationApiRequest
         $object->setTags($this->resolveDeployTagSlugs());
 
         return $object;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Server::class;
     }
 
     /** @phpstan-assert int|string $value */

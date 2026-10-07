@@ -2,37 +2,30 @@ import { useAppForm, Form } from '@/components/form';
 import { type AdminNode, updateAdminNodeInput, useUpdateAdminNode } from '@/api/admin/nodes/queries';
 import { useAllAdminLocations } from '@/api/admin/locations/queries';
 import {
-    type NodeSettingsValues,
+    type NodeFormValues,
     nodeFormValues,
     nodeNumberValidators,
     nodeValuesFromForm,
 } from '@/components/admin/nodes/nodeForm';
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import Spinner from '@/components/elements/Spinner';
-import Slot from '@/extensions/Slot';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
-const nodeToValues = (node: AdminNode, extensions: LoadedExtensionFieldValues): NodeSettingsValues => ({
-    ...nodeFormValues(node, extensions),
-    resetSecret: false,
-});
+interface Values extends NodeFormValues {
+    resetSecret: boolean;
+}
 
-const NodeSettingsForm = ({
-    extensions,
-    hidden,
-}: {
-    extensions: LoadedExtensionFieldValues;
-    hidden: readonly string[];
-}) => {
+const nodeToValues = (node: AdminNode): Values => ({ ...nodeFormValues(node), resetSecret: false });
+
+const NodeSettingsForm = () => {
     const { node } = useNodeDetail();
     const updateNode = useUpdateAdminNode();
 
     const { data: locations = [] } = useAllAdminLocations();
 
     const form = useAppForm({
-        defaultValues: nodeToValues(node, extensions),
+        defaultValues: nodeToValues(node),
         onSubmit: async ({ value }) => {
             const { resetSecret, ...values } = value;
             try {
@@ -40,6 +33,7 @@ const NodeSettingsForm = ({
                     updateAdminNodeInput(node.attributes.id, nodeValuesFromForm(values), resetSecret)
                 );
                 form.setFieldValue('resetSecret', false);
+                form.setFieldValue('extensions', initialExtensionValues());
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -219,11 +213,18 @@ const NodeSettingsForm = ({
                     </TitledGreyBox>
                 </div>
             </div>
-            <Slot
-                name={'panel.nodes.detail.settings.form'}
-                data={{ kind: 'admin.node', mode: 'edit', resource: node, form }}
-                hidden={hidden}
-            />
+            <form.AppField name={'extensions'}>
+                {() => (
+                    <ExtensionFormFields
+                        form={'admin.node'}
+                        mode={'edit'}
+                        resource={node}
+                        error={updateNode.error}
+                        boxed
+                        className={'mt-6'}
+                    />
+                )}
+            </form.AppField>
             <TitledGreyBox title={'Save Settings'} className={'mt-6'}>
                 <form.AppField name={'resetSecret'}>
                     {(field) => (
@@ -248,11 +249,6 @@ const NodeSettingsForm = ({
 
 export default function NodeSettingsTab() {
     const { node } = useNodeDetail();
-    const extensions = useExtensionFormFields('admin.node', node.attributes.id);
 
-    if (!extensions.ready) {
-        return <Spinner size={'large'} centered />;
-    }
-
-    return <NodeSettingsForm key={node.attributes.id} extensions={extensions.values} hidden={extensions.hidden} />;
+    return <NodeSettingsForm key={node.attributes.id} />;
 }

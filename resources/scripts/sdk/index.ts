@@ -2,6 +2,7 @@
 import type { ComponentName, ComponentReplacement } from '@/extensions/componentTypes';
 import type { ComponentType } from 'react';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
+import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
 import {
     SLOT_NAMES,
     type SlotComponentProps,
@@ -80,11 +81,6 @@ export { SLOT_NAMES };
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
 export type {
     AdminUserFormSlotData,
-    CreateFormSlotData,
-    EditFormSlotData,
-    ExtensionFormResources,
-    FormSlotDataMap,
-    FormSlotName,
     FileManagerSlotData,
     FileRowSlotData,
     StartupFormSlotData,
@@ -96,12 +92,16 @@ export type {
     ScreenOptions,
 } from '@/extensions/registry';
 export type { ExtensionTableColumn, ExtensionTableName, ExtensionTableRows } from '@/extensions/tableTypes';
+export { EXTENSION_FORM_NAMES } from '@/extensions/formTypes';
 export type {
+    ExtensionField,
     ExtensionFieldValue,
     ExtensionFieldValues,
-    ExtensionFormFieldMap,
     ExtensionFormName,
-} from '@/extensions/formFields';
+    ExtensionFormResources,
+    FormExtension,
+    FormExtensionProps,
+} from '@/extensions/formTypes';
 
 export type { SlotComponentProps, SlotData } from '@/extensions/registry';
 
@@ -145,6 +145,17 @@ export interface ExtensionSetupContext {
     };
     columns: {
         register<TName extends ExtensionTableName>(name: TName, column: ExtensionTableColumn<TName>): void;
+    };
+    forms: {
+        /**
+         * Draws the extension's fields inside an admin form, when creating and when editing.
+         * They are the fields its PHP `Fields` class declares for the form's model with
+         * `registerFields()`; the panel saves them with the form.
+         */
+        extend<TName extends ExtensionFormName, TValues extends ExtensionFieldValues>(
+            form: TName,
+            component: FormExtension<TValues, TName>
+        ): void;
     };
 }
 

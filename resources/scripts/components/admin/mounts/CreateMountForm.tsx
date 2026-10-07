@@ -1,30 +1,29 @@
-import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { createAdminMountInput, type MountValues, useCreateAdminMount } from '@/api/admin/mounts/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import MountFormFields from '@/components/admin/mounts/MountFormFields';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
-import Slot from '@/extensions/Slot';
 
-const initialValues: MountValues = {
+const initialValues = (): MountValues => ({
     name: '',
     description: '',
     source: '',
     target: '',
     readOnly: false,
     userMountable: false,
-    extensions: {},
-};
+    extensions: initialExtensionValues(),
+});
 
 export default function CreateMountForm() {
     const navigate = useNavigate();
     const createMount = useCreateAdminMount();
 
-    const defaultValues: MountValues = { ...initialValues, extensions: newExtensionFieldValues('admin.mount') };
     const form = useAppForm({
-        defaultValues,
+        defaultValues: initialValues(),
         onSubmit: async ({ value }) => {
             try {
                 const mount = await createMount.mutateAsync(createAdminMountInput(value));
@@ -51,7 +50,11 @@ export default function CreateMountForm() {
             <Form form={form}>
                 <div className={'space-y-6'}>
                     <MountFormFields form={form} />
-                    <Slot name={'panel.mounts.create.form'} data={{ kind: 'admin.mount', mode: 'create', form }} />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields form={'admin.mount'} mode={'create'} error={createMount.error} boxed />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Mount</form.SubmitButton>

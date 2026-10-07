@@ -25,7 +25,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerRequest;
 use Pterodactyl\Models\Filters\AdminServerFilter;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -259,7 +258,7 @@ class ServerController extends AdminApiController
     public function show(GetServerRequest $request, Server $server): array
     {
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -269,9 +268,9 @@ class ServerController extends AdminApiController
     #[Endpoint('Create server', 'Creates a server using explicit allocations or automatic deployment constraints.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreServerRequest $request, CreatesServers $creation, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
-        $server = $fields->persist('admin.server', $request->extensionFields(), fn (): Server => $creation->create($request->payload(), $request->getDeploymentObject()), atomic: false);
+        $server = $creation->create($request->payload(), $request->getDeploymentObject());
 
         Activity::event('admin:server.create')
             ->subject($server)
@@ -279,7 +278,7 @@ class ServerController extends AdminApiController
             ->log();
 
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.servers.view', [
                     'server' => $server->id,

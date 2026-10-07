@@ -13,10 +13,13 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Services\Extensions\ExtensionFields;
 use Throwable;
 
 final readonly class UpdateNode implements UpdatesNodes
 {
+    public function __construct(private ExtensionFields $extensions) {}
+
     /**
      * Update the configuration values for a given node on the machine.
      *
@@ -26,12 +29,15 @@ final readonly class UpdateNode implements UpdatesNodes
      */
     public function update(Node $node, array $data, bool $resetToken = false): Node
     {
+        $extensions = $data['extensions'] ?? [];
+        unset($data['extensions']);
+
         if ($resetToken) {
             $data['daemon_token'] = Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
             $data['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
         }
 
-        [$updated, $exception] = DB::transaction(function () use ($data, $node): array {
+        [$updated, $exception] = DB::transaction(function () use ($data, $node, $extensions): array {
             // Wings is reached with the pre-update scheme and port, but at the newly provided
             // FQDN: if the node was pointed at a "valid" FQDN that is not actually running
             // Wings, the operator can still change it back. Only the Panel uses the FQDN for
@@ -41,6 +47,7 @@ final readonly class UpdateNode implements UpdatesNodes
             $daemon = clone $node;
 
             $node->forceFill($data)->save();
+            $this->extensions->save($node, $extensions);
             $updated = $node->refresh();
 
             try {

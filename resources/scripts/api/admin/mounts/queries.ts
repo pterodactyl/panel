@@ -1,4 +1,3 @@
-import type { MountValues } from '@/api/admin/mounts/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
@@ -35,8 +34,7 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
-
-export type { MountValues };
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 type MountsFilters = 'name';
 type MountsSorts = 'id' | 'name';
@@ -46,6 +44,16 @@ export type AdminMountsQueryParams = QueryBuilderParams<MountsFilters, MountsSor
 export type AdminMountListSort = ListSort<'name'>;
 
 export type AdminMount = AdminMountResource;
+
+export interface MountValues {
+    name: string;
+    description: string;
+    source: string;
+    target: string;
+    readOnly: boolean;
+    userMountable: boolean;
+    extensions: ExtensionFormValues;
+}
 
 export type AdminMountEgg = Extract<
     NonNullable<NonNullable<AdminMountResource['attributes']['relationships']>['eggs']>,
@@ -176,7 +184,6 @@ export const useUpdateAdminMount = () => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListMounts']),
                 queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.id) }),
-                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
             ]);
             const messages = resourceMutationMessages('mount', 'update', mount.attributes.name);
             toast.success(messages.success.title, { description: messages.success.description });

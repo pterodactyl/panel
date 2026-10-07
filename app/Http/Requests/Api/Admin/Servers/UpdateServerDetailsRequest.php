@@ -19,14 +19,6 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function extensionForm(): string
-    {
-        return 'admin.server';
-    }
-
-    /**
      * Validation rules for updating a server's details.
      *
      * @return ValidationRules
@@ -55,6 +47,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'name' => $this->string('name')->toString(),
             'owner_id' => $this->integer('owner_id'),
             'description' => $this->filled('description') ? $this->string('description')->toString() : null,
+            'extensions' => $this->extensionValues(),
         ];
     }
 
@@ -65,5 +58,13 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'owner_id' => 'User ID',
             'name' => 'Server Name',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Server
+    {
+        return $this->parameter('server', Server::class);
     }
 }

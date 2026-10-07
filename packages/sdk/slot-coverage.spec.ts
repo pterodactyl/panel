@@ -44,19 +44,6 @@ const anchorFiles = [
     '../../resources/scripts/components/admin/eggs/EggDetailContainer.tsx',
     '../../resources/scripts/components/admin/users/UserDetailContainer.tsx',
     '../../resources/scripts/components/admin/overview/OverviewContainer.tsx',
-    '../../resources/scripts/components/admin/users/CreateUserForm.tsx',
-    '../../resources/scripts/components/admin/nodes/CreateNodeForm.tsx',
-    '../../resources/scripts/components/admin/nodes/NodeSettingsTab.tsx',
-    '../../resources/scripts/components/admin/servers/CreateServerForm.tsx',
-    '../../resources/scripts/components/admin/servers/ServerDetailsTab.tsx',
-    '../../resources/scripts/components/admin/eggs/CreateEggForm.tsx',
-    '../../resources/scripts/components/admin/eggs/EggConfigurationTab.tsx',
-    '../../resources/scripts/components/admin/locations/CreateLocationButton.tsx',
-    '../../resources/scripts/components/admin/locations/LocationDetailContainer.tsx',
-    '../../resources/scripts/components/admin/mounts/CreateMountForm.tsx',
-    '../../resources/scripts/components/admin/mounts/MountDetailContainer.tsx',
-    '../../resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx',
-    '../../resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx',
 ];
 
 const anchorSource = anchorFiles.map((file) => readFileSync(resolve(__dirname, file), 'utf8')).join('\n');

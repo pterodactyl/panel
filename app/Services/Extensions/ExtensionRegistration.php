@@ -27,6 +27,7 @@ final class ExtensionRegistration
         private readonly ExtensionActionDecorators $actions,
         private readonly ExtensionConsoleRegistry $console,
         private readonly ExtensionHeadTags $headTags,
+        private readonly ExtensionFieldRegistry $fields,
     ) {}
 
     public function begin(): void
@@ -58,8 +59,7 @@ final class ExtensionRegistration
         $actions = $this->actions->snapshot();
         $console = $this->console->snapshot();
         $headTags = $this->headTags->snapshot();
-        $formFields = $this->app->make(ExtensionFormFieldRegistry::class);
-        $fields = $formFields->snapshot();
+        $fields = $this->fields->snapshot();
         $router = new ExtensionStagingRouter($this->router);
 
         Route::swap($router);
@@ -86,7 +86,7 @@ final class ExtensionRegistration
             $this->actions->restore($actions);
             $this->console->restore($console);
             $this->headTags->restore($headTags);
-            $formFields->restore($fields);
+            $this->fields->restore($fields);
 
             throw $throwable;
         } finally {

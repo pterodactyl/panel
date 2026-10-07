@@ -27,7 +27,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Locations\StoreLocationRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Locations\UpdateLocationRequest;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\LocationTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -78,7 +77,7 @@ class LocationController extends AdminApiController
         }]);
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -88,9 +87,9 @@ class LocationController extends AdminApiController
     #[Endpoint('Create location', 'Creates a location for grouping nodes and servers.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.com/api/admin/locations/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreLocationRequest $request, CreatesLocations $locations, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
     {
-        $location = $fields->persist('admin.location', $request->extensionFields(), fn (): Location => $locations->create($request->payload()));
+        $location = $locations->create($request->payload());
 
         Activity::event('admin:location.create')
             ->subject($location)
@@ -98,7 +97,7 @@ class LocationController extends AdminApiController
             ->log();
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.locations.view', [
                     'location' => $location->id,
@@ -115,9 +114,9 @@ class LocationController extends AdminApiController
     #[Endpoint('Update location', 'Updates a location short identifier and description.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, description: 'Location updated.', resourceKey: 'location')]
     #[ExtensionFieldsParam]
-    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, ExtensionFormFields $fields, Location $location): array
+    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
     {
-        $location = $fields->persist('admin.location', $request->extensionFields(), fn (): Location => $locations->update($location, $request->payload()));
+        $location = $locations->update($location, $request->payload());
 
         Activity::event('admin:location.update')
             ->subject($location)
@@ -125,7 +124,7 @@ class LocationController extends AdminApiController
             ->log();
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

@@ -1,10 +1,10 @@
 import type { AdminUser, UserValues } from '@/api/admin/users/queries';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
 import type { AppForm } from '@/components/form';
 import type { SelectOption } from '@/components/ui/Select';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import { initialExtensionValues } from '@/extensions/forms';
 
-export const userFormValues = (user: AdminUser, extensions: LoadedExtensionFieldValues = {}): UserValues => ({
+export const userFormValues = (user: AdminUser): UserValues => ({
     email: user.attributes.email,
     username: user.attributes.username,
     nameFirst: user.attributes.first_name ?? '',
@@ -12,7 +12,7 @@ export const userFormValues = (user: AdminUser, extensions: LoadedExtensionField
     password: '',
     rootAdmin: user.attributes.root_admin,
     language: user.attributes.language,
-    extensions,
+    extensions: initialExtensionValues(),
 });
 
 export const validateUserPassword = ({ value }: { value: string }): string | undefined =>

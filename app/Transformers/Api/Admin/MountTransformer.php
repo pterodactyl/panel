@@ -8,6 +8,7 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Mount;
+use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('mounted', 'boolean', 'Present only when listed in the context of a server.', required: false, nullable: true)]
 class MountTransformer extends BaseAdminTransformer
@@ -38,7 +39,7 @@ class MountTransformer extends BaseAdminTransformer
      */
     public function transform(Mount $mount): array
     {
-        return [
+        $payload = [
             'id' => $mount->id,
             'uuid' => $mount->uuid,
             'name' => $mount->name,
@@ -50,7 +51,11 @@ class MountTransformer extends BaseAdminTransformer
             'eggs_count' => (int) ($mount->eggs_count ?? 0),
             'nodes_count' => (int) ($mount->nodes_count ?? 0),
             'servers_count' => (int) ($mount->servers_count ?? 0),
+            ...$this->extensionFields($mount),
         ];
+        JsonValueGuard::assertPayload($payload);
+
+        return $payload;
     }
 
     public function includeEggs(Mount $mount): Collection|NullResource

@@ -16,6 +16,8 @@ import {
     useDeleteAdminUser,
     useUpdateAdminUser,
 } from '@/api/admin/users/queries';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
@@ -31,8 +33,6 @@ import {
     type ExtensionResourceContext,
 } from '@/extensions/resourceContext';
 import Slot from '@/extensions/Slot';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 import { userDetailRoute } from '@/router/routeTree';
 import { languageOptions } from '@/components/admin/languageOptions';
 import { userFormValues, validateUserPassword } from '@/components/admin/users/UserFormFields';
@@ -285,15 +285,7 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
     );
 };
 
-const UserDetailContent = ({
-    user,
-    extensions,
-    hidden,
-}: {
-    user: AdminUserWithServers;
-    extensions: LoadedExtensionFieldValues;
-    hidden: readonly string[];
-}) => {
+const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
     const navigate = useNavigate();
     const userId = user.attributes.id;
 
@@ -304,11 +296,11 @@ const UserDetailContent = ({
     const languagesList = languageOptions(languages, user.attributes.language);
 
     const form = useAppForm({
-        defaultValues: userFormValues(user, extensions),
+        defaultValues: userFormValues(user),
         onSubmit: async ({ value }) => {
             try {
                 await updateUser.mutateAsync(updateAdminUserInput(userId, value));
-                form.reset({ ...value, password: '' });
+                form.reset({ ...value, password: '', extensions: initialExtensionValues() });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -328,11 +320,7 @@ const UserDetailContent = ({
     return (
         <>
             <Form form={form} className={'m-0'}>
-                <Slot
-                    name={'panel.users.detail.form'}
-                    data={{ kind: 'admin.user', mode: 'edit', resource: user, form }}
-                    hidden={hidden}
-                />
+                <Slot name={'panel.users.detail.form'} data={{ kind: 'admin.user', resource: user, form }} />
                 <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4'}>
                     <IdentityCard
                         form={form}
@@ -345,6 +333,19 @@ const UserDetailContent = ({
                         <DeleteUserCard disabled={ownsServers} email={user.attributes.email} onDelete={onDelete} />
                     </div>
                 </div>
+                <form.AppField name={'extensions'}>
+                    {() => (
+                        <ExtensionFormFields
+                            form={'admin.user'}
+                            mode={'edit'}
+                            resource={user}
+                            error={updateUser.error}
+                            boxed
+                            submitLabel={'Save Changes'}
+                            className={'mt-4'}
+                        />
+                    )}
+                </form.AppField>
             </Form>
 
             <OwnedServersCard servers={servers} />
@@ -409,18 +410,8 @@ export function UserDetailLayout() {
     );
 }
 
-function UserDetailFields({ user }: { user: AdminUserWithServers }) {
-    const extensions = useExtensionFormFields('admin.user', user.attributes.id);
-
-    if (!extensions.ready) {
-        return <Spinner size={'large'} centered />;
-    }
-
-    return <UserDetailContent user={user} extensions={extensions.values} hidden={extensions.hidden} />;
-}
-
 export default function UserDetailContainer() {
     const resource = useCurrentResource();
     if (resource?.kind !== 'admin.user') throw new Error('A user detail tab was rendered without its resource.');
-    return <UserDetailFields key={resource.resource.attributes.id} user={resource.resource} />;
+    return <UserDetailContent key={resource.resource.attributes.id} user={resource.resource} />;
 }

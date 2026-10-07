@@ -32,7 +32,6 @@ use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\UpdateDatabaseHostRequest;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\DatabaseHostTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
@@ -126,7 +125,7 @@ class DatabaseHostController extends AdminApiController
         $databaseHost->load('node');
 
         return Fractal::item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -172,15 +171,13 @@ class DatabaseHostController extends AdminApiController
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, status: 201, description: 'Database host created.', resourceKey: 'database_host', meta: ['resource' => 'https://panel.example.com/api/admin/database-hosts/1'])]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
     #[ExtensionFieldsParam]
-    public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost): JsonResponse
     {
-        $host = $fields->persist('admin.databaseHost', $request->extensionFields(), function () use ($createHost, $request): DatabaseHost {
-            try {
-                return $createHost->create($request->payload());
-            } catch (Exception $exception) {
-                $this->handleConnectionException($exception);
-            }
-        });
+        try {
+            $host = $createHost->create($request->payload());
+        } catch (Exception $exception) {
+            $this->handleConnectionException($exception);
+        }
 
         $host->load('node')->loadCount('databases');
 
@@ -190,7 +187,7 @@ class DatabaseHostController extends AdminApiController
             ->log();
 
         return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.database-hosts.view', [
                     'databaseHost' => $host->id,
@@ -208,15 +205,13 @@ class DatabaseHostController extends AdminApiController
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
     #[ExtensionFieldsParam]
-    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, ExtensionFormFields $fields, DatabaseHost $databaseHost): array
+    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): array
     {
-        $host = $fields->persist('admin.databaseHost', $request->extensionFields(), function () use ($updateHost, $databaseHost, $request): DatabaseHost {
-            try {
-                return $updateHost->update($databaseHost, $request->payload());
-            } catch (Exception $exception) {
-                $this->handleConnectionException($exception);
-            }
-        });
+        try {
+            $host = $updateHost->update($databaseHost, $request->payload());
+        } catch (Exception $exception) {
+            $this->handleConnectionException($exception);
+        }
 
         $host->load('node')->loadCount('databases');
 
@@ -226,7 +221,7 @@ class DatabaseHostController extends AdminApiController
             ->log();
 
         return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

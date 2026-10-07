@@ -37,10 +37,6 @@ const server = {
     },
 };
 
-vi.mock('@/extensions/useExtensionFormFields', () => ({
-    useExtensionFormFields: () => ({ values: {}, ready: true, failed: false }),
-}));
-
 vi.mock('@/components/ui/Select', () => ({
     default: ({ id, value, options = [], onChange, onSearchChange, multiple }: SelectProps) => (
         <>

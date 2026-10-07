@@ -18,4 +18,12 @@ class UpdateLocationRequest extends StoreLocationRequest
     {
         return LocationRules::rules($this->parameter('location', Location::class));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Location
+    {
+        return $this->parameter('location', Location::class);
+    }
 }

@@ -6,6 +6,7 @@ namespace Pterodactyl\Extensions;
 
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -20,7 +21,7 @@ use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
-use Pterodactyl\Services\Extensions\ExtensionFormFieldRegistry;
+use Pterodactyl\Services\Extensions\ExtensionFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
@@ -361,13 +362,19 @@ abstract class ExtensionProvider extends ServiceProvider
     }
 
     /**
-     * @param  ValidationRules  $rules
+     * Add fields to the admin create and edit forms of a model:
+     * `$this->registerFields(User::class, UserRole::class)`. See Fields for what the class
+     * declares. Users, servers, nodes, eggs, locations, mounts and database hosts accept
+     * fields; an extension registers one Fields class per model.
+     *
+     * @param  class-string<Model>  $model
+     * @param  class-string<Fields>  $fields
      */
-    protected function registerFormFields(string $form, array $rules, ?Closure $load = null, ?Closure $save = null): void
+    protected function registerFields(string $model, string $fields): void
     {
         $registration = $this->registration();
-        $registration->defer(function () use ($form, $rules, $load, $save, $registration): void {
-            $this->app->make(ExtensionFormFieldRegistry::class)->register($this->id(), $form, $rules, $load, $save, $registration);
+        $registration->defer(function () use ($model, $fields, $registration): void {
+            $this->app->make(ExtensionFieldRegistry::class)->register($this->id(), $model, $fields, $registration);
         });
     }
 

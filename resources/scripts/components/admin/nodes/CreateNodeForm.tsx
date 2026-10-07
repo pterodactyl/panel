@@ -4,9 +4,9 @@ import { createAdminNodeInput, useCreateAdminNode } from '@/api/admin/nodes/quer
 import NodeFormFields from '@/components/admin/nodes/NodeFormFields';
 import { newNodeFormValues, nodeValuesFromForm } from '@/components/admin/nodes/nodeForm';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
-import Slot from '@/extensions/Slot';
 
 export default function CreateNodeForm() {
     const navigate = useNavigate();
@@ -41,7 +41,11 @@ export default function CreateNodeForm() {
             <Form form={form}>
                 <div className={'space-y-6'}>
                     <NodeFormFields form={form} prefix={'create_'} requiresSslScheme={requiresSslScheme} />
-                    <Slot name={'panel.nodes.create.form'} data={{ kind: 'admin.node', mode: 'create', form }} />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields form={'admin.node'} mode={'create'} error={createNode.error} boxed />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Node</form.SubmitButton>

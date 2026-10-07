@@ -74,3 +74,29 @@ export function httpErrorToHuman(cause: unknown): string {
 
     return cause instanceof Error ? cause.message : 'An unexpected error occurred.';
 }
+
+/** Validation messages keyed by the request path of the field they are about. */
+export type ValidationErrors = Record<string, string>;
+
+/** The first message for each field a validation (422) response rejected. */
+export function httpValidationErrors(cause: unknown): ValidationErrors {
+    if (!axios.isAxiosError(cause) || cause.response?.status !== 422) {
+        return {};
+    }
+
+    const data: unknown = cause.response.data;
+    if (!isObject(data) || !('errors' in data) || !Array.isArray(data.errors)) {
+        return {};
+    }
+
+    const errors: ValidationErrors = {};
+    for (const error of data.errors) {
+        if (!isObject(error) || !('detail' in error) || !isString(error.detail)) continue;
+        const field = 'meta' in error && isObject(error.meta) ? error.meta.source_field : undefined;
+        if (isString(field) && !(field in errors)) {
+            errors[field] = error.detail;
+        }
+    }
+
+    return errors;
+}

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Route;
 use Mockery;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
-use Pterodactyl\Services\Extensions\ExtensionFormFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -214,14 +213,12 @@ test('serializes screen descriptors into bootstrap without evaluating an extensi
         resolve(Dispatcher::class),
         resolve(ExtensionSettingsRegistry::class),
         resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
-        resolve(ExtensionFormFieldRegistry::class),
     ])->makePartial();
     $repository->shouldReceive('enabled')->once()->andReturn(collect(['example' => $manifest]));
     $repository->shouldReceive('settings')->with('example')->once()->andThrow(new RuntimeException('settings not ready'));
     $payload = $repository->frontendPayload(authenticated: true);
     expect($payload[0]['screens'])->toBe([$screen]);
     expect($payload[0]['prefix'])->toBe('ex');
-    expect($payload[0]['forms'])->toBe([]);
     expect($payload[0]['entry'])->toBe('/assets/extensions/example/client.js?v=100');
     expect($this->directory.'/dist/client.js')->not->toBeFile();
 });
@@ -234,13 +231,11 @@ test('leaves settings out of the bootstrap payload when config is not included',
         resolve(Dispatcher::class),
         resolve(ExtensionSettingsRegistry::class),
         resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
-        resolve(ExtensionFormFieldRegistry::class),
     ])->makePartial();
     $repository->shouldReceive('enabled')->once()->andReturn(collect(['example' => $manifest]));
     $repository->shouldNotReceive('settings');
     $payload = $repository->frontendPayload(authenticated: false);
     expect($payload[0]['id'])->toBe('example');
-    expect($payload[0]['forms'])->toBe([]);
     expect($payload[0]['prefix'])->toBeNull();
     expect($payload[0]['translations'])->toBeNull();
     expect((array) $payload[0]['config'])->toBe([]);
@@ -254,7 +249,6 @@ test('reports a translations revision that changes with the translation files', 
         resolve(Dispatcher::class),
         resolve(ExtensionSettingsRegistry::class),
         resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
-        resolve(ExtensionFormFieldRegistry::class),
     ])->makePartial();
     $repository->shouldReceive('enabled')->andReturn(collect(['example' => $manifest]));
     $revision = fn (): ?string => $repository->frontendPayload(authenticated: false)[0]['translations'];

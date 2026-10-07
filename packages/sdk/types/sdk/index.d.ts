@@ -2,6 +2,7 @@
 import type { ComponentName, ComponentReplacement } from "../extensions/componentTypes.js";
 import type { ComponentType } from 'react';
 import type { ExtensionTableName, ExtensionTableColumn } from "../extensions/tableTypes.js";
+import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from "../extensions/formTypes.js";
 import { SLOT_NAMES, type SlotComponentProps, type SlotData, type ScreenImporter, type ScreenComponentProps, type ScreenOptions, type ExtensionScreenDefinition, type RouteSlotData, type SlotName, type SubuserPermissionsSlotData } from "../extensions/registry.js";
 import type { UserData as SdkUser } from "../api/account/types.js";
 import type { SiteSettings as SdkSiteSettings } from "../api/settings/types.js";
@@ -46,9 +47,10 @@ export { usePermissions } from "../plugins/usePermissions.js";
 export { useExtensionCallback as useExtensionAction } from "../extensions/context.js";
 export { SLOT_NAMES };
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
-export type { AdminUserFormSlotData, CreateFormSlotData, EditFormSlotData, ExtensionFormResources, FormSlotDataMap, FormSlotName, FileManagerSlotData, FileRowSlotData, StartupFormSlotData, ScreenParent, ScreenBadgeValue, ScreenCondition, ScreenContext, ScreenMatcher, ScreenOptions, } from "../extensions/registry.js";
+export type { AdminUserFormSlotData, FileManagerSlotData, FileRowSlotData, StartupFormSlotData, ScreenParent, ScreenBadgeValue, ScreenCondition, ScreenContext, ScreenMatcher, ScreenOptions, } from "../extensions/registry.js";
 export type { ExtensionTableColumn, ExtensionTableName, ExtensionTableRows } from "../extensions/tableTypes.js";
-export type { ExtensionFieldValue, ExtensionFieldValues, ExtensionFormFieldMap, ExtensionFormName, } from "../extensions/formFields.js";
+export { EXTENSION_FORM_NAMES } from "../extensions/formTypes.js";
+export type { ExtensionField, ExtensionFieldValue, ExtensionFieldValues, ExtensionFormName, ExtensionFormResources, FormExtension, FormExtensionProps, } from "../extensions/formTypes.js";
 export type { SlotComponentProps, SlotData } from "../extensions/registry.js";
 export interface ExtensionMeta {
     id: string;
@@ -80,6 +82,14 @@ export interface ExtensionSetupContext {
     };
     columns: {
         register<TName extends ExtensionTableName>(name: TName, column: ExtensionTableColumn<TName>): void;
+    };
+    forms: {
+        /**
+         * Draws the extension's fields inside an admin form, when creating and when editing.
+         * They are the fields its PHP `Fields` class declares for the form's model with
+         * `registerFields()`; the panel saves them with the form.
+         */
+        extend<TName extends ExtensionFormName, TValues extends ExtensionFieldValues>(form: TName, component: FormExtension<TValues, TName>): void;
     };
 }
 export { COMPONENT_NAMES } from "../extensions/componentTypes.js";

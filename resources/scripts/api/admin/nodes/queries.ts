@@ -1,4 +1,3 @@
-import type { NodeValues } from '@/api/admin/nodes/types';
 import {
     useQuery,
     useMutation,
@@ -66,12 +65,31 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
-
-export type { NodeValues };
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 export type AdminNode = AdminNodeResource;
 export type AdminNodeSort = 'id' | 'uuid' | 'name' | 'memory' | 'disk' | 'created_at';
 export type AdminNodeListSort = ListSort<'name' | 'memory' | 'disk' | 'created_at'>;
+
+export interface NodeValues {
+    name: string;
+    description: string;
+    locationId: number;
+    public: boolean;
+    fqdn: string;
+    scheme: string;
+    behindProxy: boolean;
+    maintenanceMode: boolean;
+    memory: number;
+    memoryOverallocate: number;
+    disk: number;
+    diskOverallocate: number;
+    uploadSize: number;
+    daemonListen: number;
+    daemonSftp: number;
+    daemonBase: string;
+    extensions: ExtensionFormValues;
+}
 
 export type AdminAllocation = AdminAllocationResource;
 
@@ -370,7 +388,6 @@ export const useUpdateAdminNode = () => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListNodes']),
                 queryClient.invalidateQueries({ queryKey: adminNodeDetailKey(variables.path.id) }),
-                invalidateGeneratedOperations(queryClient, ['adminGetExtensionFormValues']),
                 queryClient.invalidateQueries({
                     queryKey: adminGetNodeConfigurationQueryKey({ path: { node_id: variables.path.id } }),
                 }),

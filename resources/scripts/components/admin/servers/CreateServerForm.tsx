@@ -1,4 +1,3 @@
-import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import { useRef, useState } from 'react';
 import { useStore } from '@tanstack/react-form';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -14,14 +13,15 @@ import {
 import {
     allocationLabel,
     createServerBodyFromFormValues,
-    type CreateServerFormValues,
     type CreateServerValues,
 } from '@/components/admin/servers/helpers';
-import { requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
 import { type AdminUser, useAllAdminUsers } from '@/api/admin/users/queries';
 import { type LocationWithNodes, useAdminNodesGroupedByLocation } from '@/api/admin/nodes/queries';
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { type ExtensionFormValues, initialExtensionValues } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Label from '@/components/elements/Label';
@@ -31,9 +31,21 @@ import type { AppForm } from '@/components/form';
 import { useAppForm, Form } from '@/components/form';
 import Select from '@/components/ui/Select';
 import { relationshipData } from '@/api/relationships';
-import Slot from '@/extensions/Slot';
 
-type Values = CreateServerFormValues;
+interface Values extends Omit<
+    CreateServerValues,
+    'databaseLimit' | 'allocationLimit' | 'backupLimit' | 'cpu' | 'memory' | 'swap' | 'disk' | 'io'
+> {
+    databaseLimit: NumberInputValue;
+    allocationLimit: NumberInputValue;
+    backupLimit: NumberInputValue;
+    cpu: NumberInputValue;
+    memory: NumberInputValue;
+    swap: NumberInputValue;
+    disk: NumberInputValue;
+    io: NumberInputValue;
+    extensions: ExtensionFormValues;
+}
 
 type ServerForm = AppForm<Values>;
 
@@ -65,7 +77,8 @@ const initialValues: Values = {
     startup: '',
 
     environment: {},
-    extensions: {},
+
+    extensions: initialExtensionValues(),
 };
 
 const createServerValues = (values: Values): CreateServerValues => ({
@@ -565,13 +578,15 @@ export default function CreateServerForm() {
     const loading = usersLoading || locationsLoading || eggsLoading;
     const hasNodes = locations.some((location) => location.nodes.length > 0);
 
-    const defaultValues: Values = { ...initialValues, extensions: newExtensionFieldValues('admin.server') };
     const form = useAppForm({
-        defaultValues,
+        defaultValues: initialValues,
         onSubmit: async ({ value }) => {
             try {
                 const server = await createServer.mutateAsync(
-                    createAdminServerInput(createServerBodyFromFormValues(createServerValues(value)))
+                    createAdminServerInput({
+                        ...createServerBodyFromFormValues(createServerValues(value)),
+                        extensions: value.extensions,
+                    })
                 );
                 navigate({ to: '/panel/servers/$id', params: { id: server.attributes.id } });
             } catch {
@@ -612,10 +627,16 @@ export default function CreateServerForm() {
                         <FeatureLimitsBox form={form} />
                         <ResourceManagementBox form={form} />
                         <EggSection form={form} eggs={eggs?.data ?? []} />
-                        <Slot
-                            name={'panel.servers.create.form'}
-                            data={{ kind: 'admin.server', mode: 'create', form }}
-                        />
+                        <form.AppField name={'extensions'}>
+                            {() => (
+                                <ExtensionFormFields
+                                    form={'admin.server'}
+                                    mode={'create'}
+                                    error={createServer.error}
+                                    boxed
+                                />
+                            )}
+                        </form.AppField>
                         <div className={'flex justify-end'}>
                             <form.AppForm>
                                 <form.SubmitButton>Create Server</form.SubmitButton>

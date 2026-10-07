@@ -7,6 +7,7 @@ namespace Pterodactyl\Transformers\Api\Admin;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Models\Location;
+use Pterodactyl\Support\JsonValueGuard;
 
 class LocationTransformer extends BaseAdminTransformer
 {
@@ -32,7 +33,7 @@ class LocationTransformer extends BaseAdminTransformer
      */
     public function transform(Location $location): array
     {
-        return [
+        $payload = [
             'id' => $location->id,
             'short' => $location->short,
             'long' => $location->long,
@@ -40,7 +41,11 @@ class LocationTransformer extends BaseAdminTransformer
             'servers_count' => $location->servers_count ?? $location->servers()->count(),
             'created_at' => $this->formatTimestamp($location->created_at),
             'updated_at' => $this->formatTimestamp($location->updated_at),
+            ...$this->extensionFields($location),
         ];
+        JsonValueGuard::assertPayload($payload);
+
+        return $payload;
     }
 
     public function includeNodes(Location $location): Collection|NullResource

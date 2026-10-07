@@ -1,10 +1,5 @@
 import type { AdminAllocation } from '@/api/admin/nodes/queries';
 import type {
-    CreateServerFormValues,
-    CreateServerValues,
-    ServerDetailsValues,
-} from '@/components/admin/servers/formValues';
-import type {
     CreateServerBody,
     ServerBuildBody,
     CreateServerDatabaseBody,
@@ -13,7 +8,12 @@ import type {
     TransferServerBody,
 } from '@/api/admin/servers/queries';
 
-export type { CreateServerFormValues, CreateServerValues, ServerDetailsValues };
+export interface ServerDetailsValues {
+    name: string;
+    user: number;
+    externalId: string;
+    description: string;
+}
 
 export interface ServerBuildValues {
     allocationId: number;
@@ -49,6 +49,36 @@ export interface TransferServerValues {
     allocationAdditional: number[];
 }
 
+export interface CreateServerValues {
+    name: string;
+    description: string;
+    ownerId: number;
+    startOnCompletion: boolean;
+
+    allocationId: number;
+    allocationAdditional: number[];
+
+    databaseLimit: number;
+    allocationLimit: number;
+    backupLimit: number;
+
+    cpu: number;
+    threads: string;
+    memory: number;
+    swap: number;
+    disk: number;
+    io: number;
+    enableOomKiller: boolean;
+
+    eggId: number;
+    skipScripts: boolean;
+
+    image: string;
+    startup: string;
+
+    environment: Record<string, string>;
+}
+
 export interface CreateServerDatabaseValues {
     databaseName: string;
     connectionsFrom: string;
@@ -61,7 +91,6 @@ export const serverDetailsBodyFromFormValues = (values: ServerDetailsValues): Se
     owner_id: values.user,
     external_id: values.externalId === '' ? null : values.externalId,
     description: values.description,
-    extensions: values.extensions,
 });
 
 export const serverBuildBodyFromFormValues = (values: ServerBuildValues): ServerBuildBody => ({
@@ -118,7 +147,6 @@ export const createServerBodyFromFormValues = (values: CreateServerValues): Crea
     backup_limit: values.backupLimit,
     primary_allocation_id: values.allocationId,
     secondary_allocations_ids: values.allocationAdditional,
-    extensions: values.extensions,
 });
 
 export const allocationLabel = (allocation: AdminAllocation): string =>

@@ -1,4 +1,3 @@
-import { newExtensionFieldValues } from '@/extensions/useExtensionFormFields';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { createAdminUserInput, type UserValues } from '@/api/admin/users/queries';
@@ -6,10 +5,11 @@ import { useAdminLanguages } from '@/api/admin/languages/queries';
 import { useCreateAdminUser } from '@/api/admin/users/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import UserFormFields from '@/components/admin/users/UserFormFields';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 import { languageOptions } from '@/components/admin/languageOptions';
-import Slot from '@/extensions/Slot';
 
 const initialValues = (language: string): UserValues => ({
     email: '',
@@ -19,7 +19,7 @@ const initialValues = (language: string): UserValues => ({
     password: '',
     rootAdmin: false,
     language,
-    extensions: newExtensionFieldValues('admin.user'),
+    extensions: initialExtensionValues(),
 });
 
 export default function CreateUserForm() {
@@ -62,7 +62,11 @@ export default function CreateUserForm() {
                         languageOptions={languagesList}
                         languagesLoading={languagesLoading && !languages}
                     />
-                    <Slot name={'panel.users.create.form'} data={{ kind: 'admin.user', mode: 'create', form }} />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields form={'admin.user'} mode={'create'} error={createUser.error} boxed />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end'}>
                         <form.AppForm>
                             <form.SubmitButton>Create User</form.SubmitButton>

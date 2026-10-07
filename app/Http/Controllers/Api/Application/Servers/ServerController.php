@@ -19,6 +19,7 @@ use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -99,12 +100,13 @@ class ServerController extends ApplicationApiController
     #[Endpoint('Create server', 'Creates a new server using either explicit allocations or automatic deployment constraints.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ScribeResponse(self::DEPLOYMENT_ERROR, status: 400, description: 'Automatic deployment could not find a viable node or allocation.')]
+    #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
         $server = $creation->create($request->payload(), $request->getDeploymentObject());
 
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->respond(201);
     }
 
@@ -119,7 +121,7 @@ class ServerController extends ApplicationApiController
     public function view(GetServerRequest $request, Server $server): array
     {
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

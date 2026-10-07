@@ -6,6 +6,7 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\Mounts;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
@@ -23,7 +24,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Mounts\GetMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\StoreMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\UpdateMountRequest;
 use Pterodactyl\Models\Mount;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
+use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Transformers\Api\Admin\MountTransformer;
 use Ramsey\Uuid\Uuid;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -86,7 +87,7 @@ class MountController extends AdminApiController
         $mount->loadCount('eggs', 'nodes', 'servers');
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -96,12 +97,14 @@ class MountController extends AdminApiController
     #[Endpoint('Create mount', 'Creates a mount definition and generates its UUID.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, status: 201, description: 'Mount created.', resourceKey: 'mount', meta: ['resource' => 'https://panel.example.com/api/admin/mounts/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreMountRequest $request, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreMountRequest $request, ExtensionFields $extensions): JsonResponse
     {
-        $mount = $fields->persist('admin.mount', $request->extensionFields(), function () use ($request): Mount {
-            $mount = (new Mount)->fill(array_diff_key($request->validated(), ['extensions' => true]));
+        $mount = DB::transaction(function () use ($request, $extensions): Mount {
+            $mount = (new Mount)->fill($request->validated());
             $mount->forceFill(['uuid' => Uuid::uuid4()->toString()]);
             $mount->saveOrFail();
+
+            $extensions->save($mount, $request->extensionValues());
 
             return $mount;
         });
@@ -112,7 +115,7 @@ class MountController extends AdminApiController
             ->log();
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.mounts.view', [
                     'mount' => $mount->id,
@@ -129,12 +132,11 @@ class MountController extends AdminApiController
     #[Endpoint('Update mount', 'Updates an existing mount definition.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
     #[ExtensionFieldsParam]
-    public function update(UpdateMountRequest $request, ExtensionFormFields $fields, Mount $mount): array
+    public function update(UpdateMountRequest $request, ExtensionFields $extensions, Mount $mount): array
     {
-        $fields->persist('admin.mount', $request->extensionFields(), function () use ($request, $mount): Mount {
-            $mount->forceFill(array_diff_key($request->validated(), ['extensions' => true]))->save();
-
-            return $mount;
+        DB::transaction(function () use ($request, $extensions, $mount): void {
+            $mount->forceFill($request->validated())->save();
+            $extensions->save($mount, $request->extensionValues());
         });
 
         Activity::event('admin:mount.update')
@@ -143,7 +145,7 @@ class MountController extends AdminApiController
             ->log();
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

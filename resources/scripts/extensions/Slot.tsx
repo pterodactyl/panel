@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from 'react';
 import { getSlotComponents, subscribeExtensionRegistry, type SlotProps } from '@/extensions/registry';
 import ExtensionMount from '@/extensions/ExtensionMount';
 
-export default function Slot({ name, data, hidden }: SlotProps & { hidden?: readonly string[] }) {
+export default function Slot({ name, data }: SlotProps) {
     const subscribe = useCallback(
         (listener: () => void) => subscribeExtensionRegistry(`slot:${name}`, listener),
         [name]
@@ -21,19 +21,17 @@ export default function Slot({ name, data, hidden }: SlotProps & { hidden?: read
                   : name;
     return (
         <>
-            {registrations
-                .filter(({ extensionId }) => !hidden?.includes(extensionId))
-                .map(({ id, extensionId, component: Component }) => (
-                    <ExtensionMount
-                        isSlot
-                        key={id}
-                        extensionId={extensionId}
-                        context={`slot "${name}"`}
-                        resetKey={resetKey}
-                    >
-                        <Component data={data} />
-                    </ExtensionMount>
-                ))}
+            {registrations.map(({ id, extensionId, component: Component }) => (
+                <ExtensionMount
+                    isSlot
+                    key={id}
+                    extensionId={extensionId}
+                    context={`slot "${name}"`}
+                    resetKey={resetKey}
+                >
+                    <Component data={data} />
+                </ExtensionMount>
+            ))}
         </>
     );
 }

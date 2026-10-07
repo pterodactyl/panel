@@ -9,10 +9,10 @@ import {
 } from '@/components/admin/databases/databaseHostForm';
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useAppForm, Form } from '@/components/form';
-import Slot from '@/extensions/Slot';
 
 export default function CreateDatabaseHostForm() {
     const navigate = useNavigate();
@@ -111,10 +111,16 @@ export default function CreateDatabaseHostForm() {
                             </form.AppField>
                         </div>
                     </TitledGreyBox>
-                    <Slot
-                        name={'panel.databaseHosts.create.form'}
-                        data={{ kind: 'admin.databaseHost', mode: 'create', form }}
-                    />
+                    <form.AppField name={'extensions'}>
+                        {() => (
+                            <ExtensionFormFields
+                                form={'admin.database_host'}
+                                mode={'create'}
+                                error={createDatabaseHost.error}
+                                boxed
+                            />
+                        )}
+                    </form.AppField>
                     <div className={'flex justify-end'}>
                         <form.AppForm>
                             <form.SubmitButton>Create Host</form.SubmitButton>

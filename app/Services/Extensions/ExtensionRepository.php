@@ -39,7 +39,6 @@ class ExtensionRepository
         private readonly Dispatcher $events,
         private readonly ExtensionSettingsRegistry $settingsRegistry,
         private readonly ExtensionCompatibility $compatibility,
-        private readonly ExtensionFormFieldRegistry $formFields,
     ) {}
 
     public function directory(): string
@@ -155,7 +154,7 @@ class ExtensionRepository
      * The enabled frontend extensions for the SPA to load. Signed-in users receive
      * each extension's frontend settings; everyone else only those marked ->public().
      *
-     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, forms: list<string>, development: array{url: string, version: string}|null}>
+     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
      */
     public function frontendPayload(bool $authenticated): array
     {
@@ -174,7 +173,6 @@ class ExtensionRepository
             'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
             'screens' => $manifest->screens,
             'components' => $manifest->components,
-            'forms' => $authenticated ? $this->formFields->forms($manifest->id) : [],
             'development' => $this->assets->developmentPayload($manifest->id),
         ])
             ->values()

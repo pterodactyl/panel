@@ -6,17 +6,15 @@ namespace Pterodactyl\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Pterodactyl\Services\Extensions\ExtensionFieldValueGuard;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 
-class ExtensionFieldValue implements ValidationRule
+/** An extension field's value: a string, number, boolean or null, or a list of those. */
+final class ExtensionFieldValue implements ValidationRule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (! ExtensionFieldValueGuard::isValue($value)) {
-            $fail('The :attribute field must be a string, number, boolean, null or a list of strings and numbers.');
+        if (! ExtensionSettingValueGuard::isFieldValue($value)) {
+            $fail('The :attribute field must be a string, number, boolean, or a list of them.');
         }
     }
 }

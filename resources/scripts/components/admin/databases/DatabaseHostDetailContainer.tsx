@@ -21,6 +21,7 @@ import {
 } from '@/components/admin/databases/databaseHostForm';
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -34,31 +35,20 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { getPageSearch, usePageSearch } from '@/router/search';
 import { databaseHostDetailRoute } from '@/router/routeTree';
 import { relationshipAttributes } from '@/api/relationships';
-import Slot from '@/extensions/Slot';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
-function DatabaseHostDetailForm({
-    host,
-    extensions,
-    hidden,
-}: {
-    host: AdminDatabaseHost;
-    extensions: LoadedExtensionFieldValues;
-    hidden: readonly string[];
-}) {
+function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
     const navigate = useNavigate();
     const updateDatabaseHost = useUpdateAdminDatabaseHost();
     const deleteDatabaseHost = useDeleteAdminDatabaseHost();
 
     const form = useAppForm({
-        defaultValues: databaseHostFormValues(host, extensions),
+        defaultValues: databaseHostFormValues(host),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateDatabaseHost.mutateAsync(
                     updateAdminDatabaseHostInput(host.attributes.id, databaseHostBodyFromFormValues(value))
                 );
-                form.reset(databaseHostFormValues(updated, value.extensions));
+                form.reset(databaseHostFormValues(updated));
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -146,11 +136,6 @@ function DatabaseHostDetailForm({
                         The configured account must have WITH GRANT OPTION permission and should not reuse Panel
                         database credentials.
                     </p>
-                    <Slot
-                        name={'panel.databaseHosts.detail.form'}
-                        data={{ kind: 'admin.databaseHost', mode: 'edit', resource: host, form }}
-                        hidden={hidden}
-                    />
                     <div className={'flex justify-end mt-6'}>
                         <Dialog.ConfirmTrigger
                             title={'Delete database host'}
@@ -173,6 +158,19 @@ function DatabaseHostDetailForm({
                     </div>
                 </TitledGreyBox>
             </div>
+            <form.AppField name={'extensions'}>
+                {() => (
+                    <ExtensionFormFields
+                        form={'admin.database_host'}
+                        mode={'edit'}
+                        resource={host}
+                        error={updateDatabaseHost.error}
+                        boxed
+                        submitLabel={'Save Changes'}
+                        className={'mt-4'}
+                    />
+                )}
+            </form.AppField>
         </Form>
     );
 }
@@ -294,13 +292,12 @@ export default function DatabaseHostDetailContainer() {
     const hostId = loadedHost.attributes.id;
 
     const { data: host = loadedHost, error } = useAdminDatabaseHost(hostId);
-    const extensions = useExtensionFormFields('admin.databaseHost', hostId);
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} />;
     }
 
-    if (!host || !extensions.ready) {
+    if (!host) {
         return (
             <AdminContentBlock title={'Admin · Database Host'} heading={'Database Host'}>
                 <Spinner size={'large'} centered />
@@ -322,12 +319,7 @@ export default function DatabaseHostDetailContainer() {
                 Back to Database Hosts
             </Link>
 
-            <DatabaseHostDetailForm
-                key={`${host.attributes.id}:${host.attributes.updated_at}`}
-                host={host}
-                extensions={extensions.values}
-                hidden={extensions.hidden}
-            />
+            <DatabaseHostDetailForm key={`${host.attributes.id}:${host.attributes.updated_at}`} host={host} />
             <DatabaseHostDatabases hostId={host.attributes.id} />
         </AdminContentBlock>
     );

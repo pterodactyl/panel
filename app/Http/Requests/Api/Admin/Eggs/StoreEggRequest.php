@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
@@ -17,14 +18,6 @@ class StoreEggRequest extends AdminApiRequest
     public function permissions(): array
     {
         return [Permissions::AdminEggsCreate];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function extensionForm(): string
-    {
-        return 'admin.egg';
     }
 
     /**
@@ -80,7 +73,17 @@ class StoreEggRequest extends AdminApiRequest
             }
         }
 
+        $data['extensions'] = $this->extensionValues();
+
         return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Egg::class;
     }
 
     /** A zero config_from is the legacy "no parent egg" sentinel; treat it as null. */

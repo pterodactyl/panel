@@ -17,7 +17,6 @@ use Pterodactyl\Http\Controllers\Api\Admin\Eggs\ImportEggController;
 use Pterodactyl\Http\Controllers\Api\Admin\Eggs\ReorderVariablesController;
 use Pterodactyl\Http\Controllers\Api\Admin\Eggs\UpdateImportEggController;
 use Pterodactyl\Http\Controllers\Api\Admin\Extensions\ExtensionController;
-use Pterodactyl\Http\Controllers\Api\Admin\Extensions\ExtensionFormValuesController;
 use Pterodactyl\Http\Controllers\Api\Admin\LanguagesController;
 use Pterodactyl\Http\Controllers\Api\Admin\Locations\EligibleNodesController;
 use Pterodactyl\Http\Controllers\Api\Admin\Locations\LocationController;
@@ -63,7 +62,6 @@ use Pterodactyl\Http\Controllers\Api\Admin\Users\ExternalController as UserExter
 use Pterodactyl\Http\Controllers\Api\Admin\Users\UserController;
 use Pterodactyl\Http\Controllers\Api\Admin\VersionController;
 use Pterodactyl\Http\Middleware\Api\Admin\RequireSessionAuthentication;
-use Pterodactyl\Services\Extensions\ExtensionFormFieldRegistry;
 
 // Admin API (/api/admin), gated on the global root administrator flag.
 
@@ -83,10 +81,6 @@ Route::get('/activity/filters', ActivityFilterController::class)->name('api.admi
 Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): void {
     Route::get('/', [ExtensionController::class, 'index']);
     Route::get('/{extension}/settings', [ExtensionController::class, 'settings'])->name('.settings');
-    Route::get('/forms/{form}/{id}', ExtensionFormValuesController::class)
-        ->whereIn('form', array_keys(ExtensionFormFieldRegistry::FORMS))
-        ->whereNumber('id')
-        ->name('.forms');
 
     Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
         Route::post('/', [ExtensionController::class, 'store'])->name('.install');

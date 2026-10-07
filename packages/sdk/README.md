@@ -129,10 +129,10 @@ useNavigationBlocker(dirty, { message: 'Discard your changes to this file?' });
 
 File toolbar, row actions, and selection actions receive typed files, directory,
 selection, and refresh callbacks. `server.startup.form` receives current configuration
-and a guarded Docker image setter. Form slots supply the native `form`, so contributed
-`form.AppField` controls share core validation, pending state, submission, and
-persistence; see [Form slots and fields](#form-slots-and-fields). Keep values in that form
-rather than copying a separate draft. `columns.register('admin.nodes', { id, label,
+and a guarded Docker image setter. `panel.users.detail.form` supplies the native
+`form`, so contributed `form.AppField` controls share core validation, pending state,
+submission, and persistence. Keep values in that form rather than copying a separate draft. To add fields of your
+own to an admin form, see [Admin form fields](#admin-form-fields). `columns.register('admin.nodes', { id, label,
 component })` adds a typed cell to the native table; servers and eggs are also supported.
 Columns commit atomically and render inside local error boundaries. Table, Tooltip,
 DropdownMenu, and Pagination complement the existing form and dialog primitives. `Empty`
@@ -154,54 +154,6 @@ when a stylesheet or an inline property on `<html>` changes; `onThemeChange(list
 canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
 `notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own
 `theme-color` tag follows the token; one registered with `registerHeadTags` is left as rendered.
-
-## Form slots and fields
-
-Every admin create and edit form renders a slot inside its `<form>`:
-
-| Form | Create slot | Edit slot |
-| --- | --- | --- |
-| `admin.user` | `panel.users.create.form` | `panel.users.detail.form` |
-| `admin.node` | `panel.nodes.create.form` | `panel.nodes.detail.settings.form` |
-| `admin.server` | `panel.servers.create.form` | `panel.servers.detail.details.form` |
-| `admin.egg` | `panel.eggs.create.form` | `panel.eggs.detail.configuration.form` |
-| `admin.location` | `panel.locations.create.form` | `panel.locations.detail.form` |
-| `admin.mount` | `panel.mounts.create.form` | `panel.mounts.detail.form` |
-| `admin.databaseHost` | `panel.databaseHosts.create.form` | `panel.databaseHosts.detail.form` |
-
-The slot receives `{ kind, mode, form }`, plus the saved `resource` when `mode` is
-`'edit'`. `form` is the native form: render a core field again, or add validators to it,
-with `form.AppField name="username"`.
-
-To add a field of your own, register it on the backend ([Form fields](#form-fields)) and render it under
-`extensions.<your id>.<field>`. Declare its type once so the field name and value are
-checked:
-
-```tsx
-declare module '@pterodactyl/sdk' {
-    interface ExtensionFormFieldMap {
-        'admin.user': { billing: { plan: string } };
-    }
-}
-
-slots.register('panel.users.create.form', ({ data }) => (
-    <data.form.AppField name={'extensions.billing.plan'} defaultValue={'free'}>
-        {(field) => <field.SelectField label={'Plan'} options={plans} />}
-    </data.form.AppField>
-));
-slots.register('panel.users.detail.form', ({ data }) => (
-    <data.form.AppField name={'extensions.billing.plan'}>
-        {(field) => <field.SelectField label={'Plan'} options={plans} />}
-    </data.form.AppField>
-));
-```
-
-Edit forms load the stored values before they render, and only when some extension has
-registered fields for that form. The values are submitted with the core request and
-saved with it, on create forms too. Only pass `defaultValue` in create slots: a field's
-`defaultValue` replaces the form's value until the field is edited, so on an edit form it
-would overwrite the value that was loaded. Values are strings, numbers, booleans, `null`,
-or lists of strings and numbers.
 
 ## Conditional screens, badges, and icons
 
@@ -357,6 +309,115 @@ shared cache store for workers and web requests. Snapshots expire after
 `extensions.progress_retention_seconds` (one hour by default); they are progress UI,
 not a durable job audit log.
 
+## Admin form fields
+
+An extension can add its own fields to the admin create and edit forms of users, servers,
+nodes, eggs, locations, mounts and database hosts. The panel validates them with the form,
+saves them in the same transaction, and returns them on the resource.
+
+Declare the fields in PHP with a `Fields` class and register it from the provider, one
+class per model:
+
+```php
+use Illuminate\Validation\Rule;
+use Pterodactyl\Extensions\Fields;
+use Pterodactyl\Models\User;
+
+$this->registerFields(User::class, UserRole::class);
+
+final class UserRole extends Fields
+{
+    public function rules(): array
+    {
+        return ['role' => ['nullable', 'integer', Rule::exists(Role::class, 'id')]];
+    }
+
+    public function values(User $user): array
+    {
+        return ['role' => RoleAssignment::query()->whereKey($user->id)->value('role_id')];
+    }
+
+    public function save(User $user, array $values): void
+    {
+        RoleAssignment::query()->updateOrCreate(['user_id' => $user->id], ['role_id' => $values['role']]);
+    }
+}
+```
+
+Every method is optional. The panel calls them through the container, like the methods of
+a FormRequest, so each can type-hint the model it extends and any other dependency:
+
+- `rules()` validates the extension's values on their own, so `required_if:plan,pro` refers
+  to the extension's own `plan`. They only run when a request sends values for the
+  extension: `required` means required whenever its values are sent. A `?User $user`
+  parameter receives the model when updating and null when creating.
+- `values($model)` returns the current values, keyed by field. Values are strings, numbers,
+  booleans, null, or lists of those.
+- `save($model, array $values)` stores the validated values; the parameter must be named
+  `$values`. It runs inside the transaction that writes the model, after its row is written
+  and before Wings is contacted, so throwing rolls the whole change back. Put work that has
+  to wait for the commit in `DB::afterCommit()`.
+- `authorize()` decides whether the signed-in user may see and change the values; type-hint
+  `#[CurrentUser] User $admin` to get them. A request that sends values it refuses gets a 403.
+- `attributes()` and `messages()` name the fields in validation messages and replace them,
+  as on a FormRequest.
+
+Leave out `values()` and `save()` and the panel stores the values for you, in the
+extension's settings scoped to the model: read them with `$this->settings()->for($user)`.
+Implement both to keep the values in your own tables, where you can index, join and query
+them. Implementing only one fails the provider's boot.
+
+The admin API's create and update endpoints accept `extensions: { "<id>": { "<field>": value } }`
+and report errors under `extensions.<id>.<field>`. Responses about one resource include
+`attributes.extensions`; lists leave it out. A request that leaves an extension out does not
+run its `save()`, values sent for an extension that is disabled are ignored, and an extension
+whose `values()` throws is recorded as failing and left out of the response. Mark the class
+`#[ApplicationApi]` (`Pterodactyl\Extensions\Attributes\ApplicationApi`) to accept and return
+its values on the Application API's user, node, location and server endpoints as well, so a
+billing system that provisions through it can set them.
+
+Draw the fields with `forms.extend()`. The component receives `field(name)`, which binds one
+field to the form: `value`, `setValue`, an `id` for its label, and `error`, the panel's
+message from the last save until the field changes. `values` holds every field of the
+extension as edited so far, `mode` is `'create'` or `'edit'`, and `resource` is the saved
+resource when editing.
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+import { definePterodactylExtension, http, Label, Select, type FormExtension } from '@pterodactyl/sdk';
+
+const RoleSelect: FormExtension<{ role: number | null }, 'admin.user'> = ({ field }) => {
+    const role = field('role');
+    const { data: roles = [] } = useQuery(rolesQuery);
+
+    return (
+        <div>
+            <Label htmlFor={role.id}>Role</Label>
+            <Select
+                id={role.id}
+                value={role.value ?? 0}
+                options={[{ value: 0, label: 'No role' }, ...roles.map((r) => ({ value: r.id, label: r.name }))]}
+                onChange={(value) => role.setValue(value === 0 ? null : Number(value))}
+            />
+            {role.error && <p className={'input-help error'}>{role.error}</p>}
+        </div>
+    );
+};
+
+export default definePterodactylExtension({
+    setup({ forms }) {
+        forms.extend('admin.user', RoleSelect);
+    },
+});
+```
+
+The forms are `admin.user`, `admin.server` (the create form and the details form),
+`admin.node`, `admin.egg`, `admin.location`, `admin.mount` and `admin.database_host`. The
+panel draws each extension's component under its name, inside an error boundary. It sends
+an extension's values once one of them changes, and then all of them, so a save never
+writes values the admin did not touch. When editing, an extension whose values the panel did
+not return is not drawn.
+
 ## Backend provider API
 
 The manifest's `provider` class is loaded through its `autoload` map of PSR-4 prefixes to
@@ -431,43 +492,6 @@ reimplementing it. Beside the mutating actions, these read or complete on your b
 
 These actions do not check permissions; authorize the caller first, as the core
 controllers do. They can be wrapped like any other action.
-
-### Form fields
-
-`registerFormFields($form, $rules, $load = null, $save = null)` adds fields to a resource
-form (`admin.user`, `admin.node`, `admin.server`, `admin.egg`, `admin.location`,
-`admin.mount` or `admin.databaseHost`). `$rules` are Laravel validation rules keyed by
-field; the panel prefixes them with `extensions.<id>.` and applies them only when the
-request carries your extension's values, so API clients that omit `extensions` are not
-affected and your stored values stay as they are. A rule that names another field, such
-as `required_if`, must use the full path: `required_if:extensions.<id>.plan,pro`.
-
-```php
-$this->registerFormFields('admin.user', ['plan' => ['required', 'in:free,pro']]);
-
-$this->registerFormFields(
-    'admin.node',
-    ['region' => ['required', 'string', 'max:32']],
-    fn (Node $node): array => ['region' => NodeRegion::for($node)],
-    fn (Node $node, array $values) => NodeRegion::store($node, $values['region']),
-);
-```
-
-Users and servers need no callbacks: values are stored as your settings scoped to that
-user or server, so `$this->settings()->forUser($user)->get('plan')` reads them. Other forms
-require both callbacks. `load` returns the current values for the edit form; values that
-are not strings, numbers, booleans, `null` or lists of strings and numbers are rejected,
-and a `load` that throws is recorded against your extension. The form still renders, but
-your contributions to that slot are hidden so a save cannot overwrite what you stored.
-`save` receives the saved resource and the declared fields that were submitted; a field
-that was never filled in is absent, so read values with a fallback.
-
-Saving runs in the same transaction as the core change, so an exception from `save`
-rolls back the update and reaches the caller. Server creation is the exception: Wings
-reads the new server while it provisions, so your values are saved after provisioning
-succeeds, outside that transaction. Fields of a disabled or failed extension are neither
-validated nor saved. `GET /api/admin/extensions/forms/{form}/{id}` returns the current values
-of every extension, keyed by extension id.
 
 ### Commands and scheduled tasks
 

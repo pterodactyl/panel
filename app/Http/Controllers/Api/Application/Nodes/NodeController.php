@@ -15,6 +15,7 @@ use Pterodactyl\Contracts\Nodes\CreatesNodes;
 use Pterodactyl\Contracts\Nodes\DeletesNodes;
 use Pterodactyl\Contracts\Nodes\UpdatesNodes;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -91,7 +92,7 @@ class NodeController extends ApplicationApiController
     public function view(GetNodeRequest $request, Node $node): array
     {
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -101,12 +102,13 @@ class NodeController extends ApplicationApiController
      */
     #[Endpoint('Create node', 'Creates a new Wings node and returns the created resource.')]
     #[ResponseFromTransformer(NodeTransformer::class, Node::class, status: 201, description: 'Node created.', factoryStates: ['withLocation'], resourceKey: 'node', meta: ['resource' => 'https://panel.example.test/api/application/nodes/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreNodeRequest $request, CreatesNodes $nodes): JsonResponse
     {
         $node = $nodes->create($request->payload());
 
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.application.nodes.view', [
                     'node' => $node->id,
@@ -126,6 +128,7 @@ class NodeController extends ApplicationApiController
     #[Endpoint('Update node', 'Updates an existing Wings node by internal numeric ID.')]
     #[ResponseFromTransformer(NodeTransformer::class, Node::class, factoryStates: ['withLocation'], resourceKey: 'node')]
     #[ScribeResponse(self::CONFIGURATION_NOT_PERSISTED_ERROR, status: 400, description: 'The panel saved the node changes but could not persist the configuration to Wings.')]
+    #[ExtensionFieldsParam]
     public function update(UpdateNodeRequest $request, UpdatesNodes $nodes, Node $node): array
     {
         $node = $nodes->update(
@@ -135,7 +138,7 @@ class NodeController extends ApplicationApiController
         );
 
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

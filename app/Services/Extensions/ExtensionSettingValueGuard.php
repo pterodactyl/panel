@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
+use Closure;
+use Illuminate\Contracts\Validation\Rule as RuleContract;
+use Illuminate\Contracts\Validation\ValidationRule as ValidationRuleContract;
 use Illuminate\Support\Facades\Crypt;
 use Pterodactyl\Support\JsonValueGuard;
+use Stringable;
 use UnexpectedValueException;
 
 final class ExtensionSettingValueGuard
@@ -56,6 +60,120 @@ final class ExtensionSettingValueGuard
 
             self::assertValue($item);
         }
+    }
+
+    /**
+     * Whether a value fits an extension field: a string, number, boolean or null, or a
+     * list of those.
+     *
+     * @phpstan-assert-if-true ExtensionFieldValue $value
+     */
+    public static function isFieldValue(mixed $value): bool
+    {
+        if (! is_array($value)) {
+            return $value === null || is_scalar($value);
+        }
+
+        if (! array_is_list($value)) {
+            return false;
+        }
+
+        foreach ($value as $item) {
+            if ($item !== null && ! is_scalar($item)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @phpstan-assert ExtensionFieldValue $value
+     *
+     * @return ExtensionFieldValue
+     */
+    public static function fieldValue(mixed $value): bool|float|int|string|array|null
+    {
+        throw_unless(self::isFieldValue($value), UnexpectedValueException::class, 'Extension field values must be strings, numbers, booleans, null, or lists of them.');
+
+        return $value;
+    }
+
+    /**
+     * @phpstan-assert ExtensionFieldValues $value
+     *
+     * @return ExtensionFieldValues
+     */
+    public static function fieldValues(mixed $value): array
+    {
+        throw_unless(is_array($value), UnexpectedValueException::class, 'Extension field values must be an array keyed by field name.');
+
+        $values = [];
+        foreach ($value as $key => $item) {
+            throw_unless(is_string($key), UnexpectedValueException::class, 'Extension field names must be strings.');
+            $values[$key] = self::fieldValue($item);
+        }
+
+        return $values;
+    }
+
+    /**
+     * Field values keyed by extension id and then by field name.
+     *
+     * @phpstan-assert ExtensionFieldInput $value
+     *
+     * @return ExtensionFieldInput
+     */
+    public static function fieldInput(mixed $value): array
+    {
+        throw_unless(is_array($value), UnexpectedValueException::class, 'Extension field input must be an array keyed by extension id.');
+
+        $input = [];
+        foreach ($value as $extension => $values) {
+            throw_unless(is_string($extension), UnexpectedValueException::class, 'Extension field input must be keyed by extension id.');
+            $input[$extension] = self::fieldValues($values);
+        }
+
+        return $input;
+    }
+
+    /**
+     * The validation rules an extension's Fields declare: rule strings, objects or closures,
+     * or lists of them, keyed by field.
+     *
+     * @phpstan-assert ValidationRules $value
+     *
+     * @return ValidationRules
+     */
+    public static function validationRules(mixed $value): array
+    {
+        throw_unless(is_array($value), UnexpectedValueException::class, 'Extension field rules must be an array keyed by field name.');
+
+        $rules = [];
+        foreach ($value as $field => $rule) {
+            throw_unless(is_string($field), UnexpectedValueException::class, 'Extension field rules must be keyed by field name.');
+            $rules[$field] = is_array($rule) ? array_values(array_map(self::validationRule(...), $rule)) : self::validationRule($rule);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @phpstan-assert array<string, string> $value
+     *
+     * @return array<string, string>
+     */
+    public static function stringMap(mixed $value): array
+    {
+        throw_unless(is_array($value), UnexpectedValueException::class, 'Extension field attributes and messages must be an array of strings.');
+
+        $strings = [];
+        foreach ($value as $key => $string) {
+            throw_unless(is_string($key) && is_string($string), UnexpectedValueException::class, 'Extension field attributes and messages must be an array of strings.');
+            $strings[$key] = $string;
+        }
+
+        return $strings;
     }
 
     /**
@@ -175,5 +293,17 @@ final class ExtensionSettingValueGuard
             'json' => true,
         };
         throw_unless($valid, UnexpectedValueException::class, "Extension frontend setting does not match its declared {$type} type.");
+    }
+
+    /**
+     * @phpstan-assert ValidationRule $value
+     *
+     * @return ValidationRule
+     */
+    private static function validationRule(mixed $value): string|Stringable|Closure|RuleContract|ValidationRuleContract
+    {
+        throw_unless(is_string($value) || $value instanceof Stringable || $value instanceof Closure || $value instanceof RuleContract || $value instanceof ValidationRuleContract, UnexpectedValueException::class, 'Extension field rules must be rule strings, rule objects or closures.');
+
+        return $value;
     }
 }

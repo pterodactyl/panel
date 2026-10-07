@@ -27,6 +27,7 @@ use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
+use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Ramsey\Uuid\Uuid;
 use Throwable;
@@ -38,6 +39,7 @@ final readonly class CreateServer implements CreatesServers
         private FindViableNodesService $findViableNodesService,
         private DeletesServers $deleteServer,
         private VariableValidatorService $validatorService,
+        private ExtensionFields $extensions,
     ) {}
 
     /**
@@ -78,6 +80,7 @@ final readonly class CreateServer implements CreatesServers
             $server = $this->createModel($data);
             $this->storeAssignedAllocations($server, $data);
             $this->storeEggVariables($server, $eggVariableData);
+            $this->extensions->save($server, $data['extensions']);
 
             return $server;
         }, 5);

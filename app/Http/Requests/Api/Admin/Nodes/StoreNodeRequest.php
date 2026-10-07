@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Nodes;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Rules\Fqdn;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
@@ -23,14 +25,6 @@ class StoreNodeRequest extends AdminApiRequest
     public function permissions(): array
     {
         return [Permissions::AdminNodesCreate];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function extensionForm(): string
-    {
-        return 'admin.node';
     }
 
     /**
@@ -139,6 +133,16 @@ class StoreNodeRequest extends AdminApiRequest
             $response['upload_size'] = JsonValueGuard::integer($uploadSize);
         }
 
+        $response['extensions'] = $this->extensionValues();
+
         return $response;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Node::class;
     }
 }

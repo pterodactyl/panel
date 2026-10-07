@@ -82,6 +82,7 @@ class EggTransformer extends BaseAdminTransformer
             'relationships' => [],
             $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
             $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
+            ...$this->extensionFields($model),
         ];
         JsonValueGuard::assertPayload($payload);
 

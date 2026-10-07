@@ -15,6 +15,7 @@ use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Contracts\Users\DeletesUsers;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -72,7 +73,7 @@ class UserController extends ApplicationApiController
     public function view(GetUsersRequest $request, User $user): array
     {
         return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -83,12 +84,13 @@ class UserController extends ApplicationApiController
      */
     #[Endpoint('Update user', 'Updates account details for an existing panel user.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, resourceKey: 'user')]
+    #[ExtensionFieldsParam]
     public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
     {
         $user = $users->update($user, $request->payload());
 
         $response = Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class));
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields());
 
         return $response->toResponseArray();
     }
@@ -101,6 +103,7 @@ class UserController extends ApplicationApiController
      */
     #[Endpoint('Create user', 'Creates a new panel user and returns the created resource.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.test/api/application/users/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
         $user = $users->create($request->payload());
@@ -111,7 +114,7 @@ class UserController extends ApplicationApiController
             ->log();
 
         return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.application.users.view', [
                     'user' => $user->id,

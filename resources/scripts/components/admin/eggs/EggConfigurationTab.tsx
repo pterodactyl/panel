@@ -5,19 +5,15 @@ import { updateAdminEggInput, useAdminEggs, useUpdateAdminEgg } from '@/api/admi
 import { useEggDetail } from '@/components/admin/eggs/useEggDetail';
 import EggConfigurationFields from '@/components/admin/eggs/EggConfigurationForm';
 import { eggToFormValues, toApiValues } from '@/components/admin/eggs/helpers';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues } from '@/extensions/forms';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
-import Spinner from '@/components/elements/Spinner';
-import Slot from '@/extensions/Slot';
-import type { LoadedExtensionFieldValues } from '@/extensions/formFields';
-import { useExtensionFormFields } from '@/extensions/useExtensionFormFields';
 
 interface Props {
     egg: AdminEgg;
-    extensions: LoadedExtensionFieldValues;
-    hidden: readonly string[];
 }
 
-function EggConfigurationForm({ egg, extensions, hidden }: Props) {
+function EggConfigurationForm({ egg }: Props) {
     const logsEditor = useRef<CodemirrorEditorHandle | null>(null);
     const filesEditor = useRef<CodemirrorEditorHandle | null>(null);
     const startupEditor = useRef<CodemirrorEditorHandle | null>(null);
@@ -26,7 +22,7 @@ function EggConfigurationForm({ egg, extensions, hidden }: Props) {
     const eggs = (eggOptions?.data ?? []).filter((option) => option.attributes.id !== egg.attributes.id);
     const updateEgg = useUpdateAdminEgg();
 
-    const initialValues = eggToFormValues(egg, extensions);
+    const initialValues = eggToFormValues(egg);
 
     const form = useAppForm({
         defaultValues: initialValues,
@@ -41,6 +37,7 @@ function EggConfigurationForm({ egg, extensions, hidden }: Props) {
                         toApiValues(value, { configLogs, configFiles, configStartup })
                     )
                 );
+                form.setFieldValue('extensions', initialExtensionValues());
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -59,11 +56,18 @@ function EggConfigurationForm({ egg, extensions, hidden }: Props) {
                 filesRef={filesEditor}
                 startupRef={startupEditor}
             />
-            <Slot
-                name={'panel.eggs.detail.configuration.form'}
-                data={{ kind: 'admin.egg', mode: 'edit', resource: egg, form }}
-                hidden={hidden}
-            />
+            <form.AppField name={'extensions'}>
+                {() => (
+                    <ExtensionFormFields
+                        form={'admin.egg'}
+                        mode={'edit'}
+                        resource={egg}
+                        error={updateEgg.error}
+                        boxed
+                        className={'mt-4'}
+                    />
+                )}
+            </form.AppField>
             <div className={'flex justify-end mt-6'}>
                 <form.AppForm>
                     <form.SubmitButton>Save Changes</form.SubmitButton>
@@ -75,18 +79,6 @@ function EggConfigurationForm({ egg, extensions, hidden }: Props) {
 
 export default function EggConfigurationTab() {
     const egg = useEggDetail();
-    const extensions = useExtensionFormFields('admin.egg', egg.attributes.id);
 
-    if (!extensions.ready) {
-        return <Spinner size={'large'} centered />;
-    }
-
-    return (
-        <EggConfigurationForm
-            key={egg.attributes.id}
-            egg={egg}
-            extensions={extensions.values}
-            hidden={extensions.hidden}
-        />
-    );
+    return <EggConfigurationForm key={egg.attributes.id} egg={egg} />;
 }

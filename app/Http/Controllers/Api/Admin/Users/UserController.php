@@ -29,7 +29,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateUserRequest;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Extensions\ExtensionFormFields;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -110,7 +109,7 @@ class UserController extends AdminApiController
     public function show(GetUserRequest $request, User $user): array
     {
         return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -120,9 +119,9 @@ class UserController extends AdminApiController
     #[Endpoint('Create user', 'Creates a panel user. Optional password and language fields may be supplied explicitly.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.com/api/admin/users/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreUserRequest $request, CreatesUsers $users, ExtensionFormFields $fields): JsonResponse
+    public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
-        $user = $fields->persist('admin.user', $request->extensionFields(), fn (): User => $users->create($request->payload()));
+        $user = $users->create($request->payload());
 
         Activity::event('admin:user.create')
             ->subject($user)
@@ -130,7 +129,7 @@ class UserController extends AdminApiController
             ->log();
 
         return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.users.view', [
                     'user' => $user->id,
@@ -147,9 +146,9 @@ class UserController extends AdminApiController
     #[Endpoint('Update user', 'Updates an existing panel user. Supplying a password changes the user password.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'User updated.', resourceKey: 'user')]
     #[ExtensionFieldsParam]
-    public function update(UpdateUserRequest $request, UpdatesUsers $users, ExtensionFormFields $fields, User $user): array
+    public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
     {
-        $user = $fields->persist('admin.user', $request->extensionFields(), fn (): User => $users->update($user, $request->payload()));
+        $user = $users->update($user, $request->payload());
 
         Activity::event('admin:user.update')
             ->subject($user)
@@ -157,7 +156,7 @@ class UserController extends AdminApiController
             ->log();
 
         return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

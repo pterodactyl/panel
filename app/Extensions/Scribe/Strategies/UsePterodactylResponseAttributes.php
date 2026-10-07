@@ -20,6 +20,7 @@ use League\Fractal\TransformerAbstract;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Models\User;
 use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use ReflectionClass;
 
 class UsePterodactylResponseAttributes extends UseResponseAttributes
@@ -120,6 +121,11 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
         throw_unless($transformer instanceof TransformerAbstract, InvalidArgumentException::class, "Transformer [$transformerClass] must extend ".TransformerAbstract::class.'.');
 
         if (! $attribute->collection) {
+            // Controllers add extension field values to responses about one resource.
+            if ($transformer instanceof BaseTransformer) {
+                $transformer->withExtensionFields();
+            }
+
             $resource = new Item($modelInstantiator(), $transformer, $attribute->resourceKey);
 
             return $fractal->createData($resource)->toJson();

@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Users;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Throwable;
 
-final class UpdateUser implements UpdatesUsers
+final readonly class UpdateUser implements UpdatesUsers
 {
+    public function __construct(private ExtensionFields $extensions) {}
+
     /**
      * Update the user model instance and return the updated model. The hashed
      * password cast on the model takes care of hashing a new password.
@@ -22,11 +27,18 @@ final class UpdateUser implements UpdatesUsers
      */
     public function update(User $user, array $data): User
     {
+        // SAFETY: requests put the validated values of each extension under `extensions`.
+        $extensions = ExtensionSettingValueGuard::fieldInput($data['extensions'] ?? []);
+        unset($data['extensions']);
+
         if (empty(Arr::get($data, 'password'))) {
             unset($data['password']);
         }
 
-        $user->forceFill($data)->saveOrFail();
+        DB::transaction(function () use ($user, $data, $extensions): void {
+            $user->forceFill($data)->saveOrFail();
+            $this->extensions->save($user, $extensions);
+        });
 
         if (isset($data['password'])) {
             event(new PasswordChanged($user));

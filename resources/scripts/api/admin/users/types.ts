@@ -1,4 +1,4 @@
-import type { ExtensionFieldValues } from '@/extensions/formFields';
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 export interface UserValues {
     email: string;
@@ -8,5 +8,5 @@ export interface UserValues {
     password: string;
     rootAdmin: boolean;
     language: string;
-    extensions: ExtensionFieldValues<'admin.user'>;
+    extensions: ExtensionFormValues;
 }
