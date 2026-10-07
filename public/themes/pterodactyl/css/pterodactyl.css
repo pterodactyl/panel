@@ -561,7 +561,10 @@ body {
 }
 
 .text-danger {
-    color: #ff1c00;
+    color: #ffffff;
+    background: #dd4b39;
+    padding: 5px 10px;
+    border-radius: 3px;
 }
 
 .content-wrapper {
