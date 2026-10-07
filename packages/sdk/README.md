@@ -322,8 +322,10 @@ not a durable job audit log.
 
 ## Backend provider API
 
-The manifest's `provider` class is loaded through its `autoload` map of PSR-4 prefixes to
-package directories, such as `{ "Acme\\Billing\\": "src" }`. A prefix cannot equal, contain
+The manifest's `provider` class is loaded through a map of PSR-4 prefixes to package
+directories, such as `{ "Acme\\Billing\\": "src" }`. Scaffolds keep it in `composer.json`
+under `autoload.psr-4`, where Composer, editors and static analysis read it too; an
+`autoload` map in `extension.json` takes its place when present. A prefix cannot equal, contain
 or sit inside `Pterodactyl\`, `Illuminate\`, `Laravel\`, `Symfony\` or a namespace of the
 panel's Composer packages, and enabling fails while another enabled extension autoloads an
 overlapping prefix. Extension class loaders are registered behind the panel's, so once an
@@ -339,6 +341,13 @@ uses. Give each extension a suffix of its own in its `composer.json`:
 ```json
 { "config": { "autoloader-suffix": "AcmeBillingExtension" } }
 ```
+
+Build `vendor/` with `composer install --no-dev --optimize-autoloader` before packing.
+`p:extension:doctor` and `p:extension:pack` read `vendor/composer/installed.json` and warn
+about development packages left in `vendor/`, about `composer.json` requirements the
+panel's copy of a package does not satisfy, and about bundled packages the panel loads at
+another version. None of these stop the extension from loading, but its code runs with the
+panel's copy of any package both ship.
 
 Providers can use `listenToServerOperations` for immutable `provision`, `install`,
 `reinstall`, `backup`, `delete`, `suspend`, `unsuspend`, and `transfer` results. Results

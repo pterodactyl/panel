@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use JsonException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use Pterodactyl\Support\JsonValueGuard;
 use ReflectionClass;
 use UnexpectedValueException;
 
@@ -71,7 +72,9 @@ class ExtensionManifestValidator
 
         throw_if(in_array($id, ExtensionManifest::RESERVED_IDS, true), InvalidExtensionException::class, "Extension id \"{$id}\" is reserved.");
 
-        $autoload = $this->normalizeAutoload($data['autoload'] ?? []);
+        $autoload = isset($data['autoload'])
+            ? $this->normalizeAutoload($data['autoload'], 'Manifest "autoload"')
+            : $this->normalizeAutoload($this->composerAutoload($directory), 'composer.json "autoload.psr-4"');
         [$uiEntry, $uiMode] = $this->normalizeUi($data['ui'] ?? null);
 
         $provider = $data['provider'] ?? null;
@@ -228,19 +231,49 @@ class ExtensionManifestValidator
     }
 
     /**
-     * @param  array<array-key, ApiValue9>  $autoload
+     * The PSR-4 map of the package's composer.json, which Composer and editors read. It is
+     * used when extension.json declares no `autoload` of its own.
+     *
+     * @return array<array-key, JsonInputValue>
+     */
+    private function composerAutoload(string $directory): array
+    {
+        $path = mb_rtrim($directory, '/\\').DIRECTORY_SEPARATOR.'composer.json';
+        if (! is_file($path)) {
+            return [];
+        }
+
+        try {
+            $composer = JsonValueGuard::decodeArray8(File::get($path));
+        } catch (JsonException|UnexpectedValueException) {
+            throw new InvalidExtensionException("{$path} is not valid JSON.");
+        }
+
+        $psr4 = is_array($composer['autoload'] ?? null) ? $composer['autoload']['psr-4'] ?? [] : [];
+        throw_unless(is_array($psr4), InvalidExtensionException::class, 'composer.json "autoload.psr-4" must map "Vendor\\\\Prefix\\\\" to a source directory.');
+
+        return $psr4;
+    }
+
+    /**
+     * @param  array<array-key, JsonInputValue>  $autoload
      * @return array<string, string>
      */
-    private function normalizeAutoload(mixed $autoload): array
+    private function normalizeAutoload(array $autoload, string $field): array
     {
         $normalized = [];
         foreach ($autoload as $prefix => $src) {
-            throw_if(! is_string($prefix) || ! is_string($src) || preg_match(ExtensionManifest::NAMESPACE_REGEX, $prefix) !== 1, InvalidExtensionException::class, 'Manifest "autoload" must map "Vendor\\\\Prefix\\\\" to a source directory.');
+            // Composer also maps a prefix to a list of directories; a list of one is the same map.
+            if (is_array($src) && count($src) === 1 && array_is_list($src)) {
+                $src = $src[0];
+            }
+
+            throw_if(! is_string($prefix) || ! is_string($src) || preg_match(ExtensionManifest::NAMESPACE_REGEX, $prefix) !== 1, InvalidExtensionException::class, $field.' must map "Vendor\\\\Prefix\\\\" to a source directory.');
 
             $reserved = array_find($this->panelNamespaces(), fn (string $namespace): bool => ExtensionManifest::namespacesOverlap($prefix, $namespace));
-            throw_if($reserved !== null, InvalidExtensionException::class, "Manifest \"autoload\" namespace \"{$prefix}\" overlaps \"{$reserved}\", which the panel already autoloads.");
+            throw_if($reserved !== null, InvalidExtensionException::class, "{$field} namespace \"{$prefix}\" overlaps \"{$reserved}\", which the panel already autoloads.");
 
-            throw_if(str_starts_with($src, '/') || str_contains($src, '..'), InvalidExtensionException::class, 'Manifest "autoload" directories must be relative paths inside the package.');
+            throw_if(str_starts_with($src, '/') || str_contains($src, '..'), InvalidExtensionException::class, $field.' directories must be relative paths inside the package.');
 
             $normalized[$prefix] = mb_trim(str_replace('\\', '/', $src), '/');
         }

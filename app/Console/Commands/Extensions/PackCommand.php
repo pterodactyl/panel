@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
+use Pterodactyl\Services\Extensions\ExtensionComposerInspector;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use ZipArchive;
@@ -19,11 +20,15 @@ use ZipArchive;
 #[Signature('p:extension:pack {path : Path to the unpacked extension.} {--output= : Archive filename.} {--force : Overwrite an existing archive.}')]
 class PackCommand extends Command
 {
-    public function handle(ExtensionManifestValidator $validator, ExtensionAssetPublisher $assets): int
+    public function handle(ExtensionManifestValidator $validator, ExtensionAssetPublisher $assets, ExtensionComposerInspector $composer): int
     {
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
             throw_if($reason = $assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
+            foreach ($composer->warnings($manifest) as $warning) {
+                $this->components->warn($warning);
+            }
+
             $output = $this->option('output') ?: getcwd().DIRECTORY_SEPARATOR.$manifest->id.'-'.$manifest->version.'.pteroext';
             throw_if(is_file($output) && ! $this->option('force'), InvalidExtensionException::class, 'Archive exists; pass --force to overwrite it.');
             File::ensureDirectoryExists(dirname($output));
@@ -34,6 +39,11 @@ class PackCommand extends Command
                 throw_unless($zip->open($temporary, ZipArchive::CREATE | ZipArchive::EXCL) === true, InvalidExtensionException::class, 'Unable to open archive.');
                 $opened = true;
                 throw_unless($zip->addFile($manifest->path(ExtensionManifest::FILENAME), ExtensionManifest::FILENAME), InvalidExtensionException::class, 'Unable to add extension manifest to archive.');
+                // The panel reads the PSR-4 map from composer.json when the manifest has none.
+                if (is_file($manifest->path('composer.json'))) {
+                    throw_unless($zip->addFile($manifest->path('composer.json'), 'composer.json'), InvalidExtensionException::class, 'Unable to add composer.json to archive.');
+                }
+
                 $directories = array_unique(['routes', 'database', 'resources', 'dist', 'vendor', ...array_values($manifest->autoload)]);
                 foreach ($directories as $directory) {
                     if (! is_dir($manifest->path($directory))) {

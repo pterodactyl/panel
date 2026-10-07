@@ -68,7 +68,7 @@
         },
         "autoload": {
             "type": "object",
-            "description": "PSR-4 namespace prefixes mapped to source directories inside the package. A prefix cannot equal, contain or sit inside Pterodactyl\\, Illuminate\\, Laravel\\, Symfony\\ or a namespace of the panel's Composer packages, and enabling fails while another enabled extension autoloads an overlapping one.",
+            "description": "PSR-4 namespace prefixes mapped to source directories inside the package. Without it, the panel reads autoload.psr-4 from the package's composer.json. A prefix cannot equal, contain or sit inside Pterodactyl\\, Illuminate\\, Laravel\\, Symfony\\ or a namespace of the panel's Composer packages, and enabling fails while another enabled extension autoloads an overlapping one.",
             "propertyNames": {
                 "pattern": "^(?:[A-Za-z_\\u0080-\\uffff][A-Za-z0-9_\\u0080-\\uffff]*\\\\)+$"
             },

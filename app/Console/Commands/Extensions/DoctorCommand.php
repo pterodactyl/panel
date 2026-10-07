@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionCompatibility;
+use Pterodactyl\Services\Extensions\ExtensionComposerInspector;
 use Pterodactyl\Services\Extensions\ExtensionIconCatalog;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -18,7 +19,7 @@ use Pterodactyl\Services\Extensions\ExtensionRepository;
 #[Signature('p:extension:doctor {path : Path to an unpacked extension package.}')]
 class DoctorCommand extends Command
 {
-    public function handle(ExtensionManifestValidator $validator, ExtensionCompatibility $compatibility, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, ExtensionIconCatalog $icons): int
+    public function handle(ExtensionManifestValidator $validator, ExtensionCompatibility $compatibility, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, ExtensionIconCatalog $icons, ExtensionComposerInspector $composer): int
     {
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
@@ -39,6 +40,10 @@ class DoctorCommand extends Command
 
         if (($problem = $assets->iconProblem($manifest)) !== null) {
             $this->components->warn($problem.' The extension list shows its initials instead.');
+        }
+
+        foreach ($composer->warnings($manifest) as $warning) {
+            $this->components->warn($warning);
         }
 
         $this->components->info("{$manifest->id} v{$manifest->version}: manifest, compatibility, autoload directories, and build passed.");

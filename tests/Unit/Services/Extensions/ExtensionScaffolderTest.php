@@ -29,6 +29,14 @@ test('scaffolds an installable package', function (): void {
     expect($manifest->author)->toBe('Tester');
     expect($manifest->provider)->toBe('MyWidget\MyWidgetProvider');
     expect($manifest->autoload)->toBe(['MyWidget\\' => 'src']);
+    // The PSR-4 map lives where Composer and editors read it, with an autoloader of its own.
+    expect(File::json($target.'/extension.json'))->not->toHaveKey('autoload');
+    expect(File::json($target.'/composer.json'))->toBe([
+        'description' => 'A test widget.',
+        'autoload' => ['psr-4' => ['MyWidget\\' => 'src/']],
+        'config' => ['autoloader-suffix' => 'MyWidgetExtension'],
+    ]);
+    expect(File::get($target.'/.gitignore'))->toContain('/vendor/');
     expect($manifest->hasUi())->toBeTrue();
     expect($manifest->screens)->toBe([['id' => 'main', 'area' => 'server', 'path' => 'my-widget', 'nav' => ['label' => 'My Widget']]]);
 
