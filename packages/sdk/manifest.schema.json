@@ -43,6 +43,22 @@
                 "null"
             ]
         },
+        "icon": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "maxLength": 255,
+            "anyOf": [
+                {
+                    "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+                },
+                {
+                    "pattern": "^(?:[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_-][A-Za-z0-9_.-]*\\.(?:png|jpe?g|webp)$"
+                }
+            ],
+            "description": "Shown on the admin extensions page. A lucide icon name (https://lucide.dev/icons) such as life-buoy, or the path of a PNG, JPEG or WebP image inside the package such as icon.png (at most 512 KB and 2048 px per side). Without one the extension's initials are shown."
+        },
         "provider": {
             "type": [
                 "string",

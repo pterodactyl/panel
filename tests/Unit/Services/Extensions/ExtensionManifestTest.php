@@ -435,3 +435,37 @@ test('reserves every top-level route of the SPA and matches the SDK manifest sch
     // Served by a core route whose `extensions.` name the route scan skips.
     expect(ExtensionManifest::RESERVED_ROOT_PREFIXES)->toContain(ExtensionSettingFiles::ROUTE_PREFIX);
 });
+
+test('accepts a lucide icon name or an image path as the icon', function (?string $icon, ?string $name, ?string $file): void {
+    writeManifest(array_filter(['id' => 'icon-test', 'name' => 'Icons', 'version' => '1.0.0', 'icon' => $icon]));
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+
+    expect($manifest->icon)->toBe($icon);
+    expect($manifest->iconName())->toBe($name);
+    expect($manifest->iconFile())->toBe($file);
+})->with([
+    'none' => [null, null, null],
+    'lucide name' => ['life-buoy', 'life-buoy', null],
+    'root image' => ['icon.png', null, 'icon.png'],
+    'nested image' => ['resources/brand/Logo_2x.webp', null, 'resources/brand/Logo_2x.webp'],
+    'jpeg image' => ['icon.jpeg', null, 'icon.jpeg'],
+]);
+
+test('rejects icons that are neither a lucide name nor an image inside the package', function (mixed $icon): void {
+    writeManifest(['id' => 'icon-test', 'name' => 'Icons', 'version' => '1.0.0', 'icon' => $icon]);
+
+    expect(fn () => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, 'Manifest "icon"');
+})->with([
+    'uppercase name' => ['LifeBuoy'],
+    'trailing newline' => ["life-buoy\n"],
+    'svg image' => ['icon.svg'],
+    'gif image' => ['icon.gif'],
+    'absolute path' => ['/etc/icon.png'],
+    'traversal' => ['../icon.png'],
+    'nested traversal' => ['dist/../../icon.png'],
+    'hidden file' => ['.icon.png'],
+    'backslashes' => ['dist\\icon.png'],
+    'url' => ['https://example.com/icon.png'],
+    'not a string' => [['icon.png']],
+    'too long' => [str_repeat('a', 252).'.png'],
+]);

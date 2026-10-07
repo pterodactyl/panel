@@ -35,7 +35,7 @@ afterEach(function (): void {
     repository()->flushDiscovery();
     File::deleteDirectory($this->baseDirectory);
 });
-dataset('extensionEndpointsDataProvider', fn (): array => [['getJson', 'api.admin.extensions'], ['postJson', 'api.admin.extensions.install'], ['getJson', 'api.admin.extensions.settings', ['extension' => 'admin-fixture']], ['patchJson', 'api.admin.extensions.settings.update', ['extension' => 'admin-fixture']], ['postJson', 'api.admin.extensions.settings.file', ['extension' => 'admin-fixture', 'input' => 'logo']], ['deleteJson', 'api.admin.extensions.settings.file.clear', ['extension' => 'admin-fixture', 'input' => 'logo']], ['postJson', 'api.admin.extensions.enable', ['extension' => 'admin-fixture']], ['postJson', 'api.admin.extensions.disable', ['extension' => 'admin-fixture']], ['delete', 'api.admin.extensions.delete', ['extension' => 'admin-fixture']]]);
+dataset('extensionEndpointsDataProvider', fn (): array => [['getJson', 'api.admin.extensions'], ['postJson', 'api.admin.extensions.install'], ['getJson', 'api.admin.extensions.settings', ['extension' => 'admin-fixture']], ['get', 'api.admin.extensions.icon', ['extension' => 'admin-fixture']], ['patchJson', 'api.admin.extensions.settings.update', ['extension' => 'admin-fixture']], ['postJson', 'api.admin.extensions.settings.file', ['extension' => 'admin-fixture', 'input' => 'logo']], ['deleteJson', 'api.admin.extensions.settings.file.clear', ['extension' => 'admin-fixture', 'input' => 'logo']], ['postJson', 'api.admin.extensions.enable', ['extension' => 'admin-fixture']], ['postJson', 'api.admin.extensions.disable', ['extension' => 'admin-fixture']], ['delete', 'api.admin.extensions.delete', ['extension' => 'admin-fixture']]]);
 test('list extensions returns discovered extensions and metadata', function (): void {
     writeExtension('admin-fixture');
     Extension::query()->create(['identifier' => 'admin-fixture', 'version' => '1.0.0', 'enabled' => true]);
@@ -289,15 +289,74 @@ function extensionPackage(array $manifest): UploadedFile
     return new UploadedFile($path, 'bad-probe.pteroext', 'application/zip', null, true);
 }
 
-function writeExtension(string $identifier): void
+/**
+ * @param  array<string, string>  $manifest
+ */
+function writeExtension(string $identifier, array $manifest = []): string
 {
-    (function () use ($identifier): void {
+    return (function () use ($identifier, $manifest): string {
         $path = $this->extensionsDirectory.DIRECTORY_SEPARATOR.$identifier;
         File::ensureDirectoryExists($path);
-        File::put($path.DIRECTORY_SEPARATOR.'extension.json', json_encode(['id' => $identifier, 'name' => 'Admin Fixture', 'version' => '1.0.0'], JSON_THROW_ON_ERROR));
+        File::put($path.DIRECTORY_SEPARATOR.'extension.json', json_encode(['id' => $identifier, 'name' => 'Admin Fixture', 'version' => '1.0.0', ...$manifest], JSON_THROW_ON_ERROR));
         repository()->flushDiscovery();
+
+        return $path;
     })->call(pterodactylTestCase());
 }
+
+test('lists and serves an image icon from the package of a disabled extension', function (): void {
+    $path = writeExtension('admin-fixture', ['icon' => 'resources/icon.png']);
+    File::ensureDirectoryExists($path.'/resources');
+    File::put($path.'/resources/icon.png', png());
+
+    $url = $this->getJson(route('api.admin.extensions'))
+        ->assertOk()
+        ->assertJsonPath('data.0.icon', null)
+        ->assertJsonPath('data.0.enabled', false)
+        ->json('data.0.icon_url');
+    expect($url)->toBe('/api/admin/extensions/admin-fixture/icon?v='.hash('xxh3', png()));
+
+    $served = $this->get($url)->assertOk();
+    expect($served->getContent())->toBe(png());
+    expect($served->headers->get('Content-Type'))->toBe('image/png');
+    expect($served->headers->get('X-Content-Type-Options'))->toBe('nosniff');
+    expect($served->headers->get('Cache-Control'))->toContain('private')->toContain('immutable');
+    expect($served->headers->get('Content-Security-Policy'))->toContain('sandbox');
+});
+
+test('lists a lucide icon name without an icon url', function (): void {
+    writeExtension('admin-fixture', ['icon' => 'life-buoy']);
+
+    $this->getJson(route('api.admin.extensions'))
+        ->assertOk()
+        ->assertJsonPath('data.0.icon', 'life-buoy')
+        ->assertJsonPath('data.0.icon_url', null);
+    $this->getJson(route('api.admin.extensions.icon', ['extension' => 'admin-fixture']))->assertNotFound();
+});
+
+test('does not serve icons that are missing, unreadable, oversized or outside the package', function (string $case): void {
+    $path = writeExtension('admin-fixture', ['icon' => 'icon.png']);
+    $outside = $this->baseDirectory.DIRECTORY_SEPARATOR.'outside.png';
+    File::put($outside, png());
+    match ($case) {
+        'missing' => null,
+        'not an image' => File::put($path.'/icon.png', '<?php echo 1;'),
+        'svg disguised as png' => File::put($path.'/icon.png', '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
+        'oversized' => File::put($path.'/icon.png', png().str_repeat("\0", 513 * 1024)),
+        'link outside the package' => symlink($outside, $path.'/icon.png'),
+    };
+
+    $this->getJson(route('api.admin.extensions'))->assertOk()->assertJsonPath('data.0.icon_url', null);
+    $this->getJson(route('api.admin.extensions.icon', ['extension' => 'admin-fixture']))->assertNotFound();
+})->with(['missing', 'not an image', 'svg disguised as png', 'oversized', 'link outside the package']);
+
+test('icon for an unknown extension or one without an icon returns not found', function (): void {
+    writeExtension('admin-fixture');
+
+    $this->getJson(route('api.admin.extensions'))->assertOk()->assertJsonPath('data.0.icon', null)->assertJsonPath('data.0.icon_url', null);
+    $this->getJson(route('api.admin.extensions.icon', ['extension' => 'admin-fixture']))->assertNotFound();
+    $this->getJson(route('api.admin.extensions.icon', ['extension' => 'missing']))->assertNotFound();
+});
 
 test('secret settings are masked by the admin endpoint and encrypted on disk', function (): void {
     $settings = registerSettings();

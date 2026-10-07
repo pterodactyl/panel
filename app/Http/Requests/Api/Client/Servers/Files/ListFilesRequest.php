@@ -25,7 +25,7 @@ class ListFilesRequest extends ClientApiRequest implements ClientPermissionsRequ
     public function rules(): array
     {
         return [
-            'directory' => ['sometimes', 'nullable', 'string'],
+            'directory' => ['sometimes', 'nullable', 'string', 'max:2048'],
         ];
     }
 }

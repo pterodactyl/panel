@@ -35,6 +35,14 @@ test('backup can be created', function () {
     $backup = Backup::query()->where('server_id', $server->id)->where('name', 'Test Backup')->firstOrFail();
     $fake->assertBackedUp($backup->uuid);
 });
+test('backup can be created without a name', function (): void {
+    $user = User::factory()->create();
+    $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 3]);
+    $fake = new FakeDaemonBackup;
+    $response = $this->actingAs($user)->postJson($this->link($server, '/backups'))->assertOk()->assertJsonPath('object', 'backup');
+    expect($response->json('attributes.name'))->toStartWith('Backup at ');
+    $fake->assertBackedUp($response->json('attributes.uuid'));
+});
 test('backup cannot be created past the server limit', function () {
     $user = User::factory()->create();
     $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 1]);

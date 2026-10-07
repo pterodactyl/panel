@@ -32,6 +32,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Button from '@/components/elements/Button';
 import Icon from '@/components/elements/Icon';
 import Label from '@/components/elements/Label';
+import NamedIcon from '@/components/elements/NamedIcon';
 import ListToolbar from '@/components/elements/ListToolbar';
 import { NewButton } from '@/components/elements/NewButton';
 import Spinner from '@/components/elements/Spinner';
@@ -91,15 +92,39 @@ const extensionInitials = (extension: AdminExtension): string =>
         .map((part) => part[0]?.toUpperCase() ?? '')
         .join('') || 'EX';
 
-function ExtensionMark({ extension }: { extension: AdminExtension }) {
+function ExtensionMarkContent({ extension }: { extension: AdminExtension }) {
+    const [failedUrl, setFailedUrl] = useState<string | null>(null);
+    const iconUrl = extension.icon_url;
+
+    if (iconUrl && iconUrl !== failedUrl) {
+        return (
+            <img
+                src={iconUrl}
+                alt={''}
+                loading={'lazy'}
+                decoding={'async'}
+                className={'h-full w-full object-contain'}
+                onError={() => setFailedUrl(iconUrl)}
+            />
+        );
+    }
+
+    if (extension.icon) {
+        return <NamedIcon name={extension.icon} size={20} />;
+    }
+
+    return <>{extensionInitials(extension)}</>;
+}
+
+export function ExtensionMark({ extension }: { extension: AdminExtension }) {
     return (
         <div
             className={
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-secondary text-sm font-semibold text-secondary-foreground'
+                'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-secondary text-sm font-semibold text-secondary-foreground'
             }
             aria-hidden={'true'}
         >
-            {extensionInitials(extension)}
+            <ExtensionMarkContent extension={extension} />
         </div>
     );
 }

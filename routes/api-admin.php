@@ -81,6 +81,7 @@ Route::get('/activity/filters', ActivityFilterController::class)->name('api.admi
 Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): void {
     Route::get('/', [ExtensionController::class, 'index']);
     Route::get('/{extension}/settings', [ExtensionController::class, 'settings'])->name('.settings');
+    Route::get('/{extension}/icon', [ExtensionController::class, 'icon'])->name('.icon');
 
     Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
         Route::post('/', [ExtensionController::class, 'store'])->name('.install');

@@ -367,6 +367,11 @@ class FileController extends ClientApiController
             $files
         );
 
+        Activity::event('server:file.chmod')
+            ->property('directory', $root)
+            ->property('files', $files)
+            ->log();
+
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 

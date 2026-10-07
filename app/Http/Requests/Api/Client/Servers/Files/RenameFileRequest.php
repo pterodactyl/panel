@@ -25,11 +25,11 @@ class RenameFileRequest extends ClientApiRequest implements ClientPermissionsReq
     public function rules(): array
     {
         return [
-            'root' => ['required', 'nullable', 'string'],
+            'root' => ['sometimes', 'nullable', 'string', 'max:2048'],
             'files' => ['required', 'array'],
             'files.*' => ['array'],
-            'files.*.to' => ['required', 'string'],
-            'files.*.from' => ['required', 'string'],
+            'files.*.to' => ['required', 'string', 'max:2048'],
+            'files.*.from' => ['required', 'string', 'max:2048'],
         ];
     }
 }

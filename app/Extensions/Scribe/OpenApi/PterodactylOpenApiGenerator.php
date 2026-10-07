@@ -947,9 +947,10 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      */
     private function normalizeRawResponseMediaTypes(array &$pathItem, OutputEndpointData $endpoint): void
     {
-        if (($pathItem['operationId'] ?? null) !== 'adminExportEgg'
-            && preg_match('#^api/admin/eggs/\{[^}]+\}/export$#', $endpoint->uri) !== 1
-        ) {
+        $isEggExport = ($pathItem['operationId'] ?? null) === 'adminExportEgg'
+            || preg_match('#^api/admin/eggs/\{[^}]+\}/export$#', $endpoint->uri) === 1;
+        $isExtensionIcon = preg_match('#^api/admin/extensions/\{[^}]+\}/icon$#', $endpoint->uri) === 1;
+        if (! $isEggExport && ! $isExtensionIcon) {
             return;
         }
 
@@ -958,7 +959,23 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2') || ! isset($response['content']['application/json'])) {
+            if (! str_starts_with($this->arrayKeyString($status), '2')) {
+                continue;
+            }
+
+            if ($isExtensionIcon) {
+                $response['content'] = array_fill_keys(['image/png', 'image/jpeg', 'image/webp'], [
+                    'schema' => [
+                        'type' => 'string',
+                        'format' => 'binary',
+                        'description' => 'Icon image bytes.',
+                    ],
+                ]);
+
+                continue;
+            }
+
+            if (! isset($response['content']['application/json'])) {
                 continue;
             }
 

@@ -6,11 +6,13 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Events\Auth\FailedCaptcha;
 use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -35,22 +37,12 @@ class VerifyReCaptcha
             return $next($request);
         }
 
-        if ($request->filled('g-recaptcha-response')) {
-            $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
-            $res = $client->post(JsonValueGuard::string($this->config->get('recaptcha.domain')), [
-                'form_params' => [
-                    'secret' => $this->config->get('recaptcha.secret_key'),
-                    'response' => $request->input('g-recaptcha-response'),
-                ],
-            ]);
+        $result = $this->verifyCaptcha($request);
 
-            if ($res->getStatusCode() === 200) {
-                $result = $this->decodeResponse($res->getBody()->__toString());
+        $domainValid = ! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
 
-                if ($result['success'] && (! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request))) {
-                    return $next($request);
-                }
-            }
+        if ($result['success'] && $domainValid) {
+            return $next($request);
         }
 
         $this->dispatcher->dispatch(
@@ -64,6 +56,34 @@ class VerifyReCaptcha
     }
 
     /**
+     * @return array{success: bool, hostname: string|null}
+     */
+    private function verifyCaptcha(Request $request): array
+    {
+        if (! $request->filled('g-recaptcha-response')) {
+            return ['success' => false, 'hostname' => null];
+        }
+
+        try {
+            $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
+            $res = $client->post(JsonValueGuard::string($this->config->get('recaptcha.domain')), [
+                'form_params' => [
+                    'secret' => $this->config->get('recaptcha.secret_key'),
+                    'response' => $request->input('g-recaptcha-response'),
+                ],
+            ]);
+
+            if ($res->getStatusCode() === 200) {
+                return $this->decodeResponse($res->getBody()->__toString());
+            }
+        } catch (GuzzleException $exception) {
+            // Ignore the error entirely, we will just return a failed response below.
+        }
+
+        return ['success' => false, 'hostname' => null];
+    }
+
+    /**
      * Determine if the response from the recaptcha servers was valid.
      */
     /**
@@ -71,10 +91,6 @@ class VerifyReCaptcha
      */
     private function isResponseVerified(array $result, Request $request): bool
     {
-        if (! $this->config->get('recaptcha.verify_domain')) {
-            return false;
-        }
-
         $url = parse_url($request->url());
 
         return $url !== false && $result['hostname'] === Arr::get($url, 'host');

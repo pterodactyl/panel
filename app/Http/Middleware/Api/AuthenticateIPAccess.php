@@ -6,6 +6,10 @@ namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
+use IPTools\Exception\IpException;
+use IPTools\Exception\NetworkException;
 use IPTools\IP;
 use IPTools\Range;
 use Laravel\Sanctum\TransientToken;
@@ -47,10 +51,20 @@ class AuthenticateIPAccess
         $requestIp = $request->ip();
         throw_if($requestIp === null, AccessDeniedHttpException::class, 'The request did not contain a valid IP address.');
 
-        $find = new IP($requestIp);
+        try {
+            $find = new IP($requestIp);
+        } catch (IpException) {
+            throw new AccessDeniedHttpException('The request did not contain a valid IP address.');
+        }
+
         foreach ($token->allowed_ips as $ip) {
-            if (Range::parse($ip)->contains($find)) {
-                return $next($request);
+            try {
+                if (Range::parse($ip)->contains($find)) {
+                    return $next($request);
+                }
+            } catch (IpException | NetworkException | InvalidArgumentException $exception) {
+                // Ignore the error entirely
+                continue;
             }
         }
 

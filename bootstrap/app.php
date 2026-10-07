@@ -46,7 +46,7 @@ $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR_
             Route::middleware('guest')->prefix('/auth')->group(base_path('routes/auth.php'));
         });
 
-        Route::middleware(['api', RequireTwoFactorAuthentication::class])->group(function (): void {
+        Route::middleware(['api'])->group(function (): void {
             Route::middleware(['application-api', 'throttle:api.application'])
                 ->prefix('/api/application')
                 ->scopeBindings()

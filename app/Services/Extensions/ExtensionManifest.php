@@ -26,6 +26,8 @@ class ExtensionManifest
     /** A lucide icon name (kebab-case), such as "life-buoy" or "grid-2x2". */
     public const string ICON_REGEX = '/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/D';
 
+    public const string ICON_FILE_REGEX = '/^(?:[A-Za-z0-9_-][A-Za-z0-9_.-]*\/)*[A-Za-z0-9_-][A-Za-z0-9_.-]*\.(?:png|jpe?g|webp)$/D';
+
     /** Identifiers that would collide with core routes/assets. */
     public const array RESERVED_IDS = ['pterodactyl', 'panel', 'core'];
 
@@ -100,6 +102,7 @@ class ExtensionManifest
         public readonly array $rootPrefixes = [],
         /** The Tailwind prefix this extension builds its utilities and theme variables with. */
         public readonly ?string $uiPrefix = null,
+        public readonly ?string $icon = null,
     ) {}
 
     /**
@@ -131,6 +134,7 @@ class ExtensionManifest
             requiredExtensions: $data['requires']['extensions'] ?? [],
             rootPrefixes: $data['routes']['root'] ?? [],
             uiPrefix: $data['ui']['prefix'] ?? null,
+            icon: is_string($data['icon'] ?? null) ? $data['icon'] : null,
         );
     }
 
@@ -177,6 +181,16 @@ class ExtensionManifest
     public function hasUi(): bool
     {
         return $this->uiEntry !== null;
+    }
+
+    public function iconName(): ?string
+    {
+        return $this->icon !== null && preg_match(self::ICON_REGEX, $this->icon) === 1 ? $this->icon : null;
+    }
+
+    public function iconFile(): ?string
+    {
+        return $this->icon !== null && preg_match(self::ICON_FILE_REGEX, $this->icon) === 1 ? $this->icon : null;
     }
 
     public function path(string ...$parts): string

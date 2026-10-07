@@ -31,7 +31,7 @@ class WriteFileContentRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'string'],
+            'file' => ['required', 'string', 'max:2048'],
         ];
     }
 }

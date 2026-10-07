@@ -3360,6 +3360,8 @@ export type AdminListExtensionsResponseBody = {
         description: string | null;
         author: string | null;
         provider: string | null;
+        icon: string | null;
+        icon_url: string | null;
         has_ui?: boolean;
         ui_entry: string | null;
         ui_mode?: string;
@@ -3382,6 +3384,8 @@ export type AdminInstallExtensionResponseBody = {
         description: string | null;
         author: string | null;
         provider: string | null;
+        icon: string | null;
+        icon_url: string | null;
         has_ui?: boolean;
         ui_entry: string | null;
         ui_mode?: string;
@@ -3398,6 +3402,18 @@ export type AdminGetExtensionSettingsResponseBody = {
         schema: Array<AdminExtensionSettingField>;
     };
 };
+/**
+ * Icon image bytes.
+ */
+export type AdminGetExtensionIcon200ImagePngResponseBody = Blob | File;
+/**
+ * Icon image bytes.
+ */
+export type AdminGetExtensionIcon200ImageJpegResponseBody = Blob | File;
+/**
+ * Icon image bytes.
+ */
+export type AdminGetExtensionIcon200ImageWebpResponseBody = Blob | File;
 export type AdminUpdateExtensionSettingsResponseBody = {
     data: {
         registered: boolean;
@@ -3424,6 +3440,8 @@ export type AdminEnableExtensionResponseBody = {
         description: string | null;
         author: string | null;
         provider: string | null;
+        icon: string | null;
+        icon_url: string | null;
         has_ui?: boolean;
         ui_entry: string | null;
         ui_mode?: string;
@@ -3442,6 +3460,8 @@ export type AdminDisableExtensionResponseBody = {
         description: string | null;
         author: string | null;
         provider: string | null;
+        icon: string | null;
+        icon_url: string | null;
         has_ui?: boolean;
         ui_entry: string | null;
         ui_mode?: string;
@@ -3644,6 +3664,7 @@ export type AdminListActivityPerPageQueryParameter = number;
  */
 export type AdminListActivityIncludeQueryParameter = string;
 export type AdminGetExtensionSettingsExtensionPathParameter = string;
+export type AdminGetExtensionIconExtensionPathParameter = string;
 export type AdminUpdateExtensionSettingsExtensionIdPathParameter = string;
 export type AdminUploadExtensionSettingFileExtensionPathParameter = string;
 export type AdminUploadExtensionSettingFileInputPathParameter = string;
@@ -4751,6 +4772,39 @@ export type AdminGetExtensionSettingsResponses = {
     200: AdminGetExtensionSettingsResponseBody;
 };
 export type AdminGetExtensionSettingsResponse = AdminGetExtensionSettingsResponses[keyof AdminGetExtensionSettingsResponses];
+export type AdminGetExtensionIconData = {
+    body?: never;
+    path: {
+        /**
+         * The extension identifier.
+         */
+        extension: AdminGetExtensionIconExtensionPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/extensions/{extension}/icon';
+};
+export type AdminGetExtensionIconErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+export type AdminGetExtensionIconError = AdminGetExtensionIconErrors[keyof AdminGetExtensionIconErrors];
+export type AdminGetExtensionIconResponses = {
+    /**
+     * Icon image returned.
+     */
+    200: AdminGetExtensionIcon200ImagePngResponseBody;
+};
+export type AdminGetExtensionIconResponse = AdminGetExtensionIconResponses[keyof AdminGetExtensionIconResponses];
 export type AdminUpdateExtensionSettingsData = {
     body: AdminUpdateExtensionSettingsRequest;
     path: {

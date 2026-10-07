@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 
@@ -63,6 +64,30 @@ class Mount extends Model implements Identifiable
     public static array $invalidTargetPaths = [
         '/home/container',
     ];
+
+    /**
+     * Normalizes an absolute path string by resolving '.', '..', and duplicate slashes
+     * without requiring the path to exist on the host filesystem.
+     */
+    public static function normalizePath(string $path): string
+    {
+        $parts = [];
+
+        foreach (Str::of($path)->trim('/')->explode('/') as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+
+            if ($segment === '..') {
+                array_pop($parts);
+                continue;
+            }
+
+            $parts[] = $segment;
+        }
+
+        return '/' . implode('/', $parts);
+    }
 
     /**
      * @return array<string, string>

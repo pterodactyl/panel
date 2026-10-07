@@ -223,6 +223,18 @@ picker. Common names render immediately; the rest of the set is one lazily fetch
 shared by every extension. Keep importing icons you reference in code from
 `lucide-react` and pass them to `<Icon icon={…} />`.
 
+The top-level `icon` is shown for the extension on the admin extensions page, in place of
+its initials. It is either a lucide icon name, as above, or the path of a PNG, JPEG or
+WebP image inside the package, such as `"icon": "icon.png"`. Images may be at most 512 KB
+and 2048 px per side, and a square image of 128 px or more looks best. The image does
+not have to sit in `dist`: it is served to administrators from the package itself, so it
+shows while the extension is disabled, and `p:extension:pack` adds it to the archive.
+`p:extension:doctor` warns about an image that is missing or unreadable.
+
+```json
+{ "id": "mods", "name": "Mods", "version": "1.0.0", "icon": "icon.png" }
+```
+
 ## Author tooling and configuration
 
 Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
