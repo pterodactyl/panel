@@ -12,9 +12,13 @@ const withoutTrailingSlash = (path: string): string => path.replace(/\/+$/, '');
 export function useIsRenderedRoute(path: string): boolean {
     return useMatches({
         select: (matches) => {
-            const rendered = matches.at(-1)?.pathname;
+            const rendered = matches.at(-1);
 
-            return rendered !== undefined && withoutTrailingSlash(rendered) === withoutTrailingSlash(path);
+            return (
+                rendered !== undefined &&
+                !rendered.globalNotFound &&
+                withoutTrailingSlash(rendered.pathname) === withoutTrailingSlash(path)
+            );
         },
     });
 }
