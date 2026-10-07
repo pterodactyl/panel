@@ -37,30 +37,12 @@ class VerifyReCaptcha
             return $next($request);
         }
 
-        $result = ['success' => false, 'hostname' => null];
+        $result = $this->verifyCaptcha($request);
 
-        if ($request->filled('g-recaptcha-response')) {
-            try {
-                $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
-                $res = $client->post(JsonValueGuard::string($this->config->get('recaptcha.domain')), [
-                    'form_params' => [
-                        'secret' => $this->config->get('recaptcha.secret_key'),
-                        'response' => $request->input('g-recaptcha-response'),
-                    ],
-                ]);
+        $domainValid = ! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
 
-                if ($res->getStatusCode() === 200) {
-                    $result = $this->decodeResponse($res->getBody()->__toString());
-
-                    if ($result['success'] && (! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request))) {
-                        return $next($request);
-                    }
-                }
-            } catch (GuzzleException $exception) {
-                Log::warning('Failed to communicate with reCAPTCHA verification service', [
-                    'error' => $exception->getMessage(),
-                ]);
-            }
+        if ($result['success'] && $domainValid) {
+            return $next($request);
         }
 
         $this->dispatcher->dispatch(
@@ -71,6 +53,34 @@ class VerifyReCaptcha
         );
 
         throw new HttpException(Response::HTTP_BAD_REQUEST, 'Failed to validate reCAPTCHA data.');
+    }
+
+    /**
+     * @return array{success: bool, hostname: string|null}
+     */
+    private function verifyCaptcha(Request $request): array
+    {
+        if (! $request->filled('g-recaptcha-response')) {
+            return ['success' => false, 'hostname' => null];
+        }
+
+        try {
+            $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
+            $res = $client->post(JsonValueGuard::string($this->config->get('recaptcha.domain')), [
+                'form_params' => [
+                    'secret' => $this->config->get('recaptcha.secret_key'),
+                    'response' => $request->input('g-recaptcha-response'),
+                ],
+            ]);
+
+            if ($res->getStatusCode() === 200) {
+                return $this->decodeResponse($res->getBody()->__toString());
+            }
+        } catch (GuzzleException $exception) {
+            // Ignore the error entirely, we will just return a failed response below.
+        }
+
+        return ['success' => false, 'hostname' => null];
     }
 
     /**

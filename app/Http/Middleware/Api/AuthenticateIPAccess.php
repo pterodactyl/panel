@@ -63,12 +63,7 @@ class AuthenticateIPAccess
                     return $next($request);
                 }
             } catch (IpException | NetworkException | InvalidArgumentException $exception) {
-                Log::warning('Malformed IP or CIDR range encountered in API key allowed_ips list', [
-                    'identifier' => $token->identifier,
-                    'entry' => $ip,
-                    'error' => $exception->getMessage(),
-                ]);
-
+                // Ignore the error entirely
                 continue;
             }
         }
