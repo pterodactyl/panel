@@ -1,0 +1,49 @@
+tests/Unit/Extensions/ExtensionProviderRuntimeTest.php
+  s_b7506fbf20f690::t_39f4ee01569846 214-224
+  s_b7506fbf20f690::t_b630ca484cbabb 570-584
+  s_b7506fbf20f690::t_2b8de06a42cab9 568-569
+packages/sdk/README.md
+  s_b7506fbf20f690::t_5711aa317737ec 433-437
+app/Services/Extensions/ExtensionRuntimeRefresher.php
+  s_b7506fbf20f690::t_4285eaa8cbd455 7,9-13,16,20-21
+app/Services/Extensions/ExtensionConsoleRegistry.php
+  s_b7506fbf20f690::t_ebd9115d64b2ed 61-62,66,75,82,87-92,98-102
+  s_b7506fbf20f690::t_c31c337776e4fd 153-165
+  s_b7506fbf20f690::t_c09a1a201879c6 74,76-81
+  s_b7506fbf20f690::t_a37815e4df4f19 13-14
+  s_b7506fbf20f690::t_ae4e080d1db7a4 103
+  s_b7506fbf20f690::t_c73585209bc810 166
+app/Providers/ExtensionServiceProvider.php
+  s_b7506fbf20f690::t_6012b6a8237e47 10
+  s_b7506fbf20f690::t_be68412dc017e2 68-69
+  s_b7506fbf20f690::t_c7362c11197180 92-123
+  s_e0c446b9e496bf::t_637877b897d1ff 124
+tests/Unit/Services/Extensions/ExtensionRuntimeTest.php
+  s_b7506fbf20f690::t_8bac04bf1d3a8f 36-41,43-44,47-48
+tests/Unit/Providers/ExtensionAboutTest.php
+  s_b7506fbf20f690::t_b4c8d050204cb9 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f154449a8075595d12b8b01fa52cab570d04056d",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_e0c446b9e496bf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c6c54941-c42a-4ca6-be65-267f64810365",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
