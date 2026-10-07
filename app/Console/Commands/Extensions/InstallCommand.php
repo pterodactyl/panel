@@ -7,26 +7,42 @@ namespace Pterodactyl\Console\Commands\Extensions;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Pterodactyl\Contracts\Extensions\InstallsExtensions;
 use Pterodactyl\Exceptions\Extensions\ExtensionAlreadyInstalledException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
+use Pterodactyl\Services\Extensions\ExtensionUrlDownloader;
 
 #[Description('Install an extension package into the extensions directory.')]
 #[Signature('p:extension:install
-                            {path : Path to a .pteroext/.zip archive or an unpacked extension directory.}
+                            {path : Path to a .pteroext/.zip archive or an unpacked extension directory, or a signed install URL.}
                             {--enable : Enable the extension (and run its migrations) after installing.}
                             {--replace : Replace an installed extension with the same id without asking.}')]
 class InstallCommand extends Command
 {
-    public function handle(InstallsExtensions $installer): int
+    public function handle(InstallsExtensions $installer, ExtensionUrlDownloader $urls): int
     {
+        $download = null;
+
         try {
-            $manifest = $this->install($installer);
+            $path = $this->argument('path');
+            // A URL is only ever a signed install URL: its signature is verified before
+            // anything is downloaded, so the panel never installs from an arbitrary address.
+            if ($urls->isUrl($path)) {
+                $this->components->info('Verifying the install URL and downloading the extension.');
+                $path = $download = $urls->download($path);
+            }
+
+            $manifest = $this->install($installer, $path);
         } catch (InvalidExtensionException $invalidExtensionException) {
             $this->components->error($invalidExtensionException->getMessage());
 
             return self::FAILURE;
+        } finally {
+            if ($download !== null) {
+                rescue(fn () => File::delete($download));
+            }
         }
 
         $this->components->info(sprintf(
@@ -41,9 +57,8 @@ class InstallCommand extends Command
     }
 
     /** Replacing an installed extension needs --replace, or a yes when run interactively. */
-    private function install(InstallsExtensions $installer): ExtensionManifest
+    private function install(InstallsExtensions $installer, string $path): ExtensionManifest
     {
-        $path = $this->argument('path');
         $enable = (bool) $this->option('enable');
 
         try {
