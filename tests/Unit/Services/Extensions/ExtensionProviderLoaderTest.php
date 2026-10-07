@@ -46,6 +46,29 @@ test('Composer packages load once and malformed vendor bootstraps leave healthy 
     }
 });
 
+test('a bundled autoloader that shares its Composer suffix with a loaded one fails alone', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-suffix-'.uniqid();
+    $suffix = 'Probe'.str_replace('.', '', uniqid('', true));
+    foreach (['first', 'second'] as $id) {
+        // What Composer generates: autoload.php declares a class named after the suffix.
+        File::ensureDirectoryExists($directory.'/'.$id.'/vendor/composer');
+        File::put($directory.'/'.$id.'/vendor/autoload.php', '<?php require_once __DIR__."/composer/autoload_real.php"; return ComposerAutoloaderInit'.$suffix.'::getLoader();');
+        File::put($directory.'/'.$id.'/vendor/composer/autoload_real.php', '<?php class ComposerAutoloaderInit'.$suffix.' { public static function getLoader() { return new \Composer\Autoload\ClassLoader; } }');
+        File::put($directory.'/'.$id.'/extension.json', json_encode(['id' => $id, 'name' => $id, 'version' => '1.0.0'], JSON_THROW_ON_ERROR));
+    }
+
+    $validator = new ExtensionManifestValidator;
+    $manifests = collect(['first' => $validator->fromDirectory($directory.'/first'), 'second' => $validator->fromDirectory($directory.'/second')]);
+    $repository = Mockery::mock(ExtensionRepository::class);
+    $repository->shouldReceive('recordFailure')->once()->with('second', Mockery::on(fn (string $reason): bool => str_contains($reason, 'ComposerAutoloaderInit'.$suffix.', which another package already loaded')), Mockery::type(Throwable::class), 'register');
+    $repository->shouldReceive('clearErrors')->once()->with(['first']);
+    try {
+        (new ExtensionProviderLoader($this->app, $repository))->registerProviders($manifests);
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
 test('extension class loaders never replace a class the panel loads', function (): void {
     $directory = sys_get_temp_dir().'/ptero-shadow-'.uniqid();
     $decoy = '<?php namespace Pterodactyl\Exceptions\Service\Location; final class HasActiveNodesException {}';

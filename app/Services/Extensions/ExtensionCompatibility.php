@@ -64,6 +64,7 @@ final class ExtensionCompatibility
         // A claim both sides make is reported from the side of the extension being checked.
         $reason = $errors[$manifest->id] ?? reset($errors);
         throw_if($reason !== false, InvalidExtensionException::class, $reason);
+        $this->assertDistinctAutoloader($manifest, $enabled);
     }
 
     /** @param Collection<string, ExtensionManifest> $enabled */
@@ -78,6 +79,30 @@ final class ExtensionCompatibility
     {
         $reason = $this->runtimeFailureReason($manifest);
         throw_if($reason !== null, InvalidExtensionException::class, $reason);
+    }
+
+    /**
+     * A bundled vendor/autoload.php declares a class named after its Composer autoloader
+     * suffix. PHP stops at the second declaration of that class before any handler runs, so
+     * two packages sharing a suffix would take every request down instead of failing alone.
+     *
+     * @param  Collection<string, ExtensionManifest>  $enabled
+     */
+    private function assertDistinctAutoloader(ExtensionManifest $manifest, Collection $enabled): void
+    {
+        $suffix = ExtensionComposerInspector::autoloaderSuffix($manifest->directory);
+        if ($suffix === null) {
+            return;
+        }
+
+        $owner = $enabled->first(fn (ExtensionManifest $other): bool => $other->id !== $manifest->id && ExtensionComposerInspector::autoloaderSuffix($other->directory) === $suffix);
+        $claimant = match (true) {
+            $suffix === ExtensionComposerInspector::autoloaderSuffix(base_path()) => 'the panel',
+            $owner instanceof ExtensionManifest => sprintf('enabled extension "%s"', $owner->id),
+            default => null,
+        };
+
+        throw_if($claimant !== null, InvalidExtensionException::class, sprintf('Extension "%s" cannot load its vendor/autoload.php: %s uses the same Composer autoloader (ComposerAutoloaderInit%s). Set "config.autoloader-suffix" in its composer.json and run composer dump-autoload.', $manifest->id, $claimant, $suffix));
     }
 
     /** @param Collection<string, ExtensionManifest> $enabled */

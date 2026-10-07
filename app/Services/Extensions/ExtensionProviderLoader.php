@@ -117,6 +117,11 @@ class ExtensionProviderLoader
             return;
         }
 
+        // Declaring an autoloader class a second time is a fatal error no handler can catch,
+        // so a package that shares its suffix with one already loaded is refused instead.
+        $suffix = ExtensionComposerInspector::autoloaderSuffix($manifest->directory);
+        throw_if($suffix !== null && ExtensionComposerInspector::autoloaderLoaded($suffix), InvalidExtensionException::class, sprintf('Extension vendor/autoload.php declares the Composer autoloader ComposerAutoloaderInit%s, which another package already loaded. Set "config.autoloader-suffix" in the extension\'s composer.json and run composer dump-autoload.', $suffix));
+
         $loader = require $path;
         throw_unless($loader instanceof ClassLoader, InvalidExtensionException::class, 'Extension vendor/autoload.php must return a Composer ClassLoader.');
         // Composer registers its loader in front of every other one. Behind the panel's, a

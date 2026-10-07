@@ -330,6 +330,16 @@ overlapping prefix. Extension class loaders are registered behind the panel's, s
 extension's `vendor/autoload.php` has returned, a class the panel or its packages provide
 always comes from the panel.
 
+Composer names the class `vendor/autoload.php` declares after the lock file's hash unless
+`config.autoloader-suffix` sets it, so two packages installed from the same requirements
+declare the same class, and PHP cannot recover from declaring it twice. The panel refuses
+to enable or load an extension whose suffix the panel or another enabled extension already
+uses. Give each extension a suffix of its own in its `composer.json`:
+
+```json
+{ "config": { "autoloader-suffix": "AcmeBillingExtension" } }
+```
+
 Providers can use `listenToServerOperations` for immutable `provision`, `install`,
 `reinstall`, `backup`, `delete`, `suspend`, `unsuspend`, and `transfer` results. Results
 dispatch after commit and carry identifiers only (`serverUuid`, `operation`, `successful`,

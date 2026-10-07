@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionCompatibilityTest;
 
+use Illuminate\Support\Facades\File;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionCompatibility;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
@@ -145,6 +146,31 @@ test('rejects autoload namespaces that overlap another enabled extension in eith
     $compatibility->assertCompatible(autoloaded('healthy', ['Acme\\Status\\' => 'src', 'Acme\\Status\\Extra\\' => 'extra']), $healthy);
     $compatibility->assertCompatible(autoloaded('sibling', ['Acme\\StatusPage\\' => 'src']), $healthy);
     $compatibility->assertCompatible(autoloaded('takeover', ['Acme\\Status\\' => 'src']), collect());
+});
+
+test('rejects a bundled vendor autoloader whose Composer suffix the panel or an enabled extension already uses', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-suffix-'.uniqid();
+    preg_match('/ComposerAutoloaderInit(\w+)::/', File::get(base_path('vendor/autoload.php')), $panel);
+    $bundle = function (string $id, string $suffix) use ($directory): ExtensionManifest {
+        File::ensureDirectoryExists($directory.'/'.$id.'/vendor');
+        File::put($directory.'/'.$id.'/vendor/autoload.php', '<?php require_once __DIR__."/composer/autoload_real.php"; return ComposerAutoloaderInit'.$suffix.'::getLoader();');
+
+        return ExtensionManifest::fromValidatedData($directory.'/'.$id, ['id' => $id, 'name' => $id, 'version' => '1.0.0'], [], null, 'native', null);
+    };
+
+    try {
+        $compatibility = resolve(ExtensionCompatibility::class);
+        $first = $bundle('first', 'Shared');
+        $enabled = collect(['first' => $first]);
+
+        expect(fn () => $compatibility->assertCompatible($bundle('second', 'Shared'), $enabled))->toThrow(InvalidExtensionException::class, 'Extension "second" cannot load its vendor/autoload.php: enabled extension "first" uses the same Composer autoloader (ComposerAutoloaderInitShared).');
+        expect(fn () => $compatibility->assertCompatible($bundle('copy', $panel[1]), collect()))->toThrow(InvalidExtensionException::class, 'the panel uses the same Composer autoloader');
+        // An upgrade keeps its own suffix, and a distinct suffix loads beside it.
+        $compatibility->assertCompatible($first, $enabled);
+        $compatibility->assertCompatible($bundle('third', 'Distinct'), $enabled);
+    } finally {
+        File::deleteDirectory($directory);
+    }
 });
 
 function styled(string $id, ?string $prefix): ExtensionManifest
