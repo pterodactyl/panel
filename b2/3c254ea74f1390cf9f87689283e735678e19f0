@@ -1,0 +1,262 @@
+packages/sdk/types/components/elements/dropdown/DropdownMenu.d.ts
+  s_b7506fbf20f690::t_2e350796974da2 9,13
+resources/scripts/router/routeTree.spec.ts
+  s_b7506fbf20f690::t_2e350796974da2 146-159
+resources/scripts/components/auth/LoginContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 2,16,44,50
+resources/scripts/sdk/navigation.tsx
+  s_b7506fbf20f690::t_2e350796974da2 5,118,121-127
+app/Console/Commands/Extensions/DevCommand.php
+  s_b7506fbf20f690::t_2e350796974da2 25-26,44-45
+app/Http/Middleware/Api/Application/AuthorizeExtensionApplicationRequest.php
+  s_b7506fbf20f690::t_2e350796974da2 1-48
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_b7506fbf20f690::t_2e350796974da2 121-149
+app/Services/Extensions/ExtensionConsoleRegistry.php
+  s_b7506fbf20f690::t_2e350796974da2 10,12,20-21,31-34,54-59,67-79
+public/favicons/favicon.svg
+  s_b7506fbf20f690::t_2e350796974da2 1
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 68
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_b7506fbf20f690::t_2e350796974da2 36-42,46,53-58,71,73-75,85-90,146,177-193
+  s_b7506fbf20f690::t_c0b12f009380f5 194
+resources/scripts/router/redirect.spec.ts
+  s_b7506fbf20f690::t_2e350796974da2 1-31
+app/Providers/ExtensionServiceProvider.php
+  s_b7506fbf20f690::t_2e350796974da2 74-75
+tests/Integration/Console/Commands/Themes/ThemeCommandsTest.php
+  s_b7506fbf20f690::t_2e350796974da2 53,56-57,71-110
+  s_b7506fbf20f690::t_03132bb8f77e98 111
+resources/scripts/components/elements/SecretInput.tsx
+  s_b7506fbf20f690::t_2e350796974da2 1-67
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_b7506fbf20f690::t_2e350796974da2 12,35-37,48-49,113-119,140,170,175,177
+tests/Integration/Console/SchedulerTest.php
+  s_b7506fbf20f690::t_2e350796974da2 26,51
+resources/scripts/components/server/console/useTerminal.ts
+  s_b7506fbf20f690::t_2e350796974da2 73-103,163-164
+tests/Integration/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_b7506fbf20f690::t_2e350796974da2 10,78,81,236-240,303-304
+tests/Integration/Http/ExtensionFrontendConfigTest.php
+  s_b7506fbf20f690::t_2e350796974da2 52-60
+scripts/generate-extension-openapi.php
+  s_b7506fbf20f690::t_2e350796974da2 76
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_b7506fbf20f690::t_2e350796974da2 79-80,121-123,130
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_b7506fbf20f690::t_2e350796974da2 13,95,120-161,209-238,396,401-403,408-409
+app/Services/Extensions/ExtensionManifest.php
+  s_b7506fbf20f690::t_2e350796974da2 23-24,27,32-41,43,137-146
+  s_b7506fbf20f690::t_4677d694846e24 147-148
+public/favicons/browserconfig.xml
+  s_b7506fbf20f690::t_2e350796974da2 2
+resources/views/templates/wrapper.blade.php
+  s_b7506fbf20f690::t_2e350796974da2 19,27,43-44,48,53
+app/Http/Requests/Api/Admin/Extensions/InstallExtensionRequest.php
+  s_b7506fbf20f690::t_2e350796974da2 27,39,49,58-61,63-66
+app/Console/Kernel.php
+  s_b7506fbf20f690::t_2e350796974da2 1-38
+.github/docker/default.conf
+  s_b7506fbf20f690::t_2e350796974da2 19-63
+app/Http/Middleware/Api/Client/Server/AuthenticateServerParameterAccess.php
+  s_b7506fbf20f690::t_2e350796974da2 1-36
+app/Console/Commands/Extensions/InstallCommand.php
+  s_b7506fbf20f690::t_2e350796974da2 11,13,18-19,25,42-61
+  s_b7506fbf20f690::t_05728dab7d7ef2 62
+public/favicons/manifest.json
+  s_b7506fbf20f690::t_2e350796974da2 2-17
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 396-404
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_b7506fbf20f690::t_2e350796974da2 9-10,38,46-48,69-74,122-123,145-146,148
+tests/Unit/Services/Extensions/ExtensionJobProgressTest.php
+  s_b7506fbf20f690::t_2e350796974da2 37-38
+app/Contracts/Extensions/InstallsExtensions.php
+  s_b7506fbf20f690::t_2e350796974da2 7,12-18
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_b7506fbf20f690::t_2e350796974da2 26,93,101,104,111,126,316,343-345,374-375,397,413,434,450,505,556-714
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_b7506fbf20f690::t_2e350796974da2 13,15,48-61,161-163
+  s_b7506fbf20f690::t_690eaa8cfbb4ae 164-165
+.github/docker/healthcheck.sh
+  s_b7506fbf20f690::t_2e350796974da2 4,6,9,11-18
+.github/docker/php.ini
+  s_b7506fbf20f690::t_2e350796974da2 2-3,9
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 62-79
+resources/scripts/router/routeTree.ts
+  s_b7506fbf20f690::t_2e350796974da2 78,119,128,152,154,160-162,187,260,466
+app/Services/Extensions/ExtensionRegistration.php
+  s_b7506fbf20f690::t_2e350796974da2 63,73
+Dockerfile
+  s_b7506fbf20f690::t_2e350796974da2 55-56
+tests/Unit/Services/Extensions/ExtensionSettingFilesTest.php
+  s_b7506fbf20f690::t_2e350796974da2 17,62-103
+  s_b7506fbf20f690::t_a16d6d7c91f85b 104
+resources/scripts/components/auth/LoginCheckpointContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 2,11,27,36,82
+resources/scripts/api/generated/sdk.gen.ts
+  s_b7506fbf20f690::t_2e350796974da2 183
+resources/scripts/router/redirect.ts
+  s_b7506fbf20f690::t_2e350796974da2 1-25
+.github/docker/entrypoint.sh
+  s_b7506fbf20f690::t_2e350796974da2 67-111
+packages/sdk/manifest.schema.json
+  s_b7506fbf20f690::t_2e350796974da2 55,57
+resources/scripts/router/layouts/AccountLayout.tsx
+  s_b7506fbf20f690::t_2e350796974da2 15-27
+app/Services/Extensions/ExtensionCompatibility.php
+  s_b7506fbf20f690::t_2e350796974da2 109-117
+.github/docker/default_ssl.conf
+  s_b7506fbf20f690::t_2e350796974da2 51-104
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_b7506fbf20f690::t_2e350796974da2 12,18-20,134-136,147,153,234,238,259-264,267,327,347,378,391-393,422-436
+  s_b7506fbf20f690::t_a306cec0d8bbdd 437-438
+app/Services/Extensions/ExtensionDistFiles.php
+  s_b7506fbf20f690::t_2e350796974da2 1-61
+app/Services/Extensions/ExtensionPackageLocator.php
+  s_b7506fbf20f690::t_2e350796974da2 75,87-151
+  s_b7506fbf20f690::t_8154c82de8128e 152
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 9,14,123-136,140,150,152-157,178-181,188,202,208,623-624
+app/Services/Extensions/ExtensionActionDecorators.php
+  s_b7506fbf20f690::t_2e350796974da2 27-30,36-44,69-72
+  s_b7506fbf20f690::t_216989459e241f 73
+resources/scripts/components/elements/SubNavigation.tsx
+  s_b7506fbf20f690::t_2e350796974da2 1-2,4-5,18,36-288
+packages/sdk/README.md
+  s_b7506fbf20f690::t_2e350796974da2 293-296,307-312,326-334,362-369,416-418,475,477-481
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_b7506fbf20f690::t_2e350796974da2 83,107,125,149,213
+bootstrap/app.php
+  s_b7506fbf20f690::t_2e350796974da2 7,20,135-137
+  s_b7506fbf20f690::t_bd0cf6ee8d1e0f 138
+app/Exceptions/Extensions/ExtensionAlreadyInstalledException.php
+  s_b7506fbf20f690::t_2e350796974da2 1-49
+app/Http/Requests/Base/LocaleRequest.php
+  s_b7506fbf20f690::t_2e350796974da2 17-18,20
+packages/sdk/vite.spec.ts
+  s_b7506fbf20f690::t_2e350796974da2 59-82
+tests/Unit/Services/Extensions/ExtensionPermissionRegistryTest.php
+  s_b7506fbf20f690::t_2e350796974da2 27
+tests/Unit/Services/Extensions/ExtensionDistFilesTest.php
+  s_b7506fbf20f690::t_2e350796974da2 1-82
+app/Services/Extensions/ExtensionStagingRouter.php
+  s_b7506fbf20f690::t_2e350796974da2 1-50
+resources/scripts/components/admin/extensions/ExtensionsContainer.spec.tsx
+  s_b7506fbf20f690::t_2e350796974da2 1-139
+tests/Integration/Services/Extensions/ExtensionRouteAuthorizationTest.php
+  s_b7506fbf20f690::t_2e350796974da2 1-141
+tests/Unit/Http/Controllers/Base/LocaleControllerTest.php
+  s_b7506fbf20f690::t_2e350796974da2 28-38
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_b7506fbf20f690::t_2e350796974da2 134-151
+  s_b7506fbf20f690::t_ab810183fdbd0f 133
+app/Actions/Themes/ApplyTheme.php
+  s_b7506fbf20f690::t_2e350796974da2 11,29-37,47-53,58
+app/Services/Extensions/ExtensionPackageFiles.php
+  s_b7506fbf20f690::t_2e350796974da2 12,18-23,27,34,42-71,73
+  s_b7506fbf20f690::t_8363097dae7aff 72
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_b7506fbf20f690::t_2e350796974da2 98
+app/Services/Extensions/ExtensionPermissionRegistry.php
+  s_b7506fbf20f690::t_2e350796974da2 16,18
+app/Services/Extensions/ExtensionStylesheetInspector.php
+  s_b7506fbf20f690::t_2e350796974da2 31-32,36,53
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 65-98
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_b7506fbf20f690::t_2e350796974da2 56-107,335-336,434
+resources/scripts/extensions/NavigationLabel.tsx
+  s_b7506fbf20f690::t_2e350796974da2 12-13
+public/favicons/safari-pinned-tab.svg
+  s_b7506fbf20f690::t_2e350796974da2 1
+app/Actions/Extensions/InstallExtension.php
+  s_b7506fbf20f690::t_2e350796974da2 13-14,40,42,45,49,52,54,56,59-60,66,84-99,121-124
+.github/docker/README.md
+  s_b7506fbf20f690::t_2e350796974da2 108
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_b7506fbf20f690::t_2e350796974da2 54-74
+resources/scripts/router/RouteError.tsx
+  s_b7506fbf20f690::t_2e350796974da2 4,8,26,30-35
+resources/scripts/components/server/console/useTerminal.spec.tsx
+  s_b7506fbf20f690::t_2e350796974da2 4,8-20,33-41,51-67,133-185
+  s_b7506fbf20f690::t_60d1ee274f9a92 186
+app/Extensions/ExtensionProvider.php
+  s_b7506fbf20f690::t_2e350796974da2 15,17,40-41,44-54,94-96,100,105-109,113,122-127,273-277,293-295
+resources/scripts/api/generated/types.gen.ts
+  s_b7506fbf20f690::t_2e350796974da2 1549-1552
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_b7506fbf20f690::t_2e350796974da2 7,15,20-22,119,121,232-235,245-267
+  s_b7506fbf20f690::t_2f1d9d1361398b 268-269
+tests/Unit/Services/Extensions/ExtensionSettingFieldTypesTest.php
+  s_b7506fbf20f690::t_2e350796974da2 78-80,83-135,295-297
+  s_b7506fbf20f690::t_1c71b18e007cae 298-299
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_b7506fbf20f690::t_2e350796974da2 18,158
+app/Services/Extensions/ExtensionSettingFiles.php
+  s_b7506fbf20f690::t_2e350796974da2 7,10,17,55-63,161-166,169-188,263,274-335
+.github/docker/smoke-test.sh
+  s_b7506fbf20f690::t_2e350796974da2 159,168,211
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_b7506fbf20f690::t_2e350796974da2 9-10,15,48-68,71
+  s_b7506fbf20f690::t_29c8e4c37f4e2e 69-70,72
+tests/Unit/Services/Extensions/ExtensionToolingTest.php
+  s_b7506fbf20f690::t_2e350796974da2 113
+tests/Unit/Extensions/ExtensionProviderRuntimeTest.php
+  s_b7506fbf20f690::t_2e350796974da2 9,12,20-31,33-34,39,174-204,214-230,369-393,483-501,567-602
+resources/scripts/router/RouteError.spec.tsx
+  s_b7506fbf20f690::t_2e350796974da2 66
+tests/Unit/Services/Extensions/ExtensionSettingsDefinitionTest.php
+  s_b7506fbf20f690::t_2e350796974da2 8,28,51,57,59,64
+resources/scripts/api/admin/extensions/queries.ts
+  s_b7506fbf20f690::t_2e350796974da2 2,32,48-53,56-86,207-210
+  s_b7506fbf20f690::t_07579bd0ffee1c 211-212
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_b7506fbf20f690::t_2e350796974da2 60-70,73-93,95-101
+app/Services/FilesystemChanges.php
+  s_b7506fbf20f690::t_2e350796974da2 62-64,71
+config/extensions.php
+  s_b7506fbf20f690::t_2e350796974da2 37-38
+resources/scripts/sdk/loginCheckpoint.spec.tsx
+  s_b7506fbf20f690::t_2e350796974da2 32-49
+packages/sdk/vite.mjs
+  s_b7506fbf20f690::t_2e350796974da2 76-78
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_b7506fbf20f690::t_2e350796974da2 1393-1396
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_b7506fbf20f690::t_2e350796974da2 24,29,32-34
+app/Rules/ValidExtensionSettingType.php
+  s_b7506fbf20f690::t_2e350796974da2 1-45
+app/Services/Extensions/ExtensionJobProgress.php
+  s_b7506fbf20f690::t_2e350796974da2 21
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_b7506fbf20f690::t_2e350796974da2 391
+resources/scripts/components/elements/SecretInput.spec.tsx
+  s_b7506fbf20f690::t_2e350796974da2 1-54
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_b7506fbf20f690::t_2e350796974da2 7,9,12,15,54-104,106,108-109,126,128-149,161,164-166,168-177,221-230
+  s_b7506fbf20f690::t_ea97d7db3dad36 231
+resources/scripts/components/server/databases/DatabaseTable.tsx
+  s_b7506fbf20f690::t_2e350796974da2 14,140
+app/Actions/Extensions/RemoveExtension.php
+  s_b7506fbf20f690::t_2e350796974da2 14-15,20,53-54,56,66-81
+  s_b7506fbf20f690::t_9c0b7673b7c0d4 82-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b23c254ea74f1390cf9f87689283e735678e19f0",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
