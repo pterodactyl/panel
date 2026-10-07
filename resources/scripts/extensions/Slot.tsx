@@ -1,14 +1,8 @@
-import { useCallback, useSyncExternalStore } from 'react';
-import { getSlotComponents, subscribeExtensionRegistry, type SlotProps } from '@/extensions/registry';
+import { getSlotComponents, useExtensionRegistry, type SlotProps } from '@/extensions/registry';
 import ExtensionMount from '@/extensions/ExtensionMount';
 
 export default function Slot({ name, data }: SlotProps) {
-    const subscribe = useCallback(
-        (listener: () => void) => subscribeExtensionRegistry(`slot:${name}`, listener),
-        [name]
-    );
-    const snapshot = useCallback(() => getSlotComponents(name), [name]);
-    const registrations = useSyncExternalStore(subscribe, snapshot);
+    const registrations = useExtensionRegistry(() => getSlotComponents(name));
     const resetKey =
         data && 'resource' in data
             ? `${data.kind}:${data.resource.attributes.id}`

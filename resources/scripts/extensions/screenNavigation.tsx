@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useSyncExternalStore, type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useLocation } from '@tanstack/react-router';
 import { useCurrentUser } from '@/api/account/queries';
 import { useServerQuery } from '@/api/server/queries';
@@ -10,7 +10,7 @@ import {
     getExtensionLoadState,
     getScreenOptions,
     matchesScreenCondition,
-    subscribeExtensionRegistry,
+    useExtensionRegistry,
     type ExtensionScreenRegistration,
     type ScreenContext,
     type ScreenOptions,
@@ -22,14 +22,6 @@ type Screen = ExtensionScreenRegistration;
 function useAreaServer(screen: Screen) {
     const id = useServerRouteId();
     return useServerQuery(screen.area === 'server' ? (id ?? '') : '').data;
-}
-
-function useExtensionStore<T>(extensionId: string, read: () => T): T {
-    const subscribe = useCallback(
-        (listener: () => void) => subscribeExtensionRegistry(`extension:${extensionId}`, listener),
-        [extensionId]
-    );
-    return useSyncExternalStore(subscribe, read);
 }
 
 function useScreenContext(screen: Screen): ScreenContext {
@@ -68,8 +60,8 @@ function ConditionalScreen({
     const { extensionId, id, when } = screen;
     const server = useAreaServer(screen);
     const pathname = useLocation({ select: (location) => location.pathname });
-    const visible = useExtensionStore(extensionId, () => getScreenOptions(extensionId, id)?.visible);
-    const failed = useExtensionStore(extensionId, () => getExtensionLoadState(extensionId)?.status === 'failed');
+    const visible = useExtensionRegistry(() => getScreenOptions(extensionId, id)?.visible);
+    const failed = useExtensionRegistry(() => getExtensionLoadState(extensionId)?.status === 'failed');
 
     if (!matchesScreenCondition(when, server)) return hidden;
     if (!when?.runtime) return children;
@@ -134,7 +126,7 @@ function LiveBadge({
 function RegisteredBadge({ screen, fallback }: { screen: Screen; fallback: ReactNode }) {
     const { extensionId, id } = screen;
     const pathname = useLocation({ select: (location) => location.pathname });
-    const badge = useExtensionStore(extensionId, () => getScreenOptions(extensionId, id)?.badge);
+    const badge = useExtensionRegistry(() => getScreenOptions(extensionId, id)?.badge);
     if (!badge) return fallback;
     return (
         <ExtensionMount

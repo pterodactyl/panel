@@ -98,7 +98,7 @@ export function createComponentSession() {
             }
         };
         pending.set(name, stop);
-        unsubscribe = subscribeExtensionRegistry(`extension:${extensionId}`, check);
+        unsubscribe = subscribeExtensionRegistry(check);
         check();
     };
     return {

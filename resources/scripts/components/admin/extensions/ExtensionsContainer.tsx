@@ -1,6 +1,6 @@
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useState } from 'react';
 import { AlertCircle, FileArchive, RefreshCw, Settings2, Trash2, UploadCloud } from 'lucide-react';
-import { getExtensionStates, subscribeExtensionRegistry } from '@/extensions/registry';
+import { getExtensionStates, useExtensionRegistry } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
 import { httpErrorToHuman } from '@/api/http';
 import {
@@ -46,8 +46,6 @@ import Switch from '@/components/ui/Switch';
 import { FileInput } from '@/components/form/controls';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
-
-const subscribeRuntime = (listener: () => void) => subscribeExtensionRegistry('states', listener);
 
 type ExtensionState = NonNullable<AdminExtension['state']>;
 
@@ -674,7 +672,7 @@ function EmptyExtensionsState() {
 }
 
 export default function ExtensionsContainer() {
-    const runtimeStates = useSyncExternalStore(subscribeRuntime, getExtensionStates);
+    const runtimeStates = useExtensionRegistry(getExtensionStates);
     const runtimeFailures = runtimeStates.filter((state) => state.status === 'failed');
     const { data, error, isFetching, refetch } = useAdminExtensions();
     const extensions = data?.data ?? [];

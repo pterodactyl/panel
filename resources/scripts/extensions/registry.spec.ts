@@ -14,9 +14,15 @@ describe('extensions/registry', () => {
         vi.spyOn(console, 'error').mockImplementation(() => {});
     });
 
+    const registerSlot = (extensionId: string, name: RegistryModule.SlotName) => {
+        const batch = registry.createExtensionRegistryBatch();
+        registry.registerSlotComponent(extensionId, name, Component, batch);
+        registry.commitExtensionRegistryBatch(extensionId, batch);
+    };
+
     it('returns slot components in registration order', () => {
-        registry.registerSlotComponent('one', 'dashboard.before', Component);
-        registry.registerSlotComponent('two', 'dashboard.before', Component);
+        registerSlot('one', 'dashboard.before');
+        registerSlot('two', 'dashboard.before');
 
         expect(registry.getSlotComponents('dashboard.before').map((r) => r.extensionId)).toEqual(['one', 'two']);
         expect(new Set(registry.getSlotComponents('dashboard.before').map((r) => r.id)).size).toBe(2);
@@ -24,7 +30,8 @@ describe('extensions/registry', () => {
     });
 
     it('rejects unknown slot names loudly', () => {
-        expect(() => registry.registerSlotComponent('ext', 'dashboard.typo' as never, Component)).toThrow(
+        const batch = registry.createExtensionRegistryBatch();
+        expect(() => registry.registerSlotComponent('ext', 'dashboard.typo' as never, Component, batch)).toThrow(
             /Unknown slot/
         );
     });
@@ -93,20 +100,24 @@ describe('extensions/registry', () => {
         );
     });
 
-    it('publishes stable immutable slot snapshots only to relevant subscribers', () => {
+    it('publishes stable immutable slot snapshots once per committed batch', () => {
         const changed = vi.fn();
-        const unrelated = vi.fn();
-        const unsubscribe = registry.subscribeExtensionRegistry('slot:dashboard.before', changed);
-        registry.subscribeExtensionRegistry('slot:dashboard.after', unrelated);
+        const unsubscribe = registry.subscribeExtensionRegistry(changed);
         const before = registry.getSlotComponents('dashboard.before');
+        const after = registry.getSlotComponents('dashboard.after');
         expect(registry.getSlotComponents('dashboard.before')).toBe(before);
-        registry.registerSlotComponent('demo', 'dashboard.before', Component);
+        const batch = registry.createExtensionRegistryBatch();
+        registry.registerSlotComponent('demo', 'dashboard.before', Component, batch);
+        registry.registerSlotComponent('demo', 'dashboard.before', Component, batch);
+        expect(changed).not.toHaveBeenCalled();
+        registry.commitExtensionRegistryBatch('demo', batch);
         expect(before).toHaveLength(0);
+        expect(registry.getSlotComponents('dashboard.before')).toHaveLength(2);
         expect(Object.isFrozen(registry.getSlotComponents('dashboard.before'))).toBe(true);
+        expect(registry.getSlotComponents('dashboard.after')).toBe(after);
         expect(changed).toHaveBeenCalledTimes(1);
-        expect(unrelated).not.toHaveBeenCalled();
         unsubscribe();
-        registry.registerSlotComponent('demo', 'dashboard.before', Component);
+        registerSlot('late', 'dashboard.before');
         expect(changed).toHaveBeenCalledTimes(1);
     });
 
@@ -115,7 +126,7 @@ describe('extensions/registry', () => {
             { id: 'demo', entry: '/demo.js', screens: [{ id: 'main', area: 'account', path: 'probe' }] },
         ]);
         const changed = vi.fn();
-        registry.subscribeExtensionRegistry('table:admin.nodes', changed);
+        registry.subscribeExtensionRegistry(changed);
         const batch = registry.createExtensionRegistryBatch();
         const column = {
             extensionId: 'demo',
@@ -146,9 +157,20 @@ describe('extensions/registry', () => {
         ]);
     });
 
+    it('shows the latest remaining failure once another context recovers', () => {
+        registry.setExtensionState({ id: 'demo', status: 'loaded' });
+        registry.reportExtensionError('demo', 'first', new Error('one'));
+        registry.reportExtensionError('demo', 'second', new Error('two'));
+        registry.reportExtensionError('demo', 'third', new Error('three'));
+        registry.clearExtensionError('demo', 'third');
+
+        expect(registry.getExtensionStates()).toEqual([{ id: 'demo', status: 'failed', error: 'second: two' }]);
+        expect(registry.getExtensionLoadState('demo')?.status).toBe('loaded');
+    });
+
     it('publishes stable diagnostics snapshots and restores state after a mount recovers', () => {
         const changed = vi.fn();
-        registry.subscribeExtensionRegistry('states', changed);
+        registry.subscribeExtensionRegistry(changed);
         registry.setExtensionState({ id: 'demo', status: 'loaded' });
         const before = registry.getExtensionStates();
         expect(registry.getExtensionStates()).toBe(before);
@@ -261,7 +283,7 @@ describe('extensions/registry', () => {
         registry.abortExtensionRegistryBatch(missing);
 
         const changed = vi.fn();
-        registry.subscribeExtensionRegistry('extension:demo', changed);
+        registry.subscribeExtensionRegistry(changed);
         const batch = registry.createExtensionRegistryBatch();
         registry.registerScreen('demo', 'gated', importer, batch, { visible });
         registry.registerScreen('demo', 'open', importer, batch, { badge });

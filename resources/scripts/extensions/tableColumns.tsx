@@ -1,19 +1,14 @@
-import { useCallback, useMemo, useSyncExternalStore } from 'react';
+import { useMemo } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import ExtensionMount from './ExtensionMount';
-import { getExtensionTableColumns, subscribeExtensionRegistry } from './registry';
+import { getExtensionTableColumns, useExtensionRegistry } from './registry';
 
 import type { ExtensionTableName, ExtensionTableRows } from './tableTypes';
 
 export function useExtensionTableColumns<TName extends ExtensionTableName>(
     name: TName
 ): ColumnDef<ExtensionTableRows[TName]>[] {
-    const subscribe = useCallback(
-        (changed: () => void) => subscribeExtensionRegistry(`table:${name}`, changed),
-        [name]
-    );
-    const snapshot = useCallback(() => getExtensionTableColumns(name), [name]);
-    const columns = useSyncExternalStore(subscribe, snapshot);
+    const columns = useExtensionRegistry(() => getExtensionTableColumns(name));
     return useMemo(
         () =>
             columns.map(({ id, label, extensionId, component: Component }) => ({

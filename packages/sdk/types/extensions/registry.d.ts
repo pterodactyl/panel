@@ -178,11 +178,14 @@ export interface SiteExtensionEntry {
         version: string;
     } | null;
 }
+interface StagedScreen {
+    importer: ScreenImporter;
+    options: Readonly<ScreenOptions>;
+}
 export interface ExtensionRegistryBatch {
     closed: boolean;
     slots: BatchedSlotRegistration[];
-    screens: Map<string, ScreenImporter>;
-    screenOptions: Map<string, ScreenOptions>;
+    screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
     components: Map<ComponentName, ComponentReplacement<ComponentName>>;
 }
@@ -193,7 +196,9 @@ export interface ExtensionRuntimeState {
 }
 export declare class ExtensionImportError extends Error {
 }
-export declare function subscribeExtensionRegistry(key: string, listener: () => void): () => void;
+/** Every change notifies every listener; each getter returns the same value until its own data changes. */
+export declare function subscribeExtensionRegistry(listener: () => void): () => void;
+export declare function useExtensionRegistry<T>(read: () => T): T;
 export declare function getExtensionLoadState(id: string): ExtensionRuntimeState | undefined;
 export declare function getScreenComponent(extensionId: string, screenId: string): LazyExoticComponent<ComponentType<ScreenComponentProps>> | undefined;
 /** Undefined until the screen's bundle has loaded. */
@@ -215,7 +220,7 @@ export declare function createExtensionRegistryBatch(): ExtensionRegistryBatch;
 export declare function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void;
 export declare function registerComponentReplacement<TName extends ComponentName>(extensionId: string, name: TName, replacement: ComponentReplacement<TName>, batch: ExtensionRegistryBatch): void;
 export declare function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void;
-export declare function registerSlotComponent(extensionId: string, name: SlotName, component: ComponentType<SlotComponentProps>, batch?: ExtensionRegistryBatch): void;
+export declare function registerSlotComponent(extensionId: string, name: SlotName, component: ComponentType<SlotComponentProps>, batch: ExtensionRegistryBatch): void;
 export declare function getSlotComponents(name: SlotName): readonly SlotRegistration[];
 export declare function registerExtensionTableColumn(column: ExtensionTableColumnRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[];

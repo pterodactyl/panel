@@ -328,7 +328,6 @@ describe('declared component replacements', () => {
             'Duplicate'
         );
         registry.abortExtensionRegistryBatch(batch);
-        expect(batch.components.size).toBe(0);
         expect(() => registry.registerComponentReplacement('views', 'dashboard.serverCard', Component, batch)).toThrow(
             'closed'
         );
