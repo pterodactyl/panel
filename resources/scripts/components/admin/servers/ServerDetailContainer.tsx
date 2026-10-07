@@ -62,41 +62,40 @@ export default function ServerDetailContainer() {
                 </div>
                 <Slot name='panel.servers.detail.actions' data={resourceContext} />
                 <SubNavigation className={'mb-6 rounded-sm'}>
-                    <div>
-                        <Link
-                            to={'/panel/servers/$id'}
-                            params={params}
-                            activeOptions={{ exact: true, includeSearch: false }}
-                        >
-                            About
-                        </Link>
-                        {isInstalled && (
-                            <>
-                                <Link to={'/panel/servers/$id/details'} params={params}>
-                                    Details
-                                </Link>
-                                <Link to={'/panel/servers/$id/build'} params={params}>
-                                    Build
-                                </Link>
-                                <Link to={'/panel/servers/$id/startup'} params={params}>
-                                    Startup
-                                </Link>
-                                <Link to={'/panel/servers/$id/database'} params={params}>
-                                    Database
-                                </Link>
-                                <Link to={'/panel/servers/$id/mounts'} params={params}>
-                                    Mounts
-                                </Link>
-                            </>
-                        )}
-                        <Link to={'/panel/servers/$id/manage'} params={params}>
-                            Manage
-                        </Link>
-                        <Link to={'/panel/servers/$id/delete'} params={params}>
-                            Delete
-                        </Link>
-                        <ResourceExtensionTabs parent='admin.server' basePath={`/panel/servers/${attributes.id}`} />
-                    </div>
+                    <Link
+                        data-core
+                        to={'/panel/servers/$id'}
+                        params={params}
+                        activeOptions={{ exact: true, includeSearch: false }}
+                    >
+                        About
+                    </Link>
+                    {isInstalled && (
+                        <>
+                            <Link data-core to={'/panel/servers/$id/details'} params={params}>
+                                Details
+                            </Link>
+                            <Link data-core to={'/panel/servers/$id/build'} params={params}>
+                                Build
+                            </Link>
+                            <Link data-core to={'/panel/servers/$id/startup'} params={params}>
+                                Startup
+                            </Link>
+                            <Link data-core to={'/panel/servers/$id/database'} params={params}>
+                                Database
+                            </Link>
+                            <Link data-core to={'/panel/servers/$id/mounts'} params={params}>
+                                Mounts
+                            </Link>
+                        </>
+                    )}
+                    <Link data-core to={'/panel/servers/$id/manage'} params={params}>
+                        Manage
+                    </Link>
+                    <Link data-core to={'/panel/servers/$id/delete'} params={params}>
+                        Delete
+                    </Link>
+                    <ResourceExtensionTabs parent='admin.server' basePath={`/panel/servers/${attributes.id}`} />
                 </SubNavigation>
                 <Outlet />
             </AdminContentBlock>

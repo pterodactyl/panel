@@ -156,7 +156,7 @@ test "$(docker exec "$redis" redis-cli get smoke-preserved)" = yes
 docker run -d --name "$dynamic" --network "$prefix" "${environment[@]}" \
   -e APP_ENVIRONMENT_ONLY=false -e PTERODACTYL_EXTENSIONS_ENABLED=true \
   -e QUEUE_WORKER_ENABLED=false -e SCHEDULER_ENABLED=false \
-  -e PHP_FPM_MAX_CHILDREN=3 -e PHP_OPCACHE_MEMORY_CONSUMPTION=192 \
+  -e PHP_FPM_MAX_CHILDREN=3 -e PHP_OPCACHE_MEMORY_CONSUMPTION=192 -e PHP_OPCACHE_REVALIDATE_FREQ=5 \
   "$image" >/dev/null
 wait_for healthy "$dynamic"
 docker exec "$dynamic" /bin/ash -ec '
@@ -165,6 +165,7 @@ docker exec "$dynamic" /bin/ash -ec '
   test ! -f bootstrap/cache/events.php
   php-fpm -tt 2>&1 | grep -q "pm.max_children = 3"
   php -r '\''exit(ini_get("opcache.memory_consumption") === "192" ? 0 : 1);'\''
+  php -r '\''exit(ini_get("opcache.revalidate_freq") === "5" ? 0 : 1);'\''
 '
 for name in 'First live name' 'Second live name'; do
   docker exec -i -e SMOKE_NAME="$name" "$dynamic" php <<'PHP'
@@ -207,6 +208,7 @@ PHP
     version=$(docker exec "$dynamic" cat /app/public/assets/extensions/cache-probe/_current)
     [[ "$version" =~ ^[a-f0-9]{64}$ ]]
     docker exec "$dynamic" curl -fsS "http://127.0.0.1/assets/extensions/cache-probe/$version/client.js" | grep -qx "export const smoke = true;"
+    docker exec "$dynamic" curl -fsSI "http://127.0.0.1/assets/extensions/cache-probe/$version/client.js" | grep -qi '^x-content-type-options: nosniff'
   else
     test "$(docker exec "$dynamic" curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/api/cache-extension-probe)" = 404
   fi

@@ -6,10 +6,12 @@ import { httpErrorToHuman } from '@/api/http';
 import {
     disableAdminExtensionInput,
     enableAdminExtensionInput,
+    extensionReplacement,
     installAdminExtensionInput,
     removeAdminExtensionInput,
     updateAdminExtensionSettingsInput,
     type AdminExtension,
+    type AdminExtensionReplacement,
     type AdminExtensionSettingField,
     type AdminExtensionSettingValue,
     useAdminExtensions,
@@ -118,9 +120,24 @@ function ActionButton({ label, icon, disabled, color = 'grey', isLoading, onClic
     );
 }
 
+function ReplacementNotice({ replacement }: { replacement: AdminExtensionReplacement }) {
+    const installed = replacement.installedVersion ? `v${replacement.installedVersion}` : 'a copy';
+
+    return (
+        <Alert type={'warning'} title={'Replace an installed extension?'}>
+            This package is <code className={'font-mono'}>{replacement.id}</code> v{replacement.version}, and{' '}
+            {installed} of <code className={'font-mono'}>{replacement.id}</code> is already installed. Installing it
+            replaces the installed files.
+            {replacement.enabled &&
+                ' The extension is enabled and stays enabled, so the new version runs its migrations and code right away.'}
+        </Alert>
+    );
+}
+
 function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
     const [file, setFile] = useState<File | null>(null);
     const [enable, setEnable] = useState(false);
+    const [replacement, setReplacement] = useState<AdminExtensionReplacement | null>(null);
     const installExtension = useInstallAdminExtension();
     const submitting = installExtension.isPending;
 
@@ -130,10 +147,14 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
         }
 
         try {
-            await installExtension.mutateAsync(installAdminExtensionInput(file, enable));
+            await installExtension.mutateAsync(installAdminExtensionInput(file, enable, replacement !== null));
             onClose();
-        } catch {
-            // Error toast is handled by the mutation.
+        } catch (error) {
+            // A package with an installed id waits for the admin to confirm; other errors are toasted by the mutation.
+            const conflict = extensionReplacement(error);
+            if (conflict) {
+                setReplacement(conflict);
+            }
         }
     };
 
@@ -154,13 +175,17 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                         accept={'.pteroext,.zip,application/zip'}
                         aria-label={'Extension package'}
                         disabled={submitting}
-                        onChange={(event) => setFile(event.currentTarget.files?.[0] ?? null)}
+                        onChange={(event) => {
+                            setFile(event.currentTarget.files?.[0] ?? null);
+                            setReplacement(null);
+                        }}
                     />
                 </div>
                 <label className={'flex items-center gap-3 text-sm text-foreground'}>
                     <Checkbox checked={enable} onChange={setEnable} disabled={submitting} />
                     Enable after install
                 </label>
+                {replacement && <ReplacementNotice replacement={replacement} />}
             </div>
             <div className={'flex flex-wrap justify-end mt-6'}>
                 <Button
@@ -174,12 +199,13 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                 </Button>
                 <Button
                     type={'button'}
+                    color={replacement ? 'red' : 'primary'}
                     className={'w-full mt-4 sm:w-auto sm:mt-0'}
                     disabled={!file || submitting}
                     isLoading={submitting}
                     onClick={() => void submit()}
                 >
-                    Install
+                    {replacement ? `Replace ${replacement.id}` : 'Install'}
                 </Button>
             </div>
         </Dialog>
@@ -594,8 +620,8 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                         onConfirmed={(_event, close) => submitRemove(close)}
                     >
                         <SpinnerOverlay visible={removePending} />
-                        Removing <strong>{name}</strong> deletes the extension files, published assets, and install
-                        record.
+                        Removing <strong>{name}</strong> deletes the extension files, published assets, settings,
+                        subuser permissions it added, and install record.
                     </Dialog.ConfirmTrigger>
                 </div>
             </div>

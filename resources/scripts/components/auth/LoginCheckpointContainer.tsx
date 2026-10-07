@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useLocation } from '@tanstack/react-router';
+import { Link, Navigate, useLocation, useSearch } from '@tanstack/react-router';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useAppForm } from '@/components/form';
 import { useLoginCheckpoint } from '@/api/auth/queries';
@@ -8,6 +8,7 @@ export default function LoginCheckpointContainer() {
     const location = useLocation();
     // The login screen hands off the 2FA confirmation token via history state.
     const state = location.state as { token?: string } | null;
+    const { redirect } = useSearch({ from: '/auth/login/checkpoint' });
     const loginCheckpoint = useLoginCheckpoint();
     const [isMissingDevice, setIsMissingDevice] = useState(false);
 
@@ -23,7 +24,7 @@ export default function LoginCheckpointContainer() {
                     },
                 });
                 if (response.data.complete) {
-                    window.location.assign(response.data.intended || '/');
+                    window.location.assign(redirect || response.data.intended || '/');
                 }
             } catch {
                 // Error toast is handled by the mutation.
@@ -32,7 +33,7 @@ export default function LoginCheckpointContainer() {
     });
 
     if (!state?.token) {
-        return <Navigate to={'/auth/login'} replace />;
+        return <Navigate to={'/auth/login'} search={{ redirect }} replace />;
     }
 
     return (
@@ -78,6 +79,7 @@ export default function LoginCheckpointContainer() {
             <div className={'mt-6 text-center'}>
                 <Link
                     to={'/auth/login'}
+                    search={{ redirect }}
                     className={
                         'text-xs text-muted-foreground tracking-wide uppercase no-underline hover:text-foreground'
                     }

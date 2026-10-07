@@ -63,6 +63,7 @@ it('continues at sign in and ends the session when a loader is unauthenticated',
 
     expect(await screen.findByText('sign in')).toBeVisible();
     expect(router.state.location.pathname).toBe('/auth/login');
+    expect(router.state.location.search).toEqual({ redirect: '/page' });
     expect(hasBootstrapSession()).toBe(false);
 });
 

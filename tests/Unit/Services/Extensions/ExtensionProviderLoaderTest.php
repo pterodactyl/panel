@@ -6,10 +6,13 @@ namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionProviderLoade
 
 use Illuminate\Support\Facades\File;
 use Mockery;
+use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Tests\TestCase;
+use ReflectionClass;
 use Throwable;
 
 uses(TestCase::class);
@@ -38,6 +41,31 @@ test('Composer packages load once and malformed vendor bootstraps leave healthy 
         $loader->registerProviders($manifests);
         expect(class_exists($namespace.'\\Included'))->toBeTrue();
         expect(File::get($counter))->toBe('x');
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
+test('extension class loaders never replace a class the panel loads', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-shadow-'.uniqid();
+    $decoy = '<?php namespace Pterodactyl\Exceptions\Service\Location; final class HasActiveNodesException {}';
+    foreach (['src', 'bundled'] as $source) {
+        File::ensureDirectoryExists($directory.'/'.$source.'/Exceptions/Service/Location');
+        File::put($directory.'/'.$source.'/Exceptions/Service/Location/HasActiveNodesException.php', $decoy);
+    }
+
+    // What Composer's generated autoload.php does: register its loader in front of all others.
+    File::ensureDirectoryExists($directory.'/vendor');
+    File::put($directory.'/vendor/autoload.php', '<?php $loader = new \Composer\Autoload\ClassLoader; $loader->addPsr4("Pterodactyl\\\\", __DIR__."/../bundled"); $loader->register(true); return $loader;');
+
+    // A manifest that skipped validation, claiming the panel namespace for itself.
+    $manifest = ExtensionManifest::fromValidatedData($directory, ['id' => 'shadow', 'name' => 'Shadow', 'version' => '1.0.0'], ['Pterodactyl\\' => 'src'], null, 'native', null);
+    $repository = Mockery::mock(ExtensionRepository::class);
+    $repository->shouldReceive('clearErrors')->once()->with(['shadow']);
+    try {
+        (new ExtensionProviderLoader($this->app, $repository))->registerProviders(collect(['shadow' => $manifest]));
+
+        expect((new ReflectionClass(HasActiveNodesException::class))->getFileName())->toBe(realpath(app_path('Exceptions/Service/Location/HasActiveNodesException.php')));
     } finally {
         File::deleteDirectory($directory);
     }

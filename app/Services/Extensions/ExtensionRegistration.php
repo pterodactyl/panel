@@ -60,11 +60,7 @@ final class ExtensionRegistration
         $headTags = $this->headTags->snapshot();
         $formFields = $this->app->make(ExtensionFormFieldRegistry::class);
         $fields = $formFields->snapshot();
-        $router = clone $this->router;
-        $routes = $this->router->getRoutes();
-        if ($routes instanceof RouteCollection) {
-            $router->setRoutes(clone $routes);
-        }
+        $router = new ExtensionStagingRouter($this->router);
 
         Route::swap($router);
         $registrations = $this->pending;
@@ -74,13 +70,7 @@ final class ExtensionRegistration
                 $registration();
             }
 
-            $routes = $router->getRoutes();
-            if ($routes instanceof RouteCollection) {
-                $routes->refreshNameLookups();
-                $routes->refreshActionLookups();
-                $this->router->setRoutes($routes);
-            }
-
+            $router->apply();
             $this->active = true;
         } catch (Throwable $throwable) {
             $this->settings->unregister($identifier);

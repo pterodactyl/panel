@@ -72,7 +72,7 @@ class ExtensionPackageLocator
         File::ensureDirectoryExists($workdir);
 
         try {
-            throw_unless($zip->extractTo($workdir), InvalidExtensionException::class, "Unable to extract {$archive}.");
+            $this->extractEntries($zip, $archive, $workdir);
 
             return $workdir;
         } catch (Throwable $throwable) {
@@ -82,6 +82,72 @@ class ExtensionPackageLocator
         } finally {
             $zip->close();
         }
+    }
+
+    /**
+     * Extract entry by entry, counting the bytes actually written. The sizes an archive
+     * declares are only a fast first check: they are written by whoever built the archive,
+     * and an entry may inflate far beyond them.
+     *
+     * @throws InvalidExtensionException
+     */
+    private function extractEntries(ZipArchive $zip, string $archive, string $workdir): void
+    {
+        $written = 0;
+        for ($index = 0; $index < $zip->numFiles; $index++) {
+            $name = $zip->getNameIndex($index);
+            $stat = $zip->statIndex($index);
+            throw_if($name === false || $stat === false, InvalidExtensionException::class, "Unable to read entry {$index} of archive {$archive}.");
+
+            $relative = $this->entryPath($name, $archive);
+            $path = $workdir.DIRECTORY_SEPARATOR.$relative;
+            if (str_ends_with($name, '/') || str_ends_with($name, '\\')) {
+                File::ensureDirectoryExists($path);
+
+                continue;
+            }
+
+            throw_if($relative === '', InvalidExtensionException::class, "Archive {$archive} contains a file without a name.");
+            File::ensureDirectoryExists(dirname($path));
+            $input = $zip->getStreamIndex($index);
+            $output = fopen($path, 'wb');
+            throw_if($input === false || $output === false, InvalidExtensionException::class, "Unable to extract {$name} from {$archive}.");
+
+            try {
+                $crc = hash_init('crc32b');
+                while (($chunk = fread($input, 65536)) !== '') {
+                    throw_if($chunk === false, InvalidExtensionException::class, "Unable to extract {$name} from {$archive}.");
+                    $written += mb_strlen($chunk, '8bit');
+                    throw_if($written > self::MAX_ARCHIVE_UNCOMPRESSED_BYTES, InvalidExtensionException::class, sprintf('Archive %s expands to more than the allowed %d bytes.', $archive, self::MAX_ARCHIVE_UNCOMPRESSED_BYTES));
+                    throw_unless(fwrite($output, $chunk) === mb_strlen($chunk, '8bit'), InvalidExtensionException::class, "Unable to extract {$name} from {$archive}.");
+                    hash_update($crc, $chunk);
+                }
+
+                throw_unless(hexdec(hash_final($crc)) === $stat['crc'], InvalidExtensionException::class, "Entry {$name} of archive {$archive} is corrupt.");
+            } finally {
+                fclose($input);
+                fclose($output);
+            }
+        }
+    }
+
+    /**
+     * The entry's path relative to the extraction directory (empty for the directory itself).
+     * Names that would land outside it are refused rather than rewritten.
+     *
+     * @throws InvalidExtensionException
+     */
+    private function entryPath(string $name, string $archive): string
+    {
+        $normalized = str_replace('\\', '/', $name);
+        $segments = array_filter(explode('/', $normalized), fn (string $segment): bool => $segment !== '' && $segment !== '.');
+        throw_if(
+            str_starts_with($normalized, '/') || preg_match('/^[A-Za-z]:/', $normalized) === 1 || str_contains($name, "\0") || in_array('..', $segments, true),
+            InvalidExtensionException::class,
+            "Archive {$archive} contains an entry outside the package: {$name}.",
+        );
+
+        return implode(DIRECTORY_SEPARATOR, $segments);
     }
 
     /**

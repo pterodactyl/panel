@@ -24,6 +24,7 @@ class InstallExtensionRequest extends AdminApiRequest
         return [
             'package' => ['required', 'file', 'max:51200'],
             'enable' => ['sometimes', 'boolean'],
+            'replace' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -35,7 +36,7 @@ class InstallExtensionRequest extends AdminApiRequest
     }
 
     /**
-     * @return array{package: UploadedFile, enable: bool}
+     * @return array{package: UploadedFile, enable: bool, replace: bool}
      */
     public function payload(): array
     {
@@ -45,6 +46,7 @@ class InstallExtensionRequest extends AdminApiRequest
         return [
             'package' => $package,
             'enable' => $this->boolean('enable', false),
+            'replace' => $this->boolean('replace', false),
         ];
     }
 
@@ -53,13 +55,15 @@ class InstallExtensionRequest extends AdminApiRequest
      */
     protected function prepareForValidation(): void
     {
-        if (! $this->has('enable')) {
-            return;
-        }
+        foreach (['enable', 'replace'] as $key) {
+            if (! $this->has($key)) {
+                continue;
+            }
 
-        $enable = filter_var($this->input('enable'), FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
-        if ($enable !== null) {
-            $this->merge(['enable' => $enable]);
+            $value = filter_var($this->input($key), FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+            if ($value !== null) {
+                $this->merge([$key => $value]);
+            }
         }
     }
 }

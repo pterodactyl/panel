@@ -290,10 +290,10 @@ recovery. Successful lifecycle changes invalidate routes and signal queue worker
 reload the page to replace already evaluated frontend code.
 
 Backend settings support `forUser($user)` and `forServer($server)`. Mark secrets with
-`->secret()` to encrypt storage, mask admin output, and prohibit frontend exposure;
-a password control alone does not enable encryption. Empty secret updates preserve the
-stored value. `->frontend()->frontendType('boolean')` declares and verifies a public
-value's type. `p:extension:types <path>` generates literal screen ids, registered permissions, and public config
+`->secret()` to encrypt storage, mask admin output as `********`, and prohibit frontend
+exposure; `->field('password')` is always secret. A secret submitted empty, as its mask,
+or not at all keeps the stored value, whatever its field.
+`->frontend()->frontendType('boolean')` declares and verifies a public value's type. `p:extension:types <path>` generates literal screen ids, registered permissions, and public config
 keys. `defineConfiguredExtension` accepts a parser for runtime configuration and these
 generated types. Undeclared value types remain bounded JSON.
 
@@ -303,6 +303,12 @@ anyone may read; `public()` requires `frontend()` and cannot be combined with
 `secret()`. Generated types add `ExtensionPublicConfigKey` and `ExtensionPublicConfig`
 for the keys a guest receives; every other key is absent until the user signs in and
 the page reloads.
+
+Submitted values are checked against their field on the server as well as against the
+definition's rules: `text` and `password` take a string or number, `number` a number,
+`toggle` a boolean, and `select` one of its option values (compared strictly, so `'25'`
+does not match `25`). `null` passes all of them. A `number`, `toggle` or `select` default
+has to pass the same check.
 
 Beyond `text`, `password`, `number`, `toggle`, and `select`, settings have five typed
 fields, each validated server-side and rendered by the admin Extensions form:
@@ -317,11 +323,15 @@ fields, each validated server-side and rendered by the admin Extensions form:
   must pass the item rules.
 - `->file(mimes: ExtensionSettingFiles::IMAGES, maxKilobytes: 1024)`: an admin upload.
   The type is decided from the content against the allow-list (PNG, JPEG, GIF, WebP and
-  AVIF by default; ICO, WOFF, WOFF2 and SVG only when listed, and SVG with active
-  content is refused), the file is stored under a random name on the
-  `extensions.files_disk` disk, and `get()` and `ctx.config` return its URL under
-  `/extension-files/<id>/` or the default (a URL or `null`). Replacing or clearing a file
-  deletes the old one; removing the extension deletes them all. Files are uploaded through
+  AVIF by default; ICO, WOFF, WOFF2 and SVG only when listed). An SVG must be plain SVG:
+  scripts, event handlers, animation, embedded documents, `javascript:` or non-image
+  `data:` links, and elements or attributes from other XML vocabularies (editor metadata
+  included) are refused. The file is stored under a random name on the
+  `extensions.files_disk` disk, which must be private (a public disk is refused, so files
+  are only served with the panel's sandboxing headers), and `get()` and `ctx.config`
+  return its URL under `/extension-files/<id>/` or the default (a URL or `null`).
+  Replacing or clearing a file deletes the old one; removing the extension deletes them
+  all. Files are uploaded through
   `POST`/`DELETE /api/admin/extensions/<id>/settings/<input>/file`, never through a
   settings update.
 
@@ -348,6 +358,14 @@ shared cache store for workers and web requests. Snapshots expire after
 not a durable job audit log.
 
 ## Backend provider API
+
+The manifest's `provider` class is loaded through its `autoload` map of PSR-4 prefixes to
+package directories, such as `{ "Acme\\Billing\\": "src" }`. A prefix cannot equal, contain
+or sit inside `Pterodactyl\`, `Illuminate\`, `Laravel\`, `Symfony\` or a namespace of the
+panel's Composer packages, and enabling fails while another enabled extension autoloads an
+overlapping prefix. Extension class loaders are registered behind the panel's, so once an
+extension's `vendor/autoload.php` has returned, a class the panel or its packages provide
+always comes from the panel.
 
 Providers can use `listenToServerOperations` for immutable `provision`, `install`,
 `reinstall`, `backup`, `delete`, `suspend`, `unsuspend`, and `transfer` results. Results
@@ -395,7 +413,9 @@ throws reaches the caller unchanged, and exceptions of the inner action pass thr
 untouched. A reported exception raised from the extension's package is recorded against
 the extension. The decorator is skipped while the extension is disabled or failed to boot;
 one that throws or returns another type is recorded and skipped, so the core action always
-resolves. Extensions wrap in load order, the last one outermost.
+resolves. Extensions wrap in load order, the last one outermost. The actions that install,
+enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and apply themes
+(`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
 
 Resolve the same contracts from the container to call core behaviour instead of
 reimplementing it. Beside the mutating actions, these read or complete on your behalf:
@@ -452,11 +472,13 @@ of every extension, keyed by extension id.
 ### Commands and scheduled tasks
 
 `registerCommands([CleanLogsCommand::class])` adds artisan commands and
-`registerSchedule(fn (Schedule $schedule) => $schedule->command('logs:clean')->daily())`
+`registerSchedule(fn (Schedule $schedule) => $schedule->command('myext:clean-logs')->daily())`
 defines tasks on the panel's scheduler. Both exist only while the extension is enabled and
-booted successfully. Prefix command names with the extension id. A scheduled task that
-fails, or a schedule callback that throws, is recorded against the extension; a callback
-that throws schedules nothing.
+booted successfully. A command's name and every alias must start with the extension id and
+a colon (`myext:clean-logs`) and must not already exist; a command that breaks either rule
+is left out and recorded against the extension. A scheduled task that fails, or a schedule
+callback that throws, is recorded against the extension; a callback that throws schedules
+nothing.
 
 ### Head tags
 

@@ -20,17 +20,27 @@ class ExtensionManifest
         'server.files.manager',
     ];
 
-    /** Lowercase slug: starts with a letter, then letters/digits/hyphens, max 48. */
-    public const string ID_REGEX = '/^[a-z][a-z0-9-]{0,47}$/';
+    /** Lowercase slug: starts with a letter, then letters/digits/hyphens, max 48, with no trailing newline. */
+    public const string ID_REGEX = '/^[a-z][a-z0-9-]{0,47}$/D';
 
     /** A lucide icon name (kebab-case), such as "life-buoy" or "grid-2x2". */
-    public const string ICON_REGEX = '/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/';
+    public const string ICON_REGEX = '/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/D';
 
     /** Identifiers that would collide with core routes/assets. */
     public const array RESERVED_IDS = ['pterodactyl', 'panel', 'core'];
 
+    /** A PSR-4 prefix under `autoload`: PHP identifiers, each followed by a backslash. */
+    public const string NAMESPACE_REGEX = '/^(?:[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*\\\\)+$/D';
+
+    /**
+     * Namespaces an extension can never autoload into, on top of every PSR-4 prefix the
+     * panel's own Composer autoloader maps. Prefixes claimed by other extensions are
+     * compared when an extension is enabled.
+     */
+    public const array RESERVED_NAMESPACES = ['Pterodactyl\\', 'Illuminate\\', 'Laravel\\', 'Symfony\\'];
+
     /** Lowercase slug a top-level URL prefix claimed under `routes.root` must match. */
-    public const string ROOT_PREFIX_REGEX = '/^[a-z][a-z0-9-]{0,47}$/';
+    public const string ROOT_PREFIX_REGEX = '/^[a-z][a-z0-9-]{0,47}$/D';
 
     /**
      * Top-level URL segments an extension can never claim: the SPA's own client-side
@@ -122,6 +132,18 @@ class ExtensionManifest
             rootPrefixes: $data['routes']['root'] ?? [],
             uiPrefix: $data['ui']['prefix'] ?? null,
         );
+    }
+
+    /**
+     * Whether two PSR-4 prefixes can serve the same class: one equals or contains the
+     * other. PHP class names are case-insensitive, so the comparison is too.
+     */
+    public static function namespacesOverlap(string $first, string $second): bool
+    {
+        $first = mb_strtolower($first);
+        $second = mb_strtolower($second);
+
+        return str_starts_with($first, $second) || str_starts_with($second, $first);
     }
 
     /** Whether a Tailwind prefix is well formed and not reserved; uniqueness is compared when an extension is enabled. */

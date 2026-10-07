@@ -11,6 +11,7 @@ import Button from '@/components/elements/Button';
 import Can from '@/components/elements/Can';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import Label from '@/components/elements/Label';
+import SecretInput from '@/components/elements/SecretInput';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import DataTableColumnHeader from '@/components/elements/table/DataTableColumnHeader';
 import { actionsColumn, DeleteAction, RowActionButton, RowActions } from '@/components/elements/table/RowActions';
@@ -136,9 +137,7 @@ function DatabaseConnectionDialog({
             <Can action={'database.view_password'}>
                 <div className={'mt-6'}>
                     <Label>Password</Label>
-                    <CopyOnClick text={password} showInNotification={false}>
-                        <TextInput type={'text'} readOnly value={password} />
-                    </CopyOnClick>
+                    <SecretInput value={password} label={'Password'} />
                 </div>
             </Can>
             <div className={'mt-6'}>

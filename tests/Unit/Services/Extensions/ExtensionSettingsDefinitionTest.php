@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionSettingsDefinitionTest;
 
 use InvalidArgumentException;
+use Pterodactyl\Rules\ValidExtensionSettingType;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettings;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
@@ -24,7 +25,7 @@ test('schema describes fields with current public values', function (): void {
     expect($enabled['value'])->toBeTrue();
     expect($apiKey['field'])->toBe('password');
     expect($apiKey['help'])->toBe('Secret value.');
-    expect($apiKey['value'])->toBe('masked-xy', 'schema must serialize secrets through publicUsing');
+    expect($apiKey['value'])->toBe(ExtensionSettingDefinition::MASK, 'a password field is secret, so publicUsing cannot reveal it');
     expect($pageSize['field'])->toBe('select');
     expect($pageSize['options'])->toBe([['value' => 25, 'label' => '25'], ['value' => 50, 'label' => '50']]);
     expect($pageSize['value'])->toBe(50);
@@ -47,18 +48,20 @@ test('update only writes submitted inputs', function (): void {
     expect($definition->get('enabled'))->toBeFalse();
     expect($definition->get('api_key'))->toBe('keep-me');
 });
-test('validation rules make every input optional and keep inputs without rules', function (): void {
+test('validation rules make every input optional and check the field type', function (): void {
     $definition = new ExtensionSettingsDefinition(settings(), [
         ExtensionSettingDefinition::make('limit', 'limit', 10, ['required', 'integer']),
         ExtensionSettingDefinition::make('enabled', 'enabled', true, ['sometimes', 'boolean']),
         ExtensionSettingDefinition::make('greeting', 'greeting', 'hello'),
     ]);
+    $rules = $definition->validationRules();
 
-    expect($definition->validationRules())->toBe([
+    expect(array_map(fn (array $set): array => array_filter($set, is_string(...)), $rules))->toBe([
         'limit' => ['sometimes', 'required', 'integer'],
         'enabled' => ['sometimes', 'boolean'],
         'greeting' => ['sometimes'],
     ]);
+    expect(array_map(fn (array $set): mixed => end($set), $rules))->each->toBeInstanceOf(ValidExtensionSettingType::class);
 });
 test('field rejects unknown types', function (): void {
     $this->expectException(InvalidArgumentException::class);

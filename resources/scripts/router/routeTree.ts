@@ -72,13 +72,10 @@ import { getBootstrapExtensions, hasBootstrapSession } from '@/bootstrap';
 import { registerClassPrefixes } from '@/lib/cn';
 import RootLayout from '@/router/layouts/RootLayout';
 import AuthLayout from '@/router/layouts/AuthLayout';
-import AuthenticatedLayout from '@/router/layouts/AuthenticatedLayout';
-import AccountLayout from '@/router/layouts/AccountLayout';
-import ServerLayout from '@/router/layouts/ServerLayout';
-import AdminLayout from '@/router/layouts/AdminLayout';
 import RootNotFound from '@/router/RootNotFound';
 import { RouteAccessDenied } from '@/router/RouteError';
 import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
+import { parseRedirectSearch } from '@/router/redirect';
 import { requireServerPermission, serverScreen } from '@/router/serverScreen';
 import { slottedRouteComponent } from '@/router/routeSlots';
 import {
@@ -119,6 +116,7 @@ const authChildren = [
             before: 'auth.login.before',
             after: 'auth.login.after',
         }),
+        validateSearch: parseRedirectSearch,
     }),
     createRoute({
         getParentRoute: () => authRoute,
@@ -127,6 +125,7 @@ const authChildren = [
             before: 'auth.checkpoint.before',
             after: 'auth.checkpoint.after',
         }),
+        validateSearch: parseRedirectSearch,
     }),
     createRoute({
         getParentRoute: () => authRoute,
@@ -150,15 +149,17 @@ const authChildren = [
 const authenticatedRoute = createRoute({
     getParentRoute: () => rootRoute,
     id: 'authenticated',
-    beforeLoad: () => {
+    beforeLoad: ({ location }) => {
         if (!hasBootstrapSession()) {
-            throw redirect({ to: '/auth/login' });
+            throw redirect({ to: '/auth/login', search: parseRedirectSearch({ redirect: location.href }) });
         }
     },
     loader: async ({ context }) => {
         await context.queryClient.ensureQueryData({ ...currentUserQueryOptions(), revalidateIfStale: true });
     },
-    component: AuthenticatedLayout,
+    // Layouts behind the session are lazy so the login screen does not ship the navigation
+    // bar, admin sidebar, or server console in the entry chunk.
+    component: lazyRouteComponent(() => import('@/router/layouts/AuthenticatedLayout')),
 });
 
 const dashboardRoute = createRoute({
@@ -183,7 +184,7 @@ const dashboardRoute = createRoute({
 const accountRoute = createRoute({
     getParentRoute: () => authenticatedRoute,
     path: 'account',
-    component: AccountLayout,
+    component: lazyRouteComponent(() => import('@/router/layouts/AccountLayout')),
 });
 const accountChildren = [
     createRoute({
@@ -256,7 +257,7 @@ const serverRoute = createRoute({
 
         return { serverUuid: server.attributes.uuid, serverPermissions: selectServerPermissions(server) };
     },
-    component: ServerLayout,
+    component: lazyRouteComponent(() => import('@/router/layouts/ServerLayout')),
 });
 const serverChildren = [
     // ServerLayout renders the console itself.
@@ -462,7 +463,7 @@ const panelRoute = createRoute({
             throw new RouteAccessDenied('You do not have permission to access the administrative area.');
         }
     },
-    component: AdminLayout,
+    component: lazyRouteComponent(() => import('@/router/layouts/AdminLayout')),
 });
 const adminPage = slottedRouteComponent;
 

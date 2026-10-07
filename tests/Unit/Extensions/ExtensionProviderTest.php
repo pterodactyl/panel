@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Route;
 use Mockery;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Middleware\Activity\ServerSubject;
+use Pterodactyl\Http\Middleware\Api\Application\AuthorizeExtensionApplicationRequest;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
+use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerParameterAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
@@ -43,6 +45,20 @@ test('client api routes load through laravel route group', function () {
     expect($route->middleware())->toContain('client-api');
     expect($route->middleware())->toContain('throttle:api.client');
     expect($route->middleware())->toContain(RequireTwoFactorAuthentication::class);
+    expect($route->middleware())->toContain(AuthenticateServerParameterAccess::class);
+    expect($route->enforcesScopedBindings())->toBeTrue();
+});
+test('application api routes load with the api key scope check', function () {
+    $provider = provider('application-fixture');
+    $path = writeRouteFile('application.php', '/report', 'report');
+    useTemporaryBootstrapPath('bootstrap-application');
+    $provider->applicationApiRoutes($path);
+    $route = routeByUri('api/application/extensions/application-fixture/report');
+    expect($route)->not->toBeNull();
+    expect($route->getName())->toBe('extensions.application-fixture.application.report');
+    expect($route->middleware())->toContain('application-api');
+    expect($route->middleware())->toContain('throttle:api.application');
+    expect($route->middleware())->toContain(AuthorizeExtensionApplicationRequest::class);
     expect($route->enforcesScopedBindings())->toBeTrue();
 });
 test('admin api routes load through laravel route group', function () {
@@ -140,6 +156,11 @@ function provider(string $identifier): ExtensionProvider
             public function adminApiRoutes(string $path): void
             {
                 $this->registerAdminApiRoutes($path);
+            }
+
+            public function applicationApiRoutes(string $path): void
+            {
+                $this->registerApplicationApiRoutes($path);
             }
 
             public function serverApiRoutes(string $path): void

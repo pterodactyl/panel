@@ -25,6 +25,17 @@ test('serves namespaced extension translations and rejects path traversal', func
     }
 });
 
+test('locale rules reject values with a trailing newline', function (array $query): void {
+    $rules = (new \Pterodactyl\Http\Requests\Base\LocaleRequest)->rules();
+
+    expect(\Illuminate\Support\Facades\Validator::make(['locale' => 'en', 'namespace' => 'ext-probe::messages', 'revision' => str_repeat('a', 32)], $rules)->passes())->toBeTrue();
+    expect(\Illuminate\Support\Facades\Validator::make(['locale' => 'en', 'namespace' => 'auth', ...$query], $rules)->passes())->toBeFalse();
+})->with([
+    'locale' => [['locale' => "en\n"]],
+    'extension namespace' => [['namespace' => "ext-probe::messages\n"]],
+    'revision' => [['revision' => str_repeat('a', 32)."\n"]],
+]);
+
 test('caches translations whose URL changes with them and makes the browser revalidate the rest', function (): void {
     $directory = sys_get_temp_dir().'/ptero-locale-'.uniqid();
     \Illuminate\Support\Facades\File::ensureDirectoryExists($directory.'/en');

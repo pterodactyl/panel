@@ -65,7 +65,7 @@ const StartupContainer = () => {
                     },
                 }}
             />
-            <div className={'md:flex'}>
+            <div className={'md:flex md:items-start'}>
                 <TitledGreyBox title={'Startup Command'} className={'flex-1'}>
                     <div className={'px-1 py-2'}>
                         <p className={'rounded-sm bg-terminal px-4 py-2 font-mono'}>{data.meta?.startup_command}</p>

@@ -6,6 +6,8 @@ namespace Pterodactyl\Services\Extensions;
 
 use Composer\Autoload\ClassLoader;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Routing\RouteCollection;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Extensions\ExtensionProvider;
@@ -33,6 +35,7 @@ class ExtensionProviderLoader
     {
         $this->registerAutoloader($enabled);
 
+        $router = $this->app->make(Router::class);
         $registered = [];
         foreach ($enabled as $manifest) {
             if (isset($this->providers[$manifest->id])) {
@@ -40,6 +43,9 @@ class ExtensionProviderLoader
             }
 
             $provider = null;
+            // Cached routes are compiled and are not copied, so nothing is taken back then.
+            $routes = $router->getRoutes();
+            $routes = $routes instanceof RouteCollection ? clone $routes : null;
             try {
                 foreach (array_keys($manifest->requiredExtensions) as $dependency) {
                     throw_unless(in_array($dependency, $registered, true) || isset($this->providers[$dependency]), InvalidExtensionException::class, "Required extension \"{$dependency}\" failed to load.");
@@ -60,6 +66,12 @@ class ExtensionProviderLoader
                 $registered[] = $manifest->id;
             } catch (Throwable $exception) {
                 $provider?->discardRegistration();
+                // Routes the provider added with the Route facade instead of the staged
+                // helpers would otherwise stay live; see ExtensionProvider for what remains.
+                if ($routes instanceof RouteCollection) {
+                    $router->setRoutes($routes);
+                }
+
                 $this->extensions->recordFailure(
                     $manifest->id,
                     $exception->getMessage(),
@@ -107,6 +119,8 @@ class ExtensionProviderLoader
 
         $loader = require $path;
         throw_unless($loader instanceof ClassLoader, InvalidExtensionException::class, 'Extension vendor/autoload.php must return a Composer ClassLoader.');
+        // Composer registers its loader in front of every other one. Behind the panel's, a
+        // package the extension bundles can never replace the copy the panel loads.
         $loader->unregister();
         $loader->register(prepend: false);
         $this->autoloadedPaths[$path] = true;
@@ -128,8 +142,10 @@ class ExtensionProviderLoader
     private function loader(): ClassLoader
     {
         if (! $this->classLoader instanceof ClassLoader) {
+            // Appended behind the panel's own loader, so the manifest's PSR-4 map only
+            // serves classes the panel and its packages do not provide.
             $this->classLoader = new ClassLoader;
-            $this->classLoader->register();
+            $this->classLoader->register(prepend: false);
         }
 
         return $this->classLoader;

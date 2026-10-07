@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import {
@@ -28,6 +29,7 @@ import type {
     AdminUploadExtensionSettingFileData,
     Options,
 } from '@/api/generated';
+import { isObject, isString } from '@/lib/objects';
 import { notifyHttpError } from '@/plugins/notifications';
 
 export type AdminExtensionsResponse = AdminListExtensionsResponse;
@@ -43,9 +45,44 @@ type AdminExtensionsQueryOptions = { enabled?: boolean };
 
 export const adminExtensionsQueryOptions = () => adminListExtensionsOptions();
 
-export const installAdminExtensionInput = (file: File, enable: boolean): Options<AdminInstallExtensionData> => ({
-    body: { package: file, enable },
+export const installAdminExtensionInput = (
+    file: File,
+    enable: boolean,
+    replace = false
+): Options<AdminInstallExtensionData> => ({
+    body: { package: file, enable, replace },
 });
+
+/** The installed extension an uploaded package would replace, which the admin has to confirm. */
+export type AdminExtensionReplacement = {
+    id: string;
+    version: string;
+    installedVersion: string | null;
+    enabled: boolean;
+};
+
+/** Reads the 409 the install endpoint answers with when the package's id is already installed. */
+export const extensionReplacement = (cause: unknown): AdminExtensionReplacement | null => {
+    if (!isAxiosError(cause) || cause.response?.status !== 409) {
+        return null;
+    }
+
+    const data: unknown = cause.response.data;
+    const first: unknown = isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors[0] : null;
+    const meta: unknown = isObject(first) && 'meta' in first ? first.meta : null;
+    if (!isObject(meta) || !('identifier' in meta) || !('version' in meta) || !isString(meta.identifier)) {
+        return null;
+    }
+
+    const installed = 'installed_version' in meta ? meta.installed_version : null;
+
+    return {
+        id: meta.identifier,
+        version: isString(meta.version) ? meta.version : '',
+        installedVersion: isString(installed) ? installed : null,
+        enabled: 'enabled' in meta && meta.enabled === true,
+    };
+};
 
 export const enableAdminExtensionInput = (extension: string): Options<AdminEnableExtensionData> => ({
     path: { extension },
@@ -167,7 +204,12 @@ export const useInstallAdminExtension = () => {
                 toast.success('Extension installed', { description });
             }
         },
-        onError: (error) => notifyHttpError(error, 'Unable to install extension'),
+        onError: (error) => {
+            // The install dialog asks the admin to confirm a replacement instead.
+            if (!extensionReplacement(error)) {
+                notifyHttpError(error, 'Unable to install extension');
+            }
+        },
     });
 };
 

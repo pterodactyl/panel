@@ -110,7 +110,7 @@ test('development publishes after a successful build', function (): void {
     Process::fake(['*' => Process::result(output: 'built in 100ms')]);
     $manifest = resolve(ExtensionManifestValidator::class)->fromDirectory($this->directory);
     $installer = Mockery::mock(InstallsExtensions::class);
-    $installer->shouldReceive('install')->once()->with($this->directory, false)->andReturn($manifest);
+    $installer->shouldReceive('install')->once()->with($this->directory, false, true)->andReturn($manifest);
     $this->app->instance(InstallsExtensions::class, $installer);
     $this->artisan('p:extension:dev', ['path' => $this->directory])->assertSuccessful();
 });

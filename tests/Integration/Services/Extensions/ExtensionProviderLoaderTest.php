@@ -7,6 +7,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Services\Extensions\ExtensionProvid
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Route as IlluminateRoute;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Exceptions;
@@ -74,8 +75,10 @@ test('failed providers and their dependents expose no registrations while health
     expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['z-healthy']);
     $repository->flushDiscovery();
     expect($repository->enabled()->keys()->all())->toBe(['z-healthy']);
+    expect(hasDirectRoute('z-healthy'))->toBeTrue();
     foreach (['a-failed', 'b-dependent', 'c-transitive'] as $identifier) {
         expect(Route::has('extensions.'.$identifier.'.client.status'))->toBeFalse();
+        expect(hasDirectRoute($identifier))->toBeFalse();
         expect($this->app->make(ExtensionSettingsRegistry::class)->has($identifier))->toBeFalse();
         expect($this->app->make(ExtensionPermissionRegistry::class)->all())->not->toHaveKey('ext.'.$identifier);
         expect($this->app->make(ExtensionFormFieldRegistry::class)->forms($identifier))->toBe([]);
@@ -230,6 +233,11 @@ test('failure observer exceptions are reported and healthy providers still load'
     $this->actingAs(User::factory()->create())->getJson('/api/client/extensions/z-healthy/status')->assertOk()->assertContent('ready');
 });
 
+function hasDirectRoute(string $identifier): bool
+{
+    return array_any(Route::getRoutes()->getRoutes(), fn (IlluminateRoute $route): bool => $route->uri() === 'api/registration-direct/'.$identifier);
+}
+
 /** @param array<string, string> $dependencies */
 function writeExtension(string $identifier, array $dependencies = [], bool $routeFailure = false): ExtensionManifest
 {
@@ -292,6 +300,8 @@ final class RegistrationProbeProvider extends ExtensionProvider
     public function boot(): void
     {
         $this->registerApiRoutes();
+        // Not staged: removed again when the provider fails.
+        Route::get('/api/registration-direct/'.$this->id(), RegistrationProbeController::class);
         Event::dispatch(new OperationCompleted('server', 'install', true, 'during-boot'));
         $this->failAt('boot');
     }

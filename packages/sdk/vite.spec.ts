@@ -56,3 +56,27 @@ it('loads extracted entry styles before setup and rejects unavailable styles', a
         rmSync(directory, { recursive: true, force: true });
     }
 });
+
+it('does not emit a preload map that resolves lazy chunks against the page instead of the bundle', async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'extension-preload-'));
+    try {
+        writeFileSync(resolve(directory, 'shared.js'), 'export const shared = () => "shared";');
+        writeFileSync(resolve(directory, 'one.js'), "import { shared } from './shared.js'; export default () => shared() + 'one';");
+        writeFileSync(resolve(directory, 'two.js'), "import { shared } from './shared.js'; export default () => shared() + 'two';");
+        writeFileSync(
+            resolve(directory, 'entry.js'),
+            "export default { setup() { return [import('./one.js'), import('./two.js')]; } };"
+        );
+        await build({
+            ...defineExtensionConfig({ entry: resolve(directory, 'entry.js'), outDir: resolve(directory, 'dist') }),
+            configFile: false,
+            logLevel: 'silent',
+        });
+        // The shared module becomes its own chunk, so the dynamic imports have a dependency to preload.
+        const entry = readFileSync(resolve(directory, 'dist/client.js'), 'utf8');
+        expect(entry).toContain('import(');
+        expect(entry).not.toContain('__vite__mapDeps');
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+});

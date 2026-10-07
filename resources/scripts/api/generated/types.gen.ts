@@ -1546,6 +1546,10 @@ export type AdminInstallExtensionRequest = {
      * Enable the extension after installing it.
      */
     enable?: boolean;
+    /**
+     * Replace an installed extension with the same id. Without it, such a package is rejected with a 409 naming the id and both versions.
+     */
+    replace?: boolean;
 };
 
 export type AdminUpdateExtensionSettingsRequest = {

@@ -14,6 +14,7 @@ use Pterodactyl\Services\Extensions\ExtensionSettings;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Pterodactyl\Tests\TestCase;
+use UnexpectedValueException;
 
 use function pterodactylTestCase;
 
@@ -57,6 +58,49 @@ test('rejects uploads whose content is not an allowed type', function (string $b
     'malformed svg' => ['<svg xmlns="http://www.w3.org/2000/svg"><g></svg>', ['image/svg+xml'], 'not valid XML'],
     'empty' => ['', ExtensionSettingFiles::IMAGES, 'empty'],
 ]);
+
+test('svg elements and attributes are judged by namespace, not by prefix', function (string $svg, string $message): void {
+    expect(fn () => (new ExtensionSettingFiles)->store('probe', upload($svg, 'logo.svg', 'image/svg+xml'), ['image/svg+xml'], 64))
+        ->toThrow(ValidationException::class, $message);
+    expect(Storage::disk('local')->allFiles())->toBe([]);
+})->with([
+    'prefixed script' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/2000/svg"><x:script>alert(1)</x:script></svg>', 'active or external content'],
+    'prefixed foreign object' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/2000/svg"><x:foreignObject>hi</x:foreignObject></svg>', 'active or external content'],
+    'prefixed animation' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/2000/svg"><rect><x:animate attributeName="fill" values="red"/></rect></svg>', 'active or external content'],
+    'prefixed set' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/2000/svg"><a><x:set attributeName="href" to="#x"/></a></svg>', 'active or external content'],
+    'xhtml script' => ['<svg xmlns="http://www.w3.org/2000/svg"><h:script xmlns:h="http://www.w3.org/1999/xhtml">alert(1)</h:script></svg>', 'outside the SVG namespace'],
+    'svg element without the svg namespace' => ['<svg><rect/></svg>', 'outside the SVG namespace'],
+    'prefixed handler attribute' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:e="urn:x"><rect e:onclick="alert(1)"/></svg>', 'outside the SVG namespace'],
+    'data link' => ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="data:image/svg+xml;base64,PHN2Zy8+"/></svg>', 'active or external content'],
+    'script link split by whitespace' => ["<svg xmlns=\"http://www.w3.org/2000/svg\"><a href=\"java\tscript:alert(1)\"><rect/></a></svg>", 'active or external content'],
+    'stylesheet processing instruction' => ['<?xml-stylesheet type="text/xsl" href="#x"?><svg xmlns="http://www.w3.org/2000/svg"/>', 'active or external content'],
+]);
+
+test('plain svg with links, xml attributes and embedded raster images is stored', function (): void {
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:s="http://www.w3.org/2000/svg" xml:space="preserve">'
+        .'<defs><s:rect id="r" width="1" height="1"/></defs><use xlink:href="#r"/><a href="https://example.com"><text>Docs</text></a>'
+        .'<image href="data:image/png;base64,'.PNG.'" width="1" height="1"/></svg>';
+
+    expect((new ExtensionSettingFiles)->store('probe', upload($svg, 'logo.svg', 'image/svg+xml'), ['image/svg+xml'], 64))->toEndWith('.svg');
+});
+
+test('a disk the web server serves directly is refused', function (array $disk): void {
+    config(['filesystems.disks.exposed' => $disk, 'extensions.files_disk' => 'exposed']);
+    $files = new ExtensionSettingFiles;
+
+    expect(fn () => $files->store('probe', upload(base64_decode(PNG, true)), ExtensionSettingFiles::IMAGES, 64))->toThrow(UnexpectedValueException::class, 'must name a private disk');
+    expect(fn () => $files->read('probe', '0123456789abcdef0123456789abcdef01234567.png'))->toThrow(UnexpectedValueException::class, 'must name a private disk');
+})->with([
+    'public visibility' => [fn (): array => ['driver' => 'local', 'root' => storage_path('app/exposed'), 'visibility' => 'public']],
+    'storage link target' => [fn (): array => ['driver' => 'local', 'root' => storage_path('app/public/nested')]],
+    'public directory' => [fn (): array => ['driver' => 'local', 'root' => public_path('uploads')]],
+]);
+
+test('the stock public disk is refused', function (): void {
+    config(['extensions.files_disk' => 'public']);
+
+    expect(fn () => (new ExtensionSettingFiles)->store('probe', upload(base64_decode(PNG, true)), ExtensionSettingFiles::IMAGES, 64))->toThrow(UnexpectedValueException::class, 'must name a private disk');
+});
 
 test('enforces the size limit of the definition', function (): void {
     $bytes = base64_decode(PNG, true).str_repeat("\0", 2048);

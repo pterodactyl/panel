@@ -118,6 +118,35 @@ test('rejects root path prefixes another enabled extension already claims', func
     $compatibility->assertCompatible(rooted('third', ['status']), collect());
 });
 
+/** @param array<string, string> $autoload */
+function autoloaded(string $id, array $autoload): ExtensionManifest
+{
+    return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0'], $autoload, null, 'native', null);
+}
+
+test('rejects autoload namespaces that overlap another enabled extension in either direction', function (): void {
+    $enabled = collect([
+        'billing' => autoloaded('billing', ['Acme\\Billing\\' => 'src']),
+        'invoices' => autoloaded('invoices', ['Acme\\Billing\\Invoices\\' => 'src']),
+        'healthy' => autoloaded('healthy', ['Acme\\Status\\' => 'src']),
+        'plain' => autoloaded('plain', []),
+    ]);
+    $compatibility = resolve(ExtensionCompatibility::class);
+    $result = $compatibility->resolve($enabled);
+
+    expect($result['manifests']->keys()->all())->toBe(['healthy', 'plain']);
+    expect($result['errors']['billing'])->toBe('Extension "billing" cannot autoload "Acme\\Billing\\": enabled extension "invoices" autoloads "Acme\\Billing\\Invoices\\".');
+    expect($result['errors']['invoices'])->toBe('Extension "invoices" cannot autoload "Acme\\Billing\\Invoices\\": enabled extension "billing" autoloads "Acme\\Billing\\".');
+
+    $healthy = collect(['healthy' => $enabled['healthy']]);
+    expect(fn () => $compatibility->assertCompatible(autoloaded('takeover', ['acme\\status\\' => 'src']), $healthy))->toThrow(InvalidExtensionException::class, 'enabled extension "healthy" autoloads "Acme\\Status\\"');
+    expect(fn () => $compatibility->assertCompatible(autoloaded('parent', ['Acme\\' => 'src']), $healthy))->toThrow(InvalidExtensionException::class, 'cannot autoload "Acme\\"');
+    // An upgrade keeps its own namespaces, a sibling namespace is free, and so is one whose owner is disabled.
+    $compatibility->assertCompatible(autoloaded('healthy', ['Acme\\Status\\' => 'src', 'Acme\\Status\\Extra\\' => 'extra']), $healthy);
+    $compatibility->assertCompatible(autoloaded('sibling', ['Acme\\StatusPage\\' => 'src']), $healthy);
+    $compatibility->assertCompatible(autoloaded('takeover', ['Acme\\Status\\' => 'src']), collect());
+});
+
 function styled(string $id, ?string $prefix): ExtensionManifest
 {
     return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0', 'ui' => array_filter(['entry' => 'dist/client.js', 'prefix' => $prefix])], [], 'dist/client.js', 'native', null);
