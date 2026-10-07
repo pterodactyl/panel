@@ -69,12 +69,12 @@ class ExtensionServiceProvider extends ServiceProvider
         }
 
         // The console application starts after every extension provider has been
-        // committed, so the registry only ever hands over what booted successfully. The
+        // committed, so the registry only ever hands over what booted successfully. Its
+        // commands are added by Pterodactyl\Console\Kernel once the panel's own exist; the
         // scheduler is wired the way core's own schedule is (bootstrap/app.php).
         Artisan::starting(static function (Artisan $artisan): void {
             $app = $artisan->getLaravel();
             $registry = $app->make(ExtensionConsoleRegistry::class);
-            $registry->resolveCommands($artisan);
 
             $app->afterResolving(Schedule::class, static fn (Schedule $schedule) => $registry->schedule($schedule));
             if ($app->resolved(Schedule::class)) {

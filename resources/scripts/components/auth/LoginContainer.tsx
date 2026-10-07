@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStore } from '@tanstack/react-form';
 import { useAppForm } from '@/components/form';
@@ -13,6 +13,7 @@ import { useRouteSlotData } from '@/router/routeSlots';
 
 const LoginContainer = () => {
     const navigate = useNavigate();
+    const { redirect } = useSearch({ from: '/auth/login' });
     const slotData = useRouteSlotData();
     const recaptchaRef = useRef<InvisibleRecaptchaHandle>(null);
 
@@ -40,12 +41,13 @@ const LoginContainer = () => {
                     },
                 });
                 if (response.data.complete) {
-                    window.location.assign(response.data.intended || '/');
+                    window.location.assign(redirect || response.data.intended || '/');
                     return;
                 }
 
                 navigate({
                     to: '/auth/login/checkpoint',
+                    search: { redirect },
                     replace: true,
                     state: { token: response.data.confirmation_token },
                 });

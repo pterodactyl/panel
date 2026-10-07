@@ -14,10 +14,10 @@ class LocaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'locale' => ['required', 'string', 'regex:/^[a-z][a-z]$/'],
-            'namespace' => ['required', 'string', 'regex:/^(?:[a-z]{1,191}|ext-[a-z][a-z0-9-]{0,47}::[a-z][a-z0-9_-]{0,63})$/'],
+            'locale' => ['required', 'string', 'regex:/^[a-z][a-z]$/D'],
+            'namespace' => ['required', 'string', 'regex:/^(?:[a-z]{1,191}|ext-[a-z][a-z0-9-]{0,47}::[a-z][a-z0-9_-]{0,63})$/D'],
             // The revision of an extension's translations, which only makes the URL unique.
-            'revision' => ['sometimes', 'string', 'regex:/^[a-f0-9]{32}$/'],
+            'revision' => ['sometimes', 'string', 'regex:/^[a-f0-9]{32}$/D'],
         ];
     }
 }

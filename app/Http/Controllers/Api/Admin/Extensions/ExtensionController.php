@@ -80,7 +80,7 @@ class ExtensionController extends AdminApiController
                     'help' => 'Leave blank to keep the stored key.',
                     'field' => 'password',
                     'options' => [],
-                    'value' => '***********9999',
+                    'value' => '********',
                     'constraints' => ['max_length' => null, 'max_items' => null, 'max_kilobytes' => null, 'accept' => []],
                     'visibility' => 'admin',
                 ],
@@ -104,6 +104,7 @@ class ExtensionController extends AdminApiController
     #[Endpoint('Install extension', 'Installs an uploaded .pteroext or .zip extension package.')]
     #[BodyParam('package', 'file', 'Extension archive to install.', required: true)]
     #[BodyParam('enable', 'boolean', 'Enable the extension after installing it.', required: false, example: false)]
+    #[BodyParam('replace', 'boolean', 'Replace an installed extension with the same id. Without it, such a package is rejected with a 409 naming the id and both versions.', required: false, example: false)]
     #[ScribeResponse(['data' => self::EXTENSION_EXAMPLE], status: 201, description: 'Extension installed.')]
     public function store(
         InstallExtensionRequest $request,
@@ -121,7 +122,7 @@ class ExtensionController extends AdminApiController
         $path = $workdir.DIRECTORY_SEPARATOR.$filename;
 
         try {
-            $manifest = $installer->install($path, $payload['enable']);
+            $manifest = $installer->install($path, $payload['enable'], $payload['replace']);
         } finally {
             File::delete($path);
         }
@@ -145,7 +146,7 @@ class ExtensionController extends AdminApiController
         return new JsonResponse(['data' => ['registered' => true, 'schema' => $definition->schema()]]);
     }
 
-    #[Endpoint('Update extension settings', "Validates against the extension's declared rules and persists the submitted values. Omitted fields keep their stored values.")]
+    #[Endpoint('Update extension settings', "Validates against each field's type and the extension's declared rules and persists the submitted values. Omitted fields keep their stored values, as do secrets submitted empty or as their mask.")]
     #[BodyParam('settings', 'object', 'Field values keyed by input name, as described by the settings schema.', required: true, example: ['curseforge_api_key' => 'cf-key'])]
     #[ScribeResponse(self::SETTINGS_EXAMPLE, description: 'Settings updated; fresh schema returned.')]
     public function updateSettings(UpdateExtensionSettingsRequest $request, UpdatesExtensionSettings $updateSettings, ExtensionSettingsRegistry $settingsRegistry, string $extension): JsonResponse
@@ -209,7 +210,7 @@ class ExtensionController extends AdminApiController
         return new JsonResponse(['data' => $this->serializeInstalled($extension, $extensions, $assets)]);
     }
 
-    #[Endpoint('Remove extension', 'Deletes extension files, published assets, and the install record.')]
+    #[Endpoint('Remove extension', 'Deletes extension files, published assets, settings, subuser permission grants, and the install record.')]
     #[ScribeResponse(status: 204, description: 'Extension removed.')]
     public function destroy(DeleteExtensionRequest $request, RemovesExtensions $installer, string $extension): Response
     {

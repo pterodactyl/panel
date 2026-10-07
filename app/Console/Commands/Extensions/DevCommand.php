@@ -22,7 +22,8 @@ class DevCommand extends Command
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
             $publish = function () use ($installer, $manifest): void {
-                $installer->install($manifest->directory, (bool) $this->option('enable'));
+                // Republishing its own source over the installed copy is what this command is for.
+                $installer->install($manifest->directory, (bool) $this->option('enable'), replace: true);
                 $this->components->info('Published '.$manifest->id.'.');
             };
             if (! $manifest->hasUi()) {
@@ -40,6 +41,8 @@ class DevCommand extends Command
 
             $publish();
             if ($this->option('watch')) {
+                // Disabled extensions publish no frontend build, so there is nothing to reload.
+                throw_if($assets->currentVersion($manifest->id) === null, InvalidExtensionException::class, "Extension \"{$manifest->id}\" is disabled; pass --enable to watch it.");
                 $assets->watchDevelopment($manifest->id);
                 try {
                     $buffer = '';

@@ -57,35 +57,48 @@ function ServerLayoutInner() {
         <SubNavigationLayout
             navigation={
                 <SubNavigation>
-                    <div>
-                        <Slot name={'server.navigation.before'} data={server} />
-                        {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
-                            <ScreenGate key={segment || '/'} screen={meta.screen}>
-                                {permission ? (
-                                    <Can action={permission} matchAny>
-                                        <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
-                                            <NavigationLabel label={label} {...meta} />
-                                        </NavLink>
-                                    </Can>
-                                ) : (
-                                    <NavLink to={to(segment)} exact={exact} hash={segment === 'files' ? '/' : ''}>
+                    <Slot name={'server.navigation.before'} data={server} />
+                    {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
+                        <ScreenGate key={segment || '/'} screen={meta.screen}>
+                            {permission ? (
+                                <Can action={permission} matchAny>
+                                    <NavLink
+                                        to={to(segment)}
+                                        exact={exact}
+                                        hash={segment === 'files' ? '/' : ''}
+                                        data-core={meta.screen ? undefined : ''}
+                                    >
                                         <NavigationLabel label={label} {...meta} />
                                     </NavLink>
-                                )}
-                            </ScreenGate>
-                        ))}
-                        {rootAdmin && (
-                            <Link
-                                to={'/panel/servers/$id'}
-                                params={{ id: server.attributes.internal_id }}
-                                aria-label={'Open server administration'}
-                                title={'Open server administration'}
-                            >
+                                </Can>
+                            ) : (
+                                <NavLink
+                                    to={to(segment)}
+                                    exact={exact}
+                                    hash={segment === 'files' ? '/' : ''}
+                                    data-core={meta.screen ? undefined : ''}
+                                >
+                                    <NavigationLabel label={label} {...meta} />
+                                </NavLink>
+                            )}
+                        </ScreenGate>
+                    ))}
+                    {rootAdmin && (
+                        <Link
+                            to={'/panel/servers/$id'}
+                            params={{ id: server.attributes.internal_id }}
+                            aria-label={'Open server administration'}
+                            title={'Open server administration'}
+                        >
+                            <span className={'inline-flex items-center gap-2 align-top'}>
                                 <Icon icon={ExternalLink} />
-                            </Link>
-                        )}
-                        <Slot name={'server.navigation.after'} data={server} />
-                    </div>
+                                <span className={'hidden in-data-collapsed:inline in-data-overflowed:inline'}>
+                                    Open Admin Area
+                                </span>
+                            </span>
+                        </Link>
+                    )}
+                    <Slot name={'server.navigation.after'} data={server} />
                 </SubNavigation>
             }
         >

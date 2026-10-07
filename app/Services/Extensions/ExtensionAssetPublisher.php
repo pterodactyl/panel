@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Support\JsonValueGuard;
-use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -34,16 +33,29 @@ class ExtensionAssetPublisher
         }
     }
 
-    /** @param Closure(): void $callback */
+    /**
+     * Publish the build, then run the callback. If either fails, `_current` goes back to the
+     * previous build and the build directory this call created is removed, so nothing from a
+     * failed install or enable stays web-served.
+     *
+     * @param  Closure(): void  $callback
+     */
     public function publishWith(ExtensionManifest $manifest, Closure $callback): void
     {
         $previous = $this->currentVersion($manifest->id);
+        $existing = $this->builds($manifest->id);
 
         try {
             $this->publish($manifest);
             $callback();
         } catch (Throwable $throwable) {
             rescue(fn () => $this->activate($manifest->id, $previous));
+            $current = $this->currentVersion($manifest->id);
+            foreach (array_diff($this->builds($manifest->id), $existing) as $build) {
+                if (basename($build) !== $current) {
+                    rescue(fn (): bool => File::deleteDirectory($build));
+                }
+            }
 
             throw $throwable;
         }
@@ -56,13 +68,11 @@ class ExtensionAssetPublisher
         }
 
         throw_if($reason = $this->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
-        $dist = $manifest->path('dist');
-        $files = File::allFiles($dist);
-        usort($files, fn (SplFileInfo $left, SplFileInfo $right): int => strcmp($left->getRelativePathname(), $right->getRelativePathname()));
+        $files = ExtensionDistFiles::list($manifest->path('dist'));
         $hash = hash_init('sha256');
-        foreach ($files as $file) {
-            hash_update($hash, $file->getRelativePathname()."\0");
-            hash_update_file($hash, $file->getPathname());
+        foreach ($files as $relative => $path) {
+            hash_update($hash, $relative."\0");
+            hash_update_file($hash, $path);
         }
 
         $version = hash_final($hash);
@@ -72,7 +82,12 @@ class ExtensionAssetPublisher
             $staged = $root.DIRECTORY_SEPARATOR.'.staging-'.Str::random(12);
             File::ensureDirectoryExists($root);
             try {
-                throw_unless(File::copyDirectory($dist, $staged), InvalidExtensionException::class, 'Unable to stage extension assets.');
+                // Copy exactly the files that were checked, never the directory itself.
+                foreach ($files as $relative => $path) {
+                    File::ensureDirectoryExists(dirname($staged.DIRECTORY_SEPARATOR.$relative));
+                    throw_unless(File::copy($path, $staged.DIRECTORY_SEPARATOR.$relative), InvalidExtensionException::class, 'Unable to stage extension assets.');
+                }
+
                 throw_unless(File::moveDirectory($staged, $target), InvalidExtensionException::class, 'Unable to publish extension assets.');
             } finally {
                 File::deleteDirectory($staged);
@@ -128,24 +143,7 @@ class ExtensionAssetPublisher
             return null;
         }
 
-        return $this->missingBuildReason($manifest) ?? $this->serverScriptReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
-    }
-
-    /** Published assets are web-served, so nothing in dist may be executable by PHP-FPM. */
-    private function serverScriptReason(ExtensionManifest $manifest): ?string
-    {
-        $dist = $manifest->path('dist');
-        if (! is_dir($dist)) {
-            return null;
-        }
-
-        foreach (File::allFiles($dist, true) as $file) {
-            if (preg_match('/\.(php\d?|phtml|phar|pht|phps)$/i', $file->getFilename()) || mb_strtolower($file->getFilename()) === '.user.ini') {
-                return "Extension \"{$manifest->id}\" ships a server-side script in dist ({$file->getRelativePathname()}); dist may only contain browser assets.";
-            }
-        }
-
-        return null;
+        return $this->missingBuildReason($manifest) ?? $this->distFilesReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
     }
 
     public function publishedPath(string $identifier): string
@@ -174,6 +172,24 @@ class ExtensionAssetPublisher
         }
 
         return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version];
+    }
+
+    /** Published assets are web-served, so dist may only hold static browser assets. */
+    private function distFilesReason(ExtensionManifest $manifest): ?string
+    {
+        try {
+            ExtensionDistFiles::list($manifest->path('dist'));
+        } catch (InvalidExtensionException $invalidExtensionException) {
+            return "Extension \"{$manifest->id}\" {$invalidExtensionException->getMessage()}";
+        }
+
+        return null;
+    }
+
+    /** @return list<string> the published build directories, never the dot-prefixed staging ones */
+    private function builds(string $identifier): array
+    {
+        return glob($this->publishedPath($identifier).DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [];
     }
 
     private function developmentPath(string $identifier): string

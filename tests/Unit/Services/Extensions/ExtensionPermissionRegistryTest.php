@@ -24,4 +24,5 @@ test('rejects permission keys that would not form a valid permission', function 
     'dotted key' => [['votes.view' => 'View votes.']],
     'uppercase key' => [['View' => 'View votes.']],
     'wildcard key' => [['*' => 'Everything.']],
+    'trailing newline' => [["view\n" => 'View votes.']],
 ]);

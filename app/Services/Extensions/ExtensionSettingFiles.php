@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
+use DOMComment;
 use DOMDocument;
 use DOMElement;
+use DOMText;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\ExtensionSetting;
 use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 /**
  * Files uploaded through `file` extension settings. The type is decided from
@@ -48,6 +51,15 @@ class ExtensionSettingFiles
     private const string DIRECTORY = 'extension-files';
 
     private const int MAX_DIMENSION = 10000;
+
+    private const string SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+
+    private const string XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink';
+
+    private const string XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
+
+    /** SVG elements that run script, embed another document or rewrite attributes; animate* is matched by prefix. */
+    private const array ACTIVE_ELEMENTS = ['script', 'foreignobject', 'iframe', 'embed', 'object', 'set', 'handler', 'listener'];
 
     /** The public URL (a path on this panel) a stored file is served from. */
     public static function url(string $extension, string $name): string
@@ -146,9 +158,34 @@ class ExtensionSettingFiles
         }
     }
 
+    /**
+     * The configured disk. A disk the web server also serves directly would hand
+     * these files out without the file route's sandboxing headers, so a disk with
+     * public visibility (such as the stock `public` disk) or a local root inside the
+     * public directory or a storage link target is refused.
+     */
     private function disk(): Filesystem
     {
-        return Storage::disk(JsonValueGuard::string(config('extensions.files_disk')));
+        $name = JsonValueGuard::string(config('extensions.files_disk'));
+        throw_if($this->servedDirectly($name), UnexpectedValueException::class, sprintf('The "%s" disk is served directly by the web server; extensions.files_disk must name a private disk so setting files are only served through /%s.', $name, self::ROUTE_PREFIX));
+
+        return Storage::disk($name);
+    }
+
+    private function servedDirectly(string $disk): bool
+    {
+        if (config("filesystems.disks.{$disk}.visibility") === 'public') {
+            return true;
+        }
+
+        if (config("filesystems.disks.{$disk}.driver") !== 'local') {
+            return false;
+        }
+
+        $root = mb_rtrim(JsonValueGuard::string(config("filesystems.disks.{$disk}.root")), '/\\').'/';
+        $links = JsonValueGuard::stringList(array_values(JsonValueGuard::jsonArray(config('filesystems.links', []))));
+
+        return array_any([public_path(), ...$links], fn (string $directory): bool => str_starts_with($root, mb_rtrim($directory, '/\\').'/'));
     }
 
     private function path(string $extension, string $name): string
@@ -223,9 +260,9 @@ class ExtensionSettingFiles
         }
 
         $previous = libxml_use_internal_errors(true);
+        $document = new DOMDocument;
 
         try {
-            $document = new DOMDocument;
             $root = @$document->loadXML($bytes, LIBXML_NONET) ? $document->documentElement : null;
             if (! $root instanceof DOMElement || $root->localName !== 'svg') {
                 $this->reject('The SVG is not valid XML.');
@@ -234,5 +271,67 @@ class ExtensionSettingFiles
             libxml_clear_errors();
             libxml_use_internal_errors($previous);
         }
+
+        $this->assertInertSvgTree($document);
+    }
+
+    /**
+     * The parsed tree has to agree with the text checks above. Elements and attributes
+     * are judged by namespace and local name, so a prefix (<x:script xmlns:x="...svg">)
+     * cannot hide them. Only SVG elements are allowed, and only plain, XLink and XML
+     * attributes; anything from another vocabulary (XHTML, MathML, editor metadata) is
+     * refused rather than trusted to stay inert.
+     */
+    private function assertInertSvgTree(DOMDocument $document): void
+    {
+        $pending = iterator_to_array($document->childNodes, false);
+        while (($node = array_pop($pending)) !== null) {
+            if ($node instanceof DOMElement) {
+                $this->assertInertSvgElement($node);
+                array_push($pending, ...iterator_to_array($node->childNodes, false));
+            } elseif (! $node instanceof DOMText && ! $node instanceof DOMComment) {
+                // Processing instructions (an xml-stylesheet one can pull in XSLT), doctypes and entities.
+                $this->reject('The SVG contains active or external content and was rejected.');
+            }
+        }
+    }
+
+    private function assertInertSvgElement(DOMElement $element): void
+    {
+        if ($element->namespaceURI !== self::SVG_NAMESPACE) {
+            $this->reject('The SVG contains elements or attributes from outside the SVG namespace and was rejected. Save it as plain SVG.');
+        }
+
+        $name = mb_strtolower($element->localName ?? '');
+        if (in_array($name, self::ACTIVE_ELEMENTS, true) || str_starts_with($name, 'animate')) {
+            $this->reject('The SVG contains active or external content and was rejected.');
+        }
+
+        foreach ($element->attributes as $attribute) {
+            if (! in_array($attribute->namespaceURI, [null, self::XLINK_NAMESPACE, self::XML_NAMESPACE], true)) {
+                $this->reject('The SVG contains elements or attributes from outside the SVG namespace and was rejected. Save it as plain SVG.');
+            }
+
+            $attributeName = mb_strtolower($attribute->localName ?? '');
+            if (str_starts_with($attributeName, 'on') || $this->isActiveReference($attributeName, $attribute->value)) {
+                $this->reject('The SVG contains active or external content and was rejected.');
+            }
+        }
+    }
+
+    /**
+     * Whether an attribute value would run script when followed: a javascript: or
+     * vbscript: URL anywhere, or a data: URL in a link other than an embedded raster
+     * image. Browsers ignore whitespace and control characters inside a scheme, so
+     * those are removed before looking.
+     */
+    private function isActiveReference(string $attribute, string $value): bool
+    {
+        $url = mb_strtolower(preg_replace('/[\x00-\x20\x7F]+/', '', $value) ?? '');
+        if (str_contains($url, 'javascript:') || str_contains($url, 'vbscript:')) {
+            return true;
+        }
+
+        return $attribute === 'href' && str_starts_with($url, 'data:') && preg_match('#\Adata:image/(?:png|jpeg|gif|webp|avif)[;,]#', $url) !== 1;
     }
 }

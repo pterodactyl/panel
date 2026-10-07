@@ -16,6 +16,7 @@
                 <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
             @endunless
             @unless ($extensionHead->replaces('link', 'icon'))
+                <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg">
                 <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
                 <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
             @endunless
@@ -23,7 +24,7 @@
                 <link rel="manifest" href="/favicons/manifest.json">
             @endunless
             @unless ($extensionHead->replaces('link', 'mask-icon'))
-                <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
+                <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#3d7bfd">
             @endunless
             @unless ($extensionHead->replaces('link', 'shortcut icon'))
                 <link rel="shortcut icon" href="/favicons/favicon.ico">
@@ -39,15 +40,17 @@
             {{ $extensionHead }}
         @show
 
+        {{-- @json escapes < > & ' " so a stored value such as "<!--<script" cannot
+             change how the browser parses these inline scripts. --}}
         @section('user-data')
             @if(!is_null(Auth::user()))
                 <script>
-                    window.PterodactylUser = {!! json_encode(Auth::user()->toVueObject()) !!};
+                    window.PterodactylUser = @json(Auth::user()->toVueObject());
                 </script>
             @endif
             @if(!empty($siteConfiguration))
                 <script>
-                    window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
+                    window.SiteConfiguration = @json($siteConfiguration);
                 </script>
             @endif
         @show

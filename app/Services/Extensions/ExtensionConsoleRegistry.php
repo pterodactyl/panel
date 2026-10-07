@@ -7,7 +7,9 @@ namespace Pterodactyl\Services\Extensions;
 use Closure;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
+use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Console\Command\Command;
 use Throwable;
 
@@ -15,8 +17,8 @@ use Throwable;
  * The artisan commands and schedule callbacks extensions have registered this boot,
  * keyed by extension id. Populated by ExtensionProvider::registerCommands() and
  * registerSchedule() once a provider has booted successfully; consumed when the console
- * application starts and when the scheduler is resolved, so nothing reaches Artisan for
- * an extension that failed to boot or is not enabled.
+ * application is created and when the scheduler is resolved, so nothing reaches Artisan
+ * for an extension that failed to boot or is not enabled.
  */
 final class ExtensionConsoleRegistry
 {
@@ -26,7 +28,10 @@ final class ExtensionConsoleRegistry
     /** @var array<string, list<Closure(Schedule): void>> */
     private array $schedules = [];
 
-    public function __construct(private readonly ExtensionRepository $extensions) {}
+    public function __construct(
+        private readonly Application $app,
+        private readonly ExtensionRepository $extensions,
+    ) {}
 
     /** @param list<string> $classes */
     public function registerCommands(string $identifier, array $classes): void
@@ -46,7 +51,12 @@ final class ExtensionConsoleRegistry
         $this->schedules[$identifier][] = $callback;
     }
 
-    /** Hand the commands of every available extension to the starting console application. */
+    /**
+     * Hand the commands of every available extension to the console application, once the
+     * panel's own are registered (Pterodactyl\Console\Kernel). A command whose name or an
+     * alias does not start with `<id>:`, or that would replace a command that already
+     * exists, is refused and recorded against its extension; its other commands still load.
+     */
     public function resolveCommands(Artisan $artisan): void
     {
         foreach ($this->commands as $identifier => $commands) {
@@ -54,10 +64,19 @@ final class ExtensionConsoleRegistry
                 continue;
             }
 
-            try {
-                $artisan->resolveCommands($commands);
-            } catch (Throwable $throwable) {
-                $this->extensions->recordFailure($identifier, $throwable->getMessage(), $throwable, 'command');
+            foreach ($commands as $class) {
+                try {
+                    $command = $this->app->make($class);
+                    throw_unless($command instanceof Command, InvalidArgumentException::class, sprintf('Extension "%s" registered "%s", which is not a console command.', $identifier, $class));
+                    foreach ([$command->getName(), ...array_map(JsonValueGuard::string(...), $command->getAliases())] as $name) {
+                        throw_unless($name !== null && str_starts_with($name, $identifier.':'), InvalidArgumentException::class, sprintf('Extension "%s" cannot register the command "%s": its names must start with "%s:".', $identifier, $name, $identifier));
+                        throw_if($artisan->has($name), InvalidArgumentException::class, sprintf('Extension "%s" cannot register the command "%s": a command with that name already exists.', $identifier, $name));
+                    }
+
+                    $artisan->addCommand($command);
+                } catch (Throwable $throwable) {
+                    $this->extensions->recordFailure($identifier, $throwable->getMessage(), $throwable, 'command');
+                }
             }
         }
     }

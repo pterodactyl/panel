@@ -168,7 +168,7 @@ export const adminDisableExtension = <ThrowOnError extends boolean = true>(optio
 /**
  * Remove extension
  *
- * Deletes extension files, published assets, and the install record.
+ * Deletes extension files, published assets, settings, subuser permission grants, and the install record.
  */
 export const adminRemoveExtension = <ThrowOnError extends boolean = true>(options: Options<AdminRemoveExtensionData, ThrowOnError>): RequestResult<AdminRemoveExtensionResponses, AdminRemoveExtensionErrors, ThrowOnError> => (options.client ?? client).delete<AdminRemoveExtensionResponses, AdminRemoveExtensionErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],

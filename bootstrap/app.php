@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
+use Pterodactyl\Console\Kernel;
 use Pterodactyl\Console\Scheduler;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Http\Middleware\Activity\TrackAPIKey;
@@ -129,6 +131,10 @@ $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR_
             : null);
     })
     ->create();
+
+// The panel's console kernel adds extension commands after its own. Artisan resolves the
+// kernel before any provider registers, so it is bound here rather than in a provider.
+$app->singleton(ConsoleKernelContract::class, Kernel::class);
 
 if (isset($_ENV['APP_STORAGE_PATH'])) {
     $app->useStoragePath($_ENV['APP_STORAGE_PATH']);

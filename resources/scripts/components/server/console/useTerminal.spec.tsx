@@ -1,11 +1,23 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ITerminalOptions } from 'ghostty-web';
+import type { IRenderable, ITerminalOptions } from 'ghostty-web';
 import type { notifyThemeChange as NotifyThemeChange } from '@/lib/theme';
 import type { useTerminal as UseTerminal } from './useTerminal';
 
-const terminals: { options: ITerminalOptions; dispose: ReturnType<typeof vi.fn> }[] = [];
+type MockTerminal = {
+    options: ITerminalOptions;
+    dispose: ReturnType<typeof vi.fn>;
+    viewportY: number;
+    scrollbackLength: number;
+    scrollbackLimit: number;
+    renderedViewportY: number | undefined;
+    renderer: { render: (buffer: IRenderable, forceAll: boolean, viewportY: number) => void };
+    write: (data: string) => void;
+    writeln: (data: string) => void;
+};
+
+const terminals: MockTerminal[] = [];
 const ghostty = vi.hoisted(() => ({ load: vi.fn<() => Promise<object>>() }));
 
 vi.mock('ghostty-web', () => ({
@@ -18,6 +30,15 @@ vi.mock('ghostty-web', () => ({
     UrlRegexProvider: class {},
     Terminal: class {
         dispose = vi.fn();
+        viewportY = 0;
+        scrollbackLength = 0;
+        scrollbackLimit = Number.POSITIVE_INFINITY;
+        renderedViewportY: number | undefined;
+        renderer = {
+            render: (_buffer: IRenderable, _forceAll: boolean, viewportY: number) => {
+                this.renderedViewportY = viewportY;
+            },
+        };
         constructor(public options: ITerminalOptions) {
             terminals.push(this);
         }
@@ -27,7 +48,23 @@ vi.mock('ghostty-web', () => ({
         attachCustomKeyEventHandler() {}
         onScroll() {}
         getViewportY() {
-            return 0;
+            return this.viewportY;
+        }
+        getScrollbackLength() {
+            return this.scrollbackLength;
+        }
+        scrollLines(amount: number) {
+            this.viewportY = Math.max(0, Math.min(this.scrollbackLength, this.viewportY - amount));
+        }
+        write(data: string) {
+            this.scrollbackLength += data.split('\n').length - 1;
+            if (this.scrollbackLength > this.scrollbackLimit) {
+                this.scrollbackLength -= this.scrollbackLimit / 2;
+            }
+            this.viewportY = 0;
+        }
+        writeln(data: string) {
+            this.write(data + '\r\n');
         }
     },
 }));
@@ -91,6 +128,60 @@ describe('useTerminal', () => {
         expect(theme.foreground).toBe('#cccccc');
         expect(theme.background).toBe('#1e2430');
         expect(Object.keys(theme)).toHaveLength(22);
+    });
+
+    it('keeps a scrolled-up viewport on the same lines when new output arrives', async () => {
+        const { container } = render(<Harness />);
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const term = terminals[0];
+        term.scrollbackLength = 100;
+        term.viewportY = 20;
+        term.writeln('one');
+        term.write('two\r\nthree\r\n');
+
+        expect(term.viewportY).toBe(23);
+    });
+
+    it('keeps a scrolled-up viewport on the same lines when old history is trimmed', async () => {
+        const { container } = render(<Harness />);
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const term = terminals[0];
+        term.scrollbackLimit = 100;
+        term.scrollbackLength = 100;
+        term.viewportY = 20;
+        term.writeln('one');
+
+        expect(term.scrollbackLength).toBe(51);
+        expect(term.viewportY).toBe(21);
+    });
+
+    it('renders a fractional scroll position as whole lines', async () => {
+        const { container } = render(<Harness />);
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const buffer: IRenderable = {
+            getLine: () => null,
+            getCursor: () => ({ x: 0, y: 0, visible: false }),
+            getDimensions: () => ({ cols: 80, rows: 24 }),
+            isRowDirty: () => false,
+            clearDirty: () => {},
+        };
+        terminals[0].renderer.render(buffer, false, 4.29);
+
+        expect(terminals[0].renderedViewportY).toBe(4);
+    });
+
+    it('follows new output when the viewport is at the bottom', async () => {
+        const { container } = render(<Harness />);
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const term = terminals[0];
+        term.scrollbackLength = 100;
+        term.writeln('one');
+
+        expect(term.viewportY).toBe(0);
     });
 
     it('rebuilds the terminal when a theme changes the palette, and only then', async () => {

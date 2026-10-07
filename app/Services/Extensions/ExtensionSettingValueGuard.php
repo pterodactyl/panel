@@ -131,6 +131,25 @@ final class ExtensionSettingValueGuard
     }
 
     /**
+     * Whether a value has the type a text, password, number, toggle or select field
+     * stores: text is a string or a number, a select value is identical to one of
+     * the declared choices. Null always fits; other fields have their own checks.
+     *
+     * @param  ExtensionSettingValue  $value
+     * @param  list<string|int|bool>  $choices
+     */
+    public static function fitsField(string $field, bool|float|int|string|array|null $value, array $choices = []): bool
+    {
+        return $value === null || match ($field) {
+            'text', 'password' => is_string($value) || is_int($value) || is_float($value),
+            'number' => is_int($value) || is_float($value),
+            'toggle' => is_bool($value),
+            'select' => in_array($value, $choices, true),
+            default => true,
+        };
+    }
+
+    /**
      * The stored name of an uploaded settings file, or null when the value is not one.
      *
      * @param  ExtensionSettingValue  $value

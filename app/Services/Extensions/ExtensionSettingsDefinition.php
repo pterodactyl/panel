@@ -76,9 +76,8 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
 
     /**
      * Rules for a partial update: every input is optional and, when submitted, must pass
-     * its definition's rules and those of its field type. Inputs without rules of their
-     * own are accepted as given. File inputs are prohibited: files are uploaded and
-     * cleared through replaceFile().
+     * its definition's rules and those of its field type. File inputs are prohibited:
+     * files are uploaded and cleared through replaceFile().
      *
      * @return NormalizedValidationRules
      */
@@ -119,13 +118,16 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
     }
 
     /**
+     * Drops secret inputs that would replace the stored value with nothing or with
+     * its own mask, whatever the field type, so they keep the stored value.
+     *
      * @param  ExtensionSettingValues  $input
      * @return ExtensionSettingValues
      */
     public function withoutBlankSecrets(array $input): array
     {
         foreach ($this->definitions as $definition) {
-            if ($definition->isSecret() && in_array($input[$definition->input] ?? null, ['', null], true)) {
+            if ($definition->isSecret() && in_array($input[$definition->input] ?? null, ['', null, ExtensionSettingDefinition::MASK], true)) {
                 unset($input[$definition->input]);
             }
         }

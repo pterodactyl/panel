@@ -368,7 +368,7 @@ export const adminRemoveExtensionMutationKey = (options?: Partial<Options<AdminR
 /**
  * Remove extension
  *
- * Deletes extension files, published assets, and the install record.
+ * Deletes extension files, published assets, settings, subuser permission grants, and the install record.
  */
 export const adminRemoveExtensionMutation = (options?: Partial<Options<AdminRemoveExtensionData>>): UseMutationOptions<AdminRemoveExtensionResponse, AxiosError<AdminRemoveExtensionError>, Options<AdminRemoveExtensionData>> => {
     const mutationOptions: UseMutationOptions<AdminRemoveExtensionResponse, AxiosError<AdminRemoveExtensionError>, Options<AdminRemoveExtensionData>> = {

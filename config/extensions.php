@@ -34,6 +34,7 @@ return [
     'assets_directory' => public_path('assets/extensions'),
 
     // The filesystem disk that holds files uploaded through `file` settings. They are
-    // served by the panel from /extension-files, so the disk does not need to be public.
+    // served by the panel from /extension-files with sandboxing headers, so the disk must
+    // be private: a public disk (such as `public`) is refused.
     'files_disk' => env('PTERODACTYL_EXTENSIONS_FILES_DISK', 'local'),
 ];

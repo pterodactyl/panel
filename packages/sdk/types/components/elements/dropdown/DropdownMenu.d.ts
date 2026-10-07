@@ -6,10 +6,11 @@ interface DropdownMenuProps {
     /** Rendered inside the trigger `<button>`. */
     triggerContent: React.ReactNode;
     triggerClassName?: string;
+    openOnHover?: boolean;
     children: React.ReactNode;
     className?: string;
 }
-declare function DropdownMenu({ triggerContent, triggerClassName, children, className }: DropdownMenuProps): React.JSX.Element;
+declare function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children, className }: DropdownMenuProps): React.JSX.Element;
 interface ContextDropdownMenuProps {
     className?: string;
     menuClassName?: string;

@@ -95,7 +95,7 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values>; egg: EggFo
                         </p>
                         {attributes.rules && (
                             <p>
-                                <strong>Input Rules:</strong> <Code>{attributes.rules}</Code>
+                                <strong>Input Rules:</strong> <Code className={'break-all'}>{attributes.rules}</Code>
                             </p>
                         )}
                     </div>

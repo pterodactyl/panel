@@ -106,6 +106,15 @@ final class ExtensionCompatibility
             if ($manifest->uiPrefix !== null && $manifest->uiPrefix === $other->uiPrefix) {
                 return sprintf('Extension "%s" cannot use Tailwind prefix "%s": enabled extension "%s" also declares it.', $manifest->id, $manifest->uiPrefix, $other->id);
             }
+
+            // Overlapping PSR-4 prefixes would let one extension's classes, its provider
+            // included, be loaded from the other's package.
+            foreach (array_keys($manifest->autoload) as $namespace) {
+                $claimed = array_find(array_keys($other->autoload), fn (string $prefix): bool => ExtensionManifest::namespacesOverlap($namespace, $prefix));
+                if ($claimed !== null) {
+                    return sprintf('Extension "%s" cannot autoload "%s": enabled extension "%s" autoloads "%s".', $manifest->id, $namespace, $other->id, $claimed);
+                }
+            }
         }
 
         foreach ($manifest->requiredExtensions as $id => $constraint) {

@@ -52,6 +52,58 @@ test('rejects invalid manifests', function (array $overrides, string $messageFra
     $this->expectExceptionMessageMatches('/'.preg_quote($messageFragment, '/').'/');
     (new ExtensionManifestValidator)->fromDirectory($this->directory);
 })->with('invalidManifestProvider');
+test('identifiers and slugs with a trailing newline are rejected', function (array $overrides, string $message): void {
+    writeManifest(array_merge(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0'], $overrides));
+
+    expect(preg_match(ExtensionManifest::ID_REGEX, "my-ext\n"))->toBe(0);
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, $message);
+})->with([
+    'extension id' => [['id' => "my-ext\n"], 'Extension id "my-ext'],
+    'dependency id' => [['requires' => ['extensions' => ["base\n" => '*']]], 'Extension dependencies must be valid identifiers'],
+    'root path prefix' => [['routes' => ['root' => ["go\n"]]], 'Manifest "routes.root" prefixes must match'],
+    'screen id' => [['ui' => ['entry' => 'dist/client.js', 'screens' => [['id' => "main\n", 'area' => 'account', 'path' => 'probe']]]], 'ui.screens.0.id'],
+    'screen path' => [['ui' => ['entry' => 'dist/client.js', 'screens' => [['id' => 'main', 'area' => 'account', 'path' => "probe\n"]]]], 'ui.screens.0.path'],
+    'navigation icon' => [['ui' => ['entry' => 'dist/client.js', 'screens' => [['id' => 'main', 'area' => 'account', 'path' => 'probe', 'nav' => ['label' => 'Probe', 'icon' => "life-buoy\n"]]]]], 'Navigation "icon" must be a lucide icon name'],
+]);
+
+test('rejects autoload namespaces that are not PSR-4 prefixes', function (string $prefix): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => [$prefix => 'src']]);
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, 'Manifest "autoload" must map');
+})->with([
+    'a lone separator' => ['\\'],
+    'a leading separator' => ['\\Acme\\'],
+    'an empty segment' => ['Acme\\\\Billing\\'],
+    'a leading digit' => ['1Acme\\'],
+    'a space' => ['Acme Billing\\'],
+    'a trailing newline' => ["Acme\\\n"],
+]);
+
+test('rejects autoload namespaces the panel or its Composer packages already load', function (string $prefix, string $owner): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => ['Acme\\' => 'lib', $prefix => 'src']]);
+
+    // A parent namespace is reported against whichever of its packages is compared first.
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))
+        ->toThrow(InvalidExtensionException::class, "Manifest \"autoload\" namespace \"{$prefix}\" overlaps \"{$owner}");
+})->with([
+    'the panel namespace' => ['Pterodactyl\\', 'Pterodactyl\\", which'],
+    'inside the panel namespace' => ['Pterodactyl\\Extensions\\Billing\\', 'Pterodactyl\\", which'],
+    'the panel namespace in another case' => ['pterodactyl\\Models\\', 'Pterodactyl\\", which'],
+    'inside the framework' => ['Illuminate\\Support\\', 'Illuminate\\", which'],
+    'a framework vendor' => ['Laravel\\Billing\\', 'Laravel\\", which'],
+    'symfony' => ['Symfony\\Component\\Console\\', 'Symfony\\", which'],
+    'a Composer package' => ['GuzzleHttp\\', 'GuzzleHttp\\'],
+    'inside a Composer package' => ['Carbon\\Billing\\', 'Carbon\\", which'],
+    'a parent of Composer packages' => ['League\\', 'League\\'],
+    'a parent of the panel database namespaces' => ['Database\\', 'Database\\'],
+]);
+
+test('accepts autoload namespaces that only share a name start with the panel', function (): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => ['PterodactylBilling\\' => 'src', 'Acme\\Pterodactyl\\' => 'lib']]);
+
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->autoload)->toBe(['PterodactylBilling\\' => 'src', 'Acme\\Pterodactyl\\' => 'lib']);
+});
+
 test('missing and malformed files', function (string $subdirectory, ?string $contents): void {
     $directory = $this->directory.DIRECTORY_SEPARATOR.$subdirectory;
     if ($contents !== null) {
@@ -274,7 +326,8 @@ test('matches the SDK manifest component catalog', function (): void {
     $schema = File::json(base_path('packages/sdk/manifest.schema.json'));
 
     expect($schema['properties']['ui']['properties']['components']['items']['enum'])->toBe(ExtensionManifest::COMPONENT_NAMES);
-    expect('/'.$schema['properties']['ui']['properties']['screens']['items']['properties']['nav']['properties']['icon']['pattern'].'/')->toBe(ExtensionManifest::ICON_REGEX);
+    expect('/'.$schema['properties']['ui']['properties']['screens']['items']['properties']['nav']['properties']['icon']['pattern'].'/D')->toBe(ExtensionManifest::ICON_REGEX);
+    expect('/'.$schema['properties']['id']['pattern'].'/D')->toBe(ExtensionManifest::ID_REGEX);
 });
 
 test('preserves the declared tailwind prefix', function (string $prefix): void {
@@ -372,7 +425,7 @@ test('reserves every top-level route of the SPA and matches the SDK manifest sch
     $items = $schema['properties']['routes']['properties']['root']['items'];
 
     expect($items['not']['enum'])->toBe(ExtensionManifest::RESERVED_ROOT_PREFIXES);
-    expect('/'.$items['pattern'].'/')->toBe(ExtensionManifest::ROOT_PREFIX_REGEX);
+    expect('/'.$items['pattern'].'/D')->toBe(ExtensionManifest::ROOT_PREFIX_REGEX);
 
     // Client-side routes mounted directly under the root or the authenticated layout.
     preg_match_all('/getParentRoute: \(\) => (?:rootRoute|authenticatedRoute),\s+path: \'([a-z][a-z0-9-]*)/', File::get(resource_path('scripts/router/routeTree.ts')), $matches);
