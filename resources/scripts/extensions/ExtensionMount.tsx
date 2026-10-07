@@ -1,10 +1,49 @@
-import { Suspense, useEffect, useMemo, type ReactNode } from 'react';
+import { Component, Suspense, useEffect, useMemo, type ReactNode } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Button from '@/components/elements/Button';
-import ExtensionBoundary from '@/extensions/ExtensionBoundary';
-import { ExtensionImportError } from '@/extensions/registry';
+import { clearExtensionError, ExtensionImportError, reportExtensionError } from '@/extensions/registry';
 import { ExtensionContext } from '@/extensions/context';
+
+interface BoundaryProps {
+    extensionId: string;
+    context: string;
+    resetKey: string;
+    onReset: () => void;
+    fallback: (error: Error, retry: () => void) => ReactNode;
+    children?: ReactNode;
+}
+
+/** Records a crash against the extension and renders the fallback until it is retried or the key changes. */
+interface BoundaryState {
+    error: Error | null;
+}
+
+class ExtensionBoundary extends Component<BoundaryProps, BoundaryState> {
+    state: BoundaryState = { error: null };
+
+    static getDerivedStateFromError(cause: unknown) {
+        return { error: cause instanceof Error ? cause : new Error(String(cause)) };
+    }
+
+    componentDidCatch(error: Error) {
+        reportExtensionError(this.props.extensionId, this.props.context, error);
+    }
+
+    componentDidUpdate(previous: BoundaryProps) {
+        if (previous.resetKey !== this.props.resetKey && this.state.error) this.retry();
+    }
+
+    retry = () => {
+        this.props.onReset();
+        clearExtensionError(this.props.extensionId, this.props.context);
+        this.setState({ error: null });
+    };
+
+    render() {
+        return this.state.error ? this.props.fallback(this.state.error, this.retry) : this.props.children;
+    }
+}
 
 interface FailedMount {
     retry?: () => void;
