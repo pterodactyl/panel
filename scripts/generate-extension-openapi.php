@@ -73,7 +73,7 @@ if ($paths === []) {
 
 $spec['paths'] = $paths;
 $spec['info'] = (array) ($spec['info'] ?? []);
-$spec['info']['title'] = mb_trim(($spec['info']['title'] ?? 'Pterodactyl API').' - '.$extension);
+$spec['info']['title'] = trim(($spec['info']['title'] ?? 'Pterodactyl API').' - '.$extension);
 pruneUnusedSchemas($spec);
 
 $directory = dirname($output);
