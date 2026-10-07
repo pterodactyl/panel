@@ -15,7 +15,7 @@ final readonly class ReadFileContents implements ReadsFileContents
     {
         return Daemon::server($server)->files()->getContent(
             $path,
-            $maxBytes ?? JsonValueGuard::nullableInteger(config('pterodactyl.files.max_edit_size'))
+            $maxBytes ?? JsonValueGuard::integer(config('pterodactyl.files.max_edit_size'))
         );
     }
 }

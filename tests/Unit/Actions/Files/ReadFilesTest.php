@@ -61,6 +61,20 @@ test('the configured edit size rejects larger files by default', function (): vo
     $this->app->make(ReadsFileContents::class)->read(server(), '/large.log');
 })->throws(FileSizeTooLargeException::class);
 
+test('an edit size configured from the environment as a string is honoured', function (string $size, bool $rejected): void {
+    config()->set('pterodactyl.files.max_edit_size', $size);
+    Http::fake(['*/files/contents*' => Http::response('123456', 200, ['Content-Length' => '6'])]);
+
+    $read = fn (): string => $this->app->make(ReadsFileContents::class)->read(server(), '/large.log');
+
+    $rejected
+        ? expect($read)->toThrow(FileSizeTooLargeException::class)
+        : expect($read())->toBe('123456');
+})->with([
+    'larger string limit allows the file' => ['4194304', false],
+    'smaller string limit rejects the file' => ['4', true],
+]);
+
 test('directories are listed from Wings', function (): void {
     $entry = ['name' => 'eula.txt', 'mode' => '-rw-r--r--', 'mode_bits' => '0644', 'size' => 9, 'file' => true, 'symlink' => false, 'mime' => 'text/plain', 'created' => '2024-01-01T00:00:00Z', 'modified' => '2024-01-01T00:00:00Z'];
     $fake = new FakeDaemonFile;
