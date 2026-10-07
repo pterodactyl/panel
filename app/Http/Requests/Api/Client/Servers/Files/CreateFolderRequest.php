@@ -24,8 +24,8 @@ class CreateFolderRequest extends ClientApiRequest implements ClientPermissionsR
     public function rules(): array
     {
         return [
-            'root' => ['sometimes', 'nullable', 'string'],
-            'name' => ['required', 'string'],
+            'root' => ['sometimes', 'nullable', 'string', 'max:2048'],
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

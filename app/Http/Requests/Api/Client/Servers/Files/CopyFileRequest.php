@@ -21,7 +21,7 @@ class CopyFileRequest extends ClientApiRequest implements ClientPermissionsReque
     public function rules(): array
     {
         return [
-            'location' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:2048'],
         ];
     }
 }
