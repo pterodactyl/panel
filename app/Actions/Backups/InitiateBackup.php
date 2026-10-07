@@ -110,7 +110,7 @@ final class InitiateBackup implements InitiatesBackups
 
             $backup = $server->backups()->create([
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => mb_trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
+                'name' => mb_trim($name ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
                 'ignored_files' => array_values($this->ignoredFiles),
                 'disk' => $this->backupManager->getDefaultAdapter(),
                 'is_locked' => $this->isLocked,

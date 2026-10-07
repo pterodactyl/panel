@@ -13,7 +13,55 @@ use Throwable;
 
 class ExtensionAssetPublisher
 {
+    public const int ICON_MAX_KILOBYTES = 512;
+
+    public const int ICON_MAX_DIMENSION = 2048;
+
+    private const array ICON_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+
     public function __construct(private readonly ExtensionStylesheetInspector $stylesheets) {}
+
+    public function iconUrl(ExtensionManifest $manifest): ?string
+    {
+        $icon = $this->icon($manifest);
+
+        return $icon === null ? null : sprintf('/api/admin/extensions/%s/icon?v=%s', $manifest->id, hash('xxh3', $icon['contents']));
+    }
+
+    /** @return array{contents: string, mime: string}|null */
+    public function icon(ExtensionManifest $manifest): ?array
+    {
+        $path = $this->iconPath($manifest);
+        if ($path === null) {
+            return null;
+        }
+
+        $contents = File::get($path);
+        $size = @getimagesizefromstring($contents);
+        if ($size === false || ! in_array($size['mime'], self::ICON_TYPES, true)) {
+            return null;
+        }
+
+        if ($size[0] < 1 || $size[1] < 1 || $size[0] > self::ICON_MAX_DIMENSION || $size[1] > self::ICON_MAX_DIMENSION) {
+            return null;
+        }
+
+        return ['contents' => $contents, 'mime' => $size['mime']];
+    }
+
+    public function iconProblem(ExtensionManifest $manifest): ?string
+    {
+        $file = $manifest->iconFile();
+        if ($file === null) {
+            return null;
+        }
+
+        return match (true) {
+            $this->iconPath($manifest) === null => sprintf('Icon "%s" is missing, outside the package or larger than %d KB.', $file, self::ICON_MAX_KILOBYTES),
+            $this->icon($manifest) === null => sprintf('Icon "%s" is not a readable PNG, JPEG or WebP image of at most %d px per side.', $file, self::ICON_MAX_DIMENSION),
+            default => null,
+        };
+    }
 
     public function entryUrl(ExtensionManifest $manifest): string
     {
@@ -190,6 +238,24 @@ class ExtensionAssetPublisher
     private function builds(string $identifier): array
     {
         return glob($this->publishedPath($identifier).DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [];
+    }
+
+    private function iconPath(ExtensionManifest $manifest): ?string
+    {
+        $file = $manifest->iconFile();
+        if ($file === null) {
+            return null;
+        }
+
+        $root = realpath($manifest->directory);
+        $path = realpath($manifest->path(...explode('/', $file)));
+        if ($root === false || $path === false || ! str_starts_with($path, $root.DIRECTORY_SEPARATOR) || ! is_file($path)) {
+            return null;
+        }
+
+        $bytes = filesize($path);
+
+        return $bytes !== false && $bytes > 0 && $bytes <= self::ICON_MAX_KILOBYTES * 1024 ? $path : null;
     }
 
     private function developmentPath(string $identifier): string

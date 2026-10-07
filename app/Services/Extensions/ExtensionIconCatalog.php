@@ -17,13 +17,13 @@ final class ExtensionIconCatalog
     public const string PATH = 'packages/sdk/icons.json';
 
     /**
-     * The navigation icons a manifest declares that this panel does not ship.
+     * The icons a manifest declares that this panel does not ship.
      *
      * @return list<string>
      */
     public function unknownIcons(ExtensionManifest $manifest): array
     {
-        $declared = [];
+        $declared = array_filter([$manifest->iconName()]);
         foreach ($manifest->screens as $screen) {
             if (isset($screen['nav']['icon'])) {
                 $declared[] = $screen['nav']['icon'];

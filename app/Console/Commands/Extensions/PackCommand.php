@@ -50,6 +50,11 @@ class PackCommand extends Command
                     }
                 }
 
+                $icon = $manifest->iconFile();
+                if ($icon !== null && is_file($manifest->path($icon)) && $zip->locateName($icon) === false) {
+                    throw_unless($zip->addFile($manifest->path($icon), $icon), InvalidExtensionException::class, "Unable to add {$icon} to archive.");
+                }
+
                 throw_unless($zip->close(), InvalidExtensionException::class, 'Unable to finish archive.');
                 $opened = false;
                 throw_unless(File::move($temporary, $output), InvalidExtensionException::class, 'Unable to save archive.');

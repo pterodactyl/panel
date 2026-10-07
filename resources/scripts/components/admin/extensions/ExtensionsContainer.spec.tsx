@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import http from '@/api/http';
-import { adminExtensionsQueryOptions } from '@/api/admin/extensions/queries';
-import ExtensionsContainer from '@/components/admin/extensions/ExtensionsContainer';
+import { adminExtensionsQueryOptions, type AdminExtension } from '@/api/admin/extensions/queries';
+import ExtensionsContainer, { ExtensionMark } from '@/components/admin/extensions/ExtensionsContainer';
 
 const mocks = vi.hoisted(() => ({ notifyError: vi.fn(), toastSuccess: vi.fn() }));
 
@@ -135,5 +135,51 @@ describe('extension install dialog', () => {
 
         expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
         expect(within(dialog).getByRole('button', { name: 'Install' })).toBeEnabled();
+    });
+});
+
+const extension = (overrides: Partial<AdminExtension>): AdminExtension =>
+    ({ id: 'server-tools', name: 'Server Tools', icon: null, icon_url: null, ...overrides }) as AdminExtension;
+
+describe('extension mark', () => {
+    afterEach(cleanup);
+
+    it('shows the image icon and falls back to the lucide icon, then the initials, when it fails to load', async () => {
+        const { container, rerender } = render(
+            <ExtensionMark
+                extension={extension({ icon: 'puzzle', icon_url: '/api/admin/extensions/server-tools/icon?v=1' })}
+            />
+        );
+
+        const image = container.querySelector('img');
+        expect(image).toHaveAttribute('src', '/api/admin/extensions/server-tools/icon?v=1');
+        expect(image).toHaveAttribute('alt', '');
+
+        fireEvent.error(image as HTMLImageElement);
+        await waitFor(() => expect(container.querySelector('svg')?.getAttribute('class')).toContain('lucide-puzzle'));
+        expect(container.querySelector('img')).toBeNull();
+
+        rerender(<ExtensionMark extension={extension({ icon_url: '/api/admin/extensions/server-tools/icon?v=1' })} />);
+        expect(container.querySelector('img')).toBeNull();
+        expect(container).toHaveTextContent('ST');
+
+        rerender(<ExtensionMark extension={extension({ icon_url: '/api/admin/extensions/server-tools/icon?v=2' })} />);
+        expect(container.querySelector('img')).toHaveAttribute('src', '/api/admin/extensions/server-tools/icon?v=2');
+    });
+
+    it('shows a lucide icon by name', async () => {
+        const { container } = render(<ExtensionMark extension={extension({ icon: 'life-buoy' })} />);
+
+        await waitFor(() =>
+            expect(container.querySelector('svg')?.getAttribute('class')).toContain('lucide-life-buoy')
+        );
+        expect(container).not.toHaveTextContent('ST');
+    });
+
+    it('shows the initials without an icon', () => {
+        const { container } = render(<ExtensionMark extension={extension({})} />);
+
+        expect(container.querySelector('img, svg')).toBeNull();
+        expect(container).toHaveTextContent('ST');
     });
 });
