@@ -62,37 +62,19 @@ export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? 
 type ServerSlotName = `dashboard.serverRow.${string}` | `server.navigation.${'before' | 'after'}` | `server.console.${string}`;
 type DataLessSlotName = `nav.items.${'before' | 'after'}` | `dashboard.${'before' | 'after'}` | `account.navigation.${'before' | 'after'}` | `account.overview.${'before' | 'after'}` | `server.files.${'before' | 'after'}` | `panel.navigation.${'before' | 'after'}` | `panel.overview.${'before' | 'after'}`;
 export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail.form' ? AdminUserFormSlotData : TName extends 'server.users.permissions.before' ? SubuserPermissionsSlotData : TName extends 'server.startup.form' ? StartupFormSlotData : TName extends FileManagerSlotName ? FileManagerSlotData : TName extends 'server.files.rowActions' ? FileRowSlotData : TName extends ResourceActionSlotName ? ResourceActionSlotData<TName> : TName extends ServerSlotName ? Server : TName extends DataLessSlotName ? undefined : RouteSlotData;
-export type RouteSlotName = Exclude<SlotName, ServerSlotName | DataLessSlotName | 'server.users.permissions.before' | FileManagerSlotName | 'server.files.rowActions' | 'server.startup.form' | 'panel.users.detail.form' | ResourceActionSlotName>;
+export type RouteSlotName = {
+    [TName in SlotName]: SlotData<TName> extends RouteSlotData ? TName : never;
+}[SlotName];
+type DataSlotName = Exclude<SlotName, RouteSlotName>;
+/** Route slots share one member, so a component can pass any route slot name it holds. */
 export type SlotProps = {
-    name: 'panel.users.detail.form';
-    data: AdminUserFormSlotData;
-} | {
-    name: Extract<SlotName, ServerSlotName>;
-    data: Server;
-} | {
-    name: Extract<SlotName, DataLessSlotName>;
-    data?: undefined;
-} | {
-    name: 'server.users.permissions.before';
-    data: SubuserPermissionsSlotData;
-} | {
-    name: 'server.startup.form';
-    data: StartupFormSlotData;
-} | {
-    name: FileManagerSlotName;
-    data: FileManagerSlotData;
-} | {
-    name: 'server.files.rowActions';
-    data: FileRowSlotData;
-} | {
-    [TName in ResourceActionSlotName]: {
-        name: TName;
-        data: ResourceActionSlotData<TName>;
-    };
-}[ResourceActionSlotName] | {
     name: RouteSlotName;
     data: RouteSlotData;
-};
+} | {
+    [TName in DataSlotName]: {
+        name: TName;
+    } & SlotComponentProps<SlotData<TName>>;
+}[DataSlotName];
 export interface SlotRegistration {
     id: number;
     extensionId: string;
