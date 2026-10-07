@@ -41,6 +41,8 @@ use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
 #[ResponseField('provider', nullable: true)]
 #[ResponseField('ui_entry', nullable: true)]
 #[ResponseField('frontend_entry', nullable: true)]
+#[ResponseField('icon', nullable: true)]
+#[ResponseField('icon_url', nullable: true)]
 class ExtensionController extends AdminApiController
 {
     private const array EXTENSION_EXAMPLE = [
@@ -50,6 +52,8 @@ class ExtensionController extends AdminApiController
         'description' => 'Example extension',
         'author' => 'Pterodactyl',
         'provider' => 'ExampleExtension\\Provider',
+        'icon' => 'puzzle',
+        'icon_url' => null,
         'has_ui' => true,
         'ui_entry' => 'dist/client.js',
         'ui_mode' => 'native',
@@ -98,6 +102,22 @@ class ExtensionController extends AdminApiController
                 'enabled' => (bool) config('extensions.enabled'),
                 'directory' => $extensions->directory(),
             ],
+        ]);
+    }
+
+    #[Endpoint('Get extension icon', 'Returns the PNG, JPEG or WebP image an extension declares as its "icon". Extensions with a lucide icon name or no icon return not found.')]
+    #[ScribeResponse('', description: 'Icon image returned.')]
+    public function icon(GetExtensionsRequest $request, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, string $extension): Response
+    {
+        $manifest = $extensions->discovered()->get($extension);
+        $icon = $manifest instanceof ExtensionManifest ? $assets->icon($manifest) : null;
+        abort_if($icon === null, Response::HTTP_NOT_FOUND, "Extension \"{$extension}\" has no image icon.");
+
+        return new Response($icon['contents'], Response::HTTP_OK, [
+            'Content-Type' => $icon['mime'],
+            'Cache-Control' => 'private, max-age=31536000, immutable',
+            'X-Content-Type-Options' => 'nosniff',
+            'Content-Security-Policy' => "default-src 'none'; sandbox",
         ]);
     }
 
@@ -238,6 +258,8 @@ class ExtensionController extends AdminApiController
                 'description' => null,
                 'author' => null,
                 'provider' => null,
+                'icon' => null,
+                'icon_url' => null,
                 'has_ui' => false,
                 'ui_entry' => null,
                 'ui_mode' => null,
@@ -278,6 +300,8 @@ class ExtensionController extends AdminApiController
             'description' => $manifest->description,
             'author' => $manifest->author,
             'provider' => $manifest->provider,
+            'icon' => $manifest->iconName(),
+            'icon_url' => $assets->iconUrl($manifest),
             'has_ui' => $manifest->hasUi(),
             'ui_entry' => $manifest->uiEntry,
             'ui_mode' => $manifest->uiMode,

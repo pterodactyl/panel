@@ -77,6 +77,9 @@ class ExtensionManifestValidator
         $provider = $data['provider'] ?? null;
         throw_if($provider !== null && $provider === '', InvalidExtensionException::class, 'Manifest "provider" must be a class name string.');
 
+        $icon = $data['icon'] ?? null;
+        throw_if($icon !== null && preg_match(ExtensionManifest::ICON_REGEX, $icon) !== 1 && preg_match(ExtensionManifest::ICON_FILE_REGEX, $icon) !== 1, InvalidExtensionException::class, 'Manifest "icon" must be a lucide icon name such as "life-buoy", or the relative path of a .png, .jpg or .webp image inside the package.');
+
         return ExtensionManifest::fromValidatedData(
             directory: $directory,
             data: $data,
@@ -101,6 +104,7 @@ class ExtensionManifestValidator
             'description' => ['nullable', 'string'],
             'author' => ['nullable', 'string'],
             'provider' => ['nullable', 'string'],
+            'icon' => ['nullable', 'string', 'max:255'],
             'autoload' => ['sometimes', 'array'],
             'requires' => ['sometimes', 'array:panel,sdk,php,extensions'],
             'requires.panel' => ['sometimes', 'string', 'max:255'],
@@ -152,6 +156,8 @@ class ExtensionManifestValidator
             'version.string' => 'Manifest field "version" is required and must be a string.',
             'version.max' => 'Manifest field "version" must not be longer than 64 characters.',
             'provider.string' => 'Manifest "provider" must be a class name string.',
+            'icon.string' => 'Manifest "icon" must be a lucide icon name or an image path string.',
+            'icon.max' => 'Manifest "icon" must not be longer than 255 characters.',
             'autoload.array' => 'Manifest "autoload" must map "Vendor\\\\Prefix\\\\" to a source directory.',
             'ui.array' => 'Manifest "ui" must be an object with an "entry" path.',
             'ui.entry.required_with' => 'Manifest "ui" must be an object with an "entry" path.',

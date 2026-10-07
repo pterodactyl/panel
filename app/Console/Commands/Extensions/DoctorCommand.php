@@ -34,7 +34,11 @@ class DoctorCommand extends Command
         }
 
         foreach ($icons->unknownIcons($manifest) as $icon) {
-            $this->components->warn("Navigation icon \"{$icon}\" is not a lucide icon this panel ships; the default icon is shown instead.");
+            $this->components->warn("Icon \"{$icon}\" is not a lucide icon this panel ships; the default icon is shown instead.");
+        }
+
+        if (($problem = $assets->iconProblem($manifest)) !== null) {
+            $this->components->warn($problem.' The extension list shows its initials instead.');
         }
 
         $this->components->info("{$manifest->id} v{$manifest->version}: manifest, compatibility, autoload directories, and build passed.");

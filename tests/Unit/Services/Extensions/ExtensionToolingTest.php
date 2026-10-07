@@ -40,7 +40,7 @@ test('doctor reports navigation icons the panel does not ship without failing th
     ]]], JSON_THROW_ON_ERROR));
 
     $this->artisan('p:extension:doctor', ['path' => $this->directory])
-        ->expectsOutputToContain('Navigation icon "not-an-icon" is not a lucide icon this panel ships')
+        ->expectsOutputToContain('Icon "not-an-icon" is not a lucide icon this panel ships')
         ->doesntExpectOutputToContain('life-buoy')
         ->assertSuccessful();
 });
@@ -97,6 +97,51 @@ test('packs runtime sources and lazy assets without developer files or hidden se
     }
     $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive])->assertFailed();
 });
+
+test('packs an image icon declared outside the runtime directories once', function (string $icon): void {
+    File::put($this->directory.'/extension.json', json_encode(['id' => 'probe', 'name' => 'Probe', 'version' => '1.0.0', 'icon' => $icon, 'autoload' => ['Probe\\' => 'src'], 'ui' => ['entry' => 'dist/client.js']], JSON_THROW_ON_ERROR));
+    File::ensureDirectoryExists(dirname($this->directory.'/'.$icon));
+    File::put($this->directory.'/'.$icon, toolingPng());
+    $archive = $this->directory.'/probe.pteroext';
+    $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive])->assertSuccessful();
+    $zip = new ZipArchive;
+    expect($zip->open($archive))->toBeTrue();
+    try {
+        expect($zip->getFromName($icon))->toBe(toolingPng());
+        $names = array_map(fn (int $index): string|false => $zip->getNameIndex($index), range(0, $zip->numFiles - 1));
+        expect(array_count_values(array_filter($names))[$icon])->toBe(1);
+    } finally {
+        $zip->close();
+    }
+})->with(['icon.png', 'dist/icon.png']);
+
+test('doctor warns about an image icon it cannot serve without failing the package', function (?string $contents, string $message): void {
+    File::put($this->directory.'/extension.json', json_encode(['id' => 'probe', 'name' => 'Probe', 'version' => '1.0.0', 'icon' => 'icon.png', 'autoload' => ['Probe\\' => 'src'], 'ui' => ['entry' => 'dist/client.js']], JSON_THROW_ON_ERROR));
+    if ($contents !== null) {
+        File::put($this->directory.'/icon.png', $contents);
+    }
+
+    $this->artisan('p:extension:doctor', ['path' => $this->directory])
+        ->expectsOutputToContain($message)
+        ->assertSuccessful();
+})->with([
+    'missing' => [null, 'Icon "icon.png" is missing'],
+    'not an image' => ['<?php echo 1;', 'Icon "icon.png" is not a readable PNG, JPEG or WebP image'],
+]);
+
+test('doctor accepts a readable image icon', function (): void {
+    File::put($this->directory.'/extension.json', json_encode(['id' => 'probe', 'name' => 'Probe', 'version' => '1.0.0', 'icon' => 'icon.png', 'autoload' => ['Probe\\' => 'src'], 'ui' => ['entry' => 'dist/client.js']], JSON_THROW_ON_ERROR));
+    File::put($this->directory.'/icon.png', toolingPng());
+
+    $this->artisan('p:extension:doctor', ['path' => $this->directory])
+        ->doesntExpectOutputToContain('Icon "icon.png"')
+        ->assertSuccessful();
+});
+
+function toolingPng(): string
+{
+    return (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', true);
+}
 
 test('a failed development build never publishes the incomplete package', function (): void {
     Process::fake(['*' => Process::result(exitCode: 1, errorOutput: 'build failed')]);
