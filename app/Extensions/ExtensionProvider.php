@@ -22,7 +22,6 @@ use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionRegistration;
@@ -360,7 +359,7 @@ abstract class ExtensionProvider extends ServiceProvider
     /** Typed key/value settings scoped to this extension. */
     protected function settings(): ExtensionSettings
     {
-        return $this->app->make(ExtensionManager::class)->settings($this->id());
+        return $this->app->make(ExtensionRepository::class)->settings($this->id());
     }
 
     /**

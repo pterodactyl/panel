@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionManagerTest;
+namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionRepositoryTest;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
+use Pterodactyl\Facades\Extensions;
 use Pterodactyl\Services\Extensions\ExtensionManager;
-use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -31,19 +30,19 @@ test('discovers valid packages and records invalid ones', function () {
     writeExtension('broken', ['id' => 'broken', 'name' => '', 'version' => '1.0.0']);
     // Directory name not matching the manifest id is rejected.
     writeExtension('renamed', ['id' => 'other', 'name' => 'Other', 'version' => '1.0.0']);
-    $manager = manager();
-    $discovered = $manager->discovered();
+    $repository = repository();
+    $discovered = $repository->discovered();
     expect($discovered->keys()->all())->toBe(['alpha']);
-    expect($manager->discoveryErrors())->toHaveKey('broken');
-    expect($manager->discoveryErrors())->toHaveKey('renamed');
+    expect($repository->discoveryErrors())->toHaveKey('broken');
+    expect($repository->discoveryErrors())->toHaveKey('renamed');
 });
 test('nothing is enabled without install records', function () {
     writeExtension('alpha', ['id' => 'alpha', 'name' => 'Alpha', 'version' => '1.0.0']);
-    $manager = manager();
+    $repository = repository();
     // No extensions table in the unit test database — records() degrades to
     // empty, so nothing is enabled and nothing throws.
-    expect($manager->enabled()->isEmpty())->toBeTrue();
-    expect($manager->frontendPayload(authenticated: true))->toBe([]);
+    expect($repository->enabled()->isEmpty())->toBeTrue();
+    expect($repository->frontendPayload(authenticated: true))->toBe([]);
 });
 test('provider boot failures are caught', function () {
     Event::fake([ExtensionLoadFailed::class]);
@@ -67,35 +66,21 @@ test('provider boot failures are caught', function () {
     PHP);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory.DIRECTORY_SEPARATOR.'broken');
     $repository = repository();
-    $loader = new ExtensionProviderLoader(pterodactylTestCase()->app, $repository);
-    $manager = new class($repository, $loader) extends ExtensionManager
-    {
-        public ?ExtensionManifest $stub = null;
-
-        public function enabled(): Collection
-        {
-            return $this->stub instanceof ExtensionManifest
-                ? collect([$this->stub->id => $this->stub])
-                : parent::enabled();
-        }
-    };
-    $manager->stub = $manifest;
-    $manager->registerProviders();
-    $manager->bootProviders();
+    (new ExtensionProviderLoader(pterodactylTestCase()->app, $repository))->registerProviders(collect([$manifest->id => $manifest]));
     Event::assertDispatched(ExtensionLoadFailed::class, fn (ExtensionLoadFailed $event) => $event->identifier === 'broken' && $event->phase === 'boot' && str_contains($event->reason, 'boot failed'));
 });
-function manager(): ExtensionManager
-{
-    return (function () {
-        $repository = repository();
+test('the facade and the deprecated manager hand out the same settings as the repository', function () {
+    $settings = repository()->settings('alpha');
 
-        return new ExtensionManager($repository, new ExtensionProviderLoader($this->app, $repository));
-    })->call(pterodactylTestCase());
-}
+    expect(Extensions::settings('alpha'))->toBe($settings);
+    expect(Extensions::isAvailable('alpha'))->toBeFalse();
+    expect(app(ExtensionManager::class)->settings('alpha'))->toBe($settings);
+});
 function repository(): ExtensionRepository
 {
     return (function () {
         $this->app->forgetInstance(ExtensionRepository::class);
+        Extensions::clearResolvedInstance(ExtensionRepository::class);
         $repository = $this->app->make(ExtensionRepository::class);
         $repository->flushDiscovery();
 

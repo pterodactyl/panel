@@ -14,7 +14,7 @@ class StatusController
     public function __invoke(): JsonResponse
     {
         // Persisted per-extension settings are available via:
-        // app(\Pterodactyl\Services\Extensions\ExtensionManager::class)->settings('{{id}}')
+        // \Pterodactyl\Facades\Extensions::settings('{{id}}')
         return new JsonResponse([
             'extension' => '{{id}}',
             'status' => 'ok',

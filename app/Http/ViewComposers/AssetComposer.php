@@ -7,7 +7,7 @@ namespace Pterodactyl\Http\ViewComposers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
-use Pterodactyl\Services\Extensions\ExtensionManager;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
 use Throwable;
 
@@ -18,7 +18,7 @@ class AssetComposer
      */
     public function __construct(
         private readonly AssetHashService $assetHashService,
-        private readonly ExtensionManager $extensionManager,
+        private readonly ExtensionRepository $extensions,
         private readonly ExtensionHeadTags $extensionHeadTags,
     ) {}
 
@@ -55,7 +55,7 @@ class AssetComposer
         }
 
         try {
-            return $this->extensionManager->frontendPayload(authenticated: Auth::check());
+            return $this->extensions->frontendPayload(authenticated: Auth::check());
         } catch (Throwable) {
             return [];
         }

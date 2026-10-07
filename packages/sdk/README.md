@@ -259,6 +259,13 @@ and `migrate:rollback` finds them; a provider does not need to call
 refuses an extension with a migration named like one of the panel's or another installed
 extension's, and `p:extension:doctor` reports it.
 
+A provider reads its settings with `$this->settings()`. Code outside the provider, such as
+a controller or a job, uses the `Pterodactyl\Facades\Extensions` facade:
+`Extensions::settings('billing')` returns the same settings, and
+`Extensions::isAvailable('billing')` tells whether an extension is enabled and running.
+`app(ExtensionManager::class)->settings('billing')`, which earlier scaffolds suggested,
+still works but is deprecated.
+
 Backend settings support `forUser($user)` and `forServer($server)`. Mark secrets with
 `->secret()` to encrypt storage, mask admin output as `********`, and prohibit frontend
 exposure; `->field('password')` is always secret. A secret submitted empty, as its mask,

@@ -19,7 +19,6 @@ use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionFailureAttributor;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionLock;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
@@ -39,7 +38,6 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->singleton(ExtensionRepository::class);
         $this->app->singleton(ExtensionLock::class);
         $this->app->singleton(ExtensionProviderLoader::class);
-        $this->app->singleton(ExtensionManager::class);
         $this->app->singleton(ExtensionActionDecorators::class);
         $this->app->singleton(ExtensionConsoleRegistry::class);
         $this->app->singleton(ExtensionHeadTags::class);
@@ -52,7 +50,7 @@ class ExtensionServiceProvider extends ServiceProvider
         // Registered during the provider registration phase, then executed after
         // the core app has booted. Application::register() immediately runs
         // Laravel's normal provider boot path inside the loader's failure boundary.
-        $this->app->booted(fn () => $this->app->make(ExtensionManager::class)->registerProviders());
+        $this->app->booted(fn () => $this->app->make(ExtensionProviderLoader::class)->registerProviders($this->app->make(ExtensionRepository::class)->enabled()));
     }
 
     public function boot(): void
@@ -102,10 +100,10 @@ class ExtensionServiceProvider extends ServiceProvider
             return ['Status' => 'OFF'];
         }
 
-        $manager = $this->app->make(ExtensionManager::class);
-        $records = $manager->records();
+        $extensions = $this->app->make(ExtensionRepository::class);
+        $records = $extensions->records();
         $rows = [];
-        foreach ($manager->discovered() as $manifest) {
+        foreach ($extensions->discovered() as $manifest) {
             $record = $records->get($manifest->id);
             $state = match (true) {
                 $record === null => 'not registered',
@@ -116,7 +114,7 @@ class ExtensionServiceProvider extends ServiceProvider
             $rows[$manifest->id] = sprintf('%s (%s)', $manifest->version, $state);
         }
 
-        foreach (array_keys($manager->discoveryErrors()) as $directory) {
+        foreach (array_keys($extensions->discoveryErrors()) as $directory) {
             $rows[$directory] = 'invalid manifest';
         }
 

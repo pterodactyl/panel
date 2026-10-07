@@ -86,12 +86,6 @@ class ExtensionProviderLoader
         $this->extensions->clearErrors($registered);
     }
 
-    public function bootProviders(): void
-    {
-        // Providers are booted by Application::register() because the extension
-        // loader runs from an app-booted callback.
-    }
-
     /**
      * @param  Collection<string, ExtensionManifest>  $manifests
      */

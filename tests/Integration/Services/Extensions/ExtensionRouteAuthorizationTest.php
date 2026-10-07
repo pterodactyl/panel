@@ -12,7 +12,6 @@ use Pterodactyl\Models\Extension;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
@@ -29,7 +28,6 @@ beforeEach(function (): void {
     ]);
     $this->app->forgetInstance(ExtensionRepository::class);
     $this->app->forgetInstance(ExtensionProviderLoader::class);
-    $this->app->forgetInstance(ExtensionManager::class);
 
     File::put($this->extensionDirectory.'/probe/extension.json', json_encode([
         'id' => 'probe',
