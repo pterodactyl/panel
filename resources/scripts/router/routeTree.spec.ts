@@ -2,7 +2,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { createMemoryHistory, createRouter } from '@tanstack/react-router';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import type { SiteExtensionEntry } from '@/extensions/loader';
+import type { SiteExtensionEntry } from '@/extensions/registry';
 
 const extensions: SiteExtensionEntry[] = [
     {

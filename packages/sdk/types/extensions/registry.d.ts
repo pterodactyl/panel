@@ -197,7 +197,7 @@ export declare function failExtensionLoad(id: string, context: string, cause: un
 export declare function resolveScreenPath(path: string, params?: Record<string, string>): string;
 /** A rule never matches without a server to test. */
 export declare function matchesScreenCondition(when: ScreenCondition | undefined, server: Server | undefined): boolean;
-export declare function prepareExtensions(advertised: readonly SiteExtensionEntry[], corePaths?: Record<ScreenArea, readonly string[]>, resourcePaths?: Partial<Record<ScreenParent, readonly string[]>>): void;
+export declare function prepareExtensions(advertised: readonly SiteExtensionEntry[], corePaths?: Record<ScreenArea, readonly string[]>, resourcePaths?: Partial<Record<ScreenParent, readonly string[]>>): readonly SiteExtensionEntry[];
 export declare function createExtensionRegistryBatch(): ExtensionRegistryBatch;
 export declare function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void;
 export declare function registerComponentReplacement<TName extends ComponentName>(extensionId: string, name: TName, replacement: ComponentReplacement<TName>, batch: ExtensionRegistryBatch): void;

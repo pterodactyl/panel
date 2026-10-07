@@ -1,7 +1,6 @@
 import { getBootstrapExtensions } from '@/bootstrap';
 import type { ExtensionDefinition, ExtensionSetupContext } from '@/sdk';
 import { isObject } from '@/lib/objects';
-import { registerClassPrefixes } from '@/lib/cn';
 import {
     abortExtensionRegistryBatch,
     commitExtensionRegistryBatch,
@@ -16,11 +15,9 @@ import {
     prepareExtensions,
     getLoadableExtensions,
     type ExtensionRegistryBatch,
+    type SiteExtensionEntry,
 } from '@/extensions/registry';
-
-export type { SiteExtensionEntry } from '@/extensions/registry';
 import type { ExtensionTableColumnRegistration } from './tableTypes';
-import type { SiteExtensionEntry } from '@/extensions/registry';
 import { startExtensionDevelopmentReload } from './development';
 
 export const EXTENSION_IMPORT_TIMEOUT_MS = 15_000;
@@ -106,7 +103,6 @@ const parseExtensionDefinition = <T extends object>(module: T): ExtensionDefinit
 let loading: Promise<void> | undefined;
 let importBundle: ModuleImporter = nativeImport;
 const failedImports = new Set<string>();
-const retries = new Map<string, Promise<void>>();
 
 async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     let module: ExtensionModule;
@@ -133,14 +129,13 @@ async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     }
 }
 
-/** Call once after the core mounts. */
+/** Call once after the core mounts. The route tree has already registered each extension's class prefix. */
 export function loadExtensions(importModule: ModuleImporter = nativeImport): Promise<void> {
     if (loading) return loading;
     importBundle = importModule;
-    if (!getLoadableExtensions()) prepareExtensions(getBootstrapExtensions());
-    registerClassPrefixes((getLoadableExtensions() ?? []).map((entry) => entry.prefix));
-    startExtensionDevelopmentReload(getLoadableExtensions() ?? []);
-    loading = Promise.all((getLoadableExtensions() ?? []).map(bootExtension)).then(() => {});
+    const entries = prepareExtensions(getBootstrapExtensions());
+    startExtensionDevelopmentReload(entries);
+    loading = Promise.all(entries.map(bootExtension)).then(() => {});
     return loading;
 }
 
@@ -148,17 +143,12 @@ export function canRetryExtension(id: string): boolean {
     return failedImports.has(id);
 }
 
+/** Only a failed import can be retried, once per failure. */
 export function retryExtension(id: string): Promise<void> {
-    const pending = retries.get(id);
-    if (pending) return pending;
-
     const entry = getLoadableExtensions()?.find((candidate) => candidate.id === id);
     if (!entry || !failedImports.delete(id)) return Promise.resolve();
 
     clearExtensionError(id, 'boot');
     setExtensionState({ id, status: 'loading' });
-    const retry = bootExtension(entry).finally(() => retries.delete(id));
-    retries.set(id, retry);
-
-    return retry;
+    return bootExtension(entry);
 }

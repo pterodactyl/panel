@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ExtensionSetupContext } from '@/sdk';
-import type { ExtensionModule, SiteExtensionEntry } from '@/extensions/loader';
+import type { ExtensionModule } from '@/extensions/loader';
+import type { SiteExtensionEntry } from '@/extensions/registry';
 import type * as RegistryModule from '@/extensions/registry';
 import type * as LoaderModule from '@/extensions/loader';
 

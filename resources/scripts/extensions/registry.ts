@@ -509,8 +509,8 @@ export function prepareExtensions(
     advertised: readonly SiteExtensionEntry[],
     corePaths: Record<ScreenArea, readonly string[]> = { account: [], server: [], admin: [] },
     resourcePaths: Partial<Record<ScreenParent, readonly string[]>> = {}
-): void {
-    if (entries) return;
+): readonly SiteExtensionEntry[] {
+    if (entries) return entries;
     const accepted: SiteExtensionEntry[] = [];
     const claimed = new Map<string, string>();
     const seenIds = new Set<string>();
@@ -581,6 +581,7 @@ export function prepareExtensions(
         }
     }
     entries = Object.freeze(accepted);
+    return entries;
 }
 
 function assertBatchOpen(batch: ExtensionRegistryBatch): void {
