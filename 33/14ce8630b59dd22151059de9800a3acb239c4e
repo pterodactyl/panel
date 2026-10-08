@@ -1,0 +1,24 @@
+resources/scripts/components/server/console/AreaChart.tsx
+  s_bf0a8697c91bc4::t_924187edcb574d 112-124
+  s_bf0a8697c91bc4::t_789aed1ccb0d44 171
+  s_bf0a8697c91bc4::t_ae666792007925 97
+  s_bf0a8697c91bc4::t_f83ea9ec3ff084 29
+  s_bf0a8697c91bc4::t_919f2d228a5731 71
+  s_bf0a8697c91bc4::t_fd6a70af636d84 202-205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3314ce8630b59dd22151059de9800a3acb239c4e",
+  "prompts": {},
+  "sessions": {
+    "s_bf0a8697c91bc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a4a92c0-ec0d-4af5-89b6-050af2e58784",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
