@@ -24,7 +24,8 @@ export default function CreateMountForm() {
         onSubmit: async ({ value }) => {
             try {
                 const mount = await createMount.mutateAsync(createAdminMountInput(value));
-                navigate({ to: '/panel/mounts/$id', params: { id: mount.attributes.id } });
+
+                void navigate({ to: '/panel/mounts/$id', params: { id: mount.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -33,21 +34,21 @@ export default function CreateMountForm() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Create Mount'}
-            heading={'Create Mount'}
-            description={'Create a directory mount that can be attached to servers.'}
+            title='Admin · Create Mount'
+            heading='Create Mount'
+            description='Create a directory mount that can be attached to servers.'
         >
             <Link
-                to={'/panel/mounts'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                to='/panel/mounts'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Mounts
             </Link>
             <Form form={form}>
-                <div className={'space-y-6'}>
+                <div className='space-y-6'>
                     <MountFormFields form={form} />
-                    <div className={'flex justify-end'}>
+                    <div className='flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Create Mount</form.SubmitButton>
                         </form.AppForm>

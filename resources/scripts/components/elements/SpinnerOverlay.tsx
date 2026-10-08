@@ -22,7 +22,7 @@ const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: P
             className={cn(
                 'top-0 left-0 flex items-center justify-center w-full h-full rounded-sm flex-col z-40',
                 'bg-background/(--spinner-overlay-opacity)',
-                !fixed ? 'absolute' : 'fixed'
+                fixed ? 'fixed' : 'absolute'
             )}
             style={
                 backgroundOpacity === undefined
@@ -31,7 +31,7 @@ const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: P
             }
         >
             <Spinner size={size} />
-            {children && <p className={'mt-4 text-muted-foreground'}>{children}</p>}
+            {children && <p className='mt-4 text-muted-foreground'>{children}</p>}
         </div>
     );
 };

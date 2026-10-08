@@ -162,11 +162,13 @@ export const useAdminMount = (id: number, options?: ResourceQueryOverrides) =>
 
 export const useCreateAdminMount = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateMountMutation(),
         onSuccess: async (mount) => {
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
             const messages = resourceMutationMessages('mount', 'create', mount.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'create').errorTitle),
@@ -175,6 +177,7 @@ export const useCreateAdminMount = () => {
 
 export const useUpdateAdminMount = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateMountMutation(),
         onSuccess: async (mount, variables) => {
@@ -183,6 +186,7 @@ export const useUpdateAdminMount = () => {
                 queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.id) }),
             ]);
             const messages = resourceMutationMessages('mount', 'update', mount.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'update').errorTitle),
@@ -191,6 +195,7 @@ export const useUpdateAdminMount = () => {
 
 export const useDeleteAdminMount = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteMountMutation(),
         onSuccess: async (_data, variables) => {
@@ -198,6 +203,7 @@ export const useDeleteAdminMount = () => {
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('mount', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'delete').errorTitle),
@@ -206,6 +212,7 @@ export const useDeleteAdminMount = () => {
 
 export const useAttachAdminMountEggs = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminAttachEggsToMountMutation(),
         onSuccess: async (mount) => {
@@ -220,6 +227,7 @@ export const useAttachAdminMountEggs = () => {
 
 export const useAttachAdminMountNodes = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminAttachNodesToMountMutation(),
         onSuccess: async (mount) => {
@@ -234,6 +242,7 @@ export const useAttachAdminMountNodes = () => {
 
 export const useDetachAdminMountEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDetachEggFromMountMutation(),
         onSuccess: async (_data, variables) => {
@@ -242,6 +251,7 @@ export const useDetachAdminMountEgg = () => {
                 queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.mount_id) }),
             ]);
             const name = variables.meta?.name;
+
             toast.success('Egg detached', {
                 description: name
                     ? `${name} has been detached from this mount.`
@@ -254,6 +264,7 @@ export const useDetachAdminMountEgg = () => {
 
 export const useDetachAdminMountNode = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDetachNodeFromMountMutation(),
         onSuccess: async (_data, variables) => {
@@ -262,6 +273,7 @@ export const useDetachAdminMountNode = () => {
                 queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.mount_id) }),
             ]);
             const name = variables.meta?.name;
+
             toast.success('Node detached', {
                 description: name
                     ? `${name} has been detached from this mount.`

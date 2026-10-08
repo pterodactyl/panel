@@ -9,6 +9,7 @@ export function useExtensionTableColumns<TName extends ExtensionTableName>(
     name: TName
 ): ColumnDef<ExtensionTableRows[TName]>[] {
     const columns = useExtensionRegistry(() => getExtensionTableColumns(name));
+
     return useMemo(
         () =>
             columns.map(({ id, label, extensionId, component: Component }) => ({

@@ -18,8 +18,10 @@ beforeEach(() => {
     opened.length = 0;
     Websocket.createSocket = (url) => {
         opened.push(url);
+
         return { readyState: 0, send() {}, close() {}, onclose: null, onerror: null, onmessage: null, onopen: null };
     };
+
     vi.mocked(getServerWebsocketCredentials).mockImplementation(async () => ({
         token: 'token',
         socket: `wss://node-${opened.length + 1}.test/api/servers/uuid/ws`,

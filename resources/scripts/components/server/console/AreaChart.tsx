@@ -53,43 +53,36 @@ const LazyRechartsAreaChart = lazy(async () => {
             tickFormatter,
         }: RechartsAreaChartContentProps) {
             return (
-                <ResponsiveContainer width={'100%'} height={height}>
+                <ResponsiveContainer width='100%' height={height}>
                     <RechartsAreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                         <defs>
                             {series.map(({ dataKey, color }) => (
-                                <linearGradient
-                                    key={dataKey}
-                                    id={`${uid}-fill-${dataKey}`}
-                                    x1={'0'}
-                                    y1={'0'}
-                                    x2={'0'}
-                                    y2={'1'}
-                                >
-                                    <stop offset={'0%'} stopColor={color} stopOpacity={0.45} />
-                                    <stop offset={'100%'} stopColor={color} stopOpacity={0} />
+                                <linearGradient key={dataKey} id={`${uid}-fill-${dataKey}`} x1='0' y1='0' x2='0' y2='1'>
+                                    <stop offset='0%' stopColor={color} stopOpacity={0.45} />
+                                    <stop offset='100%' stopColor={color} stopOpacity={0} />
                                 </linearGradient>
                             ))}
                             {series.map(({ dataKey, color }) => (
                                 <filter
                                     key={dataKey}
                                     id={`${uid}-glow-${dataKey}`}
-                                    x={'-20%'}
-                                    y={'-20%'}
-                                    width={'140%'}
-                                    height={'140%'}
+                                    x='-20%'
+                                    y='-20%'
+                                    width='140%'
+                                    height='140%'
                                 >
                                     <feDropShadow
-                                        dx={'0'}
-                                        dy={'0'}
-                                        stdDeviation={'2.5'}
+                                        dx='0'
+                                        dy='0'
+                                        stdDeviation='2.5'
                                         floodColor={color}
                                         floodOpacity={0.7}
                                     />
                                 </filter>
                             ))}
                         </defs>
-                        <CartesianGrid stroke={GRID_COLOR} strokeDasharray={'0'} vertical={false} />
-                        <XAxis dataKey={'t'} type={'number'} domain={xDomain} allowDataOverflow hide />
+                        <CartesianGrid stroke={GRID_COLOR} strokeDasharray='0' vertical={false} />
+                        <XAxis dataKey='t' type='number' domain={xDomain} allowDataOverflow hide />
                         <YAxis
                             width={64}
                             tickCount={3}
@@ -107,7 +100,7 @@ const LazyRechartsAreaChart = lazy(async () => {
                         {series.map(({ dataKey, color }) => (
                             <Area
                                 key={dataKey}
-                                type={'monotone'}
+                                type='monotone'
                                 dataKey={dataKey}
                                 stroke={color}
                                 strokeWidth={2}
@@ -127,7 +120,7 @@ const LazyRechartsAreaChart = lazy(async () => {
 });
 
 export default function AreaChart({ data, series, live, windowMs, suggestedMax, tickFormatter, height = 180 }: Props) {
-    const uid = useId().replace(/:/g, '');
+    const uid = useId().replaceAll(':', '');
     const container = useRef<HTMLDivElement>(null);
     const visible = useElementVisible(container);
     const now = useAnimationClock(live && visible);
@@ -135,7 +128,7 @@ export default function AreaChart({ data, series, live, windowMs, suggestedMax, 
     const right = now - RIGHT_LAG_MS;
     const xDomain = useMemo<[number, number]>(() => [right - windowMs, right], [right, windowMs]);
     const yDomain = useMemo<YDomain>(
-        () => (suggestedMax !== undefined ? [0, (dataMax: number) => Math.max(suggestedMax, dataMax)] : [0, 'auto']),
+        () => (suggestedMax === undefined ? [0, 'auto'] : [0, (dataMax: number) => Math.max(suggestedMax, dataMax)]),
         [suggestedMax]
     );
 

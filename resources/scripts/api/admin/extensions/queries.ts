@@ -62,6 +62,7 @@ export const extensionReplacement = (cause: unknown): AdminExtensionReplacement 
     const data: unknown = cause.response.data;
     const first: unknown = isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors[0] : null;
     const meta: unknown = isObject(first) && 'meta' in first ? first.meta : null;
+
     if (!isObject(meta) || !('identifier' in meta) || !('version' in meta) || !isString(meta.identifier)) {
         return null;
     }
@@ -132,6 +133,7 @@ export const useAdminExtensionSettings = (extension: string, options?: { enabled
 
 export const useUpdateAdminExtensionSettings = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateExtensionSettingsMutation(),
         onSuccess: async (_data, variables) => {
@@ -141,6 +143,7 @@ export const useUpdateAdminExtensionSettings = () => {
                 }),
             });
             const name = variables.meta?.name ?? 'the extension';
+
             toast.success('Settings saved', { description: `Settings for ${name} have been updated.` });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update extension settings'),
@@ -149,6 +152,7 @@ export const useUpdateAdminExtensionSettings = () => {
 
 export const useUploadAdminExtensionSettingFile = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUploadExtensionSettingFileMutation(),
         onSuccess: (data, variables) => {
@@ -164,6 +168,7 @@ export const useUploadAdminExtensionSettingFile = () => {
 
 export const useClearAdminExtensionSettingFile = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminClearExtensionSettingFileMutation(),
         onSuccess: (data, variables) => {
@@ -185,11 +190,13 @@ const notifyReloadToApply = (title: string, description: string) =>
 
 export const useInstallAdminExtension = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminInstallExtensionMutation(),
         onSuccess: async (data) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
             const description = `${data.data?.name ?? 'The extension'} has been installed.`;
+
             if (data.data?.enabled) {
                 notifyReloadToApply('Extension installed', description);
             } else {
@@ -207,11 +214,13 @@ export const useInstallAdminExtension = () => {
 
 export const useEnableAdminExtension = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminEnableExtensionMutation(),
         onSuccess: async (data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
             const fallback = variables.meta?.name ?? 'The extension';
+
             notifyReloadToApply('Extension enabled', `${data.data?.name ?? fallback} has been enabled.`);
         },
         onError: (error) => notifyHttpError(error, 'Unable to enable extension'),
@@ -220,11 +229,13 @@ export const useEnableAdminExtension = () => {
 
 export const useDisableAdminExtension = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDisableExtensionMutation(),
         onSuccess: async (data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
             const fallback = variables.meta?.name ?? 'The extension';
+
             notifyReloadToApply('Extension disabled', `${data.data?.name ?? fallback} has been disabled.`);
         },
         onError: (error) => notifyHttpError(error, 'Unable to disable extension'),
@@ -233,11 +244,13 @@ export const useDisableAdminExtension = () => {
 
 export const useRemoveAdminExtension = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminRemoveExtensionMutation(),
         onSuccess: async (_data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
             const name = variables.meta?.name ?? 'The extension';
+
             notifyReloadToApply('Extension removed', `${name} has been removed.`);
         },
         onError: (error) => notifyHttpError(error, 'Unable to remove extension'),

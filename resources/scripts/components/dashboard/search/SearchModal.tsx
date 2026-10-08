@@ -38,11 +38,11 @@ export default function SearchModal({ ...props }: Props) {
     const serverList = servers?.data.slice(0, 5) ?? [];
 
     return (
-        <Dialog title={'Search servers'} {...props}>
+        <Dialog title='Search servers' {...props}>
             <Form form={form}>
                 <InputSpinner visible={isFetching}>
                     <form.AppField
-                        name={'term'}
+                        name='term'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 3 || value.length === 0
@@ -52,8 +52,8 @@ export default function SearchModal({ ...props }: Props) {
                     >
                         {(field) => (
                             <field.TextField
-                                label={'Search term'}
-                                description={'Enter a server name, uuid, or allocation to begin searching.'}
+                                label='Search term'
+                                description='Enter a server name, uuid, or allocation to begin searching.'
                                 autoFocus
                             />
                         )}
@@ -61,14 +61,14 @@ export default function SearchModal({ ...props }: Props) {
                 </InputSpinner>
             </Form>
             {canSearch && error && !isFetching && (
-                <div className={'mt-4'}>
-                    <Alert type={'danger'}>{httpErrorToHuman(error)}</Alert>
+                <div className='mt-4'>
+                    <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
                 </div>
             )}
             {canSearch && servers && !isFetching && !error && serverList.length === 0 && (
                 <Empty className={cn(emptyCompactClass, 'mt-6')}>
                     <EmptyHeader>
-                        <EmptyMedia variant={'icon'}>
+                        <EmptyMedia variant='icon'>
                             <SearchX />
                         </EmptyMedia>
                         <EmptyTitle>No servers found</EmptyTitle>
@@ -79,7 +79,7 @@ export default function SearchModal({ ...props }: Props) {
                 </Empty>
             )}
             {canSearch && serverList.length > 0 && (
-                <div className={'mt-6'}>
+                <div className='mt-6'>
                     {serverList.map((server) => {
                         const { attributes } = server;
                         const defaultAllocations = relationshipData(attributes.relationships?.allocations).reduce<
@@ -105,12 +105,12 @@ export default function SearchModal({ ...props }: Props) {
                                 serverId={attributes.identifier}
                                 onClick={() => props.onClose()}
                             >
-                                <div className={'flex-1 mr-4'}>
-                                    <p className={'text-sm'}>{attributes.name}</p>
-                                    <p className={'mt-1 text-xs text-muted-foreground'}>{defaultAllocations}</p>
+                                <div className='flex-1 mr-4'>
+                                    <p className='text-sm'>{attributes.name}</p>
+                                    <p className='mt-1 text-xs text-muted-foreground'>{defaultAllocations}</p>
                                 </div>
-                                <div className={'flex-none text-right'}>
-                                    <span className={'text-xs py-1 px-2 bg-accent text-accent-foreground rounded-sm'}>
+                                <div className='flex-none text-right'>
+                                    <span className='text-xs py-1 px-2 bg-accent text-accent-foreground rounded-sm'>
                                         {attributes.node}
                                     </span>
                                 </div>

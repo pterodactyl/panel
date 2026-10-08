@@ -24,7 +24,11 @@ export function useExtensionJobProgress(
     options: { serverUuid?: string } = {}
 ): UseQueryResult<ExtensionJobProgress, unknown> {
     const mount = useContext(ExtensionContext);
-    if (!mount) throw new Error('Extension progress requires an extension mount.');
+
+    if (!mount) {
+        throw new Error('Extension progress requires an extension mount.');
+    }
+
     return useQuery({
         ...extensionProgressQueryOptions(mount.extensionId, job ?? '', options.serverUuid),
         enabled: !!job,

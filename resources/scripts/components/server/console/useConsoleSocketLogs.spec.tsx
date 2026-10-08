@@ -74,6 +74,7 @@ describe('useConsoleSocketLogs', () => {
 
     it('restores transfer output after a reconnect without duplicating the history', () => {
         const { rerender } = mount();
+
         socket.emit('console output', 'history line');
         socket.emit('transfer logs', 'Streaming archive to destination...');
         socket.emit('transfer status', 'failure');

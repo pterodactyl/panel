@@ -61,6 +61,7 @@ export const deleteServerSubuserInput = (uuid: string, subuser: Subuser): Option
 
 const upsertSubuser = async (queryClient: QueryClient, uuid: string, subuser: Subuser) => {
     await queryClient.cancelQueries({ queryKey: clientListServerSubusersQueryKey(serverSubusersInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerSubusersResponse>(
         clientListServerSubusersQueryKey(serverSubusersInput(uuid)),
         (current) => upsertListItem(current, subuser, (item) => item.attributes.uuid === subuser.attributes.uuid)
@@ -69,6 +70,7 @@ const upsertSubuser = async (queryClient: QueryClient, uuid: string, subuser: Su
 
 const removeSubuser = async (queryClient: QueryClient, uuid: string, subuserUuid: string) => {
     await queryClient.cancelQueries({ queryKey: clientListServerSubusersQueryKey(serverSubusersInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerSubusersResponse>(
         clientListServerSubusersQueryKey(serverSubusersInput(uuid)),
         (current) => removeListItems(current, (subuser) => subuser.attributes.uuid === subuserUuid)

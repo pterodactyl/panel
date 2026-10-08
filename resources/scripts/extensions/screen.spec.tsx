@@ -28,6 +28,7 @@ it('renders core navigation before imports settle and recovers resource-specific
     const registry = await import('@/extensions/registry');
     const { loadExtensions } = await import('@/extensions/loader');
     const { extensionScreenComponent } = await import('@/extensions/screen');
+
     registry.prepareExtensions([
         { id: 'slow', entry: '/slow.js' },
         { id: 'mod', entry: '/mod.js', screens: [{ id: 'main', area: 'account', path: 'mod/$resource' }] },
@@ -35,10 +36,15 @@ it('renders core navigation before imports settle and recovers resource-specific
     ]);
     let resolveSlow!: (module: ExtensionModule) => void;
     let broken = true;
+
     function ModScreen() {
-        if (broken) throw new Error('resource failed');
+        if (broken) {
+            throw new Error('resource failed');
+        }
+
         return <p>extension ready</p>;
     }
+
     const importer = vi.fn((url: string) =>
         url === '/slow.js'
             ? new Promise<ExtensionModule>((resolve) => {
@@ -51,10 +57,12 @@ it('renders core navigation before imports settle and recovers resource-specific
                   },
               })
     );
+
     function Layout() {
         useEffect(() => {
             void loadExtensions(importer);
         }, []);
+
         return (
             <>
                 <button>Core navigation</button>
@@ -62,6 +70,7 @@ it('renders core navigation before imports settle and recovers resource-specific
             </>
         );
     }
+
     const root = createRootRoute({ component: Layout });
     const home = createRoute({ getParentRoute: () => root, path: '/', component: () => <p>core route ready</p> });
     const routes = registry.getExtensionScreens('account').map((registration) =>
@@ -76,6 +85,7 @@ it('renders core navigation before imports settle and recovers resource-specific
         history: createMemoryHistory({ initialEntries: ['/'] }),
     });
     const client = new QueryClient();
+
     render(
         <QueryClientProvider client={client}>
             <RouterProvider router={router} />
@@ -105,11 +115,13 @@ it('renders core navigation before imports settle and recovers resource-specific
 it('offers page reload for a rejected lazy screen without looping imports', async () => {
     const registry = await import('@/extensions/registry');
     const { extensionScreenComponent } = await import('@/extensions/screen');
+
     registry.prepareExtensions([
         { id: 'broken-chunk', entry: '/chunk.js', screens: [{ id: 'main', area: 'account', path: 'chunk' }] },
     ]);
     const importer = vi.fn().mockRejectedValue(new Error('chunk unavailable'));
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerScreen('broken-chunk', 'main', importer, batch);
     registry.commitExtensionRegistryBatch('broken-chunk', batch);
     const root = createRootRoute({ component: Outlet });
@@ -123,6 +135,7 @@ it('offers page reload for a rejected lazy screen without looping imports', asyn
         routeTree: root.addChildren([route]),
         history: createMemoryHistory({ initialEntries: ['/chunk'] }),
     });
+
     render(
         <QueryClientProvider client={new QueryClient()}>
             <RouterProvider router={router} />
@@ -136,10 +149,12 @@ it('offers page reload for a rejected lazy screen without looping imports', asyn
 it('passes the current route and its parameters to the screen', async () => {
     const registry = await import('@/extensions/registry');
     const { extensionScreenComponent } = await import('@/extensions/screen');
+
     registry.prepareExtensions([
         { id: 'params', entry: '/params.js', screens: [{ id: 'main', area: 'account', path: 'probe/$tab' }] },
     ]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerScreen(
         'params',
         'main',
@@ -164,6 +179,7 @@ it('passes the current route and its parameters to the screen', async () => {
         routeTree: root.addChildren([route]),
         history: createMemoryHistory({ initialEntries: ['/probe/some-tab'] }),
     });
+
     render(
         <QueryClientProvider client={new QueryClient()}>
             <RouterProvider router={router} />

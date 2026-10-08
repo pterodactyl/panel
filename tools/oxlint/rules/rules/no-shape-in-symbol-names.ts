@@ -22,7 +22,10 @@ export const noForbiddenTermInSymbolNamesRule = defineRule({
     },
     create(context) {
         const reportForbiddenSymbolName = (node: ESTree.Node & { name: string }) => {
-            if (!containsForbiddenSymbolName(node.name)) return;
+            if (!containsForbiddenSymbolName(node.name)) {
+                return;
+            }
+
             context.report({
                 node,
                 messageId: 'forbiddenSymbolName',

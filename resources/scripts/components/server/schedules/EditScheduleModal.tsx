@@ -53,6 +53,7 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
                 } else {
                     await createSchedule.mutateAsync(createServerScheduleInput(uuid, values));
                 }
+
                 onClose();
             } catch {
                 // Error toast is handled by the mutation.
@@ -62,11 +63,11 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
 
     return (
         <Form form={form}>
-            <form.AppField name={'name'}>
+            <form.AppField name='name'>
                 {(field) => (
                     <field.TextField
-                        label={'Schedule name'}
-                        description={'A human readable identifier for this schedule.'}
+                        label='Schedule name'
+                        description='A human readable identifier for this schedule.'
                     />
                 )}
             </form.AppField>
@@ -77,50 +78,48 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
                     '[&_input]:text-center [&_input]:font-mono'
                 }
             >
-                <form.AppField name={'minute'}>{(field) => <field.TextField label={'Minute'} />}</form.AppField>
-                <form.AppField name={'hour'}>{(field) => <field.TextField label={'Hour'} />}</form.AppField>
-                <form.AppField name={'dayOfMonth'}>
-                    {(field) => <field.TextField label={'Day of month'} />}
-                </form.AppField>
-                <form.AppField name={'month'}>{(field) => <field.TextField label={'Month'} />}</form.AppField>
-                <form.AppField name={'dayOfWeek'}>{(field) => <field.TextField label={'Day of week'} />}</form.AppField>
+                <form.AppField name='minute'>{(field) => <field.TextField label='Minute' />}</form.AppField>
+                <form.AppField name='hour'>{(field) => <field.TextField label='Hour' />}</form.AppField>
+                <form.AppField name='dayOfMonth'>{(field) => <field.TextField label='Day of month' />}</form.AppField>
+                <form.AppField name='month'>{(field) => <field.TextField label='Month' />}</form.AppField>
+                <form.AppField name='dayOfWeek'>{(field) => <field.TextField label='Day of week' />}</form.AppField>
             </div>
-            <p className={'text-muted-foreground text-xs mt-2'}>
+            <p className='text-muted-foreground text-xs mt-2'>
                 The schedule system supports the use of Cronjob syntax when defining when tasks should begin running.
                 Use the fields above to specify when these tasks should begin running.
             </p>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
                 <Switch
-                    label={'Show Cheatsheet'}
-                    description={'Show the cron cheatsheet for some examples.'}
+                    label='Show Cheatsheet'
+                    description='Show the cron cheatsheet for some examples.'
                     checked={showCheatsheet}
                     onChange={() => setShowCheetsheet((s) => !s)}
                 />
                 {showCheatsheet && <ScheduleCheatsheetCards />}
             </div>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                <form.AppField name={'onlyWhenOnline'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                <form.AppField name='onlyWhenOnline'>
                     {(field) => (
                         <field.SwitchField
-                            description={'Only execute this schedule when the server is in a running state.'}
-                            label={'Only When Server Is Online'}
+                            description='Only execute this schedule when the server is in a running state.'
+                            label='Only When Server Is Online'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                <form.AppField name={'enabled'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                <form.AppField name='enabled'>
                     {(field) => (
                         <field.SwitchField
-                            description={'This schedule will be executed automatically if enabled.'}
-                            label={'Schedule Enabled'}
+                            description='This schedule will be executed automatically if enabled.'
+                            label='Schedule Enabled'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6 text-right'}>
+            <div className='mt-6 text-right'>
                 <form.AppForm>
-                    <form.SubmitButton className={'w-full sm:w-auto'}>
+                    <form.SubmitButton className='w-full sm:w-auto'>
                         {schedule ? 'Save changes' : 'Create schedule'}
                     </form.SubmitButton>
                 </form.AppForm>

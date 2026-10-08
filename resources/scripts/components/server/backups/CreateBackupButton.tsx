@@ -29,7 +29,7 @@ const CreateBackupDialogContent = ({ onClose }: { onClose: () => void }) => {
     return (
         <Dialog
             open
-            title={'Create server backup'}
+            title='Create server backup'
             onClose={onClose}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
@@ -37,7 +37,7 @@ const CreateBackupDialogContent = ({ onClose }: { onClose: () => void }) => {
             <SpinnerOverlay visible={isSubmitting} />
             <Form form={form}>
                 <form.AppField
-                    name={'name'}
+                    name='name'
                     validators={{
                         onChange: ({ value }) =>
                             value.length <= 191 ? undefined : 'The backup name must not exceed 191 characters.',
@@ -45,16 +45,16 @@ const CreateBackupDialogContent = ({ onClose }: { onClose: () => void }) => {
                 >
                     {(field) => (
                         <field.TextField
-                            label={'Backup name'}
-                            description={'If provided, the name that should be used to reference this backup.'}
+                            label='Backup name'
+                            description='If provided, the name that should be used to reference this backup.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6'}>
-                    <form.AppField name={'ignored'}>
+                <div className='mt-6'>
+                    <form.AppField name='ignored'>
                         {(field) => (
                             <field.TextAreaField
-                                label={'Ignored Files & Directories'}
+                                label='Ignored Files & Directories'
                                 rows={6}
                                 description={`
                                             Enter the files or folders to ignore while generating this backup. Leave blank to use
@@ -66,19 +66,19 @@ const CreateBackupDialogContent = ({ onClose }: { onClose: () => void }) => {
                         )}
                     </form.AppField>
                 </div>
-                <Can action={'backup.delete'}>
-                    <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                        <form.AppField name={'isLocked'}>
+                <Can action='backup.delete'>
+                    <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                        <form.AppField name='isLocked'>
                             {(field) => (
                                 <field.SwitchField
-                                    label={'Locked'}
-                                    description={'Prevents this backup from being deleted until explicitly unlocked.'}
+                                    label='Locked'
+                                    description='Prevents this backup from being deleted until explicitly unlocked.'
                                 />
                             )}
                         </form.AppField>
                     </div>
                 </Can>
-                <div className={'flex justify-end mt-6'}>
+                <div className='flex justify-end mt-6'>
                     <form.AppForm>
                         <form.SubmitButton>Start backup</form.SubmitButton>
                     </form.AppForm>

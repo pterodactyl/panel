@@ -29,7 +29,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                     header: 'Database',
                     cell: ({ row }) => (
                         <CopyOnClick text={row.original.attributes.name}>
-                            <span className={'font-mono text-sm'}>{row.original.attributes.name}</span>
+                            <span className='font-mono text-sm'>{row.original.attributes.name}</span>
                         </CopyOnClick>
                     ),
                 },
@@ -40,7 +40,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                         <CopyOnClick
                             text={`${row.original.attributes.host.address}:${row.original.attributes.host.port}`}
                         >
-                            <span className={'text-xs'}>
+                            <span className='text-xs'>
                                 {row.original.attributes.host.address}:{row.original.attributes.host.port}
                             </span>
                         </CopyOnClick>
@@ -52,7 +52,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                     header: 'Username',
                     cell: ({ row }) => (
                         <CopyOnClick text={row.original.attributes.username}>
-                            <span className={'text-xs'}>{row.original.attributes.username}</span>
+                            <span className='text-xs'>{row.original.attributes.username}</span>
                         </CopyOnClick>
                     ),
                     meta: { headerClassName: 'hidden lg:table-cell', cellClassName: 'hidden lg:table-cell' },
@@ -61,11 +61,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                     id: 'max',
                     header: 'Max',
                     cell: ({ row }) => (
-                        <span className={'text-xs'}>
-                            {row.original.attributes.max_connections === null
-                                ? 'Unlimited'
-                                : row.original.attributes.max_connections}
-                        </span>
+                        <span className='text-xs'>{row.original.attributes.max_connections ?? 'Unlimited'}</span>
                     ),
                     meta: {
                         headerClassName: 'hidden xl:table-cell w-20 text-right',
@@ -98,10 +94,8 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
 
     return (
         <div>
-            <TitledGreyBox title={'Databases'}>
-                {!databases ? (
-                    <Spinner size={'large'} centered />
-                ) : (
+            <TitledGreyBox title='Databases'>
+                {databases ? (
                     <>
                         {(canCreate || usage) && (
                             <ListToolbar summary={usage}>
@@ -114,7 +108,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                             emptyState={
                                 <Empty className={emptyCompactClass}>
                                     <EmptyHeader>
-                                        <EmptyMedia variant={'icon'}>
+                                        <EmptyMedia variant='icon'>
                                             <Database />
                                         </EmptyMedia>
                                         <EmptyTitle>No databases</EmptyTitle>
@@ -141,6 +135,8 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                             }
                         />
                     </>
+                ) : (
+                    <Spinner size='large' centered />
                 )}
             </TitledGreyBox>
         </div>
@@ -151,9 +147,7 @@ export default function ServerDatabaseTab() {
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return (
-            <ServerError message={'Access to this resource is not allowed due to the current installation state.'} />
-        );
+        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
     }
 
     return <ServerDatabaseContent server={server} />;

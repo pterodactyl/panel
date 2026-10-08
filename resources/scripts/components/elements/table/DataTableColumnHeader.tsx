@@ -8,6 +8,8 @@ interface Props<TData extends RowData, TValue> {
     className?: string;
 }
 
+const sortIcons = { asc: ArrowUp, desc: ArrowDown };
+
 export default function DataTableColumnHeader<TData extends RowData, TValue>({
     column,
     title,
@@ -22,11 +24,11 @@ export default function DataTableColumnHeader<TData extends RowData, TValue>({
     const label = nextDirection
         ? `Sort ${title} ${nextDirection === 'asc' ? 'ascending' : 'descending'}`
         : `Clear ${title} sorting`;
-    const SortIcon = direction === 'asc' ? ArrowUp : direction === 'desc' ? ArrowDown : ArrowUpDown;
+    const SortIcon = direction ? sortIcons[direction] : ArrowUpDown;
 
     return (
         <button
-            type={'button'}
+            type='button'
             aria-label={label}
             onClick={column.getToggleSortingHandler()}
             className={cn(
@@ -37,7 +39,7 @@ export default function DataTableColumnHeader<TData extends RowData, TValue>({
         >
             <span>{title}</span>
             <SortIcon
-                aria-hidden={'true'}
+                aria-hidden='true'
                 className={cn(
                     'h-3 w-3 shrink-0 transition-opacity',
                     direction ? 'opacity-100' : 'opacity-0 group-hover:opacity-70 group-focus-visible:opacity-70'

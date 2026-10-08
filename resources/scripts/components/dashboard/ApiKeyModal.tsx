@@ -7,7 +7,7 @@ interface Props extends DialogProps {
 
 export default function ApiKeyModal({ apiKey, onClose, open }: Props) {
     return (
-        <Dialog open={open} onClose={onClose} preventExternalClose title={'Your API key'}>
+        <Dialog open={open} onClose={onClose} preventExternalClose title='Your API key'>
             <ApiKeyModalContent apiKey={apiKey} onClose={onClose} />
         </Dialog>
     );

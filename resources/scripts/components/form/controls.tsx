@@ -44,7 +44,7 @@ export const TextInput = ({ $isLight, $hasError, className, ...props }: TextInpu
 export const FileInput = ({ className, ...props }: Omit<React.ComponentProps<'input'>, 'type'>) => (
     <input
         {...props}
-        type={'file'}
+        type='file'
         className={cn(
             'block w-full min-w-0 rounded-sm text-sm text-foreground',
             'file:mr-3 file:rounded-sm file:border file:border-border file:bg-popover file:px-4 file:py-2 file:text-sm file:font-medium file:text-foreground',

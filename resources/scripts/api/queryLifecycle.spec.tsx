@@ -57,8 +57,10 @@ describe('native query lifecycle', () => {
         vi.useFakeTimers({ toFake: ['Date'] });
         const now = Date.now();
         const options = serverQueryOptions('server');
+
         await client.ensureQueryData({ ...options, revalidateIfStale: true });
         const { result } = renderHook(() => [useServerQuery('server'), useServerQuery('server')], { wrapper });
+
         await waitFor(() => expect(result.current[0]?.data).toEqual(server));
         await client.ensureQueryData({ ...options, revalidateIfStale: true });
         expect(adapter).toHaveBeenCalledOnce();
@@ -89,6 +91,7 @@ describe('native query lifecycle', () => {
         }));
         await client.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         const { result } = renderHook(() => useAdminEggs(), { wrapper });
+
         expect(result.current.data?.data).toEqual([]);
         await act(async () => {
             await client.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
@@ -98,17 +101,21 @@ describe('native query lifecycle', () => {
 
     it('does not notify permission subscribers for an unrelated server update', async () => {
         const options = serverQueryOptions('server');
+
         client.setQueryData(options.queryKey, server);
         const renders = vi.fn();
         const { result } = renderHook(
             () => {
                 const permissions = useCurrentServerPermissions();
+
                 renders(permissions);
+
                 return permissions;
             },
             { wrapper }
         );
         const initialRenders = renders.mock.calls.length;
+
         await act(async () => {
             client.setQueryData(options.queryKey, { ...server, attributes: { ...server.attributes, name: 'Renamed' } });
             await new Promise((resolve) => setTimeout(resolve, 0));
@@ -128,6 +135,7 @@ describe('native query lifecycle', () => {
         const { result } = renderHook(() => useServerQuery('server', (data) => data.attributes.internal_id), {
             wrapper,
         });
+
         expectTypeOf(result.current.data).toEqualTypeOf<number | undefined>();
         expectTypeOf(result.current.error).toEqualTypeOf<AxiosError<ClientGetServerError> | null>();
         expect(result.current.data).toBe(1);
@@ -135,21 +143,27 @@ describe('native query lifecycle', () => {
 
     it('prevents an older read from overwriting a completed mutation', async () => {
         const options = serverQueryOptions('server');
+
         client.setQueryData(options.queryKey, server);
         let finishRead = () => {};
+
         adapter.mockImplementation((config) => {
             const response = { config, headers: {}, status: 200, statusText: 'OK' };
+
             if (config.method === 'get') {
                 return new Promise((resolve) => {
                     finishRead = () => resolve({ ...response, data: server });
                 });
             }
+
             return Promise.resolve({ ...response, data: {} });
         });
         renderHook(() => useServerQuery('server'), { wrapper });
         const pendingRead = client.refetchQueries({ queryKey: options.queryKey });
+
         await waitFor(() => expect(adapter).toHaveBeenCalledOnce());
         const mutation = renderHook(() => useRenameServer('server'), { wrapper });
+
         await act(async () => {
             await mutation.result.current.mutateAsync({ path: { server_uuid: 'server' }, body: { name: 'Renamed' } });
             finishRead();
@@ -167,6 +181,7 @@ describe('native query lifecycle', () => {
             }),
             { wrapper }
         );
+
         await act(async () => {
             await Promise.resolve();
         });
@@ -179,6 +194,7 @@ describe('native query lifecycle', () => {
         const { result } = renderHook(() => useQuery({ ...serverQueryOptions('server'), refetchInterval: 10 }), {
             wrapper,
         });
+
         await waitFor(() => expect(result.current.data).toEqual(server));
         await waitFor(() => expect(adapter.mock.calls.length).toBeGreaterThan(1));
     });

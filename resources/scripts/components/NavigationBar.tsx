@@ -27,57 +27,50 @@ export default function NavigationBar() {
     const onTriggerLogout = () => logout.mutate({});
 
     return (
-        <div className={'w-full bg-background shadow-md overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden'}>
+        <div className='w-full bg-background shadow-md overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden'>
             <SpinnerOverlay visible={logout.isPending} />
-            <div className={'mx-auto flex h-14 w-full max-w-panel items-center'}>
-                <div id={'logo'} className={'flex-1 min-w-0'}>
+            <div className='mx-auto flex h-14 w-full max-w-panel items-center'>
+                <div id='logo' className='flex-1 min-w-0'>
                     <Link
-                        to={'/'}
-                        className={
-                            'block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
-                        }
+                        to='/'
+                        className='block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
                     >
                         {name}
                     </Link>
                 </div>
-                <div className={'flex h-full shrink-0 items-center justify-center'}>
-                    <Slot name={'nav.items.before'} />
+                <div className='flex h-full shrink-0 items-center justify-center'>
+                    <Slot name='nav.items.before' />
                     <SearchContainer className={navItemClass} />
-                    <Tooltip placement={'bottom'} content={'Dashboard'}>
+                    <Tooltip placement='bottom' content='Dashboard'>
                         <Link
-                            to={'/'}
+                            to='/'
                             activeOptions={{ exact: true, includeSearch: false }}
                             className={navItemClass}
-                            aria-label={'Dashboard'}
+                            aria-label='Dashboard'
                         >
                             <Icon icon={Layers} />
                         </Link>
                     </Tooltip>
                     {rootAdmin && (
-                        <Tooltip placement={'bottom'} content={'Admin'}>
-                            <Link to={'/panel'} className={navItemClass} aria-label={'Admin'}>
+                        <Tooltip placement='bottom' content='Admin'>
+                            <Link to='/panel' className={navItemClass} aria-label='Admin'>
                                 <Icon icon={UserCog} />
                             </Link>
                         </Tooltip>
                     )}
-                    <Tooltip placement={'bottom'} content={'Account Settings'}>
-                        <Link to={'/account'} className={navItemClass} aria-label={'Account Settings'}>
-                            <span className={'flex items-center w-5 h-5'}>
+                    <Tooltip placement='bottom' content='Account Settings'>
+                        <Link to='/account' className={navItemClass} aria-label='Account Settings'>
+                            <span className='flex items-center w-5 h-5'>
                                 <Avatar.User />
                             </span>
                         </Link>
                     </Tooltip>
-                    <Tooltip placement={'bottom'} content={'Sign Out'}>
-                        <button
-                            type={'button'}
-                            aria-label={'Sign Out'}
-                            onClick={onTriggerLogout}
-                            className={navItemClass}
-                        >
+                    <Tooltip placement='bottom' content='Sign Out'>
+                        <button type='button' aria-label='Sign Out' onClick={onTriggerLogout} className={navItemClass}>
                             <Icon icon={LogOut} />
                         </button>
                     </Tooltip>
-                    <Slot name={'nav.items.after'} />
+                    <Slot name='nav.items.after' />
                 </div>
             </div>
         </div>

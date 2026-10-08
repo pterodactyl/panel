@@ -20,6 +20,7 @@ import { createExtensionTestHost, createTestServer, type ExtensionTestHost } fro
 import { SocketEvent, toast, type SdkServer } from '@pterodactyl/sdk';
 
 let host: ExtensionTestHost | undefined;
+
 beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
 });
@@ -31,6 +32,7 @@ afterEach(() => {
 });
 function renderInHost(children: ReactNode, server?: SdkServer) {
     host = createExtensionTestHost({ server });
+
     return render(children, { wrapper: host.Wrapper });
 }
 
@@ -56,7 +58,8 @@ it('registers a console slot, a permissions form slot, and a lazy server page', 
 it('shows the current user and updates local state and websocket feedback', async () => {
     const feedback = vi.spyOn(toast, 'success');
     const server = createTestServer({ identifier: 'test', name: 'Example server' });
-    renderInHost(<HelloWorldCard serverName={'Example server'} />, server);
+
+    renderInHost(<HelloWorldCard serverName='Example server' />, server);
     await screen.findByText('Greetings this visit');
 
     fireEvent.click(screen.getByRole('button', { name: 'Say hello' }));
@@ -81,6 +84,7 @@ it('preselects role permissions without submitting the surrounding form', async 
         disabled: false,
         setPermissions,
     };
+
     renderInHost(
         <form onSubmit={submit}>
             <SubuserPresets data={data} />
@@ -101,6 +105,7 @@ it('preselects role permissions without submitting the surrounding form', async 
 it('changes only the reinstall selection when the switch is toggled', async () => {
     function Draft() {
         const [selectedPermissions, setPermissions] = useState<readonly string[]>(['file.read']);
+
         return (
             <>
                 <SubuserPresets
@@ -116,6 +121,7 @@ it('changes only the reinstall selection when the switch is toggled', async () =
             </>
         );
     }
+
     renderInHost(<Draft />);
 
     fireEvent.click(await screen.findByRole('switch'));
@@ -126,6 +132,7 @@ it('changes only the reinstall selection when the switch is toggled', async () =
 
 it('disables the reinstall shortcut when it cannot be granted', async () => {
     const setPermissions = vi.fn();
+
     renderInHost(
         <SubuserPresets
             data={{
@@ -146,6 +153,7 @@ it('disables the reinstall shortcut when it cannot be granted', async () => {
 
 it('disables every shortcut while the host form is read-only or saving', async () => {
     const setPermissions = vi.fn();
+
     renderInHost(
         <SubuserPresets
             data={{
@@ -169,11 +177,13 @@ it('composes the native server card using the real SDK fixture', () => {
         model: createTestServerCard({ name: 'Survival' }),
         prefix: 'hw',
     });
+
     render(<ServerCard {...host.props} />, { wrapper: host.Wrapper });
     expect(screen.getByText('Survival')).toBeTruthy();
     expect(screen.getByText('12.00 %')).toBeTruthy();
     // The prefixed utility replaces the native card's own gap instead of sitting beside it.
     const card = screen.getByText('Survival').closest('.grid');
+
     expect(card?.classList.contains('hw:gap-3')).toBe(true);
     expect(card?.classList.contains('gap-4')).toBe(false);
 });
@@ -182,6 +192,7 @@ it('customizes only the file name while native size and timestamp remain availab
     const host = createComponentTestHost('server.files.details', {
         model: createTestFileDetails({ name: 'server.properties' }),
     });
+
     render(<FileDetails {...host.props} />, { wrapper: host.Wrapper });
     expect(screen.getByText('server.properties').classList.contains('hw:font-medium')).toBe(true);
     expect(screen.getByText('1 KiB')).toBeTruthy();
@@ -192,6 +203,7 @@ it('reports unsaved changes above the native file editor', () => {
     const host = createComponentTestHost('server.files.editor', {
         model: createTestFileEditor({ name: 'server.properties', dirty: true }),
     });
+
     render(<FileEditor {...host.props} />, { wrapper: host.Wrapper });
     expect(screen.getByRole('status').textContent).toBe('server.properties has unsaved changes.');
     expect(screen.getByRole('button', { name: 'Save Content' })).toBeTruthy();

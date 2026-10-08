@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,12 +10,8 @@ let directory: string;
 
 beforeAll(() => {
     directory = mkdtempSync(resolve(tmpdir(), 'panel-lint-'));
-    const config = JSON.parse(readFileSync(resolve(root, '.oxlintrc.json'), 'utf8'));
-    config.jsPlugins = config.jsPlugins.map((plugin: { name: string; specifier: string }) => ({
-        ...plugin,
-        specifier: resolve(root, plugin.specifier),
-    }));
-    writeFileSync(resolve(directory, '.oxlintrc.json'), JSON.stringify(config));
+    symlinkSync(resolve(root, 'node_modules'), resolve(directory, 'node_modules'));
+    writeFileSync(resolve(directory, '.oxlintrc.json'), JSON.stringify({ extends: [resolve(root, '.oxlintrc.json')] }));
 });
 
 afterAll(() => rmSync(directory, { recursive: true, force: true }));
@@ -113,6 +109,7 @@ it.each([
     ],
 ])('%s', (_name, path, source, rule) => {
     const result = lint(path, source);
+
     expect(result.status).toBe(1);
     expect(result.diagnostics.some((diagnostic) => diagnostic.code?.includes(rule))).toBe(true);
 });
@@ -151,6 +148,7 @@ it.each([
     ],
 ])('%s', (_name, path, source) => {
     const result = lint(path, source);
+
     expect(result.diagnostics.filter((diagnostic) => diagnostic.severity === 'error')).toEqual([]);
     expect(result.status).toBe(0);
 });
@@ -160,13 +158,16 @@ function lint(
     source: string
 ): { status: number | null; diagnostics: { code?: string; severity: string }[] } {
     const filename = resolve(directory, path);
+
     mkdirSync(dirname(filename), { recursive: true });
     writeFileSync(filename, source);
     const result = spawnSync(resolve(root, 'node_modules/.bin/oxlint'), ['--format', 'json', path], {
         cwd: directory,
         encoding: 'utf8',
     });
+
     rmSync(filename);
     expect(result.stderr).toBe('');
+
     return { status: result.status, diagnostics: JSON.parse(result.stdout).diagnostics };
 }

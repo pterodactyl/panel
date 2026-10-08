@@ -32,6 +32,7 @@ const TERMINAL_COLOR_VARS = {
 
 const buildTerminalStyle = (): Pick<ITerminalOptions, 'fontFamily' | 'fontSize' | 'theme'> => {
     const probe = document.createElement('span');
+
     probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
     probe.style.fontFamily = 'var(--font-mono)';
     probe.style.fontSize = 'var(--text-xs)';
@@ -39,10 +40,13 @@ const buildTerminalStyle = (): Pick<ITerminalOptions, 'fontFamily' | 'fontSize' 
     // Ghostty only parses hex/rgb(a); a canvas fillStyle converts oklch and other colours.
     const ctx = document.createElement('canvas').getContext('2d');
     const theme: ITheme = {};
+
     for (const slot of getObjectKeys(TERMINAL_COLOR_VARS)) {
         const cssVar = TERMINAL_COLOR_VARS[slot];
+
         probe.style.color = `var(${cssVar})`;
         const resolved = getComputedStyle(probe).color;
+
         if (ctx) {
             ctx.fillStyle = resolved;
             theme[slot] = ctx.fillStyle;
@@ -50,9 +54,11 @@ const buildTerminalStyle = (): Pick<ITerminalOptions, 'fontFamily' | 'fontSize' 
             theme[slot] = resolved;
         }
     }
+
     const computedStyle = getComputedStyle(probe);
     const fontSize = Number.parseFloat(computedStyle.fontSize);
     const fontFamily = computedStyle.fontFamily;
+
     probe.remove();
 
     if (!Number.isFinite(fontSize) || fontFamily.length === 0) {
@@ -78,25 +84,31 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
 
     term.write = (data, callback) => {
         const viewportY = term.getViewportY();
+
         if (viewportY === 0) {
             write(data, callback);
+
             return;
         }
 
         const scrollbackLength = term.getScrollbackLength();
+
         write(data, callback);
         const grown = term.getScrollbackLength() - scrollbackLength;
+
         term.scrollLines(-(viewportY + (grown < 0 ? countLineFeeds(data) : grown)));
     };
 };
 
 const renderWholeLines = (term: Terminal) => {
     const renderer = term.renderer;
+
     if (!renderer) {
         return;
     }
 
     const render = renderer.render.bind(renderer);
+
     renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider, scrollbarOpacity) =>
         render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, scrollbarOpacity);
 };
@@ -167,11 +179,14 @@ export const useTerminal = () => {
                 term.attachCustomKeyEventHandler((e: KeyboardEvent) => {
                     if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                         const selection = term.getSelection();
+
                         if (selection) {
-                            navigator.clipboard?.writeText(selection);
+                            navigator.clipboard?.writeText(selection).catch(() => {});
+
                             return false;
                         }
                     }
+
                     return true;
                 });
 

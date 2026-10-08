@@ -42,13 +42,14 @@ type PartProps = ComponentPartProps<'server.files.manager'>;
 function Toolbar({ model }: PartProps) {
     const id = useCurrentServerIdentifier()!;
     const extensionData = useFileManagerExtensionData();
+
     return (
         <ErrorBoundary>
-            <div className={'flex flex-wrap-reverse md:flex-nowrap mb-4'}>
+            <div className='flex flex-wrap-reverse md:flex-nowrap mb-4'>
                 <FileManagerBreadcrumbs>
                     <Checkbox
-                        className={'mx-4'}
-                        aria-label={'Select all files'}
+                        className='mx-4'
+                        aria-label='Select all files'
                         checked={model.entries.length > 0 && model.selection.length === model.entries.length}
                         indeterminate={model.selection.length > 0 && model.selection.length < model.entries.length}
                         onChange={(checked) =>
@@ -62,7 +63,7 @@ function Toolbar({ model }: PartProps) {
                         <NewDirectoryButton />
                         {model.permissions.update && <UploadButton />}
                         <Link
-                            to={'/server/$id/files/$action'}
+                            to='/server/$id/files/$action'
                             params={{ id, action: 'new' }}
                             hash={encodePathSegments(model.directory)}
                         >
@@ -71,18 +72,23 @@ function Toolbar({ model }: PartProps) {
                     </div>
                 )}
             </div>
-            {extensionData && <Slot name={'server.files.toolbar'} data={extensionData} />}
+            {extensionData && <Slot name='server.files.toolbar' data={extensionData} />}
         </ErrorBoundary>
     );
 }
+
 function List({ model }: PartProps) {
     const { files } = useContext(FileManagerContext)!;
-    if (model.loading) return <Spinner size={'large'} centered />;
+
+    if (model.loading) {
+        return <Spinner size='large' centered />;
+    }
+
     if (!files.length) {
         return (
-            <Empty className={'border'}>
+            <Empty className='border'>
                 <EmptyHeader>
-                    <EmptyMedia variant={'icon'}>
+                    <EmptyMedia variant='icon'>
                         <FolderOpen />
                     </EmptyMedia>
                     <EmptyTitle>This folder is empty</EmptyTitle>
@@ -95,11 +101,12 @@ function List({ model }: PartProps) {
             </Empty>
         );
     }
+
     return (
         <div>
             {model.truncated && (
-                <div className={'rounded-sm bg-warning mb-px p-3'}>
-                    <p className={'text-warning-foreground text-sm text-center'}>
+                <div className='rounded-sm bg-warning mb-px p-3'>
+                    <p className='text-warning-foreground text-sm text-center'>
                         This directory is too large to display in the browser, limiting output to first 250 files.
                     </p>
                 </div>
@@ -112,9 +119,11 @@ function List({ model }: PartProps) {
         </div>
     );
 }
+
 function Selection({ model }: PartProps) {
     return model.entries.length > 0 ? <MassActionsBar selectedFiles={model.selection} /> : null;
 }
+
 export const fileManagerParts: ComponentParts<'server.files.manager'> = {
     toolbar: Toolbar,
     list: List,
@@ -125,6 +134,7 @@ export function DefaultFileManager({ className, parts }: DefaultComponentProps<'
     const ToolbarPart = parts?.toolbar ?? Toolbar;
     const ListPart = parts?.list ?? List;
     const SelectionPart = parts?.selection ?? Selection;
+
     return (
         <div className={cn('min-w-0', className)}>
             <ToolbarPart model={model} />

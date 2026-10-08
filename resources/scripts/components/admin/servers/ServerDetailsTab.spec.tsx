@@ -40,13 +40,16 @@ const server = {
 vi.mock('@/components/ui/Select', () => ({
     default: ({ id, value, options = [], onChange, onSearchChange, multiple }: SelectProps) => (
         <>
-            <input aria-label={'Search owners'} onChange={(event) => onSearchChange?.(event.currentTarget.value)} />
+            <input aria-label='Search owners' onChange={(event) => onSearchChange?.(event.currentTarget.value)} />
             <select
                 data-testid={id}
                 value={String(value ?? '')}
                 onChange={(event) => {
                     const choice = options.find((option) => String(option.value) === event.currentTarget.value);
-                    if (choice && !multiple) onChange(choice.value);
+
+                    if (choice && !multiple) {
+                        onChange(choice.value);
+                    }
                 }}
             >
                 {options.map((option) => (
@@ -79,6 +82,7 @@ afterEach(cleanup);
 describe('ServerDetailsTab', () => {
     it('keeps a newly picked owner selectable after the owner search is cleared', async () => {
         const events = userEvent.setup();
+
         render(<ServerDetailsTab />);
 
         expect(screen.getByTestId('user')).toHaveValue('1');

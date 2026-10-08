@@ -10,7 +10,8 @@ afterEach(cleanup);
 describe('ServerError', () => {
     it('renders the error in place with a retry action', () => {
         const onRetry = vi.fn();
-        render(<ServerError message={'Request failed with status 500.'} onRetry={onRetry} />);
+
+        render(<ServerError message='Request failed with status 500.' onRetry={onRetry} />);
 
         expect(screen.getByRole('heading', { name: 'Something went wrong' })).toBeInTheDocument();
         expect(screen.getByText('Request failed with status 500.')).toBeInTheDocument();
@@ -22,7 +23,8 @@ describe('ServerError', () => {
 
     it('renders a back action', () => {
         const onBack = vi.fn();
-        render(<ServerError title={'Oops!'} message={'Not readable.'} onBack={onBack} />);
+
+        render(<ServerError title='Oops!' message='Not readable.' onBack={onBack} />);
 
         expect(screen.getByRole('heading', { name: 'Oops!' })).toBeInTheDocument();
         fireEvent.click(screen.getByRole('button', { name: 'Go back' }));

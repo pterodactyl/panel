@@ -13,24 +13,36 @@ export const generatedApiImportsRule = defineRule({
         const apiRoot = resolve(sourceRoot, 'api');
         const generatedRoot = resolve(apiRoot, 'generated');
         const filename = resolve(context.filename);
-        if (filename.startsWith(apiRoot + sep) || filename === resolve(sourceRoot, 'sdk/api.ts')) return {};
+
+        if (filename.startsWith(apiRoot + sep) || filename === resolve(sourceRoot, 'sdk/api.ts')) {
+            return {};
+        }
 
         const check = (source: ESTree.Expression) => {
-            if (source.type !== 'Literal' || typeof source.value !== 'string') return;
+            if (source.type !== 'Literal' || typeof source.value !== 'string') {
+                return;
+            }
+
             const imported = source.value;
             const target = imported.startsWith('@/')
                 ? resolve(sourceRoot, imported.slice(2))
                 : imported.startsWith('.')
                   ? resolve(dirname(filename), imported)
                   : null;
-            if (target !== generatedRoot && !target?.startsWith(generatedRoot + sep)) return;
+
+            if (target !== generatedRoot && !target?.startsWith(generatedRoot + sep)) {
+                return;
+            }
+
             context.report({ node: source, messageId: 'boundary' });
         };
 
         return {
             ImportDeclaration: (node) => check(node.source),
             ExportNamedDeclaration: (node) => {
-                if (node.source) check(node.source);
+                if (node.source) {
+                    check(node.source);
+                }
             },
             ExportAllDeclaration: (node) => check(node.source),
             ImportExpression: (node) => check(node.source),

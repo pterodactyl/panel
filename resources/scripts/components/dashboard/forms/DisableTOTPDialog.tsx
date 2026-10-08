@@ -18,7 +18,9 @@ const DisableTOTPDialogContent = ({
         e.preventDefault();
         e.stopPropagation();
 
-        if (disableTwoFactor.isPending) return;
+        if (disableTwoFactor.isPending) {
+            return;
+        }
 
         try {
             await disableTwoFactor.mutateAsync({ body: { password } });
@@ -29,13 +31,13 @@ const DisableTOTPDialogContent = ({
     };
 
     return (
-        <form id={'disable-totp-form'} className={'mt-6'} onSubmit={submit}>
-            <label className={'block pb-1'} htmlFor={'totp-password'}>
+        <form id='disable-totp-form' className='mt-6' onSubmit={submit}>
+            <label className='block pb-1' htmlFor='totp-password'>
                 Password
             </label>
             <TextInput
-                id={'totp-password'}
-                type={'password'}
+                id='totp-password'
+                type='password'
                 value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
             />
@@ -44,11 +46,11 @@ const DisableTOTPDialogContent = ({
                 <Tooltip
                     delay={100}
                     disabled={password.length > 0}
-                    content={'You must enter your account password to continue.'}
+                    content='You must enter your account password to continue.'
                 >
                     <Button.Danger
-                        type={'submit'}
-                        form={'disable-totp-form'}
+                        type='submit'
+                        form='disable-totp-form'
                         disabled={disableTwoFactor.isPending || !password.length}
                         isLoading={disableTwoFactor.isPending}
                     >
@@ -69,8 +71,8 @@ export default function DisableTOTPDialog({ open, onClose }: DialogProps) {
             onClose={onClose}
             preventExternalClose={disableTwoFactor.isPending}
             hideCloseIcon={disableTwoFactor.isPending}
-            title={'Disable Two-Step Verification'}
-            description={'Disabling two-step verification will make your account less secure.'}
+            title='Disable Two-Step Verification'
+            description='Disabling two-step verification will make your account less secure.'
         >
             <DisableTOTPDialogContent disableTwoFactor={disableTwoFactor} onClose={onClose} />
         </Dialog>

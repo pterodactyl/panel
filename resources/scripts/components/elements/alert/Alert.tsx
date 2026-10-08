@@ -40,7 +40,7 @@ export default function Alert({ type, title, className, children }: AlertProps) 
 
     return (
         <div
-            role={'alert'}
+            role='alert'
             className={cn(
                 'flex items-start rounded-sm border border-l-4 px-4 py-3 text-foreground shadow-sm',
                 config.className,
@@ -48,8 +48,8 @@ export default function Alert({ type, title, className, children }: AlertProps) 
             )}
         >
             <AlertIcon aria-hidden className={cn('mr-3 mt-0.5 h-5 w-5 shrink-0', config.iconClassName)} />
-            <div className={'min-w-0 flex-1 text-sm leading-relaxed'}>
-                {title && <p className={'mb-1 font-semibold text-foreground'}>{title}</p>}
+            <div className='min-w-0 flex-1 text-sm leading-relaxed'>
+                {title && <p className='mb-1 font-semibold text-foreground'>{title}</p>}
                 <div>{children}</div>
             </div>
         </div>

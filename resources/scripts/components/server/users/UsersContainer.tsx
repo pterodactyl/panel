@@ -50,11 +50,11 @@ const UsersContainer = () => {
         !subuserList.length &&
         (isLoading || isLoadingPermissions || !permissions || !Object.keys(permissions).length)
     ) {
-        return <Spinner size={'large'} centered />;
+        return <Spinner size='large' centered />;
     }
 
     return (
-        <ServerContentBlock title={'Users'}>
+        <ServerContentBlock title='Users'>
             {canCreate && (
                 <ListToolbar>
                     <AddSubuserButton />
@@ -65,7 +65,7 @@ const UsersContainer = () => {
                 emptyState={
                     <Empty className={emptyCompactClass}>
                         <EmptyHeader>
-                            <EmptyMedia variant={'icon'}>
+                            <EmptyMedia variant='icon'>
                                 <Users />
                             </EmptyMedia>
                             <EmptyTitle>No subusers</EmptyTitle>

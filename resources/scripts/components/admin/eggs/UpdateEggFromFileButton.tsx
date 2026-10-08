@@ -27,12 +27,10 @@ export default function UpdateEggFromFileButton({ egg }: Props) {
                 <EggFileDialog
                     open={open}
                     onClose={onClose}
-                    title={'Update egg from file'}
-                    description={
-                        "Upload a new egg JSON file to replace this egg's settings. This will not change any existing startup strings or docker images for servers already using this egg."
-                    }
-                    submitLabel={'Update Egg'}
-                    submitColor={'red'}
+                    title='Update egg from file'
+                    description="Upload a new egg JSON file to replace this egg's settings. This will not change any existing startup strings or docker images for servers already using this egg."
+                    submitLabel='Update Egg'
+                    submitColor='red'
                     submitting={updateEggFromFile.isPending}
                     onSubmit={submit}
                 />

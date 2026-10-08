@@ -36,17 +36,24 @@ export function followCurrentUserLanguage(queryClient: QueryClient, instance: I1
     const currentUserHash = hashKey(currentUserQueryKey);
 
     return queryClient.getQueryCache().subscribe((event) => {
-        if (event.type !== 'added' && event.type !== 'updated') return;
-        if (event.query.queryHash !== currentUserHash) return;
+        if (event.type !== 'added' && event.type !== 'updated') {
+            return;
+        }
+
+        if (event.query.queryHash !== currentUserHash) {
+            return;
+        }
 
         const language = (event.query.state.data as UserData | undefined)?.language;
+
         if (language && language !== instance.language) {
             void instance.changeLanguage(language);
         }
     });
 }
 
-i18n.use(I18NextMultiloadBackendAdapter)
+void i18n
+    .use(I18NextMultiloadBackendAdapter)
     .use(initReactI18next)
     .init({
         debug: import.meta.env.DEV,

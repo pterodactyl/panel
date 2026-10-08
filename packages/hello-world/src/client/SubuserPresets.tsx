@@ -34,11 +34,12 @@ export default function SubuserPresets({ data }: { data: SubuserPermissionsSlotD
 
     const setReinstall = (enabled: boolean) => {
         const permissions = data.selectedPermissions.filter((permission) => permission !== reinstallPermission);
+
         data.setPermissions(enabled ? [...permissions, reinstallPermission] : permissions);
     };
 
     return (
-        <TitledGreyBox title={'Permission shortcuts'} className={'hw:mt-6'}>
+        <TitledGreyBox title='Permission shortcuts' className='hw:mt-6'>
             <div style={{ display: 'grid', gap: '1rem' }}>
                 <p>
                     Choose a starting point, then adjust the checkboxes below. Presets replace permissions you can edit.
@@ -47,7 +48,7 @@ export default function SubuserPresets({ data }: { data: SubuserPermissionsSlotD
                     {presets.map((preset) => (
                         <Button
                             key={preset.name}
-                            type={'button'}
+                            type='button'
                             disabled={data.disabled}
                             onClick={() => data.setPermissions(preset.permissions)}
                         >
@@ -56,7 +57,7 @@ export default function SubuserPresets({ data }: { data: SubuserPermissionsSlotD
                     ))}
                 </div>
                 <Switch
-                    label={'Allow this subuser to reinstall the server'}
+                    label='Allow this subuser to reinstall the server'
                     checked={data.selectedPermissions.includes(reinstallPermission)}
                     disabled={!canChangeReinstall}
                     onChange={setReinstall}

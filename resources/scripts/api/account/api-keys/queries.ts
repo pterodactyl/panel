@@ -61,11 +61,13 @@ export const useDeleteAccountApiKey = () => {
             if (queryClient.isMutating({ mutationKey: clientDeleteAccountApiKeyMutation().mutationKey }) === 1) {
                 return queryClient.invalidateQueries({ queryKey });
             }
+
             return Promise.resolve();
         },
         onError: (error, _variables, context) => {
             if (context?.removed) {
                 const removed = context.removed;
+
                 queryClient.setQueryData<ClientListAccountApiKeysResponse>(queryKey, (current) =>
                     upsertListItem(
                         current,
@@ -74,6 +76,7 @@ export const useDeleteAccountApiKey = () => {
                     )
                 );
             }
+
             notifyHttpError(error, 'Unable to delete API key');
         },
     });

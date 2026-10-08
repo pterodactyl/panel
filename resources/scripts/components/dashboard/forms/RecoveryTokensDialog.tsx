@@ -10,37 +10,36 @@ interface RecoveryTokenDialogProps extends DialogProps {
 
 function RecoveryTokensDialog({ tokens, open, onClose }: RecoveryTokenDialogProps) {
     const grouped = [] as [string, string][];
-    tokens.forEach((token, index) => {
+
+    for (const [index, token] of tokens.entries()) {
         if (index % 2 === 0) {
             grouped.push([token, tokens[index + 1] || '']);
         }
-    });
+    }
 
     return (
         <Dialog
             open={open}
             onClose={onClose}
-            title={'Two-Step Authentication Enabled'}
-            description={
-                'Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
-            }
+            title='Two-Step Authentication Enabled'
+            description='Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
             hideCloseIcon
             preventExternalClose
         >
-            <Dialog.Icon position={'container'} type={'success'} />
+            <Dialog.Icon position='container' type='success' />
             <CopyOnClick text={tokens.join('\n')} showInNotification={false}>
-                <pre className={'bg-background rounded-sm p-2 mt-6'}>
+                <pre className='bg-background rounded-sm p-2 mt-6'>
                     {grouped.map((value) => (
-                        <span key={value.join('_')} className={'block'}>
+                        <span key={value.join('_')} className='block'>
                             {value[0]}
-                            <span className={'mx-2 selection:bg-background'}>&nbsp;</span>
+                            <span className='mx-2 selection:bg-background'>&nbsp;</span>
                             {value[1]}
-                            <span className={'selection:bg-background'}>&nbsp;</span>
+                            <span className='selection:bg-background'>&nbsp;</span>
                         </span>
                     ))}
                 </pre>
             </CopyOnClick>
-            <Alert type={'danger'} className={'mt-3'}>
+            <Alert type='danger' className='mt-3'>
                 These codes will not be shown again.
             </Alert>
             <Dialog.Footer>

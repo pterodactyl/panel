@@ -28,6 +28,30 @@ const initialValues = {
     rules: 'required|string|max:20',
 };
 
+const validateVariableName = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'A variable name must be provided.';
+    }
+
+    if (value.length > 191) {
+        return 'A variable name must not exceed 191 characters.';
+    }
+
+    return undefined;
+};
+
+const validateEnvVariable = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'An environment variable must be provided.';
+    }
+
+    if (!envVariableRegex.test(value)) {
+        return 'The environment variable may only contain letters, numbers, and underscores.';
+    }
+
+    return undefined;
+};
+
 function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDialogProps) {
     const createEggVariable = useCreateAdminEggVariable();
 
@@ -50,60 +74,50 @@ function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDial
     return (
         <Dialog
             open={open}
-            title={'Create new egg variable'}
+            title='Create new egg variable'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
+            <Form form={form} className='m-0'>
                 <form.AppField
-                    name={'name'}
+                    name='name'
                     validators={{
-                        onChange: ({ value }) =>
-                            value.length < 1
-                                ? 'A variable name must be provided.'
-                                : value.length > 191
-                                  ? 'A variable name must not exceed 191 characters.'
-                                  : undefined,
+                        onChange: ({ value }) => validateVariableName(value),
                     }}
                 >
-                    {(field) => <field.TextField type={'text'} id={'create_name'} label={'Name'} />}
+                    {(field) => <field.TextField type='text' id='create_name' label='Name' />}
                 </form.AppField>
-                <div className={'mt-6'}>
-                    <form.AppField name={'description'}>
-                        {(field) => <field.TextAreaField id={'create_description'} label={'Description'} rows={3} />}
+                <div className='mt-6'>
+                    <form.AppField name='description'>
+                        {(field) => <field.TextAreaField id='create_description' label='Description' rows={3} />}
                     </form.AppField>
                 </div>
-                <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'}>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'>
                     <form.AppField
-                        name={'envVariable'}
+                        name='envVariable'
                         validators={{
-                            onChange: ({ value }) =>
-                                value.length < 1
-                                    ? 'An environment variable must be provided.'
-                                    : !envVariableRegex.test(value)
-                                      ? 'The environment variable may only contain letters, numbers, and underscores.'
-                                      : undefined,
+                            onChange: ({ value }) => validateEnvVariable(value),
                         }}
                     >
-                        {(field) => <field.TextField type={'text'} id={'create_env'} label={'Environment Variable'} />}
+                        {(field) => <field.TextField type='text' id='create_env' label='Environment Variable' />}
                     </form.AppField>
-                    <form.AppField name={'defaultValue'}>
-                        {(field) => <field.TextField type={'text'} id={'create_default'} label={'Default Value'} />}
-                    </form.AppField>
-                </div>
-                <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'}>
-                    <form.AppField name={'userViewable'}>
-                        {(field) => <field.SwitchField label={'Users Can View'} />}
-                    </form.AppField>
-                    <form.AppField name={'userEditable'}>
-                        {(field) => <field.SwitchField label={'Users Can Edit'} />}
+                    <form.AppField name='defaultValue'>
+                        {(field) => <field.TextField type='text' id='create_default' label='Default Value' />}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'>
+                    <form.AppField name='userViewable'>
+                        {(field) => <field.SwitchField label='Users Can View' />}
+                    </form.AppField>
+                    <form.AppField name='userEditable'>
+                        {(field) => <field.SwitchField label='Users Can Edit' />}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
                     <form.AppField
-                        name={'rules'}
+                        name='rules'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'Validation rules must be provided.',
@@ -111,22 +125,20 @@ function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDial
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'create_rules'}
-                                label={'Input Rules'}
-                                description={'Standard Laravel validation rules used to validate this variable.'}
+                                type='text'
+                                id='create_rules'
+                                label='Input Rules'
+                                description='Standard Laravel validation rules used to validate this variable.'
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex flex-wrap justify-end mt-6'}>
-                    <Button type={'button'} isSecondary className={'w-full sm:w-auto sm:mr-2'} onClick={onClose}>
+                <div className='flex flex-wrap justify-end mt-6'>
+                    <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
                         Cancel
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton className={'w-full mt-4 sm:w-auto sm:mt-0'}>
-                            Create Variable
-                        </form.SubmitButton>
+                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>Create Variable</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>

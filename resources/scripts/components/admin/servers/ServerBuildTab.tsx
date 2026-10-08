@@ -65,13 +65,17 @@ const validateSwap = requiredNumber('A swap limit must be provided.', (value) =>
 const validateDisk = requiredNumber('A disk limit must be provided.', (value) =>
     value >= 0 ? undefined : 'Invalid disk limit.'
 );
-const validateIo = requiredNumber('An IO proportion must be provided.', (value) =>
-    value < 10
-        ? 'The IO proportion must be at least 10.'
-        : value > 1000
-          ? 'The IO proportion must not exceed 1000.'
-          : undefined
-);
+const validateIo = requiredNumber('An IO proportion must be provided.', (value): string | undefined => {
+    if (value < 10) {
+        return 'The IO proportion must be at least 10.';
+    }
+
+    if (value > 1000) {
+        return 'The IO proportion must not exceed 1000.';
+    }
+
+    return undefined;
+});
 const validateDatabaseLimit = requiredNumber('A database limit must be provided.', (value) =>
     value >= 0 ? undefined : 'Invalid database limit.'
 );
@@ -137,25 +141,25 @@ function ServerBuildForm({ server }: Props) {
 
     return (
         <Form form={form}>
-            <div className={'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
-                <TitledGreyBox title={'Resource Management'}>
-                    <form.AppField name={'cpu'} validators={{ onChange: validateCpu }}>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                <TitledGreyBox title='Resource Management'>
+                    <form.AppField name='cpu' validators={{ onChange: validateCpu }}>
                         {(field) => (
                             <field.NumberField
-                                id={'cpu'}
-                                label={'CPU Limit (%)'}
+                                id='cpu'
+                                label='CPU Limit (%)'
                                 min={0}
-                                description={'Each thread on the system is 100%. Set to 0 for unlimited CPU.'}
+                                description='Each thread on the system is 100%. Set to 0 for unlimited CPU.'
                             />
                         )}
                     </form.AppField>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'threads'}>
+                    <div className='mt-6'>
+                        <form.AppField name='threads'>
                             {(field) => (
                                 <field.TextField
-                                    type={'text'}
-                                    id={'threads'}
-                                    label={'CPU Pinning'}
+                                    type='text'
+                                    id='threads'
+                                    label='CPU Pinning'
                                     description={
                                         'Advanced: the specific CPU cores this process can run on (e.g. 0, 0-1,3). ' +
                                         'Leave blank to allow all cores.'
@@ -164,64 +168,62 @@ function ServerBuildForm({ server }: Props) {
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'memory'} validators={{ onChange: validateMemory }}>
+                    <div className='mt-6'>
+                        <form.AppField name='memory' validators={{ onChange: validateMemory }}>
                             {(field) => (
                                 <field.NumberField
-                                    id={'memory'}
-                                    label={'Allocated Memory (MiB)'}
+                                    id='memory'
+                                    label='Allocated Memory (MiB)'
                                     min={0}
-                                    description={'The maximum memory for this container. Set to 0 for unlimited.'}
+                                    description='The maximum memory for this container. Set to 0 for unlimited.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'swap'} validators={{ onChange: validateSwap }}>
+                    <div className='mt-6'>
+                        <form.AppField name='swap' validators={{ onChange: validateSwap }}>
                             {(field) => (
                                 <field.NumberField
-                                    id={'swap'}
-                                    label={'Allocated Swap (MiB)'}
+                                    id='swap'
+                                    label='Allocated Swap (MiB)'
                                     min={-1}
-                                    description={'Set to 0 to disable swap, or -1 for unlimited swap.'}
+                                    description='Set to 0 to disable swap, or -1 for unlimited swap.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'disk'} validators={{ onChange: validateDisk }}>
+                    <div className='mt-6'>
+                        <form.AppField name='disk' validators={{ onChange: validateDisk }}>
                             {(field) => (
                                 <field.NumberField
-                                    id={'disk'}
-                                    label={'Disk Space Limit (MiB)'}
+                                    id='disk'
+                                    label='Disk Space Limit (MiB)'
                                     min={0}
-                                    description={'Set to 0 to allow unlimited disk usage.'}
+                                    description='Set to 0 to allow unlimited disk usage.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'io'} validators={{ onChange: validateIo }}>
+                    <div className='mt-6'>
+                        <form.AppField name='io' validators={{ onChange: validateIo }}>
                             {(field) => (
                                 <field.NumberField
-                                    id={'io'}
-                                    label={'Block IO Proportion'}
+                                    id='io'
+                                    label='Block IO Proportion'
                                     min={10}
                                     max={1000}
-                                    description={'Advanced: a value between 10 and 1000.'}
+                                    description='Advanced: a value between 10 and 1000.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'oomDisabled'}>
+                    <div className='mt-6'>
+                        <form.AppField name='oomDisabled'>
                             {(field) => (
                                 <field.SelectField
-                                    id={'oomDisabled'}
-                                    label={'OOM Killer'}
-                                    description={
-                                        'Enabling the OOM killer may cause server processes to exit unexpectedly.'
-                                    }
+                                    id='oomDisabled'
+                                    label='OOM Killer'
+                                    description='Enabling the OOM killer may cause server processes to exit unexpectedly.'
                                     options={[
                                         { value: 'false', label: 'Enabled' },
                                         { value: 'true', label: 'Disabled' },
@@ -231,31 +233,29 @@ function ServerBuildForm({ server }: Props) {
                         </form.AppField>
                     </div>
                 </TitledGreyBox>
-                <div className={'space-y-6'}>
-                    <TitledGreyBox title={'Application Feature Limits'}>
-                        <div className={'grid grid-cols-1 sm:grid-cols-3 gap-4'}>
-                            <form.AppField name={'databaseLimit'} validators={{ onChange: validateDatabaseLimit }}>
+                <div className='space-y-6'>
+                    <TitledGreyBox title='Application Feature Limits'>
+                        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+                            <form.AppField name='databaseLimit' validators={{ onChange: validateDatabaseLimit }}>
+                                {(field) => <field.NumberField id='database_limit' label='Database Limit' min={0} />}
+                            </form.AppField>
+                            <form.AppField name='allocationLimit' validators={{ onChange: validateAllocationLimit }}>
                                 {(field) => (
-                                    <field.NumberField id={'database_limit'} label={'Database Limit'} min={0} />
+                                    <field.NumberField id='allocation_limit' label='Allocation Limit' min={0} />
                                 )}
                             </form.AppField>
-                            <form.AppField name={'allocationLimit'} validators={{ onChange: validateAllocationLimit }}>
-                                {(field) => (
-                                    <field.NumberField id={'allocation_limit'} label={'Allocation Limit'} min={0} />
-                                )}
-                            </form.AppField>
-                            <form.AppField name={'backupLimit'} validators={{ onChange: validateBackupLimit }}>
-                                {(field) => <field.NumberField id={'backup_limit'} label={'Backup Limit'} min={0} />}
+                            <form.AppField name='backupLimit' validators={{ onChange: validateBackupLimit }}>
+                                {(field) => <field.NumberField id='backup_limit' label='Backup Limit' min={0} />}
                             </form.AppField>
                         </div>
                     </TitledGreyBox>
-                    <TitledGreyBox title={'Allocation Management'}>
-                        <form.AppField name={'allocationId'}>
+                    <TitledGreyBox title='Allocation Management'>
+                        <form.AppField name='allocationId'>
                             {(field) => (
                                 <field.SelectField
-                                    id={'allocationId'}
-                                    label={'Game Port'}
-                                    description={'The default connection address for this server.'}
+                                    id='allocationId'
+                                    label='Game Port'
+                                    description='The default connection address for this server.'
                                     options={assignedOptions}
                                     onChange={(value) =>
                                         form.setFieldValue('removeAllocations', (current) =>
@@ -265,15 +265,13 @@ function ServerBuildForm({ server }: Props) {
                                 />
                             )}
                         </form.AppField>
-                        <div className={'mt-6'}>
-                            <form.AppField name={'addAllocations'}>
+                        <div className='mt-6'>
+                            <form.AppField name='addAllocations'>
                                 {(field) => (
                                     <field.MultiSelectField
-                                        id={'addAllocations'}
-                                        label={'Assign Additional Ports'}
-                                        description={
-                                            'Unassigned ports on this node that will be assigned to the server.'
-                                        }
+                                        id='addAllocations'
+                                        label='Assign Additional Ports'
+                                        description='Unassigned ports on this node that will be assigned to the server.'
                                         options={unassigned.map((allocation) => ({
                                             value: allocation.attributes.id,
                                             label: allocationLabel(allocation),
@@ -282,13 +280,13 @@ function ServerBuildForm({ server }: Props) {
                                 )}
                             </form.AppField>
                         </div>
-                        <div className={'mt-6'}>
-                            <form.AppField name={'removeAllocations'}>
+                        <div className='mt-6'>
+                            <form.AppField name='removeAllocations'>
                                 {(field) => (
                                     <field.MultiSelectField
-                                        id={'removeAllocations'}
-                                        label={'Remove Additional Ports'}
-                                        description={'Select the ports to remove from this server.'}
+                                        id='removeAllocations'
+                                        label='Remove Additional Ports'
+                                        description='Select the ports to remove from this server.'
                                         options={removableOptions}
                                     />
                                 )}
@@ -297,7 +295,7 @@ function ServerBuildForm({ server }: Props) {
                     </TitledGreyBox>
                 </div>
             </div>
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>Update Build Configuration</form.SubmitButton>
                 </form.AppForm>
@@ -310,9 +308,7 @@ export default function ServerBuildTab() {
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return (
-            <ServerError message={'Access to this resource is not allowed due to the current installation state.'} />
-        );
+        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
     }
 
     return <ServerBuildForm key={`${server.attributes.id}:${server.attributes.updated_at}`} server={server} />;

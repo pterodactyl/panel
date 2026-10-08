@@ -19,6 +19,30 @@ interface Props {
 
 const envVariableRegex = /^[\w]{1,191}$/;
 
+const validateVariableName = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'A variable name must be provided.';
+    }
+
+    if (value.length > 191) {
+        return 'A variable name must not exceed 191 characters.';
+    }
+
+    return undefined;
+};
+
+const validateEnvVariable = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'An environment variable must be provided.';
+    }
+
+    if (!envVariableRegex.test(value)) {
+        return 'The environment variable may only contain letters, numbers, and underscores.';
+    }
+
+    return undefined;
+};
+
 const variableToFormValues = (variable: AdminEggVariable): EggVariableValues => ({
     name: variable.attributes.name,
     description: variable.attributes.description,
@@ -60,80 +84,70 @@ export default function EggVariableBox({ eggId, variable }: Props) {
         <Form form={form}>
             <TitledGreyBox title={variable.attributes.name}>
                 <form.AppField
-                    name={'name'}
+                    name='name'
                     validators={{
-                        onChange: ({ value }) =>
-                            value.length < 1
-                                ? 'A variable name must be provided.'
-                                : value.length > 191
-                                  ? 'A variable name must not exceed 191 characters.'
-                                  : undefined,
+                        onChange: ({ value }) => validateVariableName(value),
                     }}
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
+                            type='text'
                             id={`name_${variable.attributes.id}`}
-                            label={'Name'}
-                            description={'A human-readable name for this variable.'}
+                            label='Name'
+                            description='A human-readable name for this variable.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-4'}>
-                    <form.AppField name={'description'}>
+                <div className='mt-4'>
+                    <form.AppField name='description'>
                         {(field) => (
                             <field.TextAreaField
                                 id={`description_${variable.attributes.id}`}
-                                label={'Description'}
+                                label='Description'
                                 rows={3}
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'}>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
                     <form.AppField
-                        name={'envVariable'}
+                        name='envVariable'
                         validators={{
-                            onChange: ({ value }) =>
-                                value.length < 1
-                                    ? 'An environment variable must be provided.'
-                                    : !envVariableRegex.test(value)
-                                      ? 'The environment variable may only contain letters, numbers, and underscores.'
-                                      : undefined,
+                            onChange: ({ value }) => validateEnvVariable(value),
                         }}
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
+                                type='text'
                                 id={`env_${variable.attributes.id}`}
-                                label={'Environment Variable'}
+                                label='Environment Variable'
                             />
                         )}
                     </form.AppField>
-                    <form.AppField name={'defaultValue'}>
+                    <form.AppField name='defaultValue'>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
+                                type='text'
                                 id={`default_${variable.attributes.id}`}
-                                label={'Default Value'}
+                                label='Default Value'
                             />
                         )}
                     </form.AppField>
                 </div>
-                <p className={'text-xs text-muted-foreground mt-2'}>
+                <p className='text-xs text-muted-foreground mt-2'>
                     Access this variable in the startup command with <Code>{variable.attributes.env_variable}</Code>.
                 </p>
-                <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'}>
-                    <form.AppField name={'userViewable'}>
-                        {(field) => <field.SwitchField label={'Users Can View'} />}
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
+                    <form.AppField name='userViewable'>
+                        {(field) => <field.SwitchField label='Users Can View' />}
                     </form.AppField>
-                    <form.AppField name={'userEditable'}>
-                        {(field) => <field.SwitchField label={'Users Can Edit'} />}
+                    <form.AppField name='userEditable'>
+                        {(field) => <field.SwitchField label='Users Can Edit' />}
                     </form.AppField>
                 </div>
-                <div className={'mt-4'}>
+                <div className='mt-4'>
                     <form.AppField
-                        name={'rules'}
+                        name='rules'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'Validation rules must be provided.',
@@ -141,21 +155,21 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
+                                type='text'
                                 id={`rules_${variable.attributes.id}`}
-                                label={'Input Rules'}
-                                description={'Standard Laravel validation rules used to validate this variable.'}
+                                label='Input Rules'
+                                description='Standard Laravel validation rules used to validate this variable.'
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex items-center justify-between mt-6'}>
+                <div className='flex items-center justify-between mt-6'>
                     <Dialog.ConfirmTrigger
                         title={`Delete ${variable.attributes.name}`}
-                        confirm={'Delete Variable'}
+                        confirm='Delete Variable'
                         onConfirmed={confirmDelete}
                         trigger={({ onClick }) => (
-                            <Button type={'button'} color={'red'} isSecondary onClick={onClick}>
+                            <Button type='button' color='red' isSecondary onClick={onClick}>
                                 Delete
                             </Button>
                         )}

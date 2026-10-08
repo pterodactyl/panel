@@ -45,18 +45,22 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
     const { default: NavigationLabel } = await import('@/extensions/NavigationLabel');
     const { extensionScreenComponent } = await import('@/extensions/screen');
     const { serverQueryKey } = await import('@/api/server/queries');
+
     registry.prepareExtensions(entries);
     const area = entries[0]?.screens?.[0]?.area ?? 'server';
     const screens = registry.getExtensionScreens(area);
 
     const client = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity, retry: false } } });
-    if (options.server) client.setQueryData(serverQueryKey('abc'), options.server);
+
+    if (options.server) {
+        client.setQueryData(serverQueryKey('abc'), options.server);
+    }
 
     function Layout() {
         return (
             <>
                 <nav>
-                    <a href={'/'}>Core entry</a>
+                    <a href='/'>Core entry</a>
                     {screens.map((registration) => (
                         <ScreenGate key={`${registration.extensionId}:${registration.id}`} screen={registration}>
                             <a href={`/${registration.path}`}>
@@ -69,6 +73,7 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
             </>
         );
     }
+
     const root = createRootRoute({ component: Outlet });
     const authenticated = createRoute({ getParentRoute: () => root, id: 'authenticated', component: Outlet });
     const layout = createRoute({ getParentRoute: () => authenticated, path: 'server/$id', component: Layout });
@@ -90,6 +95,7 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
         ]),
         history: createMemoryHistory({ initialEntries: [options.path ?? '/server/abc'] }),
     });
+
     render(
         <QueryClientProvider client={client}>
             <RouterProvider router={router} />
@@ -102,6 +108,7 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
         router,
         load(extensionId: string, options: Record<string, ScreenOptions> = {}) {
             const batch = registry.createExtensionRegistryBatch();
+
             for (const registration of screens.filter((item) => item.extensionId === extensionId)) {
                 registry.registerScreen(
                     extensionId,
@@ -111,6 +118,7 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
                     options[registration.id]
                 );
             }
+
             act(() => registry.commitExtensionRegistryBatch(extensionId, batch));
         },
     };
@@ -138,6 +146,7 @@ it('lists and routes an egg-gated screen only for servers whose egg matches', as
         server: createTestServer({ eggTags: ['minecraft', 'paper'] }),
         path: '/server/abc/mods',
     });
+
     expect(screen.getByText('Mods')).toBeVisible();
     matching.load('mods');
     expect(await screen.findByText('mods screen')).toBeVisible();
@@ -174,6 +183,7 @@ it('holds a predicate-gated entry back until its bundle answers, then keeps it r
         ],
         { server: createTestServer({ name: 'Lobby' }) }
     );
+
     expect(screen.getByText('Plain')).toBeVisible();
     expect(screen.queryByText('Subdomains')).not.toBeInTheDocument();
 
@@ -181,6 +191,7 @@ it('holds a predicate-gated entry back until its bundle answers, then keeps it r
         domains: {
             visible: (context) => {
                 seen.push(context);
+
                 return allowed;
             },
         },
@@ -230,6 +241,7 @@ it('lets a predicate use hooks and suspend without holding up navigation', async
         },
     ]);
     const useHasQuota = () => useSuspenseQuery({ queryKey: ['quota'], queryFn: () => quota }).data > 0;
+
     panel.load('creator', { create: { visible: useHasQuota } });
     expect(screen.getByText('Core entry')).toBeVisible();
     expect(screen.queryByText('Create server')).not.toBeInTheDocument();
@@ -248,6 +260,7 @@ it('hides an entry whose predicate throws and reports it against the extension',
             ],
         },
     ]);
+
     panel.load('broken', {
         gated: {
             visible: () => {
@@ -279,6 +292,7 @@ it('keeps a predicate-gated entry hidden when its bundle fails to load', async (
             screens: [{ id: 'main', area: 'account', path: 'main', nav: { label: 'Main' }, when: { runtime: true } }],
         },
     ]);
+
     act(() => panel.registry.failExtensionLoad('offline', 'boot', new Error('network')));
     expect(screen.queryByText('Main')).not.toBeInTheDocument();
 });
@@ -295,6 +309,7 @@ it('shows the manifest badge until the extension supplies a live one', async () 
             ],
         },
     ]);
+
     expect(screen.getByText('New')).toBeVisible();
 
     panel.load('tickets', { tickets: { badge: () => open } });
@@ -333,6 +348,7 @@ it('falls back to the manifest badge while a live badge is slow or failing', asy
         },
     ]);
     const useUsage = () => useSuspenseQuery({ queryKey: ['usage'], queryFn: () => usage }).data;
+
     panel.load('badges', {
         slow: { badge: useUsage },
         failing: {

@@ -54,20 +54,20 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
     return (
         <Dialog
             open={open}
-            title={'Attach eggs'}
+            title='Attach eggs'
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={submitting} />
             {eggs === undefined ? (
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             ) : (
                 <>
                     {availableEggs.length === 0 ? (
                         <Empty className={emptyCompactClass}>
                             <EmptyHeader>
-                                <EmptyMedia variant={'icon'}>
+                                <EmptyMedia variant='icon'>
                                     <Egg />
                                 </EmptyMedia>
                                 <EmptyTitle>{eggs.data.length === 0 ? 'No eggs yet' : 'All eggs attached'}</EmptyTitle>
@@ -83,7 +83,7 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                             <Label>Eggs</Label>
                             <Select
                                 multiple
-                                placeholder={'Select one or more eggs…'}
+                                placeholder='Select one or more eggs…'
                                 value={selected}
                                 onChange={(value) => setSelected((value as (string | number)[]).map(Number))}
                                 options={availableEggs.map((egg) => ({
@@ -93,9 +93,9 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                             />
                         </>
                     )}
-                    <div className={'flex flex-wrap justify-end mt-6'}>
+                    <div className='flex flex-wrap justify-end mt-6'>
                         <Button
-                            type={'button'}
+                            type='button'
                             isSecondary
                             className={cn('w-full sm:w-auto', availableEggs.length > 0 && 'sm:mr-2')}
                             onClick={onClose}
@@ -104,8 +104,8 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                         </Button>
                         {availableEggs.length > 0 && (
                             <Button
-                                className={'w-full mt-4 sm:w-auto sm:mt-0'}
-                                type={'button'}
+                                className='w-full mt-4 sm:w-auto sm:mt-0'
+                                type='button'
                                 disabled={selected.length === 0}
                                 onClick={submit}
                             >

@@ -31,6 +31,7 @@ const serve = (
     attributes: (id: number) => Record<string, string | number> = () => ({})
 ) => {
     const requests: string[] = [];
+
     adapter.mockImplementation(async (config) => {
         const url = new URL(config.url!, 'https://panel.test');
         const page = Number(url.searchParams.get('page') ?? '1');
@@ -40,6 +41,7 @@ const serve = (
         const data = Array.from({ length: Math.max(0, Math.min(100, total - first + 1)) }, (_, index) =>
             item(first + index, attributes(first + index))
         );
+
         requests.push(`${url.pathname}?page=${page}&per_page=${url.searchParams.get('per_page')}`);
 
         return {

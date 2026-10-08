@@ -34,14 +34,18 @@ export const FILE_LIST_LIMIT = 250;
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
         .sort((a, b) => a.attributes.name.localeCompare(b.attributes.name))
-        .sort((a, b) => (a.attributes.is_file === b.attributes.is_file ? 0 : a.attributes.is_file ? 1 : -1));
+        // Directories before files.
+        .sort((a, b) => Number(a.attributes.is_file) - Number(b.attributes.is_file));
+
     return sortedFiles.filter(
         (file, index) => index === 0 || file.attributes.name !== sortedFiles[index - 1].attributes.name
     );
 };
 
 function allow(granted: boolean, permission: string): void {
-    if (!granted) throw new Error(`This action requires the ${permission} permission.`);
+    if (!granted) {
+        throw new Error(`This action requires the ${permission} permission.`);
+    }
 }
 
 export default function useFileManagerModel(data: FileManagerSlotData, listed: boolean): FileManagerSession {
@@ -90,10 +94,15 @@ export default function useFileManagerModel(data: FileManagerSlotData, listed: b
     const actions = useMemo<FileManagerModel['actions']>(() => {
         const show = (target: string) =>
             navigate({ to: '/server/$id/files', params: { id }, hash: encodePathSegments(target) });
+
         return {
             open: async (name) => {
                 const entry = entries.find((entry) => entry.name === name);
-                if (!entry?.openable) throw new Error(`"${name}" cannot be opened.`);
+
+                if (!entry?.openable) {
+                    throw new Error(`"${name}" cannot be opened.`);
+                }
+
                 await (entry.kind === 'directory'
                     ? show(entry.path)
                     : navigate({

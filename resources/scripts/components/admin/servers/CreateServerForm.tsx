@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { useStore } from '@tanstack/react-form';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
@@ -89,35 +89,35 @@ const createServerValues = (values: Values): CreateServerValues => ({
 });
 
 const CoreDetailsBox = ({ form, users }: { form: ServerForm; users: AdminUser[] }) => (
-    <TitledGreyBox title={'Core Details'}>
-        <div className={'grid grid-cols-1 md:grid-cols-2 gap-6'}>
-            <div className={'space-y-6'}>
+    <TitledGreyBox title='Core Details'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <div className='space-y-6'>
                 <form.AppField
-                    name={'name'}
+                    name='name'
                     validators={{
                         onChange: ({ value }) => (value.length >= 1 ? undefined : 'A server name must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'name'}
-                            label={'Server Name'}
-                            description={'Character limits: a-z A-Z 0-9 _ - . and [Space].'}
+                            type='text'
+                            id='name'
+                            label='Server Name'
+                            description='Character limits: a-z A-Z 0-9 _ - . and [Space].'
                         />
                     )}
                 </form.AppField>
                 <form.AppField
-                    name={'ownerId'}
+                    name='ownerId'
                     validators={{
                         onChange: ({ value }) => (value >= 1 ? undefined : 'A server owner must be selected.'),
                     }}
                 >
                     {(field) => (
                         <field.SelectField
-                            id={'ownerId'}
-                            label={'Server Owner'}
-                            description={'The user that this server will belong to.'}
+                            id='ownerId'
+                            label='Server Owner'
+                            description='The user that this server will belong to.'
                             options={[
                                 { value: 0, label: 'Select a server owner…', disabled: true },
                                 ...users.map((user) => ({
@@ -129,23 +129,23 @@ const CoreDetailsBox = ({ form, users }: { form: ServerForm; users: AdminUser[] 
                     )}
                 </form.AppField>
             </div>
-            <div className={'space-y-6'}>
-                <form.AppField name={'description'}>
+            <div className='space-y-6'>
+                <form.AppField name='description'>
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'description'}
-                            label={'Server Description'}
-                            description={'A brief description of this server.'}
+                            type='text'
+                            id='description'
+                            label='Server Description'
+                            description='A brief description of this server.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6'}>
-                    <form.AppField name={'startOnCompletion'}>
+                <div className='mt-6'>
+                    <form.AppField name='startOnCompletion'>
                         {(field) => (
                             <field.SwitchField
-                                label={'Start Server when Installed'}
-                                description={'Start this server automatically once the installation completes.'}
+                                label='Start Server when Installed'
+                                description='Start this server automatically once the installation completes.'
                             />
                         )}
                     </form.AppField>
@@ -171,15 +171,15 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
     const additionalOptions = allocationOptions.filter((option) => option.value !== defaultAllocationId);
 
     return (
-        <TitledGreyBox title={'Allocation Management'}>
-            <div className={'relative grid grid-cols-1 md:grid-cols-3 gap-6'}>
-                {loading && <Spinner size={'small'} centered />}
+        <TitledGreyBox title='Allocation Management'>
+            <div className='relative grid grid-cols-1 md:grid-cols-3 gap-6'>
+                {loading && <Spinner size='small' centered />}
                 <div>
-                    <Label htmlFor={'nodeId'}>Node</Label>
+                    <Label htmlFor='nodeId'>Node</Label>
                     <Select
-                        id={'nodeId'}
+                        id='nodeId'
                         value={nodeId}
-                        placeholder={'Select a node…'}
+                        placeholder='Select a node…'
                         onChange={(value) => {
                             setNodeId(Number(value));
                             form.setFieldValue('allocationId', 0);
@@ -192,11 +192,11 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
                             options: group.nodes.map((node) => ({ value: node.id, label: node.name })),
                         }))}
                     />
-                    <p className={'input-help'}>The node which this server will be deployed to.</p>
+                    <p className='input-help'>The node which this server will be deployed to.</p>
                 </div>
                 <div>
                     <form.AppField
-                        name={'allocationId'}
+                        name='allocationId'
                         validators={{
                             onChange: ({ value }) =>
                                 value >= 1 ? undefined : 'A default allocation must be selected.',
@@ -204,9 +204,9 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
                     >
                         {(field) => (
                             <field.SelectField
-                                id={'allocationId'}
-                                label={'Default Allocation'}
-                                description={'The main allocation that will be assigned to this server.'}
+                                id='allocationId'
+                                label='Default Allocation'
+                                description='The main allocation that will be assigned to this server.'
                                 disabled={nodeId <= 0}
                                 options={[
                                     { value: 0, label: 'Select an allocation…', disabled: true },
@@ -222,12 +222,12 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
                     </form.AppField>
                 </div>
                 <div>
-                    <form.AppField name={'allocationAdditional'}>
+                    <form.AppField name='allocationAdditional'>
                         {(field) => (
                             <field.MultiSelectField
-                                id={'allocationAdditional'}
-                                label={'Additional Allocation(s)'}
-                                description={'Additional allocations to assign to this server on creation.'}
+                                id='allocationAdditional'
+                                label='Additional Allocation(s)'
+                                description='Additional allocations to assign to this server on creation.'
                                 disabled={nodeId <= 0}
                                 options={additionalOptions}
                             />
@@ -240,44 +240,44 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
 };
 
 const FeatureLimitsBox = ({ form }: { form: ServerForm }) => (
-    <TitledGreyBox title={'Application Feature Limits'}>
-        <div className={'grid grid-cols-1 md:grid-cols-3 gap-6'}>
+    <TitledGreyBox title='Application Feature Limits'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
             <form.AppField
-                name={'databaseLimit'}
+                name='databaseLimit'
                 validators={{ onChange: requiredNumber('A database limit must be provided.') }}
             >
                 {(field) => (
                     <field.NumberField
-                        id={'databaseLimit'}
-                        label={'Database Limit'}
+                        id='databaseLimit'
+                        label='Database Limit'
                         min={0}
-                        description={'The total number of databases a user is allowed to create for this server.'}
+                        description='The total number of databases a user is allowed to create for this server.'
                     />
                 )}
             </form.AppField>
             <form.AppField
-                name={'allocationLimit'}
+                name='allocationLimit'
                 validators={{ onChange: requiredNumber('An allocation limit must be provided.') }}
             >
                 {(field) => (
                     <field.NumberField
-                        id={'allocationLimit'}
-                        label={'Allocation Limit'}
+                        id='allocationLimit'
+                        label='Allocation Limit'
                         min={0}
-                        description={'The total number of allocations a user is allowed to create for this server.'}
+                        description='The total number of allocations a user is allowed to create for this server.'
                     />
                 )}
             </form.AppField>
             <form.AppField
-                name={'backupLimit'}
+                name='backupLimit'
                 validators={{ onChange: requiredNumber('A backup limit must be provided.') }}
             >
                 {(field) => (
                     <field.NumberField
-                        id={'backupLimit'}
-                        label={'Backup Limit'}
+                        id='backupLimit'
+                        label='Backup Limit'
                         min={0}
-                        description={'The total number of backups that can be created for this server.'}
+                        description='The total number of backups that can be created for this server.'
                     />
                 )}
             </form.AppField>
@@ -286,63 +286,60 @@ const FeatureLimitsBox = ({ form }: { form: ServerForm }) => (
 );
 
 const ResourceManagementBox = ({ form }: { form: ServerForm }) => (
-    <TitledGreyBox title={'Resource Management'}>
-        <div className={'grid grid-cols-1 md:grid-cols-2 gap-6'}>
-            <form.AppField name={'cpu'} validators={{ onChange: requiredNumber('A CPU limit must be provided.') }}>
+    <TitledGreyBox title='Resource Management'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <form.AppField name='cpu' validators={{ onChange: requiredNumber('A CPU limit must be provided.') }}>
                 {(field) => (
                     <field.NumberField
-                        id={'cpu'}
-                        label={'CPU Limit (%)'}
+                        id='cpu'
+                        label='CPU Limit (%)'
                         min={0}
-                        description={'Set to 0 to allow unlimited CPU usage. 100% equals one thread.'}
+                        description='Set to 0 to allow unlimited CPU usage. 100% equals one thread.'
                     />
                 )}
             </form.AppField>
-            <form.AppField name={'threads'}>
+            <form.AppField name='threads'>
                 {(field) => (
                     <field.TextField
-                        type={'text'}
-                        id={'threads'}
-                        label={'CPU Pinning'}
-                        description={'Advanced: specific CPU threads (e.g. 0, 0-1,3) or leave blank for all.'}
+                        type='text'
+                        id='threads'
+                        label='CPU Pinning'
+                        description='Advanced: specific CPU threads (e.g. 0, 0-1,3) or leave blank for all.'
                     />
                 )}
             </form.AppField>
-            <form.AppField
-                name={'memory'}
-                validators={{ onChange: requiredNumber('A memory limit must be provided.') }}
-            >
+            <form.AppField name='memory' validators={{ onChange: requiredNumber('A memory limit must be provided.') }}>
                 {(field) => (
                     <field.NumberField
-                        id={'memory'}
-                        label={'Memory (MiB)'}
+                        id='memory'
+                        label='Memory (MiB)'
                         min={0}
-                        description={'The maximum amount of memory allowed. Set to 0 for unlimited.'}
+                        description='The maximum amount of memory allowed. Set to 0 for unlimited.'
                     />
                 )}
             </form.AppField>
-            <form.AppField name={'swap'} validators={{ onChange: requiredNumber('A swap limit must be provided.') }}>
+            <form.AppField name='swap' validators={{ onChange: requiredNumber('A swap limit must be provided.') }}>
                 {(field) => (
                     <field.NumberField
-                        id={'swap'}
-                        label={'Swap (MiB)'}
+                        id='swap'
+                        label='Swap (MiB)'
                         min={-1}
-                        description={'Set to 0 to disable swap, or -1 to allow unlimited swap.'}
+                        description='Set to 0 to disable swap, or -1 to allow unlimited swap.'
                     />
                 )}
             </form.AppField>
-            <form.AppField name={'disk'} validators={{ onChange: requiredNumber('A disk limit must be provided.') }}>
+            <form.AppField name='disk' validators={{ onChange: requiredNumber('A disk limit must be provided.') }}>
                 {(field) => (
                     <field.NumberField
-                        id={'disk'}
-                        label={'Disk Space (MiB)'}
+                        id='disk'
+                        label='Disk Space (MiB)'
                         min={0}
-                        description={'Set to 0 to allow unlimited disk usage.'}
+                        description='Set to 0 to allow unlimited disk usage.'
                     />
                 )}
             </form.AppField>
             <form.AppField
-                name={'io'}
+                name='io'
                 validators={{
                     onChange: requiredNumber('A block IO weight must be provided.', (value) =>
                         value >= 10 && value <= 1000 ? undefined : 'Block IO weight must be between 10 and 1000.'
@@ -351,20 +348,20 @@ const ResourceManagementBox = ({ form }: { form: ServerForm }) => (
             >
                 {(field) => (
                     <field.NumberField
-                        id={'io'}
-                        label={'Block IO Weight'}
+                        id='io'
+                        label='Block IO Weight'
                         min={10}
                         max={1000}
-                        description={'Advanced: IO performance relative to other containers (10 to 1000).'}
+                        description='Advanced: IO performance relative to other containers (10 to 1000).'
                     />
                 )}
             </form.AppField>
         </div>
-        <div className={'mt-6'}>
-            <form.AppField name={'enableOomKiller'}>
+        <div className='mt-6'>
+            <form.AppField name='enableOomKiller'>
                 {(field) => (
                     <field.SwitchField
-                        label={'Enable OOM Killer'}
+                        label='Enable OOM Killer'
                         description={
                             'Terminates the server if it breaches its memory limits. Enabling the OOM killer may ' +
                             'cause server processes to exit unexpectedly.'
@@ -390,30 +387,31 @@ const EggConfigurationBox = ({
     const eggId = useStore(form.store, (state) => Number(state.values.eggId ?? 0));
 
     return (
-        <TitledGreyBox title={'Egg Configuration'}>
-            <div className={'relative space-y-6'}>
-                {loading && <Spinner size={'small'} centered />}
+        <TitledGreyBox title='Egg Configuration'>
+            <div className='relative space-y-6'>
+                {loading && <Spinner size='small' centered />}
                 <div>
-                    <Label htmlFor={'eggId'}>Egg</Label>
+                    <Label htmlFor='eggId'>Egg</Label>
                     <Select
-                        id={'eggId'}
+                        id='eggId'
                         value={eggId}
-                        placeholder={'Select an egg…'}
+                        placeholder='Select an egg…'
                         options={eggs.map((egg) => ({ value: egg.attributes.id, label: egg.attributes.name }))}
                         onChange={(value) => {
                             const nextEggId = Number(value);
+
                             form.setFieldValue('eggId', nextEggId);
                             loadEgg(nextEggId);
                         }}
                     />
-                    <p className={'input-help'}>Select the egg that will define how this server should operate.</p>
+                    <p className='input-help'>Select the egg that will define how this server should operate.</p>
                 </div>
                 <div>
-                    <form.AppField name={'skipScripts'}>
+                    <form.AppField name='skipScripts'>
                         {(field) => (
                             <field.SwitchField
-                                label={'Skip Egg Install Script'}
-                                description={'Skip the egg install script during installation if one is attached.'}
+                                label='Skip Egg Install Script'
+                                description='Skip the egg install script during installation if one is attached.'
                             />
                         )}
                     </form.AppField>
@@ -429,12 +427,12 @@ const DockerImageBox = ({ form, egg }: { form: ServerForm; egg: EggForServer | n
     const isCustom = !images.some(([, value]) => value === image);
 
     return (
-        <TitledGreyBox title={'Docker Configuration'}>
-            <div className={'space-y-4'}>
+        <TitledGreyBox title='Docker Configuration'>
+            <div className='space-y-4'>
                 <div>
-                    <Label htmlFor={'image'}>Docker Image</Label>
+                    <Label htmlFor='image'>Docker Image</Label>
                     <Select
-                        id={'image'}
+                        id='image'
                         value={isCustom ? 'custom' : image}
                         disabled={!egg}
                         onChange={(value) => form.setFieldValue('image', value === 'custom' ? '' : String(value))}
@@ -446,7 +444,7 @@ const DockerImageBox = ({ form, egg }: { form: ServerForm; egg: EggForServer | n
                 </div>
                 {(isCustom || images.length === 0) && (
                     <form.AppField
-                        name={'image'}
+                        name='image'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'A Docker image must be provided.',
@@ -454,11 +452,11 @@ const DockerImageBox = ({ form, egg }: { form: ServerForm; egg: EggForServer | n
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'customImage'}
-                                label={'Custom Image'}
-                                placeholder={'Or enter a custom image…'}
-                                description={'The default Docker image used to run this server.'}
+                                type='text'
+                                id='customImage'
+                                label='Custom Image'
+                                placeholder='Or enter a custom image…'
+                                description='The default Docker image used to run this server.'
                             />
                         )}
                     </form.AppField>
@@ -472,28 +470,26 @@ const StartupBox = ({ form, egg }: { form: ServerForm; egg: EggForServer | null 
     const variables = relationshipData(egg?.attributes.relationships?.variables);
 
     return (
-        <TitledGreyBox title={'Startup Configuration'}>
+        <TitledGreyBox title='Startup Configuration'>
             <form.AppField
-                name={'startup'}
+                name='startup'
                 validators={{
                     onChange: ({ value }) => (value.length >= 1 ? undefined : 'A startup command must be provided.'),
                 }}
             >
                 {(field) => (
                     <field.TextField
-                        type={'text'}
-                        id={'startup'}
-                        label={'Startup Command'}
-                        description={
-                            'The following substitutes are available: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.'
-                        }
+                        type='text'
+                        id='startup'
+                        label='Startup Command'
+                        description='The following substitutes are available: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.'
                     />
                 )}
             </form.AppField>
             {variables.length > 0 && (
-                <div className={'mt-6'}>
-                    <p className={'text-sm uppercase text-muted-foreground mb-4'}>Service Variables</p>
-                    <div className={'grid grid-cols-1 md:grid-cols-2 gap-6'}>
+                <div className='mt-6'>
+                    <p className='text-sm uppercase text-muted-foreground mb-4'>Service Variables</p>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         {variables.map(({ attributes }) => (
                             <form.AppField key={attributes.id} name={`environment.${attributes.env_variable}`}>
                                 {(field) => (
@@ -526,10 +522,12 @@ const EggSection = ({ form, eggs }: { form: ServerForm; eggs: AdminEggListItem[]
             form.setFieldValue('startup', '');
             form.setFieldValue('image', '');
             form.setFieldValue('environment', {});
+
             return;
         }
 
         const nextEgg = await fetchEgg(nextEggId);
+
         if (!nextEgg || eggLoad !== latestEggLoad.current) {
             return;
         }
@@ -537,18 +535,21 @@ const EggSection = ({ form, eggs }: { form: ServerForm; eggs: AdminEggListItem[]
         form.setFieldValue('startup', nextEgg.attributes.startup);
 
         const images = Object.values(nextEgg.attributes.docker_images);
+
         form.setFieldValue('image', images.length > 0 ? images[0] : '');
 
         const environment: Record<string, string> = {};
-        relationshipData(nextEgg.attributes.relationships?.variables).forEach(({ attributes }) => {
+
+        for (const { attributes } of relationshipData(nextEgg.attributes.relationships?.variables)) {
             environment[attributes.env_variable] = attributes.default_value;
-        });
+        }
+
         form.setFieldValue('environment', environment);
     };
 
     return (
         <>
-            <div className={'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
                 <EggConfigurationBox
                     form={form}
                     eggs={eggs}
@@ -560,6 +561,37 @@ const EggSection = ({ form, eggs }: { form: ServerForm; eggs: AdminEggListItem[]
             <StartupBox form={form} egg={egg} />
         </>
     );
+};
+
+const NoNodesAlert = () => (
+    <Alert type='warning' className='text-sm'>
+        <span>
+            You must have at least one node configured before you can add a server to this panel.{' '}
+            <Link to='/panel/nodes' className='font-medium underline'>
+                Manage Nodes
+            </Link>
+        </span>
+    </Alert>
+);
+
+const CreateServerBody = ({
+    loading,
+    hasNodes,
+    children,
+}: {
+    loading: boolean;
+    hasNodes: boolean;
+    children: ReactNode;
+}) => {
+    if (loading) {
+        return <Spinner size='large' centered />;
+    }
+
+    if (!hasNodes) {
+        return <NoNodesAlert />;
+    }
+
+    return children;
 };
 
 export default function CreateServerForm() {
@@ -580,7 +612,8 @@ export default function CreateServerForm() {
                 const server = await createServer.mutateAsync(
                     createAdminServerInput(createServerBodyFromFormValues(createServerValues(value)))
                 );
-                navigate({ to: '/panel/servers/$id', params: { id: server.attributes.id } });
+
+                void navigate({ to: '/panel/servers/$id', params: { id: server.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -589,44 +622,33 @@ export default function CreateServerForm() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Create Server'}
-            heading={'Create Server'}
-            description={'Create a game server on one of your nodes.'}
+            title='Admin · Create Server'
+            heading='Create Server'
+            description='Create a game server on one of your nodes.'
         >
             <Link
-                to={'/panel/servers'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                to='/panel/servers'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Servers
             </Link>
-            {loading ? (
-                <Spinner size={'large'} centered />
-            ) : !hasNodes ? (
-                <Alert type={'warning'} className={'text-sm'}>
-                    <span>
-                        You must have at least one node configured before you can add a server to this panel.{' '}
-                        <Link to={'/panel/nodes'} className={'font-medium underline'}>
-                            Manage Nodes
-                        </Link>
-                    </span>
-                </Alert>
-            ) : (
+            <CreateServerBody loading={loading} hasNodes={hasNodes}>
                 <Form form={form}>
-                    <div className={'space-y-6'}>
+                    <div className='space-y-6'>
                         <CoreDetailsBox form={form} users={users} />
                         <AllocationBox form={form} locations={locations} />
                         <FeatureLimitsBox form={form} />
                         <ResourceManagementBox form={form} />
                         <EggSection form={form} eggs={eggs?.data ?? []} />
-                        <div className={'flex justify-end'}>
+                        <div className='flex justify-end'>
                             <form.AppForm>
                                 <form.SubmitButton>Create Server</form.SubmitButton>
                             </form.AppForm>
                         </div>
                     </div>
                 </Form>
-            )}
+            </CreateServerBody>
         </AdminContentBlock>
     );
 }

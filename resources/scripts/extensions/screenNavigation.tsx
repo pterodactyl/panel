@@ -21,6 +21,7 @@ type Screen = ExtensionScreenRegistration;
 /** Only server-area screens see the current server. */
 function useAreaServer(screen: Screen) {
     const id = useServerRouteId();
+
     return useServerQuery(screen.area === 'server' ? (id ?? '') : '').data;
 }
 
@@ -29,6 +30,7 @@ function useScreenContext(screen: Screen): ScreenContext {
     const server = useAreaServer(screen);
     const resource = useCurrentResource() ?? undefined;
     const config = getExtensionConfig(screen.extensionId);
+
     return useMemo(() => ({ user, server, resource, config }), [user, server, resource, config]);
 }
 
@@ -63,9 +65,18 @@ function ConditionalScreen({
     const visible = useExtensionRegistry(() => getScreenOptions(extensionId, id)?.visible);
     const failed = useExtensionRegistry(() => getExtensionLoadState(extensionId)?.status === 'failed');
 
-    if (!matchesScreenCondition(when, server)) return hidden;
-    if (!when?.runtime) return children;
-    if (!visible) return failed ? hidden : pending;
+    if (!matchesScreenCondition(when, server)) {
+        return hidden;
+    }
+
+    if (!when?.runtime) {
+        return children;
+    }
+
+    if (!visible) {
+        return failed ? hidden : pending;
+    }
+
     return (
         <ExtensionMount
             extensionId={extensionId}
@@ -105,7 +116,7 @@ export function ScreenGate({
 const BADGE_MAX_LENGTH = 32;
 
 function Badge({ children }: { children: string }) {
-    return <span className={'rounded bg-muted px-1 text-xs text-muted-foreground'}>{children}</span>;
+    return <span className='rounded bg-muted px-1 text-xs text-muted-foreground'>{children}</span>;
 }
 
 function LiveBadge({
@@ -118,8 +129,13 @@ function LiveBadge({
     fallback: ReactNode;
 }) {
     const value = badge(useScreenContext(screen));
-    if (value === undefined) return fallback;
+
+    if (value === undefined) {
+        return fallback;
+    }
+
     const text = value === null ? '' : String(value).slice(0, BADGE_MAX_LENGTH);
+
     return text ? <Badge>{text}</Badge> : null;
 }
 
@@ -127,7 +143,11 @@ function RegisteredBadge({ screen, fallback }: { screen: Screen; fallback: React
     const { extensionId, id } = screen;
     const pathname = useLocation({ select: (location) => location.pathname });
     const badge = useExtensionRegistry(() => getScreenOptions(extensionId, id)?.badge);
-    if (!badge) return fallback;
+
+    if (!badge) {
+        return fallback;
+    }
+
     return (
         <ExtensionMount
             extensionId={extensionId}
@@ -144,5 +164,6 @@ function RegisteredBadge({ screen, fallback }: { screen: Screen; fallback: React
 /** The extension's live badge once it answers, else the manifest's. */
 export function ScreenBadge({ screen, badge }: { screen?: Screen; badge?: string }) {
     const fallback = badge ? <Badge>{badge}</Badge> : null;
+
     return screen ? <RegisteredBadge screen={screen} fallback={fallback} /> : fallback;
 }

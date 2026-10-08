@@ -15,6 +15,7 @@ afterEach(() => {
 });
 beforeEach(() => {
     const portal = document.createElement('div');
+
     portal.id = 'modal-portal';
     document.body.append(portal);
     clipboard.copy.mockReset();
@@ -24,7 +25,7 @@ beforeEach(() => {
 describe('CopyOnClick', () => {
     it('does not echo the copied value by default', async () => {
         render(
-            <CopyOnClick text={'ptlc_secret'}>
+            <CopyOnClick text='ptlc_secret'>
                 <code>ptlc_secret</code>
             </CopyOnClick>
         );
@@ -37,7 +38,7 @@ describe('CopyOnClick', () => {
 
     it('echoes the value only when asked to', async () => {
         render(
-            <CopyOnClick text={'node-1'} showInNotification>
+            <CopyOnClick text='node-1' showInNotification>
                 <code>node-1</code>
             </CopyOnClick>
         );
@@ -50,7 +51,7 @@ describe('CopyOnClick', () => {
     it('reports a failed copy', async () => {
         clipboard.copy.mockResolvedValue(false);
         render(
-            <CopyOnClick text={'value'}>
+            <CopyOnClick text='value'>
                 <span>value</span>
             </CopyOnClick>
         );
@@ -62,7 +63,7 @@ describe('CopyOnClick', () => {
 
     it('makes non-interactive children focusable and copies on Enter and Space', async () => {
         render(
-            <CopyOnClick text={'uuid'}>
+            <CopyOnClick text='uuid'>
                 <code>uuid</code>
             </CopyOnClick>
         );
@@ -78,8 +79,8 @@ describe('CopyOnClick', () => {
 
     it('leaves interactive children with their native role', async () => {
         render(
-            <CopyOnClick text={'sftp://example'}>
-                <TextInput aria-label={'SFTP address'} readOnly value={'sftp://example'} />
+            <CopyOnClick text='sftp://example'>
+                <TextInput aria-label='SFTP address' readOnly value='sftp://example' />
             </CopyOnClick>
         );
         const input = screen.getByRole('textbox', { name: 'SFTP address' });

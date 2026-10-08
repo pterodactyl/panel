@@ -10,10 +10,11 @@ afterEach(cleanup);
 describe('Button', () => {
     it('defaults to a non-submitting button', () => {
         const onSubmit = vi.fn((event: FormEvent) => event.preventDefault());
+
         render(
             <form onSubmit={onSubmit}>
                 <Button.Text onClick={vi.fn()}>Cancel</Button.Text>
-                <Button type={'submit'}>Save</Button>
+                <Button type='submit'>Save</Button>
             </form>
         );
 
@@ -27,6 +28,7 @@ describe('Button', () => {
 
     it('disables itself and reports busy while loading', () => {
         const onClick = vi.fn();
+
         render(
             <Button isLoading onClick={onClick}>
                 Rotate
@@ -34,6 +36,7 @@ describe('Button', () => {
         );
 
         const button = screen.getByRole('button', { name: 'Rotate' });
+
         expect(button).toBeDisabled();
         expect(button).toHaveAttribute('aria-busy', 'true');
         expect(button.querySelector('div')).toBeNull();
@@ -46,6 +49,7 @@ describe('Button', () => {
         render(<Button>Idle</Button>);
 
         const button = screen.getByRole('button', { name: 'Idle' });
+
         expect(button).toBeEnabled();
         expect(button).not.toHaveAttribute('aria-busy');
     });

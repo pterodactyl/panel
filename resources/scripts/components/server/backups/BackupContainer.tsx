@@ -23,6 +23,18 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
 
+const backupUsage = (limit: number, count: number, hasBackups: boolean, canCreate: boolean): string | null => {
+    if (limit === 0 && hasBackups) {
+        return 'Backups cannot be created for this server because the backup limit is set to 0.';
+    }
+
+    if (canCreate && limit > 0 && count > 0) {
+        return `${count} of ${limit} backups have been created for this server.`;
+    }
+
+    return null;
+};
+
 export default function BackupContainer() {
     const navigate = useNavigate();
     const { id } = useParams({ from: '/authenticated/server/$id' });
@@ -40,9 +52,12 @@ export default function BackupContainer() {
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
-            if (next.pageIndex === pagination.pageIndex) return;
 
-            navigate({
+            if (next.pageIndex === pagination.pageIndex) {
+                return;
+            }
+
+            void navigate({
                 to: '/server/$id/backups',
                 params: { id },
                 search: getPageSearch(next.pageIndex + 1),
@@ -65,8 +80,10 @@ export default function BackupContainer() {
 
     useWebsocketEvent(SocketEvent.BACKUP_COMPLETED, (data) => {
         const payload = parseBackupCompletedPayload(data);
+
         if (!payload) {
             console.warn('Ignoring a malformed backup completion event.', data);
+
             return;
         }
 
@@ -82,20 +99,15 @@ export default function BackupContainer() {
     }
 
     if (!backups) {
-        return <Spinner size={'large'} centered />;
+        return <Spinner size='large' centered />;
     }
 
     const backupCount = backups.meta.backup_count;
     const canAddBackup = canCreate && backupLimit > backupCount;
-    const usage =
-        backupLimit === 0 && backups.data.length > 0
-            ? 'Backups cannot be created for this server because the backup limit is set to 0.'
-            : canCreate && backupLimit > 0 && backupCount > 0
-              ? `${backupCount} of ${backupLimit} backups have been created for this server.`
-              : null;
+    const usage = backupUsage(backupLimit, backupCount, backups.data.length > 0, canCreate);
 
     return (
-        <ServerContentBlock title={'Backups'}>
+        <ServerContentBlock title='Backups'>
             {(usage || canAddBackup) && (
                 <ListToolbar summary={usage}>{canAddBackup && <CreateBackupButton />}</ListToolbar>
             )}
@@ -105,7 +117,7 @@ export default function BackupContainer() {
                     page > 1 ? (
                         <Empty className={emptyCompactClass}>
                             <EmptyHeader>
-                                <EmptyMedia variant={'icon'}>
+                                <EmptyMedia variant='icon'>
                                     <Archive />
                                 </EmptyMedia>
                                 <EmptyTitle>No backups on this page</EmptyTitle>
@@ -120,7 +132,7 @@ export default function BackupContainer() {
                     ) : (
                         <Empty className={emptyCompactClass}>
                             <EmptyHeader>
-                                <EmptyMedia variant={'icon'}>
+                                <EmptyMedia variant='icon'>
                                     <Archive />
                                 </EmptyMedia>
                                 <EmptyTitle>No backups</EmptyTitle>
@@ -143,7 +155,7 @@ export default function BackupContainer() {
                 table={table}
                 total={backups.meta.pagination.total}
                 count={backups.meta.pagination.count}
-                itemLabel={'backups'}
+                itemLabel='backups'
             />
         </ServerContentBlock>
     );

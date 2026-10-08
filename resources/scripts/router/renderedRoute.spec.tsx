@@ -18,7 +18,7 @@ function Layout() {
 
     return (
         <>
-            <output data-testid={'console'}>{isConsole ? 'shown' : 'hidden'}</output>
+            <output data-testid='console'>{isConsole ? 'shown' : 'hidden'}</output>
             <Outlet />
         </>
     );
@@ -49,6 +49,7 @@ function mount(initialPath: string) {
         // The page being left stays on screen while the next one loads, as in the panel.
         defaultPendingMs: 60_000,
     });
+
     render(<RouterProvider router={router} />);
 
     return { router, finishLoading };
@@ -56,6 +57,7 @@ function mount(initialPath: string) {
 
 it('follows the page the outlet renders rather than the location while a page loads', async () => {
     const { router, finishLoading } = mount('/server/abc');
+
     expect(await screen.findByText('shown')).toBeVisible();
 
     // Pushed through the history: `navigate` is typed against the panel's own routes.

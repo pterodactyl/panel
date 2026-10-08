@@ -40,28 +40,37 @@ export interface SdkServerQueryOptions<TData> {
 export function serverQueryOptions(id: string): SdkServerQueryOptions<ClientGetServerResponse> {
     return publicQueryOptions(panelServerOptions(id));
 }
+
 export function serverFilesQueryOptions(id: string, directory: string): SdkServerQueryOptions<SdkServerFiles> {
     return publicQueryOptions(panelFilesOptions(id, directory));
 }
+
 export function serverFileContentQueryOptions(id: string, file: string): SdkServerQueryOptions<string> {
     return publicQueryOptions(panelFileContentOptions(id, file));
 }
+
 export function serverStartupQueryOptions(id: string): SdkServerQueryOptions<SdkServerStartup> {
     const options = panelStartupOptions(id);
+
     return publicQueryOptions(options, options.retry);
 }
+
 export function serverBackupsQueryOptions(id: string, page = 1): SdkServerQueryOptions<SdkServerBackups> {
     return publicQueryOptions(panelBackupsOptions(id, page));
 }
+
 /** Power state and resource usage, in the cache entry the dashboard's server cards poll. */
 export function serverResourcesQueryOptions(id: string): SdkServerQueryOptions<SdkServerResources> {
     const options = panelResourcesOptions(id);
+
     return publicQueryOptions(options, options.retry);
 }
+
 /** Recent console output, oldest first; `lines` is clamped to 1-100 and needs `websocket.connect`. */
 export function serverLogsQueryOptions(id: string, lines?: number): SdkServerQueryOptions<SdkServerLogs> {
     return publicQueryOptions(panelLogsOptions(id, lines));
 }
+
 export function useServerFiles<TData = SdkServerFiles>(
     id: string,
     directory: string,
@@ -69,15 +78,18 @@ export function useServerFiles<TData = SdkServerFiles>(
 ): UseQueryResult<TData, unknown> {
     return useQuery({ ...serverFilesQueryOptions(id, directory), enabled: !!id, select });
 }
+
 export function useServerFileContent(id: string, file: string): UseQueryResult<string, unknown> {
     return useQuery({ ...serverFileContentQueryOptions(id, file), enabled: !!id && !!file });
 }
+
 export function useServerStartup<TData = SdkServerStartup>(
     id: string,
     select?: (data: SdkServerStartup) => TData
 ): UseQueryResult<TData, unknown> {
     return useQuery({ ...serverStartupQueryOptions(id), enabled: !!id, select });
 }
+
 export function useServerBackups<TData = SdkServerBackups>(
     id: string,
     page = 1,
@@ -85,6 +97,7 @@ export function useServerBackups<TData = SdkServerBackups>(
 ): UseQueryResult<TData, unknown> {
     return useQuery({ ...serverBackupsQueryOptions(id, page), enabled: !!id, select });
 }
+
 /** Polls like the dashboard. Inside the server area, the "stats" and "status" websocket events are live. */
 export function useServerResources<TData = SdkServerResources>(
     id: string,

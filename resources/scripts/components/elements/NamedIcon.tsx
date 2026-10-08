@@ -39,20 +39,27 @@ function loadCatalog(): Promise<IconCatalog | null> {
         .catch(() => null)
         .then((loaded) => {
             catalog = loaded;
-            listeners.forEach((listener) => listener());
+            for (const listener of listeners) {
+                listener();
+            }
+
             return loaded;
         });
+
     return pending;
 }
 
 function subscribeCatalog(listener: () => void): () => void {
     listeners.add(listener);
     void loadCatalog();
+
     return () => {
         listeners.delete(listener);
     };
 }
+
 const subscribeNothing = () => () => {};
+
 const getCatalog = () => catalog;
 
 /** Every icon name this panel can render. */
@@ -64,7 +71,11 @@ export async function loadIconNames(): Promise<readonly string[]> {
 export function useNamedIcon(name: string): LucideIcon | null | undefined {
     const immediate = bundled.get(name);
     const loaded = useSyncExternalStore(immediate ? subscribeNothing : subscribeCatalog, getCatalog);
-    if (immediate) return immediate;
+
+    if (immediate) {
+        return immediate;
+    }
+
     return loaded === undefined ? undefined : (loaded?.resolveIcon(name) ?? null);
 }
 
@@ -77,9 +88,12 @@ export interface NamedIconProps extends Omit<LucideProps, 'ref' | 'name'> {
 
 export default function NamedIcon({ name, fallback = Puzzle, className, size = '1em', ...rest }: NamedIconProps) {
     const Resolved = useNamedIcon(name);
+
     if (Resolved === undefined) {
         return <span aria-hidden className={cn('inline-block', className)} style={{ width: size, height: size }} />;
     }
+
     const Component = Resolved ?? fallback;
+
     return <Component className={cn('inline-block', className)} size={size} {...rest} />;
 }

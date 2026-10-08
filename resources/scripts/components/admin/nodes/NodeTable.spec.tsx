@@ -32,7 +32,7 @@ const HeaderTable = ({
         onSortingChange: (updater) => onSortingChange(updater instanceof Function ? updater(sorting) : updater),
     });
 
-    return <DataTable table={table} emptyState={'No nodes'} />;
+    return <DataTable table={table} emptyState='No nodes' />;
 };
 
 describe('NodeTable', () => {
@@ -59,6 +59,7 @@ describe('NodeTable', () => {
     it('sorts memory and disk from the merged resources header', async () => {
         const user = userEvent.setup();
         const onSortingChange = vi.fn();
+
         render(<HeaderTable sorting={[{ id: 'memory', desc: true }]} onSortingChange={onSortingChange} />);
 
         expect(screen.queryByRole('columnheader', { name: 'Memory' })).not.toBeInTheDocument();

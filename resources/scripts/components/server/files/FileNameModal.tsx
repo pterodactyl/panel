@@ -28,19 +28,19 @@ export default function FileNameModal({ onFileNamed, onClose, ...props }: Props)
         >
             <Form form={form}>
                 <form.AppField
-                    name={'fileName'}
+                    name='fileName'
                     validators={{ onChange: ({ value }) => (value.length >= 1 ? undefined : 'Required') }}
                 >
                     {(field) => (
                         <field.TextField
-                            id={'fileName'}
-                            label={'File Name'}
-                            description={'Enter the name that this file should be saved as.'}
+                            id='fileName'
+                            label='File Name'
+                            description='Enter the name that this file should be saved as.'
                             autoFocus
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6 text-right'}>
+                <div className='mt-6 text-right'>
                     <form.AppForm>
                         <form.SubmitButton>Create File</form.SubmitButton>
                     </form.AppForm>

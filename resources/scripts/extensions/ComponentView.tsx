@@ -6,6 +6,7 @@ import type { ComponentName, ReplacementProps } from './componentTypes';
 
 function SuspendedView({ onSuspend }: { onSuspend: () => void }) {
     useLayoutEffect(onSuspend, [onSuspend]);
+
     return null;
 }
 
@@ -33,9 +34,17 @@ export default function ComponentView<TName extends ComponentName>({
         setSuspended(true);
     }, [extensionId, context]);
     const Default = props.Default;
-    if (decision.status === 'loading') return loading;
-    if (decision.status === 'default' || suspended) return <Default />;
+
+    if (decision.status === 'loading') {
+        return loading;
+    }
+
+    if (decision.status === 'default' || suspended) {
+        return <Default />;
+    }
+
     const Component = decision.component;
+
     return (
         <ExtensionMount
             extensionId={extensionId}

@@ -61,10 +61,11 @@ vi.mock('ghostty-web', () => ({
             if (this.scrollbackLength > this.scrollbackLimit) {
                 this.scrollbackLength -= this.scrollbackLimit / 2;
             }
+
             this.viewportY = 0;
         }
         writeln(data: string) {
-            this.write(data + '\r\n');
+            this.write(`${data}\r\n`);
         }
     },
 }));
@@ -81,7 +82,7 @@ function Harness() {
 
     return (
         <div ref={ref} data-ready={terminalReady} data-error={terminalError?.message ?? ''}>
-            <button type={'button'} onClick={retry}>
+            <button type='button' onClick={retry}>
                 Retry
             </button>
         </div>
@@ -125,6 +126,7 @@ describe('useTerminal', () => {
         await waitFor(() => expect(terminals).toHaveLength(1));
 
         const theme = terminals[0].options.theme ?? {};
+
         expect(theme.foreground).toBe('#cccccc');
         expect(theme.background).toBe('#1e2430');
         expect(Object.keys(theme)).toHaveLength(22);
@@ -132,9 +134,11 @@ describe('useTerminal', () => {
 
     it('keeps a scrolled-up viewport on the same lines when new output arrives', async () => {
         const { container } = render(<Harness />);
+
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
 
         const term = terminals[0];
+
         term.scrollbackLength = 100;
         term.viewportY = 20;
         term.writeln('one');
@@ -145,9 +149,11 @@ describe('useTerminal', () => {
 
     it('keeps a scrolled-up viewport on the same lines when old history is trimmed', async () => {
         const { container } = render(<Harness />);
+
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
 
         const term = terminals[0];
+
         term.scrollbackLimit = 100;
         term.scrollbackLength = 100;
         term.viewportY = 20;
@@ -159,6 +165,7 @@ describe('useTerminal', () => {
 
     it('renders a fractional scroll position as whole lines', async () => {
         const { container } = render(<Harness />);
+
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
 
         const buffer: IRenderable = {
@@ -168,6 +175,7 @@ describe('useTerminal', () => {
             isRowDirty: () => false,
             clearDirty: () => {},
         };
+
         terminals[0].renderer.render(buffer, false, 4.29);
 
         expect(terminals[0].renderedViewportY).toBe(4);
@@ -175,9 +183,11 @@ describe('useTerminal', () => {
 
     it('follows new output when the viewport is at the bottom', async () => {
         const { container } = render(<Harness />);
+
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
 
         const term = terminals[0];
+
         term.scrollbackLength = 100;
         term.writeln('one');
 
@@ -186,6 +196,7 @@ describe('useTerminal', () => {
 
     it('rebuilds the terminal when a theme changes the palette, and only then', async () => {
         const { container } = render(<Harness />);
+
         await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
 
         notifyThemeChange();

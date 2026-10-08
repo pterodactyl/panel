@@ -1,6 +1,6 @@
 import { createContext, use, useCallback, useMemo, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
+import { getCoreRowModel, useReactTable, type ColumnDef, type Table } from '@tanstack/react-table';
 import { useAppForm, Form } from '@/components/form';
 import { Network, Trash2 } from 'lucide-react';
 import {
@@ -43,6 +43,7 @@ const ghostDangerClass = 'rounded-sm text-muted-foreground transition-colors hov
 
 const unassignedAllocationIds = (items: AdminAllocation[]) => {
     const ids: number[] = [];
+
     for (const allocation of items) {
         if (!allocation.attributes.assigned) {
             ids.push(allocation.attributes.id);
@@ -57,11 +58,12 @@ const groupAllocationsByIp = (items: AdminAllocation[]) => {
 
     for (const allocation of items) {
         const list = map.get(allocation.attributes.ip) ?? [];
+
         list.push(allocation);
         map.set(allocation.attributes.ip, list);
     }
 
-    return Array.from(map.entries());
+    return [...map.entries()];
 };
 
 const paginationColumns = [
@@ -80,6 +82,7 @@ const AllocationTableContext = createContext<AllocationTableContextValue | null>
 
 const useAllocationTable = (): AllocationTableContextValue => {
     const context = use(AllocationTableContext);
+
     if (!context) {
         throw new Error('An allocation table cell was rendered outside of its allocation tab.');
     }
@@ -124,13 +127,18 @@ const AllocationAliasCell = ({ allocation }: { allocation: AdminAllocation }) =>
     const updateAlias = useUpdateAdminNodeAllocationAlias();
 
     const saveAlias = () => {
-        if (draft === null) return;
+        if (draft === null) {
+            return;
+        }
+
         if (draft === savedAlias) {
             setDraft(null);
+
             return;
         }
 
         const alias = draft;
+
         updateAlias.mutate(updateAdminNodeAllocationAliasInput(nodeId, allocation.attributes.id, alias), {
             onSuccess: () => setDraft((current) => (current === alias ? null : current)),
         });
@@ -138,15 +146,13 @@ const AllocationAliasCell = ({ allocation }: { allocation: AdminAllocation }) =>
 
     return (
         <TextInput
-            type={'text'}
+            type='text'
             value={draft ?? savedAlias}
-            placeholder={'Add alias'}
+            placeholder='Add alias'
             aria-label={`Alias for ${allocation.attributes.ip}:${allocation.attributes.port}`}
             onChange={(e) => setDraft(e.currentTarget.value)}
             onBlur={saveAlias}
-            className={
-                'h-8 border border-transparent bg-transparent px-2 py-1 placeholder:text-muted-foreground focus:bg-input'
-            }
+            className='h-8 border border-transparent bg-transparent px-2 py-1 placeholder:text-muted-foreground focus:bg-input'
         />
     );
 };
@@ -156,25 +162,21 @@ const AllocationServerCell = ({ allocation }: { allocation: AdminAllocation }) =
 
     if (!assigned) {
         return (
-            <span
-                className={
-                    'inline-flex items-center rounded-sm border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'
-                }
-            >
+            <span className='inline-flex items-center rounded-sm border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
                 Unassigned
             </span>
         );
     }
 
     if (serverId === null) {
-        return <span className={'text-sm text-muted-foreground'}>Assigned</span>;
+        return <span className='text-sm text-muted-foreground'>Assigned</span>;
     }
 
     return (
         <Link
-            to={'/panel/servers/$id'}
+            to='/panel/servers/$id'
             params={{ id: serverId }}
-            className={'block truncate text-sm text-foreground transition-colors hover:text-accent'}
+            className='block truncate text-sm text-foreground transition-colors hover:text-accent'
         >
             {serverName ?? 'Assigned'}
         </Link>
@@ -193,8 +195,8 @@ const AllocationDeleteCell = ({ allocation }: { allocation: AdminAllocation }) =
     return (
         <RowActions>
             <Dialog.ConfirmTrigger
-                title={'Delete this allocation?'}
-                confirm={'Delete'}
+                title='Delete this allocation?'
+                confirm='Delete'
                 trigger={({ onClick }) => (
                     <DeleteAction aria-label={`Delete allocation ${address}`} onClick={onClick} />
                 )}
@@ -220,7 +222,7 @@ const allocationColumns = [
         id: 'port',
         header: 'Port',
         cell: ({ row }) => (
-            <span className={'font-mono text-sm tabular-nums text-foreground'}>{row.original.attributes.port}</span>
+            <span className='font-mono text-sm tabular-nums text-foreground'>{row.original.attributes.port}</span>
         ),
         meta: { headerClassName: 'w-24', cellClassName: 'w-24' },
     },
@@ -256,20 +258,20 @@ const AllocationGroupTable = ({ ip, allocations, isFetching, onDeleteBlock }: Al
     const unassignedCount = unassignedAllocationIds(allocations).length;
 
     return (
-        <section className={'pt-4'}>
-            <div className={'flex items-center justify-between gap-4 px-3 pb-2'}>
-                <div className={'flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5'}>
-                    <h3 className={'truncate font-mono text-sm font-medium text-foreground'}>{ip}</h3>
-                    <p className={'text-xs text-muted-foreground'}>
+        <section className='pt-4'>
+            <div className='flex items-center justify-between gap-4 px-3 pb-2'>
+                <div className='flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5'>
+                    <h3 className='truncate font-mono text-sm font-medium text-foreground'>{ip}</h3>
+                    <p className='text-xs text-muted-foreground'>
                         {countLabel(allocations.length, 'allocation')} · {unassignedCount} unassigned
                     </p>
                 </div>
                 <Dialog.ConfirmTrigger
-                    title={'Delete allocations for IP block?'}
-                    confirm={'Delete'}
+                    title='Delete allocations for IP block?'
+                    confirm='Delete'
                     trigger={({ onClick }) => (
                         <button
-                            type={'button'}
+                            type='button'
                             aria-label={`Delete IP block ${ip}`}
                             className={cn(
                                 'inline-flex shrink-0 items-center gap-1.5 px-2 py-1 text-xs font-medium',
@@ -293,11 +295,117 @@ const AllocationGroupTable = ({ ip, allocations, isFetching, onDeleteBlock }: Al
             <DataTable
                 table={table}
                 isFetching={isFetching}
-                className={'rounded-none border-0 bg-transparent'}
-                tableClassName={'table-fixed'}
-                emptyState={'No allocations for this address.'}
+                className='rounded-none border-0 bg-transparent'
+                tableClassName='table-fixed'
+                emptyState='No allocations for this address.'
             />
         </section>
+    );
+};
+
+interface ExistingAllocationsSummaryProps {
+    selectedCount: number;
+    total: number | undefined;
+    onBulkDelete: () => void;
+}
+
+const ExistingAllocationsSummary = ({ selectedCount, total, onBulkDelete }: ExistingAllocationsSummaryProps) => {
+    if (selectedCount > 0) {
+        return (
+            <div className='-my-1 flex items-center gap-3'>
+                <span className='text-xs text-muted-foreground'>{selectedCount} selected</span>
+                <Dialog.ConfirmTrigger
+                    title='Delete selected allocations?'
+                    confirm='Delete'
+                    trigger={({ onClick }) => (
+                        <Button size='xsmall' color='red' onClick={onClick}>
+                            Delete Selected
+                        </Button>
+                    )}
+                    onConfirmed={(_event, close) => {
+                        close();
+                        onBulkDelete();
+                    }}
+                >
+                    This will permanently delete the {selectedCount} selected allocation(s). This action cannot be
+                    undone.
+                </Dialog.ConfirmTrigger>
+            </div>
+        );
+    }
+
+    if (total === undefined) {
+        return null;
+    }
+
+    return <span className='text-xs text-muted-foreground'>{countLabel(total, 'allocation')}</span>;
+};
+
+type NodeAllocationsQuery = ReturnType<typeof useAdminNodeAllocations>;
+
+interface AllocationListProps {
+    query: NodeAllocationsQuery;
+    paginationTable: Table<AdminAllocation>;
+    showPagination: boolean;
+    onBlockDelete: (ip: string) => void;
+}
+
+const AllocationList = ({ query, paginationTable, showPagination, onBlockDelete }: AllocationListProps) => {
+    const { data: allocations, error, isFetching: loading, refetch } = query;
+    const grouped = useMemo(() => groupAllocationsByIp(allocations?.data ?? []), [allocations?.data]);
+
+    if (error && !loading) {
+        return (
+            <div className='space-y-4 p-3'>
+                <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
+                <Button.Text type='button' onClick={() => refetch()}>
+                    Retry
+                </Button.Text>
+            </div>
+        );
+    }
+
+    if (!allocations) {
+        return <Spinner size='large' centered />;
+    }
+
+    return (
+        <>
+            {grouped.length === 0 ? (
+                <Empty className={emptyCompactClass}>
+                    <EmptyHeader>
+                        <EmptyMedia variant='icon'>
+                            <Network />
+                        </EmptyMedia>
+                        <EmptyTitle>No allocations yet</EmptyTitle>
+                        <EmptyDescription>
+                            Assign IP addresses and ports with the form to make them available to servers.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
+            ) : (
+                <div className='divide-y divide-border'>
+                    {grouped.map(([ip, items]) => (
+                        <AllocationGroupTable
+                            key={ip}
+                            ip={ip}
+                            allocations={items}
+                            isFetching={loading}
+                            onDeleteBlock={onBlockDelete}
+                        />
+                    ))}
+                </div>
+            )}
+            {showPagination && (
+                <DataTablePagination
+                    table={paginationTable}
+                    total={allocations.meta.pagination.total}
+                    count={allocations.meta.pagination.count}
+                    itemLabel='allocations'
+                    className='mt-0 border-t border-border px-3 py-2'
+                />
+            )}
+        </>
     );
 };
 
@@ -312,7 +420,8 @@ export default function NodeAllocationTab() {
     const { mutate: bulkDeleteAllocations } = useBulkDeleteAdminNodeAllocations();
     const { mutate: ipBlockDeleteAllocations } = useDeleteAdminNodeIpBlockAllocations();
 
-    const { data: allocations, error, isFetching: loading, refetch } = useAdminNodeAllocations(attributes.id, page);
+    const query = useAdminNodeAllocations(attributes.id, page);
+    const allocations = query.data;
     const pagination = { pageIndex: Math.max(page - 1, 0), pageSize: allocations?.meta.pagination.per_page ?? 50 };
     const paginationData = useMemo(() => allocations?.data ?? [], [allocations?.data]);
     const paginationTable = useReactTable({
@@ -325,14 +434,16 @@ export default function NodeAllocationTab() {
         state: { pagination },
         onPaginationChange: (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
-            if (next.pageIndex !== pagination.pageIndex)
-                navigate({
+
+            if (next.pageIndex !== pagination.pageIndex) {
+                void navigate({
                     to: '/panel/nodes/$id/allocation',
                     params: { id: attributes.id },
                     search: getPageSearch(next.pageIndex + 1),
                     replace: true,
                     viewTransition: false,
                 });
+            }
         },
     });
 
@@ -349,7 +460,7 @@ export default function NodeAllocationTab() {
             try {
                 await createAllocations.mutateAsync(createAdminNodeAllocationsInput(attributes.id, payload));
                 createForm.reset();
-                navigate({
+                void navigate({
                     to: '/panel/nodes/$id/allocation',
                     params: { id: attributes.id },
                     search: {},
@@ -362,8 +473,6 @@ export default function NodeAllocationTab() {
         },
     });
 
-    const grouped = useMemo(() => groupAllocationsByIp(allocations?.data ?? []), [allocations?.data]);
-
     const toggle = useCallback(
         (id: number) =>
             setSelected((current) => (current.includes(id) ? current.filter((v) => v !== id) : [...current, id])),
@@ -372,15 +481,21 @@ export default function NodeAllocationTab() {
 
     const toggleGroup = useCallback((items: AdminAllocation[]) => {
         const unassignedIds = unassignedAllocationIds(items);
-        if (unassignedIds.length === 0) return;
+
+        if (unassignedIds.length === 0) {
+            return;
+        }
 
         setSelected((current) => {
             const currentSet = new Set(current);
             const allSelected = unassignedIds.every((id) => currentSet.has(id));
+
             if (allSelected) {
                 const unassignedSet = new Set(unassignedIds);
+
                 return current.filter((id) => !unassignedSet.has(id));
             }
+
             return [...current, ...unassignedIds.filter((id) => !currentSet.has(id))];
         });
     }, []);
@@ -426,96 +541,37 @@ export default function NodeAllocationTab() {
         [attributes.id, onDeleteSingle, selected, toggle, toggleGroup]
     );
 
-    const showPagination = !!allocations && (allocations.meta.pagination.total_pages > 1 || page > 1);
+    const showPagination = allocations !== undefined && (allocations.meta.pagination.total_pages > 1 || page > 1);
 
     return (
-        <div className={'grid grid-cols-1 items-start gap-6 lg:grid-cols-3'}>
+        <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-3'>
             <TitledGreyBox
-                className={'lg:col-span-2'}
-                contentClassName={'p-0'}
+                className='lg:col-span-2'
+                contentClassName='p-0'
                 title={
-                    <div className={'flex min-h-5 items-center justify-between gap-3'}>
+                    <div className='flex min-h-5 items-center justify-between gap-3'>
                         <h2 className={cardTitleClass}>Existing Allocations</h2>
-                        {selected.length > 0 ? (
-                            <div className={'-my-1 flex items-center gap-3'}>
-                                <span className={'text-xs text-muted-foreground'}>{selected.length} selected</span>
-                                <Dialog.ConfirmTrigger
-                                    title={'Delete selected allocations?'}
-                                    confirm={'Delete'}
-                                    trigger={({ onClick }) => (
-                                        <Button size={'xsmall'} color={'red'} onClick={onClick}>
-                                            Delete Selected
-                                        </Button>
-                                    )}
-                                    onConfirmed={(_event, close) => {
-                                        close();
-                                        onBulkDelete();
-                                    }}
-                                >
-                                    This will permanently delete the {selected.length} selected allocation(s). This
-                                    action cannot be undone.
-                                </Dialog.ConfirmTrigger>
-                            </div>
-                        ) : allocations ? (
-                            <span className={'text-xs text-muted-foreground'}>
-                                {countLabel(allocations.meta.pagination.total, 'allocation')}
-                            </span>
-                        ) : null}
+                        <ExistingAllocationsSummary
+                            selectedCount={selected.length}
+                            total={allocations?.meta.pagination.total}
+                            onBulkDelete={onBulkDelete}
+                        />
                     </div>
                 }
             >
-                {error && !loading ? (
-                    <div className={'space-y-4 p-3'}>
-                        <Alert type={'danger'}>{httpErrorToHuman(error)}</Alert>
-                        <Button.Text type={'button'} onClick={() => refetch()}>
-                            Retry
-                        </Button.Text>
-                    </div>
-                ) : !allocations ? (
-                    <Spinner size={'large'} centered />
-                ) : (
-                    <AllocationTableContext.Provider value={tableContext}>
-                        {grouped.length === 0 ? (
-                            <Empty className={emptyCompactClass}>
-                                <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
-                                        <Network />
-                                    </EmptyMedia>
-                                    <EmptyTitle>No allocations yet</EmptyTitle>
-                                    <EmptyDescription>
-                                        Assign IP addresses and ports with the form to make them available to servers.
-                                    </EmptyDescription>
-                                </EmptyHeader>
-                            </Empty>
-                        ) : (
-                            <div className={'divide-y divide-border'}>
-                                {grouped.map(([ip, items]) => (
-                                    <AllocationGroupTable
-                                        key={ip}
-                                        ip={ip}
-                                        allocations={items}
-                                        isFetching={loading}
-                                        onDeleteBlock={onBlockDelete}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                        {showPagination && (
-                            <DataTablePagination
-                                table={paginationTable}
-                                total={allocations.meta.pagination.total}
-                                count={allocations.meta.pagination.count}
-                                itemLabel={'allocations'}
-                                className={'mt-0 border-t border-border px-3 py-2'}
-                            />
-                        )}
-                    </AllocationTableContext.Provider>
-                )}
+                <AllocationTableContext.Provider value={tableContext}>
+                    <AllocationList
+                        query={query}
+                        paginationTable={paginationTable}
+                        showPagination={showPagination}
+                        onBlockDelete={onBlockDelete}
+                    />
+                </AllocationTableContext.Provider>
             </TitledGreyBox>
             <Form form={createForm}>
-                <TitledGreyBox title={'Assign New Allocations'} contentClassName={'space-y-6 px-3 pt-4'}>
+                <TitledGreyBox title='Assign New Allocations' contentClassName='space-y-6 px-3 pt-4'>
                     <createForm.AppField
-                        name={'ip'}
+                        name='ip'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'An IP address must be provided.',
@@ -523,25 +579,25 @@ export default function NodeAllocationTab() {
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'allocation_ip'}
-                                label={'IP Address'}
-                                description={'Enter the IP address to assign ports to.'}
+                                type='text'
+                                id='allocation_ip'
+                                label='IP Address'
+                                description='Enter the IP address to assign ports to.'
                             />
                         )}
                     </createForm.AppField>
-                    <createForm.AppField name={'alias'}>
+                    <createForm.AppField name='alias'>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'allocation_alias'}
-                                label={'IP Alias'}
-                                description={'Optional default alias for these allocations.'}
+                                type='text'
+                                id='allocation_alias'
+                                label='IP Alias'
+                                description='Optional default alias for these allocations.'
                             />
                         )}
                     </createForm.AppField>
                     <createForm.AppField
-                        name={'ports'}
+                        name='ports'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'At least one port must be provided.',
@@ -549,9 +605,9 @@ export default function NodeAllocationTab() {
                     >
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'allocation_ports'}
-                                label={'Ports'}
+                                type='text'
+                                id='allocation_ports'
+                                label='Ports'
                                 description={
                                     'Enter individual ports or port ranges (e.g. 25565-25570) separated by ' +
                                     'commas or spaces.'
@@ -559,7 +615,7 @@ export default function NodeAllocationTab() {
                             />
                         )}
                     </createForm.AppField>
-                    <div className={'flex justify-end'}>
+                    <div className='flex justify-end'>
                         <createForm.AppForm>
                             <createForm.SubmitButton>Create Allocations</createForm.SubmitButton>
                         </createForm.AppForm>

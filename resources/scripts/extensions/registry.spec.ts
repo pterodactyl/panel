@@ -16,6 +16,7 @@ describe('extensions/registry', () => {
 
     const registerSlot = (extensionId: string, name: RegistryModule.SlotName) => {
         const batch = registry.createExtensionRegistryBatch();
+
         registry.registerSlotComponent(extensionId, name, Component, batch);
         registry.commitExtensionRegistryBatch(extensionId, batch);
     };
@@ -31,6 +32,7 @@ describe('extensions/registry', () => {
 
     it('rejects unknown slot names loudly', () => {
         const batch = registry.createExtensionRegistryBatch();
+
         expect(() => registry.registerSlotComponent('ext', 'dashboard.typo' as never, Component, batch)).toThrow(
             /Unknown slot/
         );
@@ -88,6 +90,7 @@ describe('extensions/registry', () => {
             { id: 'demo', entry: '/demo.js', screens: [{ id: 'main', area: 'server', path: 'demo' }] },
         ]);
         const batch = registry.createExtensionRegistryBatch();
+
         registry.registerSlotComponent('demo', 'dashboard.before', Component, batch);
         expect(() => registry.registerScreen('demo', 'other', async () => ({ default: Component }), batch)).toThrow(
             'Undeclared'
@@ -105,8 +108,10 @@ describe('extensions/registry', () => {
         const unsubscribe = registry.subscribeExtensionRegistry(changed);
         const before = registry.getSlotComponents('dashboard.before');
         const after = registry.getSlotComponents('dashboard.after');
+
         expect(registry.getSlotComponents('dashboard.before')).toBe(before);
         const batch = registry.createExtensionRegistryBatch();
+
         registry.registerSlotComponent('demo', 'dashboard.before', Component, batch);
         registry.registerSlotComponent('demo', 'dashboard.before', Component, batch);
         expect(changed).not.toHaveBeenCalled();
@@ -126,6 +131,7 @@ describe('extensions/registry', () => {
             { id: 'demo', entry: '/demo.js', screens: [{ id: 'main', area: 'account', path: 'probe' }] },
         ]);
         const changed = vi.fn();
+
         registry.subscribeExtensionRegistry(changed);
         const batch = registry.createExtensionRegistryBatch();
         const column = {
@@ -136,6 +142,7 @@ describe('extensions/registry', () => {
             component: Component,
         };
         const before = registry.getExtensionTableColumns('admin.nodes');
+
         registry.registerExtensionTableColumn(column, batch);
         expect(() => registry.registerExtensionTableColumn(column, batch)).toThrow('Duplicate');
         expect(() => registry.commitExtensionRegistryBatch('demo', batch)).toThrow('Missing implementation');
@@ -170,9 +177,11 @@ describe('extensions/registry', () => {
 
     it('publishes stable diagnostics snapshots and restores state after a mount recovers', () => {
         const changed = vi.fn();
+
         registry.subscribeExtensionRegistry(changed);
         registry.setExtensionState({ id: 'demo', status: 'loaded' });
         const before = registry.getExtensionStates();
+
         expect(registry.getExtensionStates()).toBe(before);
         registry.reportExtensionError('demo', 'action', new Error('failed'));
         expect(before[0].status).toBe('loaded');
@@ -204,6 +213,7 @@ describe('extensions/registry', () => {
             },
         ]);
         const accepted = registry.getExtensionScreens('account');
+
         expect(accepted.map((screen) => screen.id)).toEqual(['main', 'late']);
         expect(registry.resolveScreenPath(accepted[0].path, accepted[0].nav?.params)).toBe('probe/two%20words');
         expect(registry.getExtensionStates().find((state) => state.id === 'bad')?.status).toBe('failed');
@@ -228,6 +238,7 @@ describe('extensions/registry', () => {
             match({ eggFeatures: { all: ['eula'], any: ['java_version'] } }, server(['eula', 'java_version'], []))
         ).toBe(true);
         const either = { eggFeatures: { any: ['eula'] }, eggTags: { any: ['minecraft'] } };
+
         expect(match(either, server(['eula'], []))).toBe(false);
         expect(match({ ...either, match: 'any' }, server(['eula'], []))).toBe(true);
         expect(match({ ...either, match: 'any' }, server(null, []))).toBe(false);
@@ -267,6 +278,7 @@ describe('extensions/registry', () => {
         const badge = () => 3;
 
         const undeclared = registry.createExtensionRegistryBatch();
+
         expect(() => registry.registerScreen('demo', 'open', importer, undeclared, { visible })).toThrow(
             '"runtime": true'
         );
@@ -276,6 +288,7 @@ describe('extensions/registry', () => {
         registry.abortExtensionRegistryBatch(undeclared);
 
         const missing = registry.createExtensionRegistryBatch();
+
         registry.registerScreen('demo', 'gated', importer, missing);
         registry.registerScreen('demo', 'open', importer, missing, { badge });
         expect(() => registry.commitExtensionRegistryBatch('demo', missing)).toThrow('Missing visibility predicate');
@@ -283,8 +296,10 @@ describe('extensions/registry', () => {
         registry.abortExtensionRegistryBatch(missing);
 
         const changed = vi.fn();
+
         registry.subscribeExtensionRegistry(changed);
         const batch = registry.createExtensionRegistryBatch();
+
         registry.registerScreen('demo', 'gated', importer, batch, { visible });
         registry.registerScreen('demo', 'open', importer, batch, { badge });
         expect(registry.getScreenOptions('demo', 'gated')).toBeUndefined();

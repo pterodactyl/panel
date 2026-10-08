@@ -7,7 +7,11 @@ export function publicQueryOptions<TData, TError, TKey extends QueryKey>(
     retry?: SdkServerQueryOptions<TData>['retry']
 ): SdkServerQueryOptions<TData> {
     const fetch = options.queryFn;
-    if (!fetch || fetch === skipToken) throw new Error('The panel query has no fetcher.');
+
+    if (!fetch || fetch === skipToken) {
+        throw new Error('The panel query has no fetcher.');
+    }
+
     const queryFn: QueryFunction<TData> = (context) => fetch({ ...context, queryKey: options.queryKey });
     const { queryKey } = queryOptions<TData, unknown, TData, QueryKey>({
         queryKey: options.queryKey,

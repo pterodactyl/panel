@@ -29,6 +29,7 @@ let merge = createMerge();
  */
 export function registerClassPrefixes(names: Iterable<string | null | undefined>): void {
     let added = false;
+
     for (const name of names) {
         if (name && /^[a-z]+$/.test(name) && !prefixes.has(name)) {
             prefixes.add(name);
@@ -36,7 +37,9 @@ export function registerClassPrefixes(names: Iterable<string | null | undefined>
         }
     }
 
-    if (added) merge = createMerge();
+    if (added) {
+        merge = createMerge();
+    }
 }
 
 export const cn = (...inputs: ClassValue[]): string => merge(clsx(inputs));

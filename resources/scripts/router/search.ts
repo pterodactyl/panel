@@ -64,7 +64,9 @@ export interface RawSearch {
 
 /** The URL text of a search value the router JSON-parsed. */
 const searchText = (value: RawSearch[keyof RawSearch]): string | undefined => {
-    if (isString(value)) return value.trim() || undefined;
+    if (isString(value)) {
+        return value.trim() || undefined;
+    }
 
     return isFiniteNumber(value) || value === true || value === false ? String(value) : undefined;
 };
@@ -83,37 +85,11 @@ export const parseAdminListSearch = (search: RawSearch): AdminListSearch => {
     const result: AdminListSearch = { ...parsePageSearch(search) };
     const filter = searchText(search.filter);
 
-    if (filter) result.filter = filter;
+    if (filter) {
+        result.filter = filter;
+    }
 
     return result;
-};
-
-const parseAdminServerSort = (value: RawSearch['sort']): AdminServerListSort | undefined => {
-    switch (value) {
-        case 'name':
-        case '-name':
-        case 'created_at':
-        case '-created_at':
-            return value;
-        default:
-            return undefined;
-    }
-};
-
-const parseAdminNodeSort = (value: RawSearch['sort']): AdminNodeListSort | undefined => {
-    switch (value) {
-        case 'name':
-        case '-name':
-        case 'memory':
-        case '-memory':
-        case 'disk':
-        case '-disk':
-        case 'created_at':
-        case '-created_at':
-            return value;
-        default:
-            return undefined;
-    }
 };
 
 const parseAllowedSort = <TSort extends string>(value: RawSearch['sort'], allowed: readonly TSort[]) =>
@@ -125,26 +101,28 @@ const parseSortableAdminListSearch = <TSort extends string>(
 ): AdminListSearch & { sort?: TSort } => {
     const result: AdminListSearch & { sort?: TSort } = { ...parseAdminListSearch(search) };
     const sort = parseAllowedSort(search.sort, allowed);
-    if (sort) result.sort = sort;
+
+    if (sort) {
+        result.sort = sort;
+    }
 
     return result;
 };
 
-export const parseServerListSearch = (search: RawSearch): ServerListSearch => {
-    const result: ServerListSearch = { ...parseAdminListSearch(search) };
-    const sort = parseAdminServerSort(search.sort);
-    if (sort) result.sort = sort;
+export const parseServerListSearch = (search: RawSearch): ServerListSearch =>
+    parseSortableAdminListSearch<AdminServerListSort>(search, ['name', '-name', 'created_at', '-created_at']);
 
-    return result;
-};
-
-export const parseNodeListSearch = (search: RawSearch): NodeListSearch => {
-    const result: NodeListSearch = { ...parseAdminListSearch(search) };
-    const sort = parseAdminNodeSort(search.sort);
-    if (sort) result.sort = sort;
-
-    return result;
-};
+export const parseNodeListSearch = (search: RawSearch): NodeListSearch =>
+    parseSortableAdminListSearch<AdminNodeListSort>(search, [
+        'name',
+        '-name',
+        'memory',
+        '-memory',
+        'disk',
+        '-disk',
+        'created_at',
+        '-created_at',
+    ]);
 
 export const parseUserListSearch = (search: RawSearch): UserListSearch =>
     parseSortableAdminListSearch(search, ['email', '-email', 'username', '-username', 'created_at', '-created_at']);
@@ -169,15 +147,23 @@ export const parseActivitySearch = (search: RawSearch): ActivitySearch => {
     const event = searchText(search.event);
     const user = searchText(search.user);
 
-    if (event) result.event = event;
-    if (user) result.user = user;
+    if (event) {
+        result.event = event;
+    }
+
+    if (user) {
+        result.user = user;
+    }
 
     return result;
 };
 
 export const parseDashboardSearch = (search: RawSearch): DashboardSearch => {
     const result: DashboardSearch = { ...parsePageSearch(search) };
-    if (search.type === 'admin') result.type = 'admin';
+
+    if (search.type === 'admin') {
+        result.type = 'admin';
+    }
 
     return result;
 };
@@ -219,11 +205,19 @@ const useSortableAdminListSearch = <TSort extends AdminListSort>(
             const nextSort = next.sort === undefined ? sort : (next.sort ?? undefined);
             const search: AdminListSearch & { sort?: TSort } = {};
 
-            if (nextPage > 1) search.page = nextPage;
-            if (nextFilter.length > 0) search.filter = nextFilter;
-            if (nextSort) search.sort = nextSort;
+            if (nextPage > 1) {
+                search.page = nextPage;
+            }
 
-            navigate({
+            if (nextFilter.length > 0) {
+                search.filter = nextFilter;
+            }
+
+            if (nextSort) {
+                search.sort = nextSort;
+            }
+
+            void navigate({
                 to: '.',
                 search,
                 replace: true,

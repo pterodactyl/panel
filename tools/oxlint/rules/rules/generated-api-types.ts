@@ -10,12 +10,15 @@ export const generatedApiTypesRule = defineRule({
         return {
             TSUnknownKeyword(node) {
                 const property = node.parent.parent;
+
                 if (
                     property?.type === 'TSPropertySignature' &&
                     property.key.type === 'Literal' &&
                     property.key.value === 202
-                )
+                ) {
                     return;
+                }
+
                 context.report({ node, messageId: 'unknown' });
             },
         };

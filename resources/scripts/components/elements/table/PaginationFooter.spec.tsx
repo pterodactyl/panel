@@ -6,7 +6,7 @@ import PaginationFooter from './PaginationFooter';
 
 afterEach(cleanup);
 
-const summary = (container: HTMLElement) => container.querySelector('p')?.textContent?.replace(/\s+/g, ' ');
+const summary = (container: HTMLElement) => container.querySelector('p')?.textContent?.replaceAll(/\s+/g, ' ');
 
 describe('PaginationFooter', () => {
     it('reports a 1-based range for the current page', () => {
@@ -27,6 +27,7 @@ describe('PaginationFooter', () => {
                 onPageSelect={vi.fn()}
             />
         );
+
         expect(summary(first.container)).toBe('Showing 1 to 25 of 60 results.');
         first.unmount();
 
@@ -36,6 +37,7 @@ describe('PaginationFooter', () => {
                 onPageSelect={vi.fn()}
             />
         );
+
         expect(summary(last.container)).toBe('Showing 51 to 60 of 60 results.');
     });
 

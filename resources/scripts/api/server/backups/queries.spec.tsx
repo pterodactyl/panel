@@ -22,8 +22,10 @@ const mocks = vi.hoisted(() => ({
 
 const backupQueryKey = (input: { path: { server_uuid: string }; query?: { page?: number } }) => {
     const key = { _id: 'clientListServerBackups', path: input.path };
+
     return input.query ? [{ ...key, query: input.query }] : [key];
 };
+
 type BackupListInput = Parameters<typeof backupQueryKey>[0];
 
 vi.mock('sonner', () => ({ toast: { success: mocks.toastSuccess } }));
@@ -61,6 +63,7 @@ describe('server backup mutations', () => {
         const { queryClient, wrapper } = setup();
         const created = backup('new', 'nightly');
         const queryKey = backupQueryKey({ path: { server_uuid: 'server' }, query: { page: 3 } });
+
         mocks.create.mockResolvedValue(created);
         queryClient.setQueryData<ClientListServerBackupsResponse>(queryKey, {
             object: 'list',
@@ -76,6 +79,7 @@ describe('server backup mutations', () => {
         await act(async () => result.current.mutateAsync(input));
 
         const cached = queryClient.getQueryData<ClientListServerBackupsResponse>(queryKey);
+
         expect(cached?.data).toEqual([]);
         expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
         expect(mocks.create).toHaveBeenCalledWith(input, expect.anything());
@@ -85,6 +89,7 @@ describe('server backup mutations', () => {
     it('updates current server state before notifying when a restore starts', async () => {
         const { wrapper } = setup();
         const selected = backup('backup', 'before-upgrade');
+
         mocks.restore.mockResolvedValue(undefined);
         const { result } = renderHook(() => useRestoreServerBackup(selected), { wrapper });
 

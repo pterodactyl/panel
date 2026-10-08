@@ -17,6 +17,7 @@ function registerSlot(
     component: ComponentType<SlotComponentProps>
 ) {
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerSlotComponent(extensionId, name, component, batch);
     registry.commitExtensionRegistryBatch(extensionId, batch);
 }
@@ -36,7 +37,7 @@ describe('extension Slot', () => {
         registerSlot(registry, 'first-extension', 'auth.login.before', First);
         registerSlot(registry, 'second-extension', 'auth.login.before', Second);
 
-        render(<Slot name={'auth.login.before'} data={{ pathname: 'survival', params: {}, search: {} }} />);
+        render(<Slot name='auth.login.before' data={{ pathname: 'survival', params: {}, search: {} }} />);
 
         expect(screen.getAllByText(/survival/).map((element) => element.textContent)).toEqual([
             'first:survival',
@@ -50,12 +51,13 @@ describe('extension Slot', () => {
         const Broken = () => {
             throw new Error('render failed');
         };
+
         const Healthy = () => <span>healthy extension</span>;
 
         registerSlot(registry, 'broken-extension', 'dashboard.before', Broken);
         registerSlot(registry, 'healthy-extension', 'dashboard.before', Healthy);
 
-        render(<Slot name={'dashboard.before'} />);
+        render(<Slot name='dashboard.before' />);
 
         expect(screen.getByText('healthy extension')).toBeInTheDocument();
         expect(registry.getExtensionStates()).toContainEqual({
@@ -76,6 +78,7 @@ it('keeps the host and healthy registrations visible while a lazy slot loads', a
                 resolve = done;
             })
     );
+
     registerSlot(registry, 'lazy', 'dashboard.after', Lazy);
     registerSlot(registry, 'healthy', 'dashboard.after', () => <span>healthy sibling</span>);
     render(
@@ -95,12 +98,16 @@ it('isolates suspense queries and lets an errored query recover on explicit retr
     const registry = await import('@/extensions/registry');
     const { default: Slot } = await import('@/extensions/Slot');
     const queryFn = vi.fn().mockRejectedValueOnce(new Error('temporary')).mockResolvedValue('recovered');
+
     function QuerySlot() {
         const { data } = useSuspenseQuery({ queryKey: ['extension-recovery'], queryFn, retry: false });
+
         return <span>{data}</span>;
     }
+
     registerSlot(registry, 'query', 'account.overview.before', QuerySlot);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
     render(
         <QueryClientProvider client={client}>
             <AppToaster />
@@ -118,10 +125,13 @@ it('isolates suspense queries and lets an errored query recover on explicit retr
 it('shows late registrations without resetting healthy mod state', async () => {
     const registry = await import('@/extensions/registry');
     const { default: Slot } = await import('@/extensions/Slot');
+
     function Counter() {
         const [count, setCount] = useState(0);
+
         return <button onClick={() => setCount(count + 1)}>Count {count}</button>;
     }
+
     registerSlot(registry, 'counter', 'account.overview.after', Counter);
     render(<Slot name='account.overview.after' />);
     fireEvent.click(screen.getByRole('button', { name: 'Count 0' }));
@@ -133,6 +143,7 @@ it('shows late registrations without resetting healthy mod state', async () => {
 it('keeps recovery controls outside clickable slot hosts', async () => {
     const registry = await import('@/extensions/registry');
     const { default: Slot } = await import('@/extensions/Slot');
+
     registerSlot(registry, 'row-failure', 'panel.overview.before', () => {
         throw new Error('broken row');
     });
@@ -154,8 +165,12 @@ it('reports a failure repeated in every row once and retries every row together'
     const registry = await import('@/extensions/registry');
     const { default: Slot } = await import('@/extensions/Slot');
     let broken = true;
+
     registerSlot(registry, 'rows', 'dashboard.serverRow.after', () => {
-        if (broken) throw new Error('row failed');
+        if (broken) {
+            throw new Error('row failed');
+        }
+
         return <span>row ready</span>;
     });
     render(
@@ -169,6 +184,7 @@ it('reports a failure repeated in every row once and retries every row together'
 
     expect(await screen.findAllByRole('button', { name: 'Retry extension' })).toHaveLength(1);
     const reports = errors.mock.calls.filter(([message]) => String(message).startsWith('[extensions] "rows"'));
+
     expect(reports).toHaveLength(1);
     expect(registry.getExtensionStates().find((state) => state.id === 'rows')).toEqual({
         id: 'rows',

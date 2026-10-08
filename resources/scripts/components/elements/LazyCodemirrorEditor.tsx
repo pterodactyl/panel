@@ -12,7 +12,7 @@ const LazyCodemirrorEditor = (props: CodemirrorEditorProps) => (
     <Suspense
         fallback={
             <div className={cn(editorContainerClass, props.className)}>
-                <Spinner centered size={'large'} />
+                <Spinner centered size='large' />
             </div>
         }
     >

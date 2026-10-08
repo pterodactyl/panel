@@ -19,22 +19,22 @@ const ReinstallServerBox = () => {
     };
 
     return (
-        <TitledGreyBox title={'Reinstall Server'} className={'relative'}>
-            <p className={'text-sm'}>
+        <TitledGreyBox title='Reinstall Server' className='relative'>
+            <p className='text-sm'>
                 Reinstalling your server will stop it, and then re-run the installation script that initially set it
                 up.&nbsp;
-                <strong className={'font-medium'}>
+                <strong className='font-medium'>
                     Some files may be deleted or modified during this process, please back up your data before
                     continuing.
                 </strong>
             </p>
-            {!canReinstall && <p className={'mt-3 text-sm text-muted-foreground'}>{SKIPPED_INSTALL_SCRIPT_MESSAGE}</p>}
+            {!canReinstall && <p className='mt-3 text-sm text-muted-foreground'>{SKIPPED_INSTALL_SCRIPT_MESSAGE}</p>}
             <Dialog.ConfirmTrigger
-                title={'Confirm server reinstallation'}
-                confirm={'Yes, reinstall server'}
+                title='Confirm server reinstallation'
+                confirm='Yes, reinstall server'
                 onConfirmed={(_event, close) => reinstall(close)}
                 trigger={({ onClick }) => (
-                    <div className={'mt-6 text-right'}>
+                    <div className='mt-6 text-right'>
                         <Button.Danger isSecondary disabled={!canReinstall} onClick={onClick}>
                             Reinstall Server
                         </Button.Danger>

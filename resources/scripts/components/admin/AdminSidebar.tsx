@@ -81,25 +81,25 @@ export default function AdminSidebar() {
     return (
         <div className={cn('w-full shrink-0 px-4 pt-4', 'lg:w-sidebar lg:px-0 lg:pt-0')}>
             <button
-                type={'button'}
+                type='button'
                 onClick={() => setOpen((value) => !value)}
                 aria-expanded={open}
-                aria-controls={'admin-sidebar-nav'}
+                aria-controls='admin-sidebar-nav'
                 className={cn(
                     'flex w-full items-center gap-3 rounded-md bg-card px-3 py-2 text-sm text-foreground shadow-sm',
                     'transition-colors duration-150 hover:bg-popover lg:hidden'
                 )}
             >
-                <Icon icon={Menu} className={'w-4 h-4 shrink-0'} />
-                <span className={'flex-1 min-w-0 truncate text-left'}>{current?.label ?? 'Administration'}</span>
+                <Icon icon={Menu} className='w-4 h-4 shrink-0' />
+                <span className='flex-1 min-w-0 truncate text-left'>{current?.label ?? 'Administration'}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('w-4 h-4 shrink-0 transition-transform', open && 'rotate-180')}
                 />
             </button>
             <nav
-                id={'admin-sidebar-nav'}
-                aria-label={'Administration'}
+                id='admin-sidebar-nav'
+                aria-label='Administration'
                 className={cn(
                     'mt-2 flex-col gap-0.5',
                     'lg:sticky lg:top-0 lg:mt-0 lg:flex lg:max-h-dvh lg:overflow-y-auto lg:px-4 lg:py-6',
@@ -107,18 +107,18 @@ export default function AdminSidebar() {
                 )}
             >
                 <div className={extensionItemsClass}>
-                    <Slot name={'panel.navigation.before'} />
+                    <Slot name='panel.navigation.before' />
                 </div>
                 {entries.map((entry) => (
                     <ScreenGate key={entry.segment || '/'} screen={entry.screen}>
                         <NavLink to={hrefFor(entry)} exact={entry.exact ?? false} className={itemClass}>
-                            {!entry.icon && <Icon icon={iconFor(entry.segment)} className={'w-4 h-4 shrink-0'} />}
+                            {!entry.icon && <Icon icon={iconFor(entry.segment)} className='w-4 h-4 shrink-0' />}
                             <NavigationLabel {...entry} />
                         </NavLink>
                     </ScreenGate>
                 ))}
                 <div className={extensionItemsClass}>
-                    <Slot name={'panel.navigation.after'} />
+                    <Slot name='panel.navigation.after' />
                 </div>
             </nav>
         </div>

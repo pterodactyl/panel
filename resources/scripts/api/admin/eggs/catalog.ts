@@ -27,6 +27,7 @@ export const importAdminCatalogEggInput = (catalogId: string): Options<AdminImpo
 
 export const useImportAdminCatalogEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminImportCatalogEggMutation(),
         onSuccess: async (egg) => {
@@ -39,6 +40,7 @@ export const useImportAdminCatalogEgg = () => {
 
 export const useRefreshAdminEggCatalog = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminRefreshEggCatalogMutation(),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: adminListEggCatalogQueryKey() }),

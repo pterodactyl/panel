@@ -8,6 +8,7 @@ const thrown = (run: () => unknown): unknown => {
     } catch (error) {
         return error;
     }
+
     return undefined;
 };
 

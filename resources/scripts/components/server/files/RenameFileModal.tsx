@@ -20,12 +20,10 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
     const form = useAppForm({
         defaultValues: { name: files.length > 1 ? '' : files[0] || '' },
         onSubmit: async ({ value: { name } }) => {
-            let data;
-            if (useMoveTerminology && files.length > 1) {
-                data = files.map((f) => ({ from: f, to: join(name, f) }));
-            } else {
-                data = files.map((f) => ({ from: f, to: name }));
-            }
+            const data = files.map((f) => ({
+                from: f,
+                to: useMoveTerminology && files.length > 1 ? join(name, f) : name,
+            }));
 
             try {
                 await renameFiles.mutateAsync(renameFilesInput(uuid, directory, data));
@@ -33,6 +31,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
             } catch {
                 // Error toast is handled by the mutation.
             }
+
             props.onClose();
         },
     });
@@ -43,15 +42,15 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
     return (
         <Dialog {...props} preventExternalClose={isSubmitting} hideCloseIcon={isSubmitting}>
             <SpinnerOverlay visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
+            <Form form={form} className='m-0'>
                 <div className={cn('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}>
-                    <div className={'w-full sm:flex-1 sm:mr-4'}>
-                        <form.AppField name={'name'}>
+                    <div className='w-full sm:flex-1 sm:mr-4'>
+                        <form.AppField name='name'>
                             {(field) => (
                                 <field.TextField
-                                    type={'string'}
-                                    id={'file_name'}
-                                    label={'File Name'}
+                                    type='string'
+                                    id='file_name'
+                                    label='File Name'
                                     description={
                                         useMoveTerminology
                                             ? 'Enter the new name and directory of this file or folder, relative to the current directory.'
@@ -62,17 +61,17 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'w-full sm:w-auto mt-4 sm:mt-0'}>
+                    <div className='w-full sm:w-auto mt-4 sm:mt-0'>
                         <form.AppForm>
-                            <form.SubmitButton className={'w-full'}>
+                            <form.SubmitButton className='w-full'>
                                 {useMoveTerminology ? 'Move' : 'Rename'}
                             </form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>
                 {useMoveTerminology && (
-                    <p className={'text-xs mt-2 text-muted-foreground'}>
-                        <strong className={'text-foreground'}>New location:</strong>
+                    <p className='text-xs mt-2 text-muted-foreground'>
+                        <strong className='text-foreground'>New location:</strong>
                         &nbsp;/home/container/{join(directory, name).replace(/^(\.\.\/|\/)+/, '')}
                     </p>
                 )}

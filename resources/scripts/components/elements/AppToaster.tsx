@@ -6,8 +6,8 @@ const iconClassName = 'h-4 w-4 shrink-0';
 const AppToaster = () => (
     <Toaster
         closeButton
-        theme={'dark'}
-        position={'top-right'}
+        theme='dark'
+        position='top-right'
         visibleToasts={4}
         toastOptions={{
             unstyled: true,

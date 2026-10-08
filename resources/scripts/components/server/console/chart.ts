@@ -15,13 +15,20 @@ export function useRollingData(keys: readonly string[]) {
         (values: Record<string, number | null>, t: number) =>
             setData((prev) => {
                 const point: ChartPoint = { t };
+
                 for (const key of keys) {
                     const value = values[key];
+
                     point[key] = value === null || value === undefined ? null : Number(value.toFixed(2));
                 }
+
                 const cutoff = t - RETAIN_MS;
                 let start = 0;
-                while (start < prev.length && prev[start].t < cutoff) start++;
+
+                while (start < prev.length && prev[start].t < cutoff) {
+                    start++;
+                }
+
                 return [...prev.slice(start), point];
             }),
         [keys]
@@ -37,7 +44,9 @@ export function useAnimationClock(active: boolean, fps = 30): number {
     const [now, setNow] = useState(() => performance.now());
 
     useEffect(() => {
-        if (!active) return;
+        if (!active) {
+            return;
+        }
 
         const minDelta = 1000 / fps;
         let frame = 0;
@@ -50,6 +59,7 @@ export function useAnimationClock(active: boolean, fps = 30): number {
                 setNow(timestamp);
             }
         };
+
         frame = requestAnimationFrame(tick);
 
         return () => cancelAnimationFrame(frame);
@@ -65,14 +75,19 @@ export function useElementVisible(ref: RefObject<Element | null>): boolean {
 
     useEffect(() => {
         const element = ref.current;
-        if (!element) return;
+
+        if (!element) {
+            return;
+        }
 
         const observer = new IntersectionObserver((entries) => {
-            const entry = entries[entries.length - 1];
+            const entry = entries.at(-1);
+
             if (entry) {
                 setIntersecting(entry.isIntersecting);
             }
         });
+
         observer.observe(element);
 
         return () => observer.disconnect();
@@ -80,6 +95,7 @@ export function useElementVisible(ref: RefObject<Element | null>): boolean {
 
     useEffect(() => {
         const update = () => setDocumentVisible(document.visibilityState !== 'hidden');
+
         document.addEventListener('visibilitychange', update);
 
         return () => document.removeEventListener('visibilitychange', update);

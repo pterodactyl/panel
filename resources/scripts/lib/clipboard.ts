@@ -3,6 +3,7 @@ export default async function copyToClipboard(text: string): Promise<boolean> {
     if (window.isSecureContext && navigator.clipboard) {
         try {
             await navigator.clipboard.writeText(text);
+
             return true;
         } catch {
             // Fall back to execCommand.
@@ -10,6 +11,7 @@ export default async function copyToClipboard(text: string): Promise<boolean> {
     }
 
     const textarea = document.createElement('textarea');
+
     textarea.value = text;
     textarea.setAttribute('readonly', '');
     textarea.style.position = 'fixed';
@@ -23,6 +25,7 @@ export default async function copyToClipboard(text: string): Promise<boolean> {
     textarea.select();
 
     let succeeded = false;
+
     try {
         succeeded = document.execCommand('copy');
     } catch {

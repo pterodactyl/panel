@@ -47,10 +47,13 @@ export default function TransferServerModal({ server, open, onClose }: Props) {
         onSubmit: async ({ value }) => {
             if (!nodeId) {
                 toast.error('A target node must be selected.');
+
                 return;
             }
+
             if (!value.allocationId) {
                 toast.error('A default allocation must be selected.');
+
                 return;
             }
 
@@ -83,8 +86,10 @@ export default function TransferServerModal({ server, open, onClose }: Props) {
     const additionalOptions = allocationOptions.filter((option) => option.value !== defaultAllocationId);
 
     const nodeGroups: SelectGroup[] = [];
+
     for (const group of groups) {
         const options = [];
+
         for (const node of group.nodes) {
             if (node.id !== attributes.node) {
                 options.push({ value: node.id, label: node.name });
@@ -104,18 +109,18 @@ export default function TransferServerModal({ server, open, onClose }: Props) {
     return (
         <Dialog
             open={open}
-            title={'Transfer server'}
+            title='Transfer server'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
-                <Label htmlFor={'nodeId'}>Node</Label>
+            <Form form={form} className='m-0'>
+                <Label htmlFor='nodeId'>Node</Label>
                 <Select
-                    id={'nodeId'}
+                    id='nodeId'
                     value={nodeId}
-                    placeholder={'Select a target node...'}
+                    placeholder='Select a target node...'
                     groups={nodeGroups}
                     onChange={(value) => {
                         setNodeId(Number(value));
@@ -123,14 +128,14 @@ export default function TransferServerModal({ server, open, onClose }: Props) {
                         form.setFieldValue('allocationAdditional', []);
                     }}
                 />
-                <p className={'mt-1 text-xs text-muted-foreground'}>The node this server will be transferred to.</p>
-                <div className={'mt-6'}>
-                    <form.AppField name={'allocationId'}>
+                <p className='mt-1 text-xs text-muted-foreground'>The node this server will be transferred to.</p>
+                <div className='mt-6'>
+                    <form.AppField name='allocationId'>
                         {(field) => (
                             <field.SelectField
-                                id={'allocationId'}
-                                label={'Default Allocation'}
-                                description={'The main allocation that will be assigned to this server.'}
+                                id='allocationId'
+                                label='Default Allocation'
+                                description='The main allocation that will be assigned to this server.'
                                 options={[
                                     { value: 0, label: 'Select an allocation...', disabled: true },
                                     ...allocationOptions,
@@ -144,25 +149,25 @@ export default function TransferServerModal({ server, open, onClose }: Props) {
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'allocationAdditional'}>
+                <div className='mt-6'>
+                    <form.AppField name='allocationAdditional'>
                         {(field) => (
                             <field.MultiSelectField
-                                id={'allocationAdditional'}
-                                label={'Additional Allocation(s)'}
-                                description={'Additional allocations to assign to this server.'}
+                                id='allocationAdditional'
+                                label='Additional Allocation(s)'
+                                description='Additional allocations to assign to this server.'
                                 options={additionalOptions}
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex flex-wrap justify-end mt-6'}>
-                    <Button type={'button'} isSecondary className={'w-full sm:w-auto sm:mr-2'} onClick={onClose}>
+                <div className='flex flex-wrap justify-end mt-6'>
+                    <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
                         Cancel
                     </Button>
                     <Button
-                        className={'w-full mt-4 sm:w-auto sm:mt-0'}
-                        type={'button'}
+                        className='w-full mt-4 sm:w-auto sm:mt-0'
+                        type='button'
                         disabled={isSubmitting}
                         onClick={() => form.handleSubmit()}
                     >

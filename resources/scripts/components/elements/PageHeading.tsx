@@ -12,11 +12,11 @@ interface Props {
 export default function PageHeading({ title, description, actions, className }: Props) {
     return (
         <header className={cn('mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', className)}>
-            <div className={'min-w-0'}>
+            <div className='min-w-0'>
                 <h1 className={pageTitleClass}>{title}</h1>
-                {description && <p className={'mt-1 text-sm leading-relaxed text-foreground/70'}>{description}</p>}
+                {description && <p className='mt-1 text-sm leading-relaxed text-foreground/70'>{description}</p>}
             </div>
-            {actions && <div className={'shrink-0'}>{actions}</div>}
+            {actions && <div className='shrink-0'>{actions}</div>}
         </header>
     );
 }

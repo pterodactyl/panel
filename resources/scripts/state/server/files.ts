@@ -62,7 +62,7 @@ export const createFiles = (set: ServerSet, get: ServerGet): ServerFileStore => 
                 selectedDirectory: directory,
                 selectedFiles:
                     state.files.selectedDirectory === directory
-                        ? state.files.selectedFiles.filter((file) => file !== name).concat(name)
+                        ? [...state.files.selectedFiles.filter((file) => file !== name), name]
                         : [name],
             },
         })),
@@ -80,7 +80,9 @@ export const createFiles = (set: ServerSet, get: ServerGet): ServerFileStore => 
         })),
 
     clearFileUploads: () => {
-        Object.values(get().files.uploads).forEach((upload) => upload.abort.abort());
+        for (const upload of Object.values(get().files.uploads)) {
+            upload.abort.abort();
+        }
 
         set((state) => ({
             files: {
@@ -104,6 +106,7 @@ export const createFiles = (set: ServerSet, get: ServerGet): ServerFileStore => 
     setUploadProgress: ({ id, loaded }) =>
         set((state) => {
             const upload = state.files.uploads[id];
+
             if (!upload) {
                 return state;
             }
@@ -138,6 +141,7 @@ export const createFiles = (set: ServerSet, get: ServerGet): ServerFileStore => 
 
     cancelFileUpload: (id) => {
         const upload = get().files.uploads[id];
+
         if (upload) {
             upload.abort.abort();
 

@@ -20,11 +20,25 @@ export const activityLogQuery = (filters?: ActivityLogFilters): ActivityLogQuery
     const timestamp = filters?.sorts?.timestamp;
     const query: ActivityLogQuery = { include: 'actor' };
 
-    if (filters?.page !== undefined) query.page = filters.page;
-    if (event) query['filter[event_name]'] = event;
-    if (user !== undefined && Number.isFinite(Number(user))) query['filter[user_id]'] = Number(user);
-    if (timestamp === -1 || timestamp === 'desc') query.sort = '-timestamp';
-    if (timestamp === 1 || timestamp === 'asc') query.sort = 'timestamp';
+    if (filters?.page !== undefined) {
+        query.page = filters.page;
+    }
+
+    if (event) {
+        query['filter[event_name]'] = event;
+    }
+
+    if (user !== undefined && Number.isFinite(Number(user))) {
+        query['filter[user_id]'] = Number(user);
+    }
+
+    if (timestamp === -1 || timestamp === 'desc') {
+        query.sort = '-timestamp';
+    }
+
+    if (timestamp === 1 || timestamp === 'asc') {
+        query.sort = 'timestamp';
+    }
 
     return query;
 };

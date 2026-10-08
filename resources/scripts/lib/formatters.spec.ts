@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 
-describe('@/lib/formatters.ts', function () {
-    describe('mbToBytes()', function () {
-        it('should convert from MB to Bytes', function () {
+describe('@/lib/formatters.ts', () => {
+    describe('mbToBytes()', () => {
+        it('should convert from MB to Bytes', () => {
             expect(mbToBytes(1)).toBe(1_048_576);
             expect(mbToBytes(0)).toBe(0);
             expect(mbToBytes(0.1)).toBe(104_857);
@@ -12,7 +12,7 @@ describe('@/lib/formatters.ts', function () {
         });
     });
 
-    describe('bytesToString()', function () {
+    describe('bytesToString()', () => {
         it.each([
             [0, '0 Bytes'],
             [0.5, '0 Bytes'],
@@ -38,22 +38,22 @@ describe('@/lib/formatters.ts', function () {
             [1_678_342_000, '1.56 GiB'],
             [1_000_000_000_000, '931.32 GiB'],
             [1_099_511_627_776, '1 TiB'],
-        ])('should format %d bytes as "%s"', function (input, output) {
+        ])('should format %d bytes as "%s"', (input, output) => {
             expect(bytesToString(input)).toBe(output);
         });
     });
 
-    describe('ip()', function () {
-        it('should format an IPv4 address', function () {
+    describe('ip()', () => {
+        it('should format an IPv4 address', () => {
             expect(ip('127.0.0.1')).toBe('127.0.0.1');
         });
 
-        it('should format an IPv6 address', function () {
+        it('should format an IPv6 address', () => {
             expect(ip(':::1')).toBe('[:::1]');
             expect(ip('2001:db8::')).toBe('[2001:db8::]');
         });
 
-        it('should handle random inputs', function () {
+        it('should handle random inputs', () => {
             expect(ip('1')).toBe('1');
             expect(ip('foobar')).toBe('foobar');
             expect(ip('127.0.0.1:25565')).toBe('[127.0.0.1:25565]');

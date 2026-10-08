@@ -19,7 +19,7 @@ const RotatePasswordButton = ({ databaseId }: Props) => {
     };
 
     return (
-        <Button isSecondary color={'primary'} className={'mr-2'} onClick={rotate} isLoading={rotatePassword.isPending}>
+        <Button isSecondary color='primary' className='mr-2' onClick={rotate} isLoading={rotatePassword.isPending}>
             Rotate Password
         </Button>
     );

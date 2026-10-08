@@ -42,6 +42,18 @@ import { relationshipData } from '@/api/relationships';
 
 type MountForm = AppForm<MountValues>;
 
+const validateMountName = (value: string): string | undefined => {
+    if (value.length < 2) {
+        return 'A name must be at least 2 characters.';
+    }
+
+    if (value.length > 64) {
+        return 'A name must not exceed 64 characters.';
+    }
+
+    return undefined;
+};
+
 const mountToValues = (mount: AdminMountWithRelations): MountValues => ({
     name: mount.attributes.name,
     description: mount.attributes.description ?? '',
@@ -52,31 +64,26 @@ const mountToValues = (mount: AdminMountWithRelations): MountValues => ({
 });
 
 const MountDetailsCard = ({ form, onDelete }: { form: MountForm; onDelete: () => void }) => (
-    <TitledGreyBox title={'Mount Details'}>
-        <Form form={form} className={'m-0'}>
+    <TitledGreyBox title='Mount Details'>
+        <Form form={form} className='m-0'>
             <form.AppField
-                name={'name'}
+                name='name'
                 validators={{
-                    onChange: ({ value }) =>
-                        value.length < 2
-                            ? 'A name must be at least 2 characters.'
-                            : value.length > 64
-                              ? 'A name must not exceed 64 characters.'
-                              : undefined,
+                    onChange: ({ value }) => validateMountName(value),
                 }}
             >
                 {(field) => (
                     <field.TextField
-                        type={'text'}
-                        id={'name'}
-                        label={'Name'}
-                        description={'A unique name used to identify this mount.'}
+                        type='text'
+                        id='name'
+                        label='Name'
+                        description='A unique name used to identify this mount.'
                     />
                 )}
             </form.AppField>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'description'}
+                    name='description'
                     validators={{
                         onChange: ({ value }) =>
                             value.length <= 191 ? undefined : 'A description must not exceed 191 characters.',
@@ -84,70 +91,70 @@ const MountDetailsCard = ({ form, onDelete }: { form: MountForm; onDelete: () =>
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'description'}
-                            label={'Description'}
-                            description={'A longer description for this mount.'}
+                            type='text'
+                            id='description'
+                            label='Description'
+                            description='A longer description for this mount.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'source'}
+                    name='source'
                     validators={{
                         onChange: ({ value }) => (value.length >= 1 ? undefined : 'A source path must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'source'}
-                            label={'Source'}
-                            description={'The path on the host system to mount into the container.'}
+                            type='text'
+                            id='source'
+                            label='Source'
+                            description='The path on the host system to mount into the container.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'target'}
+                    name='target'
                     validators={{
                         onChange: ({ value }) => (value.length >= 1 ? undefined : 'A target path must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'target'}
-                            label={'Target'}
-                            description={'The path inside the container where the source will be mounted.'}
+                            type='text'
+                            id='target'
+                            label='Target'
+                            description='The path inside the container where the source will be mounted.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
-                <form.AppField name={'readOnly'}>
+            <div className='mt-6'>
+                <form.AppField name='readOnly'>
                     {(field) => (
                         <field.SwitchField
-                            label={'Read Only'}
-                            description={'Mount this volume as read only inside the container.'}
+                            label='Read Only'
+                            description='Mount this volume as read only inside the container.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
-                <form.AppField name={'userMountable'}>
+            <div className='mt-6'>
+                <form.AppField name='userMountable'>
                     {(field) => (
                         <field.SwitchField
-                            label={'User Mountable'}
-                            description={'Allow this mount to be added to servers by users.'}
+                            label='User Mountable'
+                            description='Allow this mount to be added to servers by users.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'flex justify-end mt-6'}>
-                <Button type={'button'} color={'red'} isSecondary className={'mr-2'} onClick={onDelete}>
+            <div className='flex justify-end mt-6'>
+                <Button type='button' color='red' isSecondary className='mr-2' onClick={onDelete}>
                     Delete Mount
                 </Button>
                 <form.AppForm>
@@ -175,9 +182,9 @@ const AttachedEggsCard = ({
                     header: 'Egg',
                     cell: ({ row }) => (
                         <Link
-                            to={'/panel/eggs/$eggId'}
+                            to='/panel/eggs/$eggId'
                             params={{ eggId: row.original.attributes.id }}
-                            className={'block truncate text-sm text-foreground hover:text-accent'}
+                            className='block truncate text-sm text-foreground hover:text-accent'
                         >
                             {row.original.attributes.name}
                         </Link>
@@ -187,7 +194,7 @@ const AttachedEggsCard = ({
                     id: 'id',
                     header: 'ID',
                     cell: ({ row }) => (
-                        <span className={'text-xs text-muted-foreground'}>{row.original.attributes.id}</span>
+                        <span className='text-xs text-muted-foreground'>{row.original.attributes.id}</span>
                     ),
                     meta: {
                         headerClassName: 'hidden sm:table-cell w-16 text-right',
@@ -198,15 +205,15 @@ const AttachedEggsCard = ({
                     <RowActions>
                         <EditLinkAction
                             aria-label={`Edit ${egg.attributes.name}`}
-                            to={'/panel/eggs/$eggId'}
+                            to='/panel/eggs/$eggId'
                             params={{ eggId: egg.attributes.id }}
                         />
                         <Dialog.ConfirmTrigger
-                            title={'Detach egg'}
-                            confirm={'Detach Egg'}
+                            title='Detach egg'
+                            confirm='Detach Egg'
                             trigger={({ onClick }) => (
                                 <DeleteAction
-                                    label={'Detach'}
+                                    label='Detach'
                                     aria-label={`Detach ${egg.attributes.name}`}
                                     onClick={onClick}
                                 />
@@ -230,8 +237,9 @@ const AttachedEggsCard = ({
         getCoreRowModel: getCoreRowModel(),
         getRowId: (egg) => String(egg.attributes.id),
     });
+
     return (
-        <TitledGreyBox title={'Eggs'}>
+        <TitledGreyBox title='Eggs'>
             <ListToolbar>
                 <NewButton onClick={onAttach}>Attach eggs</NewButton>
             </ListToolbar>
@@ -240,7 +248,7 @@ const AttachedEggsCard = ({
                 emptyState={
                     <Empty className={emptyCompactClass}>
                         <EmptyHeader>
-                            <EmptyMedia variant={'icon'}>
+                            <EmptyMedia variant='icon'>
                                 <Egg />
                             </EmptyMedia>
                             <EmptyTitle>No eggs attached</EmptyTitle>
@@ -272,15 +280,15 @@ const AttachedNodesCard = ({
                     id: 'name',
                     header: 'Node',
                     cell: ({ row }) => (
-                        <div className={'min-w-0'}>
+                        <div className='min-w-0'>
                             <Link
-                                to={'/panel/nodes/$id'}
+                                to='/panel/nodes/$id'
                                 params={{ id: row.original.attributes.id }}
-                                className={'block truncate text-sm text-foreground hover:text-accent'}
+                                className='block truncate text-sm text-foreground hover:text-accent'
                             >
                                 {row.original.attributes.name}
                             </Link>
-                            <p className={'mt-1 truncate text-xs text-muted-foreground'}>
+                            <p className='mt-1 truncate text-xs text-muted-foreground'>
                                 {row.original.attributes.fqdn}
                             </p>
                         </div>
@@ -290,15 +298,15 @@ const AttachedNodesCard = ({
                     <RowActions>
                         <EditLinkAction
                             aria-label={`Edit ${node.attributes.name}`}
-                            to={'/panel/nodes/$id/settings'}
+                            to='/panel/nodes/$id/settings'
                             params={{ id: node.attributes.id }}
                         />
                         <Dialog.ConfirmTrigger
-                            title={'Detach node'}
-                            confirm={'Detach Node'}
+                            title='Detach node'
+                            confirm='Detach Node'
                             trigger={({ onClick }) => (
                                 <DeleteAction
-                                    label={'Detach'}
+                                    label='Detach'
                                     aria-label={`Detach ${node.attributes.name}`}
                                     onClick={onClick}
                                 />
@@ -322,8 +330,9 @@ const AttachedNodesCard = ({
         getCoreRowModel: getCoreRowModel(),
         getRowId: (node) => String(node.attributes.id),
     });
+
     return (
-        <TitledGreyBox title={'Nodes'}>
+        <TitledGreyBox title='Nodes'>
             <ListToolbar>
                 <NewButton onClick={onAttach}>Attach nodes</NewButton>
             </ListToolbar>
@@ -332,7 +341,7 @@ const AttachedNodesCard = ({
                 emptyState={
                     <Empty className={emptyCompactClass}>
                         <EmptyHeader>
-                            <EmptyMedia variant={'icon'}>
+                            <EmptyMedia variant='icon'>
                                 <HardDrive />
                             </EmptyMedia>
                             <EmptyTitle>No nodes attached</EmptyTitle>
@@ -380,19 +389,19 @@ const DeleteMountDialog = ({
     return (
         <Dialog
             open
-            title={'Confirm mount deletion'}
+            title='Confirm mount deletion'
             preventExternalClose={deleteSubmitting}
             hideCloseIcon={deleteSubmitting}
             onClose={close}
         >
             <SpinnerOverlay visible={deleteSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a mount is a permanent action, it cannot be undone. This will permanently delete the{' '}
                 <strong>{mount.attributes.name}</strong> mount and detach it from every egg and node.
             </p>
-            <Form form={deleteForm} className={'m-0 mt-6'}>
+            <Form form={deleteForm} className='m-0 mt-6'>
                 <deleteForm.AppField
-                    name={'confirm'}
+                    name='confirm'
                     validators={{
                         onChange: ({ value }) =>
                             value === mount.attributes.name ? undefined : 'The mount name must be provided.',
@@ -400,19 +409,19 @@ const DeleteMountDialog = ({
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'confirm_mount_name'}
-                            label={'Confirm Name'}
-                            description={'Enter the name of this mount to confirm deletion.'}
+                            type='text'
+                            id='confirm_mount_name'
+                            label='Confirm Name'
+                            description='Enter the name of this mount to confirm deletion.'
                         />
                     )}
                 </deleteForm.AppField>
-                <div className={'mt-6 text-right'}>
-                    <Button type={'button'} isSecondary className={'mr-2'} onClick={close}>
+                <div className='mt-6 text-right'>
+                    <Button type='button' isSecondary className='mr-2' onClick={close}>
                         Cancel
                     </Button>
                     <deleteForm.AppForm>
-                        <deleteForm.SubmitButton color={'red'}>Delete Mount</deleteForm.SubmitButton>
+                        <deleteForm.SubmitButton color='red'>Delete Mount</deleteForm.SubmitButton>
                     </deleteForm.AppForm>
                 </div>
             </Form>
@@ -456,14 +465,14 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
             description={attributes.uuid}
         >
             <Link
-                to={'/panel/mounts'}
-                className={'inline-flex items-center text-sm text-muted-foreground mb-4 hover:text-foreground'}
+                to='/panel/mounts'
+                className='inline-flex items-center text-sm text-muted-foreground mb-4 hover:text-foreground'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Mounts
             </Link>
 
-            <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4'}>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
                 <Dialog.Trigger trigger={({ onClick }) => <MountDetailsCard form={editForm} onDelete={onClick} />}>
                     {({ open, onClose }) =>
                         open && (
@@ -475,7 +484,7 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
                         )
                     }
                 </Dialog.Trigger>
-                <div className={'flex flex-col gap-4'}>
+                <div className='flex flex-col gap-4'>
                     <Dialog.Trigger
                         trigger={({ onClick }) => (
                             <AttachedEggsCard
@@ -535,8 +544,8 @@ export default function MountDetailContainer() {
 
     if (!mount) {
         return (
-            <AdminContentBlock title={'Admin · Mount'} heading={'Mount'}>
-                <Spinner size={'large'} centered />
+            <AdminContentBlock title='Admin · Mount' heading='Mount'>
+                <Spinner size='large' centered />
             </AdminContentBlock>
         );
     }

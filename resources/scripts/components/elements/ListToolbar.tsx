@@ -13,8 +13,8 @@ interface Props {
 export default function ListToolbar({ summary, children, className }: Props) {
     return (
         <div className={cn('mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between', className)}>
-            {summary && <p className={'text-sm text-muted-foreground'}>{summary}</p>}
-            {children && <div className={'flex flex-col gap-2 sm:ml-auto sm:flex-row sm:items-center'}>{children}</div>}
+            {summary && <p className='text-sm text-muted-foreground'>{summary}</p>}
+            {children && <div className='flex flex-col gap-2 sm:ml-auto sm:flex-row sm:items-center'>{children}</div>}
         </div>
     );
 }

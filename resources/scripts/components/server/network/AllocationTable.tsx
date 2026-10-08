@@ -30,8 +30,8 @@ const AllocationNotesCell = ({ allocation }: { allocation: ServerAllocation }) =
         <InputSpinner visible={updateAllocationNotes.isPending}>
             <TextArea
                 aria-label={`Notes for ${allocation.attributes.ip}:${allocation.attributes.port}`}
-                className={'min-h-9 resize-y bg-input hover:border-input border-transparent'}
-                placeholder={'Notes'}
+                className='min-h-9 resize-y bg-input hover:border-input border-transparent'
+                placeholder='Notes'
                 defaultValue={allocation.attributes.notes || undefined}
                 onChange={(event) => setAllocationNotes(event.currentTarget.value)}
                 onBlur={setAllocationNotes.flush}
@@ -47,9 +47,7 @@ const AllocationActionsCell = ({ allocation }: { allocation: ServerAllocation })
 
     if (attributes.is_default) {
         return (
-            <span
-                className={'inline-flex rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground'}
-            >
+            <span className='inline-flex rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground'>
                 Primary
             </span>
         );
@@ -57,16 +55,16 @@ const AllocationActionsCell = ({ allocation }: { allocation: ServerAllocation })
 
     return (
         <RowActions>
-            <Can action={'allocation.update'}>
+            <Can action='allocation.update'>
                 <Button.Text
-                    size={'xsmall'}
+                    size='xsmall'
                     disabled={setPrimaryAllocation.isPending}
                     onClick={() => setPrimaryAllocation.mutate(setPrimaryAllocationInput(uuid, attributes.id))}
                 >
                     Make Primary
                 </Button.Text>
             </Can>
-            <Can action={'allocation.delete'}>
+            <Can action='allocation.delete'>
                 <DeleteAllocationButton allocation={allocation} />
             </Can>
         </RowActions>
@@ -77,12 +75,13 @@ export const allocationColumns: ColumnDef<ServerAllocation>[] = [
     {
         id: 'address',
         accessorFn: (allocation) => allocation.attributes.ip_alias || ip(allocation.attributes.ip),
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Address'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Address' />,
         cell: ({ row }) => {
             const address = row.original.attributes.ip_alias || ip(row.original.attributes.ip);
+
             return (
                 <CopyOnClick text={address}>
-                    <Code dark className={'max-w-52 truncate'}>
+                    <Code dark className='max-w-52 truncate'>
                         {address}
                     </Code>
                 </CopyOnClick>
@@ -92,7 +91,7 @@ export const allocationColumns: ColumnDef<ServerAllocation>[] = [
     {
         id: 'port',
         accessorFn: (allocation) => allocation.attributes.port,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Port'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Port' />,
         cell: ({ getValue }) => <Code dark>{getValue<number>()}</Code>,
         meta: { headerClassName: 'w-24', cellClassName: 'w-24' },
     },

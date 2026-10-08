@@ -27,7 +27,7 @@ const DialogIcon = ({ type, position, className }: DialogIconProps) => {
 
         setIcon(
             <div className={cn(iconClass, iconTypeClass[type], className)}>
-                <Icon className={'w-6 h-6'} />
+                <Icon className='w-6 h-6' />
             </div>
         );
 

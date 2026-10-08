@@ -51,6 +51,7 @@ export default function DialogComponent({
         if (nextOpen || preventExternalClose) {
             return;
         }
+
         onClose();
     };
 
@@ -67,13 +68,13 @@ export default function DialogComponent({
             <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
                 <BaseDialog.Portal>
                     <BaseDialog.Backdrop className={backdropClass} />
-                    <div className={'fixed inset-0 overflow-y-auto z-50'}>
+                    <div className='fixed inset-0 overflow-y-auto z-50'>
                         <div className={dialogContainerClass}>
                             <BaseDialog.Popup ref={popupRef} className={panelClass} initialFocus={initialFocus}>
-                                <div className={'flex min-h-0 flex-1 overflow-y-auto p-6 pb-0'}>
+                                <div className='flex min-h-0 flex-1 overflow-y-auto p-6 pb-0'>
                                     {iconPosition === 'container' && icon}
-                                    <div className={'flex-1 min-w-0'}>
-                                        <div className={'flex items-center'}>
+                                    <div className='flex-1 min-w-0'>
+                                        <div className='flex items-center'>
                                             {iconPosition !== 'container' && icon}
                                             <div>
                                                 {title && (
@@ -88,27 +89,25 @@ export default function DialogComponent({
                                                     </BaseDialog.Title>
                                                 )}
                                                 {description && (
-                                                    <BaseDialog.Description
-                                                        className={'mb-5 text-sm leading-relaxed text-muted-foreground'}
-                                                    >
+                                                    <BaseDialog.Description className='mb-5 text-sm leading-relaxed text-muted-foreground'>
                                                         {description}
                                                     </BaseDialog.Description>
                                                 )}
                                             </div>
                                         </div>
                                         {content}
-                                        <div className={'invisible h-6'} />
+                                        <div className='invisible h-6' />
                                     </div>
                                 </div>
                                 {footer}
                                 {/* Rendered after the other buttons so it is not the default focus. */}
                                 {!hideCloseIcon && (
-                                    <div className={'absolute right-0 top-0 m-4'}>
+                                    <div className='absolute right-0 top-0 m-4'>
                                         <Button.Text
-                                            type={'button'}
-                                            size={'xsmall'}
+                                            type='button'
+                                            size='xsmall'
                                             onClick={onClose}
-                                            className={'group w-8 h-8 p-0 inline-flex items-center justify-center'}
+                                            className='group w-8 h-8 p-0 inline-flex items-center justify-center'
                                         >
                                             <X className={closeIconClass} />
                                         </Button.Text>

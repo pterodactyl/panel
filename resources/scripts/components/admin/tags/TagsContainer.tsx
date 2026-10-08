@@ -34,14 +34,17 @@ const sortingFromSearch = (sort?: AdminTagListSort): SortingState => {
             return [{ id: 'slug', desc: false }];
         case '-slug':
             return [{ id: 'slug', desc: true }];
-        default:
+        case undefined:
             return [];
     }
 };
 
 const sortingToSearch = (sorting: SortingState): AdminTagListSort | null => {
     const primary = sorting[0];
-    if (!primary || !['name', 'slug'].includes(primary.id)) return null;
+
+    if (!primary || !['name', 'slug'].includes(primary.id)) {
+        return null;
+    }
 
     return `${primary.desc ? '-' : ''}${primary.id}` as AdminTagListSort;
 };
@@ -63,13 +66,17 @@ export default function TagsContainer() {
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
-            if (next.pageIndex !== pagination.pageIndex) navigateToSearch({ page: next.pageIndex + 1 });
+
+            if (next.pageIndex !== pagination.pageIndex) {
+                navigateToSearch({ page: next.pageIndex + 1 });
+            }
         },
         [navigateToSearch, pagination]
     );
     const onSortingChange = useCallback<OnChangeFn<SortingState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(sorting) : updater;
+
             navigateToSearch({ page: 1, sort: sortingToSearch(next) });
         },
         [navigateToSearch, sorting]
@@ -88,56 +95,55 @@ export default function TagsContainer() {
         onSortingChange,
     });
 
-    if (error) return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    if (error) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
 
     return (
         <AdminContentBlock
-            title={'Admin · Tags'}
-            heading={'Tags'}
-            description={'Organize eggs and control which nodes can run them.'}
+            title='Admin · Tags'
+            heading='Tags'
+            description='Organize eggs and control which nodes can run them.'
         >
             <form
-                className={'mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'}
+                className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
                 onSubmit={(event) => {
                     event.preventDefault();
                     const value = new FormData(event.currentTarget).get('filter');
+
                     navigateToSearch({ page: 1, filter: value instanceof File || value === null ? '' : value.trim() });
                 }}
             >
-                <div className={'relative w-full sm:max-w-lg'}>
+                <div className='relative w-full sm:max-w-lg'>
                     <Icon
                         icon={Search}
-                        aria-hidden={'true'}
-                        className={
-                            'pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
-                        }
+                        aria-hidden='true'
+                        className='pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
                     />
                     <TextInput
                         key={filter}
-                        name={'filter'}
-                        aria-label={'Search tags'}
-                        className={'h-9 border-border bg-card pl-10'}
-                        placeholder={'Search tags…'}
+                        name='filter'
+                        aria-label='Search tags'
+                        className='h-9 border-border bg-card pl-10'
+                        placeholder='Search tags…'
                         defaultValue={filter}
                     />
                 </div>
                 <CreateTagButton />
             </form>
-            {!tags ? (
-                <Spinner size={'large'} centered />
-            ) : (
+            {tags ? (
                 <>
                     <DataTable
                         table={table}
-                        tableClassName={'table-fixed'}
+                        tableClassName='table-fixed'
                         isFetching={isFetching}
                         emptyState={
                             <AdminListEmpty
                                 icon={Tags}
-                                noun={'tags'}
+                                noun='tags'
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description={'Create a tag to organize eggs and match them with nodes.'}
+                                description='Create a tag to organize eggs and match them with nodes.'
                                 action={<CreateTagButton />}
                             />
                         }
@@ -146,9 +152,11 @@ export default function TagsContainer() {
                         table={table}
                         total={tags.meta.pagination.total}
                         count={tags.meta.pagination.count}
-                        itemLabel={'tags'}
+                        itemLabel='tags'
                     />
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
         </AdminContentBlock>
     );

@@ -9,10 +9,10 @@ interface Props {
 
 const kebab = (value: string): string =>
     value
-        .replace(/\W+/g, '-')
-        .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+        .replaceAll(/\W+/g, '-')
+        .replaceAll(/([a-z\d])([A-Z])/g, '$1-$2')
         .toLowerCase()
-        .replace(/^-+|-+$/g, '');
+        .replaceAll(/^-+|-+$/g, '');
 
 export default function ExportEggButton({ egg }: Props) {
     const exportEgg = useExportAdminEgg(egg.attributes.id);
@@ -20,6 +20,7 @@ export default function ExportEggButton({ egg }: Props) {
     const download = async () => {
         try {
             const { data: json } = await exportEgg.refetch({ throwOnError: true });
+
             if (!json) {
                 return;
             }
@@ -27,6 +28,7 @@ export default function ExportEggButton({ egg }: Props) {
             const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
+
             link.href = url;
             link.download = `egg-${kebab(egg.attributes.name)}.json`;
             document.body.appendChild(link);

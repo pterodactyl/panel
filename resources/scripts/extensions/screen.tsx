@@ -21,11 +21,13 @@ export function extensionScreenComponent(
     area: ScreenArea
 ): FunctionComponent {
     const { extensionId, id } = registration;
+
     function ScreenImplementation() {
         const state = useExtensionRegistry(() => getExtensionLoadState(extensionId));
         const data = useRouteSlotData();
         const resource = useCurrentResource();
         const Lazy = getScreenComponent(extensionId, id);
+
         if (state?.status === 'failed') {
             return (
                 <ExtensionFailure
@@ -34,8 +36,10 @@ export function extensionScreenComponent(
                 />
             );
         }
+
         return Lazy ? <Lazy data={{ ...data, resource: resource ?? undefined }} /> : <Spinner centered />;
     }
+
     return function ExtensionScreen() {
         const pathname = useLocation({ select: (location) => location.pathname });
         const screen = (
@@ -48,6 +52,7 @@ export function extensionScreenComponent(
                 <ScreenImplementation />
             </ExtensionMount>
         );
+
         return (
             <ScreenGate screen={registration} pending={<Spinner centered />} hidden={<NotFound />}>
                 {area === 'server' && registration.permission ? (

@@ -1,18 +1,34 @@
 import { getSlotComponents, useExtensionRegistry, type SlotProps } from '@/extensions/registry';
 import ExtensionMount from '@/extensions/ExtensionMount';
 
+function slotResetKey(name: SlotProps['name'], data: SlotProps['data']): string {
+    if (!data) {
+        return name;
+    }
+
+    if ('resource' in data) {
+        return `${data.kind}:${data.resource.attributes.id}`;
+    }
+
+    if ('directory' in data) {
+        return `${data.server.attributes.uuid}:${data.directory}`;
+    }
+
+    if ('attributes' in data) {
+        return data.attributes.uuid;
+    }
+
+    if ('pathname' in data) {
+        return data.pathname;
+    }
+
+    return name;
+}
+
 export default function Slot({ name, data }: SlotProps) {
     const registrations = useExtensionRegistry(() => getSlotComponents(name));
-    const resetKey =
-        data && 'resource' in data
-            ? `${data.kind}:${data.resource.attributes.id}`
-            : data && 'directory' in data
-              ? `${data.server.attributes.uuid}:${data.directory}`
-              : data && 'attributes' in data
-                ? data.attributes.uuid
-                : data && 'pathname' in data
-                  ? data.pathname
-                  : name;
+    const resetKey = slotResetKey(name, data);
+
     return (
         <>
             {registrations.map(({ id, extensionId, component: Component }) => (

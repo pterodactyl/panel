@@ -67,14 +67,14 @@ export default function Switch({
         </BaseSwitch.Root>
     );
     const text = hasText ? (
-        <div className={'min-w-0 flex-1'}>
+        <div className='min-w-0 flex-1'>
             {label && (
-                <Label id={labelId} htmlFor={fieldId} className={'cursor-pointer mb-0'}>
+                <Label id={labelId} htmlFor={fieldId} className='cursor-pointer mb-0'>
                     {label}
                 </Label>
             )}
             {description && (
-                <p id={descriptionId} className={'input-help'}>
+                <p id={descriptionId} className='input-help'>
                     {description}
                 </p>
             )}

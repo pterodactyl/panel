@@ -12,8 +12,11 @@ let renders = 0;
 const runFrame = (timestamp: number) =>
     act(() => {
         const pending = [...frames.values()];
+
         frames = new Map();
-        pending.forEach((callback) => callback(timestamp));
+        for (const callback of pending) {
+            callback(timestamp);
+        }
     });
 
 const reportIntersection = (isIntersecting: boolean) =>
@@ -23,6 +26,7 @@ function Chart({ live }: { live: boolean }) {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useElementVisible(ref);
     const now = useAnimationClock(live && visible);
+
     renders++;
 
     return <div ref={ref} data-now={now} />;
@@ -35,6 +39,7 @@ describe('chart animation clock', () => {
         observerCallback = null;
         vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
             frames.set(++nextFrame, callback);
+
             return nextFrame;
         });
         vi.stubGlobal('cancelAnimationFrame', (id: number) => frames.delete(id));
@@ -74,6 +79,7 @@ describe('chart animation clock', () => {
 
     it('stops ticking when the chart leaves the screen, the tab hides, or the server is not live', async () => {
         const { container, rerender } = render(<Chart live />);
+
         await reportIntersection(true);
         await runFrame(1_000);
         expect(container.firstElementChild).toHaveAttribute('data-now', '1000');
@@ -83,6 +89,7 @@ describe('chart animation clock', () => {
 
         await reportIntersection(true);
         const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+
         await act(() => document.dispatchEvent(new Event('visibilitychange')));
         expect(frames.size).toBe(0);
 

@@ -19,6 +19,7 @@ function CreateApiKeyForm() {
                         allowed_ips: value.allowedIps.length > 0 ? value.allowedIps.split('\n') : [],
                     },
                 });
+
                 formApi.reset();
                 setApiKey(`${created.attributes.identifier}${created.meta?.secret_token ?? ''}`);
             } catch {
@@ -34,9 +35,9 @@ function CreateApiKeyForm() {
             <ApiKeyModal open={apiKey.length > 0} onClose={() => setApiKey('')} apiKey={apiKey} />
             <Form form={form}>
                 <SpinnerOverlay visible={isSubmitting} />
-                <div className={'mb-6'}>
+                <div className='mb-6'>
                     <form.AppField
-                        name={'description'}
+                        name='description'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 4
@@ -45,22 +46,20 @@ function CreateApiKeyForm() {
                         }}
                     >
                         {(field) => (
-                            <field.TextField label={'Description'} description={'A description of this API key.'} />
+                            <field.TextField label='Description' description='A description of this API key.' />
                         )}
                     </form.AppField>
                 </div>
-                <form.AppField name={'allowedIps'}>
+                <form.AppField name='allowedIps'>
                     {(field) => (
                         <field.TextAreaField
-                            label={'Allowed IPs'}
+                            label='Allowed IPs'
                             rows={6}
-                            description={
-                                'Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.'
-                            }
+                            description='Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.'
                         />
                     )}
                 </form.AppField>
-                <div className={'flex justify-end mt-6'}>
+                <div className='flex justify-end mt-6'>
                     <form.AppForm>
                         <form.SubmitButton>Create</form.SubmitButton>
                     </form.AppForm>

@@ -48,6 +48,7 @@ describe('account API key mutations', () => {
         const { queryClient, wrapper } = setup();
         const created = apiKey('created');
         const perCallSuccess = vi.fn();
+
         mocks.create.mockResolvedValue(created);
         queryClient.setQueryData<ClientListAccountApiKeysResponse>(queryKey, { object: 'list', data: [] });
         const { result } = renderHook(() => useCreateAccountApiKey(), { wrapper });
@@ -66,7 +67,8 @@ describe('account API key mutations', () => {
     it('rolls an optimistic delete back before reporting the error', async () => {
         const { queryClient, wrapper } = setup();
         const existing = apiKey('existing');
-        let rejectDelete: (error: Error) => void = () => undefined;
+        let rejectDelete: (error: Error) => void = () => {};
+
         mocks.delete.mockImplementation(
             () =>
                 new Promise((_resolve, reject) => {
@@ -97,7 +99,8 @@ describe('account API key mutations', () => {
         const { queryClient, wrapper } = setup();
         const existing = apiKey('existing');
         const created = apiKey('created');
-        let rejectDelete: (error: Error) => void = () => undefined;
+        let rejectDelete: (error: Error) => void = () => {};
+
         mocks.delete.mockImplementation(
             () =>
                 new Promise((_resolve, reject) => {
@@ -108,6 +111,7 @@ describe('account API key mutations', () => {
         queryClient.setQueryData<ClientListAccountApiKeysResponse>(queryKey, { object: 'list', data: [existing] });
         const deletion = renderHook(() => useDeleteAccountApiKey(), { wrapper });
         const creation = renderHook(() => useCreateAccountApiKey(), { wrapper });
+
         act(() =>
             deletion.result.current.mutate({
                 path: { identifier: 'existing' },

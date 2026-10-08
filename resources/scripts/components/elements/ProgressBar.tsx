@@ -8,7 +8,7 @@ export default function ProgressBar() {
 
     useEffect(() => {
         if (progress !== 100) {
-            return undefined;
+            return;
         }
 
         const timeout = setTimeout(() => setHttpProgress(undefined), 500);
@@ -23,11 +23,13 @@ export default function ProgressBar() {
 
         if (!progress || progress === 0) {
             setHttpProgress(randomInt(20, 30));
+
             return;
         }
 
         if (progress >= 90) {
             setHttpProgress(90);
+
             return;
         }
 
@@ -37,10 +39,10 @@ export default function ProgressBar() {
     }, [continuous, progress]);
 
     return (
-        <div className={'fixed h-0.5 w-full'}>
+        <div className='fixed h-0.5 w-full'>
             {visible && (
                 <div
-                    className={'h-full bg-accent shadow-progress transition-[width] duration-300 ease-in-out'}
+                    className='h-full bg-accent shadow-progress transition-[width] duration-300 ease-in-out'
                     style={{ width: progress === undefined ? '100%' : `${progress}%` }}
                 />
             )}

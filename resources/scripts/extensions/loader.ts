@@ -78,6 +78,7 @@ const describeBootError = (cause: unknown): Error => {
     const error = cause instanceof Error ? cause : new Error(String(cause));
     const message = error.message;
     const match = message.match(/does not provide an export named '([^']+)'/);
+
     if (!match) {
         return error;
     }
@@ -106,36 +107,49 @@ const failedImports = new Set<string>();
 
 async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     let module: ExtensionModule;
+
     try {
         module = await withTimeout(importBundle(entry.entry));
     } catch (cause) {
         failedImports.add(entry.id);
         failExtensionLoad(entry.id, 'boot', describeBootError(cause));
+
         return;
     }
 
     const batch = createExtensionRegistryBatch();
+
     try {
         const definition = parseExtensionDefinition(module);
         const setupResult = definition.setup(createContext(entry, batch));
+
         if (isThenable(setupResult)) {
             void Promise.resolve(setupResult).catch(() => {});
             throw new Error('setup() must register synchronously and must not return a promise');
         }
+
         commitExtensionRegistryBatch(entry.id, batch);
     } catch (cause) {
-        if (!batch.closed) abortExtensionRegistryBatch(batch);
+        if (!batch.closed) {
+            abortExtensionRegistryBatch(batch);
+        }
+
         failExtensionLoad(entry.id, 'boot', describeBootError(cause));
     }
 }
 
 /** Call once after the core mounts. The route tree has already registered each extension's class prefix. */
 export function loadExtensions(importModule: ModuleImporter = nativeImport): Promise<void> {
-    if (loading) return loading;
+    if (loading) {
+        return loading;
+    }
+
     importBundle = importModule;
     const entries = prepareExtensions(getBootstrapExtensions());
+
     startExtensionDevelopmentReload(entries);
     loading = Promise.all(entries.map(bootExtension)).then(() => {});
+
     return loading;
 }
 
@@ -146,9 +160,13 @@ export function canRetryExtension(id: string): boolean {
 /** Only a failed import can be retried, once per failure. */
 export function retryExtension(id: string): Promise<void> {
     const entry = getLoadableExtensions()?.find((candidate) => candidate.id === id);
-    if (!entry || !failedImports.delete(id)) return Promise.resolve();
+
+    if (!entry || !failedImports.delete(id)) {
+        return Promise.resolve();
+    }
 
     clearExtensionError(id, 'boot');
     setExtensionState({ id, status: 'loading' });
+
     return bootExtension(entry);
 }

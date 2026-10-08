@@ -468,16 +468,16 @@ const panelRoute = createRoute({
 const adminPage = slottedRouteComponent;
 
 const nodeDetailImport = () => import('@/components/admin/nodes/NodeDetailContainer');
+
 export const nodeDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'nodes/$id',
     params: idParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({
             ...adminNodeQueryOptions(params.id),
             revalidateIfStale: true,
-        });
-    },
+        }),
     component: adminPage(nodeDetailImport, {
         before: 'panel.nodes.detail.before',
         after: 'panel.nodes.detail.after',
@@ -555,16 +555,16 @@ const nodeDetailChildren = [
 ];
 
 const serverDetailImport = () => import('@/components/admin/servers/ServerDetailContainer');
+
 export const serverDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'servers/$id',
     params: idParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({
             ...adminServerQueryOptions(params.id),
             revalidateIfStale: true,
-        });
-    },
+        }),
     component: adminPage(serverDetailImport, {
         before: 'panel.servers.detail.before',
         after: 'panel.servers.detail.after',
@@ -664,13 +664,13 @@ const serverDetailChildren = [
 ];
 
 const eggDetailImport = () => import('@/components/admin/eggs/EggDetailContainer');
+
 export const eggDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'eggs/$eggId',
     params: eggIdParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({ ...adminEggQueryOptions(params.eggId), revalidateIfStale: true });
-    },
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({ ...adminEggQueryOptions(params.eggId), revalidateIfStale: true }),
     component: adminPage(eggDetailImport, {
         before: 'panel.eggs.detail.before',
         after: 'panel.eggs.detail.after',
@@ -727,12 +727,11 @@ export const mountDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'mounts/$id',
     params: idParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({
             ...adminMountQueryOptions(params.id),
             revalidateIfStale: true,
-        });
-    },
+        }),
     component: adminPage(() => import('@/components/admin/mounts/MountDetailContainer'), {
         before: 'panel.mounts.detail.before',
         after: 'panel.mounts.detail.after',
@@ -743,12 +742,11 @@ export const userDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'users/$id',
     params: idParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({
             ...adminUserWithServersQueryOptions(params.id),
             revalidateIfStale: true,
-        });
-    },
+        }),
     component: adminPage(
         () =>
             import('@/components/admin/users/UserDetailContainer').then((module) => ({
@@ -773,12 +771,11 @@ export const locationDetailRoute = createRoute({
     getParentRoute: () => panelRoute,
     path: 'locations/$id',
     params: idParam,
-    loader: async ({ context, params }) => {
-        return context.queryClient.ensureQueryData({
+    loader: async ({ context, params }) =>
+        context.queryClient.ensureQueryData({
             ...adminLocationQueryOptions(params.id),
             revalidateIfStale: true,
-        });
-    },
+        }),
     component: adminPage(() => import('@/components/admin/locations/LocationDetailContainer'), {
         before: 'panel.locations.detail.before',
         after: 'panel.locations.detail.after',

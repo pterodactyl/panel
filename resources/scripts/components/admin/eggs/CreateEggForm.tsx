@@ -32,7 +32,8 @@ export default function CreateEggForm() {
                 const egg = await createEgg.mutateAsync(
                     createAdminEggInput(toApiValues(value, { configLogs, configFiles, configStartup }))
                 );
-                navigate({
+
+                void navigate({
                     to: '/panel/eggs/$eggId',
                     params: { eggId: egg.attributes.id },
                 });
@@ -48,32 +49,32 @@ export default function CreateEggForm() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Create Egg'}
-            heading={'Create Egg'}
-            description={'Create a reusable server template and startup configuration.'}
+            title='Admin · Create Egg'
+            heading='Create Egg'
+            description='Create a reusable server template and startup configuration.'
         >
             <Link
-                to={'/panel/eggs'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                to='/panel/eggs'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Eggs
             </Link>
             {eggsFetching ? (
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             ) : (
                 <Form form={form}>
                     <EggConfigurationFields
                         form={form}
                         eggs={eggs?.data ?? []}
-                        initialConfigLogs={''}
-                        initialConfigFiles={''}
-                        initialConfigStartup={''}
+                        initialConfigLogs=''
+                        initialConfigFiles=''
+                        initialConfigStartup=''
                         logRef={logsEditor}
                         filesRef={filesEditor}
                         startupRef={startupEditor}
                     />
-                    <div className={'flex justify-end mt-6'}>
+                    <div className='flex justify-end mt-6'>
                         <form.AppForm>
                             <form.SubmitButton>Create Egg</form.SubmitButton>
                         </form.AppForm>

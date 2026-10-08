@@ -9,6 +9,7 @@ import { SocketEvent } from '@/components/server/events';
 import { Websocket } from '@/plugins/Websocket';
 
 const connection = vi.hoisted(() => ({ connected: true, socket: null as Websocket | null }));
+
 vi.mock('@/state/server', () => ({
     useSocketConnected: () => connection.connected,
     useSocketInstance: () => connection.socket,
@@ -22,8 +23,10 @@ afterEach(cleanup);
 
 function Subscriber({ callback }: { callback: (value: string) => void | Promise<void> }) {
     useWebsocketEvent(SocketEvent.STATUS, useExtensionCallback(SocketEvent.STATUS, callback));
+
     return null;
 }
+
 const mountContext = { extensionId: 'event-mod', context: 'test mount' };
 
 function Mount({ callback }: { callback: (value: string) => void | Promise<void> }) {
@@ -45,6 +48,7 @@ it('isolates throwing and rejecting mod callbacks and reports their event', asyn
         />
     );
     const healthy = vi.fn();
+
     connection.socket!.on('status', healthy);
     act(() => {
         connection.socket!.emit('status', 'running');
@@ -73,6 +77,7 @@ it('uses the latest callback and cleans up across reconnects and Strict Mode', (
     const first = vi.fn();
     const latest = vi.fn();
     const result = render(<Mount callback={first} />);
+
     act(() => {
         connection.socket!.emit('status', 'first');
     });

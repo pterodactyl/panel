@@ -13,7 +13,7 @@ export type AdminActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | number | boolean | Array<string> | {
+        [key: string]: string | number   | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -1086,7 +1086,7 @@ export type ClientActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | number | boolean | Array<string> | {
+        [key: string]: string | number   | boolean | Array<string> | {
             [key: string]: string;
         };
     };

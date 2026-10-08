@@ -50,6 +50,7 @@ const Spinner = (({ centered, ...props }: Props) =>
     ) : (
         <SpinnerComponent {...props} />
     )) as SpinnerComponentType;
+
 Spinner.displayName = 'Spinner';
 
 Spinner.Size = {

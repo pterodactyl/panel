@@ -20,9 +20,11 @@ it.each([SocketEvent.INSTALL_COMPLETED, SocketEvent.BACKUP_RESTORE_COMPLETED])(
     async (event) => {
         const server = createTestServer();
         const host = createExtensionTestHost({ server });
+
         vi.spyOn(host.queryClient, 'refetchQueries').mockResolvedValue();
         const ownKey = [{ _id: 'clientListAllocations', path: { server_uuid: server.attributes.uuid } }];
         const otherKey = [{ _id: 'clientListAllocations', path: { server_uuid: 'another-server' } }];
+
         host.queryClient.setQueryData(ownKey, { data: [] });
         host.queryClient.setQueryData(otherKey, { data: [] });
 

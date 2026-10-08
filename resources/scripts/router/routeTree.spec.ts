@@ -51,6 +51,7 @@ it(
 
         const { getAreaNav } = await import('@/router/nav');
         const tabs = getAreaNav('server');
+
         expect(tabs.find((tab) => tab.segment === 'votes')?.screen).toMatchObject({
             extensionId: 'healthy',
             id: 'main',
@@ -83,9 +84,11 @@ it('mounts extension tabs beneath the existing resource layouts and preserves co
 
     for (const resource of ['nodes', 'servers', 'eggs', 'users']) {
         const matches = router.matchRoutes(`/panel/${resource}/42/probe`);
+
         expect(matches.at(-1)?.pathname).toBe(`/panel/${resource}/42/probe`);
         expect(matches.at(-2)?.pathname).toBe(`/panel/${resource}/42`);
     }
+
     expect(router.matchRoutes('/panel/nodes/42/settings').at(-1)?.pathname).toBe('/panel/nodes/42/settings');
 });
 
@@ -126,17 +129,21 @@ async function loadRoute(path: string, options: { rootAdmin?: boolean; seed?: (c
     const { buildRouteTree } = await import('@/router/routeTree');
     const http = (await import('@/api/http')).default;
     const requests: string[] = [];
+
     http.defaults.adapter = async (config) => {
         requests.push(config.url ?? '');
         throw new Error(`unexpected request to ${config.url}`);
     };
+
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+
     options.seed?.(queryClient);
     const router = createRouter({
         routeTree: buildRouteTree([]),
         context: { queryClient },
         history: createMemoryHistory({ initialEntries: [path] }),
     });
+
     await router.load();
     delete (window as BootstrapWindow).PterodactylUser;
 
@@ -151,6 +158,7 @@ it('sends guests to sign in with the page they asked for', { timeout: 20_000 }, 
         context: { queryClient: new QueryClient() },
         history: createMemoryHistory({ initialEntries: ['/panel/nodes/42/settings?tab=network'] }),
     });
+
     await router.load();
 
     expect(router.state.location.pathname).toBe('/auth/login');
@@ -213,6 +221,7 @@ it('parses numeric route ids and treats anything else as not found', { timeout: 
 
     const params = (path: string, routeId: string) =>
         router.matchRoutes(path).find((match) => match.routeId === routeId)?.params;
+
     expect(params('/panel/nodes/42/settings', '/authenticated/panel/nodes/$id')).toMatchObject({ id: 42 });
     expect(params('/panel/eggs/7/variables', '/authenticated/panel/eggs/$eggId')).toMatchObject({ eggId: 7 });
     expect(params('/server/abc/schedules/3', '/authenticated/server/$id/schedules/$scheduleId')).toMatchObject({

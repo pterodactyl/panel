@@ -42,6 +42,7 @@ async function renderSidebar(pathname: string) {
         history: createMemoryHistory({ initialEntries: [pathname] }),
         defaultHashScrollIntoView: false,
     });
+
     await router.load();
     render(<RouterProvider router={router} />);
     await screen.findByText('Admin screen');

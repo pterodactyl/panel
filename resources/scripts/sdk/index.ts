@@ -64,15 +64,19 @@ export type { SdkUser, SdkSiteSettings, SdkServer };
 export function useCurrentUser(): SdkUser {
     return usePanelUser();
 }
+
 export function useSiteSettings(): SdkSiteSettings {
     return usePanelSettings();
 }
+
 export function useCurrentServer<TData = SdkServer>(select?: (server: SdkServer) => TData): TData | undefined {
     return usePanelServer(select);
 }
+
 export function useCurrentServerPermissions(): string[] {
     return usePanelPermissions();
 }
+
 export { usePermissions } from '@/plugins/usePermissions';
 export { useExtensionCallback as useExtensionAction } from '@/extensions/context';
 
@@ -203,6 +207,7 @@ export function useCurrentServerUuid(): string | undefined {
 
 export function useCurrentServerRequired(message = 'This extension screen requires a server context.'): SdkServer {
     const server = useCurrentServer();
+
     if (!server) {
         throw new Error(message);
     }

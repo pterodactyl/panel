@@ -16,7 +16,7 @@ const RemoveSubuserButton = ({ subuser }: Props) => {
     const loading = deleteSubuser.isPending;
 
     const doDeletion = (close: () => void) => {
-        deleteSubuser
+        void deleteSubuser
             .mutateAsync(deleteServerSubuserInput(uuid, subuser))
             .catch(() => {})
             .then(close);
@@ -24,8 +24,8 @@ const RemoveSubuserButton = ({ subuser }: Props) => {
 
     return (
         <Dialog.ConfirmTrigger
-            title={'Delete this subuser?'}
-            confirm={'Yes, remove subuser'}
+            title='Delete this subuser?'
+            confirm='Yes, remove subuser'
             preventExternalClose={loading}
             pending={loading}
             onConfirmed={(_event, close) => doDeletion(close)}

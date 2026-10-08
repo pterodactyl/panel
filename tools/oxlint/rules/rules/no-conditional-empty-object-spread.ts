@@ -3,9 +3,11 @@ import type { ESTree } from '@oxlint/plugins';
 
 function unwrapParentheses(node: ESTree.Expression): ESTree.Expression {
     let current = node;
+
     while (current.type === 'ParenthesizedExpression') {
         current = current.expression;
     }
+
     return current;
 }
 
@@ -15,6 +17,7 @@ function isEmptyObjectExpression(node: ESTree.Expression): boolean {
 
 function isConditionalEmptyObjectSpread(node: ESTree.Expression): boolean {
     const conditional = unwrapParentheses(node);
+
     return (
         conditional.type === 'ConditionalExpression' &&
         (isEmptyObjectExpression(conditional.consequent) || isEmptyObjectExpression(conditional.alternate))
@@ -35,7 +38,9 @@ export const noConditionalEmptyObjectSpreadRule = defineRule({
     create(context) {
         return {
             SpreadElement(node) {
-                if (node.parent.type !== 'ObjectExpression') return;
+                if (node.parent.type !== 'ObjectExpression') {
+                    return;
+                }
 
                 if (isConditionalEmptyObjectSpread(node.argument)) {
                     context.report({ node, messageId: 'avoid' });

@@ -30,6 +30,7 @@ export default function ConfirmationDialogTrigger({
         }
 
         const result = onConfirmed(event, dialog.hide);
+
         if (!(result instanceof Promise)) {
             return;
         }
@@ -37,7 +38,7 @@ export default function ConfirmationDialogTrigger({
         confirmingRef.current = true;
         setConfirming(true);
         result
-            .catch(() => undefined)
+            .catch(() => {})
             .finally(() => {
                 confirmingRef.current = false;
                 setConfirming(false);

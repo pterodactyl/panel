@@ -15,7 +15,7 @@ const SEND_LOGS_RETRY_MS = 5_000;
 const MAX_RETAINED_TRANSFER_LINES = 1_000;
 
 const formatLine = (line: string, prelude = false) =>
-    (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m';
+    `${(prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '')}\u001b[0m`;
 
 /** Streams the server's socket output into the terminal, requesting log history on each connection. */
 export const useConsoleSocketLogs = ({
@@ -34,30 +34,33 @@ export const useConsoleSocketLogs = ({
     // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
     useEffect(() => {
         const term = terminal.current;
+
         if (!terminalReady || !term || !connected || !instance) {
             return;
         }
 
         const writeTransferLine = (line: string) => {
             const lines = transferLines.current;
+
             lines.push(line);
             if (lines.length > MAX_RETAINED_TRANSFER_LINES) {
                 lines.splice(0, lines.length - MAX_RETAINED_TRANSFER_LINES);
             }
+
             term.writeln(line);
         };
 
         const handleTransferStatus = (status: string) => {
             if (normalizeTransferStatus(status) === 'failed') {
-                writeTransferLine(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                writeTransferLine(`${TERMINAL_PRELUDE}Transfer has failed.\u001b[0m`);
             }
         };
 
         const handleDaemonErrorOutput = (line: string) =>
-            term.writeln(TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + formatLine(line));
+            term.writeln(`${TERMINAL_PRELUDE}\u001b[1m\u001b[41m${formatLine(line)}`);
 
         const handlePowerChangeEvent = (state: string) =>
-            term.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
+            term.writeln(`${TERMINAL_PRELUDE}Server marked as ${state}...\u001b[0m`);
 
         const listeners = [
             [SocketEvent.STATUS, handlePowerChangeEvent],
@@ -67,11 +70,14 @@ export const useConsoleSocketLogs = ({
             [SocketEvent.TRANSFER_STATUS, handleTransferStatus],
             [SocketEvent.DAEMON_MESSAGE, (line: string) => term.writeln(formatLine(line, true))],
             [SocketEvent.DAEMON_ERROR, handleDaemonErrorOutput],
-        ] satisfies ReadonlyArray<readonly [SocketEvent, (line: string) => void]>;
+        ] satisfies readonly (readonly [SocketEvent, (line: string) => void])[];
 
         const requestHistory = () => {
             term.clear();
-            transferLines.current.forEach((line) => term.writeln(line));
+            for (const line of transferLines.current) {
+                term.writeln(line);
+            }
+
             instance.send(SocketRequest.SEND_LOGS);
         };
 
@@ -87,13 +93,19 @@ export const useConsoleSocketLogs = ({
             }, SEND_LOGS_RETRY_MS);
         };
 
-        listeners.forEach(([event, listener]) => instance.addListener(event, listener));
+        for (const [event, listener] of listeners) {
+            instance.addListener(event, listener);
+        }
+
         instance.addListener(THROTTLED_EVENT, handleThrottled);
         requestHistory();
 
         return () => {
             clearTimeout(retryTimer);
-            listeners.forEach(([event, listener]) => instance.removeListener(event, listener));
+            for (const [event, listener] of listeners) {
+                instance.removeListener(event, listener);
+            }
+
             instance.removeListener(THROTTLED_EVENT, handleThrottled);
         };
     }, [connected, instance, terminal, terminalReady]);

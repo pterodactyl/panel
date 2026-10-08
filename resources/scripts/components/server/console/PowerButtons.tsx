@@ -25,33 +25,33 @@ export default function PowerButtons({ className }: PowerButtonProps) {
 
     return (
         <div className={className}>
-            <Can action={'control.start'}>
+            <Can action='control.start'>
                 <Button
-                    className={'flex-1'}
+                    className='flex-1'
                     disabled={!connected || status !== 'offline'}
                     onClick={onButtonClick.bind(null, 'start')}
                 >
                     Start
                 </Button>
             </Can>
-            <Can action={'control.restart'}>
+            <Can action='control.restart'>
                 <Button.Text
-                    className={'flex-1'}
+                    className='flex-1'
                     disabled={!connected || !status}
                     onClick={onButtonClick.bind(null, 'restart')}
                 >
                     Restart
                 </Button.Text>
             </Can>
-            <Can action={'control.stop'}>
+            <Can action='control.stop'>
                 {killable ? (
                     <Dialog.ConfirmTrigger
-                        key={'killable'}
+                        key='killable'
                         hideCloseIcon
-                        title={'Forcibly Stop Process'}
-                        confirm={'Continue'}
+                        title='Forcibly Stop Process'
+                        confirm='Continue'
                         trigger={({ onClick }) => (
-                            <Button.Danger className={'flex-1'} disabled={!connected} onClick={onClick}>
+                            <Button.Danger className='flex-1' disabled={!connected} onClick={onClick}>
                                 Kill
                             </Button.Danger>
                         )}
@@ -64,8 +64,8 @@ export default function PowerButtons({ className }: PowerButtonProps) {
                     </Dialog.ConfirmTrigger>
                 ) : (
                     <Button.Danger
-                        key={'stoppable'}
-                        className={'flex-1'}
+                        key='stoppable'
+                        className='flex-1'
                         disabled={!connected || status === 'offline'}
                         onClick={onButtonClick.bind(null, 'stop')}
                     >

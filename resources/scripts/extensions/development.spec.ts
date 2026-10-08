@@ -21,8 +21,10 @@ it('reloads once after a successful replacement and ignores failed responses', a
         .mockRejectedValueOnce(new Error('offline'))
         .mockResolvedValueOnce(new Response(version))
         .mockResolvedValueOnce(new Response('b'.repeat(64)));
+
     vi.stubGlobal('fetch', fetcher);
     const stop = startExtensionDevelopmentReload([entry], reload);
+
     try {
         await vi.advanceTimersByTimeAsync(1500);
         expect(reload).not.toHaveBeenCalled();
@@ -40,10 +42,12 @@ it('reloads once after a successful replacement and ignores failed responses', a
 it('stops after the development command removes its marker and leaves normal extensions idle', async () => {
     vi.useFakeTimers();
     const fetcher = vi.fn().mockResolvedValue(new Response('', { status: 404 }));
+
     vi.stubGlobal('fetch', fetcher);
     const reload = vi.fn();
     const stop = startExtensionDevelopmentReload([entry], reload);
     const regular = startExtensionDevelopmentReload([{ id: 'normal', entry: '/normal.js' }], reload);
+
     try {
         await vi.advanceTimersByTimeAsync(1500);
         await vi.advanceTimersByTimeAsync(6000);

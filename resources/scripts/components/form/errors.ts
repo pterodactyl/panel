@@ -7,6 +7,7 @@ export function firstError<T>(errors: T[]): string | undefined {
     }
 
     const error = errors.find((e) => e !== undefined && e !== null && e !== '');
+
     if (error === undefined) {
         return undefined;
     }

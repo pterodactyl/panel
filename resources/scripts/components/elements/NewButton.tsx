@@ -21,8 +21,8 @@ export function NewButton({
 }: React.ComponentProps<typeof Button> & IconProps) {
     return (
         <Button className={cn(newButtonClass, className)} {...props}>
-            <span className={'inline-flex items-center gap-2'}>
-                <Icon icon={icon} aria-hidden className={'h-4 w-4'} />
+            <span className='inline-flex items-center gap-2'>
+                <Icon icon={icon} aria-hidden className='h-4 w-4' />
                 {children}
             </span>
         </Button>
@@ -38,7 +38,7 @@ export function NewLinkButton({
 }: Omit<React.ComponentProps<typeof RouterLinkButton>, 'children'> & IconProps & { children: React.ReactNode }) {
     return (
         <RouterLinkButton className={cn(newButtonClass, className)} {...props}>
-            <Icon icon={icon} aria-hidden className={'h-4 w-4'} />
+            <Icon icon={icon} aria-hidden className='h-4 w-4' />
             {children}
         </RouterLinkButton>
     );

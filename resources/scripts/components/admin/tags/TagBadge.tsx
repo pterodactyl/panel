@@ -18,12 +18,12 @@ export default function TagBadge({ tag, className, showSlug = false }: Props) {
             )}
         >
             <span
-                aria-hidden={'true'}
-                className={'h-2 w-2 shrink-0 rounded-full bg-muted-foreground'}
+                aria-hidden='true'
+                className='h-2 w-2 shrink-0 rounded-full bg-muted-foreground'
                 style={color ? { backgroundColor: color } : undefined}
             />
-            <span className={'truncate'}>{name}</span>
-            {showSlug ? <span className={'truncate font-mono text-muted-foreground'}>{slug}</span> : null}
+            <span className='truncate'>{name}</span>
+            {showSlug ? <span className='truncate font-mono text-muted-foreground'>{slug}</span> : null}
         </span>
     );
 }

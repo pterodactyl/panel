@@ -29,6 +29,7 @@ function EggConfigurationForm({ egg }: Props) {
                 const configLogs = logsEditor.current?.getValue() ?? initialValues.configLogs;
                 const configFiles = filesEditor.current?.getValue() ?? initialValues.configFiles;
                 const configStartup = startupEditor.current?.getValue() ?? initialValues.configStartup;
+
                 await updateEgg.mutateAsync(
                     updateAdminEggInput(
                         egg.attributes.id,
@@ -53,7 +54,7 @@ function EggConfigurationForm({ egg }: Props) {
                 filesRef={filesEditor}
                 startupRef={startupEditor}
             />
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>Save Changes</form.SubmitButton>
                 </form.AppForm>

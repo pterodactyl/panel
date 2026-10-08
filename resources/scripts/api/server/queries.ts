@@ -86,12 +86,14 @@ export const useServerQuery = <TData = Server>(id: string, select?: (server: Ser
 
 export const useCurrentServer = <TData = Server>(select?: (server: Server) => TData) => {
     const id = useServerRouteId();
+
     return useServerQuery(id ?? '', select).data;
 };
 
 const selectServerUuid = (server: Server) => server.attributes.uuid;
 const selectServerIdentifier = (server: Server) => server.attributes.identifier;
 const selectServerName = (server: Server) => server.attributes.name;
+
 export const selectServerPermissions = (server: Server) =>
     server.meta?.is_server_owner ? ownerPermissions : (server.meta?.user_permissions ?? emptyPermissions);
 
@@ -106,7 +108,9 @@ export const useUpdateCurrentServer = () => {
 
     return useCallback(
         (updater: (server: ClientServerResource) => ClientServerResource) => {
-            if (!id) return;
+            if (!id) {
+                return;
+            }
 
             updateServerQueryData(queryClient, id, updater);
         },

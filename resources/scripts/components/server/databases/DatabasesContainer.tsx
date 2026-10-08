@@ -40,9 +40,9 @@ const DatabasesContainer = () => {
             : null;
 
     return (
-        <ServerContentBlock title={'Databases'}>
+        <ServerContentBlock title='Databases'>
             {!databases.length && isLoading ? (
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             ) : (
                 <>
                     {(usage || canAddDatabase) && (
@@ -53,7 +53,7 @@ const DatabasesContainer = () => {
                         emptyState={
                             <Empty className={emptyCompactClass}>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <Database />
                                     </EmptyMedia>
                                     <EmptyTitle>No databases</EmptyTitle>

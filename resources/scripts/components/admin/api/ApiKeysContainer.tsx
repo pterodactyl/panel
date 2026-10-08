@@ -38,13 +38,18 @@ const sortingFromSearch = (sort?: ApiKeyListSort): SortingState => {
             return [{ id: 'created_at', desc: false }];
         case '-created_at':
             return [{ id: 'created_at', desc: true }];
-        default:
+        case undefined:
             return [];
     }
 };
+
 const sortingToSearch = (sorting: SortingState): ApiKeyListSort | null => {
     const primary = sorting[0];
-    if (!primary || !['memo', 'created_at'].includes(primary.id)) return null;
+
+    if (!primary || !['memo', 'created_at'].includes(primary.id)) {
+        return null;
+    }
+
     return `${primary.desc ? '-' : ''}${primary.id}` as ApiKeyListSort;
 };
 
@@ -65,13 +70,17 @@ export default function ApiKeysContainer() {
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
-            if (next.pageIndex !== pagination.pageIndex) navigateToSearch({ page: next.pageIndex + 1 });
+
+            if (next.pageIndex !== pagination.pageIndex) {
+                navigateToSearch({ page: next.pageIndex + 1 });
+            }
         },
         [navigateToSearch, pagination]
     );
     const onSortingChange = useCallback<OnChangeFn<SortingState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(sorting) : updater;
+
             navigateToSearch({ page: 1, sort: sortingToSearch(next) });
         },
         [navigateToSearch, sorting]
@@ -90,44 +99,43 @@ export default function ApiKeysContainer() {
         onSortingChange,
     });
 
-    if (error) return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    if (error) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
 
     return (
         <AdminContentBlock
-            title={'Admin · Application API'}
-            heading={'Application API'}
-            description={'Manage application API keys used to automate panel administration.'}
+            title='Admin · Application API'
+            heading='Application API'
+            description='Manage application API keys used to automate panel administration.'
         >
             <form
-                className={'mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'}
+                className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
                 onSubmit={(event) => {
                     event.preventDefault();
                     const value = new FormData(event.currentTarget).get('filter');
+
                     navigateToSearch({ page: 1, filter: value instanceof File || value === null ? '' : value.trim() });
                 }}
             >
-                <div className={'relative w-full sm:max-w-lg'}>
+                <div className='relative w-full sm:max-w-lg'>
                     <Icon
                         icon={Search}
-                        aria-hidden={'true'}
-                        className={
-                            'pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
-                        }
+                        aria-hidden='true'
+                        className='pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
                     />
                     <TextInput
                         key={filter}
-                        name={'filter'}
-                        aria-label={'Search application API keys'}
-                        className={'h-9 border-border bg-card pl-10'}
-                        placeholder={'Search API keys…'}
+                        name='filter'
+                        aria-label='Search application API keys'
+                        className='h-9 border-border bg-card pl-10'
+                        placeholder='Search API keys…'
                         defaultValue={filter}
                     />
                 </div>
                 <CreateApiKeyButton />
             </form>
-            {!apiKeys ? (
-                <Spinner size={'large'} centered />
-            ) : (
+            {apiKeys ? (
                 <>
                     <DataTable
                         table={table}
@@ -135,10 +143,10 @@ export default function ApiKeysContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={KeyRound}
-                                noun={'API keys'}
+                                noun='API keys'
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description={'Create an application API key to automate panel administration.'}
+                                description='Create an application API key to automate panel administration.'
                             />
                         }
                     />
@@ -146,9 +154,11 @@ export default function ApiKeysContainer() {
                         table={table}
                         total={apiKeys.meta.pagination.total}
                         count={apiKeys.meta.pagination.count}
-                        itemLabel={'API keys'}
+                        itemLabel='API keys'
                     />
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
         </AdminContentBlock>
     );

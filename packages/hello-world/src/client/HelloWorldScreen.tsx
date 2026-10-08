@@ -5,7 +5,7 @@ export default function HelloWorldScreen() {
     const server = useCurrentServerRequired();
 
     return (
-        <ServerContentBlock title={'Hello World'}>
+        <ServerContentBlock title='Hello World'>
             <div style={{ display: 'grid', gap: '1rem' }}>
                 <HelloWorldCard key={server.attributes.uuid} serverName={server.attributes.name} />
                 <p>

@@ -53,6 +53,7 @@ describe('extensions/loader', () => {
         expect(setup).toHaveBeenCalledTimes(1);
 
         const context = setup.mock.calls[0]![0];
+
         expect(context.meta).toEqual({ id: 'demo', version: '1.2.3' });
         expect(context.config).toEqual({ greeting: 'hi' });
 
@@ -109,6 +110,7 @@ describe('extensions/loader', () => {
                 },
             },
         };
+
         resolvers.get('/assets/extensions/second/client.js')?.(extensionModule);
         await vi.waitFor(() => expect(setupOrder).toEqual(['second']));
         expect(registry.getSlotComponents('dashboard.before').map((item) => item.extensionId)).toEqual(['second']);
@@ -187,6 +189,7 @@ describe('extensions/loader', () => {
         stubExtensions([{ id: 'hung', entry: '/assets/extensions/hung/client.js' }]);
 
         const loading = loader.loadExtensions(vi.fn(() => new Promise<ExtensionModule>(() => {})));
+
         await vi.advanceTimersByTimeAsync(loader.EXTENSION_IMPORT_TIMEOUT_MS);
         await loading;
 
@@ -211,11 +214,13 @@ describe('extensions/loader', () => {
         const setup = vi.fn((context: ExtensionSetupContext) => context.slots.register('dashboard.before', Component));
 
         const loading = loader.loadExtensions(importer);
+
         await vi.advanceTimersByTimeAsync(loader.EXTENSION_IMPORT_TIMEOUT_MS);
         await loading;
         expect(registry.getExtensionLoadState('slow')?.status).toBe('failed');
 
         const retry = loader.retryExtension('slow');
+
         expect(registry.getExtensionStates()).toEqual([{ id: 'slow', status: 'loading' }]);
         expect(loader.canRetryExtension('slow')).toBe(false);
         resolve({ default: { setup } });
@@ -249,6 +254,7 @@ describe('extensions/loader', () => {
         vi.stubGlobal('window', { SiteConfiguration: {} });
 
         const importer = vi.fn();
+
         await loader.loadExtensions(importer);
 
         expect(importer).not.toHaveBeenCalled();
@@ -262,6 +268,7 @@ it('never runs setup after a timed-out import eventually resolves', async () => 
     vi.spyOn(console, 'error').mockImplementation(() => {});
     const registry = await import('@/extensions/registry');
     const loader = await import('@/extensions/loader');
+
     stubExtensions([{ id: 'late', entry: '/late.js' }]);
     let resolve!: (module: ExtensionModule) => void;
     const setup = vi.fn((context: ExtensionSetupContext) => context.slots.register('dashboard.before', Component));
@@ -271,6 +278,7 @@ it('never runs setup after a timed-out import eventually resolves', async () => 
                 resolve = done;
             })
     );
+
     await vi.advanceTimersByTimeAsync(loader.EXTENSION_IMPORT_TIMEOUT_MS);
     await pending;
     resolve({ default: { setup } });
@@ -289,6 +297,7 @@ describe('declared component replacements', () => {
         stubExtensions([{ id: 'views', entry: '/views.js', components: ['dashboard.serverCard'] }]);
         const registry = await import('./registry');
         const loader = await import('./loader');
+
         await loader.loadExtensions(async () => ({
             default: {
                 setup(ctx: ExtensionSetupContext) {
@@ -303,6 +312,7 @@ describe('declared component replacements', () => {
         stubExtensions([{ id: 'views', entry: '/views.js', components: ['dashboard.serverCard'] }]);
         const registry = await import('./registry');
         const loader = await import('./loader');
+
         await loader.loadExtensions(async () => ({
             default: {
                 setup(ctx: ExtensionSetupContext) {
@@ -316,8 +326,10 @@ describe('declared component replacements', () => {
     });
     it('rejects undeclared duplicate and invalid component registrations', async () => {
         const registry = await import('./registry');
+
         registry.prepareExtensions([{ id: 'views', entry: '/views.js', components: ['dashboard.serverCard'] }]);
         const batch = registry.createExtensionRegistryBatch();
+
         expect(() => registry.registerComponentReplacement('views', 'server.files.details', Component, batch)).toThrow(
             'ui.components'
         );
@@ -342,6 +354,7 @@ describe('declared component replacements', () => {
         const registry = await import('./registry');
         const loader = await import('./loader');
         const importer = vi.fn(async () => ({ default: { setup() {} } }));
+
         await loader.loadExtensions(importer);
         expect(importer).toHaveBeenCalledExactlyOnceWith('/healthy.js');
         expect(registry.getComponentOwner('dashboard.serverCard')).toBeUndefined();

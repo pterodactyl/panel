@@ -52,9 +52,9 @@ const hintClass = [
 const RowMeaning = ({ meaning, detail }: Row) =>
     detail ? (
         <Tooltip content={detail} interactions={['hover', 'focus', 'click']}>
-            <button type={'button'} className={hintClass}>
+            <button type='button' className={hintClass}>
                 {meaning}
-                <Icon icon={CircleHelp} className={'shrink-0 self-center text-muted-foreground'} />
+                <Icon icon={CircleHelp} className='shrink-0 self-center text-muted-foreground' />
             </button>
         </Tooltip>
     ) : (
@@ -62,21 +62,17 @@ const RowMeaning = ({ meaning, detail }: Row) =>
     );
 
 const CheatsheetCard = ({ title, rows, tokenClass }: { title: string; rows: Row[]; tokenClass: string }) => (
-    <div className={'overflow-hidden rounded-sm border border-border bg-background/50'}>
-        <h3
-            className={
-                'border-b border-border bg-popover px-3 py-2 text-xs font-semibold uppercase text-muted-foreground'
-            }
-        >
+    <div className='overflow-hidden rounded-sm border border-border bg-background/50'>
+        <h3 className='border-b border-border bg-popover px-3 py-2 text-xs font-semibold uppercase text-muted-foreground'>
             {title}
         </h3>
-        <dl className={'divide-y divide-border text-xs'}>
+        <dl className='divide-y divide-border text-xs'>
             {rows.map((row) => (
-                <div key={row.token} className={'flex items-baseline gap-3 px-3 py-2.5'}>
+                <div key={row.token} className='flex items-baseline gap-3 px-3 py-2.5'>
                     <dt className={cn('shrink-0 whitespace-nowrap font-mono text-foreground', tokenClass)}>
                         {row.token}
                     </dt>
-                    <dd className={'min-w-0 text-card-foreground'}>
+                    <dd className='min-w-0 text-card-foreground'>
                         <RowMeaning {...row} />
                     </dd>
                 </div>
@@ -86,9 +82,9 @@ const CheatsheetCard = ({ title, rows, tokenClass }: { title: string; rows: Row[
 );
 
 const ScheduleCheatsheetCards = () => (
-    <div className={'mt-4 grid items-start gap-4 sm:grid-cols-2'}>
-        <CheatsheetCard title={'Examples'} rows={examples} tokenClass={'w-32'} />
-        <CheatsheetCard title={'Special characters'} rows={specialCharacters} tokenClass={'w-6 text-center'} />
+    <div className='mt-4 grid items-start gap-4 sm:grid-cols-2'>
+        <CheatsheetCard title='Examples' rows={examples} tokenClass='w-32' />
+        <CheatsheetCard title='Special characters' rows={specialCharacters} tokenClass='w-6 text-center' />
     </div>
 );
 

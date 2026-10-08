@@ -64,6 +64,7 @@ export const useServerAllocations = (uuid: string) =>
 
 const upsertAllocation = async (queryClient: QueryClient, uuid: string, allocation: ServerAllocation) => {
     await queryClient.cancelQueries({ queryKey: clientListServerAllocationsQueryKey(serverAllocationsInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerAllocationsResponse>(
         clientListServerAllocationsQueryKey(serverAllocationsInput(uuid)),
         (current) => upsertListItem(current, allocation, (item) => item.attributes.id === allocation.attributes.id)
@@ -72,6 +73,7 @@ const upsertAllocation = async (queryClient: QueryClient, uuid: string, allocati
 
 const removeAllocation = async (queryClient: QueryClient, uuid: string, allocationId: number) => {
     await queryClient.cancelQueries({ queryKey: clientListServerAllocationsQueryKey(serverAllocationsInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerAllocationsResponse>(
         clientListServerAllocationsQueryKey(serverAllocationsInput(uuid)),
         (current) => removeListItems(current, (allocation) => allocation.attributes.id === allocationId)

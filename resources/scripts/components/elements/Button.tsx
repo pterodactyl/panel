@@ -130,19 +130,22 @@ type ComponentProps = Omit<React.ComponentPropsWithRef<'button'>, keyof Props> &
 const Button = ({ children, isLoading, disabled, type = 'button', ref, ...props }: ComponentProps) => (
     <ButtonStyle ref={ref} type={type} disabled={disabled || isLoading} aria-busy={isLoading || undefined} {...props}>
         {isLoading && (
-            <span className={'flex absolute justify-center items-center w-full h-full left-0 top-0'}>
-                <Spinner size={'small'} />
+            <span className='flex absolute justify-center items-center w-full h-full left-0 top-0'>
+                <Spinner size='small' />
             </span>
         )}
         <span className={isLoading ? 'text-transparent' : undefined}>{children}</span>
     </ButtonStyle>
 );
+
 Button.displayName = 'Button';
 
-const TextButton = ({ ref, ...props }: ComponentProps) => <Button ref={ref} color={'grey'} {...props} />;
+const TextButton = ({ ref, ...props }: ComponentProps) => <Button ref={ref} color='grey' {...props} />;
+
 TextButton.displayName = 'Button.Text';
 
-const DangerButton = ({ ref, ...props }: ComponentProps) => <Button ref={ref} color={'red'} {...props} />;
+const DangerButton = ({ ref, ...props }: ComponentProps) => <Button ref={ref} color='red' {...props} />;
+
 DangerButton.displayName = 'Button.Danger';
 
 // Assigned as static properties; Object.assign would hide the component from Fast Refresh.
@@ -150,12 +153,13 @@ const ButtonWithVariants = Button as typeof Button & {
     Text: typeof TextButton;
     Danger: typeof DangerButton;
 };
+
 ButtonWithVariants.Text = TextButton;
 ButtonWithVariants.Danger = DangerButton;
 
 type LinkProps = Omit<React.JSX.IntrinsicElements['a'], 'ref' | keyof Props> & Props;
 
-const LinkButton = (props: LinkProps) => <ButtonStyle as={'a'} {...props} />;
+const LinkButton = (props: LinkProps) => <ButtonStyle as='a' {...props} />;
 
 const RouterLinkButton = (props: ButtonStyleProps<typeof Link>) => <ButtonStyle as={Link} {...props} />;
 

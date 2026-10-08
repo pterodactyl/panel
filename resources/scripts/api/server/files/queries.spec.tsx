@@ -19,6 +19,7 @@ import {
 } from './queries';
 
 const mocks = vi.hoisted(() => ({ error: vi.fn(), success: vi.fn() }));
+
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: mocks.error }));
 vi.mock('sonner', () => ({ toast: { success: mocks.success, error: vi.fn() } }));
 
@@ -55,9 +56,11 @@ const file = (name: string) => new File([name], name, { type: 'text/plain' });
 function upload(files: File[]) {
     const { result } = renderHook(() => useUploadFiles(), { wrapper });
     let done: Promise<FileUploadSummary> | undefined;
+
     act(() => {
         done = result.current.mutateAsync({ uuid: 'server', directory: '/config', files, callbacks });
     });
+
     return done!;
 }
 
@@ -104,9 +107,12 @@ describe('useUploadFiles', () => {
 
         posts[0].finish();
         await waitFor(() => expect(posts).toHaveLength(4));
-        posts.slice(1).forEach((post) => post.finish());
+        for (const post of posts.slice(1)) {
+            post.finish();
+        }
 
         const summary = await done;
+
         expect(summary.uploaded.map((uploaded) => uploaded.name)).toEqual(['a.txt', 'a.txt', 'b.txt', 'c.txt']);
         expect(settled.map(([, outcome]) => outcome)).toEqual(['uploaded', 'uploaded', 'uploaded', 'uploaded']);
         expect(mocks.success).toHaveBeenCalledWith('Upload complete');
@@ -115,6 +121,7 @@ describe('useUploadFiles', () => {
 
     it('settles a cancelled and a failed file on their own and still refreshes the listing', async () => {
         const done = upload([file('a.txt'), file('b.txt'), file('c.txt')]);
+
         await waitFor(() => expect(posts).toHaveLength(3));
 
         queued[1].controller.abort();
@@ -122,6 +129,7 @@ describe('useUploadFiles', () => {
         posts[0].finish();
 
         const summary = await done;
+
         expect(summary.uploaded.map((uploaded) => uploaded.name)).toEqual(['a.txt']);
         expect(summary.cancelled.map((cancelled) => cancelled.name)).toEqual(['b.txt']);
         expect(summary.failed.map((failed) => failed.name)).toEqual(['c.txt']);
@@ -139,12 +147,16 @@ describe('useUploadFiles', () => {
 
     it('never starts a queued file cancelled before its turn', async () => {
         const done = upload([file('a.txt'), file('b.txt'), file('c.txt'), file('d.txt')]);
+
         await waitFor(() => expect(posts).toHaveLength(3));
 
         queued[3].controller.abort();
-        posts.forEach((post) => post.finish());
+        for (const post of posts) {
+            post.finish();
+        }
 
         const summary = await done;
+
         expect(posts.map((post) => post.name)).toEqual(['a.txt', 'b.txt', 'c.txt']);
         expect(summary.cancelled.map((cancelled) => cancelled.name)).toEqual(['d.txt']);
         expect(mocks.error).not.toHaveBeenCalled();
@@ -154,6 +166,7 @@ describe('useUploadFiles', () => {
 describe('file queries', () => {
     it('refreshes the destination listing after a move', async () => {
         const destination = serverFilesQueryKey('server', '/config/plugins');
+
         client.setQueryData(destination, { object: 'list', data: [] });
         const { result } = renderHook(() => useRenameFiles(), { wrapper });
 
@@ -167,8 +180,10 @@ describe('file queries', () => {
 
     it('sends chmod modes to wings as octal strings and patches the cached listing', async () => {
         let sent: unknown;
+
         http.defaults.adapter = (async (config) => {
             sent = JSON.parse(config.data as string);
+
             return respond(config, '', 204);
         }) satisfies AxiosAdapter;
         client.setQueryData(listing, {

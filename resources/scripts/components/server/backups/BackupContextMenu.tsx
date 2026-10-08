@@ -82,7 +82,7 @@ const BackupContextMenu = ({ backup, page }: Props) => {
             <Dialog.Confirm
                 open={modal === 'restore'}
                 onClose={() => setModal('')}
-                confirm={'Restore'}
+                confirm='Restore'
                 title={`Restore "${attributes.name}"`}
                 pending={restoreBackup.isPending}
                 onConfirmed={() => doRestorationAction()}
@@ -91,14 +91,12 @@ const BackupContextMenu = ({ backup, page }: Props) => {
                     Your server will be stopped. You will not be able to control the power state, access the file
                     manager, or create additional backups until completed.
                 </p>
-                <p className={'mt-4 -mb-2 bg-card p-3 rounded-sm'}>
-                    <label htmlFor={'restore_truncate'} className={'text-base flex items-center cursor-pointer'}>
+                <p className='mt-4 -mb-2 bg-card p-3 rounded-sm'>
+                    <label htmlFor='restore_truncate' className='text-base flex items-center cursor-pointer'>
                         <Checkbox
-                            className={
-                                'mr-2 h-5 w-5 data-[checked]:border-destructive data-[checked]:bg-destructive data-[checked]:text-destructive-foreground'
-                            }
-                            id={'restore_truncate'}
-                            value={'true'}
+                            className='mr-2 h-5 w-5 data-[checked]:border-destructive data-[checked]:bg-destructive data-[checked]:text-destructive-foreground'
+                            id='restore_truncate'
+                            value='true'
                             checked={truncate}
                             onChange={() => setTruncate((s) => !s)}
                         />
@@ -108,7 +106,7 @@ const BackupContextMenu = ({ backup, page }: Props) => {
             </Dialog.Confirm>
             <Dialog.Confirm
                 title={`Delete "${attributes.name}"`}
-                confirm={'Continue'}
+                confirm='Continue'
                 open={modal === 'delete'}
                 pending={deleteBackup.isPending}
                 onClose={() => setModal('')}
@@ -118,27 +116,27 @@ const BackupContextMenu = ({ backup, page }: Props) => {
             </Dialog.Confirm>
             <SpinnerOverlay visible={loading} fixed />
             <RowActions>
-                <Can action={'backup.delete'}>
+                <Can action='backup.delete'>
                     <DeleteAction
                         aria-label={`Delete ${attributes.name}`}
                         disabled={attributes.is_locked}
-                        disabledReason={'Unlock this backup before deleting it.'}
+                        disabledReason='Unlock this backup before deleting it.'
                         onClick={() => setModal('delete')}
                     />
                 </Can>
                 {attributes.is_successful && (
                     <RowActionsMenu label={`More actions for ${attributes.name}`}>
-                        <Can action={'backup.download'}>
+                        <Can action='backup.download'>
                             <DropdownMenu.Item onClick={doDownload} icon={CloudDownload}>
                                 Download
                             </DropdownMenu.Item>
                         </Can>
-                        <Can action={'backup.restore'}>
+                        <Can action='backup.restore'>
                             <DropdownMenu.Item onClick={() => setModal('restore')} icon={PackageOpen}>
                                 Restore
                             </DropdownMenu.Item>
                         </Can>
-                        <Can action={'backup.delete'}>
+                        <Can action='backup.delete'>
                             <DropdownMenu.Item onClick={onLockToggle} icon={attributes.is_locked ? Unlock : Lock}>
                                 {attributes.is_locked ? 'Unlock' : 'Lock'}
                             </DropdownMenu.Item>

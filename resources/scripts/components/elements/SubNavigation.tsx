@@ -63,7 +63,9 @@ let lastElementKey = 0;
 
 const keyFor = (element: HTMLElement) => {
     const key = elementKeys.get(element) ?? ++lastElementKey;
+
     elementKeys.set(element, key);
+
     return key;
 };
 
@@ -108,11 +110,14 @@ function useOverflowNavigation(
         let mounted = true;
 
         const update = () => {
-            const children = Array.from(row.children).filter(
+            const children = [...row.children].filter(
                 (child): child is HTMLElement => child !== more && child instanceof HTMLElement
             );
 
-            children.forEach((child) => delete child.dataset.overflowed);
+            for (const child of children) {
+                delete child.dataset.overflowed;
+            }
+
             delete root.dataset.collapsed;
             more.hidden = true;
 
@@ -127,7 +132,9 @@ function useOverflowNavigation(
                 const widths = children.map((child) => {
                     const right = child.getBoundingClientRect().right;
                     const width = Math.max(0, right - edge);
+
                     edge = Math.max(edge, right);
+
                     return width;
                 });
                 const total = widths.reduce((sum, width) => sum + width, 0);
@@ -175,7 +182,10 @@ function useOverflowNavigation(
                 root.dataset.collapsed = '';
             }
 
-            overflowed.forEach((child) => (child.dataset.overflowed = ''));
+            for (const child of overflowed) {
+                child.dataset.overflowed = '';
+            }
+
             more.hidden = overflowed.length === 0;
 
             const activeChild = children.find(isActive);
@@ -197,6 +207,7 @@ function useOverflowNavigation(
         update();
 
         const mutationObserver = new MutationObserver(update);
+
         mutationObserver.observe(row, {
             childList: true,
             subtree: true,
@@ -205,9 +216,10 @@ function useOverflowNavigation(
         });
 
         const resizeObserver = new ResizeObserver(update);
+
         resizeObserver.observe(root);
 
-        document.fonts?.ready.then(() => mounted && update());
+        void document.fonts?.ready.then(() => mounted && update());
 
         return () => {
             mounted = false;
@@ -236,16 +248,14 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
             {...props}
         >
             <button
-                type={'button'}
+                type='button'
                 onClick={() => setOpen((value) => !value)}
                 aria-expanded={expanded}
                 aria-controls={rowId}
-                className={
-                    'mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
-                }
+                className='mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
             >
-                <Icon icon={Menu} className={'h-4 w-4 shrink-0'} aria-hidden />
-                <span className={'min-w-0 flex-1 truncate text-left'}>{current || 'Navigation'}</span>
+                <Icon icon={Menu} className='h-4 w-4 shrink-0' aria-hidden />
+                <span className='min-w-0 flex-1 truncate text-left'>{current || 'Navigation'}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-180')}
@@ -254,7 +264,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
             </button>
             <div ref={rowRef} id={rowId} onClick={() => setOpen(false)}>
                 {children}
-                <span ref={moreRef} className={'ml-2 shrink-0'}>
+                <span ref={moreRef} className='ml-2 shrink-0'>
                     <DropdownMenu
                         openOnHover
                         triggerClassName={cn(
@@ -274,7 +284,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                                 className={cn(item.active && 'bg-muted')}
                                 onClick={() => activate(item.element)}
                             >
-                                <span className={'inline-flex items-center gap-2'}>
+                                <span className='inline-flex items-center gap-2'>
                                     <span data-overflowed dangerouslySetInnerHTML={{ __html: item.html }} />
                                     {item.label && <span>{item.label}</span>}
                                 </span>
@@ -286,6 +296,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
         </div>
     );
 };
+
 SubNavigation.displayName = 'SubNavigation';
 
 export default SubNavigation;

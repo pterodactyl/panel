@@ -11,6 +11,7 @@ export default function ImportEggButton() {
 
     const submit = async (file: File) => {
         const egg = await importEgg.mutateAsync(importAdminEggInput({ import_file: file }));
+
         void navigate({ to: '/panel/eggs/$eggId', params: { eggId: egg.attributes.id } });
     };
 
@@ -26,9 +27,9 @@ export default function ImportEggButton() {
                 <EggFileDialog
                     open={open}
                     onClose={onClose}
-                    title={'Import egg'}
-                    description={'Upload an egg JSON file to add a server template.'}
-                    submitLabel={'Import Egg'}
+                    title='Import egg'
+                    description='Upload an egg JSON file to add a server template.'
+                    submitLabel='Import Egg'
                     submitting={importEgg.isPending}
                     onSubmit={submit}
                 />

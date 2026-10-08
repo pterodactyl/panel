@@ -30,13 +30,14 @@ const getActionDetails = (action: string): [string, LucideIcon] => {
 
 const TaskIdentityCell = ({ task }: { task: Task }) => {
     const [title, icon] = getActionDetails(task.attributes.action);
+
     return (
-        <div className={'flex min-w-48 items-start gap-3'}>
-            <Icon icon={icon} className={'mt-0.5 hidden text-muted-foreground md:block'} />
-            <div className={'min-w-0'}>
-                <p className={'font-medium'}>{title}</p>
+        <div className='flex min-w-48 items-start gap-3'>
+            <Icon icon={icon} className='mt-0.5 hidden text-muted-foreground md:block' />
+            <div className='min-w-0'>
+                <p className='font-medium'>{title}</p>
                 {task.attributes.payload ? (
-                    <code className={'mt-1 block max-w-xl whitespace-pre-wrap break-all text-xs text-muted-foreground'}>
+                    <code className='mt-1 block max-w-xl whitespace-pre-wrap break-all text-xs text-muted-foreground'>
                         {task.attributes.payload}
                     </code>
                 ) : null}
@@ -60,16 +61,16 @@ const TaskActionsCell = ({ schedule, task }: { schedule: Schedule; task: Task })
 
     return (
         <RowActions>
-            <SpinnerOverlay visible={deleteTask.isPending} fixed size={'large'} />
-            <Can action={'schedule.update'}>
+            <SpinnerOverlay visible={deleteTask.isPending} fixed size='large' />
+            <Can action='schedule.update'>
                 <Dialog.Trigger trigger={({ onClick }) => <EditAction aria-label={`Edit ${name}`} onClick={onClick} />}>
                     {({ open, onClose }) => (
                         <TaskDetailsModal schedule={schedule} task={task} open={open} onClose={onClose} />
                     )}
                 </Dialog.Trigger>
                 <Dialog.ConfirmTrigger
-                    title={'Confirm task deletion'}
-                    confirm={'Delete Task'}
+                    title='Confirm task deletion'
+                    confirm='Delete Task'
                     onConfirmed={(_event, close) => onConfirmDeletion(close)}
                     trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}
                 >
@@ -84,17 +85,17 @@ export const scheduleTaskColumns = (schedule: Schedule): ColumnDef<Task>[] => [
     {
         id: 'action',
         accessorFn: (task) => getActionDetails(task.attributes.action)[0],
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Task'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Task' />,
         cell: ({ row }) => <TaskIdentityCell task={row.original} />,
     },
     {
         id: 'delay',
         accessorFn: (task) => task.attributes.time_offset,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Delay'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Delay' />,
         cell: ({ row }) =>
             row.original.attributes.sequence_id > 1 && row.original.attributes.time_offset > 0 ? (
-                <span className={'inline-flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground'}>
-                    <Icon icon={Clock} className={'h-3.5 w-3.5'} />
+                <span className='inline-flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground'>
+                    <Icon icon={Clock} className='h-3.5 w-3.5' />
                     {row.original.attributes.time_offset}s later
                 </span>
             ) : (
@@ -108,16 +109,12 @@ export const scheduleTaskColumns = (schedule: Schedule): ColumnDef<Task>[] => [
         header: 'Failure behavior',
         cell: ({ row }) =>
             row.original.attributes.continue_on_failure ? (
-                <span
-                    className={
-                        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-warning px-2 py-1 text-xs text-warning-foreground'
-                    }
-                >
-                    <Icon icon={ArrowDownCircle} className={'h-3.5 w-3.5'} />
+                <span className='inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-warning px-2 py-1 text-xs text-warning-foreground'>
+                    <Icon icon={ArrowDownCircle} className='h-3.5 w-3.5' />
                     Continues
                 </span>
             ) : (
-                <span className={'text-xs text-muted-foreground'}>Stops</span>
+                <span className='text-xs text-muted-foreground'>Stops</span>
             ),
         enableSorting: false,
         meta: { headerClassName: 'hidden lg:table-cell w-36', cellClassName: 'hidden lg:table-cell w-36' },

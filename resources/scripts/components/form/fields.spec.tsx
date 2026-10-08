@@ -17,30 +17,32 @@ function Harness({
     onNameBlur?: FocusEventHandler<HTMLInputElement>;
 }) {
     const form = useAppForm({ defaultValues: { name: '', memory: 512 } as Values });
+
     useImperativeHandle(formRef, () => form, [form]);
 
     return (
         <>
             <form.AppField
-                name={'name'}
+                name='name'
                 validators={{ onChange: ({ value }) => (value === 'bad' ? 'invalid CPU limit.' : undefined) }}
             >
                 {(field) => (
                     <field.TextField
-                        label={'Name'}
-                        description={'The display name.'}
-                        aria-describedby={'external-hint'}
+                        label='Name'
+                        description='The display name.'
+                        aria-describedby='external-hint'
                         onBlur={onNameBlur}
                     />
                 )}
             </form.AppField>
-            <form.AppField name={'memory'}>{(field) => <field.NumberField label={'Memory'} />}</form.AppField>
+            <form.AppField name='memory'>{(field) => <field.NumberField label='Memory' />}</form.AppField>
         </>
     );
 }
 
 const renderHarness = (onNameBlur?: FocusEventHandler<HTMLInputElement>) => {
     const formRef = createRef<AppForm<Values>>();
+
     render(<Harness formRef={formRef} onNameBlur={onNameBlur} />);
 
     return () => formRef.current!;

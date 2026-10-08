@@ -22,8 +22,13 @@ interface DeleteServerDialogProps {
 }
 
 export const getServerStatus = (suspended: boolean, installed: number): ServerStatus => {
-    if (suspended) return 'suspended';
-    if (!installed) return 'installing';
+    if (suspended) {
+        return 'suspended';
+    }
+
+    if (!installed) {
+        return 'installing';
+    }
 
     return 'active';
 };
@@ -47,7 +52,7 @@ function DeleteServerDialog({ server, open, onClose }: DeleteServerDialogProps) 
     return (
         <Dialog
             open={open}
-            title={'Confirm server deletion'}
+            title='Confirm server deletion'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={() => {
@@ -56,13 +61,13 @@ function DeleteServerDialog({ server, open, onClose }: DeleteServerDialogProps) 
             }}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a server is permanent. This will remove <strong>{attributes.name}</strong> and all associated
                 data.
             </p>
-            <Form form={form} className={'m-0 mt-6'}>
+            <Form form={form} className='m-0 mt-6'>
                 <form.AppField
-                    name={'confirm'}
+                    name='confirm'
                     validators={{
                         onChange: ({ value }) =>
                             value === attributes.name ? undefined : 'The server name must be provided.',
@@ -70,19 +75,19 @@ function DeleteServerDialog({ server, open, onClose }: DeleteServerDialogProps) 
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
+                            type='text'
                             id={`confirm_${attributes.uuid}`}
-                            label={'Confirm Server Name'}
-                            description={'Enter the name of this server to confirm deletion.'}
+                            label='Confirm Server Name'
+                            description='Enter the name of this server to confirm deletion.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6 flex justify-end gap-2'}>
-                    <Button.Text type={'button'} isSecondary onClick={onClose}>
+                <div className='mt-6 flex justify-end gap-2'>
+                    <Button.Text type='button' isSecondary onClick={onClose}>
                         Cancel
                     </Button.Text>
                     <form.AppForm>
-                        <form.SubmitButton color={'red'}>Delete server</form.SubmitButton>
+                        <form.SubmitButton color='red'>Delete server</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
@@ -94,18 +99,16 @@ const ServerIdentityCell = ({ server }: { server: AdminServer }) => {
     const { attributes } = server;
 
     return (
-        <div className={'w-0 min-w-full'}>
+        <div className='w-0 min-w-full'>
             <Link
-                to={'/panel/servers/$id'}
+                to='/panel/servers/$id'
                 params={{ id: attributes.id }}
                 title={attributes.name}
-                className={
-                    'block truncate font-medium text-foreground no-underline transition-colors hover:text-accent'
-                }
+                className='block truncate font-medium text-foreground no-underline transition-colors hover:text-accent'
             >
                 {attributes.name}
             </Link>
-            <p className={'mt-0.5 truncate font-mono text-xs text-muted-foreground'} title={attributes.uuid}>
+            <p className='mt-0.5 truncate font-mono text-xs text-muted-foreground' title={attributes.uuid}>
                 #{attributes.id} · {attributes.identifier}
             </p>
         </div>
@@ -114,21 +117,24 @@ const ServerIdentityCell = ({ server }: { server: AdminServer }) => {
 
 const OwnerCell = ({ server }: { server: AdminServer }) => {
     const owner = relationshipAttributes(server.attributes.relationships?.user);
-    if (!owner) return <span className={'text-muted-foreground'}>Unavailable</span>;
+
+    if (!owner) {
+        return <span className='text-muted-foreground'>Unavailable</span>;
+    }
 
     const name = [owner.first_name, owner.last_name].filter(Boolean).join(' ') || owner.username;
 
     return (
-        <div className={'w-0 min-w-full'}>
+        <div className='w-0 min-w-full'>
             <Link
-                to={'/panel/users/$id'}
+                to='/panel/users/$id'
                 params={{ id: owner.id }}
                 title={name}
-                className={'block truncate text-foreground no-underline transition-colors hover:text-accent'}
+                className='block truncate text-foreground no-underline transition-colors hover:text-accent'
             >
                 {name}
             </Link>
-            <p className={'mt-0.5 truncate text-xs text-muted-foreground'} title={owner.email}>
+            <p className='mt-0.5 truncate text-xs text-muted-foreground' title={owner.email}>
                 {owner.email}
             </p>
         </div>
@@ -141,21 +147,21 @@ const NodeCell = ({ server }: { server: AdminServer }) => {
     const address = allocation ? `${allocation.alias ?? allocation.ip}:${allocation.port}` : null;
 
     return (
-        <div className={'w-0 min-w-full'}>
+        <div className='w-0 min-w-full'>
             {node ? (
                 <Link
-                    to={'/panel/nodes/$id'}
+                    to='/panel/nodes/$id'
                     params={{ id: node.id }}
                     title={node.fqdn}
-                    className={'block truncate text-foreground no-underline transition-colors hover:text-accent'}
+                    className='block truncate text-foreground no-underline transition-colors hover:text-accent'
                 >
                     {node.name}
                 </Link>
             ) : (
-                <span className={'block text-muted-foreground'}>Unavailable</span>
+                <span className='block text-muted-foreground'>Unavailable</span>
             )}
             {address ? (
-                <p className={'mt-0.5 truncate font-mono text-xs text-muted-foreground'} title={address}>
+                <p className='mt-0.5 truncate font-mono text-xs text-muted-foreground' title={address}>
                     {address}
                 </p>
             ) : null}
@@ -189,7 +195,7 @@ export const serverColumns = [
     {
         id: 'name',
         accessorFn: (server) => server.attributes.name,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Server'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Server' />,
         cell: ({ row }) => <ServerIdentityCell server={row.original} />,
         enableSorting: true,
         meta: { headerClassName: 'min-w-40', cellClassName: 'min-w-40' },
@@ -222,11 +228,11 @@ export const serverColumns = [
     {
         id: 'created_at',
         accessorFn: (server) => server.attributes.created_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Created'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Created' />,
         cell: ({ row }) => (
             <time
                 dateTime={row.original.attributes.created_at}
-                className={'whitespace-nowrap text-xs text-muted-foreground'}
+                className='whitespace-nowrap text-xs text-muted-foreground'
             >
                 {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
             </time>

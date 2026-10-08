@@ -31,7 +31,9 @@ class ExtensionBoundary extends Component<BoundaryProps, BoundaryState> {
     }
 
     componentDidUpdate(previous: BoundaryProps) {
-        if (previous.resetKey !== this.props.resetKey && this.state.error) this.retry();
+        if (previous.resetKey !== this.props.resetKey && this.state.error) {
+            this.retry();
+        }
     }
 
     retry = () => {
@@ -55,11 +57,19 @@ const failureNotificationId = (extensionId: string, context: string) => `extensi
 
 function showFailureNotice(notificationId: string, extensionId: string, mounts: Set<FailedMount>) {
     const retryable = [...mounts].some((mount) => mount.retry);
+
     toast.error(`The "${extensionId}" extension could not display this content.`, {
         id: notificationId,
         duration: Infinity,
         action: retryable
-            ? { label: 'Retry extension', onClick: () => [...mounts].forEach((mount) => mount.retry?.()) }
+            ? {
+                  label: 'Retry extension',
+                  onClick: () => {
+                      for (const mount of mounts) {
+                          mount.retry?.();
+                      }
+                  },
+              }
             : { label: 'Reload page', onClick: () => window.location.reload() },
         description: retryable ? (
             <Button type='button' onClick={() => window.location.reload()}>
@@ -80,20 +90,32 @@ export function ExtensionFailure({
     notificationId?: string;
 }) {
     useEffect(() => {
-        if (!notificationId) return;
+        if (!notificationId) {
+            return;
+        }
+
         const mount: FailedMount = { retry };
         const mounts = failedMountsByNotification.get(notificationId) ?? new Set<FailedMount>();
+
         mounts.add(mount);
         failedMountsByNotification.set(notificationId, mounts);
-        if (mounts.size === 1) showFailureNotice(notificationId, extensionId, mounts);
+        if (mounts.size === 1) {
+            showFailureNotice(notificationId, extensionId, mounts);
+        }
+
         return () => {
             mounts.delete(mount);
-            if (mounts.size) return;
+            if (mounts.size) {
+                return;
+            }
+
             failedMountsByNotification.delete(notificationId);
             toast.dismiss(notificationId);
         };
     }, [extensionId, notificationId, retry]);
-    if (notificationId) return null;
+    if (notificationId) {
+        return null;
+    }
 
     return (
         <div role='alert'>
@@ -129,6 +151,7 @@ export default function ExtensionMount({
     children: ReactNode;
 }) {
     const mount = useMemo(() => ({ extensionId, context }), [extensionId, context]);
+
     return (
         <ExtensionContext.Provider value={mount}>
             <QueryErrorResetBoundary>
@@ -138,14 +161,14 @@ export default function ExtensionMount({
                         resetKey={resetKey}
                         onReset={reset}
                         fallback={(error, retry) =>
-                            failure !== undefined ? (
-                                failure
-                            ) : (
+                            failure === undefined ? (
                                 <ExtensionFailure
                                     extensionId={extensionId}
                                     notificationId={isSlot ? failureNotificationId(extensionId, context) : undefined}
                                     retry={error instanceof ExtensionImportError ? undefined : retry}
                                 />
+                            ) : (
+                                failure
                             )
                         }
                     >

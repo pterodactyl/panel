@@ -26,17 +26,29 @@ const renderKey = (key: string): string =>
     plainKey.test(key) && !reservedPlainKey.test(key) ? key : JSON.stringify(key);
 
 const renderScalar = (value: YamlScalar): string => {
-    if (value === null) return 'null';
-    if (isString(value)) return JSON.stringify(value);
+    if (value === null) {
+        return 'null';
+    }
+
+    if (isString(value)) {
+        return JSON.stringify(value);
+    }
+
+    if (isNumber(value) && Number.isNaN(value)) {
+        return '.nan';
+    }
+
     if (isNumber(value) && !Number.isFinite(value)) {
-        return Number.isNaN(value) ? '.nan' : value > 0 ? '.inf' : '-.inf';
+        return value > 0 ? '.inf' : '-.inf';
     }
 
     return String(value);
 };
 
 const renderInline = (value: YamlValue): string => {
-    if (!isCollection(value)) return renderScalar(value);
+    if (!isCollection(value)) {
+        return renderScalar(value);
+    }
 
     return isSequence(value) ? '[]' : '{}';
 };
@@ -53,6 +65,7 @@ const renderBlock = (value: YamlCollection, depth: number): string[] => {
             }
 
             const nested = renderBlock(item, depth + 1);
+
             nested[0] = `${pad}- ${(nested[0] ?? '').trimStart()}`;
             lines.push(...nested);
         }

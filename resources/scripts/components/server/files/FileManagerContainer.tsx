@@ -29,6 +29,7 @@ function FileManagerContainerContent() {
     );
     const selectedFiles = useMemo(() => {
         const present = storedSelection.filter((name) => listed.has(name));
+
         return present.length === storedSelection.length ? storedSelection : present;
     }, [storedSelection, listed]);
     const select = useCallback(
@@ -39,7 +40,10 @@ function FileManagerContainerContent() {
     );
     const refresh = useCallback(async () => {
         const result = await refetch();
-        if (result.error) throw result.error;
+
+        if (result.error) {
+            throw result.error;
+        }
     }, [refetch]);
     const extensionData = useMemo<FileManagerSlotData>(
         () => ({
@@ -61,17 +65,17 @@ function FileManagerContainerContent() {
 
     return (
         <FileManagerExtensionContext.Provider value={extensionData}>
-            <ServerContentBlock title={'File Manager'}>
-                <Slot name={'server.files.before'} />
+            <ServerContentBlock title='File Manager'>
+                <Slot name='server.files.before' />
                 <FileManagerContext.Provider value={session}>
                     <ComponentView
                         name='server.files.manager'
                         resetKey={server.attributes.uuid}
                         props={{ model: session.model, Default: DefaultFileManager, parts: fileManagerParts }}
-                        loading={<Spinner size={'large'} centered />}
+                        loading={<Spinner size='large' centered />}
                     />
                 </FileManagerContext.Provider>
-                <Slot name={'server.files.after'} />
+                <Slot name='server.files.after' />
             </ServerContentBlock>
         </FileManagerExtensionContext.Provider>
     );

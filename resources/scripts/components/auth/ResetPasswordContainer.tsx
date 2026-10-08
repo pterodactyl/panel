@@ -21,10 +21,12 @@ export default function ResetPasswordContainer() {
         defaultValues: { password: '', passwordConfirmation: '' },
         onSubmit: async ({ value }) => {
             let recaptchaToken = '';
+
             if (recaptchaEnabled) {
                 recaptchaToken = (await recaptchaRef.current?.execute()) ?? '';
                 if (!recaptchaToken) {
                     toast.error('Captcha verification failed, please try again.');
+
                     return;
                 }
             }
@@ -47,14 +49,14 @@ export default function ResetPasswordContainer() {
     });
 
     return (
-        <LoginFormContainer form={form} title={'Reset Password'} className={'w-full flex'}>
+        <LoginFormContainer form={form} title='Reset Password' className='w-full flex'>
             <div>
-                <label htmlFor={'password-reset-email'}>Email</label>
-                <TextInput id={'password-reset-email'} value={email} $isLight disabled />
+                <label htmlFor='password-reset-email'>Email</label>
+                <TextInput id='password-reset-email' value={email} $isLight disabled />
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'password'}
+                    name='password'
                     validators={{
                         onChange: ({ value }) =>
                             value.length >= 8
@@ -65,16 +67,16 @@ export default function ResetPasswordContainer() {
                     {(field) => (
                         <field.TextField
                             light
-                            label={'New Password'}
-                            type={'password'}
-                            description={'Passwords must be at least 8 characters in length.'}
+                            label='New Password'
+                            type='password'
+                            description='Passwords must be at least 8 characters in length.'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'passwordConfirmation'}
+                    name='passwordConfirmation'
                     validators={{
                         onChangeListenTo: ['password'],
                         onChange: ({ value, fieldApi }) =>
@@ -83,21 +85,19 @@ export default function ResetPasswordContainer() {
                                 : 'Your new password does not match.',
                     }}
                 >
-                    {(field) => <field.TextField light label={'Confirm New Password'} type={'password'} />}
+                    {(field) => <field.TextField light label='Confirm New Password' type='password' />}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton size={'xlarge'}>Reset Password</form.SubmitButton>
+                    <form.SubmitButton size='xlarge'>Reset Password</form.SubmitButton>
                 </form.AppForm>
             </div>
             {recaptchaEnabled && <InvisibleRecaptcha ref={recaptchaRef} siteKey={siteKey || ''} />}
-            <div className={'mt-6 text-center'}>
+            <div className='mt-6 text-center'>
                 <Link
-                    to={'/auth/login'}
-                    className={
-                        'text-xs text-muted-foreground tracking-wide no-underline uppercase hover:text-foreground'
-                    }
+                    to='/auth/login'
+                    className='text-xs text-muted-foreground tracking-wide no-underline uppercase hover:text-foreground'
                 >
                     Return to Login
                 </Link>

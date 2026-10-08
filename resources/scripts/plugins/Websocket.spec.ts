@@ -27,6 +27,7 @@ class FakeSocket {
         if (this.readyState !== 1) {
             throw new DOMException('Still in CONNECTING state.', 'InvalidStateError');
         }
+
         this.sent.push(data);
     }
 
@@ -50,7 +51,7 @@ class FakeSocket {
     }
 }
 
-const latest = () => FakeSocket.instances[FakeSocket.instances.length - 1];
+const latest = () => FakeSocket.instances.at(-1)!;
 
 const authFrame = (token: string) => JSON.stringify({ event: 'auth', args: [token] });
 
@@ -75,6 +76,7 @@ describe('Websocket', () => {
         socket.setToken('token-value').connect('wss://example.test/socket');
 
         const native = FakeSocket.instances[0];
+
         native.open();
 
         expect(onOpen).toHaveBeenCalledOnce();
@@ -94,6 +96,7 @@ describe('Websocket', () => {
 
     it('drops sends while the socket is not open and authenticates with the latest token once it opens', () => {
         const socket = new Websocket();
+
         socket.setToken('first').connect('wss://example.test/socket');
 
         expect(() => socket.setToken('refreshed', true)).not.toThrow();
@@ -127,6 +130,7 @@ describe('Websocket', () => {
     it('backs off exponentially while sockets open but never authenticate', () => {
         vi.useFakeTimers();
         const socket = new Websocket();
+
         socket.setToken('token').connect('wss://example.test/socket');
 
         for (const delay of [1_000, 2_000, 4_000, 8_000]) {
@@ -144,6 +148,7 @@ describe('Websocket', () => {
     it('restarts the backoff only after the daemon accepts authentication', () => {
         vi.useFakeTimers();
         const socket = new Websocket();
+
         socket.setToken('token').connect('wss://example.test/socket');
 
         latest().closeFromServer(1006);
@@ -164,6 +169,7 @@ describe('Websocket', () => {
         vi.useFakeTimers();
         const socket = new Websocket();
         const onGiveUp = vi.fn();
+
         socket.on('SOCKET_CONNECT_ERROR', onGiveUp);
         socket.connect('wss://example.test/socket');
 
@@ -171,6 +177,7 @@ describe('Websocket', () => {
             latest().closeFromServer(1006);
             vi.advanceTimersByTime(reconnectDelay(attempt));
         }
+
         latest().closeFromServer(1006);
         vi.runOnlyPendingTimers();
 
@@ -190,6 +197,7 @@ describe('Websocket', () => {
         vi.useFakeTimers();
         const onLine = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
         const socket = new Websocket();
+
         socket.connect('wss://example.test/socket');
         latest().closeFromServer(1006);
         vi.runAllTimers();
@@ -220,6 +228,7 @@ describe('Websocket', () => {
         vi.useFakeTimers();
         const socket = new Websocket();
         const onClose = vi.fn();
+
         socket.on('SOCKET_CLOSE', onClose);
         socket.connect('wss://example.test/socket');
         const native = latest();
@@ -248,12 +257,15 @@ describe('reconnectDelay', () => {
 it('continues event delivery when a listener throws and attributes dispatch errors correctly', () => {
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
     const warnings = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
     Websocket.createSocket = (url) => new FakeSocket(url);
     const socket = new Websocket();
+
     socket.on('status', () => {
         throw new Error('broken listener');
     });
     const healthy = vi.fn();
+
     socket.on('status', healthy);
     socket.connect('wss://example.test/socket');
     FakeSocket.instances.at(-1)!.message({ event: 'status', args: ['running'] });

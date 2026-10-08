@@ -8,11 +8,17 @@ export function useExtensionCallback<TArgs extends readonly unknown[]>(
     callback: (...args: TArgs) => void | Promise<void>
 ): (...args: TArgs) => void {
     const mount = useContext(ExtensionContext);
-    if (!mount) throw new Error('Extension callbacks require an extension mount.');
+
+    if (!mount) {
+        throw new Error('Extension callbacks require an extension mount.');
+    }
+
     const context = `${mount.context}, event "${event}"`;
+
     return (...args: TArgs): void => {
         try {
             const result = callback(...args);
+
             if (result) {
                 void result.then(
                     () => clearExtensionError(mount.extensionId, context),

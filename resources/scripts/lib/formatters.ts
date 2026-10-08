@@ -7,11 +7,13 @@ function mbToBytes(megabytes: number): number {
 function bytesToString(bytes: number, decimals = 2): string {
     const k = _CONVERSION_UNIT;
 
-    if (bytes < 1) return '0 Bytes';
+    if (bytes < 1) {
+        return '0 Bytes';
+    }
 
     decimals = Math.floor(Math.max(0, decimals));
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    const value = Number((bytes / Math.pow(k, i)).toFixed(decimals));
+    const value = Number((bytes / k ** i).toFixed(decimals));
 
     return `${value} ${['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'][i]}`;
 }

@@ -15,24 +15,25 @@ describe('Tooltip', () => {
             useEffect(() => mounted(), []);
 
             return (
-                <button type={'button'} {...props}>
+                <button type='button' {...props}>
                     Target
                 </button>
             );
         };
 
         const { rerender } = render(
-            <Tooltip content={'Help'} disabled>
+            <Tooltip content='Help' disabled>
+                <Target />
+            </Tooltip>
+        );
+
+        rerender(
+            <Tooltip content='Help'>
                 <Target />
             </Tooltip>
         );
         rerender(
-            <Tooltip content={'Help'}>
-                <Target />
-            </Tooltip>
-        );
-        rerender(
-            <Tooltip content={'Help'} disabled>
+            <Tooltip content='Help' disabled>
                 <Target />
             </Tooltip>
         );
@@ -44,15 +45,16 @@ describe('Tooltip', () => {
     it('attaches the child ref once across re-renders', () => {
         const ref = vi.fn();
         const { rerender } = render(
-            <Tooltip content={'First'}>
-                <button type={'button'} ref={ref}>
+            <Tooltip content='First'>
+                <button type='button' ref={ref}>
                     Target
                 </button>
             </Tooltip>
         );
+
         rerender(
-            <Tooltip content={'Second'}>
-                <button type={'button'} ref={ref}>
+            <Tooltip content='Second'>
+                <button type='button' ref={ref}>
                     Target
                 </button>
             </Tooltip>

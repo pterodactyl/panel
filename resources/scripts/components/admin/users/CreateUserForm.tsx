@@ -32,7 +32,8 @@ export default function CreateUserForm() {
         onSubmit: async ({ value }) => {
             try {
                 const user = await createUser.mutateAsync(createAdminUserInput(value));
-                navigate({ to: '/panel/users/$id', params: { id: user.attributes.id } });
+
+                void navigate({ to: '/panel/users/$id', params: { id: user.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -41,25 +42,25 @@ export default function CreateUserForm() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Create User'}
-            heading={'Create User'}
-            description={'Create a panel account and configure its access.'}
+            title='Admin · Create User'
+            heading='Create User'
+            description='Create a panel account and configure its access.'
         >
             <Link
-                to={'/panel/users'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                to='/panel/users'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Users
             </Link>
             <Form form={form}>
-                <div className={'space-y-6'}>
+                <div className='space-y-6'>
                     <UserFormFields
                         form={form}
                         languageOptions={languagesList}
                         languagesLoading={languagesLoading && !languages}
                     />
-                    <div className={'flex justify-end'}>
+                    <div className='flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Create User</form.SubmitButton>
                         </form.AppForm>

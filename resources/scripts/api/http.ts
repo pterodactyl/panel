@@ -61,6 +61,7 @@ export function httpErrorToHuman(cause: unknown): string {
 
         if (isObject(data) && 'errors' in data && Array.isArray(data.errors)) {
             const firstError = data.errors[0];
+
             if (isObject(firstError) && 'detail' in firstError && isString(firstError.detail)) {
                 return firstError.detail;
             }

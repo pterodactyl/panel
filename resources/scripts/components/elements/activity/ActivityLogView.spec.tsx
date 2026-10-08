@@ -8,6 +8,7 @@ afterEach(cleanup);
 
 it('preserves both activity filters when changing pages', () => {
     const onNavigate = vi.fn();
+
     render(
         <ActivityLogView
             data={{
@@ -17,9 +18,9 @@ it('preserves both activity filters when changing pages', () => {
             error={null}
             isFetching={false}
             refetch={vi.fn()}
-            event={'server:power.start'}
-            user={'7'}
-            emptyMessage={'No activity'}
+            event='server:power.start'
+            user='7'
+            emptyMessage='No activity'
             facets={{
                 events: ['server:power.start'],
                 users: [{ id: 7, username: 'actor', email: 'actor@example.com' }],

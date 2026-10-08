@@ -15,7 +15,10 @@ export const generatedApiMutationsRule = defineRule({
                         : node.key.type === 'Literal'
                           ? node.key.value
                           : null;
-                if (name === 'mutationFn') context.report({ node: node.key, messageId: 'mutation' });
+
+                if (name === 'mutationFn') {
+                    context.report({ node: node.key, messageId: 'mutation' });
+                }
             },
         };
     },

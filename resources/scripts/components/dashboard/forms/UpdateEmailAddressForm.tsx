@@ -27,38 +27,36 @@ function UpdateEmailAddressForm() {
     const isSubmitting = useStore(form.store, (state) => state.isSubmitting) || updateEmail.isPending;
 
     return (
-        <React.Fragment>
-            <SpinnerOverlay size={'large'} visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
+        <>
+            <SpinnerOverlay size='large' visible={isSubmitting} />
+            <Form form={form} className='m-0'>
                 <form.AppField
-                    name={'email'}
+                    name='email'
                     validators={{
                         onChange: ({ value }) =>
                             isEmail(value) ? undefined : 'A valid email address must be provided.',
                     }}
                 >
-                    {(field) => <field.TextField id={'current_email'} type={'email'} label={'Email'} />}
+                    {(field) => <field.TextField id='current_email' type='email' label='Email' />}
                 </form.AppField>
-                <div className={'mt-6'}>
+                <div className='mt-6'>
                     <form.AppField
-                        name={'password'}
+                        name='password'
                         validators={{
                             onChange: ({ value }) =>
                                 value.length >= 1 ? undefined : 'You must provide your current account password.',
                         }}
                     >
-                        {(field) => (
-                            <field.TextField id={'confirm_password'} type={'password'} label={'Confirm Password'} />
-                        )}
+                        {(field) => <field.TextField id='confirm_password' type='password' label='Confirm Password' />}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
+                <div className='mt-6'>
                     <form.AppForm>
                         <form.SubmitButton disabled={updateEmail.isPending}>Update Email</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
-        </React.Fragment>
+        </>
     );
 }
 

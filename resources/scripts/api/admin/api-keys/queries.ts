@@ -102,6 +102,7 @@ export const useCreateAdminApiKey = () => {
         onSuccess: async (apiKey) => {
             await invalidateGeneratedOperations(queryClient, ['adminListApiKeys']);
             const messages = resourceMutationMessages('application API key', 'create', apiKey.attributes.identifier);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) =>
@@ -117,6 +118,7 @@ export const useDeleteAdminApiKey = () => {
         onSuccess: async (_data, variables) => {
             await invalidateGeneratedOperations(queryClient, ['adminListApiKeys']);
             const messages = resourceMutationMessages('application API key', 'delete', variables.path.identifier);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) =>

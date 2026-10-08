@@ -40,36 +40,36 @@ export default function OverviewContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin Overview'}
-            heading={'Administration'}
-            description={'Manage your users, infrastructure, servers, and panel settings.'}
+            title='Admin Overview'
+            heading='Administration'
+            description='Manage your users, infrastructure, servers, and panel settings.'
         >
-            <Slot name={'panel.overview.before'} />
-            {!version ? (
-                <Spinner size={'large'} centered />
-            ) : (
+            <Slot name='panel.overview.before' />
+            {version ? (
                 <>
                     <OverviewVersionCard version={version} />
-                    <div className={'mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'}>
+                    <div className='mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
                         {externalLinks(version).map((link) => (
                             <a
                                 key={link.href}
                                 href={link.href}
-                                target={'_blank'}
-                                rel={'noreferrer'}
+                                target='_blank'
+                                rel='noreferrer'
                                 className={cn(
                                     'inline-flex items-center justify-center rounded-sm border border-border bg-card px-4 py-3 text-sm font-medium text-foreground no-underline hover:text-accent',
                                     interactiveSurfaceClass
                                 )}
                             >
-                                <Icon icon={link.icon} className={'mr-2 h-4 w-4'} />
+                                <Icon icon={link.icon} className='mr-2 h-4 w-4' />
                                 {link.label}
                             </a>
                         ))}
                     </div>
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
-            <div className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'}>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {sections.map((s) => (
                     <Link
                         key={s.to}
@@ -79,12 +79,12 @@ export default function OverviewContainer() {
                             interactiveSurfaceClass
                         )}
                     >
-                        <p className={'text-foreground font-medium'}>{s.label}</p>
-                        <p className={'text-muted-foreground text-sm mt-1'}>{s.description}</p>
+                        <p className='text-foreground font-medium'>{s.label}</p>
+                        <p className='text-muted-foreground text-sm mt-1'>{s.description}</p>
                     </Link>
                 ))}
             </div>
-            <Slot name={'panel.overview.after'} />
+            <Slot name='panel.overview.after' />
         </AdminContentBlock>
     );
 }

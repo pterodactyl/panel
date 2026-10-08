@@ -34,7 +34,9 @@ function wrapProperty(value: TranslationValue): TranslationValue {
         return value.map(wrapProperty);
     }
 
-    if (value === true || value === false) return value;
+    if (value === true || value === false) {
+        return value;
+    }
 
     return Object.fromEntries(
         Object.entries(value).map(([key, item]) => [
@@ -53,34 +55,34 @@ export default function ActivityLogEntry({ activity, children }: Props) {
     const properties = wrapProperties(attributes.properties);
 
     return (
-        <div className={'grid grid-cols-10 py-4 border-b-2 border-border last:rounded-b-sm last:border-0 group'}>
-            <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
-                <div className={'flex items-center w-10 h-10 rounded-full bg-popover overflow-hidden'}>
+        <div className='grid grid-cols-10 py-4 border-b-2 border-border last:rounded-b-sm last:border-0 group'>
+            <div className='hidden sm:flex sm:col-span-1 items-center justify-center select-none'>
+                <div className='flex items-center w-10 h-10 rounded-full bg-popover overflow-hidden'>
                     <Avatar name={actor?.username || actor?.email || 'system'} />
                 </div>
             </div>
-            <div className={'col-span-10 sm:col-span-9 flex'}>
-                <div className={'flex-1 px-4 sm:px-0'}>
-                    <div className={'flex items-center text-foreground'}>
-                        <Tooltip placement={'top'} content={actor?.email || 'System User'}>
+            <div className='col-span-10 sm:col-span-9 flex'>
+                <div className='flex-1 px-4 sm:px-0'>
+                    <div className='flex items-center text-foreground'>
+                        <Tooltip placement='top' content={actor?.email || 'System User'}>
                             <span>{actor?.username || 'System'}</span>
                         </Tooltip>
-                        <span className={'text-muted-foreground'}>&nbsp;&mdash;&nbsp;</span>
+                        <span className='text-muted-foreground'>&nbsp;&mdash;&nbsp;</span>
                         <Link
-                            to={'.'}
+                            to='.'
                             search={{ event: attributes.event }}
-                            className={'transition-colors duration-75 active:text-accent hover:text-accent'}
+                            className='transition-colors duration-75 active:text-accent hover:text-accent'
                         >
                             {attributes.event}
                         </Link>
                         <div className={cn(activityIconClass, 'group-hover:text-muted-foreground')}>
                             {attributes.is_api && (
-                                <Tooltip placement={'top'} content={'Using API Key'}>
+                                <Tooltip placement='top' content='Using API Key'>
                                     <Terminal />
                                 </Tooltip>
                             )}
                             {attributes.event.startsWith('server:sftp.') && (
-                                <Tooltip placement={'top'} content={'Using SFTP'}>
+                                <Tooltip placement='top' content='Using SFTP'>
                                     <FolderOpen />
                                 </Tooltip>
                             )}
@@ -88,19 +90,16 @@ export default function ActivityLogEntry({ activity, children }: Props) {
                         </div>
                     </div>
                     <p className={activityDescriptionClass}>
-                        <Translate ns={'activity'} values={properties} i18nKey={attributes.event.replace(':', '.')} />
+                        <Translate ns='activity' values={properties} i18nKey={attributes.event.replace(':', '.')} />
                     </p>
-                    <div className={'mt-1 flex items-center text-sm'}>
+                    <div className='mt-1 flex items-center text-sm'>
                         {attributes.ip && (
                             <span>
                                 {attributes.ip}
-                                <span className={'text-muted-foreground'}>&nbsp;|&nbsp;</span>
+                                <span className='text-muted-foreground'>&nbsp;|&nbsp;</span>
                             </span>
                         )}
-                        <Tooltip
-                            placement={'right'}
-                            content={dayjs(attributes.timestamp).format('MMM Do, YYYY H:mm:ss')}
-                        >
+                        <Tooltip placement='right' content={dayjs(attributes.timestamp).format('MMM Do, YYYY H:mm:ss')}>
                             <span>{dayjs(attributes.timestamp).fromNow()}</span>
                         </Tooltip>
                     </div>

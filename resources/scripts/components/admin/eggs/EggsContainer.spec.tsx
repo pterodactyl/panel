@@ -56,12 +56,14 @@ const setup = (children: ReactNode = <EggsContainer />) => {
     const queryClient = new QueryClient({
         defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } },
     });
+
     queryClient.setQueryData(adminEggsQueryOptions().queryKey, {
         object: 'list',
         data: [],
         meta: { pagination: { total: 0, count: 0, per_page: 100, current_page: 1, total_pages: 1 } },
     });
     render(<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>);
+
     return { queryClient, user: userEvent.setup() };
 };
 
@@ -80,6 +82,7 @@ describe('egg file uploads', () => {
                     },
                 };
             }
+
             return upload(config);
         };
     });
@@ -92,24 +95,30 @@ describe('egg file uploads', () => {
     it('imports from the Eggs page, blocks dismissal during upload, and refreshes the list', async () => {
         const { queryClient, user } = setup();
         let finishImport = () => {};
+
         const imported = new Promise<void>((resolve) => {
             finishImport = resolve;
         });
+
         upload.mockImplementation(async (config) => {
             await imported;
+
             return response(config);
         });
         await user.click(screen.getByRole('button', { name: 'Import egg' }));
         const dialog = await screen.findByRole('dialog', { name: 'Import egg' });
         const submit = within(dialog).getByRole('button', { name: 'Import Egg' });
+
         expect(submit).toBeDisabled();
 
         const file = eggFile();
+
         await user.upload(within(dialog).getByLabelText('Egg File'), file);
         await user.click(submit);
 
         await waitFor(() => expect(upload).toHaveBeenCalledOnce());
         const request = upload.mock.calls[0]![0];
+
         expect(request.url).toBe('/api/admin/eggs/import');
         expect(request.method).toBe('post');
         expect(request.data).toBeInstanceOf(FormData);
@@ -135,11 +144,14 @@ describe('egg file uploads', () => {
     it('keeps a failed upload open so the selected file can be retried', async () => {
         const { user } = setup();
         const error = new AxiosError('Invalid egg file');
+
         upload.mockRejectedValueOnce(error).mockImplementation(async (config) => response(config));
         await user.click(screen.getByRole('button', { name: 'Import egg' }));
         const dialog = await screen.findByRole('dialog');
+
         await user.upload(within(dialog).getByLabelText('Egg File'), eggFile());
         const submit = within(dialog).getByRole('button', { name: 'Import Egg' });
+
         await user.click(submit);
 
         await waitFor(() => expect(mocks.notifyError).toHaveBeenCalledWith(error, 'Unable to import egg'));
@@ -152,22 +164,27 @@ describe('egg file uploads', () => {
 
     it('clears the selected file when an import is cancelled', async () => {
         const { user } = setup();
+
         await user.click(screen.getByRole('button', { name: 'Import egg' }));
         const dialog = await screen.findByRole('dialog');
+
         await user.upload(within(dialog).getByLabelText('Egg File'), eggFile());
         await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
         await user.click(screen.getByRole('button', { name: 'Import egg' }));
 
         const reopened = await screen.findByRole('dialog');
+
         expect(within(reopened).getByRole('button', { name: 'Import Egg' })).toBeDisabled();
         expect(upload).not.toHaveBeenCalled();
     });
 
     it('updates the existing egg through the shared file dialog', async () => {
         const { user } = setup(<UpdateEggFromFileButton egg={egg} />);
+
         upload.mockImplementation(async (config) => response(config));
         await user.click(screen.getByRole('button', { name: 'Update From File' }));
         const dialog = await screen.findByRole('dialog', { name: 'Update egg from file' });
+
         await user.upload(within(dialog).getByLabelText('Egg File'), eggFile());
         await user.click(within(dialog).getByRole('button', { name: 'Update Egg' }));
 

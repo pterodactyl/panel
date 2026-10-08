@@ -29,7 +29,7 @@ export default function NodeDetailContainer() {
     }
 
     if (!node) {
-        return <Spinner size={'large'} centered />;
+        return <Spinner size='large' centered />;
     }
 
     const { attributes } = node;
@@ -43,32 +43,32 @@ export default function NodeDetailContainer() {
                 description={attributes.fqdn}
             >
                 <Link
-                    to={'/panel/nodes'}
-                    className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                    to='/panel/nodes'
+                    className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
                 >
-                    <Icon icon={ArrowLeft} className={'mr-2'} />
+                    <Icon icon={ArrowLeft} className='mr-2' />
                     Back to Nodes
                 </Link>
                 <Slot name='panel.nodes.detail.actions' data={resourceContext} />
-                <SubNavigation className={'mb-6 rounded-sm'}>
+                <SubNavigation className='mb-6 rounded-sm'>
                     <Link
                         data-core
-                        to={'/panel/nodes/$id'}
+                        to='/panel/nodes/$id'
                         params={params}
                         activeOptions={{ exact: true, includeSearch: false }}
                     >
                         About
                     </Link>
-                    <Link data-core to={'/panel/nodes/$id/settings'} params={params}>
+                    <Link data-core to='/panel/nodes/$id/settings' params={params}>
                         Settings
                     </Link>
-                    <Link data-core to={'/panel/nodes/$id/configuration'} params={params}>
+                    <Link data-core to='/panel/nodes/$id/configuration' params={params}>
                         Configuration
                     </Link>
-                    <Link data-core to={'/panel/nodes/$id/allocation'} params={params}>
+                    <Link data-core to='/panel/nodes/$id/allocation' params={params}>
                         Allocation
                     </Link>
-                    <Link data-core to={'/panel/nodes/$id/servers'} params={params}>
+                    <Link data-core to='/panel/nodes/$id/servers' params={params}>
                         Servers
                     </Link>
                     <ResourceExtensionTabs parent='admin.node' basePath={`/panel/nodes/${attributes.id}`} />

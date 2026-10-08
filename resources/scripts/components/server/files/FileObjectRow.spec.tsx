@@ -12,6 +12,7 @@ let registry: typeof Registry;
 let testing: typeof Testing;
 let Row: typeof FileObjectRow;
 let RowActions: typeof FileRowActionsProvider;
+
 beforeEach(async () => {
     vi.resetModules();
     const [registered, sdk, row, actions] = await Promise.all([
@@ -20,6 +21,7 @@ beforeEach(async () => {
         import('./FileObjectRow'),
         import('./useFileActions'),
     ]);
+
     registry = registered;
     testing = sdk;
     Row = row.default;
@@ -46,9 +48,11 @@ const file: FileObject = {
         modified_at: '2026-01-01T12:00:00Z',
     },
 };
+
 function renderRow(owner = true) {
     const { createExtensionTestHost, createTestServer } = testing;
     const mounted = createExtensionTestHost({ server: createTestServer({ owner, permissions: [] }) });
+
     host = mounted;
     render(
         <RowActions>
@@ -57,9 +61,11 @@ function renderRow(owner = true) {
         { wrapper: mounted.Wrapper }
     );
 }
+
 it('preserves the core file link checkbox and menu when details are replaced', async () => {
     registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement(
         'details',
         'server.files.details',
@@ -80,6 +86,7 @@ it('preserves the core file link checkbox and menu when details are replaced', a
 it('does not expose a core edit link without file-content permission', async () => {
     registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement(
         'details',
         'server.files.details',
@@ -94,6 +101,7 @@ it('does not expose a core edit link without file-content permission', async () 
 it('restores native details after a renderer failure with core controls intact', async () => {
     registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement(
         'details',
         'server.files.details',

@@ -50,10 +50,8 @@ const NetworkContainer = () => {
     const newAllocationButton = <NewButton onClick={onCreateAllocation}>New allocation</NewButton>;
 
     return (
-        <ServerContentBlock title={'Network'}>
-            {!data ? (
-                <Spinner size={'large'} centered />
-            ) : (
+        <ServerContentBlock title='Network'>
+            {data ? (
                 <>
                     <SpinnerOverlay visible={createAllocation.isPending} />
                     {canManage && (
@@ -68,7 +66,7 @@ const NetworkContainer = () => {
                         emptyState={
                             <Empty className={emptyCompactClass}>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <Network />
                                     </EmptyMedia>
                                     <EmptyTitle>No allocations</EmptyTitle>
@@ -81,6 +79,8 @@ const NetworkContainer = () => {
                         }
                     />
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
         </ServerContentBlock>
     );

@@ -33,23 +33,23 @@ const ActionButton = ({ className, ...props }: React.ComponentProps<typeof Butto
 
 const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
-        <div className={'flex justify-center'}>
-            <div className={'w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-card rounded-lg shadow-lg text-center relative'}>
-                {(onBack || onRetry) && (
-                    <div className={'absolute left-0 top-0 ml-4 mt-4'}>
+        <div className='flex justify-center'>
+            <div className='w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-card rounded-lg shadow-lg text-center relative'>
+                {(onBack ?? onRetry) && (
+                    <div className='absolute left-0 top-0 ml-4 mt-4'>
                         <ActionButton
                             aria-label={onRetry ? 'Retry' : 'Go back'}
                             title={onRetry ? 'Retry' : 'Go back'}
-                            onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
+                            onClick={() => (onRetry ?? onBack)?.()}
                             className={onRetry ? 'hover:animate-[spin_2s_linear_infinite]' : undefined}
                         >
                             <Icon icon={onRetry ? RefreshCw : ArrowLeft} />
                         </ActionButton>
                     </div>
                 )}
-                <img src={image} alt={''} className={'w-2/3 h-auto select-none mx-auto'} />
-                <h2 className={'mt-10 text-foreground font-bold text-4xl'}>{title}</h2>
-                <p className={'text-sm text-muted-foreground mt-2'}>{message}</p>
+                <img src={image} alt='' className='w-2/3 h-auto select-none mx-auto' />
+                <h2 className='mt-10 text-foreground font-bold text-4xl'>{title}</h2>
+                <p className='text-sm text-muted-foreground mt-2'>{message}</p>
             </div>
         </div>
     </PageContentBlock>
@@ -67,7 +67,7 @@ const ServerError = ({ title = 'Something went wrong', message, onBack, onRetry 
     );
 
 const AccessDenied = ({ message }: Pick<BaseProps, 'message'>) => (
-    <ScreenBlock title={'Access Denied'} image={ServerErrorSvg} message={message} />
+    <ScreenBlock title='Access Denied' image={ServerErrorSvg} message={message} />
 );
 
 const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (

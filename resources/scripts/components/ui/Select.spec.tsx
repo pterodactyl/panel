@@ -26,6 +26,7 @@ describe('Select', () => {
     it('drops the remembered label once the value changes', () => {
         const onChange = vi.fn();
         const { rerender } = render(<Select value={1} onChange={onChange} options={[alpha]} />);
+
         rerender(<Select value={2} onChange={onChange} options={[gamma]} />);
 
         expect(screen.getByRole('combobox')).toHaveValue('');
@@ -44,7 +45,7 @@ describe('Select', () => {
 
     it('forwards the description and invalid state to the input', () => {
         render(
-            <Select value={null} onChange={vi.fn()} options={[alpha]} aria-describedby={'select-help'} aria-invalid />
+            <Select value={null} onChange={vi.fn()} options={[alpha]} aria-describedby='select-help' aria-invalid />
         );
         const input = screen.getByRole('combobox');
 

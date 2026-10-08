@@ -47,6 +47,7 @@ describe('complete tag collection', () => {
     it.each([0, 1, 3])('loads a collection with %i pages without sharing the paginated cache', async (total) => {
         adapter.mockImplementation(async (config) => {
             const current = Number(new URL(config.url!, 'https://panel.test').searchParams.get('page'));
+
             return {
                 config,
                 headers: {},
@@ -58,6 +59,7 @@ describe('complete tag collection', () => {
         const options = allAdminTagsQueryOptions();
         const listOptions = adminTagsQueryOptions();
         const firstPage = page(1, total);
+
         client.setQueryData(listOptions.queryKey, firstPage);
 
         const result = await client.fetchQuery(options);
@@ -73,13 +75,19 @@ describe('complete tag collection', () => {
     it('stops after bounded retries on page two and can explicitly retry', async () => {
         vi.useFakeTimers();
         let fail = true;
+
         adapter.mockImplementation(async (config) => {
             const current = Number(new URL(config.url!, 'https://panel.test').searchParams.get('page'));
-            if (current === 2 && fail) throw new Error('offline');
+
+            if (current === 2 && fail) {
+                throw new Error('offline');
+            }
+
             return { config, headers: {}, status: 200, statusText: 'OK', data: page(current, 2) };
         });
         const options = { ...allAdminTagsQueryOptions(), retry: 1, retryDelay: 10 };
         const failed = expect(client.fetchQuery(options)).rejects.toThrow('offline');
+
         await vi.advanceTimersByTimeAsync(100);
         await failed;
         expect(adapter).toHaveBeenCalledTimes(4);
@@ -93,9 +101,11 @@ describe('complete tag collection', () => {
 
     it('does not start another page after cancellation', async () => {
         const options = allAdminTagsQueryOptions();
+
         adapter.mockImplementation(async (config) => {
             await client.cancelQueries({ queryKey: options.queryKey });
             expect(config.signal?.aborted).toBe(true);
+
             return { config, headers: {}, status: 200, statusText: 'OK', data: page(1, 2) };
         });
 

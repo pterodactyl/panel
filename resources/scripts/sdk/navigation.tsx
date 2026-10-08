@@ -56,39 +56,52 @@ export interface ResolvedPanelDestination {
 }
 export function resolvePanelDestination(destination: PanelDestination): ResolvedPanelDestination {
     let path: string;
+
     if ('to' in destination) {
         path = destination.to;
     } else {
         const screen = findExtensionScreen(destination.extension, destination.screen);
-        if (!screen) throw new Error(`Unknown extension screen "${destination.extension}:${destination.screen}".`);
+
+        if (!screen) {
+            throw new Error(`Unknown extension screen "${destination.extension}:${destination.screen}".`);
+        }
+
         path = `${SCREEN_ROOTS[screen.parent ?? screen.area]}/${screen.path}`;
     }
+
     const pathname = resolveScreenPath(path, destination.params);
+
     return { pathname, search: destination.search, hash: destination.hash, replace: destination.replace };
 }
 
 export function usePanelNavigate(): (destination: PanelDestination) => Promise<void> {
     const navigate = useNavigate();
+
     return useCallback(
         (destination: PanelDestination) => {
             const { pathname, ...options } = resolvePanelDestination(destination);
+
             return navigate({ to: pathname as never, ...options, search: options.search as never });
         },
         [navigate]
     );
 }
+
 export function usePanelLocation(): RouteSlotData {
     const { pathname } = useLocation();
     const params = useParams({ strict: false });
     const search = useSearch({ strict: false });
+
     return { pathname, params: routeParamStrings(params), search };
 }
+
 export interface PanelLinkProps extends Omit<ComponentProps<'a'>, 'href'> {
     destination: PanelDestination;
     exact?: boolean;
 }
 export function PanelLink({ destination, exact = false, ...props }: PanelLinkProps): ReactElement {
     const { pathname, ...options } = resolvePanelDestination(destination);
+
     return (
         <Link
             to={pathname as never}
@@ -103,6 +116,7 @@ export function PanelLink({ destination, exact = false, ...props }: PanelLinkPro
 export function useOpenLoginCheckpoint(): (confirmationToken: string) => Promise<void> {
     const navigate = useNavigate();
     const { redirect } = parseRedirectSearch(useSearch({ strict: false }));
+
     return useCallback(
         (confirmationToken: string) =>
             navigate({

@@ -46,6 +46,7 @@ function ServerMountsContent({ server }: Props) {
                 detachMount(detachAdminServerMountInput(attributes.id, mountAttributes.id, mountAttributes.name), {
                     onSettled: () => setUpdatingId(null),
                 });
+
                 return;
             }
 
@@ -64,15 +65,15 @@ function ServerMountsContent({ server }: Props) {
                     id: 'name',
                     header: 'Mount',
                     cell: ({ row }) => (
-                        <div className={'min-w-0'}>
+                        <div className='min-w-0'>
                             <Link
-                                to={'/panel/mounts/$id'}
+                                to='/panel/mounts/$id'
                                 params={{ id: row.original.attributes.id }}
-                                className={'block truncate text-sm text-foreground hover:text-accent'}
+                                className='block truncate text-sm text-foreground hover:text-accent'
                             >
                                 {row.original.attributes.name}
                             </Link>
-                            <p className={'mt-1 truncate text-xs text-muted-foreground'}>
+                            <p className='mt-1 truncate text-xs text-muted-foreground'>
                                 <Code>{row.original.attributes.source}</Code>
                                 {' → '}
                                 <Code>{row.original.attributes.target}</Code>
@@ -102,11 +103,11 @@ function ServerMountsContent({ server }: Props) {
                         <RowActions>
                             <EditLinkAction
                                 aria-label={`Edit ${mount.attributes.name}`}
-                                to={'/panel/mounts/$id'}
+                                to='/panel/mounts/$id'
                                 params={{ id: mount.attributes.id }}
                             />
                             <Button
-                                size={'xsmall'}
+                                size='xsmall'
                                 isSecondary
                                 color={mount.attributes.mounted ? 'red' : 'primary'}
                                 disabled={updatingId === mount.attributes.id}
@@ -135,17 +136,15 @@ function ServerMountsContent({ server }: Props) {
 
     return (
         <div>
-            <TitledGreyBox title={'Available Mounts'}>
-                {!mounts ? (
-                    <Spinner size={'large'} centered />
-                ) : (
+            <TitledGreyBox title='Available Mounts'>
+                {mounts ? (
                     <DataTable
                         table={table}
                         isFetching={isFetching}
                         emptyState={
                             <Empty className={emptyCompactClass}>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <FolderInput />
                                     </EmptyMedia>
                                     <EmptyTitle>No mounts available</EmptyTitle>
@@ -155,13 +154,15 @@ function ServerMountsContent({ server }: Props) {
                                     </EmptyDescription>
                                 </EmptyHeader>
                                 <EmptyContent>
-                                    <NewLinkButton to={'/panel/mounts'} isSecondary icon={FolderInput}>
+                                    <NewLinkButton to='/panel/mounts' isSecondary icon={FolderInput}>
                                         Manage mounts
                                     </NewLinkButton>
                                 </EmptyContent>
                             </Empty>
                         }
                     />
+                ) : (
+                    <Spinner size='large' centered />
                 )}
             </TitledGreyBox>
         </div>
@@ -172,9 +173,7 @@ export default function ServerMountsTab() {
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return (
-            <ServerError message={'Access to this resource is not allowed due to the current installation state.'} />
-        );
+        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
     }
 
     return <ServerMountsContent server={server} />;

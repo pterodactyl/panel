@@ -11,12 +11,17 @@ import type { ServerCardModel, ServerCardState } from '@/extensions/componentTyp
 import { relationshipData } from '@/api/relationships';
 import { DefaultServerCard, ServerCardContext, serverCardParts } from './ServerCardView';
 
-const ServerRowLink = createLink((props: ComponentProps<'a'>) => <GreyRowBox as={'a'} {...props} />);
+const ServerRowLink = createLink((props: ComponentProps<'a'>) => <GreyRowBox as='a' {...props} />);
 
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
-const statusToColor = (status: ServerPowerState | undefined): string =>
-    !status || status === 'offline' ? 'bg-destructive' : status === 'running' ? 'bg-success' : 'bg-warning';
+const statusToColor = (status: ServerPowerState | undefined): string => {
+    if (!status || status === 'offline') {
+        return 'bg-destructive';
+    }
+
+    return status === 'running' ? 'bg-success' : 'bg-warning';
+};
 
 type ServerAlarms = { cpu: boolean; memory: boolean; disk: boolean };
 
@@ -40,10 +45,15 @@ function resolveState(
     suspended: boolean | undefined,
     alarms: ServerAlarms
 ): ServerCardState {
-    if (suspended)
+    if (suspended) {
         return { kind: 'unavailable', reason: attributes.status === 'suspended' ? 'suspended' : 'connection-error' };
-    if (attributes.is_node_under_maintenance) return { kind: 'unavailable', reason: 'maintenance' };
-    if (stats)
+    }
+
+    if (attributes.is_node_under_maintenance) {
+        return { kind: 'unavailable', reason: 'maintenance' };
+    }
+
+    if (stats) {
         return {
             kind: 'ready',
             power: stats.current_state,
@@ -55,9 +65,20 @@ function resolveState(
             },
             disk: { value: stats.resources.disk_bytes, limit: mbToBytes(attributes.limits.disk), alarm: alarms.disk },
         };
-    if (attributes.is_transferring) return { kind: 'unavailable', reason: 'transferring' };
-    if (attributes.status === 'installing') return { kind: 'unavailable', reason: 'installing' };
-    if (attributes.status === 'restoring_backup') return { kind: 'unavailable', reason: 'restoring-backup' };
+    }
+
+    if (attributes.is_transferring) {
+        return { kind: 'unavailable', reason: 'transferring' };
+    }
+
+    if (attributes.status === 'installing') {
+        return { kind: 'unavailable', reason: 'installing' };
+    }
+
+    if (attributes.status === 'restoring_backup') {
+        return { kind: 'unavailable', reason: 'restoring-backup' };
+    }
+
     return attributes.status ? { kind: 'unavailable', reason: 'unavailable' } : { kind: 'loading' };
 }
 
@@ -97,12 +118,12 @@ export default function ServerRow({ server, className }: { server: AccountServer
 
     return (
         <ServerRowLink
-            to={'/server/$id'}
+            to='/server/$id'
             params={{ id: attributes.identifier }}
             aria-label={attributes.name}
             className={cn('group grid grid-cols-12 gap-4 relative', className)}
         >
-            <Slot name={'dashboard.serverRow.before'} data={server} />
+            <Slot name='dashboard.serverRow.before' data={server} />
             <div className='col-span-12'>
                 <ServerCardContext.Provider value={context}>
                     <ComponentView
@@ -115,8 +136,8 @@ export default function ServerRow({ server, className }: { server: AccountServer
                     />
                 </ServerCardContext.Provider>
             </div>
-            <Slot name={'dashboard.serverRow.metrics.after'} data={server} />
-            <Slot name={'dashboard.serverRow.after'} data={server} />
+            <Slot name='dashboard.serverRow.metrics.after' data={server} />
+            <Slot name='dashboard.serverRow.after' data={server} />
             <div
                 className={cn(
                     'status-bar w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-opacity duration-150',

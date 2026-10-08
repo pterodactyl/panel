@@ -43,6 +43,7 @@ function DeleteServerDialog({ server, mode, open, onClose }: DeleteServerDialogP
                 } else {
                     await deleteServer.mutateAsync(deleteAdminServerInput(attributes.id, attributes.name));
                 }
+
                 await navigate({ to: '/panel/servers' });
             } catch {
                 // Error toast is handled by the mutation.
@@ -66,18 +67,18 @@ function DeleteServerDialog({ server, mode, open, onClose }: DeleteServerDialogP
             onClose={close}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a server is a permanent action, it cannot be undone. This will permanently delete the{' '}
                 <strong>{attributes.name}</strong> server and remove all associated data.
                 {mode === 'force' && (
-                    <span className={'block mt-2 text-destructive'}>
+                    <span className='block mt-2 text-destructive'>
                         Force deleting may leave dangling files on the daemon if it reports an error.
                     </span>
                 )}
             </p>
-            <Form form={form} className={'m-0 mt-6'}>
+            <Form form={form} className='m-0 mt-6'>
                 <form.AppField
-                    name={'confirm'}
+                    name='confirm'
                     validators={{
                         onChange: ({ value }) =>
                             value === attributes.name ? undefined : 'The server name must be provided.',
@@ -85,19 +86,19 @@ function DeleteServerDialog({ server, mode, open, onClose }: DeleteServerDialogP
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
+                            type='text'
                             id={`confirm_server_name_${mode}`}
-                            label={'Confirm Server Name'}
-                            description={'Enter the name of this server to confirm deletion.'}
+                            label='Confirm Server Name'
+                            description='Enter the name of this server to confirm deletion.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6 text-right'}>
-                    <Button type={'button'} isSecondary className={'mr-2'} disabled={isSubmitting} onClick={close}>
+                <div className='mt-6 text-right'>
+                    <Button type='button' isSecondary className='mr-2' disabled={isSubmitting} onClick={close}>
                         Cancel
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton color={'red'}>
+                        <form.SubmitButton color='red'>
                             {mode === 'force' ? 'Force Delete Server' : 'Delete Server'}
                         </form.SubmitButton>
                     </form.AppForm>
@@ -118,14 +119,14 @@ const DeleteActionCard = ({
     description: ReactNode;
     action: ReactNode;
 }) => (
-    <TitledGreyBox title={title} className={'flex h-full flex-col'} contentClassName={'flex flex-1 flex-col p-0'}>
-        <div className={'flex flex-1 flex-col gap-3 p-3'}>
-            <Alert type={'danger'}>
-                <strong className={'font-semibold'}>Danger!</strong> {warning}
+    <TitledGreyBox title={title} className='flex h-full flex-col' contentClassName='flex flex-1 flex-col p-0'>
+        <div className='flex flex-1 flex-col gap-3 p-3'>
+            <Alert type='danger'>
+                <strong className='font-semibold'>Danger!</strong> {warning}
             </Alert>
-            <p className={'text-sm text-muted-foreground'}>{description}</p>
+            <p className='text-sm text-muted-foreground'>{description}</p>
         </div>
-        <div className={'flex items-center justify-end border-t border-border p-3'}>{action}</div>
+        <div className='flex items-center justify-end border-t border-border p-3'>{action}</div>
     </TitledGreyBox>
 );
 
@@ -135,41 +136,37 @@ function ServerDeleteContent({ server }: Props) {
 
     return (
         <div>
-            <DeleteServerDialog server={server} mode={'safe'} open={mode === 'safe'} onClose={close} />
-            <DeleteServerDialog server={server} mode={'force'} open={mode === 'force'} onClose={close} />
+            <DeleteServerDialog server={server} mode='safe' open={mode === 'safe'} onClose={close} />
+            <DeleteServerDialog server={server} mode='force' open={mode === 'force'} onClose={close} />
 
-            <div className={'grid grid-cols-1 gap-6 lg:grid-cols-2'}>
+            <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
                 <DeleteActionCard
-                    title={'Safely Delete Server'}
+                    title='Safely Delete Server'
                     warning={
                         <>
                             Deleting a server is an irreversible action. <strong>All server data</strong> (including
                             files and users) will be removed from the system.
                         </>
                     }
-                    description={
-                        'This action will attempt to delete the server from both the panel and daemon. If either one reports an error the action will be cancelled.'
-                    }
+                    description='This action will attempt to delete the server from both the panel and daemon. If either one reports an error the action will be cancelled.'
                     action={
-                        <Button color={'red'} className={'whitespace-nowrap'} onClick={() => setMode('safe')}>
+                        <Button color='red' className='whitespace-nowrap' onClick={() => setMode('safe')}>
                             Safely Delete This Server
                         </Button>
                     }
                 />
 
                 <DeleteActionCard
-                    title={'Force Delete Server'}
+                    title='Force Delete Server'
                     warning={
                         <>
                             Deleting a server is an irreversible action. <strong>All server data</strong> will be
                             removed. This method may leave dangling files on your daemon if it reports an error.
                         </>
                     }
-                    description={
-                        'This action will attempt to delete the server from both the panel and daemon. If the daemon does not respond, or reports an error, the deletion will continue.'
-                    }
+                    description='This action will attempt to delete the server from both the panel and daemon. If the daemon does not respond, or reports an error, the deletion will continue.'
                     action={
-                        <Button color={'red'} className={'whitespace-nowrap'} onClick={() => setMode('force')}>
+                        <Button color='red' className='whitespace-nowrap' onClick={() => setMode('force')}>
                             Forcibly Delete This Server
                         </Button>
                     }

@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 
 export const ServerRowMetricIcon = ({ $alarm, icon: IconComponent }: { $alarm: boolean; icon: LucideIcon }) => (
     <IconComponent
-        size={'1em'}
+        size='1em'
         className={cn('inline-block shrink-0', $alarm ? 'text-destructive' : 'text-muted-foreground')}
     />
 );

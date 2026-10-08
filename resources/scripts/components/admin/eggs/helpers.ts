@@ -37,8 +37,14 @@ const nullIfEmpty = (value: string): string | null => (value.trim().length > 0 ?
 
 const eggVariableOptions = (values: EggVariableValues): string[] => {
     const options: string[] = [];
-    if (values.userViewable) options.push('user_viewable');
-    if (values.userEditable) options.push('user_editable');
+
+    if (values.userViewable) {
+        options.push('user_viewable');
+    }
+
+    if (values.userEditable) {
+        options.push('user_editable');
+    }
 
     return options;
 };

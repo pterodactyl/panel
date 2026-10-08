@@ -42,6 +42,7 @@ const watch = (): (() => void) => {
             schedule();
         }
     });
+
     observer.observe(document.documentElement, { attributes: true });
     observer.observe(document.head, { attributes: true, characterData: true, childList: true, subtree: true });
 
@@ -51,10 +52,12 @@ const watch = (): (() => void) => {
             schedule();
         }
     };
+
     document.head.addEventListener('load', onLoad, true);
     window.addEventListener(THEME_CHANGE_EVENT, schedule);
 
     const scheme = window.matchMedia?.('(prefers-color-scheme: dark)');
+
     scheme?.addEventListener('change', schedule);
 
     return () => {
@@ -95,6 +98,7 @@ export const syncThemeColorMeta = (): (() => void) => {
     const apply = () => {
         const color = readThemeToken('--theme-color');
         const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"][data-theme-token]');
+
         if (meta && color.length > 0 && meta.content !== color) {
             meta.content = color;
         }

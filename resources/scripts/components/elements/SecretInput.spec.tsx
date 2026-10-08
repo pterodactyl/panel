@@ -14,6 +14,7 @@ afterEach(() => {
 });
 beforeEach(() => {
     const portal = document.createElement('div');
+
     portal.id = 'modal-portal';
     document.body.append(portal);
     clipboard.copy.mockReset();
@@ -22,7 +23,7 @@ beforeEach(() => {
 
 describe('SecretInput', () => {
     it('masks the value until revealed', () => {
-        const { container } = render(<SecretInput value={'hunter2'} label={'Password'} />);
+        const { container } = render(<SecretInput value='hunter2' label='Password' />);
         const input = container.querySelector('input')!;
 
         expect(input).toHaveAttribute('type', 'password');
@@ -35,7 +36,7 @@ describe('SecretInput', () => {
     });
 
     it('copies the value without revealing it', async () => {
-        const { container } = render(<SecretInput value={'hunter2'} label={'Password'} />);
+        const { container } = render(<SecretInput value='hunter2' label='Password' />);
 
         await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Copy password' })));
 
@@ -46,7 +47,7 @@ describe('SecretInput', () => {
     });
 
     it('disables both actions when there is no value', () => {
-        render(<SecretInput value={undefined} label={'Password'} />);
+        render(<SecretInput value={undefined} label='Password' />);
 
         expect(screen.getByRole('button', { name: 'Show password' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Copy password' })).toBeDisabled();

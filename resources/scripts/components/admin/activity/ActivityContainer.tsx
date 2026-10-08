@@ -16,11 +16,9 @@ export default function ActivityContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Activity'}
-            heading={'Activity'}
-            description={
-                'Actions taken through the admin panel, newest first. Server and account activity stays on those screens.'
-            }
+            title='Admin · Activity'
+            heading='Activity'
+            description='Actions taken through the admin panel, newest first. Server and account activity stays on those screens.'
         >
             <ActivityLogView
                 data={data}
@@ -30,7 +28,7 @@ export default function ActivityContainer() {
                 event={event}
                 user={user}
                 facets={facets}
-                emptyMessage={'Actions taken through the admin panel will appear here.'}
+                emptyMessage='Actions taken through the admin panel will appear here.'
                 onNavigate={(search: ActivityLogSearch) =>
                     navigate({ to: '/panel/activity', search, replace: true, viewTransition: false })
                 }

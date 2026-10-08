@@ -5,11 +5,13 @@ export const hytaleOauthUrlPattern = /https:\/\/oauth\.accounts\.hytale\.com\/oa
 
 export const extractHytaleOauthUrl = (line: string): string | null => {
     const match = hytaleOauthUrlPattern.exec(line);
+
     if (!match) {
         return null;
     }
 
     const url = new URL(match[0]);
+
     if (
         url.origin !== HYTALE_OAUTH_ORIGIN ||
         url.pathname !== HYTALE_DEVICE_VERIFY_PATH ||

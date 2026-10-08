@@ -11,7 +11,9 @@ const listeners = new Set<() => void>();
 
 const publish = (next: HttpProgressSnapshot) => {
     snapshot = next;
-    listeners.forEach((listener) => listener());
+    for (const listener of listeners) {
+        listener();
+    }
 };
 
 const subscribe = (listener: () => void) => {

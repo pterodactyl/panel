@@ -25,6 +25,22 @@ interface TaskFormValues {
     continueOnFailure: boolean;
 }
 
+const validateTimeOffset = (value: number | null): string | undefined => {
+    if (value === null) {
+        return 'A time offset must be provided.';
+    }
+
+    if (value < 0) {
+        return 'The time offset must be at least 0 seconds.';
+    }
+
+    if (value > 900) {
+        return 'The time offset must be less than 900 seconds.';
+    }
+
+    return undefined;
+};
+
 const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => void }) => {
     const [formError, setFormError] = useState<string | null>(null);
 
@@ -50,10 +66,12 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
             setFormError(null);
             if (backupLimit === 0 && value.action === 'backup') {
                 setFormError("A backup task cannot be created when the server's backup limit is set to 0.");
+
                 return;
             }
 
             const { timeOffset } = value;
+
             if (timeOffset === null) {
                 return;
             }
@@ -66,6 +84,7 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
                 } else {
                     await createTask.mutateAsync(createScheduleTaskInput(uuid, schedule, values));
                 }
+
                 onClose();
             } catch {
                 // Error toast is handled by the mutation.
@@ -82,29 +101,28 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
                 : 'A task payload must be provided.',
     };
     const setPayloadForAction = (nextAction: Action) => {
-        form.setFieldValue(
-            'payload',
-            nextAction === initialAction ? initialPayload || '' : nextAction === 'power' ? 'start' : ''
-        );
+        if (nextAction === initialAction) {
+            form.setFieldValue('payload', initialPayload || '');
+
+            return;
+        }
+
+        form.setFieldValue('payload', nextAction === 'power' ? 'start' : '');
     };
 
     return (
-        <Form form={form} className={'m-0'}>
+        <Form form={form} className='m-0'>
             {formError && (
-                <div
-                    className={
-                        'rounded-sm border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground mb-4'
-                    }
-                >
+                <div className='rounded-sm border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground mb-4'>
                     {formError}
                 </div>
             )}
-            <div className={'flex'}>
-                <div className={'mr-2 w-1/3'}>
-                    <form.AppField name={'action'}>
+            <div className='flex'>
+                <div className='mr-2 w-1/3'>
+                    <form.AppField name='action'>
                         {(field) => (
                             <field.SelectField
-                                label={'Action'}
+                                label='Action'
                                 options={[
                                     { value: 'command', label: 'Send command' },
                                     { value: 'power', label: 'Send power action' },
@@ -115,43 +133,35 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex-1 ml-6'}>
+                <div className='flex-1 ml-6'>
                     <form.AppField
-                        name={'timeOffset'}
+                        name='timeOffset'
                         validators={{
-                            onChange: ({ value }) =>
-                                value === null
-                                    ? 'A time offset must be provided.'
-                                    : value < 0
-                                      ? 'The time offset must be at least 0 seconds.'
-                                      : value > 900
-                                        ? 'The time offset must be less than 900 seconds.'
-                                        : undefined,
+                            onChange: ({ value }) => validateTimeOffset(value),
                         }}
                     >
                         {(field) => (
                             <field.NumberField
-                                label={'Time offset (in seconds)'}
+                                label='Time offset (in seconds)'
                                 min={0}
                                 max={900}
-                                description={
-                                    'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
-                                }
+                                description='The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
                             />
                         )}
                     </form.AppField>
                 </div>
             </div>
-            <div className={'mt-6'}>
-                {action === 'command' ? (
-                    <form.AppField name={'payload'} validators={payloadValidators}>
-                        {(field) => <field.TextAreaField label={'Payload'} rows={6} />}
+            <div className='mt-6'>
+                {action === 'command' && (
+                    <form.AppField name='payload' validators={payloadValidators}>
+                        {(field) => <field.TextAreaField label='Payload' rows={6} />}
                     </form.AppField>
-                ) : action === 'power' ? (
-                    <form.AppField name={'payload'} validators={payloadValidators}>
+                )}
+                {action === 'power' && (
+                    <form.AppField name='payload' validators={payloadValidators}>
                         {(field) => (
                             <field.SelectField
-                                label={'Payload'}
+                                label='Payload'
                                 options={[
                                     { value: 'start', label: 'Start the server' },
                                     { value: 'restart', label: 'Restart the server' },
@@ -161,31 +171,30 @@ const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => v
                             />
                         )}
                     </form.AppField>
-                ) : (
-                    <form.AppField name={'payload'} validators={payloadValidators}>
+                )}
+                {action === 'backup' && (
+                    <form.AppField name='payload' validators={payloadValidators}>
                         {(field) => (
                             <field.TextAreaField
-                                label={'Ignored Files'}
+                                label='Ignored Files'
                                 rows={6}
-                                description={
-                                    'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
-                                }
+                                description='Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
                             />
                         )}
                     </form.AppField>
                 )}
             </div>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                <form.AppField name={'continueOnFailure'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                <form.AppField name='continueOnFailure'>
                     {(field) => (
                         <field.SwitchField
-                            description={'Future tasks will be run when this task fails.'}
-                            label={'Continue on Failure'}
+                            description='Future tasks will be run when this task fails.'
+                            label='Continue on Failure'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>{task ? 'Save Changes' : 'Create Task'}</form.SubmitButton>
                 </form.AppForm>

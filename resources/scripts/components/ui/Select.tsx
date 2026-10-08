@@ -114,7 +114,7 @@ const getOptions = (options: SelectOption[] | undefined, groups: SelectGroup[] |
 
 const getGroups = (groups: SelectGroup[] | undefined): ComboboxGroupItem[] | undefined =>
     groups?.map((group, index) => ({
-        value: group.id !== undefined ? optionKey({ value: group.id }) : `${index}:${group.label}`,
+        value: group.id === undefined ? `${index}:${group.label}` : optionKey({ value: group.id }),
         label: group.label,
         items: group.options,
     }));
@@ -178,7 +178,7 @@ const ChevronIcon = () => <ChevronDown size={16} aria-hidden />;
 
 const ComboboxOptionItem = ({ option, showIndicator }: { option: SelectOption; showIndicator: boolean }) => (
     <ComboboxItem value={option} disabled={option.disabled}>
-        <span className={'min-w-0'}>{option.label}</span>
+        <span className='min-w-0'>{option.label}</span>
         {showIndicator && (
             <Combobox.ItemIndicator>
                 <CheckIcon />
@@ -233,6 +233,9 @@ const ComboboxPopupContent = ({
         </ComboboxPositioner>
     </Combobox.Portal>
 );
+
+const singleSelectedValues = (value: SelectValue | null | undefined): SelectValue[] =>
+    value === null || value === undefined ? [] : [value];
 
 const findOption = (candidates: SelectOption[], value: SelectValue): SelectOption | undefined =>
     candidates.find((option) => sameValue(option.value, value));
@@ -394,7 +397,7 @@ function MultiSelectCombobox({
                         </>
                     )}
                 </Combobox.Value>
-                <ComboboxTrigger aria-label={'Open popup'}>
+                <ComboboxTrigger aria-label='Open popup'>
                     <ChevronIcon />
                 </ComboboxTrigger>
             </ComboboxInputGroup>
@@ -475,7 +478,7 @@ function SingleSelectCombobox({
                     onFocus={search.handleFocus}
                     onBlur={search.handleBlur}
                 />
-                <ComboboxTrigger aria-label={'Open popup'}>
+                <ComboboxTrigger aria-label='Open popup'>
                     <ChevronIcon />
                 </ComboboxTrigger>
             </ComboboxInputGroup>
@@ -501,11 +504,7 @@ export default function Select(props: SelectProps) {
     const groupedItems = getGroups(groups);
     const items = groupedItems ?? flatOptions;
     const search = useSelectSearch({ onBlur, onSearchChange });
-    const selectedValues = props.multiple
-        ? props.value
-        : props.value === null || props.value === undefined
-          ? []
-          : [props.value];
+    const selectedValues = props.multiple ? props.value : singleSelectedValues(props.value);
     const selectedOptions = useSelectedOptions(flatOptions, selectedValues);
     const inputAria: InputAriaProps = {
         'aria-describedby': props['aria-describedby'],

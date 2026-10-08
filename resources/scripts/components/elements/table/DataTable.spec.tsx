@@ -43,8 +43,8 @@ const TestTable = ({ total = 3 }: { total?: number }) => {
 
     return (
         <>
-            <DataTable table={table} emptyState={'No rows'} />
-            <DataTablePagination table={table} total={total} count={2} itemLabel={'servers'} />
+            <DataTable table={table} emptyState='No rows' />
+            <DataTablePagination table={table} total={total} count={2} itemLabel='servers' />
         </>
     );
 };
@@ -64,7 +64,7 @@ const MergedSortTable = ({ sorting }: { sorting: SortingState }) => {
         state: { sorting, columnVisibility: { id: false } },
     });
 
-    return <DataTable table={table} emptyState={'No rows'} />;
+    return <DataTable table={table} emptyState='No rows' />;
 };
 
 afterEach(cleanup);
@@ -80,6 +80,7 @@ describe('DataTable', () => {
 
     it('drives controlled manual pagination through the table instance', async () => {
         const user = userEvent.setup();
+
         render(<TestTable />);
 
         await user.click(screen.getByRole('button', { name: 'Next page' }));
@@ -103,10 +104,11 @@ describe('DataTable', () => {
             return (
                 <>
                     <DataTable table={table} isFetching={isFetching} emptyState={<p>No servers yet</p>} />
-                    <DataTablePagination table={table} total={0} count={0} itemLabel={'servers'} />
+                    <DataTablePagination table={table} total={0} count={0} itemLabel='servers' />
                 </>
             );
         };
+
         const { container, rerender } = render(<EmptyTable />);
 
         expect(screen.getByText('No servers yet')).toBeInTheDocument();
@@ -124,8 +126,9 @@ describe('DataTable', () => {
         const StringTable = () => {
             const table = useReactTable({ data: noRows, columns, getCoreRowModel: getCoreRowModel() });
 
-            return <DataTable table={table} emptyState={'No rows'} />;
+            return <DataTable table={table} emptyState='No rows' />;
         };
+
         render(<StringTable />);
 
         expect(screen.getByText('No rows')).toHaveAttribute('data-slot', 'empty-description');

@@ -31,6 +31,7 @@ function NotesCell() {
         .getRowModel()
         .rows[0].getVisibleCells()
         .find((visible) => visible.column.id === 'notes')!;
+
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
 }
 
@@ -51,7 +52,9 @@ beforeEach(() => {
     client = new QueryClient();
     http.defaults.adapter = (async (config) => {
         const body = JSON.parse(String(config.data)) as { notes: string };
+
         notes.push(body.notes);
+
         return {
             config,
             headers: {},

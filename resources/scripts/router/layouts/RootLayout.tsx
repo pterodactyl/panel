@@ -5,7 +5,7 @@ export default function RootLayout() {
     return (
         <>
             <ProgressBar />
-            <div className={'mx-auto w-auto'}>
+            <div className='mx-auto w-auto'>
                 <Outlet />
             </div>
         </>

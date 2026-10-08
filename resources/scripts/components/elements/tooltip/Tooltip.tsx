@@ -69,7 +69,7 @@ export default function Tooltip({ children, ...props }: Props) {
         whileElementsMounted: autoUpdate,
     });
 
-    const interactions = props.interactions || ['hover', 'focus'];
+    const interactions = props.interactions ?? ['hover', 'focus'];
     const { getReferenceProps, getFloatingProps } = useInteractions([
         useHover(context, {
             restMs: props.rest ?? 30,
@@ -91,7 +91,7 @@ export default function Tooltip({ children, ...props }: Props) {
     });
 
     const side = arrowSides[placement.split('-')[0] as Side];
-    const { x: ax, y: ay } = middlewareData.arrow || {};
+    const { x: ax, y: ay } = middlewareData.arrow ?? {};
     const referenceRef = useMergeRefs([refs.setReference, children.props.ref]);
 
     return (

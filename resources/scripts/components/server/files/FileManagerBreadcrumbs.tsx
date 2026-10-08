@@ -30,13 +30,13 @@ export default function FileManagerBreadcrumbs({ children, withinFileEditor, isN
             });
 
     return (
-        <div className={'flex grow-0 items-center text-sm text-muted-foreground overflow-x-hidden'}>
-            {children || <div className={'w-12'} />}/<span className={'px-1 text-muted-foreground'}>home</span>/
+        <div className='flex grow-0 items-center text-sm text-muted-foreground overflow-x-hidden'>
+            {children || <div className='w-12' />}/<span className='px-1 text-muted-foreground'>home</span>/
             <Link
-                to={'/server/$id/files'}
+                to='/server/$id/files'
                 params={{ id }}
-                hash={'/'}
-                className={'px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'}
+                hash='/'
+                className='px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'
             >
                 container
             </Link>
@@ -45,28 +45,22 @@ export default function FileManagerBreadcrumbs({ children, withinFileEditor, isN
                 crumb.path ? (
                     <React.Fragment key={crumb.path}>
                         <Link
-                            to={'/server/$id/files'}
+                            to='/server/$id/files'
                             params={{ id }}
                             hash={encodePathSegments(crumb.path)}
-                            className={
-                                'px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'
-                            }
+                            className='px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'
                         >
                             {crumb.name}
                         </Link>
                         /
                     </React.Fragment>
                 ) : (
-                    <span key={`current:${crumb.name}`} className={'px-1 text-muted-foreground'}>
+                    <span key={`current:${crumb.name}`} className='px-1 text-muted-foreground'>
                         {crumb.name}
                     </span>
                 )
             )}
-            {file && (
-                <React.Fragment>
-                    <span className={'px-1 text-muted-foreground'}>{file}</span>
-                </React.Fragment>
-            )}
+            {file && <span className='px-1 text-muted-foreground'>{file}</span>}
         </div>
     );
 }

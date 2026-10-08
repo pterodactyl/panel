@@ -39,9 +39,9 @@ function DeleteDatabaseConfirmForm({
     onCancel: () => void;
 }) {
     return (
-        <Form form={form} className={'m-0 mt-6'}>
+        <Form form={form} className='m-0 mt-6'>
             <form.AppField
-                name={'confirm'}
+                name='confirm'
                 validators={{
                     onChange: ({ value }) =>
                         value === databaseName || value === serverDatabaseShortName(databaseName)
@@ -51,19 +51,19 @@ function DeleteDatabaseConfirmForm({
             >
                 {(field) => (
                     <field.TextField
-                        type={'text'}
-                        id={'confirm_name'}
-                        label={'Confirm Database Name'}
-                        description={'Enter the database name to confirm deletion.'}
+                        type='text'
+                        id='confirm_name'
+                        label='Confirm Database Name'
+                        description='Enter the database name to confirm deletion.'
                     />
                 )}
             </form.AppField>
-            <div className={'mt-6 text-right'}>
-                <Button type={'button'} isSecondary className={'mr-2'} onClick={onCancel}>
+            <div className='mt-6 text-right'>
+                <Button type='button' isSecondary className='mr-2' onClick={onCancel}>
                     Cancel
                 </Button>
                 <form.AppForm>
-                    <form.SubmitButton color={'red'}>Delete Database</form.SubmitButton>
+                    <form.SubmitButton color='red'>Delete Database</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>
@@ -93,13 +93,13 @@ function DeleteServerDatabaseDialog({ serverId, database, open, onClose }: Serve
     return (
         <Dialog
             open={open}
-            title={'Confirm database deletion'}
+            title='Confirm database deletion'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a database is a permanent action, it cannot be undone. This will permanently delete the{' '}
                 <strong>{databaseAttributes.name}</strong> database and remove all associated data.
             </p>
@@ -126,48 +126,42 @@ function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: S
     };
 
     return (
-        <Dialog open={open} title={'Database connection details'} onClose={onClose}>
+        <Dialog open={open} title='Database connection details' onClose={onClose}>
             <div>
                 <Label>Endpoint</Label>
                 <CopyOnClick text={connectionString}>
-                    <TextInput type={'text'} readOnly value={connectionString} />
+                    <TextInput type='text' readOnly value={connectionString} />
                 </CopyOnClick>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Connections from</Label>
-                <TextInput type={'text'} readOnly value={databaseAttributes.connections_from} />
+                <TextInput type='text' readOnly value={databaseAttributes.connections_from} />
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Max Connections</Label>
-                <TextInput
-                    type={'text'}
-                    readOnly
-                    value={
-                        databaseAttributes.max_connections === null ? 'Unlimited' : databaseAttributes.max_connections
-                    }
-                />
+                <TextInput type='text' readOnly value={databaseAttributes.max_connections ?? 'Unlimited'} />
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Username</Label>
                 <CopyOnClick text={databaseAttributes.username}>
-                    <TextInput type={'text'} readOnly value={databaseAttributes.username} />
+                    <TextInput type='text' readOnly value={databaseAttributes.username} />
                 </CopyOnClick>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Password</Label>
-                <SecretInput value={password} label={'Password'} />
+                <SecretInput value={password} label='Password' />
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>JDBC Connection String</Label>
                 <CopyOnClick text={jdbcConnection} showInNotification={false}>
-                    <TextInput type={'text'} readOnly value={jdbcConnection} />
+                    <TextInput type='text' readOnly value={jdbcConnection} />
                 </CopyOnClick>
             </div>
-            <div className={'mt-6 text-right'}>
+            <div className='mt-6 text-right'>
                 <Button
                     isSecondary
-                    color={'primary'}
-                    className={'mr-2'}
+                    color='primary'
+                    className='mr-2'
                     onClick={rotate}
                     isLoading={rotatePassword.isPending}
                 >
@@ -190,7 +184,7 @@ export function ServerDatabaseActions({ serverId, database }: ServerDatabaseRowP
                 trigger={({ onClick }) => (
                     <RowActionButton
                         icon={Eye}
-                        label={'Connection details'}
+                        label='Connection details'
                         aria-label={`View ${name} connection details`}
                         onClick={onClick}
                     />

@@ -34,6 +34,7 @@ const isServerStatsPayload = <T>(value: T): value is T & ServerStatsPayload => {
 export const parseServerStatsPayload = (data: string): ServerStatsPayload | null => {
     try {
         const parsed: unknown = JSON.parse(data);
+
         return isServerStatsPayload(parsed) ? parsed : null;
     } catch {
         return null;

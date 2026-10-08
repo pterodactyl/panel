@@ -8,11 +8,11 @@ export const accountApiColumns = (onDelete: (identifier: string) => void): Colum
     {
         id: 'description',
         accessorFn: (key) => key.attributes.description,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Description'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Description' />,
         cell: ({ row }) => (
-            <div className={'min-w-40'}>
-                <p className={'truncate font-medium'}>{row.original.attributes.description}</p>
-                <p className={'mt-0.5 truncate font-mono text-xs text-muted-foreground md:hidden'}>
+            <div className='min-w-40'>
+                <p className='truncate font-medium'>{row.original.attributes.description}</p>
+                <p className='mt-0.5 truncate font-mono text-xs text-muted-foreground md:hidden'>
                     {row.original.attributes.identifier}
                 </p>
             </div>
@@ -21,18 +21,18 @@ export const accountApiColumns = (onDelete: (identifier: string) => void): Colum
     {
         id: 'identifier',
         accessorFn: (key) => key.attributes.identifier,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Identifier'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Identifier' />,
         cell: ({ row }) => (
-            <code className={'font-mono text-xs text-muted-foreground'}>{row.original.attributes.identifier}</code>
+            <code className='font-mono text-xs text-muted-foreground'>{row.original.attributes.identifier}</code>
         ),
         meta: { headerClassName: 'hidden md:table-cell', cellClassName: 'hidden md:table-cell' },
     },
     {
         id: 'last_used_at',
         accessorFn: (key) => key.attributes.last_used_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Last used'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Last used' />,
         cell: ({ row }) => (
-            <span className={'whitespace-nowrap text-xs text-muted-foreground'}>
+            <span className='whitespace-nowrap text-xs text-muted-foreground'>
                 {row.original.attributes.last_used_at
                     ? dayjs(row.original.attributes.last_used_at).format('MMM D, YYYY HH:mm')
                     : 'Never'}

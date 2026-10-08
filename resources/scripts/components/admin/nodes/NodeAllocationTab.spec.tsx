@@ -68,6 +68,7 @@ describe('NodeAllocationTab', () => {
         const { rerender } = render(<NodeAllocationTab />);
 
         const input = screen.getByLabelText('Alias for 10.0.0.1:25565');
+
         await user.type(input, 'lobby');
         await user.click(screen.getAllByRole('checkbox')[2]!);
 
@@ -87,11 +88,13 @@ describe('NodeAllocationTab', () => {
         const { rerender } = render(<NodeAllocationTab />);
 
         const input = screen.getByLabelText('Alias for 10.0.0.1:25565');
+
         await user.type(input, 'lobby');
         await user.tab();
 
         expect(state.updateAlias).toHaveBeenCalledOnce();
         const [variables, options] = state.updateAlias.mock.calls[0]!;
+
         expect(variables).toEqual({ path: { node_id: 7, id: 1 }, body: { alias: 'lobby' } });
 
         page = allocationPage([allocation(1, 25565, 'lobby-1'), allocation(2, 25566, 'proxy')]);
@@ -105,6 +108,7 @@ describe('NodeAllocationTab', () => {
 
     it('does not save an alias that was not changed', async () => {
         const user = userEvent.setup();
+
         render(<NodeAllocationTab />);
 
         await user.click(screen.getByLabelText('Alias for 10.0.0.1:25566'));

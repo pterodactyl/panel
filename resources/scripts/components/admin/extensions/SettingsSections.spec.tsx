@@ -64,6 +64,7 @@ describe('SettingsSections', () => {
 
     it('switches sections from the dropdown and keeps hidden sections mounted', async () => {
         const user = userEvent.setup();
+
         render(
             <SettingsSections
                 schema={[field('enabled', null), field('bucket', 'Storage'), field('access_key', 'Storage')]}

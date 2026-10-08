@@ -55,19 +55,19 @@ function DeleteDatabaseDialog({
     return (
         <Dialog
             open={open}
-            title={'Confirm database deletion'}
+            title='Confirm database deletion'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={close}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a database is permanent. This will delete <strong>{attributes.name}</strong> and all associated
                 data.
             </p>
-            <Form form={form} className={'m-0 mt-6'}>
+            <Form form={form} className='m-0 mt-6'>
                 <form.AppField
-                    name={'confirm'}
+                    name='confirm'
                     validators={{
                         onChange: ({ value }) =>
                             value === attributes.name || value === serverDatabaseShortName(attributes.name)
@@ -77,19 +77,19 @@ function DeleteDatabaseDialog({
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'confirm_name'}
-                            label={'Confirm Database Name'}
-                            description={'Enter the database name to confirm deletion.'}
+                            type='text'
+                            id='confirm_name'
+                            label='Confirm Database Name'
+                            description='Enter the database name to confirm deletion.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6 text-right'}>
-                    <Button type={'button'} isSecondary className={'mr-2'} onClick={close}>
+                <div className='mt-6 text-right'>
+                    <Button type='button' isSecondary className='mr-2' onClick={close}>
                         Cancel
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton color={'red'}>Delete Database</form.SubmitButton>
+                        <form.SubmitButton color='red'>Delete Database</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
@@ -117,37 +117,37 @@ function DatabaseConnectionDialog({
     });
 
     return (
-        <Dialog open={open} title={'Database connection details'} onClose={onClose}>
+        <Dialog open={open} title='Database connection details' onClose={onClose}>
             <div>
                 <Label>Endpoint</Label>
                 <CopyOnClick text={connectionString}>
-                    <TextInput type={'text'} readOnly value={connectionString} />
+                    <TextInput type='text' readOnly value={connectionString} />
                 </CopyOnClick>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Connections from</Label>
-                <TextInput type={'text'} readOnly value={attributes.connections_from} />
+                <TextInput type='text' readOnly value={attributes.connections_from} />
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>Username</Label>
                 <CopyOnClick text={attributes.username}>
-                    <TextInput type={'text'} readOnly value={attributes.username} />
+                    <TextInput type='text' readOnly value={attributes.username} />
                 </CopyOnClick>
             </div>
-            <Can action={'database.view_password'}>
-                <div className={'mt-6'}>
+            <Can action='database.view_password'>
+                <div className='mt-6'>
                     <Label>Password</Label>
-                    <SecretInput value={password} label={'Password'} />
+                    <SecretInput value={password} label='Password' />
                 </div>
             </Can>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <Label>JDBC Connection String</Label>
                 <CopyOnClick text={jdbcConnection} showInNotification={false}>
-                    <TextInput type={'text'} readOnly value={jdbcConnection} />
+                    <TextInput type='text' readOnly value={jdbcConnection} />
                 </CopyOnClick>
             </div>
-            <div className={'mt-6 flex justify-end gap-2'}>
-                <Can action={'database.update'}>
+            <div className='mt-6 flex justify-end gap-2'>
+                <Can action='database.update'>
                     <RotatePasswordButton databaseId={attributes.id} />
                 </Can>
                 <Button isSecondary onClick={onClose}>
@@ -164,7 +164,7 @@ const DatabaseActions = ({ database }: { database: ServerDatabase }) => (
             trigger={({ onClick }) => (
                 <RowActionButton
                     icon={Eye}
-                    label={'Connection details'}
+                    label='Connection details'
                     aria-label={`View ${database.attributes.name} connection details`}
                     onClick={onClick}
                 />
@@ -172,7 +172,7 @@ const DatabaseActions = ({ database }: { database: ServerDatabase }) => (
         >
             {({ open, onClose }) => <DatabaseConnectionDialog database={database} open={open} onClose={onClose} />}
         </Dialog.Trigger>
-        <Can action={'database.delete'}>
+        <Can action='database.delete'>
             <Dialog.Trigger
                 trigger={({ onClick }) => (
                     <DeleteAction aria-label={`Delete ${database.attributes.name}`} onClick={onClick} />
@@ -188,20 +188,20 @@ export const databaseColumns: ColumnDef<ServerDatabase>[] = [
     {
         id: 'name',
         accessorFn: (database) => database.attributes.name,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Database'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Database' />,
         cell: ({ row }) => (
             <CopyOnClick text={row.original.attributes.name}>
-                <span className={'font-medium'}>{row.original.attributes.name}</span>
+                <span className='font-medium'>{row.original.attributes.name}</span>
             </CopyOnClick>
         ),
     },
     {
         id: 'endpoint',
         accessorFn: (database) => `${database.attributes.host.address}:${database.attributes.host.port}`,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Endpoint'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Endpoint' />,
         cell: ({ getValue }) => (
             <CopyOnClick text={getValue<string>()}>
-                <code className={'whitespace-nowrap text-xs'}>{getValue<string>()}</code>
+                <code className='whitespace-nowrap text-xs'>{getValue<string>()}</code>
             </CopyOnClick>
         ),
         meta: { headerClassName: 'hidden md:table-cell', cellClassName: 'hidden md:table-cell' },
@@ -209,16 +209,16 @@ export const databaseColumns: ColumnDef<ServerDatabase>[] = [
     {
         id: 'connections_from',
         accessorFn: (database) => database.attributes.connections_from,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Connections from'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Connections from' />,
         meta: { headerClassName: 'hidden lg:table-cell', cellClassName: 'hidden lg:table-cell' },
     },
     {
         id: 'username',
         accessorFn: (database) => database.attributes.username,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Username'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,
         cell: ({ getValue }) => (
             <CopyOnClick text={getValue<string>()}>
-                <code className={'text-xs'}>{getValue<string>()}</code>
+                <code className='text-xs'>{getValue<string>()}</code>
             </CopyOnClick>
         ),
         meta: { headerClassName: 'hidden xl:table-cell', cellClassName: 'hidden xl:table-cell' },

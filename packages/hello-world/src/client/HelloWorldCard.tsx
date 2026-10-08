@@ -23,7 +23,7 @@ export default function HelloWorldCard({ serverName }: { serverName: string }) {
     };
 
     return (
-        <TitledGreyBox title={'Hello World'}>
+        <TitledGreyBox title='Hello World'>
             <div style={{ display: 'grid', gap: '1rem' }}>
                 <p>
                     Hello, {user.username}! This extension is running on {serverName}.
@@ -35,11 +35,11 @@ export default function HelloWorldCard({ serverName }: { serverName: string }) {
                     </div>
                     <div>
                         <dt>Latest server status event</dt>
-                        <dd aria-live={'polite'}>{lastStatus ?? 'Waiting for the next status event.'}</dd>
+                        <dd aria-live='polite'>{lastStatus ?? 'Waiting for the next status event.'}</dd>
                     </div>
                     <div>
                         <dt>Greetings this visit</dt>
-                        <dd aria-live={'polite'}>{greetings}</dd>
+                        <dd aria-live='polite'>{greetings}</dd>
                     </div>
                 </dl>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>

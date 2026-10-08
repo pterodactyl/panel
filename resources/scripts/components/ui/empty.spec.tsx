@@ -9,23 +9,24 @@ afterEach(cleanup);
 describe('Empty', () => {
     it('renders each part with its slot and merges class names', () => {
         const { container } = render(
-            <Empty className={'border md:p-8'} data-testid={'empty'}>
+            <Empty className='border md:p-8' data-testid='empty'>
                 <EmptyHeader>
-                    <EmptyMedia variant={'icon'}>
+                    <EmptyMedia variant='icon'>
                         <svg />
                     </EmptyMedia>
                     <EmptyTitle>No databases</EmptyTitle>
                     <EmptyDescription>
-                        Create one from <a href={'/'}>the panel</a>.
+                        Create one from <a href='/'>the panel</a>.
                     </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
-                    <button type={'button'}>Create database</button>
+                    <button type='button'>Create database</button>
                 </EmptyContent>
             </Empty>
         );
 
         const root = screen.getByTestId('empty');
+
         expect(root).toHaveAttribute('data-slot', 'empty');
         expect(root).toHaveClass('border', 'md:p-8', 'p-6');
         expect(root).not.toHaveClass('md:p-12');
@@ -40,8 +41,8 @@ describe('Empty', () => {
     it('frames icons only for the icon media variant', () => {
         render(
             <>
-                <EmptyMedia data-testid={'default'} />
-                <EmptyMedia data-testid={'icon'} variant={'icon'} className={'size-12'} />
+                <EmptyMedia data-testid='default' />
+                <EmptyMedia data-testid='icon' variant='icon' className='size-12' />
             </>
         );
 
@@ -53,7 +54,7 @@ describe('Empty', () => {
     });
 
     it('lets callers override the slot attribute', () => {
-        render(<EmptyTitle data-slot={'custom-title'}>Title</EmptyTitle>);
+        render(<EmptyTitle data-slot='custom-title'>Title</EmptyTitle>);
 
         expect(screen.getByText('Title')).toHaveAttribute('data-slot', 'custom-title');
     });

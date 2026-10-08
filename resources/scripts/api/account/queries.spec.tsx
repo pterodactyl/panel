@@ -71,6 +71,7 @@ describe('session queries', () => {
             }),
         }));
         const { result } = renderHook(() => useCurrentUser(), { wrapper });
+
         expect(result.current).toMatchObject({ uuid: 'user-uuid', email: 'alex@example.test', useTotp: false });
 
         act(() => setCurrentUserQueryData(client, { useTotp: true }));

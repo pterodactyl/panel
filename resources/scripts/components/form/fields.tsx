@@ -14,16 +14,25 @@ type BaseProps = {
     light?: boolean;
 };
 
-const HelpText = ({ id, error, description }: { id: string; error?: string; description?: string }) =>
-    error ? (
-        <p id={id} className={'input-help error'}>
-            {capitalize(error)}
-        </p>
-    ) : description ? (
-        <p id={id} className={'input-help'}>
+const HelpText = ({ id, error, description }: { id: string; error?: string; description?: string }) => {
+    if (error) {
+        return (
+            <p id={id} className='input-help error'>
+                {capitalize(error)}
+            </p>
+        );
+    }
+
+    if (!description) {
+        return null;
+    }
+
+    return (
+        <p id={id} className='input-help'>
             {description}
         </p>
-    ) : null;
+    );
+};
 
 const describedBy = (...ids: (string | undefined)[]): string | undefined =>
     ids.filter((id) => !!id).join(' ') || undefined;
@@ -309,12 +318,14 @@ export function CheckboxField({ value, disabled, className }: CheckboxFieldProps
             disabled={disabled}
             onChange={(checked) => {
                 const set = new Set(selected);
+
                 if (checked) {
                     set.add(value);
                 } else {
                     set.delete(value);
                 }
-                field.handleChange(Array.from(set));
+
+                field.handleChange([...set]);
             }}
         />
     );

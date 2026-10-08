@@ -31,12 +31,12 @@ export default function DatabaseHostNodeSelect({ id, value, onChange }: Props) {
             <Select
                 id={id}
                 value={value}
-                placeholder={'None'}
+                placeholder='None'
                 groups={groups}
                 disabled={locations === undefined}
                 onChange={(value) => onChange(String(value))}
             />
-            <p className={'input-help'}>
+            <p className='input-help'>
                 Default to this database host when adding databases to servers on selected node.
             </p>
         </div>

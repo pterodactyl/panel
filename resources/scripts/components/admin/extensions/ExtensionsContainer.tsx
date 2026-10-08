@@ -58,7 +58,7 @@ type ActionButtonProps = {
     onClick: () => void;
 };
 
-const stateBadge = (state: ExtensionState | undefined) => {
+const stateBadge = (state: ExtensionState = '') => {
     switch (state) {
         case 'not_registered':
             return { label: 'Not set up', className: 'bg-accent/10 text-accent' };
@@ -98,10 +98,10 @@ function ExtensionMarkContent({ extension }: { extension: AdminExtension }) {
         return (
             <img
                 src={iconUrl}
-                alt={''}
-                loading={'lazy'}
-                decoding={'async'}
-                className={'h-full w-full object-contain'}
+                alt=''
+                loading='lazy'
+                decoding='async'
+                className='h-full w-full object-contain'
                 onError={() => setFailedUrl(iconUrl)}
             />
         );
@@ -117,10 +117,8 @@ function ExtensionMarkContent({ extension }: { extension: AdminExtension }) {
 export function ExtensionMark({ extension }: { extension: AdminExtension }) {
     return (
         <div
-            className={
-                'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-secondary text-sm font-semibold text-secondary-foreground'
-            }
-            aria-hidden={'true'}
+            className='flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-secondary text-sm font-semibold text-secondary-foreground'
+            aria-hidden='true'
         >
             <ExtensionMarkContent extension={extension} />
         </div>
@@ -135,7 +133,7 @@ function ActionButton({ label, icon, disabled, color = 'grey', isLoading, onClic
             isSecondary
             disabled={disabled}
             isLoading={isLoading}
-            className={'h-8 px-2.5 text-sm'}
+            className='h-8 px-2.5 text-sm'
             onClick={onClick}
         >
             {label}
@@ -147,10 +145,10 @@ function ReplacementNotice({ replacement }: { replacement: AdminExtensionReplace
     const installed = replacement.installedVersion ? `v${replacement.installedVersion}` : 'a copy';
 
     return (
-        <Alert type={'warning'} title={'Replace an installed extension?'}>
-            This package is <code className={'font-mono'}>{replacement.id}</code> v{replacement.version}, and{' '}
-            {installed} of <code className={'font-mono'}>{replacement.id}</code> is already installed. Installing it
-            replaces the installed files.
+        <Alert type='warning' title='Replace an installed extension?'>
+            This package is <code className='font-mono'>{replacement.id}</code> v{replacement.version}, and {installed}{' '}
+            of <code className='font-mono'>{replacement.id}</code> is already installed. Installing it replaces the
+            installed files.
             {replacement.enabled &&
                 ' The extension is enabled and stays enabled, so the new version runs its migrations and code right away.'}
         </Alert>
@@ -175,6 +173,7 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
         } catch (error) {
             // A package with an installed id waits for the admin to confirm; other errors are toasted by the mutation.
             const conflict = extensionReplacement(error);
+
             if (conflict) {
                 setReplacement(conflict);
             }
@@ -184,19 +183,19 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
     return (
         <Dialog
             open={open}
-            title={'Install extension'}
+            title='Install extension'
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={submitting} />
-            <div className={'space-y-5'}>
+            <div className='space-y-5'>
                 <div>
-                    <Label htmlFor={'extension_package'}>Package</Label>
+                    <Label htmlFor='extension_package'>Package</Label>
                     <FileInput
-                        id={'extension_package'}
-                        accept={'.pteroext,.zip,application/zip'}
-                        aria-label={'Extension package'}
+                        id='extension_package'
+                        accept='.pteroext,.zip,application/zip'
+                        aria-label='Extension package'
                         disabled={submitting}
                         onChange={(event) => {
                             setFile(event.currentTarget.files?.[0] ?? null);
@@ -204,26 +203,26 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                         }}
                     />
                 </div>
-                <label className={'flex items-center gap-3 text-sm text-foreground'}>
+                <label className='flex items-center gap-3 text-sm text-foreground'>
                     <Checkbox checked={enable} onChange={setEnable} disabled={submitting} />
                     Enable after install
                 </label>
                 {replacement && <ReplacementNotice replacement={replacement} />}
             </div>
-            <div className={'flex flex-wrap justify-end mt-6'}>
+            <div className='flex flex-wrap justify-end mt-6'>
                 <Button
-                    type={'button'}
+                    type='button'
                     isSecondary
-                    className={'w-full sm:w-auto sm:mr-2'}
+                    className='w-full sm:w-auto sm:mr-2'
                     disabled={submitting}
                     onClick={onClose}
                 >
                     Cancel
                 </Button>
                 <Button
-                    type={'button'}
+                    type='button'
                     color={replacement ? 'red' : 'primary'}
-                    className={'w-full mt-4 sm:w-auto sm:mt-0'}
+                    className='w-full mt-4 sm:w-auto sm:mt-0'
                     disabled={!file || submitting}
                     isLoading={submitting}
                     onClick={() => void submit()}
@@ -262,24 +261,24 @@ function ExtensionToolbar({
         <ListToolbar
             summary={
                 failedCount > 0 && (
-                    <span className={'inline-flex items-center gap-1.5 text-warning'}>
+                    <span className='inline-flex items-center gap-1.5 text-warning'>
                         <Icon icon={AlertCircle} />
                         {failedCount === 1 ? '1 extension needs attention' : `${failedCount} extensions need attention`}
                     </span>
                 )
             }
         >
-            <div className={'flex items-center gap-2'}>
-                <Tooltip content={'Refresh'}>
-                    <span className={'inline-flex'}>
+            <div className='flex items-center gap-2'>
+                <Tooltip content='Refresh'>
+                    <span className='inline-flex'>
                         <Button
-                            type={'button'}
-                            color={'grey'}
+                            type='button'
+                            color='grey'
                             isSecondary
-                            aria-label={'Refresh extensions'}
+                            aria-label='Refresh extensions'
                             disabled={isFetching}
                             isLoading={isFetching}
-                            className={'inline-flex h-9 w-9 items-center justify-center p-0'}
+                            className='inline-flex h-9 w-9 items-center justify-center p-0'
                             onClick={onRefresh}
                         >
                             <Icon icon={RefreshCw} />
@@ -321,8 +320,10 @@ const buildSettingsPayload = (
     getValue: (field: AdminExtensionSettingField) => AdminExtensionSettingValue | undefined
 ) => {
     const settings: Record<string, AdminExtensionSettingValue> = {};
+
     for (const field of schema) {
         const value = getValue(field);
+
         if (shouldIncludeSettingValue(field, value)) {
             settings[field.input] = field.field === 'list' ? submittedItems(value) : value;
         }
@@ -335,7 +336,7 @@ function SettingsEmptyState({ extensionEnabled }: { extensionEnabled: boolean | 
     return (
         <Empty className={emptyCompactClass}>
             <EmptyHeader>
-                <EmptyMedia variant={'icon'}>
+                <EmptyMedia variant='icon'>
                     <Settings2 />
                 </EmptyMedia>
                 <EmptyTitle>{extensionEnabled ? 'No settings' : 'Settings unavailable'}</EmptyTitle>
@@ -371,7 +372,7 @@ function SettingsDialogContent({
     if (error) {
         return (
             <div className={settingsBodyClass}>
-                <Alert type={'danger'}>
+                <Alert type='danger'>
                     <span>{httpErrorToHuman(error)}</span>
                 </Alert>
             </div>
@@ -381,7 +382,7 @@ function SettingsDialogContent({
     if (showLoading) {
         return (
             <div className={cn(settingsBodyClass, 'justify-center')}>
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             </div>
         );
     }
@@ -422,19 +423,19 @@ function SettingsDialogActions({
     onSubmit: () => void;
 }) {
     return (
-        <div className={'flex flex-wrap justify-end mt-6'}>
+        <div className='flex flex-wrap justify-end mt-6'>
             <Button
-                type={'button'}
+                type='button'
                 isSecondary
-                className={'w-full sm:w-auto sm:mr-2'}
+                className='w-full sm:w-auto sm:mr-2'
                 disabled={submitting}
                 onClick={onCancel}
             >
                 Cancel
             </Button>
             <Button
-                type={'button'}
-                className={'w-full mt-4 sm:w-auto sm:mt-0'}
+                type='button'
+                className='w-full mt-4 sm:w-auto sm:mt-0'
                 disabled={submitting || !canSave}
                 isLoading={submitting}
                 onClick={onSubmit}
@@ -560,12 +561,12 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
     };
 
     return (
-        <article className={'flex h-full flex-col rounded-sm border border-border bg-card p-4'}>
-            <div className={'flex min-w-0 items-start gap-3'}>
+        <article className='flex h-full flex-col rounded-sm border border-border bg-card p-4'>
+            <div className='flex min-w-0 items-start gap-3'>
                 <ExtensionMark extension={extension} />
-                <div className={'min-w-0 flex-1'}>
-                    <div className={'flex flex-wrap items-center gap-2'}>
-                        <h2 className={'truncate text-base font-semibold text-foreground'} title={`${name} (${id})`}>
+                <div className='min-w-0 flex-1'>
+                    <div className='flex flex-wrap items-center gap-2'>
+                        <h2 className='truncate text-base font-semibold text-foreground' title={`${name} (${id})`}>
                             {name}
                         </h2>
                         {badge && (
@@ -574,37 +575,37 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                             </span>
                         )}
                     </div>
-                    <p className={'mt-0.5 truncate text-xs text-muted-foreground'}>
+                    <p className='mt-0.5 truncate text-xs text-muted-foreground'>
                         {subtitle && <>{subtitle} · </>}
-                        <span className={'font-mono'}>{id}</span>
+                        <span className='font-mono'>{id}</span>
                     </p>
                 </div>
             </div>
 
             <p
-                className={'mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'}
+                className='mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'
                 title={extension.description || undefined}
             >
                 {extension.description || 'No description provided.'}
             </p>
 
             {state === 'not_registered' && (
-                <p className={'mt-3 text-sm text-muted-foreground'}>
+                <p className='mt-3 text-sm text-muted-foreground'>
                     Found in the extensions folder. Turn it on to finish setting it up.
                 </p>
             )}
 
             {extension.error && (
-                <div className={'mt-3 rounded-sm border border-destructive/30 bg-destructive/10 p-3'}>
-                    <p className={'break-words text-sm text-destructive'}>{extension.error}</p>
+                <div className='mt-3 rounded-sm border border-destructive/30 bg-destructive/10 p-3'>
+                    <p className='break-words text-sm text-destructive'>{extension.error}</p>
                 </div>
             )}
 
-            <div className={'mt-auto pt-4'}>
-                <div className={'flex flex-wrap items-center gap-2 border-t border-border pt-4'}>
+            <div className='mt-auto pt-4'>
+                <div className='flex flex-wrap items-center gap-2 border-t border-border pt-4'>
                     <Switch
                         aria-label={`Enable ${name}`}
-                        className={'mr-auto'}
+                        className='mr-auto'
                         checked={extension.enabled === true}
                         disabled={
                             enablePending ||
@@ -616,7 +617,7 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                     {extension.enabled && (
                         <Dialog.Trigger
                             trigger={({ onClick }) => (
-                                <ActionButton label={'Settings'} icon={Settings2} onClick={onClick} />
+                                <ActionButton label='Settings' icon={Settings2} onClick={onClick} />
                             )}
                         >
                             {({ open, onClose }) => (
@@ -625,16 +626,16 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                         </Dialog.Trigger>
                     )}
                     <Dialog.ConfirmTrigger
-                        title={'Remove extension'}
-                        confirm={'Remove'}
+                        title='Remove extension'
+                        confirm='Remove'
                         preventExternalClose={removePending}
                         hideCloseIcon={removePending}
                         pending={removePending}
                         trigger={({ onClick }) => (
                             <ActionButton
-                                label={'Remove'}
+                                label='Remove'
                                 icon={Trash2}
-                                color={'red'}
+                                color='red'
                                 disabled={!canRemove(extension) || removePending}
                                 isLoading={removePending}
                                 onClick={onClick}
@@ -654,9 +655,9 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
 
 function EmptyExtensionsState() {
     return (
-        <Empty className={'border bg-card'}>
+        <Empty className='border bg-card'>
             <EmptyHeader>
-                <EmptyMedia variant={'icon'}>
+                <EmptyMedia variant='icon'>
                     <FileArchive />
                 </EmptyMedia>
                 <EmptyTitle>No extensions installed</EmptyTitle>
@@ -668,6 +669,20 @@ function EmptyExtensionsState() {
                 <InstallExtensionButton />
             </EmptyContent>
         </Empty>
+    );
+}
+
+function ExtensionGrid({ extensions }: { extensions: AdminExtension[] }) {
+    if (extensions.length === 0) {
+        return <EmptyExtensionsState />;
+    }
+
+    return (
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
+            {extensions.map((extension) => (
+                <ExtensionCard key={extension.id ?? extension.name} extension={extension} />
+            ))}
+        </div>
     );
 }
 
@@ -684,9 +699,9 @@ export default function ExtensionsContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Extensions'}
-            heading={'Extensions'}
-            description={'Manage extensions that add features and integrations to your panel.'}
+            title='Admin · Extensions'
+            heading='Extensions'
+            description='Manage extensions that add features and integrations to your panel.'
         >
             {runtimeFailures.length > 0 && (
                 <Alert type='danger' className='mb-4'>
@@ -698,24 +713,14 @@ export default function ExtensionsContainer() {
                 </Alert>
             )}
             {data?.meta?.enabled === false && (
-                <Alert type={'warning'} className={'mb-4'}>
+                <Alert type='warning' className='mb-4'>
                     Extensions are turned off on this panel, so installed extensions won&apos;t load. Set{' '}
-                    <code className={'font-mono'}>PTERODACTYL_EXTENSIONS_ENABLED=true</code> in your{' '}
-                    <code className={'font-mono'}>.env</code> to turn them on.
+                    <code className='font-mono'>PTERODACTYL_EXTENSIONS_ENABLED=true</code> in your{' '}
+                    <code className='font-mono'>.env</code> to turn them on.
                 </Alert>
             )}
             {data && <ExtensionToolbar failedCount={failedCount} isFetching={isFetching} onRefresh={() => refetch()} />}
-            {!data ? (
-                <Spinner size={'large'} centered />
-            ) : extensions.length === 0 ? (
-                <EmptyExtensionsState />
-            ) : (
-                <div className={'grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'}>
-                    {extensions.map((extension) => (
-                        <ExtensionCard key={extension.id ?? extension.name} extension={extension} />
-                    ))}
-                </div>
-            )}
+            {data ? <ExtensionGrid extensions={extensions} /> : <Spinner size='large' centered />}
         </AdminContentBlock>
     );
 }
