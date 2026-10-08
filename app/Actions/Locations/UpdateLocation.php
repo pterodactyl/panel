@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Locations\UpdatesLocations;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 
 final readonly class UpdateLocation implements UpdatesLocations
 {
@@ -20,7 +21,7 @@ final readonly class UpdateLocation implements UpdatesLocations
      */
     public function update(Location $location, array $data): Location
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         DB::transaction(function () use ($location, $data, $extensions): void {

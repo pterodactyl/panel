@@ -118,26 +118,6 @@ final class ExtensionSettingValueGuard
     }
 
     /**
-     * Field values keyed by extension id and then by field name.
-     *
-     * @phpstan-assert ExtensionFieldInput $value
-     *
-     * @return ExtensionFieldInput
-     */
-    public static function fieldInput(mixed $value): array
-    {
-        throw_unless(is_array($value), UnexpectedValueException::class, 'Extension field input must be an array keyed by extension id.');
-
-        $input = [];
-        foreach ($value as $extension => $values) {
-            throw_unless(is_string($extension), UnexpectedValueException::class, 'Extension field input must be keyed by extension id.');
-            $input[$extension] = self::fieldValues($values);
-        }
-
-        return $input;
-    }
-
-    /**
      * The validation rules an extension's Fields declare: rule strings, objects or closures,
      * or lists of them, keyed by field.
      *

@@ -10,6 +10,7 @@ use Pterodactyl\Contracts\Databases\UpdatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Throwable;
 
 final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
@@ -25,7 +26,7 @@ final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
      */
     public function update(DatabaseHost $host, array $data): DatabaseHost
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         $password = $data['password'] ?? null;

@@ -11,13 +11,15 @@ namespace Pterodactyl\Extensions;
  * `extensions.<id>` and returns them on the resource under the same key.
  *
  * Every method is optional and called through the service container, like the methods
- * of a FormRequest, so each can type-hint the model it extends (`User $user`) as well as
- * any other dependency:
+ * of a FormRequest, so each can type-hint the model it extends as well as any other
+ * dependency. Every method but values() and save() also runs while the model is created,
+ * when there is no model yet, so a model parameter there must be nullable (`?User $user`).
+ * A model parameter always receives the model being changed, never the signed-in user:
+ * type-hint `#[CurrentUser] User $admin` for that.
  *
  * - `rules()`: validation rules keyed by field name, applied to this extension's values
- *   alone, so `required_if:plan,pro` refers to this extension's `plan`. They only run when
- *   a request sends values for this extension. When updating, the model is passed to a
- *   nullable parameter (`?User $user`); when creating, that parameter is null.
+ *   alone, so `required_if:plan,pro` refers to this extension's `plan`. They run whenever a
+ *   request includes this extension, and the admin forms include it on every save.
  * - `values($model)`: the current values, keyed by field name. Strings, numbers, booleans,
  *   null, and lists of those.
  * - `save($model, array $values)`: stores the validated values. It runs inside the
@@ -25,10 +27,14 @@ namespace Pterodactyl\Extensions;
  *   whole change back. Put work that has to wait for the commit in DB::afterCommit().
  * - `authorize()`: whether the signed-in user may see and change these values. A request
  *   that sends them anyway is refused.
+ * - `secrets()`: the names of fields that hold credentials. Their values are encrypted when
+ *   the panel stores them, returned as a mask, and kept when a save sends them empty, as
+ *   the mask or not at all.
  * - `attributes()` and `messages()`: names and messages for validation errors.
  *
- * Without `values()` and `save()`, the panel stores the values for you in the extension's
- * settings scoped to the model, which the provider reads with `$this->settings()->for($model)`.
- * Implement both to keep them in the extension's own tables instead.
+ * Without `values()` and `save()`, the panel stores the values for you, apart from the
+ * extension's other settings, where the provider reads them with
+ * `$this->settings()->fields($model)`. Implement both to keep them in the extension's own
+ * tables instead.
  */
 abstract class Fields {}

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\CreatesEggs;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class CreateEgg implements CreatesEggs
@@ -22,7 +23,7 @@ final readonly class CreateEgg implements CreatesEggs
      */
     public function create(array $data): Egg
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         return DB::transaction(function () use ($data, $extensions): Egg {

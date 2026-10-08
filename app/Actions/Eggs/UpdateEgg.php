@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\UpdatesEggs;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 
 final readonly class UpdateEgg implements UpdatesEggs
 {
@@ -20,7 +21,7 @@ final readonly class UpdateEgg implements UpdatesEggs
      */
     public function update(Egg $egg, array $data): void
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         // TODO(dane): Once the admin UI is done being reworked and this is exposed

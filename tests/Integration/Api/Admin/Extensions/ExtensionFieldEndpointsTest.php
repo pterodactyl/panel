@@ -58,7 +58,7 @@ final class FailingSaveFields extends Fields
     }
 
     /** @param array<string, string> $values */
-    public function save(Model $model, array $values): void
+    public function save(Model $model, array $values): never
     {
         throw new RuntimeException('The billing system is down.');
     }
@@ -116,7 +116,7 @@ test('values are validated, saved with the change and returned on the resource',
 
     $subject = $case['find']();
     expect($subject)->not->toBeNull();
-    expect($this->app->make(ExtensionRepository::class)->settings('fields')->for($subject)->all())->toBe(['note' => 'hello']);
+    expect($this->app->make(ExtensionRepository::class)->settings('fields')->fields($subject)->all())->toBe(['note' => 'hello']);
 })->with('formEndpoints');
 
 test('invalid values reject the request before the core change', function (string $model, string $endpoint): void {
@@ -128,6 +128,7 @@ test('invalid values reject the request before the core change', function (strin
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $response->assertJsonPath('errors.0.meta.source_field', 'extensions.fields.note');
     $response->assertJsonPath('errors.0.detail', 'The note may not be greater than 32 characters.');
+
     expect($case['find']())->toBeNull();
 })->with('formEndpoints');
 
@@ -141,6 +142,7 @@ test('an extension sent without values still runs its rules, so a required field
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $response->assertJsonPath('errors.0.meta.source_field', 'extensions.fields.note');
     $response->assertJsonPath('errors.0.detail', 'The note field is required.');
+
     expect($case['find']())->toBeNull();
 })->with('formEndpoints');
 
@@ -158,13 +160,13 @@ test('a request that sends no values leaves the stored ones alone', function (st
     registerFields($model, NoteFields::class);
     $case = formCase($endpoint);
     $settings = $this->app->make(ExtensionRepository::class)->settings('fields');
-    $settings->for($case['subject'] ?? throw new RuntimeException('Expected a model to update.'))->set('note', 'kept');
+    $settings->fields($case['subject'] ?? throw new RuntimeException('Expected a model to update.'))->set('note', 'kept');
 
     $this->json($case['method'], $case['url'], $case['payload'])
         ->assertSuccessful()
         ->assertJsonPath('attributes.extensions.fields.note', 'kept');
 
-    expect($settings->for($case['subject'])->all())->toBe(['note' => 'kept']);
+    expect($settings->fields($case['subject'])->all())->toBe(['note' => 'kept']);
 })->with('updateEndpoints');
 
 test('a node update that Wings cannot receive keeps the node and its values', function (): void {
@@ -176,9 +178,10 @@ test('a node update that Wings cannot receive keeps the node and its values', fu
 
     $response->assertStatus(Response::HTTP_BAD_REQUEST);
     $response->assertJsonPath('errors.0.code', 'ConfigurationNotPersistedException');
+
     $node = $case['find']();
     expect($node)->not->toBeNull();
-    expect($this->app->make(ExtensionRepository::class)->settings('fields')->for($node)->get('note'))->toBe('hello');
+    expect($this->app->make(ExtensionRepository::class)->settings('fields')->fields($node)->get('note'))->toBe('hello');
 });
 
 test('lists leave extension values out', function (): void {

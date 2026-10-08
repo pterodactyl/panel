@@ -44,6 +44,8 @@ abstract class BaseTransformer extends TransformerAbstract
 
     private bool $extensionFields = false;
 
+    private bool $readExtensionFields = true;
+
     /**
      * Return the resource name for the JSONAPI output.
      */
@@ -52,11 +54,13 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Adds the values of extension fields to the resource as its `extensions` attribute.
      * Controllers ask for them on responses about one model, so a list never runs every
-     * extension for every row.
+     * extension for every row. With `$read` false the attribute is present but empty and no
+     * extension code runs, as in documentation examples.
      */
-    public function withExtensionFields(): static
+    public function withExtensionFields(bool $read = true): static
     {
         $this->extensionFields = true;
+        $this->readExtensionFields = $read;
 
         return $this;
     }
@@ -137,6 +141,10 @@ abstract class BaseTransformer extends TransformerAbstract
     {
         if (! $this->extensionFields) {
             return [];
+        }
+
+        if (! $this->readExtensionFields) {
+            return ['extensions' => new JsonEmptyObject];
         }
 
         $values = array_map(

@@ -121,9 +121,10 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
         throw_unless($transformer instanceof TransformerAbstract, InvalidArgumentException::class, "Transformer [$transformerClass] must extend ".TransformerAbstract::class.'.');
 
         if (! $attribute->collection) {
-            // Controllers add extension field values to responses about one resource.
+            // Controllers add extension field values to responses about one resource. The
+            // example shows the attribute without running installed extensions' code.
             if ($transformer instanceof BaseTransformer) {
-                $transformer->withExtensionFields();
+                $transformer->withExtensionFields(read: false);
             }
 
             $resource = new Item($modelInstantiator(), $transformer, $attribute->resourceKey);

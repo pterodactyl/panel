@@ -65,8 +65,8 @@ test('the Application API accepts and returns only fields marked for it', functi
     $response->assertCreated()->assertJsonPath('attributes.extensions', ['billing' => ['plan' => 'pro']]);
     $user = User::query()->where('username', 'billed')->firstOrFail();
     $repository = $this->app->make(ExtensionRepository::class);
-    expect($repository->settings('billing')->for($user)->all())->toBe(['plan' => 'pro']);
-    expect($repository->settings('notes')->for($user)->all())->toBe([]);
+    expect($repository->settings('billing')->fields($user)->all())->toBe(['plan' => 'pro']);
+    expect($repository->settings('notes')->fields($user)->all())->toBe([]);
 
     $this->patchJson('/api/application/users/'.$user->id, ['username' => 'billed', 'email' => 'billed@example.test', 'first_name' => 'Billed', 'last_name' => 'User', 'extensions' => ['billing' => ['plan' => 'gold']]])
         ->assertUnprocessable()

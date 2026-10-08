@@ -11,7 +11,7 @@ use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Extensions\ExtensionFields;
-use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Throwable;
 
 final readonly class CreateUser implements CreatesUsers
@@ -25,14 +25,13 @@ final readonly class CreateUser implements CreatesUsers
      * The UUID and password hash are handled by the model itself (HasVersion4Uuids
      * and the hashed password cast).
      *
-     * @param  ModelAttributes  $data
+     * @param  UserCreationData  $data
      *
      * @throws Throwable
      */
     public function create(array $data): User
     {
-        // SAFETY: requests put the validated values of each extension under `extensions`.
-        $extensions = ExtensionSettingValueGuard::fieldInput($data['extensions'] ?? []);
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         $generateResetToken = empty($data['password']);

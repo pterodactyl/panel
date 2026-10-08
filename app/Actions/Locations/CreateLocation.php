@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 
 final readonly class CreateLocation implements CreatesLocations
 {
@@ -20,7 +21,7 @@ final readonly class CreateLocation implements CreatesLocations
      */
     public function create(array $data): Location
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         return DB::transaction(function () use ($data, $extensions): Location {

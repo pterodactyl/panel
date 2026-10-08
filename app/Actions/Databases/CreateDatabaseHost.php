@@ -11,7 +11,7 @@ use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
-use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
@@ -22,7 +22,7 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
     /**
      * Create a new database host on the Panel.
      *
-     * @param  ModelAttributes  $data
+     * @param  DatabaseHostUpdateData  $data
      *
      * @throws Throwable
      */
@@ -38,8 +38,7 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
                 'max_databases' => null,
                 'node_id' => JsonValueGuard::nullableInteger(Arr::get($data, 'node_id')),
             ]);
-            // SAFETY: requests put the validated values of each extension under `extensions`.
-            $this->extensions->save($host, ExtensionSettingValueGuard::fieldInput($data['extensions'] ?? []));
+            $this->extensions->save($host, ValidatedExtensionValues::of($data['extensions'] ?? null));
 
             // Confirm access using the provided credentials before saving data.
             $this->dynamic->set('dynamic', $host);

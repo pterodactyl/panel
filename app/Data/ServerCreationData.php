@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Data;
 
-use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonEmptyObject;
 use UnexpectedValueException;
 
@@ -41,7 +41,7 @@ final class ServerCreationData
             'allocation_limit' => self::nullableInteger($value['allocation_limit'] ?? null, 'allocation_limit'),
             'backup_limit' => self::nullableInteger($value['backup_limit'] ?? null, 'backup_limit'),
             'oom_disabled' => self::nullableBoolean($value['oom_disabled'] ?? null, 'oom_disabled'),
-            'extensions' => ExtensionSettingValueGuard::fieldInput($value['extensions'] ?? []),
+            'extensions' => ValidatedExtensionValues::of($value['extensions'] ?? null),
         ];
     }
 

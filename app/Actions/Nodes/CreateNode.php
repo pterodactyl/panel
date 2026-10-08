@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Nodes\CreatesNodes;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 
 final readonly class CreateNode implements CreatesNodes
 {
@@ -22,7 +23,7 @@ final readonly class CreateNode implements CreatesNodes
      */
     public function create(array $data): Node
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         return DB::transaction(function () use ($data, $extensions): Node {

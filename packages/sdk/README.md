@@ -357,7 +357,11 @@ final class UserRole extends Fields
 ```
 
 Every method is optional. The panel calls them through the container, like the methods of
-a FormRequest, so each can type-hint the model it extends and any other dependency:
+a FormRequest, so each can type-hint the model it extends and any other dependency. A model
+parameter always receives the model being changed, never the signed-in user, and every
+method but `values()` and `save()` also runs while the model is created, so a model
+parameter there must be nullable. Registering a class that breaks either rule fails the
+provider's boot.
 
 - `rules()` validates the extension's values on their own, so `required_if:plan,pro` refers
   to the extension's own `plan`. They run whenever a request includes the extension under
@@ -373,13 +377,20 @@ a FormRequest, so each can type-hint the model it extends and any other dependen
   to wait for the commit in `DB::afterCommit()`.
 - `authorize()` decides whether the signed-in user may see and change the values; type-hint
   `#[CurrentUser] User $admin` to get them. A request that sends values it refuses gets a 403.
+  Only root admins reach these endpoints, and `$admin->can()` passes every check for a root
+  admin, so decide on something else, such as the admin's id or a role the extension keeps.
+- `secrets()` lists the fields that hold credentials. Their values are encrypted when the
+  panel stores them and returned as `********`, and a save that sends one empty, as the mask
+  or not at all keeps the stored value. A secret cannot be cleared through the form.
 - `attributes()` and `messages()` name the fields in validation messages and replace them,
   as on a FormRequest.
 
-Leave out `values()` and `save()` and the panel stores the values for you, in the
-extension's settings scoped to the model: read them with `$this->settings()->for($user)`.
-Implement both to keep the values in your own tables, where you can index, join and query
-them. Implementing only one fails the provider's boot.
+Leave out `values()` and `save()` and the panel stores the values for you, apart from the
+extension's other settings: read them with `$this->settings()->fields($user)`. Settings from
+`for()`, `forUser()` and `forServer()` never include them, so an extension that shows users
+their own settings cannot expose admin fields. Implement both to keep the values in your
+own tables, where you can index, join and query them. Implementing only one fails the
+provider's boot.
 
 The admin API's create and update endpoints accept `extensions: { "<id>": { "<field>": value } }`
 and report errors under `extensions.<id>.<field>`. Responses about one resource include

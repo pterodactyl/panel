@@ -118,11 +118,10 @@ class StoreServerRequest extends ApplicationApiRequest
             'allocation_limit' => Arr::get($data, 'feature_limits.allocations'),
             'backup_limit' => Arr::get($data, 'feature_limits.backups'),
             'oom_disabled' => Arr::get($data, 'oom_disabled'),
-            'extensions' => $this->extensionValues(),
         ];
         JsonValueGuard::assertPayload9($payload);
 
-        return ServerCreationData::parse($payload);
+        return [...ServerCreationData::parse($payload), 'extensions' => $this->extensionValues()];
     }
 
     /**

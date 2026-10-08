@@ -14,6 +14,7 @@ use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Throwable;
 
 final readonly class UpdateNode implements UpdatesNodes
@@ -29,7 +30,7 @@ final readonly class UpdateNode implements UpdatesNodes
      */
     public function update(Node $node, array $data, bool $resetToken = false): Node
     {
-        $extensions = $data['extensions'] ?? [];
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
 
         if ($resetToken) {

@@ -9,7 +9,9 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 /**
  * Accepts the `extensions` input of a request that creates or updates a model extensions
@@ -19,8 +21,7 @@ use Pterodactyl\Support\JsonValueGuard;
  */
 trait ValidatesExtensionFields
 {
-    /** @var ExtensionFieldInput */
-    private array $extensionValues = [];
+    private ?ValidatedExtensionValues $extensionValues = null;
 
     /**
      * The model this request updates, or its class when the request creates one.
@@ -29,14 +30,10 @@ trait ValidatesExtensionFields
      */
     abstract protected function extensionFieldsModel(): Model|string;
 
-    /**
-     * The validated values of each extension that sent any, keyed by extension id.
-     *
-     * @return ExtensionFieldInput
-     */
-    public function extensionValues(): array
+    /** The validated values of each extension that sent any, keyed by extension id. */
+    public function extensionValues(): ValidatedExtensionValues
     {
-        return $this->extensionValues;
+        return $this->extensionValues ?? ValidatedExtensionValues::none();
     }
 
     /**
@@ -48,24 +45,27 @@ trait ValidatesExtensionFields
         $model = $this->extensionFieldsModel();
         $input = $this->input('extensions');
         $applicationApi = $this instanceof ApplicationApiRequest;
+        $running = array_keys($fields->for($model instanceof Model ? $model::class : $model, $applicationApi));
 
         $fields->authorize($model, is_array($input) ? array_values(array_filter(array_keys($input), is_string(...))) : [], $applicationApi);
 
         $validator = parent::createDefaultValidator($factory);
-        $validator->after(function (Validator $validator) use ($fields, $model, $applicationApi): void {
-            $this->extensionValues = $fields->validate($validator, $model, $this->submittedExtensionValues($validator), $applicationApi);
+        $validator->after(function (Validator $validator) use ($fields, $model, $applicationApi, $running): void {
+            $this->extensionValues = $fields->validate($validator, $model, $this->submittedExtensionValues($validator, $running), $applicationApi);
         });
 
         return $validator;
     }
 
     /**
-     * Each extension's submitted values, reporting input that is not keyed by extension
-     * and then by field.
+     * The submitted values of each running extension, reporting input that is not keyed by
+     * extension and then by field, or nested too deeply. Values for other extensions are
+     * ignored without being read.
      *
+     * @param  list<string>  $running
      * @return array<string, array<array-key, ApiValue9>>
      */
-    private function submittedExtensionValues(Validator $validator): array
+    private function submittedExtensionValues(Validator $validator, array $running): array
     {
         $input = $this->input('extensions');
         if ($input === null) {
@@ -79,18 +79,18 @@ trait ValidatesExtensionFields
         }
 
         $submitted = [];
-        foreach ($input as $extension => $values) {
-            if (! is_string($extension)) {
-                continue;
-            }
-
-            if (! is_array($values) || ($values !== [] && array_is_list($values))) {
+        foreach (array_intersect_key($input, array_flip($running)) as $extension => $values) {
+            if (! is_array($values) || array_any(array_keys($values), fn (int|string $key): bool => is_int($key))) {
                 $validator->errors()->add('extensions.'.$extension, sprintf('The %s values must be an object keyed by field.', $extension));
 
                 continue;
             }
 
-            $submitted[$extension] = JsonValueGuard::jsonArray($values);
+            try {
+                $submitted[$extension] = JsonValueGuard::jsonArray($values);
+            } catch (UnexpectedValueException) {
+                $validator->errors()->add('extensions.'.$extension, sprintf('The %s values are nested too deeply.', $extension));
+            }
         }
 
         return $submitted;
