@@ -1,0 +1,107 @@
+app/Actions/Servers/UpdateServerStartup.php
+  s_899a0f63af105e::t_5f8067f4ccd0e7 64-68
+  s_899a0f63af105e::t_8b266b5632104b 63
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-143
+app/Extensions/DynamicDatabaseConnection.php
+  s_899a0f63af105e::t_4e9bbf444150ab 8-9,31,37
+app/Actions/Extensions/InstallExtension.php
+  s_899a0f63af105e::t_07badb83b1b804 121,124
+tests/Unit/Http/Middleware/RedirectIfAuthenticatedTest.php
+  s_899a0f63af105e::t_8646f801ac0770 26
+app/Actions/Databases/CreateDatabaseHost.php
+  s_899a0f63af105e::t_3a13c6151242fa 29-45
+tests/Integration/Actions/Schedules/ProcessScheduleTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-189
+app/Http/Middleware/RedirectIfAuthenticated.php
+  s_899a0f63af105e::t_8646f801ac0770 9,23
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_899a0f63af105e::t_2926c5a264e5d2 38,66
+  s_899a0f63af105e::t_4b552bceb8db87 8
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_899a0f63af105e::t_4e9bbf444150ab 11,69
+tests/Integration/Actions/Databases/CreateDatabaseTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-152
+app/Services/Databases/DatabaseHostGateway.php
+  s_899a0f63af105e::t_4e9bbf444150ab 7,100
+tests/Integration/Actions/Servers/ToggleServerSuspensionTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-83
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_899a0f63af105e::t_69da1ff4dac378 10,41,43,52
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_899a0f63af105e::t_f8c94dbb8a7f83 82,85
+app/Console/Commands/Environment/DatabaseSettingsCommand.php
+  s_899a0f63af105e::t_2926c5a264e5d2 11,34,85,117
+tests/Integration/Actions/Allocations/AssignAvailableAllocationTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-121
+tests/Integration/Actions/Databases/DeployServerDatabaseTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-92
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_899a0f63af105e::t_8ffe7ba9d14e54 34-37,39-41
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_899a0f63af105e::t_2926c5a264e5d2 11,24-25,27-28,30
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_899a0f63af105e::t_4e9bbf444150ab 32
+tests/Integration/Actions/Servers/UpdateServerStartupTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-111
+app/Http/Middleware/VerifyReCaptcha.php
+  s_899a0f63af105e::t_4e9bbf444150ab 28,34,40,61,63
+app/Services/Activity/ActivityLogService.php
+  s_899a0f63af105e::t_4e9bbf444150ab 12-13,192,232,249
+tests/Integration/Actions/Backups/GenerateBackupDownloadLinkTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-40
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_899a0f63af105e::t_6a0c5064a43acc 137
+tests/Unit/Http/Middleware/MaintenanceMiddlewareTest.php
+  s_899a0f63af105e::t_4e9bbf444150ab 59
+app/Console/Commands/InfoCommand.php
+  s_899a0f63af105e::t_2926c5a264e5d2 17,29,32,37-39,41-47,51,54-57,63-69
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_899a0f63af105e::t_2926c5a264e5d2 48,72,77,93,98,103,113,128,133,138,149,163
+tests/Integration/Actions/Servers/CreateServerTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-115
+tests/Integration/Actions/Users/DeleteUserTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-44
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_899a0f63af105e::t_69da1ff4dac378 57,61-63,66-70,73-74,77,79-84,87-89
+app/Actions/Backups/DeleteBackup.php
+  s_899a0f63af105e::t_5f62b19a590cc0 58-59,65-66,68-71,73
+  s_899a0f63af105e::t_93029bb4b72ea4 46-52,54
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_899a0f63af105e::t_2926c5a264e5d2 63,79
+  s_899a0f63af105e::t_7be446a3a54476 9
+tests/Unit/ArchTest.php
+  s_899a0f63af105e::t_2efa66a99c0a9d 25-26,60
+  s_899a0f63af105e::t_3bf40e609e8f7d 57
+  s_899a0f63af105e::t_7769d6179ed4aa 58-59
+  s_899a0f63af105e::t_682554820d2729 53-56,61-76
+tests/Integration/Actions/Servers/UpdateServerBuildTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-140
+tests/Integration/Actions/Backups/DeleteBackupTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-72
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_899a0f63af105e::t_4e9bbf444150ab 9,54
+tests/Integration/Actions/Databases/RotateDatabasePasswordTest.php
+  s_899a0f63af105e::t_c74a8af7275858 1-53
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_899a0f63af105e::t_69da1ff4dac378 10,83,117
+app/Actions/Servers/UpdateServerDetails.php
+  s_899a0f63af105e::t_c2a53f86c5ffa9 7
+  s_899a0f63af105e::t_767ae7309d3d9e 34-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bc50a8bbeb96e370a7d049bc2ad77c2983977232",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
