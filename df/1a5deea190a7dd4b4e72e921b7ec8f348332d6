@@ -1,0 +1,23 @@
+resources/scripts/extensions/ComponentView.tsx
+  s_b7506fbf20f690::t_2b1e76dcd54ebd 1-2,25-34,40-48
+resources/scripts/extensions/ExtensionMount.tsx
+  s_b7506fbf20f690::t_84c7a31d0e7b51 18-23
+  s_b7506fbf20f690::t_013aa348b70077 1,5,8-17,24-46
+  s_b7506fbf20f690::t_70c0df2491b901 47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "df1a5deea190a7dd4b4e72e921b7ec8f348332d6",
+  "prompts": {},
+  "sessions": {
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
