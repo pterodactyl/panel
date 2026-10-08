@@ -1,0 +1,103 @@
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_899a0f63af105e::t_1e1a272fda00b8 43
+  s_899a0f63af105e::t_fed392b32b9ce8 19-42,44-72,80,83
+resources/scripts/api/http.ts
+  s_899a0f63af105e::t_0cdc58f275d6dd 50,52,54-57,62-64,66-67,69-70,72-82,85-86
+  s_899a0f63af105e::t_f6d02e090dd4a1 1,49,51,53,58-61,83
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 9-14
+resources/scripts/components/admin/users/userForm.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 1-58
+resources/scripts/components/admin/locations/locationForm.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 1-11
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_899a0f63af105e::t_ce2bbeb7a3b199 19-45
+  s_899a0f63af105e::t_42e3db9386649c 76,87
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 16
+app/Providers/ActionServiceProvider.php
+  s_899a0f63af105e::t_613d3850bfc248 101,218,287
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_899a0f63af105e::t_1ddee8b86628e6 8-9,79-103
+  s_899a0f63af105e::t_0c26e17553fc76 104
+resources/scripts/components/elements/SubNavigation.tsx
+  s_899a0f63af105e::t_9f6991b08844d1 94-168,199
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 43
+resources/scripts/components/admin/users/UserFormFields.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 1,5-11
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 3
+app/Actions/Servers/UpdateServerDockerImage.php
+  s_899a0f63af105e::t_613d3850bfc248 1-26
+resources/scripts/components/server/console/stats.ts
+  s_899a0f63af105e::t_de9241924db2f9 14-23,25,36
+resources/scripts/api/admin/extensions/queries.ts
+  s_899a0f63af105e::t_f6d02e090dd4a1 3,58-59,71
+  s_899a0f63af105e::t_0cdc58f275d6dd 57,60-64
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 8
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_899a0f63af105e::t_fc2f04dbe79aa6 522-525,527-528,530-533,535-537,540-551,553-556,558-560,562-564,572,583-663,667,679
+resources/scripts/extensions/registry.ts
+  s_899a0f63af105e::t_c2e40e691047f9 569-574,576-577,589-602,606-625,627-715,723
+  s_899a0f63af105e::t_f6d02e090dd4a1 626
+  s_899a0f63af105e::t_e82ec4412ca087 603-605
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_899a0f63af105e::t_613d3850bfc248 16,103,109-110,114
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_899a0f63af105e::t_70a54aa628e045 100-143,187,223-230
+resources/scripts/components/admin/databases/databaseHostForm.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 3
+packages/sdk/README.md
+  s_899a0f63af105e::t_526761a156d3c9 435
+.oxlintrc.json
+  s_899a0f63af105e::t_7fde339a77ef1c 163-168
+  s_899a0f63af105e::t_d52321b424473c 88,91-92
+  s_899a0f63af105e::t_956a0a75c78435 162
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 4-8
+app/Contracts/Servers/UpdatesServerDockerImage.php
+  s_899a0f63af105e::t_613d3850bfc248 1-20
+resources/scripts/components/admin/mounts/mountForm.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 1-11
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 9
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_899a0f63af105e::t_6a81b0a03e1e69 38-90,170-175
+resources/scripts/components/admin/nodes/nodeForm.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 75-85
+  s_899a0f63af105e::t_893834b83f8f17 86
+resources/scripts/api/activity.ts
+  s_899a0f63af105e::t_29b905caa455d1 1,17-31,34-35,46-47,50-51
+resources/scripts/components/admin/eggs/helpers.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 28-53
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 28
+resources/scripts/components/form/validators.ts
+  s_899a0f63af105e::t_4ec7fa1939db0c 1-16
+resources/scripts/components/admin/mounts/MountFormFields.tsx
+  s_899a0f63af105e::t_4ec7fa1939db0c 4
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_899a0f63af105e::t_d1a678ce503f6d 2,47-87,113,141
+resources/scripts/components/server/console/useTerminal.ts
+  s_899a0f63af105e::t_3988bf55b88c34 116-139,202,217-221
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_899a0f63af105e::t_23723e4ab66ac9 18-46,66,80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e217e42360c0b338e7a78c958450d3b2555f0f31",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
