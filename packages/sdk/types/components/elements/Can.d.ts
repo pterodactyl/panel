@@ -6,5 +6,5 @@ interface Props {
     renderOnError?: React.ReactNode | null;
     children: React.ReactNode;
 }
-export default function Can({ action, matchAny, renderOnError, children }: Props): React.JSX.Element;
+export default function Can({ action, matchAny, renderOnError, children }: Props): React.ReactNode;
 export {};

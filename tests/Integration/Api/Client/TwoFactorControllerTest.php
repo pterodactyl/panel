@@ -76,7 +76,7 @@ test('two factor can be enabled on account', function () {
 test('two factor can be disabled on account', function () {
     Carbon::setTestNow(Carbon::now());
     /** @var User $user */
-    $user = User::factory()->create(['use_totp' => true]);
+    $user = User::factory()->create(['use_totp' => true, 'totp_secret' => encrypt('SECRET'), 'totp_authenticated_at' => Carbon::now()]);
     $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', ['password' => 'invalid']);
     $response->assertStatus(Response::HTTP_BAD_REQUEST);
     $response->assertJsonPath('errors.0.code', 'InvalidPasswordProvidedException');
@@ -85,8 +85,8 @@ test('two factor can be disabled on account', function () {
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $user = $user->refresh();
     expect($user->use_totp)->toBeFalse();
-    expect($user->totp_authenticated_at)->not->toBeNull();
-    expect($user->totp_authenticated_at->toAtomString())->toBe(Carbon::now()->toAtomString());
+    expect($user->totp_secret)->toBeNull();
+    expect($user->totp_authenticated_at)->toBeNull();
 });
 test('no error is returned if two factor is not enabled', function () {
     Carbon::setTestNow(Carbon::now());

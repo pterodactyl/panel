@@ -29,7 +29,7 @@ final readonly class UpdateSubuser implements UpdatesSubusers
             $job = new RevokeSftpAccessJob($subuser->user->uuid, $server);
             DB::afterCommit(fn (): PendingDispatch => dispatch($job));
 
-            return $subuser->refresh();
+            return $subuser;
         });
     }
 }

@@ -44,6 +44,6 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
 
         $allocation->update(['server_id' => $server->id]);
 
-        return $allocation->refresh();
+        return $allocation;
     }
 }

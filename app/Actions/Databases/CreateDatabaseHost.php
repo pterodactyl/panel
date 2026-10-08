@@ -42,6 +42,6 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
 
         $host->save();
 
-        return $host->refresh();
+        return $host;
     }
 }

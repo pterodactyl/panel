@@ -8,6 +8,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Mounts\AttachesEggsToMounts;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -28,11 +29,11 @@ class AttachEggsController extends AdminApiController
     #[Endpoint('Attach eggs to mount', 'Attaches one or more eggs to a mount definition without removing existing egg attachments.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
-    public function __invoke(AttachEggsRequest $request, Mount $mount): array
+    public function __invoke(AttachEggsRequest $request, AttachesEggsToMounts $attacher, Mount $mount): array
     {
         $eggs = $request->eggs();
 
-        $mount->eggs()->syncWithoutDetaching($eggs);
+        $attacher->attach($mount, $eggs);
 
         Activity::event('admin:mount.attach-egg')
             ->subject($mount)

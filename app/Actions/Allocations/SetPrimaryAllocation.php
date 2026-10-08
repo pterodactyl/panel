@@ -14,6 +14,7 @@ final class SetPrimaryAllocation implements SetsPrimaryAllocations
     {
         $server->update(['allocation_id' => $allocation->id]);
 
-        return $allocation->refresh();
+        // The allocation row is unchanged, but a loaded server relation still holds the old primary.
+        return $allocation->unsetRelation('server');
     }
 }

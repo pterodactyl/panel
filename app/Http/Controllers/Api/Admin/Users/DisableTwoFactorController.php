@@ -9,6 +9,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Users\DisablesTwoFactor;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Users\DisableTwoFactorRequest;
@@ -23,13 +24,9 @@ class DisableTwoFactorController extends AdminApiController
      */
     #[Endpoint('Disable user two-factor authentication', 'Clears the configured TOTP secret and disables two-factor authentication for a user.')]
     #[ScribeResponse(status: 204, description: 'Two-factor authentication disabled.')]
-    public function __invoke(DisableTwoFactorRequest $request, User $user): Response
+    public function __invoke(DisableTwoFactorRequest $request, DisablesTwoFactor $twoFactor, User $user): Response
     {
-        $user->forceFill([
-            'use_totp' => false,
-            'totp_secret' => null,
-            'totp_authenticated_at' => null,
-        ])->saveOrFail();
+        $twoFactor->disable($user);
 
         Activity::event('admin:user.disable-2fa')
             ->subject($user)

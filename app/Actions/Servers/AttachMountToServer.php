@@ -21,6 +21,6 @@ final class AttachMountToServer implements AttachesMountsToServers
 
         (new MountServer)->forceFill(['mount_id' => $mount->id, 'server_id' => $server->id])->saveOrFail();
 
-        return $mount->refresh();
+        return $mount;
     }
 }

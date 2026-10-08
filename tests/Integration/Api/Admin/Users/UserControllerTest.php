@@ -6,6 +6,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\Users\UserControllerTest;
 
 use Illuminate\Http\Response;
 use Illuminate\Testing\Assert;
+use Pterodactyl\Contracts\Users\DisablesTwoFactor;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
@@ -112,6 +113,24 @@ test('disable two factor', function (): void {
     $response = $this->postJson(route('api.admin.users.disable-2fa', ['user' => $user->id]));
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseHas('users', ['id' => $user->id, 'use_totp' => false, 'totp_secret' => null]);
+});
+test('disable two factor goes through the contract', function (): void {
+    $user = User::factory()->create(['use_totp' => true, 'totp_secret' => 'encrypted-secret']);
+    $spy = new class implements DisablesTwoFactor
+    {
+        public ?int $disabled = null;
+
+        public function disable(User $user): void
+        {
+            $this->disabled = $user->id;
+        }
+    };
+    $this->app->instance(DisablesTwoFactor::class, $spy);
+
+    $this->postJson(route('api.admin.users.disable-2fa', ['user' => $user->id]))->assertStatus(Response::HTTP_NO_CONTENT);
+
+    expect($spy->disabled)->toBe($user->id);
+    $this->assertDatabaseHas('users', ['id' => $user->id, 'use_totp' => true]);
 });
 test('delete user', function (): void {
     $user = User::factory()->create();

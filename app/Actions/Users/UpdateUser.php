@@ -32,6 +32,6 @@ final class UpdateUser implements UpdatesUsers
             event(new PasswordChanged($user));
         }
 
-        return $user->refresh();
+        return $user;
     }
 }

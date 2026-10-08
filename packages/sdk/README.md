@@ -403,6 +403,15 @@ final class PurgeDnsRecords implements DeletesServers
 }
 ```
 
+A few core actions call out only after their own transaction commits, so wrappers of the
+nested contracts run outside it. When creating a backup rotates out an old one,
+`DeletesBackups` runs after the new backup is recorded and Wings has accepted it. During
+server deletion, `DeletesDatabases` runs after the server and its database rows are
+deleted, so the `Database` it receives no longer exists in the panel, and a failure is
+reported instead of failing the deletion. The Wings call that starts a transfer also runs
+after the transfer is recorded; if Wings rejects it, the transfer is marked failed through
+`FailsTransfers`.
+
 The wrapper owns the call: it decides whether and when to invoke the inner action and
 must forward fluent options such as `withForce()` itself, returning itself. Whatever it
 throws reaches the caller unchanged, and exceptions of the inner action pass through

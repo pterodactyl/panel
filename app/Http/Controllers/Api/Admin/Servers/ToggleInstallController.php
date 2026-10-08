@@ -9,6 +9,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Servers\TogglesServerInstallStatus;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
@@ -31,19 +32,15 @@ class ToggleInstallController extends AdminApiController
 
     /**
      * Toggle server install state.
+     *
+     * @throws DisplayException
      */
     #[Endpoint('Toggle server install state', 'Toggles a server between installed and installing states unless it is marked as failed.')]
     #[ScribeResponse(status: 204, description: 'Server install state toggled.')]
     #[ScribeResponse(self::INSTALL_FAILED_ERROR, status: 400, description: 'The server is marked as failed.')]
-    public function __invoke(ToggleInstallRequest $request, Server $server): Response
+    public function __invoke(ToggleInstallRequest $request, TogglesServerInstallStatus $toggler, Server $server): Response
     {
-        if ($server->status === Server::STATUS_INSTALL_FAILED) {
-            throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
-        }
-
-        $server->forceFill([
-            'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
-        ])->saveOrFail();
+        $toggler->toggle($server);
 
         Activity::event('admin:server.toggle-install')
             ->subject($server)

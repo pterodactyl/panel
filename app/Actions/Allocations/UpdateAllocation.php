@@ -15,6 +15,6 @@ final class UpdateAllocation implements UpdatesAllocations
             'ip_alias' => empty($alias) ? null : $alias,
         ])->saveOrFail();
 
-        return $allocation->refresh();
+        return $allocation;
     }
 }

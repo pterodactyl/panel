@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Backups\TogglesBackupLocks;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -28,13 +29,13 @@ class ToggleBackupController extends AdminApiController
      */
     #[Endpoint('Toggle server backup lock', 'Toggles whether a server backup is locked against deletion.')]
     #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backup lock state toggled.', resourceKey: 'backup')]
-    public function __invoke(ToggleBackupRequest $request, Server $server, Backup $backup): array
+    public function __invoke(ToggleBackupRequest $request, TogglesBackupLocks $toggle, Server $server, Backup $backup): array
     {
         if ($backup->server_id !== $server->id) {
             throw (new ModelNotFoundException)->setModel(Backup::class);
         }
 
-        $backup->update(['is_locked' => ! $backup->is_locked]);
+        $backup = $toggle->toggle($backup);
 
         Activity::event('admin:server-backup.toggle-lock')
             ->subject($backup)

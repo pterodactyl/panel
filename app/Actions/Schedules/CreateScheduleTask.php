@@ -47,7 +47,7 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
                 'payload' => $data['payload'],
                 'time_offset' => $data['time_offset'],
                 'continue_on_failure' => $data['continue_on_failure'],
-            ])->refresh();
+            ]);
         });
     }
 }

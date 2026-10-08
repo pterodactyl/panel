@@ -10,7 +10,7 @@ export type AdminActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | number | boolean | Array<string> | {
+        [key: string]: string | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -983,7 +983,7 @@ export type ClientActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | number | boolean | Array<string> | {
+        [key: string]: string | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -1912,11 +1912,11 @@ export type AdminCreateMountRequest = {
      */
     description?: string | null;
     /**
-     * The source path. Must not be one of <code>/etc/pterodactyl</code>, <code>/var/lib/pterodactyl/volumes</code>, or <code>/srv/daemon-data</code>.
+     * The source path. Must start with one of <code>/</code>.
      */
     source: string;
     /**
-     * The target path. Must not be one of <code>/home/container</code>.
+     * The target path. Must start with one of <code>/</code>.
      */
     target: string;
     /**
@@ -1938,11 +1938,11 @@ export type AdminUpdateMountRequest = {
      */
     description?: string | null;
     /**
-     * The source path. Must not be one of <code>/etc/pterodactyl</code>, <code>/var/lib/pterodactyl/volumes</code>, or <code>/srv/daemon-data</code>.
+     * The source path. Must start with one of <code>/</code>.
      */
     source: string;
     /**
-     * The target path. Must not be one of <code>/home/container</code>.
+     * The target path. Must start with one of <code>/</code>.
      */
     target: string;
     /**
@@ -3034,17 +3034,23 @@ export type ClientCreateServerDatabaseRequest = {
 };
 export type ClientRenameFilesRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
-    root: string;
+    root?: string | null;
     files?: Array<{
+        /**
+         * Must not be greater than 2048 characters.
+         */
         to: string;
+        /**
+         * Must not be greater than 2048 characters.
+         */
         from: string;
     }>;
 };
 export type ClientCopyFileRequest = {
     /**
-     * The location.
+     * The location. Must not be greater than 2048 characters.
      */
     location: string;
 };
@@ -3054,62 +3060,74 @@ export type ClientCopyFileRequest = {
 export type ClientWriteFileContentsRequest = string;
 export type ClientCompressFilesRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
     root?: string | null;
+    /**
+     * Must not be greater than 2048 characters.
+     */
     files?: Array<string>;
 };
 export type ClientDecompressFileRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
     root?: string | null;
     /**
-     * The file path.
+     * The file path. Must not be greater than 2048 characters.
      */
     file: string;
 };
 export type ClientDeleteFilesRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
-    root: string;
+    root?: string | null;
+    /**
+     * Must not be greater than 2048 characters.
+     */
     files?: Array<string>;
 };
 export type ClientCreateFolderRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
     root?: string | null;
     /**
-     * The display name.
+     * The display name. Must not be greater than 255 characters.
      */
     name: string;
 };
 export type ClientChangeFilePermissionsRequest = {
     /**
-     * The root.
+     * The root. Must not be greater than 2048 characters.
      */
-    root: string;
+    root?: string | null;
     /**
      * File paths affected by the operation.
      */
     files: Array<{
+        /**
+         * Must not be greater than 2048 characters.
+         */
         file: string;
-        mode: number;
+        /**
+         * Must match the regex /^[0-7]{3,4}$/.
+         */
+        mode: string;
     }>;
 };
 export type ClientPullRemoteFileRequest = {
     /**
-     * The URL. Must be a valid URL.
+     * The URL. Must be a valid URL. Must not be greater than 2048 characters.
      */
     url: string;
     /**
-     * The directory path.
+     * The directory path. Must not be greater than 2048 characters.
      */
     directory?: string | null;
     /**
-     * The file name.
+     * The file name. Must not be greater than 255 characters.
      */
     filename?: string | null;
     /**
@@ -11874,7 +11892,7 @@ export type ClientGetFileDownloadUrlResponses = {
 };
 export type ClientGetFileDownloadUrlResponse = ClientGetFileDownloadUrlResponses[keyof ClientGetFileDownloadUrlResponses];
 export type ClientRenameFilesData = {
-    body: ClientRenameFilesRequest;
+    body?: ClientRenameFilesRequest;
     path: {
         /**
          * The server UUID.
@@ -12084,7 +12102,7 @@ export type ClientDecompressFileResponses = {
 };
 export type ClientDecompressFileResponse = ClientDecompressFileResponses[keyof ClientDecompressFileResponses];
 export type ClientDeleteFilesData = {
-    body: ClientDeleteFilesRequest;
+    body?: ClientDeleteFilesRequest;
     path: {
         /**
          * The server UUID.

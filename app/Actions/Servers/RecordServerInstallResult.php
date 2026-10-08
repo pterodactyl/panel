@@ -39,6 +39,6 @@ final readonly class RecordServerInstallResult implements RecordsServerInstallRe
 
         Event::dispatch(new OperationCompleted($server->uuid, $reinstall ? 'reinstall' : 'install', $successful, $server->uuid));
 
-        return $server->refresh();
+        return $server;
     }
 }

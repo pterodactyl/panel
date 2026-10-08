@@ -7,6 +7,7 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Rules\TagSlug;
+use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
 use Pterodactyl\Validation\TagRules;
 
@@ -23,6 +24,26 @@ class StoreTagRequest extends AdminApiRequest
     public function rules(): array
     {
         return $this->withSlugRule(TagRules::rules());
+    }
+
+    /**
+     * Model attributes for the tag. The color stays absent when the request
+     * omits it so an update leaves the stored value alone.
+     *
+     * @return TagData
+     */
+    public function payload(): array
+    {
+        $payload = [
+            'name' => $this->string('name')->toString(),
+            'slug' => $this->string('slug')->toString(),
+        ];
+
+        if ($this->exists('color')) {
+            $payload['color'] = JsonValueGuard::nullableString($this->input('color'));
+        }
+
+        return $payload;
     }
 
     /**

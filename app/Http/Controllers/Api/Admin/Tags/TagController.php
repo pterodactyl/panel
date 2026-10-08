@@ -12,8 +12,10 @@ use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Pterodactyl\Contracts\Tags\CreatesTags;
+use Pterodactyl\Contracts\Tags\DeletesTags;
 use Pterodactyl\Contracts\Tags\SyncsTags;
-use Pterodactyl\Enum\EggSpecificTags;
+use Pterodactyl\Contracts\Tags\UpdatesTags;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -93,9 +95,9 @@ class TagController extends AdminApiController
      */
     #[Endpoint('Create tag', 'Creates a tag.')]
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, status: 201, description: 'Tag created.', resourceKey: 'tag', meta: ['resource' => 'https://panel.example.com/api/admin/tags/1'])]
-    public function store(StoreTagRequest $request): JsonResponse
+    public function store(StoreTagRequest $request, CreatesTags $tags): JsonResponse
     {
-        $tag = Tag::query()->create($request->validated());
+        $tag = $tags->create($request->payload());
 
         Activity::event('admin:tag.create')
             ->subject($tag)
@@ -123,11 +125,9 @@ class TagController extends AdminApiController
     #[Endpoint('Update tag', 'Updates an existing tag. Built-in game tags cannot be edited.')]
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tag updated.', resourceKey: 'tag')]
     #[ScribeResponse(self::BUILT_IN_ERROR, status: 400, description: 'The tag is a built-in game tag.')]
-    public function update(UpdateTagRequest $request, Tag $tag): array
+    public function update(UpdateTagRequest $request, UpdatesTags $tags, Tag $tag): array
     {
-        $this->guardBuiltIn($tag);
-
-        $tag->update($request->validated());
+        $tag = $tags->update($tag, $request->payload());
 
         Activity::event('admin:tag.update')
             ->subject($tag)
@@ -151,11 +151,9 @@ class TagController extends AdminApiController
     #[Endpoint('Delete tag', 'Deletes a tag and detaches it from every egg and node.')]
     #[ScribeResponse(status: 204, description: 'Tag deleted.')]
     #[ScribeResponse(self::BUILT_IN_ERROR, status: 400, description: 'The tag is a built-in game tag.')]
-    public function destroy(DeleteTagRequest $request, Tag $tag): Response
+    public function destroy(DeleteTagRequest $request, DeletesTags $tags, Tag $tag): Response
     {
-        $this->guardBuiltIn($tag);
-
-        $tag->delete();
+        $tags->delete($tag);
 
         Activity::event('admin:tag.delete')
             ->subject($tag)
@@ -229,17 +227,5 @@ class TagController extends AdminApiController
         return Fractal::collection($node->deploymentTags()->get())
             ->transformWith($this->getTransformer(TagTransformer::class))
             ->toResponseArray();
-    }
-
-    /**
-     * Reject edits to a built-in game tag. Its slug is the key that feature gating
-     * matches on, and its presentation comes from the EggSpecificTags enum, so it
-     * must never be renamed or relabelled.
-     *
-     * @throws DisplayException
-     */
-    private function guardBuiltIn(Tag $tag): void
-    {
-        throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be edited.');
     }
 }

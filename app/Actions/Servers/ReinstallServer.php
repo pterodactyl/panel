@@ -25,7 +25,7 @@ final readonly class ReinstallServer implements ReinstallsServers
             $server->fill(['status' => Server::STATUS_INSTALLING])->save();
             Daemon::server($server)->reinstall();
 
-            return $server->refresh();
+            return $server;
         });
     }
 }

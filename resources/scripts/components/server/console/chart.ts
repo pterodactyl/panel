@@ -39,39 +39,9 @@ export function useRollingData(keys: readonly string[]) {
     return { data, push, clear };
 }
 
-/** A performance.now() clock that re-renders at ~`fps` while `active`. */
-export function useAnimationClock(active: boolean, fps = 30): number {
-    const [now, setNow] = useState(() => performance.now());
-
-    useEffect(() => {
-        if (!active) {
-            return;
-        }
-
-        const minDelta = 1000 / fps;
-        let frame = 0;
-        let last = 0;
-
-        const tick = (timestamp: number) => {
-            frame = requestAnimationFrame(tick);
-            if (timestamp - last >= minDelta) {
-                last = timestamp;
-                setNow(timestamp);
-            }
-        };
-
-        frame = requestAnimationFrame(tick);
-
-        return () => cancelAnimationFrame(frame);
-    }, [active, fps]);
-
-    return now;
-}
-
-/** Whether the element intersects the viewport while the document is visible. */
-export function useElementVisible(ref: RefObject<Element | null>): boolean {
-    const [intersecting, setIntersecting] = useState(false);
-    const [documentVisible, setDocumentVisible] = useState(() => document.visibilityState !== 'hidden');
+/** The element's width in whole pixels; 0 until it has been measured. */
+export function useElementWidth(ref: RefObject<Element | null>): number {
+    const [width, setWidth] = useState(0);
 
     useEffect(() => {
         const element = ref.current;
@@ -80,11 +50,11 @@ export function useElementVisible(ref: RefObject<Element | null>): boolean {
             return;
         }
 
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new ResizeObserver((entries) => {
             const entry = entries.at(-1);
 
             if (entry) {
-                setIntersecting(entry.isIntersecting);
+                setWidth(Math.floor(entry.contentRect.width));
             }
         });
 
@@ -93,13 +63,5 @@ export function useElementVisible(ref: RefObject<Element | null>): boolean {
         return () => observer.disconnect();
     }, [ref]);
 
-    useEffect(() => {
-        const update = () => setDocumentVisible(document.visibilityState !== 'hidden');
-
-        document.addEventListener('visibilitychange', update);
-
-        return () => document.removeEventListener('visibilitychange', update);
-    }, []);
-
-    return intersecting && documentVisible;
+    return width;
 }

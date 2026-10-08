@@ -9,6 +9,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Mounts\DetachesNodesFromMounts;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\DetachNodeRequest;
@@ -24,9 +25,9 @@ class DetachNodeController extends AdminApiController
      */
     #[Endpoint('Detach node from mount', 'Removes a single node attachment from a mount definition.')]
     #[ScribeResponse(status: 204, description: 'Node detached from mount.')]
-    public function __invoke(DetachNodeRequest $request, Mount $mount, Node $node): Response
+    public function __invoke(DetachNodeRequest $request, DetachesNodesFromMounts $detacher, Mount $mount, Node $node): Response
     {
-        $mount->nodes()->detach($node->id);
+        $detacher->detach($mount, $node);
 
         Activity::event('admin:mount.detach-node')
             ->subject($mount)

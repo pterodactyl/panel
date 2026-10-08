@@ -53,6 +53,6 @@ final class UpdateSchedule implements UpdatesSchedules
 
         $schedule->update($attributes);
 
-        return $schedule->refresh();
+        return $schedule;
     }
 }

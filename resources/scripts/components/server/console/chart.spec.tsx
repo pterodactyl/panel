@@ -1,106 +1,126 @@
 /** @vitest-environment jsdom */
-import { useRef } from 'react';
-import { act, cleanup, render } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useAnimationClock, useElementVisible } from './chart';
+import { act, cleanup, render, waitFor } from '@testing-library/react';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import AreaChart from './AreaChart';
+import type { ChartPoint } from './chart';
 
-let frames = new Map<number, FrameRequestCallback>();
-let nextFrame = 0;
-let observerCallback: IntersectionObserverCallback | null = null;
-let renders = 0;
-
-const runFrame = (timestamp: number) =>
-    act(() => {
-        const pending = [...frames.values()];
-
-        frames = new Map();
-        for (const callback of pending) {
-            callback(timestamp);
-        }
-    });
-
-const reportIntersection = (isIntersecting: boolean) =>
-    act(() => observerCallback?.([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver));
-
-function Chart({ live }: { live: boolean }) {
-    const ref = useRef<HTMLDivElement>(null);
-    const visible = useElementVisible(ref);
-    const now = useAnimationClock(live && visible);
-
-    renders++;
-
-    return <div ref={ref} data-now={now} />;
+interface FakeAnimation {
+    keyframes: Keyframe[];
+    currentTime: number | null;
+    pause: ReturnType<typeof vi.fn>;
+    cancel: ReturnType<typeof vi.fn>;
 }
 
-describe('chart animation clock', () => {
-    beforeEach(() => {
-        frames = new Map();
-        renders = 0;
-        observerCallback = null;
-        vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
-            frames.set(++nextFrame, callback);
+let animations: FakeAnimation[] = [];
+let resize: ResizeObserverCallback | null = null;
 
-            return nextFrame;
-        });
-        vi.stubGlobal('cancelAnimationFrame', (id: number) => frames.delete(id));
+const SERIES = [{ dataKey: 'value', color: 'var(--chart-1)' }];
+
+const reportWidth = (width: number) =>
+    act(() => resize?.([{ contentRect: { width } } as ResizeObserverEntry], {} as ResizeObserver));
+
+const renderChart = (data: ChartPoint[], live = true) =>
+    render(<AreaChart data={data} series={SERIES} live={live} windowMs={20_000} suggestedMax={100} />);
+
+describe('console area chart', () => {
+    // The chart lazy-loads recharts; a cold import can outlast waitFor's timeout.
+    beforeAll(() => import('recharts'));
+
+    beforeEach(() => {
+        animations = [];
+        vi.spyOn(performance, 'now').mockReturnValue(10_000);
         vi.stubGlobal(
-            'IntersectionObserver',
+            'ResizeObserver',
             class {
-                constructor(callback: IntersectionObserverCallback) {
-                    observerCallback = callback;
+                constructor(callback: ResizeObserverCallback) {
+                    resize = callback;
                 }
                 observe() {}
                 disconnect() {}
             }
         );
+        // jsdom has no Web Animations API.
+        Object.defineProperty(Element.prototype, 'animate', {
+            configurable: true,
+            value: (keyframes: Keyframe[]) => {
+                const animation: FakeAnimation = { keyframes, currentTime: 0, pause: vi.fn(), cancel: vi.fn() };
+
+                animations.push(animation);
+
+                return animation;
+            },
+        });
     });
 
     afterEach(() => {
         cleanup();
         vi.unstubAllGlobals();
         vi.restoreAllMocks();
+        Reflect.deleteProperty(Element.prototype, 'animate');
+        resize = null;
     });
 
-    it('stays idle until the chart is on screen', async () => {
-        const { container } = render(<Chart live />);
-        const before = renders;
+    it('starts the slide as far in as the newest sample is old', async () => {
+        renderChart([
+            { t: 9_000, value: 10 },
+            { t: 9_800, value: 20 },
+        ]);
+        await reportWidth(572);
 
-        await runFrame(1_000);
-        await runFrame(2_000);
+        await waitFor(() => expect(animations).toHaveLength(1));
 
-        expect(frames.size).toBe(0);
-        expect(renders).toBe(before);
-
-        await reportIntersection(true);
-        await runFrame(3_000);
-
-        expect(container.firstElementChild).toHaveAttribute('data-now', '3000');
+        // 500px of plot shows 20s, so the 4s of slack beyond the right edge is 100px of travel.
+        expect(animations[0].keyframes.at(-1)).toEqual({ transform: 'translateX(-100px)' });
+        // The newest sample arrived 200ms ago, so the slide starts that far in.
+        expect(animations[0].currentTime).toBe(200);
+        expect(animations[0].pause).not.toHaveBeenCalled();
     });
 
-    it('stops ticking when the chart leaves the screen, the tab hides, or the server is not live', async () => {
-        const { container, rerender } = render(<Chart live />);
+    it('restarts the slide when a sample arrives and holds it while the server is not live', async () => {
+        const { rerender } = renderChart([{ t: 9_800, value: 20 }]);
 
-        await reportIntersection(true);
-        await runFrame(1_000);
-        expect(container.firstElementChild).toHaveAttribute('data-now', '1000');
+        await reportWidth(572);
+        await waitFor(() => expect(animations).toHaveLength(1));
 
-        await reportIntersection(false);
-        expect(frames.size).toBe(0);
+        rerender(
+            <AreaChart
+                data={[
+                    { t: 9_800, value: 20 },
+                    { t: 10_000, value: 30 },
+                ]}
+                series={SERIES}
+                live
+                windowMs={20_000}
+                suggestedMax={100}
+            />
+        );
 
-        await reportIntersection(true);
-        const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+        expect(animations[0].cancel).toHaveBeenCalled();
+        expect(animations).toHaveLength(2);
+        expect(animations[1].currentTime).toBe(0);
 
-        await act(() => document.dispatchEvent(new Event('visibilitychange')));
-        expect(frames.size).toBe(0);
+        rerender(
+            <AreaChart
+                data={[
+                    { t: 9_800, value: 20 },
+                    { t: 10_000, value: 30 },
+                ]}
+                series={SERIES}
+                live={false}
+                windowMs={20_000}
+                suggestedMax={100}
+            />
+        );
 
-        visibility.mockReturnValue('visible');
-        await act(() => document.dispatchEvent(new Event('visibilitychange')));
-        await runFrame(2_000);
-        expect(container.firstElementChild).toHaveAttribute('data-now', '2000');
+        expect(animations).toHaveLength(3);
+        expect(animations[2].pause).toHaveBeenCalled();
+    });
 
-        rerender(<Chart live={false} />);
-        expect(frames.size).toBe(0);
-        await runFrame(3_000);
-        expect(container.firstElementChild).toHaveAttribute('data-now', '2000');
+    it('does not animate before the first sample', async () => {
+        renderChart([]);
+        await reportWidth(572);
+        await waitFor(() => expect(document.querySelector('.recharts-wrapper')).not.toBeNull());
+
+        expect(animations).toHaveLength(0);
     });
 });

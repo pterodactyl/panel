@@ -9,6 +9,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Mounts\DetachesEggsFromMounts;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\DetachEggRequest;
@@ -24,9 +25,9 @@ class DetachEggController extends AdminApiController
      */
     #[Endpoint('Detach egg from mount', 'Removes a single egg attachment from a mount definition.')]
     #[ScribeResponse(status: 204, description: 'Egg detached from mount.')]
-    public function __invoke(DetachEggRequest $request, Mount $mount, Egg $egg): Response
+    public function __invoke(DetachEggRequest $request, DetachesEggsFromMounts $detacher, Mount $mount, Egg $egg): Response
     {
-        $mount->eggs()->detach($egg->id);
+        $detacher->detach($mount, $egg);
 
         Activity::event('admin:mount.detach-egg')
             ->subject($mount)

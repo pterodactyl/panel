@@ -12,6 +12,7 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\ReinstallsServers;
+use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
@@ -39,26 +40,32 @@ class SettingsController extends ClientApiController
 
     /**
      * Renames a server.
+     *
+     * @throws Throwable
      */
     #[Endpoint('Rename server', 'Updates the server name and optionally its description.')]
     #[ScribeResponse(status: 204, description: 'Server renamed.')]
-    public function rename(RenameServerRequest $request, Server $server): JsonResponse
+    public function rename(RenameServerRequest $request, UpdatesServerDetails $details, Server $server): JsonResponse
     {
         $previousName = $server->name;
         $previousDescription = $server->description;
 
-        $server->update([
+        // The action writes owner and external ID too, so pass the current values
+        // through unchanged; only the name and description come from the request.
+        $server = $details->update($server, [
+            'external_id' => $server->external_id,
+            'owner_id' => $server->owner_id,
             'name' => $request->string('name')->toString(),
             'description' => $request->has('description') ? $request->description() : $server->description,
         ]);
 
-        if ($server->wasChanged('name')) {
+        if ($previousName !== $server->name) {
             Activity::event('server:settings.rename')
                 ->property(['old' => $previousName, 'new' => $server->name])
                 ->log();
         }
 
-        if ($server->wasChanged('description')) {
+        if ($previousDescription !== $server->description) {
             Activity::event('server:settings.description')
                 ->property(['old' => $previousDescription, 'new' => $server->description])
                 ->log();
