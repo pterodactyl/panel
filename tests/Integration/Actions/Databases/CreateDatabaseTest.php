@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Databases\DatabaseManagementServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Databases\CreateDatabaseTest;
 
 use BadMethodCallException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

@@ -134,7 +134,7 @@ class TagController extends AdminApiController
             ->property('slug', $tag->slug)
             ->log();
 
-        return Fractal::item($tag->refresh())
+        return Fractal::item($tag)
             ->transformWith($this->getTransformer(TagTransformer::class))
             ->toResponseArray();
     }

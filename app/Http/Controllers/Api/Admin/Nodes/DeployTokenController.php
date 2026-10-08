@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\Nodes;
 
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
@@ -35,7 +35,7 @@ class DeployTokenController extends AdminApiController
      */
     #[Endpoint('Create node deploy token', 'Creates or reuses an application API key that can deploy the specified node.')]
     #[ScribeResponse(self::DEPLOY_TOKEN_EXAMPLE, description: 'Deploy token returned.')]
-    public function __invoke(DeployTokenRequest $request, CreatesApiKeys $keyCreator, Encrypter $encrypter, Node $node): JsonResponse
+    public function __invoke(DeployTokenRequest $request, CreatesApiKeys $keyCreator, Node $node): JsonResponse
     {
         $permissions = [];
         foreach (AdminAcl::getResourceList() as $resource) {
@@ -63,7 +63,7 @@ class DeployTokenController extends AdminApiController
 
         return new JsonResponse([
             'node' => $node->id,
-            'token' => $key->identifier.JsonValueGuard::string($encrypter->decrypt($key->token)),
+            'token' => $key->identifier.JsonValueGuard::string(Crypt::decrypt($key->token)),
             'panel_url' => config('app.url'),
             'allow_insecure' => config('app.debug'),
         ]);

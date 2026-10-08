@@ -8,8 +8,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
+use Pterodactyl\Facades\Alert;
 use Pterodactyl\Http\Concerns\ResolvesRequestContext;
-use Pterodactyl\Support\Alerts\AlertsMessageBag;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireTwoFactorAuthentication
@@ -26,11 +26,6 @@ class RequireTwoFactorAuthentication
      * The route to redirect a user to enable 2FA.
      */
     protected string $redirectRoute = '/account';
-
-    /**
-     * RequireTwoFactorAuthentication constructor.
-     */
-    public function __construct(private readonly AlertsMessageBag $alert) {}
 
     /**
      * Check the user state on the incoming request to determine if they should be allowed to
@@ -71,7 +66,7 @@ class RequireTwoFactorAuthentication
         // For API calls return an exception which gets rendered nicely in the API response.
         throw_if($request->isJson() || Str::startsWith($uri, '/api/'), TwoFactorAuthRequiredException::class);
 
-        $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
+        Alert::danger(trans('auth.2fa_must_be_enabled'))->flash();
 
         return redirect()->to($this->redirectRoute);
     }

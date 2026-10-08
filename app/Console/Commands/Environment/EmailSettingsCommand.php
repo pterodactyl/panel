@@ -7,7 +7,6 @@ namespace Pterodactyl\Console\Commands\Environment;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
@@ -31,14 +30,6 @@ class EmailSettingsCommand extends Command
     protected array $variables = [];
 
     /**
-     * EmailSettingsCommand constructor.
-     */
-    public function __construct(private ConfigRepository $config)
-    {
-        parent::__construct();
-    }
-
-    /**
      * Handle command execution.
      *
      * @throws PterodactylException
@@ -54,7 +45,7 @@ class EmailSettingsCommand extends Command
                 'mandrill' => 'Mandrill Transactional Email',
                 'postmark' => 'Postmark Transactional Email',
             ],
-            JsonValueGuard::nullableScalarString($this->config->get('mail.default', 'smtp'))
+            JsonValueGuard::nullableScalarString(config('mail.default', 'smtp'))
         );
 
         throw_unless(is_string($driver), PterodactylException::class, 'The mail driver selection must resolve to a single value.');
@@ -78,12 +69,12 @@ class EmailSettingsCommand extends Command
 
         $this->variables['MAIL_FROM_ADDRESS'] = JsonValueGuard::scalar($this->option('email') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mail_from'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.from.address'))
+            JsonValueGuard::nullableScalarString(config('mail.from.address'))
         ));
 
         $this->variables['MAIL_FROM_NAME'] = JsonValueGuard::scalar($this->option('from') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mail_name'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.from.name'))
+            JsonValueGuard::nullableScalarString(config('mail.from.name'))
         ));
 
         $this->writeToEnvironment($this->variables);
@@ -99,17 +90,17 @@ class EmailSettingsCommand extends Command
     {
         $this->variables['MAIL_HOST'] = JsonValueGuard::scalar($this->option('host') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_host'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.mailers.smtp.host'))
+            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.host'))
         ));
 
         $this->variables['MAIL_PORT'] = JsonValueGuard::scalar($this->option('port') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_port'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.mailers.smtp.port'))
+            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.port'))
         ));
 
         $this->variables['MAIL_USERNAME'] = JsonValueGuard::scalar($this->option('username') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_username'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.mailers.smtp.username'))
+            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.username'))
         ));
 
         $this->variables['MAIL_PASSWORD'] = JsonValueGuard::scalar($this->option('password') ?? $this->secret(
@@ -119,7 +110,7 @@ class EmailSettingsCommand extends Command
         $encryption = $this->option('encryption') ?? $this->choice(
             trans('command/messages.environment.mail.ask_encryption'),
             ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'],
-            JsonValueGuard::nullableScalarString($this->config->get('mail.mailers.smtp.encryption', 'tls'))
+            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.encryption', 'tls'))
         );
 
         throw_unless(is_string($encryption), PterodactylException::class, 'The mail encryption selection must resolve to a single value.');
@@ -134,17 +125,17 @@ class EmailSettingsCommand extends Command
     {
         $this->variables['MAILGUN_DOMAIN'] = JsonValueGuard::scalar($this->option('host') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_domain'),
-            JsonValueGuard::nullableScalarString($this->config->get('services.mailgun.domain'))
+            JsonValueGuard::nullableScalarString(config('services.mailgun.domain'))
         ));
 
         $this->variables['MAILGUN_SECRET'] = JsonValueGuard::scalar($this->option('password') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_secret'),
-            JsonValueGuard::nullableScalarString($this->config->get('services.mailgun.secret'))
+            JsonValueGuard::nullableScalarString(config('services.mailgun.secret'))
         ));
 
         $this->variables['MAILGUN_ENDPOINT'] = JsonValueGuard::scalar($this->option('endpoint') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_endpoint'),
-            JsonValueGuard::nullableScalarString($this->config->get('services.mailgun.endpoint'))
+            JsonValueGuard::nullableScalarString(config('services.mailgun.endpoint'))
         ));
     }
 
@@ -155,7 +146,7 @@ class EmailSettingsCommand extends Command
     {
         $this->variables['MANDRILL_SECRET'] = JsonValueGuard::scalar($this->option('password') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mandrill_secret'),
-            JsonValueGuard::nullableScalarString($this->config->get('services.mandrill.secret'))
+            JsonValueGuard::nullableScalarString(config('services.mandrill.secret'))
         ));
     }
 
@@ -169,7 +160,7 @@ class EmailSettingsCommand extends Command
         $this->variables['MAIL_PORT'] = '587';
         $credentials = JsonValueGuard::scalar($this->option('username') ?? $this->ask(
             trans('command/messages.environment.mail.ask_postmark_username'),
-            JsonValueGuard::nullableScalarString($this->config->get('mail.username'))
+            JsonValueGuard::nullableScalarString(config('mail.username'))
         ));
         $this->variables['MAIL_USERNAME'] = $credentials;
         $this->variables['MAIL_PASSWORD'] = $credentials;

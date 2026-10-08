@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Support\ViewErrorBag;
 
 class Utilities
 {
@@ -47,17 +46,5 @@ class Utilities
         return Date::instance((new CronExpression(
             sprintf('%s %s %s %s %s', $minute, $hour, $dayOfMonth, $month, $dayOfWeek)
         ))->getNextRunDate());
-    }
-
-    /** @param bool|int $default */
-    public static function checked(string $name, mixed $default): string
-    {
-        $errors = session('errors');
-
-        if (isset($errors) && $errors instanceof ViewErrorBag && $errors->any()) {
-            return old($name) ? 'checked' : '';
-        }
-
-        return ($default) ? 'checked' : '';
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Backups\DownloadLinkServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Backups\GenerateBackupDownloadLinkTest;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

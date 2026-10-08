@@ -6,11 +6,11 @@ namespace Pterodactyl\Services\Activity;
 
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Factory as AuthFactory;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Pterodactyl\Models\ActivityLog;
@@ -27,10 +27,8 @@ class ActivityLogService
     protected array $subjects = [];
 
     public function __construct(
-        protected AuthFactory $manager,
         protected ActivityLogBatchService $batch,
         protected ActivityLogTargetableService $targetable,
-        protected ConnectionInterface $connection,
         protected Request $request,
     ) {}
 
@@ -191,7 +189,7 @@ class ActivityLogService
      */
     public function transaction(Closure $callback): array|bool|float|int|object|string|null
     {
-        return $this->connection->transaction(function () use ($callback) {
+        return DB::transaction(function () use ($callback) {
             $response = $callback($this);
 
             $this->save();
@@ -231,7 +229,7 @@ class ActivityLogService
 
         if (($actor = $this->targetable->actor()) instanceof Model) {
             $this->actor($actor);
-        } elseif (($user = $this->manager->guard()->user()) !== null) {
+        } elseif (($user = Auth::guard()->user()) !== null) {
             $this->actor($user);
         }
 
@@ -248,7 +246,7 @@ class ActivityLogService
         throw_unless($this->activity instanceof ActivityLog, InvalidArgumentException::class, 'Cannot save an activity log before one has been initialized.');
 
         $activity = $this->activity;
-        $response = $this->connection->transaction(function () use ($activity): ActivityLog {
+        $response = DB::transaction(function () use ($activity): ActivityLog {
             $activity->save();
 
             $subjects = Collection::make($this->subjects)

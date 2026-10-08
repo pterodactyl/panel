@@ -79,10 +79,10 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
 
     private function persist(ExtensionManifest $manifest, bool $enabled): void
     {
-        DB::transaction(fn (): Extension => Extension::query()->updateOrCreate(
+        Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
             ['version' => $manifest->version, 'enabled' => $enabled, 'error' => null],
-        ));
+        );
     }
 
     private function runMigrations(ExtensionManifest $manifest): void

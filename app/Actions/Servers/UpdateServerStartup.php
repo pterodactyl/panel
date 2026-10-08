@@ -60,9 +60,12 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
                 ])->save();
             }
 
-            // Calling ->refresh() rather than ->fresh() here causes the
-            // variables as triplicates for some reason. Not entirely sure why,
-            // but this operation test covers the behavior and keeps it stable.
+            // Use fresh() rather than refresh(). refresh() reloads every loaded
+            // relation through an eager load, which rebuilds Server::variables()
+            // on a blank model. That relation captures $this->id in its join, so
+            // the rebuilt join loses the server filter and the reloaded variables
+            // come back wrong. fresh() returns a new instance and leaves the
+            // relation unloaded.
             $fresh = $server->fresh();
             throw_if($fresh === null, LogicException::class, 'The modified server no longer exists.');
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Allocations\FindAssignableAllocationServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Allocations\AssignAvailableAllocationTest;
 
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

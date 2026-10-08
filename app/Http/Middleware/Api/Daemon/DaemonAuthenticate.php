@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Middleware\Api\Daemon;
 
 use Closure;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Pterodactyl\Http\Concerns\ResolvesRequestContext;
 use Pterodactyl\Models\Node;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,11 +26,6 @@ class DaemonAuthenticate
     protected array $except = [
         'daemon.configuration',
     ];
-
-    /**
-     * DaemonAuthenticate constructor.
-     */
-    public function __construct(private readonly Encrypter $encrypter) {}
 
     /**
      * Check if a request from the daemon can be properly attributed back to a single node instance.
@@ -56,7 +51,7 @@ class DaemonAuthenticate
         // Unknown token ids and wrong tokens fail identically.
         $node = Node::query()->where('daemon_token_id', $parts[0])->first();
         if ($node !== null) {
-            $token = $this->encrypter->decrypt($node->daemon_token);
+            $token = Crypt::decrypt($node->daemon_token);
             throw_unless(is_string($token), AccessDeniedHttpException::class, 'The authentication token provided is not valid.');
 
             if (hash_equals($token, $parts[1])) {

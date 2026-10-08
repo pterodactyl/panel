@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Servers\ServerDeletionServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Servers\DeleteServerTest;
 
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

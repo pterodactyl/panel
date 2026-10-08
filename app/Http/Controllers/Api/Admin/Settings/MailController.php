@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\Settings;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
@@ -39,9 +38,9 @@ class MailController extends AdminApiController
     #[Endpoint('Update mail settings', 'Updates SMTP mail settings and restarts queued workers so they reload configuration.')]
     #[ScribeResponse(status: 204, description: 'Mail settings updated.')]
     #[ScribeResponse(self::SMTP_DRIVER_ERROR, status: 400, description: 'The panel is not configured to use SMTP mail.')]
-    public function __invoke(UpdateMailSettingsRequest $request, Kernel $kernel, Encrypter $encrypter, ConfigRepository $config): Response
+    public function __invoke(UpdateMailSettingsRequest $request, Kernel $kernel): Response
     {
-        throw_if($config->get('mail.default') !== 'smtp', DisplayException::class, 'This feature is only available if SMTP is the selected email driver for the Panel.');
+        throw_if(config('mail.default') !== 'smtp', DisplayException::class, 'This feature is only available if SMTP is the selected email driver for the Panel.');
 
         $values = $request->normalize();
         if (Arr::get($values, 'mail:mailers:smtp:password') === '!e') {
@@ -50,7 +49,7 @@ class MailController extends AdminApiController
 
         foreach ($values as $key => $value) {
             if (in_array($key, SettingsServiceProvider::getEncryptedKeys()) && ! empty($value)) {
-                $value = $encrypter->encrypt($value);
+                $value = Crypt::encrypt($value);
             }
 
             // SAFETY: settings are persisted in the environment store as strings; null retains its deletion semantics.

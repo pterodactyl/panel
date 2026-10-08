@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Schedules\ProcessScheduleServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Schedules\ProcessScheduleTest;
 
 use Carbon\CarbonImmutable;
 use Exception;

@@ -7,8 +7,6 @@ namespace Pterodactyl\Http\Middleware;
 use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -19,11 +17,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class VerifyReCaptcha
 {
     /**
-     * VerifyReCaptcha constructor.
-     */
-    public function __construct(private readonly Dispatcher $dispatcher, private readonly Repository $config) {}
-
-    /**
      * Handle an incoming request.
      */
     /**
@@ -32,19 +25,19 @@ class VerifyReCaptcha
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (! $this->config->get('recaptcha.enabled')) {
+        if (! config('recaptcha.enabled')) {
             return $next($request);
         }
 
         $result = $this->verifyCaptcha($request);
 
-        $domainValid = ! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
+        $domainValid = ! config('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
 
         if ($result['success'] && $domainValid) {
             return $next($request);
         }
 
-        $this->dispatcher->dispatch(
+        event(
             new FailedCaptcha(
                 $request->ip() ?? 'unknown',
                 $result['hostname'] ?? 'unknown'
@@ -65,9 +58,9 @@ class VerifyReCaptcha
 
         try {
             $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
-            $res = $client->post(JsonValueGuard::string($this->config->get('recaptcha.domain')), [
+            $res = $client->post(JsonValueGuard::string(config('recaptcha.domain')), [
                 'form_params' => [
-                    'secret' => $this->config->get('recaptcha.secret_key'),
+                    'secret' => config('recaptcha.secret_key'),
                     'response' => $request->input('g-recaptcha-response'),
                 ],
             ]);

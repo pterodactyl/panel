@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Databases\DeployServerDatabaseServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Databases\DeployServerDatabaseTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use InvalidArgumentException;

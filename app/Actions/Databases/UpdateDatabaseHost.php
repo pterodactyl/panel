@@ -31,12 +31,13 @@ final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
             unset($data['password']);
         }
 
-        return DB::transaction(function () use ($data, $host): DatabaseHost {
-            $host->update($data);
-            $this->dynamic->set('dynamic', $host);
-            DB::connection('dynamic')->select('SELECT 1 FROM dual');
+        // Confirm access using the new credentials before saving them.
+        $host->fill($data);
+        $this->dynamic->set('dynamic', $host);
+        DB::connection('dynamic')->select('SELECT 1 FROM dual');
 
-            return $host;
-        });
+        $host->save();
+
+        return $host;
     }
 }

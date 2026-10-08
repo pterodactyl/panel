@@ -83,7 +83,6 @@ class StartupController extends ClientApiController
             ['variable_value' => $value ?? ''],
         );
 
-        $variable->refresh();
         $variable->server_value = $value;
 
         $startup = $startupCommand->handle($server);

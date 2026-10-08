@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Servers\StartupModificationServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Servers\UpdateServerStartupTest;
 
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

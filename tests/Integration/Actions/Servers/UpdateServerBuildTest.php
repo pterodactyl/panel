@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Servers\BuildModificationServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Servers\UpdateServerBuildTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;

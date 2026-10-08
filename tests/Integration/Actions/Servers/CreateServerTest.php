@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Servers\ServerCreationServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Servers\CreateServerTest;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

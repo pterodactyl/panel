@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\ApiKeys;
 
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
@@ -60,7 +60,7 @@ class ApiKeyController extends AdminApiController
      */
     #[Endpoint('Create API key', 'Creates a new application API key and returns the plaintext secret token once.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, status: 201, description: 'API key created.', resourceKey: 'api_key', meta: ['secret_token' => 'ptla_1234567890abcdef'])]
-    public function store(StoreApiKeyRequest $request, Encrypter $encrypter, CreatesApiKeys $keyCreator): JsonResponse
+    public function store(StoreApiKeyRequest $request, CreatesApiKeys $keyCreator): JsonResponse
     {
         $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [
             'memo' => $request->string('memo')->toString(),
@@ -76,7 +76,7 @@ class ApiKeyController extends AdminApiController
         return Fractal::item($key)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta([
-                'secret_token' => $key->identifier.JsonValueGuard::string($encrypter->decrypt($key->token)),
+                'secret_token' => $key->identifier.JsonValueGuard::string(Crypt::decrypt($key->token)),
             ])
             ->respond(Response::HTTP_CREATED);
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Databases\DatabasePasswordServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Databases\RotateDatabasePasswordTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;

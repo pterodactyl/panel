@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Integration\Services\Users\UserDeletionServiceTest;
+namespace Pterodactyl\Tests\Pest\Integration\Actions\Users\DeleteUserTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;

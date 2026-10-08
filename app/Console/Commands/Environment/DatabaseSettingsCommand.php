@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\DB;
 use PDOException;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Support\JsonValueGuard;
@@ -31,7 +31,7 @@ class DatabaseSettingsCommand extends Command
     /**
      * DatabaseSettingsCommand constructor.
      */
-    public function __construct(private DatabaseManager $database, private Kernel $console)
+    public function __construct(private Kernel $console)
     {
         parent::__construct();
     }
@@ -82,7 +82,7 @@ class DatabaseSettingsCommand extends Command
             $this->output->error('Your connection credentials have NOT been saved. You will need to provide valid connection information before proceeding.');
 
             if ($this->confirm('Go back and try again?')) {
-                $this->database->disconnect('_pterodactyl_command_test');
+                DB::disconnect('_pterodactyl_command_test');
 
                 return $this->handle();
             }
@@ -114,6 +114,6 @@ class DatabaseSettingsCommand extends Command
             'strict' => true,
         ]);
 
-        $this->database->connection('_pterodactyl_command_test')->getPdo();
+        DB::connection('_pterodactyl_command_test')->getPdo();
     }
 }
