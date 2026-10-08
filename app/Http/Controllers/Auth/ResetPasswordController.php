@@ -114,9 +114,7 @@ class ResetPasswordController extends Controller
         if (! $user->use_totp) {
             Auth::guard()->login($user);
 
-            if (method_exists(Auth::guard(), 'logoutOtherDevices')) {
-                Auth::guard()->logoutOtherDevices($password);
-            }
+            Auth::guard()->logoutOtherDevices($password);
         }
 
         $this->hasTwoFactor = $user->use_totp;

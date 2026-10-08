@@ -26,7 +26,7 @@ class NotInPathHierarchy implements ValidationRule
         foreach ($this->invalidPaths as $blocked) {
             $blocked = rtrim($blocked, '/');
 
-            if ($path === $blocked || str_starts_with($path, $blocked . '/')) {
+            if ($path === $blocked || str_starts_with($path, $blocked.'/')) {
                 $fail("The {$attribute} path cannot be or reside within [{$blocked}].");
 
                 return;
@@ -34,4 +34,3 @@ class NotInPathHierarchy implements ValidationRule
         }
     }
 }
-

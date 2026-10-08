@@ -12,7 +12,6 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Events\Auth\FailedCaptcha;
 use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -76,7 +75,7 @@ class VerifyReCaptcha
             if ($res->getStatusCode() === 200) {
                 return $this->decodeResponse($res->getBody()->__toString());
             }
-        } catch (GuzzleException $exception) {
+        } catch (GuzzleException) {
             // Ignore the error entirely, we will just return a failed response below.
         }
 
