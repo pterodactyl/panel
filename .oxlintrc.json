@@ -298,6 +298,13 @@
                 "typescript/no-redundant-type-constituents": "off",
                 "typescript/no-empty-object-type": "error"
             }
+        },
+        {
+            // ESTree literals are discriminated only by the runtime type of `value`; this helper is that decoder.
+            "files": ["tools/oxlint/rules/shared/literals.ts"],
+            "rules": {
+                "rules/no-runtime-typeof": "off"
+            }
         }
     ]
 }

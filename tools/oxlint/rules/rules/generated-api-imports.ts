@@ -1,6 +1,7 @@
 import { dirname, resolve, sep } from 'node:path';
 import { defineRule } from '@oxlint/plugins';
 import type { ESTree } from '@oxlint/plugins';
+import { stringLiteralValue } from '../shared/literals.ts';
 
 /** Keep generated transport details behind the panel API wrappers. */
 export const generatedApiImportsRule = defineRule({
@@ -18,17 +19,22 @@ export const generatedApiImportsRule = defineRule({
             return {};
         }
 
+        const importTarget = (imported: string): string | null => {
+            if (imported.startsWith('@/')) {
+                return resolve(sourceRoot, imported.slice(2));
+            }
+
+            return imported.startsWith('.') ? resolve(dirname(filename), imported) : null;
+        };
+
         const check = (source: ESTree.Expression) => {
-            if (source.type !== 'Literal' || typeof source.value !== 'string') {
+            const imported = stringLiteralValue(source);
+
+            if (imported === null) {
                 return;
             }
 
-            const imported = source.value;
-            const target = imported.startsWith('@/')
-                ? resolve(sourceRoot, imported.slice(2))
-                : imported.startsWith('.')
-                  ? resolve(dirname(filename), imported)
-                  : null;
+            const target = importTarget(imported);
 
             if (target !== generatedRoot && !target?.startsWith(generatedRoot + sep)) {
                 return;

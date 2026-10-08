@@ -61,11 +61,6 @@ class FakeDaemonServer extends FakeDaemonHttpClient
         Assert::assertNotEmpty($this->callsFor('reinstall'), 'Expected daemon server reinstall to have been called.');
     }
 
-    public function assertArchiveRequested(): void
-    {
-        Assert::assertNotEmpty($this->callsFor('requestArchive'), 'Expected daemon server archive request to have been called.');
-    }
-
     public function assertDetailsFetched(): void
     {
         Assert::assertNotEmpty($this->callsFor('getDetails'), 'Expected daemon server details to have been fetched.');
@@ -91,7 +86,7 @@ class FakeDaemonServer extends FakeDaemonHttpClient
             return $this->reply();
         }
 
-        if (! preg_match('#^/api/servers/([^/]+)(?:/(sync|reinstall|archive|logs))?$#', $path, $matches)) {
+        if (! preg_match('#^/api/servers/([^/]+)(?:/(sync|reinstall|logs))?$#', $path, $matches)) {
             return null;
         }
 
@@ -100,7 +95,6 @@ class FakeDaemonServer extends FakeDaemonHttpClient
             ['DELETE', ''] => 'delete',
             ['POST', 'sync'] => 'sync',
             ['POST', 'reinstall'] => 'reinstall',
-            ['POST', 'archive'] => 'requestArchive',
             ['GET', 'logs'] => 'getLogs',
             default => null,
         };

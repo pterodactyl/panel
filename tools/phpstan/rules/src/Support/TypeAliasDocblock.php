@@ -65,7 +65,7 @@ final class TypeAliasDocblock
         $parts = [];
         $depth = 0;
         $current = '';
-        foreach (str_split($body) as $character) {
+        foreach (mb_str_split($body) as $character) {
             if ($character === '<' || $character === '{' || $character === '(' || $character === '[') {
                 $depth++;
             } elseif ($character === '>' || $character === '}' || $character === ')' || $character === ']') {

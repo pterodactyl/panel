@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\AssertionForms;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\AssertionForms;
 
 /**
  * Port of anti-slop's require-safety-comment-for-type-assertion: every

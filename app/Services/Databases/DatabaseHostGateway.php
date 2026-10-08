@@ -14,24 +14,12 @@ class DatabaseHostGateway
 {
     public const string DEFAULT_CONNECTION_NAME = 'dynamic';
 
-    private string $connection = self::DEFAULT_CONNECTION_NAME;
-
-    /**
-     * Set the connection name to execute statements against.
-     */
-    public function setConnection(string $connection): self
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-
     /**
      * Return the connection to execute statements against.
      */
     public function getConnection(): string
     {
-        return $this->connection;
+        return self::DEFAULT_CONNECTION_NAME;
     }
 
     /**

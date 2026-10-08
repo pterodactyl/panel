@@ -85,7 +85,11 @@ function hasKnownEvidence(
 
     const declarator = variableDeclarator(variable);
 
-    if (declarator === null || declarator.init === null || !isStableConstVariable(variable, declarator)) {
+    if (declarator === null) {
+        return false;
+    }
+
+    if (declarator.init === null || !isStableConstVariable(variable, declarator)) {
         return false;
     }
 

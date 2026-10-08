@@ -88,7 +88,7 @@
             "pint --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests"
         ],
         "test:lint": [
-            "pint --test --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests",
+            "pint --test --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests tools/phpstan",
             "rector --dry-run"
         ],
         "test:types": "phpstan analyse -c phpstan-rules.neon --memory-limit=2G",

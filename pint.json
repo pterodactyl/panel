@@ -1,5 +1,6 @@
 {
     "preset": "laravel",
+    "notPath": ["rules/tests/Rules/data", "rules/tests/Integration/data"],
     "rules": {
         "array_push": true,
         "backtick_to_shell_exec": true,

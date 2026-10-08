@@ -14,8 +14,10 @@ final class UpdateEggVariable implements UpdatesEggVariables
      *
      * @param  EggVariableData  $data
      */
-    public function update(EggVariable $variable, array $data): void
+    public function update(EggVariable $variable, array $data): EggVariable
     {
         $variable->update($data);
+
+        return $variable;
     }
 }

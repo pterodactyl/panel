@@ -25,16 +25,6 @@ class EnvironmentService
     }
 
     /**
-     * Return the dynamically added additional keys.
-     *
-     * @return array<string, callable(Server): ApiScalar>
-     */
-    public function getEnvironmentKeys(): array
-    {
-        return $this->additional;
-    }
-
-    /**
      * Take all of the environment variables configured for this server and return
      * them in an easy to process format.
      *

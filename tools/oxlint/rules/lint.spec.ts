@@ -20,6 +20,32 @@ const components = 'resources/scripts/components/Probe.tsx';
 const api = 'resources/scripts/api/queries.ts';
 const generated = 'resources/scripts/api/generated/types.gen.ts';
 
+type LintDiagnostic = {
+    readonly code?: string;
+    readonly severity: string;
+};
+
+type LintResult = {
+    readonly status: number | null;
+    readonly diagnostics: readonly LintDiagnostic[];
+};
+
+function lint(path: string, source: string): LintResult {
+    const filename = resolve(directory, path);
+
+    mkdirSync(dirname(filename), { recursive: true });
+    writeFileSync(filename, source);
+    const result = spawnSync(resolve(root, 'node_modules/.bin/oxlint'), ['--format', 'json', path], {
+        cwd: directory,
+        encoding: 'utf8',
+    });
+
+    rmSync(filename);
+    expect(result.stderr).toBe('');
+
+    return { status: result.status, diagnostics: JSON.parse(result.stdout).diagnostics };
+}
+
 it.each([
     [
         'rejects aliased generated imports',
@@ -152,22 +178,3 @@ it.each([
     expect(result.diagnostics.filter((diagnostic) => diagnostic.severity === 'error')).toEqual([]);
     expect(result.status).toBe(0);
 });
-
-function lint(
-    path: string,
-    source: string
-): { status: number | null; diagnostics: { code?: string; severity: string }[] } {
-    const filename = resolve(directory, path);
-
-    mkdirSync(dirname(filename), { recursive: true });
-    writeFileSync(filename, source);
-    const result = spawnSync(resolve(root, 'node_modules/.bin/oxlint'), ['--format', 'json', path], {
-        cwd: directory,
-        encoding: 'utf8',
-    });
-
-    rmSync(filename);
-    expect(result.stderr).toBe('');
-
-    return { status: result.status, diagnostics: JSON.parse(result.stdout).diagnostics };
-}

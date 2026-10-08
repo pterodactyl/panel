@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rules\Tests\Rules;
 
+use PHPStan\Rules\Rule;
+use PHPStan\Testing\RuleTestCase;
 use Rules\Rules\NoMixedParametersRule;
 use Rules\Support\SignatureResolver;
 use Rules\Support\TypeClassifier;
-use PHPStan\Rules\Rule;
-use PHPStan\Testing\RuleTestCase;
 
 /**
  * @extends RuleTestCase<NoMixedParametersRule>

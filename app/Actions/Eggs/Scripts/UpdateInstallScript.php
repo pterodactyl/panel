@@ -19,7 +19,7 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
      *
      * @throws InvalidCopyFromException
      */
-    public function update(Egg $egg, array $data): void
+    public function update(Egg $egg, array $data): Egg
     {
         $copyFrom = JsonValueGuard::nullableInteger(Arr::get($data, 'copy_script_from'));
         if ($copyFrom !== null && ! Egg::query()->scriptSources()->whereKey($copyFrom)->exists()) {
@@ -33,5 +33,7 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
             'script_container' => JsonValueGuard::string(Arr::get($data, 'script_container')),
             'copy_script_from' => $copyFrom,
         ]);
+
+        return $egg;
     }
 }

@@ -94,14 +94,7 @@ class ApiKey extends Model implements HasAbilities
 
     public const int TYPE_ACCOUNT = 1;
 
-    /* @deprecated */
     public const int TYPE_APPLICATION = 2;
-
-    /* @deprecated */
-    public const int TYPE_DAEMON_USER = 3;
-
-    /* @deprecated */
-    public const int TYPE_DAEMON_APPLICATION = 4;
 
     /**
      * The length of API key identifiers.

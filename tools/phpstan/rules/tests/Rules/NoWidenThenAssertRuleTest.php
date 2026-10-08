@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Rules\Tests\Rules;
 
-use Rules\Rules\NoWidenThenAssertRule;
-use Rules\Support\AssertionForms;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
+use Rules\Rules\NoWidenThenAssertRule;
+use Rules\Support\AssertionForms;
 
 /**
  * @extends RuleTestCase<NoWidenThenAssertRule>
  */
 final class NoWidenThenAssertRuleTest extends RuleTestCase
 {
-    protected function getRule(): Rule
-    {
-        return new NoWidenThenAssertRule(new AssertionForms);
-    }
-
-    public function testRule(): void
+    public function test_rule(): void
     {
         $message = 'Binding `$%s` discards type evidence and later recreates it with an assertion. Keep the precise type from initialization through use; parse boundary input once.';
 
@@ -28,5 +23,10 @@ final class NoWidenThenAssertRuleTest extends RuleTestCase
             [sprintf($message, 'data'), 26],
             [sprintf($message, 'vars'), 35],
         ]);
+    }
+
+    protected function getRule(): Rule
+    {
+        return new NoWidenThenAssertRule(new AssertionForms);
     }
 }

@@ -30,7 +30,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\ToggleBackupLockRequest
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\ViewBackupRequest;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Backups\BackupListService;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Spatie\Fractalistic\Exceptions\InvalidTransformation;
 use Spatie\Fractalistic\Exceptions\NoTransformerSpecified;
@@ -68,16 +67,14 @@ class BackupController extends ClientApiController
     #[QueryParam('page', 'integer', 'The page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Number of backups to return per page. The maximum is 50.', required: false, example: 20)]
     #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backups returned.', collection: true, resourceKey: 'backup', paginate: [IlluminatePaginatorAdapter::class, 20], meta: ['backup_count' => 1])]
-    public function index(ListBackupsRequest $request, BackupListService $listing, Server $server): array
+    public function index(ListBackupsRequest $request, Server $server): array
     {
         $validated = $request->payload();
 
-        $result = $listing->handle($server, $validated['per_page']);
-
-        return Fractal::collection($result['backups'])
+        return Fractal::collection($server->backups()->paginate($validated['per_page']))
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->addMeta([
-                'backup_count' => $result['backup_count'],
+                'backup_count' => $server->backups()->nonFailed()->count(),
             ])
             ->toResponseArray();
     }

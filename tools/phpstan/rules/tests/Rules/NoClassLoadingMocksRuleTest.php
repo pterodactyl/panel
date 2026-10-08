@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace Rules\Tests\Rules;
 
-use Rules\Rules\NoClassLoadingMocksRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
+use Rules\Rules\NoClassLoadingMocksRule;
 
 /**
  * @extends RuleTestCase<NoClassLoadingMocksRule>
  */
 final class NoClassLoadingMocksRuleTest extends RuleTestCase
 {
-    protected function getRule(): Rule
-    {
-        return new NoClassLoadingMocksRule($this->createReflectionProvider());
-    }
-
-    public function testRule(): void
+    public function test_rule(): void
     {
         $concrete = 'Mocking the concrete class `%s` fakes an implementation instead of a contract. Extract a real interface, or inject a faithful in-memory fake.';
         $loading = 'Mocking `%s` replaces the autoloaded class for the whole process. Extract a real interface and inject a faithful in-memory fake instead.';
@@ -32,5 +27,10 @@ final class NoClassLoadingMocksRuleTest extends RuleTestCase
             [sprintf($loading, 'overload:'.$class), 38],
             [sprintf($loading, 'alias:'.$class), 39],
         ]);
+    }
+
+    protected function getRule(): Rule
+    {
+        return new NoClassLoadingMocksRule($this->createReflectionProvider());
     }
 }

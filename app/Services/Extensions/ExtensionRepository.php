@@ -196,11 +196,6 @@ class ExtensionRepository
         rescue(fn () => $this->events->dispatch(new ExtensionLoadFailed($identifier, $phase, $reason, $exception)));
     }
 
-    public function clearError(string $identifier): void
-    {
-        $this->clearErrors([$identifier]);
-    }
-
     /** @param list<string> $identifiers */
     public function clearErrors(array $identifiers): void
     {

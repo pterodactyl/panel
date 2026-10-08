@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Servers;
 use Illuminate\Support\Facades\DB;
 use LogicException;
 use Pterodactyl\Contracts\Servers\ChangesServerEgg;
+use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
@@ -20,6 +21,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
     public function __construct(
         private VariableValidatorService $validatorService,
         private ChangesServerEgg $eggs,
+        private UpdatesServerDockerImage $dockerImage,
     ) {}
 
     /**
@@ -56,8 +58,14 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
                 $server->fill([
                     'startup' => $data['startup'] ?? $server->startup,
                     'skip_scripts' => $data['skip_scripts'] ?? isset($data['skip_scripts']),
-                    'image' => $data['docker_image'] ?? $server->image,
                 ])->save();
+
+                // Image changes go through their own contract so extensions wrapping
+                // it see this path too. Skip it when the image is unchanged.
+                $image = $data['docker_image'] ?? null;
+                if ($image !== null && $image !== $server->image) {
+                    $server = $this->dockerImage->update($server, $image);
+                }
             }
 
             // Use fresh() rather than refresh(). refresh() reloads every loaded

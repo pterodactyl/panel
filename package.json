@@ -92,7 +92,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "tsc": "tsc --noEmit && tsc --project tools/oxlint/rules && npm --prefix packages/hello-world run typecheck",
-        "lint": "oxfmt --check resources/scripts packages/hello-world tools/oxlint && oxlint --type-aware resources/scripts packages/hello-world/src/client",
+        "lint": "oxfmt --check resources/scripts packages/hello-world tools/oxlint && oxlint --type-aware resources/scripts packages/hello-world/src/client tools/oxlint",
         "api:generate": "openapi-ts",
         "extension:api:generate": "node scripts/generate-extension-api.mjs",
         "api:refresh": "PTERODACTYL_EXTENSIONS_ENABLED=false composer docs:openapi:verify && npm run api:generate",

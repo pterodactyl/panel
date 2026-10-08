@@ -7,6 +7,7 @@ namespace Pterodactyl\Extensions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Models\DatabaseHost;
 
 class DynamicDatabaseConnection
@@ -38,5 +39,9 @@ class DynamicDatabaseConnection
             'charset' => self::DB_CHARSET,
             'collation' => self::DB_COLLATION,
         ]);
+
+        // The manager caches resolved connections by name, so drop the previous host's
+        // connection or the next DB::connection() call keeps talking to it.
+        DB::purge($connection);
     }
 }

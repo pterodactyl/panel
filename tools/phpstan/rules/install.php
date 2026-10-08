@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * Usage: php install.php [target-repository] [--force]
  */
-
 $arguments = array_slice($argv, 1);
 $force = in_array('--force', $arguments, true);
 $positional = array_values(array_filter($arguments, static fn (string $argument): bool => ! str_starts_with($argument, '--')));

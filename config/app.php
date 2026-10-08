@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Facade;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Alert;
 use Pterodactyl\Facades\LogBatch;
 use Pterodactyl\Facades\LogTarget;
 
@@ -169,7 +168,6 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Alert' => Alert::class,
         'Carbon' => Carbon::class,
 
         // Custom Facades

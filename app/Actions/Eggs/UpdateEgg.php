@@ -14,12 +14,14 @@ final class UpdateEgg implements UpdatesEggs
      *
      * @param  EggCreationData  $data
      */
-    public function update(Egg $egg, array $data): void
+    public function update(Egg $egg, array $data): Egg
     {
         // TODO(dane): Once the admin UI is done being reworked and this is exposed
         //  in said UI, remove this so that you can actually update the denylist.
         unset($data['file_denylist']);
 
         $egg->update($data);
+
+        return $egg;
     }
 }

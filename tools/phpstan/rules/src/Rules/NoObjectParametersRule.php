@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\SignatureResolver;
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\SignatureResolver;
+use Rules\Support\TypeClassifier;
 
 /**
  * Port of anti-slop's no-object-parameters: the bare `object` type on an input

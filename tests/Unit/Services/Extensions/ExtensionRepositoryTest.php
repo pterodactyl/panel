@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
 use Pterodactyl\Facades\Extensions;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -17,15 +16,15 @@ use Pterodactyl\Tests\TestCase;
 use function pterodactylTestCase;
 
 uses(TestCase::class);
-beforeEach(function () {
+beforeEach(function (): void {
     $this->directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'ptero-extensions-'.uniqid();
     File::ensureDirectoryExists($this->directory);
     config(['extensions.directory' => $this->directory]);
 });
-afterEach(function () {
+afterEach(function (): void {
     File::deleteDirectory($this->directory);
 });
-test('discovers valid packages and records invalid ones', function () {
+test('discovers valid packages and records invalid ones', function (): void {
     writeExtension('alpha', ['id' => 'alpha', 'name' => 'Alpha', 'version' => '1.0.0']);
     writeExtension('broken', ['id' => 'broken', 'name' => '', 'version' => '1.0.0']);
     // Directory name not matching the manifest id is rejected.
@@ -36,7 +35,7 @@ test('discovers valid packages and records invalid ones', function () {
     expect($repository->discoveryErrors())->toHaveKey('broken');
     expect($repository->discoveryErrors())->toHaveKey('renamed');
 });
-test('nothing is enabled without install records', function () {
+test('nothing is enabled without install records', function (): void {
     writeExtension('alpha', ['id' => 'alpha', 'name' => 'Alpha', 'version' => '1.0.0']);
     $repository = repository();
     // No extensions table in the unit test database — records() degrades to
@@ -44,7 +43,7 @@ test('nothing is enabled without install records', function () {
     expect($repository->enabled()->isEmpty())->toBeTrue();
     expect($repository->frontendPayload(authenticated: true))->toBe([]);
 });
-test('provider boot failures are caught', function () {
+test('provider boot failures are caught', function (): void {
     Event::fake([ExtensionLoadFailed::class]);
     writeExtension('broken', ['id' => 'broken', 'name' => 'Broken', 'version' => '1.0.0', 'provider' => 'BrokenExtension\Provider', 'autoload' => ['BrokenExtension\\' => 'src']]);
     $src = $this->directory.DIRECTORY_SEPARATOR.'broken'.DIRECTORY_SEPARATOR.'src';
@@ -67,14 +66,13 @@ test('provider boot failures are caught', function () {
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory.DIRECTORY_SEPARATOR.'broken');
     $repository = repository();
     (new ExtensionProviderLoader(pterodactylTestCase()->app, $repository))->registerProviders(collect([$manifest->id => $manifest]));
-    Event::assertDispatched(ExtensionLoadFailed::class, fn (ExtensionLoadFailed $event) => $event->identifier === 'broken' && $event->phase === 'boot' && str_contains($event->reason, 'boot failed'));
+    Event::assertDispatched(ExtensionLoadFailed::class, fn (ExtensionLoadFailed $event): bool => $event->identifier === 'broken' && $event->phase === 'boot' && str_contains($event->reason, 'boot failed'));
 });
-test('the facade and the deprecated manager hand out the same settings as the repository', function () {
+test('the facade hands out the same settings as the repository', function (): void {
     $settings = repository()->settings('alpha');
 
     expect(Extensions::settings('alpha'))->toBe($settings);
     expect(Extensions::isAvailable('alpha'))->toBeFalse();
-    expect(app(ExtensionManager::class)->settings('alpha'))->toBe($settings);
 });
 function repository(): ExtensionRepository
 {
@@ -87,9 +85,10 @@ function repository(): ExtensionRepository
         return $repository;
     })->call(pterodactylTestCase());
 }
+
 function writeExtension(string $directory, array $manifest): void
 {
-    (function () use ($directory, $manifest) {
+    (function () use ($directory, $manifest): void {
         $path = $this->directory.DIRECTORY_SEPARATOR.$directory;
         File::ensureDirectoryExists($path);
         file_put_contents($path.DIRECTORY_SEPARATOR.'extension.json', json_encode($manifest));

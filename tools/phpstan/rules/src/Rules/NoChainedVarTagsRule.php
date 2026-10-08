@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\AssertionForms;
-use Rules\Support\NodeChildren;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
@@ -15,6 +13,8 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\AssertionForms;
+use Rules\Support\NodeChildren;
 
 /**
  * The statement-sequence half of no-chained-type-assertions: two consecutive

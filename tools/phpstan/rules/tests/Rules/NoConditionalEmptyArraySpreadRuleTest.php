@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace Rules\Tests\Rules;
 
-use Rules\Rules\NoConditionalEmptyArraySpreadRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
+use Rules\Rules\NoConditionalEmptyArraySpreadRule;
 
 /**
  * @extends RuleTestCase<NoConditionalEmptyArraySpreadRule>
  */
 final class NoConditionalEmptyArraySpreadRuleTest extends RuleTestCase
 {
-    protected function getRule(): Rule
-    {
-        return new NoConditionalEmptyArraySpreadRule;
-    }
-
-    public function testRule(): void
+    public function test_rule(): void
     {
         $message = 'This conditional spread hides key omission behind an empty array. Build the array in separate statements and add the key only when present.';
 
@@ -28,5 +23,10 @@ final class NoConditionalEmptyArraySpreadRuleTest extends RuleTestCase
             [$message, 16],
             [$message, 18],
         ]);
+    }
+
+    protected function getRule(): Rule
+    {
+        return new NoConditionalEmptyArraySpreadRule;
     }
 }

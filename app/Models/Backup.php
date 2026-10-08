@@ -32,7 +32,6 @@ use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
  * @property CarbonImmutable $updated_at
  * @property CarbonImmutable|null $deleted_at
  * @property Server $server
- * @property AuditLog[] $audits
  */
 #[Attributes\Identifiable('bkup')]
 #[Guarded(['id', 'created_at', 'updated_at', 'deleted_at'])]

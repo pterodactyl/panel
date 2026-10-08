@@ -61,14 +61,14 @@ class EggScriptController extends AdminApiController
 
         $data = $request->validated();
         JsonValueGuard::assertPayload9($data);
-        $scripts->update($egg, $data);
+        $egg = $scripts->update($egg, $data);
 
         Activity::event('admin:egg.scripts')
             ->subject($egg)
             ->property('name', $egg->name)
             ->log();
 
-        return Fractal::item($egg->refresh())
+        return Fractal::item($egg)
             ->transformWith($this->getTransformer(EggTransformer::class))
             ->toResponseArray();
     }

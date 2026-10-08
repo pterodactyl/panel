@@ -76,9 +76,7 @@ class EggVariableController extends AdminApiController
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]
     public function update(UpdateVariableRequest $request, UpdatesEggVariables $variables, Egg $egg, EggVariable $variable): array
     {
-        $variables->update($variable, $request->payload());
-
-        $variable = $variable->refresh();
+        $variable = $variables->update($variable, $request->payload());
 
         Activity::event('admin:egg-variable.update')
             ->subject($egg, $variable)

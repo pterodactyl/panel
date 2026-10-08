@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Log;
-use Pterodactyl\Facades\Alert;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
@@ -51,17 +50,15 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
     }
 
     /**
-     * Render the exception to the user by adding a flashed message to the session
-     * and then redirecting them back to the page that they came from. If the
-     * request originated from an API hit, return the error in JSONAPI spec format.
+     * Render the exception by redirecting the user back to the page that they came
+     * from. If the request originated from an API hit, return the error in JSONAPI
+     * spec format.
      */
     public function render(Request $request): JsonResponse|RedirectResponse
     {
         if ($request->expectsJson() || $request->is('api/*')) {
             return response()->json(ApiErrorResponse::toArray($this), $this->getStatusCode(), $this->getHeaders());
         }
-
-        Alert::danger($this->getMessage())->flash();
 
         return back()->withInput();
     }

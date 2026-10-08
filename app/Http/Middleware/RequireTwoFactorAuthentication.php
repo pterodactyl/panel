@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
-use Pterodactyl\Facades\Alert;
 use Pterodactyl\Http\Concerns\ResolvesRequestContext;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -65,8 +64,6 @@ class RequireTwoFactorAuthentication
 
         // For API calls return an exception which gets rendered nicely in the API response.
         throw_if($request->isJson() || Str::startsWith($uri, '/api/'), TwoFactorAuthRequiredException::class);
-
-        Alert::danger(trans('auth.2fa_must_be_enabled'))->flash();
 
         return redirect()->to($this->redirectRoute);
     }

@@ -1,5 +1,6 @@
 import { defineRule } from '@oxlint/plugins';
 import type { ESTree } from '@oxlint/plugins';
+import { stringLiteralValue } from '../shared/literals.ts';
 
 const palette =
     'slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black';
@@ -27,8 +28,10 @@ export const designTokensRule = defineRule({
 
         return {
             Literal(node) {
-                if (typeof node.value === 'string') {
-                    check(node, node.value);
+                const value = stringLiteralValue(node);
+
+                if (value !== null) {
+                    check(node, value);
                 }
             },
             TemplateElement: (node) => check(node, node.value.cooked ?? node.value.raw),
@@ -37,11 +40,9 @@ export const designTokensRule = defineRule({
                     return;
                 }
 
-                if (
-                    node.value.type !== 'Literal' ||
-                    typeof node.value.value !== 'string' ||
-                    node.value.value.startsWith('var(')
-                ) {
+                const fontFamily = stringLiteralValue(node.value);
+
+                if (fontFamily === null || fontFamily.startsWith('var(')) {
                     return;
                 }
 
@@ -57,7 +58,9 @@ export const designTokensRule = defineRule({
 
                 const value = node.value?.type === 'JSXExpressionContainer' ? node.value.expression : node.value;
 
-                if (value?.type === 'Literal' && typeof value.value === 'string' && paintNames.test(value.value)) {
+                const paint = stringLiteralValue(value);
+
+                if (value !== null && value !== undefined && paint !== null && paintNames.test(paint)) {
                     context.report({ node: value, messageId: 'token' });
                 }
             },

@@ -12,7 +12,6 @@ use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetExternalServerRequest;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\ServerFinderService;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
@@ -26,9 +25,9 @@ class ExternalServerController extends ApplicationApiController
      */
     #[Endpoint('Get server by external ID', 'Returns a single server by its external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
-    public function index(GetExternalServerRequest $request, ServerFinderService $finder, string $external_id): array
+    public function index(GetExternalServerRequest $request, string $external_id): array
     {
-        $server = $finder->byExternalId($external_id);
+        $server = Server::query()->where('external_id', $external_id)->firstOrFail();
 
         return Fractal::item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))

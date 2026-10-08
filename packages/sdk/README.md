@@ -2,7 +2,7 @@
 
 Build extensions for the Pterodactyl panel (v2+). This package provides:
 
-- **Types** for the runtime API — the actual implementation is provided *by the panel*
+- **Types** for the runtime API. The implementation is provided *by the panel*
   through its import map, so your built extension never bundles the SDK, React, or
   TanStack Query: it shares the panel's own instances.
 - **The Vite build preset** (`@pterodactyl/sdk/vite`) that keeps those modules external
@@ -34,7 +34,7 @@ import { defineExtensionConfig } from '@pterodactyl/sdk/vite';
 export default defineExtensionConfig({ entry: 'src/client/index.tsx' });
 ```
 
-`vite build` → `dist/client.js`, referenced from your `extension.json`:
+`vite build` emits `dist/client.js`, referenced from your `extension.json`:
 
 ```json
 {
@@ -72,19 +72,19 @@ minor versions, removals are majors.
 
 Screen IDs, paths, navigation, and permissions live in `ui.screens` in the manifest. A screen's `permission` list names the subuser permissions needed to open it and is only accepted on `server` screens; account and admin screens are open to every signed-in user and every root admin respectively. Register each declared screen with `screens.register(id, importer)` during synchronous `setup`. Paths use a static first segment and may include named parameters such as `votes/$tab` (the panel reserves `$id`); duplicate paths, duplicate parameter patterns, and core route collisions reject the offending extension. Screen components receive a `data` prop (`ScreenComponentProps`) with the current `pathname`, `search`, and `params`, so `votes/$tab` reads its value from `data.params.tab`.
 
-The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the configured extension order. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions still execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
+The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the configured extension order. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
 
 Recoverable render/query failures offer Retry. Failed screen chunks offer an explicit page reload because resetting an error boundary cannot evict a rejected browser module. Enabling, disabling, updating, or changing frontend configuration takes effect on the next full page load; reload after management changes. Already evaluated JavaScript is not unloaded dynamically.
 
 ## Types and shared dependencies
 
-The panel currently supports the React 19.3 client API. Server-only caching APIs, development-only `captureOwnerStack`, and unstable cache-refresh APIs are not part of the shared React facade. React, React DOM, JSX runtime, Query, and SDK entry points stay external through the Vite preset.
+The panel supports the React 19.3 client API. Server-only caching APIs, development-only `captureOwnerStack`, and unstable cache-refresh APIs are not part of the shared React facade. React, React DOM, JSX runtime, Query, and SDK entry points stay external through the Vite preset.
 
 SDK declarations are generated from the runtime public surface with `npm run sdk:generate` at the panel root. `npm run sdk:check` checks reproducibility and compiles a packed-package consumer, including negative type cases. Component props, form fields, and `useCurrentServer(server => server.attributes.name)` preserve their actual types. SDK peer dependencies include the existing libraries referenced by those declarations; use SDK form hooks/components to share the panel's bound form contexts.
 
 Declare screen metadata in the manifest and register each implementation by ID with `screens.register`. Build extensions against the SDK version used by the panel.
 
-A `file:` dependency on `packages/sdk` is a link into the panel checkout. TypeScript follows links to their real location by default, so the SDK declarations would take React, TanStack Query and the other peers from the panel's `node_modules` while your code takes them from yours; when the versions differ, `useQuery(serverFileContentQueryOptions(...))` fails on two unrelated `QueryClient` types. Scaffolded extensions set `"preserveSymlinks": true` in `tsconfig.json`, which resolves the SDK's peers from the extension, the same way the Vitest preset does at runtime. Add that option to an extension scaffolded earlier and remove any `paths` entries for `react`, `@tanstack/react-query` or `lucide-react`. An SDK installed from a tarball or registry needs neither.
+A `file:` dependency on `packages/sdk` is a link into the panel checkout. TypeScript follows links to their real location by default, so the SDK declarations would take React, TanStack Query and the other peers from the panel's `node_modules` while your code takes them from yours; when the versions differ, `useQuery(serverFileContentQueryOptions(...))` fails on two unrelated `QueryClient` types. Scaffolded extensions set `"preserveSymlinks": true` in `tsconfig.json`, which resolves the SDK's peers from the extension, the same way the Vitest preset does at runtime. Do not add `paths` entries for `react`, `@tanstack/react-query` or `lucide-react`. An SDK installed from a tarball or registry needs neither option.
 
 ## Resource hooks and native data
 
@@ -263,8 +263,8 @@ A provider reads its settings with `$this->settings()`. Code outside the provide
 a controller or a job, uses the `Pterodactyl\Facades\Extensions` facade:
 `Extensions::settings('billing')` returns the same settings, and
 `Extensions::isAvailable('billing')` tells whether an extension is enabled and running.
-`app(ExtensionManager::class)->settings('billing')`, which earlier scaffolds suggested,
-still works but is deprecated.
+Both return an `ExtensionSettings`: `get($key, $default)`, `set($key, $value)`, and
+`setSecret($key, $value)`, which stores the value encrypted.
 
 Backend settings support `forUser($user)` and `forServer($server)`. Mark secrets with
 `->secret()` to encrypt storage, mask admin output as `********`, and prohibit frontend
@@ -375,8 +375,11 @@ failed provisioning is cleaned up, suspension fires only for a change Wings acce
 ### Wrapping core actions
 
 `wrapAction($contract, $decorator)` runs extension code around any action contract under
-`Pterodactyl\Contracts\` that the panel binds. The decorator receives the implementation that
-would otherwise be used and returns an implementation of the same contract:
+`Pterodactyl\Contracts\` that the panel binds per caller (not as a shared singleton). The
+wrapper runs around every call to that contract, including the calls core makes internally,
+such as `DeleteServer` dropping databases through `DeletesDatabases`. The decorator receives
+the implementation that would otherwise be used and returns an implementation of the same
+contract:
 
 ```php
 $this->wrapAction(DeletesServers::class, fn (DeletesServers $inner): DeletesServers => new PurgeDnsRecords($inner, $this->app->make(DnsRecords::class)));
@@ -403,14 +406,19 @@ final class PurgeDnsRecords implements DeletesServers
 }
 ```
 
-A few core actions call out only after their own transaction commits, so wrappers of the
-nested contracts run outside it. When creating a backup rotates out an old one,
-`DeletesBackups` runs after the new backup is recorded and Wings has accepted it. During
-server deletion, `DeletesDatabases` runs after the server and its database rows are
-deleted, so the `Database` it receives no longer exists in the panel, and a failure is
-reported instead of failing the deletion. The Wings call that starts a transfer also runs
-after the transfer is recorded; if Wings rejects it, the transfer is marked failed through
-`FailsTransfers`.
+These core actions order their work as follows, and wrappers of the contracts they call
+run outside their transactions:
+
+- `InitiatesBackups` creates the backup row in a transaction, then asks Wings to start the
+  backup. A backup Wings rejects is stored as failed. Backups rotated out to make room are
+  deleted through `DeletesBackups` only after Wings accepts the new one; a failed rotation
+  delete is reported, not thrown.
+- `DeletesServers` deletes the panel rows in a transaction, then drops each remote database
+  through `DeletesDatabases`. The `Database` it passes is already deleted from the panel. A
+  failed drop is reported and the rest are dropped.
+- `InitiatesTransfers` calls Wings after the transfer records commit. A transfer Wings
+  rejects is marked failed through `FailsTransfers`.
+- `RotatesDatabasePasswords` finishes before the controller writes the activity log entry.
 
 The wrapper owns the call: it decides whether and when to invoke the inner action and
 must forward fluent options such as `withForce()` itself, returning itself. Whatever it
@@ -421,6 +429,19 @@ one that throws or returns another type is recorded and skipped, so the core act
 resolves. Extensions wrap in load order, the last one outermost. The actions that install,
 enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and apply themes
 (`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
+
+Core controllers resolve these contracts, not the classes behind them. Renaming a server from the client API calls
+`UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
+Deleting an allocation block calls `DeletesAllocations` once per allocation. Disabling
+two-factor, by an admin or by the user, calls `DisablesTwoFactor`, which clears the TOTP
+secret. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
+endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image.
+`UpdatesEggs`, `UpdatesEggInstallScripts` and `UpdatesEggVariables` return the updated model.
+Mounts (`CreatesMounts`, `UpdatesMounts`, `DeletesMounts`, `AttachesEggsToMounts`,
+`AttachesNodesToMounts`, `DetachesEggsFromMounts`, `DetachesNodesFromMounts`), tags
+(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, `DeletesApiKeys`),
+egg variable deletion (`DeletesEggVariables`) and the server install-status toggle
+(`TogglesServerInstallStatus`) have contracts of their own as well.
 
 Resolve the same contracts from the container to call core behaviour instead of
 reimplementing it. Beside the mutating actions, these read or complete on your behalf:

@@ -130,6 +130,40 @@ test('exception while deleting databases does not abort if force deleted', funct
     $this->assertDatabaseMissing('servers', ['id' => $server->id]);
     $this->assertDatabaseMissing('databases', ['id' => $db->id]);
 });
+test('databases on different hosts are each dropped on their own host', function (): void {
+    $server = $this->createServerModel();
+    $first = DatabaseHost::factory()->create();
+    $second = DatabaseHost::factory()->create();
+    /** @var Database $a */
+    $a = Database::factory()->create(['database_host_id' => $first->id, 'server_id' => $server->id]);
+    /** @var Database $b */
+    $b = Database::factory()->create(['database_host_id' => $second->id, 'server_id' => $server->id]);
+    $server->refresh();
+
+    // Record which host the dynamic connection points at for each drop. Resolving the
+    // connection does not open a socket, so no real database host is needed.
+    $gateway = new class extends FakeDatabaseHostGateway
+    {
+        /** @var array<string, mixed> */
+        public array $hosts = [];
+
+        public function dropDatabase(string $database): bool
+        {
+            $this->hosts[$database] = DB::connection($this->getConnection())->getConfig('host');
+
+            return parent::dropDatabase($database);
+        }
+    };
+    $this->app->instance(DatabaseHostGateway::class, $gateway);
+
+    try {
+        getService()->delete($server);
+    } finally {
+        DB::purge(DatabaseHostGateway::DEFAULT_CONNECTION_NAME);
+    }
+
+    expect($gateway->hosts)->toBe([$a->database => $first->host, $b->database => $second->host]);
+});
 function getService(): DeletesServers
 {
     return (fn () => $this->app->make(DeletesServers::class))->call(pterodactylTestCase());
