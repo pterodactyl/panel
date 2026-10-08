@@ -1,0 +1,228 @@
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_899a0f63af105e::t_f9ebc762e96a6c 9,117-133
+  s_899a0f63af105e::t_6ff08d02fae909 134
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_899a0f63af105e::t_4473b8148169f2 8,19
+  s_899a0f63af105e::t_43ba97ddad2b37 135
+  s_899a0f63af105e::t_7dd5b277c6c36b 13,74-77,80-88,90-95,98-119
+  s_899a0f63af105e::t_8b8fe8b59d0dcc 31,41,45,53,57,64,71,97,120-121,138,153,157,163,172
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_899a0f63af105e::t_ed89654c3882de 100,128,130
+  s_899a0f63af105e::t_1abeac08f524d3 15-16,18,98,154,156
+app/Contracts/Mounts/AttachesEggsToMounts.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-17
+app/Providers/ActionServiceProvider.php
+  s_899a0f63af105e::t_1f9bb15ef551fe 352-365
+  s_899a0f63af105e::t_b826baac4050f1 19-20,45,67-73,97,105-106,108,135-136,155,183-189,213,221-222,224
+tests/Integration/Api/Admin/Servers/ServerTransferControllerTest.php
+  s_899a0f63af105e::t_068fc9b6b6c19b 8-9,136-154
+  s_899a0f63af105e::t_19714cabd873fe 155
+app/Actions/Mounts/CreateMount.php
+  s_899a0f63af105e::t_2467af4f5561b5 16
+  s_899a0f63af105e::t_3147fc250e60ae 1-15,17-26
+app/Actions/Tags/UpdateTag.php
+  s_899a0f63af105e::t_2467af4f5561b5 19
+  s_899a0f63af105e::t_3147fc250e60ae 1-18,20-31
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_bf0a8697c91bc4::t_56bc4c99465ee7 13,986,1915,1919,1941,1945,3037,3039,3041-3043,3045-3047,3053,3063,3066-3068,3073,3077,3083-3087,3093,3097,3103,3105,3110-3112,3114-3117,3122,3126,3130,11895,12105
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_899a0f63af105e::t_76a733214ac7a8 62,68
+  s_899a0f63af105e::t_0d1835dbb88c6f 15,43-44,48,53-57
+app/Contracts/Api/UpdatesApiKeys.php
+  s_899a0f63af105e::t_2467af4f5561b5 14
+  s_899a0f63af105e::t_3147fc250e60ae 1-13,15-18
+app/Actions/Mounts/AttachEggsToMount.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-21
+app/Contracts/Mounts/DetachesNodesFromMounts.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-16
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_899a0f63af105e::t_02922b201ca948 100-103,107
+tests/Integration/Api/Client/TwoFactorControllerTest.php
+  s_899a0f63af105e::t_f9ebc762e96a6c 79,88-89
+app/Http/Requests/Api/Admin/Mounts/StoreMountRequest.php
+  s_899a0f63af105e::t_ed89654c3882de 9,28-55
+  s_899a0f63af105e::t_53d12c2cfc90b7 56
+packages/sdk/types/components/elements/Can.d.ts
+  s_bf0a8697c91bc4::t_56bc4c99465ee7 9
+app/Contracts/Mounts/CreatesMounts.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-13,15-17
+  s_899a0f63af105e::t_2467af4f5561b5 14
+app/Actions/Mounts/DeleteMount.php
+  s_899a0f63af105e::t_7602aabd151948 13
+  s_899a0f63af105e::t_3147fc250e60ae 1-12,14-19
+app/Contracts/Mounts/DeletesMounts.php
+  s_899a0f63af105e::t_7602aabd151948 12
+  s_899a0f63af105e::t_3147fc250e60ae 1-11,13-15
+app/Contracts/Mounts/DetachesEggsFromMounts.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-16
+app/Actions/Mounts/UpdateMount.php
+  s_899a0f63af105e::t_2467af4f5561b5 15
+  s_899a0f63af105e::t_3147fc250e60ae 1-14,16-23
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_899a0f63af105e::t_ed89654c3882de 120
+  s_899a0f63af105e::t_04314a8dcf2ba8 17-18,113,138,150
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_899a0f63af105e::t_ed89654c3882de 10,29-46
+  s_899a0f63af105e::t_d308dc1e63e817 47-48
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_899a0f63af105e::t_02922b201ca948 38-41,45
+app/Actions/Mounts/AttachNodesToMount.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-21
+packages/sdk/README.md
+  s_899a0f63af105e::t_88368f4c2f9eb8 406-414
+app/Actions/Servers/DeleteServer.php
+  s_899a0f63af105e::t_4473b8148169f2 7
+  s_899a0f63af105e::t_b4f4452f55a4c6 46
+  s_899a0f63af105e::t_e772c138f320eb 51-56,62-63,66-74
+  s_899a0f63af105e::t_c6f709a25349af 75
+phpstan.neon
+  s_899a0f63af105e::t_ecd148ab9df5ac 92-94
+app/Actions/Servers/ToggleServerInstallStatus.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-29
+app/Contracts/Api/DeletesApiKeys.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-12
+app/Contracts/Mounts/AttachesNodesToMounts.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-17
+resources/scripts/components/server/console/chart.ts
+  s_bf0a8697c91bc4::t_861d3f4caa28a4 42-44,53,57,66
+app/Contracts/Eggs/DeletesEggVariables.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-11,13-15
+  s_899a0f63af105e::t_7602aabd151948 12
+app/Contracts/Tags/UpdatesTags.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-14,16-20
+  s_899a0f63af105e::t_2467af4f5561b5 15
+app/Actions/Api/UpdateApiKey.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-14,16-28
+  s_899a0f63af105e::t_2467af4f5561b5 15
+resources/scripts/components/server/console/chart.spec.tsx
+  s_bf0a8697c91bc4::t_ecece6f784b8fa 42-51,59,63
+  s_bf0a8697c91bc4::t_7ab790280d0aa7 3
+  s_bf0a8697c91bc4::t_82a0ca516e15a9 26-27
+  s_bf0a8697c91bc4::t_193f2d10c3bf47 2,4-12,14-15,17,19-20,22-23,25,30-31,33,35-36,52,60,64-68,70,72-76,79-80,82-96,98-113,115-117,119-122,124
+  s_bf0a8697c91bc4::t_9f130ec457f06f 81
+  s_899a0f63af105e::t_c8663f6dfba9f4 29
+tests/Integration/Actions/Backups/InitiateBackupTest.php
+  s_899a0f63af105e::t_ac97442ef431d4 1-86
+app/Contracts/Tags/DeletesTags.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-18
+app/Actions/Api/DeleteApiKey.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-16
+app/Actions/Mounts/DetachNodeFromMount.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-20
+app/Actions/Tags/CreateTag.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-14,16-21
+  s_899a0f63af105e::t_2467af4f5561b5 15
+tests/Integration/Api/Admin/Nodes/AllocationControllerTest.php
+  s_bf0a8697c91bc4::t_9da23413ba9ebd 136-137,145
+app/Contracts/Tags/CreatesTags.php
+  s_899a0f63af105e::t_2467af4f5561b5 14
+  s_899a0f63af105e::t_3147fc250e60ae 1-13,15-17
+app/Actions/Transfers/InitiateTransfer.php
+  s_899a0f63af105e::t_c5d001d057f111 9,25,30-31,40,73-76,84-85,87-90
+app/Actions/Mounts/DetachEggFromMount.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-20
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_899a0f63af105e::t_a97f5b61bdd7f4 112-119,121-123,125-127
+  s_899a0f63af105e::t_86a8d6e5d652bf 15,120,124
+app/Actions/Backups/InitiateBackup.php
+  s_899a0f63af105e::t_4473b8148169f2 8,64-68,99-101,107-118,131-134,136-152,154-163
+  s_899a0f63af105e::t_7be56bfecd026c 75
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_899a0f63af105e::t_ed89654c3882de 100,124,126
+  s_899a0f63af105e::t_13d54387362f20 15-17,98,143,147
+resources/scripts/components/server/console/AreaChart.tsx
+  s_bf0a8697c91bc4::t_f40d5ad1f18404 2,9-11,15-17,29,34,36,38,43-48,50,56,58,60,64-90,92-108,110-182,191-204,207-222
+  s_bf0a8697c91bc4::t_294ed8dcaeb8d3 1
+app/Contracts/Mounts/UpdatesMounts.php
+  s_899a0f63af105e::t_2467af4f5561b5 14
+  s_899a0f63af105e::t_3147fc250e60ae 1-13,15-17
+app/Actions/Eggs/Variables/DeleteEggVariable.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-12,14-19
+  s_899a0f63af105e::t_7602aabd151948 13
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_899a0f63af105e::t_f8ec668c4c89e7 8,13,17,20,28-29,33,36-42
+app/Actions/Tags/DeleteTag.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-27
+app/Contracts/Servers/TogglesServerInstallStatus.php
+  s_899a0f63af105e::t_3147fc250e60ae 1-19
+app/Actions/Allocations/AssignAllocation.php
+  s_899a0f63af105e::t_e6ddd538e174eb 28
+app/Actions/Allocations/AssignAvailableAllocation.php
+  s_899a0f63af105e::t_e215e61bfd9e40 47
+app/Actions/Allocations/SetPrimaryAllocation.php
+  s_899a0f63af105e::t_a427529a3448d3 17-18
+app/Actions/Allocations/UpdateAllocation.php
+  s_899a0f63af105e::t_4327cc6496b7a5 18
+app/Actions/Allocations/UpdateAllocationNotes.php
+  s_899a0f63af105e::t_a73592cb02a211 16
+app/Actions/Backups/RestoreBackupStatus.php
+  s_899a0f63af105e::t_252cbb39f1ed4e 22
+app/Actions/Backups/ToggleBackupLock.php
+  s_899a0f63af105e::t_770d7ba62471f6 16
+app/Actions/Databases/CreateDatabaseHost.php
+  s_899a0f63af105e::t_94f4ddbeec3a87 45
+app/Actions/Nodes/UpdateNode.php
+  s_899a0f63af105e::t_f3521e39b830e3 44-45,48,50,62,65
+app/Actions/Schedules/CreateScheduleTask.php
+  s_899a0f63af105e::t_c470a250cc3db7 50
+app/Actions/Schedules/UpdateSchedule.php
+  s_899a0f63af105e::t_721bb16c4cee67 56
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_899a0f63af105e::t_9cbbdd8b449722 51
+app/Actions/Servers/AttachMountToServer.php
+  s_899a0f63af105e::t_ebb1e0d70899f1 24
+app/Actions/Servers/RecordServerInstallResult.php
+  s_899a0f63af105e::t_7e10611e10962f 42
+app/Actions/Servers/ReinstallServer.php
+  s_899a0f63af105e::t_f7c54073983815 28
+app/Actions/Subusers/CreateSubuser.php
+  s_899a0f63af105e::t_340721a6058e40 47
+app/Actions/Subusers/UpdateSubuser.php
+  s_899a0f63af105e::t_284eecd41318ba 32
+app/Actions/Users/DisableTwoFactor.php
+  s_899a0f63af105e::t_a3c0d740b2ce81 14,16-18
+app/Actions/Users/UpdateUser.php
+  s_899a0f63af105e::t_b7a0dfba09f530 35
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_899a0f63af105e::t_0f033ffab68fec 16,98,100
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_899a0f63af105e::t_9f08f7752c378c 11,32,36
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_899a0f63af105e::t_6328c4a3da7b99 11,32,36
+app/Http/Controllers/Api/Admin/Mounts/DetachEggController.php
+  s_899a0f63af105e::t_3f0b52dbcc83f4 12,28,30
+app/Http/Controllers/Api/Admin/Mounts/DetachNodeController.php
+  s_899a0f63af105e::t_50ab7828e5a443 12,28,30
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_899a0f63af105e::t_c4737375a9e1f9 11,32,38
+app/Http/Controllers/Api/Admin/Servers/ToggleInstallController.php
+  s_899a0f63af105e::t_a99003bd3a450f 12,35-36,41,43
+app/Http/Controllers/Api/Admin/Users/DisableTwoFactorController.php
+  s_899a0f63af105e::t_63c30834a95d08 12,27,29
+app/Providers/AppServiceProvider.php
+  s_899a0f63af105e::t_1c4e257978228a 44,114-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "56fb932a73e08822efe463f7aa42a56fcf072d67",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_bf0a8697c91bc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a4a92c0-ec0d-4af5-89b6-050af2e58784",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
