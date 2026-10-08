@@ -1,0 +1,191 @@
+tools/phpstan/rules/src/Rules/NoMixedParametersRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 14-15
+tools/phpstan/rules/tests/Rules/NoChainedVarTagsRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,23-26
+  s_899a0f63af105e::t_5631dced5f804f 27
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_899a0f63af105e::t_82fbea48f80189 19
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_899a0f63af105e::t_82fbea48f80189 22,36-37
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_899a0f63af105e::t_b7186f7468b93f 133-166
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_899a0f63af105e::t_82fbea48f80189 16
+tools/phpstan/rules/src/Rules/NoMixedReturnsRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 16-17
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,26-29
+  s_899a0f63af105e::t_a38093f9360fdf 30
+tools/phpstan/rules/tests/Integration/PackageCoverageTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 18,34,36
+tools/phpstan/rules/tests/Rules/RequireSafetyCommentForAssertionRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,29-32
+  s_899a0f63af105e::t_27383d4844c931 33
+tools/phpstan/rules/tests/Rules/NoMixedTypeAliasesRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,28-31
+  s_899a0f63af105e::t_5a6fa406af7b1c 32
+tools/phpstan/rules/src/Rules/NoChainedVarTagsRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 16-17
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_899a0f63af105e::t_82fbea48f80189 79
+.oxlintrc.json
+  s_899a0f63af105e::t_4476623ea24fd0 301-307
+tools/phpstan/rules/tests/Rules/NoWidenThenAssertRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,27-30
+  s_899a0f63af105e::t_84aa8fb7eaeb55 31
+app/Actions/Eggs/Variables/UpdateEggVariable.php
+  s_899a0f63af105e::t_82fbea48f80189 17,20-21
+tools/oxlint/rules/rules/generated-api-imports.ts
+  s_899a0f63af105e::t_ac76ae1a168519 22-29,31-33,37
+  s_899a0f63af105e::t_b995f9bfedabba 4
+tools/phpstan/rules/src/Rules/NoInstanceofOnMixedRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryPropertyRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_899a0f63af105e::t_82fbea48f80189 115,122
+tools/oxlint/rules/rules/no-widen-then-assert.ts
+  s_899a0f63af105e::t_4c2bbfc612f382 18-37,86-89,91,93-100,102-103,107,119-134,174-183,185-190,266-294,304,307,325-326,329,331-333
+tools/oxlint/rules/rules/no-known-value-widening.ts
+  s_899a0f63af105e::t_8cf2b6267ad969 88-92
+tools/phpstan/rules/tests/Rules/NoForbiddenTermsInSymbolNamesRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9,16,32-35
+  s_899a0f63af105e::t_6d4b0d22212edf 36
+tools/phpstan/rules/tests/Rules/NoMixedParametersRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 7-8
+app/Exceptions/DisplayException.php
+  s_899a0f63af105e::t_da1617ac450ae5 53-55
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryPropertyRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,25-28
+  s_899a0f63af105e::t_2fbd1d3ff5b8e0 29
+tools/phpstan/rules/tests/Rules/NoServiceConstructionRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9,16,26-29
+  s_899a0f63af105e::t_17c390c30cc4e0 30
+tests/Support/Fakes/FakeDaemonServer.php
+  s_899a0f63af105e::t_0503025e5d8404 89
+app/Extensions/DynamicDatabaseConnection.php
+  s_899a0f63af105e::t_9e4425fca29010 10
+  s_899a0f63af105e::t_6fe46dfa2f9bc6 42-45
+app/Contracts/Eggs/UpdatesEggs.php
+  s_899a0f63af105e::t_82fbea48f80189 16
+pint.json
+  s_899a0f63af105e::t_2c87db60f74b7d 3
+tools/phpstan/rules/src/Rules/NoWidenThenAssertRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 24-25
+tests/Integration/Extensions/DynamicDatabaseConnectionTest.php
+  s_899a0f63af105e::t_ac5196e6cdd086 1-24,26-37
+  s_899a0f63af105e::t_c205c0dc04ca61 25
+tools/phpstan/rules/tests/Rules/NoInstanceofOnMixedRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,23-26
+  s_899a0f63af105e::t_8c5bff4bd1f799 27
+tools/phpstan/rules/tests/Rules/NoObjectParametersRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 7-8,18,30-36
+  s_899a0f63af105e::t_be91928d8cbacf 37
+packages/sdk/README.md
+  s_899a0f63af105e::t_824a27554f902a 5,37,75,81,87,266-267,378-382,409-421,433-445
+tools/oxlint/rules/rules/generated-api-mutations.ts
+  s_899a0f63af105e::t_9d74ccd07a18ff 13-14
+  s_899a0f63af105e::t_b995f9bfedabba 2
+tools/phpstan/rules/src/Rules/RequireSafetyCommentForAssertionRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12
+tools/phpstan/rules/src/Rules/NoForbiddenTermsInSymbolNamesRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 119
+app/Actions/Servers/UpdateServerStartup.php
+  s_899a0f63af105e::t_5658cfd5d6b7dd 10,24,62-68
+tools/phpstan/rules/tests/Rules/NoClassLoadingMocksRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9,16,31-34
+  s_899a0f63af105e::t_b6c51f4f7e60f2 35
+tests/Integration/Actions/Servers/UpdateServerStartupTest.php
+  s_899a0f63af105e::t_3af69f946f7993 11-12
+  s_899a0f63af105e::t_c205c0dc04ca61 23,37,46,61,64,75,81,84,99,102,108,129,138,145
+  s_899a0f63af105e::t_a1db40fec0fec9 109-128,130-137
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryTypeRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 7-8,18,20,33-39
+  s_899a0f63af105e::t_d751548395561f 40
+tools/phpstan/rules/src/Rules/NoObjectParametersRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12-13
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_899a0f63af105e::t_82fbea48f80189 64,71
+tools/phpstan/rules/src/Support/TypeAliasDocblock.php
+  s_899a0f63af105e::t_d9945bb143e95a 68
+tools/phpstan/rules/phpunit.xml
+  s_899a0f63af105e::t_9b0a873fd366c4 13-15
+tools/phpstan/rules/src/Rules/NoMixedTypeAliasesRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12
+tools/oxlint/rules/shared/dictionary-types.ts
+  s_899a0f63af105e::t_93890375781cdf 108-117
+  s_899a0f63af105e::t_dc06e6809868cd 36-58,67-69,74,76-77,79-80,118
+  s_899a0f63af105e::t_89c7dc6d3a4ab2 202,207,209-242,246,250,254,258-259,261-268,270-271,274-275,277-284,291,293,301,310,312-315,317-323,325-330,333-335,337-339,341,344-346,349-353,356-359,362-365,368-378,389,392,394-395,398,400-403,405-411,413-418,421-422,425,429,462-467,478-479,482,484,488-514,521,523,536,542-546,548,551,562-563,566-567,570-572
+  s_899a0f63af105e::t_75749315aaab4c 119
+tools/phpstan/rules/src/Rules/NoKnownValueWideningPropertyRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 18
+tools/oxlint/rules/rules/design-tokens.ts
+  s_899a0f63af105e::t_b995f9bfedabba 3
+  s_899a0f63af105e::t_ac76ae1a168519 31-34,43-45,61-63
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningReturnRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,23-26
+  s_899a0f63af105e::t_f4f783e3fda748 27
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryTypeRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 12-13,47
+composer.json
+  s_899a0f63af105e::t_69aa0313121853 91
+tools/phpstan/rules/src/Rules/NoKnownValueWideningReturnRule.php
+  s_899a0f63af105e::t_d9945bb143e95a 18
+package.json
+  s_899a0f63af105e::t_2dc6f9356b09b8 95
+app/Actions/Eggs/UpdateEgg.php
+  s_899a0f63af105e::t_82fbea48f80189 17,24-25
+app/Services/Databases/DatabaseHostGateway.php
+  s_899a0f63af105e::t_cd6e6ccf511ee0 22
+tools/phpstan/rules/tests/Rules/NoConditionalEmptyArraySpreadRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9,16,27-30
+  s_899a0f63af105e::t_882f989b029e56 31
+tests/Unit/Services/Extensions/ExtensionRepositoryTest.php
+  s_899a0f63af105e::t_fde9cf41d55741 19,24,27,38,46,69,71,88,91
+tools/phpstan/rules/tests/Rules/NoMixedReturnsRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 7-8,18,32-38
+  s_899a0f63af105e::t_ea15f37342ed88 39
+tools/phpstan/rules/tests/Rules/NoChainedAssertionsRuleTest.php
+  s_899a0f63af105e::t_d9945bb143e95a 9-10,17,27-30
+  s_899a0f63af105e::t_7fb2496284e5d8 31
+tools/oxlint/rules/shared/literals.ts
+  s_899a0f63af105e::t_ac76ae1a168519 1-9
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_899a0f63af105e::t_300a552ad30f4e 28,30
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_899a0f63af105e::t_79117cee823760 63,67
+app/Http/Controllers/Api/Admin/Users/ExternalController.php
+  s_899a0f63af105e::t_a3038cbde2f632 28,30
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_899a0f63af105e::t_a893523b5158fc 28,30
+app/Http/Controllers/Api/Application/Users/ExternalUserController.php
+  s_899a0f63af105e::t_9851dcd2c46851 28,30
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_899a0f63af105e::t_c0fed1f96ad790 70,74,77
+resources/scripts/api/activity.spec.ts
+  s_899a0f63af105e::t_a40525fba88f45 1-63
+resources/scripts/api/admin/extensions/queries.spec.ts
+  s_899a0f63af105e::t_29d4c0eedea0d7 1-90
+resources/scripts/api/http.spec.ts
+  s_899a0f63af105e::t_33764487628d62 1-77
+resources/scripts/components/elements/SubNavigation.spec.tsx
+  s_899a0f63af105e::t_e72b88b6075a8a 1-10,12-17,19,21,23-25,27-28,31-32,35,37-39,42-43,45-77,79-165
+tools/oxlint/rules/lint.spec.ts
+  s_899a0f63af105e::t_d516691921f3a6 23-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "135b2985606f086fcd606367a0233b3d306ccd4b",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
