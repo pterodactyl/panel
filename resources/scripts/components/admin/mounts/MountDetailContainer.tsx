@@ -24,7 +24,7 @@ import {
 import { mountDetailRoute } from '@/router/routeTree';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import AttachEggsModal from '@/components/admin/mounts/AttachEggsModal';
 import AttachNodesModal from '@/components/admin/mounts/AttachNodesModal';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -456,7 +456,9 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
         defaultValues: mountToValues(mount),
         onSubmit: async ({ value }) => {
             try {
-                await updateMount.mutateAsync(updateAdminMountInput(mountId, value));
+                await updateMount.mutateAsync(
+                    updateAdminMountInput(mountId, withExtensionPayload('admin.mount', value, mount))
+                );
                 editForm.reset({ ...value, extensions: initialExtensionValues() });
             } catch {
                 // Error toast is handled by the mutation.

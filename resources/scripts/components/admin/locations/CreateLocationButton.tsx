@@ -2,7 +2,7 @@ import { useStore } from '@tanstack/react-form';
 import { useAppForm, Form } from '@/components/form';
 import { createAdminLocationInput, useCreateAdminLocation } from '@/api/admin/locations/queries';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
@@ -20,7 +20,9 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
         defaultValues: { short: '', long: '', extensions: initialExtensionValues() },
         onSubmit: async ({ value }) => {
             try {
-                await createLocation.mutateAsync(createAdminLocationInput(value));
+                await createLocation.mutateAsync(
+                    createAdminLocationInput(withExtensionPayload('admin.location', value))
+                );
                 onClose();
             } catch {
                 // Error toast is handled by the mutation.

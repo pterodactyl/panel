@@ -9,7 +9,7 @@ import {
 } from '@/components/admin/nodes/nodeForm';
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 interface Values extends NodeFormValues {
@@ -30,7 +30,11 @@ const NodeSettingsForm = () => {
             const { resetSecret, ...values } = value;
             try {
                 await updateNode.mutateAsync(
-                    updateAdminNodeInput(node.attributes.id, nodeValuesFromForm(values), resetSecret)
+                    updateAdminNodeInput(
+                        node.attributes.id,
+                        nodeValuesFromForm(withExtensionPayload('admin.node', values, node)),
+                        resetSecret
+                    )
                 );
                 form.setFieldValue('resetSecret', false);
                 form.setFieldValue('extensions', initialExtensionValues());

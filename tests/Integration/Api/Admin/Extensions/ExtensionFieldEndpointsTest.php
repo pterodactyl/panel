@@ -28,6 +28,7 @@ use Pterodactyl\Tests\Support\Fakes\FakeDaemonConfiguration;
 use Pterodactyl\Tests\Support\Fakes\FakeDaemonServer;
 use Pterodactyl\Tests\Support\Fakes\FakeDynamicDatabaseConnection;
 use RuntimeException;
+use stdClass;
 
 use function pterodactylTestCase;
 
@@ -127,6 +128,19 @@ test('invalid values reject the request before the core change', function (strin
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $response->assertJsonPath('errors.0.meta.source_field', 'extensions.fields.note');
     $response->assertJsonPath('errors.0.detail', 'The note may not be greater than 32 characters.');
+    expect($case['find']())->toBeNull();
+})->with('formEndpoints');
+
+test('an extension sent without values still runs its rules, so a required field holds', function (string $model, string $endpoint): void {
+    registerFields($model, NoteFields::class);
+    $case = formCase($endpoint);
+
+    // What an admin form sends for an extension whose fields were left untouched.
+    $response = $this->json($case['method'], $case['url'], [...$case['payload'], 'extensions' => ['fields' => new stdClass]]);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertJsonPath('errors.0.meta.source_field', 'extensions.fields.note');
+    $response->assertJsonPath('errors.0.detail', 'The note field is required.');
     expect($case['find']())->toBeNull();
 })->with('formEndpoints');
 

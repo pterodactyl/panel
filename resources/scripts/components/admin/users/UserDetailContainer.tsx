@@ -17,7 +17,7 @@ import {
     useUpdateAdminUser,
 } from '@/api/admin/users/queries';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
@@ -299,7 +299,9 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
         defaultValues: userFormValues(user),
         onSubmit: async ({ value }) => {
             try {
-                await updateUser.mutateAsync(updateAdminUserInput(userId, value));
+                await updateUser.mutateAsync(
+                    updateAdminUserInput(userId, withExtensionPayload('admin.user', value, user))
+                );
                 form.reset({ ...value, password: '', extensions: initialExtensionValues() });
             } catch {
                 // Error toast is handled by the mutation.

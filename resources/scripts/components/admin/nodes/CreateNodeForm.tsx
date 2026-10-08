@@ -5,6 +5,7 @@ import NodeFormFields from '@/components/admin/nodes/NodeFormFields';
 import { newNodeFormValues, nodeValuesFromForm } from '@/components/admin/nodes/nodeForm';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { withExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 
@@ -17,7 +18,9 @@ export default function CreateNodeForm() {
         defaultValues: newNodeFormValues(),
         onSubmit: async ({ value }) => {
             try {
-                const node = await createNode.mutateAsync(createAdminNodeInput(nodeValuesFromForm(value)));
+                const node = await createNode.mutateAsync(
+                    createAdminNodeInput(nodeValuesFromForm(withExtensionPayload('admin.node', value)))
+                );
                 navigate({ to: '/panel/nodes/$id/allocation', params: { id: node.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.

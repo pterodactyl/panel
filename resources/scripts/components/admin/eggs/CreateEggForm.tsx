@@ -6,6 +6,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { createAdminEggInput, useAdminEggs, useCreateAdminEgg } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { withExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
@@ -31,7 +32,13 @@ export default function CreateEggForm() {
                 const configFiles = filesEditor.current?.getValue() ?? '';
                 const configStartup = startupEditor.current?.getValue() ?? '';
                 const egg = await createEgg.mutateAsync(
-                    createAdminEggInput(toApiValues(value, { configLogs, configFiles, configStartup }))
+                    createAdminEggInput(
+                        toApiValues(withExtensionPayload('admin.egg', value), {
+                            configLogs,
+                            configFiles,
+                            configStartup,
+                        })
+                    )
                 );
                 navigate({
                     to: '/panel/eggs/$eggId',

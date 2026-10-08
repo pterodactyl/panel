@@ -6,7 +6,7 @@ import { useEggDetail } from '@/components/admin/eggs/useEggDetail';
 import EggConfigurationFields from '@/components/admin/eggs/EggConfigurationForm';
 import { eggToFormValues, toApiValues } from '@/components/admin/eggs/helpers';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
 
 interface Props {
@@ -34,7 +34,11 @@ function EggConfigurationForm({ egg }: Props) {
                 await updateEgg.mutateAsync(
                     updateAdminEggInput(
                         egg.attributes.id,
-                        toApiValues(value, { configLogs, configFiles, configStartup })
+                        toApiValues(withExtensionPayload('admin.egg', value, egg), {
+                            configLogs,
+                            configFiles,
+                            configStartup,
+                        })
                     )
                 );
                 form.setFieldValue('extensions', initialExtensionValues());

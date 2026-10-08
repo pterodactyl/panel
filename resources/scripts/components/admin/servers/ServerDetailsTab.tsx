@@ -10,7 +10,7 @@ import { serverDetailsBodyFromFormValues } from '@/components/admin/servers/help
 import { useAdminUsers } from '@/api/admin/users/queries';
 import { useServerDetail } from '@/components/admin/servers/useServerDetail';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { extensionFormPayload, initialExtensionValues } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { relationshipAttributes } from '@/api/relationships';
@@ -92,7 +92,7 @@ function ServerDetailsForm({ server }: Props) {
                             externalId: value.externalId,
                             description: value.description,
                         }),
-                        extensions: value.extensions,
+                        extensions: extensionFormPayload('admin.server', value.extensions, server),
                     })
                 );
                 form.setFieldValue('extensions', initialExtensionValues());

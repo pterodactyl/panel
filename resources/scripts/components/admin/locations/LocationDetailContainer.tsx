@@ -14,7 +14,7 @@ import {
 } from '@/api/admin/locations/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -95,7 +95,9 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
         defaultValues: locationToValues(location),
         onSubmit: async ({ value }) => {
             try {
-                const updated = await updateLocation.mutateAsync(updateAdminLocationInput(attributes.id, value));
+                const updated = await updateLocation.mutateAsync(
+                    updateAdminLocationInput(attributes.id, withExtensionPayload('admin.location', value, location))
+                );
                 form.reset(locationToValues(updated));
             } catch {
                 // Error toast is handled by the mutation.

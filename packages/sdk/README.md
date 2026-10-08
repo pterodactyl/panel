@@ -360,8 +360,10 @@ Every method is optional. The panel calls them through the container, like the m
 a FormRequest, so each can type-hint the model it extends and any other dependency:
 
 - `rules()` validates the extension's values on their own, so `required_if:plan,pro` refers
-  to the extension's own `plan`. They only run when a request sends values for the
-  extension: `required` means required whenever its values are sent. A `?User $user`
+  to the extension's own `plan`. They run whenever a request includes the extension under
+  `extensions`, even with no values. The admin forms include every extension they show,
+  so `required` holds there on create and on every edit, like the core fields beside it.
+  An API request that leaves the extension out leaves its values alone. A `?User $user`
   parameter receives the model when updating and null when creating.
 - `values($model)` returns the current values, keyed by field. Values are strings, numbers,
   booleans, null, or lists of those.
@@ -391,8 +393,8 @@ billing system that provisions through it can set them.
 Draw the fields with `forms.extend()`. The component receives `field(name)`, which binds one
 field to the form: `value`, `setValue`, an `id` for its label, and `error`, the panel's
 message from the last save until the field changes. `values` holds every field of the
-extension as edited so far, `mode` is `'create'` or `'edit'`, and `resource` is the saved
-resource when editing.
+extension: its saved values with the edits made so far. `mode` is `'create'` or `'edit'`,
+and `resource` is the saved resource when editing.
 
 ```tsx
 import { useQuery } from '@tanstack/react-query';
@@ -425,10 +427,10 @@ export default definePterodactylExtension({
 
 The forms are `admin.user`, `admin.server` (the create form and the details form),
 `admin.node`, `admin.egg`, `admin.location`, `admin.mount` and `admin.database_host`. The
-panel draws each extension's component under its name, inside an error boundary. It sends
-an extension's values once one of them changes, and then all of them, so a save never
-writes values the admin did not touch. When editing, an extension whose values the panel did
-not return is not drawn.
+panel draws each extension's component under its name, inside an error boundary. Every save
+sends all values of every extension it draws, edited or not, so their rules run each time
+and `save()` receives the complete values. When editing, an extension whose values the
+panel did not return is not drawn or sent, so a save cannot write over them.
 
 ## Backend provider API
 

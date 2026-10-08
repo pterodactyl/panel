@@ -6,7 +6,7 @@ import { useCreateAdminUser } from '@/api/admin/users/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import UserFormFields from '@/components/admin/users/UserFormFields';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 import { languageOptions } from '@/components/admin/languageOptions';
@@ -34,7 +34,9 @@ export default function CreateUserForm() {
         defaultValues: defaults,
         onSubmit: async ({ value }) => {
             try {
-                const user = await createUser.mutateAsync(createAdminUserInput(value));
+                const user = await createUser.mutateAsync(
+                    createAdminUserInput(withExtensionPayload('admin.user', value))
+                );
                 navigate({ to: '/panel/users/$id', params: { id: user.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.

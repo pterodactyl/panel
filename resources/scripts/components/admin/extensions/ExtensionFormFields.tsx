@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useStore } from '@tanstack/react-form';
 import { httpValidationErrors } from '@/api/http';
-import { getBootstrapExtensionForms } from '@/bootstrap';
 import Button from '@/components/elements/Button';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useFieldContext } from '@/components/form';
 import ExtensionMount from '@/extensions/ExtensionMount';
-import { useFormExtensions, type ExtensionFormValues } from '@/extensions/forms';
+import { shownFormExtensions, useFormExtensions, type ExtensionFormValues } from '@/extensions/forms';
 import type {
     ExtensionField,
     ExtensionFieldValue,
@@ -32,7 +31,8 @@ interface Props<TName extends ExtensionFormName> {
 
 /**
  * The fields extensions draw in an admin form with `forms.extend()`. Render it inside
- * `<form.AppField name={'extensions'}>` so their values save with the form. When editing,
+ * `<form.AppField name={'extensions'}>` and submit `withExtensionPayload()` of the form's
+ * values, so every extension shown here is validated and saved with the form. When editing,
  * an extension whose values the panel did not return (it failed to read them, or the
  * signed-in admin may not see them) is left out, so a save cannot write over them.
  */
@@ -53,12 +53,7 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
     const editedPaths = edited.error === error ? edited.paths : [];
 
     const saved = resource?.attributes.extensions ?? {};
-    const extensions = (getBootstrapExtensionForms()[form] ?? []).flatMap((entry) => {
-        const registration = registrations.find((candidate) => candidate.extensionId === entry.id);
-        const values = saved[entry.id];
-
-        return registration && (mode === 'create' || values) ? [{ ...entry, Component: registration.component }] : [];
-    });
+    const extensions = shownFormExtensions(form, registrations, mode === 'create' ? undefined : saved);
     if (extensions.length === 0) {
         return null;
     }
@@ -92,7 +87,7 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
 
     return (
         <div className={cn('space-y-4', className)}>
-            {extensions.map(({ id, name, Component }) => {
+            {extensions.map(({ id, name, component: Component }) => {
                 const fields = (
                     <ExtensionMount extensionId={id} context={`form "${form}"`} resetKey={form} isSlot>
                         <Component form={form} mode={mode} resource={resource} values={valuesOf(id)} field={bind(id)} />

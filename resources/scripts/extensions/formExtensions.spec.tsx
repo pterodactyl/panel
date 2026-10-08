@@ -106,7 +106,7 @@ async function boot() {
 }
 
 describe('extension fields in admin forms', () => {
-    it('loads saved values into the extension, sends only extensions that changed and shows the panel messages', async () => {
+    it('loads saved values into the extension, sends every extension it shows and shows the panel messages', async () => {
         const payloads: unknown[] = [];
         http.defaults.adapter = async (config) => {
             if (config.url === '/api/admin/languages') return respond(config, 200, { en: 'English' });
@@ -137,15 +137,21 @@ describe('extension fields in admin forms', () => {
         expect(screen.queryByText('Unloaded')).toBeNull();
 
         const save = () => fireEvent.click(screen.getAllByRole('button', { name: 'Save Changes' })[0]);
+        // Untouched extensions are sent with their saved values, so their rules run on every
+        // save; the one the panel could not read is left out, so its values stay as they are.
         save();
         await waitFor(() => expect(payloads).toHaveLength(1));
-        expect(payloads[0]).toMatchObject({ extensions: {} });
+        expect((payloads[0] as { extensions: unknown }).extensions).toEqual({
+            probe: { tier: 'gold', note: 'vip' },
+            other: { flag: true },
+        });
 
         fireEvent.change(tier, { target: { value: 'platinum' } });
         save();
         await waitFor(() => expect(payloads).toHaveLength(2));
         expect((payloads[1] as { extensions: unknown }).extensions).toEqual({
             probe: { tier: 'platinum', note: 'vip' },
+            other: { flag: true },
         });
 
         expect((await screen.findByRole('alert')).textContent).toBe('Pick a tier we sell.');
@@ -153,7 +159,7 @@ describe('extension fields in admin forms', () => {
         expect(screen.queryByRole('alert')).toBeNull();
     }, 20_000);
 
-    it('starts a create form with no values and sends what was entered', async () => {
+    it('starts a create form with no values and sends every extension it shows', async () => {
         const payloads: unknown[] = [];
         http.defaults.adapter = async (config) => {
             if (config.url === '/api/admin/languages') return respond(config, 200, { en: 'English' });
@@ -188,7 +194,8 @@ describe('extension fields in admin forms', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
 
         await waitFor(() => expect(payloads).toHaveLength(1));
-        expect((payloads[0] as { extensions: unknown }).extensions).toEqual({ probe: { tier: 'silver' } });
+        // An extension left untouched is still sent, so a `required` rule of its fails the create.
+        expect((payloads[0] as { extensions: unknown }).extensions).toEqual({ probe: { tier: 'silver' }, other: {} });
     }, 20_000);
 });
 
