@@ -83,6 +83,26 @@
         ]
     },
     "scripts": {
+        "setup": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php -r \"preg_match('/^APP_KEY=./m', file_get_contents('.env')) || passthru(escapeshellarg(PHP_BINARY).' artisan key:generate --ansi');\"",
+            "npm ci",
+            "npm run build",
+            "@php -r \"echo PHP_EOL.'Next: point .env at MySQL/MariaDB (php artisan p:environment:database), then run php artisan migrate --seed.'.PHP_EOL;\""
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently --kill-others --names queue,vite -c \"#93c5fd,#fdba74\" \"php artisan queue:listen --tries=1\" \"npm run dev\""
+        ],
+        "check": [
+            "Composer\\Config::disableProcessTimeout",
+            "npm run lint",
+            "npm run tsc",
+            "npm test",
+            "@test"
+        ],
         "lint": [
             "rector",
             "pint --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests"
@@ -99,6 +119,8 @@
         "test:unit": "@php -d memory_limit=2G vendor/bin/pest --bootstrap vendor/autoload.php tests/Unit",
         "test:integration": "@php -d memory_limit=2G vendor/bin/pest tests/Integration",
         "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan config:clear --ansi",
             "@test:type-coverage",
             "@test:unit",
             "@test:integration",
@@ -121,14 +143,6 @@
         ],
         "post-install-cmd": [
             "@php artisan p:environment:addons:run-hooks post-install || true"
-        ],
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
         ]
     },
     "config": {

@@ -11,9 +11,12 @@
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="CACHE_STORE" value="array"/>
-    <env name="SESSION_DRIVER" value="array"/>
-    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="DB_DATABASE" value="testing"/>
     <env name="MAIL_MAILER" value="array"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <!-- "(false)" rather than "false": PHPUnit turns "false" into an empty string. -->
+    <env name="RECAPTCHA_ENABLED" value="(false)"/>
+    <env name="SESSION_DRIVER" value="array"/>
     <env name="PTERODACTYL_EXTENSIONS_DIRECTORY" value="tests/Fixtures/extensions"/>
   </php>
   <source>
