@@ -13,6 +13,7 @@ import {
     useUpdateAdminLocation,
 } from '@/api/admin/locations/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import { validateShortCode } from '@/components/admin/locations/locationForm';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -26,18 +27,6 @@ import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
 import { cardTitleClass } from '@/components/ui/typography';
-
-const validateShortCode = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'A short code must be provided.';
-    }
-
-    if (value.length > 60) {
-        return 'A short code must not exceed 60 characters.';
-    }
-
-    return undefined;
-};
 
 const locationToValues = (location: AdminLocation): LocationValues => ({
     short: location.attributes.short,

@@ -1,4 +1,3 @@
-import React from 'react';
 import Slot from '@/extensions/Slot';
 import type { SubuserPermissionsSlotData } from '@/extensions/registry';
 import { permissionGroupRows, replaceEditablePermissions } from './permissionSelection';
@@ -98,7 +97,50 @@ const validateEmail = (value: string): string | undefined => {
     return isEmail(value) ? undefined : 'A valid email address must be provided.';
 };
 
-const SubuserFormContent = ({ state }: { state: ReturnType<typeof useSubuserFormState> }) => {
+type SubuserFormState = ReturnType<typeof useSubuserFormState>;
+
+const SubuserFormTitle = ({ subuser, canEditUser }: { subuser?: Subuser; canEditUser: boolean }) => {
+    if (!subuser) {
+        return 'Create new subuser';
+    }
+
+    return `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.attributes.email}`;
+};
+
+type PermissionGroupsProps = Pick<SubuserFormState, 'form' | 'permissions' | 'canEditUser' | 'editablePermissionSet'>;
+
+const PermissionGroups = ({ form, permissions, canEditUser, editablePermissionSet }: PermissionGroupsProps) =>
+    Object.entries(permissions)
+        .filter(([key]) => key !== 'websocket')
+        .map(([key, permissionGroup], index) => {
+            const rows = permissionGroupRows(key, permissionGroup.keys);
+            const permissionKeys = rows.map(({ permission }) => permission as SubuserPermission);
+
+            return (
+                <PermissionTitleBox
+                    key={`permission_${key}`}
+                    form={form}
+                    title={key}
+                    isEditable={canEditUser}
+                    editablePermissions={permissionKeys.filter((permission) => editablePermissionSet.has(permission))}
+                    className={index > 0 ? 'mt-4' : undefined}
+                >
+                    <p className='text-sm text-muted-foreground mb-4'>{permissionGroup.description}</p>
+                    {rows.map(({ permission, key: label, description }) => (
+                        <PermissionRow
+                            key={`permission_${permission}`}
+                            form={form}
+                            permission={permission}
+                            label={label}
+                            description={description}
+                            disabled={!canEditUser || !editablePermissionSet.has(permission as SubuserPermission)}
+                        />
+                    ))}
+                </PermissionTitleBox>
+            );
+        });
+
+const SubuserFormContent = ({ state }: { state: SubuserFormState }) => {
     const {
         canEditUser,
         editablePermissionSet,
@@ -128,39 +170,6 @@ const SubuserFormContent = ({ state }: { state: ReturnType<typeof useSubuserForm
             );
         },
     };
-    const permissionBoxes: React.ReactNode[] = [];
-
-    for (const [key, permissionGroup] of Object.entries(permissions)) {
-        if (key === 'websocket') {
-            continue;
-        }
-
-        const rows = permissionGroupRows(key, permissionGroup.keys);
-        const permissionKeys = rows.map(({ permission }) => permission as SubuserPermission);
-
-        permissionBoxes.push(
-            <PermissionTitleBox
-                key={`permission_${key}`}
-                form={form}
-                title={key}
-                isEditable={canEditUser}
-                editablePermissions={permissionKeys.filter((permission) => editablePermissionSet.has(permission))}
-                className={permissionBoxes.length > 0 ? 'mt-4' : undefined}
-            >
-                <p className='text-sm text-muted-foreground mb-4'>{permissionGroup.description}</p>
-                {rows.map(({ permission, key: label, description }) => (
-                    <PermissionRow
-                        key={`permission_${permission}`}
-                        form={form}
-                        permission={permission}
-                        label={label}
-                        description={description}
-                        disabled={!canEditUser || !editablePermissionSet.has(permission as SubuserPermission)}
-                    />
-                ))}
-            </PermissionTitleBox>
-        );
-    }
 
     if (isLoadingPermissions) {
         return <SpinnerOverlay visible />;
@@ -175,9 +184,7 @@ const SubuserFormContent = ({ state }: { state: ReturnType<typeof useSubuserForm
             <SpinnerOverlay visible={isSubmitting} />
             <div className='flex justify-between'>
                 <h2 className='text-2xl'>
-                    {subuser
-                        ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.attributes.email}`
-                        : 'Create new subuser'}
+                    <SubuserFormTitle subuser={subuser} canEditUser={canEditUser} />
                 </h2>
                 <div>
                     <form.AppForm>
@@ -213,7 +220,14 @@ const SubuserFormContent = ({ state }: { state: ReturnType<typeof useSubuserForm
                 </div>
             )}
             <Slot name='server.users.permissions.before' data={permissionSlot} />
-            <div className='my-6'>{permissionBoxes}</div>
+            <div className='my-6'>
+                <PermissionGroups
+                    form={form}
+                    permissions={permissions}
+                    canEditUser={canEditUser}
+                    editablePermissionSet={editablePermissionSet}
+                />
+            </div>
             <Can action={subuser ? 'user.update' : 'user.create'}>
                 <div className='pb-6 flex justify-end'>
                     <form.AppForm>

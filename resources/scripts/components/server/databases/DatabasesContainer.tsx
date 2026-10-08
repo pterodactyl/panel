@@ -15,6 +15,35 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 
+const databaseUsage = (canCreate: boolean, limit: number, count: number): string | null => {
+    if (canCreate && limit > 0 && count > 0) {
+        return `${count} of ${limit} databases have been allocated to this server.`;
+    }
+
+    return null;
+};
+
+const DatabasesEmptyState = ({ databaseLimit, canAddDatabase }: { databaseLimit: number; canAddDatabase: boolean }) => (
+    <Empty className={emptyCompactClass}>
+        <EmptyHeader>
+            <EmptyMedia variant='icon'>
+                <Database />
+            </EmptyMedia>
+            <EmptyTitle>No databases</EmptyTitle>
+            <EmptyDescription>
+                {databaseLimit > 0
+                    ? "This server doesn't have any databases yet."
+                    : "Databases can't be created because this server's database limit is 0."}
+            </EmptyDescription>
+        </EmptyHeader>
+        {canAddDatabase && (
+            <EmptyContent>
+                <CreateDatabaseButton />
+            </EmptyContent>
+        )}
+    </Empty>
+);
+
 const DatabasesContainer = () => {
     const server = useCurrentServer()!;
     const databaseLimit = server.attributes.feature_limits.databases ?? 0;
@@ -34,10 +63,7 @@ const DatabasesContainer = () => {
     }
 
     const canAddDatabase = canCreate && databaseLimit > 0 && databases.length < databaseLimit;
-    const usage =
-        canCreate && databaseLimit > 0 && databases.length > 0
-            ? `${databases.length} of ${databaseLimit} databases have been allocated to this server.`
-            : null;
+    const usage = databaseUsage(canCreate, databaseLimit, databases.length);
 
     return (
         <ServerContentBlock title='Databases'>
@@ -51,24 +77,7 @@ const DatabasesContainer = () => {
                     <DataTable
                         table={table}
                         emptyState={
-                            <Empty className={emptyCompactClass}>
-                                <EmptyHeader>
-                                    <EmptyMedia variant='icon'>
-                                        <Database />
-                                    </EmptyMedia>
-                                    <EmptyTitle>No databases</EmptyTitle>
-                                    <EmptyDescription>
-                                        {databaseLimit > 0
-                                            ? "This server doesn't have any databases yet."
-                                            : "Databases can't be created because this server's database limit is 0."}
-                                    </EmptyDescription>
-                                </EmptyHeader>
-                                {canAddDatabase && (
-                                    <EmptyContent>
-                                        <CreateDatabaseButton />
-                                    </EmptyContent>
-                                )}
-                            </Empty>
+                            <DatabasesEmptyState databaseLimit={databaseLimit} canAddDatabase={canAddDatabase} />
                         }
                     />
                 </>

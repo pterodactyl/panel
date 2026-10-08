@@ -85,11 +85,11 @@
                     { "blankLine": "always", "prev": "*", "next": "return" }
                 ],
                 "arrow-body-style": ["error", "as-needed"],
-                "complexity": ["warn", { "max": 15 }],
+                "complexity": ["error", { "max": 15 }],
                 "curly": ["error", "all"],
                 "eqeqeq": "error",
-                "max-depth": ["warn", { "max": 3 }],
-                "max-nested-callbacks": ["warn", { "max": 3 }],
+                "max-depth": ["error", { "max": 3 }],
+                "max-nested-callbacks": ["error", { "max": 3 }],
                 "no-implicit-coercion": ["error", { "allow": ["!!"] }],
                 "no-nested-ternary": "error",
                 "object-shorthand": "error",
@@ -157,6 +157,13 @@
                         "ts-expect-error": "allow-with-description"
                     }
                 ]
+            }
+        },
+        {
+            // describe → it → act → callback nesting is normal in tests.
+            "files": ["**/*.spec.{ts,tsx}"],
+            "rules": {
+                "max-nested-callbacks": "off"
             }
         },
         {

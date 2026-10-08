@@ -1,6 +1,6 @@
 import type { AppForm } from '@/components/form';
 import { type AdminLocation, useAllAdminLocations } from '@/api/admin/locations/queries';
-import { type NodeFormValues, nodeNumberValidators } from '@/components/admin/nodes/nodeForm';
+import { type NodeFormValues, nodeNumberValidators, validateNodeName } from '@/components/admin/nodes/nodeForm';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 interface Props {
@@ -23,18 +23,6 @@ interface IdentityFieldsProps extends FormFieldsProps {
 interface NetworkFieldsProps extends FormFieldsProps {
     requiresSslScheme: boolean;
 }
-
-export const validateNodeName = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'A name must be provided.';
-    }
-
-    if (value.length > 100) {
-        return 'A name must not exceed 100 characters.';
-    }
-
-    return undefined;
-};
 
 const IdentityFields = ({ form, locations, prefix }: IdentityFieldsProps) => (
     <div className='space-y-6'>

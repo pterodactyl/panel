@@ -113,6 +113,30 @@ const renderWholeLines = (term: Terminal) => {
         render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, scrollbarOpacity);
 };
 
+/** The canvas has no DOM selection, so copy reads the terminal's own selection. */
+const copySelectionOnShortcut = (term: Terminal) => {
+    term.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+        if (!(e.ctrlKey || e.metaKey) || e.key !== 'c') {
+            return true;
+        }
+
+        const selection = term.getSelection();
+
+        if (!selection) {
+            return true;
+        }
+
+        navigator.clipboard?.writeText(selection).catch(() => {});
+
+        return false;
+    });
+};
+
+/** Runs after the browser has laid out and painted the next frame. */
+const afterNextLayout = (callback: () => void) => {
+    requestAnimationFrame(() => requestAnimationFrame(callback));
+};
+
 const hasStyleChanged = (appliedStyle: string) => {
     try {
         return JSON.stringify(buildTerminalStyle()) !== appliedStyle;
@@ -175,20 +199,7 @@ export const useTerminal = () => {
                 preserveScrollPositionOnWrite(term);
                 renderWholeLines(term);
 
-                // The canvas has no DOM selection, so copy reads the terminal's own selection.
-                term.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-                        const selection = term.getSelection();
-
-                        if (selection) {
-                            navigator.clipboard?.writeText(selection).catch(() => {});
-
-                            return false;
-                        }
-                    }
-
-                    return true;
-                });
+                copySelectionOnShortcut(term);
 
                 term.onScroll(() => {
                     if (!cancelled) {
@@ -203,13 +214,11 @@ export const useTerminal = () => {
                 setTerminalReady(true);
 
                 // Re-fit once layout settles; a mount mid route-transition can leave the history unpainted.
-                requestAnimationFrame(() =>
-                    requestAnimationFrame(() => {
-                        if (!cancelled) {
-                            fit.fit();
-                        }
-                    })
-                );
+                afterNextLayout(() => {
+                    if (!cancelled) {
+                        fit.fit();
+                    }
+                });
             })
             .catch((error) => {
                 if (!cancelled) {

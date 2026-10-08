@@ -1,5 +1,6 @@
 import type { AdminDatabaseHost } from '@/api/admin/database-hosts/queries';
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { requiredWithMaxLength } from '@/components/form/validators';
 
 export interface DatabaseHostFormValues {
     name: string;
@@ -29,20 +30,6 @@ export const databaseHostFormValues = (host: AdminDatabaseHost): DatabaseHostFor
     password: '',
     nodeId: host.attributes.node_id === null ? '' : String(host.attributes.node_id),
 });
-
-const requiredWithMaxLength =
-    (max: number, missing: string, tooLong: string): TextValidator =>
-    ({ value }): string | undefined => {
-        if (value.length < 1) {
-            return missing;
-        }
-
-        if (value.length > max) {
-            return tooLong;
-        }
-
-        return undefined;
-    };
 
 const validateName = requiredWithMaxLength(191, 'A name must be provided.', 'The name must not exceed 191 characters.');
 

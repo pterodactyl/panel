@@ -519,36 +519,103 @@ function SettingsDialog({
     );
 }
 
-function ExtensionCard({ extension }: { extension: AdminExtension }) {
-    const enableExtension = useEnableAdminExtension();
-    const disableExtension = useDisableAdminExtension();
-    const removeExtension = useRemoveAdminExtension();
-    const id = extensionId(extension);
-    const name = extensionName(extension);
-    const subtitle = [extension.version ? `v${extension.version}` : null, extension.author && `by ${extension.author}`]
+type ExtensionMutationState = {
+    isPending: boolean;
+    variables?: { path: { extension?: string } };
+};
+
+const isPendingFor = (mutation: ExtensionMutationState, extension: AdminExtension): boolean =>
+    mutation.isPending && mutation.variables?.path.extension === extension.id;
+
+const extensionSubtitle = (extension: AdminExtension): string =>
+    [extension.version ? `v${extension.version}` : null, extension.author && `by ${extension.author}`]
         .filter(Boolean)
         .join(' · ');
-    const state = extension.state as ExtensionState | undefined;
-    const badge = stateBadge(state);
-    const enablePending = enableExtension.isPending && enableExtension.variables?.path.extension === extension.id;
-    const disablePending = disableExtension.isPending && disableExtension.variables?.path.extension === extension.id;
-    const removePending = removeExtension.isPending && removeExtension.variables?.path.extension === extension.id;
 
-    const submitEnable = () => {
+function ExtensionCardHeader({ extension, name, id }: { extension: AdminExtension; name: string; id: string }) {
+    const subtitle = extensionSubtitle(extension);
+    const badge = stateBadge(extension.state as ExtensionState | undefined);
+
+    return (
+        <div className='flex min-w-0 items-start gap-3'>
+            <ExtensionMark extension={extension} />
+            <div className='min-w-0 flex-1'>
+                <div className='flex flex-wrap items-center gap-2'>
+                    <h2 className='truncate text-base font-semibold text-foreground' title={`${name} (${id})`}>
+                        {name}
+                    </h2>
+                    {badge && (
+                        <span className={cn('rounded-sm px-1.5 py-0.5 text-xs font-medium', badge.className)}>
+                            {badge.label}
+                        </span>
+                    )}
+                </div>
+                <p className='mt-0.5 truncate text-xs text-muted-foreground'>
+                    {subtitle && <>{subtitle} · </>}
+                    <span className='font-mono'>{id}</span>
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
+    return (
+        <>
+            <p
+                className='mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'
+                title={extension.description || undefined}
+            >
+                {extension.description || 'No description provided.'}
+            </p>
+
+            {extension.state === 'not_registered' && (
+                <p className='mt-3 text-sm text-muted-foreground'>
+                    Found in the extensions folder. Turn it on to finish setting it up.
+                </p>
+            )}
+
+            {extension.error && (
+                <div className='mt-3 rounded-sm border border-destructive/30 bg-destructive/10 p-3'>
+                    <p className='break-words text-sm text-destructive'>{extension.error}</p>
+                </div>
+            )}
+        </>
+    );
+}
+
+function ExtensionToggle({ extension, name }: { extension: AdminExtension; name: string }) {
+    const enableExtension = useEnableAdminExtension();
+    const disableExtension = useDisableAdminExtension();
+    const pending = isPendingFor(enableExtension, extension) || isPendingFor(disableExtension, extension);
+    const allowed = extension.enabled ? canDisable(extension) : canEnable(extension);
+
+    const onChange = (checked: boolean) => {
         if (!extension.id) {
             return;
         }
 
-        enableExtension.mutate(enableAdminExtensionInput(extension.id));
-    };
-
-    const submitDisable = () => {
-        if (!extension.id) {
-            return;
+        if (checked) {
+            enableExtension.mutate(enableAdminExtensionInput(extension.id));
+        } else {
+            disableExtension.mutate(disableAdminExtensionInput(extension.id));
         }
-
-        disableExtension.mutate(disableAdminExtensionInput(extension.id));
     };
+
+    return (
+        <Switch
+            aria-label={`Enable ${name}`}
+            className='mr-auto'
+            checked={extension.enabled === true}
+            disabled={pending || !allowed}
+            onChange={onChange}
+        />
+    );
+}
+
+function RemoveExtensionButton({ extension, name }: { extension: AdminExtension; name: string }) {
+    const removeExtension = useRemoveAdminExtension();
+    const removePending = isPendingFor(removeExtension, extension);
 
     const submitRemove = (close: () => void) => {
         if (!extension.id) {
@@ -561,59 +628,43 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
     };
 
     return (
+        <Dialog.ConfirmTrigger
+            title='Remove extension'
+            confirm='Remove'
+            preventExternalClose={removePending}
+            hideCloseIcon={removePending}
+            pending={removePending}
+            trigger={({ onClick }) => (
+                <ActionButton
+                    label='Remove'
+                    icon={Trash2}
+                    color='red'
+                    disabled={!canRemove(extension) || removePending}
+                    isLoading={removePending}
+                    onClick={onClick}
+                />
+            )}
+            onConfirmed={(_event, close) => submitRemove(close)}
+        >
+            <SpinnerOverlay visible={removePending} />
+            Removing <strong>{name}</strong> deletes the extension files, published assets, settings, subuser
+            permissions it added, and install record.
+        </Dialog.ConfirmTrigger>
+    );
+}
+
+function ExtensionCard({ extension }: { extension: AdminExtension }) {
+    const id = extensionId(extension);
+    const name = extensionName(extension);
+
+    return (
         <article className='flex h-full flex-col rounded-sm border border-border bg-card p-4'>
-            <div className='flex min-w-0 items-start gap-3'>
-                <ExtensionMark extension={extension} />
-                <div className='min-w-0 flex-1'>
-                    <div className='flex flex-wrap items-center gap-2'>
-                        <h2 className='truncate text-base font-semibold text-foreground' title={`${name} (${id})`}>
-                            {name}
-                        </h2>
-                        {badge && (
-                            <span className={cn('rounded-sm px-1.5 py-0.5 text-xs font-medium', badge.className)}>
-                                {badge.label}
-                            </span>
-                        )}
-                    </div>
-                    <p className='mt-0.5 truncate text-xs text-muted-foreground'>
-                        {subtitle && <>{subtitle} · </>}
-                        <span className='font-mono'>{id}</span>
-                    </p>
-                </div>
-            </div>
-
-            <p
-                className='mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'
-                title={extension.description || undefined}
-            >
-                {extension.description || 'No description provided.'}
-            </p>
-
-            {state === 'not_registered' && (
-                <p className='mt-3 text-sm text-muted-foreground'>
-                    Found in the extensions folder. Turn it on to finish setting it up.
-                </p>
-            )}
-
-            {extension.error && (
-                <div className='mt-3 rounded-sm border border-destructive/30 bg-destructive/10 p-3'>
-                    <p className='break-words text-sm text-destructive'>{extension.error}</p>
-                </div>
-            )}
+            <ExtensionCardHeader extension={extension} name={name} id={id} />
+            <ExtensionCardDetails extension={extension} />
 
             <div className='mt-auto pt-4'>
                 <div className='flex flex-wrap items-center gap-2 border-t border-border pt-4'>
-                    <Switch
-                        aria-label={`Enable ${name}`}
-                        className='mr-auto'
-                        checked={extension.enabled === true}
-                        disabled={
-                            enablePending ||
-                            disablePending ||
-                            !(extension.enabled ? canDisable(extension) : canEnable(extension))
-                        }
-                        onChange={(checked) => (checked ? submitEnable() : submitDisable())}
-                    />
+                    <ExtensionToggle extension={extension} name={name} />
                     {extension.enabled && (
                         <Dialog.Trigger
                             trigger={({ onClick }) => (
@@ -625,28 +676,7 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                             )}
                         </Dialog.Trigger>
                     )}
-                    <Dialog.ConfirmTrigger
-                        title='Remove extension'
-                        confirm='Remove'
-                        preventExternalClose={removePending}
-                        hideCloseIcon={removePending}
-                        pending={removePending}
-                        trigger={({ onClick }) => (
-                            <ActionButton
-                                label='Remove'
-                                icon={Trash2}
-                                color='red'
-                                disabled={!canRemove(extension) || removePending}
-                                isLoading={removePending}
-                                onClick={onClick}
-                            />
-                        )}
-                        onConfirmed={(_event, close) => submitRemove(close)}
-                    >
-                        <SpinnerOverlay visible={removePending} />
-                        Removing <strong>{name}</strong> deletes the extension files, published assets, settings,
-                        subuser permissions it added, and install record.
-                    </Dialog.ConfirmTrigger>
+                    <RemoveExtensionButton extension={extension} name={name} />
                 </div>
             </div>
         </article>

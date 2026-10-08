@@ -1,5 +1,5 @@
 import React, { cloneElement, useRef, useState } from 'react';
-import type { Placement, Side } from '@floating-ui/react';
+import type { FloatingContext, Placement, Side } from '@floating-ui/react';
 import {
     arrow,
     autoUpdate,
@@ -44,6 +44,47 @@ const arrowSides = {
     left: 'top-0 right-[-6px]',
 } satisfies Record<Side, string>;
 
+type TooltipInteractionOptions = Pick<Props, 'interactions' | 'rest' | 'delay'>;
+
+function useTooltipInteractions(
+    context: FloatingContext,
+    enabled: boolean,
+    { interactions = ['hover', 'focus'], rest = 30, delay = 0 }: TooltipInteractionOptions
+) {
+    return useInteractions([
+        useHover(context, {
+            restMs: rest,
+            delay,
+            mouseOnly: true,
+            enabled: enabled && interactions.includes('hover'),
+        }),
+        useFocus(context, { enabled: enabled && interactions.includes('focus') }),
+        useClick(context, { enabled: enabled && interactions.includes('click') }),
+        useRole(context, { role: 'tooltip', enabled }),
+        useDismiss(context, { enabled }),
+    ]);
+}
+
+type TooltipArrowProps = {
+    ref: React.Ref<HTMLDivElement>;
+    placement: Placement;
+    position?: { x?: number; y?: number };
+};
+
+function TooltipArrow({ ref, placement, position }: TooltipArrowProps) {
+    const side = arrowSides[placement.split('-')[0] as Side];
+    const x = Math.round(position?.x || 0);
+    const y = Math.round(position?.y || 0);
+
+    return (
+        <div
+            ref={ref}
+            style={{ transform: `translate(${x}px, ${y}px) rotate(45deg)` }}
+            className={cn('absolute bg-popover w-3 h-3', side)}
+        />
+    );
+}
+
 export default function Tooltip({ children, ...props }: Props) {
     const arrowEl = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
@@ -69,19 +110,7 @@ export default function Tooltip({ children, ...props }: Props) {
         whileElementsMounted: autoUpdate,
     });
 
-    const interactions = props.interactions ?? ['hover', 'focus'];
-    const { getReferenceProps, getFloatingProps } = useInteractions([
-        useHover(context, {
-            restMs: props.rest ?? 30,
-            delay: props.delay ?? 0,
-            mouseOnly: true,
-            enabled: enabled && interactions.includes('hover'),
-        }),
-        useFocus(context, { enabled: enabled && interactions.includes('focus') }),
-        useClick(context, { enabled: enabled && interactions.includes('click') }),
-        useRole(context, { role: 'tooltip', enabled }),
-        useDismiss(context, { enabled }),
-    ]);
+    const { getReferenceProps, getFloatingProps } = useTooltipInteractions(context, enabled, props);
 
     const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
         duration: { open: 100, close: 75 },
@@ -90,8 +119,6 @@ export default function Tooltip({ children, ...props }: Props) {
         close: { opacity: 0 },
     });
 
-    const side = arrowSides[placement.split('-')[0] as Side];
-    const { x: ax, y: ay } = middlewareData.arrow ?? {};
     const referenceRef = useMergeRefs([refs.setReference, children.props.ref]);
 
     return (
@@ -111,15 +138,7 @@ export default function Tooltip({ children, ...props }: Props) {
                     >
                         {props.content}
                         {props.arrow && (
-                            <div
-                                ref={arrowEl}
-                                style={{
-                                    transform: `translate(${Math.round(ax || 0)}px, ${Math.round(
-                                        ay || 0
-                                    )}px) rotate(45deg)`,
-                                }}
-                                className={cn('absolute bg-popover w-3 h-3', side)}
-                            />
+                            <TooltipArrow ref={arrowEl} placement={placement} position={middlewareData.arrow} />
                         )}
                     </div>
                 </FloatingPortal>

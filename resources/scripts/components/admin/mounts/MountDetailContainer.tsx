@@ -25,6 +25,7 @@ import { mountDetailRoute } from '@/router/routeTree';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AttachEggsModal from '@/components/admin/mounts/AttachEggsModal';
 import AttachNodesModal from '@/components/admin/mounts/AttachNodesModal';
+import { validateMountName } from '@/components/admin/mounts/mountForm';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -41,18 +42,6 @@ import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 
 type MountForm = AppForm<MountValues>;
-
-const validateMountName = (value: string): string | undefined => {
-    if (value.length < 2) {
-        return 'A name must be at least 2 characters.';
-    }
-
-    if (value.length > 64) {
-        return 'A name must not exceed 64 characters.';
-    }
-
-    return undefined;
-};
 
 const mountToValues = (mount: AdminMountWithRelations): MountValues => ({
     name: mount.attributes.name,

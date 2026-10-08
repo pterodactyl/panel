@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 
 import {
@@ -53,15 +54,21 @@ export type AdminExtensionReplacement = {
     enabled: boolean;
 };
 
+/** The `meta` object of the first JSON:API error in a response body. */
+const firstErrorMeta = (response: AxiosResponse): unknown => {
+    const data: unknown = response.data;
+    const first: unknown = isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors[0] : null;
+
+    return isObject(first) && 'meta' in first ? first.meta : null;
+};
+
 /** Reads the 409 the install endpoint answers with when the package's id is already installed. */
 export const extensionReplacement = (cause: unknown): AdminExtensionReplacement | null => {
     if (!isAxiosError(cause) || cause.response?.status !== 409) {
         return null;
     }
 
-    const data: unknown = cause.response.data;
-    const first: unknown = isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors[0] : null;
-    const meta: unknown = isObject(first) && 'meta' in first ? first.meta : null;
+    const meta = firstErrorMeta(cause.response);
 
     if (!isObject(meta) || !('identifier' in meta) || !('version' in meta) || !isString(meta.identifier)) {
         return null;

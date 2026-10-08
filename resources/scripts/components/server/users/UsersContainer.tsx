@@ -16,6 +16,33 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import DataTable from '@/components/elements/table/DataTable';
 import { subuserColumns } from '@/components/server/users/SubuserTable';
 
+const hasPermissionGroups = <T extends object>(permissions: T | undefined): boolean => {
+    if (!permissions) {
+        return false;
+    }
+
+    return Object.keys(permissions).length > 0;
+};
+
+const UsersEmptyState = ({ canCreate }: { canCreate: boolean }) => (
+    <Empty className={emptyCompactClass}>
+        <EmptyHeader>
+            <EmptyMedia variant='icon'>
+                <Users />
+            </EmptyMedia>
+            <EmptyTitle>No subusers</EmptyTitle>
+            <EmptyDescription>
+                Add users to give them access to this server with the permissions you choose.
+            </EmptyDescription>
+        </EmptyHeader>
+        {canCreate && (
+            <EmptyContent>
+                <AddSubuserButton />
+            </EmptyContent>
+        )}
+    </Empty>
+);
+
 const UsersContainer = () => {
     const server = useCurrentServer();
     const uuid = server?.attributes.uuid ?? '';
@@ -46,10 +73,7 @@ const UsersContainer = () => {
         return <ServerError message={httpErrorToHuman(permissionsError)} onRetry={() => refetchPermissions()} />;
     }
 
-    if (
-        !subuserList.length &&
-        (isLoading || isLoadingPermissions || !permissions || !Object.keys(permissions).length)
-    ) {
+    if (!subuserList.length && (isLoading || isLoadingPermissions || !hasPermissionGroups(permissions))) {
         return <Spinner size='large' centered />;
     }
 
@@ -60,27 +84,7 @@ const UsersContainer = () => {
                     <AddSubuserButton />
                 </ListToolbar>
             )}
-            <DataTable
-                table={table}
-                emptyState={
-                    <Empty className={emptyCompactClass}>
-                        <EmptyHeader>
-                            <EmptyMedia variant='icon'>
-                                <Users />
-                            </EmptyMedia>
-                            <EmptyTitle>No subusers</EmptyTitle>
-                            <EmptyDescription>
-                                Add users to give them access to this server with the permissions you choose.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        {canCreate && (
-                            <EmptyContent>
-                                <AddSubuserButton />
-                            </EmptyContent>
-                        )}
-                    </Empty>
-                }
-            />
+            <DataTable table={table} emptyState={<UsersEmptyState canCreate={canCreate} />} />
         </ServerContentBlock>
     );
 };

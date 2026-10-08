@@ -5,18 +5,7 @@ import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
 import { NewButton } from '@/components/elements/NewButton';
-
-const validateShortCode = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'A short code must be provided.';
-    }
-
-    if (value.length > 60) {
-        return 'A short code must not exceed 60 characters.';
-    }
-
-    return undefined;
-};
+import { validateShortCode } from '@/components/admin/locations/locationForm';
 
 type CreateLocationDialogProps = {
     open: boolean;

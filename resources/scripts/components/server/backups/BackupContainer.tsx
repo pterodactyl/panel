@@ -35,6 +35,59 @@ const backupUsage = (limit: number, count: number, hasBackups: boolean, canCreat
     return null;
 };
 
+function PastEndEmptyState({ onFirstPage }: { onFirstPage: () => void }) {
+    return (
+        <Empty className={emptyCompactClass}>
+            <EmptyHeader>
+                <EmptyMedia variant='icon'>
+                    <Archive />
+                </EmptyMedia>
+                <EmptyTitle>No backups on this page</EmptyTitle>
+                <EmptyDescription>This page is past the end of the backup list.</EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+                <NewButton isSecondary icon={ArrowLeft} onClick={onFirstPage}>
+                    First page
+                </NewButton>
+            </EmptyContent>
+        </Empty>
+    );
+}
+
+type BackupsEmptyStateProps = {
+    page: number;
+    backupLimit: number;
+    canAddBackup: boolean;
+    onFirstPage: () => void;
+};
+
+function BackupsEmptyState({ page, backupLimit, canAddBackup, onFirstPage }: BackupsEmptyStateProps) {
+    if (page > 1) {
+        return <PastEndEmptyState onFirstPage={onFirstPage} />;
+    }
+
+    return (
+        <Empty className={emptyCompactClass}>
+            <EmptyHeader>
+                <EmptyMedia variant='icon'>
+                    <Archive />
+                </EmptyMedia>
+                <EmptyTitle>No backups</EmptyTitle>
+                <EmptyDescription>
+                    {backupLimit > 0
+                        ? "This server doesn't have any backups yet."
+                        : "Backups can't be created because this server's backup limit is 0."}
+                </EmptyDescription>
+            </EmptyHeader>
+            {canAddBackup && (
+                <EmptyContent>
+                    <CreateBackupButton />
+                </EmptyContent>
+            )}
+        </Empty>
+    );
+}
+
 export default function BackupContainer() {
     const navigate = useNavigate();
     const { id } = useParams({ from: '/authenticated/server/$id' });
@@ -114,41 +167,12 @@ export default function BackupContainer() {
             <DataTable
                 table={table}
                 emptyState={
-                    page > 1 ? (
-                        <Empty className={emptyCompactClass}>
-                            <EmptyHeader>
-                                <EmptyMedia variant='icon'>
-                                    <Archive />
-                                </EmptyMedia>
-                                <EmptyTitle>No backups on this page</EmptyTitle>
-                                <EmptyDescription>This page is past the end of the backup list.</EmptyDescription>
-                            </EmptyHeader>
-                            <EmptyContent>
-                                <NewButton isSecondary icon={ArrowLeft} onClick={() => table.setPageIndex(0)}>
-                                    First page
-                                </NewButton>
-                            </EmptyContent>
-                        </Empty>
-                    ) : (
-                        <Empty className={emptyCompactClass}>
-                            <EmptyHeader>
-                                <EmptyMedia variant='icon'>
-                                    <Archive />
-                                </EmptyMedia>
-                                <EmptyTitle>No backups</EmptyTitle>
-                                <EmptyDescription>
-                                    {backupLimit > 0
-                                        ? "This server doesn't have any backups yet."
-                                        : "Backups can't be created because this server's backup limit is 0."}
-                                </EmptyDescription>
-                            </EmptyHeader>
-                            {canAddBackup && (
-                                <EmptyContent>
-                                    <CreateBackupButton />
-                                </EmptyContent>
-                            )}
-                        </Empty>
-                    )
+                    <BackupsEmptyState
+                        page={page}
+                        backupLimit={backupLimit}
+                        canAddBackup={canAddBackup}
+                        onFirstPage={() => table.setPageIndex(0)}
+                    />
                 }
             />
             <DataTablePagination

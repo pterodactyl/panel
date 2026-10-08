@@ -1,74 +1,14 @@
-import type { AdminUser, UserValues } from '@/api/admin/users/queries';
+import type { UserValues } from '@/api/admin/users/queries';
 import type { AppForm } from '@/components/form';
 import type { SelectOption } from '@/components/ui/Select';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-
-export const userFormValues = (user: AdminUser): UserValues => ({
-    email: user.attributes.email,
-    username: user.attributes.username,
-    nameFirst: user.attributes.first_name ?? '',
-    nameLast: user.attributes.last_name ?? '',
-    password: '',
-    rootAdmin: user.attributes.root_admin,
-    language: user.attributes.language,
-});
-
-export const validateUserPassword = ({ value }: { value: string }): string | undefined => {
-    if (value.length === 0) {
-        return undefined;
-    }
-
-    if (value.length < 8) {
-        return 'Password must be at least 8 characters.';
-    }
-
-    if (value.length > 191) {
-        return 'Password must not exceed 191 characters.';
-    }
-
-    return undefined;
-};
-
-export const validateUserEmail = ({ value }: { value: string }): string | undefined => {
-    if (value.length < 1) {
-        return 'An email address must be provided.';
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return 'A valid email address must be provided.';
-    }
-
-    return undefined;
-};
-
-const requiredWithMaxLength =
-    (missing: string, tooLong: string) =>
-    ({ value }: { value: string }): string | undefined => {
-        if (value.length < 1) {
-            return missing;
-        }
-
-        if (value.length > 191) {
-            return tooLong;
-        }
-
-        return undefined;
-    };
-
-export const validateUsername = requiredWithMaxLength(
-    'A username must be provided.',
-    'A username must not exceed 191 characters.'
-);
-
-export const validateFirstName = requiredWithMaxLength(
-    'A first name must be provided.',
-    'First name must not exceed 191 characters.'
-);
-
-export const validateLastName = requiredWithMaxLength(
-    'A last name must be provided.',
-    'Last name must not exceed 191 characters.'
-);
+import {
+    validateFirstName,
+    validateLastName,
+    validateUserEmail,
+    validateUsername,
+    validateUserPassword,
+} from '@/components/admin/users/userForm';
 
 interface Props {
     form: AppForm<UserValues>;

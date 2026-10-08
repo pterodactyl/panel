@@ -1,4 +1,4 @@
-import type { QueryBuilderParams } from '@/api/queryParameters';
+import type { QueryBuilderParams, QuerySortValue } from '@/api/queryParameters';
 import { queryFilterValue } from '@/api/queryParameters';
 import type { AdminActivityLogResource, ClientActivityLogResource } from '@/api/generated';
 
@@ -14,10 +14,25 @@ type ActivityLogQuery = {
     include: 'actor';
 };
 
+const timestampSorts = new Map<QuerySortValue, ActivityLogQuery['sort']>([
+    [-1, '-timestamp'],
+    ['desc', '-timestamp'],
+    [1, 'timestamp'],
+    ['asc', 'timestamp'],
+]);
+
+const userIdFilter = (user: string | undefined): number | undefined => {
+    if (user === undefined || !Number.isFinite(Number(user))) {
+        return undefined;
+    }
+
+    return Number(user);
+};
+
 export const activityLogQuery = (filters?: ActivityLogFilters): ActivityLogQuery => {
     const event = queryFilterValue(filters?.filters?.event);
-    const user = queryFilterValue(filters?.filters?.user);
-    const timestamp = filters?.sorts?.timestamp;
+    const userId = userIdFilter(queryFilterValue(filters?.filters?.user));
+    const sort = timestampSorts.get(filters?.sorts?.timestamp);
     const query: ActivityLogQuery = { include: 'actor' };
 
     if (filters?.page !== undefined) {
@@ -28,16 +43,12 @@ export const activityLogQuery = (filters?: ActivityLogFilters): ActivityLogQuery
         query['filter[event_name]'] = event;
     }
 
-    if (user !== undefined && Number.isFinite(Number(user))) {
-        query['filter[user_id]'] = Number(user);
+    if (userId !== undefined) {
+        query['filter[user_id]'] = userId;
     }
 
-    if (timestamp === -1 || timestamp === 'desc') {
-        query.sort = '-timestamp';
-    }
-
-    if (timestamp === 1 || timestamp === 'asc') {
-        query.sort = 'timestamp';
+    if (sort) {
+        query.sort = sort;
     }
 
     return query;

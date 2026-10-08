@@ -566,18 +566,15 @@ export function matchesScreenCondition(when: ScreenCondition | undefined, server
     return when?.match === 'any' ? results.some(Boolean) : results.every(Boolean);
 }
 
-export function prepareExtensions(
-    advertised: readonly SiteExtensionEntry[],
-    corePaths: Record<ScreenArea, readonly string[]> = { account: [], server: [], admin: [] },
-    resourcePaths: Partial<Record<ScreenParent, readonly string[]>> = {}
-): readonly SiteExtensionEntry[] {
-    if (entries) {
-        return entries;
-    }
+type ScreenRules = {
+    corePaths: Record<ScreenArea, readonly string[]>;
+    resourcePaths: Partial<Record<ScreenParent, readonly string[]>>;
+    /** Screen paths already taken by accepted extensions, keyed by mount point and path shape. */
+    claimed: Map<string, string>;
+};
 
-    const accepted: SiteExtensionEntry[] = [];
-    const claimed = new Map<string, string>();
-    const seenIds = new Set<string>();
+/** Every extension that declares each component replacement, so a contested name fails all its claimants. */
+function collectComponentClaims(advertised: readonly SiteExtensionEntry[]): Map<string, Set<string>> {
     const componentClaims = new Map<string, Set<string>>();
 
     for (const entry of advertised) {
@@ -589,6 +586,133 @@ export function prepareExtensions(
         }
     }
 
+    return componentClaims;
+}
+
+function assertComponentClaims(entry: SiteExtensionEntry, componentClaims: Map<string, Set<string>>): void {
+    const names = entry.components ?? [];
+
+    if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
+        throw new Error('Invalid or duplicate component replacement name.');
+    }
+
+    for (const name of names) {
+        const owners = componentClaims.get(name)!;
+
+        if (owners.size > 1) {
+            throw new Error(
+                `Component "${name}" is declared by competing extensions: ${[...owners].sort().join(', ')}.`
+            );
+        }
+    }
+}
+
+function assertScreenParent(screen: ExtensionScreenDefinition): void {
+    if (screen.parent && (screen.area !== 'admin' || !SCREEN_PARENTS.includes(screen.parent))) {
+        throw new Error(`Invalid screen parent "${screen.parent}"`);
+    }
+}
+
+function assertNoCoreCollision(screen: ExtensionScreenDefinition, path: string, rules: ScreenRules): void {
+    const first = path.split('/')[0];
+    const reserved = screen.parent ? (rules.resourcePaths[screen.parent] ?? []) : rules.corePaths[screen.area];
+
+    if (reserved.some((core) => core.replace(/^\//, '').split('/')[0] === first)) {
+        throw new Error(`screen "${path}" collides with core in ${screen.area}`);
+    }
+}
+
+function assertEggRulesInServerArea(screen: ExtensionScreenDefinition): void {
+    if (screen.area !== 'server' && (screen.when?.eggFeatures || screen.when?.eggTags)) {
+        throw new Error(`screen "${screen.id}" declares egg rules outside the server area`);
+    }
+}
+
+/** Screens with the same mount point and path shape collide, whatever their parameters are named. */
+function screenClaimKey(screen: ExtensionScreenDefinition, path: string): string {
+    return `${screen.parent ?? screen.area}:${path.replaceAll(/\$[a-zA-Z][a-zA-Z0-9_]*/g, '$param')}`;
+}
+
+function prepareScreen(
+    screen: ExtensionScreenDefinition,
+    entry: SiteExtensionEntry,
+    ids: Set<string>,
+    paths: Map<string, string>,
+    rules: ScreenRules
+): ExtensionScreenRegistration {
+    if (!/^[a-z][a-z0-9-]*$/.test(screen.id) || ids.has(screen.id)) {
+        throw new Error(`Invalid or duplicate screen id "${screen.id}"`);
+    }
+
+    ids.add(screen.id);
+    if (!Object.hasOwn(rules.corePaths, screen.area)) {
+        throw new Error(`Invalid screen area "${screen.area}"`);
+    }
+
+    const path = normalizeScreenPath(screen.path);
+
+    if (screen.nav) {
+        resolveScreenPath(path, screen.nav.params);
+    }
+
+    assertScreenParent(screen);
+    assertNoCoreCollision(screen, path, rules);
+    assertEggRulesInServerArea(screen);
+
+    const key = screenClaimKey(screen, path);
+    const owner = rules.claimed.get(key) ?? paths.get(key);
+
+    if (owner) {
+        throw new Error(`screen "${path}" collides with extension "${owner}"`);
+    }
+
+    paths.set(key, entry.id);
+
+    return Object.freeze({
+        id: screen.id,
+        area: screen.area,
+        path,
+        parent: screen.parent,
+        nav: screen.nav,
+        permission: screen.permission,
+        when: screen.when,
+        extensionId: entry.id,
+    });
+}
+
+/** Validates an entry's metadata and registers its screens; throws without registering anything when invalid. */
+function registerEntryScreens(
+    entry: SiteExtensionEntry,
+    componentClaims: Map<string, Set<string>>,
+    rules: ScreenRules
+): void {
+    assertComponentClaims(entry, componentClaims);
+
+    const ids = new Set<string>();
+    const paths = new Map<string, string>();
+    const pending = (entry.screens ?? []).map((screen) => prepareScreen(screen, entry, ids, paths, rules));
+
+    for (const [key, owner] of paths) {
+        rules.claimed.set(key, owner);
+    }
+
+    screens.push(...pending);
+}
+
+export function prepareExtensions(
+    advertised: readonly SiteExtensionEntry[],
+    corePaths: Record<ScreenArea, readonly string[]> = { account: [], server: [], admin: [] },
+    resourcePaths: Partial<Record<ScreenParent, readonly string[]>> = {}
+): readonly SiteExtensionEntry[] {
+    if (entries) {
+        return entries;
+    }
+
+    const accepted: SiteExtensionEntry[] = [];
+    const seenIds = new Set<string>();
+    const componentClaims = collectComponentClaims(advertised);
+    const rules: ScreenRules = { corePaths, resourcePaths, claimed: new Map() };
+
     for (const entry of advertised) {
         if (seenIds.has(entry.id)) {
             continue;
@@ -596,80 +720,7 @@ export function prepareExtensions(
 
         seenIds.add(entry.id);
         try {
-            const names = entry.components ?? [];
-
-            if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
-                throw new Error('Invalid or duplicate component replacement name.');
-            }
-
-            for (const name of names) {
-                if (componentClaims.get(name)!.size > 1) {
-                    throw new Error(
-                        `Component "${name}" is declared by competing extensions: ${[...componentClaims.get(name)!].sort().join(', ')}.`
-                    );
-                }
-            }
-
-            const ids = new Set<string>();
-            const paths = new Map<string, string>();
-            const pending = (entry.screens ?? []).map((screen) => {
-                if (!/^[a-z][a-z0-9-]*$/.test(screen.id) || ids.has(screen.id)) {
-                    throw new Error(`Invalid or duplicate screen id "${screen.id}"`);
-                }
-
-                ids.add(screen.id);
-                if (!Object.hasOwn(corePaths, screen.area)) {
-                    throw new Error(`Invalid screen area "${screen.area}"`);
-                }
-
-                const path = normalizeScreenPath(screen.path);
-
-                if (screen.nav) {
-                    resolveScreenPath(path, screen.nav.params);
-                }
-
-                const first = path.split('/')[0];
-
-                if (screen.parent && (screen.area !== 'admin' || !SCREEN_PARENTS.includes(screen.parent))) {
-                    throw new Error(`Invalid screen parent "${screen.parent}"`);
-                }
-
-                const reserved = screen.parent ? (resourcePaths[screen.parent] ?? []) : corePaths[screen.area];
-
-                if (reserved.some((core) => core.replace(/^\//, '').split('/')[0] === first)) {
-                    throw new Error(`screen "${path}" collides with core in ${screen.area}`);
-                }
-
-                if (screen.area !== 'server' && (screen.when?.eggFeatures || screen.when?.eggTags)) {
-                    throw new Error(`screen "${screen.id}" declares egg rules outside the server area`);
-                }
-
-                const key = `${screen.parent ?? screen.area}:${path.replaceAll(/\$[a-zA-Z][a-zA-Z0-9_]*/g, '$param')}`;
-                const owner = claimed.get(key) ?? paths.get(key);
-
-                if (owner) {
-                    throw new Error(`screen "${path}" collides with extension "${owner}"`);
-                }
-
-                paths.set(key, entry.id);
-
-                return Object.freeze({
-                    id: screen.id,
-                    area: screen.area,
-                    path,
-                    parent: screen.parent,
-                    nav: screen.nav,
-                    permission: screen.permission,
-                    when: screen.when,
-                    extensionId: entry.id,
-                });
-            });
-
-            for (const [key, owner] of paths) {
-                claimed.set(key, owner);
-            }
-
-            screens.push(...pending);
+            registerEntryScreens(entry, componentClaims, rules);
             accepted.push(entry);
             setExtensionState({ id: entry.id, status: 'loading' });
         } catch (error) {

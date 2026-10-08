@@ -16,6 +16,60 @@ interface Props {
     schedule?: Schedule;
 }
 
+type ScheduleFormValues = {
+    name: string;
+    minute: string;
+    hour: string;
+    dayOfMonth: string;
+    month: string;
+    dayOfWeek: string;
+    enabled: boolean;
+    onlyWhenOnline: boolean;
+};
+
+const newScheduleDefaults: ScheduleFormValues = {
+    name: '',
+    minute: '*/5',
+    hour: '*',
+    dayOfMonth: '*',
+    month: '*',
+    dayOfWeek: '*',
+    enabled: true,
+    onlyWhenOnline: true,
+};
+
+const scheduleDefaultValues = (schedule?: Schedule): ScheduleFormValues => {
+    if (!schedule) {
+        return { ...newScheduleDefaults };
+    }
+
+    const { name, cron, is_active, only_when_online } = schedule.attributes;
+
+    return {
+        name: name || newScheduleDefaults.name,
+        minute: cron.minute || newScheduleDefaults.minute,
+        hour: cron.hour || newScheduleDefaults.hour,
+        dayOfMonth: cron.day_of_month || newScheduleDefaults.dayOfMonth,
+        month: cron.month || newScheduleDefaults.month,
+        dayOfWeek: cron.day_of_week || newScheduleDefaults.dayOfWeek,
+        enabled: is_active ?? newScheduleDefaults.enabled,
+        onlyWhenOnline: only_when_online ?? newScheduleDefaults.onlyWhenOnline,
+    };
+};
+
+const scheduleSubmitValues = (value: ScheduleFormValues) => ({
+    name: value.name,
+    cron: {
+        minute: value.minute,
+        hour: value.hour,
+        dayOfWeek: value.dayOfWeek,
+        month: value.month,
+        dayOfMonth: value.dayOfMonth,
+    },
+    onlyWhenOnline: value.onlyWhenOnline,
+    isActive: value.enabled,
+});
+
 const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }) => {
     const uuid = useCurrentServerUuid()!;
     const createSchedule = useCreateServerSchedule();
@@ -23,30 +77,10 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
     const [showCheatsheet, setShowCheetsheet] = useState(false);
 
     const form = useAppForm({
-        defaultValues: {
-            name: schedule?.attributes.name || '',
-            minute: schedule?.attributes.cron.minute || '*/5',
-            hour: schedule?.attributes.cron.hour || '*',
-            dayOfMonth: schedule?.attributes.cron.day_of_month || '*',
-            month: schedule?.attributes.cron.month || '*',
-            dayOfWeek: schedule?.attributes.cron.day_of_week || '*',
-            enabled: schedule?.attributes.is_active ?? true,
-            onlyWhenOnline: schedule?.attributes.only_when_online ?? true,
-        },
+        defaultValues: scheduleDefaultValues(schedule),
         onSubmit: async ({ value }) => {
             try {
-                const values = {
-                    name: value.name,
-                    cron: {
-                        minute: value.minute,
-                        hour: value.hour,
-                        dayOfWeek: value.dayOfWeek,
-                        month: value.month,
-                        dayOfMonth: value.dayOfMonth,
-                    },
-                    onlyWhenOnline: value.onlyWhenOnline,
-                    isActive: value.enabled,
-                };
+                const values = scheduleSubmitValues(value);
 
                 if (schedule) {
                     await updateSchedule.mutateAsync(updateServerScheduleInput(uuid, schedule.attributes.id, values));

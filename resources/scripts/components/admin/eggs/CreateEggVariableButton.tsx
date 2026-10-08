@@ -1,7 +1,11 @@
 import { useStore } from '@tanstack/react-form';
 import { useAppForm, Form } from '@/components/form';
 import { createAdminEggVariableInput, useCreateAdminEggVariable } from '@/api/admin/eggs/queries';
-import { eggVariableBodyFromFormValues } from '@/components/admin/eggs/helpers';
+import {
+    eggVariableBodyFromFormValues,
+    validateEnvVariable,
+    validateVariableName,
+} from '@/components/admin/eggs/helpers';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
@@ -16,8 +20,6 @@ type CreateEggVariableDialogProps = Props & {
     onClose: () => void;
 };
 
-const envVariableRegex = /^[\w]{1,191}$/;
-
 const initialValues = {
     name: '',
     description: '',
@@ -26,30 +28,6 @@ const initialValues = {
     userViewable: true,
     userEditable: true,
     rules: 'required|string|max:20',
-};
-
-const validateVariableName = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'A variable name must be provided.';
-    }
-
-    if (value.length > 191) {
-        return 'A variable name must not exceed 191 characters.';
-    }
-
-    return undefined;
-};
-
-const validateEnvVariable = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'An environment variable must be provided.';
-    }
-
-    if (!envVariableRegex.test(value)) {
-        return 'The environment variable may only contain letters, numbers, and underscores.';
-    }
-
-    return undefined;
 };
 
 function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDialogProps) {

@@ -6,9 +6,9 @@ import {
     nodeFormValues,
     nodeNumberValidators,
     nodeValuesFromForm,
+    validateNodeName,
 } from '@/components/admin/nodes/nodeForm';
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
-import { validateNodeName } from '@/components/admin/nodes/NodeFormFields';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 interface Values extends NodeFormValues {

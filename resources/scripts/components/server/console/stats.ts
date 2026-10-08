@@ -11,8 +11,18 @@ export interface ServerStatsPayload {
     };
 }
 
+const isNetworkStats = <T>(value: T): value is T & ServerStatsPayload['network'] =>
+    isObject(value) &&
+    'rx_bytes' in value &&
+    isFiniteNumber(value.rx_bytes) &&
+    'tx_bytes' in value &&
+    isFiniteNumber(value.tx_bytes);
+
+const hasValidUptime = <T extends object>(value: T): boolean =>
+    !('uptime' in value) || value.uptime === undefined || isFiniteNumber(value.uptime);
+
 const isServerStatsPayload = <T>(value: T): value is T & ServerStatsPayload => {
-    if (!isObject(value) || !('network' in value) || !isObject(value.network)) {
+    if (!isObject(value) || !('network' in value) || !isNetworkStats(value.network)) {
         return false;
     }
 
@@ -23,11 +33,7 @@ const isServerStatsPayload = <T>(value: T): value is T & ServerStatsPayload => {
         isFiniteNumber(value.memory_bytes) &&
         'disk_bytes' in value &&
         isFiniteNumber(value.disk_bytes) &&
-        (!('uptime' in value) || value.uptime === undefined || isFiniteNumber(value.uptime)) &&
-        'rx_bytes' in value.network &&
-        isFiniteNumber(value.network.rx_bytes) &&
-        'tx_bytes' in value.network &&
-        isFiniteNumber(value.network.tx_bytes)
+        hasValidUptime(value)
     );
 };
 

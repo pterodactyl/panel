@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\SettingsControllerTest;
 
 use Illuminate\Http\Response;
+use Pterodactyl\Actions\Servers\UpdateServerDockerImage;
+use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -73,6 +75,32 @@ test('docker image can be changed', function (): void {
     $target = end($images);
     $this->actingAs($user)->putJson("/api/client/servers/{$server->uuid}/settings/docker-image", ['docker_image' => $target])->assertStatus(Response::HTTP_NO_CONTENT);
     expect($server->refresh()->image)->toBe($target);
+});
+test('docker image change goes through the contract', function (): void {
+    [$user, $server] = $this->generateTestAccount();
+    $images = array_values($server->egg->docker_images);
+    $server->forceFill(['image' => $images[0]])->saveOrFail();
+    $startup = $server->startup;
+    $target = end($images);
+    $spy = new class(new UpdateServerDockerImage()) implements UpdatesServerDockerImage
+    {
+        /** @var list<string> */
+        public array $images = [];
+
+        public function __construct(private readonly UpdatesServerDockerImage $inner) {}
+
+        public function update(Server $server, string $image): Server
+        {
+            $this->images[] = $image;
+
+            return $this->inner->update($server, $image);
+        }
+    };
+    $this->app->instance(UpdatesServerDockerImage::class, $spy);
+    $this->actingAs($user)->putJson("/api/client/servers/{$server->uuid}/settings/docker-image", ['docker_image' => $target])->assertStatus(Response::HTTP_NO_CONTENT);
+    expect($spy->images)->toBe([$target])
+        ->and($server->refresh()->image)->toBe($target)
+        ->and($server->startup)->toBe($startup);
 });
 test('docker image cannot be changed when admin set', function (): void {
     [$user, $server] = $this->generateTestAccount();

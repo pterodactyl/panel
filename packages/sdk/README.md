@@ -432,6 +432,7 @@ reimplementing it. Beside the mutating actions, these read or complete on your b
 | `Contracts\Servers\ReadsServerLogs` | `read($server, $lines = 100)`: recent console lines, oldest first, at most `MAX_LINES`. |
 | `Contracts\Servers\ReadsServerState` | `read($server): ServerState`, live state and usage from the cache the client API shares (up to 20 seconds old). |
 | `Contracts\Servers\ChangesServerEgg` | `change($server, $egg, keepVariables: false)`: resets startup, image and variables to the new egg, optionally carrying over values whose names and rules still match. |
+| `Contracts\Servers\UpdatesServerDockerImage` | `update($server, $image)`: sets the Docker image alone, leaving the startup command and install settings as they are. The image is not checked against the egg. |
 | `Contracts\Users\CompletesLogins` | `complete($user)` after you verified a first factor (it issues the two-factor checkpoint when the account needs one), `establish($user)` once every factor has passed, and `pendingCheckpoint()`. |
 
 These actions do not check permissions; authorize the caller first, as the core

@@ -6,7 +6,12 @@ import {
     useDeleteAdminEggVariable,
     useUpdateAdminEggVariable,
 } from '@/api/admin/eggs/queries';
-import { eggVariableBodyFromFormValues, type EggVariableValues } from '@/components/admin/eggs/helpers';
+import {
+    eggVariableBodyFromFormValues,
+    type EggVariableValues,
+    validateEnvVariable,
+    validateVariableName,
+} from '@/components/admin/eggs/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Button from '@/components/elements/Button';
 import Code from '@/components/elements/Code';
@@ -16,32 +21,6 @@ interface Props {
     eggId: number;
     variable: AdminEggVariable;
 }
-
-const envVariableRegex = /^[\w]{1,191}$/;
-
-const validateVariableName = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'A variable name must be provided.';
-    }
-
-    if (value.length > 191) {
-        return 'A variable name must not exceed 191 characters.';
-    }
-
-    return undefined;
-};
-
-const validateEnvVariable = (value: string): string | undefined => {
-    if (value.length < 1) {
-        return 'An environment variable must be provided.';
-    }
-
-    if (!envVariableRegex.test(value)) {
-        return 'The environment variable may only contain letters, numbers, and underscores.';
-    }
-
-    return undefined;
-};
 
 const variableToFormValues = (variable: AdminEggVariable): EggVariableValues => ({
     name: variable.attributes.name,

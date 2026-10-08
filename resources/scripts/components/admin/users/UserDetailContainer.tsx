@@ -40,7 +40,7 @@ import {
     validateUserEmail,
     validateUsername,
     validateUserPassword,
-} from '@/components/admin/users/UserFormFields';
+} from '@/components/admin/users/userForm';
 import type { SelectOption } from '@/components/ui/Select';
 import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, RowActions } from '@/components/elements/table/RowActions';
