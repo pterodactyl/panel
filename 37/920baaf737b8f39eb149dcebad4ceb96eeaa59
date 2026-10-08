@@ -1,0 +1,168 @@
+app/Extensions/Fields.php
+  s_b7506fbf20f690::t_19c480063ed4ab 14-18,21-22,30-32,35-38
+tests/Integration/Api/Application/Extensions/ExtensionFieldsTest.php
+  s_b7506fbf20f690::t_9d0b84ef3d5920 68-69
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_b7506fbf20f690::t_67b00d4880db41 124
+tests/Unit/ServerCreationDataTest.php
+  s_b7506fbf20f690::t_9278fb4a88a879 7,9
+  s_b7506fbf20f690::t_8feba49bb0cab6 16
+  s_b7506fbf20f690::t_b313bd2bc827fb 15,19,25,27,36,46,52
+  s_b7506fbf20f690::t_e98463ed322864 67
+  s_b7506fbf20f690::t_56e11cee27486b 17-18,20-24
+app/Data/ServerCreationData.php
+  s_b7506fbf20f690::t_8fabee86d5d901 7
+  s_b7506fbf20f690::t_510d2a3ca5887a 44
+app/Services/Extensions/ExtensionFieldRegistry.php
+  s_b7506fbf20f690::t_0ca916304876c2 31
+  s_b7506fbf20f690::t_b58a15b2ad1120 65-94
+  s_b7506fbf20f690::t_97d15b91c4d361 7,11-13
+app/Actions/Servers/CreateServer.php
+  s_b7506fbf20f690::t_94c379ce4ba1e6 47
+  s_b7506fbf20f690::t_bcb7cf2de869d5 58-60
+  s_b7506fbf20f690::t_2f9cc683e8607a 31
+app/Services/Extensions/ExtensionSettings.php
+  s_b7506fbf20f690::t_d3d4bb9803c50c 183
+  s_b7506fbf20f690::t_51c60a6fec536b 44-48,53-54
+  s_b7506fbf20f690::t_6f4c5db0cfe181 194
+  s_b7506fbf20f690::t_43f98b56cce378 236-240
+  s_b7506fbf20f690::t_e422afeddfb7f5 243-246
+  s_b7506fbf20f690::t_2584403a286847 101-110,241
+  s_899a0f63af105e::t_74bd22482ace6f 242
+app/Actions/Databases/CreateDatabaseHost.php
+  s_b7506fbf20f690::t_5490e75de055c0 14
+  s_b7506fbf20f690::t_2a1ff797eff331 25
+  s_b7506fbf20f690::t_41f29e0eae564f 41
+app/Transformers/Api/Application/BaseTransformer.php
+  s_b7506fbf20f690::t_db80d4dbccb6b9 57-58,60,63
+  s_b7506fbf20f690::t_f7aea05fb78b04 146-149
+  s_b7506fbf20f690::t_d40c7a70f6c311 47-48
+app/Actions/Locations/UpdateLocation.php
+  s_b7506fbf20f690::t_3d3d2fd3eddd25 24
+  s_b7506fbf20f690::t_1ca773fe2c9f21 11
+app/Services/Extensions/ValidatedExtensionValues.php
+  s_b7506fbf20f690::t_8c78d200890ab7 1-52
+app/Actions/Nodes/UpdateNode.php
+  s_b7506fbf20f690::t_127485d3a71ede 17
+  s_b7506fbf20f690::t_5759c287a16de5 33
+app/Services/Extensions/ExtensionRepository.php
+  s_b7506fbf20f690::t_49d44db395b55f 190-194
+  s_b7506fbf20f690::t_82ba206c221d1d 8
+packages/sdk/README.md
+  s_b7506fbf20f690::t_49241f3ae83eaf 360-364
+  s_b7506fbf20f690::t_0c9982812ae519 380-384,388-393
+tests/Integration/Api/Admin/Extensions/ExtensionFieldsTest.php
+  s_b7506fbf20f690::t_700be99b3e7b74 278
+  s_b7506fbf20f690::t_0c1ed5cde13263 320-321,323
+  s_b7506fbf20f690::t_2cbc8064e3fcb5 329
+  s_b7506fbf20f690::t_21bc8c3cf476fe 24,26
+  s_b7506fbf20f690::t_c98b63100a45a0 351-352,355-394,396-442
+  s_b7506fbf20f690::t_0374abfd64032b 12
+  s_b7506fbf20f690::t_90b48114fc3563 286
+  s_b7506fbf20f690::t_b313bd2bc827fb 171-172,395
+  s_b7506fbf20f690::t_aea8413bf586e6 316-319,322
+  s_b7506fbf20f690::t_648d3a050723be 338
+  s_b7506fbf20f690::t_e7ed2b83b3c5af 112-115
+  s_b7506fbf20f690::t_6e8f2b0ef762ed 18
+  s_b7506fbf20f690::t_2bc0ef5e807a89 127-170,173-193
+  s_899a0f63af105e::t_1c34c83ce3b3b3 443
+tests/Integration/Services/Extensions/ExtensionScopedSettingsTest.php
+  s_b7506fbf20f690::t_c5b5abd9245ad5 82-100,102
+  s_b7506fbf20f690::t_b313bd2bc827fb 37,51,61-63,67,101
+app/Contracts/Users/CreatesUsers.php
+  s_b7506fbf20f690::t_1536a3ef6c5af8 19
+app/Http/Requests/Concerns/ValidatesExtensionFields.php
+  s_b7506fbf20f690::t_f3e49e408ecdd9 83
+  s_b7506fbf20f690::t_11112d72257763 12,14,24,33-34,36,48,53-54,61-63,65,68,82,89-93
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_b7506fbf20f690::t_7c2efd9c8a5fa8 120
+app/Contracts/Users/UpdatesUsers.php
+  s_b7506fbf20f690::t_b4da2a25d8d8c1 16
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_b7506fbf20f690::t_46b4c1c8e58ed0 13
+  s_b7506fbf20f690::t_645a9e2113ee58 29
+tests/Unit/Http/ApplicationApiControllerTest.php
+  s_b7506fbf20f690::t_b313bd2bc827fb 11,20
+  s_b7506fbf20f690::t_6c23989fbfc09c 1-10,12-19,21-30
+app/Http/Controllers/Api/Application/ApplicationApiController.php
+  s_b7506fbf20f690::t_68b9e2c4a65941 11,13
+  s_b7506fbf20f690::t_32f0c9663f257a 30-33
+phpstan.neon
+  s_b7506fbf20f690::t_a17e71d6441d66 88,91-92,94-95,98,105
+  s_b7506fbf20f690::t_3b5019c1b6c899 33
+  s_b7506fbf20f690::t_c22f14436dfc0d 34
+  s_b7506fbf20f690::t_44ae011d8deb56 96
+app/Contracts/Servers/UpdatesServerDetails.php
+  s_b7506fbf20f690::t_187a6ce6b59899 13
+app/Services/Extensions/ExtensionFields.php
+  s_b7506fbf20f690::t_c20725e3bdf707 15,69-70,75,80-81,96,103,105,110,116-118,128,131-132,192-204,214,224-272,294-304,306
+  s_01f4a6969ae96f::t_4eabd2b6338bdf 305,307
+app/Actions/Eggs/CreateEgg.php
+  s_b7506fbf20f690::t_ba147fa6bc66e1 12
+  s_b7506fbf20f690::t_a46b7eae70da7a 26
+app/Contracts/Servers/CreatesServers.php
+  s_b7506fbf20f690::t_21a67a97fdfe8c 18
+app/Actions/Locations/CreateLocation.php
+  s_b7506fbf20f690::t_5f9ce5ed9df546 11
+  s_b7506fbf20f690::t_a2ae7989d86a88 24
+app/Actions/Servers/UpdateServerDetails.php
+  s_b7506fbf20f690::t_39eff2e0609d1a 35
+  s_b7506fbf20f690::t_0400a3cb7b9248 13
+  s_b7506fbf20f690::t_7c1c8446e197d9 21
+app/Actions/Nodes/CreateNode.php
+  s_b7506fbf20f690::t_a880c2962af4bd 26
+  s_b7506fbf20f690::t_de3d06a56d83b1 13
+tests/Integration/Api/Admin/Extensions/ExtensionFieldEndpointsTest.php
+  s_b7506fbf20f690::t_62547c1dec5c46 163
+  s_b7506fbf20f690::t_b313bd2bc827fb 61,131,145,181
+  s_b7506fbf20f690::t_a534f51989d4be 119
+  s_b7506fbf20f690::t_85dc4cdb47a605 169
+  s_b7506fbf20f690::t_0e4618539970a8 184
+app/Actions/Users/CreateUser.php
+  s_b7506fbf20f690::t_8ce797fb2e37bf 14
+  s_b7506fbf20f690::t_859097af35da32 34
+  s_b7506fbf20f690::t_f67848a1c041ac 28
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_b7506fbf20f690::t_14f9ba5ee86733 124-125,127
+app/Contracts/Databases/CreatesDatabaseHosts.php
+  s_b7506fbf20f690::t_1f0c5661775776 12
+app/Actions/Users/UpdateUser.php
+  s_b7506fbf20f690::t_f8b6ded14a0c50 13
+  s_b7506fbf20f690::t_7354c5515d15a2 24
+  s_b7506fbf20f690::t_349a232eee9a1a 30
+app/Actions/Eggs/UpdateEgg.php
+  s_b7506fbf20f690::t_c8aa7b3cb7183b 11
+  s_b7506fbf20f690::t_086ffa58da45be 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "37920baaf737b8f39eb149dcebad4ceb96eeaa59",
+  "prompts": {},
+  "sessions": {
+    "s_01f4a6969ae96f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a11a09-bbb9-7cc3-ab54-abdc83e48bd3",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_b7506fbf20f690": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2223b7d0-74ae-4b6b-8dcf-b2903b219d9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
