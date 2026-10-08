@@ -88,7 +88,7 @@ export const chmodFilesInput = (
     path: { server_uuid: uuid },
     body: {
         root: directory,
-        files: files.map(({ file, mode }) => ({ file, mode: Number.parseInt(mode, 8) })),
+        files: files.map(({ file, mode }) => ({ file, mode })),
     },
 });
 
@@ -301,7 +301,7 @@ export const useChmodFiles = () => {
         onSuccess: async (_data, { path, body }) => {
             if (body?.root && body.files?.length === 1) {
                 const [{ file, mode }] = body.files;
-                const modeBits = mode.toString(8).padStart(4, '0');
+                const modeBits = mode.padStart(4, '0');
 
                 await serverFilesQueryUpdate(queryClient, path.server_uuid, body.root, (current) =>
                     updateListItems(

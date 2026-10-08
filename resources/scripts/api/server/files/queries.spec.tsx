@@ -7,9 +7,11 @@ import type { PropsWithChildren } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import http from '@/api/http';
 import {
+    chmodFilesInput,
     renameFilesInput,
     serverFileContentQueryOptions,
     serverFilesQueryKey,
+    useChmodFiles,
     useRenameFiles,
     useUploadFiles,
     type FileUploadOutcome,
@@ -161,6 +163,34 @@ describe('file queries', () => {
 
         expect(client.getQueryState(destination)?.isInvalidated).toBe(true);
         expect(client.getQueryState(listing)?.isInvalidated).toBe(true);
+    });
+
+    it('sends chmod modes to wings as octal strings and patches the cached listing', async () => {
+        let sent: unknown;
+        http.defaults.adapter = (async (config) => {
+            sent = JSON.parse(config.data as string);
+            return respond(config, '', 204);
+        }) satisfies AxiosAdapter;
+        client.setQueryData(listing, {
+            object: 'list',
+            data: [
+                {
+                    object: 'file_object',
+                    attributes: { name: 'a.txt', is_file: true, mode: '-rw-------', mode_bits: '0600' },
+                },
+            ],
+        });
+        const { result } = renderHook(() => useChmodFiles(), { wrapper });
+
+        await act(() =>
+            result.current.mutateAsync(chmodFilesInput('server', '/config', [{ file: 'a.txt', mode: '644' }]))
+        );
+
+        expect(sent).toEqual({ root: '/config', files: [{ file: 'a.txt', mode: '644' }] });
+        expect(client.getQueryData<{ data: { attributes: object }[] }>(listing)?.data[0].attributes).toMatchObject({
+            mode: '-rw-r--r--',
+            mode_bits: '0644',
+        });
     });
 
     it('treats cached file contents as stale', () => {
