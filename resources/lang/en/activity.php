@@ -74,6 +74,8 @@ return [
         'file' => [
             'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
+            'chmod_one' => 'Changed the permissions of :directory:files.0.file to :files.0.mode',
+            'chmod_other' => 'Changed the permissions of :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',
             'create-directory' => 'Created directory :directory:name',
