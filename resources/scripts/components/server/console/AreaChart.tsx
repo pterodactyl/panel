@@ -26,7 +26,7 @@ interface Props {
     height?: number;
 }
 
-type YDomain = [number, number | 'auto'];
+type YDomain = [number, (dataMax: number) => number] | [number, string];
 
 interface RechartsAreaChartContentProps {
     data: ChartPoint[];
@@ -68,6 +68,7 @@ const LazyRechartsAreaChart = lazy(async () => {
             // The newest sample's arrival time is the moment the visible window ends at `anchor - RIGHT_LAG_MS`.
             const anchor = data.at(-1)?.t;
             const right = (anchor ?? 0) - RIGHT_LAG_MS;
+            const xDomain = useMemo<[number, number]>(() => [right - windowMs, right + SLIDE_MS], [right, windowMs]);
 
             useLayoutEffect(() => {
                 if (!slider.current || anchor === undefined) {
@@ -93,6 +94,7 @@ const LazyRechartsAreaChart = lazy(async () => {
                     <div className='absolute inset-0'>
                         <RechartsAreaChart width={width} height={height} data={data} margin={MARGIN}>
                             <CartesianGrid stroke={GRID_COLOR} strokeDasharray='0' vertical={false} />
+                            <XAxis dataKey='t' type='number' domain={xDomain} allowDataOverflow hide />
                             <YAxis
                                 width={Y_AXIS_WIDTH}
                                 tickCount={3}
@@ -107,6 +109,19 @@ const LazyRechartsAreaChart = lazy(async () => {
                                     fontWeight: 'var(--font-weight-normal)',
                                 }}
                             />
+                            {/* Undrawn copies of the series: the axis only ticks for plotted data, and
+                                matching inputs give it the same scale as the sliding layer. */}
+                            {series.map(({ dataKey }) => (
+                                <Area
+                                    key={dataKey}
+                                    dataKey={dataKey}
+                                    stroke='none'
+                                    fill='none'
+                                    isAnimationActive={false}
+                                    dot={false}
+                                    activeDot={false}
+                                />
+                            ))}
                         </RechartsAreaChart>
                     </div>
                     <div
@@ -153,13 +168,7 @@ const LazyRechartsAreaChart = lazy(async () => {
                                         </filter>
                                     ))}
                                 </defs>
-                                <XAxis
-                                    dataKey='t'
-                                    type='number'
-                                    domain={[right - windowMs, right + SLIDE_MS]}
-                                    allowDataOverflow
-                                    hide
-                                />
+                                <XAxis dataKey='t' type='number' domain={xDomain} allowDataOverflow hide />
                                 <YAxis hide tickCount={3} domain={yDomain} />
                                 {series.map(({ dataKey, color }) => (
                                     <Area
@@ -190,18 +199,10 @@ export default function AreaChart({ data, series, live, windowMs, suggestedMax, 
     const container = useRef<HTMLDivElement>(null);
     const width = useElementWidth(container);
 
-    // Both layers share one domain so the static axis lines up with the sliding series.
-    const yDomain = useMemo<YDomain>(() => {
-        let max = suggestedMax ?? 0;
-
-        for (const point of data) {
-            for (const { dataKey } of series) {
-                max = Math.max(max, point[dataKey] ?? 0);
-            }
-        }
-
-        return [0, max > 0 ? max : 'auto'];
-    }, [data, series, suggestedMax]);
+    const yDomain = useMemo<YDomain>(
+        () => (suggestedMax === undefined ? [0, 'auto'] : [0, (dataMax: number) => Math.max(suggestedMax, dataMax)]),
+        [suggestedMax]
+    );
 
     return (
         <div ref={container} className='relative' style={{ height }}>
