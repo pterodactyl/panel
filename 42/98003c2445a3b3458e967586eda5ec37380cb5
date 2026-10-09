@@ -1,7 +1,9 @@
 app/Services/Extensions/ExtensionUrlDownloader.php
   s_570a6c49650832::t_8a6e1f3d28af32 91
+  s_570a6c49650832::t_8ac5c8684515db 91
 tests/Integration/Services/Extensions/ExtensionUrlDownloaderTest.php
   s_570a6c49650832::t_717040ee423e29 23-24,86
+  s_570a6c49650832::t_8ac5c8684515db 23-24,86
 ---
 {
   "schema_version": "authorship/3.0.0",
