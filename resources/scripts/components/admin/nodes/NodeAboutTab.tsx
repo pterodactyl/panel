@@ -56,18 +56,13 @@ const UsageBox = ({ title, metric }: { title: string; metric: NodeUtilization['m
 
     return (
         <TitledGreyBox title={title}>
-            {metric ? (
-                <>
-                    <p className='text-sm text-foreground'>
-                        {bytesRatioToString(mbToBytes(megabytes(metric.value)), mbToBytes(megabytes(metric.max)))}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
-                        {metric.value} / {metric.max} MiB
-                    </p>
-                </>
-            ) : (
-                <Spinner size='small' />
-            )}
+            <p className='text-sm text-foreground'>
+                {metric ? (
+                    bytesRatioToString(mbToBytes(megabytes(metric.value)), mbToBytes(megabytes(metric.max)))
+                ) : (
+                    <Spinner size='small' />
+                )}
+            </p>
             <div className='mt-2 h-2 w-full rounded-sm bg-sunken overflow-hidden'>
                 <div
                     className={cn('h-2 rounded-sm transition-[width,background-color] duration-150', colour)}
