@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\SignatureResolver;
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -15,6 +13,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\SignatureResolver;
+use Rules\Support\TypeClassifier;
 
 /**
  * Port of anti-slop's no-unknown-returns: a declared return contract of

@@ -13,6 +13,6 @@ final class ToggleBackupLock implements TogglesBackupLocks
     {
         $backup->update(['is_locked' => ! $backup->is_locked]);
 
-        return $backup->refresh();
+        return $backup;
     }
 }

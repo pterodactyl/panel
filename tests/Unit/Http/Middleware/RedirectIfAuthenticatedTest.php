@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Http\Middleware\RedirectIfAuthenticatedTest;
 
-use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Pterodactyl\Models\User;
@@ -24,5 +23,5 @@ test('non authenticated user is not redirected', function () {
  */
 function getMiddleware(): RedirectIfAuthenticated
 {
-    return new RedirectIfAuthenticated(app(AuthManager::class));
+    return new RedirectIfAuthenticated;
 }

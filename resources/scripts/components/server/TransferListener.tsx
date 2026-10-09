@@ -20,6 +20,7 @@ const TransferListener = () => {
 
     useEffect(() => {
         const disconnected = wasConnected.current && !connected;
+
         wasConnected.current = connected;
 
         if (disconnected && isTransferring) {
@@ -29,16 +30,19 @@ const TransferListener = () => {
 
     useWebsocketEvent(SocketEvent.TRANSFER_STATUS, (value: string) => {
         const status = normalizeTransferStatus(value);
+
         if (!status) {
             return;
         }
 
         if (isTransferSuccessful(status)) {
             queryClient.refetchQueries(serverQueryFilters(id ?? '')).catch((error) => console.error(error));
+
             return;
         }
 
         const transferring = status !== 'failed';
+
         updateCurrentServer((server) =>
             server.attributes.is_transferring === transferring
                 ? server

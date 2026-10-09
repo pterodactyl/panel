@@ -39,9 +39,10 @@ interface Values {
 
 const serverToValues = (server: AdminServer): Values => {
     const environment: Record<string, string> = {};
-    relationshipData(server.attributes.relationships?.variables).forEach(({ attributes }) => {
+
+    for (const { attributes } of relationshipData(server.attributes.relationships?.variables)) {
         environment[attributes.env_variable] = attributes.server_value ?? attributes.default_value ?? '';
-    });
+    }
 
     return {
         startup: server.attributes.container.startup_command,
@@ -62,10 +63,10 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values>; egg: EggFo
 
     if (variables.length === 0) {
         return (
-            <TitledGreyBox title={'Service Variables'}>
+            <TitledGreyBox title='Service Variables'>
                 <Empty className={emptyCompactClass}>
                     <EmptyHeader>
-                        <EmptyMedia variant={'icon'}>
+                        <EmptyMedia variant='icon'>
                             <Variable />
                         </EmptyMedia>
                         <EmptyTitle>No variables</EmptyTitle>
@@ -77,25 +78,25 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values>; egg: EggFo
     }
 
     return (
-        <div className={'space-y-6'}>
+        <div className='space-y-6'>
             {variables.map(({ attributes }) => (
                 <TitledGreyBox key={attributes.id} title={attributes.name}>
                     <form.AppField name={`environment.${attributes.env_variable}`}>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
+                                type='text'
                                 id={`environment_${attributes.env_variable}`}
                                 description={attributes.description}
                             />
                         )}
                     </form.AppField>
-                    <div className={'mt-3 text-xs text-muted-foreground space-y-1'}>
+                    <div className='mt-3 text-xs text-muted-foreground space-y-1'>
                         <p>
                             <strong>Startup Variable:</strong> <Code>{attributes.env_variable}</Code>
                         </p>
                         {attributes.rules && (
                             <p>
-                                <strong>Input Rules:</strong> <Code className={'break-all'}>{attributes.rules}</Code>
+                                <strong>Input Rules:</strong> <Code className='break-all'>{attributes.rules}</Code>
                             </p>
                         )}
                     </div>
@@ -137,15 +138,15 @@ const EggSelector = ({
 
     return (
         <>
-            <TitledGreyBox title={'Service Configuration'}>
-                <p className={'text-xs text-destructive mb-4'}>
+            <TitledGreyBox title='Service Configuration'>
+                <p className='text-xs text-destructive mb-4'>
                     Changing any of the values below will result in the server being reinstalled. The server will be
                     stopped and will then proceed.
                 </p>
                 <div>
-                    <Label htmlFor={'eggId'}>Egg</Label>
+                    <Label htmlFor='eggId'>Egg</Label>
                     <Select
-                        id={'eggId'}
+                        id='eggId'
                         value={eggId}
                         disabled={loading || eggs.length === 0}
                         options={eggs.map((candidate) => ({
@@ -154,28 +155,29 @@ const EggSelector = ({
                         }))}
                         onChange={(value) => {
                             const nextEggId = Number(value);
+
                             form.setFieldValue('eggId', nextEggId);
                             onEggChange(nextEggId);
                         }}
                     />
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'skipScripts'}>
+                <div className='mt-6'>
+                    <form.AppField name='skipScripts'>
                         {(field) => (
                             <field.SwitchField
-                                label={'Skip Egg Install Script'}
-                                description={'Skip the egg install script when reinstalling the server.'}
+                                label='Skip Egg Install Script'
+                                description='Skip the egg install script when reinstalling the server.'
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title={'Docker Image Configuration'} className={'mt-6'}>
+            <TitledGreyBox title='Docker Image Configuration' className='mt-6'>
                 {hasPresetImages ? (
                     <>
-                        <Label htmlFor={'image'}>Image</Label>
+                        <Label htmlFor='image'>Image</Label>
                         <Select
-                            id={'image'}
+                            id='image'
                             value={image}
                             options={imageOptions}
                             onChange={(value) => {
@@ -183,32 +185,32 @@ const EggSelector = ({
                                 form.setFieldValue('customImage', '');
                             }}
                         />
-                        <div className={'mt-6'}>
-                            <form.AppField name={'customImage'}>
+                        <div className='mt-6'>
+                            <form.AppField name='customImage'>
                                 {(field) => (
                                     <field.TextField
-                                        type={'text'}
-                                        id={'custom_docker_image'}
-                                        label={'Custom Docker Image'}
-                                        placeholder={'Or enter a custom image...'}
+                                        type='text'
+                                        id='custom_docker_image'
+                                        label='Custom Docker Image'
+                                        placeholder='Or enter a custom image...'
                                     />
                                 )}
                             </form.AppField>
                         </div>
                     </>
                 ) : (
-                    <form.AppField name={'image'}>
+                    <form.AppField name='image'>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'image'}
-                                label={'Image'}
-                                placeholder={'Enter a docker image...'}
+                                type='text'
+                                id='image'
+                                label='Image'
+                                placeholder='Enter a docker image...'
                             />
                         )}
                     </form.AppField>
                 )}
-                <p className={'mt-1 text-xs text-muted-foreground'}>
+                <p className='mt-1 text-xs text-muted-foreground'>
                     Select an image from the dropdown or enter a custom Docker image.
                 </p>
             </TitledGreyBox>
@@ -253,10 +255,12 @@ function ServerStartupTabContent({ server }: Props) {
             form.setFieldValue('environment', {});
             form.setFieldValue('image', '');
             form.setFieldValue('customImage', '');
+
             return;
         }
 
         const nextEgg = await fetchEggForServer(nextEggId);
+
         if (eggLoad !== latestEggLoad.current) {
             return;
         }
@@ -265,39 +269,45 @@ function ServerStartupTabContent({ server }: Props) {
             form.setFieldValue('environment', {});
             form.setFieldValue('image', '');
             form.setFieldValue('customImage', '');
+
             return;
         }
 
         const isCurrentEgg = nextEggId === server.attributes.egg;
         const current = relationshipData(server.attributes.relationships?.variables);
         const environment: Record<string, string> = {};
-        relationshipData(nextEgg.attributes.relationships?.variables).forEach(({ attributes }) => {
+
+        for (const { attributes } of relationshipData(nextEgg.attributes.relationships?.variables)) {
             const existing = current.find((variable) => variable.attributes.env_variable === attributes.env_variable);
+
             environment[attributes.env_variable] =
                 isCurrentEgg && existing
                     ? (existing.attributes.server_value ?? existing.attributes.default_value ?? '')
                     : attributes.default_value;
-        });
+        }
+
         form.setFieldValue('environment', environment);
 
         const images = Object.values(nextEgg.attributes.docker_images);
+
         if (isCurrentEgg) {
             form.setFieldValue('image', server.attributes.container.image);
         } else if (images.length > 0) {
             form.setFieldValue('image', images[0]);
         }
+
         form.setFieldValue('customImage', '');
     };
 
     return (
         <Form form={form}>
-            <TitledGreyBox title={'Startup Command Modification'}>
-                <form.AppField name={'startup'}>
+            <TitledGreyBox title='Startup Command Modification'>
+                <form.AppField name='startup'>
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'startup'}
-                            label={'Startup Command'}
+                            type='text'
+                            id='startup'
+                            label='Startup Command'
                             description={
                                 'The following variables are available by default: {{SERVER_MEMORY}}, ' +
                                 '{{SERVER_IP}}, and {{SERVER_PORT}}.'
@@ -305,17 +315,17 @@ function ServerStartupTabContent({ server }: Props) {
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6'}>
-                    <Label htmlFor={'default_startup'}>Default Service Start Command</Label>
+                <div className='mt-6'>
+                    <Label htmlFor='default_startup'>Default Service Start Command</Label>
                     <TextInput
-                        id={'default_startup'}
-                        type={'text'}
+                        id='default_startup'
+                        type='text'
                         readOnly
                         value={egg?.attributes.startup || 'Startup not defined'}
                     />
                 </div>
             </TitledGreyBox>
-            <div className={'grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6'}>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6'>
                 <div>
                     <EggSelector
                         form={form}
@@ -327,7 +337,7 @@ function ServerStartupTabContent({ server }: Props) {
                 </div>
                 <EnvironmentVariables form={form} egg={egg} />
             </div>
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>Save Modifications</form.SubmitButton>
                 </form.AppForm>
@@ -340,9 +350,7 @@ export default function ServerStartupTab() {
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return (
-            <ServerError message={'Access to this resource is not allowed due to the current installation state.'} />
-        );
+        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
     }
 
     return <ServerStartupTabContent key={server.attributes.id} server={server} />;

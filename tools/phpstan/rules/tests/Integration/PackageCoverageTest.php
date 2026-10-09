@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class PackageCoverageTest extends TestCase
 {
-    public function testPackagesCoverDynamicAccessAndRuntimeTypeChecks(): void
+    public function test_packages_cover_dynamic_access_and_runtime_type_checks(): void
     {
         $projectRoot = dirname(__DIR__, 5);
         $command = sprintf(
@@ -31,9 +31,9 @@ final class PackageCoverageTest extends TestCase
         // Local tooling may prefix phpstan's stdout with guidance text; the
         // JSON report starts at the first brace.
         $raw = implode('', $output);
-        $braceOffset = strpos($raw, '{');
+        $braceOffset = mb_strpos($raw, '{');
         self::assertIsInt($braceOffset, 'no JSON object found in phpstan output');
-        $report = json_decode(substr($raw, $braceOffset), true, 32, JSON_THROW_ON_ERROR);
+        $report = json_decode(mb_substr($raw, $braceOffset), true, 32, JSON_THROW_ON_ERROR);
         self::assertIsArray($report);
 
         $messages = [];

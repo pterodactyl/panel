@@ -97,10 +97,14 @@ class DatabaseController extends ClientApiController
     #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]
     public function rotatePassword(RotatePasswordRequest $request, RotatesDatabasePasswords $passwordService, Server $server, Database $database): array
     {
+        // The action commits its own transaction around the remote user change, so the
+        // activity is logged afterwards instead of wrapping a change it cannot undo.
+        $passwordService->rotate($database);
+
         Activity::event('server:database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
-            ->transaction(fn (): string => $passwordService->rotate($database));
+            ->log();
 
         return Fractal::item($database->refresh())
             ->parseIncludes(['password'])

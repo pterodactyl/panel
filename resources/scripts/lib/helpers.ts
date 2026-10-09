@@ -6,6 +6,7 @@ function hexToRgba(hex: string, alpha = 1): string {
 
     // noinspection RegExpSimplifiable
     const pairs = hex.match(/[a-fA-F0-9]{2}/g);
+
     if (!pairs || pairs.length < 3) {
         return hex;
     }

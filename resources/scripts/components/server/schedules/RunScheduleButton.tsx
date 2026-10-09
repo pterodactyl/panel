@@ -21,10 +21,10 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
 
     return (
         <>
-            <SpinnerOverlay visible={triggerSchedule.isPending} size={'large'} />
+            <SpinnerOverlay visible={triggerSchedule.isPending} size='large' />
             <Button
                 isSecondary
-                className={'flex-1 sm:flex-none'}
+                className='flex-1 sm:flex-none'
                 disabled={schedule.attributes.is_processing || triggerSchedule.isPending}
                 onClick={onTriggerExecute}
             >

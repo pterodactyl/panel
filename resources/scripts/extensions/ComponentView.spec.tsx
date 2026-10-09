@@ -6,6 +6,7 @@ import type { ReplacementProps, ComponentReplacement } from './componentTypes';
 import type * as Registry from './registry';
 
 let registry: typeof Registry;
+
 beforeEach(async () => {
     vi.resetModules();
     registry = await import('./registry');
@@ -20,17 +21,22 @@ const model = { name: 'config.json', kind: 'file' as const, size: 12, modifiedAt
 const Part = () => null;
 const parts = { icon: Part, name: Part, size: Part, modified: Part };
 const Default = () => <span>Native details</span>;
+
 function prepare() {
     registry.prepareExtensions([{ id: 'presentation', entry: '/client.js', components: ['server.files.details'] }]);
 }
+
 function register(replacement: ComponentReplacement<'server.files.details'>) {
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement('presentation', 'server.files.details', replacement, batch);
     registry.commitExtensionRegistryBatch('presentation', batch);
 }
+
 async function components() {
     const { default: View } = await import('./ComponentView');
     const { ComponentReplacementSession: Session, COMPONENT_LOAD_TIMEOUT_MS } = await import('./componentSession');
+
     function Row({ name = model.name }: { name?: string }) {
         return (
             <View
@@ -41,10 +47,13 @@ async function components() {
             />
         );
     }
+
     return { Row, View, Session, timeout: COMPONENT_LOAD_TIMEOUT_MS };
 }
+
 it('renders the native view immediately when no extension declares a replacement', async () => {
     const { Row } = await components();
+
     render(<Row />);
     expect(screen.getByText('Native details')).toBeVisible();
 });
@@ -52,13 +61,16 @@ it('shares one lazy import across rows and preserves replacement state when data
     prepare();
     function Custom({ model }: ReplacementProps<'server.files.details'>) {
         const [count, setCount] = useState(0);
+
         return (
             <button onClick={() => setCount(count + 1)}>
                 {model.name}:{count}
             </button>
         );
     }
+
     const load = vi.fn(async () => ({ default: Custom }));
+
     register({ load });
     const { Row, Session } = await components();
     const view = render(
@@ -67,6 +79,7 @@ it('shares one lazy import across rows and preserves replacement state when data
             <Row name='other.json' />
         </Session>
     );
+
     fireEvent.click(await screen.findByRole('button', { name: 'config.json:0' }));
     view.rerender(
         <Session>
@@ -81,12 +94,14 @@ it('shares one lazy import across rows and preserves replacement state when data
 it('keeps all rows native after a deadline even when setup finishes or another row mounts later', async () => {
     prepare();
     const { Row, Session, timeout } = await components();
+
     vi.useFakeTimers();
     const view = render(
         <Session>
             <Row />
         </Session>
     );
+
     expect(screen.getByText('Loading details')).toBeVisible();
     await act(async () => {
         await vi.advanceTimersByTimeAsync(timeout);
@@ -107,6 +122,7 @@ it('keeps all rows native after a deadline even when setup finishes or another r
 it('does not swap native content when a timed-out lazy chunk resolves', async () => {
     prepare();
     let resolve!: (module: { default: ComponentType<ReplacementProps<'server.files.details'>> }) => void;
+
     register({
         load: () =>
             new Promise((done) => {
@@ -114,6 +130,7 @@ it('does not swap native content when a timed-out lazy chunk resolves', async ()
             }),
     });
     const { Row, timeout } = await components();
+
     vi.useFakeTimers();
     render(<Row />);
     await act(async () => {
@@ -131,8 +148,10 @@ it('restores native presentation on import failure while core controls stay usab
         },
     });
     const { Row } = await components();
+
     function Host() {
         const [count, setCount] = useState(0);
+
         return (
             <>
                 <button onClick={() => setCount(count + 1)}>Core {count}</button>
@@ -140,6 +159,7 @@ it('restores native presentation on import failure while core controls stay usab
             </>
         );
     }
+
     render(<Host />);
     fireEvent.click(screen.getByRole('button', { name: 'Core 0' }));
     expect(await screen.findByText('Native details')).toBeVisible();
@@ -151,15 +171,23 @@ it('keeps core draft state during render failure and never replays its action', 
     const Draft = createContext('');
     const Native = () => <output>{useContext(Draft)}</output>;
     const save = vi.fn();
+
     function Custom() {
         const draft = useContext(Draft);
-        if (draft === 'saved draft') throw new Error('presentation failed');
+
+        if (draft === 'saved draft') {
+            throw new Error('presentation failed');
+        }
+
         return <span>Custom details</span>;
     }
+
     register(Custom);
     const { View } = await components();
+
     function Host() {
         const [draft, setDraft] = useState('');
+
         return (
             <Draft.Provider value={draft}>
                 <input aria-label='Core draft' value={draft} onChange={(event) => setDraft(event.target.value)} />
@@ -173,6 +201,7 @@ it('keeps core draft state during render failure and never replays its action', 
             </Draft.Provider>
         );
     }
+
     render(<Host />);
     await screen.findByText('Custom details');
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'saved draft' } });
@@ -185,11 +214,14 @@ it('keeps core draft state during render failure and never replays its action', 
 it('uses a stable default component without recursively resolving the replacement', async () => {
     prepare();
     const custom = vi.fn(({ Default }: ReplacementProps<'server.files.details'>) => <Default />);
+
     register(custom);
     const { Row } = await components();
     const view = render(<Row />);
+
     await screen.findByText('Native details');
     const before = custom.mock.calls[0][0];
+
     view.rerender(<Row name='updated.json' />);
     expect(custom.mock.calls.at(-1)![0].Default).toBe(before.Default);
     expect(custom.mock.calls.at(-1)![0].parts).toBe(before.parts);
@@ -200,15 +232,22 @@ it.each(['throw', 'reject'] as const)(
         prepare();
         const { useExtensionCallback } = await import('./context');
         const action = vi.fn(() => {
-            if (failure === 'throw') throw new Error('callback failed');
+            if (failure === 'throw') {
+                throw new Error('callback failed');
+            }
+
             return Promise.reject(new Error('callback failed'));
         });
+
         function Custom() {
             const onClick = useExtensionCallback('inspect', action);
+
             return <button onClick={onClick}>Inspect details</button>;
         }
+
         register(Custom);
         const { Row } = await components();
+
         render(<Row />);
         fireEvent.click(await screen.findByRole('button', { name: 'Inspect details' }));
         await waitFor(() => {
@@ -230,11 +269,16 @@ it('retains the native view when an uncontained suspension eventually resolves',
             done();
         };
     });
+
     register(() => {
-        if (!ready) throw promise;
+        if (!ready) {
+            throw promise;
+        }
+
         return <span>Late suspense</span>;
     });
     const { Row } = await components();
+
     render(<Row />);
     await screen.findByText('Native details');
     await act(async () => resolve());
@@ -244,8 +288,10 @@ it('retains the native view when an uncontained suspension eventually resolves',
 it('cancels waiting when the page unmounts', async () => {
     prepare();
     const { Row, timeout } = await components();
+
     vi.useFakeTimers();
     const view = render(<Row />);
+
     view.unmount();
     await act(async () => {
         await vi.advanceTimersByTimeAsync(timeout);

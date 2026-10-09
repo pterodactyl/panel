@@ -12,6 +12,7 @@ function mount(Probe: FunctionComponent, path: string) {
         routeTree: createRootRoute({ component: Probe }),
         history: createMemoryHistory({ initialEntries: [path] }),
     });
+
     render(<RouterProvider router={router} />);
 
     return router;
@@ -30,6 +31,7 @@ it('navigates list search on the current route', async () => {
     let search!: ReturnType<typeof useUserListSearch>;
     const router = mount(() => {
         search = useUserListSearch();
+
         return <output>{search.sort ?? 'unsorted'}</output>;
     }, '/?filter=25565&page=3&sort=bogus');
 

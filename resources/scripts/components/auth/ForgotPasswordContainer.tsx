@@ -20,10 +20,12 @@ export default function ForgotPasswordContainer() {
         defaultValues: { email: '' },
         onSubmit: async ({ value }) => {
             let token = '';
+
             if (recaptchaEnabled) {
                 token = (await recaptchaRef.current?.execute()) ?? '';
                 if (!token) {
                     toast.error('Captcha verification failed, please try again.');
+
                     return;
                 }
             }
@@ -43,9 +45,9 @@ export default function ForgotPasswordContainer() {
     });
 
     return (
-        <LoginFormContainer form={form} title={'Request Password Reset'} className={'w-full flex'}>
+        <LoginFormContainer form={form} title='Request Password Reset' className='w-full flex'>
             <form.AppField
-                name={'email'}
+                name='email'
                 validators={{
                     onChange: ({ value }) =>
                         isEmail(value) ? undefined : 'A valid email address must be provided to continue.',
@@ -54,26 +56,22 @@ export default function ForgotPasswordContainer() {
                 {(field) => (
                     <field.TextField
                         light
-                        type={'email'}
-                        label={'Email'}
-                        description={
-                            'Enter your account email address to receive instructions on resetting your password.'
-                        }
+                        type='email'
+                        label='Email'
+                        description='Enter your account email address to receive instructions on resetting your password.'
                     />
                 )}
             </form.AppField>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton size={'xlarge'}>Send Email</form.SubmitButton>
+                    <form.SubmitButton size='xlarge'>Send Email</form.SubmitButton>
                 </form.AppForm>
             </div>
             {recaptchaEnabled && <InvisibleRecaptcha ref={recaptchaRef} siteKey={siteKey || ''} />}
-            <div className={'mt-6 text-center'}>
+            <div className='mt-6 text-center'>
                 <Link
-                    to={'/auth/login'}
-                    className={
-                        'text-xs text-muted-foreground tracking-wide uppercase no-underline hover:text-foreground'
-                    }
+                    to='/auth/login'
+                    className='text-xs text-muted-foreground tracking-wide uppercase no-underline hover:text-foreground'
                 >
                     Return to Login
                 </Link>

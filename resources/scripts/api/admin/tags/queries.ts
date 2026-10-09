@@ -100,6 +100,7 @@ export const useCreateAdminTag = () => {
         onSuccess: async (tag) => {
             await invalidateGeneratedOperations(queryClient, tagListOperations);
             const messages = resourceMutationMessages('tag', 'create', tag.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'create').errorTitle),
@@ -114,6 +115,7 @@ export const useUpdateAdminTag = () => {
         onSuccess: async (tag) => {
             await invalidateGeneratedOperations(queryClient, assignedTagOperations);
             const messages = resourceMutationMessages('tag', 'update', tag.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'update').errorTitle),
@@ -128,6 +130,7 @@ export const useDeleteAdminTag = () => {
         onSuccess: async (_data, variables) => {
             await invalidateGeneratedOperations(queryClient, assignedTagOperations);
             const messages = resourceMutationMessages('tag', 'delete', variables.meta?.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'delete').errorTitle),

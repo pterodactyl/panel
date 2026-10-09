@@ -11,6 +11,7 @@ import {
 } from './testing';
 
 let host: ComponentTestHost<'server.files.editor'> | ComponentTestHost<'server.files.manager'> | undefined;
+
 afterEach(() => {
     cleanup();
     host?.dispose();
@@ -20,6 +21,7 @@ afterEach(() => {
 it('renders an editor replacement around native parts with a fixture model', () => {
     const save = vi.fn(async () => true);
     const change = vi.fn();
+
     function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
         return (
             <textarea
@@ -29,12 +31,15 @@ it('renders an editor replacement around native parts with a fixture model', () 
             />
         );
     }
+
     function Editor({ Default }: ReplacementProps<'server.files.editor'>) {
         return <Default className='custom-editor' parts={{ editor: Buffer }} />;
     }
+
     const mounted = createComponentTestHost('server.files.editor', {
         model: createTestFileEditor({ name: '.pteroignore', content: 'logs/*', save, change }),
     });
+
     host = mounted;
     render(<Editor {...mounted.props} />, { wrapper: mounted.Wrapper });
 
@@ -51,8 +56,10 @@ it('hides the native save action from a read-only editor fixture', () => {
     const mounted = createComponentTestHost('server.files.editor', {
         model: createTestFileEditor({ readOnly: true }),
     });
+
     host = mounted;
     const { actions: Actions } = mounted.props.parts;
+
     render(<Actions model={mounted.props.model} />, { wrapper: mounted.Wrapper });
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -71,10 +78,12 @@ it('renders the native file browser from a fixture model without issuing core qu
     const mounted = createComponentTestHost('server.files.manager', {
         model: { ...model, actions: { ...model.actions, select } },
     });
+
     host = mounted;
     function Browser({ Default }: ReplacementProps<'server.files.manager'>) {
         return <Default />;
     }
+
     render(<Browser {...mounted.props} />, { wrapper: mounted.Wrapper });
 
     expect(await screen.findByRole('link', { name: 'app.yml' })).toHaveAttribute(

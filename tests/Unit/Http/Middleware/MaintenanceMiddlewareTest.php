@@ -56,6 +56,6 @@ test('rejects servers with an invalid node relation', function () {
 function getMiddleware(): MaintenanceMiddleware
 {
     return (function () {
-        return new MaintenanceMiddleware($this->app->make(ResponseFactory::class));
+        return new MaintenanceMiddleware();
     })->call(pterodactylTestCase());
 }

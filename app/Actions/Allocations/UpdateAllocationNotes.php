@@ -13,6 +13,6 @@ final class UpdateAllocationNotes implements UpdatesAllocationNotes
     {
         $allocation->forceFill(['notes' => $notes])->save();
 
-        return $allocation->refresh();
+        return $allocation;
     }
 }

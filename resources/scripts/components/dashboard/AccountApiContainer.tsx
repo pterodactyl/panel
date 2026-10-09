@@ -36,16 +36,16 @@ export default function AccountApiContainer() {
     }
 
     return (
-        <PageContentBlock title={'Account API'}>
-            <div className={'md:flex flex-nowrap my-10'}>
-                <ContentBox title={'Create API Key'} className={'flex-none w-full md:w-1/2'}>
+        <PageContentBlock title='Account API'>
+            <div className='md:flex flex-nowrap my-10'>
+                <ContentBox title='Create API Key' className='flex-none w-full md:w-1/2'>
                     <CreateApiKeyForm />
                 </ContentBox>
-                <ContentBox title={'API Keys'} className={'flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'}>
+                <ContentBox title='API Keys' className='flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'>
                     <SpinnerOverlay visible={isDeleting} />
                     <Dialog.Confirm
-                        title={'Delete API Key'}
-                        confirm={'Delete Key'}
+                        title='Delete API Key'
+                        confirm='Delete Key'
                         open={!!deleteIdentifier}
                         pending={isDeleting}
                         onClose={() => setDeleteIdentifier('')}
@@ -58,15 +58,13 @@ export default function AccountApiContainer() {
                     >
                         All requests using the <Code>{deleteIdentifier}</Code> key will be invalidated.
                     </Dialog.Confirm>
-                    {!keys ? (
-                        <Spinner size={'large'} centered />
-                    ) : (
+                    {keys ? (
                         <DataTable
                             table={table}
                             emptyState={
                                 <Empty className={emptyCompactClass}>
                                     <EmptyHeader>
-                                        <EmptyMedia variant={'icon'}>
+                                        <EmptyMedia variant='icon'>
                                             <KeyRound />
                                         </EmptyMedia>
                                         <EmptyTitle>No API keys</EmptyTitle>
@@ -77,6 +75,8 @@ export default function AccountApiContainer() {
                                 </Empty>
                             }
                         />
+                    ) : (
+                        <Spinner size='large' centered />
                     )}
                 </ContentBox>
             </div>

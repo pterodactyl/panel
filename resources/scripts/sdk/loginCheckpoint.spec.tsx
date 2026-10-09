@@ -5,6 +5,7 @@ import { useOpenLoginCheckpoint } from './navigation';
 import { createExtensionTestHost, type ExtensionTestHost } from './testing';
 
 let host: ExtensionTestHost | undefined;
+
 afterEach(() => {
     cleanup();
     host?.dispose();
@@ -14,10 +15,13 @@ afterEach(() => {
 it('hands the confirmation token to the native checkpoint screen through history state', async () => {
     host = createExtensionTestHost({ path: '/auth/login' });
     let open: ((token: string) => Promise<void>) | undefined;
+
     function Probe() {
         open = useOpenLoginCheckpoint();
+
         return <span>ready</span>;
     }
+
     render(<Probe />, { wrapper: host.Wrapper });
     await screen.findByText('ready');
 
@@ -33,10 +37,13 @@ it('hands the confirmation token to the native checkpoint screen through history
 it('carries the post-login destination through to the checkpoint screen', async () => {
     host = createExtensionTestHost({ path: '/auth/login?redirect=%2Fpanel%2Fnodes' });
     let open: ((token: string) => Promise<void>) | undefined;
+
     function Probe() {
         open = useOpenLoginCheckpoint();
+
         return <span>ready</span>;
     }
+
     render(<Probe />, { wrapper: host.Wrapper });
     await screen.findByText('ready');
 

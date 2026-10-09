@@ -8,9 +8,11 @@ import { ExtensionContext } from '@/extensions/context';
 import { useExtensionTranslation } from './localization';
 
 const mount = { extensionId: 'probe', context: 'translation test' };
+
 afterEach(cleanup);
 it('uses the mount namespace and host locale without reading another extension translations', async () => {
     const i18n = createInstance();
+
     await i18n.init({
         lng: 'en',
         resources: {
@@ -24,7 +26,9 @@ it('uses the mount namespace and host locale without reading another extension t
             </I18nextProvider>
         );
     }
+
     const { result } = renderHook(() => useExtensionTranslation(), { wrapper: Wrapper });
+
     expect(result.current.ready).toBe(true);
     expect(result.current.locale).toBe('en');
     expect(result.current.t('greeting', { name: 'Alex' })).toBe('Hello Alex');

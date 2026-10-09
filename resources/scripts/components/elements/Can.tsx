@@ -11,11 +11,5 @@ interface Props {
 export default function Can({ action, matchAny = false, renderOnError, children }: Props) {
     const can = usePermissions(action);
 
-    return (
-        <>
-            {(matchAny && can.filter((p) => p).length > 0) || (!matchAny && can.every((p) => p))
-                ? children
-                : renderOnError}
-        </>
-    );
+    return (matchAny && can.some((p) => p)) || (!matchAny && can.every((p) => p)) ? children : renderOnError;
 }

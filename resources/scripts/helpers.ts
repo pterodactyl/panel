@@ -2,33 +2,26 @@ import { normalize } from 'pathe';
 
 export const randomInt = (low: number, high: number) => Math.floor(Math.random() * (high - low) + low);
 
-export const cleanDirectoryPath = (path: string) => path.replace(/(\/(\/*))|(^$)/g, '/');
+export const cleanDirectoryPath = (path: string) => path.replaceAll(/(\/(\/*))|(^$)/g, '/');
 
 export function fileBitsToString(mode: string, directory: boolean): string {
     const m = parseInt(mode, 8);
 
     let buf = '';
-    'dalTLDpSugct?'.split('').forEach((c, i) => {
-        if ((m & (1 << (32 - 1 - i))) !== 0) {
-            buf = buf + c;
-        }
-    });
 
-    if (buf.length === 0) {
-        if (directory) {
-            buf = 'd';
-        } else {
-            buf = '-';
+    for (const [i, c] of [...'dalTLDpSugct?'].entries()) {
+        if ((m & (1 << (32 - 1 - i))) !== 0) {
+            buf += c;
         }
     }
 
-    'rwxrwxrwx'.split('').forEach((c, i) => {
-        if ((m & (1 << (9 - 1 - i))) !== 0) {
-            buf = buf + c;
-        } else {
-            buf = buf + '-';
-        }
-    });
+    if (buf.length === 0) {
+        buf = directory ? 'd' : '-';
+    }
+
+    for (const [i, c] of [...'rwxrwxrwx'].entries()) {
+        buf += (m & (1 << (9 - 1 - i))) === 0 ? '-' : c;
+    }
 
     return buf;
 }

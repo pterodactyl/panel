@@ -30,10 +30,12 @@ const JavaVersionModalFeature = () => {
     const loading = updateDockerImage.isPending;
 
     const { data, isFetching } = useServerStartup(uuid, { enabled: dialog.open });
-    const selectedVersion = selectedVersionOverride || Object.values(data?.meta?.docker_images || {})[0] || '';
+    const selectedVersion = selectedVersionOverride || Object.values(data?.meta?.docker_images ?? {})[0] || '';
 
     useWebsocketEvent(SocketEvent.CONSOLE_OUTPUT, (data) => {
-        if (status === 'running') return;
+        if (status === 'running') {
+            return;
+        }
 
         if (MATCH_ERRORS.some((p) => data.toLowerCase().includes(p.toLowerCase()))) {
             setSelectedVersionOverride('');
@@ -48,6 +50,7 @@ const JavaVersionModalFeature = () => {
                 if (status === 'offline' && instance) {
                     instance.send(SocketRequest.SET_STATE, 'restart');
                 }
+
                 dialog.hide();
             })
             .catch(() => {});
@@ -56,20 +59,20 @@ const JavaVersionModalFeature = () => {
     return (
         <Dialog
             open={dialog.open}
-            title={'Unsupported Java version'}
+            title='Unsupported Java version'
             onClose={dialog.hide}
             preventExternalClose={loading}
             hideCloseIcon={loading}
         >
             <SpinnerOverlay visible={loading} />
-            <p className={'mt-4'}>
+            <p className='mt-4'>
                 This server is currently running an unsupported version of Java and cannot be started.
-                <Can action={'startup.docker-image'}>
+                <Can action='startup.docker-image'>
                     &nbsp;Please select a supported version from the list below to continue starting the server.
                 </Can>
             </p>
-            <Can action={'startup.docker-image'}>
-                <div className={'mt-4'}>
+            <Can action='startup.docker-image'>
+                <div className='mt-4'>
                     <InputSpinner visible={!data || isFetching}>
                         <Select
                             disabled={!data}
@@ -77,9 +80,9 @@ const JavaVersionModalFeature = () => {
                             onChange={(value) => setSelectedVersionOverride(String(value))}
                             options={
                                 data
-                                    ? Object.keys(data.meta?.docker_images ?? {}).map((key) => ({
-                                          value: (data.meta?.docker_images ?? {})[key],
-                                          label: key,
+                                    ? Object.entries(data.meta?.docker_images ?? {}).map(([label, value]) => ({
+                                          value,
+                                          label,
                                       }))
                                     : []
                             }
@@ -87,12 +90,12 @@ const JavaVersionModalFeature = () => {
                     </InputSpinner>
                 </div>
             </Can>
-            <div className={'mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0'}>
-                <Button isSecondary onClick={dialog.hide} className={'w-full sm:w-auto'}>
+            <div className='mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0'>
+                <Button isSecondary onClick={dialog.hide} className='w-full sm:w-auto'>
                     Cancel
                 </Button>
-                <Can action={'startup.docker-image'}>
-                    <Button onClick={updateJava} className={'w-full sm:w-auto'}>
+                <Can action='startup.docker-image'>
+                    <Button onClick={updateJava} className='w-full sm:w-auto'>
                         Update Docker Image
                     </Button>
                 </Can>

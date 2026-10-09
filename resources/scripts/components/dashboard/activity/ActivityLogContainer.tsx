@@ -15,7 +15,7 @@ export default function ActivityLogContainer() {
     );
 
     return (
-        <PageContentBlock title={'Account Activity Log'}>
+        <PageContentBlock title='Account Activity Log'>
             <ActivityLogView
                 data={data}
                 error={error}
@@ -25,7 +25,7 @@ export default function ActivityLogContainer() {
                 user={user}
                 facets={facets}
                 showUserFilter={false}
-                emptyMessage={'Actions taken on your account will appear here.'}
+                emptyMessage='Actions taken on your account will appear here.'
                 onNavigate={(search: ActivityLogSearch) =>
                     navigate({ to: '/account/activity', search, replace: true, viewTransition: false })
                 }

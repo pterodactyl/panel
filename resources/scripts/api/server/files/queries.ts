@@ -88,7 +88,7 @@ export const chmodFilesInput = (
     path: { server_uuid: uuid },
     body: {
         root: directory,
-        files: files.map(({ file, mode }) => ({ file, mode: Number.parseInt(mode, 8) })),
+        files: files.map(({ file, mode }) => ({ file, mode })),
     },
 });
 
@@ -150,11 +150,13 @@ const serverFilesQueryUpdate = async (
     updater: (current: ClientListFilesResponse | undefined) => ClientListFilesResponse | undefined
 ) => {
     await queryClient.cancelQueries({ queryKey: serverFilesQueryKey(uuid, directory) });
+
     return queryClient.setQueryData<ClientListFilesResponse>(serverFilesQueryKey(uuid, directory), updater);
 };
 
 const updateServerFileContent = async (queryClient: QueryClient, uuid: string, file: string, content: string) => {
     await queryClient.cancelQueries({ queryKey: serverFileContentQueryKey(uuid, file) });
+
     return queryClient.setQueryData<string>(serverFileContentQueryKey(uuid, file), content);
 };
 
@@ -200,17 +202,22 @@ export const isFileObjectArchiveType = ({ attributes }: FileObject) =>
         'application/x-7z-compressed', // .7z
     ].includes(attributes.mimetype);
 
-export const fileObjectKind = (file: FileObject): 'file' | 'directory' | 'archive' | 'symlink' =>
-    !file.attributes.is_file
-        ? 'directory'
-        : file.attributes.is_symlink
-          ? 'symlink'
-          : isFileObjectArchiveType(file)
-            ? 'archive'
-            : 'file';
+export const fileObjectKind = (file: FileObject): 'file' | 'directory' | 'archive' | 'symlink' => {
+    if (!file.attributes.is_file) {
+        return 'directory';
+    }
+
+    if (file.attributes.is_symlink) {
+        return 'symlink';
+    }
+
+    return isFileObjectArchiveType(file) ? 'archive' : 'file';
+};
 
 export const isFileObjectEditable = (file: FileObject) => {
-    if (isFileObjectArchiveType(file) || !file.attributes.is_file) return false;
+    if (isFileObjectArchiveType(file) || !file.attributes.is_file) {
+        return false;
+    }
 
     const matches = ['application/jar', 'application/octet-stream', 'inode/directory', /^image\/(?!svg\+xml)/];
 
@@ -260,6 +267,7 @@ export const useCreateDirectory = () => {
                     data: [...(files?.data ?? []), generateDirectoryData(body.name)],
                 }));
             }
+
             toast.success('Directory created');
         },
         onError: (error) => notifyHttpError(error, 'Unable to create directory'),
@@ -286,6 +294,7 @@ export const useRenameFiles = () => {
                         : removeListItems(current, (file) => file.attributes.name === from)
                 );
             }
+
             await queryClient.invalidateQueries({ queryKey: allServerFilesQueryKey(path.server_uuid) });
             toast.success('Files updated');
         },
@@ -301,7 +310,7 @@ export const useChmodFiles = () => {
         onSuccess: async (_data, { path, body }) => {
             if (body?.root && body.files?.length === 1) {
                 const [{ file, mode }] = body.files;
-                const modeBits = mode.toString(8).padStart(4, '0');
+                const modeBits = mode.padStart(4, '0');
 
                 await serverFilesQueryUpdate(queryClient, path.server_uuid, body.root, (current) =>
                     updateListItems(
@@ -318,9 +327,11 @@ export const useChmodFiles = () => {
                     )
                 );
             }
+
             if (body?.root) {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
+
             toast.success('Permissions updated');
         },
         onError: (error) => notifyHttpError(error, 'Unable to update permissions'),
@@ -335,10 +346,12 @@ export const useDeleteFiles = () => {
         onSuccess: async (_data, { path, body }) => {
             if (body?.root && body.files) {
                 const files = body.files;
+
                 await serverFilesQueryUpdate(queryClient, path.server_uuid, body.root, (current) =>
                     removeListItems(current, (file) => files.includes(file.attributes.name))
                 );
             }
+
             toast.success(body?.files?.length === 1 ? 'File deleted' : 'Files deleted');
         },
         onError: (error) => notifyHttpError(error, 'Unable to delete files'),
@@ -354,6 +367,7 @@ export const useCopyFile = (directory: string) => {
             if (directory) {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, directory) });
             }
+
             toast.success('File copied');
         },
         onError: (error) => notifyHttpError(error, 'Unable to copy file'),
@@ -369,6 +383,7 @@ export const useCompressFiles = () => {
             if (body?.root) {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
+
             toast.success('Archive started');
         },
         onError: (error) => notifyHttpError(error, 'Unable to archive files'),
@@ -384,6 +399,7 @@ export const useDecompressFile = () => {
             if (body?.root) {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
+
             toast.success('Unarchive started');
         },
         onError: (error) => notifyHttpError(error, 'Unable to unarchive file'),
@@ -412,8 +428,12 @@ export const useSaveFileContent = () => {
 const runPooled = async <T>(items: readonly T[], concurrency: number, task: (item: T) => Promise<void>) => {
     let next = 0;
     const worker = async (): Promise<void> => {
-        if (next >= items.length) return;
+        if (next >= items.length) {
+            return;
+        }
+
         await task(items[next++]);
+
         return worker();
     };
 
@@ -428,6 +448,7 @@ const uploadFile = async (
     onUploadProgress: (progress: AxiosProgressEvent) => void
 ) => {
     const url = await getFileUploadUrl(uuid, signal);
+
     await axios.post(
         url,
         { files: file },
@@ -459,6 +480,7 @@ export const useUploadFiles = () => {
             const queued = files.map((file) => {
                 const id = `upload-${++uploadSequence}`;
                 const controller = new AbortController();
+
                 callbacks.onFileQueued(id, file, controller);
 
                 return { id, file, controller };
@@ -467,6 +489,7 @@ export const useUploadFiles = () => {
 
             await runPooled(queued, UPLOAD_CONCURRENCY, async ({ id, file, controller }) => {
                 let outcome: FileUploadOutcome = 'cancelled';
+
                 if (!controller.signal.aborted) {
                     try {
                         await uploadFile(uuid, directory, file, controller.signal, (progress) =>

@@ -27,15 +27,15 @@ const PermissionTitleBox = ({ form, isEditable, title, editablePermissions, clas
     return (
         <TitledGreyBox
             title={
-                <div className={'flex items-center'}>
-                    <p className={'text-sm uppercase flex-1'}>{title}</p>
+                <div className='flex items-center'>
+                    <p className='text-sm uppercase flex-1'>{title}</p>
                     {canToggleGroup && (
                         <Checkbox
                             aria-label={`Select all ${title} permissions`}
                             checked={allChecked}
                             indeterminate={!allChecked && editablePermissions.some((p) => valueSet.has(p))}
                             onChange={onCheckedChange}
-                            className={'w-5 h-5'}
+                            className='w-5 h-5'
                         />
                     )}
                 </div>

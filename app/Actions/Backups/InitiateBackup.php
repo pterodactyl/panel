@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Backups;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
@@ -60,13 +61,18 @@ final class InitiateBackup implements InitiatesBackups
     /**
      * Initiates the backup process for a server on Wings.
      *
+     * The rows are written in a transaction, but Wings is only asked to start the backup
+     * once that transaction commits, and backups rotated out to make room are deleted only
+     * after Wings accepted the new one. A rejected backup is marked failed and nothing is
+     * rotated out, so the oldest backup survives a failed attempt.
+     *
      * @throws Throwable
      * @throws TooManyBackupsException
      * @throws TooManyRequestsHttpException
      */
     public function initiate(Server $server, ?string $name = null, bool $override = false): Backup
     {
-        return DB::transaction(function () use ($server, $name, $override): Backup {
+        [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $name, $override): array {
             $limit = JsonValueGuard::integer(config('backups.throttles.limit'));
             $period = JsonValueGuard::integer(config('backups.throttles.period'));
             if ($period > 0) {
@@ -90,22 +96,28 @@ final class InitiateBackup implements InitiatesBackups
                 }
             }
 
-            $successful = $server->backups()->nonFailed();
-            if (! $server->backup_limit || $successful->lockForUpdate()->count() >= $server->backup_limit) {
+            $rotated = new Collection;
+            $count = $server->backups()->nonFailed()->lockForUpdate()->count();
+            if (! $server->backup_limit || $count >= $server->backup_limit) {
                 // Do not allow the user to continue if this server is already at its limit and can't override.
                 if (! $override || $server->backup_limit <= 0) {
                     throw new TooManyBackupsException($server->backup_limit);
                 }
 
-                // Get the oldest backup the server has that is not "locked" (indicating a backup that should
-                // never be automatically purged). If we find a backup we will delete it and then continue with
-                // this process. If no backup is found that can be used an exception is thrown.
-                $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
-                if (! $oldest) {
+                // Pick the oldest backups that are not "locked" (indicating a backup that should never
+                // be automatically purged) to make room for this one. A backup rotated out by another
+                // request that has not finished deleting it still counts here, so take enough to bring
+                // the server back to its limit. They are deleted once Wings accepts the new backup.
+                $needed = $count - $server->backup_limit + 1;
+                $rotated = $server->backups()
+                    ->nonFailed()
+                    ->where('is_locked', false)
+                    ->orderBy('created_at')
+                    ->limit($needed)
+                    ->get();
+                if ($rotated->count() < $needed) {
                     throw new TooManyBackupsException($server->backup_limit);
                 }
-
-                $this->deleteBackup->delete($oldest);
             }
 
             $backup = $server->backups()->create([
@@ -116,9 +128,38 @@ final class InitiateBackup implements InitiatesBackups
                 'is_locked' => $this->isLocked,
             ]);
 
-            Daemon::server($server)->backups()->create($backup);
-
-            return $backup->refresh();
+            return [$backup, $rotated];
         });
+
+        try {
+            Daemon::server($server)->backups()->create($backup);
+        } catch (Throwable $throwable) {
+            // Record the attempt as failed, the same state Wings reports for a failed backup.
+            $backup->forceFill([
+                'is_successful' => false,
+                'is_locked' => false,
+                'completed_at' => CarbonImmutable::now(),
+            ])->save();
+
+            throw $throwable;
+        }
+
+        foreach ($rotated as $old) {
+            // Re-read the row: it may have been deleted or locked since it was picked.
+            $current = Backup::query()->whereKey($old->getKey())->first();
+            if ($current === null) {
+                continue;
+            }
+
+            try {
+                $this->deleteBackup->delete($current);
+            } catch (Throwable $throwable) {
+                // The new backup is already running, so leave the server one over its limit
+                // rather than failing a request Wings accepted.
+                report($throwable);
+            }
+        }
+
+        return $backup->refresh();
     }
 }

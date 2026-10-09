@@ -26,7 +26,7 @@ function DashboardContainerContent() {
     const showOnlyAdmin = serverType === 'admin';
 
     const navigateToPage = (page: number) => {
-        navigate({
+        void navigate({
             to: '/',
             search: serverType ? { ...getPageSearch(page), type: serverType } : getPageSearch(page),
             replace: true,
@@ -37,7 +37,7 @@ function DashboardContainerContent() {
     const { data: servers, error, refetch } = useAccountServers({ page, type: serverType });
 
     const toggleShowOnlyAdmin = () => {
-        navigate({
+        void navigate({
             to: '/',
             search: showOnlyAdmin ? {} : { type: 'admin' },
             replace: true,
@@ -46,9 +46,12 @@ function DashboardContainerContent() {
     };
 
     useEffect(() => {
-        if (!servers) return;
+        if (!servers) {
+            return;
+        }
+
         if (servers.meta.pagination.current_page > 1 && !servers.data.length) {
-            navigate({
+            void navigate({
                 to: '/',
                 search: serverType ? { type: serverType } : {},
                 replace: true,
@@ -62,26 +65,24 @@ function DashboardContainerContent() {
     }
 
     return (
-        <PageContentBlock title={'Dashboard'}>
+        <PageContentBlock title='Dashboard'>
             <PageHeading
-                title={'Servers'}
-                className={'mb-4'}
+                title='Servers'
+                className='mb-4'
                 actions={
                     rootAdmin && (
                         <Switch
                             checked={showOnlyAdmin}
                             onChange={toggleShowOnlyAdmin}
                             label={showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
-                            controlPosition={'end'}
-                            className={'gap-2'}
+                            controlPosition='end'
+                            className='gap-2'
                         />
                     )
                 }
             />
-            <Slot name={'dashboard.before'} />
-            {!servers ? (
-                <Spinner centered size={'large'} />
-            ) : (
+            <Slot name='dashboard.before' />
+            {servers ? (
                 <Pagination data={servers} onPageSelect={navigateToPage}>
                     {({ items }) =>
                         items.length > 0 ? (
@@ -93,9 +94,9 @@ function DashboardContainerContent() {
                                 />
                             ))
                         ) : (
-                            <Empty className={'border bg-card'}>
+                            <Empty className='border bg-card'>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <Server />
                                     </EmptyMedia>
                                     <EmptyTitle>{showOnlyAdmin ? 'No other servers' : 'No servers yet'}</EmptyTitle>
@@ -107,15 +108,17 @@ function DashboardContainerContent() {
                                 </EmptyHeader>
                                 {rootAdmin && (
                                     <EmptyContent>
-                                        <NewLinkButton to={'/panel/servers/new'}>New server</NewLinkButton>
+                                        <NewLinkButton to='/panel/servers/new'>New server</NewLinkButton>
                                     </EmptyContent>
                                 )}
                             </Empty>
                         )
                     }
                 </Pagination>
+            ) : (
+                <Spinner centered size='large' />
             )}
-            <Slot name={'dashboard.after'} />
+            <Slot name='dashboard.after' />
         </PageContentBlock>
     );
 }

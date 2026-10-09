@@ -63,6 +63,7 @@ export const useServerDatabases = (uuid: string) =>
 
 const upsertDatabase = async (queryClient: QueryClient, uuid: string, database: ServerDatabase) => {
     await queryClient.cancelQueries({ queryKey: clientListServerDatabasesQueryKey(serverDatabasesInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerDatabasesResponse>(
         clientListServerDatabasesQueryKey(serverDatabasesInput(uuid)),
         (current) =>
@@ -77,6 +78,7 @@ const upsertDatabase = async (queryClient: QueryClient, uuid: string, database: 
 
 const removeDatabase = async (queryClient: QueryClient, uuid: string, databaseId: string) => {
     await queryClient.cancelQueries({ queryKey: clientListServerDatabasesQueryKey(serverDatabasesInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerDatabasesResponse>(
         clientListServerDatabasesQueryKey(serverDatabasesInput(uuid)),
         (current) => removeListItems(current, (database) => database.attributes.id === databaseId)
@@ -104,6 +106,7 @@ export const useDeleteServerDatabase = () => {
         onSuccess: async (_data, variables) => {
             await removeDatabase(queryClient, variables.path.server_uuid, variables.path.database_id);
             const name = variables.meta?.name;
+
             toast.success('Database deleted', { description: name ? `${name} has been removed.` : undefined });
         },
         onError: (error) => notifyHttpError(error, 'Unable to delete database'),

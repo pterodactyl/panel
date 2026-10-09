@@ -16,12 +16,15 @@ function parameterAnnotation(parameter: Parameter): ESTree.TSTypeAnnotation | nu
     if (parameter.type === 'TSParameterProperty') {
         return parameterAnnotation(parameter.parameter);
     }
+
     if (parameter.type === 'RestElement') {
         return parameter.typeAnnotation ?? parameterAnnotation(parameter.argument);
     }
+
     if (parameter.type === 'AssignmentPattern') {
         return parameter.typeAnnotation ?? parameter.left.typeAnnotation;
     }
+
     return parameter.typeAnnotation;
 }
 
@@ -48,11 +51,18 @@ export const noObjectParametersRule = defineRule({
         const aliases = new Map<string, ESTree.TSType>();
 
         const resolvesToObject = (type: ESTree.TSType, visited = new Set<string>()): boolean => {
-            if (type.type === 'TSObjectKeyword') return true;
-            if (type.type === 'TSParenthesizedType') return resolvesToObject(type.typeAnnotation, visited);
+            if (type.type === 'TSObjectKeyword') {
+                return true;
+            }
+
+            if (type.type === 'TSParenthesizedType') {
+                return resolvesToObject(type.typeAnnotation, visited);
+            }
+
             if (type.type === 'TSUnionType') {
                 return type.types.some((member) => resolvesToObject(member, visited));
             }
+
             if (
                 type.type !== 'TSTypeReference' ||
                 type.typeName.type !== 'Identifier' ||
@@ -63,18 +73,32 @@ export const noObjectParametersRule = defineRule({
             ) {
                 return false;
             }
+
             const alias = aliases.get(type.typeName.name);
-            if (alias === undefined) return false;
+
+            if (alias === undefined) {
+                return false;
+            }
+
             const nextVisited = new Set(visited);
+
             nextVisited.add(type.typeName.name);
+
             return resolvesToObject(alias, nextVisited);
         };
 
         const checkParameters = (node: ParameterOwner) => {
             for (const parameter of node.params) {
                 const annotation = parameterAnnotation(parameter);
-                if (annotation === null || annotation === undefined) continue;
-                if (!resolvesToObject(annotation.typeAnnotation)) continue;
+
+                if (annotation === null || annotation === undefined) {
+                    continue;
+                }
+
+                if (!resolvesToObject(annotation.typeAnnotation)) {
+                    continue;
+                }
+
                 context.report({
                     node: annotation.typeAnnotation,
                     messageId: 'objectParameter',
@@ -87,6 +111,7 @@ export const noObjectParametersRule = defineRule({
             Program(node) {
                 for (const statement of node.body) {
                     const declaration = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement;
+
                     if (
                         declaration?.type === 'TSTypeAliasDeclaration' &&
                         (declaration.typeParameters === null || declaration.typeParameters === undefined)

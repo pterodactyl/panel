@@ -13,5 +13,5 @@ interface UpdatesEggs
      *
      * @param  EggCreationData  $data
      */
-    public function update(Egg $egg, array $data): void;
+    public function update(Egg $egg, array $data): Egg;
 }

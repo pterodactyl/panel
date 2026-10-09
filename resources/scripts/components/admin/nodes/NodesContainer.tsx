@@ -48,18 +48,33 @@ const sortingFromSearch = (sort?: AdminNodeListSort): SortingState => {
             return [{ id: 'created_at', desc: false }];
         case '-created_at':
             return [{ id: 'created_at', desc: true }];
-        default:
+        case undefined:
             return [];
     }
 };
 
 const sortingToSearch = (sorting: SortingState): AdminNodeListSort | null => {
     const primary = sorting[0];
-    if (!primary) return null;
-    if (primary.id === 'name') return primary.desc ? '-name' : 'name';
-    if (primary.id === 'memory') return primary.desc ? '-memory' : 'memory';
-    if (primary.id === 'disk') return primary.desc ? '-disk' : 'disk';
-    if (primary.id === 'created_at') return primary.desc ? '-created_at' : 'created_at';
+
+    if (!primary) {
+        return null;
+    }
+
+    if (primary.id === 'name') {
+        return primary.desc ? '-name' : 'name';
+    }
+
+    if (primary.id === 'memory') {
+        return primary.desc ? '-memory' : 'memory';
+    }
+
+    if (primary.id === 'disk') {
+        return primary.desc ? '-disk' : 'disk';
+    }
+
+    if (primary.id === 'created_at') {
+        return primary.desc ? '-created_at' : 'created_at';
+    }
 
     return null;
 };
@@ -83,6 +98,7 @@ export default function NodesContainer() {
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
+
             if (next.pageIndex !== pagination.pageIndex) {
                 navigateToSearch({ page: next.pageIndex + 1 });
             }
@@ -93,6 +109,7 @@ export default function NodesContainer() {
     const onSortingChange = useCallback<OnChangeFn<SortingState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(sorting) : updater;
+
             navigateToSearch({ page: 1, sort: sortingToSearch(next) });
         },
         [navigateToSearch, sorting]
@@ -121,40 +138,37 @@ export default function NodesContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Nodes'}
-            heading={'Nodes'}
-            description={'Manage Wings nodes, connectivity, allocations, and server capacity.'}
+            title='Admin · Nodes'
+            heading='Nodes'
+            description='Manage Wings nodes, connectivity, allocations, and server capacity.'
         >
             <form
-                className={'mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'}
+                className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
                 onSubmit={(event) => {
                     event.preventDefault();
                     const value = new FormData(event.currentTarget).get('filter');
+
                     navigateToSearch({ page: 1, filter: value instanceof File || value === null ? '' : value.trim() });
                 }}
             >
-                <div className={'relative w-full sm:max-w-lg'}>
+                <div className='relative w-full sm:max-w-lg'>
                     <Icon
                         icon={Search}
-                        aria-hidden={'true'}
-                        className={
-                            'pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
-                        }
+                        aria-hidden='true'
+                        className='pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
                     />
                     <TextInput
                         key={filter}
-                        name={'filter'}
-                        aria-label={'Search nodes'}
-                        className={'h-9 border-border bg-card pl-10'}
-                        placeholder={'Search nodes…'}
+                        name='filter'
+                        aria-label='Search nodes'
+                        className='h-9 border-border bg-card pl-10'
+                        placeholder='Search nodes…'
                         defaultValue={filter}
                     />
                 </div>
                 <CreateNodeButton />
             </form>
-            {!nodes ? (
-                <Spinner size={'large'} centered />
-            ) : (
+            {nodes ? (
                 <>
                     <DataTable
                         table={table}
@@ -162,10 +176,10 @@ export default function NodesContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={HardDrive}
-                                noun={'nodes'}
+                                noun='nodes'
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description={'Add a node running Wings to start hosting servers.'}
+                                description='Add a node running Wings to start hosting servers.'
                                 action={<CreateNodeButton />}
                             />
                         }
@@ -174,9 +188,11 @@ export default function NodesContainer() {
                         table={table}
                         total={nodes.meta.pagination.total}
                         count={nodes.meta.pagination.count}
-                        itemLabel={'nodes'}
+                        itemLabel='nodes'
                     />
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
         </AdminContentBlock>
     );

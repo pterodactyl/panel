@@ -43,6 +43,7 @@ const listings = new Map([
     ['/config/plugins', [entry('inner.yml', 'text/plain')]],
 ]);
 const manyNames = Array.from({ length: 252 }, (_, index) => `f${String(index).padStart(3, '0')}.txt`);
+
 listings.set(
     '/many',
     manyNames.map((name) => entry(name, 'text/plain'))
@@ -53,9 +54,11 @@ beforeEach(async () => {
     rowRenders.clear();
     vi.doMock('./SelectFileCheckbox', async (importOriginal) => {
         const { default: Checkbox } = await importOriginal<{ default: typeof SelectFileCheckbox }>();
+
         return {
             default: ({ name }: { name: string }) => {
                 rowRenders.set(name, (rowRenders.get(name) ?? 0) + 1);
+
                 return <Checkbox name={name} />;
             },
         };
@@ -66,6 +69,7 @@ beforeEach(async () => {
         import('@/api/http'),
         import('./FileManagerContainer'),
     ]);
+
     registry = registered;
     testing = sdk;
     http = transport.default;
@@ -75,12 +79,15 @@ beforeEach(async () => {
     const adapter: AxiosAdapter = async (config) => {
         const url = new URL(config.url!, 'https://panel.test');
         const directory = url.searchParams.get('directory') ?? (config.params as { directory?: string })?.directory;
+
         requests.push({ path: url.pathname, body: config.data });
         const data = url.pathname.endsWith('/files/list')
             ? { object: 'list', data: listings.get(directory ?? '') ?? [] }
             : '';
+
         return { data, config, status: 200, statusText: 'OK', headers: {} };
     };
+
     http.defaults.adapter = adapter;
     vi.spyOn(console, 'error').mockImplementation(() => {});
     portal = document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }));
@@ -97,13 +104,16 @@ afterEach(() => {
 function replace(replacement: ComponentReplacement<'server.files.manager'>) {
     registry.prepareExtensions([{ id: 'browser', entry: '/browser.js', components: ['server.files.manager'] }]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement('browser', 'server.files.manager', replacement, batch);
     registry.commitExtensionRegistryBatch('browser', batch);
 }
+
 function Custom({ model }: ReplacementProps<'server.files.manager'>) {
     const [error, setError] = useState('');
     const run = (action: Promise<void>) => void action.catch((cause: Error) => setError(cause.message));
     const { directory, loading, selection, permissions, actions } = model;
+
     return (
         <div>
             <output>
@@ -125,6 +135,7 @@ function Custom({ model }: ReplacementProps<'server.files.manager'>) {
         </div>
     );
 }
+
 function open(permissions?: string[], directory = '/config') {
     host = testing.createExtensionTestHost({
         server: testing.createTestServer(permissions ? { owner: false, permissions } : {}),
@@ -132,6 +143,7 @@ function open(permissions?: string[], directory = '/config') {
     });
     render(<Container />, { wrapper: host.Wrapper });
 }
+
 const state = () => JSON.parse(screen.getByRole('status').textContent ?? '{}');
 const deletes = () => requests.filter((request) => request.path.endsWith('/files/delete'));
 
@@ -178,7 +190,10 @@ it('refuses a mutation the user has no permission for before any request is sent
 
 it('composes native parts and keeps the native browser when the replacement fails', async () => {
     replace(({ Default, model }) => {
-        if (model.selection.length) throw new Error('browser crashed');
+        if (model.selection.length) {
+            throw new Error('browser crashed');
+        }
+
         return <Default parts={{ selection: () => <p>Custom selection</p> }} />;
     });
     open();
@@ -217,6 +232,7 @@ it('drops files that leave the listing from the selection', async () => {
     expect(state().selection).toEqual(['a.zip', 'b.txt']);
 
     const config = listings.get('/config')!;
+
     listings.set(
         '/config',
         config.filter((file) => file.attributes.name !== 'b.txt')
@@ -233,6 +249,7 @@ it('re-renders no file row when the selection changes', async () => {
     open();
     const row = (await screen.findByRole('link', { name: 'b.txt' })).parentElement!;
     const before = new Map(rowRenders);
+
     fireEvent.click(within(row).getByRole('checkbox'));
 
     expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
@@ -243,12 +260,14 @@ it('re-renders no file row when the selection changes', async () => {
 it('removes a file deleted from its row menu from the selection', async () => {
     open();
     const row = (await screen.findByRole('link', { name: 'b.txt' })).parentElement!;
+
     fireEvent.click(within(row).getByRole('checkbox'));
     expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
 
     fireEvent.click(within(row).getByRole('button', { name: 'Open file options' }));
     fireEvent.click(await screen.findByRole('menuitem', { name: /Delete/ }));
     const dialog = await screen.findByRole('dialog');
+
     fireEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
 
     await waitFor(() => expect(deletes()).toHaveLength(1));

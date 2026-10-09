@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Pterodactyl\Models\Node;
@@ -14,11 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MaintenanceMiddleware
 {
-    /**
-     * MaintenanceMiddleware constructor.
-     */
-    public function __construct(private readonly ResponseFactory $response) {}
-
     /**
      * Handle an incoming request.
      */
@@ -35,7 +29,7 @@ class MaintenanceMiddleware
         throw_unless($node instanceof Node, InvalidArgumentException::class, 'The maintenance middleware requires the server node relation.');
 
         if ($node->maintenance_mode) {
-            return $this->response->view('errors.maintenance');
+            return response()->view('errors.maintenance');
         }
 
         return $next($request);

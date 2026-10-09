@@ -9,10 +9,12 @@ import { queryClient } from '@/api/queryClient';
 import { useSendServerCommand, useSendServerPower } from './mutations';
 
 const notifyHttpError = vi.hoisted(() => vi.fn());
+
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError }));
 
 const originalAdapter = http.defaults.adapter;
 let requests: { method?: string; path: string; body: unknown }[];
+
 beforeEach(() => {
     requests = [];
     notifyHttpError.mockClear();
@@ -28,11 +30,16 @@ const respond = (accepted: boolean) => {
             path: new URL(config.url!, 'https://panel.test').pathname,
             body: JSON.parse(String(config.data)),
         });
-        if (!accepted) throw new Error('Bad Gateway');
+        if (!accepted) {
+            throw new Error('Bad Gateway');
+        }
+
         return { data: '', config, status: 204, statusText: 'No Content', headers: {} };
     };
+
     http.defaults.adapter = adapter;
 };
+
 const wrapper = ({ children }: PropsWithChildren) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );

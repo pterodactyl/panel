@@ -116,7 +116,7 @@ final class NoForbiddenTermsInSymbolNamesRule implements Rule
     private function matchedTerm(string $name): ?string
     {
         foreach ($this->forbiddenTerms as $term) {
-            if (stripos($name, $term) !== false) {
+            if (mb_stripos($name, $term) !== false) {
                 return $term;
             }
         }

@@ -213,7 +213,7 @@ const adminServerDetailIncludes = ['allocations', 'user', 'node', 'node.location
 
 const numericFilterValue = (value: NonNullable<AdminServersQueryParams['filters']>['node_id' | 'owner_id']) => {
     if (value === undefined || value === null || value === '') {
-        return undefined;
+        return;
     }
 
     const normalized = Array.isArray(value) ? value[0] : value;
@@ -254,9 +254,17 @@ const toAdminServersQuery = ({
     const nodeId = numericFilterValue(nodeIdFilter);
     const ownerId = numericFilterValue(ownerIdFilter);
 
-    if (nodeId !== undefined) query['filter[node_id]'] = nodeId;
-    if (ownerId !== undefined) query['filter[owner_id]'] = ownerId;
-    if (include.length > 0) query.include = include.join(',');
+    if (nodeId !== undefined) {
+        query['filter[node_id]'] = nodeId;
+    }
+
+    if (ownerId !== undefined) {
+        query['filter[owner_id]'] = ownerId;
+    }
+
+    if (include.length > 0) {
+        query.include = include.join(',');
+    }
 
     return query;
 };
@@ -425,6 +433,7 @@ export const useAdminServerTransferProgress = (id: number, options?: ResourceQue
 
 export const useCreateAdminServer = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateServerMutation(),
         onSuccess: async (server) => {
@@ -433,6 +442,7 @@ export const useCreateAdminServer = () => {
                 invalidateAdminNodeAllocations(queryClient, [server.attributes.node]),
             ]);
             const messages = resourceMutationMessages('server', 'create', server.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'create').errorTitle),
@@ -441,6 +451,7 @@ export const useCreateAdminServer = () => {
 
 export const useUpdateAdminServerDetails = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateServerDetailsMutation(),
         onSuccess: async (server, variables) => {
@@ -458,6 +469,7 @@ export const useUpdateAdminServerDetails = () => {
 
 export const useUpdateAdminServerBuild = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateServerBuildMutation(),
         onSuccess: async (server) => {
@@ -476,6 +488,7 @@ export const useUpdateAdminServerBuild = () => {
 
 export const useUpdateAdminServerStartup = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateServerStartupMutation(),
         onSuccess: async (server, variables) => {
@@ -495,6 +508,7 @@ export const useUpdateAdminServerStartup = () => {
 
 const onAdminServerDeleted = async (queryClient: QueryClient, id: string) => {
     const nodeId = cachedAdminServerNode(queryClient, id);
+
     for (const queryKey of adminServerScopedKeys(id)) {
         removeQueriesWhenUnobserved(queryClient, { queryKey });
     }
@@ -507,12 +521,14 @@ const onAdminServerDeleted = async (queryClient: QueryClient, id: string) => {
 
 export const useDeleteAdminServer = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteServerMutation(),
         onSuccess: async (_data, variables) => {
             await onAdminServerDeleted(queryClient, variables.path.server_admin_identifier);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('server', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'delete').errorTitle),
@@ -521,12 +537,14 @@ export const useDeleteAdminServer = () => {
 
 export const useForceDeleteAdminServer = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminForceDeleteServerMutation(),
         onSuccess: async (_data, variables) => {
             await onAdminServerDeleted(queryClient, variables.path.server_admin_identifier);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('server', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'delete').errorTitle),
@@ -535,11 +553,13 @@ export const useForceDeleteAdminServer = () => {
 
 export const useTransferAdminServer = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminTransferServerMutation(),
         onSuccess: async (_data, variables) => {
             const id = Number(variables.path.server_admin_identifier);
             const sourceNodeId = cachedAdminServerNode(queryClient, id);
+
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListServers']),
                 queryClient.invalidateQueries({ queryKey: adminServerDetailKey(id) }),
@@ -561,6 +581,7 @@ export const useTransferAdminServer = () => {
 
 export const useCreateAdminServerDatabase = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateServerDatabaseMutation(),
         onSuccess: async (database, variables) => {
@@ -571,6 +592,7 @@ export const useCreateAdminServerDatabase = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListDatabaseHostDatabases']),
             ]);
             const messages = resourceMutationMessages('database', 'create', database.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('database', 'create').errorTitle),
@@ -579,6 +601,7 @@ export const useCreateAdminServerDatabase = () => {
 
 export const useDeleteAdminServerDatabase = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteServerDatabaseMutation(),
         onSuccess: async (_data, variables) => {
@@ -590,6 +613,7 @@ export const useDeleteAdminServerDatabase = () => {
             ]);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('database', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('database', 'delete').errorTitle),
@@ -598,6 +622,7 @@ export const useDeleteAdminServerDatabase = () => {
 
 export const useRotateAdminServerDatabasePassword = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminRotateServerDatabasePasswordMutation(),
         onSuccess: async (database, variables) => {
@@ -614,6 +639,7 @@ export const useRotateAdminServerDatabasePassword = () => {
 
 export const useAttachAdminServerMount = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminAttachServerMountMutation(),
         onSuccess: async (_data, variables) => {
@@ -621,6 +647,7 @@ export const useAttachAdminServerMount = () => {
                 queryKey: adminServerMountListQueryKey(variables.path.server_admin_identifier),
             });
             const name = variables.meta?.name;
+
             toast.success('Mount attached', {
                 description: name
                     ? `${name} has been mounted to this server.`
@@ -633,6 +660,7 @@ export const useAttachAdminServerMount = () => {
 
 export const useDetachAdminServerMount = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDetachServerMountMutation(),
         onSuccess: async (_data, variables) => {
@@ -640,6 +668,7 @@ export const useDetachAdminServerMount = () => {
                 queryKey: adminServerMountListQueryKey(variables.path.server_admin_identifier),
             });
             const name = variables.meta?.name;
+
             toast.success('Mount detached', {
                 description: name
                     ? `${name} has been unmounted from this server.`
@@ -652,6 +681,7 @@ export const useDetachAdminServerMount = () => {
 
 export const useReinstallAdminServer = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminReinstallServerMutation(),
         onSuccess: async (_data, variables) => {
@@ -669,6 +699,7 @@ export const useReinstallAdminServer = () => {
 
 export const useToggleAdminServerInstallState = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminToggleServerInstallStateMutation(),
         onSuccess: async (_data, variables) => {
@@ -686,6 +717,7 @@ export const useToggleAdminServerInstallState = () => {
 
 export const useUpdateAdminServerSuspension = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateServerSuspensionMutation(),
         onSuccess: async (_data, variables) => {

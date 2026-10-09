@@ -19,7 +19,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServerMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerMountRequest;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\MountListService;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\MountTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -61,11 +60,11 @@ class ServerMountController extends AdminApiController
     #[Endpoint('List server mounts', 'Returns mount definitions that are eligible for a server, including whether each mount is attached.')]
     #[ScribeResponse(self::SERVER_MOUNT_LIST_EXAMPLE, description: 'Eligible server mounts returned.')]
     #[ScribeResponse(self::INSTALL_STATE_ERROR, status: 403, description: 'The server is not installed.')]
-    public function index(GetServerMountsRequest $request, MountListService $listing, Server $server): array
+    public function index(GetServerMountsRequest $request, Server $server): array
     {
         $this->assertServerInstalled($server);
 
-        $mounts = $listing->handle($server);
+        $mounts = Mount::query()->availableToServer($server)->get();
 
         $mountedIds = $server->mounts->pluck('id')->all();
 

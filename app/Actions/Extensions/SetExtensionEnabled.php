@@ -67,6 +67,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
         }
 
         $this->compatibility->assertCompatible($manifest, $this->extensions->configuredEnabled());
+        $this->compatibility->assertMigrationsAreUnique($manifest, $this->extensions->discovered());
         throw_if($reason = $this->assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
     }
 
@@ -78,10 +79,10 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
 
     private function persist(ExtensionManifest $manifest, bool $enabled): void
     {
-        DB::transaction(fn (): Extension => Extension::query()->updateOrCreate(
+        Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
             ['version' => $manifest->version, 'enabled' => $enabled, 'error' => null],
-        ));
+        );
     }
 
     private function runMigrations(ExtensionManifest $manifest): void

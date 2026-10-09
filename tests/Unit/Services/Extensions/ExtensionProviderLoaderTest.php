@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionProviderLoaderTest;
 
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\File;
 use Mockery;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
@@ -41,6 +42,51 @@ test('Composer packages load once and malformed vendor bootstraps leave healthy 
         $loader->registerProviders($manifests);
         expect(class_exists($namespace.'\\Included'))->toBeTrue();
         expect(File::get($counter))->toBe('x');
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
+test('a bundled autoloader that shares its Composer suffix with a loaded one fails alone', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-suffix-'.uniqid();
+    $suffix = 'Probe'.str_replace('.', '', uniqid('', true));
+    foreach (['first', 'second'] as $id) {
+        // What Composer generates: autoload.php declares a class named after the suffix.
+        File::ensureDirectoryExists($directory.'/'.$id.'/vendor/composer');
+        File::put($directory.'/'.$id.'/vendor/autoload.php', '<?php require_once __DIR__."/composer/autoload_real.php"; return ComposerAutoloaderInit'.$suffix.'::getLoader();');
+        File::put($directory.'/'.$id.'/vendor/composer/autoload_real.php', '<?php class ComposerAutoloaderInit'.$suffix.' { public static function getLoader() { return new \Composer\Autoload\ClassLoader; } }');
+        File::put($directory.'/'.$id.'/extension.json', json_encode(['id' => $id, 'name' => $id, 'version' => '1.0.0'], JSON_THROW_ON_ERROR));
+    }
+
+    $validator = new ExtensionManifestValidator;
+    $manifests = collect(['first' => $validator->fromDirectory($directory.'/first'), 'second' => $validator->fromDirectory($directory.'/second')]);
+    $repository = Mockery::mock(ExtensionRepository::class);
+    $repository->shouldReceive('recordFailure')->once()->with('second', Mockery::on(fn (string $reason): bool => str_contains($reason, 'ComposerAutoloaderInit'.$suffix.', which another package already loaded')), Mockery::type(Throwable::class), 'register');
+    $repository->shouldReceive('clearErrors')->once()->with(['first']);
+    try {
+        (new ExtensionProviderLoader($this->app, $repository))->registerProviders($manifests);
+    } finally {
+        File::deleteDirectory($directory);
+    }
+});
+
+test('the migrator knows the migrations of every extension that loads', function (): void {
+    $directory = sys_get_temp_dir().'/ptero-migrations-'.uniqid();
+    foreach (['plain', 'broken'] as $id) {
+        File::ensureDirectoryExists($directory.'/'.$id.'/database/migrations');
+        File::put($directory.'/'.$id.'/extension.json', json_encode(['id' => $id, 'name' => $id, 'version' => '1.0.0', 'provider' => $id === 'broken' ? 'Missing\\Provider' : null], JSON_THROW_ON_ERROR));
+    }
+
+    $validator = new ExtensionManifestValidator;
+    $repository = Mockery::mock(ExtensionRepository::class);
+    $repository->shouldReceive('recordFailure')->once()->with('broken', Mockery::type('string'), Mockery::type(Throwable::class), 'register');
+    $repository->shouldReceive('clearErrors')->once()->with(['plain']);
+    try {
+        (new ExtensionProviderLoader($this->app, $repository))->registerProviders(collect(['plain' => $validator->fromDirectory($directory.'/plain'), 'broken' => $validator->fromDirectory($directory.'/broken')]));
+
+        $paths = $this->app->make(Migrator::class)->paths();
+        expect($paths)->toContain($directory.'/plain'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations');
+        expect($paths)->not->toContain($directory.'/broken'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations');
     } finally {
         File::deleteDirectory($directory);
     }

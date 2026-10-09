@@ -26,6 +26,7 @@ vi.mock('@google-recaptcha/react', () => ({
     GoogleReCaptchaProvider: ({ children }: { children: React.ReactNode }) => children,
     GoogleReCaptchaBadge: (props: BadgeProps) => {
         recaptcha.badge = props;
+
         return null;
     },
     useGoogleReCaptcha: () =>
@@ -34,13 +35,15 @@ vi.mock('@google-recaptcha/react', () => ({
 
 const renderRecaptcha = () => {
     const ref = createRef<InvisibleRecaptchaHandle>();
-    render(<InvisibleRecaptcha ref={ref} siteKey={'site-key'} />);
+
+    render(<InvisibleRecaptcha ref={ref} siteKey='site-key' />);
 
     return ref;
 };
 
 const challengePopup = () => {
     const popup = document.createElement('div');
+
     popup.style.visibility = 'hidden';
     popup.innerHTML =
         '<div></div><div><iframe src="https://www.google.com/recaptcha/api2/bframe?k=site-key"></iframe></div>';
@@ -66,6 +69,7 @@ describe('InvisibleRecaptcha', () => {
         const ref = renderRecaptcha();
 
         const token = ref.current!.execute();
+
         expect(recaptcha.instance.execute).toHaveBeenCalledOnce();
         act(() => recaptcha.badge.onChange?.('token-1'));
 
@@ -98,10 +102,12 @@ describe('InvisibleRecaptcha', () => {
         const ref = renderRecaptcha();
 
         const errored = ref.current!.execute();
+
         act(() => recaptcha.badge.onError?.());
         await expect(errored).resolves.toBeNull();
 
         const expired = ref.current!.execute();
+
         act(() => recaptcha.badge.onExpired?.());
         await expect(expired).resolves.toBeNull();
     });
@@ -111,6 +117,7 @@ describe('InvisibleRecaptcha', () => {
 
         const first = ref.current!.execute();
         const second = ref.current!.execute();
+
         act(() => recaptcha.badge.onChange?.('token-2'));
 
         await expect(first).resolves.toBeNull();
@@ -122,6 +129,7 @@ describe('InvisibleRecaptcha', () => {
         const ref = renderRecaptcha();
 
         const token = ref.current!.execute();
+
         await act(async () => vi.advanceTimersByTimeAsync(120_000));
 
         await expect(token).resolves.toBeNull();
@@ -134,6 +142,7 @@ describe('InvisibleRecaptcha', () => {
         const ref = renderRecaptcha();
 
         const token = ref.current!.execute();
+
         popup.style.visibility = 'visible';
         await act(async () => vi.advanceTimersByTimeAsync(0));
         popup.style.visibility = 'hidden';
@@ -148,6 +157,7 @@ describe('InvisibleRecaptcha', () => {
         const ref = renderRecaptcha();
 
         const token = ref.current!.execute();
+
         popup.style.visibility = 'visible';
         await act(async () => vi.advanceTimersByTimeAsync(0));
         recaptcha.instance.getResponse.mockReturnValue('token-3');

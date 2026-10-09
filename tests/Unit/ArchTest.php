@@ -22,6 +22,8 @@ use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
+use Pterodactyl\Services\Tags\TagBackfiller;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer as AdminUserTransformer;
 use Pterodactyl\Transformers\Api\Client\UserTransformer as ClientUserTransformer;
 use Pterodactyl\Transformers\Concerns\FormatsActivityLogs;
@@ -48,19 +50,30 @@ arch('no sleeping, debugging, or environment reads outside config')
     ->not->toBeUsed()
     ->ignoring('Pterodactyl\Tests');
 
-arch('actions use facades for framework services')
-    ->expect('Pterodactyl\Actions')
-    ->not->toUse([
-        AuthManager::class,
-        PasswordBroker::class,
-        Dispatcher::class,
-        Repository::class,
-        Encrypter::class,
-        EventDispatcher::class,
-        Connection::class,
-        ConnectionInterface::class,
-        DatabaseManager::class,
-    ]);
+// One rule per namespace: Pest silently passes multi-target expect([...]) here.
+foreach ([
+    'Pterodactyl\Actions' => [],
+    'Pterodactyl\Console' => [],
+    'Pterodactyl\Http' => [],
+    // Deliberate seams: the tags migration hands the backfiller the connection it
+    // runs on, and the extension repository resolves during provider boot.
+    'Pterodactyl\Services' => [TagBackfiller::class, ExtensionRepository::class],
+] as $namespace => $seams) {
+    arch("{$namespace} uses facades for framework services")
+        ->expect($namespace)
+        ->not->toUse([
+            AuthManager::class,
+            PasswordBroker::class,
+            Dispatcher::class,
+            Repository::class,
+            Encrypter::class,
+            EventDispatcher::class,
+            Connection::class,
+            ConnectionInterface::class,
+            DatabaseManager::class,
+        ])
+        ->ignoring($seams);
+}
 
 arch('controllers')
     ->expect('Pterodactyl\Http\Controllers')

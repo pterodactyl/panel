@@ -104,6 +104,31 @@ test('accepts autoload namespaces that only share a name start with the panel', 
     expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->autoload)->toBe(['PterodactylBilling\\' => 'src', 'Acme\\Pterodactyl\\' => 'lib']);
 });
 
+test('reads the PSR-4 map from composer.json when the manifest declares no autoload', function (): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0']);
+    File::put($this->directory.'/composer.json', json_encode(['autoload' => ['psr-4' => ['Acme\\Billing\\' => 'src/', 'Acme\\Invoices\\' => ['lib/']]]], JSON_THROW_ON_ERROR));
+
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->autoload)->toBe(['Acme\\Billing\\' => 'src', 'Acme\\Invoices\\' => 'lib']);
+
+    // A manifest map of its own takes the place of composer.json's, as it always has.
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0', 'autoload' => ['Acme\\Status\\' => 'status']]);
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->autoload)->toBe(['Acme\\Status\\' => 'status']);
+});
+
+test('holds the composer.json PSR-4 map to the manifest rules', function (string $psr4, string $message): void {
+    writeManifest(['id' => 'valid-id', 'name' => 'Valid', 'version' => '1.0.0']);
+    File::put($this->directory.'/composer.json', $psr4);
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, $message);
+})->with([
+    'the panel namespace' => ['{"autoload": {"psr-4": {"Pterodactyl\\\\Billing\\\\": "src/"}}}', 'composer.json "autoload.psr-4" namespace "Pterodactyl\\Billing\\" overlaps "Pterodactyl\\"'],
+    'a fallback directory' => ['{"autoload": {"psr-4": {"": "src/"}}}', 'composer.json "autoload.psr-4" must map'],
+    'several directories' => ['{"autoload": {"psr-4": {"Acme\\\\": ["src/", "lib/"]}}}', 'composer.json "autoload.psr-4" must map'],
+    'a directory outside the package' => ['{"autoload": {"psr-4": {"Acme\\\\": "../src/"}}}', 'composer.json "autoload.psr-4" directories must be relative paths'],
+    'not a map' => ['{"autoload": {"psr-4": "src/"}}', 'composer.json "autoload.psr-4" must map'],
+    'invalid JSON' => ['{"autoload":', 'composer.json is not valid JSON'],
+]);
+
 test('missing and malformed files', function (string $subdirectory, ?string $contents): void {
     $directory = $this->directory.DIRECTORY_SEPARATOR.$subdirectory;
     if ($contents !== null) {

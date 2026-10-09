@@ -1,6 +1,6 @@
 type QueryFilterPrimitive = string | number | boolean | null;
 
-export type QueryFilterValue = QueryFilterPrimitive | undefined | ReadonlyArray<QueryFilterPrimitive>;
+export type QueryFilterValue = QueryFilterPrimitive | undefined | readonly QueryFilterPrimitive[];
 export type QuerySortValue = -1 | 0 | 1 | 'asc' | 'desc' | null | undefined;
 
 export interface QueryBuilderParams<FilterKeys extends string = string, SortKeys extends string = string> {
@@ -15,7 +15,7 @@ export interface QueryBuilderParams<FilterKeys extends string = string, SortKeys
 
 export const queryFilterValue = (value: QueryFilterValue) => {
     if (value === undefined || value === null || value === '') {
-        return undefined;
+        return;
     }
 
     const normalized = Array.isArray(value) ? value.join(',') : String(value);
@@ -25,7 +25,7 @@ export const queryFilterValue = (value: QueryFilterValue) => {
 
 export const querySortValue = (field: string, value: QuerySortValue) => {
     if (!value || !['asc', 'desc', 1, -1].includes(value)) {
-        return undefined;
+        return;
     }
 
     return value === -1 || value === 'desc' ? `-${field}` : field;
@@ -51,11 +51,13 @@ export const listSorts = <TField extends string>(
 ): Partial<Record<TField, 'asc' | 'desc'>> | undefined => {
     const descending = sort?.startsWith('-') === true;
     const field = fields.find((candidate) => candidate === (descending ? sort?.slice(1) : sort));
+
     if (field === undefined) {
         return undefined;
     }
 
     const sorts: Partial<Record<TField, 'asc' | 'desc'>> = {};
+
     sorts[field] = descending ? 'desc' : 'asc';
 
     return sorts;
@@ -72,16 +74,29 @@ export const listQuery = <TFilter extends string, TSort extends string>(
     perPage?: number
 ): ListQuery<TFilter> => {
     const filters: Partial<Record<`filter[${TFilter}]`, string>> = {};
+
     for (const [field, value] of Object.entries(params.filters ?? {}) as [TFilter, QueryFilterValue][]) {
         const normalized = queryFilterValue(value);
-        if (normalized !== undefined) filters[`filter[${field}]` as const] = normalized;
+
+        if (normalized !== undefined) {
+            filters[`filter[${field}]` as const] = normalized;
+        }
     }
 
     const query: ListQuery<TFilter> = { ...filters };
     const sorts = querySortList(params.sorts);
-    if (sorts.length > 0) query.sort = sorts.join(',');
-    if (params.page !== undefined) query.page = params.page;
-    if (perPage !== undefined) query.per_page = perPage;
+
+    if (sorts.length > 0) {
+        query.sort = sorts.join(',');
+    }
+
+    if (params.page !== undefined) {
+        query.page = params.page;
+    }
+
+    if (perPage !== undefined) {
+        query.per_page = perPage;
+    }
 
     return query;
 };

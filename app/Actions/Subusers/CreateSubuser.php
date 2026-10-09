@@ -44,7 +44,7 @@ final readonly class CreateSubuser implements CreatesSubusers
                 'user_id' => $user->id,
                 'server_id' => $server->id,
                 'permissions' => array_values(array_unique($permissions)),
-            ])->refresh()->setRelation('user', $user);
+            ])->setRelation('user', $user);
         });
     }
 

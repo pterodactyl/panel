@@ -8,7 +8,7 @@ import {
     useAdminNodeSystemInformation,
     useDeleteAdminNode,
 } from '@/api/admin/nodes/queries';
-import { NodeStatusBadge, type NodeStatus } from '@/components/admin/nodes/NodeStatusBadge';
+import { NodeStatusBadge } from '@/components/admin/nodes/NodeStatusBadge';
 import Button from '@/components/elements/Button';
 import { Dialog } from '@/components/elements/dialog';
 import Icon from '@/components/elements/Icon';
@@ -32,14 +32,16 @@ const NodeLiveness = ({ node }: { node: AdminNode }) => {
         refetchInterval: 60_000,
         retry: false,
     });
-    const status: NodeStatus = error ? 'offline' : data ? 'online' : 'checking';
 
-    return (
-        <NodeStatusBadge
-            status={status}
-            title={data ? `Wings ${data.version}` : error ? error.message : 'Checking node status'}
-        />
-    );
+    if (data) {
+        return <NodeStatusBadge status={error ? 'offline' : 'online'} title={`Wings ${data.version}`} />;
+    }
+
+    if (error) {
+        return <NodeStatusBadge status='offline' title={error.message} />;
+    }
+
+    return <NodeStatusBadge status='checking' title='Checking node status' />;
 };
 
 function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
@@ -61,7 +63,7 @@ function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
     return (
         <Dialog
             open={open}
-            title={'Confirm node deletion'}
+            title='Confirm node deletion'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={() => {
@@ -70,12 +72,12 @@ function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
             }}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 Deleting a node is permanent. This will remove <strong>{attributes.name}</strong>.
             </p>
-            <Form form={deleteForm} className={'m-0 mt-6'}>
+            <Form form={deleteForm} className='m-0 mt-6'>
                 <deleteForm.AppField
-                    name={'confirm'}
+                    name='confirm'
                     validators={{
                         onChange: ({ value }) =>
                             value === attributes.name ? undefined : 'The node name must be provided.',
@@ -83,19 +85,19 @@ function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
                 >
                     {(field) => (
                         <field.TextField
-                            type={'text'}
+                            type='text'
                             id={`confirm_${attributes.id}`}
-                            label={'Confirm Node Name'}
-                            description={'Enter the name of this node to confirm deletion.'}
+                            label='Confirm Node Name'
+                            description='Enter the name of this node to confirm deletion.'
                         />
                     )}
                 </deleteForm.AppField>
-                <div className={'mt-6 flex justify-end gap-2'}>
-                    <Button.Text type={'button'} isSecondary onClick={onClose}>
+                <div className='mt-6 flex justify-end gap-2'>
+                    <Button.Text type='button' isSecondary onClick={onClose}>
                         Cancel
                     </Button.Text>
                     <deleteForm.AppForm>
-                        <deleteForm.SubmitButton color={'red'}>Delete node</deleteForm.SubmitButton>
+                        <deleteForm.SubmitButton color='red'>Delete node</deleteForm.SubmitButton>
                     </deleteForm.AppForm>
                 </div>
             </Form>
@@ -107,18 +109,16 @@ const NodeIdentityCell = ({ node }: { node: AdminNode }) => {
     const { attributes } = node;
 
     return (
-        <div className={'w-0 min-w-full'}>
+        <div className='w-0 min-w-full'>
             <Link
-                to={'/panel/nodes/$id'}
+                to='/panel/nodes/$id'
                 params={{ id: attributes.id }}
                 title={attributes.name}
-                className={
-                    'block truncate font-medium text-foreground no-underline transition-colors hover:text-accent'
-                }
+                className='block truncate font-medium text-foreground no-underline transition-colors hover:text-accent'
             >
                 {attributes.name}
             </Link>
-            <p className={'mt-0.5 truncate text-xs text-muted-foreground'} title={attributes.fqdn}>
+            <p className='mt-0.5 truncate text-xs text-muted-foreground' title={attributes.fqdn}>
                 #{attributes.id} · {attributes.fqdn}
             </p>
         </div>
@@ -126,11 +126,11 @@ const NodeIdentityCell = ({ node }: { node: AdminNode }) => {
 };
 
 const NodeStatusCell = ({ node }: { node: AdminNode }) => (
-    <div className={'flex flex-col items-start gap-1'}>
+    <div className='flex flex-col items-start gap-1'>
         <NodeLiveness node={node} />
         {node.attributes.maintenance_mode ? (
-            <span className={'inline-flex items-center gap-1 text-xs font-medium text-warning'}>
-                <Icon icon={Wrench} aria-hidden={'true'} className={'h-3 w-3'} />
+            <span className='inline-flex items-center gap-1 text-xs font-medium text-warning'>
+                <Icon icon={Wrench} aria-hidden='true' className='h-3 w-3' />
                 Maintenance
             </span>
         ) : null}
@@ -139,20 +139,23 @@ const NodeStatusCell = ({ node }: { node: AdminNode }) => (
 
 const LocationCell = ({ node }: { node: AdminNode }) => {
     const location = relationshipAttributes(node.attributes.relationships?.location);
-    if (!location) return <span className={'text-muted-foreground'}>#{node.attributes.location_id}</span>;
+
+    if (!location) {
+        return <span className='text-muted-foreground'>#{node.attributes.location_id}</span>;
+    }
 
     return (
-        <div className={'w-0 min-w-full'}>
+        <div className='w-0 min-w-full'>
             <Link
-                to={'/panel/locations/$id'}
+                to='/panel/locations/$id'
                 params={{ id: location.id }}
                 title={location.short}
-                className={'block truncate text-foreground no-underline transition-colors hover:text-accent'}
+                className='block truncate text-foreground no-underline transition-colors hover:text-accent'
             >
                 {location.short}
             </Link>
             {location.long ? (
-                <p className={'mt-0.5 truncate text-xs text-muted-foreground'} title={location.long}>
+                <p className='mt-0.5 truncate text-xs text-muted-foreground' title={location.long}>
                     {location.long}
                 </p>
             ) : null}
@@ -163,23 +166,26 @@ const LocationCell = ({ node }: { node: AdminNode }) => {
 const ResourcesHeader = ({ table }: { table: Table<AdminNode> }) => {
     const memory = table.getColumn('memory');
     const disk = table.getColumn('disk');
-    if (!memory || !disk) return <span>Resources</span>;
+
+    if (!memory || !disk) {
+        return <span>Resources</span>;
+    }
 
     return (
-        <span className={'inline-flex items-center gap-1'}>
-            <DataTableColumnHeader column={memory} title={'Memory'} />
-            <DataTableColumnHeader column={disk} title={'Disk'} />
+        <span className='inline-flex items-center gap-1'>
+            <DataTableColumnHeader column={memory} title='Memory' />
+            <DataTableColumnHeader column={disk} title='Disk' />
         </span>
     );
 };
 
 const ResourcesCell = ({ node }: { node: AdminNode }) => (
-    <div className={'whitespace-nowrap text-xs tabular-nums'}>
-        <p className={'text-muted-foreground'}>
-            <span className={'text-foreground'}>{bytesToString(mbToBytes(node.attributes.memory))}</span> memory
+    <div className='whitespace-nowrap text-xs tabular-nums'>
+        <p className='text-muted-foreground'>
+            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.memory))}</span> memory
         </p>
-        <p className={'mt-0.5 text-muted-foreground'}>
-            <span className={'text-foreground'}>{bytesToString(mbToBytes(node.attributes.disk))}</span> disk
+        <p className='mt-0.5 text-muted-foreground'>
+            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.disk))}</span> disk
         </p>
     </div>
 );
@@ -189,13 +195,13 @@ const AccessCell = ({ node }: { node: AdminNode }) => {
     const secure = attributes.scheme === 'https';
 
     return (
-        <div className={'flex flex-col items-start gap-0.5 whitespace-nowrap text-xs'}>
+        <div className='flex flex-col items-start gap-0.5 whitespace-nowrap text-xs'>
             <span className={cn('inline-flex items-center gap-1', secure ? 'text-success' : 'text-destructive')}>
-                <Icon icon={secure ? Lock : Unlock} aria-hidden={'true'} className={'h-3 w-3'} />
+                <Icon icon={secure ? Lock : Unlock} aria-hidden='true' className='h-3 w-3' />
                 {attributes.scheme.toUpperCase()}
             </span>
-            <span className={'inline-flex items-center gap-1 text-muted-foreground'}>
-                <Icon icon={attributes.public ? Eye : EyeOff} aria-hidden={'true'} className={'h-3 w-3'} />
+            <span className='inline-flex items-center gap-1 text-muted-foreground'>
+                <Icon icon={attributes.public ? Eye : EyeOff} aria-hidden='true' className='h-3 w-3' />
                 {attributes.public ? 'Public' : 'Private'}
             </span>
         </div>
@@ -207,7 +213,7 @@ const NodeActionsCell = ({ node }: { node: AdminNode }) => {
 
     return (
         <RowActions>
-            <EditLinkAction aria-label={`Edit ${name}`} to={'/panel/nodes/$id/settings'} params={{ id }} />
+            <EditLinkAction aria-label={`Edit ${name}`} to='/panel/nodes/$id/settings' params={{ id }} />
             <Dialog.Trigger trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}>
                 {({ open, onClose }) => <DeleteNodeDialog node={node} open={open} onClose={onClose} />}
             </Dialog.Trigger>
@@ -219,7 +225,7 @@ export const nodeColumns = [
     {
         id: 'name',
         accessorFn: (node) => node.attributes.name,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Node'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Node' />,
         cell: ({ row }) => <NodeIdentityCell node={row.original} />,
         enableSorting: true,
         meta: { headerClassName: 'min-w-40', cellClassName: 'min-w-40' },
@@ -242,7 +248,7 @@ export const nodeColumns = [
         id: 'servers_count',
         accessorFn: (node) => node.attributes.servers_count,
         header: 'Servers',
-        cell: ({ row }) => <span className={'tabular-nums'}>{row.original.attributes.servers_count}</span>,
+        cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.servers_count}</span>,
         enableSorting: false,
         meta: { headerClassName: 'w-20', cellClassName: 'w-20' },
     },
@@ -277,11 +283,11 @@ export const nodeColumns = [
     {
         id: 'created_at',
         accessorFn: (node) => node.attributes.created_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Created'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Created' />,
         cell: ({ row }) => (
             <time
                 dateTime={row.original.attributes.created_at}
-                className={'whitespace-nowrap text-xs text-muted-foreground'}
+                className='whitespace-nowrap text-xs text-muted-foreground'
             >
                 {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
             </time>

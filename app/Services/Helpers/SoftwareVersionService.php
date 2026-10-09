@@ -71,18 +71,6 @@ class SoftwareVersionService
     }
 
     /**
-     * Determine if a passed daemon version string is the latest.
-     */
-    public function isLatestDaemon(string $version): bool
-    {
-        if ($version === 'develop') {
-            return true;
-        }
-
-        return version_compare($version, $this->getDaemon()) >= 0;
-    }
-
-    /**
      * Keeps the versioning cache up-to-date with the latest results from the CDN.
      *
      * @return SoftwareVersionData

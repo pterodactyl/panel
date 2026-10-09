@@ -62,7 +62,10 @@ vi.mock('@/components/ui/Select', () => ({
                 disabled={disabled}
                 onChange={(event) => {
                     const choice = choices.find((option) => String(option.value) === event.currentTarget.value);
-                    if (choice && !multiple) onChange(choice.value);
+
+                    if (choice && !multiple) {
+                        onChange(choice.value);
+                    }
                 }}
             >
                 {choices.map((option) => (
@@ -79,7 +82,7 @@ vi.mock('@/components/admin/servers/useServerDetail', () => ({
 }));
 vi.mock('@/api/admin/eggs/queries', async (importOriginal) => ({
     ...(await importOriginal<typeof EggQueries>()),
-    useAdminEggs: () => ({ data: { data: Array.from(eggs.values()) } }),
+    useAdminEggs: () => ({ data: { data: [...eggs.values()] } }),
 }));
 vi.mock('@/api/admin/servers/queries', async (importOriginal) => ({
     ...(await importOriginal<typeof ServerQueries>()),
@@ -89,7 +92,8 @@ vi.mock('@/api/admin/servers/queries', async (importOriginal) => ({
 }));
 
 const deferred = <T,>() => {
-    let resolve: (value: T) => void = () => undefined;
+    let resolve: (value: T) => void = () => {};
+
     const promise = new Promise<T>((settle) => {
         resolve = settle;
     });
@@ -109,6 +113,7 @@ describe('ServerStartupTab', () => {
     it('ignores an egg that finishes loading after a newer egg was picked', async () => {
         const user = userEvent.setup();
         const slowEgg = deferred<ReturnType<typeof egg> | undefined>();
+
         mocks.fetchEgg.mockImplementation((eggId: number) =>
             eggId === 2 ? slowEgg.promise : Promise.resolve(eggs.get(eggId))
         );
@@ -127,6 +132,7 @@ describe('ServerStartupTab', () => {
 
     it("restores the server's own image and variables when switching back to its egg", async () => {
         const user = userEvent.setup();
+
         render(<ServerStartupTab />);
 
         expect(screen.getByTestId('image')).toHaveValue('img:custom');

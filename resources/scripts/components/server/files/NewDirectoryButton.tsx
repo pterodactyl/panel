@@ -33,29 +33,29 @@ const NewDirectoryDialogContent = ({ onClose }: { onClose: () => void }) => {
 
     return (
         <>
-            <Form form={form} className={'m-0'}>
+            <Form form={form} className='m-0'>
                 <form.AppField
-                    name={'directoryName'}
+                    name='directoryName'
                     validators={{
                         onChange: ({ value }) =>
                             value.length >= 1 ? undefined : 'A valid directory name must be provided.',
                     }}
                 >
-                    {(field) => <field.TextField autoFocus id={'directoryName'} label={'Name'} />}
+                    {(field) => <field.TextField autoFocus id='directoryName' label='Name' />}
                 </form.AppField>
-                <p className={'mt-2 text-sm md:text-base break-all'}>
-                    <span className={'text-foreground'}>This directory will be created as&nbsp;</span>
+                <p className='mt-2 text-sm md:text-base break-all'>
+                    <span className='text-foreground'>This directory will be created as&nbsp;</span>
                     <Code>
                         /home/container/
-                        <span className={'text-accent'}>{normalizeServerPath(join(directory, directoryName))}</span>
+                        <span className='text-accent'>{normalizeServerPath(join(directory, directoryName))}</span>
                     </Code>
                 </p>
             </Form>
             <Dialog.Footer>
-                <Button.Text className={'w-full sm:w-auto'} onClick={onClose}>
+                <Button.Text className='w-full sm:w-auto' onClick={onClose}>
                     Cancel
                 </Button.Text>
-                <Button className={'w-full sm:w-auto'} onClick={() => form.handleSubmit()}>
+                <Button className='w-full sm:w-auto' onClick={() => form.handleSubmit()}>
                     Create
                 </Button>
             </Dialog.Footer>
@@ -73,7 +73,7 @@ export default function NewDirectoryButton({ className }: WithClassname) {
             )}
         >
             {({ open, onClose }) => (
-                <Dialog open={open} onClose={onClose} title={'Create folder'}>
+                <Dialog open={open} onClose={onClose} title='Create folder'>
                     <NewDirectoryDialogContent onClose={onClose} />
                 </Dialog>
             )}

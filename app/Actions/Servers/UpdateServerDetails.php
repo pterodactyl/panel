@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Servers;
 
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
@@ -35,8 +36,9 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
             $this->extensions->save($server, ValidatedExtensionValues::of($data['extensions'] ?? null));
 
             // Revoke the previous owner's Wings SFTP token after an ownership change.
-            if (! $server->refresh()->user->is($original)) {
-                dispatch(new RevokeSftpAccessJob($original->uuid, $server));
+            if ($server->owner_id !== $original->id) {
+                $job = new RevokeSftpAccessJob($original->uuid, $server);
+                DB::afterCommit(fn (): PendingDispatch => dispatch($job));
             }
 
             return $server->refresh();

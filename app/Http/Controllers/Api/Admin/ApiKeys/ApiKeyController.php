@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\ApiKeys;
 
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
@@ -14,6 +14,8 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Api\CreatesApiKeys;
+use Pterodactyl\Contracts\Api\DeletesApiKeys;
+use Pterodactyl\Contracts\Api\UpdatesApiKeys;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -60,7 +62,7 @@ class ApiKeyController extends AdminApiController
      */
     #[Endpoint('Create API key', 'Creates a new application API key and returns the plaintext secret token once.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, status: 201, description: 'API key created.', resourceKey: 'api_key', meta: ['secret_token' => 'ptla_1234567890abcdef'])]
-    public function store(StoreApiKeyRequest $request, Encrypter $encrypter, CreatesApiKeys $keyCreator): JsonResponse
+    public function store(StoreApiKeyRequest $request, CreatesApiKeys $keyCreator): JsonResponse
     {
         $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [
             'memo' => $request->string('memo')->toString(),
@@ -76,7 +78,7 @@ class ApiKeyController extends AdminApiController
         return Fractal::item($key)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta([
-                'secret_token' => $key->identifier.JsonValueGuard::string($encrypter->decrypt($key->token)),
+                'secret_token' => $key->identifier.JsonValueGuard::string(Crypt::decrypt($key->token)),
             ])
             ->respond(Response::HTTP_CREATED);
     }
@@ -108,17 +110,14 @@ class ApiKeyController extends AdminApiController
      */
     #[Endpoint('Update API key', 'Updates an application API key memo and resource permissions without regenerating the token.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API key updated.', resourceKey: 'api_key')]
-    public function update(UpdateApiKeyRequest $request, string $identifier): array
+    public function update(UpdateApiKeyRequest $request, UpdatesApiKeys $keyUpdater, string $identifier): array
     {
         $key = ApiKey::query()
             ->where('key_type', ApiKey::TYPE_APPLICATION)
             ->where('identifier', $identifier)
             ->firstOrFail();
 
-        $key->forceFill(array_merge(
-            ['memo' => $request->validated('memo')],
-            $request->getKeyPermissions()
-        ))->saveOrFail();
+        $key = $keyUpdater->update($key, ['memo' => JsonValueGuard::nullableString($request->validated('memo'))], $request->getKeyPermissions());
         $key->load('user');
 
         Activity::event('admin:api-key.update')
@@ -136,7 +135,7 @@ class ApiKeyController extends AdminApiController
      */
     #[Endpoint('Delete API key', 'Deletes an application API key by identifier.')]
     #[ScribeResponse(status: 204, description: 'API key deleted.')]
-    public function destroy(DeleteApiKeyRequest $request, string $identifier): Response
+    public function destroy(DeleteApiKeyRequest $request, DeletesApiKeys $keyDeleter, string $identifier): Response
     {
         $key = ApiKey::query()
             ->where('key_type', ApiKey::TYPE_APPLICATION)
@@ -148,7 +147,7 @@ class ApiKeyController extends AdminApiController
             ->property('identifier', $key->identifier)
             ->log();
 
-        $key->delete();
+        $keyDeleter->delete($key);
 
         return $this->returnNoContent();
     }

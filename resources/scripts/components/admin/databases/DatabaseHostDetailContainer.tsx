@@ -52,6 +52,7 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                         databaseHostBodyFromFormValues(withExtensionPayload('admin.database_host', value, host))
                     )
                 );
+
                 form.reset(databaseHostFormValues(updated));
             } catch {
                 // Error toast is handled by the mutation.
@@ -69,39 +70,37 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
     };
 
     return (
-        <Form form={form} className={'m-0'}>
-            <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4'}>
-                <TitledGreyBox title={'Host Details'}>
-                    <form.AppField name={'name'} validators={databaseHostValidators.name}>
-                        {(field) => <field.TextField type={'text'} id={'name'} label={'Name'} />}
+        <Form form={form} className='m-0'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+                <TitledGreyBox title='Host Details'>
+                    <form.AppField name='name' validators={databaseHostValidators.name}>
+                        {(field) => <field.TextField type='text' id='name' label='Name' />}
                     </form.AppField>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'host'} validators={databaseHostValidators.host}>
+                    <div className='mt-6'>
+                        <form.AppField name='host' validators={databaseHostValidators.host}>
                             {(field) => (
                                 <field.TextField
-                                    type={'text'}
-                                    id={'host'}
-                                    label={'Host'}
-                                    description={
-                                        'The IP address or FQDN used when the Panel connects to this MySQL host.'
-                                    }
+                                    type='text'
+                                    id='host'
+                                    label='Host'
+                                    description='The IP address or FQDN used when the Panel connects to this MySQL host.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'port'} validators={databaseHostValidators.port}>
-                            {(field) => <field.NumberField id={'port'} label={'Port'} />}
+                    <div className='mt-6'>
+                        <form.AppField name='port' validators={databaseHostValidators.port}>
+                            {(field) => <field.NumberField id='port' label='Port' />}
                         </form.AppField>
                     </div>
-                    <div className={'mt-6'}>
+                    <div className='mt-6'>
                         <DatabaseHostNodeSelect
-                            id={'nodeId'}
+                            id='nodeId'
                             value={nodeId}
                             onChange={(value) => form.setFieldValue('nodeId', value)}
                         />
                     </div>
-                    <div className={'mt-6 text-sm text-muted-foreground'}>
+                    <div className='mt-6 text-sm text-muted-foreground'>
                         <p>{host.attributes.databases_count} databases</p>
                         <p>
                             {(() => {
@@ -113,41 +112,41 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                     </div>
                 </TitledGreyBox>
 
-                <TitledGreyBox title={'User Details'}>
-                    <form.AppField name={'username'} validators={databaseHostValidators.username}>
+                <TitledGreyBox title='User Details'>
+                    <form.AppField name='username' validators={databaseHostValidators.username}>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'username'}
-                                label={'Username'}
-                                description={'A database server user with permission to create users and databases.'}
+                                type='text'
+                                id='username'
+                                label='Username'
+                                description='A database server user with permission to create users and databases.'
                             />
                         )}
                     </form.AppField>
-                    <div className={'mt-6'}>
-                        <form.AppField name={'password'}>
+                    <div className='mt-6'>
+                        <form.AppField name='password'>
                             {(field) => (
                                 <field.TextField
-                                    type={'password'}
-                                    id={'password'}
-                                    label={'Password'}
-                                    description={'Leave blank to keep existing password.'}
+                                    type='password'
+                                    id='password'
+                                    label='Password'
+                                    description='Leave blank to keep existing password.'
                                 />
                             )}
                         </form.AppField>
                     </div>
-                    <p className={'text-sm text-destructive mt-6'}>
+                    <p className='text-sm text-destructive mt-6'>
                         The configured account must have WITH GRANT OPTION permission and should not reuse Panel
                         database credentials.
                     </p>
-                    <div className={'flex justify-end mt-6'}>
+                    <div className='flex justify-end mt-6'>
                         <Dialog.ConfirmTrigger
-                            title={'Delete database host'}
-                            confirm={'Delete Host'}
+                            title='Delete database host'
+                            confirm='Delete Host'
                             pending={deleteDatabaseHost.isPending}
                             trigger={({ onClick }) => (
-                                <Button type={'button'} color={'red'} isSecondary className={'mr-2'} onClick={onClick}>
-                                    <Icon icon={Trash2} className={'mr-2'} />
+                                <Button type='button' color='red' isSecondary className='mr-2' onClick={onClick}>
+                                    <Icon icon={Trash2} className='mr-2' />
                                     Delete Host
                                 </Button>
                             )}
@@ -162,16 +161,16 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                     </div>
                 </TitledGreyBox>
             </div>
-            <form.AppField name={'extensions'}>
+            <form.AppField name='extensions'>
                 {() => (
                     <ExtensionFormFields
-                        form={'admin.database_host'}
-                        mode={'edit'}
+                        form='admin.database_host'
+                        mode='edit'
                         resource={host}
                         error={updateDatabaseHost.error}
                         boxed
-                        submitLabel={'Save Changes'}
-                        className={'mt-4'}
+                        submitLabel='Save Changes'
+                        className='mt-4'
                     />
                 )}
             </form.AppField>
@@ -197,9 +196,9 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
                     header: 'Server',
                     cell: ({ row }) => (
                         <Link
-                            to={'/panel/servers/$id/database'}
+                            to='/panel/servers/$id/database'
                             params={{ id: row.original.attributes.server.id }}
-                            className={'block truncate text-sm text-foreground hover:text-accent'}
+                            className='block truncate text-sm text-foreground hover:text-accent'
                         >
                             {row.original.attributes.server.name}
                         </Link>
@@ -209,24 +208,22 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
                     id: 'database',
                     header: 'Database',
                     cell: ({ row }) => (
-                        <span className={'block truncate font-mono text-xs'}>{row.original.attributes.name}</span>
+                        <span className='block truncate font-mono text-xs'>{row.original.attributes.name}</span>
                     ),
                     meta: { headerClassName: 'hidden sm:table-cell', cellClassName: 'hidden sm:table-cell' },
                 },
                 {
                     id: 'username',
                     header: 'Username',
-                    cell: ({ row }) => <span className={'text-xs'}>{row.original.attributes.username}</span>,
+                    cell: ({ row }) => <span className='text-xs'>{row.original.attributes.username}</span>,
                     meta: { headerClassName: 'hidden md:table-cell', cellClassName: 'hidden md:table-cell' },
                 },
                 {
                     id: 'connections',
                     header: 'Max connections',
                     cell: ({ row }) => (
-                        <span className={'text-xs text-muted-foreground'}>
-                            {row.original.attributes.max_connections === null
-                                ? 'Unlimited'
-                                : row.original.attributes.max_connections}
+                        <span className='text-xs text-muted-foreground'>
+                            {row.original.attributes.max_connections ?? 'Unlimited'}
                         </span>
                     ),
                     meta: { headerClassName: 'w-28 text-right', cellClassName: 'w-28 text-right' },
@@ -244,8 +241,9 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
         state: { pagination },
         onPaginationChange: (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
+
             if (next.pageIndex !== pagination.pageIndex) {
-                navigate({
+                void navigate({
                     to: '/panel/databases/$id',
                     params: { id: hostId },
                     search: getPageSearch(next.pageIndex + 1),
@@ -257,10 +255,8 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
     });
 
     return (
-        <TitledGreyBox title={'Databases'} className={'mt-4'}>
-            {!databases ? (
-                <Spinner size={'small'} centered />
-            ) : (
+        <TitledGreyBox title='Databases' className='mt-4'>
+            {databases ? (
                 <>
                     <DataTable
                         table={table}
@@ -268,7 +264,7 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
                         emptyState={
                             <Empty className={emptyCompactClass}>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <Database />
                                     </EmptyMedia>
                                     <EmptyTitle>No databases</EmptyTitle>
@@ -283,9 +279,11 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
                         table={table}
                         total={databases.meta.pagination.total}
                         count={databases.meta.pagination.count}
-                        itemLabel={'databases'}
+                        itemLabel='databases'
                     />
                 </>
+            ) : (
+                <Spinner size='small' centered />
             )}
         </TitledGreyBox>
     );
@@ -303,8 +301,8 @@ export default function DatabaseHostDetailContainer() {
 
     if (!host) {
         return (
-            <AdminContentBlock title={'Admin · Database Host'} heading={'Database Host'}>
-                <Spinner size={'large'} centered />
+            <AdminContentBlock title='Admin · Database Host' heading='Database Host'>
+                <Spinner size='large' centered />
             </AdminContentBlock>
         );
     }
@@ -316,10 +314,10 @@ export default function DatabaseHostDetailContainer() {
             description={`${host.attributes.username}@${host.attributes.host}:${host.attributes.port}`}
         >
             <Link
-                to={'/panel/databases'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-accent mb-4'}
+                to='/panel/databases'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-accent mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Database Hosts
             </Link>
 

@@ -41,25 +41,37 @@ const ManageActionCard = ({
     description: React.ReactNode;
     action: React.ReactNode;
 }) => (
-    <TitledGreyBox title={title} className={'flex h-full flex-col'} contentClassName={'flex flex-1 flex-col p-0'}>
-        <div className={'flex flex-1 flex-col gap-3 p-3'}>
+    <TitledGreyBox title={title} className='flex h-full flex-col' contentClassName='flex flex-1 flex-col p-0'>
+        <div className='flex flex-1 flex-col gap-3 p-3'>
             {alert && (
                 <Alert type={alert.type}>
-                    <strong className={'font-semibold'}>{alert.title}</strong> {alert.message}
+                    <strong className='font-semibold'>{alert.title}</strong> {alert.message}
                 </Alert>
             )}
             <p className={descriptionClass}>{description}</p>
         </div>
-        <div className={'flex items-center justify-end border-t border-border p-3'}>{action}</div>
+        <div className='flex items-center justify-end border-t border-border p-3'>{action}</div>
     </TitledGreyBox>
 );
 
 // The span is what receives the hover: a disabled button does not emit pointer events.
 const ActionTrigger = ({ reason, children }: { reason?: string; children: React.ReactElement }) => (
     <Tooltip content={reason} disabled={!reason}>
-        <span className={'inline-flex'}>{children}</span>
+        <span className='inline-flex'>{children}</span>
     </Tooltip>
 );
+
+const reinstallBlockedReasonFor = (attributes: AdminServer['attributes']): string | undefined => {
+    if (attributes.container.installed !== 1) {
+        return 'This action is disabled until the server is installed.';
+    }
+
+    if (canReinstallServer(attributes.status, attributes.container.skip_scripts)) {
+        return undefined;
+    }
+
+    return SKIPPED_INSTALL_SCRIPT_MESSAGE;
+};
 
 function ServerManageContent({ server }: Props) {
     const { attributes } = server;
@@ -74,16 +86,11 @@ function ServerManageContent({ server }: Props) {
     const loading = reinstallServer.isPending || toggleInstallState.isPending || updateSuspension.isPending;
     const activeTransfer = isObject(transfer);
     const canTransfer = (nodes?.meta.pagination.total ?? 0) > 1;
-    const reinstallBlockedReason =
-        attributes.container.installed !== 1
-            ? 'This action is disabled until the server is installed.'
-            : !canReinstallServer(attributes.status, attributes.container.skip_scripts)
-              ? SKIPPED_INSTALL_SCRIPT_MESSAGE
-              : undefined;
+    const reinstallBlockedReason = reinstallBlockedReasonFor(attributes);
 
     if (attributes.status === 'install_failed') {
         return (
-            <TitledGreyBox title={'Server Cannot Be Managed'}>
+            <TitledGreyBox title='Server Cannot Be Managed'>
                 <p className={descriptionClass}>
                     This server is in a failed install state and cannot be recovered. Delete and re-create the server.
                 </p>
@@ -92,20 +99,20 @@ function ServerManageContent({ server }: Props) {
     }
 
     return (
-        <div className={'grid grid-cols-1 gap-6 lg:grid-cols-2'}>
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
             <ManageActionCard
-                title={'Reinstall Server'}
+                title='Reinstall Server'
                 alert={{ type: 'danger', title: 'Danger!', message: 'This could overwrite server data.' }}
-                description={'This will reinstall the server with the assigned service scripts.'}
+                description='This will reinstall the server with the assigned service scripts.'
                 action={
                     <Dialog.ConfirmTrigger
-                        title={'Reinstall Server'}
-                        confirm={'Reinstall'}
+                        title='Reinstall Server'
+                        confirm='Reinstall'
                         pending={reinstallServer.isPending}
                         trigger={({ onClick }) => (
                             <ActionTrigger reason={reinstallBlockedReason}>
                                 <Button
-                                    color={'red'}
+                                    color='red'
                                     className={actionButtonClass}
                                     disabled={loading || reinstallBlockedReason !== undefined}
                                     onClick={onClick}
@@ -125,14 +132,12 @@ function ServerManageContent({ server }: Props) {
             />
 
             <ManageActionCard
-                title={'Install Status'}
-                description={
-                    'If you need to change the install status from uninstalled to installed, or vice versa, you may do so with the button below.'
-                }
+                title='Install Status'
+                description='If you need to change the install status from uninstalled to installed, or vice versa, you may do so with the button below.'
                 action={
                     <Dialog.ConfirmTrigger
-                        title={'Toggle Install Status'}
-                        confirm={'Toggle'}
+                        title='Toggle Install Status'
+                        confirm='Toggle'
                         pending={toggleInstallState.isPending}
                         trigger={({ onClick }) => (
                             <Button className={actionButtonClass} disabled={loading} onClick={onClick}>
@@ -153,16 +158,16 @@ function ServerManageContent({ server }: Props) {
 
             {attributes.suspended ? (
                 <ManageActionCard
-                    title={'Unsuspend Server'}
-                    description={'This will unsuspend the server and restore normal user access.'}
+                    title='Unsuspend Server'
+                    description='This will unsuspend the server and restore normal user access.'
                     action={
                         <Dialog.ConfirmTrigger
-                            title={'Unsuspend Server'}
-                            confirm={'Unsuspend'}
+                            title='Unsuspend Server'
+                            confirm='Unsuspend'
                             pending={updateSuspension.isPending}
                             trigger={({ onClick }) => (
                                 <Button
-                                    color={'green'}
+                                    color='green'
                                     className={actionButtonClass}
                                     disabled={loading}
                                     onClick={onClick}
@@ -183,14 +188,12 @@ function ServerManageContent({ server }: Props) {
                 />
             ) : (
                 <ManageActionCard
-                    title={'Suspend Server'}
-                    description={
-                        'This will suspend the server, stop any running processes, and immediately block the user from accessing their files or managing the server.'
-                    }
+                    title='Suspend Server'
+                    description='This will suspend the server, stop any running processes, and immediately block the user from accessing their files or managing the server.'
                     action={
                         <Dialog.ConfirmTrigger
-                            title={'Suspend Server'}
-                            confirm={'Suspend'}
+                            title='Suspend Server'
+                            confirm='Suspend'
                             pending={updateSuspension.isPending}
                             trigger={({ onClick }) => (
                                 <ActionTrigger
@@ -201,7 +204,7 @@ function ServerManageContent({ server }: Props) {
                                     }
                                 >
                                     <Button
-                                        color={'orange'}
+                                        color='orange'
                                         className={actionButtonClass}
                                         disabled={loading || activeTransfer}
                                         onClick={onClick}
@@ -225,7 +228,7 @@ function ServerManageContent({ server }: Props) {
             )}
 
             <ManageActionCard
-                title={'Transfer Server'}
+                title='Transfer Server'
                 alert={
                     activeTransfer
                         ? undefined
@@ -247,7 +250,7 @@ function ServerManageContent({ server }: Props) {
                                 }
                             >
                                 <Button
-                                    color={'green'}
+                                    color='green'
                                     className={actionButtonClass}
                                     disabled={loading || activeTransfer || !canTransfer}
                                     onClick={onClick}

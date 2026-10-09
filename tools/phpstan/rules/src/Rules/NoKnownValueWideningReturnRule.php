@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -16,6 +15,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Node\FunctionReturnStatementsNode;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\TypeClassifier;
 
 /**
  * The return half of anti-slop's no-known-value-widening: a function whose

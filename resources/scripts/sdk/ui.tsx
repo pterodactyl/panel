@@ -37,6 +37,7 @@ export function Table<TRow>({ rows, columns, keyOf, ...props }: TableProps<TRow>
         [columns]
     );
     const table = useReactTable({ data, columns: definitions, getRowId: keyOf, getCoreRowModel: getCoreRowModel() });
+
     return <PanelDataTable table={table} {...props} />;
 }
 

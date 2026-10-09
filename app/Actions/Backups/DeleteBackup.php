@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Backups;
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use LogicException;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -44,36 +43,33 @@ final readonly class DeleteBackup implements DeletesBackups
             return;
         }
 
-        DB::transaction(function () use ($backup): void {
-            try {
-                Daemon::server($backup->server)->backups()->delete($backup);
-            } catch (DaemonConnectionException $daemonConnectionException) {
-                // Don't fail the request if the Daemon responds with a 404, just assume the backup
-                // doesn't actually exist and remove its reference from the Panel as well.
-                throw_if($daemonConnectionException->getStatusCode() !== Response::HTTP_NOT_FOUND, $daemonConnectionException);
-            }
+        try {
+            Daemon::server($backup->server)->backups()->delete($backup);
+        } catch (DaemonConnectionException $daemonConnectionException) {
+            // Don't fail the request if the Daemon responds with a 404, just assume the backup
+            // doesn't actually exist and remove its reference from the Panel as well.
+            throw_if($daemonConnectionException->getStatusCode() !== Response::HTTP_NOT_FOUND, $daemonConnectionException);
+        }
 
-            $backup->delete();
-        });
+        $backup->delete();
     }
 
     /**
-     * Deletes a backup from an S3 disk.
+     * Deletes a backup from an S3 disk. The object is removed first so the row is
+     * kept if S3 rejects the request.
      *
      * @throws Throwable
      */
     private function deleteFromS3(Backup $backup): void
     {
-        DB::transaction(function () use ($backup): void {
-            $backup->delete();
+        $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
+        throw_unless($adapter instanceof S3Filesystem, LogicException::class, 'The S3 backup adapter is not configured correctly.');
 
-            $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
-            throw_unless($adapter instanceof S3Filesystem, LogicException::class, 'The S3 backup adapter is not configured correctly.');
+        $adapter->getClient()->deleteObject([
+            'Bucket' => $adapter->getBucket(),
+            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+        ]);
 
-            $adapter->getClient()->deleteObject([
-                'Bucket' => $adapter->getBucket(),
-                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-            ]);
-        });
+        $backup->delete();
     }
 }

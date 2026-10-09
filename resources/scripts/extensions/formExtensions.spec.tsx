@@ -36,7 +36,7 @@ function ProbeFields({ field, values, mode }: FormExtensionProps<ProbeValues, 'a
         <div>
             <label htmlFor={tier.id}>Tier</label>
             <input id={tier.id} value={tier.value ?? ''} onChange={(event) => tier.setValue(event.target.value)} />
-            {tier.error && <p role={'alert'}>{tier.error}</p>}
+            {tier.error && <p role='alert'>{tier.error}</p>}
             <p>
                 {mode} note: {values.note ?? 'none'}
             </p>
@@ -73,6 +73,7 @@ const user: AdminUserFormSlotData['resource'] = {
 
 const originalAdapter = http.defaults.adapter;
 let host: ReturnType<typeof createExtensionTestHost> | undefined;
+
 afterEach(() => {
     cleanup();
     host?.dispose();
@@ -98,8 +99,11 @@ async function boot() {
     await loadExtensions(async (url) => ({
         default: definePterodactylExtension({
             setup({ forms }) {
-                if (url === '/probe.js') forms.extend('admin.user', ProbeFields);
-                else forms.extend('admin.user', OtherFields);
+                if (url === '/probe.js') {
+                    forms.extend('admin.user', ProbeFields);
+                } else {
+                    forms.extend('admin.user', OtherFields);
+                }
             },
         }),
     }));
@@ -108,10 +112,15 @@ async function boot() {
 describe('extension fields in admin forms', () => {
     it('loads saved values into the extension, sends every extension it shows and shows the panel messages', async () => {
         const payloads: unknown[] = [];
+
         http.defaults.adapter = async (config) => {
-            if (config.url === '/api/admin/languages') return respond(config, 200, { en: 'English' });
+            if (config.url === '/api/admin/languages') {
+                return respond(config, 200, { en: 'English' });
+            }
+
             payloads.push(JSON.parse(config.data));
             const errors = [{ detail: 'Pick a tier we sell.', meta: { source_field: 'extensions.probe.tier' } }];
+
             throw new AxiosError(
                 'Request failed with status code 422',
                 'ERR_BAD_REQUEST',
@@ -120,10 +129,12 @@ describe('extension fields in admin forms', () => {
                 respond(config, 422, { errors })
             );
         };
+
         await boot();
         host = createExtensionTestHost({ path: '/panel/users/1', resource: { kind: 'admin.user', resource: user } });
         host.queryClient.setQueryData(adminUserWithServersQueryOptions(1).queryKey, user);
         const Wrapper = host.Wrapper;
+
         render(
             <Wrapper>
                 <UserDetailContainer />
@@ -131,12 +142,14 @@ describe('extension fields in admin forms', () => {
         );
 
         const tier = await screen.findByLabelText('Tier');
+
         expect(tier).toHaveProperty('value', 'gold');
         expect(screen.getByText('edit note: vip')).toBeTruthy();
         expect(screen.getByText('other fields')).toBeTruthy();
         expect(screen.queryByText('Unloaded')).toBeNull();
 
         const save = () => fireEvent.click(screen.getAllByRole('button', { name: 'Save Changes' })[0]);
+
         // Untouched extensions are sent with their saved values, so their rules run on every
         // save; the one the panel could not read is left out, so its values stay as they are.
         save();
@@ -161,8 +174,12 @@ describe('extension fields in admin forms', () => {
 
     it('starts a create form with no values and sends every extension it shows', async () => {
         const payloads: unknown[] = [];
+
         http.defaults.adapter = async (config) => {
-            if (config.url === '/api/admin/languages') return respond(config, 200, { en: 'English' });
+            if (config.url === '/api/admin/languages') {
+                return respond(config, 200, { en: 'English' });
+            }
+
             payloads.push(JSON.parse(config.data));
             throw new AxiosError(
                 'Request failed with status code 422',
@@ -172,9 +189,11 @@ describe('extension fields in admin forms', () => {
                 respond(config, 422, { errors: [] })
             );
         };
+
         await boot();
         host = createExtensionTestHost({ path: '/panel/users/new' });
         const Wrapper = host.Wrapper;
+
         render(
             <Wrapper>
                 <CreateUserForm />
@@ -182,6 +201,7 @@ describe('extension fields in admin forms', () => {
         );
 
         const tier = await screen.findByLabelText('Tier');
+
         expect(tier).toHaveProperty('value', '');
         expect(screen.getByText('create note: none')).toBeTruthy();
         expect(screen.queryByText('Unloaded')).toBeNull();
@@ -202,6 +222,7 @@ describe('extension fields in admin forms', () => {
 describe('form extension registration', () => {
     it('refuses unknown forms and a second component for the same form', () => {
         const batch = createExtensionRegistryBatch();
+
         registerFormExtension({ extensionId: 'probe', form: 'admin.user', component: OtherFields }, batch);
 
         expect(() =>

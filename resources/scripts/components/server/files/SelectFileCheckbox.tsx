@@ -10,9 +10,9 @@ export default function SelectFileCheckbox({ name }: { name: string }) {
     const removeSelectedFile = useServerStore((state) => state.files.removeSelectedFile);
 
     return (
-        <div className={'flex-none px-4 py-2 absolute self-center z-30'}>
+        <div className='flex-none px-4 py-2 absolute self-center z-30'>
             <Checkbox
-                name={'selectedFiles'}
+                name='selectedFiles'
                 value={name}
                 aria-label={`Select ${name}`}
                 checked={isChecked}

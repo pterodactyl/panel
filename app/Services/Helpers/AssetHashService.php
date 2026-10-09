@@ -65,14 +65,6 @@ class AssetHashService
     }
 
     /**
-     * Return a built CSS import using the provided URL.
-     */
-    public function css(string $resource): string
-    {
-        return $this->stylesheetTag($this->url($resource), $this->integrity($resource));
-    }
-
-    /**
      * Return stylesheet tags for CSS emitted with a JS entry.
      */
     public function cssImports(string $resource): string

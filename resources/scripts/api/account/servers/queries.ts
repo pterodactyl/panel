@@ -28,7 +28,10 @@ type ServerListParams = {
 
 const clientServersInput = ({ page, query, type }: ServerListParams = {}): Options<ClientListClientServersData> => {
     const queryParameters: ClientServerListQuery = { page, type };
-    if (query) queryParameters['filter[*]'] = query;
+
+    if (query) {
+        queryParameters['filter[*]'] = query;
+    }
 
     return { query: queryParameters };
 };

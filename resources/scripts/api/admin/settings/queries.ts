@@ -118,6 +118,7 @@ export const useAdminSettings = (options?: AdminSettingsQueryOptions) =>
 
 export const useUpdateAdminGeneralSettings = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateGeneralSettingsMutation(),
         onSuccess: async (_data, { body }) => {
@@ -128,6 +129,7 @@ export const useUpdateAdminGeneralSettings = () => {
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             const notification = adminSettingsUpdateToast('General');
+
             toast.success(notification.title, { description: notification.description });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update general settings'),
@@ -136,12 +138,14 @@ export const useUpdateAdminGeneralSettings = () => {
 
 export const useUpdateAdminMailSettings = ({ successNotification = true }: UpdateAdminMailSettingsOptions = {}) => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateMailSettingsMutation(),
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             if (successNotification) {
                 const notification = adminSettingsUpdateToast('Mail');
+
                 toast.success(notification.title, { description: notification.description });
             }
         },
@@ -161,6 +165,7 @@ export const useSendTestAdminMail = () =>
 
 export const useUpdateAdminAdvancedSettings = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateAdvancedSettingsMutation(),
         onSuccess: async (_data, { body }) => {
@@ -173,6 +178,7 @@ export const useUpdateAdminAdvancedSettings = () => {
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             const notification = adminSettingsUpdateToast('Advanced');
+
             toast.success(notification.title, { description: notification.description });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update advanced settings'),

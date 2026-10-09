@@ -1,4 +1,4 @@
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import { lazy, useSyncExternalStore, type ComponentType, type LazyExoticComponent } from 'react';
 import type { Server } from '@/api/server/types';
 import type { ExtensionConfig } from '@/sdk';
 import type { AppForm } from '@/components/form';
@@ -277,29 +277,12 @@ export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail
                 : TName extends DataLessSlotName
                   ? undefined
                   : RouteSlotData;
-export type RouteSlotName = Exclude<
-    SlotName,
-    | ServerSlotName
-    | DataLessSlotName
-    | 'server.users.permissions.before'
-    | FileManagerSlotName
-    | 'server.files.rowActions'
-    | 'server.startup.form'
-    | 'panel.users.detail.form'
-    | ResourceActionSlotName
->;
+export type RouteSlotName = { [TName in SlotName]: SlotData<TName> extends RouteSlotData ? TName : never }[SlotName];
+type DataSlotName = Exclude<SlotName, RouteSlotName>;
+/** Route slots share one member, so a component can pass any route slot name it holds. */
 export type SlotProps =
-    | { name: 'panel.users.detail.form'; data: AdminUserFormSlotData }
-    | { name: Extract<SlotName, ServerSlotName>; data: Server }
-    | { name: Extract<SlotName, DataLessSlotName>; data?: undefined }
-    | { name: 'server.users.permissions.before'; data: SubuserPermissionsSlotData }
-    | { name: 'server.startup.form'; data: StartupFormSlotData }
-    | { name: FileManagerSlotName; data: FileManagerSlotData }
-    | { name: 'server.files.rowActions'; data: FileRowSlotData }
-    | {
-          [TName in ResourceActionSlotName]: { name: TName; data: ResourceActionSlotData<TName> };
-      }[ResourceActionSlotName]
-    | { name: RouteSlotName; data: RouteSlotData };
+    | { name: RouteSlotName; data: RouteSlotData }
+    | { [TName in DataSlotName]: { name: TName } & SlotComponentProps<SlotData<TName>> }[DataSlotName];
 
 export interface SlotRegistration {
     id: number;
@@ -312,6 +295,16 @@ interface BatchedSlotRegistration extends SlotRegistration {
 export type ScreenArea = 'account' | 'server' | 'admin';
 export const SCREEN_PARENTS = ['admin.node', 'admin.server', 'admin.egg', 'admin.user'] as const;
 export type ScreenParent = (typeof SCREEN_PARENTS)[number];
+/** The panel path each area and resource mounts its extension screens under. */
+export const SCREEN_ROOTS = {
+    account: '/account',
+    server: '/server/$id',
+    admin: '/panel',
+    'admin.node': '/panel/nodes/$id',
+    'admin.server': '/panel/servers/$id',
+    'admin.egg': '/panel/eggs/$eggId',
+    'admin.user': '/panel/users/$id',
+} as const satisfies Record<ScreenArea | ScreenParent, string>;
 export type ScreenComponentProps = SlotComponentProps<RouteSlotData & { resource?: ExtensionResourceContext }>;
 export type ScreenImporter = () => Promise<{ default: ComponentType<ScreenComponentProps> }>;
 /** Values an egg must carry: every `all` entry and, when listed, at least one `any` entry. */
@@ -379,11 +372,14 @@ export interface SiteExtensionEntry {
     components?: ComponentName[];
     development?: { url: string; version: string } | null;
 }
+interface StagedScreen {
+    importer: ScreenImporter;
+    options: Readonly<ScreenOptions>;
+}
 export interface ExtensionRegistryBatch {
     closed: boolean;
     slots: BatchedSlotRegistration[];
-    screens: Map<string, ScreenImporter>;
-    screenOptions: Map<string, ScreenOptions>;
+    screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
     forms: FormExtensionRegistration[];
     components: Map<ComponentName, ComponentReplacement<ComponentName>>;
@@ -401,46 +397,72 @@ const formExtensions = new Map<ExtensionFormName, readonly FormExtensionRegistra
 const emptyFormExtensions: readonly FormExtensionRegistration[] = Object.freeze([]);
 const emptySlots: readonly SlotRegistration[] = Object.freeze([]);
 const screens: ExtensionScreenRegistration[] = [];
+
 export class ExtensionImportError extends Error {}
-const implementations = new Map<string, LazyExoticComponent<ComponentType<ScreenComponentProps>>>();
-const screenOptions = new Map<string, Readonly<ScreenOptions>>();
+const screenImplementations = new Map<
+    string,
+    { component: LazyExoticComponent<ComponentType<ScreenComponentProps>>; options: Readonly<ScreenOptions> }
+>();
 const emptyConfig: ExtensionConfig = Object.freeze({});
 const componentReplacements = new Map<ComponentName, ComponentReplacement<ComponentName>>();
 const loadStates = new Map<string, ExtensionRuntimeState>();
-const states = new Map<string, ExtensionRuntimeState>();
+
+/** Failures of mounted extension code, by extension and then by context, the latest last. */
 const mountErrors = new Map<string, Map<string, string>>();
-const subscriptions = new Map<string, Set<() => void>>();
+const listeners = new Set<() => void>();
 let entries: readonly SiteExtensionEntry[] | undefined;
 let nextSlotRegistrationId = 1;
+let stateSnapshot: readonly ExtensionRuntimeState[] = [];
 
-export function subscribeExtensionRegistry(key: string, listener: () => void): () => void {
-    const listeners = subscriptions.get(key) ?? new Set();
+/** Every change notifies every listener; each getter returns the same value until its own data changes. */
+export function subscribeExtensionRegistry(listener: () => void): () => void {
     listeners.add(listener);
-    subscriptions.set(key, listeners);
+
     return () => {
         listeners.delete(listener);
-        if (!listeners.size) subscriptions.delete(key);
     };
 }
-function notify(key: string): void {
-    subscriptions.get(key)?.forEach((listener) => listener());
+
+export function useExtensionRegistry<T>(read: () => T): T {
+    return useSyncExternalStore(subscribeExtensionRegistry, read);
 }
+
+/** The latest failure of mounted code overrides the load state. */
+function runtimeState(id: string): ExtensionRuntimeState | undefined {
+    const latest = [...(mountErrors.get(id) ?? [])].at(-1);
+
+    return latest ? Object.freeze({ id, status: 'failed', error: `${latest[0]}: ${latest[1]}` }) : loadStates.get(id);
+}
+
+function publish(): void {
+    const ids = new Set([...loadStates.keys(), ...mountErrors.keys()]);
+
+    stateSnapshot = Object.freeze([...ids].flatMap((id) => runtimeState(id) ?? []));
+    for (const listener of listeners) {
+        listener();
+    }
+}
+
 export function getExtensionLoadState(id: string): ExtensionRuntimeState | undefined {
     return loadStates.get(id);
 }
+
 export function getScreenComponent(
     extensionId: string,
     screenId: string
 ): LazyExoticComponent<ComponentType<ScreenComponentProps>> | undefined {
-    return implementations.get(`${extensionId}:${screenId}`);
+    return screenImplementations.get(`${extensionId}:${screenId}`)?.component;
 }
+
 /** Undefined until the screen's bundle has loaded. */
 export function getScreenOptions(extensionId: string, screenId: string): Readonly<ScreenOptions> | undefined {
-    return screenOptions.get(`${extensionId}:${screenId}`);
+    return screenImplementations.get(`${extensionId}:${screenId}`)?.options;
 }
+
 export function getExtensionConfig(extensionId: string): ExtensionConfig {
     return entries?.find((entry) => entry.id === extensionId)?.config ?? emptyConfig;
 }
+
 export function getLoadableExtensions(): readonly SiteExtensionEntry[] | undefined {
     return entries;
 }
@@ -453,243 +475,358 @@ export function getComponentReplacement(name: ComponentName): ComponentReplaceme
     return componentReplacements.get(name);
 }
 
-let stateSnapshot: readonly ExtensionRuntimeState[] = [];
 export function getExtensionStates(): readonly ExtensionRuntimeState[] {
     return stateSnapshot;
 }
-function publishStates(): void {
-    stateSnapshot = Object.freeze([...states.values()]);
-    notify('states');
-}
-function refreshExtensionState(extensionId: string): void {
-    const remaining = mountErrors.get(extensionId)?.entries().next().value;
-    if (remaining) {
-        states.set(
-            extensionId,
-            Object.freeze({ id: extensionId, status: 'failed', error: `${remaining[0]}: ${remaining[1]}` })
-        );
-    } else {
-        const state = loadStates.get(extensionId);
-        if (state) states.set(extensionId, state);
-    }
-}
+
 export function setExtensionState(state: ExtensionRuntimeState): void {
-    const snapshot = Object.freeze({ ...state });
-    loadStates.set(state.id, snapshot);
-    refreshExtensionState(state.id);
-    notify(`extension:${state.id}`);
-    publishStates();
+    loadStates.set(state.id, Object.freeze({ ...state }));
+    publish();
 }
-/** Repeat reports of the same failure in a context are ignored. */
-export function reportExtensionError(extensionId: string, context: string, cause: unknown): void {
+
+/** Records a failure, unless the same one is already recorded for the context; returns its message. */
+function recordError(extensionId: string, context: string, cause: unknown): string | undefined {
     const message = cause instanceof Error ? cause.message : String(cause);
     const errors = mountErrors.get(extensionId) ?? new Map<string, string>();
-    if (errors.get(context) === message && states.get(extensionId)?.status === 'failed') return;
+
+    if (errors.get(context) === message) {
+        return undefined;
+    }
+
     console.error(`[extensions] "${extensionId}" failed in ${context}:`, cause);
+    errors.delete(context);
     errors.set(context, message);
     mountErrors.set(extensionId, errors);
-    states.set(extensionId, Object.freeze({ id: extensionId, status: 'failed', error: `${context}: ${message}` }));
-    publishStates();
+
+    return message;
 }
+
+/** Repeat reports of the same failure in a context are ignored. */
+export function reportExtensionError(extensionId: string, context: string, cause: unknown): void {
+    if (recordError(extensionId, context, cause) !== undefined) {
+        publish();
+    }
+}
+
 export function failExtensionLoad(id: string, context: string, cause: unknown): void {
-    reportExtensionError(id, context, cause);
-    const state = states.get(id)!;
-    loadStates.set(id, state);
-    notify(`extension:${id}`);
+    const message = recordError(id, context, cause) ?? mountErrors.get(id)!.get(context)!;
+
+    loadStates.set(id, Object.freeze({ id, status: 'failed', error: `${context}: ${message}` }));
+    publish();
 }
 
 /** Restrict extension paths to static segments and named parameters, with a static namespace. */
 function normalizeScreenPath(path: string): string {
     const normalized = path.replace(/\/+$/, '');
+
     if (!/^[a-z][a-z0-9-]*(?:\/(?:[a-z][a-z0-9-]*|\$[a-zA-Z][a-zA-Z0-9_]*))*$/.test(normalized)) {
         throw new Error(`Invalid screen path "${path}"`);
     }
+
     const parameters = normalized.split('/').filter((segment) => segment.startsWith('$'));
-    if (parameters.includes('$id')) throw new Error('The id path parameter is reserved for the panel.');
-    if (new Set(parameters).size !== parameters.length) throw new Error(`Duplicate path parameter in "${path}"`);
+
+    if (parameters.includes('$id')) {
+        throw new Error('The id path parameter is reserved for the panel.');
+    }
+
+    if (new Set(parameters).size !== parameters.length) {
+        throw new Error(`Duplicate path parameter in "${path}"`);
+    }
+
     return normalized;
 }
 
 export function resolveScreenPath(path: string, params: Record<string, string> = {}): string {
-    return path.replace(/\$([a-zA-Z][a-zA-Z0-9_]*)/g, (_match, name: string) => {
+    return path.replaceAll(/\$([a-zA-Z][a-zA-Z0-9_]*)/g, (_match, name: string) => {
         const value = params[name];
-        if (!value) throw new Error(`Missing navigation parameter "${name}".`);
+
+        if (!value) {
+            throw new Error(`Missing navigation parameter "${name}".`);
+        }
+
         return encodeURIComponent(value);
     });
 }
+
 function matchesValues(matcher: ScreenMatcher, values: readonly string[]): boolean {
     const present = new Set(values.map((value) => value.toLowerCase()));
     const has = (value: string) => present.has(value.toLowerCase());
+
     return (matcher.all ?? []).every(has) && (!matcher.any || matcher.any.some(has));
 }
+
 /** A rule never matches without a server to test. */
 export function matchesScreenCondition(when: ScreenCondition | undefined, server: Server | undefined): boolean {
     const results: boolean[] = [];
-    if (when?.eggFeatures) results.push(matchesValues(when.eggFeatures, server?.attributes.egg_features ?? []));
-    if (when?.eggTags) results.push(matchesValues(when.eggTags, server?.attributes.egg_tags ?? []));
+
+    if (when?.eggFeatures) {
+        results.push(matchesValues(when.eggFeatures, server?.attributes.egg_features ?? []));
+    }
+
+    if (when?.eggTags) {
+        results.push(matchesValues(when.eggTags, server?.attributes.egg_tags ?? []));
+    }
+
     return when?.match === 'any' ? results.some(Boolean) : results.every(Boolean);
 }
-export function prepareExtensions(
-    advertised: readonly SiteExtensionEntry[],
-    corePaths: Record<ScreenArea, readonly string[]> = { account: [], server: [], admin: [] },
-    resourcePaths: Partial<Record<ScreenParent, readonly string[]>> = {}
-): void {
-    if (entries) return;
-    const accepted: SiteExtensionEntry[] = [];
-    const claimed = new Map<string, string>();
-    const seenIds = new Set<string>();
+
+type ScreenRules = {
+    corePaths: Record<ScreenArea, readonly string[]>;
+    resourcePaths: Partial<Record<ScreenParent, readonly string[]>>;
+    /** Screen paths already taken by accepted extensions, keyed by mount point and path shape. */
+    claimed: Map<string, string>;
+};
+
+/** Every extension that declares each component replacement, so a contested name fails all its claimants. */
+function collectComponentClaims(advertised: readonly SiteExtensionEntry[]): Map<string, Set<string>> {
     const componentClaims = new Map<string, Set<string>>();
+
     for (const entry of advertised) {
         for (const name of entry.components ?? []) {
             const owners = componentClaims.get(name) ?? new Set<string>();
+
             owners.add(entry.id);
             componentClaims.set(name, owners);
         }
     }
+
+    return componentClaims;
+}
+
+function assertComponentClaims(entry: SiteExtensionEntry, componentClaims: Map<string, Set<string>>): void {
+    const names = entry.components ?? [];
+
+    if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
+        throw new Error('Invalid or duplicate component replacement name.');
+    }
+
+    for (const name of names) {
+        const owners = componentClaims.get(name)!;
+
+        if (owners.size > 1) {
+            throw new Error(
+                `Component "${name}" is declared by competing extensions: ${[...owners].sort().join(', ')}.`
+            );
+        }
+    }
+}
+
+function assertScreenParent(screen: ExtensionScreenDefinition): void {
+    if (screen.parent && (screen.area !== 'admin' || !SCREEN_PARENTS.includes(screen.parent))) {
+        throw new Error(`Invalid screen parent "${screen.parent}"`);
+    }
+}
+
+function assertNoCoreCollision(screen: ExtensionScreenDefinition, path: string, rules: ScreenRules): void {
+    const first = path.split('/')[0];
+    const reserved = screen.parent ? (rules.resourcePaths[screen.parent] ?? []) : rules.corePaths[screen.area];
+
+    if (reserved.some((core) => core.replace(/^\//, '').split('/')[0] === first)) {
+        throw new Error(`screen "${path}" collides with core in ${screen.area}`);
+    }
+}
+
+function assertEggRulesInServerArea(screen: ExtensionScreenDefinition): void {
+    if (screen.area !== 'server' && (screen.when?.eggFeatures || screen.when?.eggTags)) {
+        throw new Error(`screen "${screen.id}" declares egg rules outside the server area`);
+    }
+}
+
+/** Screens with the same mount point and path shape collide, whatever their parameters are named. */
+function screenClaimKey(screen: ExtensionScreenDefinition, path: string): string {
+    return `${screen.parent ?? screen.area}:${path.replaceAll(/\$[a-zA-Z][a-zA-Z0-9_]*/g, '$param')}`;
+}
+
+function prepareScreen(
+    screen: ExtensionScreenDefinition,
+    entry: SiteExtensionEntry,
+    ids: Set<string>,
+    paths: Map<string, string>,
+    rules: ScreenRules
+): ExtensionScreenRegistration {
+    if (!/^[a-z][a-z0-9-]*$/.test(screen.id) || ids.has(screen.id)) {
+        throw new Error(`Invalid or duplicate screen id "${screen.id}"`);
+    }
+
+    ids.add(screen.id);
+    if (!Object.hasOwn(rules.corePaths, screen.area)) {
+        throw new Error(`Invalid screen area "${screen.area}"`);
+    }
+
+    const path = normalizeScreenPath(screen.path);
+
+    if (screen.nav) {
+        resolveScreenPath(path, screen.nav.params);
+    }
+
+    assertScreenParent(screen);
+    assertNoCoreCollision(screen, path, rules);
+    assertEggRulesInServerArea(screen);
+
+    const key = screenClaimKey(screen, path);
+    const owner = rules.claimed.get(key) ?? paths.get(key);
+
+    if (owner) {
+        throw new Error(`screen "${path}" collides with extension "${owner}"`);
+    }
+
+    paths.set(key, entry.id);
+
+    return Object.freeze({
+        id: screen.id,
+        area: screen.area,
+        path,
+        parent: screen.parent,
+        nav: screen.nav,
+        permission: screen.permission,
+        when: screen.when,
+        extensionId: entry.id,
+    });
+}
+
+/** Validates an entry's metadata and registers its screens; throws without registering anything when invalid. */
+function registerEntryScreens(
+    entry: SiteExtensionEntry,
+    componentClaims: Map<string, Set<string>>,
+    rules: ScreenRules
+): void {
+    assertComponentClaims(entry, componentClaims);
+
+    const ids = new Set<string>();
+    const paths = new Map<string, string>();
+    const pending = (entry.screens ?? []).map((screen) => prepareScreen(screen, entry, ids, paths, rules));
+
+    for (const [key, owner] of paths) {
+        rules.claimed.set(key, owner);
+    }
+
+    screens.push(...pending);
+}
+
+export function prepareExtensions(
+    advertised: readonly SiteExtensionEntry[],
+    corePaths: Record<ScreenArea, readonly string[]> = { account: [], server: [], admin: [] },
+    resourcePaths: Partial<Record<ScreenParent, readonly string[]>> = {}
+): readonly SiteExtensionEntry[] {
+    if (entries) {
+        return entries;
+    }
+
+    const accepted: SiteExtensionEntry[] = [];
+    const seenIds = new Set<string>();
+    const componentClaims = collectComponentClaims(advertised);
+    const rules: ScreenRules = { corePaths, resourcePaths, claimed: new Map() };
+
     for (const entry of advertised) {
-        if (seenIds.has(entry.id)) continue;
+        if (seenIds.has(entry.id)) {
+            continue;
+        }
+
         seenIds.add(entry.id);
         try {
-            const names = entry.components ?? [];
-            if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
-                throw new Error('Invalid or duplicate component replacement name.');
-            }
-            for (const name of names) {
-                if (componentClaims.get(name)!.size > 1) {
-                    throw new Error(
-                        `Component "${name}" is declared by competing extensions: ${[...componentClaims.get(name)!].sort().join(', ')}.`
-                    );
-                }
-            }
-            const ids = new Set<string>();
-            const paths = new Map<string, string>();
-            const pending = (entry.screens ?? []).map((screen) => {
-                if (!/^[a-z][a-z0-9-]*$/.test(screen.id) || ids.has(screen.id))
-                    throw new Error(`Invalid or duplicate screen id "${screen.id}"`);
-                ids.add(screen.id);
-                if (!Object.hasOwn(corePaths, screen.area)) throw new Error(`Invalid screen area "${screen.area}"`);
-                const path = normalizeScreenPath(screen.path);
-                if (screen.nav) resolveScreenPath(path, screen.nav.params);
-                const first = path.split('/')[0];
-                if (screen.parent && (screen.area !== 'admin' || !SCREEN_PARENTS.includes(screen.parent))) {
-                    throw new Error(`Invalid screen parent "${screen.parent}"`);
-                }
-                const reserved = screen.parent ? (resourcePaths[screen.parent] ?? []) : corePaths[screen.area];
-                if (reserved.some((core) => core.replace(/^\//, '').split('/')[0] === first)) {
-                    throw new Error(`screen "${path}" collides with core in ${screen.area}`);
-                }
-                if (screen.area !== 'server' && (screen.when?.eggFeatures || screen.when?.eggTags)) {
-                    throw new Error(`screen "${screen.id}" declares egg rules outside the server area`);
-                }
-                const key = `${screen.parent ?? screen.area}:${path.replace(/\$[a-zA-Z][a-zA-Z0-9_]*/g, '$param')}`;
-                const owner = claimed.get(key) ?? paths.get(key);
-                if (owner) throw new Error(`screen "${path}" collides with extension "${owner}"`);
-                paths.set(key, entry.id);
-                return Object.freeze({
-                    id: screen.id,
-                    area: screen.area,
-                    path,
-                    parent: screen.parent,
-                    nav: screen.nav,
-                    permission: screen.permission,
-                    when: screen.when,
-                    extensionId: entry.id,
-                });
-            });
-            paths.forEach((owner, key) => claimed.set(key, owner));
-            screens.push(...pending);
+            registerEntryScreens(entry, componentClaims, rules);
             accepted.push(entry);
             setExtensionState({ id: entry.id, status: 'loading' });
         } catch (error) {
             failExtensionLoad(entry.id, 'metadata', error);
         }
     }
+
     entries = Object.freeze(accepted);
+
+    return entries;
 }
 
 function assertBatchOpen(batch: ExtensionRegistryBatch): void {
-    if (batch.closed) throw new Error('Extension registration batch is closed.');
+    if (batch.closed) {
+        throw new Error('Extension registration batch is closed.');
+    }
 }
+
 export function createExtensionRegistryBatch(): ExtensionRegistryBatch {
-    return {
-        closed: false,
-        slots: [],
-        screens: new Map(),
-        screenOptions: new Map(),
-        columns: [],
-        forms: [],
-        components: new Map(),
-    };
+    return { closed: false, slots: [], screens: new Map(), columns: [], forms: [], components: new Map() };
 }
-function appendSlotRegistration(name: SlotName, registration: SlotRegistration, publish = true): void {
+
+/** Keeps registrations in the order the panel advertises their extensions; the sort is stable. */
+function mergeByEntryOrder<TKey, TItem extends { extensionId: string }>(
+    map: Map<TKey, readonly TItem[]>,
+    key: TKey,
+    added: readonly TItem[]
+): void {
     const order = (id: string) => entries?.findIndex((entry) => entry.id === id) ?? 0;
-    slots.set(
-        name,
-        Object.freeze(
-            [...(slots.get(name) ?? []), registration].sort(
-                (a, b) => order(a.extensionId) - order(b.extensionId) || a.id - b.id
-            )
-        )
+
+    map.set(
+        key,
+        Object.freeze([...(map.get(key) ?? []), ...added].sort((a, b) => order(a.extensionId) - order(b.extensionId)))
     );
-    if (publish) notify(`slot:${name}`);
+}
+
+/** Every declared screen and component must have an implementation before a batch commits. */
+function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch): void {
+    for (const screen of screens.filter((screen) => screen.extensionId === extensionId)) {
+        const staged = batch.screens.get(screen.id);
+
+        if (!staged) {
+            throw new Error(`Missing implementation for screen "${screen.id}"`);
+        }
+
+        if (screen.when?.runtime && !staged.options.visible) {
+            throw new Error(`Missing visibility predicate for screen "${screen.id}"`);
+        }
+    }
+
+    for (const name of entries?.find((entry) => entry.id === extensionId)?.components ?? []) {
+        if (!batch.components.has(name)) {
+            throw new Error(`Missing implementation for component "${name}"`);
+        }
+    }
 }
 
 export function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void {
     assertBatchOpen(batch);
-    for (const screen of screens.filter((screen) => screen.extensionId === extensionId)) {
-        if (!batch.screens.has(screen.id)) throw new Error(`Missing implementation for screen "${screen.id}"`);
-        if (screen.when?.runtime && !batch.screenOptions.get(screen.id)?.visible) {
-            throw new Error(`Missing visibility predicate for screen "${screen.id}"`);
-        }
+    assertBatchComplete(extensionId, batch);
+    batch.closed = true;
+    for (const name of new Set(batch.slots.map((slot) => slot.name))) {
+        mergeByEntryOrder(
+            slots,
+            name,
+            batch.slots.filter((slot) => slot.name === name)
+        );
     }
-    for (const name of entries?.find((entry) => entry.id === extensionId)?.components ?? []) {
-        if (!batch.components.has(name)) throw new Error(`Missing implementation for component "${name}"`);
+
+    for (const name of new Set(batch.columns.map((column) => column.name))) {
+        mergeByEntryOrder(
+            tableColumns,
+            name,
+            batch.columns.filter((column) => column.name === name)
+        );
     }
-    const changed = new Set<SlotName>();
-    for (const registration of batch.slots) {
-        appendSlotRegistration(registration.name, registration, false);
-        changed.add(registration.name);
+
+    for (const form of new Set(batch.forms.map((registration) => registration.form))) {
+        mergeByEntryOrder(
+            formExtensions,
+            form,
+            batch.forms.filter((registration) => registration.form === form)
+        );
     }
-    batch.screens.forEach((importer, id) =>
-        implementations.set(
-            `${extensionId}:${id}`,
-            lazy(() =>
+
+    for (const [id, { importer, options }] of batch.screens) {
+        screenImplementations.set(`${extensionId}:${id}`, {
+            component: lazy(() =>
                 importer().catch((cause: unknown) => {
                     throw new ExtensionImportError('Unable to load extension screen', { cause });
                 })
-            )
-        )
-    );
-    batch.screenOptions.forEach((options, id) => screenOptions.set(`${extensionId}:${id}`, options));
-    batch.components.forEach((replacement, name) => componentReplacements.set(name, replacement));
-    batch.closed = true;
-    for (const name of new Set(batch.columns.map((column) => column.name))) {
-        const order = (id: string) => entries?.findIndex((entry) => entry.id === id) ?? 0;
-        tableColumns.set(
-            name,
-            Object.freeze(
-                [...(tableColumns.get(name) ?? []), ...batch.columns.filter((column) => column.name === name)].sort(
-                    (a, b) => order(a.extensionId) - order(b.extensionId)
-                )
-            )
-        );
-        notify(`table:${name}`);
+            ),
+            options,
+        });
     }
-    for (const form of new Set(batch.forms.map((registration) => registration.form))) {
-        const order = (id: string) => entries?.findIndex((entry) => entry.id === id) ?? 0;
-        formExtensions.set(
-            form,
-            Object.freeze(
-                [
-                    ...(formExtensions.get(form) ?? []),
-                    ...batch.forms.filter((registration) => registration.form === form),
-                ].sort((a, b) => order(a.extensionId) - order(b.extensionId))
-            )
-        );
-        notify(`form:${form}`);
+
+    for (const [name, replacement] of batch.components) {
+        componentReplacements.set(name, replacement);
     }
-    setExtensionState({ id: extensionId, status: 'loaded' });
-    changed.forEach((name) => notify(`slot:${name}`));
+
+    loadStates.set(extensionId, Object.freeze({ id: extensionId, status: 'loaded' }));
+    publish();
 }
 
 export function registerComponentReplacement<TName extends ComponentName>(
@@ -702,69 +839,93 @@ export function registerComponentReplacement<TName extends ComponentName>(
     if (!isComponentName(name) || getComponentOwner(name) !== extensionId) {
         throw new Error(`Component "${name}" must be declared in this extension's ui.components.`);
     }
-    if (batch.components.has(name)) throw new Error(`Duplicate implementation for component "${name}".`);
+
+    if (batch.components.has(name)) {
+        throw new Error(`Duplicate implementation for component "${name}".`);
+    }
+
     if (
         !isReplacementComponent(replacement) &&
         !(replacement !== null && 'load' in replacement && replacement.load instanceof Function)
     ) {
         throw new Error(`Invalid implementation for component "${name}". Use a component or a lazy importer.`);
     }
+
     batch.components.set(name, replacement);
 }
+
 export function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void {
     assertBatchOpen(batch);
-    batch.slots = [];
-    batch.columns = [];
-    batch.forms = [];
-    batch.screens.clear();
-    batch.screenOptions.clear();
-    batch.components.clear();
     batch.closed = true;
 }
+
 export function registerSlotComponent(
     extensionId: string,
     name: SlotName,
     component: ComponentType<SlotComponentProps>,
-    batch?: ExtensionRegistryBatch
+    batch: ExtensionRegistryBatch
 ): void {
-    if (!SLOT_NAMES.includes(name)) throw new Error(`Unknown slot "${name}"`);
-    const registration = Object.freeze({ id: nextSlotRegistrationId++, extensionId, name, component });
-    if (batch) {
-        assertBatchOpen(batch);
-        batch.slots.push(registration);
-    } else appendSlotRegistration(name, registration);
+    if (!SLOT_NAMES.includes(name)) {
+        throw new Error(`Unknown slot "${name}"`);
+    }
+
+    assertBatchOpen(batch);
+    batch.slots.push(Object.freeze({ id: nextSlotRegistrationId++, extensionId, name, component }));
 }
+
 export function getSlotComponents(name: SlotName): readonly SlotRegistration[] {
     return slots.get(name) ?? emptySlots;
 }
+
 export function registerExtensionTableColumn(
     column: ExtensionTableColumnRegistration,
     batch: ExtensionRegistryBatch
 ): void {
     assertBatchOpen(batch);
-    if (!['admin.nodes', 'admin.servers', 'admin.eggs'].includes(column.name))
+    if (!['admin.nodes', 'admin.servers', 'admin.eggs'].includes(column.name)) {
         throw new Error(`Unknown extension table "${column.name}".`);
-    if (!/^[a-z][a-z0-9-]{0,47}$/.test(column.id) || !column.label.trim())
+    }
+
+    if (!/^[a-z][a-z0-9-]{0,47}$/.test(column.id) || !column.label.trim()) {
         throw new Error('Table columns require a valid id and label.');
-    if (batch.columns.some((existing) => existing.name === column.name && existing.id === column.id))
+    }
+
+    if (batch.columns.some((existing) => existing.name === column.name && existing.id === column.id)) {
         throw new Error(`Duplicate table column "${column.id}".`);
+    }
+
     batch.columns.push(Object.freeze({ ...column }));
 }
+
 export function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[] {
     return tableColumns.get(name) ?? emptyColumns;
 }
+
 export function registerFormExtension(registration: FormExtensionRegistration, batch: ExtensionRegistryBatch): void {
     assertBatchOpen(batch);
-    if (!EXTENSION_FORM_NAMES.includes(registration.form)) throw new Error(`Unknown form "${registration.form}".`);
-    if (!(registration.component instanceof Function) && !isReplacementComponent(registration.component))
+    if (!EXTENSION_FORM_NAMES.includes(registration.form)) {
+        throw new Error(`Unknown form "${registration.form}".`);
+    }
+
+    if (!(registration.component instanceof Function) && !isReplacementComponent(registration.component)) {
         throw new Error(`The "${registration.form}" form needs a component.`);
-    if (batch.forms.some((existing) => existing.form === registration.form))
+    }
+
+    if (batch.forms.some((existing) => existing.form === registration.form)) {
         throw new Error(`Duplicate component for the "${registration.form}" form.`);
+    }
+
     batch.forms.push(Object.freeze({ ...registration }));
 }
+
 export function getFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[] {
     return formExtensions.get(form) ?? emptyFormExtensions;
 }
+
+export function findExtensionScreen(extensionId: string, id: string): ExtensionScreenRegistration | undefined {
+    return screens.find((screen) => screen.extensionId === extensionId && screen.id === id);
+}
+
 export function registerScreen(
     extensionId: string,
     id: string,
@@ -773,27 +934,45 @@ export function registerScreen(
     options: ScreenOptions = {}
 ): void {
     assertBatchOpen(batch);
-    const screen = screens.find((screen) => screen.extensionId === extensionId && screen.id === id);
-    if (!screen) throw new Error(`Undeclared screen "${id}"`);
-    if (batch.screens.has(id)) throw new Error(`Duplicate implementation for screen "${id}"`);
+    const screen = findExtensionScreen(extensionId, id);
+
+    if (!screen) {
+        throw new Error(`Undeclared screen "${id}"`);
+    }
+
+    if (batch.screens.has(id)) {
+        throw new Error(`Duplicate implementation for screen "${id}"`);
+    }
+
     const { visible, badge } = options;
+
     if ((visible && !(visible instanceof Function)) || (badge && !(badge instanceof Function))) {
         throw new Error(`Screen "${id}" options must be functions.`);
     }
+
     if (visible && !screen.when?.runtime) {
         throw new Error(`Screen "${id}" must declare "when": { "runtime": true } to register a visibility predicate.`);
     }
-    batch.screens.set(id, component);
-    batch.screenOptions.set(id, Object.freeze({ visible, badge }));
+
+    batch.screens.set(id, { importer: component, options: Object.freeze({ visible, badge }) });
 }
+
 export function getExtensionScreens(area: ScreenArea, parent?: ScreenParent): readonly ExtensionScreenRegistration[] {
     return screens
         .filter((screen) => screen.area === area && screen.parent === parent)
         .sort((a, b) => (a.nav?.order ?? 0) - (b.nav?.order ?? 0));
 }
+
 export function clearExtensionError(extensionId: string, context: string): void {
     const errors = mountErrors.get(extensionId);
-    errors?.delete(context);
-    refreshExtensionState(extensionId);
-    publishStates();
+
+    if (!errors?.delete(context)) {
+        return;
+    }
+
+    if (!errors.size) {
+        mountErrors.delete(extensionId);
+    }
+
+    publish();
 }

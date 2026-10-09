@@ -13,6 +13,7 @@ use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Eggs\CreatesEggVariables;
+use Pterodactyl\Contracts\Eggs\DeletesEggVariables;
 use Pterodactyl\Contracts\Eggs\UpdatesEggVariables;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -75,9 +76,7 @@ class EggVariableController extends AdminApiController
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]
     public function update(UpdateVariableRequest $request, UpdatesEggVariables $variables, Egg $egg, EggVariable $variable): array
     {
-        $variables->update($variable, $request->payload());
-
-        $variable = $variable->refresh();
+        $variable = $variables->update($variable, $request->payload());
 
         Activity::event('admin:egg-variable.update')
             ->subject($egg, $variable)
@@ -94,9 +93,9 @@ class EggVariableController extends AdminApiController
      */
     #[Endpoint('Delete egg variable', 'Deletes a startup variable from an egg.')]
     #[ScribeResponse(status: 204, description: 'Egg variable deleted.')]
-    public function destroy(DeleteVariableRequest $request, Egg $egg, EggVariable $variable): Response
+    public function destroy(DeleteVariableRequest $request, DeletesEggVariables $variables, Egg $egg, EggVariable $variable): Response
     {
-        $variable->delete();
+        $variables->delete($variable);
 
         Activity::event('admin:egg-variable.delete')
             ->subject($egg, $variable)

@@ -150,11 +150,13 @@ const cacheServerSchedule = async (
 ) => {
     const detailKey = clientGetServerScheduleQueryKey(serverScheduleInput(uuid, schedule.attributes.id));
     const listKey = clientListServerSchedulesQueryKey(serverSchedulesInput(uuid));
+
     await Promise.all([
         queryClient.cancelQueries({ queryKey: detailKey }),
         queryClient.cancelQueries({ queryKey: listKey }),
     ]);
     const updated = updater ? updater(queryClient.getQueryData<Schedule>(detailKey) ?? schedule) : schedule;
+
     queryClient.setQueryData(detailKey, updated);
     queryClient.setQueryData<ClientListServerSchedulesResponse>(listKey, (current) =>
         upsertListItem(current, updated, (item) => item.attributes.id === updated.attributes.id)
@@ -163,6 +165,7 @@ const cacheServerSchedule = async (
 
 const removeServerSchedule = async (queryClient: QueryClient, uuid: string, scheduleId: number) => {
     await queryClient.cancelQueries({ queryKey: clientListServerSchedulesQueryKey(serverSchedulesInput(uuid)) });
+
     return queryClient.setQueryData<ClientListServerSchedulesResponse>(
         clientListServerSchedulesQueryKey(serverSchedulesInput(uuid)),
         (current) => removeListItems(current, (schedule) => schedule.attributes.id === scheduleId)
@@ -224,6 +227,7 @@ export const useServerSchedule = (uuid: string, scheduleId: number) =>
 
 export const useCreateServerSchedule = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientCreateServerScheduleMutation(),
         onSuccess: async (schedule, { path }) => {
@@ -236,6 +240,7 @@ export const useCreateServerSchedule = () => {
 
 export const useUpdateServerSchedule = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientUpdateServerScheduleMutation(),
         onSuccess: async (schedule, { path }) => {
@@ -248,6 +253,7 @@ export const useUpdateServerSchedule = () => {
 
 export const useDeleteServerSchedule = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientDeleteServerScheduleMutation(),
         onSuccess: async (_data, { path }) => {
@@ -263,6 +269,7 @@ export const useDeleteServerSchedule = () => {
 
 export const useTriggerServerScheduleExecution = (schedule: Schedule) => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientExecuteServerScheduleMutation(),
         onSuccess: async (_data, { path }) => {
@@ -278,6 +285,7 @@ export const useTriggerServerScheduleExecution = (schedule: Schedule) => {
 
 export const useCreateServerScheduleTask = (schedule: Schedule) => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientCreateScheduleTaskMutation(),
         onSuccess: async (task, { path }) => {
@@ -292,6 +300,7 @@ export const useCreateServerScheduleTask = (schedule: Schedule) => {
 
 export const useUpdateServerScheduleTask = (schedule: Schedule) => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientUpdateScheduleTaskMutation(),
         onSuccess: async (task, { path }) => {
@@ -306,6 +315,7 @@ export const useUpdateServerScheduleTask = (schedule: Schedule) => {
 
 export const useDeleteServerScheduleTask = (schedule: Schedule) => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...clientDeleteScheduleTaskMutation(),
         onSuccess: async (_data, { path }) => {

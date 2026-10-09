@@ -50,14 +50,14 @@ function ServerLayoutInner() {
     useEffect(() => () => clearServerState(), [clearServerState]);
 
     if (!server) {
-        return error ? <ServerError message={httpErrorToHuman(error)} /> : <Spinner size={'large'} centered />;
+        return error ? <ServerError message={httpErrorToHuman(error)} /> : <Spinner size='large' centered />;
     }
 
     return (
         <SubNavigationLayout
             navigation={
                 <SubNavigation>
-                    <Slot name={'server.navigation.before'} data={server} />
+                    <Slot name='server.navigation.before' data={server} />
                     {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
                         <ScreenGate key={segment || '/'} screen={meta.screen}>
                             {permission ? (
@@ -85,20 +85,20 @@ function ServerLayoutInner() {
                     ))}
                     {rootAdmin && (
                         <Link
-                            to={'/panel/servers/$id'}
+                            to='/panel/servers/$id'
                             params={{ id: server.attributes.internal_id }}
-                            aria-label={'Open server administration'}
-                            title={'Open server administration'}
+                            aria-label='Open server administration'
+                            title='Open server administration'
                         >
-                            <span className={'inline-flex items-center gap-2 align-top'}>
+                            <span className='inline-flex items-center gap-2 align-top'>
                                 <Icon icon={ExternalLink} />
-                                <span className={'hidden in-data-collapsed:inline in-data-overflowed:inline'}>
+                                <span className='hidden in-data-collapsed:inline in-data-overflowed:inline'>
                                     Open Admin Area
                                 </span>
                             </span>
                         </Link>
                     )}
-                    <Slot name={'server.navigation.after'} data={server} />
+                    <Slot name='server.navigation.after' data={server} />
                 </SubNavigation>
             }
         >

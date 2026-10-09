@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore, type FunctionComponent } from 'react';
+import { type FunctionComponent } from 'react';
 import { useLocation } from '@tanstack/react-router';
 import Spinner from '@/components/elements/Spinner';
 import { NotFound } from '@/components/elements/ScreenBlock';
@@ -11,7 +11,7 @@ import { ScreenGate } from './screenNavigation';
 import {
     getExtensionLoadState,
     getScreenComponent,
-    subscribeExtensionRegistry,
+    useExtensionRegistry,
     type ExtensionScreenRegistration,
     type ScreenArea,
 } from '@/extensions/registry';
@@ -21,15 +21,13 @@ export function extensionScreenComponent(
     area: ScreenArea
 ): FunctionComponent {
     const { extensionId, id } = registration;
+
     function ScreenImplementation() {
-        const subscribe = useCallback(
-            (listener: () => void) => subscribeExtensionRegistry(`extension:${extensionId}`, listener),
-            []
-        );
-        const state = useSyncExternalStore(subscribe, () => getExtensionLoadState(extensionId));
+        const state = useExtensionRegistry(() => getExtensionLoadState(extensionId));
         const data = useRouteSlotData();
         const resource = useCurrentResource();
         const Lazy = getScreenComponent(extensionId, id);
+
         if (state?.status === 'failed') {
             return (
                 <ExtensionFailure
@@ -38,8 +36,10 @@ export function extensionScreenComponent(
                 />
             );
         }
+
         return Lazy ? <Lazy data={{ ...data, resource: resource ?? undefined }} /> : <Spinner centered />;
     }
+
     return function ExtensionScreen() {
         const pathname = useLocation({ select: (location) => location.pathname });
         const screen = (
@@ -52,6 +52,7 @@ export function extensionScreenComponent(
                 <ScreenImplementation />
             </ExtensionMount>
         );
+
         return (
             <ScreenGate screen={registration} pending={<Spinner centered />} hidden={<NotFound />}>
                 {area === 'server' && registration.permission ? (

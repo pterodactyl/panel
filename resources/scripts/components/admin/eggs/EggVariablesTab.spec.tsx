@@ -56,6 +56,7 @@ describe('EggVariablesTab', () => {
         const { rerender, container } = render(<EggVariablesTab />);
 
         const name = screen.getByLabelText('Name');
+
         await user.clear(name);
         await user.type(name, 'Server Version');
 

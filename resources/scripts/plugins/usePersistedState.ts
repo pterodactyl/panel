@@ -44,6 +44,7 @@ export function usePersistedState<S = undefined>(
         }
 
         const value = JSON.stringify(persisted.value);
+
         if (value === undefined) {
             localStorage.removeItem(key);
         } else {

@@ -21,7 +21,8 @@ export default function CreateNodeForm() {
                 const node = await createNode.mutateAsync(
                     createAdminNodeInput(nodeValuesFromForm(withExtensionPayload('admin.node', value)))
                 );
-                navigate({ to: '/panel/nodes/$id/allocation', params: { id: node.attributes.id } });
+
+                void navigate({ to: '/panel/nodes/$id/allocation', params: { id: node.attributes.id } });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -30,26 +31,24 @@ export default function CreateNodeForm() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Create Node'}
-            heading={'Create Node'}
-            description={'Add a Wings node to your panel.'}
+            title='Admin · Create Node'
+            heading='Create Node'
+            description='Add a Wings node to your panel.'
         >
             <Link
-                to={'/panel/nodes'}
-                className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'}
+                to='/panel/nodes'
+                className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
-                <Icon icon={ArrowLeft} className={'mr-2'} />
+                <Icon icon={ArrowLeft} className='mr-2' />
                 Back to Nodes
             </Link>
             <Form form={form}>
-                <div className={'space-y-6'}>
-                    <NodeFormFields form={form} prefix={'create_'} requiresSslScheme={requiresSslScheme} />
-                    <form.AppField name={'extensions'}>
-                        {() => (
-                            <ExtensionFormFields form={'admin.node'} mode={'create'} error={createNode.error} boxed />
-                        )}
+                <div className='space-y-6'>
+                    <NodeFormFields form={form} prefix='create_' requiresSslScheme={requiresSslScheme} />
+                    <form.AppField name='extensions'>
+                        {() => <ExtensionFormFields form='admin.node' mode='create' error={createNode.error} boxed />}
                     </form.AppField>
-                    <div className={'flex justify-end'}>
+                    <div className='flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Create Node</form.SubmitButton>
                         </form.AppForm>

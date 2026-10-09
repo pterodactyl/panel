@@ -52,7 +52,7 @@ class StoreApiKeyRequest extends ClientApiRequest
                 $valid = false;
                 try {
                     $valid = Range::parse($ip)->valid();
-                } catch (IpException | NetworkException | InvalidArgumentException) {
+                } catch (IpException|NetworkException|InvalidArgumentException) {
                     $valid = false;
                 }
 

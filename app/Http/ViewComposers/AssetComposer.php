@@ -9,7 +9,7 @@ use Illuminate\View\View;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
-use Pterodactyl\Services\Extensions\ExtensionManager;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
 use Pterodactyl\Support\JsonEmptyObject;
 use Throwable;
@@ -21,7 +21,7 @@ class AssetComposer
      */
     public function __construct(
         private readonly AssetHashService $assetHashService,
-        private readonly ExtensionManager $extensionManager,
+        private readonly ExtensionRepository $extensions,
         private readonly ExtensionHeadTags $extensionHeadTags,
         private readonly ExtensionFields $extensionFields,
     ) {}
@@ -60,7 +60,7 @@ class AssetComposer
         }
 
         try {
-            return $this->extensionManager->frontendPayload(authenticated: Auth::check());
+            return $this->extensions->frontendPayload(authenticated: Auth::check());
         } catch (Throwable) {
             return [];
         }

@@ -29,18 +29,27 @@ export function useNavigationBlocker(
     options: NavigationBlockerOptions = {}
 ): void {
     const latest = useRef({ shouldBlock, options });
+
     useEffect(() => {
         latest.current = { shouldBlock, options };
     });
     const isBlocking = useCallback(() => {
         const { shouldBlock } = latest.current;
+
         return shouldBlock instanceof Function ? shouldBlock() : shouldBlock;
     }, []);
     const shouldBlockFn = useCallback(
         async ({ action, current, next }: Parameters<ShouldBlockFn>[0]): Promise<boolean> => {
-            if (!isBlocking()) return false;
+            if (!isBlocking()) {
+                return false;
+            }
+
             const { confirm, message = UNSAVED_CHANGES_MESSAGE } = latest.current.options;
-            if (!confirm) return !window.confirm(message);
+
+            if (!confirm) {
+                return !window.confirm(message);
+            }
+
             try {
                 return !(await confirm({
                     action,
@@ -53,6 +62,7 @@ export function useNavigationBlocker(
                 }));
             } catch (error) {
                 console.error(error);
+
                 return !window.confirm(message);
             }
         },
@@ -62,5 +72,6 @@ export function useNavigationBlocker(
         () => latest.current.options.beforeUnload !== false && isBlocking(),
         [isBlocking]
     );
+
     useBlocker({ shouldBlockFn, enableBeforeUnload });
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Instanceof_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\TypeClassifier;
 
 /**
  * The instanceof half of anti-slop's no-runtime-typeof: `$value instanceof T`

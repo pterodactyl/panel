@@ -31,6 +31,7 @@ function EggConfigurationForm({ egg }: Props) {
                 const configLogs = logsEditor.current?.getValue() ?? initialValues.configLogs;
                 const configFiles = filesEditor.current?.getValue() ?? initialValues.configFiles;
                 const configStartup = startupEditor.current?.getValue() ?? initialValues.configStartup;
+
                 await updateEgg.mutateAsync(
                     updateAdminEggInput(
                         egg.attributes.id,
@@ -60,19 +61,19 @@ function EggConfigurationForm({ egg }: Props) {
                 filesRef={filesEditor}
                 startupRef={startupEditor}
             />
-            <form.AppField name={'extensions'}>
+            <form.AppField name='extensions'>
                 {() => (
                     <ExtensionFormFields
-                        form={'admin.egg'}
-                        mode={'edit'}
+                        form='admin.egg'
+                        mode='edit'
                         resource={egg}
                         error={updateEgg.error}
                         boxed
-                        className={'mt-4'}
+                        className='mt-4'
                     />
                 )}
             </form.AppField>
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>Save Changes</form.SubmitButton>
                 </form.AppForm>

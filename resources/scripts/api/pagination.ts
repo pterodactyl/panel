@@ -21,11 +21,14 @@ export const fetchAllPages = async <TItem, TList extends PaginatedList<TItem>>(
         signal.throwIfAborted();
         // eslint-disable-next-line no-await-in-loop -- Each response determines whether another page is needed.
         const list = await fetchPage(page);
+
         signal.throwIfAborted();
         const { current_page, total_pages, per_page, total } = list.meta.pagination;
+
         if (current_page !== page || !Number.isFinite(total_pages)) {
             throw new Error('List pagination did not advance as expected.');
         }
+
         items.push(...list.data);
         if (page >= total_pages) {
             return {
@@ -43,6 +46,7 @@ export const fetchAllPages = async <TItem, TList extends PaginatedList<TItem>>(
                 },
             };
         }
+
         page += 1;
     }
 };

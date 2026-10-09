@@ -115,14 +115,14 @@ class EggController extends AdminApiController
     #[ExtensionFieldsParam]
     public function update(UpdateEggRequest $request, UpdatesEggs $eggs, Egg $egg): array
     {
-        $eggs->update($egg, $request->payload());
+        $egg = $eggs->update($egg, $request->payload());
 
         Activity::event('admin:egg.update')
             ->subject($egg)
             ->property('name', $egg->name)
             ->log();
 
-        return Fractal::item($egg->refresh())
+        return Fractal::item($egg)
             ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }

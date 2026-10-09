@@ -16,11 +16,13 @@ export default function useFileUploader(): (files: readonly File[]) => Promise<v
 
     useEffect(() => {
         const pending = removals.current;
+
         return () => {
-            pending.forEach((timeout, id) => {
+            for (const [id, timeout] of pending) {
                 clearTimeout(timeout);
                 removeFileUpload(id);
-            });
+            }
+
             pending.clear();
         };
     }, [removeFileUpload]);
@@ -44,12 +46,15 @@ export default function useFileUploader(): (files: readonly File[]) => Promise<v
                     onFileSettled: (id, outcome) => {
                         if (outcome !== 'uploaded') {
                             removeFileUpload(id);
+
                             return;
                         }
+
                         const timeout = setTimeout(() => {
                             removals.current.delete(id);
                             removeFileUpload(id);
                         }, UPLOADED_DISPLAY_MS);
+
                         removals.current.set(id, timeout);
                     },
                 },

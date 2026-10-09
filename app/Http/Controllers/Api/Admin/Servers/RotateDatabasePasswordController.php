@@ -35,10 +35,14 @@ class RotateDatabasePasswordController extends AdminApiController
             throw (new ModelNotFoundException)->setModel(Database::class);
         }
 
+        // The action commits its own transaction around the remote user change, so the
+        // activity is logged afterwards instead of wrapping a change it cannot undo.
+        $passwordService->rotate($database);
+
         Activity::event('admin:server-database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
-            ->transaction(fn (): string => $passwordService->rotate($database));
+            ->log();
 
         return Fractal::item($database->refresh())
             ->parseIncludes(['password'])

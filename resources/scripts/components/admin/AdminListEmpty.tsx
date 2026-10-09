@@ -34,14 +34,14 @@ export default function AdminListEmpty({
     return (
         <Empty className={emptyCompactClass}>
             <EmptyHeader>
-                <EmptyMedia variant={'icon'}>
+                <EmptyMedia variant='icon'>
                     <ResourceIcon />
                 </EmptyMedia>
                 <EmptyTitle>{filter ? `No matching ${noun}` : `No ${noun} yet`}</EmptyTitle>
                 <EmptyDescription>
                     {filter ? (
                         <>
-                            No {noun} match <span className={'font-medium text-foreground'}>{filter}</span>.
+                            No {noun} match <span className='font-medium text-foreground'>{filter}</span>.
                         </>
                     ) : (
                         description

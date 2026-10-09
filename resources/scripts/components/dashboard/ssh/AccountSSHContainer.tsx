@@ -29,21 +29,19 @@ export default function AccountSSHContainer() {
     }
 
     return (
-        <PageContentBlock title={'SSH Keys'}>
-            <div className={'md:flex flex-nowrap my-10'}>
-                <ContentBox title={'Add SSH Key'} className={'flex-none w-full md:w-1/2'}>
+        <PageContentBlock title='SSH Keys'>
+            <div className='md:flex flex-nowrap my-10'>
+                <ContentBox title='Add SSH Key' className='flex-none w-full md:w-1/2'>
                     <CreateSSHKeyForm />
                 </ContentBox>
-                <ContentBox title={'SSH Keys'} className={'flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'}>
-                    {!data ? (
-                        <Spinner size={'large'} centered />
-                    ) : (
+                <ContentBox title='SSH Keys' className='flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'>
+                    {data ? (
                         <DataTable
                             table={table}
                             emptyState={
                                 <Empty className={emptyCompactClass}>
                                     <EmptyHeader>
-                                        <EmptyMedia variant={'icon'}>
+                                        <EmptyMedia variant='icon'>
                                             <KeySquare />
                                         </EmptyMedia>
                                         <EmptyTitle>No SSH keys</EmptyTitle>
@@ -54,6 +52,8 @@ export default function AccountSSHContainer() {
                                 </Empty>
                             }
                         />
+                    ) : (
+                        <Spinner size='large' centered />
                     )}
                 </ContentBox>
             </div>

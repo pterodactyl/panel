@@ -34,7 +34,11 @@ it('aborts and forgets every upload when cleared', () => {
     const { result } = renderFiles();
     const uploads = [upload('a.txt'), upload('b.txt')];
 
-    act(() => uploads.forEach((data, index) => result.current.pushFileUpload({ id: `upload-${index}`, data })));
+    act(() => {
+        for (const [index, data] of uploads.entries()) {
+            result.current.pushFileUpload({ id: `upload-${index}`, data });
+        }
+    });
     act(() => result.current.clearFileUploads());
 
     expect(uploads.map(({ abort }) => abort.signal.aborted)).toEqual([true, true]);

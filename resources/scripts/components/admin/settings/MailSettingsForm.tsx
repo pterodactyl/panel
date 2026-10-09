@@ -69,8 +69,8 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
 
     if (disabled) {
         return (
-            <TitledGreyBox title={'Mail Configuration'}>
-                <div className={'rounded-sm border border-border bg-popover px-4 py-3 text-sm text-foreground'}>
+            <TitledGreyBox title='Mail Configuration'>
+                <div className='rounded-sm border border-border bg-popover px-4 py-3 text-sm text-foreground'>
                     This interface is limited to instances using SMTP as the mail driver. Use{' '}
                     <code>php artisan p:environment:mail</code> to update mail settings, or set{' '}
                     <code>MAIL_DRIVER=smtp</code> in the environment file.
@@ -81,26 +81,26 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
 
     return (
         <Form form={form}>
-            <TitledGreyBox title={'Mail Configuration'}>
-                <div className={'grid grid-cols-2 gap-4'}>
-                    <form.AppField name={'host'}>
+            <TitledGreyBox title='Mail Configuration'>
+                <div className='grid grid-cols-2 gap-4'>
+                    <form.AppField name='host'>
                         {(field) => (
-                            <field.TextField type={'text'} id={'mail_host'} label={'SMTP Host'} disabled={readOnly} />
+                            <field.TextField type='text' id='mail_host' label='SMTP Host' disabled={readOnly} />
                         )}
                     </form.AppField>
                     <form.AppField
-                        name={'port'}
+                        name='port'
                         validators={{ onChange: requiredNumber('An SMTP port must be provided.') }}
                     >
-                        {(field) => <field.NumberField id={'mail_port'} label={'SMTP Port'} disabled={readOnly} />}
+                        {(field) => <field.NumberField id='mail_port' label='SMTP Port' disabled={readOnly} />}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'encryption'}>
+                <div className='mt-6'>
+                    <form.AppField name='encryption'>
                         {(field) => (
                             <field.SelectField
-                                id={'mail_encryption'}
-                                label={'Encryption'}
+                                id='mail_encryption'
+                                label='Encryption'
                                 options={[
                                     { value: '', label: 'None' },
                                     { value: 'tls', label: 'Transport Layer Security (TLS)' },
@@ -111,64 +111,52 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'username'}>
+                <div className='mt-6'>
+                    <form.AppField name='username'>
+                        {(field) => (
+                            <field.TextField type='text' id='mail_username' label='Username' disabled={readOnly} />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField name='password'>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'mail_username'}
-                                label={'Username'}
+                                type='password'
+                                id='mail_password'
+                                label='Password'
+                                description='Leave blank to keep the existing password. Enter !e to clear the password.'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'password'}>
+                <div className='mt-6 grid grid-cols-2 gap-4'>
+                    <form.AppField name='fromAddress'>
                         {(field) => (
                             <field.TextField
-                                type={'password'}
-                                id={'mail_password'}
-                                label={'Password'}
-                                description={
-                                    'Leave blank to keep the existing password. Enter !e to clear the password.'
-                                }
+                                type='text'
+                                id='mail_from_address'
+                                label='From Address'
                                 disabled={readOnly}
                             />
+                        )}
+                    </form.AppField>
+                    <form.AppField name='fromName'>
+                        {(field) => (
+                            <field.TextField type='text' id='mail_from_name' label='From Name' disabled={readOnly} />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-6 grid grid-cols-2 gap-4'}>
-                    <form.AppField name={'fromAddress'}>
-                        {(field) => (
-                            <field.TextField
-                                type={'text'}
-                                id={'mail_from_address'}
-                                label={'From Address'}
-                                disabled={readOnly}
-                            />
-                        )}
-                    </form.AppField>
-                    <form.AppField name={'fromName'}>
-                        {(field) => (
-                            <field.TextField
-                                type={'text'}
-                                id={'mail_from_name'}
-                                label={'From Name'}
-                                disabled={readOnly}
-                            />
-                        )}
-                    </form.AppField>
-                </div>
-                <div className={'mt-6 flex flex-wrap justify-end'}>
+                <div className='mt-6 flex flex-wrap justify-end'>
                     <form.Subscribe
                         selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
                     >
                         {({ canSubmit, isSubmitting }) => (
                             <Button
-                                type={'button'}
+                                type='button'
                                 isSecondary
-                                className={'w-full sm:w-auto sm:mr-2'}
+                                className='w-full sm:w-auto sm:mr-2'
                                 disabled={readOnly || !canSubmit}
                                 isLoading={isSubmitting}
                                 onClick={sendTestEmail}

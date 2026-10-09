@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Servers;
 use Illuminate\Support\Facades\DB;
 use LogicException;
 use Pterodactyl\Contracts\Servers\ChangesServerEgg;
+use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
@@ -20,6 +21,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
     public function __construct(
         private VariableValidatorService $validatorService,
         private ChangesServerEgg $eggs,
+        private UpdatesServerDockerImage $dockerImage,
     ) {}
 
     /**
@@ -56,13 +58,22 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
                 $server->fill([
                     'startup' => $data['startup'] ?? $server->startup,
                     'skip_scripts' => $data['skip_scripts'] ?? isset($data['skip_scripts']),
-                    'image' => $data['docker_image'] ?? $server->image,
                 ])->save();
+
+                // Image changes go through their own contract so extensions wrapping
+                // it see this path too. Skip it when the image is unchanged.
+                $image = $data['docker_image'] ?? null;
+                if ($image !== null && $image !== $server->image) {
+                    $server = $this->dockerImage->update($server, $image);
+                }
             }
 
-            // Calling ->refresh() rather than ->fresh() here causes the
-            // variables as triplicates for some reason. Not entirely sure why,
-            // but this operation test covers the behavior and keeps it stable.
+            // Use fresh() rather than refresh(). refresh() reloads every loaded
+            // relation through an eager load, which rebuilds Server::variables()
+            // on a blank model. That relation captures $this->id in its join, so
+            // the rebuilt join loses the server filter and the reloaded variables
+            // come back wrong. fresh() returns a new instance and leaves the
+            // relation unloaded.
             $fresh = $server->fresh();
             throw_if($fresh === null, LogicException::class, 'The modified server no longer exists.');
 

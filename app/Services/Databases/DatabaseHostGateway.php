@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Databases;
 
-use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Runs the administrative statements (databases, users, grants) against a
@@ -14,26 +14,12 @@ class DatabaseHostGateway
 {
     public const string DEFAULT_CONNECTION_NAME = 'dynamic';
 
-    private string $connection = self::DEFAULT_CONNECTION_NAME;
-
-    public function __construct(private readonly DatabaseManager $database) {}
-
-    /**
-     * Set the connection name to execute statements against.
-     */
-    public function setConnection(string $connection): self
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-
     /**
      * Return the connection to execute statements against.
      */
     public function getConnection(): string
     {
-        return $this->connection;
+        return self::DEFAULT_CONNECTION_NAME;
     }
 
     /**
@@ -99,6 +85,6 @@ class DatabaseHostGateway
 
     private function run(string $statement): bool
     {
-        return $this->database->connection($this->getConnection())->statement($statement);
+        return DB::connection($this->getConnection())->statement($statement);
     }
 }

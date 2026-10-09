@@ -137,11 +137,13 @@ export const useAdminDatabaseHostDatabases = (id: number, page = 1, options?: Re
 
 export const useCreateAdminDatabaseHost = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateDatabaseHostMutation(),
         onSuccess: async (host) => {
             await invalidateGeneratedOperations(queryClient, ['adminListDatabaseHosts']);
             const messages = resourceMutationMessages('database host', 'create', host.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'create').errorTitle),
@@ -150,6 +152,7 @@ export const useCreateAdminDatabaseHost = () => {
 
 export const useUpdateAdminDatabaseHost = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateDatabaseHostMutation(),
         onSuccess: async (host, variables) => {
@@ -160,6 +163,7 @@ export const useUpdateAdminDatabaseHost = () => {
                 }),
             ]);
             const messages = resourceMutationMessages('database host', 'update', host.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'update').errorTitle),
@@ -168,15 +172,18 @@ export const useUpdateAdminDatabaseHost = () => {
 
 export const useDeleteAdminDatabaseHost = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteDatabaseHostMutation(),
         onSuccess: async (_data, variables) => {
             const id = variables.path.databaseHost_id;
+
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminDatabaseHostDetailKey(id) });
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminDatabaseHostDatabasesKey(id) });
             await invalidateGeneratedOperations(queryClient, ['adminListDatabaseHosts']);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('database host', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'delete').errorTitle),

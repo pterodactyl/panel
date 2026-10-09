@@ -27,6 +27,32 @@ export interface EggVariableValues {
     rules: string;
 }
 
+const envVariableRegex = /^[\w]{1,191}$/;
+
+export const validateVariableName = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'A variable name must be provided.';
+    }
+
+    if (value.length > 191) {
+        return 'A variable name must not exceed 191 characters.';
+    }
+
+    return undefined;
+};
+
+export const validateEnvVariable = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'An environment variable must be provided.';
+    }
+
+    if (!envVariableRegex.test(value)) {
+        return 'The environment variable may only contain letters, numbers, and underscores.';
+    }
+
+    return undefined;
+};
+
 const featuresToString = (features: string[] | null): string => (features ?? []).join(', ');
 
 const stringToFeatures = (value: string): string[] =>
@@ -39,8 +65,14 @@ const nullIfEmpty = (value: string): string | null => (value.trim().length > 0 ?
 
 const eggVariableOptions = (values: EggVariableValues): string[] => {
     const options: string[] = [];
-    if (values.userViewable) options.push('user_viewable');
-    if (values.userEditable) options.push('user_editable');
+
+    if (values.userViewable) {
+        options.push('user_viewable');
+    }
+
+    if (values.userEditable) {
+        options.push('user_editable');
+    }
 
     return options;
 };

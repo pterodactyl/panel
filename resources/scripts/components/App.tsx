@@ -13,6 +13,7 @@ const App = () => {
     useEffect(() => {
         void loadExtensions();
     }, []);
+
     return (
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />

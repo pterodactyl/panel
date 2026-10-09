@@ -31,40 +31,40 @@ const PIDLimitModalFeature = () => {
             <SpinnerOverlay visible={loading} />
             {isAdmin ? (
                 <>
-                    <div className={'mt-4 sm:flex items-center'}>
-                        <Icon icon={TriangleAlert} className={'pr-4 text-warning'} size={64} />
+                    <div className='mt-4 sm:flex items-center'>
+                        <Icon icon={TriangleAlert} className='pr-4 text-warning' size={64} />
                     </div>
-                    <p className={'mt-4'}>This server has reached the maximum process or memory limit.</p>
-                    <p className={'mt-4'}>
-                        Increasing <code className={'font-mono bg-muted'}>container_pid_limit</code> in the wings
-                        configuration, <code className={'font-mono bg-muted'}>config.yml</code>, might help resolve this
+                    <p className='mt-4'>This server has reached the maximum process or memory limit.</p>
+                    <p className='mt-4'>
+                        Increasing <code className='font-mono bg-muted'>container_pid_limit</code> in the wings
+                        configuration, <code className='font-mono bg-muted'>config.yml</code>, might help resolve this
                         issue.
                     </p>
-                    <p className={'mt-4'}>
+                    <p className='mt-4'>
                         <b>Note: Wings must be restarted for the configuration file changes to take effect</b>
                     </p>
-                    <div className={'mt-8 sm:flex items-center justify-end'}>
-                        <Button onClick={dialog.hide} className={'w-full sm:w-auto border-transparent'}>
+                    <div className='mt-8 sm:flex items-center justify-end'>
+                        <Button onClick={dialog.hide} className='w-full sm:w-auto border-transparent'>
                             Close
                         </Button>
                     </div>
                 </>
             ) : (
                 <>
-                    <div className={'mt-4 sm:flex items-center'}>
-                        <Icon icon={TriangleAlert} className={'pr-4 text-warning'} size={64} />
+                    <div className='mt-4 sm:flex items-center'>
+                        <Icon icon={TriangleAlert} className='pr-4 text-warning' size={64} />
                     </div>
-                    <p className={'mt-4'}>
+                    <p className='mt-4'>
                         This server is attempting to use more resources than allocated. Please contact the administrator
                         and give them the error below.
                     </p>
-                    <p className={'mt-4'}>
-                        <code className={'font-mono bg-muted'}>
+                    <p className='mt-4'>
+                        <code className='font-mono bg-muted'>
                             pthread_create failed, Possibly out of memory or process/resource limits reached
                         </code>
                     </p>
-                    <div className={'mt-8 sm:flex items-center justify-end'}>
-                        <Button onClick={dialog.hide} className={'w-full sm:w-auto border-transparent'}>
+                    <div className='mt-8 sm:flex items-center justify-end'>
+                        <Button onClick={dialog.hide} className='w-full sm:w-auto border-transparent'>
                             Close
                         </Button>
                     </div>

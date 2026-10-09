@@ -5,7 +5,7 @@ import names from '../../../../packages/sdk/icons.json';
 const catalog: Readonly<Record<string, LucideIcon | undefined>> = icons;
 const known = new Set<string>(names);
 const exportName = (name: string): string =>
-    name.replace(/(?:^|-)([a-z0-9])/g, (_match, letter: string) => letter.toUpperCase());
+    name.replaceAll(/(?:^|-)([a-z0-9])/g, (_match, letter: string) => letter.toUpperCase());
 
 export const iconNames: readonly string[] = Object.freeze([...names]);
 

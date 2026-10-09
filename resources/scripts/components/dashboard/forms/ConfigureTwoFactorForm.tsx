@@ -25,12 +25,12 @@ function ConfigureTwoFactorForm() {
             />
             <RecoveryTokensDialog tokens={tokens} open={tokens.length > 0} onClose={() => setTokens([])} />
             <DisableTOTPDialog open={visible === 'disable'} onClose={() => setVisible(null)} />
-            <p className={'text-sm'}>
+            <p className='text-sm'>
                 {isEnabled
                     ? 'Two-step verification is currently enabled on your account.'
                     : 'You do not currently have two-step verification enabled on your account. Click the button below to begin configuring it.'}
             </p>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 {isEnabled ? (
                     <Button.Danger onClick={() => setVisible('disable')}>Disable Two-Step</Button.Danger>
                 ) : (

@@ -37,7 +37,9 @@ export default function WebsocketHandler() {
     const { setInstance, setConnectionState, setReconnecting } = useServerStore((state) => state.socket);
 
     const updateToken = useCallback((uuid: string, socket: Websocket) => {
-        if (updatingToken.current || activeSocket.current !== socket || activeUuid.current !== uuid) return;
+        if (updatingToken.current || activeSocket.current !== socket || activeUuid.current !== uuid) {
+            return;
+        }
 
         updatingToken.current = true;
         getServerWebsocketCredentials(uuid)
@@ -132,6 +134,7 @@ export default function WebsocketHandler() {
 
         let cancelled = false;
         const socket = createSocket(uuid);
+
         activeSocket.current = socket;
         activeUuid.current = uuid;
         setConnectionState(false);
@@ -141,6 +144,7 @@ export default function WebsocketHandler() {
             .then((data) => {
                 if (cancelled || activeSocket.current !== socket || activeUuid.current !== uuid) {
                     socket.close();
+
                     return;
                 }
 
@@ -173,10 +177,10 @@ export default function WebsocketHandler() {
     }, [createSocket, node, setConnectionState, setInstance, setReconnecting, uuid]);
 
     return reconnecting ? (
-        <div className={'bg-destructive py-2'}>
-            <ContentContainer className={'flex items-center justify-center'}>
-                <Spinner size={'small'} />
-                <p className={'ml-2 text-sm text-destructive-foreground'}>
+        <div className='bg-destructive py-2'>
+            <ContentContainer className='flex items-center justify-center'>
+                <Spinner size='small' />
+                <p className='ml-2 text-sm text-destructive-foreground'>
                     We&apos;re having some trouble connecting to your server, please wait...
                 </p>
             </ContentContainer>

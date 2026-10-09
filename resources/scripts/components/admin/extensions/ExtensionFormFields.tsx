@@ -54,6 +54,7 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
 
     const saved = resource?.attributes.extensions ?? {};
     const extensions = shownFormExtensions(form, registrations, mode === 'create' ? undefined : saved);
+
     if (extensions.length === 0) {
         return null;
     }
@@ -67,7 +68,7 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
             const path = `extensions.${extension}.${name}`;
 
             return {
-                id: `${form}-${extension}-${name}`.replace(/[^\w-]/g, '-'),
+                id: `${form}-${extension}-${name}`.replaceAll(/[^\w-]/g, '-'),
                 name: path,
                 value: valuesOf(extension)[name],
                 setValue: (value) => {
@@ -98,16 +99,16 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
                     <TitledGreyBox key={id} title={name}>
                         {fields}
                         {submitLabel && (
-                            <div className={'mt-6 flex justify-end'}>
-                                <Button type={'submit'} isLoading={isSubmitting}>
+                            <div className='mt-6 flex justify-end'>
+                                <Button type='submit' isLoading={isSubmitting}>
                                     {submitLabel}
                                 </Button>
                             </div>
                         )}
                     </TitledGreyBox>
                 ) : (
-                    <section key={id} aria-label={name} className={'border-t border-border pt-4'}>
-                        <h3 className={'mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground'}>
+                    <section key={id} aria-label={name} className='border-t border-border pt-4'>
+                        <h3 className='mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                             {name}
                         </h3>
                         {fields}

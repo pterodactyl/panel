@@ -12,7 +12,7 @@ export default function AccountLayout() {
         <SubNavigationLayout
             navigation={
                 <SubNavigation>
-                    <Slot name={'account.navigation.before'} />
+                    <Slot name='account.navigation.before' />
                     {getAreaNav('account').map(({ segment, label, exact = false, ...meta }) => (
                         <ScreenGate key={segment || '/'} screen={meta.screen}>
                             <NavLink
@@ -24,7 +24,7 @@ export default function AccountLayout() {
                             </NavLink>
                         </ScreenGate>
                     ))}
-                    <Slot name={'account.navigation.after'} />
+                    <Slot name='account.navigation.after' />
                 </SubNavigation>
             }
         >

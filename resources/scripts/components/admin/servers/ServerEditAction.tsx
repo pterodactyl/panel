@@ -11,10 +11,10 @@ export default function ServerEditAction({ server }: { server: AdminServer }) {
             <EditAction
                 aria-label={label}
                 disabled
-                disabledReason={'Editing is disabled until the server is installed.'}
+                disabledReason='Editing is disabled until the server is installed.'
             />
         );
     }
 
-    return <EditLinkAction aria-label={label} to={'/panel/servers/$id/details'} params={{ id }} />;
+    return <EditLinkAction aria-label={label} to='/panel/servers/$id/details' params={{ id }} />;
 }

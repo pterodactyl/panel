@@ -4,6 +4,7 @@ import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from '@/comp
 import { DefaultFileEditor, FileEditorContext, fileEditorParts } from '@/components/server/files/FileEditorView';
 import { DefaultFileManager, FileManagerContext, fileManagerParts } from '@/components/server/files/FileManagerView';
 import type {
+    ComponentModels,
     ComponentName,
     ReplacementProps,
     ServerCardModel,
@@ -32,6 +33,7 @@ import { Websocket } from '@/plugins/Websocket';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { registerClassPrefixes } from '@/lib/cn';
 import { ExtensionResourceProvider } from '@/extensions/resourceContext';
+import { SCREEN_ROOTS } from '@/extensions/registry';
 import type { ExtensionResourceContext } from '@/extensions/resourceContext';
 import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
@@ -77,6 +79,7 @@ export function createTestServer(
 ): SdkServer {
     const identifier = options.identifier ?? 'test-server';
     const owner = options.owner ?? true;
+
     return {
         object: 'server',
         attributes: {
@@ -135,29 +138,37 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
     if (options.server) {
         queryClient.setQueryData(serverQueryOptions(options.server.attributes.identifier).queryKey, options.server);
     }
+
     const socket = new Websocket();
     let updateConnected: (connected: boolean) => void = () => {
         throw new Error('Mount the test host before changing its connection state.');
     };
+
     function SocketFixture() {
         const setInstance = useServerStore((state) => state.socket.setInstance);
         const setConnected = useServerStore((state) => state.socket.setConnectionState);
+
         useLayoutEffect(() => {
             updateConnected = setConnected;
             setInstance(socket);
             setConnected(true);
+
             return () => {
                 setConnected(false);
                 setInstance(null);
                 socket.removeAllListeners();
             };
         }, [setInstance, setConnected]);
+
         return null;
     }
+
     const Content = createContext<ReactNode>(null);
+
     function RenderContent() {
         return useContext(Content);
     }
+
     function Root() {
         const content = (
             <ExtensionMount extensionId={options.extensionId ?? 'test-extension'} context='test host' resetKey='test'>
@@ -166,6 +177,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
                 </ExtensionResourceProvider.Provider>
             </ExtensionMount>
         );
+
         return options.server ? (
             <ServerContext.Provider>
                 <SocketFixture />
@@ -175,19 +187,12 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
             content
         );
     }
+
     const root = createRootRoute({ component: Root });
     const authenticated = createRoute({ getParentRoute: () => root, id: 'authenticated', component: Outlet });
-    const paths = [
-        '/server/$id',
-        '/account',
-        '/panel/nodes/$id',
-        '/panel/servers/$id',
-        '/panel/eggs/$eggId',
-        '/panel/users/$id',
-        '/panel',
-    ] as const;
-    const routes = paths.map((path) => {
+    const routes = Object.values(SCREEN_ROOTS).map((path) => {
         const parent = createRoute({ getParentRoute: () => authenticated, path, component: Outlet });
+
         return parent.addChildren([
             createRoute({ getParentRoute: () => parent, path: '/', component: RenderContent }),
             createRoute({ getParentRoute: () => parent, path: '$', component: RenderContent }),
@@ -204,6 +209,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
             ],
         }),
     });
+
     function Wrapper({ children }: { children?: ReactNode }) {
         return (
             <QueryClientProvider client={queryClient}>
@@ -213,15 +219,18 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
             </QueryClientProvider>
         );
     }
+
     return {
         Wrapper,
         queryClient,
         navigate: async (destination) => {
             const { pathname, ...navigation } = resolvePanelDestination(destination);
+
             await router.navigate({ to: pathname as never, ...navigation, search: navigation.search as never });
         },
         location: () => {
             const { pathname, search, state } = router.state.location;
+
             return { pathname, search: { ...(search as PanelSearch) }, state: { ...state } };
         },
         emitWebsocket: (event, data) => {
@@ -253,9 +262,11 @@ export function createTestServerCard(options: Partial<ServerCardModel> = {}): Se
         ...options,
     };
 }
+
 export function createTestFileDetails(options: Partial<FileDetailsModel> = {}): FileDetailsModel {
     return { name: 'config.json', kind: 'file', size: 1024, modifiedAt: '2026-01-01T12:00:00Z', ...options };
 }
+
 export function createTestFileEditor(options: Partial<FileEditorModel> = {}): FileEditorModel {
     return {
         path: '/config/server.properties',
@@ -272,8 +283,10 @@ export function createTestFileEditor(options: Partial<FileEditorModel> = {}): Fi
         ...options,
     };
 }
+
 export function createTestFileManagerEntry(options: Partial<FileManagerEntry> = {}): FileManagerEntry {
     const name = options.name ?? 'config.json';
+
     return {
         name,
         path: `/${name}`,
@@ -287,6 +300,7 @@ export function createTestFileManagerEntry(options: Partial<FileManagerEntry> = 
         ...options,
     };
 }
+
 export function createTestFileManager(options: Partial<FileManagerModel> = {}): FileManagerModel {
     return {
         directory: '/',
@@ -318,36 +332,36 @@ export function createTestFileManager(options: Partial<FileManagerModel> = {}): 
         ...options,
     };
 }
+
 export interface ComponentTestHost<TName extends ComponentName> {
     Wrapper: ComponentType<{ children?: ReactNode }>;
     props: ReplacementProps<TName>;
     /** Call after unmounting the Wrapper. */
     dispose(): void;
 }
-interface ComponentTestModels {
-    'dashboard.serverCard': ServerCardModel;
-    'server.files.details': FileDetailsModel;
-    'server.files.editor': FileEditorModel;
-    'server.files.manager': FileManagerModel;
-}
 const noDispose = () => {};
+
 /** Test presentation against the native default and parts without issuing core queries. */
 export function createComponentTestHost<TName extends ComponentName>(
     name: TName,
-    options: { model: ComponentTestModels[TName]; extensionId?: string; prefix?: string }
+    options: { model: ComponentModels[TName]; extensionId?: string; prefix?: string }
 ): ComponentTestHost<TName>;
 export function createComponentTestHost(
     name: ComponentName,
-    options: { model: ComponentTestModels[ComponentName]; extensionId?: string; prefix?: string }
+    options: { model: ComponentModels[ComponentName]; extensionId?: string; prefix?: string }
 ): { [TName in ComponentName]: ComponentTestHost<TName> }[ComponentName] {
     const extensionId = options.extensionId ?? 'test-extension';
+
     registerClassPrefixes([options.prefix]);
     function Context({ children }: { children?: ReactNode }) {
         const context = useMemo(() => ({ extensionId, context: `component "${name}" test host` }), []);
+
         return <ExtensionContext.Provider value={context}>{children}</ExtensionContext.Provider>;
     }
+
     if (name === 'dashboard.serverCard') {
         const model = options.model as ServerCardModel;
+
         function Wrapper({ children }: { children?: ReactNode }) {
             const context = useMemo(
                 () => ({
@@ -356,26 +370,33 @@ export function createComponentTestHost(
                 }),
                 []
             );
+
             return (
                 <Context>
                     <ServerCardContext.Provider value={context}>{children}</ServerCardContext.Provider>
                 </Context>
             );
         }
+
         return { Wrapper, props: { model, Default: DefaultServerCard, parts: serverCardParts }, dispose: noDispose };
     }
+
     if (name === 'server.files.editor') {
         const model = options.model as FileEditorModel;
+
         function Wrapper({ children }: { children?: ReactNode }) {
             const session = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), []);
+
             return (
                 <Context>
                     <FileEditorContext.Provider value={session}>{children}</FileEditorContext.Provider>
                 </Context>
             );
         }
+
         return { Wrapper, props: { model, Default: DefaultFileEditor, parts: fileEditorParts }, dispose: noDispose };
     }
+
     if (name === 'server.files.manager') {
         const model = options.model as FileManagerModel;
         const host = createExtensionTestHost({
@@ -400,15 +421,20 @@ export function createComponentTestHost(
         const portal = document.getElementById('modal-portal')
             ? null
             : document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }));
+
         function Selection() {
             const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
+
             useLayoutEffect(() => {
                 setSelectedFiles({ directory: model.directory, files: [...model.selection] });
             }, [setSelectedFiles]);
+
             return null;
         }
+
         function Wrapper({ children }: { children?: ReactNode }) {
             const session = useMemo(() => ({ model, files }), []);
+
             return (
                 <host.Wrapper>
                     <Context>
@@ -418,6 +444,7 @@ export function createComponentTestHost(
                 </host.Wrapper>
             );
         }
+
         return {
             Wrapper,
             props: { model, Default: DefaultFileManager, parts: fileManagerParts },
@@ -427,7 +454,9 @@ export function createComponentTestHost(
             },
         };
     }
+
     const model = options.model as FileDetailsModel;
+
     function Wrapper({ children }: { children?: ReactNode }) {
         return (
             <Context>
@@ -435,5 +464,6 @@ export function createComponentTestHost(
             </Context>
         );
     }
+
     return { Wrapper, props: { model, Default: DefaultFileDetails, parts: fileDetailsParts }, dispose: noDispose };
 }

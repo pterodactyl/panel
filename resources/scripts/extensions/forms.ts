@@ -1,6 +1,5 @@
-import { useCallback, useSyncExternalStore } from 'react';
 import { getBootstrapExtensionForms } from '@/bootstrap';
-import { getFormExtensions, subscribeExtensionRegistry } from './registry';
+import { getFormExtensions, useExtensionRegistry } from './registry';
 import type {
     ExtensionFieldValues,
     ExtensionFormName,
@@ -20,10 +19,7 @@ export const initialExtensionValues = (): ExtensionFormValues => ({});
 
 /** The components extensions registered for an admin form with `forms.extend()`. */
 export function useFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[] {
-    const subscribe = useCallback((changed: () => void) => subscribeExtensionRegistry(`form:${form}`, changed), [form]);
-    const snapshot = useCallback(() => getFormExtensions(form), [form]);
-
-    return useSyncExternalStore(subscribe, snapshot);
+    return useExtensionRegistry(() => getFormExtensions(form));
 }
 
 export interface ShownFormExtension {
@@ -61,7 +57,7 @@ export function extensionFormPayload<TName extends ExtensionFormName>(
     edits: ExtensionFormValues,
     resource?: ExtensionFormResources[TName]
 ): ExtensionFormValues {
-    const saved = resource && (resource.attributes.extensions ?? {});
+    const saved = resource ? (resource.attributes.extensions ?? {}) : undefined;
 
     return Object.fromEntries(
         shownFormExtensions(form, getFormExtensions(form), saved).map(({ id }) => [

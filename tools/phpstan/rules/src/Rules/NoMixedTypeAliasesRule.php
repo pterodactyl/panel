@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\TypeAliasDocblock;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\InClassNode;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\TypeAliasDocblock;
 
 /**
  * Port of anti-slop's no-unknown-type-aliases: a named alias whose body is

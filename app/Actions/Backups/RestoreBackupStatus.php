@@ -19,6 +19,6 @@ final class RestoreBackupStatus implements RestoresBackupStatuses
 
         $model->server->update(['status' => null]);
 
-        return $model->refresh();
+        return $model;
     }
 }

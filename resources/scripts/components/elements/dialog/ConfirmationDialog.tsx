@@ -38,11 +38,11 @@ export default function ConfirmationDialog({
         >
             {children}
             <DialogFooter>
-                <Button.Text type={'button'} disabled={pending} onClick={props.onClose}>
+                <Button.Text type='button' disabled={pending} onClick={props.onClose}>
                     Cancel
                 </Button.Text>
                 <Button.Danger
-                    type={'button'}
+                    type='button'
                     isLoading={pending}
                     onClick={(event) => {
                         if (props.open && !pending && !confirmed.current) {

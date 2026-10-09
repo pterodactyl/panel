@@ -9,7 +9,7 @@ interface Props extends Omit<React.ComponentProps<'a'>, 'href'> {
 export default function SearchServerResult({ serverId, className, ...props }: Props) {
     return (
         <Link
-            to={'/server/$id'}
+            to='/server/$id'
             params={{ id: serverId }}
             className={cn(
                 'flex items-center bg-muted p-4 rounded-sm border-l-4 border-border no-underline transition-[background-color,border-color,color] duration-150',

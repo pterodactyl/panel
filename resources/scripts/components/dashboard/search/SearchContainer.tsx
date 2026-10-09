@@ -14,7 +14,7 @@ export default function SearchContainer({ className }: Props) {
     const searchDialog = useDialogState();
 
     useEventListener('keydown', (e: KeyboardEvent) => {
-        if (['input', 'textarea'].indexOf(((e.target as HTMLElement).tagName || 'input').toLowerCase()) < 0) {
+        if (!['input', 'textarea'].includes(((e.target as HTMLElement).tagName || 'input').toLowerCase())) {
             if (!searchDialog.open && e.metaKey && e.key.toLowerCase() === '/') {
                 searchDialog.show();
             }
@@ -24,10 +24,10 @@ export default function SearchContainer({ className }: Props) {
     return (
         <>
             {searchDialog.open && <SearchModal open={searchDialog.open} onClose={searchDialog.hide} />}
-            <Tooltip placement={'bottom'} content={'Search'}>
+            <Tooltip placement='bottom' content='Search'>
                 <button
-                    type={'button'}
-                    aria-label={'Search'}
+                    type='button'
+                    aria-label='Search'
                     className={cn('navigation-link', className)}
                     onClick={searchDialog.show}
                 >

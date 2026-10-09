@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\Settings;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Http\JsonResponse;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -55,39 +54,39 @@ class SettingsController extends AdminApiController
      */
     #[Endpoint('Get settings', 'Returns current general, mail, advanced, and metadata settings.')]
     #[ScribeResponse(self::SETTINGS_EXAMPLE, description: 'Settings returned.')]
-    public function index(GetSettingsRequest $request, ConfigRepository $config): JsonResponse
+    public function index(GetSettingsRequest $request): JsonResponse
     {
         return new JsonResponse([
             'general' => [
-                'app:name' => $config->get('app.name'),
-                'pterodactyl:auth:2fa_required' => JsonValueGuard::integer($config->get('pterodactyl.auth.2fa_required')),
-                'app:locale' => $config->get('app.locale'),
+                'app:name' => config('app.name'),
+                'pterodactyl:auth:2fa_required' => JsonValueGuard::integer(config('pterodactyl.auth.2fa_required')),
+                'app:locale' => config('app.locale'),
             ],
             'mail' => [
-                'mail:default' => $config->get('mail.default'),
-                'mail:mailers:smtp:host' => $config->get('mail.mailers.smtp.host'),
-                'mail:mailers:smtp:port' => JsonValueGuard::integer($config->get('mail.mailers.smtp.port')),
-                'mail:mailers:smtp:encryption' => $config->get('mail.mailers.smtp.encryption'),
-                'mail:mailers:smtp:username' => $config->get('mail.mailers.smtp.username'),
+                'mail:default' => config('mail.default'),
+                'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),
+                'mail:mailers:smtp:port' => JsonValueGuard::integer(config('mail.mailers.smtp.port')),
+                'mail:mailers:smtp:encryption' => config('mail.mailers.smtp.encryption'),
+                'mail:mailers:smtp:username' => config('mail.mailers.smtp.username'),
                 // Never return the SMTP password to the client.
                 'mail:mailers:smtp:password' => '',
-                'mail:from:address' => $config->get('mail.from.address'),
-                'mail:from:name' => $config->get('mail.from.name'),
+                'mail:from:address' => config('mail.from.address'),
+                'mail:from:name' => config('mail.from.name'),
             ],
             'advanced' => [
-                'recaptcha:enabled' => JsonValueGuard::boolean($config->get('recaptcha.enabled')),
+                'recaptcha:enabled' => JsonValueGuard::boolean(config('recaptcha.enabled')),
                 'recaptcha:secret_key' => '',
-                'recaptcha:website_key' => $config->get('recaptcha.website_key'),
-                'pterodactyl:guzzle:timeout' => JsonValueGuard::integer($config->get('pterodactyl.guzzle.timeout')),
-                'pterodactyl:guzzle:connect_timeout' => JsonValueGuard::integer($config->get('pterodactyl.guzzle.connect_timeout')),
-                'pterodactyl:client_features:allocations:enabled' => JsonValueGuard::boolean($config->get('pterodactyl.client_features.allocations.enabled')),
-                'pterodactyl:client_features:allocations:range_start' => $config->get('pterodactyl.client_features.allocations.range_start'),
-                'pterodactyl:client_features:allocations:range_end' => $config->get('pterodactyl.client_features.allocations.range_end'),
+                'recaptcha:website_key' => config('recaptcha.website_key'),
+                'pterodactyl:guzzle:timeout' => JsonValueGuard::integer(config('pterodactyl.guzzle.timeout')),
+                'pterodactyl:guzzle:connect_timeout' => JsonValueGuard::integer(config('pterodactyl.guzzle.connect_timeout')),
+                'pterodactyl:client_features:allocations:enabled' => JsonValueGuard::boolean(config('pterodactyl.client_features.allocations.enabled')),
+                'pterodactyl:client_features:allocations:range_start' => config('pterodactyl.client_features.allocations.range_start'),
+                'pterodactyl:client_features:allocations:range_end' => config('pterodactyl.client_features.allocations.range_end'),
             ],
             'meta' => [
-                'load_environment_only' => JsonValueGuard::boolean($config->get('pterodactyl.load_environment_only', false)),
-                'show_recaptcha_warning' => $config->get('recaptcha._shipped_secret_key') === $config->get('recaptcha.secret_key')
-                    || $config->get('recaptcha._shipped_website_key') === $config->get('recaptcha.website_key'),
+                'load_environment_only' => JsonValueGuard::boolean(config('pterodactyl.load_environment_only', false)),
+                'show_recaptcha_warning' => config('recaptcha._shipped_secret_key') === config('recaptcha.secret_key')
+                    || config('recaptcha._shipped_website_key') === config('recaptcha.website_key'),
             ],
         ]);
     }

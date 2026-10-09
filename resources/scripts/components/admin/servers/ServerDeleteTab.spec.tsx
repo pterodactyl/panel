@@ -27,6 +27,7 @@ describe('server delete tab', () => {
         adapter.mockImplementation(async (config) => ({ config, headers: {}, status: 204, statusText: '', data: '' }));
         http.defaults.adapter = adapter;
         const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+
         render(
             <QueryClientProvider client={client}>
                 <ServerDeleteTab />
@@ -44,12 +45,14 @@ describe('server delete tab', () => {
 
         await user.click(screen.getByRole('button', { name: 'Safely Delete This Server' }));
         const safe = await screen.findByRole('dialog', { name: 'Confirm server deletion' });
+
         await user.type(within(safe).getByLabelText('Confirm Server Name'), 'Alpha');
         await user.click(within(safe).getByRole('button', { name: 'Cancel' }));
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 
         await user.click(screen.getByRole('button', { name: 'Forcibly Delete This Server' }));
         const force = await screen.findByRole('dialog', { name: 'Forcibly delete server' });
+
         expect(within(force).getByLabelText('Confirm Server Name')).toHaveValue('');
         await user.click(within(force).getByRole('button', { name: 'Force Delete Server' }));
         expect(adapter).not.toHaveBeenCalled();
@@ -58,6 +61,7 @@ describe('server delete tab', () => {
 
         await user.click(screen.getByRole('button', { name: 'Safely Delete This Server' }));
         const reopened = await screen.findByRole('dialog', { name: 'Confirm server deletion' });
+
         expect(within(reopened).getByLabelText('Confirm Server Name')).toHaveValue('');
     });
 
@@ -66,6 +70,7 @@ describe('server delete tab', () => {
 
         await user.click(screen.getByRole('button', { name: 'Forcibly Delete This Server' }));
         const force = await screen.findByRole('dialog', { name: 'Forcibly delete server' });
+
         await user.type(within(force).getByLabelText('Confirm Server Name'), 'Alpha');
         await user.click(within(force).getByRole('button', { name: 'Force Delete Server' }));
 

@@ -1,4 +1,5 @@
 import { defineRule } from '@oxlint/plugins';
+import { stringLiteralValue } from '../shared/literals.ts';
 
 /** JSON API mutations use the options emitted by HeyAPI. */
 export const generatedApiMutationsRule = defineRule({
@@ -9,13 +10,12 @@ export const generatedApiMutationsRule = defineRule({
     create(context) {
         return {
             Property(node) {
-                const name =
-                    node.key.type === 'Identifier' && !node.computed
-                        ? node.key.name
-                        : node.key.type === 'Literal'
-                          ? node.key.value
-                          : null;
-                if (name === 'mutationFn') context.report({ node: node.key, messageId: 'mutation' });
+                const { key } = node;
+                const name = key.type === 'Identifier' && !node.computed ? key.name : stringLiteralValue(key);
+
+                if (name === 'mutationFn') {
+                    context.report({ node: node.key, messageId: 'mutation' });
+                }
             },
         };
     },

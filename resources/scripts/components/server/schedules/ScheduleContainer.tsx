@@ -45,9 +45,9 @@ const ScheduleContainer = () => {
     }
 
     return (
-        <ServerContentBlock title={'Schedules'}>
+        <ServerContentBlock title='Schedules'>
             {!schedules.length && isLoading ? (
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             ) : (
                 <>
                     {canCreate && (
@@ -60,7 +60,7 @@ const ScheduleContainer = () => {
                         emptyState={
                             <Empty className={emptyCompactClass}>
                                 <EmptyHeader>
-                                    <EmptyMedia variant={'icon'}>
+                                    <EmptyMedia variant='icon'>
                                         <CalendarClock />
                                     </EmptyMedia>
                                     <EmptyTitle>No schedules</EmptyTitle>

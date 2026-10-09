@@ -35,10 +35,11 @@ describe('RowActions', () => {
         const user = userEvent.setup();
         const onEdit = vi.fn();
         const onDelete = vi.fn();
+
         render(
             <RowActions>
-                <EditAction aria-label={'Edit Alpha'} onClick={onEdit} />
-                <DeleteAction aria-label={'Delete Alpha'} onClick={onDelete} />
+                <EditAction aria-label='Edit Alpha' onClick={onEdit} />
+                <DeleteAction aria-label='Delete Alpha' onClick={onDelete} />
             </RowActions>
         );
 
@@ -56,16 +57,18 @@ describe('RowActions', () => {
     it('explains why a disabled action is unavailable', async () => {
         const user = userEvent.setup();
         const onDelete = vi.fn();
+
         render(
             <DeleteAction
-                aria-label={'Delete Alpha'}
+                aria-label='Delete Alpha'
                 disabled
-                disabledReason={'Users who own servers cannot be deleted.'}
+                disabledReason='Users who own servers cannot be deleted.'
                 onClick={onDelete}
             />
         );
 
         const button = screen.getByRole('button', { name: 'Delete Alpha' });
+
         expect(button).toBeDisabled();
 
         await user.hover(button.parentElement!);
@@ -73,15 +76,16 @@ describe('RowActions', () => {
     });
 
     it('links to the page where the resource is edited', () => {
-        render(<EditLinkAction aria-label={'Edit Alpha'} to={'/panel/nodes/$id/settings'} params={{ id: 7 }} />);
+        render(<EditLinkAction aria-label='Edit Alpha' to='/panel/nodes/$id/settings' params={{ id: 7 }} />);
 
         expect(screen.getByRole('link', { name: 'Edit Alpha' })).toHaveAttribute('href', '/panel/nodes/7/settings');
     });
 
     it('keeps other actions in the overflow menu', async () => {
         const onOpen = vi.fn();
+
         render(
-            <RowActionsMenu label={'More actions for Alpha'}>
+            <RowActionsMenu label='More actions for Alpha'>
                 <DropdownMenu.Item onClick={onOpen}>Open in client area</DropdownMenu.Item>
             </RowActionsMenu>
         );
@@ -109,8 +113,9 @@ describe('actionsColumn', () => {
         const Table = () => {
             const table = useReactTable({ data: rows, columns, getCoreRowModel: getCoreRowModel() });
 
-            return <DataTable table={table} emptyState={'No rows'} />;
+            return <DataTable table={table} emptyState='No rows' />;
         };
+
         render(<Table />);
 
         expect(columns[1]!.enableSorting).toBe(false);

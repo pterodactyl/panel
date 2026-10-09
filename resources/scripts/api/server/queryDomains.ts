@@ -16,6 +16,7 @@ const domainKeys = {
             path: { server_uuid: id },
             query: { file: '' },
         });
+
         return [key];
     },
     startup: (id: string) => clientGetStartupConfigurationQueryKey({ path: { server_uuid: id } }),

@@ -17,7 +17,9 @@ export class RouteAccessDenied extends Error {
 }
 
 const routeErrorStatus = (error: Error): number | undefined => {
-    if (error instanceof RouteAccessDenied) return 403;
+    if (error instanceof RouteAccessDenied) {
+        return 403;
+    }
 
     return axios.isAxiosError(error) ? error.response?.status : undefined;
 };
@@ -53,6 +55,7 @@ export default function RouteError({ error }: ErrorComponentProps) {
             return <AccessDenied message={error instanceof RouteAccessDenied ? error.message : accessDeniedMessage} />;
         case 404:
             return <NotFound />;
+        case undefined:
         default:
             return <ServerError message={httpErrorToHuman(error)} onRetry={retry} />;
     }

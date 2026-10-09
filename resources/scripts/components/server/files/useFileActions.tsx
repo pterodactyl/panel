@@ -95,23 +95,24 @@ export function FileRowActionsProvider({ children }: { children: ReactNode }) {
                 open={modal === 'delete'}
                 onClose={close}
                 title={`Delete ${target?.attributes.is_file === false ? 'Directory' : 'File'}`}
-                confirm={'Delete'}
+                confirm='Delete'
                 onConfirmed={() => {
                     close();
                     doDeletion();
                 }}
             >
                 You will not be able to recover the contents of&nbsp;
-                <span className={'font-semibold text-foreground'}>{name}</span> once deleted.
+                <span className='font-semibold text-foreground'>{name}</span> once deleted.
             </Dialog.Confirm>
-            {target && modal === 'chmod' ? (
+            {target && modal === 'chmod' && (
                 <ChmodFileModal
                     key={name}
                     open
                     files={[{ file: name, mode: target.attributes.mode_bits ?? '' }]}
                     onClose={close}
                 />
-            ) : target && (modal === 'rename' || modal === 'move') ? (
+            )}
+            {target && (modal === 'rename' || modal === 'move') && (
                 <RenameFileModal
                     key={`${modal}:${name}`}
                     open
@@ -119,14 +120,15 @@ export function FileRowActionsProvider({ children }: { children: ReactNode }) {
                     useMoveTerminology={modal === 'move'}
                     onClose={close}
                 />
-            ) : null}
-            <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
+            )}
+            <SpinnerOverlay visible={showSpinner} fixed size='large' />
         </FileRowActionsContext.Provider>
     );
 }
 
 export default function useFileActions(file: FileObject) {
     const actions = use(FileRowActionsContext);
+
     if (!actions) {
         throw new Error('FileRowActionsProvider is missing from the component tree.');
     }

@@ -63,7 +63,9 @@ let lastElementKey = 0;
 
 const keyFor = (element: HTMLElement) => {
     const key = elementKeys.get(element) ?? ++lastElementKey;
+
     elementKeys.set(element, key);
+
     return key;
 };
 
@@ -89,6 +91,81 @@ const sameState = (previous: OverflowState, next: OverflowState) =>
 const activate = (element: HTMLElement) =>
     (element.matches('a, button') ? element : (element.querySelector<HTMLElement>('a, button') ?? element)).click();
 
+type OverflowLayout = {
+    collapsed: boolean;
+    overflowed: HTMLElement[];
+};
+
+/** Each child's width including the gap before it, so the widths add up to the row's used space. */
+const measureWidths = (row: HTMLElement, children: HTMLElement[], style: CSSStyleDeclaration) => {
+    const rect = row.getBoundingClientRect();
+    const available = rect.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    let edge = rect.left + parseFloat(style.paddingLeft);
+    const widths = children.map((child) => {
+        const right = child.getBoundingClientRect().right;
+        const width = Math.max(0, right - edge);
+
+        edge = Math.max(edge, right);
+
+        return width;
+    });
+
+    return { available, widths };
+};
+
+/** Core items always stay; the active item claims the budget next, then the rest in order until it runs out. */
+const fitWithinBudget = (children: HTMLElement[], widths: number[], budget: number): OverflowLayout => {
+    const visible = new Set(children.filter(isCore));
+    let used = children.reduce((sum, child, index) => sum + (visible.has(child) ? widths[index] : 0), 0);
+
+    if (used > budget) {
+        return { collapsed: true, overflowed: [] };
+    }
+
+    const active = children.findIndex((child) => !visible.has(child) && isActive(child));
+
+    if (active !== -1 && used + widths[active] <= budget) {
+        visible.add(children[active]);
+        used += widths[active];
+    }
+
+    for (const [index, child] of children.entries()) {
+        if (visible.has(child)) {
+            continue;
+        }
+
+        if (used + widths[index] > budget) {
+            break;
+        }
+
+        visible.add(child);
+        used += widths[index];
+    }
+
+    return { collapsed: false, overflowed: children.filter((child) => !visible.has(child)) };
+};
+
+/** Shows the "more" toggle while measuring its width when the row overflows. */
+const overflowLayout = (row: HTMLElement, children: HTMLElement[], more: HTMLElement): OverflowLayout => {
+    const style = getComputedStyle(row);
+
+    if (style.flexDirection === 'column') {
+        return { collapsed: false, overflowed: [] };
+    }
+
+    const { available, widths } = measureWidths(row, children, style);
+    const total = widths.reduce((sum, width) => sum + width, 0);
+
+    if (total <= available) {
+        return { collapsed: false, overflowed: [] };
+    }
+
+    more.hidden = false;
+    const budget = available - more.getBoundingClientRect().width - parseFloat(getComputedStyle(more).marginLeft);
+
+    return fitWithinBudget(children, widths, budget);
+};
+
 function useOverflowNavigation(
     rootRef: React.RefObject<HTMLDivElement | null>,
     rowRef: React.RefObject<HTMLDivElement | null>,
@@ -108,74 +185,27 @@ function useOverflowNavigation(
         let mounted = true;
 
         const update = () => {
-            const children = Array.from(row.children).filter(
+            const children = [...row.children].filter(
                 (child): child is HTMLElement => child !== more && child instanceof HTMLElement
             );
 
-            children.forEach((child) => delete child.dataset.overflowed);
+            for (const child of children) {
+                delete child.dataset.overflowed;
+            }
+
             delete root.dataset.collapsed;
             more.hidden = true;
 
-            let overflowed: HTMLElement[] = [];
-            let collapsed = false;
-            const style = getComputedStyle(row);
-
-            if (style.flexDirection !== 'column') {
-                const rect = row.getBoundingClientRect();
-                const available = rect.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-                let edge = rect.left + parseFloat(style.paddingLeft);
-                const widths = children.map((child) => {
-                    const right = child.getBoundingClientRect().right;
-                    const width = Math.max(0, right - edge);
-                    edge = Math.max(edge, right);
-                    return width;
-                });
-                const total = widths.reduce((sum, width) => sum + width, 0);
-
-                if (total > available) {
-                    more.hidden = false;
-                    const budget =
-                        available - more.getBoundingClientRect().width - parseFloat(getComputedStyle(more).marginLeft);
-
-                    const visible = new Set(children.filter(isCore));
-                    let used = children.reduce(
-                        (sum, child, index) => sum + (visible.has(child) ? widths[index] : 0),
-                        0
-                    );
-
-                    if (used > budget) {
-                        collapsed = true;
-                    } else {
-                        const active = children.findIndex((child) => !visible.has(child) && isActive(child));
-
-                        if (active !== -1 && used + widths[active] <= budget) {
-                            visible.add(children[active]);
-                            used += widths[active];
-                        }
-
-                        for (const [index, child] of children.entries()) {
-                            if (visible.has(child)) {
-                                continue;
-                            }
-
-                            if (used + widths[index] > budget) {
-                                break;
-                            }
-
-                            visible.add(child);
-                            used += widths[index];
-                        }
-
-                        overflowed = children.filter((child) => !visible.has(child));
-                    }
-                }
-            }
+            const { collapsed, overflowed } = overflowLayout(row, children, more);
 
             if (collapsed) {
                 root.dataset.collapsed = '';
             }
 
-            overflowed.forEach((child) => (child.dataset.overflowed = ''));
+            for (const child of overflowed) {
+                child.dataset.overflowed = '';
+            }
+
             more.hidden = overflowed.length === 0;
 
             const activeChild = children.find(isActive);
@@ -197,6 +227,7 @@ function useOverflowNavigation(
         update();
 
         const mutationObserver = new MutationObserver(update);
+
         mutationObserver.observe(row, {
             childList: true,
             subtree: true,
@@ -205,9 +236,10 @@ function useOverflowNavigation(
         });
 
         const resizeObserver = new ResizeObserver(update);
+
         resizeObserver.observe(root);
 
-        document.fonts?.ready.then(() => mounted && update());
+        void document.fonts?.ready.then(() => mounted && update());
 
         return () => {
             mounted = false;
@@ -236,16 +268,14 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
             {...props}
         >
             <button
-                type={'button'}
+                type='button'
                 onClick={() => setOpen((value) => !value)}
                 aria-expanded={expanded}
                 aria-controls={rowId}
-                className={
-                    'mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
-                }
+                className='mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
             >
-                <Icon icon={Menu} className={'h-4 w-4 shrink-0'} aria-hidden />
-                <span className={'min-w-0 flex-1 truncate text-left'}>{current || 'Navigation'}</span>
+                <Icon icon={Menu} className='h-4 w-4 shrink-0' aria-hidden />
+                <span className='min-w-0 flex-1 truncate text-left'>{current || 'Navigation'}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-180')}
@@ -254,7 +284,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
             </button>
             <div ref={rowRef} id={rowId} onClick={() => setOpen(false)}>
                 {children}
-                <span ref={moreRef} className={'ml-2 shrink-0'}>
+                <span ref={moreRef} className='ml-2 shrink-0'>
                     <DropdownMenu
                         openOnHover
                         triggerClassName={cn(
@@ -274,7 +304,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                                 className={cn(item.active && 'bg-muted')}
                                 onClick={() => activate(item.element)}
                             >
-                                <span className={'inline-flex items-center gap-2'}>
+                                <span className='inline-flex items-center gap-2'>
                                     <span data-overflowed dangerouslySetInnerHTML={{ __html: item.html }} />
                                     {item.label && <span>{item.label}</span>}
                                 </span>
@@ -286,6 +316,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
         </div>
     );
 };
+
 SubNavigation.displayName = 'SubNavigation';
 
 export default SubNavigation;

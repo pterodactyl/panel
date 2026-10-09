@@ -23,7 +23,8 @@ const field = (overrides: Partial<AdminExtensionSettingField>): AdminExtensionSe
 describe('color field', () => {
     it('edits the colour as text and through the picker', () => {
         const onChange = vi.fn();
-        render(<SettingField field={field({ field: 'color' })} value={'#1F2933'} onChange={onChange} />);
+
+        render(<SettingField field={field({ field: 'color' })} value='#1F2933' onChange={onChange} />);
 
         expect(screen.getByLabelText('Probe picker')).toHaveValue('#1f2933');
         fireEvent.change(screen.getByLabelText('Probe picker'), { target: { value: '#abcdef' } });
@@ -47,18 +48,20 @@ describe('color field', () => {
 describe('textarea field', () => {
     it('limits and counts the text', () => {
         const onChange = vi.fn();
+
         render(
             <SettingField
                 field={field({
                     field: 'textarea',
                     constraints: { max_length: 20, max_items: null, max_kilobytes: null, accept: [] },
                 })}
-                value={'hello'}
+                value='hello'
                 onChange={onChange}
             />
         );
 
         const input = screen.getByRole('textbox', { name: 'Probe' });
+
         expect(input).toHaveAttribute('maxlength', '20');
         expect(screen.getByText('5 / 20')).toBeInTheDocument();
         fireEvent.change(input, { target: { value: 'one\ntwo' } });
@@ -74,6 +77,7 @@ describe('list field', () => {
 
     it('edits, reorders, removes and adds items', () => {
         const onChange = vi.fn();
+
         render(<SettingField field={list} value={['a', 'b']} onChange={onChange} />);
 
         fireEvent.change(screen.getByRole('textbox', { name: 'Probe item 2' }), { target: { value: 'c' } });
@@ -112,12 +116,14 @@ describe('file field', () => {
         );
 
         const input = screen.getByLabelText('Probe');
+
         expect(input).toHaveAttribute('accept', 'image/png,image/webp');
         expect(container.querySelector('img')).toHaveAttribute('src', file.value);
         expect(screen.getByText('Visible to guests')).toBeInTheDocument();
         expect(screen.getByText(/image\/png, image\/webp · up to 64 KB/)).toBeInTheDocument();
 
         const upload = new File(['png'], 'logo.png', { type: 'image/png' });
+
         fireEvent.change(input, { target: { files: [upload] } });
         expect(actions.onUpload).toHaveBeenCalledWith(upload);
 
@@ -129,7 +135,7 @@ describe('file field', () => {
         render(
             <SettingField
                 field={{ ...file, value: '/favicons/favicon.ico' }}
-                value={'/favicons/favicon.ico'}
+                value='/favicons/favicon.ico'
                 onChange={vi.fn()}
                 file={{ pending: false, onUpload: vi.fn(), onClear: vi.fn() }}
             />

@@ -59,6 +59,7 @@ it('refetches the server once the transfer completes', async () => {
 
 it('refetches the server when the socket disconnects mid-transfer, and only then', async () => {
     const { host, invalidate } = await mount(true);
+
     expect(invalidate).not.toHaveBeenCalled();
 
     act(() => host.setConnected(false));

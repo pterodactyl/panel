@@ -10,6 +10,7 @@ import VariableBox from '@/components/server/startup/VariableBox';
 import { serverStartupQueryOptions, useServerStartup, type ServerStartupVariable } from './queries';
 
 const mocks = vi.hoisted(() => ({ uuid: 'server', error: vi.fn() }));
+
 vi.mock('@/api/server/queries', () => ({
     useCurrentServerUuid: () => mocks.uuid,
     useUpdateCurrentServer: () => vi.fn(),
@@ -41,13 +42,14 @@ const variable = (value: string): ServerStartupVariable => ({
 const adapter = vi.fn<AxiosAdapter>();
 const originalAdapter = http.defaults.adapter;
 let client: QueryClient;
-let saves: Array<{ value: string; finish: () => void; fail: () => void }>;
+let saves: { value: string; finish: () => void; fail: () => void }[];
 const wrapper = ({ children }: PropsWithChildren) => (
     <QueryClientProvider client={client}>{children}</QueryClientProvider>
 );
 
 function Editor({ uuid }: { uuid: string }) {
     const { data } = useServerStartup(uuid);
+
     return data?.data[0] ? <VariableBox variable={data.data[0]} /> : null;
 }
 
@@ -70,11 +72,13 @@ describe('startup autosaves', () => {
                 meta: { startup_command: 'start original', raw_startup_command: 'start {{PORT}}', docker_images: {} },
             });
         }
+
         http.defaults.adapter = adapter;
         adapter.mockImplementation(
             (config) =>
                 new Promise((resolve, reject) => {
                     const { value } = JSON.parse(String(config.data)) as { value: string };
+
                     saves.push({
                         value,
                         finish: () =>
@@ -95,6 +99,7 @@ describe('startup autosaves', () => {
     it('serializes saves and preserves the newest draft while earlier saves finish', async () => {
         render(<Editor uuid='server' />, { wrapper });
         const input = screen.getByRole('textbox');
+
         fireEvent.change(input, { target: { value: 'first' } });
         await advance(500);
         expect(saves).toHaveLength(1);
@@ -121,6 +126,7 @@ describe('startup autosaves', () => {
     it('keeps failed drafts and saves edits made without a keyboard event', async () => {
         render(<Editor uuid='server' />, { wrapper });
         const input = screen.getByRole('textbox');
+
         fireEvent.input(input, { target: { value: 'pasted' } });
         await advance(500);
         expect(saves[0]?.value).toBe('pasted');
@@ -138,6 +144,7 @@ describe('startup autosaves', () => {
 
     it('saves unsent edits to their original server on resource change and unmount', async () => {
         const view = render(<Editor uuid='server' />, { wrapper });
+
         fireEvent.change(screen.getByRole('textbox'), { target: { value: 'submitted' } });
         await advance(500);
         fireEvent.change(screen.getByRole('textbox'), { target: { value: 'unsent' } });

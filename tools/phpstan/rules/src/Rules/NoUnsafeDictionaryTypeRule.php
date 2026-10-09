@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\SignatureResolver;
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\SignatureResolver;
+use Rules\Support\TypeClassifier;
 
 /**
  * Port of anti-slop's no-unsafe-dictionary-type for parameter and return
@@ -44,7 +44,7 @@ final class NoUnsafeDictionaryTypeRule implements Rule
             $kind = $this->typeClassifier->unsafeDictionaryValueKind($parameter->type);
             if ($kind !== null) {
                 $errors[] = $this->buildError($node, sprintf(
-                    "Parameter `\$%s` is a dictionary of `%s` values, which gives callers no value contract. Declare an `array{...}` shape or a readonly DTO; parse external payloads (cuyz/valinor, spatie/laravel-data) before insertion.",
+                    'Parameter `$%s` is a dictionary of `%s` values, which gives callers no value contract. Declare an `array{...}` shape or a readonly DTO; parse external payloads (cuyz/valinor, spatie/laravel-data) before insertion.',
                     $parameter->name,
                     $kind,
                 ));

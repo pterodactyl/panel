@@ -48,6 +48,7 @@ const setup = () => {
     const queryClient = new QueryClient({
         defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } },
     });
+
     queryClient.setQueryData(adminExtensionsQueryOptions().queryKey, {
         data: [],
         meta: { enabled: true, directory: '/srv/extensions' },
@@ -87,6 +88,7 @@ describe('extension install dialog', () => {
 
     it('names the package and asks before replacing an installed extension', async () => {
         const user = setup();
+
         upload
             .mockImplementationOnce(async (config) => {
                 throw conflict(config);
@@ -101,10 +103,12 @@ describe('extension install dialog', () => {
 
         await user.click(screen.getAllByRole('button', { name: 'Install' })[0]!);
         const dialog = await screen.findByRole('dialog', { name: 'Install extension' });
+
         await user.upload(within(dialog).getByLabelText('Extension package'), new File(['zip'], 'votes.pteroext'));
         await user.click(within(dialog).getByRole('button', { name: 'Install' }));
 
         const notice = await within(dialog).findByRole('alert');
+
         expect(notice).toHaveTextContent('This package is votes v2.0.0, and v1.0.0 of votes is already installed.');
         expect(notice).toHaveTextContent('stays enabled');
         expect(mocks.notifyError).not.toHaveBeenCalled();
@@ -120,6 +124,7 @@ describe('extension install dialog', () => {
 
     it('asks again when a different package is chosen', async () => {
         const user = setup();
+
         upload.mockImplementation(async (config) => {
             throw conflict(config);
         });
@@ -127,6 +132,7 @@ describe('extension install dialog', () => {
         await user.click(screen.getAllByRole('button', { name: 'Install' })[0]!);
         const dialog = await screen.findByRole('dialog', { name: 'Install extension' });
         const input = within(dialog).getByLabelText('Extension package');
+
         await user.upload(input, new File(['zip'], 'votes.pteroext'));
         await user.click(within(dialog).getByRole('button', { name: 'Install' }));
         await within(dialog).findByRole('button', { name: 'Replace votes' });
@@ -152,6 +158,7 @@ describe('extension mark', () => {
         );
 
         const image = container.querySelector('img');
+
         expect(image).toHaveAttribute('src', '/api/admin/extensions/server-tools/icon?v=1');
         expect(image).toHaveAttribute('alt', '');
 

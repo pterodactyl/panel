@@ -13,10 +13,10 @@ describe('AdminListEmpty', () => {
         render(
             <AdminListEmpty
                 icon={Server}
-                noun={'servers'}
+                noun='servers'
                 onClearFilter={vi.fn()}
-                description={'Create a server to get started.'}
-                action={<button type={'button'}>New server</button>}
+                description='Create a server to get started.'
+                action={<button type='button'>New server</button>}
             />
         );
 
@@ -27,14 +27,15 @@ describe('AdminListEmpty', () => {
 
     it('explains a search miss and clears the search instead of offering creation', async () => {
         const onClearFilter = vi.fn();
+
         render(
             <AdminListEmpty
                 icon={Server}
-                noun={'servers'}
-                filter={'minecraft'}
+                noun='servers'
+                filter='minecraft'
                 onClearFilter={onClearFilter}
-                description={'Create a server to get started.'}
-                action={<button type={'button'}>New server</button>}
+                description='Create a server to get started.'
+                action={<button type='button'>New server</button>}
             />
         );
 

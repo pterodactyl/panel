@@ -29,7 +29,7 @@ export default function ServerDetailContainer() {
     }
 
     if (!server) {
-        return <Spinner size={'large'} centered />;
+        return <Spinner size='large' centered />;
     }
 
     const { attributes } = server;
@@ -43,28 +43,28 @@ export default function ServerDetailContainer() {
                 heading={attributes.name}
                 description={attributes.identifier}
             >
-                <div className={'mb-4 flex flex-wrap items-center gap-4'}>
+                <div className='mb-4 flex flex-wrap items-center gap-4'>
                     <Link
-                        to={'/panel/servers'}
-                        className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground'}
+                        to='/panel/servers'
+                        className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground'
                     >
-                        <Icon icon={ArrowLeft} className={'mr-2'} />
+                        <Icon icon={ArrowLeft} className='mr-2' />
                         Back to Servers
                     </Link>
                     <Link
-                        to={'/server/$id'}
+                        to='/server/$id'
                         params={{ id: attributes.identifier }}
-                        className={'inline-flex items-center text-sm text-muted-foreground hover:text-foreground'}
+                        className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground'
                     >
-                        <Icon icon={ExternalLink} className={'mr-2'} />
+                        <Icon icon={ExternalLink} className='mr-2' />
                         Open Client Area
                     </Link>
                 </div>
                 <Slot name='panel.servers.detail.actions' data={resourceContext} />
-                <SubNavigation className={'mb-6 rounded-sm'}>
+                <SubNavigation className='mb-6 rounded-sm'>
                     <Link
                         data-core
-                        to={'/panel/servers/$id'}
+                        to='/panel/servers/$id'
                         params={params}
                         activeOptions={{ exact: true, includeSearch: false }}
                     >
@@ -72,27 +72,27 @@ export default function ServerDetailContainer() {
                     </Link>
                     {isInstalled && (
                         <>
-                            <Link data-core to={'/panel/servers/$id/details'} params={params}>
+                            <Link data-core to='/panel/servers/$id/details' params={params}>
                                 Details
                             </Link>
-                            <Link data-core to={'/panel/servers/$id/build'} params={params}>
+                            <Link data-core to='/panel/servers/$id/build' params={params}>
                                 Build
                             </Link>
-                            <Link data-core to={'/panel/servers/$id/startup'} params={params}>
+                            <Link data-core to='/panel/servers/$id/startup' params={params}>
                                 Startup
                             </Link>
-                            <Link data-core to={'/panel/servers/$id/database'} params={params}>
+                            <Link data-core to='/panel/servers/$id/database' params={params}>
                                 Database
                             </Link>
-                            <Link data-core to={'/panel/servers/$id/mounts'} params={params}>
+                            <Link data-core to='/panel/servers/$id/mounts' params={params}>
                                 Mounts
                             </Link>
                         </>
                     )}
-                    <Link data-core to={'/panel/servers/$id/manage'} params={params}>
+                    <Link data-core to='/panel/servers/$id/manage' params={params}>
                         Manage
                     </Link>
-                    <Link data-core to={'/panel/servers/$id/delete'} params={params}>
+                    <Link data-core to='/panel/servers/$id/delete' params={params}>
                         Delete
                     </Link>
                     <ResourceExtensionTabs parent='admin.server' basePath={`/panel/servers/${attributes.id}`} />

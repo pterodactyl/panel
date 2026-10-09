@@ -369,11 +369,13 @@ export const useAdminNodeAllocations = (id: number, page: number, options?: Reso
 
 export const useCreateAdminNode = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateNodeMutation(),
         onSuccess: async (node) => {
             await invalidateGeneratedOperations(queryClient, ['adminListNodes']);
             const messages = resourceMutationMessages('node', 'create', node.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'create').errorTitle),
@@ -382,6 +384,7 @@ export const useCreateAdminNode = () => {
 
 export const useUpdateAdminNode = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateNodeMutation(),
         onSuccess: async (node, variables) => {
@@ -393,6 +396,7 @@ export const useUpdateAdminNode = () => {
                 }),
             ]);
             const messages = resourceMutationMessages('node', 'update', node.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'update').errorTitle),
@@ -401,15 +405,18 @@ export const useUpdateAdminNode = () => {
 
 export const useDeleteAdminNode = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteNodeMutation(),
         onSuccess: async (_data, variables) => {
             for (const queryKey of adminNodeScopedKeys(variables.path.node_id)) {
                 removeQueriesWhenUnobserved(queryClient, { queryKey });
             }
+
             await invalidateGeneratedOperations(queryClient, ['adminListNodes']);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('node', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'delete').errorTitle),
@@ -424,6 +431,7 @@ export const useGenerateAdminNodeDeployToken = () =>
 
 export const useCreateAdminNodeAllocations = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateNodeAllocationsMutation(),
         onSuccess: async (_data, variables) => {
@@ -436,6 +444,7 @@ export const useCreateAdminNodeAllocations = () => {
 
 export const useUpdateAdminNodeAllocationAlias = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateNodeAllocationMutation(),
         onSuccess: (_data, variables) => invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]),
@@ -445,6 +454,7 @@ export const useUpdateAdminNodeAllocationAlias = () => {
 
 export const useDeleteAdminNodeAllocation = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteNodeAllocationMutation(),
         onSuccess: (_data, variables) => invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]),
@@ -454,6 +464,7 @@ export const useDeleteAdminNodeAllocation = () => {
 
 export const useBulkDeleteAdminNodeAllocations = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminBulkDeleteNodeAllocationsMutation(),
         onSuccess: async (_data, variables) => {
@@ -466,6 +477,7 @@ export const useBulkDeleteAdminNodeAllocations = () => {
 
 export const useDeleteAdminNodeIpBlockAllocations = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteNodeAllocationIpBlockMutation(),
         onSuccess: async (_data, variables) => {

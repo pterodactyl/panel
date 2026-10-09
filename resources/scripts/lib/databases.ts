@@ -7,6 +7,7 @@ interface DatabaseConnectionFields {
 
 export const jdbcConnectionString = ({ connectionString, name, password, username }: DatabaseConnectionFields) => {
     const credentials = new URLSearchParams({ user: username });
+
     if (password) {
         credentials.set('password', password);
     }

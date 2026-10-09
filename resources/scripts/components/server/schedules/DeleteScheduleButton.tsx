@@ -26,11 +26,11 @@ const DeleteScheduleButton = ({ scheduleId, onDeleted }: Props) => {
 
     return (
         <Dialog.ConfirmTrigger
-            title={'Delete Schedule'}
-            confirm={'Delete'}
+            title='Delete Schedule'
+            confirm='Delete'
             onConfirmed={(_event, close) => onDelete(close)}
             trigger={({ onClick }) => (
-                <Button.Danger isSecondary className={'flex-1 sm:flex-none mr-4 border-transparent'} onClick={onClick}>
+                <Button.Danger isSecondary className='flex-1 sm:flex-none mr-4 border-transparent' onClick={onClick}>
                     Delete
                 </Button.Danger>
             )}

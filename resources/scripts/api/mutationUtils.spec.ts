@@ -12,11 +12,12 @@ describe('mutation utilities', () => {
         const nodes = [{ _id: 'adminListNodes' }] as const;
         const servers = [{ _id: 'adminListServers' }] as const;
         const users = [{ _id: 'adminListUsers' }] as const;
+
         queryClient.setQueryData(nodes, 'nodes');
         queryClient.setQueryData(servers, 'servers');
         queryClient.setQueryData(users, 'users');
 
-        invalidateGeneratedOperations(queryClient, ['adminListNodes', 'adminListServers']);
+        void invalidateGeneratedOperations(queryClient, ['adminListNodes', 'adminListServers']);
 
         expect(queryClient.getQueryState(nodes)?.isInvalidated).toBe(true);
         expect(queryClient.getQueryState(servers)?.isInvalidated).toBe(true);
@@ -27,7 +28,7 @@ describe('mutation utilities', () => {
         const queryClient = new QueryClient();
         const invalidate = vi.spyOn(queryClient, 'invalidateQueries');
 
-        invalidateGeneratedOperations(queryClient, []);
+        void invalidateGeneratedOperations(queryClient, []);
 
         expect(invalidate).not.toHaveBeenCalled();
     });
@@ -38,7 +39,11 @@ describe('mutation utilities', () => {
         const observedKey = ['server', 7, 'detail'];
         const idleKey = ['server', 7, 'databases'];
         const otherKey = ['server', 8, 'detail'];
-        for (const key of [observedKey, idleKey, otherKey]) queryClient.setQueryData(key, 'cached');
+
+        for (const key of [observedKey, idleKey, otherKey]) {
+            queryClient.setQueryData(key, 'cached');
+        }
+
         const observers = [1, 2].map(
             () => new QueryObserver(queryClient, { queryKey: observedKey, queryFn, staleTime: Infinity })
         );

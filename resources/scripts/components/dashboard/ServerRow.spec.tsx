@@ -40,6 +40,7 @@ const server = (attributes: Partial<AccountServer['attributes']>): AccountServer
 const renderRow = async (row: AccountServer) => {
     const root = createRootRoute({ component: () => <ServerRow server={row} /> });
     const router = createRouter({ routeTree: root, history: createMemoryHistory({ initialEntries: ['/'] }) });
+
     render(
         <QueryClientProvider client={new QueryClient()}>
             <RouterProvider router={router} />

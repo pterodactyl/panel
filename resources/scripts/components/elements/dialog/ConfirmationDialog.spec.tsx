@@ -25,20 +25,15 @@ describe('Dialog.Confirm', () => {
     it('disables both actions and ignores close requests while pending', () => {
         const onClose = vi.fn();
         const onConfirmed = vi.fn();
+
         render(
-            <Dialog.Confirm
-                open
-                pending
-                title={'Delete'}
-                confirm={'Delete'}
-                onClose={onClose}
-                onConfirmed={onConfirmed}
-            >
+            <Dialog.Confirm open pending title='Delete' confirm='Delete' onClose={onClose} onConfirmed={onConfirmed}>
                 Are you sure?
             </Dialog.Confirm>
         );
 
         const confirm = screen.getByRole('button', { name: 'Delete' });
+
         expect(confirm).toBeDisabled();
         expect(confirm).toHaveAttribute('aria-busy', 'true');
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeDisabled();
@@ -56,8 +51,8 @@ describe('Dialog.Confirm', () => {
             <Dialog.Confirm
                 open
                 pending={pending}
-                title={'Delete'}
-                confirm={'Delete'}
+                title='Delete'
+                confirm='Delete'
                 onClose={vi.fn()}
                 onConfirmed={onConfirmed}
             />
@@ -80,19 +75,13 @@ describe('Dialog.Confirm', () => {
     it('ignores confirmations once the dialog has been closed', () => {
         const onConfirmed = vi.fn();
         const { rerender } = render(
-            <Dialog.Confirm open title={'Delete'} confirm={'Delete'} onClose={vi.fn()} onConfirmed={onConfirmed} />
+            <Dialog.Confirm open title='Delete' confirm='Delete' onClose={vi.fn()} onConfirmed={onConfirmed} />
         );
         const confirm = screen.getByRole('button', { name: 'Delete' });
 
         fireEvent.click(confirm);
         rerender(
-            <Dialog.Confirm
-                open={false}
-                title={'Delete'}
-                confirm={'Delete'}
-                onClose={vi.fn()}
-                onConfirmed={onConfirmed}
-            />
+            <Dialog.Confirm open={false} title='Delete' confirm='Delete' onClose={vi.fn()} onConfirmed={onConfirmed} />
         );
         fireEvent.click(confirm);
 
@@ -104,8 +93,8 @@ describe('Dialog.ConfirmTrigger', () => {
     const renderTrigger = (onConfirmed: OnConfirmed) =>
         render(
             <Dialog.ConfirmTrigger
-                title={'Reinstall'}
-                confirm={'Reinstall'}
+                title='Reinstall'
+                confirm='Reinstall'
                 trigger={({ onClick }) => <Button onClick={onClick}>Open</Button>}
                 onConfirmed={onConfirmed}
             >
@@ -116,10 +105,12 @@ describe('Dialog.ConfirmTrigger', () => {
     it('stays pending until the returned promise settles and fires only once', async () => {
         const request = deferred();
         const onConfirmed = vi.fn<OnConfirmed>((_event, close) => request.promise.then(close));
+
         renderTrigger(onConfirmed);
 
         fireEvent.click(screen.getByRole('button', { name: 'Open' }));
         const confirm = screen.getByRole('button', { name: 'Reinstall' });
+
         fireEvent.click(confirm);
         fireEvent.click(confirm);
 
@@ -134,10 +125,12 @@ describe('Dialog.ConfirmTrigger', () => {
     it('recovers from a rejected confirmation without an unhandled rejection', async () => {
         const request = deferred();
         const onConfirmed = vi.fn<OnConfirmed>(() => request.promise);
+
         renderTrigger(onConfirmed);
 
         fireEvent.click(screen.getByRole('button', { name: 'Open' }));
         const confirm = screen.getByRole('button', { name: 'Reinstall' });
+
         fireEvent.click(confirm);
         expect(confirm).toBeDisabled();
 
@@ -151,6 +144,7 @@ describe('Dialog.ConfirmTrigger', () => {
 
     it('does not enter a pending state for synchronous handlers', () => {
         const onConfirmed = vi.fn<OnConfirmed>();
+
         renderTrigger(onConfirmed);
 
         fireEvent.click(screen.getByRole('button', { name: 'Open' }));

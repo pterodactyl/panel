@@ -1,10 +1,14 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": ["eslint", "typescript", "react", "oxc"],
+    "plugins": ["eslint", "typescript", "react", "unicorn", "oxc"],
     "jsPlugins": [
         {
             "name": "rules",
             "specifier": "./tools/oxlint/rules/index.ts"
+        },
+        {
+            "name": "@stylistic",
+            "specifier": "@stylistic/eslint-plugin"
         }
     ],
     "categories": {
@@ -38,7 +42,18 @@
     },
     "options": {
         "reportUnusedDisableDirectives": "warn",
+        "typeAware": true,
         "respectEslintDisableDirectives": true
+    },
+    "rules": {
+        // React's act() is typed void for sync callbacks but returns an awaitable at runtime.
+        "typescript/await-thenable": "off",
+        // String(label) is only reached with string labels; SelectOption types label as ReactNode.
+        "typescript/no-base-to-string": "off",
+        // Only flags spreading ASCII strings, where code-point splitting is harmless.
+        "typescript/no-misused-spread": "off",
+        // Props typed with method syntax are plain functions, so every hit is a false positive.
+        "typescript/unbound-method": "off"
     },
     "ignorePatterns": [
         "public/**",
@@ -62,7 +77,26 @@
                 "rules/no-unknown-type-aliases": "error",
                 "rules/no-unsafe-dictionary-type": "error",
                 "rules/no-widen-then-assert": "error",
+                "@stylistic/padding-line-between-statements": [
+                    "error",
+                    { "blankLine": "always", "prev": ["const", "let"], "next": "*" },
+                    { "blankLine": "any", "prev": ["const", "let"], "next": ["const", "let"] },
+                    { "blankLine": "always", "prev": "block-like", "next": "*" },
+                    { "blankLine": "always", "prev": "*", "next": "return" }
+                ],
+                "arrow-body-style": ["error", "as-needed"],
+                "complexity": ["error", { "max": 15 }],
+                "curly": ["error", "all"],
                 "eqeqeq": "error",
+                "max-depth": ["error", { "max": 3 }],
+                "max-nested-callbacks": ["error", { "max": 3 }],
+                "no-implicit-coercion": ["error", { "allow": ["!!"] }],
+                "no-nested-ternary": "error",
+                "object-shorthand": "error",
+                "prefer-arrow-callback": "error",
+                "prefer-const": "error",
+                "prefer-exponentiation-operator": "error",
+                "prefer-template": "error",
                 "no-use-before-define": "warn",
                 "no-unused-expressions": [
                     "error",
@@ -82,7 +116,34 @@
                 "react/react-in-jsx-scope": "off",
                 "react/rules-of-hooks": "error",
                 "react/exhaustive-deps": "warn",
+                "react/jsx-curly-brace-presence": "error",
+                "react/jsx-fragments": "error",
+                "react/jsx-no-useless-fragment": "error",
                 "typescript/no-explicit-any": "error",
+                "typescript/array-type": "error",
+                "typescript/no-inferrable-types": "error",
+                "typescript/prefer-nullish-coalescing": [
+                    "error",
+                    {
+                        "ignorePrimitives": {
+                            "bigint": true,
+                            "boolean": true,
+                            "number": true,
+                            "string": true
+                        }
+                    }
+                ],
+                "typescript/prefer-optional-chain": "error",
+                "typescript/switch-exhaustiveness-check": "error",
+                "unicorn/no-array-for-each": "error",
+                "unicorn/no-negated-condition": "error",
+                "unicorn/no-useless-spread": "error",
+                "unicorn/no-useless-undefined": ["error", { "checkArguments": false }],
+                "unicorn/prefer-array-some": "error",
+                "unicorn/prefer-at": "error",
+                "unicorn/prefer-includes": "error",
+                "unicorn/prefer-spread": "error",
+                "unicorn/prefer-string-replace-all": "error",
                 "typescript/no-non-null-assertion": "off",
                 "typescript/consistent-type-imports": [
                     "error",
@@ -96,6 +157,13 @@
                         "ts-expect-error": "allow-with-description"
                     }
                 ]
+            }
+        },
+        {
+            // describe → it → act → callback nesting is normal in tests.
+            "files": ["**/*.spec.{ts,tsx}"],
+            "rules": {
+                "max-nested-callbacks": "off"
             }
         },
         {
@@ -226,7 +294,16 @@
             "files": ["resources/scripts/api/generated/types.gen.ts"],
             "rules": {
                 "rules/generated-api-types": "error",
+                "typescript/no-duplicate-type-constituents": "off",
+                "typescript/no-redundant-type-constituents": "off",
                 "typescript/no-empty-object-type": "error"
+            }
+        },
+        {
+            // ESTree literals are discriminated only by the runtime type of `value`; this helper is that decoder.
+            "files": ["tools/oxlint/rules/shared/literals.ts"],
+            "rules": {
+                "rules/no-runtime-typeof": "off"
             }
         }
     ]

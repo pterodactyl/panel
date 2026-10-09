@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use IPTools\Exception\IpException;
 use IPTools\Exception\NetworkException;
@@ -62,7 +61,7 @@ class AuthenticateIPAccess
                 if (Range::parse($ip)->contains($find)) {
                     return $next($request);
                 }
-            } catch (IpException | NetworkException | InvalidArgumentException $exception) {
+            } catch (IpException|NetworkException|InvalidArgumentException) {
                 // Ignore the error entirely
                 continue;
             }

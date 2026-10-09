@@ -1,6 +1,6 @@
 import type { UserData } from '@/api/account/types';
 import type { SiteSettings } from '@/api/settings/types';
-import type { SiteExtensionEntry } from '@/extensions/loader';
+import type { SiteExtensionEntry } from '@/extensions/registry';
 import type { ExtensionFormName } from '@/extensions/formTypes';
 
 /** An extension whose fields an admin form shows. */

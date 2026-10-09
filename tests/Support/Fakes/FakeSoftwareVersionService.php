@@ -50,13 +50,4 @@ class FakeSoftwareVersionService extends SoftwareVersionService
     {
         return $this->isLatestPanel;
     }
-
-    public function isLatestDaemon(string $version): bool
-    {
-        if ($version === 'develop') {
-            return true;
-        }
-
-        return version_compare($version, $this->daemon) >= 0;
-    }
 }

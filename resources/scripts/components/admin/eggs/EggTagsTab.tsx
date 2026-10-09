@@ -40,41 +40,46 @@ export default function EggTagsTab() {
             <ServerError
                 message={httpErrorToHuman(eggError ?? tagsError)}
                 onRetry={() => {
-                    if (eggError) void refetch();
-                    if (tagsError) void refetchTags();
+                    if (eggError) {
+                        void refetch();
+                    }
+
+                    if (tagsError) {
+                        void refetchTags();
+                    }
                 }}
             />
         );
     }
 
     if (tagsPending) {
-        return <Spinner size={'large'} centered />;
+        return <Spinner size='large' centered />;
     }
 
     return (
-        <ContentBox title={'Egg Tags'}>
+        <ContentBox title='Egg Tags'>
             {tags.length === 0 ? (
                 <Empty className={emptyCompactClass}>
                     <EmptyHeader>
-                        <EmptyMedia variant={'icon'}>
+                        <EmptyMedia variant='icon'>
                             <Tags />
                         </EmptyMedia>
                         <EmptyTitle>No tags yet</EmptyTitle>
                         <EmptyDescription>
-                            Create a tag on the <Link to={'/panel/tags'}>Tags page</Link> before assigning one to this
+                            Create a tag on the <Link to='/panel/tags'>Tags page</Link> before assigning one to this
                             egg.
                         </EmptyDescription>
                     </EmptyHeader>
                 </Empty>
             ) : (
-                <Form form={form} className={'m-0'}>
-                    <form.AppField name={'tags'}>
+                <Form form={form} className='m-0'>
+                    <form.AppField name='tags'>
                         {(field) => (
                             <field.MultiSelectField
-                                label={'Assigned Tags'}
-                                description={'Tags organize eggs and match them with nodes configured to accept them.'}
-                                placeholder={'Select tags'}
-                                searchPlaceholder={'Search tags…'}
+                                label='Assigned Tags'
+                                description='Tags organize eggs and match them with nodes configured to accept them.'
+                                placeholder='Select tags'
+                                searchPlaceholder='Search tags…'
                                 options={tags.map((tag) => ({
                                     value: String(tag.attributes.id),
                                     label: `${tag.attributes.name} (${tag.attributes.slug})`,
@@ -82,18 +87,18 @@ export default function EggTagsTab() {
                             />
                         )}
                     </form.AppField>
-                    <div className={'mt-4 min-h-8'}>
+                    <div className='mt-4 min-h-8'>
                         {selectedTags.length > 0 ? (
-                            <div className={'flex flex-wrap gap-2'}>
+                            <div className='flex flex-wrap gap-2'>
                                 {selectedTags.map((tag) => (
                                     <TagBadge key={tag.attributes.id} tag={tag} showSlug />
                                 ))}
                             </div>
                         ) : (
-                            <p className={'text-sm text-muted-foreground'}>No tags are assigned to this egg.</p>
+                            <p className='text-sm text-muted-foreground'>No tags are assigned to this egg.</p>
                         )}
                     </div>
-                    <div className={'mt-6 flex justify-end'}>
+                    <div className='mt-6 flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Save tags</form.SubmitButton>
                         </form.AppForm>

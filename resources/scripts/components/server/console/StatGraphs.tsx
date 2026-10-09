@@ -46,11 +46,13 @@ export default function StatGraphs() {
 
     useWebsocketEvent(SocketEvent.STATS, (data: string) => {
         const values = parseServerStatsPayload(data);
+
         if (!values) {
             return;
         }
 
         const t = performance.now();
+
         pushCpu({ value: values.cpu_absolute }, t);
         pushMemory({ value: Math.floor(values.memory_bytes / 1024 / 1024) }, t);
         pushNetwork(
@@ -66,7 +68,7 @@ export default function StatGraphs() {
 
     return (
         <>
-            <ChartBlock title={'CPU Load'}>
+            <ChartBlock title='CPU Load'>
                 <AreaChart
                     data={cpuData}
                     series={CPU_SERIES}
@@ -76,7 +78,7 @@ export default function StatGraphs() {
                     tickFormatter={(value) => `${value.toFixed(2)}%`}
                 />
             </ChartBlock>
-            <ChartBlock title={'Memory'}>
+            <ChartBlock title='Memory'>
                 <AreaChart
                     data={memoryData}
                     series={MEMORY_SERIES}
@@ -87,14 +89,14 @@ export default function StatGraphs() {
                 />
             </ChartBlock>
             <ChartBlock
-                title={'Network'}
+                title='Network'
                 legend={
                     <>
-                        <Tooltip arrow content={'Inbound'}>
-                            <CloudDownload className={'mr-2 w-4 h-4 text-chart-2'} />
+                        <Tooltip arrow content='Inbound'>
+                            <CloudDownload className='mr-2 w-4 h-4 text-chart-2' />
                         </Tooltip>
-                        <Tooltip arrow content={'Outbound'}>
-                            <CloudUpload className={'w-4 h-4 text-chart-1'} />
+                        <Tooltip arrow content='Outbound'>
+                            <CloudUpload className='w-4 h-4 text-chart-1' />
                         </Tooltip>
                     </>
                 }

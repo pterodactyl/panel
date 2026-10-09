@@ -35,7 +35,9 @@ beforeEach(() => {
     client = new QueryClient();
     http.defaults.adapter = (async (config) => {
         const { value } = JSON.parse(String(config.data)) as { value: string };
+
         saves.push(value);
+
         return { config, headers: {}, status: 200, statusText: 'OK', data: variable(value) };
     }) satisfies AxiosAdapter;
 });

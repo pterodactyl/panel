@@ -40,7 +40,7 @@ interface PaginationDataSet {
 }
 
 const Block = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
-    <Button type={'button'} className={cn('p-0 w-10 h-10 not-last-of-type:mr-2', className)} {...props} />
+    <Button type='button' className={cn('p-0 w-10 h-10 not-last-of-type:mr-2', className)} {...props} />
 );
 
 const normalizeGeneratedPagination = (
@@ -72,16 +72,16 @@ function Pagination<T>({ data, onPageSelect, children }: Props<T>) {
         <>
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
-                <div className={'mt-4 flex justify-center'}>
+                <div className='mt-4 flex justify-center'>
                     {pages[0] > 1 && !isFirstPage && (
-                        <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
+                        <Block isSecondary color='primary' onClick={() => onPageSelect(1)}>
                             <Icon icon={ChevronsLeft} />
                         </Block>
                     )}
                     {pages.map((page) => (
                         <Block
                             isSecondary={pagination.currentPage !== page}
-                            color={'primary'}
+                            color='primary'
                             key={`block_page_${page}`}
                             onClick={() => onPageSelect(page)}
                         >
@@ -89,7 +89,7 @@ function Pagination<T>({ data, onPageSelect, children }: Props<T>) {
                         </Block>
                     ))}
                     {pages[4] < pagination.totalPages && !isLastPage && (
-                        <Block isSecondary color={'primary'} onClick={() => onPageSelect(pagination.totalPages)}>
+                        <Block isSecondary color='primary' onClick={() => onPageSelect(pagination.totalPages)}>
                             <Icon icon={ChevronsRight} />
                         </Block>
                     )}

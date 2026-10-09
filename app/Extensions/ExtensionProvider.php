@@ -6,6 +6,7 @@ namespace Pterodactyl\Extensions;
 
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,6 @@ use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionRegistration;
@@ -56,11 +56,25 @@ use Throwable;
  */
 abstract class ExtensionProvider extends ServiceProvider
 {
+    protected ExtensionManifest $extension;
+
     private ?ExtensionRegistration $registration = null;
 
-    public function __construct($app, protected ExtensionManifest $extension)
+    /**
+     * The panel's loader passes the manifest. Laravel constructs a provider from the
+     * application alone, as `$app->register(BillingProvider::class)` in a test does, and the
+     * manifest is then the one of the installed extension that declares this provider.
+     *
+     * @param  Application  $app
+     *
+     * @throws InvalidExtensionException
+     */
+    public function __construct($app, ?ExtensionManifest $extension = null)
     {
         parent::__construct($app);
+        $this->extension = $extension
+            ?? $this->app->make(ExtensionRepository::class)->discovered()->first(fn (ExtensionManifest $manifest): bool => $manifest->provider !== null && strcasecmp(mb_ltrim($manifest->provider, '\\'), static::class) === 0)
+            ?? throw new InvalidExtensionException(sprintf('No installed extension declares %s as its provider.', static::class));
     }
 
     final public function beginRegistration(): void
@@ -209,7 +223,11 @@ abstract class ExtensionProvider extends ServiceProvider
         }
     }
 
-    /** Register the extension's database/migrations directory with the migrator. */
+    /**
+     * Register the extension's database/migrations directory with the migrator. The panel
+     * already does this for every enabled extension, since enabling one runs its migrations;
+     * calling it again changes nothing.
+     */
     protected function loadExtensionMigrations(): void
     {
         $this->loadMigrationsFrom($this->extensionPath('database', 'migrations'));
@@ -343,7 +361,7 @@ abstract class ExtensionProvider extends ServiceProvider
     /** Typed key/value settings scoped to this extension. */
     protected function settings(): ExtensionSettings
     {
-        return $this->app->make(ExtensionManager::class)->settings($this->id());
+        return $this->app->make(ExtensionRepository::class)->settings($this->id());
     }
 
     /**

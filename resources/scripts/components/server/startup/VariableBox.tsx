@@ -37,7 +37,57 @@ const VariableEditor = ({ variable, uuid }: Props & { uuid: string }) => {
         (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true'
     );
     const isStringSwitch = rules.some((v) => v === 'string');
-    const selectValues = rules.find((v) => v.startsWith('in:'))?.split(',') || [];
+    const selectValues = rules.find((v) => v.startsWith('in:'))?.split(',') ?? [];
+
+    const renderControl = () => {
+        if (useSwitch) {
+            return (
+                <Switch
+                    disabled={!canEdit || !attributes.is_editable}
+                    checked={isStringSwitch ? value === 'true' : value === '1'}
+                    onChange={() => {
+                        if (canEdit && attributes.is_editable) {
+                            if (isStringSwitch) {
+                                setVariableValue(value === 'true' ? 'false' : 'true');
+                            } else {
+                                setVariableValue(value === '1' ? '0' : '1');
+                            }
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (selectValues.length > 0) {
+            return (
+                <Select
+                    value={value}
+                    onChange={(value) => setVariableValue(String(value))}
+                    disabled={!canEdit || !attributes.is_editable}
+                    options={selectValues.map((rule) => {
+                        const clean = rule.replace('in:', '');
+
+                        return { value: clean, label: clean };
+                    })}
+                />
+            );
+        }
+
+        return (
+            <TextInput
+                onChange={(e) => {
+                    if (canEdit && attributes.is_editable) {
+                        setVariableValue(e.currentTarget.value);
+                    }
+                }}
+                onBlur={saveVariable.flush}
+                readOnly={!canEdit || !attributes.is_editable}
+                name={attributes.env_variable}
+                value={value}
+                placeholder={attributes.default_value}
+            />
+        );
+    };
 
     return (
         <TitledGreyBox
@@ -50,56 +100,7 @@ const VariableEditor = ({ variable, uuid }: Props & { uuid: string }) => {
                 </p>
             }
         >
-            <InputSpinner visible={updateVariable.isPending}>
-                {useSwitch ? (
-                    <>
-                        <Switch
-                            disabled={!canEdit || !attributes.is_editable}
-                            checked={isStringSwitch ? value === 'true' : value === '1'}
-                            onChange={() => {
-                                if (canEdit && attributes.is_editable) {
-                                    if (isStringSwitch) {
-                                        setVariableValue(value === 'true' ? 'false' : 'true');
-                                    } else {
-                                        setVariableValue(value === '1' ? '0' : '1');
-                                    }
-                                }
-                            }}
-                        />
-                    </>
-                ) : (
-                    <>
-                        {selectValues.length > 0 ? (
-                            <>
-                                <Select
-                                    value={value}
-                                    onChange={(value) => setVariableValue(String(value))}
-                                    disabled={!canEdit || !attributes.is_editable}
-                                    options={selectValues.map((rule) => {
-                                        const clean = rule.replace('in:', '');
-                                        return { value: clean, label: clean };
-                                    })}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <TextInput
-                                    onChange={(e) => {
-                                        if (canEdit && attributes.is_editable) {
-                                            setVariableValue(e.currentTarget.value);
-                                        }
-                                    }}
-                                    onBlur={saveVariable.flush}
-                                    readOnly={!canEdit || !attributes.is_editable}
-                                    name={attributes.env_variable}
-                                    value={value}
-                                    placeholder={attributes.default_value}
-                                />
-                            </>
-                        )}
-                    </>
-                )}
-            </InputSpinner>
+            <InputSpinner visible={updateVariable.isPending}>{renderControl()}</InputSpinner>
 
             <p className='mt-1 text-xs text-muted-foreground'>{attributes.description}</p>
         </TitledGreyBox>
@@ -108,6 +109,7 @@ const VariableEditor = ({ variable, uuid }: Props & { uuid: string }) => {
 
 const VariableBox = ({ variable }: Props) => {
     const uuid = useCurrentServerUuid()!;
+
     return <VariableEditor key={`${uuid}:${variable.attributes.env_variable}`} uuid={uuid} variable={variable} />;
 };
 

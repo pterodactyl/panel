@@ -33,7 +33,7 @@ function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children,
                 {triggerContent}
             </Menu.Trigger>
             <Menu.Portal>
-                <Menu.Positioner className={positionerClass} sideOffset={4} align={'end'}>
+                <Menu.Positioner className={positionerClass} sideOffset={4} align='end'>
                     <Menu.Popup className={cn(popupClass, className)}>
                         <MenuItemContext.Provider value={Menu.Item as MenuItemComponent}>
                             {children}
@@ -99,11 +99,11 @@ export function DropdownMenuItem({ icon, danger, description, className, childre
                             'border-destructive/30 bg-destructive/10 text-destructive group-data-[highlighted]:border-destructive/40 group-data-[highlighted]:bg-destructive/15 group-data-[highlighted]:text-destructive'
                     )}
                 >
-                    <Icon icon={icon} className={'h-4 w-4'} />
+                    <Icon icon={icon} className='h-4 w-4' />
                 </span>
             )}
-            <span className={'flex min-w-0 flex-1 flex-col'}>
-                <span className={'truncate text-sm font-medium leading-5'}>{children}</span>
+            <span className='flex min-w-0 flex-1 flex-col'>
+                <span className='truncate text-sm font-medium leading-5'>{children}</span>
                 {description && (
                     <span
                         className={cn(
@@ -122,6 +122,7 @@ export function DropdownMenuItem({ icon, danger, description, className, childre
 
 // Assigned as a static property; Object.assign would hide the component from Fast Refresh.
 const DropdownMenuWithItems = DropdownMenu as typeof DropdownMenu & { Item: typeof DropdownMenuItem };
+
 DropdownMenuWithItems.Item = DropdownMenuItem;
 
 export default DropdownMenuWithItems;

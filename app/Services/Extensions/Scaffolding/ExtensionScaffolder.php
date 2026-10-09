@@ -67,6 +67,7 @@ class ExtensionScaffolder
         ];
 
         $this->writeManifest($target, $id, $namespace, $replacements, $ui);
+        $this->writeComposerJson($target, $namespace, $replacements);
 
         $this->stub($target, 'provider.stub', 'src/'.$namespace.'Provider.php', $replacements);
         $this->stub($target, 'controller.stub', 'src/Http/Controllers/StatusController.php', $replacements);
@@ -121,7 +122,6 @@ class ExtensionScaffolder
             'description' => $replacements['{{description}}'] ?: null,
             'author' => $replacements['{{author}}'] ?: null,
             'provider' => $namespace.'\\'.$namespace.'Provider',
-            'autoload' => [$namespace.'\\' => 'src'],
             'ui' => $ui ? ['entry' => ExtensionManifest::UI_ENTRY, 'mode' => 'native', 'prefix' => $replacements['{{prefix}}'], 'screens' => [['id' => 'main', 'area' => 'server', 'path' => $id, 'nav' => ['label' => $replacements['{{name}}']]]]] : null,
         ], fn (array|string|null $value): bool => $value !== null);
 
@@ -130,6 +130,25 @@ class ExtensionScaffolder
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n",
         );
         $this->files[] = ExtensionManifest::FILENAME;
+    }
+
+    /**
+     * The PSR-4 map lives in composer.json, where Composer, editors and static analysis read
+     * it, and the panel reads it from there too. The autoloader suffix keeps the class a
+     * bundled vendor/autoload.php declares apart from every other package's.
+     *
+     * @param  array<string, string>  $replacements  stub placeholder => literal substitution
+     */
+    private function writeComposerJson(string $target, string $namespace, array $replacements): void
+    {
+        $composer = array_filter([
+            'description' => $replacements['{{description}}'] ?: null,
+            'autoload' => ['psr-4' => [$namespace.'\\' => 'src/']],
+            'config' => ['autoloader-suffix' => $namespace.'Extension'],
+        ], fn (array|string|null $value): bool => $value !== null);
+
+        File::put($target.DIRECTORY_SEPARATOR.'composer.json', json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+        $this->files[] = 'composer.json';
     }
 
     /**

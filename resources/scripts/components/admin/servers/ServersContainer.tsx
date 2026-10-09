@@ -40,16 +40,25 @@ const sortingFromSearch = (sort?: AdminServerListSort): SortingState => {
             return [{ id: 'created_at', desc: false }];
         case '-created_at':
             return [{ id: 'created_at', desc: true }];
-        default:
+        case undefined:
             return [];
     }
 };
 
 const sortingToSearch = (sorting: SortingState): AdminServerListSort | null => {
     const primary = sorting[0];
-    if (!primary) return null;
-    if (primary.id === 'name') return primary.desc ? '-name' : 'name';
-    if (primary.id === 'created_at') return primary.desc ? '-created_at' : 'created_at';
+
+    if (!primary) {
+        return null;
+    }
+
+    if (primary.id === 'name') {
+        return primary.desc ? '-name' : 'name';
+    }
+
+    if (primary.id === 'created_at') {
+        return primary.desc ? '-created_at' : 'created_at';
+    }
 
     return null;
 };
@@ -74,6 +83,7 @@ export default function ServersContainer() {
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
+
             if (next.pageIndex !== pagination.pageIndex) {
                 navigateToSearch({ page: next.pageIndex + 1 });
             }
@@ -84,6 +94,7 @@ export default function ServersContainer() {
     const onSortingChange = useCallback<OnChangeFn<SortingState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(sorting) : updater;
+
             navigateToSearch({ page: 1, sort: sortingToSearch(next) });
         },
         [navigateToSearch, sorting]
@@ -111,12 +122,12 @@ export default function ServersContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Servers'}
-            heading={'Servers'}
-            description={'Create and manage game servers across your nodes.'}
+            title='Admin · Servers'
+            heading='Servers'
+            description='Create and manage game servers across your nodes.'
         >
             <form
-                className={'mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'}
+                className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
                 onSubmit={(e) => {
                     e.preventDefault();
 
@@ -126,28 +137,24 @@ export default function ServersContainer() {
                     navigateToSearch({ page: 1, filter: value instanceof File || value === null ? '' : value.trim() });
                 }}
             >
-                <div className={'relative w-full sm:max-w-lg'}>
+                <div className='relative w-full sm:max-w-lg'>
                     <Icon
                         icon={Search}
-                        aria-hidden={'true'}
-                        className={
-                            'pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
-                        }
+                        aria-hidden='true'
+                        className='pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground'
                     />
                     <TextInput
                         key={filter}
-                        name={'filter'}
-                        aria-label={'Search servers'}
-                        className={'h-9 border-border bg-card pl-10'}
-                        placeholder={'Search servers…'}
+                        name='filter'
+                        aria-label='Search servers'
+                        className='h-9 border-border bg-card pl-10'
+                        placeholder='Search servers…'
                         defaultValue={filter}
                     />
                 </div>
                 <CreateServerButton />
             </form>
-            {!servers ? (
-                <Spinner size={'large'} centered />
-            ) : (
+            {servers ? (
                 <>
                     <DataTable
                         table={table}
@@ -155,10 +162,10 @@ export default function ServersContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={Server}
-                                noun={'servers'}
+                                noun='servers'
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description={'Create a server to deploy it on one of your nodes.'}
+                                description='Create a server to deploy it on one of your nodes.'
                                 action={<CreateServerButton />}
                             />
                         }
@@ -167,9 +174,11 @@ export default function ServersContainer() {
                         table={table}
                         total={servers.meta.pagination.total}
                         count={servers.meta.pagination.count}
-                        itemLabel={'servers'}
+                        itemLabel='servers'
                     />
                 </>
+            ) : (
+                <Spinner size='large' centered />
             )}
         </AdminContentBlock>
     );

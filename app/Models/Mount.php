@@ -66,6 +66,18 @@ class Mount extends Model implements Identifiable
     ];
 
     /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'int',
+            'read_only' => 'bool',
+            'user_mountable' => 'bool',
+        ];
+    }
+
+    /**
      * Normalizes an absolute path string by resolving '.', '..', and duplicate slashes
      * without requiring the path to exist on the host filesystem.
      */
@@ -80,25 +92,14 @@ class Mount extends Model implements Identifiable
 
             if ($segment === '..') {
                 array_pop($parts);
+
                 continue;
             }
 
             $parts[] = $segment;
         }
 
-        return '/' . implode('/', $parts);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'id' => 'int',
-            'read_only' => 'bool',
-            'user_mountable' => 'bool',
-        ];
+        return '/'.implode('/', $parts);
     }
 
     /**

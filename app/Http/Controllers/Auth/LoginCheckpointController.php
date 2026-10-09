@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Exception;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -80,7 +80,7 @@ class LoginCheckpointController extends AbstractLoginController
     #[BodyParam('recovery_token', 'string', 'A recovery token. Required when authentication_code is not provided.', required: false, example: 'r1a2b3c4d5', nullable: true)]
     #[ScribeResponse(self::LOGIN_COMPLETE_EXAMPLE, description: 'Login completed and a browser session was created.')]
     #[ScribeResponse(self::CHECKPOINT_FAILED_ERROR, status: 400, description: 'The checkpoint token, TOTP code, or recovery token is invalid.')]
-    public function __invoke(LoginCheckpointRequest $request, CompletesLogins $logins, Google2FA $google2FA, Encrypter $encrypter): JsonResponse
+    public function __invoke(LoginCheckpointRequest $request, CompletesLogins $logins, Google2FA $google2FA): JsonResponse
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
@@ -114,7 +114,7 @@ class LoginCheckpointController extends AbstractLoginController
                 $this->sendFailedLoginResponse($request, $user, self::TOKEN_EXPIRED_MESSAGE);
             }
 
-            $decrypted = JsonValueGuard::string($encrypter->decrypt($totpSecret));
+            $decrypted = JsonValueGuard::string(Crypt::decrypt($totpSecret));
             // SAFETY: TOTP counters are discrete intervals, so flooring and converting the quotient to an integer is required.
             $oldTimestamp = $user->totp_authenticated_at
                 ? (int) floor($user->totp_authenticated_at->unix() / $google2FA->getKeyRegeneration())

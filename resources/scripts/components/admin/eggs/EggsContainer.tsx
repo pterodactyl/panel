@@ -21,20 +21,16 @@ const eggColumns = [
         id: 'name',
         header: 'Egg',
         cell: ({ row }) => (
-            <div className={'min-w-0'}>
+            <div className='min-w-0'>
                 <Link
-                    to={'/panel/eggs/$eggId'}
+                    to='/panel/eggs/$eggId'
                     params={{ eggId: row.original.attributes.id }}
-                    className={'block truncate font-medium text-foreground no-underline hover:text-accent'}
+                    className='block truncate font-medium text-foreground no-underline hover:text-accent'
                 >
                     {row.original.attributes.name}
                 </Link>
                 {row.original.attributes.description ? (
-                    <p
-                        className={
-                            'mt-1 line-clamp-2 whitespace-normal break-words text-xs leading-relaxed text-muted-foreground md:line-clamp-none'
-                        }
-                    >
+                    <p className='mt-1 line-clamp-2 whitespace-normal break-words text-xs leading-relaxed text-muted-foreground md:line-clamp-none'>
                         {row.original.attributes.description}
                     </p>
                 ) : null}
@@ -46,7 +42,7 @@ const eggColumns = [
         id: 'author',
         header: 'Author',
         cell: ({ row }) => (
-            <span className={'block max-w-64 truncate text-sm'} title={row.original.attributes.author}>
+            <span className='block max-w-64 truncate text-sm' title={row.original.attributes.author}>
                 {row.original.attributes.author}
             </span>
         ),
@@ -55,14 +51,14 @@ const eggColumns = [
     {
         id: 'id',
         header: 'ID',
-        cell: ({ row }) => <span className={'tabular-nums text-sm'}>{row.original.attributes.id}</span>,
+        cell: ({ row }) => <span className='tabular-nums text-sm'>{row.original.attributes.id}</span>,
         meta: { headerClassName: 'w-20 text-right', cellClassName: 'w-20 text-right' },
     },
     actionsColumn<AdminEggListItem>(1, (egg) => (
         <RowActions>
             <EditLinkAction
                 aria-label={`Edit ${egg.attributes.name}`}
-                to={'/panel/eggs/$eggId'}
+                to='/panel/eggs/$eggId'
                 params={{ eggId: egg.attributes.id }}
             />
         </RowActions>
@@ -87,28 +83,28 @@ export default function EggsContainer() {
 
     return (
         <AdminContentBlock
-            title={'Admin · Eggs'}
-            heading={'Eggs'}
-            description={'Manage server templates, startup configuration, variables, and install scripts.'}
+            title='Admin · Eggs'
+            heading='Eggs'
+            description='Manage server templates, startup configuration, variables, and install scripts.'
         >
-            <Alert type={'danger'} className={'mb-6 text-sm'}>
+            <Alert type='danger' className='mb-6 text-sm'>
                 Eggs are powerful and can break servers when edited incorrectly. Avoid editing official eggs unless you
                 are certain of the change.
             </Alert>
             <ListToolbar>
-                <NewLinkButton to={'/panel/eggs/catalog'} isSecondary icon={Search}>
+                <NewLinkButton to='/panel/eggs/catalog' isSecondary icon={Search}>
                     Browse catalog
                 </NewLinkButton>
                 <ImportEggButton />
-                <NewLinkButton to={'/panel/eggs/new'}>New egg</NewLinkButton>
+                <NewLinkButton to='/panel/eggs/new'>New egg</NewLinkButton>
             </ListToolbar>
             <DataTable
                 table={table}
-                tableClassName={'table-fixed'}
+                tableClassName='table-fixed'
                 emptyState={
                     <Empty className={emptyCompactClass}>
                         <EmptyHeader>
-                            <EmptyMedia variant={'icon'}>
+                            <EmptyMedia variant='icon'>
                                 <Egg />
                             </EmptyMedia>
                             <EmptyTitle>No eggs yet</EmptyTitle>
@@ -118,7 +114,7 @@ export default function EggsContainer() {
                             </EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>
-                            <NewLinkButton to={'/panel/eggs/new'}>New egg</NewLinkButton>
+                            <NewLinkButton to='/panel/eggs/new'>New egg</NewLinkButton>
                         </EmptyContent>
                     </Empty>
                 }

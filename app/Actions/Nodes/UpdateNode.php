@@ -49,12 +49,13 @@ final readonly class UpdateNode implements UpdatesNodes
 
             $node->forceFill($data)->save();
             $this->extensions->save($node, $extensions);
-            $updated = $node->refresh();
+            // A location loaded before the save may no longer match location_id.
+            $node->unsetRelation('location');
 
             try {
-                $daemon->fqdn = $updated->fqdn;
+                $daemon->fqdn = $node->fqdn;
 
-                Daemon::node($daemon)->update($updated);
+                Daemon::node($daemon)->update($node);
             } catch (DaemonConnectionException $daemonConnectionException) {
                 Log::warning($daemonConnectionException->getMessage(), ['exception' => $daemonConnectionException, 'node_id' => $node->id]);
 
@@ -66,10 +67,10 @@ final readonly class UpdateNode implements UpdatesNodes
                 // inject their own response pages, causing this logic to get fucked up.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/2712
-                return [$updated, true];
+                return [$node, true];
             }
 
-            return [$updated, false];
+            return [$node, false];
         });
 
         if ($exception) {

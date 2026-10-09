@@ -11,9 +11,10 @@ final class DisableTwoFactor implements DisablesTwoFactor
 {
     public function disable(User $user): void
     {
-        $user->update([
-            'totp_authenticated_at' => now(),
+        $user->forceFill([
             'use_totp' => false,
-        ]);
+            'totp_secret' => null,
+            'totp_authenticated_at' => null,
+        ])->saveOrFail();
     }
 }

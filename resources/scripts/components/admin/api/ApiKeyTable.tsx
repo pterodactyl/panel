@@ -23,8 +23,8 @@ const ApiKeyActionsCell = ({ apiKey }: { apiKey: AdminApiKey }) => {
     return (
         <RowActions>
             <Dialog.ConfirmTrigger
-                title={'Confirm key deletion'}
-                confirm={'Delete key'}
+                title='Confirm key deletion'
+                confirm='Delete key'
                 preventExternalClose={isSubmitting}
                 hideCloseIcon={isSubmitting}
                 pending={isSubmitting}
@@ -47,13 +47,13 @@ export const apiKeyColumns = [
     {
         id: 'memo',
         accessorFn: (apiKey) => apiKey.attributes.memo,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Description'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Description' />,
         cell: ({ row }) => (
-            <div className={'w-0 min-w-full'}>
-                <p className={'truncate font-medium'} title={row.original.attributes.memo || undefined}>
+            <div className='w-0 min-w-full'>
+                <p className='truncate font-medium' title={row.original.attributes.memo || undefined}>
                     {row.original.attributes.memo || 'No description provided'}
                 </p>
-                <p className={'mt-0.5 truncate font-mono text-xs text-muted-foreground'}>
+                <p className='mt-0.5 truncate font-mono text-xs text-muted-foreground'>
                     {row.original.attributes.identifier}
                 </p>
             </div>
@@ -64,7 +64,7 @@ export const apiKeyColumns = [
     {
         id: 'permissions',
         header: 'Permissions',
-        cell: ({ row }) => <span className={'whitespace-nowrap text-xs'}>{grantedCount(row.original)} granted</span>,
+        cell: ({ row }) => <span className='whitespace-nowrap text-xs'>{grantedCount(row.original)} granted</span>,
         enableSorting: false,
         meta: { headerClassName: 'hidden w-28 @md:table-cell', cellClassName: 'hidden w-28 @md:table-cell' },
     },
@@ -73,17 +73,18 @@ export const apiKeyColumns = [
         header: 'Created by',
         cell: ({ row }) => {
             const createdBy = row.original.attributes.created_by;
+
             return createdBy ? (
                 <Link
-                    to={'/panel/users/$id'}
+                    to='/panel/users/$id'
                     params={{ id: createdBy.id }}
                     title={createdBy.username}
-                    className={'block w-0 min-w-full truncate text-foreground no-underline hover:text-accent'}
+                    className='block w-0 min-w-full truncate text-foreground no-underline hover:text-accent'
                 >
                     {createdBy.username}
                 </Link>
             ) : (
-                <span className={'text-muted-foreground'}>Unknown</span>
+                <span className='text-muted-foreground'>Unknown</span>
             );
         },
         enableSorting: false,
@@ -94,8 +95,9 @@ export const apiKeyColumns = [
         header: 'Last used',
         cell: ({ row }) => {
             const lastUsedAt = row.original.attributes.last_used_at;
+
             return (
-                <span className={'whitespace-nowrap text-xs text-muted-foreground'}>
+                <span className='whitespace-nowrap text-xs text-muted-foreground'>
                     {lastUsedAt ? dayjs(lastUsedAt).format('MMM D, YYYY') : 'Never'}
                 </span>
             );
@@ -106,10 +108,10 @@ export const apiKeyColumns = [
     {
         id: 'created_at',
         accessorFn: (apiKey) => apiKey.attributes.created_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={'Created'} />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title='Created' />,
         cell: ({ row }) => (
             <time
-                className={'whitespace-nowrap text-xs text-muted-foreground'}
+                className='whitespace-nowrap text-xs text-muted-foreground'
                 dateTime={row.original.attributes.created_at}
             >
                 {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}

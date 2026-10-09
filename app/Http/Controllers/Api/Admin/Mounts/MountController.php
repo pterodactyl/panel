@@ -6,13 +6,15 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\Mounts;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Pterodactyl\Contracts\Mounts\CreatesMounts;
+use Pterodactyl\Contracts\Mounts\DeletesMounts;
+use Pterodactyl\Contracts\Mounts\UpdatesMounts;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -24,9 +26,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Mounts\GetMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\StoreMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\UpdateMountRequest;
 use Pterodactyl\Models\Mount;
-use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Transformers\Api\Admin\MountTransformer;
-use Ramsey\Uuid\Uuid;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -97,17 +97,9 @@ class MountController extends AdminApiController
     #[Endpoint('Create mount', 'Creates a mount definition and generates its UUID.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, status: 201, description: 'Mount created.', resourceKey: 'mount', meta: ['resource' => 'https://panel.example.com/api/admin/mounts/1'])]
     #[ExtensionFieldsParam]
-    public function store(StoreMountRequest $request, ExtensionFields $extensions): JsonResponse
+    public function store(StoreMountRequest $request, CreatesMounts $mounts): JsonResponse
     {
-        $mount = DB::transaction(function () use ($request, $extensions): Mount {
-            $mount = (new Mount)->fill($request->validated());
-            $mount->forceFill(['uuid' => Uuid::uuid4()->toString()]);
-            $mount->saveOrFail();
-
-            $extensions->save($mount, $request->extensionValues());
-
-            return $mount;
-        });
+        $mount = $mounts->create($request->payload());
 
         Activity::event('admin:mount.create')
             ->subject($mount)
@@ -132,12 +124,9 @@ class MountController extends AdminApiController
     #[Endpoint('Update mount', 'Updates an existing mount definition.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
     #[ExtensionFieldsParam]
-    public function update(UpdateMountRequest $request, ExtensionFields $extensions, Mount $mount): array
+    public function update(UpdateMountRequest $request, UpdatesMounts $mounts, Mount $mount): array
     {
-        DB::transaction(function () use ($request, $extensions, $mount): void {
-            $mount->forceFill($request->validated())->save();
-            $extensions->save($mount, $request->extensionValues());
-        });
+        $mount = $mounts->update($mount, $request->payload());
 
         Activity::event('admin:mount.update')
             ->subject($mount)
@@ -154,11 +143,11 @@ class MountController extends AdminApiController
      */
     #[Endpoint('Delete mount', 'Deletes a mount definition.')]
     #[ScribeResponse(status: 204, description: 'Mount deleted.')]
-    public function destroy(DeleteMountRequest $request, Mount $mount): Response
+    public function destroy(DeleteMountRequest $request, DeletesMounts $mounts, Mount $mount): Response
     {
         $name = $mount->name;
 
-        $mount->delete();
+        $mounts->delete($mount);
 
         Activity::event('admin:mount.delete')
             ->subject($mount)

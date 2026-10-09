@@ -64,6 +64,7 @@ final class ExtensionCompatibility
         // A claim both sides make is reported from the side of the extension being checked.
         $reason = $errors[$manifest->id] ?? reset($errors);
         throw_if($reason !== false, InvalidExtensionException::class, $reason);
+        $this->assertDistinctAutoloader($manifest, $enabled);
     }
 
     /** @param Collection<string, ExtensionManifest> $enabled */
@@ -74,10 +75,60 @@ final class ExtensionCompatibility
         }
     }
 
+    /**
+     * Laravel records a migration by its file name, so a migration named like one of the
+     * panel's or another installed extension's counts as already run and never runs.
+     *
+     * @param  Collection<string, ExtensionManifest>  $installed
+     */
+    public function assertMigrationsAreUnique(ExtensionManifest $manifest, Collection $installed): void
+    {
+        $names = $this->migrationNames($manifest->path('database', 'migrations'));
+        if ($names === []) {
+            return;
+        }
+
+        $owners = ['the panel' => $this->migrationNames(database_path('migrations'))];
+        foreach ($installed as $other) {
+            if ($other->id !== $manifest->id) {
+                $owners[sprintf('extension "%s"', $other->id)] = $this->migrationNames($other->path('database', 'migrations'));
+            }
+        }
+
+        foreach ($owners as $owner => $taken) {
+            $shared = array_intersect($names, $taken);
+            throw_if($shared !== [], InvalidExtensionException::class, sprintf('Extension "%s" cannot run migration "%s": %s has a migration with the same name, which Laravel would treat as already run. Rename the migration file.', $manifest->id, reset($shared), $owner));
+        }
+    }
+
     public function assertRuntimeCompatible(ExtensionManifest $manifest): void
     {
         $reason = $this->runtimeFailureReason($manifest);
         throw_if($reason !== null, InvalidExtensionException::class, $reason);
+    }
+
+    /**
+     * A bundled vendor/autoload.php declares a class named after its Composer autoloader
+     * suffix. PHP stops at the second declaration of that class before any handler runs, so
+     * two packages sharing a suffix would take every request down instead of failing alone.
+     *
+     * @param  Collection<string, ExtensionManifest>  $enabled
+     */
+    private function assertDistinctAutoloader(ExtensionManifest $manifest, Collection $enabled): void
+    {
+        $suffix = ExtensionComposerInspector::autoloaderSuffix($manifest->directory);
+        if ($suffix === null) {
+            return;
+        }
+
+        $owner = $enabled->first(fn (ExtensionManifest $other): bool => $other->id !== $manifest->id && ExtensionComposerInspector::autoloaderSuffix($other->directory) === $suffix);
+        $claimant = match (true) {
+            $suffix === ExtensionComposerInspector::autoloaderSuffix(base_path()) => 'the panel',
+            $owner instanceof ExtensionManifest => sprintf('enabled extension "%s"', $owner->id),
+            default => null,
+        };
+
+        throw_if($claimant !== null, InvalidExtensionException::class, sprintf('Extension "%s" cannot load its vendor/autoload.php: %s uses the same Composer autoloader (ComposerAutoloaderInit%s). Set "config.autoloader-suffix" in its composer.json and run composer dump-autoload.', $manifest->id, $claimant, $suffix));
     }
 
     /** @param Collection<string, ExtensionManifest> $enabled */
@@ -125,6 +176,16 @@ final class ExtensionCompatibility
         }
 
         return null;
+    }
+
+    /**
+     * The migration names the migrator would read from a directory.
+     *
+     * @return list<string>
+     */
+    private function migrationNames(string $directory): array
+    {
+        return array_map(fn (string $file): string => basename($file, '.php'), glob($directory.DIRECTORY_SEPARATOR.'*_*.php') ?: []);
     }
 
     private function runtimeFailureReason(ExtensionManifest $manifest): ?string

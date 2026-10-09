@@ -61,7 +61,9 @@ describe('admin server cache', () => {
         client.setQueryData(adminServerQueryOptions(7).queryKey, server);
         seed(adminServerDatabasesQueryOptions(7).queryKey, { object: 'list', data: [] });
         for (const nodeId of [3, 4, 5]) {
-            for (const key of nodeReads(nodeId)) seed(key, { object: 'list', data: [] });
+            for (const key of nodeReads(nodeId)) {
+                seed(key, { object: 'list', data: [] });
+            }
         }
     });
 
@@ -94,8 +96,13 @@ describe('admin server cache', () => {
 
             detail.unmount();
             expect(client.getQueryData(adminServerQueryOptions(7).queryKey)).toBeUndefined();
-            for (const key of nodeReads(3)) expect(isInvalidated(key)).toBe(true);
-            for (const key of nodeReads(4)) expect(isInvalidated(key)).toBe(false);
+            for (const key of nodeReads(3)) {
+                expect(isInvalidated(key)).toBe(true);
+            }
+
+            for (const key of nodeReads(4)) {
+                expect(isInvalidated(key)).toBe(false);
+            }
         }
     );
 
@@ -108,8 +115,13 @@ describe('admin server cache', () => {
             );
         });
 
-        for (const key of nodeReads(3)) expect(isInvalidated(key)).toBe(true);
-        for (const key of nodeReads(4)) expect(isInvalidated(key)).toBe(false);
+        for (const key of nodeReads(3)) {
+            expect(isInvalidated(key)).toBe(true);
+        }
+
+        for (const key of nodeReads(4)) {
+            expect(isInvalidated(key)).toBe(false);
+        }
     });
 
     it('refreshes the allocations of the source and destination nodes of a transfer', async () => {
@@ -119,8 +131,13 @@ describe('admin server cache', () => {
             await transfer.result.current.mutateAsync(transferAdminServerInput(7, { node_id: 4, allocation_id: 1 }));
         });
 
-        for (const key of [...nodeReads(3), ...nodeReads(4)]) expect(isInvalidated(key)).toBe(true);
-        for (const key of nodeReads(5)) expect(isInvalidated(key)).toBe(false);
+        for (const key of [...nodeReads(3), ...nodeReads(4)]) {
+            expect(isInvalidated(key)).toBe(true);
+        }
+
+        for (const key of nodeReads(5)) {
+            expect(isInvalidated(key)).toBe(false);
+        }
     });
 
     it('refreshes the node configuration after a node update', async () => {

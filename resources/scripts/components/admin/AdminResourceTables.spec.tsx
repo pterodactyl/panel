@@ -123,7 +123,7 @@ const host = {
 function SingleRowTable<TData>({ row, columns }: { row: TData; columns: ColumnDef<TData>[] }) {
     const table = useReactTable({ data: [row], columns, getCoreRowModel: getCoreRowModel() });
 
-    return <DataTable table={table} emptyState={'No rows'} />;
+    return <DataTable table={table} emptyState='No rows' />;
 }
 
 describe('admin resource tables', () => {

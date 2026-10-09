@@ -31,6 +31,7 @@ afterEach(() => {
 
 it('starts in the signed-in user language, then the site locale, then English', async () => {
     const { initialLanguage } = await import('@/i18n');
+
     expect(initialLanguage()).toBe('en');
 
     (window as BootstrapWindow).SiteConfiguration = { locale: 'fr' };
@@ -46,6 +47,7 @@ it('follows language changes of the cached current user', async () => {
     const { currentUserQueryKey, currentUserQueryOptions, setCurrentUserQueryData } =
         await import('@/api/account/queries');
     const instance = createInstance();
+
     await instance.init({ lng: 'en', resources: {} });
     const client = new QueryClient();
     const stop = followCurrentUserLanguage(client, instance);

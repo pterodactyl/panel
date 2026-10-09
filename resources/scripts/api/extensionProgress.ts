@@ -7,11 +7,14 @@ export function extensionJobProgressQueryOptions(extension: string, job: string,
         const result = serverUuid
             ? await clientGetServerExtensionJobProgress({ path: { extension, job, server_uuid: serverUuid }, signal })
             : await clientGetExtensionJobProgress({ path: { extension, job }, signal });
+
         return result.data.data;
     };
+
     const options = queryOptions({
         queryKey: ['extension-progress', extension, serverUuid ?? null, job],
         queryFn,
     });
+
     return { queryKey: options.queryKey, queryFn };
 }

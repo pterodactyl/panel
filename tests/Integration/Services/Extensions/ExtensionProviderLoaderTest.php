@@ -23,7 +23,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
@@ -51,7 +50,6 @@ beforeEach(function (): void {
     ]);
     $this->app->forgetInstance(ExtensionRepository::class);
     $this->app->forgetInstance(ExtensionProviderLoader::class);
-    $this->app->forgetInstance(ExtensionManager::class);
 });
 
 afterEach(function (): void {

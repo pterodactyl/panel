@@ -17,6 +17,7 @@ interface PendingExecution {
 
 // Upper bound for a single execution; matches the lifetime of a reCAPTCHA image challenge.
 const EXECUTE_TIMEOUT_MS = 120_000;
+
 // After the challenge popup closes, a successful verification can still deliver its token.
 const DISMISS_GRACE_MS = 1_000;
 const CHALLENGE_FRAME_SELECTOR = 'iframe[src*="/recaptcha/api2/bframe"], iframe[src*="/recaptcha/enterprise/bframe"]';
@@ -45,6 +46,7 @@ function watchChallengeDismissal(onDismiss: () => void): () => void {
     const check = () => {
         const frame = document.querySelector<HTMLIFrameElement>(CHALLENGE_FRAME_SELECTOR);
         const popup = frame?.parentElement?.parentElement;
+
         if (!popup) {
             return;
         }
@@ -59,6 +61,7 @@ function watchChallengeDismissal(onDismiss: () => void): () => void {
     };
 
     const observer = new MutationObserver(check);
+
     observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['style'] });
 
     return () => {
@@ -78,6 +81,7 @@ const RecaptchaBridge = ({ ref }: RecaptchaBridgeProps) => {
 
     const settle = useCallback((token: string | null) => {
         const pending = pendingRef.current;
+
         pendingRef.current = null;
         pending?.finish();
         pending?.resolve(token);
@@ -98,11 +102,13 @@ const RecaptchaBridge = ({ ref }: RecaptchaBridgeProps) => {
 
                     if (isLoading || !instance) {
                         resolve(null);
+
                         return;
                     }
 
                     const timeout = window.setTimeout(() => settle(null), EXECUTE_TIMEOUT_MS);
                     const stopWatching = watchChallengeDismissal(() => settle(readResponse(instance)));
+
                     pendingRef.current = {
                         resolve,
                         finish: () => {
@@ -124,6 +130,7 @@ const RecaptchaBridge = ({ ref }: RecaptchaBridgeProps) => {
 
     return <GoogleReCaptchaBadge onChange={onChange} onError={onError} onExpired={onExpired} />;
 };
+
 RecaptchaBridge.displayName = 'RecaptchaBridge';
 
 interface Props {
@@ -132,13 +139,12 @@ interface Props {
 }
 
 /** Invisible reCAPTCHA v2; call `ref.execute()` to obtain a token. */
-const InvisibleRecaptcha = ({ siteKey, ref }: Props) => {
-    return (
-        <GoogleReCaptchaProvider type={'v2-invisible'} siteKey={siteKey || '_invalid_key'}>
-            <RecaptchaBridge ref={ref} />
-        </GoogleReCaptchaProvider>
-    );
-};
+const InvisibleRecaptcha = ({ siteKey, ref }: Props) => (
+    <GoogleReCaptchaProvider type='v2-invisible' siteKey={siteKey || '_invalid_key'}>
+        <RecaptchaBridge ref={ref} />
+    </GoogleReCaptchaProvider>
+);
+
 InvisibleRecaptcha.displayName = 'InvisibleRecaptcha';
 
 export default InvisibleRecaptcha;

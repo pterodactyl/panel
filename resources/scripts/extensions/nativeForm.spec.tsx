@@ -17,6 +17,7 @@ vi.mock('@/bootstrap', async (importOriginal) => ({
 
 const originalAdapter = http.defaults.adapter;
 let host: ReturnType<typeof createExtensionTestHost> | undefined;
+
 afterEach(() => {
     cleanup();
     host?.dispose();
@@ -47,15 +48,20 @@ it('extension controls participate in native validation, submission, and shared 
     };
     let requests = 0;
     let savedPayload: unknown;
+
     http.defaults.adapter = async (config) => {
-        if (config.url === '/api/admin/languages')
+        if (config.url === '/api/admin/languages') {
             return { data: { en: 'English' }, config, status: 200, statusText: 'OK', headers: {} };
+        }
+
         expect(config.method).toBe('put');
         expect(config.url).toBe('/api/admin/users/1');
         requests++;
         savedPayload = JSON.parse(config.data);
+
         return { data: user, config, status: 200, statusText: 'OK', headers: {} };
     };
+
     prepareExtensions([{ id: 'probe', entry: '/probe.js' }]);
     await loadExtensions(async () => ({
         default: definePterodactylExtension({
@@ -75,14 +81,17 @@ it('extension controls participate in native validation, submission, and shared 
     }));
     host = createExtensionTestHost({ path: '/panel/users/1', resource: { kind: 'admin.user', resource: user } });
     const userKey = adminUserWithServersQueryOptions(1).queryKey;
+
     host.queryClient.setQueryData(userKey, user);
     const Wrapper = host.Wrapper;
+
     render(
         <Wrapper>
             <UserDetailContainer />
         </Wrapper>
     );
     const field = await screen.findByLabelText('Extension username');
+
     fireEvent.change(field, { target: { value: '' } });
     fireEvent.click(screen.getAllByRole('button', { name: 'Save Changes' })[0]);
     await waitFor(() =>

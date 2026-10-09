@@ -18,43 +18,43 @@ const SecretInput = ({ id, value, label }: SecretInputProps) => {
     const copyLabel = `Copy ${label.toLowerCase()}`;
 
     return (
-        <div className={'relative'}>
+        <div className='relative'>
             <TextInput
                 id={id}
                 type={visible ? 'text' : 'password'}
                 readOnly
-                autoComplete={'off'}
+                autoComplete='off'
                 spellCheck={false}
                 value={value ?? ''}
-                className={'pr-20 font-mono'}
+                className='pr-20 font-mono'
             />
-            <div className={'absolute inset-y-0 right-2 flex items-center gap-1'}>
+            <div className='absolute inset-y-0 right-2 flex items-center gap-1'>
                 <Tooltip content={toggleLabel}>
-                    <span className={'inline-flex'}>
+                    <span className='inline-flex'>
                         <Button.Text
-                            type={'button'}
-                            size={'xsmall'}
+                            type='button'
+                            size='xsmall'
                             isSecondary
                             aria-label={toggleLabel}
                             aria-pressed={visible}
                             disabled={!value}
                             onClick={() => setVisible((current) => !current)}
                         >
-                            <Icon icon={visible ? EyeOff : Eye} className={'h-3.5 w-3.5'} />
+                            <Icon icon={visible ? EyeOff : Eye} className='h-3.5 w-3.5' />
                         </Button.Text>
                     </span>
                 </Tooltip>
                 <Tooltip content={copyLabel}>
-                    <span className={'inline-flex'}>
+                    <span className='inline-flex'>
                         <CopyOnClick text={value} showInNotification={false}>
                             <Button.Text
-                                type={'button'}
-                                size={'xsmall'}
+                                type='button'
+                                size='xsmall'
                                 isSecondary
                                 aria-label={copyLabel}
                                 disabled={!value}
                             >
-                                <Icon icon={Copy} className={'h-3.5 w-3.5'} />
+                                <Icon icon={Copy} className='h-3.5 w-3.5' />
                             </Button.Text>
                         </CopyOnClick>
                     </span>

@@ -4,12 +4,14 @@ A Pterodactyl panel extension, scaffolded by `p:extension:make`.
 
 ## Layout
 
-- `extension.json` — the manifest; `provider` is the boot entry point.
-- `src/` — PSR-4 PHP (`{{namespace}}\`), booted through `src/{{provider}}.php`.
+- `extension.json`: the manifest; `provider` is the boot entry point.
+- `src/`: PSR-4 PHP (`{{namespace}}\`), booted through `src/{{provider}}.php`.
   Runs fully trusted, in-process, with the same middleware stacks core uses.
-- `routes/client.php` — mounted at `/api/client/extensions/{{id}}`. Add
+- `composer.json`: the PSR-4 map the panel and your editor read. Composer
+  dependencies go here too; the panel loads `vendor/autoload.php` when it exists.
+- `routes/client.php`: mounted at `/api/client/extensions/{{id}}`. Add
   `routes/admin.php` / `routes/application.php` for the other API surfaces.
-- `database/migrations/` — extension-owned migrations. Prefix tables with
+- `database/migrations/`: extension-owned migrations. Prefix tables with
   `ext_{{id}}_` by convention.
 
 {{frontend}}## Install
@@ -18,5 +20,10 @@ A Pterodactyl panel extension, scaffolded by `p:extension:make`.
 php artisan p:extension:install /path/to/{{id}} --enable
 ```
 
-Package for distribution by zipping the directory as `{{id}}.pteroext`
-(exclude `node_modules/`; include `dist/`).
+Package for distribution with `p:extension:pack`, after building `dist/` and, if
+the extension has Composer dependencies, running
+`composer install --no-dev --optimize-autoloader`:
+
+```sh
+php artisan p:extension:pack /path/to/{{id}}
+```

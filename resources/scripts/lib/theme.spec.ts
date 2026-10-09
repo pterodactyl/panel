@@ -10,6 +10,7 @@ const settle = async () => {
 
 const addStyle = (css: string) => {
     const style = document.createElement('style');
+
     style.textContent = css;
     document.head.appendChild(style);
 
@@ -33,6 +34,7 @@ describe('theme change notifications', () => {
         const stop = onThemeChange(listener);
 
         const style = addStyle(':root { --accent: red; }');
+
         await settle();
         expect(listener).toHaveBeenCalledTimes(1);
 
@@ -45,6 +47,7 @@ describe('theme change notifications', () => {
         expect(listener).toHaveBeenCalledTimes(3);
 
         const link = document.createElement('link');
+
         link.rel = 'stylesheet';
         document.head.appendChild(link);
         await settle();
@@ -73,6 +76,7 @@ describe('theme change notifications', () => {
 
         document.title = 'Console';
         const meta = document.createElement('meta');
+
         meta.name = 'description';
         document.head.appendChild(meta);
         meta.content = 'changed';
@@ -108,6 +112,7 @@ describe('theme-color meta', () => {
     beforeEach(() => {
         vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'cancelAnimationFrame', 'setTimeout', 'clearTimeout'] });
         const meta = document.createElement('meta');
+
         meta.name = 'theme-color';
         meta.content = '#0e4688';
         meta.dataset.themeToken = '';
@@ -132,6 +137,7 @@ describe('theme-color meta', () => {
     it('follows the token as themes come and go', async () => {
         addStyle(':root { --theme-color: #101216; }');
         const stop = syncThemeColorMeta();
+
         expect(content()).toBe('#101216');
 
         addStyle(':root { --theme-color: #ffffff; }');

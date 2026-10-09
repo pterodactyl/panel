@@ -7,6 +7,7 @@ namespace Pterodactyl\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\RateLimiter;
@@ -19,7 +20,6 @@ use Pterodactyl\Services\Extensions\ExtensionFailureAttributor;
 use Pterodactyl\Services\Extensions\ExtensionFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionLock;
-use Pterodactyl\Services\Extensions\ExtensionManager;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
@@ -40,7 +40,6 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->singleton(ExtensionRepository::class);
         $this->app->singleton(ExtensionLock::class);
         $this->app->singleton(ExtensionProviderLoader::class);
-        $this->app->singleton(ExtensionManager::class);
         $this->app->singleton(ExtensionActionDecorators::class);
         $this->app->singleton(ExtensionConsoleRegistry::class);
         $this->app->singleton(ExtensionHeadTags::class);
@@ -53,7 +52,7 @@ class ExtensionServiceProvider extends ServiceProvider
         // Registered during the provider registration phase, then executed after
         // the core app has booted. Application::register() immediately runs
         // Laravel's normal provider boot path inside the loader's failure boundary.
-        $this->app->booted(fn () => $this->app->make(ExtensionManager::class)->registerProviders());
+        $this->app->booted(fn () => $this->app->make(ExtensionProviderLoader::class)->registerProviders($this->app->make(ExtensionRepository::class)->enabled()));
     }
 
     public function boot(): void
@@ -65,6 +64,8 @@ class ExtensionServiceProvider extends ServiceProvider
             return Limit::perMinute(JsonValueGuard::integer(config('extensions.root_routes_per_minute')))
                 ->by($user instanceof User ? $user->uuid : $request->ip());
         });
+
+        AboutCommand::add('Extensions', fn (): array => $this->about());
 
         if (! config('extensions.enabled')) {
             return;
@@ -87,5 +88,38 @@ class ExtensionServiceProvider extends ServiceProvider
         Exceptions::reportable(function (Throwable $throwable): void {
             $this->app->make(ExtensionFailureAttributor::class)->attribute($throwable);
         });
+    }
+
+    /**
+     * The `php artisan about` rows for extensions: each installed one with its version and
+     * state, the way Laravel packages report themselves there.
+     *
+     * @return array<string, string>
+     */
+    private function about(): array
+    {
+        if (! config('extensions.enabled')) {
+            return ['Status' => 'OFF'];
+        }
+
+        $extensions = $this->app->make(ExtensionRepository::class);
+        $records = $extensions->records();
+        $rows = [];
+        foreach ($extensions->discovered() as $manifest) {
+            $record = $records->get($manifest->id);
+            $state = match (true) {
+                $record === null => 'not registered',
+                $record->error !== null => $record->enabled ? 'enabled, failing' : 'disabled, failing',
+                $record->enabled => 'enabled',
+                default => 'disabled',
+            };
+            $rows[$manifest->id] = sprintf('%s (%s)', $manifest->version, $state);
+        }
+
+        foreach (array_keys($extensions->discoveryErrors()) as $directory) {
+            $rows[$directory] = 'invalid manifest';
+        }
+
+        return $rows === [] ? ['Installed' => 'none'] : $rows;
     }
 }

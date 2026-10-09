@@ -45,6 +45,7 @@ interface Loaded {
 let loaded: Loaded;
 let requests: { method: string; path: string; file: string | null; body: unknown }[];
 let originalAdapter: Loaded['http']['defaults']['adapter'];
+
 beforeEach(async () => {
     vi.resetModules();
     const [registry, testing, client, http, queries, container] = await Promise.all([
@@ -55,6 +56,7 @@ beforeEach(async () => {
         import('@/api/server/queries'),
         import('./FileEditContainer'),
     ]);
+
     loaded = {
         registry,
         testing,
@@ -68,10 +70,13 @@ beforeEach(async () => {
     const adapter: AxiosAdapter = async (config) => {
         const url = new URL(config.url!, 'https://panel.test');
         const file = url.searchParams.get('file') ?? (config.params as { file?: string } | undefined)?.file ?? null;
+
         requests.push({ method: config.method!, path: url.pathname, file, body: config.data });
         const data = url.pathname.endsWith('/files/contents') ? `loaded:${file}` : '';
+
         return { data, config, status: 200, statusText: 'OK', headers: {} };
     };
+
     loaded.http.defaults.adapter = adapter;
     vi.spyOn(console, 'error').mockImplementation(() => {});
     sessionStorage.clear();
@@ -85,14 +90,18 @@ afterEach(() => {
 
 function replace(replacement: ComponentReplacement<'server.files.editor'>) {
     const { registry } = loaded;
+
     registry.prepareExtensions([{ id: 'editor', entry: '/editor.js', components: ['server.files.editor'] }]);
     const batch = registry.createExtensionRegistryBatch();
+
     registry.registerComponentReplacement('editor', 'server.files.editor', replacement, batch);
     registry.commitExtensionRegistryBatch('editor', batch);
 }
+
 function Custom({ model }: ReplacementProps<'server.files.editor'>) {
     const [result, setResult] = useState('');
     const { path, name, isNew, language, readOnly, dirty } = model;
+
     return (
         <div>
             <output>{JSON.stringify({ path, name, isNew, language, readOnly, dirty })}</output>
@@ -109,12 +118,16 @@ function Custom({ model }: ReplacementProps<'server.files.editor'>) {
         </div>
     );
 }
+
 function Where() {
     const { pathname, hash } = useLocation();
+
     return <p aria-label='Location'>{`${pathname}#${hash}`}</p>;
 }
+
 function open(path: string, permissions?: string[]) {
     const { queryClient, testing, serverQueryOptions, Container } = loaded;
+
     queryClient.setQueryData(
         serverQueryOptions('test-server').queryKey,
         testing.createTestServer(permissions ? { owner: false, permissions } : {})
@@ -140,13 +153,16 @@ function open(path: string, permissions?: string[]) {
         ]),
         history: createMemoryHistory({ initialEntries: [path] }),
     });
+
     render(
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
         </QueryClientProvider>
     );
+
     return router;
 }
+
 const state = () => JSON.parse(screen.getByRole('status').textContent ?? '{}');
 const writes = () => requests.filter((request) => request.path.endsWith('/files/write'));
 
@@ -176,6 +192,7 @@ it('opens the loaded document in a replacement and saves the reported buffer thr
 
 it('opens a previously cached document with freshly fetched content', async () => {
     const { serverFileContentQueryOptions } = await import('@/api/server/files/queries');
+
     loaded.queryClient.setQueryData(
         serverFileContentQueryOptions(serverUuid, '/config/app.yml').queryKey,
         'cached a moment ago'
@@ -265,6 +282,7 @@ it('saves a replaced editor part with the native action', async () => {
     function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
         return <textarea aria-label='Part buffer' onChange={(event) => model.change(event.target.value)} />;
     }
+
     replace(({ Default }) => <Default parts={{ editor: Buffer }} />);
     open('/server/test-server/files/edit#/config/app.yml');
 
@@ -276,9 +294,13 @@ it('saves a replaced editor part with the native action', async () => {
 
 it('keeps the page and the buffer when the replacement fails to render', async () => {
     function Unstable(props: ReplacementProps<'server.files.editor'>) {
-        if (props.model.dirty) throw new Error('editor crashed');
+        if (props.model.dirty) {
+            throw new Error('editor crashed');
+        }
+
         return <Custom {...props} />;
     }
+
     replace(Unstable);
     open('/server/test-server/files/edit#/config/app.yml');
 

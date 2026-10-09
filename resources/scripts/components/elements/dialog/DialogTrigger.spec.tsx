@@ -10,9 +10,9 @@ const DraftDialog = ({ open, onClose }: { open: boolean; onClose: () => void }) 
     const [draft, setDraft] = useState('');
 
     return (
-        <div data-testid={'dialog'} data-open={open}>
-            <input aria-label={'Draft'} value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />
-            <button type={'button'} onClick={onClose}>
+        <div data-testid='dialog' data-open={open}>
+            <input aria-label='Draft' value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />
+            <button type='button' onClick={onClose}>
                 Cancel
             </button>
         </div>
@@ -23,7 +23,7 @@ const renderTrigger = (children = (props: { open: boolean; onClose: () => void }
     render(
         <DialogTrigger
             trigger={({ onClick }) => (
-                <button type={'button'} onClick={onClick}>
+                <button type='button' onClick={onClick}>
                     Open
                 </button>
             )}
@@ -38,6 +38,7 @@ describe('DialogTrigger', () => {
     it('does not render the dialog until it is first opened', async () => {
         const user = userEvent.setup();
         const children = vi.fn((props: { open: boolean; onClose: () => void }) => <DraftDialog {...props} />);
+
         renderTrigger(children);
 
         expect(children).not.toHaveBeenCalled();
@@ -52,6 +53,7 @@ describe('DialogTrigger', () => {
 
     it('keeps the closed dialog mounted until the next open', async () => {
         const user = userEvent.setup();
+
         renderTrigger();
 
         await user.click(screen.getByRole('button', { name: 'Open' }));
@@ -64,6 +66,7 @@ describe('DialogTrigger', () => {
 
     it('gives every open a fresh dialog state', async () => {
         const user = userEvent.setup();
+
         renderTrigger();
 
         await user.click(screen.getByRole('button', { name: 'Open' }));

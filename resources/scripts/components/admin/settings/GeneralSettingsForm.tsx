@@ -32,24 +32,24 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
 
     return (
         <Form form={form}>
-            <TitledGreyBox title={'General'}>
-                <form.AppField name={'name'}>
+            <TitledGreyBox title='General'>
+                <form.AppField name='name'>
                     {(field) => (
                         <field.TextField
-                            type={'text'}
-                            id={'app_name'}
-                            label={'Company Name'}
-                            description={'The name of your company, used throughout the Panel.'}
+                            type='text'
+                            id='app_name'
+                            label='Company Name'
+                            description='The name of your company, used throughout the Panel.'
                             disabled={readOnly}
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-4'}>
-                    <form.AppField name={'twoFactorRequired'}>
+                <div className='mt-4'>
+                    <form.AppField name='twoFactorRequired'>
                         {(field) => (
                             <field.SelectField
-                                id={'twoFactorRequired'}
-                                label={'Require 2-Factor Authentication'}
+                                id='twoFactorRequired'
+                                label='Require 2-Factor Authentication'
                                 options={[
                                     { value: 0, label: 'Not Required' },
                                     { value: 1, label: 'Required for Admins' },
@@ -60,21 +60,21 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-4'}>
-                    <form.AppField name={'locale'}>
+                <div className='mt-4'>
+                    <form.AppField name='locale'>
                         {(field) => (
                             <field.SelectField
-                                id={'app_locale'}
-                                label={'Default Language'}
+                                id='app_locale'
+                                label='Default Language'
                                 options={languagesList}
                                 disabled={readOnly || (languagesLoading && !languages)}
-                                placeholder={'Select a language'}
-                                description={'The default language used for the Panel.'}
+                                placeholder='Select a language'
+                                description='The default language used for the Panel.'
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex justify-end mt-4'}>
+                <div className='flex justify-end mt-4'>
                     <form.AppForm>
                         <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
                     </form.AppForm>

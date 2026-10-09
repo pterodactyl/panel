@@ -8,6 +8,26 @@ import Button from '@/components/elements/Button';
 import { NewButton } from '@/components/elements/NewButton';
 import type { WithClassname } from '@/components/types';
 
+const validateDatabaseName = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'A database name must be provided.';
+    }
+
+    if (value.length < 3) {
+        return 'Database name must be at least 3 characters.';
+    }
+
+    if (value.length > 48) {
+        return 'Database name must not exceed 48 characters.';
+    }
+
+    if (!/^[\w\-.]{3,48}$/.test(value)) {
+        return 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.';
+    }
+
+    return undefined;
+};
+
 const CreateDatabaseDialogContent = ({ onClose }: { onClose: () => void }) => {
     const uuid = useCurrentServerUuid()!;
     const createDatabase = useCreateServerDatabase();
@@ -34,7 +54,7 @@ const CreateDatabaseDialogContent = ({ onClose }: { onClose: () => void }) => {
     return (
         <Dialog
             open
-            title={'Create new database'}
+            title='Create new database'
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={() => {
@@ -43,34 +63,25 @@ const CreateDatabaseDialogContent = ({ onClose }: { onClose: () => void }) => {
             }}
         >
             <SpinnerOverlay visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
+            <Form form={form} className='m-0'>
                 <form.AppField
-                    name={'databaseName'}
+                    name='databaseName'
                     validators={{
-                        onChange: ({ value }) =>
-                            value.length < 1
-                                ? 'A database name must be provided.'
-                                : value.length < 3
-                                  ? 'Database name must be at least 3 characters.'
-                                  : value.length > 48
-                                    ? 'Database name must not exceed 48 characters.'
-                                    : /^[\w\-.]{3,48}$/.test(value)
-                                      ? undefined
-                                      : 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.',
+                        onChange: ({ value }) => validateDatabaseName(value),
                     }}
                 >
                     {(field) => (
                         <field.TextField
-                            type={'string'}
-                            id={'database_name'}
-                            label={'Database Name'}
-                            description={'A descriptive name for your database instance.'}
+                            type='string'
+                            id='database_name'
+                            label='Database Name'
+                            description='A descriptive name for your database instance.'
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6'}>
+                <div className='mt-6'>
                     <form.AppField
-                        name={'connectionsFrom'}
+                        name='connectionsFrom'
                         validators={{
                             onChange: ({ value }) =>
                                 /^[\w\-/.%:]*$/.test(value) ? undefined : 'A valid host address must be provided.',
@@ -78,24 +89,20 @@ const CreateDatabaseDialogContent = ({ onClose }: { onClose: () => void }) => {
                     >
                         {(field) => (
                             <field.TextField
-                                type={'string'}
-                                id={'connections_from'}
-                                label={'Connections From'}
-                                description={
-                                    'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
-                                }
+                                type='string'
+                                id='connections_from'
+                                label='Connections From'
+                                description='Where connections should be allowed from. Leave blank to allow connections from anywhere.'
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'flex flex-wrap justify-end mt-6'}>
-                    <Button type={'button'} isSecondary className={'w-full sm:w-auto sm:mr-2'} onClick={onClose}>
+                <div className='flex flex-wrap justify-end mt-6'>
+                    <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
                         Cancel
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton className={'w-full mt-4 sm:w-auto sm:mt-0'}>
-                            Create Database
-                        </form.SubmitButton>
+                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>Create Database</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>

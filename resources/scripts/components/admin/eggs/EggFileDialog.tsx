@@ -61,24 +61,24 @@ export default function EggFileDialog({
                 <Label htmlFor={fileId}>Egg File</Label>
                 <FileInput
                     id={fileId}
-                    accept={'application/json,.json'}
+                    accept='application/json,.json'
                     disabled={submitting}
                     onChange={(event) => setFile(event.currentTarget.files?.[0] ?? null)}
                 />
-                <div className={'mt-6 flex flex-wrap justify-end gap-3'}>
+                <div className='mt-6 flex flex-wrap justify-end gap-3'>
                     <Button
-                        type={'button'}
+                        type='button'
                         isSecondary
-                        className={'w-full sm:w-auto'}
+                        className='w-full sm:w-auto'
                         disabled={submitting}
                         onClick={onClose}
                     >
                         Cancel
                     </Button>
                     <Button
-                        type={'submit'}
+                        type='submit'
                         color={submitColor}
-                        className={'w-full sm:w-auto'}
+                        className='w-full sm:w-auto'
                         disabled={!file || submitting}
                         isLoading={submitting}
                     >

@@ -23,6 +23,7 @@ const isBackupCompletedPayload = <T>(value: T): value is T & BackupCompletedPayl
 export const parseBackupCompletedPayload = (data: string): BackupCompletedPayload | null => {
     try {
         const parsed: unknown = JSON.parse(data);
+
         return isBackupCompletedPayload(parsed) ? parsed : null;
     } catch {
         return null;

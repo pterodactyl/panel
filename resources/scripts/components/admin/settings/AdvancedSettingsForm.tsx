@@ -61,112 +61,108 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
 
     return (
         <Form form={form}>
-            <TitledGreyBox title={'reCAPTCHA'}>
+            <TitledGreyBox title='reCAPTCHA'>
                 {settings.meta.show_recaptcha_warning && (
-                    <Alert type={'warning'} className={'mb-6 text-sm'}>
+                    <Alert type='warning' className='mb-6 text-sm'>
                         <span>
                             You are using reCAPTCHA keys that shipped with this Panel. Generate new invisible reCAPTCHA
                             keys for this website to improve security.
                         </span>
                     </Alert>
                 )}
-                <form.AppField name={'recaptchaEnabled'}>
+                <form.AppField name='recaptchaEnabled'>
                     {(field) => (
                         <field.SwitchField
-                            label={'reCAPTCHA Enabled'}
-                            description={'Protect login and registration forms with reCAPTCHA.'}
+                            label='reCAPTCHA Enabled'
+                            description='Protect login and registration forms with reCAPTCHA.'
                             disabled={readOnly}
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6'}>
-                    <form.AppField name={'recaptchaWebsiteKey'}>
+                <div className='mt-6'>
+                    <form.AppField name='recaptchaWebsiteKey'>
                         {(field) => (
                             <field.TextField
-                                type={'text'}
-                                id={'recaptcha_website_key'}
-                                label={'reCAPTCHA Website Key'}
+                                type='text'
+                                id='recaptcha_website_key'
+                                label='reCAPTCHA Website Key'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
-                <div className={'mt-6'}>
-                    <form.AppField name={'recaptchaSecretKey'}>
+                <div className='mt-6'>
+                    <form.AppField name='recaptchaSecretKey'>
                         {(field) => (
                             <field.TextField
-                                type={'password'}
-                                id={'recaptcha_secret_key'}
-                                label={'reCAPTCHA Secret Key'}
-                                description={'Leave blank to keep the existing secret key.'}
+                                type='password'
+                                id='recaptcha_secret_key'
+                                label='reCAPTCHA Secret Key'
+                                description='Leave blank to keep the existing secret key.'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title={'HTTP Connections'} className={'mt-6'}>
-                <div className={'grid grid-cols-2 gap-4'}>
+            <TitledGreyBox title='HTTP Connections' className='mt-6'>
+                <div className='grid grid-cols-2 gap-4'>
                     <form.AppField
-                        name={'guzzleTimeout'}
+                        name='guzzleTimeout'
                         validators={{ onChange: requiredNumber('An HTTP request timeout must be provided.') }}
                     >
                         {(field) => (
-                            <field.NumberField
-                                id={'guzzle_timeout'}
-                                label={'HTTP Request Timeout'}
-                                disabled={readOnly}
-                            />
+                            <field.NumberField id='guzzle_timeout' label='HTTP Request Timeout' disabled={readOnly} />
                         )}
                     </form.AppField>
                     <form.AppField
-                        name={'guzzleConnectTimeout'}
+                        name='guzzleConnectTimeout'
                         validators={{ onChange: requiredNumber('An HTTP connection timeout must be provided.') }}
                     >
                         {(field) => (
                             <field.NumberField
-                                id={'guzzle_connect_timeout'}
-                                label={'HTTP Connection Timeout'}
+                                id='guzzle_connect_timeout'
+                                label='HTTP Connection Timeout'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title={'Automatic Allocation Creation'} className={'mt-6'}>
-                <form.AppField name={'allocationsEnabled'}>
+            <TitledGreyBox title='Automatic Allocation Creation' className='mt-6'>
+                <form.AppField name='allocationsEnabled'>
                     {(field) => (
                         <field.SwitchField
-                            label={'Auto Create Allocations Enabled'}
-                            description={'Allow users to automatically create new allocations for their server.'}
+                            label='Auto Create Allocations Enabled'
+                            description='Allow users to automatically create new allocations for their server.'
                             disabled={readOnly}
                         />
                     )}
                 </form.AppField>
-                <div className={'mt-6 grid grid-cols-2 gap-4'}>
-                    <form.AppField name={'allocationsRangeStart'}>
+                <div className='mt-6 grid grid-cols-2 gap-4'>
+                    <form.AppField name='allocationsRangeStart'>
                         {(field) => (
                             <field.TextField
-                                type={'number'}
-                                id={'allocations_range_start'}
-                                label={'Starting Port'}
+                                type='number'
+                                id='allocations_range_start'
+                                label='Starting Port'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
-                    <form.AppField name={'allocationsRangeEnd'}>
+                    <form.AppField name='allocationsRangeEnd'>
                         {(field) => (
                             <field.TextField
-                                type={'number'}
-                                id={'allocations_range_end'}
-                                label={'Ending Port'}
+                                type='number'
+                                id='allocations_range_end'
+                                label='Ending Port'
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <div className={'flex justify-end mt-6'}>
+            <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
                 </form.AppForm>

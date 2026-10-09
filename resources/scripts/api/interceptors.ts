@@ -11,16 +11,18 @@ export const setupInterceptors = () => {
                 const data = error.response.data;
                 const firstError =
                     isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors[0] : null;
+
                 if (
                     isObject(firstError) &&
                     'code' in firstError &&
                     firstError.code === 'TwoFactorAuthRequiredException'
                 ) {
                     if (!window.location.pathname.startsWith('/account')) {
-                        router.navigate({ to: '/account', replace: true, state: { twoFactorRedirect: true } });
+                        void router.navigate({ to: '/account', replace: true, state: { twoFactorRedirect: true } });
                     }
                 }
             }
+
             throw error;
         }
     );

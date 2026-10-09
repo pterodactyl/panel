@@ -19,12 +19,16 @@ export default <TEvent extends Event = Event>(
 
     useEffect(() => {
         const target = globalThis.window;
-        if (!target?.addEventListener) return;
+
+        if (!target?.addEventListener) {
+            return;
+        }
 
         const eventListener = (event: Event) => savedHandler.current(event as TEvent);
         const listenerOptions = hasOptions ? { capture, once, passive, signal } : undefined;
 
         target.addEventListener(eventName, eventListener, listenerOptions);
+
         return () => {
             target.removeEventListener(eventName, eventListener, capture);
         };

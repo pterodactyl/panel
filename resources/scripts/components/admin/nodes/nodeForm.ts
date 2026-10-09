@@ -75,6 +75,18 @@ export const nodeValuesFromForm = ({
     daemonSftp: submittedNumber(daemonSftp),
 });
 
+export const validateNodeName = (value: string): string | undefined => {
+    if (value.length < 1) {
+        return 'A name must be provided.';
+    }
+
+    if (value.length > 100) {
+        return 'A name must not exceed 100 characters.';
+    }
+
+    return undefined;
+};
+
 export const nodeNumberValidators = {
     memory: {
         onChange: requiredNumber('A memory limit must be provided.', (value) =>

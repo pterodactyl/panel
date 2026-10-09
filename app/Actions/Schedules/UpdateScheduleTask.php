@@ -48,7 +48,7 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
                 'continue_on_failure' => $data['continue_on_failure'],
             ]);
 
-            return $task->refresh();
+            return $task;
         });
     }
 }

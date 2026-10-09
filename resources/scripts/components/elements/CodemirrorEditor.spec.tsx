@@ -9,16 +9,21 @@ afterEach(cleanup);
 
 const viewOf = (container: HTMLElement) => {
     const view = EditorView.findFromDOM(container.querySelector<HTMLElement>('.cm-editor')!);
-    if (!view) throw new Error('The editor view is not mounted.');
+
+    if (!view) {
+        throw new Error('The editor view is not mounted.');
+    }
+
     return view;
 };
 
 it('mounts the editor as the direct child of the sized container', () => {
     const { container } = render(
-        <CodemirrorEditor initialContent={'alpha'} mode={'text/plain'} onContentSaved={vi.fn()} />
+        <CodemirrorEditor initialContent='alpha' mode='text/plain' onContentSaved={vi.fn()} />
     );
 
     const box = container.firstElementChild!;
+
     expect(box.className).toContain('overflow-hidden');
     expect(box.children).toHaveLength(1);
     expect(box.firstElementChild).toHaveClass('cm-editor');
@@ -29,13 +34,13 @@ it('keeps the view, its edits and history when initialContent changes', () => {
     const ref = createRef<CodemirrorEditorHandle>();
     const onContentChanged = vi.fn();
     const props = { ref, mode: 'text/plain', onContentSaved: vi.fn(), onContentChanged };
-    const { container, rerender } = render(<CodemirrorEditor {...props} initialContent={'alpha'} />);
+    const { container, rerender } = render(<CodemirrorEditor {...props} initialContent='alpha' />);
     const view = viewOf(container);
 
     act(() => view.dispatch({ changes: { from: 5, insert: ' beta' } }));
     expect(onContentChanged).toHaveBeenLastCalledWith('alpha beta');
 
-    rerender(<CodemirrorEditor {...props} initialContent={'saved on the server'} />);
+    rerender(<CodemirrorEditor {...props} initialContent='saved on the server' />);
 
     expect(viewOf(container)).toBe(view);
     expect(ref.current?.getValue()).toBe('alpha beta');
@@ -44,8 +49,9 @@ it('keeps the view, its edits and history when initialContent changes', () => {
 it('runs the latest save handler for Mod-s', () => {
     const first = vi.fn();
     const latest = vi.fn();
-    const { container, rerender } = render(<CodemirrorEditor mode={'text/plain'} onContentSaved={first} />);
-    rerender(<CodemirrorEditor mode={'text/plain'} onContentSaved={latest} />);
+    const { container, rerender } = render(<CodemirrorEditor mode='text/plain' onContentSaved={first} />);
+
+    rerender(<CodemirrorEditor mode='text/plain' onContentSaved={latest} />);
 
     container
         .querySelector('.cm-content')!

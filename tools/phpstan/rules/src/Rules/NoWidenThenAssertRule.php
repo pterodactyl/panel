@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\AssertionForms;
-use Rules\Support\NodeChildren;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -23,6 +21,8 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\AssertionForms;
+use Rules\Support\NodeChildren;
 
 /**
  * Port of anti-slop's no-widen-then-assert: within one function, a binding is

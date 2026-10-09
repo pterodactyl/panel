@@ -12,7 +12,6 @@ use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetExternalUserRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserFinderService;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
@@ -26,9 +25,9 @@ class ExternalUserController extends ApplicationApiController
      */
     #[Endpoint('Get user by external ID', 'Returns a single panel user by its external identifier.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, resourceKey: 'user')]
-    public function index(GetExternalUserRequest $request, UserFinderService $finder, string $external_id): array
+    public function index(GetExternalUserRequest $request, string $external_id): array
     {
-        $user = $finder->byExternalId($external_id);
+        $user = User::query()->where('external_id', $external_id)->firstOrFail();
 
         return Fractal::item($user)
             ->transformWith($this->getTransformer(UserTransformer::class))

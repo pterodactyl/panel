@@ -39,16 +39,14 @@ export default function Console() {
 
     return (
         <div className={terminalClass}>
-            <SpinnerOverlay visible={!terminalError && (!connected || !terminalReady)} size={'large'} />
+            <SpinnerOverlay visible={!terminalError && (!connected || !terminalReady)} size='large' />
             {terminalError && (
                 <div
-                    role={'alert'}
-                    className={
-                        'absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-sm bg-terminal p-4 text-center text-sm text-foreground'
-                    }
+                    role='alert'
+                    className='absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-sm bg-terminal p-4 text-center text-sm text-foreground'
                 >
                     <p>The console could not be loaded.</p>
-                    <Button.Text size={'small'} onClick={retry}>
+                    <Button.Text size='small' onClick={retry}>
                         Try again
                     </Button.Text>
                 </div>
@@ -58,21 +56,21 @@ export default function Console() {
                     'rounded-b-sm': !canSendCommands,
                 })}
             >
-                <div className={'h-full w-full'} ref={ref} />
+                <div className='h-full w-full' ref={ref} />
                 {scrolledUp && (
                     <button
-                        type={'button'}
+                        type='button'
                         onClick={() => {
                             terminal.current?.scrollToBottom();
                             setScrolledUp(false);
                         }}
-                        aria-label={'Scroll to bottom'}
+                        aria-label='Scroll to bottom'
                         className={
                             // right-5 clears Ghostty's ~14px canvas scrollbar.
                             'absolute bottom-3 right-5 z-10 rounded-full bg-popover/90 p-2 text-foreground shadow-lg transition-colors hover:bg-popover'
                         }
                     >
-                        <ChevronsDown className={'w-4 h-4'} />
+                        <ChevronsDown className='w-4 h-4' />
                     </button>
                 )}
             </div>
@@ -80,16 +78,16 @@ export default function Console() {
                 <div className={cn('relative', overflowsContainerClass)}>
                     <input
                         className={commandInputClass}
-                        type={'text'}
-                        placeholder={'Type a command...'}
-                        aria-label={'Console command input.'}
+                        type='text'
+                        placeholder='Type a command...'
+                        aria-label='Console command input.'
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
-                        autoCorrect={'off'}
-                        autoCapitalize={'none'}
+                        autoCorrect='off'
+                        autoCapitalize='none'
                     />
                     <div className={commandIconClass}>
-                        <ChevronsRight className={'w-4 h-4'} />
+                        <ChevronsRight className='w-4 h-4' />
                     </div>
                 </div>
             )}

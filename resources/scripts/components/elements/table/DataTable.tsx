@@ -32,8 +32,13 @@ const ariaSort = <TData extends RowData>(
         ? (ids.map((id) => table.getColumn(id)?.getIsSorted()).find(Boolean) ?? false)
         : column.getIsSorted();
 
-    if (direction === 'asc') return 'ascending';
-    if (direction === 'desc') return 'descending';
+    if (direction === 'asc') {
+        return 'ascending';
+    }
+
+    if (direction === 'desc') {
+        return 'descending';
+    }
 
     return undefined;
 };
@@ -63,15 +68,15 @@ export default function DataTable<TData extends RowData>({
                     )}
                 </div>
             ) : (
-                <div className={'overflow-x-auto scrollbar-thin scrollbar-thumb-(--scrollbar-thumb)'}>
+                <div className='overflow-x-auto scrollbar-thin scrollbar-thumb-(--scrollbar-thumb)'>
                     <table className={cn('w-full border-collapse text-left text-sm', tableClassName)}>
-                        <thead className={'border-b border-border bg-muted/70'}>
+                        <thead className='border-b border-border bg-muted/70'>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => (
                                         <th
                                             key={header.id}
-                                            scope={'col'}
+                                            scope='col'
                                             aria-sort={ariaSort(table, header.column)}
                                             className={cn(
                                                 'h-10 whitespace-nowrap px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground',
@@ -88,7 +93,7 @@ export default function DataTable<TData extends RowData>({
                         </thead>
                         <tbody className={cn('divide-y divide-border transition-opacity', isFetching && 'opacity-55')}>
                             {rows.map((row) => (
-                                <tr key={row.id} className={'transition-colors hover:bg-muted/35'}>
+                                <tr key={row.id} className='transition-colors hover:bg-muted/35'>
                                     {row.getVisibleCells().map((cell) => (
                                         <td
                                             key={cell.id}

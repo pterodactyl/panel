@@ -39,7 +39,7 @@ export default function UploadButton({ className }: WithClassname) {
 
     const onFileSubmission = (files: FileList) => {
         // Failures have already been reported with error toasts.
-        upload(Array.from(files)).catch(() => {});
+        upload([...files]).catch(() => {});
     };
 
     return (
@@ -47,26 +47,24 @@ export default function UploadButton({ className }: WithClassname) {
             <Portal>
                 {dropOverlay.open && (
                     <div
-                        className={'fixed z-50 overflow-auto flex w-full inset-0 bg-background/70'}
+                        className='fixed z-50 overflow-auto flex w-full inset-0 bg-background/70'
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
 
                             dropOverlay.hide();
-                            if (!e.dataTransfer?.files.length) return;
+                            if (!e.dataTransfer?.files.length) {
+                                return;
+                            }
 
                             onFileSubmission(e.dataTransfer.files);
                         }}
                     >
-                        <div className={'w-full flex items-center justify-center pointer-events-none'}>
-                            <div
-                                className={
-                                    'flex items-center space-x-4 bg-muted w-full ring-4 ring-ring/50 rounded-sm p-6 mx-10 max-w-sm'
-                                }
-                            >
-                                <CloudUpload className={'w-10 h-10 shrink-0'} />
-                                <p className={'font-header flex-1 text-lg text-foreground text-center'}>
+                        <div className='w-full flex items-center justify-center pointer-events-none'>
+                            <div className='flex items-center space-x-4 bg-muted w-full ring-4 ring-ring/50 rounded-sm p-6 mx-10 max-w-sm'>
+                                <CloudUpload className='w-10 h-10 shrink-0' />
+                                <p className='font-header flex-1 text-lg text-foreground text-center'>
                                     Drag and drop files to upload.
                                 </p>
                             </div>
@@ -75,12 +73,14 @@ export default function UploadButton({ className }: WithClassname) {
                 )}
             </Portal>
             <input
-                type={'file'}
+                type='file'
                 ref={fileUploadInput}
-                className={'hidden'}
-                aria-label={'Upload files'}
+                className='hidden'
+                aria-label='Upload files'
                 onChange={(e) => {
-                    if (!e.currentTarget.files) return;
+                    if (!e.currentTarget.files) {
+                        return;
+                    }
 
                     onFileSubmission(e.currentTarget.files);
                     e.currentTarget.value = '';

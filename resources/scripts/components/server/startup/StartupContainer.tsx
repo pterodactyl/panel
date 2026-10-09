@@ -35,16 +35,18 @@ const StartupContainer = () => {
         updateDockerImage.mutate({ path: { server_uuid: uuid }, body: { docker_image: image } });
     };
 
-    return !data ? (
-        !error || (error && isFetching) ? (
-            <Spinner centered size={Spinner.Size.LARGE} />
-        ) : (
-            <ServerError title={'Oops!'} message={httpErrorToHuman(error)} onRetry={() => refetch()} />
-        )
-    ) : (
-        <ServerContentBlock title={'Startup Settings'}>
+    if (!data) {
+        if (error && !isFetching) {
+            return <ServerError title='Oops!' message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+        }
+
+        return <Spinner centered size={Spinner.Size.LARGE} />;
+    }
+
+    return (
+        <ServerContentBlock title='Startup Settings'>
             <Slot
-                name={'server.startup.form'}
+                name='server.startup.form'
                 data={{
                     server,
                     configuration: data,
@@ -54,6 +56,7 @@ const StartupContainer = () => {
                         if (!canChangeDockerImage || isCustomImage || !Object.values(dockerImages).includes(image)) {
                             throw new Error('This Docker image cannot be selected for the current server.');
                         }
+
                         await updateDockerImage.mutateAsync({
                             path: { server_uuid: uuid },
                             body: { docker_image: image },
@@ -61,17 +64,20 @@ const StartupContainer = () => {
                     },
                     refresh: async () => {
                         const result = await refetch();
-                        if (result.error) throw result.error;
+
+                        if (result.error) {
+                            throw result.error;
+                        }
                     },
                 }}
             />
-            <div className={'md:flex md:items-start'}>
-                <TitledGreyBox title={'Startup Command'} className={'flex-1'}>
-                    <div className={'px-1 py-2'}>
-                        <p className={'rounded-sm bg-terminal px-4 py-2 font-mono'}>{data.meta?.startup_command}</p>
+            <div className='md:flex md:items-start'>
+                <TitledGreyBox title='Startup Command' className='flex-1'>
+                    <div className='px-1 py-2'>
+                        <p className='rounded-sm bg-terminal px-4 py-2 font-mono'>{data.meta?.startup_command}</p>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Docker Image'} className={'flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10'}>
+                <TitledGreyBox title='Docker Image' className='flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10'>
                     {Object.keys(dockerImages).length > 1 && !isCustomImage ? (
                         <>
                             <InputSpinner visible={updateDockerImage.isPending}>
@@ -85,7 +91,7 @@ const StartupContainer = () => {
                                     }))}
                                 />
                             </InputSpinner>
-                            <p className={'text-xs text-muted-foreground mt-2'}>
+                            <p className='text-xs text-muted-foreground mt-2'>
                                 This is an advanced feature allowing you to select a Docker image to use when running
                                 this server instance.
                             </p>
@@ -94,20 +100,20 @@ const StartupContainer = () => {
                         <>
                             <TextInput disabled readOnly value={server.attributes.docker_image} />
                             {isCustomImage && (
-                                <p className={'text-xs text-muted-foreground mt-2'}>
-                                    This {"server's"} Docker image has been manually set by an administrator and cannot
-                                    be changed through this UI.
+                                <p className='text-xs text-muted-foreground mt-2'>
+                                    This server's Docker image has been manually set by an administrator and cannot be
+                                    changed through this UI.
                                 </p>
                             )}
                         </>
                     )}
                 </TitledGreyBox>
             </div>
-            <h3 className={'mt-8 mb-2 text-2xl'}>Variables</h3>
+            <h3 className='mt-8 mb-2 text-2xl'>Variables</h3>
             {data.data.length === 0 ? (
                 <Empty className={cn(emptyCompactClass, 'border')}>
                     <EmptyHeader>
-                        <EmptyMedia variant={'icon'}>
+                        <EmptyMedia variant='icon'>
                             <Variable />
                         </EmptyMedia>
                         <EmptyTitle>No variables</EmptyTitle>
@@ -117,7 +123,7 @@ const StartupContainer = () => {
                     </EmptyHeader>
                 </Empty>
             ) : (
-                <div className={'grid gap-8 md:grid-cols-2'}>
+                <div className='grid gap-8 md:grid-cols-2'>
                     {data.data.map((variable) => (
                         <VariableBox key={variable.attributes.env_variable} variable={variable} />
                     ))}

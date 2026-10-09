@@ -19,7 +19,7 @@ final readonly class UpdateEgg implements UpdatesEggs
      *
      * @param  EggCreationData  $data
      */
-    public function update(Egg $egg, array $data): void
+    public function update(Egg $egg, array $data): Egg
     {
         $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
         unset($data['extensions']);
@@ -32,5 +32,7 @@ final readonly class UpdateEgg implements UpdatesEggs
             $egg->update($data);
             $this->extensions->save($egg, $extensions);
         });
+
+        return $egg;
     }
 }

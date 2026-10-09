@@ -37,27 +37,28 @@ const Clickable = memo(({ file, children }: ClickableProps) => {
 
     const hash = encodePathSegments(join(directory, attributes.name));
 
-    return (attributes.is_file && (!isFileObjectEditable(file) || !canReadContents)) ||
-        (!attributes.is_file && !canRead) ? (
-        <div className={cn(detailsClass, 'cursor-default')}>{children}</div>
-    ) : attributes.is_file ? (
-        <Link
-            aria-label={attributes.name}
-            className={detailsClass}
-            to={'/server/$id/files/$action'}
-            params={{ id, action: 'edit' }}
-            hash={hash}
-        >
-            {children}
-        </Link>
-    ) : (
-        <Link
-            aria-label={attributes.name}
-            className={detailsClass}
-            to={'/server/$id/files'}
-            params={{ id }}
-            hash={hash}
-        >
+    const openable = attributes.is_file ? isFileObjectEditable(file) && canReadContents : canRead;
+
+    if (!openable) {
+        return <div className={cn(detailsClass, 'cursor-default')}>{children}</div>;
+    }
+
+    if (attributes.is_file) {
+        return (
+            <Link
+                aria-label={attributes.name}
+                className={detailsClass}
+                to='/server/$id/files/$action'
+                params={{ id, action: 'edit' }}
+                hash={hash}
+            >
+                {children}
+            </Link>
+        );
+    }
+
+    return (
+        <Link aria-label={attributes.name} className={detailsClass} to='/server/$id/files' params={{ id }} hash={hash}>
             {children}
         </Link>
     );
@@ -66,7 +67,7 @@ const Clickable = memo(({ file, children }: ClickableProps) => {
 const RowActionsSlot = ({ file }: { file: FileObject }) => {
     const extensionData = useFileManagerExtensionData();
 
-    return extensionData && <Slot name={'server.files.rowActions'} data={{ ...extensionData, file }} />;
+    return extensionData && <Slot name='server.files.rowActions' data={{ ...extensionData, file }} />;
 };
 
 const FileObjectRow = ({ file }: { file: FileObject }) => {
@@ -91,7 +92,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
     );
 
     return (
-        <ContextDropdownMenu className={fileRowClass} menuClassName={'w-64'} items={actionItems}>
+        <ContextDropdownMenu className={fileRowClass} menuClassName='w-64' items={actionItems}>
             <SelectFileCheckbox name={attributes.name} />
             <Clickable file={file}>
                 <FileDetailsContext.Provider value={model}>
@@ -109,14 +110,12 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
                 </FileDetailsContext.Provider>
             </Clickable>
             <DropdownMenu
-                className={'w-64'}
-                triggerClassName={
-                    'mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring'
-                }
+                className='w-64'
+                triggerClassName='mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring'
                 triggerContent={
                     <>
-                        <Icon icon={MoreHorizontal} className={'h-4 w-4'} />
-                        <span className={'sr-only'}>Open file options</span>
+                        <Icon icon={MoreHorizontal} className='h-4 w-4' />
+                        <span className='sr-only'>Open file options</span>
                     </>
                 }
             >
@@ -126,6 +125,4 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
     );
 };
 
-export default memo(FileObjectRow, (prevProps, nextProps) => {
-    return isEqual(prevProps.file, nextProps.file);
-});
+export default memo(FileObjectRow, (prevProps, nextProps) => isEqual(prevProps.file, nextProps.file));

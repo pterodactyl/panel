@@ -9,9 +9,11 @@ afterEach(cleanup);
 describe('NumberInput', () => {
     it('renders on its own and reports the entered number', () => {
         const onValueChange = vi.fn();
-        render(<NumberInput aria-label={'Limit'} value={10} onValueChange={onValueChange} />);
+
+        render(<NumberInput aria-label='Limit' value={10} onValueChange={onValueChange} />);
 
         const input = screen.getByRole('textbox', { name: 'Limit' });
+
         expect(input).toHaveValue('10');
 
         fireEvent.change(input, { target: { value: '25' } });
@@ -22,9 +24,11 @@ describe('NumberInput', () => {
 
     it('reports an emptied field as null', () => {
         const onValueChange = vi.fn();
-        render(<NumberInput aria-label={'Limit'} value={10} onValueChange={onValueChange} />);
+
+        render(<NumberInput aria-label='Limit' value={10} onValueChange={onValueChange} />);
 
         const input = screen.getByRole('textbox', { name: 'Limit' });
+
         fireEvent.change(input, { target: { value: '' } });
         fireEvent.blur(input);
 

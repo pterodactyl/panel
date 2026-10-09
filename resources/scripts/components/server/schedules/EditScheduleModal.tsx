@@ -16,6 +16,60 @@ interface Props {
     schedule?: Schedule;
 }
 
+type ScheduleFormValues = {
+    name: string;
+    minute: string;
+    hour: string;
+    dayOfMonth: string;
+    month: string;
+    dayOfWeek: string;
+    enabled: boolean;
+    onlyWhenOnline: boolean;
+};
+
+const newScheduleDefaults: ScheduleFormValues = {
+    name: '',
+    minute: '*/5',
+    hour: '*',
+    dayOfMonth: '*',
+    month: '*',
+    dayOfWeek: '*',
+    enabled: true,
+    onlyWhenOnline: true,
+};
+
+const scheduleDefaultValues = (schedule?: Schedule): ScheduleFormValues => {
+    if (!schedule) {
+        return { ...newScheduleDefaults };
+    }
+
+    const { name, cron, is_active, only_when_online } = schedule.attributes;
+
+    return {
+        name: name || newScheduleDefaults.name,
+        minute: cron.minute || newScheduleDefaults.minute,
+        hour: cron.hour || newScheduleDefaults.hour,
+        dayOfMonth: cron.day_of_month || newScheduleDefaults.dayOfMonth,
+        month: cron.month || newScheduleDefaults.month,
+        dayOfWeek: cron.day_of_week || newScheduleDefaults.dayOfWeek,
+        enabled: is_active ?? newScheduleDefaults.enabled,
+        onlyWhenOnline: only_when_online ?? newScheduleDefaults.onlyWhenOnline,
+    };
+};
+
+const scheduleSubmitValues = (value: ScheduleFormValues) => ({
+    name: value.name,
+    cron: {
+        minute: value.minute,
+        hour: value.hour,
+        dayOfWeek: value.dayOfWeek,
+        month: value.month,
+        dayOfMonth: value.dayOfMonth,
+    },
+    onlyWhenOnline: value.onlyWhenOnline,
+    isActive: value.enabled,
+});
+
 const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }) => {
     const uuid = useCurrentServerUuid()!;
     const createSchedule = useCreateServerSchedule();
@@ -23,36 +77,17 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
     const [showCheatsheet, setShowCheetsheet] = useState(false);
 
     const form = useAppForm({
-        defaultValues: {
-            name: schedule?.attributes.name || '',
-            minute: schedule?.attributes.cron.minute || '*/5',
-            hour: schedule?.attributes.cron.hour || '*',
-            dayOfMonth: schedule?.attributes.cron.day_of_month || '*',
-            month: schedule?.attributes.cron.month || '*',
-            dayOfWeek: schedule?.attributes.cron.day_of_week || '*',
-            enabled: schedule?.attributes.is_active ?? true,
-            onlyWhenOnline: schedule?.attributes.only_when_online ?? true,
-        },
+        defaultValues: scheduleDefaultValues(schedule),
         onSubmit: async ({ value }) => {
             try {
-                const values = {
-                    name: value.name,
-                    cron: {
-                        minute: value.minute,
-                        hour: value.hour,
-                        dayOfWeek: value.dayOfWeek,
-                        month: value.month,
-                        dayOfMonth: value.dayOfMonth,
-                    },
-                    onlyWhenOnline: value.onlyWhenOnline,
-                    isActive: value.enabled,
-                };
+                const values = scheduleSubmitValues(value);
 
                 if (schedule) {
                     await updateSchedule.mutateAsync(updateServerScheduleInput(uuid, schedule.attributes.id, values));
                 } else {
                     await createSchedule.mutateAsync(createServerScheduleInput(uuid, values));
                 }
+
                 onClose();
             } catch {
                 // Error toast is handled by the mutation.
@@ -62,11 +97,11 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
 
     return (
         <Form form={form}>
-            <form.AppField name={'name'}>
+            <form.AppField name='name'>
                 {(field) => (
                     <field.TextField
-                        label={'Schedule name'}
-                        description={'A human readable identifier for this schedule.'}
+                        label='Schedule name'
+                        description='A human readable identifier for this schedule.'
                     />
                 )}
             </form.AppField>
@@ -77,50 +112,48 @@ const EditScheduleForm = ({ schedule, onClose }: Props & { onClose: () => void }
                     '[&_input]:text-center [&_input]:font-mono'
                 }
             >
-                <form.AppField name={'minute'}>{(field) => <field.TextField label={'Minute'} />}</form.AppField>
-                <form.AppField name={'hour'}>{(field) => <field.TextField label={'Hour'} />}</form.AppField>
-                <form.AppField name={'dayOfMonth'}>
-                    {(field) => <field.TextField label={'Day of month'} />}
-                </form.AppField>
-                <form.AppField name={'month'}>{(field) => <field.TextField label={'Month'} />}</form.AppField>
-                <form.AppField name={'dayOfWeek'}>{(field) => <field.TextField label={'Day of week'} />}</form.AppField>
+                <form.AppField name='minute'>{(field) => <field.TextField label='Minute' />}</form.AppField>
+                <form.AppField name='hour'>{(field) => <field.TextField label='Hour' />}</form.AppField>
+                <form.AppField name='dayOfMonth'>{(field) => <field.TextField label='Day of month' />}</form.AppField>
+                <form.AppField name='month'>{(field) => <field.TextField label='Month' />}</form.AppField>
+                <form.AppField name='dayOfWeek'>{(field) => <field.TextField label='Day of week' />}</form.AppField>
             </div>
-            <p className={'text-muted-foreground text-xs mt-2'}>
+            <p className='text-muted-foreground text-xs mt-2'>
                 The schedule system supports the use of Cronjob syntax when defining when tasks should begin running.
                 Use the fields above to specify when these tasks should begin running.
             </p>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
                 <Switch
-                    label={'Show Cheatsheet'}
-                    description={'Show the cron cheatsheet for some examples.'}
+                    label='Show Cheatsheet'
+                    description='Show the cron cheatsheet for some examples.'
                     checked={showCheatsheet}
                     onChange={() => setShowCheetsheet((s) => !s)}
                 />
                 {showCheatsheet && <ScheduleCheatsheetCards />}
             </div>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                <form.AppField name={'onlyWhenOnline'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                <form.AppField name='onlyWhenOnline'>
                     {(field) => (
                         <field.SwitchField
-                            description={'Only execute this schedule when the server is in a running state.'}
-                            label={'Only When Server Is Online'}
+                            description='Only execute this schedule when the server is in a running state.'
+                            label='Only When Server Is Online'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
-                <form.AppField name={'enabled'}>
+            <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
+                <form.AppField name='enabled'>
                     {(field) => (
                         <field.SwitchField
-                            description={'This schedule will be executed automatically if enabled.'}
-                            label={'Schedule Enabled'}
+                            description='This schedule will be executed automatically if enabled.'
+                            label='Schedule Enabled'
                         />
                     )}
                 </form.AppField>
             </div>
-            <div className={'mt-6 text-right'}>
+            <div className='mt-6 text-right'>
                 <form.AppForm>
-                    <form.SubmitButton className={'w-full sm:w-auto'}>
+                    <form.SubmitButton className='w-full sm:w-auto'>
                         {schedule ? 'Save changes' : 'Create schedule'}
                     </form.SubmitButton>
                 </form.AppForm>

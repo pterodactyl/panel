@@ -30,28 +30,35 @@ class EventEmitter {
     on(event: string, listener: Listener<string[]>): this;
     on<TArgs extends unknown[]>(event: string, listener: Listener<TArgs>): this {
         let listeners = this.listenersByEvent.get(event);
+
         if (!listeners) {
             listeners = new Set();
             this.listenersByEvent.set(event, listeners);
         }
+
         listeners.add(listener as Listener);
+
         return this;
     }
 
     addListener(event: string, listener: Listener<string[]>): this;
     addListener<TArgs extends unknown[]>(event: string, listener: Listener<TArgs>): this {
         let listeners = this.listenersByEvent.get(event);
+
         if (!listeners) {
             listeners = new Set();
             this.listenersByEvent.set(event, listeners);
         }
+
         listeners.add(listener as Listener);
+
         return this;
     }
 
     removeListener(event: string, listener: Listener<string[]>): this;
     removeListener<TArgs extends unknown[]>(event: string, listener: Listener<TArgs>): this {
         this.listenersByEvent.get(event)?.delete(listener as Listener);
+
         return this;
     }
 
@@ -61,15 +68,18 @@ class EventEmitter {
         } else {
             this.listenersByEvent.delete(event);
         }
+
         return this;
     }
 
     emit<TArgs extends unknown[]>(event: string, ...args: TArgs): boolean {
         const listeners = this.listenersByEvent.get(event);
+
         if (!listeners || listeners.size === 0) {
             return false;
         }
-        // Copied so listeners can unsubscribe mid-dispatch.
+
+        // oxlint-disable-next-line unicorn/no-useless-spread -- copied so listeners can unsubscribe mid-dispatch.
         for (const listener of [...listeners]) {
             try {
                 (listener as Listener<TArgs>)(...args);
@@ -77,6 +87,7 @@ class EventEmitter {
                 console.error(`Websocket listener failed for "${event}".`, error);
             }
         }
+
         return true;
     }
 }
@@ -147,14 +158,17 @@ export class Websocket extends EventEmitter {
         }
 
         const socket = Websocket.createSocket(this.url);
+
         this.socket = socket;
 
         socket.onmessage = (e) => {
             let message: { event: string; args?: unknown[] };
+
             try {
                 message = JSON.parse(e.data);
             } catch (ex) {
                 console.warn('Failed to parse incoming websocket message.', ex);
+
                 return;
             }
 
@@ -187,6 +201,7 @@ export class Websocket extends EventEmitter {
             // Wings closes with 4409 for suspended servers; 4400 is reserved.
             if (SUSPENDED_CLOSE_CODES.has(event.code)) {
                 this.close(1000);
+
                 return;
             }
 
@@ -198,6 +213,7 @@ export class Websocket extends EventEmitter {
 
     private disposeSocket(code?: number, reason?: string) {
         const socket = this.socket;
+
         this.socket = null;
 
         if (socket) {
@@ -217,12 +233,14 @@ export class Websocket extends EventEmitter {
         if (isOffline()) {
             this.emit('SOCKET_RECONNECT');
             this.awaitResume();
+
             return;
         }
 
         if (this.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
             this.emit('SOCKET_CONNECT_ERROR');
             this.awaitResume();
+
             return;
         }
 

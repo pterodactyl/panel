@@ -74,11 +74,6 @@ final readonly class ServerClient
         $this->connection->request('POST', "/api/servers/{$this->uuid}/reinstall");
     }
 
-    public function requestArchive(): void
-    {
-        $this->connection->request('POST', "/api/servers/{$this->uuid}/archive");
-    }
-
     public function power(string $action): Response
     {
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/power", ['json' => ['action' => $action]]);

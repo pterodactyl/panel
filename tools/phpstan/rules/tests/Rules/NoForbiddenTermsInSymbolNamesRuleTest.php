@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace Rules\Tests\Rules;
 
-use Rules\Rules\NoForbiddenTermsInSymbolNamesRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
+use Rules\Rules\NoForbiddenTermsInSymbolNamesRule;
 
 /**
  * @extends RuleTestCase<NoForbiddenTermsInSymbolNamesRule>
  */
 final class NoForbiddenTermsInSymbolNamesRuleTest extends RuleTestCase
 {
-    protected function getRule(): Rule
-    {
-        return new NoForbiddenTermsInSymbolNamesRule(['shape']);
-    }
-
-    public function testRule(): void
+    public function test_rule(): void
     {
         $message = 'Rename symbol `%s` for its domain role; `shape` describes structure rather than ownership.';
 
@@ -33,5 +28,10 @@ final class NoForbiddenTermsInSymbolNamesRuleTest extends RuleTestCase
             [sprintf($message, 'shaped'), 19],
             [sprintf($message, 'resultShape'), 21],
         ]);
+    }
+
+    protected function getRule(): Rule
+    {
+        return new NoForbiddenTermsInSymbolNamesRule(['shape']);
     }
 }

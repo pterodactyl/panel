@@ -36,11 +36,16 @@ final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
             unset($data['password']);
         }
 
-        return DB::transaction(function () use ($data, $host, $extensions): DatabaseHost {
-            $host->update($data);
+        // Confirm access using the new credentials before saving them.
+        $host->fill($data);
+        $this->dynamic->set('dynamic', $host);
+        DB::connection('dynamic')->select('SELECT 1 FROM dual');
+
+        // The host row and its extension values are written together so a failing
+        // extension cannot leave a host behind without them.
+        return DB::transaction(function () use ($host, $extensions): DatabaseHost {
+            $host->save();
             $this->extensions->save($host, $extensions);
-            $this->dynamic->set('dynamic', $host);
-            DB::connection('dynamic')->select('SELECT 1 FROM dual');
 
             return $host;
         });

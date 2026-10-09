@@ -138,6 +138,49 @@ test('doctor accepts a readable image icon', function (): void {
         ->assertSuccessful();
 });
 
+test('doctor and pack warn about the Composer packages an extension bundles without failing it', function (): void {
+    $guzzle = (require base_path('vendor/composer/installed.php'))['versions']['guzzlehttp/guzzle']['pretty_version'];
+    File::put($this->directory.'/composer.json', json_encode(['require' => ['php' => '^8.3', 'laravel/framework' => '^99.0', 'acme/ledger' => '^1.0']], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+    File::ensureDirectoryExists($this->directory.'/vendor/composer');
+    File::put($this->directory.'/vendor/composer/installed.json', json_encode([
+        'packages' => [
+            ['name' => 'acme/ledger', 'version' => '1.4.0'],
+            ['name' => 'guzzlehttp/guzzle', 'version' => '1.0.0'],
+            ['name' => 'phpunit/phpunit', 'version' => '12.0.0'],
+        ],
+        'dev' => true,
+        'dev-package-names' => ['phpunit/phpunit'],
+    ], JSON_THROW_ON_ERROR));
+
+    $this->artisan('p:extension:doctor', ['path' => $this->directory])
+        ->expectsOutputToContain('vendor/ includes development packages (phpunit/phpunit)')
+        ->expectsOutputToContain('laravel/framework ^99.0 (the panel loads')
+        ->expectsOutputToContain("guzzlehttp/guzzle (bundled 1.0.0, panel {$guzzle})")
+        ->doesntExpectOutputToContain('acme/ledger')
+        ->assertSuccessful();
+
+    $archive = $this->directory.'/probe.pteroext';
+    $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive])
+        ->expectsOutputToContain('vendor/ includes development packages (phpunit/phpunit)')
+        ->assertSuccessful();
+    $zip = new ZipArchive;
+    expect($zip->open($archive))->toBeTrue();
+    try {
+        expect($zip->getFromName('composer.json'))->toContain('acme/ledger');
+        expect($zip->locateName('vendor/composer/installed.json'))->not->toBeFalse();
+    } finally {
+        $zip->close();
+    }
+
+    // A production install of packages the panel does not ship has nothing to report.
+    File::put($this->directory.'/composer.json', json_encode(['require' => ['acme/ledger' => '^1.0']], JSON_THROW_ON_ERROR));
+    File::put($this->directory.'/vendor/composer/installed.json', json_encode(['packages' => [['name' => 'acme/ledger', 'version' => '1.4.0']], 'dev' => false, 'dev-package-names' => []], JSON_THROW_ON_ERROR));
+    $this->artisan('p:extension:doctor', ['path' => $this->directory])
+        ->doesntExpectOutputToContain('vendor/')
+        ->doesntExpectOutputToContain('composer.json')
+        ->assertSuccessful();
+});
+
 function toolingPng(): string
 {
     return (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', true);

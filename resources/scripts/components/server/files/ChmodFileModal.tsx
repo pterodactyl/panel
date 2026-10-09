@@ -23,7 +23,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     const form = useAppForm({
         defaultValues: { mode: files.length > 1 ? '' : files[0].mode || '' },
         onSubmit: async ({ value: { mode } }) => {
-            const data = files.map((f) => ({ file: f.file, mode: mode }));
+            const data = files.map((f) => ({ file: f.file, mode }));
 
             try {
                 await chmodFiles.mutateAsync(chmodFilesInput(uuid, directory, data));
@@ -31,6 +31,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
             } catch {
                 // Error toast is handled by the mutation.
             }
+
             props.onClose();
         },
     });
@@ -40,18 +41,16 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     return (
         <Dialog {...props} preventExternalClose={isSubmitting} hideCloseIcon={isSubmitting}>
             <SpinnerOverlay visible={isSubmitting} />
-            <Form form={form} className={'m-0'}>
-                <div className={'flex flex-wrap items-end'}>
-                    <div className={'w-full sm:flex-1 sm:mr-4'}>
-                        <form.AppField name={'mode'}>
-                            {(field) => (
-                                <field.TextField type={'string'} id={'file_mode'} label={'File Mode'} autoFocus />
-                            )}
+            <Form form={form} className='m-0'>
+                <div className='flex flex-wrap items-end'>
+                    <div className='w-full sm:flex-1 sm:mr-4'>
+                        <form.AppField name='mode'>
+                            {(field) => <field.TextField type='string' id='file_mode' label='File Mode' autoFocus />}
                         </form.AppField>
                     </div>
-                    <div className={'w-full sm:w-auto mt-4 sm:mt-0'}>
+                    <div className='w-full sm:w-auto mt-4 sm:mt-0'>
                         <form.AppForm>
-                            <form.SubmitButton className={'w-full'}>Update</form.SubmitButton>
+                            <form.SubmitButton className='w-full'>Update</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>

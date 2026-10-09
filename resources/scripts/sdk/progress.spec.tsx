@@ -11,6 +11,7 @@ import { extensionProgressQueryOptions, useExtensionJobProgress } from './progre
 
 const mount = { extensionId: 'probe', context: 'progress test' };
 const originalAdapter = http.defaults.adapter;
+
 function Wrapper({ children }: { children: ReactNode }) {
     return (
         <QueryClientProvider client={queryClient}>
@@ -18,6 +19,7 @@ function Wrapper({ children }: { children: ReactNode }) {
         </QueryClientProvider>
     );
 }
+
 afterEach(() => {
     cleanup();
     queryClient.clear();
@@ -29,10 +31,12 @@ afterEach(() => {
 it('recovers the latest server snapshot on reconnect with namespace and subject isolation', async () => {
     let sequence = 1;
     let requests = 0;
+
     http.defaults.adapter = async (config) => {
         requests++;
         expect(config.url).toBe('/api/client/servers/alpha/extension-progress/probe/job');
         expect(config.signal).toBeInstanceOf(AbortSignal);
+
         return {
             data: {
                 data: {
@@ -51,7 +55,9 @@ it('recovers the latest server snapshot on reconnect with namespace and subject 
             headers: {},
         };
     };
+
     const { result } = renderHook(() => useExtensionJobProgress('job', { serverUuid: 'alpha' }), { wrapper: Wrapper });
+
     await waitFor(() => expect(result.current.data?.sequence).toBe(1));
     expect(queryClient.getQueryData(extensionProgressQueryOptions('other', 'job', 'alpha').queryKey)).toBeUndefined();
     expect(queryClient.getQueryData(extensionProgressQueryOptions('probe', 'job').queryKey)).toBeUndefined();
@@ -69,6 +75,7 @@ it('recovers the latest server snapshot on reconnect with namespace and subject 
 
 it('stops polling and retrying when the job has expired or permission was revoked', async () => {
     let requests = 0;
+
     http.defaults.adapter = async (config) => {
         requests++;
         throw new AxiosError('Not found', 'ERR_BAD_REQUEST', config, undefined, {
@@ -79,7 +86,9 @@ it('stops polling and retrying when the job has expired or permission was revoke
             headers: {},
         });
     };
+
     const { result } = renderHook(() => useExtensionJobProgress('expired'), { wrapper: Wrapper });
+
     await waitFor(() => expect(result.current.isError).toBe(true));
     vi.useFakeTimers();
     await act(() => vi.advanceTimersByTimeAsync(5000));

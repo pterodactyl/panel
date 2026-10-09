@@ -49,11 +49,9 @@ export default function StatBlock({ title, copyOnClick, icon, tone, className, c
                 <div className={cn(iconClass, colors.background)}>
                     <Icon icon={icon} className={colors.foreground} />
                 </div>
-                <div className={'flex flex-col justify-center overflow-hidden w-full'}>
-                    <p className={'font-header font-medium leading-tight text-xs md:text-sm text-foreground'}>
-                        {title}
-                    </p>
-                    <div className={'h-7 w-full truncate text-lg font-semibold leading-7 text-foreground md:text-xl'}>
+                <div className='flex flex-col justify-center overflow-hidden w-full'>
+                    <p className='font-header font-medium leading-tight text-xs md:text-sm text-foreground'>{title}</p>
+                    <div className='h-7 w-full truncate text-lg font-semibold leading-7 text-foreground md:text-xl'>
                         {children}
                     </div>
                 </div>

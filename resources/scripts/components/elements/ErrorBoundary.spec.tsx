@@ -7,7 +7,7 @@ import Spinner from './Spinner';
 
 afterEach(cleanup);
 beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 });
 afterEach(() => vi.restoreAllMocks());
 
@@ -46,6 +46,7 @@ describe('ErrorBoundary', () => {
                 <Flaky />
             </ErrorBoundary>
         );
+
         expect(screen.getByRole('alert')).toBeInTheDocument();
 
         failure.active = false;

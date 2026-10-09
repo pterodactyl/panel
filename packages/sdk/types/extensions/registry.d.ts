@@ -63,37 +63,19 @@ export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? 
 type ServerSlotName = `dashboard.serverRow.${string}` | `server.navigation.${'before' | 'after'}` | `server.console.${string}`;
 type DataLessSlotName = `nav.items.${'before' | 'after'}` | `dashboard.${'before' | 'after'}` | `account.navigation.${'before' | 'after'}` | `account.overview.${'before' | 'after'}` | `server.files.${'before' | 'after'}` | `panel.navigation.${'before' | 'after'}` | `panel.overview.${'before' | 'after'}`;
 export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail.form' ? AdminUserFormSlotData : TName extends 'server.users.permissions.before' ? SubuserPermissionsSlotData : TName extends 'server.startup.form' ? StartupFormSlotData : TName extends FileManagerSlotName ? FileManagerSlotData : TName extends 'server.files.rowActions' ? FileRowSlotData : TName extends ResourceActionSlotName ? ResourceActionSlotData<TName> : TName extends ServerSlotName ? Server : TName extends DataLessSlotName ? undefined : RouteSlotData;
-export type RouteSlotName = Exclude<SlotName, ServerSlotName | DataLessSlotName | 'server.users.permissions.before' | FileManagerSlotName | 'server.files.rowActions' | 'server.startup.form' | 'panel.users.detail.form' | ResourceActionSlotName>;
+export type RouteSlotName = {
+    [TName in SlotName]: SlotData<TName> extends RouteSlotData ? TName : never;
+}[SlotName];
+type DataSlotName = Exclude<SlotName, RouteSlotName>;
+/** Route slots share one member, so a component can pass any route slot name it holds. */
 export type SlotProps = {
-    name: 'panel.users.detail.form';
-    data: AdminUserFormSlotData;
-} | {
-    name: Extract<SlotName, ServerSlotName>;
-    data: Server;
-} | {
-    name: Extract<SlotName, DataLessSlotName>;
-    data?: undefined;
-} | {
-    name: 'server.users.permissions.before';
-    data: SubuserPermissionsSlotData;
-} | {
-    name: 'server.startup.form';
-    data: StartupFormSlotData;
-} | {
-    name: FileManagerSlotName;
-    data: FileManagerSlotData;
-} | {
-    name: 'server.files.rowActions';
-    data: FileRowSlotData;
-} | {
-    [TName in ResourceActionSlotName]: {
-        name: TName;
-        data: ResourceActionSlotData<TName>;
-    };
-}[ResourceActionSlotName] | {
     name: RouteSlotName;
     data: RouteSlotData;
-};
+} | {
+    [TName in DataSlotName]: {
+        name: TName;
+    } & SlotComponentProps<SlotData<TName>>;
+}[DataSlotName];
 export interface SlotRegistration {
     id: number;
     extensionId: string;
@@ -105,6 +87,16 @@ interface BatchedSlotRegistration extends SlotRegistration {
 export type ScreenArea = 'account' | 'server' | 'admin';
 export declare const SCREEN_PARENTS: readonly ["admin.node", "admin.server", "admin.egg", "admin.user"];
 export type ScreenParent = (typeof SCREEN_PARENTS)[number];
+/** The panel path each area and resource mounts its extension screens under. */
+export declare const SCREEN_ROOTS: {
+    readonly account: "/account";
+    readonly server: "/server/$id";
+    readonly admin: "/panel";
+    readonly 'admin.node': "/panel/nodes/$id";
+    readonly 'admin.server': "/panel/servers/$id";
+    readonly 'admin.egg': "/panel/eggs/$eggId";
+    readonly 'admin.user': "/panel/users/$id";
+};
 export type ScreenComponentProps = SlotComponentProps<RouteSlotData & {
     resource?: ExtensionResourceContext;
 }>;
@@ -179,11 +171,14 @@ export interface SiteExtensionEntry {
         version: string;
     } | null;
 }
+interface StagedScreen {
+    importer: ScreenImporter;
+    options: Readonly<ScreenOptions>;
+}
 export interface ExtensionRegistryBatch {
     closed: boolean;
     slots: BatchedSlotRegistration[];
-    screens: Map<string, ScreenImporter>;
-    screenOptions: Map<string, ScreenOptions>;
+    screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
     forms: FormExtensionRegistration[];
     components: Map<ComponentName, ComponentReplacement<ComponentName>>;
@@ -195,7 +190,9 @@ export interface ExtensionRuntimeState {
 }
 export declare class ExtensionImportError extends Error {
 }
-export declare function subscribeExtensionRegistry(key: string, listener: () => void): () => void;
+/** Every change notifies every listener; each getter returns the same value until its own data changes. */
+export declare function subscribeExtensionRegistry(listener: () => void): () => void;
+export declare function useExtensionRegistry<T>(read: () => T): T;
 export declare function getExtensionLoadState(id: string): ExtensionRuntimeState | undefined;
 export declare function getScreenComponent(extensionId: string, screenId: string): LazyExoticComponent<ComponentType<ScreenComponentProps>> | undefined;
 /** Undefined until the screen's bundle has loaded. */
@@ -212,17 +209,18 @@ export declare function failExtensionLoad(id: string, context: string, cause: un
 export declare function resolveScreenPath(path: string, params?: Record<string, string>): string;
 /** A rule never matches without a server to test. */
 export declare function matchesScreenCondition(when: ScreenCondition | undefined, server: Server | undefined): boolean;
-export declare function prepareExtensions(advertised: readonly SiteExtensionEntry[], corePaths?: Record<ScreenArea, readonly string[]>, resourcePaths?: Partial<Record<ScreenParent, readonly string[]>>): void;
+export declare function prepareExtensions(advertised: readonly SiteExtensionEntry[], corePaths?: Record<ScreenArea, readonly string[]>, resourcePaths?: Partial<Record<ScreenParent, readonly string[]>>): readonly SiteExtensionEntry[];
 export declare function createExtensionRegistryBatch(): ExtensionRegistryBatch;
 export declare function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void;
 export declare function registerComponentReplacement<TName extends ComponentName>(extensionId: string, name: TName, replacement: ComponentReplacement<TName>, batch: ExtensionRegistryBatch): void;
 export declare function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void;
-export declare function registerSlotComponent(extensionId: string, name: SlotName, component: ComponentType<SlotComponentProps>, batch?: ExtensionRegistryBatch): void;
+export declare function registerSlotComponent(extensionId: string, name: SlotName, component: ComponentType<SlotComponentProps>, batch: ExtensionRegistryBatch): void;
 export declare function getSlotComponents(name: SlotName): readonly SlotRegistration[];
 export declare function registerExtensionTableColumn(column: ExtensionTableColumnRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[];
 export declare function registerFormExtension(registration: FormExtensionRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[];
+export declare function findExtensionScreen(extensionId: string, id: string): ExtensionScreenRegistration | undefined;
 export declare function registerScreen(extensionId: string, id: string, component: ScreenImporter, batch: ExtensionRegistryBatch, options?: ScreenOptions): void;
 export declare function getExtensionScreens(area: ScreenArea, parent?: ScreenParent): readonly ExtensionScreenRegistration[];
 export declare function clearExtensionError(extensionId: string, context: string): void;

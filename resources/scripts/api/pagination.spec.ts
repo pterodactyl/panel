@@ -41,6 +41,7 @@ describe('fetchAllPages', () => {
 
     it('does not request anything once aborted', async () => {
         const controller = new AbortController();
+
         controller.abort();
         const fetchPage = vi.fn(async (page: number) => list(page, 1, [1]));
 
@@ -52,6 +53,7 @@ describe('fetchAllPages', () => {
         const controller = new AbortController();
         const fetchPage = vi.fn(async (page: number) => {
             controller.abort();
+
             return list(page, 3, [page]);
         });
 

@@ -24,8 +24,10 @@ async function mount(
 ) {
     function Editor() {
         useNavigationBlocker(shouldBlock, options);
+
         return <p>Editor</p>;
     }
+
     const root = createRootRoute();
     const router = createRouter({
         routeTree: root.addChildren([
@@ -35,8 +37,10 @@ async function mount(
         ]),
         history,
     });
+
     render(<RouterProvider router={router} />);
     await screen.findByText(/Editor|List/);
+
     return router;
 }
 
@@ -66,9 +70,11 @@ it('asks before a link navigation and stays when the user declines', async () =>
 it('guards the back button and reads a lazy condition at navigation time', async () => {
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
     let dirty = false;
+
     window.history.replaceState(null, '', '/list');
     const history = createBrowserHistory();
     const router = await mount(() => dirty, undefined, history);
+
     await router.navigate({ to: '/edit/$file', params: { file: 'one' } } as never);
     await screen.findByText('Editor');
 
@@ -87,6 +93,7 @@ it('guards the back button and reads a lazy condition at navigation time', async
 
 it('hands the transition to a custom prompt and falls back to the browser prompt when it fails', async () => {
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
     vi.spyOn(console, 'error').mockImplementation(() => {});
     const prompt = vi.fn<NonNullable<NavigationBlockerOptions['confirm']>>(async () => false);
     const router = await mount(true, { confirm: prompt });
@@ -112,9 +119,11 @@ it.each([
 ])('$name', async ({ options, prevented }) => {
     window.history.replaceState(null, '', '/');
     const history = createBrowserHistory();
+
     await mount(true, options, history);
 
     const event = new Event('beforeunload', { cancelable: true });
+
     window.dispatchEvent(event);
 
     expect(event.defaultPrevented).toBe(prevented);

@@ -51,7 +51,10 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
     const change = useCallback(
         (value: string) => {
             buffer.current = value;
-            if (isNew) saveDraft(value);
+            if (isNew) {
+                saveDraft(value);
+            }
+
             setDirty(!readOnly && value !== saved.current);
         },
         [isNew, readOnly, saveDraft]
@@ -59,6 +62,7 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
     const write = useCallback(
         async (target: string): Promise<boolean> => {
             const value = buffer.current;
+
             setSaving(true);
             try {
                 await saveFileContent.mutateAsync(writeFileContentsInput(uuid, target, value));
@@ -68,38 +72,54 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
             } finally {
                 setSaving(false);
             }
+
             if (!isNew && target === file) {
                 saved.current = value;
                 setDirty(buffer.current !== value);
+
                 return true;
             }
+
             if (isNew) {
                 saveDraft.cancel();
                 clearNewFileDraft(uuid, file);
             }
+
             await navigate({
                 to: '/server/$id/files/$action',
                 params: { id, action: 'edit' },
                 hash: encodePathSegments(target),
                 ignoreBlocker: true,
             });
+
             return true;
         },
         [saveFileContent, navigate, saveDraft, id, uuid, file, isNew]
     );
     const save = useCallback(async (): Promise<boolean> => {
-        if (readOnly || saving) return false;
-        if (!isNew) return write(file);
+        if (readOnly || saving) {
+            return false;
+        }
+
+        if (!isNew) {
+            return write(file);
+        }
+
         naming.current?.(false);
         const named = new Promise<boolean>((resolve) => {
             naming.current = resolve;
         });
+
         fileNameDialog.show();
+
         return named;
     }, [readOnly, saving, isNew, write, file, fileNameDialog]);
     const saveAs = useCallback(
         async (name: string): Promise<boolean> => {
-            if (!canCreate || saving || !name) return false;
+            if (!canCreate || saving || !name) {
+                return false;
+            }
+
             return write(normalize(name.startsWith('/') ? name : join(isNew ? file : dirname(file), name)));
         },
         [canCreate, saving, write, isNew, file]
@@ -134,6 +154,7 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
                 onFileNamed={(name) => {
                     fileNameDialog.hide();
                     const resolve = naming.current;
+
                     naming.current = null;
                     void write(name).then(resolve ?? undefined);
                 }}
@@ -143,7 +164,7 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
                     name='server.files.editor'
                     resetKey={`${uuid}:${file}`}
                     props={{ model, Default: DefaultFileEditor, parts: fileEditorParts }}
-                    loading={<Spinner size={'large'} centered />}
+                    loading={<Spinner size='large' centered />}
                 />
             </FileEditorContext.Provider>
         </>
@@ -164,11 +185,29 @@ export default function FileEditContainer() {
     const hasFile = isEditingFile && file !== '/';
     const { data, error, isFetching } = useServerFileContent(uuid, file, hasFile);
     const key = `${uuid}:${action}:${file}`;
+
     // Captured once per document; later cache writes must not replace the buffer.
     const [opened, setOpened] = useState<{ key: string; content: string } | null>(null);
+
+    // Undefined while an existing file's content is still loading.
+    const loadContent = () => {
+        if (hasFile) {
+            return isFetching ? undefined : data;
+        }
+
+        if (isEditingFile) {
+            return '';
+        }
+
+        return readNewFileDraft(uuid, file);
+    };
+
     if (opened?.key !== key) {
-        const loaded = hasFile ? (isFetching ? undefined : data) : isEditingFile ? '' : readNewFileDraft(uuid, file);
-        if (loaded !== undefined) setOpened({ key, content: loaded });
+        const loaded = loadContent();
+
+        if (loaded !== undefined) {
+            setOpened({ key, content: loaded });
+        }
     }
 
     if (hasFile && error && opened?.key !== key) {
@@ -178,7 +217,7 @@ export default function FileEditContainer() {
     return (
         <PageContentBlock>
             <ErrorBoundary>
-                <div className={'mb-4'}>
+                <div className='mb-4'>
                     <FileManagerBreadcrumbs withinFileEditor isNewFile={!isEditingFile} />
                 </div>
             </ErrorBoundary>
@@ -192,7 +231,7 @@ export default function FileEditContainer() {
                     content={opened.content}
                 />
             ) : (
-                <Spinner size={'large'} centered />
+                <Spinner size='large' centered />
             )}
         </PageContentBlock>
     );

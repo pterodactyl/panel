@@ -13,12 +13,13 @@ const useWebsocketEvent = (event: SocketEvent, callback: (data: string) => void)
 
     return useEffect(() => {
         const eventListener = (data: string) => savedCallback.current(data);
+
         if (connected && instance) {
             instance.addListener(event, eventListener);
         }
 
         return () => {
-            instance && instance.removeListener(event, eventListener);
+            instance?.removeListener(event, eventListener);
         };
     }, [event, connected, instance]);
 };

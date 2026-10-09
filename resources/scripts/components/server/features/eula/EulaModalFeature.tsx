@@ -42,23 +42,23 @@ const EulaModalFeature = () => {
             hideCloseIcon={loading}
         >
             <SpinnerOverlay visible={loading} />
-            <p className={'text-foreground'}>
-                By pressing {'"I Accept"'} below you are indicating your agreement to the&nbsp;
+            <p className='text-foreground'>
+                By pressing "I Accept" below you are indicating your agreement to the&nbsp;
                 <a
-                    target={'_blank'}
-                    className={'text-accent underline transition-colors duration-150 hover:text-accent/80'}
-                    rel={'noreferrer noopener'}
+                    target='_blank'
+                    className='text-accent underline transition-colors duration-150 hover:text-accent/80'
+                    rel='noreferrer noopener'
                     href='https://www.minecraft.net/eula'
                 >
                     Minecraft&reg; EULA
                 </a>
                 .
             </p>
-            <div className={'mt-8 sm:flex items-center justify-end'}>
-                <Button isSecondary onClick={dialog.hide} className={'w-full sm:w-auto border-transparent'}>
+            <div className='mt-8 sm:flex items-center justify-end'>
+                <Button isSecondary onClick={dialog.hide} className='w-full sm:w-auto border-transparent'>
                     Cancel
                 </Button>
-                <Button onClick={onAcceptEULA} className={'mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto'}>
+                <Button onClick={onAcceptEULA} className='mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto'>
                     I Accept
                 </Button>
             </div>

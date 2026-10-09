@@ -12,6 +12,8 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\ReinstallsServers;
+use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
+use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
@@ -39,26 +41,32 @@ class SettingsController extends ClientApiController
 
     /**
      * Renames a server.
+     *
+     * @throws Throwable
      */
     #[Endpoint('Rename server', 'Updates the server name and optionally its description.')]
     #[ScribeResponse(status: 204, description: 'Server renamed.')]
-    public function rename(RenameServerRequest $request, Server $server): JsonResponse
+    public function rename(RenameServerRequest $request, UpdatesServerDetails $details, Server $server): JsonResponse
     {
         $previousName = $server->name;
         $previousDescription = $server->description;
 
-        $server->update([
+        // The action writes owner and external ID too, so pass the current values
+        // through unchanged; only the name and description come from the request.
+        $server = $details->update($server, [
+            'external_id' => $server->external_id,
+            'owner_id' => $server->owner_id,
             'name' => $request->string('name')->toString(),
             'description' => $request->has('description') ? $request->description() : $server->description,
         ]);
 
-        if ($server->wasChanged('name')) {
+        if ($previousName !== $server->name) {
             Activity::event('server:settings.rename')
                 ->property(['old' => $previousName, 'new' => $server->name])
                 ->log();
         }
 
-        if ($server->wasChanged('description')) {
+        if ($previousDescription !== $server->description) {
             Activity::event('server:settings.description')
                 ->property(['old' => $previousDescription, 'new' => $server->description])
                 ->log();
@@ -92,18 +100,18 @@ class SettingsController extends ClientApiController
     #[BodyParam('docker_image', 'string', 'The Docker image to use.', required: true, example: 'ghcr.io/pterodactyl/yolks:java_21')]
     #[ScribeResponse(status: 204, description: 'Docker image updated.')]
     #[ScribeResponse(self::BAD_REQUEST_ERROR, status: 400, description: 'The server image was manually set by an administrator and cannot be changed through this endpoint.')]
-    public function dockerImage(SetDockerImageRequest $request, Server $server): JsonResponse
+    public function dockerImage(SetDockerImageRequest $request, UpdatesServerDockerImage $dockerImage, Server $server): JsonResponse
     {
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
         throw_unless(in_array($server->image, $egg->docker_images, true), BadRequestHttpException::class, "This server's Docker image has been manually set by an administrator and cannot be updated.");
 
         $original = $server->image;
-        $dockerImage = JsonValueGuard::string($request->validated('docker_image'));
-        $server->forceFill(['image' => $dockerImage])->saveOrFail();
+        $image = JsonValueGuard::string($request->validated('docker_image'));
+        $server = $dockerImage->update($server, $image);
 
         if ($original !== $server->image) {
             Activity::event('server:startup.image')
-                ->property(['old' => $original, 'new' => $dockerImage])
+                ->property(['old' => $original, 'new' => $image])
                 ->log();
         }
 

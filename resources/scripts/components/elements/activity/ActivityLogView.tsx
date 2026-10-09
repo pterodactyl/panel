@@ -65,6 +65,7 @@ const eventGroups = (events: string[]): SelectGroup[] => {
         const action = separator === -1 ? remainder : remainder.slice(separator + 1);
 
         const options = grouped.get(resource) ?? [];
+
         options.push({
             value: event,
             label: humanise(action),
@@ -83,6 +84,57 @@ const eventGroups = (events: string[]): SelectGroup[] => {
             .sort((a, b) => a.label.localeCompare(b.label)),
     ];
 };
+
+interface ActivityLogResultsProps {
+    data: ActivityLogPage | undefined;
+    isFetching: boolean;
+    hasFilters: boolean;
+    emptyMessage: string;
+    onClearFilters: () => void;
+}
+
+function ActivityLogResults({ data, isFetching, hasFilters, emptyMessage, onClearFilters }: ActivityLogResultsProps) {
+    if (!data && isFetching) {
+        return <Spinner centered />;
+    }
+
+    if (data?.data.length) {
+        return (
+            <div className='bg-card'>
+                {data.data.map((activity) => (
+                    <ActivityLogEntry key={activity.attributes.id} activity={activity}>
+                        {isString(activity.attributes.properties.useragent) && (
+                            <Tooltip content={activity.attributes.properties.useragent} placement='top'>
+                                <span>
+                                    <Monitor />
+                                </span>
+                            </Tooltip>
+                        )}
+                    </ActivityLogEntry>
+                ))}
+            </div>
+        );
+    }
+
+    return (
+        <Empty className='border bg-card'>
+            <EmptyHeader>
+                <EmptyMedia variant='icon'>{hasFilters ? <ListFilter /> : <History />}</EmptyMedia>
+                <EmptyTitle>{hasFilters ? 'No matching activity' : 'No activity yet'}</EmptyTitle>
+                <EmptyDescription>
+                    {hasFilters ? 'No activity matches the selected filters.' : emptyMessage}
+                </EmptyDescription>
+            </EmptyHeader>
+            {hasFilters && (
+                <EmptyContent>
+                    <NewButton isSecondary icon={XCircle} onClick={onClearFilters}>
+                        Clear filters
+                    </NewButton>
+                </EmptyContent>
+            )}
+        </Empty>
+    );
+}
 
 export default function ActivityLogView({
     data,
@@ -111,8 +163,14 @@ export default function ActivityLogView({
         const next: ActivityLogSearch = {};
         const current = { event, user };
         const merged = { ...current, [key]: value ?? undefined };
-        if (merged.user) next.user = merged.user;
-        if (merged.event) next.event = merged.event;
+
+        if (merged.user) {
+            next.user = merged.user;
+        }
+
+        if (merged.event) {
+            next.event = merged.event;
+        }
 
         onNavigate(next);
     };
@@ -120,88 +178,67 @@ export default function ActivityLogView({
     return (
         <>
             {error && !isFetching && (
-                <div className={'mb-4 space-y-3'}>
-                    <Alert type={'danger'}>{httpErrorToHuman(error)}</Alert>
-                    <ButtonStyle type={'button'} color={'grey'} onClick={() => refetch()}>
+                <div className='mb-4 space-y-3'>
+                    <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
+                    <ButtonStyle type='button' color='grey' onClick={() => refetch()}>
                         Retry
                     </ButtonStyle>
                 </div>
             )}
-            <div className={'mb-3 flex flex-col gap-2 sm:flex-row sm:items-stretch'}>
+            <div className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-stretch'>
                 {showUserFilter && (
-                    <div className={'w-full sm:max-w-xs'}>
+                    <div className='w-full sm:max-w-xs'>
                         <Select
                             options={userOptions}
                             value={user ?? ''}
-                            placeholder={'All users'}
-                            searchPlaceholder={'Search users…'}
-                            emptyMessage={'No users have acted here yet.'}
+                            placeholder='All users'
+                            searchPlaceholder='Search users…'
+                            emptyMessage='No users have acted here yet.'
                             onChange={(value) => withFilter('user', String(value) || null)}
                         />
                     </div>
                 )}
-                <div className={'w-full sm:max-w-sm'}>
+                <div className='w-full sm:max-w-sm'>
                     <Select
                         groups={eventOptions}
                         value={event ?? ''}
-                        placeholder={'All events'}
-                        searchPlaceholder={'Search events…'}
-                        emptyMessage={'Nothing has been recorded here yet.'}
+                        placeholder='All events'
+                        searchPlaceholder='Search events…'
+                        emptyMessage='Nothing has been recorded here yet.'
                         onChange={(value) => withFilter('event', String(value) || null)}
                     />
                 </div>
                 {hasFilters && (
                     <ButtonStyle
-                        type={'button'}
-                        color={'grey'}
-                        className={'inline-flex items-center justify-center w-full sm:w-auto sm:shrink-0 h-auto'}
+                        type='button'
+                        color='grey'
+                        className='inline-flex items-center justify-center w-full sm:w-auto sm:shrink-0 h-auto'
                         onClick={() => onNavigate({})}
                     >
-                        Clear Filters <XCircle className={'w-4 h-4 ml-2'} />
+                        Clear Filters <XCircle className='w-4 h-4 ml-2' />
                     </ButtonStyle>
                 )}
             </div>
-            {!data && isFetching ? (
-                <Spinner centered />
-            ) : !data?.data.length ? (
-                <Empty className={'border bg-card'}>
-                    <EmptyHeader>
-                        <EmptyMedia variant={'icon'}>{hasFilters ? <ListFilter /> : <History />}</EmptyMedia>
-                        <EmptyTitle>{hasFilters ? 'No matching activity' : 'No activity yet'}</EmptyTitle>
-                        <EmptyDescription>
-                            {hasFilters ? 'No activity matches the selected filters.' : emptyMessage}
-                        </EmptyDescription>
-                    </EmptyHeader>
-                    {hasFilters && (
-                        <EmptyContent>
-                            <NewButton isSecondary icon={XCircle} onClick={() => onNavigate({})}>
-                                Clear filters
-                            </NewButton>
-                        </EmptyContent>
-                    )}
-                </Empty>
-            ) : (
-                <div className={'bg-card'}>
-                    {data.data.map((activity) => (
-                        <ActivityLogEntry key={activity.attributes.id} activity={activity}>
-                            {isString(activity.attributes.properties.useragent) && (
-                                <Tooltip content={activity.attributes.properties.useragent} placement={'top'}>
-                                    <span>
-                                        <Monitor />
-                                    </span>
-                                </Tooltip>
-                            )}
-                        </ActivityLogEntry>
-                    ))}
-                </div>
-            )}
+            <ActivityLogResults
+                data={data}
+                isFetching={isFetching}
+                hasFilters={hasFilters}
+                emptyMessage={emptyMessage}
+                onClearFilters={() => onNavigate({})}
+            />
             {data && (
                 <PaginationFooter
                     pagination={data.meta.pagination}
                     onPageSelect={(page) => {
                         const search: ActivityLogSearch = getPageSearch(page);
-                        if (event) search.event = event;
-                        if (user) search.user = user;
+
+                        if (event) {
+                            search.event = event;
+                        }
+
+                        if (user) {
+                            search.user = user;
+                        }
 
                         onNavigate(search);
                     }}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Servers;
 
-use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -43,28 +43,35 @@ final class DeleteServer implements DeletesServers
             Daemon::server($server)->delete();
         } catch (DaemonConnectionException $daemonConnectionException) {
             // A missing Wings record is safe to treat as already deleted. Force mode also
-            // tolerates other Wings and database-host cleanup failures.
+            // tolerates other Wings failures.
             throw_if(! $this->force && $daemonConnectionException->getStatusCode() !== Response::HTTP_NOT_FOUND, $daemonConnectionException);
             Log::warning($daemonConnectionException->getMessage(), ['exception' => $daemonConnectionException]);
         }
 
-        DB::transaction(function () use ($server): void {
-            foreach ($server->loadMissing('databases.host')->databases as $database) {
-                try {
-                    $this->deleteDatabase->delete($database);
-                } catch (Exception $exception) {
-                    throw_unless($this->force, $exception);
-                    // The host entry could not be removed, so remove the Panel record and
-                    // report the orphan for later cleanup rather than blocking server deletion.
-                    $database->delete();
-                    Log::warning($exception->getMessage(), ['exception' => $exception]);
-                }
+        // The remote databases are dropped only after the Panel records are gone. Dropping
+        // them inside the transaction could not be undone if the deletion later rolled back.
+        $databases = DB::transaction(function () use ($server): Collection {
+            $databases = $server->loadMissing('databases.host')->databases;
+            foreach ($databases as $database) {
+                $database->delete();
             }
 
             // Clear notes before releasing the allocations back to the unassigned pool.
             $server->allocations()->update(['notes' => null]);
             $server->delete();
+
+            return $databases;
         });
+
+        foreach ($databases as $database) {
+            try {
+                $this->deleteDatabase->delete($database);
+            } catch (Throwable $throwable) {
+                // The server is already deleted, so report the orphaned database for manual
+                // cleanup and keep dropping the rest.
+                report($throwable);
+            }
+        }
 
         // The row is gone, so only the uuid travels. Dispatched after any outer transaction commits.
         Event::dispatch(new OperationCompleted($server->uuid, 'delete', true, $server->uuid));

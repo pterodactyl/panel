@@ -19,12 +19,14 @@ export function groupSettingsBySection(schema: AdminExtensionSettingField[]): Se
     }
 
     const sections = new Map<string, AdminExtensionSettingField[]>();
+
     if (schema.some((field) => !field.tab)) {
         sections.set(GENERAL_SECTION, []);
     }
 
     for (const field of schema) {
         const name = field.tab || GENERAL_SECTION;
+
         sections.set(name, [...(sections.get(name) ?? []), field]);
     }
 
@@ -47,7 +49,7 @@ export default function SettingsSections({
     return (
         <div className={settingsBodyClass}>
             {sections.length > 1 && (
-                <div className={'shrink-0 pb-4 mb-1 border-b border-border'}>
+                <div className='shrink-0 pb-4 mb-1 border-b border-border'>
                     <Label htmlFor={id}>Section</Label>
                     <Select
                         id={id}
@@ -55,7 +57,9 @@ export default function SettingsSections({
                         options={sections.map((section) => ({ value: section.name, label: section.name }))}
                         onChange={(value) => {
                             setSelected(String(value));
-                            if (scrollRef.current) scrollRef.current.scrollTop = 0;
+                            if (scrollRef.current) {
+                                scrollRef.current.scrollTop = 0;
+                            }
                         }}
                     />
                 </div>
@@ -68,7 +72,7 @@ export default function SettingsSections({
                 )}
             >
                 {sections.map((section) => (
-                    <div key={section.name} hidden={section !== current} className={'space-y-5'}>
+                    <div key={section.name} hidden={section !== current} className='space-y-5'>
                         {section.fields.map(renderField)}
                     </div>
                 ))}

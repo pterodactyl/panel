@@ -34,12 +34,22 @@ const interactiveTypes = new Set<React.ReactElement['type']>([
     TextArea,
 ]);
 
+const copyStatusMessage = (status: CopyStatus, text: CopyOnClickProps['text'], showInNotification: boolean): string => {
+    if (status === 'failed') {
+        return 'Unable to copy text to clipboard.';
+    }
+
+    return showInNotification ? `Copied "${String(text)}" to clipboard.` : 'Copied text to clipboard.';
+};
+
 /** Copies `text` when its single child is clicked; a non-interactive child becomes a focusable button. */
 const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClickProps) => {
     const [status, setStatus] = useState<CopyStatus | null>(null);
 
     useEffect(() => {
-        if (!status) return;
+        if (!status) {
+            return;
+        }
 
         const timeout = setTimeout(() => {
             setStatus(null);
@@ -70,9 +80,8 @@ const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClick
         }
     };
 
-    const child = !text
-        ? element
-        : React.cloneElement(element, {
+    const child = text
+        ? React.cloneElement(element, {
               role: interactive ? element.props.role : (element.props.role ?? 'button'),
               tabIndex: interactive ? element.props.tabIndex : (element.props.tabIndex ?? 0),
               onKeyDown: interactive ? element.props.onKeyDown : onKeyDown,
@@ -81,21 +90,16 @@ const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClick
                   copy();
                   element.props.onClick?.(e);
               },
-          });
+          })
+        : element;
 
     return (
         <>
             {status && (
                 <Portal>
-                    <div className={'fixed z-50 bottom-0 right-0 m-4'}>
-                        <div role={'status'} className={'rounded-md py-3 px-4 text-foreground bg-popover/95 shadow-sm'}>
-                            <p>
-                                {status === 'failed'
-                                    ? 'Unable to copy text to clipboard.'
-                                    : showInNotification
-                                      ? `Copied "${String(text)}" to clipboard.`
-                                      : 'Copied text to clipboard.'}
-                            </p>
+                    <div className='fixed z-50 bottom-0 right-0 m-4'>
+                        <div role='status' className='rounded-md py-3 px-4 text-foreground bg-popover/95 shadow-sm'>
+                            <p>{copyStatusMessage(status, text, showInNotification)}</p>
                         </div>
                     </div>
                 </Portal>

@@ -24,10 +24,12 @@ const LoginContainer = () => {
         defaultValues: { username: '', password: '' },
         onSubmit: async ({ value }) => {
             let token = '';
+
             if (recaptchaEnabled) {
                 token = (await recaptchaRef.current?.execute()) ?? '';
                 if (!token) {
                     toast.error('Captcha verification failed, please try again.');
+
                     return;
                 }
             }
@@ -40,12 +42,14 @@ const LoginContainer = () => {
                         'g-recaptcha-response': token,
                     },
                 });
+
                 if (response.data.complete) {
                     window.location.assign(redirect || response.data.intended || '/');
+
                     return;
                 }
 
-                navigate({
+                void navigate({
                     to: '/auth/login/checkpoint',
                     search: { redirect },
                     replace: true,
@@ -60,39 +64,37 @@ const LoginContainer = () => {
     const isSubmitting = useStore(form.store, (state) => state.isSubmitting) || loginMutation.isPending;
 
     return (
-        <LoginFormContainer form={form} title={'Login to Continue'} className={'w-full flex'}>
+        <LoginFormContainer form={form} title='Login to Continue' className='w-full flex'>
             <form.AppField
-                name={'username'}
+                name='username'
                 validators={{
                     onChange: ({ value }) => (value.length >= 1 ? undefined : 'A username or email must be provided.'),
                 }}
             >
-                {(field) => <field.TextField light type={'text'} label={'Username or Email'} disabled={isSubmitting} />}
+                {(field) => <field.TextField light type='text' label='Username or Email' disabled={isSubmitting} />}
             </form.AppField>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppField
-                    name={'password'}
+                    name='password'
                     validators={{
                         onChange: ({ value }) =>
                             value.length >= 1 ? undefined : 'Please enter your account password.',
                     }}
                 >
-                    {(field) => <field.TextField light type={'password'} label={'Password'} disabled={isSubmitting} />}
+                    {(field) => <field.TextField light type='password' label='Password' disabled={isSubmitting} />}
                 </form.AppField>
             </div>
-            <div className={'mt-6'}>
+            <div className='mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton size={'xlarge'}>Login</form.SubmitButton>
+                    <form.SubmitButton size='xlarge'>Login</form.SubmitButton>
                 </form.AppForm>
             </div>
-            <Slot name={'auth.login.form.after'} data={slotData} />
+            <Slot name='auth.login.form.after' data={slotData} />
             {recaptchaEnabled && <InvisibleRecaptcha ref={recaptchaRef} siteKey={siteKey || ''} />}
-            <div className={'mt-6 text-center'}>
+            <div className='mt-6 text-center'>
                 <Link
-                    to={'/auth/password'}
-                    className={
-                        'text-xs text-muted-foreground tracking-wide no-underline uppercase hover:text-foreground'
-                    }
+                    to='/auth/password'
+                    className='text-xs text-muted-foreground tracking-wide no-underline uppercase hover:text-foreground'
                 >
                     Forgot password?
                 </Link>

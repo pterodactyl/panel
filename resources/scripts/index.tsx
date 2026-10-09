@@ -11,6 +11,7 @@ followCurrentUserLanguage(queryClient);
 syncThemeColorMeta();
 
 const container = document.getElementById('app');
+
 if (container) {
     const root = createRoot(container);
 

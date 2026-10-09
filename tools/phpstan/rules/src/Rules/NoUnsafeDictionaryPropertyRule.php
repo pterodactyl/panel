@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rules\Rules;
 
-use Rules\Support\TypeClassifier;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\ClassPropertyNode;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Rules\Support\TypeClassifier;
 
 /**
  * The property position of no-unsafe-dictionary-type, plus the "stdClass in

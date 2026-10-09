@@ -25,15 +25,15 @@ export const NodeStatusBadge = ({ status, title }: { status: NodeStatus; title: 
 
     return (
         <span
-            role={'status'}
-            aria-live={'polite'}
+            role='status'
+            aria-live='polite'
             title={title}
             className={cn(
                 'inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 text-xs font-medium',
                 style.badge
             )}
         >
-            <span aria-hidden={'true'} className={cn('h-1.5 w-1.5 rounded-full', style.dot)} />
+            <span aria-hidden='true' className={cn('h-1.5 w-1.5 rounded-full', style.dot)} />
             {style.label}
         </span>
     );

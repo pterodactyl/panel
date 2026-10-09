@@ -126,11 +126,13 @@ const currentUserFields = ({ attributes }: AdminUser): Partial<UserData> => ({
 
 export const useCreateAdminUser = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateUserMutation(),
         onSuccess: async (user) => {
             await invalidateGeneratedOperations(queryClient, ['adminListUsers']);
             const messages = resourceMutationMessages('user', 'create', user.attributes.email);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'create').errorTitle),
@@ -139,17 +141,20 @@ export const useCreateAdminUser = () => {
 
 export const useUpdateAdminUser = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateUserMutation(),
         onSuccess: async (user, variables) => {
             if (queryClient.getQueryData<UserData>(currentUserQueryKey)?.uuid === user.attributes.uuid) {
                 setCurrentUserQueryData(queryClient, currentUserFields(user));
             }
+
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
                 queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.id) }),
             ]);
             const messages = resourceMutationMessages('user', 'update', user.attributes.email);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'update').errorTitle),
@@ -158,6 +163,7 @@ export const useUpdateAdminUser = () => {
 
 export const useDeleteAdminUser = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteUserMutation(),
         onSuccess: async (_data, variables) => {
@@ -165,6 +171,7 @@ export const useDeleteAdminUser = () => {
             await invalidateGeneratedOperations(queryClient, ['adminListUsers']);
             const name = variables.meta?.email;
             const messages = resourceMutationMessages('user', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'delete').errorTitle),

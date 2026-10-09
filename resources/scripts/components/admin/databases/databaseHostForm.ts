@@ -1,5 +1,6 @@
 import type { AdminDatabaseHost } from '@/api/admin/database-hosts/queries';
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { requiredWithMaxLength } from '@/components/form/validators';
 import { type ExtensionFormValues, initialExtensionValues } from '@/extensions/forms';
 
 export interface DatabaseHostFormValues {
@@ -34,26 +35,25 @@ export const databaseHostFormValues = (host: AdminDatabaseHost): DatabaseHostFor
     extensions: initialExtensionValues(),
 });
 
-const validateName: TextValidator = ({ value }) =>
-    value.length < 1
-        ? 'A name must be provided.'
-        : value.length > 191
-          ? 'The name must not exceed 191 characters.'
-          : undefined;
+const validateName = requiredWithMaxLength(191, 'A name must be provided.', 'The name must not exceed 191 characters.');
 
-const validateHost: TextValidator = ({ value }) =>
-    value.length < 1
-        ? 'A host must be provided.'
-        : !/^[\w\-.]+$/.test(value)
-          ? 'The host must be a valid hostname or IP address.'
-          : undefined;
+const validateHost: TextValidator = ({ value }): string | undefined => {
+    if (value.length < 1) {
+        return 'A host must be provided.';
+    }
 
-const validateUsername: TextValidator = ({ value }) =>
-    value.length < 1
-        ? 'A username must be provided.'
-        : value.length > 32
-          ? 'The username must not exceed 32 characters.'
-          : undefined;
+    if (!/^[\w\-.]+$/.test(value)) {
+        return 'The host must be a valid hostname or IP address.';
+    }
+
+    return undefined;
+};
+
+const validateUsername = requiredWithMaxLength(
+    32,
+    'A username must be provided.',
+    'The username must not exceed 32 characters.'
+);
 
 const validateRequiredPassword: TextValidator = ({ value }) =>
     value.length >= 1 ? undefined : 'A password must be provided.';

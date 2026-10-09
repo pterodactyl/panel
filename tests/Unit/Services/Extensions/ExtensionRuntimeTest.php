@@ -6,7 +6,6 @@ namespace Pterodactyl\Tests\Pest\Unit\Services\Extensions\ExtensionRuntimeTest;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
-use Mockery;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionRuntimeRefresher;
@@ -34,16 +33,19 @@ test('package operations exclude competing writers and nested activation retains
 });
 
 test('activation invalidates cached routes and signals existing workers to restart', function (): void {
-    $path = sys_get_temp_dir().'/ptero-routes-'.uniqid().'.php';
-    $application = Mockery::mock(\Illuminate\Contracts\Foundation\Application::class);
-    $application->shouldReceive('getCachedRoutesPath')->once()->andReturn($path);
-    File::put($path, '<?php return [];');
+    $this->freezeTime();
+    $bootstrap = $this->app->bootstrapPath();
+    $directory = sys_get_temp_dir().'/ptero-routes-'.uniqid();
+    File::ensureDirectoryExists($directory.'/cache');
+    $this->app->useBootstrapPath($directory);
+    File::put($this->app->getCachedRoutesPath(), '<?php return [];');
     try {
-        (new ExtensionRuntimeRefresher($application))->refresh();
-        expect($path)->not->toBeFile();
+        resolve(ExtensionRuntimeRefresher::class)->refresh();
+        expect($this->app->getCachedRoutesPath())->not->toBeFile();
         expect(Cache::get('illuminate:queue:restart'))->toBe(now()->getTimestamp());
     } finally {
-        File::delete($path);
+        $this->app->useBootstrapPath($bootstrap);
+        File::deleteDirectory($directory);
     }
 });
 

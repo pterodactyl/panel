@@ -46,6 +46,7 @@ parameters:
             - app/Data/**
             - app/Extensions/Scribe/**
             - app/Services/Extensions/ExtensionManifestValidator.php
+            - app/Services/Extensions/ExtensionComposerInspector.php
             - app/Services/Extensions/ExtensionSettingValueGuard.php
             - app/Services/Extensions/ExtensionSettings.php
             - app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
@@ -81,7 +82,6 @@ parameters:
             - app/Services/Servers/EnvironmentService.php
             - app/Support/JsonValueGuard.php
             - app/Support/JsonValueTree.php
-            - app/Support/Alerts/AlertsMessageBag.php
             - app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
             - app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
             - app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php

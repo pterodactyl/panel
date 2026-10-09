@@ -18,6 +18,7 @@ import {
 } from './server';
 
 const originalAdapter = http.defaults.adapter;
+
 afterEach(() => {
     queryClient.clear();
     http.defaults.adapter = originalAdapter;
@@ -25,6 +26,7 @@ afterEach(() => {
 
 it('shares native cache identities and typed data with core consumers', () => {
     const files = { object: 'list' as const, data: [] };
+
     queryClient.setQueryData(panelFiles('alpha', '/nested/').queryKey, files);
 
     expect(queryClient.getQueryData(serverFilesQueryOptions('alpha', '/nested//').queryKey)).toEqual(files);
@@ -41,22 +43,33 @@ it('invalidates all selected server pages and directories while preserving other
         serverBackupsQueryOptions('alpha', 2).queryKey,
     ];
     const unrelated = [serverFilesQueryOptions('beta', '/').queryKey, serverBackupsQueryOptions('beta', 1).queryKey];
-    for (const key of [...targets, ...unrelated]) queryClient.setQueryData(key, 'cached');
+
+    for (const key of [...targets, ...unrelated]) {
+        queryClient.setQueryData(key, 'cached');
+    }
 
     await invalidateServerData('alpha', ['files', 'files', 'fileContent', 'backups']);
 
-    for (const key of targets) expect(queryClient.getQueryState(key)?.isInvalidated).toBe(true);
-    for (const key of unrelated) expect(queryClient.getQueryState(key)?.isInvalidated).toBe(false);
+    for (const key of targets) {
+        expect(queryClient.getQueryState(key)?.isInvalidated).toBe(true);
+    }
+
+    for (const key of unrelated) {
+        expect(queryClient.getQueryState(key)?.isInvalidated).toBe(false);
+    }
 });
 
 it('fetches through the shared transport and serves the result to a core consumer without another request', async () => {
     let requests = 0;
+
     http.defaults.adapter = async (config) => {
         requests++;
         const url = new URL(config.url!, 'https://panel.test');
+
         expect(url.pathname).toBe('/api/client/servers/alpha/files/list');
         expect(url.searchParams.get('directory')).toBe('/nested');
         expect(config.signal).toBeInstanceOf(AbortSignal);
+
         return { data: { object: 'list', data: [] }, config, status: 200, statusText: 'OK', headers: {} };
     };
 
@@ -84,9 +97,11 @@ it('reads live state and usage from the entry the dashboard polls', async () => 
             },
         },
     };
+
     http.defaults.adapter = async (config) => {
         requests++;
         expect(new URL(config.url!, 'https://panel.test').pathname).toBe('/api/client/servers/alpha/resources');
+
         return { data: resources, config, status: 200, statusText: 'OK', headers: {} };
     };
 
@@ -108,16 +123,20 @@ it('reads live state and usage from the entry the dashboard polls', async () => 
 
 it('reads bounded server logs through the shared transport', async () => {
     const requests: string[] = [];
+
     http.defaults.adapter = async (config) => {
         const url = new URL(config.url!, 'https://panel.test');
+
         expect(url.pathname).toBe('/api/client/servers/alpha/logs');
         expect(config.signal).toBeInstanceOf(AbortSignal);
         requests.push(url.searchParams.get('lines') ?? '');
         const data = { object: 'server_logs', attributes: { lines: ['first', 'second'] } };
+
         return { data, config, status: 200, statusText: 'OK', headers: {} };
     };
 
     const logs = await queryClient.fetchQuery(serverLogsQueryOptions('alpha', 25));
+
     await queryClient.fetchQuery({ ...serverLogsQueryOptions('alpha', 25), staleTime: Infinity });
     await queryClient.fetchQuery(serverLogsQueryOptions('alpha', 5000));
     await queryClient.fetchQuery(serverLogsQueryOptions('alpha', 0));
@@ -141,7 +160,10 @@ it('inherits the client retry policy unless the panel query sets its own', () =>
     expect('retry' in files).toBe(false);
     expect(queryClient.defaultQueryOptions(files).retry).toBe(queryClient.getDefaultOptions().queries?.retry);
     expect(queryClient.defaultQueryOptions(startup).retry).toBe(startup.retry);
-    if (!(startup.retry instanceof Function)) throw new Error('Startup reads set their own retry policy.');
+    if (!(startup.retry instanceof Function)) {
+        throw new Error('Startup reads set their own retry policy.');
+    }
+
     expect(startup.retry(0, forbidden)).toBe(false);
     expect(startup.retry(2, new Error('offline'))).toBe(true);
 });

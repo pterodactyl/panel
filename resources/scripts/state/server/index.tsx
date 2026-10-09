@@ -33,39 +33,38 @@ export interface ServerStore {
 }
 
 const createServerStore = () =>
-    createStore<ServerStore>()((set, get) => {
-        return {
-            socket: createSocket(set),
-            status: createStatus(set),
-            files: createFiles(set, get),
+    createStore<ServerStore>()((set, get) => ({
+        socket: createSocket(set),
+        status: createStatus(set),
+        files: createFiles(set, get),
 
-            clearServerState: () => {
-                const sock = get().socket.instance;
-                if (sock) {
-                    sock.removeAllListeners();
-                    sock.close();
-                }
+        clearServerState: () => {
+            const sock = get().socket.instance;
 
-                set((state) => ({
-                    files: {
-                        ...state.files,
-                        selectedDirectory: null,
-                        selectedFiles: [],
-                    },
-                    socket: {
-                        ...state.socket,
-                        instance: null,
-                        connected: false,
-                        reconnecting: false,
-                    },
-                    status: {
-                        ...state.status,
-                        value: null,
-                    },
-                }));
-            },
-        };
-    });
+            if (sock) {
+                sock.removeAllListeners();
+                sock.close();
+            }
+
+            set((state) => ({
+                files: {
+                    ...state.files,
+                    selectedDirectory: null,
+                    selectedFiles: [],
+                },
+                socket: {
+                    ...state.socket,
+                    instance: null,
+                    connected: false,
+                    reconnecting: false,
+                },
+                status: {
+                    ...state.status,
+                    value: null,
+                },
+            }));
+        },
+    }));
 
 type ServerStoreApi = ReturnType<typeof createServerStore>;
 
@@ -80,6 +79,7 @@ export const Provider = ({ children }: { children?: React.ReactNode }) => {
 
 const useServerStoreApi = (): ServerStoreApi => {
     const store = use(StoreContext);
+
     if (!store) {
         throw new Error('ServerContext.Provider is missing from the component tree.');
     }
@@ -96,6 +96,7 @@ export const useServerDirectory = () => {
 
     return hashToPath(hash);
 };
+
 export const useSelectedFiles = () => {
     const directory = useServerDirectory();
 
@@ -103,6 +104,7 @@ export const useSelectedFiles = () => {
         state.files.selectedDirectory === directory ? state.files.selectedFiles : EMPTY_SELECTED_FILES
     );
 };
+
 export const useServerStatus = () => useServerStore((state) => state.status.value);
 export const useSocketConnected = () => useServerStore((state) => state.socket.connected);
 export const useSocketInstance = () => useServerStore((state) => state.socket.instance);

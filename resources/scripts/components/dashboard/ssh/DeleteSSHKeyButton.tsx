@@ -12,8 +12,8 @@ export default function DeleteSSHKeyButton({ name, fingerprint }: { name: string
 
     return (
         <Dialog.ConfirmTrigger
-            title={'Delete SSH Key'}
-            confirm={'Delete Key'}
+            title='Delete SSH Key'
+            confirm='Delete Key'
             pending={deleteSshKey.isPending}
             onConfirmed={(_event, close) => onClick(close)}
             trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}

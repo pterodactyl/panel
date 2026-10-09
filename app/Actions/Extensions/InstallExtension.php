@@ -118,10 +118,10 @@ final readonly class InstallExtension implements InstallsExtensions
             return $manifest;
         }
 
-        DB::transaction(fn (): Extension => Extension::query()->updateOrCreate(
+        Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
             ['version' => $manifest->version, 'error' => null],
-        ));
+        );
 
         return $manifest;
     }

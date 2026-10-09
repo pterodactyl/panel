@@ -8,18 +8,16 @@ interface Props extends WithClassname {
     schedule: Schedule;
 }
 
-const NewTaskButton = ({ schedule, className }: Props) => {
-    return (
-        <Dialog.Trigger
-            trigger={({ onClick }) => (
-                <NewButton onClick={onClick} className={className}>
-                    New task
-                </NewButton>
-            )}
-        >
-            {(dialog) => <TaskDetailsModal schedule={schedule} {...dialog} />}
-        </Dialog.Trigger>
-    );
-};
+const NewTaskButton = ({ schedule, className }: Props) => (
+    <Dialog.Trigger
+        trigger={({ onClick }) => (
+            <NewButton onClick={onClick} className={className}>
+                New task
+            </NewButton>
+        )}
+    >
+        {(dialog) => <TaskDetailsModal schedule={schedule} {...dialog} />}
+    </Dialog.Trigger>
+);
 
 export default NewTaskButton;

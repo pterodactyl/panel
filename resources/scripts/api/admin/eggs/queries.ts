@@ -165,6 +165,7 @@ const invalidateAdminEggVariables = (queryClient: QueryClient, eggId: number) =>
 
 export const useImportAdminEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminImportEggMutation(),
         onSuccess: async (egg) => {
@@ -179,6 +180,7 @@ export const useImportAdminEgg = () => {
 
 export const useCreateAdminEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateEggMutation(),
         onSuccess: async (egg) => {
@@ -187,6 +189,7 @@ export const useCreateAdminEgg = () => {
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
             const messages = resourceMutationMessages('egg', 'create', egg.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'create').errorTitle),
@@ -195,6 +198,7 @@ export const useCreateAdminEgg = () => {
 
 export const useUpdateAdminEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateEggMutation(),
         onSuccess: async (egg) => {
@@ -203,6 +207,7 @@ export const useUpdateAdminEgg = () => {
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
             const messages = resourceMutationMessages('egg', 'update', egg.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'update').errorTitle),
@@ -211,6 +216,7 @@ export const useUpdateAdminEgg = () => {
 
 export const useUpdateAdminEggScript = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateEggInstallScriptMutation(),
         onSuccess: async (egg) => {
@@ -228,6 +234,7 @@ export const useUpdateAdminEggScript = () => {
 
 export const useUpdateAdminEggFromFile = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateEggFromImportMutation(),
         onSuccess: async (egg) => {
@@ -247,16 +254,19 @@ export const useExportAdminEgg = (eggId: number) => useQuery(adminEggExportQuery
 
 export const useDeleteAdminEgg = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteEggMutation(),
         onSuccess: async (_data, variables) => {
             const eggId = variables.path.egg_id;
+
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminEggDetailKey(eggId) });
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminEggVariableListQueryKey(eggId) });
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminExportEggQueryKey({ path: { egg_id: eggId } }) });
             await invalidateGeneratedOperations(queryClient, adminEggListOperations);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('egg', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'delete').errorTitle),
@@ -265,11 +275,13 @@ export const useDeleteAdminEgg = () => {
 
 export const useCreateAdminEggVariable = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminCreateEggVariableMutation(),
         onSuccess: async (variable, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
             const messages = resourceMutationMessages('variable', 'create', variable.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'create').errorTitle),
@@ -278,11 +290,13 @@ export const useCreateAdminEggVariable = () => {
 
 export const useUpdateAdminEggVariable = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminUpdateEggVariableMutation(),
         onSuccess: async (variable, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
             const messages = resourceMutationMessages('variable', 'update', variable.attributes.name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'update').errorTitle),
@@ -291,12 +305,14 @@ export const useUpdateAdminEggVariable = () => {
 
 export const useDeleteAdminEggVariable = () => {
     const queryClient = useQueryClient();
+
     return useMutation({
         ...adminDeleteEggVariableMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
             const name = variables.meta?.name;
             const messages = resourceMutationMessages('variable', 'delete', name);
+
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'delete').errorTitle),

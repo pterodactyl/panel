@@ -24,11 +24,13 @@ export const useDebouncedCallback = <TArgs extends unknown[]>(
                 clearTimeout(timeoutRef.current);
                 timeoutRef.current = null;
             }
+
             pendingRef.current = null;
         };
 
         const flush = () => {
             const args = pendingRef.current;
+
             cancel();
             if (args) {
                 callbackRef.current(...args);

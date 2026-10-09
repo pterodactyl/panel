@@ -15,10 +15,10 @@ interface Props {
 
 const TitledGreyBox = ({ icon, title, children, className, contentClassName }: Props) => (
     <div className={cn('rounded-sm shadow-md bg-card', className)}>
-        <div className={'bg-muted rounded-t-sm p-3 border-b border-border'}>
+        <div className='bg-muted rounded-t-sm p-3 border-b border-border'>
             {isString(title) ? (
                 <h2 className={cardTitleClass}>
-                    {icon && <Icon icon={icon} className={'mr-2 text-muted-foreground'} />}
+                    {icon && <Icon icon={icon} className='mr-2 text-muted-foreground' />}
                     {title}
                 </h2>
             ) : (

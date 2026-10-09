@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\Servers\ServerTransferControllerTest;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
@@ -130,4 +132,24 @@ test('non admin forbidden', function (): void {
     $this->actingAsNonAdmin();
     $response = $this->postJson(route('api.admin.servers.transfer', ['server' => $server->id]), []);
     $this->assertAccessDeniedJson($response);
+});
+
+test('a transfer wings rejects is marked failed and releases the target allocations', function (): void {
+    $server = $this->createServerModel();
+    /** @var Node $targetNode */
+    $targetNode = Node::factory()->create(['location_id' => $server->node->location_id, 'memory' => 102400, 'disk' => 102400]);
+    /** @var Allocation $primary */
+    $primary = Allocation::factory()->create(['node_id' => $targetNode->id, 'server_id' => null]);
+    /** @var Allocation $additional */
+    $additional = Allocation::factory()->create(['node_id' => $targetNode->id, 'server_id' => null]);
+    $fake = new FakeDaemonTransfer;
+    $fake->throwable = new DaemonConnectionException(Http::failedRequest([], 500));
+
+    $response = $this->postJson(route('api.admin.servers.transfer', ['server' => $server->id]), ['node_id' => $targetNode->id, 'allocation_id' => $primary->id, 'allocation_additional' => [$additional->id]]);
+
+    expect($response->status())->toBeGreaterThanOrEqual(400);
+    $this->assertDatabaseHas('server_transfers', ['server_id' => $server->id, 'new_node' => $targetNode->id, 'successful' => false]);
+    $this->assertDatabaseHas('allocations', ['id' => $primary->id, 'server_id' => null]);
+    $this->assertDatabaseHas('allocations', ['id' => $additional->id, 'server_id' => null]);
+    $this->assertDatabaseHas('servers', ['id' => $server->id, 'node_id' => $server->node_id]);
 });

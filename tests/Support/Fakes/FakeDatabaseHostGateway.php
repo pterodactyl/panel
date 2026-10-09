@@ -41,23 +41,6 @@ class FakeDatabaseHostGateway extends DatabaseHostGateway
 
     public int $flushCount = 0;
 
-    private string $connection = DatabaseHostGateway::DEFAULT_CONNECTION_NAME;
-
-    public function __construct() {}
-
-    public function setConnection(string $connection): self
-    {
-        $this->connection = $connection;
-        $this->calls[] = ['method' => 'setConnection', 'args' => [$connection]];
-
-        return $this;
-    }
-
-    public function getConnection(): string
-    {
-        return $this->connection;
-    }
-
     public function createDatabase(string $database): bool
     {
         $this->calls[] = ['method' => 'createDatabase', 'args' => [$database]];

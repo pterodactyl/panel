@@ -35,6 +35,7 @@ describe('admin settings mutations', () => {
         const wrapper = ({ children }: PropsWithChildren) => (
             <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         );
+
         mocks.updateMail.mockResolvedValue(undefined);
         const { result } = renderHook(() => useUpdateAdminMailSettings({ successNotification: false }), { wrapper });
 

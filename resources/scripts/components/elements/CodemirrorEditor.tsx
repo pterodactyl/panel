@@ -181,6 +181,7 @@ const createEditorState = (
                         preventDefault: true,
                         run: () => {
                             onContentSaved.current();
+
                             return true;
                         },
                     },

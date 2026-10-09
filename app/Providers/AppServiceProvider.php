@@ -41,6 +41,7 @@ use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Daemon\DaemonManager;
+use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Support\JsonValueGuard;
 
 class AppServiceProvider extends ServiceProvider
@@ -109,6 +110,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(DaemonManager::class);
+
+        // Keys registered through setEnvironmentKey() must survive to every consumer,
+        // so the service is shared rather than rebuilt on each resolve.
+        $this->app->singleton(EnvironmentService::class);
 
         $this->app->extend('auth.password', fn (): PasswordBrokerManager => new PasswordBrokerManager($this->app));
 
