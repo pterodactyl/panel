@@ -46,6 +46,33 @@ test('email is not updated when password is invalid', function (): void {
     $response->assertJsonPath('errors.0.code', 'InvalidPasswordProvidedException');
     $response->assertJsonPath('errors.0.detail', 'The password provided was invalid for this account.');
 });
+test('wrong password on a taken email returns 400 without mentioning the email', function (): void {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    $response = $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $other->email, 'password' => 'invalid']);
+    $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    $response->assertJsonPath('errors.0.code', 'InvalidPasswordProvidedException');
+    $response->assertJsonPath('errors.0.detail', 'The password provided was invalid for this account.');
+    expect($response->json('errors'))->toHaveCount(1);
+    expect(collect($response->json('errors'))->pluck('meta.source_field')->filter()->all())->not->toContain('email');
+    expect($response->getContent())->not->toContain('already been taken');
+    expect($user->fresh()->email)->toBe($user->email);
+    $this->assertDatabaseMissing('activity_logs', ['event' => 'user:account.email-changed', 'actor_id' => $user->id]);
+});
+
+test('correct password on a taken email returns 422 on email', function (): void {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $other->email, 'password' => 'password'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'email')
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+    expect($user->fresh()->email)->toBe($user->email);
+    $this->assertDatabaseMissing('activity_logs', ['event' => 'user:account.email-changed', 'actor_id' => $user->id]);
+});
+
 test('email is not updated when not valid', function (): void {
     /** @var User $user */
     $user = User::factory()->create();
@@ -116,15 +143,19 @@ test('malformed account credentials return 422 without changing the account', fu
     $user = User::factory()->create();
     $originalPassword = $user->password;
     $payload = $endpoint === 'email'
-        ? ['email' => 'changed@example.com']
+        ? ['email' => User::factory()->create()->email]
         : ['password' => 'New_Password1', 'password_confirmation' => 'New_Password1'];
 
-    $this->actingAs($user)->putJson('/api/client/account/'.$endpoint, array_merge($payload, $credential))
+    $response = $this->actingAs($user)->putJson('/api/client/account/'.$endpoint, array_merge($payload, $credential))
         ->assertUnprocessable()
         ->assertJsonPath('errors.0.meta.source_field', $field);
 
+    expect(collect($response->json('errors'))->pluck('meta.source_field')->unique()->all())->toBe([$field]);
+
     expect($user->fresh()->email)->toBe($user->email);
     expect($user->fresh()->password)->toBe($originalPassword);
+    $this->assertDatabaseMissing('activity_logs', ['event' => 'user:account.email-changed', 'actor_id' => $user->id]);
+    $this->assertDatabaseMissing('activity_logs', ['event' => 'user:account.password-changed', 'actor_id' => $user->id]);
 })->with([
     'missing email credential' => ['email', 'password', []],
     'null email credential' => ['email', 'password', ['password' => null]],
