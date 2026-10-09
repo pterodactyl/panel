@@ -57,6 +57,15 @@ class Mount extends Model implements Identifiable
     ];
 
     /**
+     * Source paths that cannot be mounted, nor anything beneath them.
+     *
+     * @var list<string>
+     */
+    public static array $protectedSourcePaths = [
+        '/etc/pterodactyl',
+    ];
+
+    /**
      * Blacklisted target paths.
      *
      * @var list<string>

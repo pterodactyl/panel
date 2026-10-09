@@ -13,7 +13,7 @@ class NotInPathHierarchy implements ValidationRule
     /**
      * @param  list<string>  $invalidPaths
      */
-    public function __construct(protected array $invalidPaths) {}
+    public function __construct(protected array $invalidPaths, protected bool $includeDescendants = true) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -24,9 +24,17 @@ class NotInPathHierarchy implements ValidationRule
         $path = Mount::normalizePath($value);
 
         foreach ($this->invalidPaths as $blocked) {
-            $blocked = rtrim($blocked, '/');
+            $blocked = Mount::normalizePath($blocked);
 
-            if ($path === $blocked || str_starts_with($path, $blocked.'/')) {
+            if ($path === $blocked) {
+                $fail($this->includeDescendants
+                    ? "The {$attribute} path cannot be or reside within [{$blocked}]."
+                    : "The {$attribute} path cannot be [{$blocked}].");
+
+                return;
+            }
+
+            if ($this->includeDescendants && str_starts_with($path, $blocked.'/')) {
                 $fail("The {$attribute} path cannot be or reside within [{$blocked}].");
 
                 return;

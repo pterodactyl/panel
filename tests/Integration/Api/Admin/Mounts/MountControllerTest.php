@@ -72,6 +72,33 @@ test('non admin forbidden', function (string $method, string $routeName): void {
     $response = $this->{$method}(route($routeName, ['mount' => $mount->id]));
     $this->assertAccessDeniedJson($response);
 })->with('mountEndpointsDataProvider');
+test('mount paths within server volumes and the container directory are allowed', function (string $source, string $target): void {
+    $response = $this->postJson(route('api.admin.mounts.store'), ['name' => 'Volume Mount', 'source' => $source, 'target' => $target]);
+    $response->assertStatus(Response::HTTP_CREATED);
+    $this->assertDatabaseHas('mounts', ['name' => 'Volume Mount', 'source' => $source, 'target' => $target]);
+})->with([
+    ['/var/lib/pterodactyl/volumes/34eddb08-887e-4a6e-b0f1-e4e249b3181c', '/mnt/shared'],
+    ['/var/lib/pterodactyl/volumes/34eddb08-887e-4a6e-b0f1-e4e249b3181c/plugins', '/home/container/plugins'],
+    ['/srv/daemon-data/34eddb08-887e-4a6e-b0f1-e4e249b3181c', '/home/container/shared'],
+]);
+test('protected mount paths are rejected', function (string $field, string $path): void {
+    $payload = ['name' => 'Protected Mount', 'source' => '/mnt/source', 'target' => '/mnt/target'];
+    $payload[$field] = $path;
+    $response = $this->postJson(route('api.admin.mounts.store'), $payload);
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    expect(collect($response->json('errors'))->firstWhere('meta.source_field', $field))->not->toBeNull();
+})->with([
+    ['source', '/var/lib/pterodactyl/volumes'],
+    ['source', '/var/lib/pterodactyl/volumes/'],
+    ['source', '/var/lib/pterodactyl/volumes/abc/..'],
+    ['source', '/srv/daemon-data'],
+    ['source', '/etc/pterodactyl'],
+    ['source', '/etc/pterodactyl/config.yml'],
+    ['source', '/var/lib/pterodactyl/volumes/../../../../etc/pterodactyl'],
+    ['target', '/home/container'],
+    ['target', '/home/container/'],
+    ['target', '/home/container/plugins/..'],
+]);
 test('invalid payloads return validation errors', function (): void {
     $response = $this->postJson(route('api.admin.mounts.store'), []);
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

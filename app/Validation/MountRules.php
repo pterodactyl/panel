@@ -32,14 +32,15 @@ final class MountRules
                 'required',
                 'string',
                 'starts_with:/',
-                new NotInPathHierarchy(Mount::$invalidSourcePaths),
+                new NotInPathHierarchy(Mount::$protectedSourcePaths),
+                new NotInPathHierarchy(Mount::$invalidSourcePaths, includeDescendants: false),
             ],
 
             'target' => [
                 'required',
                 'string',
                 'starts_with:/',
-                new NotInPathHierarchy(Mount::$invalidTargetPaths),
+                new NotInPathHierarchy(Mount::$invalidTargetPaths, includeDescendants: false),
             ],
 
             'read_only' => ['sometimes', 'boolean'],
