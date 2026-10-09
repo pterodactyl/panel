@@ -1,5 +1,6 @@
 import type { AdminSettings } from '@/api/admin/settings/queries';
 import Button from '@/components/elements/Button';
+import Label from '@/components/elements/Label';
 import { FileInput } from '@/components/form/controls';
 
 const logoTypes = 'image/png,image/jpeg,image/webp,image/avif,image/x-icon,image/svg+xml';
@@ -26,7 +27,7 @@ export default function LogoSettingsForm({
 
     return (
         <div className='mt-6 border-t border-border pt-6'>
-            <h3 className='text-base font-medium text-foreground'>Logo</h3>
+            <Label as='h3'>Logo</Label>
             <p className='input-help'>
                 Upload a logo to use as the Panel favicon, on the login page, and beside your company name.
             </p>
