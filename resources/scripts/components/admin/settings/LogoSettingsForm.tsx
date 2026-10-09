@@ -1,20 +1,28 @@
 import type { AdminSettings } from '@/api/admin/settings/queries';
-import { useClearAdminLogo, useUploadAdminLogo } from '@/api/admin/settings/queries';
 import Button from '@/components/elements/Button';
 import { FileInput } from '@/components/form/controls';
 
 const logoTypes = 'image/png,image/jpeg,image/gif,image/webp,image/avif,image/x-icon,image/svg+xml';
 
-export default function LogoSettingsForm({ settings }: { settings: AdminSettings }) {
-    const uploadLogo = useUploadAdminLogo();
-    const clearLogo = useClearAdminLogo();
-    const readOnly = settings.meta.load_environment_only;
+type Props = {
+    settings: AdminSettings;
+    pendingFile: File | null;
+    removePending: boolean;
+    disabled: boolean;
+    onFileSelected: (file: File | undefined) => void;
+    onRemove: () => void;
+};
 
-    const onFileSelected = (file: File | undefined) => {
-        if (file) {
-            uploadLogo.mutate(file);
-        }
-    };
+export default function LogoSettingsForm({
+    settings,
+    pendingFile,
+    removePending,
+    disabled,
+    onFileSelected,
+    onRemove,
+}: Props) {
+    const readOnly = settings.meta.load_environment_only;
+    const hasPendingChange = pendingFile !== null || removePending;
 
     return (
         <div className='mt-6 border-t border-border pt-6'>
@@ -25,7 +33,7 @@ export default function LogoSettingsForm({ settings }: { settings: AdminSettings
             <p className='mt-2 text-xs text-muted-foreground'>
                 PNG, JPEG, GIF, WebP, AVIF, ICO, and SVG files up to 10 MB are supported.
             </p>
-            {settings.logo && (
+            {settings.logo && !removePending && (
                 <div className='mt-6 flex items-center gap-4'>
                     <img
                         src={settings.logo}
@@ -36,18 +44,22 @@ export default function LogoSettingsForm({ settings }: { settings: AdminSettings
                         type='button'
                         color='red'
                         isSecondary
-                        disabled={readOnly || uploadLogo.isPending || clearLogo.isPending}
-                        onClick={() => clearLogo.mutate()}
+                        disabled={readOnly || disabled}
+                        onClick={onRemove}
                     >
                         Remove Logo
                     </Button>
                 </div>
             )}
+            {pendingFile && <p className='mt-4 text-sm text-muted-foreground'>Selected: {pendingFile.name}</p>}
+            {hasPendingChange && (
+                <p className='mt-4 text-sm text-warning'>Save Changes to apply the logo change.</p>
+            )}
             <div className='mt-6'>
                 <FileInput
                     aria-label='Upload logo'
                     accept={logoTypes}
-                    disabled={readOnly || uploadLogo.isPending || clearLogo.isPending}
+                    disabled={readOnly || disabled}
                     onChange={(event) => {
                         onFileSelected(event.currentTarget.files?.[0]);
                         event.currentTarget.value = '';
