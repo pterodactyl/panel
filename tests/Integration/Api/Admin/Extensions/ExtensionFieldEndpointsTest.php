@@ -146,6 +146,19 @@ test('an extension sent without values still runs its rules, so a required field
     expect($case['find']())->toBeNull();
 })->with('formEndpoints');
 
+test('a create that leaves an extension out still runs its rules, so a required field holds', function (string $model, string $endpoint): void {
+    registerFields($model, NoteFields::class);
+    $case = formCase($endpoint);
+
+    $response = $this->json($case['method'], $case['url'], $case['payload']);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertJsonPath('errors.0.meta.source_field', 'extensions.fields.note');
+    $response->assertJsonPath('errors.0.detail', 'The note field is required.');
+
+    expect($case['find']())->toBeNull();
+})->with('createEndpoints');
+
 test('a save that throws rolls the core change back', function (string $model, string $endpoint): void {
     registerFields($model, FailingSaveFields::class);
     $case = formCase($endpoint);

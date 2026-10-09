@@ -18,13 +18,6 @@ vi.mock('@/bootstrap', async (importOriginal) => ({
         { id: 'probe', entry: '/probe.js' },
         { id: 'other', entry: '/other.js' },
     ],
-    getBootstrapExtensionForms: () => ({
-        'admin.user': [
-            { id: 'probe', name: 'Probe' },
-            { id: 'other', name: 'Other' },
-            { id: 'unloaded', name: 'Unloaded' },
-        ],
-    }),
 }));
 
 type ProbeValues = { tier: string; note: string };
@@ -81,7 +74,20 @@ afterEach(() => {
     http.defaults.adapter = originalAdapter;
 });
 
-type ResponseBody = Record<string, string> | { errors: { detail: string; meta: { source_field: string } }[] };
+const extensionForms = {
+    data: {
+        'admin.user': [
+            { id: 'probe', name: 'Probe' },
+            { id: 'other', name: 'Other' },
+            { id: 'unloaded', name: 'Unloaded' },
+        ],
+    },
+};
+
+type ResponseBody =
+    | Record<string, string>
+    | typeof extensionForms
+    | { errors: { detail: string; meta: { source_field: string } }[] };
 
 const respond = (config: InternalAxiosRequestConfig, status: number, data: ResponseBody): AxiosResponse => ({
     data,
@@ -116,6 +122,10 @@ describe('extension fields in admin forms', () => {
         http.defaults.adapter = async (config) => {
             if (config.url === '/api/admin/languages') {
                 return respond(config, 200, { en: 'English' });
+            }
+
+            if (config.url === '/api/admin/extensions/forms') {
+                return respond(config, 200, extensionForms);
             }
 
             payloads.push(JSON.parse(config.data));
@@ -180,6 +190,10 @@ describe('extension fields in admin forms', () => {
                 return respond(config, 200, { en: 'English' });
             }
 
+            if (config.url === '/api/admin/extensions/forms') {
+                return respond(config, 200, extensionForms);
+            }
+
             payloads.push(JSON.parse(config.data));
             throw new AxiosError(
                 'Request failed with status code 422',
@@ -216,6 +230,51 @@ describe('extension fields in admin forms', () => {
         await waitFor(() => expect(payloads).toHaveLength(1));
         // An extension left untouched is still sent, so a `required` rule of its fails the create.
         expect((payloads[0] as { extensions: unknown }).extensions).toEqual({ probe: { tier: 'silver' }, other: {} });
+    }, 20_000);
+});
+
+describe('extension fields while the list of form extensions loads', () => {
+    it('shows no extension fields and sends no extension values', async () => {
+        const payloads: unknown[] = [];
+
+        http.defaults.adapter = async (config) => {
+            if (config.url === '/api/admin/languages') {
+                return respond(config, 200, { en: 'English' });
+            }
+
+            if (config.url === '/api/admin/extensions/forms') {
+                return new Promise<AxiosResponse>(() => {});
+            }
+
+            payloads.push(JSON.parse(config.data));
+            throw new AxiosError(
+                'Request failed with status code 422',
+                'ERR_BAD_REQUEST',
+                config,
+                null,
+                respond(config, 422, { errors: [] })
+            );
+        };
+
+        await boot();
+        host = createExtensionTestHost({ path: '/panel/users/new' });
+        const Wrapper = host.Wrapper;
+
+        render(
+            <Wrapper>
+                <CreateUserForm />
+            </Wrapper>
+        );
+
+        fireEvent.change(await screen.findByLabelText('Email Address'), { target: { value: 'new@example.test' } });
+        fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'newuser' } });
+        fireEvent.change(screen.getByLabelText('First Name'), { target: { value: 'New' } });
+        fireEvent.change(screen.getByLabelText('Last Name'), { target: { value: 'User' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
+
+        await waitFor(() => expect(payloads).toHaveLength(1));
+        expect(screen.queryByLabelText('Tier')).toBeNull();
+        expect((payloads[0] as { extensions: unknown }).extensions).toEqual({});
     }, 20_000);
 });
 

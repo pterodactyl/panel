@@ -1,18 +1,10 @@
 import type { UserData } from '@/api/account/types';
 import type { SiteSettings } from '@/api/settings/types';
 import type { SiteExtensionEntry } from '@/extensions/registry';
-import type { ExtensionFormName } from '@/extensions/formTypes';
-
-/** An extension whose fields an admin form shows. */
-export interface ExtensionFormEntry {
-    id: string;
-    name: string;
-}
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings & {
         extensions?: SiteExtensionEntry[];
-        extensionForms?: Partial<Record<ExtensionFormName, ExtensionFormEntry[]>>;
     };
     PterodactylUser?: {
         uuid: string;
@@ -55,7 +47,3 @@ export const getBootstrapSiteSettings = (): SiteSettings | undefined => (window 
 
 export const getBootstrapExtensions = (): SiteExtensionEntry[] =>
     (window as ExtendedWindow).SiteConfiguration?.extensions ?? [];
-
-/** The extensions whose fields each admin form shows to the signed-in root administrator. */
-export const getBootstrapExtensionForms = (): Partial<Record<ExtensionFormName, ExtensionFormEntry[]>> =>
-    (window as ExtendedWindow).SiteConfiguration?.extensionForms ?? {};

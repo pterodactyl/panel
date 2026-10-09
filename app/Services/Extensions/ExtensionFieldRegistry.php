@@ -7,8 +7,10 @@ namespace Pterodactyl\Services\Extensions;
 use Illuminate\Contracts\Container\ContextualAttribute;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
+use Pterodactyl\Extensions\Attributes\ApplicationApi;
 use Pterodactyl\Extensions\Fields;
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 
@@ -30,20 +32,25 @@ final class ExtensionFieldRegistry
         throw_if(isset($this->fields[$model][$extension]), InvalidArgumentException::class, sprintf('Extension "%s" registered fields for %s more than once.', $extension, class_basename($model)));
         $this->assertModelParameters($model, $fields);
 
-        $this->fields[$model][$extension] = ['fields' => $fields, 'registration' => $registration];
+        $this->fields[$model][$extension] = [
+            'fields' => $fields,
+            'registration' => $registration,
+            'applicationApi' => (new ReflectionClass($fields))->getAttributes(ApplicationApi::class) !== [],
+        ];
     }
 
     /**
-     * The Fields classes of extensions whose provider booted, keyed by extension id.
+     * The Fields classes of extensions whose provider booted, keyed by extension id. The
+     * Application API only sees those marked #[ApplicationApi].
      *
      * @param  class-string<Model>  $model
      * @return array<string, class-string<Fields>>
      */
-    public function for(string $model): array
+    public function for(string $model, bool $applicationApi = false): array
     {
         $fields = [];
         foreach ($this->fields[$model] ?? [] as $extension => $entry) {
-            if ($entry['registration']->isActive()) {
+            if ($entry['registration']->isActive() && (! $applicationApi || $entry['applicationApi'])) {
                 $fields[$extension] = $entry['fields'];
             }
         }

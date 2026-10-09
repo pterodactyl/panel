@@ -80,6 +80,7 @@ Route::get('/activity/filters', ActivityFilterController::class)->name('api.admi
 */
 Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): void {
     Route::get('/', [ExtensionController::class, 'index']);
+    Route::get('/forms', [ExtensionController::class, 'forms'])->name('.forms');
     Route::get('/{extension}/settings', [ExtensionController::class, 'settings'])->name('.settings');
     Route::get('/{extension}/icon', [ExtensionController::class, 'icon'])->name('.icon');
 

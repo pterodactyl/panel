@@ -6,12 +6,9 @@ namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
-use Pterodactyl\Support\JsonEmptyObject;
 use Throwable;
 
 class AssetComposer
@@ -23,7 +20,6 @@ class AssetComposer
         private readonly AssetHashService $assetHashService,
         private readonly ExtensionRepository $extensions,
         private readonly ExtensionHeadTags $extensionHeadTags,
-        private readonly ExtensionFields $extensionFields,
     ) {}
 
     /**
@@ -42,7 +38,6 @@ class AssetComposer
                 'siteKey' => config('recaptcha.website_key', ''),
             ],
             'extensions' => $this->extensionPayload(),
-            'extensionForms' => $this->extensionForms(),
         ]);
     }
 
@@ -63,25 +58,6 @@ class AssetComposer
             return $this->extensions->frontendPayload(authenticated: Auth::check());
         } catch (Throwable) {
             return [];
-        }
-    }
-
-    /**
-     * The extensions whose fields each admin form shows, for root administrators only.
-     *
-     * @return array<string, list<array{id: string, name: string}>>|JsonEmptyObject
-     */
-    private function extensionForms(): array|JsonEmptyObject
-    {
-        $user = Auth::user();
-        if (! config('extensions.enabled') || ! $user instanceof User || ! $user->root_admin) {
-            return new JsonEmptyObject;
-        }
-
-        try {
-            return $this->extensionFields->forms() ?: new JsonEmptyObject;
-        } catch (Throwable) {
-            return new JsonEmptyObject;
         }
     }
 }

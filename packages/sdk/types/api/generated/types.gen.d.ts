@@ -260,6 +260,17 @@ export type AdminEggVariableResource = {
     object: string;
     attributes: AdminEggVariableAttributes;
 };
+export type AdminExtensionFormsResponse = {
+    /**
+     * The extensions whose fields each admin form shows, keyed by form (admin.user, admin.server, admin.node, admin.egg, admin.location, admin.mount, admin.database_host). Forms without any are left out.
+     */
+    data: {
+        [key: string]: Array<{
+            id: string;
+            name: string;
+        }>;
+    };
+};
 export type AdminExtensionSettingField = {
     input: string;
     label: string;
@@ -4757,6 +4768,30 @@ export type AdminInstallExtensionResponses = {
     201: AdminInstallExtensionResponseBody;
 };
 export type AdminInstallExtensionResponse = AdminInstallExtensionResponses[keyof AdminInstallExtensionResponses];
+export type AdminListExtensionFormsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/extensions/forms';
+};
+export type AdminListExtensionFormsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+};
+export type AdminListExtensionFormsError = AdminListExtensionFormsErrors[keyof AdminListExtensionFormsErrors];
+export type AdminListExtensionFormsResponses = {
+    /**
+     * Extension forms returned.
+     */
+    200: AdminExtensionFormsResponse;
+};
+export type AdminListExtensionFormsResponse = AdminListExtensionFormsResponses[keyof AdminListExtensionFormsResponses];
 export type AdminGetExtensionSettingsData = {
     body?: never;
     path: {

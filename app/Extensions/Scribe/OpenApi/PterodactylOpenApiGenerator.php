@@ -16,6 +16,7 @@ use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
+use Pterodactyl\Services\Extensions\ExtensionSettings;
 use Pterodactyl\Support\JsonValueGuard;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -140,6 +141,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'AdminEggConfigurationFile' => $this->adminEggConfigurationFileSchema(),
             'AdminEggConfigurationFiles' => $this->adminEggConfigurationFilesSchema(),
             'AdminEggConfigurationFind' => $this->adminEggConfigurationFindSchema(),
+            'AdminExtensionFormsResponse' => $this->adminExtensionFormsSchema(),
             'AdminExtensionSettingField' => $this->adminExtensionSettingFieldSchema(),
             'ExtensionFields' => $this->extensionFieldsSchema(),
             'AdminExtensionSettingOption' => $this->adminExtensionSettingOptionSchema(),
@@ -853,6 +855,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         $schema = match ($pathItem['operationId'] ?? null) {
+            'adminListExtensionForms' => 'AdminExtensionFormsResponse',
             'adminListLanguages' => 'AdminLanguagesResponse',
             'adminGetNodeConfiguration' => 'AdminNodeConfigurationResponse',
             'adminCreateNodeDeployToken' => 'AdminNodeDeployTokenResponse',
@@ -2248,6 +2251,35 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                             'items' => ['$ref' => '#/components/schemas/AdminExtensionSettingField'],
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    /** @return OpenApiSchema */
+    private function adminExtensionFormsSchema(): array
+    {
+        $forms = implode(', ', array_map(fn (string $alias): string => "admin.{$alias}", array_keys(ExtensionSettings::SCOPES)));
+
+        return [
+            'type' => 'object',
+            'required' => ['data'],
+            'properties' => [
+                'data' => [
+                    'type' => 'object',
+                    'description' => "The extensions whose fields each admin form shows, keyed by form ({$forms}). Forms without any are left out.",
+                    'additionalProperties' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'object',
+                            'required' => ['id', 'name'],
+                            'properties' => [
+                                'id' => ['type' => 'string', 'example' => 'example-extension'],
+                                'name' => ['type' => 'string', 'example' => 'Example Extension'],
+                            ],
+                        ],
+                    ],
+                    'example' => ['admin.user' => [['id' => 'example-extension', 'name' => 'Example Extension']]],
                 ],
             ],
         ];

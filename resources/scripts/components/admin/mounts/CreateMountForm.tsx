@@ -4,7 +4,7 @@ import { createAdminMountInput, type MountValues, useCreateAdminMount } from '@/
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import MountFormFields from '@/components/admin/mounts/MountFormFields';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 
@@ -22,13 +22,12 @@ export default function CreateMountForm() {
     const navigate = useNavigate();
     const createMount = useCreateAdminMount();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.mount');
     const form = useAppForm({
         defaultValues: initialValues(),
         onSubmit: async ({ value }) => {
             try {
-                const mount = await createMount.mutateAsync(
-                    createAdminMountInput(withExtensionPayload('admin.mount', value))
-                );
+                const mount = await createMount.mutateAsync(createAdminMountInput(withExtensionPayload(value)));
 
                 void navigate({ to: '/panel/mounts/$id', params: { id: mount.attributes.id } });
             } catch {

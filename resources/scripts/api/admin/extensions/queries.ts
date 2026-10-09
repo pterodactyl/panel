@@ -10,6 +10,7 @@ import {
     adminGetExtensionSettingsOptions,
     adminGetExtensionSettingsQueryKey,
     adminInstallExtensionMutation,
+    adminListExtensionFormsOptions,
     adminListExtensionsOptions,
     adminListExtensionsQueryKey,
     adminRemoveExtensionMutation,
@@ -18,6 +19,7 @@ import {
 } from '@/api/generated/@tanstack/react-query.gen';
 import type {
     AdminClearExtensionSettingFileData,
+    AdminExtensionFormsResponse,
     AdminDisableExtensionData,
     AdminEnableExtensionData,
     AdminGetExtensionSettingsResponse,
@@ -37,6 +39,15 @@ export type AdminExtension = NonNullable<AdminExtensionsResponse['data']>[number
 type AdminExtensionsQueryOptions = { enabled?: boolean };
 
 export const adminExtensionsQueryOptions = () => adminListExtensionsOptions();
+
+/** The extensions whose fields each admin form shows, keyed by form. */
+export type AdminExtensionForms = AdminExtensionFormsResponse['data'];
+
+/** Changes only when extensions are enabled or disabled, which asks for a reload. */
+export const adminExtensionFormsQueryOptions = (): ReturnType<typeof adminListExtensionFormsOptions> => ({
+    ...adminListExtensionFormsOptions(),
+    staleTime: Infinity,
+});
 
 export const installAdminExtensionInput = (
     file: File,
@@ -134,6 +145,9 @@ export const clearAdminExtensionSettingFileInput = (
 
 export const useAdminExtensions = (options?: AdminExtensionsQueryOptions) =>
     useQuery({ ...adminExtensionsQueryOptions(), ...options });
+
+export const useAdminExtensionForms = (options?: AdminExtensionsQueryOptions) =>
+    useQuery({ ...adminExtensionFormsQueryOptions(), ...options });
 
 export const useAdminExtensionSettings = (extension: string, options?: { enabled?: boolean }) =>
     useQuery({ ...adminExtensionSettingsQueryOptions(extension), ...options });

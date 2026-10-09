@@ -378,11 +378,13 @@ parameter there must be nullable. Registering a class that breaks either rule fa
 provider's boot.
 
 - `rules()` validates the extension's values on their own, so `required_if:plan,pro` refers
-  to the extension's own `plan`. They run whenever a request includes the extension under
-  `extensions`, even with no values. The admin forms include every extension they show,
-  so `required` holds there on create and on every edit, like the core fields beside it.
-  An API request that leaves the extension out leaves its values alone. A `?User $user`
-  parameter receives the model when updating and null when creating.
+  to the extension's own `plan`. They run for every extension the signed-in user may change
+  when the model is created, whether or not the request sends its values, and when an
+  update includes the extension under `extensions`, even with no values. The admin forms
+  include every extension they show, so `required` holds there on create and on every
+  edit, like the core fields beside it. An update that leaves the extension out leaves its
+  values alone. A `?User $user` parameter receives the model when updating and null when
+  creating.
 - `values($model)` returns the current values, keyed by field. Values are strings, numbers,
   booleans, null, or lists of those.
 - `save($model, array $values)` stores the validated values; the parameter must be named
@@ -394,8 +396,10 @@ provider's boot.
   Only root admins reach these endpoints, and `$admin->can()` passes every check for a root
   admin, so decide on something else, such as the admin's id or a role the extension keeps.
 - `secrets()` lists the fields that hold credentials. Their values are encrypted when the
-  panel stores them and returned as `********`, and a save that sends one empty, as the mask
-  or not at all keeps the stored value. A secret cannot be cleared through the form.
+  panel stores them and returned as `********`. A save that sends the mask, or leaves the
+  field out, keeps the stored value, and `save()` receives it. A save that sends null or an
+  empty string clears it, so a `required` rule then fails. An empty secret is returned as
+  null, so sending back what the form loaded clears nothing.
 - `attributes()` and `messages()` name the fields in validation messages and replace them,
   as on a FormRequest.
 
@@ -410,7 +414,9 @@ The admin API's create and update endpoints accept `extensions: { "<id>": { "<fi
 and report errors under `extensions.<id>.<field>`. Responses about one resource include
 `attributes.extensions`; lists leave it out. A request that leaves an extension out does not
 run its `save()`, values sent for an extension that is disabled are ignored, and an extension
-whose `values()` throws is recorded as failing and left out of the response. Mark the class
+whose `values()` throws is recorded as failing and left out of the response. One whose
+methods throw while a save validates its values is recorded as failing too, and the request
+gets a 422 under `extensions.<id>`. Mark the class
 `#[ApplicationApi]` (`Pterodactyl\Extensions\Attributes\ApplicationApi`) to accept and return
 its values on the Application API's user, node, location and server endpoints as well, so a
 billing system that provisions through it can set them.

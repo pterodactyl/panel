@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\Extensions\ExtensionFieldsTest;
 
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Extensions\Fields;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Extension;
 use Pterodactyl\Models\ExtensionSetting;
@@ -91,7 +97,7 @@ final class LockedFields extends Fields
     /** @return array<string, list<string>> */
     public function rules(): array
     {
-        return ['tier' => ['string']];
+        return ['tier' => ['required', 'string']];
     }
 
     public function authorize(#[CurrentUser] User $admin): bool
@@ -170,6 +176,88 @@ final class TokenFields extends Fields
     {
         self::$saved = $values['token'];
         self::$token = $values['token'];
+    }
+}
+
+/** Keeps an optional credential in its own storage, here a static property standing in for a table. */
+final class OptionalTokenFields extends Fields
+{
+    public static ?string $token = null;
+
+    /** @var array<string, mixed>|null */
+    public static ?array $saved = null;
+
+    /** @return array<string, list<string>> */
+    public function rules(): array
+    {
+        return ['token' => ['nullable', 'string']];
+    }
+
+    /** @return list<string> */
+    public function secrets(): array
+    {
+        return ['token'];
+    }
+
+    /** @return array<string, string|null> */
+    public function values(Model $model): array
+    {
+        return ['token' => self::$token];
+    }
+
+    /** @param array<string, mixed> $values */
+    public function save(Model $model, array $values): void
+    {
+        self::$saved = $values;
+    }
+}
+
+/** Has a secret, so validating reads the stored values, which fails. */
+final class BrokenSecretFields extends Fields
+{
+    /** @return array<string, list<string>> */
+    public function rules(): array
+    {
+        return ['token' => ['nullable', 'string']];
+    }
+
+    /** @return list<string> */
+    public function secrets(): array
+    {
+        return ['token'];
+    }
+
+    /** @return array<string, string> */
+    public function values(Model $model): array
+    {
+        throw new RuntimeException('The vault is sealed: password=hunter2.');
+    }
+
+    /** @param array<string, string> $values */
+    public function save(Model $model, array $values): void
+    {
+        // Never reached: validating fails first.
+    }
+}
+
+/** Builds its own validator, which FormRequest uses in place of the default one. */
+final class CustomValidatorRequest extends FormRequest
+{
+    use ValidatesExtensionFields;
+
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function validator(ValidationFactory $factory): Validator
+    {
+        return $factory->make($this->all(), ['name' => ['required', 'string']]);
+    }
+
+    protected function extensionFieldsModel(): Model|string
+    {
+        return User::class;
     }
 }
 
@@ -333,12 +421,25 @@ test('values the panel stores for a model are deleted with it', function (): voi
     expect(ExtensionSetting::query()->where('extension', 'regions')->exists())->toBeFalse();
 });
 
-test('the page bootstrap lists the extensions each admin form shows, for root administrators only', function (): void {
+test('the admin API lists the extensions each admin form shows, for root administrators only', function (): void {
     install('billing', User::class, BillingFields::class);
     install('roles', Location::class, NestedFields::class);
 
-    $this->get('/')->assertOk()->assertSee('"extensionForms":{"admin.user":[{"id":"billing","name":"Billing"}],"admin.location":[{"id":"roles","name":"Roles"}]}', false);
-    $this->actingAs(User::factory()->create())->get('/')->assertOk()->assertSee('"extensionForms":{}', false);
+    // Pages never run extension field code, so their bootstrap does not carry the list.
+    $this->get('/')->assertOk()->assertDontSee('extensionForms', false);
+
+    $this->getJson(route('api.admin.extensions.forms'))
+        ->assertOk()
+        ->assertExactJson(['data' => ['admin.user' => [['id' => 'billing', 'name' => 'Billing']], 'admin.location' => [['id' => 'roles', 'name' => 'Roles']]]]);
+
+    config()->set('extensions.enabled', false);
+    expect($this->getJson(route('api.admin.extensions.forms'))->assertOk()->getContent())->toBe('{"data":{}}');
+
+    $this->actingAs(User::factory()->create())->getJson(route('api.admin.extensions.forms'))->assertForbidden();
+});
+
+test('the admin API lists no extension forms when no extension adds fields', function (): void {
+    expect($this->getJson(route('api.admin.extensions.forms'))->assertOk()->getContent())->toBe('{"data":{}}');
 });
 
 test('the registry refuses fields it cannot run', function (string $model, string $fields, string $message): void {
@@ -352,7 +453,7 @@ test('the registry refuses fields it cannot run', function (string $model, strin
     'a parameter of another model' => [User::class, OtherModelFields::class, 'OtherModelFields::rules() parameter $server would receive an empty Server'],
 ]);
 
-test('secret fields are encrypted, masked, and kept when a save sends them empty, as the mask or not at all', function (): void {
+test('secret fields are encrypted and masked, kept when a save sends the mask or leaves them out, and cleared when sent empty', function (): void {
     install('vault', User::class, VaultFields::class);
     $user = User::factory()->create();
     $update = fn (array $values) => $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['extensions' => ['vault' => $values]]));
@@ -368,11 +469,25 @@ test('secret fields are encrypted, masked, and kept when a save sends them empty
     // The mask is shorter than the rule allows, so these only pass because the stored value is checked.
     $update(['api_key' => '********', 'region' => 'us'])->assertOk();
     $update(['region' => 'ap'])->assertOk();
-    $update(['api_key' => '', 'region' => 'ap'])->assertOk();
     expect($stored())->toBe(['api_key' => 'super-secret-key', 'region' => 'ap']);
 
     $update(['api_key' => 'another-secret-key'])->assertOk();
     expect($stored()['api_key'])->toBe('another-secret-key');
+
+    $update(['api_key' => '', 'region' => 'ap'])
+        ->assertOk()
+        ->assertJsonPath('attributes.extensions.vault.api_key', null);
+    expect($stored()['api_key'])->toBeIn([null, '']);
+
+    $update(['api_key' => 'third-secret-key'])->assertOk();
+    $update(['api_key' => null])
+        ->assertOk()
+        ->assertJsonPath('attributes.extensions.vault.api_key', null);
+    expect($stored()['api_key'])->toBeNull();
+
+    // An empty secret reads back as null, so sending back what the form loaded clears nothing.
+    $update(['api_key' => null])->assertOk();
+    expect($stored()['api_key'])->toBeNull();
 
     // When creating there is nothing to keep, so the mask is not stored as a value.
     $this->postJson(route('api.admin.users.store'), ['email' => 'vault@example.test', 'username' => 'vault', 'name_first' => 'Vault', 'name_last' => 'User', 'extensions' => ['vault' => ['api_key' => '********']]])
@@ -388,8 +503,90 @@ test('a secret an extension keeps itself is masked, and save() gets the stored v
 
     $this->getJson(route('api.admin.users.view', ['user' => $user->id]))->assertJsonPath('attributes.extensions.tokens.token', '********');
     $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['extensions' => ['tokens' => ['token' => '********']]]))->assertOk();
-
     expect(TokenFields::$saved)->toBe('stored-token-value');
+
+    TokenFields::$saved = null;
+    $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['extensions' => ['tokens' => []]]))->assertOk();
+    expect(TokenFields::$saved)->toBe('stored-token-value');
+});
+
+test('clearing a required secret fails its rule', function (mixed $cleared): void {
+    install('tokens', User::class, TokenFields::class);
+    TokenFields::$token = 'stored-token-value';
+    TokenFields::$saved = null;
+    $user = User::factory()->create();
+
+    $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['extensions' => ['tokens' => ['token' => $cleared]]]))
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'extensions.tokens.token');
+
+    expect(TokenFields::$saved)->toBeNull();
+    expect(TokenFields::$token)->toBe('stored-token-value');
+})->with(['an empty string' => [''], 'null' => [null]]);
+
+test('save() receives a secret sent as null or empty, so the extension can clear it', function (): void {
+    install('tokens', User::class, OptionalTokenFields::class);
+    OptionalTokenFields::$token = 'stored-token-value';
+    OptionalTokenFields::$saved = null;
+    $user = User::factory()->create();
+
+    $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['extensions' => ['tokens' => ['token' => null]]]))->assertOk();
+
+    expect(OptionalTokenFields::$saved)->toBe(['token' => null]);
+});
+
+test('an extension that throws while its values are validated refuses the save and is recorded as failing', function (): void {
+    install('broken', User::class, BrokenSecretFields::class);
+    $user = User::factory()->create();
+
+    $this->putJson(route('api.admin.users.update', ['user' => $user->id]), userPayload($user, ['username' => 'renamed', 'extensions' => ['broken' => ['token' => '********']]]))
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'extensions.broken')
+        ->assertJsonPath('errors.0.detail', 'The broken fields could not be read, so they were not saved.');
+
+    expect($user->refresh()->username)->not->toBe('renamed');
+    expect(Extension::query()->where('identifier', 'broken')->value('error'))->toBe('Validating its User fields failed with RuntimeException; the log has the details.');
+});
+
+test('creating a model runs the rules of every extension the signed-in user may change, sent or not', function (): void {
+    install('billing', User::class, BillingFields::class);
+    install('locked', User::class, LockedFields::class);
+    $payload = ['email' => 'billed@example.test', 'username' => 'billed', 'name_first' => 'Billed', 'name_last' => 'User'];
+
+    $this->postJson(route('api.admin.users.store'), $payload)
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'extensions.billing.plan')
+        ->assertJsonCount(1, 'errors');
+
+    // locked's tier is required too, but this admin may not change it, so its rules do not run.
+    $this->postJson(route('api.admin.users.store'), [...$payload, 'extensions' => ['billing' => ['plan' => 'free']]])
+        ->assertCreated()
+        ->assertJsonPath('attributes.extensions', ['billing' => ['plan' => 'free', 'invoice_email' => null]]);
+
+    $this->actingAs(User::factory()->create(['root_admin' => true, 'email' => 'billing@example.test']));
+    $this->postJson(route('api.admin.users.store'), [...$payload, 'email' => 'other@example.test', 'username' => 'other', 'extensions' => ['billing' => ['plan' => 'free']]])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'extensions.locked.tier');
+});
+
+test('extension values are validated for a request that builds its own validator', function (): void {
+    install('billing', User::class, BillingFields::class);
+    $resolve = function (array $input): CustomValidatorRequest {
+        $request = CustomValidatorRequest::create('/', 'POST', $input);
+        $request->setContainer($this->app)->setRedirector($this->app->make(Redirector::class));
+        $request->validateResolved();
+
+        return $request;
+    };
+
+    try {
+        $resolve(['extensions' => ['billing' => ['plan' => 'gold']]]);
+        $this->fail('Expected the request to fail validation.');
+    } catch (ValidationException $exception) {
+        expect(array_keys($exception->errors()))->toBe(['name', 'extensions.billing.plan']);
+    }
+
+    expect($resolve(['name' => 'ok', 'extensions' => ['billing' => ['plan' => 'free']]])->extensionValues()->all())->toBe(['billing' => ['plan' => 'free']]);
 });
 
 test("field values the panel stores stay apart from the extension's settings for the same model", function (): void {

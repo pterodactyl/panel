@@ -115,7 +115,7 @@ parameters:
         ExtensionFieldValue: 'ApiScalar|list<ApiScalar>'
         ExtensionFieldValues: 'array<string, ExtensionFieldValue>'
         ExtensionFieldInput: 'array<string, ExtensionFieldValues>'
-        ExtensionFieldEntry: 'array{fields: class-string<\Pterodactyl\Extensions\Fields>, registration: \Pterodactyl\Services\Extensions\ExtensionRegistration}'
+        ExtensionFieldEntry: 'array{fields: class-string<\Pterodactyl\Extensions\Fields>, registration: \Pterodactyl\Services\Extensions\ExtensionRegistration, applicationApi: bool}'
         ExtensionScreenMatcher: 'array{any?: list<string>, all?: list<string>}'
         ExtensionScreenCondition: 'array{eggFeatures?: ExtensionScreenMatcher, eggTags?: ExtensionScreenMatcher, match?: string, runtime?: bool}'
         ExtensionScreenDefinition: 'array{id: string, area: string, path: string, parent?: string, nav?: array{label: string, exact?: bool, params?: array<string, string>, order?: int, group?: string, badge?: string, icon?: string}, permission?: list<string>, when?: ExtensionScreenCondition}'

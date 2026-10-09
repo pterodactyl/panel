@@ -2,32 +2,44 @@
 import type { ExtensionFieldValues, ExtensionFormName, ExtensionFormResources, FormExtensionRegistration } from "./formTypes.js";
 /**
  * The values of an admin form's `extensions` field: for each extension whose fields were
- * edited, all of its values. A save sends `withExtensionPayload()` of the form's values,
- * which adds every other extension the form shows.
+ * edited, all of its values. A save sends them through `useExtensionPayload()`, which adds
+ * every other extension the form shows.
  */
 export type ExtensionFormValues = Record<string, ExtensionFieldValues>;
+/** The extensions whose fields each admin form shows, as the panel lists them. */
+export type ExtensionFormsList = Partial<Record<ExtensionFormName, readonly {
+    id: string;
+    name: string;
+}[]>>;
 /** The initial `extensions` value of an admin form: no extension's fields edited yet. */
 export declare const initialExtensionValues: () => ExtensionFormValues;
 /** The components extensions registered for an admin form with `forms.extend()`. */
 export declare function useFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[];
+/**
+ * The extensions the panel lists for each admin form, fetched once some extension drew fields
+ * for `form`. Undefined while loading, and when no extension drew any.
+ */
+export declare function useExtensionForms(form: ExtensionFormName): ExtensionFormsList | undefined;
 export interface ShownFormExtension {
     id: string;
     name: string;
     component: FormExtensionRegistration['component'];
 }
 /**
- * The extensions an admin form shows: those the panel lists for it whose bundle drew fields
- * with `forms.extend()`. When editing (`saved` is given), only those whose values the panel
- * returned, so a save cannot write over values it could not read.
+ * The extensions an admin form shows: those the panel lists for it (`forms`, none while it
+ * loads) whose bundle drew fields with `forms.extend()`. When editing (`saved` is given), only
+ * those whose values the panel returned, so a save cannot write over values it could not read.
  */
-export declare function shownFormExtensions(form: ExtensionFormName, registrations: readonly FormExtensionRegistration[], saved?: Partial<Record<string, ExtensionFieldValues>>): ShownFormExtension[];
+export declare function shownFormExtensions(form: ExtensionFormName, forms: ExtensionFormsList | undefined, registrations: readonly FormExtensionRegistration[], saved?: Partial<Record<string, ExtensionFieldValues>>): ShownFormExtension[];
 /**
- * The `extensions` an admin form saves: every extension the form shows, its saved values with
- * the edits applied. Sending each one, edited or not, runs all of its rules on every save, so
- * a `required` field holds like the core fields beside it. Pass the resource when editing.
+ * Builds the `extensions` an admin form saves from the list `<ExtensionFormFields>` fetched,
+ * read when the form submits, so it sends exactly the extensions the form showed.
  */
-export declare function extensionFormPayload<TName extends ExtensionFormName>(form: TName, edits: ExtensionFormValues, resource?: ExtensionFormResources[TName]): ExtensionFormValues;
-/** A form's values with `extensions` replaced by `extensionFormPayload()` of them. */
-export declare function withExtensionPayload<TName extends ExtensionFormName, TValues extends {
-    extensions: ExtensionFormValues;
-}>(form: TName, values: TValues, resource?: ExtensionFormResources[TName]): TValues;
+export declare function useExtensionPayload<TName extends ExtensionFormName>(form: TName): {
+    /** The form's `extensions` edits as the payload to save. */
+    extensionFormPayload: (edits: ExtensionFormValues, resource?: ExtensionFormResources[TName]) => ExtensionFormValues;
+    /** A form's values with `extensions` replaced by `extensionFormPayload()` of them. */
+    withExtensionPayload: <TValues extends {
+        extensions: ExtensionFormValues;
+    }>(values: TValues, resource?: ExtensionFormResources[TName]) => TValues;
+};

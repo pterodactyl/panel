@@ -5,7 +5,12 @@ import Button from '@/components/elements/Button';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useFieldContext } from '@/components/form';
 import ExtensionMount from '@/extensions/ExtensionMount';
-import { shownFormExtensions, useFormExtensions, type ExtensionFormValues } from '@/extensions/forms';
+import {
+    shownFormExtensions,
+    useExtensionForms,
+    useFormExtensions,
+    type ExtensionFormValues,
+} from '@/extensions/forms';
 import type {
     ExtensionField,
     ExtensionFieldValue,
@@ -31,10 +36,10 @@ interface Props<TName extends ExtensionFormName> {
 
 /**
  * The fields extensions draw in an admin form with `forms.extend()`. Render it inside
- * `<form.AppField name={'extensions'}>` and submit `withExtensionPayload()` of the form's
- * values, so every extension shown here is validated and saved with the form. When editing,
- * an extension whose values the panel did not return (it failed to read them, or the
- * signed-in admin may not see them) is left out, so a save cannot write over them.
+ * `<form.AppField name={'extensions'}>` and submit the form's values through
+ * `useExtensionPayload()`, so every extension shown here is validated and saved with the
+ * form. When editing, an extension whose values the panel did not return (it failed to read
+ * them, or the signed-in admin may not see them) is left out, so a save cannot write over them.
  */
 export default function ExtensionFormFields<TName extends ExtensionFormName>({
     form,
@@ -48,12 +53,14 @@ export default function ExtensionFormFields<TName extends ExtensionFormName>({
     const field = useFieldContext<ExtensionFormValues>();
     const isSubmitting = useStore(field.form.store, (state) => state.isSubmitting);
     const registrations = useFormExtensions(form);
+    // Nothing shows until the panel's list of the form's extensions arrives.
+    const forms = useExtensionForms(form);
     // Fields changed since `error` arrived no longer show its message.
     const [edited, setEdited] = useState<{ error: unknown; paths: readonly string[] }>({ error: undefined, paths: [] });
     const editedPaths = edited.error === error ? edited.paths : [];
 
     const saved = resource?.attributes.extensions ?? {};
-    const extensions = shownFormExtensions(form, registrations, mode === 'create' ? undefined : saved);
+    const extensions = shownFormExtensions(form, forms, registrations, mode === 'create' ? undefined : saved);
 
     if (extensions.length === 0) {
         return null;

@@ -10,7 +10,7 @@ import {
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { withExtensionPayload } from '@/extensions/forms';
+import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useAppForm, Form } from '@/components/form';
@@ -19,14 +19,13 @@ export default function CreateDatabaseHostForm() {
     const navigate = useNavigate();
     const createDatabaseHost = useCreateAdminDatabaseHost();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.database_host');
     const form = useAppForm({
         defaultValues: newDatabaseHostFormValues(),
         onSubmit: async ({ value }) => {
             try {
                 const host = await createDatabaseHost.mutateAsync(
-                    createAdminDatabaseHostInput(
-                        databaseHostBodyFromFormValues(withExtensionPayload('admin.database_host', value))
-                    )
+                    createAdminDatabaseHostInput(databaseHostBodyFromFormValues(withExtensionPayload(value)))
                 );
 
                 void navigate({ to: '/panel/databases/$id', params: { id: host.attributes.id } });

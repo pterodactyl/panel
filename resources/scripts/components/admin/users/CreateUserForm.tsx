@@ -6,7 +6,7 @@ import { useCreateAdminUser } from '@/api/admin/users/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import UserFormFields from '@/components/admin/users/UserFormFields';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 import { languageOptions } from '@/components/admin/languageOptions';
@@ -30,13 +30,12 @@ export default function CreateUserForm() {
     const defaults = initialValues(defaultLanguage);
     const languagesList = languageOptions(languages, defaults.language);
 
+    const { withExtensionPayload } = useExtensionPayload('admin.user');
     const form = useAppForm({
         defaultValues: defaults,
         onSubmit: async ({ value }) => {
             try {
-                const user = await createUser.mutateAsync(
-                    createAdminUserInput(withExtensionPayload('admin.user', value))
-                );
+                const user = await createUser.mutateAsync(createAdminUserInput(withExtensionPayload(value)));
 
                 void navigate({ to: '/panel/users/$id', params: { id: user.attributes.id } });
             } catch {

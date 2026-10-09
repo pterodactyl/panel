@@ -72,3 +72,23 @@ test('the Application API accepts and returns only fields marked for it', functi
         ->assertUnprocessable()
         ->assertJsonPath('errors.0.meta.source_field', 'extensions.billing.plan');
 });
+
+test('a create that leaves out a field marked for the Application API still runs its rules', function (): void {
+    $this->postJson('/api/application/users', ['username' => 'billed', 'email' => 'billed@example.test', 'first_name' => 'Billed', 'last_name' => 'User'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'extensions.billing.plan')
+        ->assertJsonCount(1, 'errors');
+
+    expect(User::query()->where('username', 'billed')->exists())->toBeFalse();
+});
+
+test('an update that leaves the extensions out keeps their stored values', function (): void {
+    $user = User::factory()->create();
+    $this->app->make(ExtensionRepository::class)->settings('billing')->fields($user)->set('plan', 'pro');
+
+    $this->patchJson('/api/application/users/'.$user->id, ['username' => $user->username, 'email' => $user->email, 'first_name' => 'Renamed', 'last_name' => 'User'])
+        ->assertOk()
+        ->assertJsonPath('attributes.extensions', ['billing' => ['plan' => 'pro']]);
+
+    expect($this->app->make(ExtensionRepository::class)->settings('billing')->fields($user)->all())->toBe(['plan' => 'pro']);
+});

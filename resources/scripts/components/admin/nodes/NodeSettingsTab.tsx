@@ -10,7 +10,7 @@ import {
 } from '@/components/admin/nodes/nodeForm';
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 interface Values extends NodeFormValues {
@@ -25,6 +25,7 @@ const NodeSettingsForm = () => {
 
     const { data: locations = [] } = useAllAdminLocations();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.node');
     const form = useAppForm({
         defaultValues: nodeToValues(node),
         onSubmit: async ({ value }) => {
@@ -34,7 +35,7 @@ const NodeSettingsForm = () => {
                 await updateNode.mutateAsync(
                     updateAdminNodeInput(
                         node.attributes.id,
-                        nodeValuesFromForm(withExtensionPayload('admin.node', values, node)),
+                        nodeValuesFromForm(withExtensionPayload(values, node)),
                         resetSecret
                     )
                 );

@@ -9,11 +9,9 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Factory as ValidationFactory;
-use Pterodactyl\Extensions\Attributes\ApplicationApi;
 use Pterodactyl\Extensions\Fields;
 use Pterodactyl\Rules\ExtensionFieldValue;
 use Pterodactyl\Support\JsonValueGuard;
-use ReflectionClass;
 use Throwable;
 
 /**
@@ -41,11 +39,33 @@ final readonly class ExtensionFields
     public function for(string $model, bool $applicationApi = false): array
     {
         return array_filter(
-            $this->registry->for($model),
-            fn (string $fields, string $extension): bool => $this->extensions->isAvailable($extension)
-                && (! $applicationApi || (new ReflectionClass($fields))->getAttributes(ApplicationApi::class) !== []),
-            ARRAY_FILTER_USE_BOTH,
+            $this->registry->for($model, $applicationApi),
+            $this->extensions->isAvailable(...),
+            ARRAY_FILTER_USE_KEY,
         );
+    }
+
+    /**
+     * The running extensions whose fields the signed-in user may change on a model. One
+     * whose authorize() throws is recorded as failing and left out.
+     *
+     * @param  Model|class-string<Model>  $model  the model being updated, or the class being created
+     * @return list<string>
+     */
+    public function authorizedFor(Model|string $model, bool $applicationApi = false): array
+    {
+        $authorized = [];
+        foreach ($this->for($this->modelClass($model), $applicationApi) as $extension => $fields) {
+            try {
+                if ($this->authorized($fields, $model)) {
+                    $authorized[] = $extension;
+                }
+            } catch (Throwable $exception) {
+                $this->extensions->recordFailure($extension, sprintf('Authorizing its %s fields failed with %s; the log has the details.', class_basename($this->modelClass($model)), class_basename($exception)), $exception, 'fields');
+            }
+        }
+
+        return $authorized;
     }
 
     /**
@@ -66,22 +86,33 @@ final readonly class ExtensionFields
     /**
      * Validates each extension's submitted values against its own rules, adding failures to
      * $validator as `extensions.<id>.<field>`. Values for extensions that are not running
-     * are ignored, so their stored values stay as they are. A secret field sent empty, as
-     * its mask or not at all keeps its stored value.
+     * are ignored, so their stored values stay as they are. Each extension in $defaults
+     * that $submitted leaves out is validated with no values, so its required rules hold,
+     * and nothing is saved for it. A secret field sent as its mask or not at all keeps its
+     * stored value. An extension whose fields throw while validating is recorded as failing
+     * and its values are refused.
      *
      * @param  Model|class-string<Model>  $model  the model being updated, or the class being created
      * @param  array<string, array<array-key, ApiValue9>>  $submitted  each extension's submitted values
+     * @param  list<string>  $defaults  extensions to validate even when $submitted leaves them out
      */
-    public function validate(Validator $validator, Model|string $model, array $submitted, bool $applicationApi = false): ValidatedExtensionValues
+    public function validate(Validator $validator, Model|string $model, array $submitted, bool $applicationApi = false, array $defaults = []): ValidatedExtensionValues
     {
+        $values = $submitted + array_fill_keys($defaults, []);
         $validated = [];
-        foreach (array_intersect_key($this->for($this->modelClass($model), $applicationApi), $submitted) as $extension => $fields) {
-            $rules = $this->rules($fields, $model);
-            $values = $this->withStoredSecrets($extension, $fields, $model, $submitted[$extension]);
-            $own = $this->validation->make($values, $rules, $this->strings($fields, 'messages', $model), $this->strings($fields, 'attributes', $model));
-            $own->addRules(array_fill_keys($this->fieldNames($rules), [new ExtensionFieldValue]));
-            if ($own->fails()) {
-                foreach ($own->errors()->getMessages() as $field => $messages) {
+        foreach (array_intersect_key($this->for($this->modelClass($model), $applicationApi), $values) as $extension => $fields) {
+            try {
+                [$errors, $checked] = $this->check($extension, $fields, $model, $values[$extension]);
+            } catch (Throwable $exception) {
+                // The message can carry query bindings or credentials, so only the log gets it.
+                $this->extensions->recordFailure($extension, sprintf('Validating its %s fields failed with %s; the log has the details.', class_basename($this->modelClass($model)), class_basename($exception)), $exception, 'fields');
+                $validator->errors()->add('extensions.'.$extension, sprintf('The %s fields could not be read, so they were not saved.', $extension));
+
+                continue;
+            }
+
+            if ($errors !== []) {
+                foreach ($errors as $field => $messages) {
                     foreach ($messages as $message) {
                         $validator->errors()->add(sprintf('extensions.%s.%s', $extension, $field), $message);
                     }
@@ -90,7 +121,9 @@ final readonly class ExtensionFields
                 continue;
             }
 
-            $validated[$extension] = ExtensionSettingValueGuard::fieldValues($own->validated());
+            if (array_key_exists($extension, $submitted)) {
+                $validated[$extension] = $checked;
+            }
         }
 
         return ValidatedExtensionValues::fromValidation($validated);
@@ -170,6 +203,27 @@ final readonly class ExtensionFields
     }
 
     /**
+     * Checks one extension's values against its rules: the errors keyed by field, and the
+     * validated values when there are none.
+     *
+     * @param  class-string<Fields>  $fields
+     * @param  Model|class-string<Model>  $model
+     * @param  array<array-key, ApiValue9>  $submitted
+     * @return array{array<string, array<string>>, ExtensionFieldValues}
+     */
+    private function check(string $extension, string $fields, Model|string $model, array $submitted): array
+    {
+        $rules = $this->rules($fields, $model);
+        $values = $this->withStoredSecrets($extension, $fields, $model, $submitted);
+        $own = $this->validation->make($values, $rules, $this->strings($fields, 'messages', $model), $this->strings($fields, 'attributes', $model));
+        $own->addRules(array_fill_keys($this->fieldNames($rules), [new ExtensionFieldValue]));
+
+        return $own->fails()
+            ? [$own->errors()->getMessages(), []]
+            : [[], ExtensionSettingValueGuard::fieldValues($own->validated())];
+    }
+
+    /**
      * The fields rules name, without the nested keys of list fields (`tags.*`).
      *
      * @param  ValidationRules  $rules
@@ -222,9 +276,10 @@ final readonly class ExtensionFields
     }
 
     /**
-     * The submitted values with each secret field sent empty, as its mask or not at all
-     * replaced by its stored value, so the rules check the real value and saving keeps it.
-     * With nothing stored, or when creating, such a field is left out.
+     * The submitted values with each secret field sent as its mask or not at all replaced
+     * by its stored value, so the rules check the real value and saving keeps it. With
+     * nothing stored, or when creating, such a field is left out. A secret sent as null or
+     * empty is kept as sent, so saving clears it.
      *
      * @param  class-string<Fields>  $fields
      * @param  Model|class-string<Model>  $model
@@ -238,12 +293,13 @@ final readonly class ExtensionFields
             return $submitted;
         }
 
-        $stored = $model instanceof Model ? $this->current($extension, $fields, $model) : [];
+        $stored = null;
         foreach ($secrets as $field) {
-            if (! in_array($submitted[$field] ?? null, [null, '', ExtensionSettingDefinition::MASK], true)) {
+            if (array_key_exists($field, $submitted) && $submitted[$field] !== ExtensionSettingDefinition::MASK) {
                 continue;
             }
 
+            $stored ??= $model instanceof Model ? $this->current($extension, $fields, $model) : [];
             if (in_array($stored[$field] ?? null, [null, ''], true)) {
                 unset($submitted[$field]);
             } else {

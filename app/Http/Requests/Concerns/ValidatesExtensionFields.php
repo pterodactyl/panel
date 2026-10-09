@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Concerns;
 
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
@@ -23,6 +22,8 @@ trait ValidatesExtensionFields
 {
     private ?ValidatedExtensionValues $extensionValues = null;
 
+    private ?Validator $extensionFieldsValidator = null;
+
     /**
      * The model this request updates, or its class when the request creates one.
      *
@@ -37,10 +38,18 @@ trait ValidatesExtensionFields
     }
 
     /**
+     * Refuses extension values the signed-in user may not change before anything is
+     * validated, then validates each extension's values once the request's own rules ran,
+     * whether the request builds its validator itself or Laravel does.
+     *
      * {@inheritdoc}
      */
-    protected function createDefaultValidator(ValidationFactory $factory): Validator
+    protected function getValidatorInstance(): Validator
     {
+        if ($this->extensionFieldsValidator instanceof Validator) {
+            return $this->extensionFieldsValidator;
+        }
+
         $fields = $this->container->make(ExtensionFields::class);
         $model = $this->extensionFieldsModel();
         $input = $this->input('extensions');
@@ -49,12 +58,16 @@ trait ValidatesExtensionFields
 
         $fields->authorize($model, is_array($input) ? array_values(array_filter(array_keys($input), is_string(...))) : [], $applicationApi);
 
-        $validator = parent::createDefaultValidator($factory);
-        $validator->after(function (Validator $validator) use ($fields, $model, $applicationApi, $running): void {
-            $this->extensionValues = $fields->validate($validator, $model, $this->submittedExtensionValues($validator, $running), $applicationApi);
+        // A created model has no stored values to keep, so every extension the user may
+        // change runs its rules, sent or not. An update leaves out what the request leaves out.
+        $defaults = $model instanceof Model ? [] : array_values(array_diff($fields->authorizedFor($model, $applicationApi), is_array($input) ? array_keys($input) : []));
+
+        $validator = parent::getValidatorInstance();
+        $validator->after(function (Validator $validator) use ($fields, $model, $applicationApi, $running, $defaults): void {
+            $this->extensionValues = $fields->validate($validator, $model, $this->submittedExtensionValues($validator, $running), $applicationApi, $defaults);
         });
 
-        return $validator;
+        return $this->extensionFieldsValidator = $validator;
     }
 
     /**

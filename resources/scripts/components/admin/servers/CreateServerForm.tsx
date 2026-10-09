@@ -21,7 +21,7 @@ import { type LocationWithNodes, useAdminNodesGroupedByLocation } from '@/api/ad
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { type ExtensionFormValues, extensionFormPayload, initialExtensionValues } from '@/extensions/forms';
+import { type ExtensionFormValues, initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Label from '@/components/elements/Label';
@@ -610,6 +610,7 @@ export default function CreateServerForm() {
     const loading = usersLoading || locationsLoading || eggsLoading;
     const hasNodes = locations.some((location) => location.nodes.length > 0);
 
+    const { extensionFormPayload } = useExtensionPayload('admin.server');
     const form = useAppForm({
         defaultValues: initialValues,
         onSubmit: async ({ value }) => {
@@ -617,7 +618,7 @@ export default function CreateServerForm() {
                 const server = await createServer.mutateAsync(
                     createAdminServerInput({
                         ...createServerBodyFromFormValues(createServerValues(value)),
-                        extensions: extensionFormPayload('admin.server', value.extensions),
+                        extensions: extensionFormPayload(value.extensions),
                     })
                 );
 

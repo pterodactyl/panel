@@ -14,7 +14,7 @@ import {
 } from '@/api/admin/locations/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { initialExtensionValues, withExtensionPayload } from '@/extensions/forms';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import { validateShortCode } from '@/components/admin/locations/locationForm';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
@@ -92,12 +92,13 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
     const updateLocation = useUpdateAdminLocation();
     const deleteLocation = useDeleteAdminLocation();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.location');
     const form = useAppForm({
         defaultValues: locationToValues(location),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateLocation.mutateAsync(
-                    updateAdminLocationInput(attributes.id, withExtensionPayload('admin.location', value, location))
+                    updateAdminLocationInput(attributes.id, withExtensionPayload(value, location))
                 );
 
                 form.reset(locationToValues(updated));

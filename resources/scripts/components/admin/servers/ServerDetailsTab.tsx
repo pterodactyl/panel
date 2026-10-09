@@ -10,7 +10,7 @@ import { serverDetailsBodyFromFormValues } from '@/components/admin/servers/help
 import { useAdminUsers } from '@/api/admin/users/queries';
 import { useServerDetail } from '@/components/admin/servers/useServerDetail';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { extensionFormPayload, initialExtensionValues } from '@/extensions/forms';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { relationshipAttributes } from '@/api/relationships';
@@ -74,6 +74,7 @@ function ServerDetailsForm({ server }: Props) {
         filters: { search: debouncedSearch.trim() },
     });
 
+    const { extensionFormPayload } = useExtensionPayload('admin.server');
     const form = useAppForm({
         defaultValues: {
             name: attributes.name,
@@ -92,7 +93,7 @@ function ServerDetailsForm({ server }: Props) {
                             externalId: value.externalId,
                             description: value.description,
                         }),
-                        extensions: extensionFormPayload('admin.server', value.extensions, server),
+                        extensions: extensionFormPayload(value.extensions, server),
                     })
                 );
                 form.setFieldValue('extensions', initialExtensionValues());

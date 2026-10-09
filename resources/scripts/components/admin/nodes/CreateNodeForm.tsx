@@ -5,7 +5,7 @@ import NodeFormFields from '@/components/admin/nodes/NodeFormFields';
 import { newNodeFormValues, nodeValuesFromForm } from '@/components/admin/nodes/nodeForm';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { withExtensionPayload } from '@/extensions/forms';
+import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 
@@ -14,12 +14,13 @@ export default function CreateNodeForm() {
     const createNode = useCreateAdminNode();
     const requiresSslScheme = globalThis.window?.location.protocol === 'https:';
 
+    const { withExtensionPayload } = useExtensionPayload('admin.node');
     const form = useAppForm({
         defaultValues: newNodeFormValues(),
         onSubmit: async ({ value }) => {
             try {
                 const node = await createNode.mutateAsync(
-                    createAdminNodeInput(nodeValuesFromForm(withExtensionPayload('admin.node', value)))
+                    createAdminNodeInput(nodeValuesFromForm(withExtensionPayload(value)))
                 );
 
                 void navigate({ to: '/panel/nodes/$id/allocation', params: { id: node.attributes.id } });

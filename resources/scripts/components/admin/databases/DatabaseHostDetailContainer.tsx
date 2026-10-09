@@ -22,7 +22,7 @@ import {
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
-import { withExtensionPayload } from '@/extensions/forms';
+import { useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -42,6 +42,7 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
     const updateDatabaseHost = useUpdateAdminDatabaseHost();
     const deleteDatabaseHost = useDeleteAdminDatabaseHost();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.database_host');
     const form = useAppForm({
         defaultValues: databaseHostFormValues(host),
         onSubmit: async ({ value }) => {
@@ -49,7 +50,7 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                 const updated = await updateDatabaseHost.mutateAsync(
                     updateAdminDatabaseHostInput(
                         host.attributes.id,
-                        databaseHostBodyFromFormValues(withExtensionPayload('admin.database_host', value, host))
+                        databaseHostBodyFromFormValues(withExtensionPayload(value, host))
                     )
                 );
 

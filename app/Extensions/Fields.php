@@ -18,8 +18,9 @@ namespace Pterodactyl\Extensions;
  * type-hint `#[CurrentUser] User $admin` for that.
  *
  * - `rules()`: validation rules keyed by field name, applied to this extension's values
- *   alone, so `required_if:plan,pro` refers to this extension's `plan`. They run whenever a
- *   request includes this extension, and the admin forms include it on every save.
+ *   alone, so `required_if:plan,pro` refers to this extension's `plan`. They run for every
+ *   extension the signed-in user may change when the model is created, and when an update
+ *   includes this extension. The admin forms include it on every save.
  * - `values($model)`: the current values, keyed by field name. Strings, numbers, booleans,
  *   null, and lists of those.
  * - `save($model, array $values)`: stores the validated values. It runs inside the
@@ -28,8 +29,8 @@ namespace Pterodactyl\Extensions;
  * - `authorize()`: whether the signed-in user may see and change these values. A request
  *   that sends them anyway is refused.
  * - `secrets()`: the names of fields that hold credentials. Their values are encrypted when
- *   the panel stores them, returned as a mask, and kept when a save sends them empty, as
- *   the mask or not at all.
+ *   the panel stores them and returned as a mask. A save that sends the mask, or leaves the
+ *   field out, keeps the stored value; one that sends null or an empty string clears it.
  * - `attributes()` and `messages()`: names and messages for validation errors.
  *
  * Without `values()` and `save()`, the panel stores the values for you, apart from the
