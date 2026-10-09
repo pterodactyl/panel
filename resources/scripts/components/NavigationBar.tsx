@@ -20,7 +20,7 @@ const navItemClass = [
 ].join(' ');
 
 export default function NavigationBar() {
-    const name = useSiteSettings().name;
+    const { name, logo } = useSiteSettings();
     const rootAdmin = useCurrentUser().rootAdmin;
     const logout = useLogout();
 
@@ -35,7 +35,10 @@ export default function NavigationBar() {
                         to='/'
                         className='block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
                     >
-                        {name}
+                        <span className='flex items-center gap-3'>
+                            {logo && <img src={logo} alt='' className='h-7 w-7 shrink-0 object-contain' />}
+                            <span className='truncate'>{name}</span>
+                        </span>
                     </Link>
                 </div>
                 <div className='flex h-full shrink-0 items-center justify-center'>

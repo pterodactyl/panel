@@ -5,12 +5,13 @@ import Spinner from '@/components/elements/Spinner';
 import AdvancedSettingsForm from '@/components/admin/settings/AdvancedSettingsForm';
 import GeneralSettingsForm from '@/components/admin/settings/GeneralSettingsForm';
 import MailSettingsForm from '@/components/admin/settings/MailSettingsForm';
+import LogoSettingsForm from '@/components/admin/settings/LogoSettingsForm';
 import SettingsTabButton from '@/components/admin/settings/SettingsTabButton';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { Alert } from '@/components/elements/alert';
 
-type Tab = 'general' | 'mail' | 'advanced';
+type Tab = 'general' | 'mail' | 'advanced' | 'logo';
 type SettingsSearch = {
     tab?: string;
 };
@@ -19,12 +20,14 @@ const tabs: { key: Tab; label: string }[] = [
     { key: 'general', label: 'General' },
     { key: 'mail', label: 'Mail' },
     { key: 'advanced', label: 'Advanced' },
+    { key: 'logo', label: 'Logo' },
 ];
 
 const tabPaths = {
     general: '/panel/settings',
     mail: '/panel/settings/mail',
     advanced: '/panel/settings/advanced',
+    logo: '/panel/settings/logo',
 } as const satisfies Record<Tab, string>;
 
 const tabFromPath = (pathname: string): Tab | undefined => {
@@ -36,11 +39,15 @@ const tabFromPath = (pathname: string): Tab | undefined => {
         return 'advanced';
     }
 
+    if (pathname.endsWith('/logo')) {
+        return 'logo';
+    }
+
     return undefined;
 };
 
 const parseTab = (tab: string | undefined): Tab =>
-    tab === 'mail' || tab === 'advanced' || tab === 'general' ? tab : 'general';
+    tab === 'mail' || tab === 'advanced' || tab === 'logo' || tab === 'general' ? tab : 'general';
 
 export default function SettingsContainer() {
     const navigate = useNavigate();
@@ -58,7 +65,7 @@ export default function SettingsContainer() {
         <AdminContentBlock
             title='Admin · Settings'
             heading='Settings'
-            description="Manage your panel's general, mail, and advanced settings."
+            description="Manage your panel's general, logo, mail, and advanced settings."
         >
             {settings?.meta.load_environment_only && (
                 <Alert type='danger' className='mb-6 text-sm'>
@@ -90,6 +97,7 @@ export default function SettingsContainer() {
                     {tab === 'general' && <GeneralSettingsForm settings={settings} />}
                     {tab === 'mail' && <MailSettingsForm settings={settings} />}
                     {tab === 'advanced' && <AdvancedSettingsForm settings={settings} />}
+                    {tab === 'logo' && <LogoSettingsForm settings={settings} />}
                 </div>
             ) : (
                 <Spinner size='large' centered />

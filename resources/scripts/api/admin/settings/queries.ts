@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import http from '@/api/http';
 import { toast } from 'sonner';
 
 import {
@@ -133,6 +134,49 @@ export const useUpdateAdminGeneralSettings = () => {
             toast.success(notification.title, { description: notification.description });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update general settings'),
+    });
+};
+
+export const useUploadAdminLogo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (file: File) => {
+            const form = new FormData();
+            form.append('file', file);
+
+            const { data } = await http.post<{ logo: string }>('/api/admin/settings/logo', form);
+
+            return data.logo;
+        },
+        onSuccess: async (logo) => {
+            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
+                settings ? { ...settings, logo } : settings
+            );
+            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo }));
+            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+            toast.success('Logo updated', { description: 'Your panel branding has been updated.' });
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to upload logo'),
+    });
+};
+
+export const useClearAdminLogo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async () => {
+            await http.delete('/api/admin/settings/logo');
+        },
+        onSuccess: async () => {
+            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
+                settings ? { ...settings, logo: null } : settings
+            );
+            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo: null }));
+            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+            toast.success('Logo removed', { description: 'The default Pterodactyl branding is active again.' });
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove logo'),
     });
 };
 

@@ -18,7 +18,7 @@ export type CorePanelPath =
     | `/server/$id${'' | '/files' | '/databases' | '/schedules' | '/users' | '/users/new' | '/backups' | '/network' | '/startup' | '/settings' | '/activity'}`
     | '/server/$id/files/$action'
     | '/server/$id/schedules/$scheduleId'
-    | `/panel${'' | '/users' | '/locations' | '/nodes' | '/servers' | '/databases' | '/mounts' | '/eggs' | '/tags' | '/extensions' | '/api' | '/activity' | '/settings' | '/settings/mail' | '/settings/advanced'}`
+    | `/panel${'' | '/users' | '/locations' | '/nodes' | '/servers' | '/databases' | '/mounts' | '/eggs' | '/tags' | '/extensions' | '/api' | '/activity' | '/settings' | '/settings/mail' | '/settings/advanced' | '/settings/logo'}`
     | `/panel/${'users' | 'locations' | 'nodes' | 'servers' | 'databases' | 'mounts'}/$id`
     | `/panel/${'users' | 'nodes' | 'servers' | 'databases' | 'mounts' | 'eggs'}/new`
     | `/panel/nodes/$id/${'settings' | 'configuration' | 'allocation' | 'servers'}`
