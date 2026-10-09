@@ -1,0 +1,19 @@
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_570a6c49650832::t_81ac947b1aef61 242-243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "489528e269342d4977fe8092db3afae451a1f409",
+  "prompts": {},
+  "sessions": {
+    "s_570a6c49650832": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b42dc4c-8829-4b01-ac6f-ae3d1015d6e7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
