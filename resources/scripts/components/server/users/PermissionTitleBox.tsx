@@ -3,6 +3,7 @@ import { useStore } from '@tanstack/react-form';
 import type { AnyFormApi } from '@tanstack/react-form';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Checkbox from '@/components/ui/Checkbox';
+import { cn } from '@/lib/cn';
 import { setPermissionsSelected } from '@/components/server/users/permissionSelection';
 
 interface Props {
@@ -40,7 +41,7 @@ const PermissionTitleBox = ({ form, isEditable, title, editablePermissions, clas
                     )}
                 </div>
             }
-            className={className}
+            className={cn('border border-border ring-1 ring-border/60 shadow-lg', className)}
         >
             {children}
         </TitledGreyBox>

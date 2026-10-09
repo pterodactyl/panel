@@ -226,7 +226,7 @@ const SubuserFormContent = ({ state }: { state: SubuserFormState }) => {
             )}
             <Slot name='server.users.permissions.before' data={permissionSlot} />
             <TitledGreyBox
-                className='mt-6'
+                className='mt-6 border border-border ring-1 ring-border/60 shadow-lg'
                 title={
                     <div className='flex items-center justify-between'>
                         <span className='text-sm uppercase'>All Permissions</span>
