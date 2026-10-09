@@ -76,10 +76,12 @@ const MassActionsBar = ({ selectedFiles }: { selectedFiles: readonly string[] })
                                     <span className='font-semibold text-foreground'>{selectedFiles.length} files</span>?
                                     This is a permanent action and the files cannot be recovered.
                                 </p>
-                                {selectedFiles.slice(0, 15).map((file) => (
-                                    <li key={file}>{file}</li>
-                                ))}
-                                {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                                <ul className='mt-2 mb-0 pl-6 list-disc list-outside'>
+                                    {selectedFiles.slice(0, 15).map((file) => (
+                                        <li key={file}>{file}</li>
+                                    ))}
+                                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                                </ul>
                             </Dialog.ConfirmTrigger>
                         </div>
                     )}
