@@ -65,6 +65,7 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 export type AdminNode = AdminNodeResource;
 export type AdminNodeSort = 'id' | 'uuid' | 'name' | 'memory' | 'disk' | 'created_at';
@@ -87,6 +88,7 @@ export interface NodeValues {
     daemonListen: number;
     daemonSftp: number;
     daemonBase: string;
+    extensions: ExtensionFormValues;
 }
 
 export type AdminAllocation = AdminAllocationResource;
@@ -156,6 +158,7 @@ const nodeValuesToCreateBody = (values: NodeValues): AdminCreateNodeData['body']
     daemon_listen: values.daemonListen,
     daemon_sftp: values.daemonSftp,
     daemon_base: values.daemonBase,
+    extensions: values.extensions,
 });
 
 const nodeValuesToUpdateBody = (values: NodeValues, resetSecret = false): AdminUpdateNodeData['body'] => ({

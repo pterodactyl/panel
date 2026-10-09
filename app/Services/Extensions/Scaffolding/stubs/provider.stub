@@ -22,6 +22,7 @@ class {{provider}} extends ExtensionProvider
         // $this->loadExtensionTranslations();
         // $this->registerCommands([...]) and $this->registerSchedule(fn (Schedule $schedule) => ...)
         // $this->wrapAction(Contract::class, fn (Contract $inner): Contract => new Wrapper($inner));
+        // $this->registerFields(User::class, UserFields::class) to add fields to the admin user forms
         // $this->registerHeadTags([['tag' => 'meta', 'name' => 'theme-color', 'content' => '#0f172a']]);
         // $this->registerRootRoutes(...) for prefixes claimed under "routes.root" in extension.json
     }

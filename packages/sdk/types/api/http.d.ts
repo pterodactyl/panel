@@ -3,3 +3,7 @@ import type { AxiosInstance } from 'axios';
 declare const http: AxiosInstance;
 export default http;
 export declare function httpErrorToHuman(cause: unknown): string;
+/** Validation messages keyed by the request path of the field they are about. */
+export type ValidationErrors = Record<string, string>;
+/** The first message for each field a validation (422) response rejected. */
+export declare function httpValidationErrors(cause: unknown): ValidationErrors;

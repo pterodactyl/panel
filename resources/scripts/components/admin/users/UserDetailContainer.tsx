@@ -16,6 +16,8 @@ import {
     useDeleteAdminUser,
     useUpdateAdminUser,
 } from '@/api/admin/users/queries';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
@@ -260,12 +262,13 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
     const languagesList = languageOptions(languages, user.attributes.language);
 
+    const { withExtensionPayload } = useExtensionPayload('admin.user');
     const form = useAppForm({
         defaultValues: userFormValues(user),
         onSubmit: async ({ value }) => {
             try {
-                await updateUser.mutateAsync(updateAdminUserInput(userId, value));
-                form.reset({ ...value, password: '' });
+                await updateUser.mutateAsync(updateAdminUserInput(userId, withExtensionPayload(value, user)));
+                form.reset({ ...value, password: '', extensions: initialExtensionValues() });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -297,6 +300,19 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
                         <DeleteUserCard disabled={ownsServers} email={user.attributes.email} onDelete={onDelete} />
                     </div>
                 </div>
+                <form.AppField name='extensions'>
+                    {() => (
+                        <ExtensionFormFields
+                            form='admin.user'
+                            mode='edit'
+                            resource={user}
+                            error={updateUser.error}
+                            boxed
+                            submitLabel='Save Changes'
+                            className='mt-4'
+                        />
+                    )}
+                </form.AppField>
             </Form>
 
             <OwnedServersCard servers={servers} />

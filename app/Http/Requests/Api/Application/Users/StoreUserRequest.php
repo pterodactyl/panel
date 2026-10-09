@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Users;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
@@ -13,6 +16,8 @@ use Pterodactyl\Validation\UserRules;
 
 class StoreUserRequest extends ApplicationApiRequest
 {
+    use ValidatesExtensionFields;
+
     protected ?string $resource = AdminAcl::RESOURCE_USERS;
 
     protected int $permission = AdminAcl::WRITE;
@@ -72,6 +77,8 @@ class StoreUserRequest extends ApplicationApiRequest
             $data['language'] = JsonValueGuard::string($language);
         }
 
+        $data['extensions'] = $this->extensionValues();
+
         return $data;
     }
 
@@ -86,5 +93,13 @@ class StoreUserRequest extends ApplicationApiRequest
             'name_last' => 'Last Name',
             'root_admin' => 'Root Administrator Status',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return User::class;
     }
 }

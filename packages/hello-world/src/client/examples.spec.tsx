@@ -44,6 +44,7 @@ it('registers a console slot, a permissions form slot, and a lazy server page', 
         screens: { register: vi.fn() },
         columns: { register: vi.fn() },
         components: { replace: vi.fn() },
+        forms: { extend: vi.fn() },
     };
 
     extension.setup(context);

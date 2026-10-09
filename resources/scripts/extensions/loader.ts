@@ -8,6 +8,7 @@ import {
     registerScreen,
     registerSlotComponent,
     registerExtensionTableColumn,
+    registerFormExtension,
     registerComponentReplacement,
     failExtensionLoad,
     clearExtensionError,
@@ -18,6 +19,7 @@ import {
     type SiteExtensionEntry,
 } from '@/extensions/registry';
 import type { ExtensionTableColumnRegistration } from './tableTypes';
+import type { FormExtension } from './formTypes';
 import { startExtensionDevelopmentReload } from './development';
 
 export const EXTENSION_IMPORT_TIMEOUT_MS = 15_000;
@@ -66,6 +68,10 @@ const createContext = (entry: SiteExtensionEntry, batch: ExtensionRegistryBatch)
                 },
                 batch
             ),
+    },
+    forms: {
+        extend: (form, component) =>
+            registerFormExtension({ extensionId: entry.id, form, component: component as FormExtension }, batch),
     },
 });
 

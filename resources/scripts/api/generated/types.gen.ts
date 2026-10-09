@@ -149,6 +149,7 @@ export type AdminDatabaseHostAttributes = {
     node_id: number | null;
     created_at: string;
     updated_at: string;
+    extensions?: ExtensionFields;
     relationships?: {
         node?: AdminNodeResource | NullResource;
         databases?: AdminDatabaseListResponse | NullResource;
@@ -223,6 +224,7 @@ export type AdminEggAttributes = {
     };
     created_at: string;
     updated_at: string;
+    extensions?: ExtensionFields;
     relationships?: {
         variables?: AdminEggVariableListResponse | NullResource;
         tags?: AdminTagListResponse | NullResource;
@@ -291,6 +293,18 @@ export type AdminEggVariableResource = {
     attributes: AdminEggVariableAttributes;
 };
 
+export type AdminExtensionFormsResponse = {
+    /**
+     * The extensions whose fields each admin form shows, keyed by form (admin.user, admin.server, admin.node, admin.egg, admin.location, admin.mount, admin.database_host). Forms without any are left out.
+     */
+    data: {
+        [key: string]: Array<{
+            id: string;
+            name: string;
+        }>;
+    };
+};
+
 export type AdminExtensionSettingField = {
     input: string;
     label: string;
@@ -328,6 +342,7 @@ export type AdminLocationAttributes = {
     servers_count: number;
     created_at: string;
     updated_at: string;
+    extensions?: ExtensionFields;
     relationships?: {
         nodes?: AdminNodeListResponse | NullResource;
     };
@@ -365,6 +380,7 @@ export type AdminMountAttributes = {
      * Present only when listed in the context of a server.
      */
     mounted?: boolean | null;
+    extensions?: ExtensionFields;
     relationships?: {
         eggs?: AdminEggListResponse | NullResource;
         nodes?: AdminNodeListResponse | NullResource;
@@ -422,6 +438,7 @@ export type AdminNodeAttributes = {
         memory: number;
         disk: number;
     };
+    extensions?: ExtensionFields;
     relationships?: {
         location?: AdminLocationResource | NullResource;
     };
@@ -541,6 +558,7 @@ export type AdminServerAttributes = {
     };
     updated_at: string;
     created_at: string;
+    extensions?: ExtensionFields;
     relationships?: {
         allocation?: AdminAllocationResource | NullResource;
         allocations?: AdminAllocationListResponse | NullResource;
@@ -732,6 +750,7 @@ export type AdminUserAttributes = {
     subuser_of_count: number;
     created_at: string;
     updated_at: string;
+    extensions?: ExtensionFields;
     relationships?: {
         servers?: AdminServerListResponse | NullResource;
     };
@@ -837,6 +856,7 @@ export type ApplicationLocationAttributes = {
     long: string;
     updated_at: string;
     created_at: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationLocationPaginatedResponse = {
@@ -880,6 +900,7 @@ export type ApplicationNodeAttributes = {
         memory: number;
         disk: number;
     };
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationNodeListResponse = {
@@ -941,6 +962,7 @@ export type ApplicationServerAttributes = {
     };
     updated_at: string;
     created_at: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationServerDatabaseAttributes = {
@@ -1018,6 +1040,7 @@ export type ApplicationUserAttributes = {
     '2fa': boolean;
     created_at: string;
     updated_at: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUserPaginatedResponse = {
@@ -1501,6 +1524,15 @@ export type ErrorEnvelope = {
     }>;
 };
 
+/**
+ * Values of the fields extensions add to this resource, keyed by extension id and then by field name. Each extension validates the values sent for it; extensions left out of a request keep their values. Responses about one resource include them; lists leave them out.
+ */
+export type ExtensionFields = {
+    [key: string]: {
+        [key: string]: string | number | boolean | Array<string | number | boolean | null> | null;
+    };
+};
+
 export type NullResource = {
     object: 'null_resource';
     attributes: null;
@@ -1594,6 +1626,7 @@ export type AdminCreateUserRequest = {
          */
         language?: string;
     };
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateUserRequest = {
@@ -1631,6 +1664,7 @@ export type AdminUpdateUserRequest = {
          */
         language?: string;
     };
+    extensions?: ExtensionFields;
 };
 
 export type AdminAttachServerMountRequest = {
@@ -1743,6 +1777,7 @@ export type AdminCreateServerRequest = {
      */
     start_on_completion?: boolean;
     secondary_allocations_ids?: Array<number>;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateServerDetailsRequest = {
@@ -1762,6 +1797,7 @@ export type AdminUpdateServerDetailsRequest = {
      * A description for this resource.
      */
     description?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateServerBuildRequest = {
@@ -1944,6 +1980,7 @@ export type AdminCreateNodeRequest = {
      * The daemon base. Must match the regex /^([\/][\d\w.\-\/]+)$/.
      */
     daemon_base?: string;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateNodeRequest = {
@@ -2015,6 +2052,7 @@ export type AdminUpdateNodeRequest = {
      * Whether to rotate the daemon secret.
      */
     reset_secret?: boolean;
+    extensions?: ExtensionFields;
 };
 
 export type AdminSyncNodeGameTagsRequest = {
@@ -2067,6 +2105,7 @@ export type AdminCreateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateLocationRequest = {
@@ -2078,6 +2117,7 @@ export type AdminUpdateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminCreateMountRequest = {
@@ -2105,6 +2145,7 @@ export type AdminCreateMountRequest = {
      * Whether users can mount this resource.
      */
     user_mountable?: boolean;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateMountRequest = {
@@ -2132,6 +2173,7 @@ export type AdminUpdateMountRequest = {
      * Whether users can mount this resource.
      */
     user_mountable?: boolean;
+    extensions?: ExtensionFields;
 };
 
 export type AdminAttachEggsToMountRequest = {
@@ -2294,6 +2336,7 @@ export type AdminCreateEggRequest = {
      * The config files. This field is required when <code>config_from</code> is not present. Must be a valid JSON string.
      */
     config_files?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateEggRequest = {
@@ -2345,6 +2388,7 @@ export type AdminUpdateEggRequest = {
      * The config files. This field is required when <code>config_from</code> is not present. Must be a valid JSON string.
      */
     config_files?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminCreateTagRequest = {
@@ -2489,6 +2533,7 @@ export type AdminCreateDatabaseHostRequest = {
      * The node ID. Must match an existing stored value.
      */
     node_id?: number | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminUpdateDatabaseHostRequest = {
@@ -2516,6 +2561,7 @@ export type AdminUpdateDatabaseHostRequest = {
      * The node ID. Must match an existing stored value.
      */
     node_id?: number | null;
+    extensions?: ExtensionFields;
 };
 
 export type AdminCreateApiKeyRequest = {
@@ -2629,6 +2675,7 @@ export type ApplicationCreateUserRequest = {
      * The last name. Must be between 1 and 191 characters.
      */
     last_name: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUpdateUserRequest = {
@@ -2664,6 +2711,7 @@ export type ApplicationUpdateUserRequest = {
      * The last name. Must be between 1 and 191 characters.
      */
     last_name: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationCreateNodeRequest = {
@@ -2731,6 +2779,7 @@ export type ApplicationCreateNodeRequest = {
      * The daemon base. Must match the regex /^([\/][\d\w.\-\/]+)$/.
      */
     daemon_base?: string;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUpdateNodeRequest = {
@@ -2802,6 +2851,7 @@ export type ApplicationUpdateNodeRequest = {
      * The reset secret.
      */
     reset_secret?: boolean;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationCreateNodeAllocationsRequest = {
@@ -2825,6 +2875,7 @@ export type ApplicationCreateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUpdateLocationRequest = {
@@ -2836,6 +2887,7 @@ export type ApplicationUpdateLocationRequest = {
      * The long. Must be between 1 and 191 characters.
      */
     long?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationCreateServerRequest = {
@@ -2956,6 +3008,7 @@ export type ApplicationCreateServerRequest = {
      * Whether the server should start when the operation completes.
      */
     start_on_completion?: boolean;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUpdateServerDetailsRequest = {
@@ -2975,6 +3028,7 @@ export type ApplicationUpdateServerDetailsRequest = {
      * A description for this resource.
      */
     description?: string | null;
+    extensions?: ExtensionFields;
 };
 
 export type ApplicationUpdateServerBuildRequest = {
@@ -5374,6 +5428,35 @@ export type AdminInstallExtensionResponses = {
 };
 
 export type AdminInstallExtensionResponse = AdminInstallExtensionResponses[keyof AdminInstallExtensionResponses];
+
+export type AdminListExtensionFormsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/extensions/forms';
+};
+
+export type AdminListExtensionFormsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+};
+
+export type AdminListExtensionFormsError = AdminListExtensionFormsErrors[keyof AdminListExtensionFormsErrors];
+
+export type AdminListExtensionFormsResponses = {
+    /**
+     * Extension forms returned.
+     */
+    200: AdminExtensionFormsResponse;
+};
+
+export type AdminListExtensionFormsResponse = AdminListExtensionFormsResponses[keyof AdminListExtensionFormsResponses];
 
 export type AdminGetExtensionSettingsData = {
     body?: never;

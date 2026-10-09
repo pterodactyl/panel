@@ -9,6 +9,8 @@ import {
 import { serverDetailsBodyFromFormValues } from '@/components/admin/servers/helpers';
 import { useAdminUsers } from '@/api/admin/users/queries';
 import { useServerDetail } from '@/components/admin/servers/useServerDetail';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { relationshipAttributes } from '@/api/relationships';
@@ -72,26 +74,29 @@ function ServerDetailsForm({ server }: Props) {
         filters: { search: debouncedSearch.trim() },
     });
 
+    const { extensionFormPayload } = useExtensionPayload('admin.server');
     const form = useAppForm({
         defaultValues: {
             name: attributes.name,
             user: attributes.user,
             externalId: attributes.external_id ?? '',
             description: attributes.description ?? '',
+            extensions: initialExtensionValues(),
         },
         onSubmit: async ({ value }) => {
             try {
                 await updateServerDetails.mutateAsync(
-                    updateAdminServerDetailsInput(
-                        attributes.id,
-                        serverDetailsBodyFromFormValues({
+                    updateAdminServerDetailsInput(attributes.id, {
+                        ...serverDetailsBodyFromFormValues({
                             name: value.name,
                             user: Number(value.user),
                             externalId: value.externalId,
                             description: value.description,
-                        })
-                    )
+                        }),
+                        extensions: extensionFormPayload(value.extensions, server),
+                    })
                 );
+                form.setFieldValue('extensions', initialExtensionValues());
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -183,6 +188,17 @@ function ServerDetailsForm({ server }: Props) {
                         )}
                     </form.AppField>
                 </div>
+                <form.AppField name='extensions'>
+                    {() => (
+                        <ExtensionFormFields
+                            form='admin.server'
+                            mode='edit'
+                            resource={server}
+                            error={updateServerDetails.error}
+                            className='mt-6'
+                        />
+                    )}
+                </form.AppField>
                 <div className='flex justify-end mt-6'>
                     <form.AppForm>
                         <form.SubmitButton>Update Details</form.SubmitButton>

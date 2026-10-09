@@ -27,6 +27,8 @@ use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
+use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Ramsey\Uuid\Uuid;
 use Throwable;
@@ -38,10 +40,11 @@ final readonly class CreateServer implements CreatesServers
         private FindViableNodesService $findViableNodesService,
         private DeletesServers $deleteServer,
         private VariableValidatorService $validatorService,
+        private ExtensionFields $extensions,
     ) {}
 
     /**
-     * @param  array<string, ApiValue9>  $data
+     * @param  ServerCreationInput  $data
      *
      * @throws Throwable
      * @throws DisplayException
@@ -52,7 +55,9 @@ final readonly class CreateServer implements CreatesServers
     public function create(array $data, ?DeploymentObject $deployment = null): Server
     {
         // Normalize the validated request once before applying any deployment rules.
-        $data = ServerCreationData::parse($data);
+        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
+        unset($data['extensions']);
+        $data = [...ServerCreationData::parse($data), 'extensions' => $extensions];
         throw_if(empty($data['egg_id']), InvalidArgumentException::class, 'Expected a non-empty egg_id in server creation data.');
 
         $egg = Egg::query()->with('tags')->findOrFail((int) $data['egg_id']);
@@ -78,6 +83,7 @@ final readonly class CreateServer implements CreatesServers
             $server = $this->createModel($data);
             $this->storeAssignedAllocations($server, $data);
             $this->storeEggVariables($server, $eggVariableData);
+            $this->extensions->save($server, $data['extensions']);
 
             return $server;
         }, 5);

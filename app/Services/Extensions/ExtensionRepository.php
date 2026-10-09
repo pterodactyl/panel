@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Extensions;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -186,7 +187,11 @@ class ExtensionRepository
             $this->enabled = null;
         }
 
-        rescue(fn (): int => Extension::query()->where('identifier', $identifier)->update(['error' => $reason]), report: false);
+        // A failure that repeats on every request (reading field values, for one) is written once.
+        rescue(fn (): int => Extension::query()
+            ->where('identifier', $identifier)
+            ->where(fn (Builder $query): Builder => $query->whereNull('error')->orWhere('error', '<>', $reason))
+            ->update(['error' => $reason]), report: false);
 
         $context = array_filter(['exception' => $exception]);
         $exception instanceof Throwable

@@ -16,6 +16,7 @@ use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
+use Pterodactyl\Services\Extensions\ExtensionSettings;
 use Pterodactyl\Support\JsonValueGuard;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -140,7 +141,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'AdminEggConfigurationFile' => $this->adminEggConfigurationFileSchema(),
             'AdminEggConfigurationFiles' => $this->adminEggConfigurationFilesSchema(),
             'AdminEggConfigurationFind' => $this->adminEggConfigurationFindSchema(),
+            'AdminExtensionFormsResponse' => $this->adminExtensionFormsSchema(),
             'AdminExtensionSettingField' => $this->adminExtensionSettingFieldSchema(),
+            'ExtensionFields' => $this->extensionFieldsSchema(),
             'AdminExtensionSettingOption' => $this->adminExtensionSettingOptionSchema(),
             'AdminLanguagesResponse' => $this->adminLanguagesSchema(),
             'AdminNodeConfigurationResponse' => $this->adminNodeConfigurationSchema(),
@@ -210,6 +213,11 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
                 JsonValueGuard::assertOpenApiSchemaInput($schemas[$attributes]);
                 $this->applyDeclaredFieldMetadata($schemas[$attributes], $endpoint);
+                if (isset($fractal['attributes']['extensions'])) {
+                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$attributes]);
+                    $this->addExtensionFieldsToAttributesSchema($schemas[$attributes]);
+                }
+
                 // The valid subuser permission values come from the runtime permission
                 // registry, so they cannot be declared as a constant attribute.
                 if ($attributes === 'ClientServerSubuserAttributes') {
@@ -847,6 +855,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         $schema = match ($pathItem['operationId'] ?? null) {
+            'adminListExtensionForms' => 'AdminExtensionFormsResponse',
             'adminListLanguages' => 'AdminLanguagesResponse',
             'adminGetNodeConfiguration' => 'AdminNodeConfigurationResponse',
             'adminCreateNodeDeployToken' => 'AdminNodeDeployTokenResponse',
@@ -1421,6 +1430,10 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
                 $properties['preferences']['properties'] = $preferenceProperties;
             }
+        }
+
+        if (isset($properties['extensions'])) {
+            $properties['extensions'] = ['$ref' => '#/components/schemas/ExtensionFields'];
         }
 
         JsonValueGuard::assertOpenApiSchemaMap($properties);
@@ -2244,6 +2257,35 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /** @return OpenApiSchema */
+    private function adminExtensionFormsSchema(): array
+    {
+        $forms = implode(', ', array_map(fn (string $alias): string => "admin.{$alias}", array_keys(ExtensionSettings::SCOPES)));
+
+        return [
+            'type' => 'object',
+            'required' => ['data'],
+            'properties' => [
+                'data' => [
+                    'type' => 'object',
+                    'description' => "The extensions whose fields each admin form shows, keyed by form ({$forms}). Forms without any are left out.",
+                    'additionalProperties' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'object',
+                            'required' => ['id', 'name'],
+                            'properties' => [
+                                'id' => ['type' => 'string', 'example' => 'example-extension'],
+                                'name' => ['type' => 'string', 'example' => 'Example Extension'],
+                            ],
+                        ],
+                    ],
+                    'example' => ['admin.user' => [['id' => 'example-extension', 'name' => 'Example Extension']]],
+                ],
+            ],
+        ];
+    }
+
+    /** @return OpenApiSchema */
     private function adminExtensionSettingFieldSchema(): array
     {
         return [
@@ -2312,6 +2354,47 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ['type' => 'array', 'items' => ['oneOf' => [['type' => 'string'], ['type' => 'number']]]],
             ],
         ];
+    }
+
+    /**
+     * @return OpenApiSchema
+     */
+    private function extensionFieldsSchema(): array
+    {
+        $scalar = $this->extensionSettingScalarSchema()['oneOf'];
+
+        return [
+            'type' => 'object',
+            'description' => 'Values of the fields extensions add to this resource, keyed by extension id and then by field name. Each extension validates the values sent for it; extensions left out of a request keep their values. Responses about one resource include them; lists leave them out.',
+            'additionalProperties' => [
+                'type' => 'object',
+                'additionalProperties' => [
+                    'oneOf' => [...$scalar, ['type' => 'array', 'items' => ['oneOf' => $scalar, 'nullable' => true]]],
+                    'nullable' => true,
+                ],
+            ],
+            'example' => ['billing' => ['plan' => 'pro']],
+        ];
+    }
+
+    /**
+     * Extension field values depend on the extensions installed, so the example response
+     * cannot describe them; lists leave them out, so they are never required.
+     *
+     * @param  OpenApiSchemaInput  $schema
+     */
+    private function addExtensionFieldsToAttributesSchema(array &$schema): void
+    {
+        $properties = $schema['properties'] ?? [];
+        JsonValueGuard::assertOpenApiSchemaMap($properties);
+        $properties['extensions'] = ['$ref' => '#/components/schemas/ExtensionFields'];
+        $schema['properties'] = $properties;
+
+        $required = $schema['required'] ?? null;
+        if (is_array($required)) {
+            // SAFETY: an object schema's `required` lists its property names.
+            $schema['required'] = array_values(array_diff(JsonValueGuard::stringList($required), ['extensions']));
+        }
     }
 
     /**

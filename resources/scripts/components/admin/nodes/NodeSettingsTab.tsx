@@ -9,6 +9,8 @@ import {
     validateNodeName,
 } from '@/components/admin/nodes/nodeForm';
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 interface Values extends NodeFormValues {
@@ -23,6 +25,7 @@ const NodeSettingsForm = () => {
 
     const { data: locations = [] } = useAllAdminLocations();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.node');
     const form = useAppForm({
         defaultValues: nodeToValues(node),
         onSubmit: async ({ value }) => {
@@ -30,9 +33,14 @@ const NodeSettingsForm = () => {
 
             try {
                 await updateNode.mutateAsync(
-                    updateAdminNodeInput(node.attributes.id, nodeValuesFromForm(values), resetSecret)
+                    updateAdminNodeInput(
+                        node.attributes.id,
+                        nodeValuesFromForm(withExtensionPayload(values, node)),
+                        resetSecret
+                    )
                 );
                 form.setFieldValue('resetSecret', false);
+                form.setFieldValue('extensions', initialExtensionValues());
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -196,6 +204,18 @@ const NodeSettingsForm = () => {
                     </TitledGreyBox>
                 </div>
             </div>
+            <form.AppField name='extensions'>
+                {() => (
+                    <ExtensionFormFields
+                        form='admin.node'
+                        mode='edit'
+                        resource={node}
+                        error={updateNode.error}
+                        boxed
+                        className='mt-6'
+                    />
+                )}
+            </form.AppField>
             <TitledGreyBox title='Save Settings' className='mt-6'>
                 <form.AppField name='resetSecret'>
                     {(field) => (

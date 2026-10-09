@@ -1,5 +1,6 @@
 import type { AdminUser, UserValues } from '@/api/admin/users/queries';
 import { requiredWithMaxLength } from '@/components/form/validators';
+import { initialExtensionValues } from '@/extensions/forms';
 
 export const userFormValues = (user: AdminUser): UserValues => ({
     email: user.attributes.email,
@@ -9,6 +10,7 @@ export const userFormValues = (user: AdminUser): UserValues => ({
     password: '',
     rootAdmin: user.attributes.root_admin,
     language: user.attributes.language,
+    extensions: initialExtensionValues(),
 });
 
 export const validateUserPassword = ({ value }: { value: string }): string | undefined => {

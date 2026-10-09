@@ -15,6 +15,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Mounts\CreatesMounts;
 use Pterodactyl\Contracts\Mounts\DeletesMounts;
 use Pterodactyl\Contracts\Mounts\UpdatesMounts;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -86,7 +87,7 @@ class MountController extends AdminApiController
         $mount->loadCount('eggs', 'nodes', 'servers');
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -95,6 +96,7 @@ class MountController extends AdminApiController
      */
     #[Endpoint('Create mount', 'Creates a mount definition and generates its UUID.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, status: 201, description: 'Mount created.', resourceKey: 'mount', meta: ['resource' => 'https://panel.example.com/api/admin/mounts/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreMountRequest $request, CreatesMounts $mounts): JsonResponse
     {
         $mount = $mounts->create($request->payload());
@@ -105,7 +107,7 @@ class MountController extends AdminApiController
             ->log();
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.mounts.view', [
                     'mount' => $mount->id,
@@ -121,6 +123,7 @@ class MountController extends AdminApiController
      */
     #[Endpoint('Update mount', 'Updates an existing mount definition.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
+    #[ExtensionFieldsParam]
     public function update(UpdateMountRequest $request, UpdatesMounts $mounts, Mount $mount): array
     {
         $mount = $mounts->update($mount, $request->payload());
@@ -131,7 +134,7 @@ class MountController extends AdminApiController
             ->log();
 
         return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

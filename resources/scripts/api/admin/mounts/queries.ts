@@ -34,6 +34,7 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 type MountsFilters = 'name';
 type MountsSorts = 'id' | 'name';
@@ -51,6 +52,7 @@ export interface MountValues {
     target: string;
     readOnly: boolean;
     userMountable: boolean;
+    extensions: ExtensionFormValues;
 }
 
 export type AdminMountEgg = Extract<
@@ -87,6 +89,7 @@ const toMountBody = (values: MountValues): AdminCreateMountData['body'] => ({
     target: values.target,
     read_only: values.readOnly,
     user_mountable: values.userMountable,
+    extensions: values.extensions,
 });
 
 export const createAdminMountInput = (values: MountValues): Options<AdminCreateMountData> => ({

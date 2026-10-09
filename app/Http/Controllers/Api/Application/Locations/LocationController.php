@@ -16,6 +16,7 @@ use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Contracts\Locations\DeletesLocations;
 use Pterodactyl\Contracts\Locations\UpdatesLocations;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -77,7 +78,7 @@ class LocationController extends ApplicationApiController
     public function view(GetLocationRequest $request, Location $location): array
     {
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -87,12 +88,13 @@ class LocationController extends ApplicationApiController
      */
     #[Endpoint('Create location', 'Creates a new location and returns the created resource.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.test/api/application/locations/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
     {
         $location = $locations->create($request->payload());
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.application.locations.view', [
                     'location' => $location->id,
@@ -108,12 +110,13 @@ class LocationController extends ApplicationApiController
      */
     #[Endpoint('Update location', 'Updates an existing location by internal numeric ID.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, resourceKey: 'location')]
+    #[ExtensionFieldsParam]
     public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
     {
         $location = $locations->update($location, $request->payload());
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

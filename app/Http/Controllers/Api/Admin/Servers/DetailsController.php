@@ -8,6 +8,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -27,6 +28,7 @@ class DetailsController extends AdminApiController
      */
     #[Endpoint('Update server details', 'Updates a server name, owner, description, and external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ExtensionFieldsParam]
     public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
     {
         $updated = $details->update(
@@ -40,7 +42,7 @@ class DetailsController extends AdminApiController
             ->log();
 
         return Fractal::item($updated)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 }

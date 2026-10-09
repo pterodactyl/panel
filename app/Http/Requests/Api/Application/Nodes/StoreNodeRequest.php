@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
@@ -14,6 +17,8 @@ use Pterodactyl\Validation\NodeRules;
 
 class StoreNodeRequest extends ApplicationApiRequest
 {
+    use ValidatesExtensionFields;
+
     protected ?string $resource = AdminAcl::RESOURCE_NODES;
 
     protected int $permission = AdminAcl::WRITE;
@@ -109,6 +114,16 @@ class StoreNodeRequest extends ApplicationApiRequest
             $response['upload_size'] = JsonValueGuard::integer($uploadSize);
         }
 
+        $response['extensions'] = $this->extensionValues();
+
         return $response;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Node::class;
     }
 }

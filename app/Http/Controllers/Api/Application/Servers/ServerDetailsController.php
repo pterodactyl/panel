@@ -11,6 +11,7 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerBuild;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -43,6 +44,7 @@ class ServerDetailsController extends ApplicationApiController
      */
     #[Endpoint('Update server details', 'Updates ownership and display details for a server.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ExtensionFieldsParam]
     public function details(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
     {
         $updated = $details->update(
@@ -51,7 +53,7 @@ class ServerDetailsController extends ApplicationApiController
         );
 
         return Fractal::item($updated)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -71,7 +73,7 @@ class ServerDetailsController extends ApplicationApiController
         $server = $build->update($server, $request->payload());
 
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 }

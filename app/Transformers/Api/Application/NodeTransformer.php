@@ -64,6 +64,7 @@ class NodeTransformer extends BaseTransformer
         unset($response['sum_memory'], $response['sum_disk']);
         $response['allocated_resources'] = $node->allocatedResources();
         $response['relationships'] = [];
+        $response = [...$response, ...$this->extensionFields($node)];
 
         JsonValueGuard::assertPayload($response);
 

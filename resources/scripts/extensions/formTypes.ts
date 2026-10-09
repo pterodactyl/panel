@@ -1,0 +1,80 @@
+import type { ComponentType } from 'react';
+import type {
+    AdminDatabaseHostResource,
+    AdminEggResource,
+    AdminLocationResource,
+    AdminMountResource,
+    AdminNodeResource,
+    AdminServerResource,
+    AdminUserResource,
+    ExtensionFields,
+} from '@/api/extensionTypes';
+
+/** One extension's values, keyed by field name. */
+export type ExtensionFieldValues = ExtensionFields[string];
+/** A value an extension field holds: a string, number, boolean or null, or a list of them. */
+export type ExtensionFieldValue = ExtensionFieldValues[string];
+
+/** The resource each admin form creates or edits, keyed by form name. */
+export interface ExtensionFormResources {
+    'admin.user': AdminUserResource;
+    'admin.server': AdminServerResource;
+    'admin.node': AdminNodeResource;
+    'admin.egg': AdminEggResource;
+    'admin.location': AdminLocationResource;
+    'admin.mount': AdminMountResource;
+    'admin.database_host': AdminDatabaseHostResource;
+}
+export type ExtensionFormName = keyof ExtensionFormResources;
+
+export const EXTENSION_FORM_NAMES = Object.freeze([
+    'admin.user',
+    'admin.server',
+    'admin.node',
+    'admin.egg',
+    'admin.location',
+    'admin.mount',
+    'admin.database_host',
+] as const satisfies readonly ExtensionFormName[]);
+
+/** One of the extension's fields, bound to the form it renders in. */
+export interface ExtensionField<T> {
+    /** A unique id for the control, for `<Label htmlFor>`. */
+    id: string;
+    /** The field's path in the request, `extensions.<extension>.<field>`. */
+    name: string;
+    value: T | undefined;
+    setValue(value: T): void;
+    /** The panel's validation message from the last save, until the field changes. */
+    error: string | undefined;
+}
+
+export interface FormExtensionProps<
+    TValues extends ExtensionFieldValues = ExtensionFieldValues,
+    TName extends ExtensionFormName = ExtensionFormName,
+> {
+    form: TName;
+    mode: 'create' | 'edit';
+    /** The saved resource, when editing. */
+    resource?: ExtensionFormResources[TName];
+    /** The extension's values as they stand in the form. */
+    values: Partial<TValues>;
+    /** Binds one of the extension's fields: the ones its PHP `Fields` class declares rules for. */
+    field<TField extends keyof TValues & string>(name: TField): ExtensionField<TValues[TField]>;
+}
+
+/**
+ * Draws an extension's fields inside an admin create or edit form, registered with
+ * `forms.extend()`. The panel saves its values with the form and passes back the panel's
+ * validation messages.
+ */
+export type FormExtension<
+    TValues extends ExtensionFieldValues = ExtensionFieldValues,
+    TName extends ExtensionFormName = ExtensionFormName,
+> = ComponentType<FormExtensionProps<TValues, TName>>;
+
+export interface FormExtensionRegistration {
+    extensionId: string;
+    form: ExtensionFormName;
+    component: FormExtension;
+}

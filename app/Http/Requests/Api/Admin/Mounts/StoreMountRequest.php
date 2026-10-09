@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Mounts;
 
+use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Models\Mount;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\MountRules;
 
 class StoreMountRequest extends AdminApiRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminMountsCreate];
@@ -38,6 +43,7 @@ class StoreMountRequest extends AdminApiRequest
             'name' => $this->string('name')->toString(),
             'source' => $this->string('source')->toString(),
             'target' => $this->string('target')->toString(),
+            'extensions' => $this->extensionValues(),
         ];
 
         if ($this->exists('description')) {
@@ -53,5 +59,13 @@ class StoreMountRequest extends AdminApiRequest
         }
 
         return $payload;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Mount::class;
     }
 }

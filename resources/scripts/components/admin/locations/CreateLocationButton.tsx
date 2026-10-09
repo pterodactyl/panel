@@ -1,6 +1,8 @@
 import { useStore } from '@tanstack/react-form';
 import { useAppForm, Form } from '@/components/form';
 import { createAdminLocationInput, useCreateAdminLocation } from '@/api/admin/locations/queries';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
@@ -15,11 +17,12 @@ type CreateLocationDialogProps = {
 function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
     const createLocation = useCreateAdminLocation();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.location');
     const form = useAppForm({
-        defaultValues: { short: '', long: '' },
+        defaultValues: { short: '', long: '', extensions: initialExtensionValues() },
         onSubmit: async ({ value }) => {
             try {
-                await createLocation.mutateAsync(createAdminLocationInput(value));
+                await createLocation.mutateAsync(createAdminLocationInput(withExtensionPayload(value)));
                 onClose();
             } catch {
                 // Error toast is handled by the mutation.
@@ -72,6 +75,16 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
                         )}
                     </form.AppField>
                 </div>
+                <form.AppField name='extensions'>
+                    {() => (
+                        <ExtensionFormFields
+                            form='admin.location'
+                            mode='create'
+                            error={createLocation.error}
+                            className='mt-6'
+                        />
+                    )}
+                </form.AppField>
                 <div className='flex flex-wrap justify-end mt-6'>
                     <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
                         Cancel

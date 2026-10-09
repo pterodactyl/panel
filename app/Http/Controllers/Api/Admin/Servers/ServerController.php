@@ -14,6 +14,7 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -257,7 +258,7 @@ class ServerController extends AdminApiController
     public function show(GetServerRequest $request, Server $server): array
     {
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -266,6 +267,7 @@ class ServerController extends AdminApiController
      */
     #[Endpoint('Create server', 'Creates a server using explicit allocations or automatic deployment constraints.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
         $server = $creation->create($request->payload(), $request->getDeploymentObject());
@@ -276,7 +278,7 @@ class ServerController extends AdminApiController
             ->log();
 
         return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.servers.view', [
                     'server' => $server->id,

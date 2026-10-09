@@ -15,7 +15,7 @@ use Throwable;
 interface CreatesServers
 {
     /**
-     * @param  array<string, ApiValue9>  $data
+     * @param  ServerCreationInput  $data
      *
      * @throws Throwable
      * @throws DisplayException

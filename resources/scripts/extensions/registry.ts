@@ -10,6 +10,7 @@ import type {
 } from '@/api/extensionTypes';
 import type { ExtensionResourceContext } from './resourceContext';
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from './tableTypes';
+import { EXTENSION_FORM_NAMES, type ExtensionFormName, type FormExtensionRegistration } from './formTypes';
 import {
     isComponentName,
     isReplacementComponent,
@@ -380,6 +381,7 @@ export interface ExtensionRegistryBatch {
     slots: BatchedSlotRegistration[];
     screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
+    forms: FormExtensionRegistration[];
     components: Map<ComponentName, ComponentReplacement<ComponentName>>;
 }
 export interface ExtensionRuntimeState {
@@ -391,6 +393,8 @@ export interface ExtensionRuntimeState {
 const slots = new Map<SlotName, readonly SlotRegistration[]>();
 const tableColumns = new Map<ExtensionTableName, readonly ExtensionTableColumnRegistration[]>();
 const emptyColumns: readonly ExtensionTableColumnRegistration[] = Object.freeze([]);
+const formExtensions = new Map<ExtensionFormName, readonly FormExtensionRegistration[]>();
+const emptyFormExtensions: readonly FormExtensionRegistration[] = Object.freeze([]);
 const emptySlots: readonly SlotRegistration[] = Object.freeze([]);
 const screens: ExtensionScreenRegistration[] = [];
 
@@ -740,7 +744,7 @@ function assertBatchOpen(batch: ExtensionRegistryBatch): void {
 }
 
 export function createExtensionRegistryBatch(): ExtensionRegistryBatch {
-    return { closed: false, slots: [], screens: new Map(), columns: [], components: new Map() };
+    return { closed: false, slots: [], screens: new Map(), columns: [], forms: [], components: new Map() };
 }
 
 /** Keeps registrations in the order the panel advertises their extensions; the sort is stable. */
@@ -757,8 +761,8 @@ function mergeByEntryOrder<TKey, TItem extends { extensionId: string }>(
     );
 }
 
-export function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void {
-    assertBatchOpen(batch);
+/** Every declared screen and component must have an implementation before a batch commits. */
+function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch): void {
     for (const screen of screens.filter((screen) => screen.extensionId === extensionId)) {
         const staged = batch.screens.get(screen.id);
 
@@ -776,7 +780,11 @@ export function commitExtensionRegistryBatch(extensionId: string, batch: Extensi
             throw new Error(`Missing implementation for component "${name}"`);
         }
     }
+}
 
+export function commitExtensionRegistryBatch(extensionId: string, batch: ExtensionRegistryBatch): void {
+    assertBatchOpen(batch);
+    assertBatchComplete(extensionId, batch);
     batch.closed = true;
     for (const name of new Set(batch.slots.map((slot) => slot.name))) {
         mergeByEntryOrder(
@@ -791,6 +799,14 @@ export function commitExtensionRegistryBatch(extensionId: string, batch: Extensi
             tableColumns,
             name,
             batch.columns.filter((column) => column.name === name)
+        );
+    }
+
+    for (const form of new Set(batch.forms.map((registration) => registration.form))) {
+        mergeByEntryOrder(
+            formExtensions,
+            form,
+            batch.forms.filter((registration) => registration.form === form)
         );
     }
 
@@ -883,6 +899,27 @@ export function registerExtensionTableColumn(
 
 export function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[] {
     return tableColumns.get(name) ?? emptyColumns;
+}
+
+export function registerFormExtension(registration: FormExtensionRegistration, batch: ExtensionRegistryBatch): void {
+    assertBatchOpen(batch);
+    if (!EXTENSION_FORM_NAMES.includes(registration.form)) {
+        throw new Error(`Unknown form "${registration.form}".`);
+    }
+
+    if (!(registration.component instanceof Function) && !isReplacementComponent(registration.component)) {
+        throw new Error(`The "${registration.form}" form needs a component.`);
+    }
+
+    if (batch.forms.some((existing) => existing.form === registration.form)) {
+        throw new Error(`Duplicate component for the "${registration.form}" form.`);
+    }
+
+    batch.forms.push(Object.freeze({ ...registration }));
+}
+
+export function getFormExtensions(form: ExtensionFormName): readonly FormExtensionRegistration[] {
+    return formExtensions.get(form) ?? emptyFormExtensions;
 }
 
 export function findExtensionScreen(extensionId: string, id: string): ExtensionScreenRegistration | undefined {

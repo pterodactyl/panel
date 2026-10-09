@@ -21,6 +21,8 @@ import {
 } from '@/components/admin/databases/databaseHostForm';
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { useExtensionPayload } from '@/extensions/forms';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
 import Button from '@/components/elements/Button';
@@ -40,12 +42,16 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
     const updateDatabaseHost = useUpdateAdminDatabaseHost();
     const deleteDatabaseHost = useDeleteAdminDatabaseHost();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.database_host');
     const form = useAppForm({
         defaultValues: databaseHostFormValues(host),
         onSubmit: async ({ value }) => {
             try {
                 const updated = await updateDatabaseHost.mutateAsync(
-                    updateAdminDatabaseHostInput(host.attributes.id, databaseHostBodyFromFormValues(value))
+                    updateAdminDatabaseHostInput(
+                        host.attributes.id,
+                        databaseHostBodyFromFormValues(withExtensionPayload(value, host))
+                    )
                 );
 
                 form.reset(databaseHostFormValues(updated));
@@ -156,6 +162,19 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                     </div>
                 </TitledGreyBox>
             </div>
+            <form.AppField name='extensions'>
+                {() => (
+                    <ExtensionFormFields
+                        form='admin.database_host'
+                        mode='edit'
+                        resource={host}
+                        error={updateDatabaseHost.error}
+                        boxed
+                        submitLabel='Save Changes'
+                        className='mt-4'
+                    />
+                )}
+            </form.AppField>
         </Form>
     );
 }

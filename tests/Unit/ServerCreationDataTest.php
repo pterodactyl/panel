@@ -4,16 +4,27 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\ServerCreationDataTest;
 
+use InvalidArgumentException;
 use Pterodactyl\Data\ServerCreationData;
+use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonEmptyObject;
 use Pterodactyl\Tests\TestCase;
 use UnexpectedValueException;
 
 uses(TestCase::class);
-test('normalizes validated scalar values', function () {
-    expect(ServerCreationData::parse(validData()))->toBe(['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => 10, 'egg_id' => 20, 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => 1024, 'swap' => 0, 'disk' => 4096, 'io' => 500, 'cpu' => 100, 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => 1, 'allocation_additional' => [2, 3], 'start_on_completion' => true, 'database_limit' => 1, 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false]);
+test('normalizes validated scalar values', function (): void {
+    $data = validData();
+    expect(ServerCreationData::parse($data))->toBe(['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => 10, 'egg_id' => 20, 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => 1024, 'swap' => 0, 'disk' => 4096, 'io' => 500, 'cpu' => 100, 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => 1, 'allocation_additional' => [2, 3], 'start_on_completion' => true, 'database_limit' => 1, 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false, 'extensions' => $data['extensions']]);
 });
-test('defaults omitted optional booleans to false', function () {
+test('defaults extension values to none and refuses values that were not validated', function (): void {
+    $data = validData();
+    unset($data['extensions']);
+    expect(ServerCreationData::parse($data)['extensions']->all())->toBe([]);
+
+    $data['extensions'] = ['billing' => ['plan' => 'pro']];
+    expect(fn (): array => ServerCreationData::parse($data))->toThrow(InvalidArgumentException::class, 'must come from a request that validated them');
+});
+test('defaults omitted optional booleans to false', function (): void {
     $data = validData();
     unset($data['skip_scripts'], $data['start_on_completion']);
 
@@ -22,7 +33,7 @@ test('defaults omitted optional booleans to false', function () {
     expect($parsed['skip_scripts'])->toBeFalse();
     expect($parsed['start_on_completion'])->toBeFalse();
 });
-test('normalizes numeric boolean zero to false', function () {
+test('normalizes numeric boolean zero to false', function (): void {
     $data = validData();
     $data['skip_scripts'] = 0;
     $data['start_on_completion'] = 0;
@@ -32,13 +43,13 @@ test('normalizes numeric boolean zero to false', function () {
     expect($parsed['skip_scripts'])->toBeFalse();
     expect($parsed['start_on_completion'])->toBeFalse();
 });
-test('rejects non scalar environment values', function () {
+test('rejects non scalar environment values', function (): void {
     $data = validData();
     $data['environment'] = ['INVALID' => ['nested']];
     $this->expectException(UnexpectedValueException::class);
     ServerCreationData::parse($data);
 });
-test('rejects invalid typed fields', function (string $field, mixed $value, string $expectedType) {
+test('rejects invalid typed fields', function (string $field, mixed $value, string $expectedType): void {
     $data = validData();
     $data[$field] = $value;
     $this->expectException(UnexpectedValueException::class);
@@ -53,5 +64,5 @@ test('rejects invalid typed fields', function (string $field, mixed $value, stri
 /** @return array<string, JsonValue> */
 function validData(): array
 {
-    return ['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => '10', 'egg_id' => '20', 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => '1024', 'swap' => '0', 'disk' => '4096', 'io' => '500', 'cpu' => '100', 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => '1', 'allocation_additional' => ['2', 3], 'start_on_completion' => 1, 'database_limit' => '1', 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false];
+    return ['external_id' => 'external-123', 'name' => 'Example server', 'description' => 'Provisioned by the API', 'owner_id' => '10', 'egg_id' => '20', 'image' => 'ghcr.io/example/server:latest', 'startup' => './server', 'environment' => ['MODE' => 'production', 'QUERY_PORT' => 25565], 'memory' => '1024', 'swap' => '0', 'disk' => '4096', 'io' => '500', 'cpu' => '100', 'threads' => '0-3', 'skip_scripts' => true, 'allocation_id' => '1', 'allocation_additional' => ['2', 3], 'start_on_completion' => 1, 'database_limit' => '1', 'allocation_limit' => 2, 'backup_limit' => 3, 'oom_disabled' => false, 'extensions' => ValidatedExtensionValues::fromValidation(['billing' => ['plan' => 'pro']])];
 }

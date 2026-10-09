@@ -29,13 +29,14 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
+import type { ExtensionFormValues } from '@/extensions/forms';
 
 type LocationsFilters = 'short' | 'long';
 export type LocationListSort = ListSort<'short' | 'created_at'>;
 type LocationSorts = 'id' | 'short' | 'created_at';
 
 export type AdminLocationsQueryParams = QueryBuilderParams<LocationsFilters, LocationSorts>;
-export type LocationValues = AdminCreateLocationData['body'];
+export type LocationValues = AdminCreateLocationData['body'] & { extensions: ExtensionFormValues };
 export type AdminLocation = AdminLocationResource;
 
 export const createAdminLocationInput = (values: LocationValues): Options<AdminCreateLocationData> => ({

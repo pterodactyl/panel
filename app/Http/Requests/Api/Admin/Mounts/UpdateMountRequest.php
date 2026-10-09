@@ -24,4 +24,12 @@ class UpdateMountRequest extends StoreMountRequest
     {
         return MountRules::rules($this->parameter('mount', Mount::class));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Mount
+    {
+        return $this->parameter('mount', Mount::class);
+    }
 }

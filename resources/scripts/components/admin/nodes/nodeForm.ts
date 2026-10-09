@@ -1,5 +1,6 @@
 import type { AdminNode, NodeValues } from '@/api/admin/nodes/queries';
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import { initialExtensionValues } from '@/extensions/forms';
 
 export interface NodeFormValues extends Omit<
     NodeValues,
@@ -31,6 +32,7 @@ export const newNodeFormValues = (): NodeFormValues => ({
     daemonListen: 8080,
     daemonSftp: 2022,
     daemonBase: '/var/lib/pterodactyl/volumes',
+    extensions: initialExtensionValues(),
 });
 
 export const nodeFormValues = (node: AdminNode): NodeFormValues => ({
@@ -50,6 +52,7 @@ export const nodeFormValues = (node: AdminNode): NodeFormValues => ({
     daemonListen: node.attributes.daemon_listen,
     daemonSftp: node.attributes.daemon_sftp,
     daemonBase: node.attributes.daemon_base,
+    extensions: initialExtensionValues(),
 });
 
 export const nodeValuesFromForm = ({

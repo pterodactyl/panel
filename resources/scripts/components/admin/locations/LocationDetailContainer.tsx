@@ -13,6 +13,8 @@ import {
     useUpdateAdminLocation,
 } from '@/api/admin/locations/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import { validateShortCode } from '@/components/admin/locations/locationForm';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Icon from '@/components/elements/Icon';
@@ -31,6 +33,7 @@ import { cardTitleClass } from '@/components/ui/typography';
 const locationToValues = (location: AdminLocation): LocationValues => ({
     short: location.attributes.short,
     long: location.attributes.long ?? '',
+    extensions: initialExtensionValues(),
 });
 
 type LocationNode = Extract<
@@ -89,11 +92,14 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
     const updateLocation = useUpdateAdminLocation();
     const deleteLocation = useDeleteAdminLocation();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.location');
     const form = useAppForm({
         defaultValues: locationToValues(location),
         onSubmit: async ({ value }) => {
             try {
-                const updated = await updateLocation.mutateAsync(updateAdminLocationInput(attributes.id, value));
+                const updated = await updateLocation.mutateAsync(
+                    updateAdminLocationInput(attributes.id, withExtensionPayload(value, location))
+                );
 
                 form.reset(locationToValues(updated));
             } catch {
@@ -150,6 +156,17 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                             )}
                         </form.AppField>
                     </div>
+                    <form.AppField name='extensions'>
+                        {() => (
+                            <ExtensionFormFields
+                                form='admin.location'
+                                mode='edit'
+                                resource={location}
+                                error={updateLocation.error}
+                                className='mt-6'
+                            />
+                        )}
+                    </form.AppField>
                     <div className='flex justify-end mt-6'>
                         <Dialog.ConfirmTrigger
                             title='Delete location'

@@ -7,6 +7,7 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Nodes;
 use Closure;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Validation\NodeRules;
 
 class UpdateNodeRequest extends StoreNodeRequest
@@ -38,5 +39,13 @@ class UpdateNodeRequest extends StoreNodeRequest
     public function after(): array
     {
         return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Node
+    {
+        return $this->parameter('node', Node::class);
     }
 }

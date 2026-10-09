@@ -16,7 +16,7 @@ interface CreatesUsers
      * The UUID and password hash are handled by the model itself (HasVersion4Uuids
      * and the hashed password cast).
      *
-     * @param  ModelAttributes  $data
+     * @param  UserCreationData  $data
      *
      * @throws Throwable
      */

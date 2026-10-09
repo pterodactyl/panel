@@ -13,7 +13,7 @@ interface UpdatesUsers
      * Update the user model instance and return the updated model. The hashed
      * password cast on the model takes care of hashing a new password.
      *
-     * @param  ModelAttributes  $data
+     * @param  UserUpdateData  $data
      *
      * @throws Throwable
      */

@@ -25,4 +25,12 @@ class UpdateUserRequest extends StoreUserRequest
     {
         return parent::rules(UserRules::rules($this->parameter('user', User::class)));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): User
+    {
+        return $this->parameter('user', User::class);
+    }
 }

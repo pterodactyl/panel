@@ -17,6 +17,8 @@ use League\Fractal\TransformerAbstract;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Support\JsonEmptyObject;
 use UnexpectedValueException;
 
 /**
@@ -40,10 +42,28 @@ abstract class BaseTransformer extends TransformerAbstract
 
     private ?Request $request = null;
 
+    private bool $extensionFields = false;
+
+    private bool $readExtensionFields = true;
+
     /**
      * Return the resource name for the JSONAPI output.
      */
     abstract public function getResourceName(): string;
+
+    /**
+     * Adds the values of extension fields to the resource as its `extensions` attribute.
+     * Controllers ask for them on responses about one model, so a list never runs every
+     * extension for every row. With `$read` false the attribute is present but empty and no
+     * extension code runs, as in documentation examples.
+     */
+    public function withExtensionFields(bool $read = true): static
+    {
+        $this->extensionFields = true;
+        $this->readExtensionFields = $read;
+
+        return $this;
+    }
 
     /**
      * Batch dependencies across the entire resource before Fractal visits individual models.
@@ -109,6 +129,39 @@ abstract class BaseTransformer extends TransformerAbstract
     protected function request(): Request
     {
         return $this->request ??= RequestFacade::instance();
+    }
+
+    /**
+     * The `extensions` attribute of a model, keyed by extension id, when the controller asked
+     * for extension fields; empty otherwise, so the attribute is left out.
+     *
+     * @return array{extensions?: array<string, ExtensionFieldValues|JsonEmptyObject>|JsonEmptyObject}
+     */
+    protected function extensionFields(Model $model): array
+    {
+        if (! $this->extensionFields) {
+            return [];
+        }
+
+        if (! $this->readExtensionFields) {
+            return ['extensions' => new JsonEmptyObject];
+        }
+
+        $values = array_map(
+            fn (array $values): array|JsonEmptyObject => $values === [] ? new JsonEmptyObject : $values,
+            App::make(ExtensionFields::class)->values($model, applicationApi: ! $this->exposesAllExtensionFields()),
+        );
+
+        return ['extensions' => $values === [] ? new JsonEmptyObject : $values];
+    }
+
+    /**
+     * Whether this API returns the values of every extension's fields, rather than only
+     * those marked #[ApplicationApi].
+     */
+    protected function exposesAllExtensionFields(): bool
+    {
+        return false;
     }
 
     /**

@@ -20,6 +20,8 @@ import { type AdminUser, useAllAdminUsers } from '@/api/admin/users/queries';
 import { type LocationWithNodes, useAdminNodesGroupedByLocation } from '@/api/admin/nodes/queries';
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { type ExtensionFormValues, initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Label from '@/components/elements/Label';
@@ -42,6 +44,7 @@ interface Values extends Omit<
     swap: NumberInputValue;
     disk: NumberInputValue;
     io: NumberInputValue;
+    extensions: ExtensionFormValues;
 }
 
 type ServerForm = AppForm<Values>;
@@ -74,6 +77,8 @@ const initialValues: Values = {
     startup: '',
 
     environment: {},
+
+    extensions: initialExtensionValues(),
 };
 
 const createServerValues = (values: Values): CreateServerValues => ({
@@ -605,12 +610,16 @@ export default function CreateServerForm() {
     const loading = usersLoading || locationsLoading || eggsLoading;
     const hasNodes = locations.some((location) => location.nodes.length > 0);
 
+    const { extensionFormPayload } = useExtensionPayload('admin.server');
     const form = useAppForm({
         defaultValues: initialValues,
         onSubmit: async ({ value }) => {
             try {
                 const server = await createServer.mutateAsync(
-                    createAdminServerInput(createServerBodyFromFormValues(createServerValues(value)))
+                    createAdminServerInput({
+                        ...createServerBodyFromFormValues(createServerValues(value)),
+                        extensions: extensionFormPayload(value.extensions),
+                    })
                 );
 
                 void navigate({ to: '/panel/servers/$id', params: { id: server.attributes.id } });
@@ -641,6 +650,16 @@ export default function CreateServerForm() {
                         <FeatureLimitsBox form={form} />
                         <ResourceManagementBox form={form} />
                         <EggSection form={form} eggs={eggs?.data ?? []} />
+                        <form.AppField name='extensions'>
+                            {() => (
+                                <ExtensionFormFields
+                                    form='admin.server'
+                                    mode='create'
+                                    error={createServer.error}
+                                    boxed
+                                />
+                            )}
+                        </form.AppField>
                         <div className='flex justify-end'>
                             <form.AppForm>
                                 <form.SubmitButton>Create Server</form.SubmitButton>

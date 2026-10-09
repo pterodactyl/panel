@@ -119,6 +119,7 @@ describe('session queries', () => {
                     password: '',
                     rootAdmin: true,
                     language: 'fr',
+                    extensions: {},
                 })
             );
         });

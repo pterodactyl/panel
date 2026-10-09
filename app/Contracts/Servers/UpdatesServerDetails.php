@@ -10,7 +10,7 @@ use Throwable;
 interface UpdatesServerDetails
 {
     /**
-     * @param  ModelAttributes  $data
+     * @param  ServerDetailsModificationData  $data
      *
      * @throws Throwable
      */

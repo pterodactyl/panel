@@ -9,7 +9,7 @@ use Throwable;
 
 interface CreatesDatabaseHosts
 {
-    /** @param ModelAttributes $data
+    /** @param DatabaseHostUpdateData $data
      * @throws Throwable
      */
     public function create(array $data): DatabaseHost;

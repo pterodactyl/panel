@@ -16,6 +16,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Contracts\Locations\DeletesLocations;
 use Pterodactyl\Contracts\Locations\UpdatesLocations;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -76,7 +77,7 @@ class LocationController extends AdminApiController
         }]);
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -85,6 +86,7 @@ class LocationController extends AdminApiController
      */
     #[Endpoint('Create location', 'Creates a location for grouping nodes and servers.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.com/api/admin/locations/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
     {
         $location = $locations->create($request->payload());
@@ -95,7 +97,7 @@ class LocationController extends AdminApiController
             ->log();
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.locations.view', [
                     'location' => $location->id,
@@ -111,6 +113,7 @@ class LocationController extends AdminApiController
      */
     #[Endpoint('Update location', 'Updates a location short identifier and description.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, description: 'Location updated.', resourceKey: 'location')]
+    #[ExtensionFieldsParam]
     public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
     {
         $location = $locations->update($location, $request->payload());
@@ -121,7 +124,7 @@ class LocationController extends AdminApiController
             ->log();
 
         return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

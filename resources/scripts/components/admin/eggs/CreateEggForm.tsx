@@ -5,6 +5,8 @@ import { useAppForm, Form } from '@/components/form';
 import { httpErrorToHuman } from '@/api/http';
 import { createAdminEggInput, useAdminEggs, useCreateAdminEgg } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
@@ -22,6 +24,7 @@ export default function CreateEggForm() {
     const { data: eggs, isFetching: eggsFetching, error: eggsError } = useAdminEggs();
     const createEgg = useCreateAdminEgg();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.egg');
     const form = useAppForm({
         defaultValues: emptyEggFormValues(),
         onSubmit: async ({ value }) => {
@@ -30,7 +33,13 @@ export default function CreateEggForm() {
                 const configFiles = filesEditor.current?.getValue() ?? '';
                 const configStartup = startupEditor.current?.getValue() ?? '';
                 const egg = await createEgg.mutateAsync(
-                    createAdminEggInput(toApiValues(value, { configLogs, configFiles, configStartup }))
+                    createAdminEggInput(
+                        toApiValues(withExtensionPayload(value), {
+                            configLogs,
+                            configFiles,
+                            configStartup,
+                        })
+                    )
                 );
 
                 void navigate({
@@ -74,6 +83,17 @@ export default function CreateEggForm() {
                         filesRef={filesEditor}
                         startupRef={startupEditor}
                     />
+                    <form.AppField name='extensions'>
+                        {() => (
+                            <ExtensionFormFields
+                                form='admin.egg'
+                                mode='create'
+                                error={createEgg.error}
+                                boxed
+                                className='mt-4'
+                            />
+                        )}
+                    </form.AppField>
                     <div className='flex justify-end mt-6'>
                         <form.AppForm>
                             <form.SubmitButton>Create Egg</form.SubmitButton>

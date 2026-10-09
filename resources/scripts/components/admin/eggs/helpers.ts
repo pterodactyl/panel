@@ -1,5 +1,6 @@
 import type { AdminEgg, EggConfigurationBody, EggVariableBody } from '@/api/admin/eggs/queries';
 import { isObject } from '@/lib/objects';
+import { type ExtensionFormValues, initialExtensionValues } from '@/extensions/forms';
 
 export interface EggFormValues {
     name: string;
@@ -13,6 +14,7 @@ export interface EggFormValues {
     configStartup: string;
     configLogs: string;
     configFiles: string;
+    extensions: ExtensionFormValues;
 }
 
 export interface EggVariableValues {
@@ -108,6 +110,7 @@ export const eggToFormValues = (egg: AdminEgg): EggFormValues => ({
     configStartup: prettyJson(egg.attributes.config.startup),
     configLogs: prettyJson(egg.attributes.config.logs),
     configFiles: prettyJson(egg.attributes.config.files),
+    extensions: initialExtensionValues(),
 });
 
 export const emptyEggFormValues = (): EggFormValues => ({
@@ -122,6 +125,7 @@ export const emptyEggFormValues = (): EggFormValues => ({
     configStartup: '',
     configLogs: '',
     configFiles: '',
+    extensions: initialExtensionValues(),
 });
 
 export const toApiValues = (
@@ -144,6 +148,7 @@ export const toApiValues = (
         config_startup: nullIfEmpty(json.configStartup),
         config_logs: nullIfEmpty(json.configLogs),
         config_files: nullIfEmpty(json.configFiles),
+        extensions: values.extensions,
     };
 };
 

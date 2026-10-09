@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -12,7 +13,9 @@ use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\AllocationRules;
 use Pterodactyl\Validation\ServerRules;
@@ -20,6 +23,7 @@ use Pterodactyl\Validation\ServerRules;
 class StoreServerRequest extends AdminApiRequest
 {
     use FiltersDeployTags;
+    use ValidatesExtensionFields;
 
     public function permissions(): array
     {
@@ -113,7 +117,7 @@ class StoreServerRequest extends AdminApiRequest
         ];
         JsonValueGuard::assertPayload9($payload);
 
-        return ServerCreationData::parse($payload);
+        return [...ServerCreationData::parse($payload), 'extensions' => $this->extensionValues()];
     }
 
     /**
@@ -138,5 +142,13 @@ class StoreServerRequest extends AdminApiRequest
         $object->setTags($this->resolveDeployTagSlugs());
 
         return $object;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Model|string
+    {
+        return Server::class;
     }
 }

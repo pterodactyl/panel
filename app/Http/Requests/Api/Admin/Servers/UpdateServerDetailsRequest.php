@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
+    use ValidatesExtensionFields;
+
     public function permissions(): array
     {
         return [Permissions::AdminServersUpdate];
@@ -44,6 +47,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'name' => $this->string('name')->toString(),
             'owner_id' => $this->integer('owner_id'),
             'description' => $this->filled('description') ? $this->string('description')->toString() : null,
+            'extensions' => $this->extensionValues(),
         ];
     }
 
@@ -54,5 +58,13 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'owner_id' => 'User ID',
             'name' => 'Server Name',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Server
+    {
+        return $this->parameter('server', Server::class);
     }
 }

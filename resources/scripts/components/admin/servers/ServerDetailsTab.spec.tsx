@@ -1,5 +1,6 @@
 /** @vitest-environment jsdom */
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -83,7 +84,11 @@ describe('ServerDetailsTab', () => {
     it('keeps a newly picked owner selectable after the owner search is cleared', async () => {
         const events = userEvent.setup();
 
-        render(<ServerDetailsTab />);
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <ServerDetailsTab />
+            </QueryClientProvider>
+        );
 
         expect(screen.getByTestId('user')).toHaveValue('1');
 

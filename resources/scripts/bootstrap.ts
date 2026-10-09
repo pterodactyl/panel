@@ -3,7 +3,9 @@ import type { SiteSettings } from '@/api/settings/types';
 import type { SiteExtensionEntry } from '@/extensions/registry';
 
 interface ExtendedWindow extends Window {
-    SiteConfiguration?: SiteSettings & { extensions?: SiteExtensionEntry[] };
+    SiteConfiguration?: SiteSettings & {
+        extensions?: SiteExtensionEntry[];
+    };
     PterodactylUser?: {
         uuid: string;
         username: string;

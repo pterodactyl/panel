@@ -9,6 +9,8 @@ import {
 } from '@/components/admin/databases/databaseHostForm';
 import DatabaseHostNodeSelect from '@/components/admin/databases/DatabaseHostNodeSelect';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useAppForm, Form } from '@/components/form';
@@ -17,12 +19,13 @@ export default function CreateDatabaseHostForm() {
     const navigate = useNavigate();
     const createDatabaseHost = useCreateAdminDatabaseHost();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.database_host');
     const form = useAppForm({
         defaultValues: newDatabaseHostFormValues(),
         onSubmit: async ({ value }) => {
             try {
                 const host = await createDatabaseHost.mutateAsync(
-                    createAdminDatabaseHostInput(databaseHostBodyFromFormValues(value))
+                    createAdminDatabaseHostInput(databaseHostBodyFromFormValues(withExtensionPayload(value)))
                 );
 
                 void navigate({ to: '/panel/databases/$id', params: { id: host.attributes.id } });
@@ -107,6 +110,16 @@ export default function CreateDatabaseHostForm() {
                             </form.AppField>
                         </div>
                     </TitledGreyBox>
+                    <form.AppField name='extensions'>
+                        {() => (
+                            <ExtensionFormFields
+                                form='admin.database_host'
+                                mode='create'
+                                error={createDatabaseHost.error}
+                                boxed
+                            />
+                        )}
+                    </form.AppField>
                     <div className='flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Create Host</form.SubmitButton>

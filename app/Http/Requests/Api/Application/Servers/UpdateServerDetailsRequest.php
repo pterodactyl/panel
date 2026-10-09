@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
+    use ValidatesExtensionFields;
+
     /**
      * Rules to apply to a server details update request.
      *
@@ -39,6 +42,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'name' => $this->string('name')->toString(),
             'owner_id' => $this->integer('user'),
             'description' => $this->filled('description') ? $this->string('description')->toString() : null,
+            'extensions' => $this->extensionValues(),
         ];
     }
 
@@ -52,5 +56,13 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
             'user' => 'User ID',
             'name' => 'Server Name',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extensionFieldsModel(): Server
+    {
+        return $this->parameter('server', Server::class);
     }
 }

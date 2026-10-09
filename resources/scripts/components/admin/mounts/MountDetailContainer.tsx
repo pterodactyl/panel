@@ -23,6 +23,8 @@ import {
 } from '@/api/admin/mounts/queries';
 import { mountDetailRoute } from '@/router/routeTree';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import AttachEggsModal from '@/components/admin/mounts/AttachEggsModal';
 import AttachNodesModal from '@/components/admin/mounts/AttachNodesModal';
 import { validateMountName } from '@/components/admin/mounts/mountForm';
@@ -50,9 +52,20 @@ const mountToValues = (mount: AdminMountWithRelations): MountValues => ({
     target: mount.attributes.target,
     readOnly: mount.attributes.read_only,
     userMountable: mount.attributes.user_mountable,
+    extensions: initialExtensionValues(),
 });
 
-const MountDetailsCard = ({ form, onDelete }: { form: MountForm; onDelete: () => void }) => (
+const MountDetailsCard = ({
+    form,
+    mount,
+    error,
+    onDelete,
+}: {
+    form: MountForm;
+    mount: AdminMountWithRelations;
+    error: unknown;
+    onDelete: () => void;
+}) => (
     <TitledGreyBox title='Mount Details'>
         <Form form={form} className='m-0'>
             <form.AppField
@@ -142,6 +155,17 @@ const MountDetailsCard = ({ form, onDelete }: { form: MountForm; onDelete: () =>
                     )}
                 </form.AppField>
             </div>
+            <form.AppField name='extensions'>
+                {() => (
+                    <ExtensionFormFields
+                        form='admin.mount'
+                        mode='edit'
+                        resource={mount}
+                        error={error}
+                        className='mt-6'
+                    />
+                )}
+            </form.AppField>
             <div className='flex justify-end mt-6'>
                 <Button type='button' color='red' isSecondary className='mr-2' onClick={onDelete}>
                     Delete Mount
@@ -426,11 +450,13 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
     const detachMountEgg = useDetachAdminMountEgg();
     const detachMountNode = useDetachAdminMountNode();
 
+    const { withExtensionPayload } = useExtensionPayload('admin.mount');
     const editForm = useAppForm({
         defaultValues: mountToValues(mount),
         onSubmit: async ({ value }) => {
             try {
-                await updateMount.mutateAsync(updateAdminMountInput(mountId, value));
+                await updateMount.mutateAsync(updateAdminMountInput(mountId, withExtensionPayload(value, mount)));
+                editForm.reset({ ...value, extensions: initialExtensionValues() });
             } catch {
                 // Error toast is handled by the mutation.
             }
@@ -462,7 +488,11 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
             </Link>
 
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-                <Dialog.Trigger trigger={({ onClick }) => <MountDetailsCard form={editForm} onDelete={onClick} />}>
+                <Dialog.Trigger
+                    trigger={({ onClick }) => (
+                        <MountDetailsCard form={editForm} mount={mount} error={updateMount.error} onDelete={onClick} />
+                    )}
+                >
                     {({ open, onClose }) =>
                         open && (
                             <DeleteMountDialog

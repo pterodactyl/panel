@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Models\User;
+use Pterodactyl\Support\JsonValueGuard;
 
 class UserTransformer extends BaseAdminTransformer
 {
@@ -31,7 +32,7 @@ class UserTransformer extends BaseAdminTransformer
      */
     public function transform(User $user): array
     {
-        return [
+        $payload = [
             'id' => $user->id,
             'external_id' => $user->external_id,
             'uuid' => $user->uuid,
@@ -48,7 +49,11 @@ class UserTransformer extends BaseAdminTransformer
             'created_at' => $this->formatTimestamp($user->created_at),
             'updated_at' => $this->formatTimestamp($user->updated_at),
             'relationships' => [],
+            ...$this->extensionFields($user),
         ];
+        JsonValueGuard::assertPayload($payload);
+
+        return $payload;
     }
 
     public function includeServers(User $user): Collection|NullResource

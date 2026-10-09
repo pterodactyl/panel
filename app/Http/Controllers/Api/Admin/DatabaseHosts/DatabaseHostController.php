@@ -18,6 +18,7 @@ use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Contracts\Databases\DeletesDatabaseHosts;
 use Pterodactyl\Contracts\Databases\UpdatesDatabaseHosts;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -124,7 +125,7 @@ class DatabaseHostController extends AdminApiController
         $databaseHost->load('node');
 
         return Fractal::item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -169,6 +170,7 @@ class DatabaseHostController extends AdminApiController
     #[Endpoint('Create database host', 'Creates a database host after validating that the panel can connect to it.')]
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, status: 201, description: 'Database host created.', resourceKey: 'database_host', meta: ['resource' => 'https://panel.example.com/api/admin/database-hosts/1'])]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
+    #[ExtensionFieldsParam]
     public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost): JsonResponse
     {
         try {
@@ -185,7 +187,7 @@ class DatabaseHostController extends AdminApiController
             ->log();
 
         return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.database-hosts.view', [
                     'databaseHost' => $host->id,
@@ -202,6 +204,7 @@ class DatabaseHostController extends AdminApiController
     #[Endpoint('Update database host', 'Updates a database host after validating that the panel can connect to the supplied host details.')]
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
+    #[ExtensionFieldsParam]
     public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): array
     {
         try {
@@ -218,7 +221,7 @@ class DatabaseHostController extends AdminApiController
             ->log();
 
         return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

@@ -15,6 +15,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Eggs\CreatesEggs;
 use Pterodactyl\Contracts\Eggs\DeletesEggs;
 use Pterodactyl\Contracts\Eggs\UpdatesEggs;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -77,7 +78,7 @@ class EggController extends AdminApiController
     public function show(GetEggRequest $request, Egg $egg): array
     {
         return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -86,6 +87,7 @@ class EggController extends AdminApiController
      */
     #[Endpoint('Create egg', 'Creates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, status: 201, description: 'Egg created.', resourceKey: 'egg', meta: ['resource' => 'https://panel.example.com/api/admin/eggs/1'])]
+    #[ExtensionFieldsParam]
     public function store(StoreEggRequest $request, CreatesEggs $eggs): JsonResponse
     {
         $egg = $eggs->create($request->payload());
@@ -96,7 +98,7 @@ class EggController extends AdminApiController
             ->log();
 
         return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.eggs.view', ['egg' => $egg->id]),
             ])
@@ -110,6 +112,7 @@ class EggController extends AdminApiController
      */
     #[Endpoint('Update egg', 'Updates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg updated.', resourceKey: 'egg')]
+    #[ExtensionFieldsParam]
     public function update(UpdateEggRequest $request, UpdatesEggs $eggs, Egg $egg): array
     {
         $egg = $eggs->update($egg, $request->payload());
@@ -120,7 +123,7 @@ class EggController extends AdminApiController
             ->log();
 
         return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith($this->getTransformer(EggTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

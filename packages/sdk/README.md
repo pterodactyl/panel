@@ -131,7 +131,8 @@ File toolbar, row actions, and selection actions receive typed files, directory,
 selection, and refresh callbacks. `server.startup.form` receives current configuration
 and a guarded Docker image setter. `panel.users.detail.form` supplies the native
 `form`, so contributed `form.AppField` controls share core validation, pending state,
-submission, and persistence. Keep values in that form rather than copying a separate draft. `columns.register('admin.nodes', { id, label,
+submission, and persistence. Keep values in that form rather than copying a separate draft. To add fields of your
+own to an admin form, see [Admin form fields](#admin-form-fields). `columns.register('admin.nodes', { id, label,
 component })` adds a typed cell to the native table; servers and eggs are also supported.
 Columns commit atomically and render inside local error boundaries. Table, Tooltip,
 DropdownMenu, and Pagination complement the existing form and dialog primitives. `Empty`
@@ -333,6 +334,134 @@ jobs, recovers on reconnect, and stops when the job finishes or access expires. 
 shared cache store for workers and web requests. Snapshots expire after
 `extensions.progress_retention_seconds` (one hour by default); they are progress UI,
 not a durable job audit log.
+
+## Admin form fields
+
+An extension can add its own fields to the admin create and edit forms of users, servers,
+nodes, eggs, locations, mounts and database hosts. The panel validates them with the form,
+saves them in the same transaction, and returns them on the resource.
+
+Declare the fields in PHP with a `Fields` class and register it from the provider, one
+class per model:
+
+```php
+use Illuminate\Validation\Rule;
+use Pterodactyl\Extensions\Fields;
+use Pterodactyl\Models\User;
+
+$this->registerFields(User::class, UserRole::class);
+
+final class UserRole extends Fields
+{
+    public function rules(): array
+    {
+        return ['role' => ['nullable', 'integer', Rule::exists(Role::class, 'id')]];
+    }
+
+    public function values(User $user): array
+    {
+        return ['role' => RoleAssignment::query()->whereKey($user->id)->value('role_id')];
+    }
+
+    public function save(User $user, array $values): void
+    {
+        RoleAssignment::query()->updateOrCreate(['user_id' => $user->id], ['role_id' => $values['role']]);
+    }
+}
+```
+
+Every method is optional. The panel calls them through the container, like the methods of
+a FormRequest, so each can type-hint the model it extends and any other dependency. A model
+parameter always receives the model being changed, never the signed-in user, and every
+method but `values()` and `save()` also runs while the model is created, so a model
+parameter there must be nullable. Registering a class that breaks either rule fails the
+provider's boot.
+
+- `rules()` validates the extension's values on their own, so `required_if:plan,pro` refers
+  to the extension's own `plan`. They run for every extension the signed-in user may change
+  when the model is created, whether or not the request sends its values, and when an
+  update includes the extension under `extensions`, even with no values. The admin forms
+  include every extension they show, so `required` holds there on create and on every
+  edit, like the core fields beside it. An update that leaves the extension out leaves its
+  values alone. A `?User $user` parameter receives the model when updating and null when
+  creating.
+- `values($model)` returns the current values, keyed by field. Values are strings, numbers,
+  booleans, null, or lists of those.
+- `save($model, array $values)` stores the validated values; the parameter must be named
+  `$values`. It runs inside the transaction that writes the model, after its row is written
+  and before Wings is contacted, so throwing rolls the whole change back. Put work that has
+  to wait for the commit in `DB::afterCommit()`.
+- `authorize()` decides whether the signed-in user may see and change the values; type-hint
+  `#[CurrentUser] User $admin` to get them. A request that sends values it refuses gets a 403.
+  Only root admins reach these endpoints, and `$admin->can()` passes every check for a root
+  admin, so decide on something else, such as the admin's id or a role the extension keeps.
+- `secrets()` lists the fields that hold credentials. Their values are encrypted when the
+  panel stores them and returned as `********`. A save that sends the mask, or leaves the
+  field out, keeps the stored value, and `save()` receives it. A save that sends null or an
+  empty string clears it, so a `required` rule then fails. An empty secret is returned as
+  null, so sending back what the form loaded clears nothing.
+- `attributes()` and `messages()` name the fields in validation messages and replace them,
+  as on a FormRequest.
+
+Leave out `values()` and `save()` and the panel stores the values for you, apart from the
+extension's other settings: read them with `$this->settings()->fields($user)`. Settings from
+`for()`, `forUser()` and `forServer()` never include them, so an extension that shows users
+their own settings cannot expose admin fields. Implement both to keep the values in your
+own tables, where you can index, join and query them. Implementing only one fails the
+provider's boot.
+
+The admin API's create and update endpoints accept `extensions: { "<id>": { "<field>": value } }`
+and report errors under `extensions.<id>.<field>`. Responses about one resource include
+`attributes.extensions`; lists leave it out. A request that leaves an extension out does not
+run its `save()`, values sent for an extension that is disabled are ignored, and an extension
+whose `values()` throws is recorded as failing and left out of the response. One whose
+methods throw while a save validates its values is recorded as failing too, and the request
+gets a 422 under `extensions.<id>`. Mark the class
+`#[ApplicationApi]` (`Pterodactyl\Extensions\Attributes\ApplicationApi`) to accept and return
+its values on the Application API's user, node, location and server endpoints as well, so a
+billing system that provisions through it can set them.
+
+Draw the fields with `forms.extend()`. The component receives `field(name)`, which binds one
+field to the form: `value`, `setValue`, an `id` for its label, and `error`, the panel's
+message from the last save until the field changes. `values` holds every field of the
+extension: its saved values with the edits made so far. `mode` is `'create'` or `'edit'`,
+and `resource` is the saved resource when editing.
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+import { definePterodactylExtension, http, Label, Select, type FormExtension } from '@pterodactyl/sdk';
+
+const RoleSelect: FormExtension<{ role: number | null }, 'admin.user'> = ({ field }) => {
+    const role = field('role');
+    const { data: roles = [] } = useQuery(rolesQuery);
+
+    return (
+        <div>
+            <Label htmlFor={role.id}>Role</Label>
+            <Select
+                id={role.id}
+                value={role.value ?? 0}
+                options={[{ value: 0, label: 'No role' }, ...roles.map((r) => ({ value: r.id, label: r.name }))]}
+                onChange={(value) => role.setValue(value === 0 ? null : Number(value))}
+            />
+            {role.error && <p className={'input-help error'}>{role.error}</p>}
+        </div>
+    );
+};
+
+export default definePterodactylExtension({
+    setup({ forms }) {
+        forms.extend('admin.user', RoleSelect);
+    },
+});
+```
+
+The forms are `admin.user`, `admin.server` (the create form and the details form),
+`admin.node`, `admin.egg`, `admin.location`, `admin.mount` and `admin.database_host`. The
+panel draws each extension's component under its name, inside an error boundary. Every save
+sends all values of every extension it draws, edited or not, so their rules run each time
+and `save()` receives the complete values. When editing, an extension whose values the
+panel did not return is not drawn or sent, so a save cannot write over them.
 
 ## Backend provider API
 

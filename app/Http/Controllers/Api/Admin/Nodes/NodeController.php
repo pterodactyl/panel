@@ -16,6 +16,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Nodes\CreatesNodes;
 use Pterodactyl\Contracts\Nodes\DeletesNodes;
 use Pterodactyl\Contracts\Nodes\UpdatesNodes;
+use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -82,7 +83,7 @@ class NodeController extends AdminApiController
         $node->loadCount('servers');
 
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 
@@ -91,6 +92,7 @@ class NodeController extends AdminApiController
      */
     #[Endpoint('Create node', 'Creates a Wings node. HTTPS nodes must use a valid FQDN rather than a raw IP address.')]
     #[ResponseFromTransformer(NodeTransformer::class, Node::class, status: 201, description: 'Node created.', factoryStates: ['withLocation'], resourceKey: 'node', meta: ['resource' => 'https://panel.example.com/api/admin/nodes/1'], withCount: ['servers'])]
+    #[ExtensionFieldsParam]
     public function store(StoreNodeRequest $request, CreatesNodes $nodes): JsonResponse
     {
         $node = $nodes->create($request->payload());
@@ -101,7 +103,7 @@ class NodeController extends AdminApiController
             ->log();
 
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->addMeta([
                 'resource' => route('api.admin.nodes.view', [
                     'node' => $node->id,
@@ -118,6 +120,7 @@ class NodeController extends AdminApiController
     #[Endpoint('Update node', 'Updates a Wings node and optionally rotates its daemon secret.')]
     #[BodyParam('reset_secret', 'boolean', 'Whether to rotate the daemon secret.', required: false, example: false)]
     #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Node updated.', factoryStates: ['withLocation'], resourceKey: 'node', withCount: ['servers'])]
+    #[ExtensionFieldsParam]
     public function update(UpdateNodeRequest $request, UpdatesNodes $nodes, Node $node): array
     {
         $node = $nodes->update(
@@ -132,7 +135,7 @@ class NodeController extends AdminApiController
             ->log();
 
         return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
             ->toResponseArray();
     }
 

@@ -17,6 +17,7 @@ use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
 use Pterodactyl\Services\Extensions\ExtensionFailureAttributor;
+use Pterodactyl\Services\Extensions\ExtensionFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
@@ -35,6 +36,7 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->singleton(ExtensionAssetPublisher::class);
         $this->app->singleton(ExtensionSettingsRegistry::class);
         $this->app->singleton(ExtensionPermissionRegistry::class);
+        $this->app->singleton(ExtensionFieldRegistry::class);
         $this->app->singleton(ExtensionRepository::class);
         $this->app->singleton(ExtensionLock::class);
         $this->app->singleton(ExtensionProviderLoader::class);

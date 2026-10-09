@@ -7,6 +7,7 @@ namespace Pterodactyl\Extensions;
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +22,7 @@ use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Services\Extensions\ExtensionActionDecorators;
 use Pterodactyl\Services\Extensions\ExtensionConsoleRegistry;
+use Pterodactyl\Services\Extensions\ExtensionFieldRegistry;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
@@ -374,6 +376,23 @@ abstract class ExtensionProvider extends ServiceProvider
     {
         $this->registration()->defer(function () use ($definition): void {
             $this->app->make(ExtensionSettingsRegistry::class)->register($this->id(), $definition);
+        });
+    }
+
+    /**
+     * Add fields to the admin create and edit forms of a model:
+     * `$this->registerFields(User::class, UserRole::class)`. See Fields for what the class
+     * declares. Users, servers, nodes, eggs, locations, mounts and database hosts accept
+     * fields; an extension registers one Fields class per model.
+     *
+     * @param  class-string<Model>  $model
+     * @param  class-string<Fields>  $fields
+     */
+    protected function registerFields(string $model, string $fields): void
+    {
+        $registration = $this->registration();
+        $registration->defer(function () use ($model, $fields, $registration): void {
+            $this->app->make(ExtensionFieldRegistry::class)->register($this->id(), $model, $fields, $registration);
         });
     }
 
