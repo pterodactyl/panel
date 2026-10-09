@@ -1,0 +1,1365 @@
+.oxlintrc.json
+  s_899a0f63af105e::t_1fed51d0e8f3d8 3,8-11,45,48-57,80-89,91-99,119-121,123-146,162-168,297-298,301-307
+app/Actions/Allocations/AssignAllocation.php
+  s_899a0f63af105e::t_b7941cc4929648 28
+app/Actions/Allocations/AssignAvailableAllocation.php
+  s_899a0f63af105e::t_acaddcd374c534 47
+app/Actions/Allocations/SetPrimaryAllocation.php
+  s_899a0f63af105e::t_a12ffd3e50209e 17-18
+app/Actions/Allocations/UpdateAllocation.php
+  s_899a0f63af105e::t_e2731dc3c1c7d4 18
+app/Actions/Allocations/UpdateAllocationNotes.php
+  s_899a0f63af105e::t_0dc55d84c27652 16
+app/Actions/Api/DeleteApiKey.php
+  s_899a0f63af105e::t_ec5455477aaaeb 5,7-8,10,12,14
+app/Actions/Api/UpdateApiKey.php
+  s_899a0f63af105e::t_b43f6c76462a89 5,7-8,10,13-16,18,20-22,24,26
+app/Actions/Backups/DeleteBackup.php
+  s_899a0f63af105e::t_d8b4e769ad7f80 46-52,54,58-59,65-66,68-71,73
+app/Actions/Backups/InitiateBackup.php
+  s_899a0f63af105e::t_d5903450d1483c 8,64-68,75,99-101,107-118,131-134,136-152,154-163
+app/Actions/Backups/RestoreBackupStatus.php
+  s_899a0f63af105e::t_ab07cd206c54f5 22
+app/Actions/Backups/ToggleBackupLock.php
+  s_899a0f63af105e::t_d0f082bc22cec8 16
+app/Actions/Databases/CreateDatabaseHost.php
+  s_899a0f63af105e::t_e89bd18a89d6a0 31-53
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_899a0f63af105e::t_02c48541f578ae 39-47
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_899a0f63af105e::t_6a0c578990e4d4 22,36-37
+app/Actions/Eggs/UpdateEgg.php
+  s_899a0f63af105e::t_30282c9beb8c40 22,35-36
+app/Actions/Eggs/Variables/DeleteEggVariable.php
+  s_899a0f63af105e::t_3aff9d3a213ce4 1-19
+app/Actions/Eggs/Variables/UpdateEggVariable.php
+  s_899a0f63af105e::t_763d3c2765cf8e 17,20-21
+app/Actions/Extensions/InstallExtension.php
+  s_899a0f63af105e::t_d56d98f8de3b65 121,124
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_899a0f63af105e::t_ff0df4fd944dd9 70,82,85
+app/Actions/Mounts/AttachEggsToMount.php
+  s_899a0f63af105e::t_a8cef96340baeb 1-21
+app/Actions/Mounts/AttachNodesToMount.php
+  s_899a0f63af105e::t_009ba4d1e73e36 1-21
+app/Actions/Mounts/CreateMount.php
+  s_899a0f63af105e::t_e9b38ec309357a 1-38
+app/Actions/Mounts/DeleteMount.php
+  s_899a0f63af105e::t_33afb6176e9d42 5,7,10,13,15,17
+app/Actions/Mounts/DetachEggFromMount.php
+  s_899a0f63af105e::t_72852e47411a02 1-20
+app/Actions/Mounts/DetachNodeFromMount.php
+  s_899a0f63af105e::t_7e8c103771dae0 1-20
+app/Actions/Mounts/UpdateMount.php
+  s_899a0f63af105e::t_e89fdca79d3add 1-34
+app/Actions/Nodes/UpdateNode.php
+  s_899a0f63af105e::t_6fc36e99b5ddd0 52-53,56,58,70,73
+app/Actions/Schedules/CreateScheduleTask.php
+  s_899a0f63af105e::t_636b52a415fb4a 50
+app/Actions/Schedules/UpdateSchedule.php
+  s_899a0f63af105e::t_66783a48709432 56
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_899a0f63af105e::t_3ea64df058863f 51
+app/Actions/Servers/AttachMountToServer.php
+  s_899a0f63af105e::t_57f7895da414e5 24
+app/Actions/Servers/DeleteServer.php
+  s_899a0f63af105e::t_16017dc329372b 7,46,51-56,62-63,66-75
+app/Actions/Servers/RecordServerInstallResult.php
+  s_899a0f63af105e::t_e65b9cbc6f9dee 42
+app/Actions/Servers/ReinstallServer.php
+  s_899a0f63af105e::t_187d2c578ee6b4 28
+app/Actions/Servers/ToggleServerInstallStatus.php
+  s_899a0f63af105e::t_583ac461ee18da 1-29
+app/Actions/Servers/UpdateServerDetails.php
+  s_899a0f63af105e::t_fdee84ac592217 7,39-41
+app/Actions/Servers/UpdateServerDockerImage.php
+  s_899a0f63af105e::t_aa4a6ac7c9ab59 1-26
+app/Actions/Servers/UpdateServerStartup.php
+  s_899a0f63af105e::t_7e764bfe0cc3c6 10,24,62-68,71-76
+app/Actions/Subusers/CreateSubuser.php
+  s_899a0f63af105e::t_7072666b71792e 47
+app/Actions/Subusers/UpdateSubuser.php
+  s_899a0f63af105e::t_5f0bf9f11914e5 32
+app/Actions/Tags/CreateTag.php
+  s_899a0f63af105e::t_f0a6aa281409a1 1-21
+app/Actions/Tags/DeleteTag.php
+  s_899a0f63af105e::t_c408b362d1e8b4 1-27
+app/Actions/Tags/UpdateTag.php
+  s_899a0f63af105e::t_b04b8b1a4587f0 1-31
+app/Actions/Transfers/InitiateTransfer.php
+  s_899a0f63af105e::t_c60630b6148f73 9,25,30-31,40,73-76,84-85,87-90
+app/Actions/Users/DisableTwoFactor.php
+  s_899a0f63af105e::t_14760d3e8c3da0 14,16-18
+app/Actions/Users/UpdateUser.php
+  s_899a0f63af105e::t_05b1a1e5f92f85 46
+app/Console/Commands/Environment/DatabaseSettingsCommand.php
+  s_899a0f63af105e::t_65cb08d3d6124a 11,34,85,117
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_899a0f63af105e::t_1ad3df53a02c00 48,72,77,93,98,103,113,128,133,138,149,163
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_899a0f63af105e::t_b59976d76eecf4 13,22,27,46-49
+app/Console/Commands/Extensions/ListCommand.php
+  s_899a0f63af105e::t_7e85a58a4a8be8 11,17,19,21,40
+app/Console/Commands/Extensions/PackCommand.php
+  s_899a0f63af105e::t_11fdee009014e0 14,23,28-31,42-46
+app/Console/Commands/InfoCommand.php
+  s_899a0f63af105e::t_95fb2055fa1a03 17,29,32,37-39,41-47,51,54-57,63-69
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_899a0f63af105e::t_15bdc24017c259 11,24-25,27-28,30
+app/Contracts/Api/DeletesApiKeys.php
+  s_899a0f63af105e::t_2807c641415d9b 1-12
+app/Contracts/Api/UpdatesApiKeys.php
+  s_899a0f63af105e::t_97a8401888ebc3 1-18
+app/Contracts/Eggs/DeletesEggVariables.php
+  s_899a0f63af105e::t_d54215ef2a6d68 1-15
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_899a0f63af105e::t_b1a8d91994e190 19
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_899a0f63af105e::t_e1b2da193dcc1d 16
+app/Contracts/Eggs/UpdatesEggs.php
+  s_899a0f63af105e::t_d94e8dd103696a 16
+app/Contracts/Mounts/AttachesEggsToMounts.php
+  s_899a0f63af105e::t_0ab970d2b074b5 1-17
+app/Contracts/Mounts/AttachesNodesToMounts.php
+  s_899a0f63af105e::t_9958bba2c128e5 1-17
+app/Contracts/Mounts/CreatesMounts.php
+  s_899a0f63af105e::t_852cc8295e9e5a 1-17
+app/Contracts/Mounts/DeletesMounts.php
+  s_899a0f63af105e::t_6e8355c67911b8 1-15
+app/Contracts/Mounts/DetachesEggsFromMounts.php
+  s_899a0f63af105e::t_8b63ebd7005950 1-16
+app/Contracts/Mounts/DetachesNodesFromMounts.php
+  s_899a0f63af105e::t_a8465e14b68988 1-16
+app/Contracts/Mounts/UpdatesMounts.php
+  s_899a0f63af105e::t_c63185ff447710 1-17
+app/Contracts/Servers/TogglesServerInstallStatus.php
+  s_899a0f63af105e::t_2532e6525c7b21 5,7,10,12-18
+app/Contracts/Servers/UpdatesServerDockerImage.php
+  s_899a0f63af105e::t_9c0e4086638d55 5,8,10,13-17,19
+app/Contracts/Tags/CreatesTags.php
+  s_899a0f63af105e::t_25150965724b7d 1-17
+app/Contracts/Tags/DeletesTags.php
+  s_899a0f63af105e::t_e57c9530ce05e2 1-18
+app/Contracts/Tags/UpdatesTags.php
+  s_899a0f63af105e::t_b65140e87e56b7 1-20
+app/Exceptions/DisplayException.php
+  s_899a0f63af105e::t_54140c62c557e4 53-55
+app/Extensions/DynamicDatabaseConnection.php
+  s_899a0f63af105e::t_a92a1076f7c391 8-10,32,38,42-45
+app/Extensions/ExtensionProvider.php
+  s_899a0f63af105e::t_e0a1c42c1ef40c 9,59-60,63-72,75-77,226-230,364
+app/Facades/Extensions.php
+  s_899a0f63af105e::t_db89f6db124ea4 8-9,12-18,20,24
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_899a0f63af105e::t_ea4706edc868b6 9,17-18,65,81,113,120,138,150
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_899a0f63af105e::t_07764ad735adf7 118,125
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_899a0f63af105e::t_4dbc949e8fe70d 64,71
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_899a0f63af105e::t_32ba1c7f4c2b1c 16,79,96,98
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_899a0f63af105e::t_5d4aded2616af8 11,32,36
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_899a0f63af105e::t_894443962a1fe4 11,32,36
+app/Http/Controllers/Api/Admin/Mounts/DetachEggController.php
+  s_899a0f63af105e::t_808f317b93224a 12,28,30
+app/Http/Controllers/Api/Admin/Mounts/DetachNodeController.php
+  s_899a0f63af105e::t_c72f35961a4fa7 12,28,30
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_899a0f63af105e::t_d13f39543949f1 15-17,100,102,127,129,146,150
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_899a0f63af105e::t_f006c9d52bb4ab 8,13,17,20,28-29,33,36-42
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_899a0f63af105e::t_7db01ea3c6aa7b 8,38,66
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_899a0f63af105e::t_cf3ac524116e81 28,30
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_899a0f63af105e::t_23e2d24a764fa7 38-41,45
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_899a0f63af105e::t_2639225f392b0e 63,67
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_899a0f63af105e::t_2d1fb08bc485b0 11,32,38
+app/Http/Controllers/Api/Admin/Servers/ToggleInstallController.php
+  s_899a0f63af105e::t_6e320869778257 12,35-36,41,43
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_899a0f63af105e::t_045690c6838324 10,41,43,52
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_899a0f63af105e::t_3006acd6402ebf 57,61-63,66-70,73-74,77,79-84,87-89
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_899a0f63af105e::t_b1ddce3d88e9b3 15-16,18,98,100,128,130,137,154,156
+app/Http/Controllers/Api/Admin/Users/DisableTwoFactorController.php
+  s_899a0f63af105e::t_1f29c37903925b 12,27,29
+app/Http/Controllers/Api/Admin/Users/ExternalController.php
+  s_899a0f63af105e::t_b874517c95a58e 28,30
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_899a0f63af105e::t_f5bbf3c6c6a6f0 28,30
+app/Http/Controllers/Api/Application/Users/ExternalUserController.php
+  s_899a0f63af105e::t_307557978d852b 28,30
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_899a0f63af105e::t_3e0efd484220e7 70,74,77
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_899a0f63af105e::t_f2fb7a4f4e0276 100-103,107
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_899a0f63af105e::t_deafd0936ec5de 15-16,44-45,49,54-58,63,69,103,109-110,114
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_899a0f63af105e::t_ea2fac64961217 10,83,117
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_899a0f63af105e::t_b56c29e7c09017 117
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_899a0f63af105e::t_2cfc9b9a440229 64
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_899a0f63af105e::t_a04ca96f5de19c 9,54
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_899a0f63af105e::t_7baa9d74981c7e 32
+app/Http/Middleware/RedirectIfAuthenticated.php
+  s_899a0f63af105e::t_5081f6bd077876 9,23
+app/Http/Middleware/VerifyReCaptcha.php
+  s_899a0f63af105e::t_f8d11f7959def2 28,34,40,61,63,71
+app/Http/Requests/Api/Admin/Mounts/StoreMountRequest.php
+  s_899a0f63af105e::t_98d020b9e27291 12,34-63
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_899a0f63af105e::t_9339b5e48e55b7 10,29-48
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_899a0f63af105e::t_df0ddb73aee534 55
+app/Http/Requests/Api/Client/Servers/Files/ChmodFilesRequest.php
+  s_899a0f63af105e::t_4408aef6571117 27
+app/Http/ViewComposers/AssetComposer.php
+  s_899a0f63af105e::t_ece4353ac9a6ee 12,24,63
+app/Listeners/RevocationListener.php
+  s_899a0f63af105e::t_e66ad0a302bdb6 9,18,31-32,37
+app/Models/Mount.php
+  s_899a0f63af105e::t_a31ad0db0faab1 68-79,95,102
+app/Providers/ActionServiceProvider.php
+  s_899a0f63af105e::t_9a6976726236c1 19-20,45,67-73,97,101,106-107,109,136-137,156,184-190,214,218,223-224,226,287,355-368
+app/Providers/AppServiceProvider.php
+  s_899a0f63af105e::t_5bf9ce87cdca73 44,114-117
+app/Providers/ExtensionServiceProvider.php
+  s_899a0f63af105e::t_760af0abb3b4c4 10,55,68-69,92-124
+app/Rules/NotInPathHierarchy.php
+  s_899a0f63af105e::t_dae91482e0b3e2 29
+app/Services/Activity/ActivityLogService.php
+  s_899a0f63af105e::t_8cddbe5efb43bf 12-13,192,232,249
+app/Services/Databases/DatabaseHostGateway.php
+  s_899a0f63af105e::t_6ff965911eeb03 7,22,88
+app/Services/Extensions/ExtensionCompatibility.php
+  s_899a0f63af105e::t_58c0333ec1792c 67,78-103,110-133,181-190
+app/Services/Extensions/ExtensionComposerInspector.php
+  s_899a0f63af105e::t_52fbcae9d134d9 7-9,12-14,16,18-19,21-27,29-34,37-38,40,44-50,52,54-58,60-84,88-91,93,95-111,115-118,120,122-132,136-139,141,143-145,147-164,167,169,172-173,175-177
+app/Services/Extensions/ExtensionConsoleRegistry.php
+  s_899a0f63af105e::t_f8e3a37b08c103 13-14,61-62,66,74-82,87-92,98-103,153-166
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_899a0f63af105e::t_38d87bd867d2f3 15,75-77,234-259,262,266-271,274,276
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_899a0f63af105e::t_41ba7aefc41e69 9,27-29,59-64,67,116-120,130-150
+app/Services/Extensions/ExtensionRuntimeRefresher.php
+  s_899a0f63af105e::t_56ad10b470566a 7,9-13,16,20-21
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_899a0f63af105e::t_1ef9c50b7d800f 70,135-153
+app/Services/Extensions/Scaffolding/stubs/controller.stub
+  s_899a0f63af105e::t_23fcc3ef0df442 17
+app/Services/Extensions/Scaffolding/stubs/gitignore.stub
+  s_899a0f63af105e::t_82f849b347ad92 3
+app/Services/Extensions/Scaffolding/stubs/provider.stub
+  s_899a0f63af105e::t_9bf949af124bda 21
+app/Services/Extensions/Scaffolding/stubs/readme.stub
+  s_899a0f63af105e::t_dad562f02ad944 7-8,10-12,14,23-29
+composer.json
+  s_899a0f63af105e::t_16346de541181c 91
+package-lock.json
+  s_899a0f63af105e::t_076d79ca330379 68,81,226-251,700-812,1014-1084,1142-1167,1737-1820,2483-2503,3473-3480,3531-3544,3675-3697,3710-3727,3793-3803,3810-3823,3869-3883,4277-4284,4494-4497,4500-4712,4734-4757,4776-4825,4952-4965,5012-5025,5038-5045,5164-5174,5185-5195,5231-5255,5468-5509,5771-5787,5866-5882,5908-5915,5985-6003,6105-6156,6170-6180,6278-6288,6336-6357,6900-6913,6935-6945,7246-7256,7313-7326
+package.json
+  s_899a0f63af105e::t_1b7efc5bc41354 66,79,95
+packages/hello-world/src/client/FileDetails.tsx
+  s_899a0f63af105e::t_23809899c0850e 6
+packages/hello-world/src/client/HelloWorldCard.tsx
+  s_899a0f63af105e::t_61beb7b1db96f2 26,38,42
+packages/hello-world/src/client/HelloWorldScreen.tsx
+  s_899a0f63af105e::t_6f8053cffbb7a6 8
+packages/hello-world/src/client/SubuserPresets.tsx
+  s_899a0f63af105e::t_067d2205d8b259 37,42,51,60
+packages/hello-world/src/client/examples.spec.tsx
+  s_899a0f63af105e::t_71fb558423cd4f 23,35,62-63,88,109,125,136,157,181,187,196,207
+packages/sdk/README.md
+  s_899a0f63af105e::t_2054606112414e 5,37,75,81,87,256-269,462-465,472-488,501-505,532-545,556-568,579,594-598
+packages/sdk/manifest.schema.json
+  s_899a0f63af105e::t_7480b91547561d 71
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_899a0f63af105e::t_b42a1085cb77af 13,997,1942,1946,1969,1973,3078,3080,3082-3084,3086-3088,3094,3104,3107-3109,3114,3118,3124-3128,3134,3138,3144,3146,3151-3153,3155-3158,3163,3167,3171,11936,12146
+packages/sdk/types/components/elements/Can.d.ts
+  s_899a0f63af105e::t_0cee1e8c26fadc 9
+packages/sdk/types/extensions/registry.d.ts
+  s_899a0f63af105e::t_494fd76fe73b1d 66-70,74-78,90-99,174-177,181,193-195,212,217,223
+packages/sdk/types/sdk/testing.d.ts
+  s_899a0f63af105e::t_1e5dedeb7cafbe 2,63
+phpstan.neon
+  s_899a0f63af105e::t_7edbc3b6387ad9 93-95
+pint.json
+  s_899a0f63af105e::t_a273e6986733df 3
+resources/lang/en/activity.php
+  s_899a0f63af105e::t_8017d550c6f911 77-78
+resources/scripts/api/account/api-keys/queries.spec.tsx
+  s_899a0f63af105e::t_66600bd4eaedf8 51,70-71,102-103,114
+resources/scripts/api/account/api-keys/queries.ts
+  s_899a0f63af105e::t_0868a54be677af 64,70,79
+resources/scripts/api/account/queries.spec.tsx
+  s_899a0f63af105e::t_af4a38b2fc145c 74
+resources/scripts/api/account/servers/queries.ts
+  s_899a0f63af105e::t_fe5a687fd58afd 31-34
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_899a0f63af105e::t_6303b97aa0cd3c 68,74,83
+resources/scripts/api/activity.spec.ts
+  s_899a0f63af105e::t_109b3500c35526 1-63
+resources/scripts/api/activity.ts
+  s_899a0f63af105e::t_92798402a9d8bb 1,17-31,34-35,38-52
+resources/scripts/api/admin/api-keys/queries.ts
+  s_899a0f63af105e::t_bf5b1461fb0820 105,121
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_899a0f63af105e::t_418b1a1a5041ad 140,146,155,166,175,180,186
+resources/scripts/api/admin/eggs/catalog.ts
+  s_899a0f63af105e::t_7dc9e0d2ba129f 30,43
+resources/scripts/api/admin/eggs/queries.spec.tsx
+  s_899a0f63af105e::t_31e4514e5000c8 23,61,64,70,77,105-107,109,126-129,143-146,152-155,160
+resources/scripts/api/admin/eggs/queries.ts
+  s_899a0f63af105e::t_03bac563f260a9 168,183,192,201,210,219,237,257,262,269,278,284,293,299,308,315
+resources/scripts/api/admin/extensions/queries.spec.ts
+  s_899a0f63af105e::t_b98346c2ed928e 1-90
+resources/scripts/api/admin/extensions/queries.ts
+  s_899a0f63af105e::t_756d46d17be5fa 3,57-64,71-72,143,153,162,178,200,206,224,230,239,245,254,260
+resources/scripts/api/admin/locations/queries.ts
+  s_899a0f63af105e::t_085b4f0e3d6c35 115,133,150
+resources/scripts/api/admin/mounts/queries.ts
+  s_899a0f63af105e::t_b1f48f39507358 168,174,183,192,201,209,218,233,248,257,270,279
+resources/scripts/api/admin/nodes/invalidation.ts
+  s_899a0f63af105e::t_d6c783de89c5b7 22
+resources/scripts/api/admin/nodes/queries.ts
+  s_899a0f63af105e::t_ed8ee56d4ef559 372,378,387,399,408,415,419,434,447,457,467,480
+resources/scripts/api/admin/servers/queries.spec.tsx
+  s_899a0f63af105e::t_5c767f512b9a48 64-66,99-105,118-124,134-140
+resources/scripts/api/admin/servers/queries.ts
+  s_899a0f63af105e::t_674e4b479309db 216,257-267,436,445,454,472,491,511,524,531,540,547,556,562,584,595,604,616,625,642,650,663,671,684,702,720
+resources/scripts/api/admin/settings/queries.spec.tsx
+  s_899a0f63af105e::t_993845cc59c1f8 38
+resources/scripts/api/admin/settings/queries.ts
+  s_899a0f63af105e::t_4a71f00f49ad58 121,132,141,148,168,181
+resources/scripts/api/admin/tags/queries.spec.ts
+  s_899a0f63af105e::t_35acdacfb03032 50,62,78,81-85,90,104,108
+resources/scripts/api/admin/tags/queries.ts
+  s_899a0f63af105e::t_a714a5ef497422 103,118,133
+resources/scripts/api/admin/users/queries.ts
+  s_899a0f63af105e::t_719e8ecf34bb2f 129,135,144,151,157,166,174
+resources/scripts/api/extensionProgress.ts
+  s_899a0f63af105e::t_90281c73d519f1 10,13,18
+resources/scripts/api/generated/types.gen.ts
+  s_899a0f63af105e::t_9bac8b0fb892db 16,1100,2121,2125,2149,2153,3306,3308,3310-3312,3314-3316,3323,3335,3338-3340,3346,3350,3357-3361,3368,3372,3379,3381,3386-3388,3390-3393,3399,3403,3407,13570,13805
+resources/scripts/api/http.spec.ts
+  s_899a0f63af105e::t_b73deca201d9f6 1-77
+resources/scripts/api/http.ts
+  s_899a0f63af105e::t_81656477cc2643 1,49-60,62-70,72-83,85-86,103,109,111-114,116
+resources/scripts/api/interceptors.ts
+  s_899a0f63af105e::t_87c80ade4bf53e 14,21,25
+resources/scripts/api/mutationUtils.spec.ts
+  s_899a0f63af105e::t_cc9cad6ca8c28f 15,20,31,42-46
+resources/scripts/api/pagination.spec.ts
+  s_899a0f63af105e::t_3097a35148974b 44,56
+resources/scripts/api/pagination.spec.tsx
+  s_899a0f63af105e::t_b23be5ca08a1e0 34,44
+resources/scripts/api/pagination.ts
+  s_899a0f63af105e::t_210d1b15bec9fb 24,27,31,49
+resources/scripts/api/queryLifecycle.spec.tsx
+  s_899a0f63af105e::t_ef06146a2520a7 60,63,94,104,110,112,118,138,146,149,152,158,163,166,184,197
+resources/scripts/api/queryParameters.ts
+  s_899a0f63af105e::t_33438e9494ef98 3,18,28,54,60,77,80-83,88-99
+resources/scripts/api/server/backups/queries.spec.tsx
+  s_899a0f63af105e::t_bdea1d5b47c9e4 25,28,66,82,92
+resources/scripts/api/server/databases/queries.ts
+  s_899a0f63af105e::t_bf89f66523a927 66,81,109
+resources/scripts/api/server/files/queries.spec.tsx
+  s_899a0f63af105e::t_9704940f0232f9 10,14,22,59,63,110-112,115,124,132,150,154-156,159,169,181-210
+resources/scripts/api/server/files/queries.ts
+  s_899a0f63af105e::t_8f418b770cdae7 91,153,159,205-215,218-220,270,297,313,330,334,349,354,370,386,402,431-434,436,451,483,492
+resources/scripts/api/server/network/queries.ts
+  s_899a0f63af105e::t_73ed4411411d27 67,76
+resources/scripts/api/server/queries.ts
+  s_899a0f63af105e::t_8ab47358f3b181 89,96,111-113
+resources/scripts/api/server/queryDomains.ts
+  s_899a0f63af105e::t_22f9c533cebf06 19
+resources/scripts/api/server/schedules/queries.ts
+  s_899a0f63af105e::t_e471f286e6b718 153,159,168,230,243,256,272,288,303,318
+resources/scripts/api/server/startup/queries.spec.tsx
+  s_899a0f63af105e::t_20bf6cd9c95f6f 13,45,52,75,81,102,129,147
+resources/scripts/api/server/users/queries.ts
+  s_899a0f63af105e::t_fd2e0a84726efb 64,73
+resources/scripts/bootstrap.ts
+  s_899a0f63af105e::t_d54123c8a4ab11 3
+resources/scripts/components/App.tsx
+  s_899a0f63af105e::t_2a79ff3276cb5e 16
+resources/scripts/components/NavigationBar.tsx
+  s_899a0f63af105e::t_b6b294e04d7628 30,32-33,35-36,41-42,44,46,49,55-56,61-63,68-69,73
+resources/scripts/components/admin/AdminListEmpty.spec.tsx
+  s_899a0f63af105e::t_1c2d55f8e1a1ae 16,18-19,30,34-35,37-38
+resources/scripts/components/admin/AdminListEmpty.tsx
+  s_899a0f63af105e::t_6e22c2bf6231ab 37,44
+resources/scripts/components/admin/AdminResourceTables.spec.tsx
+  s_899a0f63af105e::t_cf581a25f480d2 126
+resources/scripts/components/admin/AdminSidebar.spec.tsx
+  s_899a0f63af105e::t_c9f2ef1dac24cb 45
+resources/scripts/components/admin/AdminSidebar.tsx
+  s_899a0f63af105e::t_a319edd5952a67 84,87,93-94,101-102,110,115,121
+resources/scripts/components/admin/activity/ActivityContainer.tsx
+  s_899a0f63af105e::t_a6548abe6635a7 19-21,31
+resources/scripts/components/admin/api/ApiKeyTable.tsx
+  s_899a0f63af105e::t_458e8670b82025 26-27,50,52-53,56,67,76,79,82,87,98,100,111,114
+resources/scripts/components/admin/api/ApiKeysContainer.tsx
+  s_899a0f63af105e::t_552475d5f5a612 41,45,48-52,73-76,83,102-104,108-110,113,117,121,124-125,129-132,138,146,149,157,160-161
+resources/scripts/components/admin/api/CreateApiKeyButton.tsx
+  s_899a0f63af105e::t_ad436e3755f1f1 35-46,61,75,81,83,85,90-93,97,99,101-103,121-122,126,139-140,144,146,149-150
+resources/scripts/components/admin/databases/CreateDatabaseHostButton.tsx
+  s_899a0f63af105e::t_5cb79e56156deb 4
+resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx
+  s_899a0f63af105e::t_4d191f1f5304d3 31-32,43-45,48-49,51,55-58,61-64,68-69,72-75,79-80,84,90-91,94-97,101-102,105-108,114,117-118,124
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_899a0f63af105e::t_35004e2845bcbe 55,73-77,79-80,83-86,91-93,96,98,103,115-116,119-122,126-127,130-133,138,142,144-145,148-149,164,167-168,172-173,199,201,211,218,225-226,244,246,258-259,267,282,285-286,304-305,317-318,320
+resources/scripts/components/admin/databases/DatabaseHostNodeSelect.tsx
+  s_899a0f63af105e::t_c54a82880787bb 34,39
+resources/scripts/components/admin/databases/DatabaseHostTable.tsx
+  s_899a0f63af105e::t_95a8a94a2e74d6 44,50,54,56,64,66-67,71-72,76,89,91,94,98,107-108,111,114,119,122,132,147,162,169,173
+resources/scripts/components/admin/databases/DatabaseHostsContainer.tsx
+  s_899a0f63af105e::t_bf3aefab070d30 33-39,46-53,78-81,88,113-115,118,122,126,129-130,134-137,143,151,154,163,166-167
+resources/scripts/components/admin/databases/databaseHostForm.ts
+  s_899a0f63af105e::t_778feb3a709185 3,38,40-43,45-56
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_899a0f63af105e::t_634805d954ef60 43-44,60-62,65-66,68,72,78-80,85,88-89,92,96
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_899a0f63af105e::t_c5d9066bb53402 4-8,55,61,63,65,68,70-72,75,77,79,82,84-85,88-90,92-93,96,98,106-109,114-115,119
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_899a0f63af105e::t_cfd83bc583e2de 41,50,54,56,64-67,71-72,76,88
+resources/scripts/components/admin/eggs/EggCatalogContainer.spec.tsx
+  s_899a0f63af105e::t_f02c6b8507da2c 42,48,72,75,96,100,108,117
+resources/scripts/components/admin/eggs/EggCatalogContainer.tsx
+  s_899a0f63af105e::t_9948e81cde1ca1 55,63-176,179-181,183,185-186,188,197,203-204,206,213-215,217-219,228,230,244,249,254
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_899a0f63af105e::t_51bd8a89cd6a3b 12-23,34-46,68-112,114-142,144-148,152,155-157,159-160,166-234
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_899a0f63af105e::t_e1236f13e99adf 34,64,67-68,72,76
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_899a0f63af105e::t_40df3258590516 36,46,48-49,51,54,61,64,70,73,76
+resources/scripts/components/admin/eggs/EggFileDialog.tsx
+  s_899a0f63af105e::t_34f7e1f0e4484c 64,68,70,72,79,81
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_899a0f63af105e::t_1aa6a2b3d491bb 42,67,69,76,78,92,94-95,98-100,103-105,116,119-122,126,129-132,137-138,141,152-153,156,160,162,170
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_899a0f63af105e::t_abcd0efddaa6d4 43-49,56,60,64,69,75-76,79-82,90,92,98,101
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_899a0f63af105e::t_365c8c26b6f5ff 9-14,66,68,73,75-76,80-81,85,91,93,95,100,102,106,109,111,116,119-121,123-124,127,129,137,139-140,145,148,151
+resources/scripts/components/admin/eggs/EggVariablesTab.spec.tsx
+  s_899a0f63af105e::t_5dc7f7b4f7a52f 59
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_899a0f63af105e::t_84ca7faf428a7a 19-25,29-37,40,53-70
+resources/scripts/components/admin/eggs/EggsContainer.spec.tsx
+  s_899a0f63af105e::t_ebff42f093df42 59,66,85,98,102,105,111,115,121,147,151,154,167,170,176,183,187
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_899a0f63af105e::t_b963512b9acdc3 24,26,28,33,45,54,61,86-88,90,95,99,103,107,117
+resources/scripts/components/admin/eggs/ExportEggButton.tsx
+  s_899a0f63af105e::t_885b5ea0f63a39 12-13,15,23,31
+resources/scripts/components/admin/eggs/ImportEggButton.tsx
+  s_899a0f63af105e::t_ac626f4b0cd086 14,30-32
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_899a0f63af105e::t_cf0b39f4390d9f 30-33
+resources/scripts/components/admin/eggs/helpers.ts
+  s_899a0f63af105e::t_98e6a4d6f3f0a0 30-55,68-75
+resources/scripts/components/admin/extensions/ExtensionFormFields.tsx
+  s_899a0f63af105e::t_b01ee49dbbff0a 57,71,102-103,110-111
+resources/scripts/components/admin/extensions/ExtensionsContainer.spec.tsx
+  s_899a0f63af105e::t_b6ddbf8d2816bc 51,91,106,111,127,135,161
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_899a0f63af105e::t_f22774f3279486 1,3,61,101-104,120-121,136,148-151,176,186,192,194,196-198,206,212,214,216,223,225,264,271-273,275-276,278,281,323,326,339,375,385,426,428,430,437-438,522-531,535-537,539-576,578-593,598-602,605-619,631-645,647-654,656-658,660-667,671,679,688,690,705-718,720,732-734,746,748-749,753
+resources/scripts/components/admin/extensions/SettingField.spec.tsx
+  s_899a0f63af105e::t_c90e79e541489e 26-27,51,58,64,80,119,126,138
+resources/scripts/components/admin/extensions/SettingField.tsx
+  s_899a0f63af105e::t_abb4ca86db7be2 37-40,56,70,72,76,78,87,108,129,132,135,148,155,160,167,172,179,181,205-206,211,217,235,237,241-242,247-249,255-257,273,281,314,318,334-335,361,365-366,373
+resources/scripts/components/admin/extensions/SettingsSections.spec.tsx
+  s_899a0f63af105e::t_5800219e3baf50 67
+resources/scripts/components/admin/extensions/SettingsSections.tsx
+  s_899a0f63af105e::t_b18d2884d3628b 22,29,52,60-62,75
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_899a0f63af105e::t_0462602f2d5fcb 10,39,45,47,49,54-57,61,63,71-74,79,82-83,85,89-90,94
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_899a0f63af105e::t_a1794ceed4892c 18,49,51,53,57,67,75,102,114,120-122,124,126,131-134,138,140,150-153,158,161-162,165,169,171-172,176-177,194,196,207,233-234,246-247,249
+resources/scripts/components/admin/locations/LocationTable.tsx
+  s_899a0f63af105e::t_e051baa0a64bf6 38,44,47,49,57,59-60,64-65,69,81,98,100,102,105,110,122,129,136,139
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_899a0f63af105e::t_f7714a6c596af8 41,45,48-52,73-76,83,102-104,108-110,113,117,121,124-125,129-132,138,146,149,158,161-162
+resources/scripts/components/admin/locations/locationForm.ts
+  s_899a0f63af105e::t_2f07557a1a19ff 1-11
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_899a0f63af105e::t_a2be140ed167e2 57,64,70,86,96,98,107-108
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_899a0f63af105e::t_2761810ff62cb9 74,81,87,103,113,115,124-125
+resources/scripts/components/admin/mounts/CreateMountButton.tsx
+  s_899a0f63af105e::t_56d845e7cf9c3d 4
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_899a0f63af105e::t_dff3a8e6117a31 32-33,42-44,47-48,50,54,56-57,59
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_899a0f63af105e::t_2e7ada3a07b243 30,69-70,72,74,79-82,86,88,96-99,104,106,113-116,121,123,130-133,138-139,142-143,148-149,152-153,158,161-162,165,169-170,198,200,210,221,225-226,229,253,255,264,296,298,300,304,314,318-319,322,346,348,357,405,411,415,417,425-428,432-433,437,484-485,487,491,507,567-568
+resources/scripts/components/admin/mounts/MountFormFields.tsx
+  s_899a0f63af105e::t_91ca6279086dd5 4,11,13,15,20-23,28,36-39,47,49,56-59,64,71-74,82-83,86-87,91,94-95,104-105,108,111
+resources/scripts/components/admin/mounts/MountTable.tsx
+  s_899a0f63af105e::t_b46298a6a7b3bc 37,43,47,49,57,59-60,64-65,69,78,80,83,88,96,105,120,142,149
+resources/scripts/components/admin/mounts/MountsContainer.tsx
+  s_899a0f63af105e::t_550d7299d8beb8 32-35,38,41-45,67-70,77,102-104,107,111,115,118-119,123-126,132,140,143,152,155-156
+resources/scripts/components/admin/mounts/mountForm.ts
+  s_899a0f63af105e::t_5a329c0073c4b2 1-11
+resources/scripts/components/admin/nodes/CreateNodeButton.tsx
+  s_899a0f63af105e::t_29c887103feaba 4
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_899a0f63af105e::t_822808dd0ea404 24-25,34-36,39-40,42,46-49,51
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_899a0f63af105e::t_8f4fe8c1a331ac 1,14-49,52,56-57,59,91-96,98-100,102,106-111,114-115,117-119,125-126,131-132,137,141,143-144,149-150,163,165-166,169-173
+resources/scripts/components/admin/nodes/NodeAllocationTab.spec.tsx
+  s_899a0f63af105e::t_7cdf09d26f124c 71,91,97,111
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_899a0f63af105e::t_7a3ad424dafc12 3,46,61,66,85,130-133,136,141,149,151,155,165,172,177,179,198-199,225,261-265,270-271,274,298-300,306-411,423-424,437-439,446,463,484-487,492,495,498,544,547,549-550,552,554-558,562-569,572,574,582-585,589,592-595,600,608-610,618
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_899a0f63af105e::t_7c4793d1686808 20-56,63,77-79,82,85-86,88-89,91,94,99-102,109-110,115,119
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_899a0f63af105e::t_fab19f74500878 32,46-47,49,53,56,62,65,68,71
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_899a0f63af105e::t_a81ebbfe25fe2a 3,28,30,32,37,39-40,44,47,49-50,55,63,80-81,83,90,92-93,98,109,123-124,127-130,134,137-140,144,147-150,160-162,164,166,169-170,172-173,179-181,183-184,186-187,189-190,199-200,203,206,209
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_899a0f63af105e::t_20854b6d1c76af 3,28,30,33,38,52,54,56,59,63,68,80,82,93,95,110-161,168-169,182-184,191,197-198
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_899a0f63af105e::t_5a7ebcba6e0bf2 9,32,51-52,54,56,61-64,68-70,73,75,82-83,94,96,103-106,111-112,115-116,125-126,129-130,135-136,139-140,145-146,149-150,156-160,163,167,170-171,173,175,180-181,183,186-187,189,192,194,198-200,206,209-210,214,218-219,222,230
+resources/scripts/components/admin/nodes/NodeStatusBadge.tsx
+  s_899a0f63af105e::t_9bbf76dd41c8ef 28-29,36
+resources/scripts/components/admin/nodes/NodeTable.spec.tsx
+  s_899a0f63af105e::t_c8c5fa6039df19 35,62
+resources/scripts/components/admin/nodes/NodeTable.tsx
+  s_899a0f63af105e::t_fc860f5f554361 11,36-44,66,75,78,80,88,90-91,95-96,100,112,114,117,121,129,132-133,142-145,148,150,153,158,169-172,175-177,183-185,187-188,198,200,203-204,216,228,251,286,290
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_899a0f63af105e::t_edfbde7b5fb15e 51,58-77,101,112,141-143,146,150,154,157-158,162-165,171,179,182,191,194-195
+resources/scripts/components/admin/nodes/nodeConfigurationYaml.ts
+  s_899a0f63af105e::t_23c11ef6522099 29-40,42,49-51,68
+resources/scripts/components/admin/nodes/nodeForm.ts
+  s_899a0f63af105e::t_4e139ac928aa4f 78-89
+resources/scripts/components/admin/overview/OverviewContainer.tsx
+  s_899a0f63af105e::t_09cfdf7b4faad3 43-45,47-48,51,56-57,63,69-70,72,82-83,87
+resources/scripts/components/admin/overview/OverviewVersionCard.tsx
+  s_899a0f63af105e::t_614021d36eda32 9,13,17,21-23,29-32
+resources/scripts/components/admin/servers/CreateServerButton.tsx
+  s_899a0f63af105e::t_d703241b116be2 4
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_899a0f63af105e::t_e3bf136decaa09 20-31,64,70-71,74-77,81-82,85-87,99-100,103-105,114-115,118,120-122,127-128,132
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_01f4a6969ae96f::t_aff414dce36cad 1,97-99,101,108-111,116,123-125,137-138,141-144,148-149,152-153,179-181,183,185,187,200,204,212-214,230,233-235,248-249,251,256-257,259,264,269-270,272,277,282-283,285,294-296,299-300,302,306,309-312,316,319-320,322,326,329-330,332,336,339-340,342,347,356-357,360,365-366,369,395-397,399,401,403,407,412,415,418-419,435-436,438,440,452,460-464,478,480,487-490,495-497,530,535,543,547-548,550-551,557,571-601,623-624,633-635,638-639,641,644,646,652,655-656,662,669
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_899a0f63af105e::t_033280bf89a16d 28-30,35-37,62,70,74,82,102,110,126-127,130,133,138,141-143,146,151-152,155,158,171-172,174,177,185,190,193,200,205,208,215,220,223,240,242,245,248,268-269,272
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_899a0f63af105e::t_5eca57bee08edd 68-78,144-146,149-150,152,156-157,160-162,171-172,175-176,178,183-184,187-188,190,195-196,199-200,202,207-208,211-212,215,220-221,224-226,236-240,242,244,247-248,252-253,256-258,268-269,272-274,283-284,287-289,298,311
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_899a0f63af105e::t_84826fa4d0e50b 42,44,54-57,61-62,66,96,102,129,133,136,138,140,142,144,147,150,152,154,157,160,163-164,187
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_899a0f63af105e::t_9344461f938484 32,43,55,64,97-98,111,138-139,150
+resources/scripts/components/admin/servers/ServerDeleteTab.spec.tsx
+  s_899a0f63af105e::t_e584c228477116 30,48,55,64,73
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_899a0f63af105e::t_efc0243396300a 46,70,74,79,81,89,91-92,96-97,101,122-125,127,129,139-140,142,144,151,153,160,167,169
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_899a0f63af105e::t_4528a69be438b8 32,46,48-49,51,55,57,59,64,67,75,78,81,84,87,92,95
+resources/scripts/components/admin/servers/ServerDetailsTab.spec.tsx
+  s_899a0f63af105e::t_c3b21a5d8e2d7f 43,49-52,85
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_899a0f63af105e::t_a540d2d55f5143 51,53,55,57-59,112,119,127,129,136-139,143-144,147-149,158-159,162-164,173,178-179,182-185,190,193-194,197,201,215
+resources/scripts/components/admin/servers/ServerEditAction.tsx
+  s_899a0f63af105e::t_95f073d5232c37 14,19
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_899a0f63af105e::t_f14104a28ecb50 44-45,48,53,60,64-75,89,93,102,104,106,109-110,115,135-136,139-140,161-162,165-166,170,191-192,195-196,207,231,253
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_899a0f63af105e::t_2bd9a3b4ad451d 49,68,70,72,76,106,110,139-140,147,157,164-165,176
+resources/scripts/components/admin/servers/ServerStartupTab.spec.tsx
+  s_899a0f63af105e::t_fe55d4ca47312b 65-68,85,95-96,116,135
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_899a0f63af105e::t_d19dd0d0e25574 42-43,45,66,69,81,87,93,99,141-142,147,149,158,164-165,168-169,175,178,180,188-189,192-195,202,205-208,213,258,263,272,279-280,282,287-288,292,298,304-305,308-310,318-319,321-322,328,340,353
+resources/scripts/components/admin/servers/ServerStatusBadge.tsx
+  s_899a0f63af105e::t_abfcb6e1384f78 28,34
+resources/scripts/components/admin/servers/ServerTable.tsx
+  s_899a0f63af105e::t_1c09dfd08e638e 25-31,55,64,68,70,78,80-81,85-86,90,102,104,107,111,120-123,128,130,133,137,150,153,156,161,164,198,231,235
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_899a0f63af105e::t_faef39bb4e379f 43,50-61,86,97,125-127,130,140,143-144,148-151,157,165,168,177,180-181
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_899a0f63af105e::t_4e8135a3026101 50,53,56,89,92,112,118-119,121,123,131-133,136-138,152-153,156-158,164-165,169-170
+resources/scripts/components/admin/settings/AdvancedSettingsForm.tsx
+  s_899a0f63af105e::t_c041a2fc3fa9d5 64,66,73,76-77,82-83,86-88,94-95,98-101,108-109,111,115,119,124-125,132-133,136-137,142-143,146-148,153,156-158,165
+resources/scripts/components/admin/settings/GeneralSettingsForm.tsx
+  s_899a0f63af105e::t_6c7eef5f4566d1 35-36,39-42,47-48,51-52,63-64,67-68,71-72,77
+resources/scripts/components/admin/settings/MailSettingsForm.tsx
+  s_899a0f63af105e::t_ddee4d55f3d191 72-73,84-86,88,92,95,98-99,102-103,114-115,117,121-122,125-128,134-135,138-140,145,147,151,157,159
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_899a0f63af105e::t_432e1dc45b90ab 24-41,49,59-61,64,71,78,88,94-95
+resources/scripts/components/admin/settings/SettingsForms.spec.tsx
+  s_899a0f63af105e::t_df761df8fc60fe 62,68,84,86-88,100
+resources/scripts/components/admin/settings/SettingsTabButton.tsx
+  s_899a0f63af105e::t_6dd9ff655e57b7 12
+resources/scripts/components/admin/tags/TagBadge.tsx
+  s_899a0f63af105e::t_00dea7e9a20e98 21-22,25-26
+resources/scripts/components/admin/tags/TagFormDialog.tsx
+  s_899a0f63af105e::t_78734bd68f8471 42-48,55-62,69-73,95,113-114,116,121-124,128,131-134,139,142-146,152-153
+resources/scripts/components/admin/tags/TagTable.tsx
+  s_899a0f63af105e::t_44f75a6409e35f 14,23-24,35-36,49,57,60,72,79
+resources/scripts/components/admin/tags/TagsContainer.tsx
+  s_899a0f63af105e::t_f6a3db44b00bba 37,44-47,69-72,79,98-100,104-106,109,113,117,120-121,125-128,134,138,143,146,155,158-159
+resources/scripts/components/admin/users/CreateUserButton.tsx
+  s_899a0f63af105e::t_98ba4ca3191e50 4
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_899a0f63af105e::t_fde7a0c83d6cd5 40-41,50-52,55-56,58,62,68-69,71
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_899a0f63af105e::t_84d781bcda5f97 38-45,65-66,69-72,76-77,80-83,88-91,94-96,100,102,109-110,113-114,119-120,123-124,129,138-139,142-144,149,153,170-171,174,176-177,179,197,199,201,205,208,217,236,242,279-280,290-292,299,304,307-308,312-313,340-341,357-358,360,363-364,367,373,383-387
+resources/scripts/components/admin/users/UserFormFields.tsx
+  s_899a0f63af105e::t_90a115db44cc91 1,5-11,20-21,24-27,31,34-37,41-43,45-46,53-54,57-61,66,73-74,77-78,86,89-90,98-99,102,109
+resources/scripts/components/admin/users/UserTable.tsx
+  s_899a0f63af105e::t_813a6b10f6e5cd 28-30,45,51,55,57,65,67-68,72-73,77,90,92,96,98,103,105,107,113-114,119,132,138,153,161,163,175,183,196,198,201,203,215,218
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_899a0f63af105e::t_2a643d50e262de 41,48-51,73-76,83,102-104,108-110,113,117,121,124-125,129-132,138,146,149,158,161-162
+resources/scripts/components/admin/users/userForm.ts
+  s_899a0f63af105e::t_b8d9c81d12fbb3 1-18,21-22,25-26,29-30,32-34,36-60
+resources/scripts/components/auth/ForgotPasswordContainer.tsx
+  s_899a0f63af105e::t_a02692592e0a8a 23,28,48,50,59-61,65,67,71,73-74
+resources/scripts/components/auth/LoginCheckpointContainer.tsx
+  s_899a0f63af105e::t_9490308bff4cf9 9,27,38,42-43,54-55,61,63,66,68,74,76,79,81,83
+resources/scripts/components/auth/LoginContainer.tsx
+  s_899a0f63af105e::t_dbcfda9eb08a4e 27,32,45,48,52,67,69,74,76,78,84,87,89,92,94,96-97
+resources/scripts/components/auth/LoginFormContainer.tsx
+  s_899a0f63af105e::t_54f241bbd42513 14-15,17-19,21,24,28-31
+resources/scripts/components/auth/ResetPasswordContainer.tsx
+  s_899a0f63af105e::t_c360a77cbc9210 24,29,52,54-55,57,59,70-72,77,79,88,91,93,97,99-100
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_899a0f63af105e::t_90b6b287eac503 39-41,44,47-48,61,67,78-79
+resources/scripts/components/dashboard/AccountApiTable.tsx
+  s_899a0f63af105e::t_2f85ecd435f86e 11,13-15,24,26,33,35
+resources/scripts/components/dashboard/AccountOverviewContainer.tsx
+  s_899a0f63af105e::t_3c43deee08b7ff 19-20,22,27,29,32,35,39
+resources/scripts/components/dashboard/ApiKeyModal.tsx
+  s_899a0f63af105e::t_1d5e139eacfde1 10
+resources/scripts/components/dashboard/ApiKeyModalContent.tsx
+  s_899a0f63af105e::t_8924f43fa71f44 12,16,18,21-22
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_899a0f63af105e::t_7be3dedef77ef8 29,40,49-52,54,68,70-71,78-79,84-85,97,99,111,118-119,121
+resources/scripts/components/dashboard/SearchServerResult.tsx
+  s_899a0f63af105e::t_55692817511312 12
+resources/scripts/components/dashboard/ServerCardView.tsx
+  s_899a0f63af105e::t_2bc4f2e4560172 14,22,38,49,59-127,131,135,147
+resources/scripts/components/dashboard/ServerRow.spec.tsx
+  s_899a0f63af105e::t_19d4ba0b3612fb 43
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_899a0f63af105e::t_a19ec12c6da2ba 14,18-24,48,50-56,68-81,121,126,139-140
+resources/scripts/components/dashboard/ServerRowMetrics.tsx
+  s_899a0f63af105e::t_3e4b622692914a 7
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_899a0f63af105e::t_728fef0ba9612f 18,28
+resources/scripts/components/dashboard/forms/ConfigureTwoFactorForm.tsx
+  s_899a0f63af105e::t_ae55c090777526 28,33
+resources/scripts/components/dashboard/forms/CreateApiKeyForm.tsx
+  s_899a0f63af105e::t_90b15c061f7580 22,38,40,49,53,56,58,62
+resources/scripts/components/dashboard/forms/DisableTOTPDialog.tsx
+  s_899a0f63af105e::t_1a66b26714726e 21-23,34-35,39-40,49,52-53,74-75
+resources/scripts/components/dashboard/forms/RecoveryTokensDialog.tsx
+  s_899a0f63af105e::t_35d0f2705b4fc0 13-14,18,24-25,29,31,33,35,37,42
+resources/scripts/components/dashboard/forms/SetupTOTPDialog.tsx
+  s_899a0f63af105e::t_c8595bd05b391b 18-29,49-51,55,63-65,68,73-75,80,85,88-93,95,99-100,109-111,118-119,138-139
+resources/scripts/components/dashboard/forms/UpdateEmailAddressForm.tsx
+  s_899a0f63af105e::t_c733b9680b7f04 30-32,34,40,42,44,50,53,59
+resources/scripts/components/dashboard/forms/UpdatePasswordForm.tsx
+  s_899a0f63af105e::t_470c42074e284e 30-32,34,40,42,44,54-57,62,64,74,78,84
+resources/scripts/components/dashboard/search/SearchContainer.tsx
+  s_899a0f63af105e::t_e2040fa3695004 17,27,29-30
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_899a0f63af105e::t_10d1229bb78655 41,45,55-56,64-65,71,82,108-110,112-113
+resources/scripts/components/dashboard/ssh/AccountSSHContainer.tsx
+  s_899a0f63af105e::t_2fef03dc59a3da 32-34,37-38,44,55-56
+resources/scripts/components/dashboard/ssh/AccountSSHTable.tsx
+  s_899a0f63af105e::t_f45a53f04181b5 12,14-16,25,27,36,40
+resources/scripts/components/dashboard/ssh/CreateSSHKeyForm.tsx
+  s_899a0f63af105e::t_a9b81cd622ce3c 29-31,33,35,38,40-56
+resources/scripts/components/dashboard/ssh/DeleteSSHKeyButton.tsx
+  s_899a0f63af105e::t_9f04c872033c89 15-16
+resources/scripts/components/elements/AppToaster.tsx
+  s_899a0f63af105e::t_dfd0f0aa54cf21 9-10
+resources/scripts/components/elements/Button.spec.tsx
+  s_899a0f63af105e::t_cd4fd892788830 13,17,31,39,52
+resources/scripts/components/elements/Button.tsx
+  s_899a0f63af105e::t_0e295480d94e8e 133-134,140,143-144,147-148,156,162
+resources/scripts/components/elements/Can.tsx
+  s_899a0f63af105e::t_73cf287347f24d 14
+resources/scripts/components/elements/CodemirrorEditor.spec.tsx
+  s_899a0f63af105e::t_0fcb373d13b5d1 12-16,22,26,37,43,52-54
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_899a0f63af105e::t_82e11f8231426f 184
+resources/scripts/components/elements/ContentContainer.tsx
+  s_899a0f63af105e::t_193c44099ee3e8 7
+resources/scripts/components/elements/CopyOnClick.spec.tsx
+  s_899a0f63af105e::t_0ad5748c9d0c1b 18,28,41,54,66,82-83
+resources/scripts/components/elements/CopyOnClick.tsx
+  s_899a0f63af105e::t_3cc47df5f40ea7 37-44,50-52,83-84,93-94,100-102
+resources/scripts/components/elements/ErrorBoundary.spec.tsx
+  s_899a0f63af105e::t_bab995ea6d90ca 10,49
+resources/scripts/components/elements/ErrorBoundary.tsx
+  s_899a0f63af105e::t_518c56df55c0d3 49-52,55
+resources/scripts/components/elements/InputSpinner.tsx
+  s_899a0f63af105e::t_3d1f870901cfcc 9-10
+resources/scripts/components/elements/InvisibleRecaptcha.spec.tsx
+  s_899a0f63af105e::t_c8a079929baf45 29,38-39,46,72,105,110,120,132,145,160
+resources/scripts/components/elements/InvisibleRecaptcha.tsx
+  s_899a0f63af105e::t_1f31be43f00941 20,49,64,84,105,111,133,142-147
+resources/scripts/components/elements/LazyCodemirrorEditor.tsx
+  s_899a0f63af105e::t_1655a6f3cc5046 15
+resources/scripts/components/elements/ListToolbar.tsx
+  s_899a0f63af105e::t_5fed7dd45cb6d2 16-17
+resources/scripts/components/elements/NamedIcon.spec.tsx
+  s_899a0f63af105e::t_f8f0b19ac71df5 13-14,17-18,25-26,29-30,42
+resources/scripts/components/elements/NamedIcon.tsx
+  s_899a0f63af105e::t_6f667191635950 42-45,48,55,60,62,74-78,91,95,97
+resources/scripts/components/elements/NewButton.tsx
+  s_899a0f63af105e::t_ebe75211ea5eb5 24-25,41
+resources/scripts/components/elements/PageContentBlock.tsx
+  s_899a0f63af105e::t_8c1d78d661de1b 19-20,22-25
+resources/scripts/components/elements/PageHeading.tsx
+  s_899a0f63af105e::t_4347a36845bdaa 15,17,19
+resources/scripts/components/elements/Pagination.tsx
+  s_899a0f63af105e::t_9ad8eba0795c02 43,75,77,84,92
+resources/scripts/components/elements/PermissionRoute.tsx
+  s_899a0f63af105e::t_b95a2254000ae7 10,14
+resources/scripts/components/elements/ProgressBar.tsx
+  s_899a0f63af105e::t_c7498bd69ea206 11,26,32,42,45
+resources/scripts/components/elements/PterodactylMark.tsx
+  s_899a0f63af105e::t_a1c82b8145911d 6-9,13-14
+resources/scripts/components/elements/ScreenBlock.spec.tsx
+  s_899a0f63af105e::t_19a088960e03fe 13-14,26-27
+resources/scripts/components/elements/ScreenBlock.tsx
+  s_899a0f63af105e::t_63484ea3bf666c 36-39,43,50-52,70
+resources/scripts/components/elements/SecretInput.spec.tsx
+  s_899a0f63af105e::t_71042c0d458abb 17,26,39,50
+resources/scripts/components/elements/SecretInput.tsx
+  s_899a0f63af105e::t_2dd57a9d9f581a 21,26,29,31,33,35-36,43,48,51-52,57
+resources/scripts/components/elements/Spinner.tsx
+  s_899a0f63af105e::t_7666527143e8ac 53
+resources/scripts/components/elements/SpinnerOverlay.tsx
+  s_899a0f63af105e::t_9513a3a8386b17 25,34
+resources/scripts/components/elements/SubNavigation.spec.tsx
+  s_899a0f63af105e::t_dc3282851ba4fd 1-165
+resources/scripts/components/elements/SubNavigation.tsx
+  s_899a0f63af105e::t_b80350e8222564 66,68,94-168,188,192-195,199,205-208,230,239,242,271,275,277-278,287,307,319
+resources/scripts/components/elements/SubNavigationLayout.tsx
+  s_899a0f63af105e::t_a3869cf4c7d029 10,12
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_899a0f63af105e::t_da13a911de1c5e 18,21
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_899a0f63af105e::t_28e7b5042ff849 37-39,58-60,64-67,70,72,74,80,85,93,95,99,102
+resources/scripts/components/elements/activity/ActivityLogMetaButton.tsx
+  s_899a0f63af105e::t_9b0cb3d7db0115 10,14-16,19,24-25
+resources/scripts/components/elements/activity/ActivityLogView.spec.tsx
+  s_899a0f63af105e::t_7c410cae12bb36 11,21-23
+resources/scripts/components/elements/activity/ActivityLogView.tsx
+  s_899a0f63af105e::t_457ae65bed5185 68,88-138,166-173,181-183,188,190,194-196,201,205-207,213-215,218,222-228,234-241
+resources/scripts/components/elements/alert/Alert.tsx
+  s_899a0f63af105e::t_a15d80935dedd0 43,51-52
+resources/scripts/components/elements/dialog/ConfirmationDialog.spec.tsx
+  s_899a0f63af105e::t_be24ebd7c3abfc 28,30,36,54-55,78,84,96-97,108,113,128,133,147
+resources/scripts/components/elements/dialog/ConfirmationDialog.tsx
+  s_899a0f63af105e::t_6183fecfade807 41,45
+resources/scripts/components/elements/dialog/ConfirmationDialogTrigger.tsx
+  s_899a0f63af105e::t_ae5316676c3886 33,41
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_899a0f63af105e::t_7e1b90fd0fbc02 54,71,74,76-77,92,99,105,107-108,110
+resources/scripts/components/elements/dialog/DialogFooter.tsx
+  s_899a0f63af105e::t_e0ba5e90349282 3-5
+resources/scripts/components/elements/dialog/DialogIcon.tsx
+  s_899a0f63af105e::t_b1de3a32186ca0 30
+resources/scripts/components/elements/dialog/DialogTrigger.spec.tsx
+  s_899a0f63af105e::t_4e3591720448a5 13-15,26,41,56,69
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_899a0f63af105e::t_90deb31d76688e 36,102,105-106,125
+resources/scripts/components/elements/iconCatalog.ts
+  s_899a0f63af105e::t_69e772593e358c 8
+resources/scripts/components/elements/table/DataTable.spec.tsx
+  s_899a0f63af105e::t_cfa46447d6fd5c 46-47,67,83,107,111,129,131
+resources/scripts/components/elements/table/DataTable.tsx
+  s_899a0f63af105e::t_12af33a8d28e7c 35-41,71,73,79,96
+resources/scripts/components/elements/table/DataTableColumnHeader.tsx
+  s_899a0f63af105e::t_5fee01a8cb9af7 11-12,27,31,42
+resources/scripts/components/elements/table/DataTablePagination.tsx
+  s_899a0f63af105e::t_d392dff4755371 17-18,22,50,52-54,57,59,63,66,70,74-75,77-78,80-81,84,88
+resources/scripts/components/elements/table/PaginationFooter.spec.tsx
+  s_899a0f63af105e::t_b9792257fd5beb 9,30,40
+resources/scripts/components/elements/table/PaginationFooter.tsx
+  s_899a0f63af105e::t_99648101579aec 46,51,71,73,75-76,79-81,89-92,101-102
+resources/scripts/components/elements/table/RowActions.spec.tsx
+  s_899a0f63af105e::t_58b5d6c57112d6 38,41-42,60,63,65,71,79,86,88,116,118
+resources/scripts/components/elements/table/RowActions.tsx
+  s_899a0f63af105e::t_1e701b11f8eb5e 27,36,41,60-61,73,88,104
+resources/scripts/components/elements/tooltip/Tooltip.spec.tsx
+  s_899a0f63af105e::t_5160180b16490e 18,25,29,31,36,48-49,54,56-57
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_899a0f63af105e::t_299b1953bbae53 2,47-87,113,141
+resources/scripts/components/form/SubmitButton.tsx
+  s_899a0f63af105e::t_d3d35e6358adf3 14
+resources/scripts/components/form/controls.spec.tsx
+  s_899a0f63af105e::t_16ace756e0c087 12-13,16,27-28,31
+resources/scripts/components/form/controls.tsx
+  s_899a0f63af105e::t_c696bf1f9ccee1 47
+resources/scripts/components/form/errors.ts
+  s_899a0f63af105e::t_92d5e8fc601456 10
+resources/scripts/components/form/fields.spec.tsx
+  s_899a0f63af105e::t_6caaa4f1de3169 20,26,31-33,38,45
+resources/scripts/components/form/fields.tsx
+  s_899a0f63af105e::t_b7cb29d8944e74 17-31,34-35,321,327-328
+resources/scripts/components/form/validators.ts
+  s_899a0f63af105e::t_8c9679796d887d 1-16
+resources/scripts/components/server/InstallListener.spec.tsx
+  s_899a0f63af105e::t_0a56cac922f951 23,27
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_899a0f63af105e::t_1d0ad853bcd610 19,28
+resources/scripts/components/server/TransferListener.spec.tsx
+  s_899a0f63af105e::t_c8ee5cfdb71fa6 62
+resources/scripts/components/server/TransferListener.tsx
+  s_899a0f63af105e::t_20e6ab46a9fc54 23,33,40,45
+resources/scripts/components/server/WebsocketHandler.spec.tsx
+  s_899a0f63af105e::t_ab3ce3a9fa55b0 21,24
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_899a0f63af105e::t_cdcecb12af333b 40-42,137,147,180-183
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_899a0f63af105e::t_42ac38ba8a9bd4 26-90,109-113,136,139,155,160,163,170-175,182
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_899a0f63af105e::t_d5abf6b4a91e43 85,94-95,97-99,109,119,123,129,134,139
+resources/scripts/components/server/backups/BackupTable.tsx
+  s_899a0f63af105e::t_891b54b19bfc61 16,18,25-26,28,32,34,59,76
+resources/scripts/components/server/backups/CreateBackupButton.tsx
+  s_899a0f63af105e::t_34799bf219f218 32,40,48-49,53-54,57,69-71,74-75,81
+resources/scripts/components/server/backups/backupCompletion.ts
+  s_899a0f63af105e::t_0f88cdc6b36bd5 26
+resources/scripts/components/server/console/AreaChart.tsx
+  s_899a0f63af105e::t_5d9c1adb7296f0 1-2,9-11,15-17,34,36,38,43-48,50,56,58,60,64-91,93-115,117-123,125-185,187-191,198,200,203,208-223
+resources/scripts/components/server/console/ChartBlock.tsx
+  s_899a0f63af105e::t_2a9f9a2280d2fc 11-13,16,18
+resources/scripts/components/server/console/Console.tsx
+  s_899a0f63af105e::t_5bcd2ea330b778 42,45-46,49,59,62,67,73,81-83,86-87,90
+resources/scripts/components/server/console/PowerButtons.tsx
+  s_899a0f63af105e::t_1d8cc96b282727 28,30,37,39,46,49,51-52,54,67-68
+resources/scripts/components/server/console/ServerConsoleContainer.tsx
+  s_899a0f63af105e::t_6cbcf59ad437cc 13-32,41,45-47,50-53,56,58-59,61,63,66-67,72,74,79
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
+  s_899a0f63af105e::t_ce8bbd52ed10be 4,18,24,31-50,54,89,106,109-110,112,114,119,121,126,129,131,136,138
+resources/scripts/components/server/console/StatBlock.tsx
+  s_899a0f63af105e::t_c3f39be9cb2d56 52-54
+resources/scripts/components/server/console/StatGraphs.tsx
+  s_899a0f63af105e::t_83c0afd9985b81 49,55,71,81,92,95-96,98-99
+resources/scripts/components/server/console/chart.spec.tsx
+  s_899a0f63af105e::t_329827806333f3 2-12,14-15,17,19-27,30-31,33,35-36,42-52,59-60,63-68,70,72-77,79-96,98-116,119-124
+resources/scripts/components/server/console/chart.ts
+  s_899a0f63af105e::t_72dff8efb8f875 18,21,24,27-31,42-44,47,49-51,53-54,57,60,66
+resources/scripts/components/server/console/stats.ts
+  s_899a0f63af105e::t_d21b81e79eaaf9 14-23,25,36,43
+resources/scripts/components/server/console/useConsoleCommandHistory.ts
+  s_899a0f63af105e::t_ad99ad9ea99f7f 29
+resources/scripts/components/server/console/useConsoleSocketLogs.spec.tsx
+  s_899a0f63af105e::t_045a71b6dff1c9 77
+resources/scripts/components/server/console/useConsoleSocketLogs.ts
+  s_899a0f63af105e::t_ed0dcc14c37a60 18,37,44,49,55,60,63,73,77-80,96-99,105-108
+resources/scripts/components/server/console/useTerminal.spec.tsx
+  s_899a0f63af105e::t_ae3992468513d6 64,68,85,129,137,141,152,156,168,178,186,190,199
+resources/scripts/components/server/console/useTerminal.ts
+  s_899a0f63af105e::t_f403476a12e6e8 35,43,46,49,57,61,87,90,95,98,105,111,116-139,202,217-221
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_899a0f63af105e::t_97192bcf15e180 11-30,57,66,68,70,75-78,82,84,92-95,100-101,105
+resources/scripts/components/server/databases/DatabaseTable.tsx
+  s_899a0f63af105e::t_346701442795ba 58,64,68,70,80-83,87-88,92,120,124,127,129,131,134,137-138,140,143,146,149-150,167,175,191,194,201,204,212,218,221
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_899a0f63af105e::t_7da92e8fd3ee63 18-46,66,69,71,80
+resources/scripts/components/server/databases/RotatePasswordButton.tsx
+  s_899a0f63af105e::t_7a69a4912696c0 22
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_899a0f63af105e::t_b34c50e316ba39 42,49-50,54-55,58-59,65-66,68
+resources/scripts/components/server/features/HytaleOauthRequireFeature.tsx
+  s_899a0f63af105e::t_2c0a20384b3bd4 28-29,33-34,37
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_899a0f63af105e::t_9369c95457d882 33,36-38,53,62,68,70,74-75,83-85,93-94,97-98
+resources/scripts/components/server/features/PIDLimitModalFeature.tsx
+  s_899a0f63af105e::t_fb65f44ead0869 34-35,37-40,43,46-47,54-55,57,61-62,66-67
+resources/scripts/components/server/features/SteamDiskSpaceFeature.tsx
+  s_899a0f63af105e::t_93f5477e8840fd 17,25,29,31,34-35,42,46-47
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_899a0f63af105e::t_69d6a8730b946f 45-46,48-50,57-58,61
+resources/scripts/components/server/features/hytaleOauth.ts
+  s_899a0f63af105e::t_af07fbdd33e96f 8,14
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_899a0f63af105e::t_fdb65d1b9318d6 26,34,44-48,51,53
+resources/scripts/components/server/files/FileActionItems.tsx
+  s_899a0f63af105e::t_c04e15d0837d89 33-34,37,40,45-46,53,58-59,65,69,74-75
+resources/scripts/components/server/files/FileDetailsView.tsx
+  s_899a0f63af105e::t_c7539009cea6ed 18,25,29,35,45,58
+resources/scripts/components/server/files/FileEditContainer.spec.tsx
+  s_899a0f63af105e::t_0bd2cd870335f4 48,59,73,76,79,93,96,100,104,121,124,127,130,156,162,165,195,285,297-300,303
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_899a0f63af105e::t_b97c5760a57238 54-57,65,75,79,82,87,94,100-107,112,114,119-122,157,167,188,191-204,206-210,220,234
+resources/scripts/components/server/files/FileEditorView.tsx
+  s_899a0f63af105e::t_3032b982931dc1 27,35-37,39,41,46,49,52,54,65,68,70,80,84,93,106,111
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_899a0f63af105e::t_2ceaf622a4e737 33-34,36,38-39,48,51,58,63
+resources/scripts/components/server/files/FileManagerContainer.spec.tsx
+  s_899a0f63af105e::t_e256a0b9ead826 46,57,61,72,82,87,90,107,111,116,138,146,193-196,235,252,263,270
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_899a0f63af105e::t_bcd1a0f643a9d7 32,43-46,68-69,75,78
+resources/scripts/components/server/files/FileManagerStatus.tsx
+  s_899a0f63af105e::t_9a27a3e4f0934a 19-20,23,25,46,48-51,54,56,59,61,92-94,103-104
+resources/scripts/components/server/files/FileManagerView.tsx
+  s_899a0f63af105e::t_3495861bef876d 45,48,51-52,66,75,79,82-86,89,91,104,108-109,122,126,137
+resources/scripts/components/server/files/FileNameModal.tsx
+  s_899a0f63af105e::t_2ad1ded0964d98 31,36-38,43
+resources/scripts/components/server/files/FileObjectRow.spec.tsx
+  s_899a0f63af105e::t_0810c07efb1e53 15,24,51,55,64,68,89,104
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_899a0f63af105e::t_b0387ff24d1ce6 40-61,70,95,113-114,117-118,128
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_899a0f63af105e::t_a5a7b947905f05 44-60,62-72,74-88
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_899a0f63af105e::t_06ce3dd18fe833 36,38,44,46-47,50,55,58,76
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_899a0f63af105e::t_61454365f2644b 23-26,34,45,47-48,51-53,64,66,73-74
+resources/scripts/components/server/files/SelectFileCheckbox.tsx
+  s_899a0f63af105e::t_461cddab81f0ec 13,15
+resources/scripts/components/server/files/UploadButton.tsx
+  s_899a0f63af105e::t_0b12b0e1474ed6 42,50,57-59,64-67,76,78-79,81-83
+resources/scripts/components/server/files/useFileActions.tsx
+  s_899a0f63af105e::t_e85e1b3ad2d592 98,105,107,114-115,123-124,131
+resources/scripts/components/server/files/useFileManagerModel.ts
+  s_899a0f63af105e::t_5235e83217f087 37-39,46-48,97,101-105
+resources/scripts/components/server/files/useFileUploader.ts
+  s_899a0f63af105e::t_49a6356a71c72b 19,21,24-25,49,52,57
+resources/scripts/components/server/network/AllocationTable.spec.tsx
+  s_899a0f63af105e::t_5980349d423266 34,55,57
+resources/scripts/components/server/network/AllocationTable.tsx
+  s_899a0f63af105e::t_fe553b10a70353 33-34,50,58,60,67,78,81,84,94
+resources/scripts/components/server/network/DeleteAllocationButton.tsx
+  s_899a0f63af105e::t_652cf60c28d588 27-28
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_899a0f63af105e::t_0e06df4e39ca0a 53-54,69,82-83
+resources/scripts/components/server/schedules/DeleteScheduleButton.tsx
+  s_899a0f63af105e::t_dc9fed2d16a7bf 29-30,33
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_899a0f63af105e::t_ae7b880645b913 19-72,80,83,90,100,103-104,115-119,121,125,127-128,134-135,138-139,144-145,148-149,154,156
+resources/scripts/components/server/schedules/NewTaskButton.tsx
+  s_899a0f63af105e::t_de62120d395fc2 11-21
+resources/scripts/components/server/schedules/RunScheduleButton.tsx
+  s_899a0f63af105e::t_89b2a04b064b55 24,27
+resources/scripts/components/server/schedules/ScheduleCheatsheetCards.tsx
+  s_899a0f63af105e::t_5001c4397d4b1b 55,57,65-66,69,71,75,85-87
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_899a0f63af105e::t_8f2bfd47ad55bb 48,50,63
+resources/scripts/components/server/schedules/ScheduleCronRow.tsx
+  s_899a0f63af105e::t_c01f502735d48c 11-13,15-17,19-21,23-25,27-29
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_899a0f63af105e::t_6c256d599229a8 29-31,66-71,74,82,87,89,94,99-100,103,112,116-121,128,143,146-147,154,177-178
+resources/scripts/components/server/schedules/ScheduleTable.tsx
+  s_899a0f63af105e::t_79073c47c7c782 11-18,23,25,27,29,33,53,55,65-66,69,84,88
+resources/scripts/components/server/schedules/ScheduleTaskTable.tsx
+  s_899a0f63af105e::t_ec66886904b23c 33,35-38,40,64-65,72-73,88,94,97-98,112-113,117
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_899a0f63af105e::t_e3ea2210308231 28-43,69,74,87,104-110,114,116,120-122,125,136,138,140,145,148,154-157,159-161,164,174-176,179,181,187-188,191-192,197
+resources/scripts/components/server/settings/ReinstallServerBox.tsx
+  s_899a0f63af105e::t_100dab692c67be 22-23,26,31,33-34,37
+resources/scripts/components/server/settings/RenameServerBox.tsx
+  s_899a0f63af105e::t_a951d439a268e1 34,36,38,41,43-45,48
+resources/scripts/components/server/settings/SettingsContainer.tsx
+  s_899a0f63af105e::t_cddf8ccb052b07 23-27,31,34,37,40-43,48,56-57,59,62,64,69-71,75
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_899a0f63af105e::t_6dedbea3842ae0 38-47,49,59,67-70,74-77,80,94,103-105,112,116,126
+resources/scripts/components/server/startup/VariableBox.spec.tsx
+  s_899a0f63af105e::t_0c810b26b17e25 38,40
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_899a0f63af105e::t_7f87224ac647af 40-90,103,112
+resources/scripts/components/server/users/CreateSubuserContainer.tsx
+  s_899a0f63af105e::t_35e92df6ba634d 17,19,21,23,27,34
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_899a0f63af105e::t_18eb220e8361ca 60,67,77,92-143,166,185-187,191,198-199,206,208,210,215-216,222-230,232,234
+resources/scripts/components/server/users/PermissionRow.tsx
+  s_899a0f63af105e::t_a8a8b2d2b2f045 20,27,33-34,36,39-40,43
+resources/scripts/components/server/users/PermissionTitleBox.tsx
+  s_899a0f63af105e::t_5e3b03acfc72bc 30-31,38
+resources/scripts/components/server/users/RemoveSubuserButton.tsx
+  s_899a0f63af105e::t_ce676220a65667 19,27-28
+resources/scripts/components/server/users/SubuserTable.tsx
+  s_899a0f63af105e::t_859c4ca94678a0 15-18,22,31,42,44,46,48,50,57,59,73
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_899a0f63af105e::t_4099c22420019b 19-45,76-77,81,87
+resources/scripts/components/ui/Checkbox.spec.tsx
+  s_899a0f63af105e::t_91c5ba40821b99 13-14,17,24-25,28
+resources/scripts/components/ui/Select.spec.tsx
+  s_899a0f63af105e::t_64e1e1c72b41c2 29,48
+resources/scripts/components/ui/Select.tsx
+  s_899a0f63af105e::t_eebb2ef1373d31 117,181,237-239,400,481,507
+resources/scripts/components/ui/Switch.tsx
+  s_899a0f63af105e::t_d1498b099899b4 70,72,77
+resources/scripts/components/ui/empty.spec.tsx
+  s_899a0f63af105e::t_858787fe0b82be 12,14,19,23,29,44-45,57
+resources/scripts/components/ui/empty.tsx
+  s_899a0f63af105e::t_ade50a2f4b9e48 8,21,49,60,70,83
+resources/scripts/extensions/ComponentView.spec.tsx
+  s_899a0f63af105e::t_8aa2c69e595b69 9,24,28,31,35,39,50,53,56,64,71,73,82,97,104,125,133,151,154,162,174,177-181,184,187,190,204,217,221,224,235-238,241,244,247,250,272,274-277,281,291,294
+resources/scripts/extensions/ComponentView.tsx
+  s_899a0f63af105e::t_a565c204bd96b2 1-2,9,26-35,37-45,47,49-57
+resources/scripts/extensions/ExtensionMount.tsx
+  s_899a0f63af105e::t_15857d4d23df2f 1,5,8-49,60,65-72,93-96,99,102-105,108-111,116-118,154,164,170-171
+resources/scripts/extensions/NavigationLabel.tsx
+  s_899a0f63af105e::t_6db5b1689e71f8 12-13
+resources/scripts/extensions/Slot.spec.tsx
+  s_899a0f63af105e::t_b87e023f6360ca 4,7-8,12-24,37-38,40,54,57-58,60,81-83,101,104,107-108,110,128,131,134-135,138,146-147,168-173,187
+resources/scripts/extensions/Slot.tsx
+  s_899a0f63af105e::t_04121785be149c 1,4-27,29-31
+resources/scripts/extensions/componentSession.tsx
+  s_899a0f63af105e::t_114a1b8897712f 35,40,43,45-48,52-53,61,63-66,69-71,73,86,91,94,97,99,103,107,112,116-119,126,128,131,136,140,151,153,156,159,166
+resources/scripts/extensions/context.spec.tsx
+  s_899a0f63af105e::t_cb713d85ed2e8c 12,26,29,51,80
+resources/scripts/extensions/context.ts
+  s_899a0f63af105e::t_52dbe26778e7ad 11-15,17,21
+resources/scripts/extensions/development.spec.ts
+  s_899a0f63af105e::t_c91b7be1d714ae 24,27,45,50
+resources/scripts/extensions/development.ts
+  s_899a0f63af105e::t_837acb56936b78 8-12,22,24-27,31,37,40-44,47,49,56,60,67-72,76,78,83
+resources/scripts/extensions/formExtensions.spec.tsx
+  s_899a0f63af105e::t_99c47a5428dfc6 39,76,102-106,115,117-120,123,132,137,145,152,177,179-182,192,196,204,225
+resources/scripts/extensions/forms.ts
+  s_899a0f63af105e::t_bb7ce9b4d34ce8 2,22,60
+resources/scripts/extensions/loader.spec.ts
+  s_899a0f63af105e::t_178c39cff6e1e0 3-4,56,113,192,217,223,257,271,281,300,315,329,332,357
+resources/scripts/extensions/loader.ts
+  s_899a0f63af105e::t_b535c0410dacda 19,87,116,122,127,131,136,139-142,147,149-152,154-158,166,169-172,177
+resources/scripts/extensions/nativeForm.spec.tsx
+  s_899a0f63af105e::t_a49fff45860652 20,51,53,55-56,61,64,84,87,94
+resources/scripts/extensions/registry.spec.ts
+  s_899a0f63af105e::t_5f4a05e43fdec3 17-23,25-26,34-36,93,106,108,110-111,113-118,120,122,125,134-135,145,167-177,180-181,184,216,241,281,291,299-300,302
+resources/scripts/extensions/registry.ts
+  s_899a0f63af105e::t_1fd8d1ae90f523 1,280-282,284-285,298-307,375-378,382,400,402-405,409-410,412,415,417-418,420,425-443,445,449,454,456,459,461,465,481,483-484,486-488,491-495,497,500-501,503-510,512-515,521,525,527-535,540,542-546,550,554,557,561-569,572-581,583,587,592-719,721-724,727,734,736-737,741-743,745,747,749-755,757-760,764-765,767-773,777,779-781,783-787,789-796,798-799,801,804,806-807,809,812-829,842-846,853,856,861,866,868-873,875,879,885,887-889,891-893,895-896,899,903,906-910,912-914,916-917,920,924-928,937-946,948,952,956-957,959,965,968-977
+resources/scripts/extensions/screen.spec.tsx
+  s_899a0f63af105e::t_14f42204d2363a 31,39,41-44,47,60,65,73,88,118,124,138,152,157,182
+resources/scripts/extensions/screen.tsx
+  s_899a0f63af105e::t_8dde8059873dec 1,14,24,26,30,39,42,55
+resources/scripts/extensions/screenNavigation.spec.tsx
+  s_899a0f63af105e::t_7e8d1b2eef38ba 48,54-57,63,76,98,111,121,149,186,194,244,263,295,312,351
+resources/scripts/extensions/screenNavigation.tsx
+  s_899a0f63af105e::t_f6375f6bc4d50b 1,13,25,33,65-78,119,132-136,138,145-150,167
+resources/scripts/extensions/tableColumns.tsx
+  s_899a0f63af105e::t_8c76209a691414 1,4,11-12
+resources/scripts/helpers.spec.ts
+  s_899a0f63af105e::t_d32090a148dbcc 4-5,11,16,20,25,34,38
+resources/scripts/helpers.ts
+  s_899a0f63af105e::t_77bcd47b4430be 5,11-12,14,16,19,22-24
+resources/scripts/i18n.spec.ts
+  s_899a0f63af105e::t_17d46302a992df 34,50
+resources/scripts/i18n.ts
+  s_899a0f63af105e::t_6d71d6c22fc7cb 39-45,48,55-56
+resources/scripts/index.tsx
+  s_899a0f63af105e::t_f034b0f5cb8f15 14
+resources/scripts/lib/clipboard.ts
+  s_899a0f63af105e::t_27a08d376e62ec 6,14,28
+resources/scripts/lib/cn.ts
+  s_899a0f63af105e::t_0cd1811af02575 32,40-42
+resources/scripts/lib/databases.ts
+  s_899a0f63af105e::t_4e003a73ad7bfe 10
+resources/scripts/lib/formatters.spec.ts
+  s_899a0f63af105e::t_5acf1e904606f9 4-6,15,41,46-47,51,56
+resources/scripts/lib/formatters.ts
+  s_899a0f63af105e::t_10facee84f80ad 10-12,16
+resources/scripts/lib/helpers.spec.ts
+  s_899a0f63af105e::t_46208f495f8c63 4-6,12,16,22
+resources/scripts/lib/helpers.ts
+  s_899a0f63af105e::t_8048c760ad735a 9
+resources/scripts/lib/objects.spec.ts
+  s_899a0f63af105e::t_1ed5b9646aacdf 4-6,12,18
+resources/scripts/lib/strings.spec.ts
+  s_899a0f63af105e::t_b06c9c84dcec2d 4-6,11,16
+resources/scripts/lib/theme.spec.ts
+  s_899a0f63af105e::t_08aa0a6390b0fd 13,37,50,79,115,140
+resources/scripts/lib/theme.ts
+  s_899a0f63af105e::t_dd2ab8c0a07fa3 45,55,60,101
+resources/scripts/plugins/Websocket.spec.ts
+  s_899a0f63af105e::t_38135d484f71aa 30,54,79,99,133,151,172,180,200,231,260,263,268
+resources/scripts/plugins/Websocket.ts
+  s_899a0f63af105e::t_29f98f2a90d13a 33,38,40,47,52,54,61,71,77,81-82,90,161,166,171,204,216,236,243
+resources/scripts/plugins/useDebouncedCallback.ts
+  s_899a0f63af105e::t_bd47871473a6a6 27,33
+resources/scripts/plugins/useEventListener.ts
+  s_899a0f63af105e::t_6ccc3b3e249d3e 22-25,31
+resources/scripts/plugins/useNavigationBlocker.spec.tsx
+  s_899a0f63af105e::t_b6dad51f8bba82 27,30,40,43,73,77,96,122,126
+resources/scripts/plugins/useNavigationBlocker.ts
+  s_899a0f63af105e::t_3001c014b68213 32,38,43-46,48-52,65,75
+resources/scripts/plugins/usePersistedState.ts
+  s_899a0f63af105e::t_6d140d0e224542 47
+resources/scripts/plugins/useWebsocketEvent.ts
+  s_899a0f63af105e::t_6fc92ba48e6eb5 16,22
+resources/scripts/router/RouteError.spec.tsx
+  s_899a0f63af105e::t_a237b8fc55d0f6 48,94
+resources/scripts/router/RouteError.tsx
+  s_899a0f63af105e::t_208ad8c062d60f 20-22,58
+resources/scripts/router/layouts/AccountLayout.tsx
+  s_899a0f63af105e::t_6313453309ff82 15,27
+resources/scripts/router/layouts/AdminLayout.tsx
+  s_899a0f63af105e::t_ae86fa1adbbf65 6,8
+resources/scripts/router/layouts/AuthLayout.tsx
+  s_899a0f63af105e::t_6e291a2a39239f 5
+resources/scripts/router/layouts/RootLayout.tsx
+  s_899a0f63af105e::t_eb2a3d2040f57f 8
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_899a0f63af105e::t_1d8e7310f1c3a2 53,60,88,90-91,93,95,101
+resources/scripts/router/params.spec.ts
+  s_899a0f63af105e::t_c09d1573122884 11
+resources/scripts/router/redirect.ts
+  s_899a0f63af105e::t_86d8b50a6c5d94 11-14,17,24-26
+resources/scripts/router/renderedRoute.spec.tsx
+  s_899a0f63af105e::t_a1e57f78f18a79 21,52,60
+resources/scripts/router/routeTree.spec.ts
+  s_899a0f63af105e::t_5f567d459ac3c9 5,54,87,91,132,137,139,146,161,224
+resources/scripts/router/routeTree.ts
+  s_899a0f63af105e::t_36225d7347cf46 471,476-477,480,558,563-564,567,667,672-673,730-731,734,745-746,749,774-775,778
+resources/scripts/router/search.ts
+  s_899a0f63af105e::t_32f4fcc8571e51 67-69,88-89,92,105-107,112-113,115-125,150-156,163-166,208-218,220
+resources/scripts/router/searchHooks.spec.tsx
+  s_899a0f63af105e::t_fdcb02fd38fef3 15,34
+resources/scripts/sdk/index.ts
+  s_899a0f63af105e::t_9e346fc5af5df6 68,72,76,80,232
+resources/scripts/sdk/localization.spec.tsx
+  s_899a0f63af105e::t_9deef0785b0949 11,15,29,31
+resources/scripts/sdk/localization.ts
+  s_899a0f63af105e::t_e578b527f99ab3 14-22,25
+resources/scripts/sdk/loginCheckpoint.spec.tsx
+  s_899a0f63af105e::t_5826f7d943fb96 8,18,21,24,40,43,46
+resources/scripts/sdk/mutations.spec.tsx
+  s_899a0f63af105e::t_b12cd9a1264920 12,17,33-36,39,42
+resources/scripts/sdk/mutations.ts
+  s_899a0f63af105e::t_72bef8d5d4740f 38-42,45-46,51-55,59,61,63,65,67,69,74,80,82-85,87,92,95,98,100,103
+resources/scripts/sdk/navigation.tsx
+  s_899a0f63af105e::t_d882c61decbf4f 3,59,63-69,71,73,79,83,89,94,97,104,119
+resources/scripts/sdk/progress.spec.tsx
+  s_899a0f63af105e::t_81c0844abc9c03 14,22,34,39,58,60,78,89,91
+resources/scripts/sdk/progress.ts
+  s_899a0f63af105e::t_48df210724ef0c 27-31
+resources/scripts/sdk/queryOptions.ts
+  s_899a0f63af105e::t_370b84fc0d1b8e 10-14
+resources/scripts/sdk/server.spec.ts
+  s_899a0f63af105e::t_c5aeda543fc1f0 21,29,46-49,53-59,64,68,72,100,104,126,129,134,139,163-166
+resources/scripts/sdk/server.ts
+  s_899a0f63af105e::t_82d4232d793648 43,47,51,54,57,61,65,68,73,81,85,92,100
+resources/scripts/sdk/testing.spec.tsx
+  s_899a0f63af105e::t_fbd4e1c7a6b6d1 14,24,34,38,42,59,62,81,86
+resources/scripts/sdk/testing.tsx
+  s_899a0f63af105e::t_a832e7c163b2d2 7,36,82,141,146,150,155,162,165,167,171,180,190,193,195,212,222,228,233,265,269,286,289,303,335,343,347,351,354,358,361,364,373,380,383,386,389,396,399,424,427,431,434,437,447,457,459,467
+resources/scripts/sdk/ui.tsx
+  s_899a0f63af105e::t_486078ed63bf02 40
+resources/scripts/state/httpProgress.ts
+  s_899a0f63af105e::t_33af4b881f4332 14-16
+resources/scripts/state/server/files.spec.tsx
+  s_899a0f63af105e::t_4ce6993759d00b 37-41
+resources/scripts/state/server/files.ts
+  s_899a0f63af105e::t_e9dac1ec63f1c6 65,83-85,109,144
+resources/scripts/state/server/index.tsx
+  s_899a0f63af105e::t_ff458a8394df74 36-67,82,99,107
+tests/Integration/Actions/Allocations/AssignAvailableAllocationTest.php
+  s_899a0f63af105e::t_0e157908af6d02 5
+tests/Integration/Actions/Backups/DeleteBackupTest.php
+  s_899a0f63af105e::t_5dd5a9ba0603f9 5
+tests/Integration/Actions/Backups/GenerateBackupDownloadLinkTest.php
+  s_899a0f63af105e::t_48e969a20cf920 5
+tests/Integration/Actions/Backups/InitiateBackupTest.php
+  s_899a0f63af105e::t_cff1791d7c449f 1-86
+tests/Integration/Actions/Databases/CreateDatabaseTest.php
+  s_899a0f63af105e::t_0f49a6faa5f117 5
+tests/Integration/Actions/Databases/DeployServerDatabaseTest.php
+  s_899a0f63af105e::t_055f0039e0135b 5
+tests/Integration/Actions/Databases/RotateDatabasePasswordTest.php
+  s_899a0f63af105e::t_d3b375e21331d9 5
+tests/Integration/Actions/Schedules/ProcessScheduleTest.php
+  s_899a0f63af105e::t_cebffffd12eb8b 5
+tests/Integration/Actions/Servers/CreateServerTest.php
+  s_899a0f63af105e::t_c1c5903705fc63 5
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_899a0f63af105e::t_754373c47c8f4e 5,8,13,19,31,41,45,53,57,64,71,74-77,80-88,90-95,97-121,133-166,169,172,187,191,197,206
+tests/Integration/Actions/Servers/ToggleServerSuspensionTest.php
+  s_899a0f63af105e::t_013bfe363bad39 5
+tests/Integration/Actions/Servers/UpdateServerBuildTest.php
+  s_899a0f63af105e::t_dadc1265b6ea4f 5
+tests/Integration/Actions/Servers/UpdateServerStartupTest.php
+  s_899a0f63af105e::t_9eb128b77753c7 5,11-12,23,37,46,61,64,75,81,84,99,102,108-138,145
+tests/Integration/Actions/Users/DeleteUserTest.php
+  s_899a0f63af105e::t_4cf6072b2561d4 5
+tests/Integration/Api/Admin/Nodes/AllocationControllerTest.php
+  s_899a0f63af105e::t_6c619c341a61b3 136-137,145
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_899a0f63af105e::t_49d6d524acf252 15,112-127
+tests/Integration/Api/Admin/Servers/ServerTransferControllerTest.php
+  s_899a0f63af105e::t_5524f453da5e65 8-9,136-155
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_899a0f63af105e::t_bac97e02f25338 9,117-134
+tests/Integration/Api/Client/Server/Files/FileControllerTest.php
+  s_899a0f63af105e::t_ede9d3a81fc64b 15-16,22,29,36,40,44,48,56,60,66,72,76,83,91,98,105,112,118,125,131,137,143,149,156-160,166,172
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_899a0f63af105e::t_fcc9266c61468d 8-9,79-104
+tests/Integration/Api/Client/TwoFactorControllerTest.php
+  s_899a0f63af105e::t_a96a794611e684 79,88-89
+tests/Integration/Extensions/DynamicDatabaseConnectionTest.php
+  s_899a0f63af105e::t_3b789fa2de0408 1-37
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_899a0f63af105e::t_373d8db96ead9b 424-434
+tests/Support/Fakes/FakeDaemonServer.php
+  s_899a0f63af105e::t_46032192008ece 89
+tests/Unit/ArchTest.php
+  s_899a0f63af105e::t_42133b2d9e5526 25-26,53-76
+tests/Unit/Extensions/ExtensionProviderRegistrationTest.php
+  s_899a0f63af105e::t_117a86c9afcd2e 5-38,40,42,44,47,49,52-53
+tests/Unit/Extensions/ExtensionProviderRuntimeTest.php
+  s_899a0f63af105e::t_55ee1eb5ab748b 214-224,568-584
+tests/Unit/Http/Middleware/MaintenanceMiddlewareTest.php
+  s_899a0f63af105e::t_c12d762efa4ca1 59
+tests/Unit/Http/Middleware/RedirectIfAuthenticatedTest.php
+  s_899a0f63af105e::t_aa70e4bff22789 26
+tests/Unit/Providers/ExtensionAboutTest.php
+  s_899a0f63af105e::t_7fe815f83fc42a 1-40
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_899a0f63af105e::t_ca0ce279a5ef19 7,151-202
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_899a0f63af105e::t_99a9f619874f63 107-131
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_899a0f63af105e::t_a2ca3325ff67db 7,50-94
+tests/Unit/Services/Extensions/ExtensionRepositoryTest.php
+  s_899a0f63af105e::t_438f395cb2b766 5,10,19,24,27,32-33,35-36,38,40,43-44,46,68-69,71-72,74-76,81,88,91
+tests/Unit/Services/Extensions/ExtensionRuntimeTest.php
+  s_899a0f63af105e::t_43a61a679221c6 36-41,43-44,47-48
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_899a0f63af105e::t_628b2e058d8a30 32-39
+tests/Unit/Services/Extensions/ExtensionToolingTest.php
+  s_899a0f63af105e::t_b4ea75bd6bdde2 139-181
+tools/oxlint/rules/design-tokens.spec.ts
+  s_899a0f63af105e::t_4c40696b728293 11,13-16,26,39-42,44
+tools/oxlint/rules/lint.spec.ts
+  s_899a0f63af105e::t_1bf8610f884133 2,13-14,23-48,138,177
+tools/oxlint/rules/rules/design-tokens.ts
+  s_899a0f63af105e::t_bdeff2048846e5 3,7,28,31-35,39,41-48,55,57-58,60-63
+tools/oxlint/rules/rules/generated-api-imports.ts
+  s_899a0f63af105e::t_75b4b52f695214 4,17-28,31-42,49-51
+tools/oxlint/rules/rules/generated-api-mutations.ts
+  s_899a0f63af105e::t_4066acfd953e52 2,13-18
+tools/oxlint/rules/rules/generated-api-types.ts
+  s_899a0f63af105e::t_64ac5690f533cc 13,18,20-21
+tools/oxlint/rules/rules/no-chained-type-assertions.ts
+  s_899a0f63af105e::t_9f3ad756fb86c7 12,16,22,70-73
+tools/oxlint/rules/rules/no-conditional-empty-object-spread.ts
+  s_899a0f63af105e::t_179de447aa9db1 6,10,20,41-43
+tools/oxlint/rules/rules/no-known-value-widening.ts
+  s_899a0f63af105e::t_c49c3a24df810c 17,27,33,36-40,43,48-51,53,70-73,75-79,81-85,87-92,95,97,112,121,124,129-136,141-148,150-158,164,193-196,200-204,220-223,227-230,238-241,249-252,254-258,260-264,272-275,277,285-288,296-299,303-306
+tools/oxlint/rules/rules/no-object-parameters.ts
+  s_899a0f63af105e::t_4c6b9b70b617ce 19,23,27,54-61,65,76,78-82,84,86,93-101,114
+tools/oxlint/rules/rules/no-shape-in-symbol-names.ts
+  s_899a0f63af105e::t_aeeeee5990759e 25-28
+tools/oxlint/rules/rules/no-unknown-parameters.ts
+  s_899a0f63af105e::t_8113b065033c77 18,22,26,34,38,42,63-67,69-73
+tools/oxlint/rules/rules/no-unknown-type-aliases.ts
+  s_899a0f63af105e::t_1f00335b370e9e 6-13,36-43,45-49,51,55,57,59,67,72,74-77
+tools/oxlint/rules/rules/no-unsafe-dictionary-type.ts
+  s_899a0f63af105e::t_2f993a2552eff7 22,24-27,30,35-38,40,45-52,54,56-59,62,84,86-89,91-95,107,109-110,112-115
+tools/oxlint/rules/rules/no-widen-then-assert.ts
+  s_899a0f63af105e::t_2afeae8c40c5af 18-37,40-44,50-54,64,70,78-82,86-89,91,93-104,107,109,119-134,137-145,155,173-175,177-190,195,200-203,206,209-212,215,221,223-226,229,247-250,252,262,266-294,304,307,311-312,316-319,325-326,329-333,346,348,364-367,374,384-399,421-424,427-431,433
+tools/oxlint/rules/shared/dictionary-types.ts
+  s_899a0f63af105e::t_7c228d04692265 36-58,66-69,74-80,97,104,108-119,139-142,144,146,156-160,162-166,168-172,174,176,188,191-195,198,202-316,324,332,334,336-365,367-383,385,388-389,391-395,397-402,425-426,429,437,444-447,449,469-481,483-487,489,493-529,531-572,577,586,592,602-606
+tools/oxlint/rules/shared/literals.ts
+  s_899a0f63af105e::t_fb8aef6f3c910e 1-9
+tools/phpstan/rules/extension.neon
+  s_899a0f63af105e::t_1a9e3f0bbd274e 49
+tools/phpstan/rules/phpunit.xml
+  s_899a0f63af105e::t_d55ea01f639c8b 13-15
+tools/phpstan/rules/src/Rules/NoChainedVarTagsRule.php
+  s_899a0f63af105e::t_47c685db272f99 16-17
+tools/phpstan/rules/src/Rules/NoForbiddenTermsInSymbolNamesRule.php
+  s_899a0f63af105e::t_0627b42d09d1a1 119
+tools/phpstan/rules/src/Rules/NoInstanceofOnMixedRule.php
+  s_899a0f63af105e::t_eabcedeefced29 12
+tools/phpstan/rules/src/Rules/NoKnownValueWideningPropertyRule.php
+  s_899a0f63af105e::t_664a726cc1f43b 18
+tools/phpstan/rules/src/Rules/NoKnownValueWideningReturnRule.php
+  s_899a0f63af105e::t_366707414d5cce 18
+tools/phpstan/rules/src/Rules/NoMixedParametersRule.php
+  s_899a0f63af105e::t_a7800554839853 14-15
+tools/phpstan/rules/src/Rules/NoMixedReturnsRule.php
+  s_899a0f63af105e::t_d5c7987eaa7e01 16-17
+tools/phpstan/rules/src/Rules/NoMixedTypeAliasesRule.php
+  s_899a0f63af105e::t_94d8bef364b887 12
+tools/phpstan/rules/src/Rules/NoObjectParametersRule.php
+  s_899a0f63af105e::t_299c8b9bbc9855 12-13
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryPropertyRule.php
+  s_899a0f63af105e::t_c6d50871da34d1 12
+tools/phpstan/rules/src/Rules/NoUnsafeDictionaryTypeRule.php
+  s_899a0f63af105e::t_9b1631e5e4a38a 12-13,47
+tools/phpstan/rules/src/Rules/NoWidenThenAssertRule.php
+  s_899a0f63af105e::t_c4bd56c055392e 24-25
+tools/phpstan/rules/src/Rules/RequireSafetyCommentForAssertionRule.php
+  s_899a0f63af105e::t_757fbf44111154 12
+tools/phpstan/rules/src/Support/TypeAliasDocblock.php
+  s_899a0f63af105e::t_8e4348a746ee6a 68
+tools/phpstan/rules/tests/Integration/PackageCoverageTest.php
+  s_899a0f63af105e::t_d1c8076200ab5a 18,34,36
+tools/phpstan/rules/tests/Rules/NoChainedAssertionsRuleTest.php
+  s_899a0f63af105e::t_b171e21d662bbb 9-10,17,27-31
+tools/phpstan/rules/tests/Rules/NoChainedVarTagsRuleTest.php
+  s_899a0f63af105e::t_2e157464abda6f 9-10,17,23-27
+tools/phpstan/rules/tests/Rules/NoClassLoadingMocksRuleTest.php
+  s_899a0f63af105e::t_1f0d8d305b9fcd 9,16,31-35
+tools/phpstan/rules/tests/Rules/NoConditionalEmptyArraySpreadRuleTest.php
+  s_899a0f63af105e::t_f8022249deac5e 9,16,27-31
+tools/phpstan/rules/tests/Rules/NoForbiddenTermsInSymbolNamesRuleTest.php
+  s_899a0f63af105e::t_2b613b1f0694ad 9,16,32-36
+tools/phpstan/rules/tests/Rules/NoInstanceofOnMixedRuleTest.php
+  s_899a0f63af105e::t_96232cf99fb606 9-10,17,23-27
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningReturnRuleTest.php
+  s_899a0f63af105e::t_520eaa3305a4aa 9-10,17,23-27
+tools/phpstan/rules/tests/Rules/NoKnownValueWideningRuleTest.php
+  s_899a0f63af105e::t_034c525a4aa561 9-10,17,26-30
+tools/phpstan/rules/tests/Rules/NoMixedParametersRuleTest.php
+  s_899a0f63af105e::t_ed239ebbafee57 7-8
+tools/phpstan/rules/tests/Rules/NoMixedReturnsRuleTest.php
+  s_899a0f63af105e::t_12c6217c706f7a 7-8,18,32-39
+tools/phpstan/rules/tests/Rules/NoMixedTypeAliasesRuleTest.php
+  s_899a0f63af105e::t_3498755105aeb3 9-10,17,28-32
+tools/phpstan/rules/tests/Rules/NoObjectParametersRuleTest.php
+  s_899a0f63af105e::t_1be8ef39f72491 7-8,18,30-37
+tools/phpstan/rules/tests/Rules/NoServiceConstructionRuleTest.php
+  s_899a0f63af105e::t_8265ad08457809 9,16,26-30
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryPropertyRuleTest.php
+  s_899a0f63af105e::t_2723bb87ca4248 9-10,17,25-29
+tools/phpstan/rules/tests/Rules/NoUnsafeDictionaryTypeRuleTest.php
+  s_899a0f63af105e::t_85198db81b3b49 7-8,18,20,33-40
+tools/phpstan/rules/tests/Rules/NoWidenThenAssertRuleTest.php
+  s_899a0f63af105e::t_da1a3e1e48aa6e 9-10,17,27-31
+tools/phpstan/rules/tests/Rules/RequireSafetyCommentForAssertionRuleTest.php
+  s_899a0f63af105e::t_b293a98b496a14 9-10,17,29-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7d983e920183164b1785179e3ff3f473c672ca18",
+  "prompts": {},
+  "sessions": {
+    "s_01f4a6969ae96f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a11a09-bbb9-7cc3-ab54-abdc83e48bd3",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
