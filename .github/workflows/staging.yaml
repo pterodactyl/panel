@@ -11,11 +11,18 @@ concurrency:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    env:
+      TOKEN: ${{ secrets.STAGING_DISPATCH_TOKEN }}
+      REPO: ${{ secrets.STAGING_DISPATCH_REPO }}
     steps:
       - name: Notify staging deployment
         run: |
+          if [[ -z "$TOKEN" || -z "$REPO" ]]; then
+            echo "::notice::STAGING_DISPATCH_TOKEN or STAGING_DISPATCH_REPO is not set; skipping"
+            exit 0
+          fi
           curl -sf -X POST \
-            -H "Authorization: Bearer ${{ secrets.STAGING_DISPATCH_TOKEN }}" \
+            -H "Authorization: Bearer $TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ secrets.STAGING_DISPATCH_REPO }}/dispatches" \
+            "https://api.github.com/repos/$REPO/dispatches" \
             -d "{\"event_type\":\"panel-next-push\",\"client_payload\":{\"sha\":\"${GITHUB_SHA}\",\"ref\":\"${GITHUB_REF_NAME}\"}}"
