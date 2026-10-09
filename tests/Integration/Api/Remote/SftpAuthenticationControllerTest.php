@@ -124,6 +124,20 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         }
     }
 
+    public function testCertificatePublicKeyAuthenticationIsRejectedAsInvalidKey()
+    {
+        $certificate = $this->makeCertificate();
+
+        for ($i = 0; $i <= 5; ++$i) {
+            $this->postJson('/api/remote/sftp/auth', [
+                'type' => 'public_key',
+                'username' => $this->getUsername(),
+                'password' => $certificate,
+            ])
+                ->assertStatus($i === 5 ? 429 : 403);
+        }
+    }
+
     /**
      * Test that a request is rejected if the credentials are valid but the username indicates
      * a server on a different node.
@@ -242,5 +256,27 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         $node = $node ?? $this->server->node;
 
         $this->withHeader('Authorization', 'Bearer ' . $node->daemon_token_id . '.' . decrypt($node->daemon_token));
+    }
+
+    protected function makeCertificate(): string
+    {
+        return <<<'PEM'
+-----BEGIN CERTIFICATE-----
+MIIClzCCAX+gAwIBAgIBADANBgkqhkiG9w0BAQUFADAPMQ0wCwYDVQQDDAR0ZXN0
+MB4XDTI2MDYyODIxMzQzMFoXDTI2MDYyOTIxMzQzMFowDzENMAsGA1UEAwwEdGVz
+dDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALZNPzyWTEinfefSMYI8
+jPtiDpQ3n4xnqobumxAMDSQd7Wkbi9MyWfV3tr7PIVzblC4aH5iLIy5dOhUWqyBd
+LwYbmdGfeghnP261CrYw4npoBO+k1CoAtfjxuv5Mkz9zs4/BtknyqKxteLxLglJI
+VTTl/IdGVdacvBSkfystMkK3AjvIwNseWLe2fcwMSs1k0yN/p/6NUYsO4BBkybaM
+JF7s3s29nKZDwPn8HxYD/5cnStSI0nhcltYF5O7/6DiH4x5lvT4Z9D+aHppDMTur
+yxAkMTSTZqMkE5iOtk6XrnEaXDVOci1fYFYIO0yKExnbf2DkB//W9f1wMYbO40Zc
+jMkCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAAbbdgyP9X3kAgMdMo2yMX6jJC9Kl
+NTio30d+NPCXsziA6elS2wWK7LhAVx0WRCho3KNJC2j3sKGOSXwf7HlG8yX4QPng
+oMf91+yM95yhJZxVGelKfBGg34Wu1e8l0FcuCchmseR8QtwwuwScDXnYQV7PyRiW
+OJ5KEg6opQivmfI4gJWDNbe6ALwHxR0TZeRITQ+tU0r/JCFwbjMX2pFNAl2sjE9x
+iiZwIndK2bAsME622kuPgfx/osJ/8zuQhBeRsiLfUT44j2RJNRj99gXRfKAA0vyG
+LaKfKLpXnF7mm6UuShG/HRt07bxu6Ayan/SJnv3E5ZkinR5lX0upcmM/gQ==
+-----END CERTIFICATE-----
+PEM;
     }
 }

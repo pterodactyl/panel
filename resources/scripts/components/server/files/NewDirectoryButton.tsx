@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import { join } from 'pathe';
+import { join, normalize } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
@@ -24,20 +24,29 @@ const schema = object().shape({
     directoryName: string().required('A valid directory name must be provided.'),
 });
 
-const generateDirectoryData = (name: string): FileObject => ({
-    key: `dir_${name.split('/', 1)[0] ?? name}`,
-    name: name.replace(/^(\/*)/, '').split('/', 1)[0] ?? name,
-    mode: 'drwxr-xr-x',
-    modeBits: '0755',
-    size: 0,
-    isFile: false,
-    isSymlink: false,
-    mimetype: '',
-    createdAt: new Date(),
-    modifiedAt: new Date(),
-    isArchiveType: () => false,
-    isEditable: () => false,
-});
+const displayNameForDirectory = (name: string): string =>
+    normalize(name)
+        .replace(/^(\.\.\/|\/)+/, '')
+        .split('/', 1)[0] || name;
+
+const generateDirectoryData = (name: string): FileObject => {
+    const displayName = displayNameForDirectory(name);
+
+    return {
+        key: `dir_${displayName}`,
+        name: displayName,
+        mode: 'drwxr-xr-x',
+        modeBits: '0755',
+        size: 0,
+        isFile: false,
+        isSymlink: false,
+        mimetype: '',
+        createdAt: new Date(),
+        modifiedAt: new Date(),
+        isArchiveType: () => false,
+        isEditable: () => false,
+    };
+};
 
 const NewDirectoryDialog = asDialog({
     title: 'Create Directory',

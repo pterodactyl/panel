@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Models\Task;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class SendPowerRequest extends ClientApiRequest
@@ -12,17 +12,7 @@ class SendPowerRequest extends ClientApiRequest
      */
     public function permission(): string
     {
-        switch ($this->input('signal')) {
-            case 'start':
-                return Permission::ACTION_CONTROL_START;
-            case 'stop':
-            case 'kill':
-                return Permission::ACTION_CONTROL_STOP;
-            case 'restart':
-                return Permission::ACTION_CONTROL_RESTART;
-        }
-
-        return '__invalid';
+        return Task::permissionForAction(Task::ACTION_POWER, $this->input('signal')) ?? '__invalid';
     }
 
     /**
@@ -31,7 +21,7 @@ class SendPowerRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'signal' => 'required|string|in:start,stop,restart,kill',
+            'signal' => 'required|string|in:' . implode(',', Task::POWER_ACTIONS),
         ];
     }
 }

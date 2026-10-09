@@ -63,8 +63,72 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
     }
 
+    /**
+     * Test that a subuser can execute a schedule containing tasks they could not create.
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('taskActionDataProvider')]
+    public function testSubuserCanExecuteScheduleWithoutTaskActionPermission(string $action, string $payload)
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
+
+        Bus::fake();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        /** @var Task $task */
+        $task = Task::factory()->create([
+            'schedule_id' => $schedule->id,
+            'sequence_id' => 1,
+            'action' => $action,
+            'payload' => $payload,
+        ]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertStatus(Response::HTTP_ACCEPTED);
+
+        Bus::assertDispatched(fn (RunTaskJob $job) => $job->task->id === $task->id);
+    }
+
+    /**
+     * Test that a task payload predating the current validation rules does not lock the owner
+     * out of their own schedule.
+     */
+    public function testOwnerCanExecuteScheduleWithUnmappableTaskPayload()
+    {
+        [$user, $server] = $this->generateTestAccount();
+
+        Bus::fake();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        /** @var Task $task */
+        $task = Task::factory()->create([
+            'schedule_id' => $schedule->id,
+            'sequence_id' => 1,
+            'action' => 'power',
+            'payload' => 'reboot',
+        ]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertStatus(Response::HTTP_ACCEPTED);
+
+        Bus::assertDispatched(fn (RunTaskJob $job) => $job->task->id === $task->id);
+    }
+
     public static function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
+    }
+
+    public static function taskActionDataProvider(): array
+    {
+        return [
+            ['command', 'say Test'],
+            ['power', 'start'],
+            ['power', 'stop'],
+            ['power', 'restart'],
+            ['power', 'kill'],
+            ['backup', ''],
+        ];
     }
 }

@@ -41,6 +41,7 @@ class Task extends Model
     public const ACTION_POWER = 'power';
     public const ACTION_COMMAND = 'command';
     public const ACTION_BACKUP = 'backup';
+    public const POWER_ACTIONS = ['start', 'stop', 'restart', 'kill'];
 
     /**
      * The table associated with the model.
@@ -95,6 +96,28 @@ class Task extends Model
         'is_queued' => 'boolean',
         'continue_on_failure' => 'boolean',
     ];
+
+    public static function permissionForAction(string $action, ?string $payload = null): ?string
+    {
+        switch ($action) {
+            case self::ACTION_COMMAND:
+                return Permission::ACTION_CONTROL_CONSOLE;
+            case self::ACTION_BACKUP:
+                return Permission::ACTION_BACKUP_CREATE;
+            case self::ACTION_POWER:
+                switch (trim((string) $payload)) {
+                    case 'start':
+                        return Permission::ACTION_CONTROL_START;
+                    case 'stop':
+                    case 'kill':
+                        return Permission::ACTION_CONTROL_STOP;
+                    case 'restart':
+                        return Permission::ACTION_CONTROL_RESTART;
+                }
+        }
+
+        return null;
+    }
 
     public function getRouteKeyName(): string
     {

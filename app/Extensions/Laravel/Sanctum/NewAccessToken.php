@@ -3,21 +3,38 @@
 namespace Pterodactyl\Extensions\Laravel\Sanctum;
 
 use Pterodactyl\Models\ApiKey;
-use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Support\Arrayable;
 
-/**
- * @property ApiKey $accessToken
- */
-class NewAccessToken extends SanctumAccessToken
+class NewAccessToken implements Arrayable, Jsonable
 {
     /**
      * NewAccessToken constructor.
-     *
-     * @noinspection PhpMissingParentConstructorInspection
      */
-    public function __construct(ApiKey $accessToken, string $plainTextToken)
+    public function __construct(public ApiKey $accessToken, public string $plainTextToken)
     {
-        $this->accessToken = $accessToken;
-        $this->plainTextToken = $plainTextToken;
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array<string, ApiKey|string>
+     */
+    public function toArray()
+    {
+        return [
+            'accessToken' => $this->accessToken,
+            'plainTextToken' => $this->plainTextToken,
+        ];
+    }
+
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param int $options
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
     }
 }
