@@ -11,7 +11,7 @@ import { NodeStatusBadge } from './NodeStatusBadge';
 
 afterEach(cleanup);
 
-const resourceRows = [{ attributes: { memory: 1024, disk: 2048 } }] as AdminNode[];
+const resourceRows = [{ attributes: { memory: 60_000, disk: 450_000 } }] as AdminNode[];
 const resourceColumnsOnly = Object.fromEntries(nodeColumns.map((column) => [column.id, column.id === 'resources']));
 
 const HeaderTable = ({
@@ -54,6 +54,13 @@ describe('NodeTable', () => {
             'disk',
             'created_at',
         ]);
+    });
+
+    it('renders rounded memory and disk totals', () => {
+        render(<HeaderTable sorting={[]} onSortingChange={vi.fn()} />);
+
+        expect(screen.getByText('59 GiB')).toBeInTheDocument();
+        expect(screen.getByText('439 GiB')).toBeInTheDocument();
     });
 
     it('sorts memory and disk from the merged resources header', async () => {

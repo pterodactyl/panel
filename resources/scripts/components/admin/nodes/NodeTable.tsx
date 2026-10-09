@@ -182,10 +182,10 @@ const ResourcesHeader = ({ table }: { table: Table<AdminNode> }) => {
 const ResourcesCell = ({ node }: { node: AdminNode }) => (
     <div className='whitespace-nowrap text-xs tabular-nums'>
         <p className='text-muted-foreground'>
-            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.memory))}</span> memory
+            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.memory), 0)}</span> memory
         </p>
         <p className='mt-0.5 text-muted-foreground'>
-            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.disk))}</span> disk
+            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.disk), 0)}</span> disk
         </p>
     </div>
 );
