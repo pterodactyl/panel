@@ -1,0 +1,94 @@
+tests/Integration/Api/Admin/Extensions/ExtensionFieldsTest.php
+  s_899a0f63af105e::t_9d433edf3d31d1 220,240,255,424,428-442
+  s_899a0f63af105e::t_f199b26d11f172 8-9,11-12,15,19,100,182-219,221-239,241-254,256-263,456,477-491,506,508-509,513-591
+app/Extensions/Fields.php
+  s_899a0f63af105e::t_61a397b8485020 21-23,32-33
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_899a0f63af105e::t_687fb814424f02 19,144,858,2259-2287
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_899a0f63af105e::t_0a550b3f79ac58 24,32,38,111-119
+app/Http/Requests/Api/Admin/Extensions/GetExtensionFormsRequest.php
+  s_899a0f63af105e::t_e73ce11de5eca7 1-18
+app/Http/Requests/Concerns/ValidatesExtensionFields.php
+  s_899a0f63af105e::t_a4489ebc87152a 25-26,41-44,47,49-52,61-67,70
+app/Services/Extensions/ExtensionFieldRegistry.php
+  s_899a0f63af105e::t_68eb34c0c4f212 10,13,35-39,43-44,49,53
+app/Services/Extensions/ExtensionFields.php
+  s_899a0f63af105e::t_f96c7eb8c2fc60 42-44,48-70,89-93,97,99,101,103-115,124-126,205-225,279-282,296,298,302
+packages/sdk/README.md
+  s_899a0f63af105e::t_b5395db15b078b 381-387,399-402,417-419
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_899a0f63af105e::t_15adf16edac063 263-273,4771-4794
+packages/sdk/types/extensions/forms.d.ts
+  s_899a0f63af105e::t_ec0a30268a5c0d 5-6,9-13,18-22,29-31,33,35-36,38-45
+phpstan.neon
+  s_899a0f63af105e::t_3581498707c1ff 118
+resources/scripts/api/admin/extensions/queries.ts
+  s_899a0f63af105e::t_f39088a38f7f9c 13,22,43-51,149-151
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_899a0f63af105e::t_3a981056edf491 8-9,236-255
+resources/scripts/api/generated/index.ts
+  s_899a0f63af105e::t_bbb484ae60306e 4-5
+resources/scripts/api/generated/sdk.gen.ts
+  s_899a0f63af105e::t_b5b41b14b3d783 6,87-98,2238
+resources/scripts/api/generated/types.gen.ts
+  s_899a0f63af105e::t_ba313d7e6bb677 296-307,5432-5460
+resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx
+  s_899a0f63af105e::t_7d4c9c679cfa5f 13,22,28
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_899a0f63af105e::t_0b208022687b4d 25,45,53
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_899a0f63af105e::t_04fdd2cdb12a6f 9,27,37
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_899a0f63af105e::t_fe5f3aeacfc3bc 9,27,39
+resources/scripts/components/admin/extensions/ExtensionFormFields.tsx
+  s_899a0f63af105e::t_356f39249d602f 8-13,39-42,56-57,63
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_899a0f63af105e::t_3c4ba92fee53eb 5,20,25
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_899a0f63af105e::t_27cfe3a8b612bc 17,95,101
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_899a0f63af105e::t_af324a06b08878 7,25,30
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_899a0f63af105e::t_b3284690e4457b 27,453,458
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_899a0f63af105e::t_433d6d28e9b596 8,17,23
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_899a0f63af105e::t_ac3e3ffce84506 13,28,38
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_899a0f63af105e::t_66137d324496bb 24,613,621
+resources/scripts/components/admin/servers/ServerDetailsTab.spec.tsx
+  s_899a0f63af105e::t_a5cdbd225cc676 3,87-91
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_899a0f63af105e::t_39b2dbc5ef7e85 13,77,96
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_899a0f63af105e::t_af5030713acfd6 9,33,38
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_899a0f63af105e::t_8419143e2c0a74 20,265,270
+resources/scripts/extensions/formExtensions.spec.tsx
+  s_899a0f63af105e::t_b38015a36e8867 77-90,127-130,193-196,236-280
+resources/scripts/extensions/forms.ts
+  s_899a0f63af105e::t_06883d032eb50e 1-2,13-14,18-20,29-38,46-48,52,56,70,72,79,86-103
+routes/api-admin.php
+  s_899a0f63af105e::t_bcc71a3a69388b 83
+tests/Integration/Api/Admin/Extensions/ExtensionFieldEndpointsTest.php
+  s_899a0f63af105e::t_bfd2b9d0baeddc 149-161
+tests/Integration/Api/Application/Extensions/ExtensionFieldsTest.php
+  s_899a0f63af105e::t_5b8fbcfa2f1b36 75-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "19b86c3a221a2371e4d4bd2fe8e47d360956bfd5",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
