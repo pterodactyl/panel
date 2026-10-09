@@ -2,7 +2,7 @@ import type { AdminSettings } from '@/api/admin/settings/queries';
 import Button from '@/components/elements/Button';
 import { FileInput } from '@/components/form/controls';
 
-const logoTypes = 'image/png,image/jpeg,image/gif,image/webp,image/avif,image/x-icon,image/svg+xml';
+const logoTypes = 'image/png,image/jpeg,image/webp,image/avif,image/x-icon,image/svg+xml';
 
 type Props = {
     settings: AdminSettings;
@@ -27,11 +27,11 @@ export default function LogoSettingsForm({
     return (
         <div className='mt-6 border-t border-border pt-6'>
             <h3 className='text-base font-medium text-foreground'>Logo</h3>
-            <p className='text-sm text-muted-foreground'>
+            <p className='input-help'>
                 Upload a logo to use as the Panel favicon, on the login page, and beside your company name.
             </p>
-            <p className='mt-2 text-xs text-muted-foreground'>
-                PNG, JPEG, GIF, WebP, AVIF, ICO, and SVG files up to 10 MB are supported.
+            <p className='input-help'>
+                PNG, JPEG, WebP, AVIF, ICO, and SVG files up to 10 MB are supported.
             </p>
             {settings.logo && !removePending && (
                 <div className='mt-6 flex items-center gap-4'>
@@ -51,7 +51,7 @@ export default function LogoSettingsForm({
                     </Button>
                 </div>
             )}
-            {pendingFile && <p className='mt-4 text-sm text-muted-foreground'>Selected: {pendingFile.name}</p>}
+            {pendingFile && <p className='mt-4 input-help'>Selected: {pendingFile.name}</p>}
             {hasPendingChange && (
                 <p className='mt-4 text-sm text-warning'>Save Changes to apply the logo change.</p>
             )}

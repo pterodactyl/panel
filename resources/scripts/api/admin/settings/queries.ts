@@ -155,7 +155,6 @@ export const useUploadAdminLogo = () => {
             );
             setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
-            toast.success('Logo updated', { description: 'Your panel branding has been updated.' });
         },
         onError: (error) => notifyHttpError(error, 'Unable to upload logo'),
     });
@@ -174,7 +173,6 @@ export const useClearAdminLogo = () => {
             );
             setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo: null }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
-            toast.success('Logo removed', { description: 'The default Pterodactyl branding is active again.' });
         },
         onError: (error) => notifyHttpError(error, 'Unable to remove logo'),
     });

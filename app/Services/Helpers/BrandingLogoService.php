@@ -29,7 +29,7 @@ final class BrandingLogoService
         $file = $this->files->store(
             self::FILE_GROUP,
             $upload,
-            ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'image/x-icon', 'image/svg+xml'],
+            ['image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/x-icon', 'image/svg+xml'],
             self::MAX_KILOBYTES
         );
         $url = ExtensionSettingFiles::url(self::FILE_GROUP, $file);
