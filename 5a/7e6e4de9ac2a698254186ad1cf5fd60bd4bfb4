@@ -1,0 +1,19 @@
+.github/workflows/react-doctor.yml
+  s_570a6c49650832::t_6a4007af84b0ef 26-29,38-39,42-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5a7e6e4de9ac2a698254186ad1cf5fd60bd4bfb4",
+  "prompts": {},
+  "sessions": {
+    "s_570a6c49650832": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b42dc4c-8829-4b01-ac6f-ae3d1015d6e7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
