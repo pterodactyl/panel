@@ -33,17 +33,39 @@ const BackupContextMenu = ({ backup, page }: Props) => {
     const deleteBackup = useDeleteServerBackup(backup);
     const restoreBackup = useRestoreServerBackup(backup);
     const toggleBackupLock = useToggleServerBackupLock(page, backup);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const loading =
-        downloadBackup.isPending || deleteBackup.isPending || restoreBackup.isPending || toggleBackupLock.isPending;
+        isDownloading ||
+        downloadBackup.isPending ||
+        deleteBackup.isPending ||
+        restoreBackup.isPending ||
+        toggleBackupLock.isPending;
 
-    const doDownload = () => {
-        downloadBackup
-            .mutateAsync(backupDownloadUrlInput(uuid, backup))
-            .then((url) => {
-                window.location.assign(url);
-            })
-            .catch(() => {});
+    const doDownload = async () => {
+        setIsDownloading(true);
+
+        try {
+            const url = await downloadBackup.mutateAsync(backupDownloadUrlInput(uuid, backup));
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Download failed with status ${response.status}`);
+            }
+
+            const blobUrl = URL.createObjectURL(await response.blob());
+            const a = document.createElement('a');
+
+            a.href = blobUrl;
+            a.download = `backup-${attributes.name || backup.attributes.uuid}.tar.gz`;
+            a.click();
+
+            URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download error:', error);
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     const doDeletion = () => {
