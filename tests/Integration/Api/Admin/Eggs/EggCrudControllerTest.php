@@ -31,6 +31,18 @@ test('get single egg', function (): void {
     $response->assertJsonStructure(['object', 'attributes' => ['id', 'uuid', 'name', 'docker_images', 'force_outgoing_ip', 'config', 'script', 'startup', 'created_at', 'updated_at']]);
     $response->assertJson(['object' => 'egg', 'attributes' => ['id' => $egg->id, 'uuid' => $egg->uuid, 'name' => $egg->name, 'author' => $egg->author, 'description' => $egg->description, 'docker_images' => $egg->docker_images, 'startup' => $egg->startup, 'force_outgoing_ip' => $egg->force_outgoing_ip]]);
 });
+test('configuration is returned as stored', function (): void {
+    $parent = Egg::factory()->create();
+    $egg = Egg::factory()->create(['config_from' => $parent->id, 'config_files' => '{}', 'config_startup' => '{}', 'config_logs' => null]);
+
+    $response = $this->getJson(route('api.admin.eggs.view', ['egg' => $egg->id]));
+    $response->assertStatus(Response::HTTP_OK);
+    // Decoded as objects, since an associative decode cannot tell {} from [].
+    $config = json_decode($response->getContent(), flags: JSON_THROW_ON_ERROR)->attributes->config;
+    expect(json_encode($config->files))->toBe('{}')
+        ->and(json_encode($config->startup))->toBe('{}')
+        ->and($config->logs)->toBeNull();
+});
 test('get missing egg', function (): void {
     $response = $this->getJson(route('api.admin.eggs.view', ['egg' => 'nil']));
     $this->assertNotFoundJson($response);

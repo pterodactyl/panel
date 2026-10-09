@@ -180,14 +180,14 @@ export type AdminEggAttributes = {
     };
     force_outgoing_ip: boolean | null;
     config: {
-        files: AdminEggConfigurationFiles;
+        files: AdminEggConfigurationFiles | null;
         startup: {
             [key: string]: string | Array<string>;
-        };
+        } | null;
         stop: string;
         logs: {
             [key: string]: string | number | boolean;
-        };
+        } | null;
         file_denylist: Array<string> | null;
         extends: number | null;
     };

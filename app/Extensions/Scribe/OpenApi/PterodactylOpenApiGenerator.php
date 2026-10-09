@@ -369,7 +369,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         if ($meta['nullable'] === true) {
-            $property['nullable'] = true;
+            // OpenAPI 3.0 ignores keywords beside a $ref, so a nullable reference is wrapped.
+            $property = isset($property['$ref']) ? ['allOf' => [$property], 'nullable' => true] : [...$property, 'nullable' => true];
         }
 
         $enum = $meta['enum'];
