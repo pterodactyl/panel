@@ -79,12 +79,13 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
 
         if (! empty($data['add_allocations'])) {
             // Assign only currently unassigned allocations on this server's node.
-            $query = Allocation::query()->where('node_id', $server->node_id)
-                ->whereIn('id', $data['add_allocations'])->whereNull('server_id');
+            $assignable = Allocation::query()->where('node_id', $server->node_id)
+                ->whereIn('id', $data['add_allocations'])->whereNull('server_id')
+                ->orderBy('id')->lockForUpdate()->get(['id']);
+            Allocation::query()->whereKey($assignable->modelKeys())->update(['server_id' => $server->id, 'notes' => null]);
             // If the default allocation is removed below, use the first newly assigned
             // allocation as its replacement.
-            $freshlyAllocated = $query->first(['id'])?->id;
-            $query->update(['server_id' => $server->id, 'notes' => null]);
+            $freshlyAllocated = $assignable->first()?->id;
         }
 
         if (! empty($data['remove_allocations'])) {

@@ -99,6 +99,17 @@ test('no exception is thrown if only removing allocation', function () {
     $this->daemonServerRepository->assertSynced();
     $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null]);
 });
+test('multiple allocations can be added at once', function () {
+    $server = $this->createServerModel();
+    /** @var Allocation[] $allocations */
+    $allocations = Allocation::factory()->times(3)->create(['node_id' => $server->node_id]);
+    $response = getService()->update($server, ['add_allocations' => $allocations->pluck('id')->all()]);
+    $this->daemonServerRepository->assertSynced();
+    expect($response->allocations)->toHaveCount(4);
+    foreach ($allocations as $allocation) {
+        $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => $server->id]);
+    }
+});
 test('allocation in both add and remove is added', function () {
     $server = $this->createServerModel();
     /** @var Allocation $allocation */
