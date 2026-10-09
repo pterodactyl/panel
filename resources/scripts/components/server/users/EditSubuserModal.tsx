@@ -17,6 +17,8 @@ import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import PermissionRow from '@/components/server/users/PermissionRow';
+import AllPermissionsButton from '@/components/server/users/AllPermissionsButton';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { Dialog, type DialogProps } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
@@ -154,6 +156,9 @@ const SubuserFormContent = ({ state }: { state: SubuserFormState }) => {
         subuser,
     } = state;
     const selectedPermissions = useStore(form.store, (current) => current.values.permissions);
+    // Use the same permission scope as the existing permission controls.
+    const editablePermissions = [...editablePermissionSet];
+
     const permissionSlot: SubuserPermissionsSlotData = {
         mode: subuser ? 'edit' : 'create',
         selectedPermissions,
@@ -220,6 +225,24 @@ const SubuserFormContent = ({ state }: { state: SubuserFormState }) => {
                 </div>
             )}
             <Slot name='server.users.permissions.before' data={permissionSlot} />
+            <TitledGreyBox
+                className='mt-6'
+                title={
+                    <div className='flex items-center justify-between'>
+                        <span className='text-sm uppercase'>All Permissions</span>
+                        <AllPermissionsButton
+                            form={form}
+                            editablePermissions={editablePermissions}
+                            disabled={!canEditUser || isSubmitting}
+                        />
+                    </div>
+                }
+            >
+                <p className='m-0 text-sm text-muted-foreground'>
+                    Only select this if <strong>you entirely trust the user you are inviting</strong> with all
+                    available permissions!
+                </p>
+            </TitledGreyBox>
             <div className='my-6'>
                 <PermissionGroups
                     form={form}
