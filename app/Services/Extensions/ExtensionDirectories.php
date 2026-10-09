@@ -55,8 +55,8 @@ final class ExtensionDirectories
 
     private function processUser(): string
     {
-        $name = function_exists('posix_geteuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? null) : null;
+        $user = function_exists('posix_geteuid') ? posix_getpwuid(posix_geteuid()) : false;
 
-        return is_string($name) ? "the {$name} user" : 'the user the panel runs as';
+        return $user === false ? 'the user the panel runs as' : "the {$user['name']} user";
     }
 }
