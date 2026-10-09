@@ -15,6 +15,7 @@ use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionCompatibility;
+use Pterodactyl\Services\Extensions\ExtensionDirectories;
 use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
@@ -35,10 +36,13 @@ final readonly class InstallExtension implements InstallsExtensions
         private ExtensionCompatibility $compatibility,
         private ExtensionLock $lock,
         private ExtensionRuntimeRefresher $runtime,
+        private ExtensionDirectories $directories,
     ) {}
 
     public function install(string $source, bool $enable = false, bool $replace = false): ExtensionManifest
     {
+        $this->directories->assertWritable();
+
         return $this->packages->using($source, fn (string $directory): ExtensionManifest => $this->installFromDirectory($directory, $source, $enable, $replace));
     }
 

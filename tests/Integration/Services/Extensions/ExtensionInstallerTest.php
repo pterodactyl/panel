@@ -723,3 +723,25 @@ test('archive entries that would land outside the package are refused', function
     expect(glob(storage_path('app/extensions-tmp/*')))->toBeEmpty();
     expect(storage_path('app/escaped.txt'))->not->toBeFile();
 })->with(['../../escaped.txt', '/tmp/escaped.txt', 'dist/..\\..\\..\\escaped.txt']);
+
+test('changes are refused up front when an extension directory is not writable', function (): void {
+    if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+        $this->markTestSkipped('Directory permissions do not apply to root.');
+    }
+
+    $source = writeExtension('eventful');
+    $this->app->make(InstallsExtensions::class)->install($source, enable: true);
+    chmod($this->installDirectory, 0555);
+
+    try {
+        $message = 'The panel cannot write to '.$this->installDirectory.'.';
+        expect(fn () => $this->app->make(InstallsExtensions::class)->install($source, replace: true))->toThrow(InvalidExtensionException::class, $message)
+            ->and(fn () => $this->app->make(SetsExtensionEnabled::class)->setEnabled('eventful', false))->toThrow(InvalidExtensionException::class, $message)
+            ->and(fn () => $this->app->make(RemovesExtensions::class)->remove('eventful'))->toThrow(InvalidExtensionException::class, $message);
+    } finally {
+        chmod($this->installDirectory, 0755);
+    }
+
+    $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => true]);
+    expect(glob($this->installDirectory.'/.staging-*'))->toBeEmpty();
+});

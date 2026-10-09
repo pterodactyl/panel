@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Pterodactyl\Contracts\Extensions\InstallsExtensions;
 use Pterodactyl\Exceptions\Extensions\ExtensionAlreadyInstalledException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use Pterodactyl\Services\Extensions\ExtensionDirectories;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionUrlDownloader;
 
@@ -21,7 +22,7 @@ use Pterodactyl\Services\Extensions\ExtensionUrlDownloader;
                             {--replace : Replace an installed extension with the same id without asking.}')]
 class InstallCommand extends Command
 {
-    public function handle(InstallsExtensions $installer, ExtensionUrlDownloader $urls): int
+    public function handle(InstallsExtensions $installer, ExtensionUrlDownloader $urls, ExtensionDirectories $directories): int
     {
         $download = null;
 
@@ -30,6 +31,7 @@ class InstallCommand extends Command
             // A URL is only ever a signed install URL: its signature is verified before
             // anything is downloaded, so the panel never installs from an arbitrary address.
             if ($urls->isUrl($path)) {
+                $directories->assertWritable();
                 $this->components->info('Verifying the install URL and downloading the extension.');
                 $path = $urls->download($path);
                 $download = $path;

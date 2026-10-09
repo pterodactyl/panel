@@ -6,8 +6,6 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\Extensions;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -145,19 +143,8 @@ class ExtensionController extends AdminApiController
         ExtensionAssetPublisher $assets,
     ): JsonResponse {
         $payload = $request->payload();
-        $uploaded = $payload['package'];
-        $workdir = storage_path('app'.DIRECTORY_SEPARATOR.'extensions-uploads');
-        $filename = Str::random(24).'.'.($uploaded->getClientOriginalExtension() ?: 'zip');
-
-        File::ensureDirectoryExists($workdir);
-        $uploaded->move($workdir, $filename);
-        $path = $workdir.DIRECTORY_SEPARATOR.$filename;
-
-        try {
-            $manifest = $installer->install($path, $payload['enable'], $payload['replace']);
-        } finally {
-            File::delete($path);
-        }
+        // Installed straight from PHP's upload, which PHP deletes once the request ends.
+        $manifest = $installer->install($payload['package']->getPathname(), $payload['enable'], $payload['replace']);
 
         return new JsonResponse([
             'data' => $this->serializeManifest($manifest, $extensions->records()->get($manifest->id), $assets),
