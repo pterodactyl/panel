@@ -1,0 +1,29 @@
+.env.ci
+  s_899a0f63af105e::t_5b241c3c501922 15,17-18
+package.json
+  s_899a0f63af105e::t_04701fbe51de99 76
+composer.json
+  s_899a0f63af105e::t_0fbd663f9ca4f8 122-123
+  s_899a0f63af105e::t_19c927606baae9 86-105
+phpunit.xml
+  s_899a0f63af105e::t_c0169d27c5173f 13-16,19
+  s_899a0f63af105e::t_1b4b857f82f6ff 17-18
+package-lock.json
+  s_899a0f63af105e::t_37c8e9689ffb9a 78,3749-3761,3921-3933,3962-3976,4033-4057,4472-4478,4568-4577,4970-4992,6727-6736,6807-6819,6861-6907,6927-6939,7082-7091,7097,7456-7473,7530-7567
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "78c931628afc775c44ca5623c62cc66b6141b141",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

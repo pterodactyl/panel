@@ -1,0 +1,46 @@
+app/Transformers/Api/Admin/EggTransformer.php
+  s_d709734af6d096::t_68d9c9b2bda260 21-23,62-63,65
+  s_d709734af6d096::t_0b341432d317a5 119-124,126-128
+  s_d709734af6d096::t_7c8d12485ca776 125,133,135-136
+  s_d709734af6d096::t_002975226e6c9d 129-132,134
+  s_41fcdb93953164::t_43366ac16196b9 137
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_d709734af6d096::t_6f21c694826e91 34-35,37-42,45
+  s_d709734af6d096::t_441773d2b46cee 43-44
+  s_d709734af6d096::t_afc9ad66ccfa67 36
+resources/scripts/components/admin/eggs/helpers.spec.ts
+  s_d709734af6d096::t_04fd3028466d2a 1-47
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_d709734af6d096::t_67372f57e7e308 183,186,190
+resources/scripts/api/generated/types.gen.ts
+  s_d709734af6d096::t_77b9675f9bc384 209,213
+  s_d709734af6d096::t_51074fd90fef98 206
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_d709734af6d096::t_0709c6da879b24 372-373
+resources/scripts/components/admin/eggs/helpers.ts
+  s_d709734af6d096::t_c12e2c8cfdd700 84-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cd5925da8765f111c87028081f820d0fc1db2a8c",
+  "prompts": {},
+  "sessions": {
+    "s_41fcdb93953164": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1195e-1a00-7b71-b5cb-0d4497ecd2d8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_d709734af6d096": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "579fbc2b-917d-4216-9c20-4b86b30e3b32",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
