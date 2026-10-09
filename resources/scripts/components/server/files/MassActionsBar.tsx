@@ -71,15 +71,17 @@ const MassActionsBar = ({ selectedFiles }: { selectedFiles: readonly string[] })
                                 )}
                                 onConfirmed={(_event, close) => onClickConfirmDeletion(close)}
                             >
-                                <p className='mb-2'>
+                                <p className='mb-2 text-center'>
                                     Are you sure you want to delete&nbsp;
                                     <span className='font-semibold text-foreground'>{selectedFiles.length} files</span>?
                                     This is a permanent action and the files cannot be recovered.
                                 </p>
-                                {selectedFiles.slice(0, 15).map((file) => (
-                                    <li key={file}>{file}</li>
-                                ))}
-                                {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                                <ul className='mx-auto mt-2 mb-0 w-fit pl-6 list-disc list-outside text-left'>
+                                    {selectedFiles.slice(0, 15).map((file) => (
+                                        <li key={file}>{file}</li>
+                                    ))}
+                                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                                </ul>
                             </Dialog.ConfirmTrigger>
                         </div>
                     )}
