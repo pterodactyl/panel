@@ -23,6 +23,11 @@ jobs:
   react-doctor:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      # Fork pull requests always get a read-only token, whatever is declared above,
+      # so they skip the comment and status steps. The job still passes or fails and
+      # the full report is in the run summary.
+      CAN_WRITE: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       # Full history so pull requests can diff against the merge base and only report new issues.
       - uses: actions/checkout@v5
@@ -34,3 +39,6 @@ jobs:
       - uses: millionco/react-doctor@v2
         with:
           blocking: error
+          comment: ${{ env.CAN_WRITE }}
+          review-comments: ${{ env.CAN_WRITE }}
+          commit-status: ${{ env.CAN_WRITE }}
