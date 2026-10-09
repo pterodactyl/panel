@@ -4,6 +4,7 @@ import { useAdminLanguages } from '@/api/admin/languages/queries';
 import { updateAdminGeneralSettingsInput, useUpdateAdminGeneralSettings } from '@/api/admin/settings/queries';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { languageOptions } from '@/components/admin/languageOptions';
+import LogoSettingsForm from '@/components/admin/settings/LogoSettingsForm';
 
 export default function GeneralSettingsForm({ settings }: { settings: AdminSettings }) {
     const readOnly = settings.meta.load_environment_only;
@@ -44,6 +45,7 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         />
                     )}
                 </form.AppField>
+                <LogoSettingsForm settings={settings} />
                 <div className='mt-4'>
                     <form.AppField name='twoFactorRequired'>
                         {(field) => (

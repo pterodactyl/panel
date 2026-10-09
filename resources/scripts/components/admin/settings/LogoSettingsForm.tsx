@@ -1,7 +1,6 @@
 import type { AdminSettings } from '@/api/admin/settings/queries';
 import { useClearAdminLogo, useUploadAdminLogo } from '@/api/admin/settings/queries';
 import Button from '@/components/elements/Button';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { FileInput } from '@/components/form/controls';
 
 const logoTypes = 'image/png,image/jpeg,image/gif,image/webp,image/avif,image/x-icon,image/svg+xml';
@@ -18,7 +17,8 @@ export default function LogoSettingsForm({ settings }: { settings: AdminSettings
     };
 
     return (
-        <TitledGreyBox title='Logo'>
+        <div className='mt-6 border-t border-border pt-6'>
+            <h3 className='text-base font-medium text-foreground'>Logo</h3>
             <p className='text-sm text-muted-foreground'>
                 Upload a logo to use as the Panel favicon, on the login page, and beside your company name.
             </p>
@@ -54,6 +54,6 @@ export default function LogoSettingsForm({ settings }: { settings: AdminSettings
                     }}
                 />
             </div>
-        </TitledGreyBox>
+        </div>
     );
 }
