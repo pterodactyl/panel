@@ -500,6 +500,7 @@ export type AdminNodeResource = {
 export type AdminNodeSystemInformationResponse = {
     architecture: string;
     cpu_count: number;
+    is_latest: boolean;
     kernel_version: string;
     os: string;
     version: string;

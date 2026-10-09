@@ -13,6 +13,7 @@ use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\GetSystemInformationRequest;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Nodes', 'Create, update, retrieve, and delete Wings nodes.')]
@@ -24,6 +25,7 @@ class SystemInformationController extends AdminApiController
         'kernel_version' => '6.8.0',
         'os' => 'linux',
         'version' => '1.11.0',
+        'is_latest' => true,
     ];
 
     private const array DAEMON_ERROR = [
@@ -41,8 +43,15 @@ class SystemInformationController extends AdminApiController
     #[Endpoint('Get node system information', 'Proxies Wings system information for a node.')]
     #[ScribeResponse(self::SYSTEM_INFORMATION_EXAMPLE, description: 'System information returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'The panel could not connect to Wings.')]
-    public function __invoke(GetSystemInformationRequest $request, Node $node): JsonResponse
+    public function __invoke(
+        GetSystemInformationRequest $request,
+        Node $node,
+        SoftwareVersionService $versionService,
+    ): JsonResponse
     {
-        return new JsonResponse(Daemon::node($node)->systemInformation());
+        $information = Daemon::node($node)->systemInformation();
+        $information['is_latest'] = $versionService->isLatestDaemon($information['version'] ?? '');
+
+        return new JsonResponse($information);
     }
 }

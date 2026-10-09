@@ -10,6 +10,7 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Code from '@/components/elements/Code';
 import Spinner from '@/components/elements/Spinner';
 import Button from '@/components/elements/Button';
+import { Alert } from '@/components/elements/alert';
 import { Dialog } from '@/components/elements/dialog';
 
 const usageColour = (metric: NodeUtilization['memory'] | undefined): string => {
@@ -86,6 +87,8 @@ export default function NodeAboutTab() {
         refetchInterval: 10000,
     });
 
+    const wingsOutdated = info?.is_latest === false;
+
     const canDelete = attributes.servers_count === 0;
     const onDelete = (close: () => void) => {
         deleteNode
@@ -97,6 +100,12 @@ export default function NodeAboutTab() {
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
             <div className='lg:col-span-2 space-y-6'>
+                {wingsOutdated && (
+                    <Alert type='danger' title='Wings is not up-to-date'>
+                        This node is running Wings <Code>{info?.version}</Code>, but the latest available version is{' '}
+                        <Code>{version?.daemon}</Code>.
+                    </Alert>
+                )}
                 <TitledGreyBox title='Information'>
                     <div className='text-sm text-foreground space-y-3'>
                         <div className='flex justify-between items-center'>
