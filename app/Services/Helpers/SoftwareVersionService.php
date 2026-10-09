@@ -71,6 +71,24 @@ class SoftwareVersionService
     }
 
     /**
+     * Determine if the provided Wings version is the latest available version.
+     */
+    public function isLatestDaemon(string $version): bool
+    {
+        $latest = $this->getDaemon();
+
+        if (trim($version) === '' || $latest === 'error') {
+            return true;
+        }
+
+        return version_compare(
+            ltrim(trim($version), 'vV'),
+            ltrim(trim($latest), 'vV'),
+            '>='
+        );
+    }
+
+    /**
      * Keeps the versioning cache up-to-date with the latest results from the CDN.
      *
      * @return SoftwareVersionData
@@ -124,4 +142,5 @@ class SoftwareVersionService
 
         return $normalized;
     }
+
 }

@@ -2215,6 +2215,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'kernel_version' => '6.8.0',
             'os' => 'linux',
             'version' => '1.11.0',
+            'is_latest' => true,
         ]);
     }
 
