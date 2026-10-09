@@ -1,0 +1,21 @@
+resources/scripts/assets/tailwind.css
+  s_899a0f63af105e::t_8468b92da18392 86-88,90-91,93-95,98,105,111-113,117-119,121,128-130
+  s_899a0f63af105e::t_41d4d1475f199e 89,92,99-104,106-110,114-116,123,211-212,214
+  s_899a0f63af105e::t_19592942ab637d 210,213,215-217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f89611b031fd5fb802a4483ec12eef60dd018519",
+  "prompts": {},
+  "sessions": {
+    "s_899a0f63af105e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8bef9f85-7c42-49ee-9971-3079043b9d10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
