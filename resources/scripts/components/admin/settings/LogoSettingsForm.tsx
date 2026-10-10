@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { AdminSettings } from '@/api/admin/settings/queries';
 import Button from '@/components/elements/Button';
 import Label from '@/components/elements/Label';
@@ -23,7 +24,22 @@ export default function LogoSettingsForm({
     onRemove,
 }: Props) {
     const readOnly = settings.meta.load_environment_only;
-    const hasPendingChange = pendingFile !== null || removePending;
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!pendingFile) {
+            setPreviewUrl(null);
+
+            return;
+        }
+
+        const url = URL.createObjectURL(pendingFile);
+        setPreviewUrl(url);
+
+        return () => URL.revokeObjectURL(url);
+    }, [pendingFile]);
+
+    const logoPreview = removePending ? null : previewUrl ?? settings.logo;
 
     return (
         <div className='mt-6 border-t border-border pt-6'>
@@ -34,10 +50,10 @@ export default function LogoSettingsForm({
             <p className='input-help'>
                 PNG, JPEG, WebP, AVIF, ICO, and SVG files up to 10 MB are supported.
             </p>
-            {settings.logo && !removePending && (
+            {logoPreview && (
                 <div className='mt-6 flex items-center gap-4'>
                     <img
-                        src={settings.logo}
+                        src={logoPreview}
                         alt='Current panel logo'
                         className='h-20 w-20 rounded-sm border border-border bg-background object-contain p-2'
                     />
@@ -52,10 +68,6 @@ export default function LogoSettingsForm({
                     </Button>
                 </div>
             )}
-            {pendingFile && <p className='mt-4 input-help'>Selected: {pendingFile.name}</p>}
-            {hasPendingChange && (
-                <p className='mt-4 text-sm text-warning'>Save Changes to apply the logo change.</p>
-            )}
             <div className='mt-6'>
                 <FileInput
                     aria-label='Upload logo'
@@ -63,7 +75,6 @@ export default function LogoSettingsForm({
                     disabled={readOnly || disabled}
                     onChange={(event) => {
                         onFileSelected(event.currentTarget.files?.[0]);
-                        event.currentTarget.value = '';
                     }}
                 />
             </div>
