@@ -164,6 +164,10 @@
                 "mode": {
                     "const": "native"
                 },
+                "guest": {
+                    "type": "boolean",
+                    "description": "Also load the frontend for visitors who are not signed in, such as on the login page. Off by default, so guests are not told which extensions are installed."
+                },
                 "prefix": {
                     "type": "string",
                     "pattern": "^[a-z]{2,12}$",

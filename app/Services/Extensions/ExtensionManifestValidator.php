@@ -118,6 +118,7 @@ class ExtensionManifestValidator
             'ui' => ['sometimes', 'array'],
             'ui.entry' => ['required_with:ui', 'string'],
             'ui.mode' => ['sometimes', 'string'],
+            'ui.guest' => ['sometimes', 'boolean:strict'],
             'ui.prefix' => ['sometimes', 'filled', 'string', 'regex:'.ExtensionManifest::UI_PREFIX_REGEX, Rule::notIn(ExtensionManifest::RESERVED_UI_PREFIXES)],
             'ui.components' => ['sometimes', 'array', 'list', 'max:64'],
             'ui.components.*' => ['required', 'string', 'distinct:strict', Rule::in(ExtensionManifest::COMPONENT_NAMES)],

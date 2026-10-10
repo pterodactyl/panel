@@ -23,7 +23,7 @@ beforeEach(function (): void {
         'id' => 'config-probe',
         'name' => 'Config Probe',
         'version' => '1.0.0',
-        'ui' => ['entry' => 'dist/client.js'],
+        'ui' => ['entry' => 'dist/client.js', 'guest' => true],
     ], JSON_THROW_ON_ERROR));
     config(['extensions.enabled' => true, 'extensions.directory' => $extensions, 'extensions.assets_directory' => $this->baseDirectory.DIRECTORY_SEPARATOR.'assets']);
     Extension::query()->create(['identifier' => 'config-probe', 'version' => '1.0.0', 'enabled' => true]);
@@ -67,6 +67,18 @@ test('guests of an extension without public settings receive an empty config', f
         ->assertSee('"id":"config-probe"', false)
         ->assertSee('"config":{}', false)
         ->assertDontSee('frontend-config-marker', false);
+});
+test('guests are not told about extensions that do not opt in', function (): void {
+    File::put($this->baseDirectory.'/extensions/config-probe/extension.json', json_encode([
+        'id' => 'config-probe',
+        'name' => 'Config Probe',
+        'version' => '1.0.0',
+        'ui' => ['entry' => 'dist/client.js'],
+    ], JSON_THROW_ON_ERROR));
+    $this->app->make(ExtensionRepository::class)->flushDiscovery();
+
+    $this->get('/auth/login')->assertOk()->assertDontSee('config-probe', false);
+    $this->actingAs(User::factory()->create())->get('/')->assertOk()->assertSee('"id":"config-probe"', false);
 });
 test('signed in users receive extension frontend settings', function (): void {
     $this->actingAs(User::factory()->create())->get('/')->assertOk()

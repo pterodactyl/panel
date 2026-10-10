@@ -152,14 +152,15 @@ class ExtensionRepository
     }
 
     /**
-     * The enabled frontend extensions for the SPA to load. Signed-in users receive
-     * each extension's frontend settings; everyone else only those marked ->public().
+     * The enabled frontend extensions for the SPA to load. Signed-in users receive every
+     * extension with its frontend settings; everyone else only extensions that set
+     * `ui.guest`, with the settings marked ->public().
      *
      * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
      */
     public function frontendPayload(bool $authenticated): array
     {
-        $enabled = $this->enabled()->filter(fn (ExtensionManifest $manifest): bool => $manifest->hasUi());
+        $enabled = $this->enabled()->filter(fn (ExtensionManifest $manifest): bool => $manifest->hasUi() && ($authenticated || $manifest->uiGuest));
         $configured = $authenticated ? $enabled : $enabled->filter(fn (ExtensionManifest $manifest): bool => ($this->settingsRegistry->get($manifest->id)?->publicConfigKeys() ?? []) !== []);
         if ($configured->isNotEmpty()) {
             rescue(fn () => ExtensionSettings::preload(array_values($configured->map(fn (ExtensionManifest $manifest): ExtensionSettings => $this->settings($manifest->id))->all())), report: false);

@@ -76,6 +76,11 @@ The panel renders before optional bundles finish importing. Each extension commi
 
 Recoverable render/query failures offer Retry. Failed screen chunks offer an explicit page reload because resetting an error boundary cannot evict a rejected browser module. Enabling, disabling, updating, or changing frontend configuration takes effect on the next full page load; reload after management changes. Already evaluated JavaScript is not unloaded dynamically.
 
+Visitors who are not signed in only load extensions that set `"guest": true` under `ui`, so the
+login page does not reveal what is installed. Set it when the extension renders into the
+`auth.login.*` slots or otherwise needs to run before sign-in; everything else loads after the
+page reloads on sign-in.
+
 ## Types and shared dependencies
 
 The panel supports the React 19.3 client API. Server-only caching APIs, development-only `captureOwnerStack`, and unstable cache-refresh APIs are not part of the shared React facade. React, React DOM, JSX runtime, Query, and SDK entry points stay external through the Vite preset.
@@ -276,8 +281,9 @@ keys. `defineConfiguredExtension` accepts a parser for runtime configuration and
 generated types. Undeclared value types remain bounded JSON.
 
 Frontend values reach signed-in users only. `->frontend()->public()` also delivers a
-value to visitors who are not signed in (the login page), so use it only for values
-anyone may read; `public()` requires `frontend()` and cannot be combined with
+value to visitors who are not signed in (the login page) when the extension sets
+`ui.guest`, so use it only for values anyone may read; `public()` requires `frontend()`
+and cannot be combined with
 `secret()`. Generated types add `ExtensionPublicConfigKey` and `ExtensionPublicConfig`
 for the keys a guest receives; every other key is absent until the user signs in and
 the page reloads.
