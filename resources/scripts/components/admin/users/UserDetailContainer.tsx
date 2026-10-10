@@ -138,8 +138,7 @@ const PasswordCard = ({ form }: { form: UserForm }) => (
     <TitledGreyBox title='Password'>
         <form.AppField name='password' validators={{ onChange: validateUserPassword }}>
             {(field) => (
-                <field.TextField
-                    type='password'
+                <field.PasswordField
                     id='password'
                     label='Password'
                     description={
