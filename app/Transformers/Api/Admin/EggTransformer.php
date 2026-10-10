@@ -18,9 +18,9 @@ use Pterodactyl\Support\JsonValueGuard;
 #[ResponseField('description', nullable: true)]
 #[ResponseField('features', nullable: true)]
 #[ResponseField('docker_images', schema: ['type' => 'object', 'additionalProperties' => ['type' => 'string'], 'example' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23']])]
-#[ResponseField('config.files', schema: ['type' => 'object', 'additionalProperties' => ['type' => 'object', 'properties' => ['parser' => ['type' => 'string'], 'find' => ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean'], ['type' => 'object', 'additionalProperties' => ['type' => 'string']]]]]]], 'example' => ['server.properties' => ['parser' => 'properties', 'find' => ['server-port' => '{{server.build.default.port}}']]]])]
-#[ResponseField('config.logs', schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean']]], 'example' => ['custom' => true, 'location' => 'logs/latest.log']])]
-#[ResponseField('config.startup', schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'array', 'items' => ['type' => 'string']]]], 'example' => ['done' => ['Done']]])]
+#[ResponseField('config.files', nullable: true, schema: ['type' => 'object', 'additionalProperties' => ['type' => 'object', 'properties' => ['parser' => ['type' => 'string'], 'find' => ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean'], ['type' => 'object', 'additionalProperties' => ['type' => 'string']]]]]]], 'example' => ['server.properties' => ['parser' => 'properties', 'find' => ['server-port' => '{{server.build.default.port}}']]]])]
+#[ResponseField('config.logs', nullable: true, schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean']]], 'example' => ['custom' => true, 'location' => 'logs/latest.log']])]
+#[ResponseField('config.startup', nullable: true, schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'array', 'items' => ['type' => 'string']]]], 'example' => ['done' => ['Done']]])]
 #[ResponseField('config.file_denylist', schema: ['type' => 'array', 'nullable' => true, 'items' => ['type' => 'string'], 'example' => ['secret.txt']])]
 #[ResponseField('force_outgoing_ip', 'boolean', nullable: true)]
 #[ResponseField('script.privileged', 'boolean', nullable: true)]
@@ -47,11 +47,6 @@ class EggTransformer extends BaseAdminTransformer
      */
     public function transform(Egg $model): array
     {
-        $files = json_decode($model->config_files ?? 'null', true, 512, JSON_THROW_ON_ERROR);
-        if (empty($files)) {
-            $files = new JsonEmptyObject;
-        }
-
         $payload = [
             'id' => $model->id,
             'uuid' => $model->uuid,
@@ -64,10 +59,10 @@ class EggTransformer extends BaseAdminTransformer
             'docker_images' => $model->docker_images,
             'force_outgoing_ip' => $model->force_outgoing_ip,
             'config' => [
-                'files' => $files,
-                'startup' => json_decode($model->config_startup ?? 'null', true),
+                'files' => $this->configuration($model->config_files),
+                'startup' => $this->configuration($model->config_startup),
                 'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs ?? 'null', true),
+                'logs' => $this->configuration($model->config_logs),
                 'file_denylist' => $model->file_denylist,
                 'extends' => $model->config_from,
             ],
@@ -120,5 +115,24 @@ class EggTransformer extends BaseAdminTransformer
             $this->makeTransformer(ServerTransformer::class),
             Server::RESOURCE_NAME
         );
+    }
+
+    /**
+     * A configuration column exactly as stored. Null means the egg inherits the value from the
+     * egg it copies configuration from, while "{}" means it has none, so neither may turn into
+     * the other on the way to the editor and back.
+     *
+     * @return JsonValue|JsonEmptyObject
+     */
+    private function configuration(?string $encoded): bool|float|int|string|array|JsonEmptyObject|null
+    {
+        if ($encoded === null) {
+            return null;
+        }
+
+        $value = JsonValueGuard::decode($encoded);
+
+        // Decoding to arrays reads "{}" as an empty list, which would reach the editor as "[]".
+        return $value === [] && str_starts_with(mb_ltrim($encoded), '{') ? new JsonEmptyObject : $value;
     }
 }

@@ -1,5 +1,4 @@
 import type { AdminEgg, EggConfigurationBody, EggVariableBody } from '@/api/admin/eggs/queries';
-import { isObject } from '@/lib/objects';
 import { type ExtensionFormValues, initialExtensionValues } from '@/extensions/forms';
 
 export interface EggFormValues {
@@ -82,12 +81,10 @@ const dockerImagesToString = (images: Record<string, string>): string =>
         .map(([name, image]) => (name === image ? image : `${name}|${image}`))
         .join('\n');
 
+// Null leaves the field empty so the egg inherits it from the egg it copies configuration from;
+// "{}" is shown as is, since it means the egg has none.
 const prettyJson = <T>(value: T): string => {
     if (value === null || value === undefined) {
-        return '';
-    }
-
-    if (isObject(value) && Object.keys(value).length === 0) {
         return '';
     }
 

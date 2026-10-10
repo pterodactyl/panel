@@ -88,7 +88,7 @@ class ExtensionUrlDownloader
         throw_unless(filter_var(config('extensions.signed_urls.enabled'), FILTER_VALIDATE_BOOLEAN), InvalidExtensionException::class, 'Installing extensions from a URL is disabled on this panel.');
         throw_unless(extension_loaded('sodium'), InvalidExtensionException::class, 'The PHP sodium extension is required to verify signed install URLs.');
 
-        $jwt = Str::afterLast(Str::before(Str::before(trim($link), '?'), '#'), '/');
+        $jwt = Str::afterLast(Str::before(Str::before(mb_trim($link), '?'), '#'), '/');
         $token = null;
         $signed = false;
 

@@ -20,8 +20,8 @@ uses(WithFaker::class);
 
 beforeEach(function (): void {
     $this->keypair = sodium_crypto_sign_keypair();
-    $this->base = rtrim($this->faker->url(), '/').'/';
-    $this->other = rtrim($this->faker->url(), '/').'/';
+    $this->base = mb_rtrim($this->faker->url(), '/').'/';
+    $this->other = mb_rtrim($this->faker->url(), '/').'/';
     config(['extensions.signed_urls.public_key' => base64_encode(sodium_crypto_sign_publickey($this->keypair))]);
     $this->downloader = $this->app->make(ExtensionUrlDownloader::class);
 });
@@ -83,7 +83,7 @@ test('a tampered token is refused', function (): void {
     [$header, $claims, $signature] = explode('.', mb_substr($source, mb_strlen($this->base)));
     $forged = json_decode((string) base64_decode(strtr($claims, '-_', '+/'), true), true);
     $forged['url'] = $this->other;
-    $claims = rtrim(strtr(base64_encode((string) json_encode($forged)), '+/', '-_'), '=');
+    $claims = mb_rtrim(strtr(base64_encode((string) json_encode($forged)), '+/', '-_'), '=');
 
     $this->downloader->verifiedUrl($this->base."{$header}.{$claims}.{$signature}");
 })->throws(InvalidExtensionException::class, 'not a signed install URL');

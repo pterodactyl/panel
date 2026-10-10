@@ -15,6 +15,7 @@ use Pterodactyl\Models\ExtensionSetting;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionCompatibility;
+use Pterodactyl\Services\Extensions\ExtensionDirectories;
 use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
@@ -33,11 +34,13 @@ final readonly class RemoveExtension implements RemovesExtensions
         private ExtensionRuntimeRefresher $runtime,
         private FilesystemChanges $files,
         private ExtensionSettingFiles $settingFiles,
+        private ExtensionDirectories $directories,
     ) {}
 
     public function remove(string $identifier): void
     {
         throw_unless(preg_match(ExtensionManifest::ID_REGEX, $identifier), InvalidExtensionException::class, "Extension id \"{$identifier}\" must match ".ExtensionManifest::ID_REGEX.'.');
+        $this->directories->assertWritable();
         $this->lock->run($identifier, fn () => $this->removePackage($identifier));
     }
 

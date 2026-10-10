@@ -17,6 +17,7 @@ use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionCompatibility;
+use Pterodactyl\Services\Extensions\ExtensionDirectories;
 use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -31,10 +32,12 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
         private ExtensionCompatibility $compatibility,
         private ExtensionLock $lock,
         private ExtensionRuntimeRefresher $runtime,
+        private ExtensionDirectories $directories,
     ) {}
 
     public function setEnabled(string $identifier, bool $enabled, ?ExtensionManifest $manifest = null): void
     {
+        $this->directories->assertWritable();
         $this->lock->run($identifier, fn () => $this->changeState($identifier, $enabled, $manifest));
     }
 

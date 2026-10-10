@@ -239,8 +239,8 @@ const SubuserFormContent = ({ state }: { state: SubuserFormState }) => {
                 }
             >
                 <p className='m-0 text-sm text-muted-foreground'>
-                    Only select this if <strong>you entirely trust the user you are inviting</strong> with all
-                    available permissions!
+                    Only select this if <strong>you entirely trust the user you are inviting</strong> with all available
+                    permissions!
                 </p>
             </TitledGreyBox>
             <div className='my-6'>
