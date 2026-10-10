@@ -50,9 +50,8 @@ function UpdatePasswordForm() {
                         }}
                     >
                         {(field) => (
-                            <field.TextField
+                            <field.PasswordField
                                 id='new_password'
-                                type='password'
                                 label='New Password'
                                 description='Your new password should be at least 8 characters in length and unique to this website.'
                             />
