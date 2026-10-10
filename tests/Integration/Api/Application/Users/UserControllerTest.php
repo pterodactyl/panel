@@ -122,3 +122,20 @@ test('api key without write permissions', function (string $method, string $url)
     $response = $this->{$method}($url);
     $this->assertAccessDeniedJson($response);
 })->with('userWriteEndpointsDataProvider');
+test('a key without full write access cannot create or manage administrators', function (): void {
+    $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => AdminAcl::READ | AdminAcl::WRITE, 'r_nodes' => AdminAcl::NONE]);
+    $admin = User::factory()->create(['root_admin' => true]);
+
+    $this->assertAccessDeniedJson($this->postJson('/api/application/users', ['username' => 'escalated', 'email' => 'escalated@example.com', 'first_name' => 'A', 'last_name' => 'B', 'root_admin' => true]));
+    $this->assertAccessDeniedJson($this->patchJson('/api/application/users/'.$admin->id, ['username' => $admin->username, 'email' => $admin->email, 'first_name' => 'A', 'last_name' => 'B', 'password' => 'Escalated_Password1']));
+    $this->assertAccessDeniedJson($this->deleteJson('/api/application/users/'.$admin->id));
+
+    $this->postJson('/api/application/users', ['username' => 'regular', 'email' => 'regular@example.com', 'first_name' => 'A', 'last_name' => 'B'])->assertCreated();
+    expect(User::query()->where('email', 'escalated@example.com')->exists())->toBeFalse()
+        ->and(Hash::check('Escalated_Password1', $admin->fresh()->password))->toBeFalse();
+});
+test('a key with full write access can create administrators', function (): void {
+    $this->postJson('/api/application/users', ['username' => 'newadmin', 'email' => 'newadmin@example.com', 'first_name' => 'A', 'last_name' => 'B', 'root_admin' => true])
+        ->assertCreated()
+        ->assertJsonPath('attributes.root_admin', true);
+});
