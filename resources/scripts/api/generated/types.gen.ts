@@ -674,6 +674,7 @@ export type AdminSettingsResponse = {
         'pterodactyl:auth:2fa_required': 0 | 1 | 2;
         'app:locale': string;
     };
+    logo: string | null;
     mail: {
         'mail:default': string;
         'mail:mailers:smtp:host': string;

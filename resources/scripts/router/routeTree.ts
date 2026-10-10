@@ -883,6 +883,17 @@ const panelChildren = [
     }),
     createRoute({
         getParentRoute: () => panelRoute,
+        path: 'settings/logo',
+        loader: async ({ context }) => {
+            await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
+        },
+        component: adminPage(() => import('@/components/admin/settings/SettingsContainer'), {
+            before: 'panel.settings.before',
+            after: 'panel.settings.after',
+        }),
+    }),
+    createRoute({
+        getParentRoute: () => panelRoute,
         path: 'users',
         staticData: { nav: { label: 'Users' } },
         validateSearch: parseUserListSearch,

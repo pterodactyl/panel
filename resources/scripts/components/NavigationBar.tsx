@@ -20,7 +20,7 @@ const navItemClass = [
 ].join(' ');
 
 export default function NavigationBar() {
-    const name = useSiteSettings().name;
+    const { name, logo } = useSiteSettings();
     const rootAdmin = useCurrentUser().rootAdmin;
     const logout = useLogout();
 
@@ -30,12 +30,15 @@ export default function NavigationBar() {
         <div className='w-full bg-background shadow-md overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden'>
             <SpinnerOverlay visible={logout.isPending} />
             <div className='mx-auto flex h-14 w-full max-w-panel items-center'>
-                <div id='logo' className='flex-1 min-w-0'>
+                <div id='logo' className='min-w-0 flex-1'>
                     <Link
                         to='/'
-                        className='block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
+                        className='flex min-w-0 items-center px-4 text-xl sm:text-2xl font-header font-medium no-underline text-foreground hover:text-accent transition-colors duration-150'
                     >
-                        {name}
+                        <span className='flex min-w-0 items-center gap-2 sm:gap-3'>
+                            {logo && <img src={logo} alt='' className='h-6 w-6 shrink-0 object-contain sm:h-7 sm:w-7' />}
+                            <span className='min-w-0 truncate'>{name}</span>
+                        </span>
                     </Link>
                 </div>
                 <div className='flex h-full shrink-0 items-center justify-center'>

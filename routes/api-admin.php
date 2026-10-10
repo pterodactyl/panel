@@ -53,6 +53,7 @@ use Pterodactyl\Http\Controllers\Api\Admin\Servers\TransferController;
 use Pterodactyl\Http\Controllers\Api\Admin\Servers\TransferProgressController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\AdvancedController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\GeneralController;
+use Pterodactyl\Http\Controllers\Api\Admin\Settings\LogoController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\MailController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\SettingsController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\TestMailController;
@@ -402,6 +403,8 @@ Route::prefix('/tags')->name('api.admin.tags')->group(function (): void {
 */
 Route::prefix('/settings')->name('api.admin.settings')->group(function (): void {
     Route::get('/', [SettingsController::class, 'index']);
+    Route::post('/logo', [LogoController::class, 'store'])->name('.logo.store');
+    Route::delete('/logo', [LogoController::class, 'destroy'])->name('.logo.destroy');
     Route::put('/general', GeneralController::class)->name('.general');
     Route::put('/mail', MailController::class)->name('.mail');
     Route::post('/mail/test', TestMailController::class)->name('.mail.test');
