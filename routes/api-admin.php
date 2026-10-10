@@ -126,7 +126,7 @@ Route::prefix('/users')->name('api.admin.users')->group(function (): void {
 */
 Route::prefix('/nodes/{node:id}')->name('api.admin.nodes')->group(function (): void {
     Route::get('/system-information', SystemInformationController::class)->name('.system-information');
-    Route::post('/deploy-token', DeployTokenController::class)->name('.deploy-token');
+    Route::post('/deploy-token', DeployTokenController::class)->middleware(RequireSessionAuthentication::class)->name('.deploy-token');
     Route::get('/utilization', UtilizationController::class)->name('.utilization');
 });
 
@@ -217,7 +217,7 @@ Route::prefix('/servers/{server:admin_identifier}/backups')->name('api.admin.ser
 Route::prefix('/nodes')->name('api.admin.nodes')->group(function (): void {
     Route::get('/', [NodeController::class, 'index']);
     Route::get('/{node:id}', [NodeController::class, 'show'])->name('.view');
-    Route::get('/{node:id}/configuration', ConfigurationController::class)->name('.configuration');
+    Route::get('/{node:id}/configuration', ConfigurationController::class)->middleware(RequireSessionAuthentication::class)->name('.configuration');
 
     Route::post('/', [NodeController::class, 'store'])->name('.store');
     Route::put('/{node:id}', [NodeController::class, 'update'])->name('.update');

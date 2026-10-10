@@ -7,7 +7,6 @@ namespace Pterodactyl\Http\Requests\Api\Client\Account;
 use Illuminate\Support\Facades\Hash;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\UserRules;
 
 class UpdateEmailRequest extends ClientApiRequest
@@ -17,14 +16,20 @@ class UpdateEmailRequest extends ClientApiRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => UserRules::rules($this->user())['email'],
-            'password' => ['required', 'string'],
-        ];
+        $rules = ['password' => ['required', 'string']];
+
+        // Only look at the email once the password checks out, so the unique rule can't be used to probe for accounts.
+        if (is_string($this->input('password'))) {
+            $rules['email'] = UserRules::rules($this->user())['email'];
+        }
+
+        return $rules;
     }
 
-    protected function passedValidation(): void
+    protected function prepareForValidation(): void
     {
-        throw_unless(Hash::check(JsonValueGuard::string($this->validated('password')), $this->user()->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
+        $password = $this->input('password');
+
+        throw_if(is_string($password) && ! Hash::check($password, $this->user()->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
     }
 }

@@ -9,6 +9,11 @@ use Pterodactyl\Validation\UserRules;
 
 class UpdateUserRequest extends StoreUserRequest
 {
+    public function authorize(): bool
+    {
+        return parent::authorize() && (! $this->parameter('user', User::class)->root_admin || $this->canManageAdministrators());
+    }
+
     /**
      * Return the validation rules for this request.
      *
