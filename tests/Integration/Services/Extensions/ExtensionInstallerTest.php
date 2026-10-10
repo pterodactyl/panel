@@ -376,7 +376,7 @@ test('two enabled extensions cannot build with the same tailwind prefix', functi
             ->toThrow(InvalidExtensionException::class, 'cannot use Tailwind prefix "shared": enabled extension "prefix-owner" also declares it.');
         $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'version' => '1.1.0', 'enabled' => true]);
         expect(File::get($this->installDirectory.'/eventful/dist/index.css'))->toContain('.ev\:flex');
-        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(false))->pluck('prefix', 'id')->all())->toBe(['eventful' => 'ev', 'prefix-owner' => 'shared']);
+        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(true))->pluck('prefix', 'id')->all())->toBe(['eventful' => 'ev', 'prefix-owner' => 'shared']);
     } finally {
         Extension::query()->where('identifier', 'prefix-owner')->delete();
     }
@@ -499,7 +499,7 @@ test('rejects enabling a competing replacement before migrations or activation e
         $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => false]);
         $this->assertDatabaseHas('extensions', ['identifier' => 'card-owner', 'enabled' => true]);
         Event::assertNothingDispatched();
-        expect($this->app->make(ExtensionRepository::class)->frontendPayload(false)[0]['components'])->toBe(['dashboard.serverCard']);
+        expect($this->app->make(ExtensionRepository::class)->frontendPayload(true)[0]['components'])->toBe(['dashboard.serverCard']);
     } finally {
         Extension::query()->where('identifier', 'card-owner')->delete();
     }
@@ -556,7 +556,7 @@ test('file editor and file browser replacements reach the frontend and stay excl
         expect(fn () => $this->app->make(SetsExtensionEnabled::class)->setEnabled('eventful', true))->toThrow(InvalidExtensionException::class, 'code-editor');
 
         $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => false]);
-        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(false))->pluck('components', 'id')->all())->toBe([
+        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(true))->pluck('components', 'id')->all())->toBe([
             'code-editor' => ['server.files.editor'],
             'tree-browser' => ['server.files.manager'],
         ]);

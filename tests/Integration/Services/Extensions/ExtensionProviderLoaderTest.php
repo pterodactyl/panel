@@ -68,7 +68,7 @@ test('failed providers and their dependents expose no registrations while health
     $this->app->make(ExtensionProviderLoader::class)->registerProviders($repository->enabled());
     Event::dispatch(new OperationCompleted('server', 'install', true, 'completed'));
 
-    expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['z-healthy']);
+    expect(array_column($repository->frontendPayload(true), 'id'))->toBe(['z-healthy']);
     $repository->flushDiscovery();
     expect($repository->enabled()->keys()->all())->toBe(['z-healthy']);
     expect(hasDirectRoute('z-healthy'))->toBeTrue();
@@ -131,7 +131,7 @@ test('healthy registrations activate after boot and repeated loading does not du
 
     Event::assertDispatchedTimes(RegistrationOperationObserved::class, 1);
     Event::assertDispatched(RegistrationOperationObserved::class, fn (RegistrationOperationObserved $event): bool => $event->identifier === 'healthy' && $event->resourceUuid === 'completed');
-    expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['healthy']);
+    expect(array_column($repository->frontendPayload(true), 'id'))->toBe(['healthy']);
     $this->actingAs(User::factory()->create())->getJson('/api/client/extensions/healthy/status')->assertOk()->assertContent('ready');
 });
 
@@ -168,7 +168,7 @@ test('healthy providers remain available when routes are compiled', function ():
     $this->app->make(ExtensionProviderLoader::class)->registerProviders($repository->enabled());
 
     $this->actingAs(User::factory()->create())->getJson('/api/client/extensions/cached/status')->assertOk()->assertContent('ready');
-    expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['cached']);
+    expect(array_column($repository->frontendPayload(true), 'id'))->toBe(['cached']);
 });
 
 test('wrappers, commands and head tags stop applying once their extension is disabled', function (): void {
@@ -200,7 +200,7 @@ test('operation listener exceptions do not remove successfully loaded extensions
     Event::dispatch(new OperationCompleted('server', 'backup', true, 'completed'));
 
     Event::assertDispatched(ExtensionLoadFailed::class, fn (ExtensionLoadFailed $event): bool => $event->identifier === 'healthy' && $event->phase === 'event');
-    expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['healthy']);
+    expect(array_column($repository->frontendPayload(true), 'id'))->toBe(['healthy']);
 });
 
 test('failure observer exceptions are reported and healthy providers still load', function (): void {
@@ -215,7 +215,7 @@ test('failure observer exceptions are reported and healthy providers still load'
 
     $this->app->make(ExtensionProviderLoader::class)->registerProviders($repository->enabled());
 
-    expect(array_column($repository->frontendPayload(false), 'id'))->toBe(['z-healthy']);
+    expect(array_column($repository->frontendPayload(true), 'id'))->toBe(['z-healthy']);
     $this->assertDatabaseHas('extensions', ['identifier' => 'a-failed', 'error' => 'boot failed']);
     Exceptions::assertReported(fn (RuntimeException $exception): bool => $exception->getMessage() === 'failure observer failed');
     $this->actingAs(User::factory()->create())->getJson('/api/client/extensions/z-healthy/status')->assertOk()->assertContent('ready');

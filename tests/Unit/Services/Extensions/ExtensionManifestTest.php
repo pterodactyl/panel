@@ -248,7 +248,7 @@ test('serializes screen descriptors into bootstrap without evaluating an extensi
     expect($this->directory.'/dist/client.js')->not->toBeFile();
 });
 test('leaves settings out of the bootstrap payload when config is not included', function (): void {
-    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js']]);
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'guest' => true]]);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
     $repository = Mockery::mock(ExtensionRepository::class, [
         new ExtensionManifestValidator,
@@ -265,8 +265,33 @@ test('leaves settings out of the bootstrap payload when config is not included',
     expect($payload[0]['translations'])->toBeNull();
     expect((array) $payload[0]['config'])->toBe([]);
 });
+test('guests only receive extensions that opt in with ui.guest', function (): void {
+    $manifests = [];
+    foreach (['hidden' => [], 'shown' => ['guest' => true]] as $id => $ui) {
+        writeManifest(['id' => $id, 'name' => $id, 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', ...$ui]]);
+        $manifests[$id] = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+    }
+    $repository = Mockery::mock(ExtensionRepository::class, [
+        new ExtensionManifestValidator,
+        resolve(ExtensionAssetPublisher::class),
+        resolve(Dispatcher::class),
+        resolve(ExtensionSettingsRegistry::class),
+        resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
+    ])->makePartial();
+    $repository->shouldReceive('enabled')->andReturn(collect($manifests));
+    $repository->shouldReceive('settings')->andThrow(new RuntimeException('settings not ready'));
+
+    expect(array_column($repository->frontendPayload(authenticated: false), 'id'))->toBe(['shown'])
+        ->and(array_column($repository->frontendPayload(authenticated: true), 'id'))->toBe(['hidden', 'shown']);
+});
+test('rejects a ui.guest value that is not a boolean', function (): void {
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'guest' => 'yes']]);
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))
+        ->toThrow(InvalidExtensionException::class);
+});
 test('reports a translations revision that changes with the translation files', function (): void {
-    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js']]);
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'guest' => true]]);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
     $repository = Mockery::mock(ExtensionRepository::class, [
         new ExtensionManifestValidator,

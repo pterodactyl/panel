@@ -103,6 +103,8 @@ class ExtensionManifest
         /** The Tailwind prefix this extension builds its utilities and theme variables with. */
         public readonly ?string $uiPrefix = null,
         public readonly ?string $icon = null,
+        /** Whether the frontend also loads for visitors who are not signed in. */
+        public readonly bool $uiGuest = false,
     ) {}
 
     /**
@@ -135,6 +137,7 @@ class ExtensionManifest
             rootPrefixes: $data['routes']['root'] ?? [],
             uiPrefix: $data['ui']['prefix'] ?? null,
             icon: is_string($data['icon'] ?? null) ? $data['icon'] : null,
+            uiGuest: ($data['ui']['guest'] ?? false) === true,
         );
     }
 

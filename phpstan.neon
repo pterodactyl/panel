@@ -119,7 +119,7 @@ parameters:
         ExtensionScreenMatcher: 'array{any?: list<string>, all?: list<string>}'
         ExtensionScreenCondition: 'array{eggFeatures?: ExtensionScreenMatcher, eggTags?: ExtensionScreenMatcher, match?: string, runtime?: bool}'
         ExtensionScreenDefinition: 'array{id: string, area: string, path: string, parent?: string, nav?: array{label: string, exact?: bool, params?: array<string, string>, order?: int, group?: string, badge?: string, icon?: string}, permission?: list<string>, when?: ExtensionScreenCondition}'
-        ExtensionManifestInput: 'array{id: string, name: string, version: string, requires?: array{panel?: string, sdk?: string, php?: string, extensions?: array<string, string>}, description?: string|null, author?: string|null, provider?: string|null, icon?: string|null, autoload?: array<array-key, ApiValue9>, ui?: array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, components?: list<string>}, routes?: array{root?: list<string>}, ...<string, ApiValue10>}'
+        ExtensionManifestInput: 'array{id: string, name: string, version: string, requires?: array{panel?: string, sdk?: string, php?: string, extensions?: array<string, string>}, description?: string|null, author?: string|null, provider?: string|null, icon?: string|null, autoload?: array<array-key, ApiValue9>, ui?: array{entry: string, mode?: string, guest?: bool, prefix?: string, screens?: list<ExtensionScreenDefinition>, components?: list<string>}, routes?: array{root?: list<string>}, ...<string, ApiValue10>}'
     paths:
         - app
     ignoreErrors:
