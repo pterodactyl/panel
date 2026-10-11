@@ -1,0 +1,3 @@
+POST /api/admin/mounts/2/nodes
+200 application/json
+{"object":"mount","attributes":{"id":2,"uuid":"a0a00002-0000-4000-8000-000000000002","name":"scratch","description":null,"source":"\/mnt\/scratch","target":"\/scratch","read_only":false,"user_mountable":true,"eggs_count":0,"nodes_count":0,"servers_count":0}}

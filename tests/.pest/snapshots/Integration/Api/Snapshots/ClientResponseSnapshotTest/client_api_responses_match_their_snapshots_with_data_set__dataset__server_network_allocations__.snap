@@ -1,0 +1,7 @@
+GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/network/allocations
+200 application/json
+{"object":"list","data":[{"object":"allocation","attributes":{"id":1,"ip":"192.0.2.10","ip_alias":"play.example.test","port":25565,"notes":"Primary <game> port","is_default":true}},{"object":"allocation","attributes":{"id":2,"ip":"192.0.2.10","ip_alias":null,"port":25566,"notes":"Query\/RCON","is_default":false}}]}
+
+GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/network/allocations?include=does-not-exist
+200 application/json
+{"object":"list","data":[{"object":"allocation","attributes":{"id":1,"ip":"192.0.2.10","ip_alias":"play.example.test","port":25565,"notes":"Primary <game> port","is_default":true}},{"object":"allocation","attributes":{"id":2,"ip":"192.0.2.10","ip_alias":null,"port":25566,"notes":"Query\/RCON","is_default":false}}]}

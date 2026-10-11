@@ -1,0 +1,3 @@
+PUT /api/admin/nodes/1/allocations/4
+200 application/json
+{"object":"allocation","attributes":{"id":4,"ip":"192.0.2.10","alias":"renamed.example.test","port":25568,"notes":null,"server_id":null,"server_name":null,"assigned":false}}

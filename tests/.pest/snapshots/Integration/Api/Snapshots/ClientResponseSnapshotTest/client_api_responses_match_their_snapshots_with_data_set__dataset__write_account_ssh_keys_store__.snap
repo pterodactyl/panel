@@ -1,0 +1,3 @@
+POST /api/client/account/ssh-keys
+200 application/json
+{"object":"ssh_key","attributes":{"name":"Workstation","fingerprint":"T2b3VnvHWUmfhDOFLqzZg2VfLgqJhWxzrMUy8WZ+V8M","public_key":"-----BEGIN PUBLIC KEY-----\r\nMCowBQYDK2VwAyEA5pcirT00fhr3cRV2u8diJnrtaP4YEQFD2i7hbSpJibY=\r\n-----END PUBLIC KEY-----","created_at":"2026-03-04T05:06:07+00:00"}}

@@ -1,0 +1,23 @@
+GET /api/admin/servers/1/backups
+200 application/json
+{"object":"list","data":[{"object":"backup","attributes":{"uuid":"bacc0001-0000-4000-8000-000000000001","name":"Nightly","ignored_files":["*.log","cache\/"],"checksum":"sha1:0123456789abcdef","bytes":1048576,"is_successful":true,"is_locked":true,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T04:04:05+00:00"}},{"object":"backup","attributes":{"uuid":"bacc0002-0000-4000-8000-000000000002","name":"Failed attempt","ignored_files":[],"checksum":null,"bytes":0,"is_successful":false,"is_locked":false,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T03:14:05+00:00"}},{"object":"backup","attributes":{"uuid":"bacc0003-0000-4000-8000-000000000003","name":"In progress","ignored_files":["world\/"],"checksum":null,"bytes":0,"is_successful":false,"is_locked":false,"created_at":"2026-01-02T03:04:05+00:00","completed_at":null}}],"meta":{"pagination":{"total":3,"count":3,"per_page":25,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/servers/1/backups?include=does-not-exist
+200 application/json
+{"object":"list","data":[{"object":"backup","attributes":{"uuid":"bacc0001-0000-4000-8000-000000000001","name":"Nightly","ignored_files":["*.log","cache\/"],"checksum":"sha1:0123456789abcdef","bytes":1048576,"is_successful":true,"is_locked":true,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T04:04:05+00:00"}},{"object":"backup","attributes":{"uuid":"bacc0002-0000-4000-8000-000000000002","name":"Failed attempt","ignored_files":[],"checksum":null,"bytes":0,"is_successful":false,"is_locked":false,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T03:14:05+00:00"}},{"object":"backup","attributes":{"uuid":"bacc0003-0000-4000-8000-000000000003","name":"In progress","ignored_files":["world\/"],"checksum":null,"bytes":0,"is_successful":false,"is_locked":false,"created_at":"2026-01-02T03:04:05+00:00","completed_at":null}}],"meta":{"pagination":{"total":3,"count":3,"per_page":25,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/servers/3/backups
+200 application/json
+{"object":"list","data":[],"meta":{"pagination":{"total":0,"count":0,"per_page":25,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/servers/1/backups?per_page=1
+200 application/json
+{"object":"list","data":[{"object":"backup","attributes":{"uuid":"bacc0001-0000-4000-8000-000000000001","name":"Nightly","ignored_files":["*.log","cache\/"],"checksum":"sha1:0123456789abcdef","bytes":1048576,"is_successful":true,"is_locked":true,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T04:04:05+00:00"}}],"meta":{"pagination":{"total":3,"count":1,"per_page":1,"current_page":1,"total_pages":3,"links":{"next":"https:\/\/panel.example.test\/api\/admin\/servers\/1\/backups?page=2"}}}}
+
+GET /api/admin/servers/1/backups?per_page=1&page=2
+200 application/json
+{"object":"list","data":[{"object":"backup","attributes":{"uuid":"bacc0002-0000-4000-8000-000000000002","name":"Failed attempt","ignored_files":[],"checksum":null,"bytes":0,"is_successful":false,"is_locked":false,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T03:14:05+00:00"}}],"meta":{"pagination":{"total":3,"count":1,"per_page":1,"current_page":2,"total_pages":3,"links":{"previous":"https:\/\/panel.example.test\/api\/admin\/servers\/1\/backups?page=1","next":"https:\/\/panel.example.test\/api\/admin\/servers\/1\/backups?page=3"}}}}
+
+GET /api/admin/servers/1/backups?per_page=1&page=99
+200 application/json
+{"object":"list","data":[],"meta":{"pagination":{"total":3,"count":0,"per_page":1,"current_page":99,"total_pages":3,"links":{"previous":"https:\/\/panel.example.test\/api\/admin\/servers\/1\/backups?page=98"}}}}

@@ -1,0 +1,3 @@
+PUT /api/admin/mounts/1
+200 application/json
+{"object":"mount","attributes":{"id":1,"uuid":"a0a00001-0000-4000-8000-000000000001","name":"shared-mods-renamed","description":"Created by an admin.","source":"\/mnt\/created","target":"\/mnt\/created-target","read_only":true,"user_mountable":true,"eggs_count":0,"nodes_count":0,"servers_count":0,"extensions":{}}}

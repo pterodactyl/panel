@@ -1,0 +1,3 @@
+POST /api/application/servers/1/databases
+201 application/json
+{"object":"server_database","attributes":{"id":1001,"server":1,"host":1,"database":"s1_apidb","username":"u1_9fc2bf2a6b","remote":"%","max_connections":null,"created_at":"2026-03-04T05:06:07+00:00","updated_at":"2026-03-04T05:06:07+00:00"},"meta":{"resource":"https:\/\/panel.example.test\/api\/application\/servers\/1\/databases\/1001"}}

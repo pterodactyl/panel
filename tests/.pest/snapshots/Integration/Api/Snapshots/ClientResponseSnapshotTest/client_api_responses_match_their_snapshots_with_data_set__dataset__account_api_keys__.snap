@@ -1,0 +1,7 @@
+GET /api/client/account/api-keys
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptlc_snapshot003","description":"CLI access","allowed_ips":["127.0.0.1","10.0.0.0\/8"],"last_used_at":"2026-02-03T07:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00"}},{"object":"api_key","attributes":{"identifier":"ptlc_snapshot004","description":"Second key","allowed_ips":[],"last_used_at":null,"created_at":"2026-01-02T03:04:05+00:00"}}]}
+
+GET /api/client/account/api-keys?include=does-not-exist
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptlc_snapshot003","description":"CLI access","allowed_ips":["127.0.0.1","10.0.0.0\/8"],"last_used_at":"2026-02-03T07:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00"}},{"object":"api_key","attributes":{"identifier":"ptlc_snapshot004","description":"Second key","allowed_ips":[],"last_used_at":null,"created_at":"2026-01-02T03:04:05+00:00"}}]}

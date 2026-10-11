@@ -1,0 +1,23 @@
+GET /api/admin/api-keys
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptla_snapshot001","memo":"Snapshot application key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":null,"created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":3,"r_nodes":3,"r_allocations":3,"r_users":3,"r_locations":3,"r_eggs":3,"r_database_hosts":3,"r_server_databases":3}},{"object":"api_key","attributes":{"identifier":"ptla_snapshot002","memo":"Read only key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":"2026-02-03T06:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":1,"r_nodes":0,"r_allocations":0,"r_users":1,"r_locations":0,"r_eggs":0,"r_database_hosts":0,"r_server_databases":0}}],"meta":{"pagination":{"total":2,"count":2,"per_page":50,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/api-keys?include=does-not-exist
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptla_snapshot001","memo":"Snapshot application key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":null,"created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":3,"r_nodes":3,"r_allocations":3,"r_users":3,"r_locations":3,"r_eggs":3,"r_database_hosts":3,"r_server_databases":3}},{"object":"api_key","attributes":{"identifier":"ptla_snapshot002","memo":"Read only key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":"2026-02-03T06:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":1,"r_nodes":0,"r_allocations":0,"r_users":1,"r_locations":0,"r_eggs":0,"r_database_hosts":0,"r_server_databases":0}}],"meta":{"pagination":{"total":2,"count":2,"per_page":50,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/api-keys?filter[memo]=none
+200 application/json
+{"object":"list","data":[],"meta":{"pagination":{"total":0,"count":0,"per_page":50,"current_page":1,"total_pages":1,"links":{}}}}
+
+GET /api/admin/api-keys?per_page=1
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptla_snapshot001","memo":"Snapshot application key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":null,"created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":3,"r_nodes":3,"r_allocations":3,"r_users":3,"r_locations":3,"r_eggs":3,"r_database_hosts":3,"r_server_databases":3}}],"meta":{"pagination":{"total":2,"count":1,"per_page":1,"current_page":1,"total_pages":2,"links":{"next":"https:\/\/panel.example.test\/api\/admin\/api-keys?page=2"}}}}
+
+GET /api/admin/api-keys?per_page=1&page=2
+200 application/json
+{"object":"list","data":[{"object":"api_key","attributes":{"identifier":"ptla_snapshot002","memo":"Read only key","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":"2026-02-03T06:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":1,"r_nodes":0,"r_allocations":0,"r_users":1,"r_locations":0,"r_eggs":0,"r_database_hosts":0,"r_server_databases":0}}],"meta":{"pagination":{"total":2,"count":1,"per_page":1,"current_page":2,"total_pages":2,"links":{"previous":"https:\/\/panel.example.test\/api\/admin\/api-keys?page=1"}}}}
+
+GET /api/admin/api-keys?per_page=1&page=99
+200 application/json
+{"object":"list","data":[],"meta":{"pagination":{"total":2,"count":0,"per_page":1,"current_page":99,"total_pages":2,"links":{"previous":"https:\/\/panel.example.test\/api\/admin\/api-keys?page=98"}}}}

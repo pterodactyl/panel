@@ -1,0 +1,7 @@
+GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/resources
+200 application/json
+{"object":"stats","attributes":{"current_state":"running","is_suspended":false,"resources":{"memory_bytes":1073741824,"cpu_absolute":12.5,"disk_bytes":2147483648,"network_rx_bytes":1024,"network_tx_bytes":2048,"uptime":3600000}}}
+
+GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/resources?include=does-not-exist
+200 application/json
+{"object":"stats","attributes":{"current_state":"running","is_suspended":false,"resources":{"memory_bytes":1073741824,"cpu_absolute":12.5,"disk_bytes":2147483648,"network_rx_bytes":1024,"network_tx_bytes":2048,"uptime":3600000}}}

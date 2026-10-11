@@ -1,0 +1,11 @@
+GET /api/admin/servers/2/transfer/progress
+200 application/json
+{"object":"server_transfer","attributes":{"id":1,"server_id":2,"old_node":1,"new_node":2,"old_allocation":3,"new_allocation":7,"successful":null,"archived":false,"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-02-03T04:05:06+00:00"}}
+
+GET /api/admin/servers/2/transfer/progress?include=does-not-exist
+200 application/json
+{"object":"server_transfer","attributes":{"id":1,"server_id":2,"old_node":1,"new_node":2,"old_allocation":3,"new_allocation":7,"successful":null,"archived":false,"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-02-03T04:05:06+00:00"}}
+
+GET /api/admin/servers/1/transfer/progress
+204 
+

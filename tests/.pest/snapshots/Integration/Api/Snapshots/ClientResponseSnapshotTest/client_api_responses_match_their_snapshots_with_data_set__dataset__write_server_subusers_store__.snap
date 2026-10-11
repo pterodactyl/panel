@@ -1,0 +1,3 @@
+POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/users
+200 application/json
+{"object":"server_subuser","attributes":{"uuid":"e45a916b-7b34-4394-9e17-48fad8d0185e","identifier":"user_4rnjc233grbzjhqxjd5nruayly","username":"new.subuser9fc","email":"new.subuser@example.test","image":"https:\/\/gravatar.com\/avatar\/56eaba207408d9e34f818293cd06abdb","2fa_enabled":false,"created_at":"2026-03-04T05:06:07+00:00","permissions":["control.console","file.read","websocket.connect"]}}
