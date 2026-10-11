@@ -1,0 +1,48 @@
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_4cabae41bceed9::t_febb7ac737b288 543
+  s_4cabae41bceed9::t_e80adfb7959220 61,63-64,69,71-72
+  s_4cabae41bceed9::t_09a8952be12044 587-592
+  s_4cabae41bceed9::t_bf6c47273d64be 62
+  s_4cabae41bceed9::t_3d639daa4db532 70
+database/migrations/2026_10_11_000000_add_error_phase_to_extensions.php
+  s_4cabae41bceed9::t_2828282b36cc39 1-25
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_a2af728887d49d 206
+  s_4cabae41bceed9::t_5bd3d2514930bd 216-221,237-247
+app/Actions/Extensions/InstallExtension.php
+  s_4cabae41bceed9::t_5a1ed3a1d7c868 127
+resources/scripts/components/admin/extensions/ExtensionsContainer.spec.tsx
+  s_4cabae41bceed9::t_1198890bacd0b5 161-163,168
+  s_4cabae41bceed9::t_49dd1d74f2a67d 150-160,164-167,169-182
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_4cabae41bceed9::t_86a298937c5469 274-302
+app/Models/Extension.php
+  s_4cabae41bceed9::t_f25f6cbd1ea994 18-19,23,28-39,47
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_2474e54683b76a 3403-3410,3435-3442,3499-3506,3527-3534
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_2474e54683b76a 3654-3661,3687-3694,3759-3766,3788-3795
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_4cabae41bceed9::t_023917ef6371ae 275-276
+  s_4cabae41bceed9::t_8923b63349601f 68-69
+  s_4cabae41bceed9::t_23d796ecd0e398 47-48
+  s_4cabae41bceed9::t_91373aa13b79eb 318-319
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_4cabae41bceed9::t_398701af86f933 87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ac1905ea31daba0f06987bbd7ce74d35cb41021",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
