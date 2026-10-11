@@ -1,0 +1,25 @@
+app/Data/ServerCreationData.php
+  s_4cabae41bceed9::t_bffe09fd9c9a65 85-89
+app/Support/JsonValueGuard.php
+  s_4cabae41bceed9::t_bffe09fd9c9a65 127-131,134-138
+tests/Integration/Actions/Schedules/CreateScheduleTest.php
+  s_4cabae41bceed9::t_5a4b3d78f095aa 1-27
+tests/Unit/JsonValueGuardTest.php
+  s_4cabae41bceed9::t_69e5d9e9e07525 57-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6e4ac8835e768ea18cac2fd030f9ae06c4086161",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
