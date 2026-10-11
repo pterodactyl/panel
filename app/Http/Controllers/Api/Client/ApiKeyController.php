@@ -10,6 +10,7 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Api\CreatesAccountApiKeys;
+use Pterodactyl\Contracts\Api\DeletesApiKeys;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
@@ -83,14 +84,14 @@ class ApiKeyController extends ClientApiController
      */
     #[Endpoint('Delete account API key', 'Deletes one client API key owned by the authenticated user.')]
     #[ScribeResponse(status: 204, description: 'API key deleted.')]
-    public function delete(ClientApiRequest $request, string $identifier): JsonResponse
+    public function delete(ClientApiRequest $request, DeletesApiKeys $keys, string $identifier): JsonResponse
     {
         $key = $request->user()->apiKeys()
             ->where('key_type', ApiKey::TYPE_ACCOUNT)
             ->where('identifier', $identifier)
             ->firstOrFail();
 
-        $key->delete();
+        $keys->delete($key);
 
         Activity::event('user:api-key.delete')
             ->property('identifier', $key->identifier)

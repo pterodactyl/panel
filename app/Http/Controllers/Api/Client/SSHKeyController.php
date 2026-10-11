@@ -9,6 +9,8 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Users\CreatesSshKeys;
+use Pterodactyl\Contracts\Users\DeletesSshKeys;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -44,13 +46,9 @@ class SSHKeyController extends ClientApiController
      */
     #[Endpoint('Create SSH key', 'Adds an SSH public key to the authenticated user account.')]
     #[ResponseFromTransformer(UserSSHKeyTransformer::class, UserSSHKey::class, description: 'SSH key created.', resourceKey: 'ssh_key')]
-    public function store(StoreSSHKeyRequest $request): array
+    public function store(StoreSSHKeyRequest $request, CreatesSshKeys $keys): array
     {
-        $model = $request->user()->sshKeys()->create([
-            'name' => $request->validated('name'),
-            'public_key' => $request->getPublicKey(),
-            'fingerprint' => $request->getKeyFingerprint(),
-        ]);
+        $model = $keys->create($request->user(), $request->string('name')->toString(), $request->getPublicKey(), $request->getKeyFingerprint());
 
         Activity::event('user:ssh-key.create')
             ->subject($model)
@@ -67,14 +65,14 @@ class SSHKeyController extends ClientApiController
      */
     #[Endpoint('Delete SSH key', 'Deletes an SSH key from the authenticated user account by fingerprint. Missing keys are treated as already deleted.')]
     #[ScribeResponse(status: 204, description: 'SSH key deleted or already absent.')]
-    public function delete(DeleteSSHKeyRequest $request): JsonResponse
+    public function delete(DeleteSSHKeyRequest $request, DeletesSshKeys $keys): JsonResponse
     {
         $key = $request->user()->sshKeys()
             ->where('fingerprint', $request->validated('fingerprint'))
             ->first();
 
         if (($key) !== null) {
-            $key->delete();
+            $keys->delete($key);
 
             Activity::event('user:ssh-key.delete')
                 ->subject($key)

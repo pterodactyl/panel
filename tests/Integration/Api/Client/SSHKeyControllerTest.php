@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\SSHKeyControllerTest;
 
+use ArrayObject;
 use phpseclib3\Crypt\EC;
+use Pterodactyl\Contracts\Api\DeletesApiKeys;
+use Pterodactyl\Contracts\Users\CreatesSshKeys;
+use Pterodactyl\Contracts\Users\DeletesSshKeys;
+use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -81,4 +86,50 @@ test('public key that already exists cannot be added a second time', function ()
     $key = UserSSHKey::factory()->for($user)->create();
     $this->actingAs($user)->postJson('/api/client/account/ssh-keys', ['name' => 'Name', 'public_key' => $key->public_key])->assertUnprocessable()->assertJsonPath('errors.0.detail', 'The public key provided already exists on your account.');
     expect($user->sshKeys()->count())->toEqual(1);
+});
+test('account key changes go through the contracts extensions can wrap', function (): void {
+    $calls = new ArrayObject;
+    $this->app->extend(CreatesSshKeys::class, fn (CreatesSshKeys $inner): CreatesSshKeys => new class($inner, $calls) implements CreatesSshKeys
+    {
+        /** @param ArrayObject<int, string> $calls */
+        public function __construct(private readonly CreatesSshKeys $inner, private readonly ArrayObject $calls) {}
+
+        public function create(User $user, string $name, string $publicKey, string $fingerprint): UserSSHKey
+        {
+            $this->calls[] = 'create ssh key';
+
+            return $this->inner->create($user, $name, $publicKey, $fingerprint);
+        }
+    });
+    $this->app->extend(DeletesSshKeys::class, fn (DeletesSshKeys $inner): DeletesSshKeys => new class($inner, $calls) implements DeletesSshKeys
+    {
+        /** @param ArrayObject<int, string> $calls */
+        public function __construct(private readonly DeletesSshKeys $inner, private readonly ArrayObject $calls) {}
+
+        public function delete(UserSSHKey $key): void
+        {
+            $this->calls[] = 'delete ssh key';
+            $this->inner->delete($key);
+        }
+    });
+    $this->app->extend(DeletesApiKeys::class, fn (DeletesApiKeys $inner): DeletesApiKeys => new class($inner, $calls) implements DeletesApiKeys
+    {
+        /** @param ArrayObject<int, string> $calls */
+        public function __construct(private readonly DeletesApiKeys $inner, private readonly ArrayObject $calls) {}
+
+        public function delete(ApiKey $key): void
+        {
+            $this->calls[] = 'delete api key';
+            $this->inner->delete($key);
+        }
+    });
+    $user = User::factory()->create();
+    $key = UserSSHKey::factory()->make();
+    $apiKey = ApiKey::factory()->for($user)->create(['key_type' => ApiKey::TYPE_ACCOUNT]);
+
+    $fingerprint = $this->actingAs($user)->postJson('/api/client/account/ssh-keys', ['name' => 'Name', 'public_key' => $key->public_key])->assertOk()->json('attributes.fingerprint');
+    $this->postJson('/api/client/account/ssh-keys/remove', ['fingerprint' => $fingerprint])->assertNoContent();
+    $this->deleteJson("/api/client/account/api-keys/{$apiKey->identifier}")->assertNoContent();
+
+    expect($calls->getArrayCopy())->toBe(['create ssh key', 'delete ssh key', 'delete api key']);
 });

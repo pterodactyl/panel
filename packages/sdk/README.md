@@ -571,7 +571,8 @@ variable in a startup update.
 `UpdatesEggs`, `UpdatesEggInstallScripts` and `UpdatesEggVariables` return the updated model.
 Mounts (`CreatesMounts`, `UpdatesMounts`, `DeletesMounts`, `AttachesEggsToMounts`,
 `AttachesNodesToMounts`, `DetachesEggsFromMounts`, `DetachesNodesFromMounts`), tags
-(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, `DeletesApiKeys`),
+(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, and `DeletesApiKeys` for
+application and account keys alike), account SSH keys (`CreatesSshKeys`, `DeletesSshKeys`),
 egg variable deletion (`DeletesEggVariables`) and the server install-status toggle
 (`TogglesServerInstallStatus`) have contracts of their own as well.
 
