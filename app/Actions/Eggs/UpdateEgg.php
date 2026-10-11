@@ -15,21 +15,21 @@ final readonly class UpdateEgg implements UpdatesEggs
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * Update an egg from request-validated attributes.
+     * Update an egg with the fields it is created with.
      *
-     * @param  EggCreationData  $data
+     * @param  ActionInput  $input
      */
-    public function update(Egg $egg, array $data): Egg
+    public function update(Egg $egg, array $input): Egg
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateEgg::attributes($input);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
         // TODO(dane): Once the admin UI is done being reworked and this is exposed
         //  in said UI, remove this so that you can actually update the denylist.
-        unset($data['file_denylist']);
+        unset($attributes['file_denylist']);
 
-        DB::transaction(function () use ($egg, $data, $extensions): void {
-            $egg->update($data);
+        DB::transaction(function () use ($egg, $attributes, $extensions): void {
+            $egg->update($attributes);
             $this->extensions->save($egg, $extensions);
         });
 

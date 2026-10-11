@@ -55,7 +55,7 @@ class EggVariableController extends AdminApiController
     public function store(StoreVariableRequest $request, CreatesEggVariables $variables, Egg $egg): JsonResponse
     {
 
-        $variable = $variables->create($egg, $request->payload());
+        $variable = $variables->create($egg, $request->actionInput());
 
         Activity::event('admin:egg-variable.create')
             ->subject($egg, $variable)
@@ -76,7 +76,7 @@ class EggVariableController extends AdminApiController
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]
     public function update(UpdateVariableRequest $request, UpdatesEggVariables $variables, Egg $egg, EggVariable $variable): array
     {
-        $variable = $variables->update($variable, $request->payload());
+        $variable = $variables->update($variable, $request->actionInput());
 
         Activity::event('admin:egg-variable.update')
             ->subject($egg, $variable)

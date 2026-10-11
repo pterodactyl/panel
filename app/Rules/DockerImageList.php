@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Pterodactyl\Validation\EggRules;
+use Pterodactyl\Actions\Eggs\CreateEgg;
 
 /**
  * A newline-separated list of Docker images, as the admin egg form submits them. Each
@@ -47,7 +47,7 @@ class DockerImageList implements ValidationRule
         }
 
         foreach ($images as $image) {
-            if (Validator::make(['image' => $image], ['image' => EggRules::DOCKER_IMAGE])->fails()) {
+            if (Validator::make(['image' => $image], ['image' => CreateEgg::DOCKER_IMAGE])->fails()) {
                 $fail(sprintf('The :attribute entry "%s" is not a valid Docker image.', Str::limit($image, 64)));
 
                 return;

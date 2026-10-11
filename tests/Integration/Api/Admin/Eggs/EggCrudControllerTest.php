@@ -73,6 +73,19 @@ test('blank lines between docker images are ignored', function (): void {
 
     expect(Egg::query()->where('name', 'Test Egg')->firstOrFail()->docker_images)->toBe(['Java 17' => 'ghcr.io/pterodactyl/yolks:java_17', 'Java 11' => 'ghcr.io/pterodactyl/yolks:java_11']);
 });
+test('features and denied files that are not strings are dropped', function (): void {
+    $this->postJson(route('api.admin.eggs.store'), array_merge(validCreatePayload(), ['features' => ['eula', 5, ['fastdl']], 'file_denylist' => ['secret.txt', true]]))
+        ->assertCreated();
+
+    $egg = Egg::query()->where('name', 'Test Egg')->firstOrFail();
+    expect($egg->features)->toBe(['eula'])
+        ->and($egg->file_denylist)->toBe(['secret.txt']);
+
+    $this->putJson(route('api.admin.eggs.update', ['egg' => $egg->id]), array_merge(validCreatePayload(), ['features' => ['name' => 'eula']]))
+        ->assertOk();
+
+    expect($egg->refresh()->features)->toBe([]);
+});
 test('update egg', function (): void {
     $egg = Egg::factory()->create();
     $response = $this->putJson(route('api.admin.eggs.update', ['egg' => $egg->id]), array_merge(validCreatePayload(), ['name' => 'Updated Egg', 'startup' => 'java -jar updated.jar']));

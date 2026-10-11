@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Eggs;
 
 use Illuminate\Support\Facades\Validator;
+use Pterodactyl\Actions\Eggs\CreateEgg;
+use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\EggRules;
+use Pterodactyl\Support\ValidationRuleSubset;
 
 final readonly class EggImportData
 {
@@ -229,6 +231,41 @@ final readonly class EggImportData
     }
 
     /**
+     * The rules an egg read from an export file must pass, keyed like its model attributes.
+     * Exports carry their own config rather than inheriting one, so every config block is
+     * checked as JSON. Each image and each variable is held to the rules of one written
+     * through the admin API. An imported variable carries its user_viewable and user_editable
+     * flags rather than options, and its environment variable name must differ from the
+     * others'.
+     *
+     * @return NormalizedValidationRules
+     */
+    private function rules(): array
+    {
+        $rules = [
+            'name' => ['required', 'string', 'max:191'],
+            'author' => ['required', 'string', 'email'],
+            'docker_images' => ['required', 'array', 'min:1'],
+            'docker_images.*' => CreateEgg::DOCKER_IMAGE,
+            'startup' => ['nullable', 'string'],
+            'config_stop' => ['nullable', 'string', 'max:191'],
+            'config_startup' => ['nullable', 'json'],
+            'config_logs' => ['nullable', 'json'],
+            'config_files' => ['nullable', 'json'],
+            'variables' => ['array'],
+        ];
+
+        $variable = ValidationRuleSubset::select(CreateEggVariable::rules(), ['name', 'description', 'env_variable', 'rules', 'default_value']);
+        foreach ($variable as $field => $fieldRules) {
+            $rules["variables.*.{$field}"] = $fieldRules;
+        }
+
+        $rules['variables.*.env_variable'][] = 'distinct';
+
+        return $rules;
+    }
+
+    /**
      * Holds an imported egg to the rules an egg written through the admin API meets, so a
      * file cannot store config that every node serving the egg would later fail to read.
      */
@@ -244,7 +281,7 @@ final readonly class EggImportData
             'config_logs' => $this->configLogs,
             'config_files' => $this->configFiles,
             'variables' => array_map(fn (EggImportVariable $variable): array => $variable->attributes(), $this->variables),
-        ], EggRules::import());
+        ], $this->rules());
 
         if ($validator->fails()) {
             $errors = $validator->errors();

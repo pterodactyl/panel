@@ -90,7 +90,7 @@ class EggController extends AdminApiController
     #[ExtensionFieldsParam]
     public function store(StoreEggRequest $request, CreatesEggs $eggs): JsonResponse
     {
-        $egg = $eggs->create($request->payload());
+        $egg = $eggs->create($request->actionInput());
 
         Activity::event('admin:egg.create')
             ->subject($egg)
@@ -115,7 +115,7 @@ class EggController extends AdminApiController
     #[ExtensionFieldsParam]
     public function update(UpdateEggRequest $request, UpdatesEggs $eggs, Egg $egg): array
     {
-        $egg = $eggs->update($egg, $request->payload());
+        $egg = $eggs->update($egg, $request->actionInput());
 
         Activity::event('admin:egg.update')
             ->subject($egg)

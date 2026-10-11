@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs;
 
+use Pterodactyl\Actions\Eggs\Scripts\UpdateInstallScript;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
 
 class UpdateEggScriptRequest extends AdminApiRequest
 {
@@ -22,26 +22,6 @@ class UpdateEggScriptRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'script_install' => ['sometimes', 'nullable', 'string'],
-            'script_is_privileged' => ['sometimes', 'required', 'boolean'],
-            'script_entry' => ['sometimes', 'required', 'string'],
-            'script_container' => ['sometimes', 'required', 'string'],
-            'copy_script_from' => ['sometimes', 'nullable', 'integer'],
-        ];
-    }
-
-    /**
-     * @return ModelAttributes
-     */
-    public function payload(): array
-    {
-        $data = $this->validated();
-        JsonValueGuard::assertPayload9($data);
-        if (array_key_exists('script_is_privileged', $data)) {
-            $data['script_is_privileged'] = $this->boolean('script_is_privileged');
-        }
-
-        return $data;
+        return UpdateInstallScript::rules();
     }
 }

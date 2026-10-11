@@ -57,7 +57,7 @@ class EggScriptController extends AdminApiController
     #[ScribeResponse(self::INVALID_COPY_FROM_ERROR, status: 400, description: 'The selected copy source is invalid.')]
     public function update(UpdateEggScriptRequest $request, UpdatesEggInstallScripts $scripts, Egg $egg): array
     {
-        $egg = $scripts->update($egg, $request->payload());
+        $egg = $scripts->update($egg, $request->actionInput());
 
         Activity::event('admin:egg.scripts')
             ->subject($egg)
