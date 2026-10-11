@@ -1,0 +1,39 @@
+app/Http/Resources/Api/Client/UserSSHKeyResource.php
+  s_4cabae41bceed9::t_79af1bff8dec7c 1-34
+app/Http/Resources/Api/Application/EggVariableResource.php
+  s_4cabae41bceed9::t_1867c4dc38423c 1-32
+tests/Integration/Api/Parity/ResourceParityTest.php
+  s_4cabae41bceed9::t_3f0cc16ff01a4b 1-93,95-105,107-109,111-125
+  s_4cabae41bceed9::t_5a0474e9acb619 110
+  s_4cabae41bceed9::t_b5a7707fc590ec 94,106
+app/Http/Resources/Api/Application/ServerVariableResource.php
+  s_4cabae41bceed9::t_4584630f9695cc 1-49,51-67
+  s_4cabae41bceed9::t_cbebf38cd51e1e 50
+app/Http/Resources/Api/Admin/ServerDatabaseResource.php
+  s_4cabae41bceed9::t_b3be2053c1bc38 1-21,23-59,61-75
+  s_4cabae41bceed9::t_7888ab6b5d7669 22
+  s_4cabae41bceed9::t_cbebf38cd51e1e 60
+tests/Integration/Api/Parity/ResourceParity.php
+  s_4cabae41bceed9::t_3f0cc16ff01a4b 1-11,13-201,204,209-232
+  s_4cabae41bceed9::t_5a0474e9acb619 12
+  s_4cabae41bceed9::t_c00ea5ea493c1d 202-203,205-208
+app/Http/Resources/Api/Client/DatabaseResource.php
+  s_4cabae41bceed9::t_cbebf38cd51e1e 61
+  s_4cabae41bceed9::t_1475d01aa0ebf5 1-60,62-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "91ed65f284f32107f3adf81b4d265e81cbeb1cfb",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
