@@ -28,7 +28,7 @@ final class UpdateSchedule implements UpdatesSchedules
         $schedule->update($attributes);
 
         Activity::event('server:schedule.update')
-            ->subject($schedule)
+            ->subject($schedule->server, $schedule)
             ->property(['name' => $schedule->name, 'active' => $schedule->is_active])
             ->log();
 

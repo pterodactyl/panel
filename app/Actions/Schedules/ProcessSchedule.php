@@ -29,7 +29,7 @@ final readonly class ProcessSchedule implements ProcessesSchedules
 
         // A run on demand is someone's doing; runs on the schedule's timer are not logged.
         if ($now) {
-            Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();
+            Activity::event('server:schedule.execute')->subject($schedule->server, $schedule)->property('name', $schedule->name)->log();
         }
     }
 

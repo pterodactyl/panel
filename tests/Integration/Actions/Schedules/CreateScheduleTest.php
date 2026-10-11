@@ -8,8 +8,11 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Schedules\CreatesSchedules;
 use Pterodactyl\Contracts\Schedules\CreatesScheduleTasks;
+use Pterodactyl\Contracts\Schedules\DeletesSchedules;
+use Pterodactyl\Contracts\Schedules\DeletesScheduleTasks;
+use Pterodactyl\Contracts\Schedules\UpdatesSchedules;
+use Pterodactyl\Contracts\Schedules\UpdatesScheduleTasks;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
@@ -36,7 +39,24 @@ test('a schedule created without the http api is validated and logged like one c
 
     $schedule = $schedules->create($server, schedule());
 
-    expect(ActivityLog::query()->where('event', 'server:schedule.create')->sole()->subjects()->where('subject_id', $schedule->id)->exists())->toBeTrue();
+    $this->assertActivityOn('server:schedule.create', $server, $schedule);
+});
+
+test('schedule and task changes made without the http api reach the server\'s feed', function (): void {
+    $server = $this->createServerModel();
+    $schedule = $this->app->make(CreatesSchedules::class)->create($server, schedule());
+    $task = $this->app->make(CreatesScheduleTasks::class)->create($schedule, ['action' => 'command', 'payload' => 'say hi', 'time_offset' => 0]);
+
+    $this->app->make(UpdatesScheduleTasks::class)->update($schedule, $task, ['action' => 'command', 'payload' => 'say bye', 'time_offset' => 0]);
+    $this->app->make(DeletesScheduleTasks::class)->delete($schedule, $task);
+    $this->app->make(UpdatesSchedules::class)->update($schedule, schedule(['name' => 'Renamed']));
+    $this->app->make(DeletesSchedules::class)->delete($schedule);
+
+    foreach (['server:task.create', 'server:task.update', 'server:task.delete', 'server:schedule.update', 'server:schedule.delete'] as $event) {
+        $this->assertActivityOn($event, $server, $schedule);
+    }
+
+    expect($server->activity()->count())->toBe(6);
 });
 
 test('task rules and the backup limit hold for every caller', function (): void {

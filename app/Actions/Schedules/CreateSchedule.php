@@ -79,7 +79,7 @@ final class CreateSchedule implements CreatesSchedules
         $schedule = $server->schedules()->create(self::attributes($input));
 
         Activity::event('server:schedule.create')
-            ->subject($schedule)
+            ->subject($server, $schedule)
             ->property('name', $schedule->name)
             ->log();
 

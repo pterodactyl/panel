@@ -51,7 +51,7 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
         });
 
         Activity::event('server:task.update')
-            ->subject($schedule, $task)
+            ->subject($schedule->server, $schedule, $task)
             ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
             ->log();
 

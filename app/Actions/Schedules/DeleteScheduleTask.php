@@ -31,6 +31,6 @@ final readonly class DeleteScheduleTask implements DeletesScheduleTasks
             $task->delete();
         });
 
-        Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
+        Activity::event('server:task.delete')->subject($schedule->server, $schedule, $task)->property('name', $schedule->name)->log();
     }
 }

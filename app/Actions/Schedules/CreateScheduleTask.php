@@ -99,7 +99,7 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
         });
 
         Activity::event('server:task.create')
-            ->subject($schedule, $task)
+            ->subject($schedule->server, $schedule, $task)
             ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
             ->log();
 

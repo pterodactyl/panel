@@ -14,6 +14,6 @@ final class DeleteSchedule implements DeletesSchedules
     {
         $schedule->delete();
 
-        Activity::event('server:schedule.delete')->subject($schedule)->property('name', $schedule->name)->log();
+        Activity::event('server:schedule.delete')->subject($schedule->server, $schedule)->property('name', $schedule->name)->log();
     }
 }
