@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Traits\Commands;
 
+use Closure;
+use Illuminate\Support\Fluent;
 use Pterodactyl\Exceptions\PterodactylException;
 
 trait EnvironmentWriterTrait
@@ -56,5 +58,26 @@ trait EnvironmentWriterTrait
         });
 
         file_put_contents($path, $saveContents);
+    }
+
+    /**
+     * The answer to a prompt, or the option passed in its place. Symfony returns
+     * either one untyped: a string, or null for a blank answer without a default.
+     */
+    protected function answer(Closure $prompt): ?string
+    {
+        $answer = Fluent::make(['value' => $prompt()]);
+
+        return $answer->get('value') === null ? null : $answer->string('value')->toString();
+    }
+
+    /**
+     * The value currently configured for a key, offered as a prompt's default.
+     */
+    protected function configured(string $key, int|string|null $default = null): ?string
+    {
+        $config = Fluent::make(config()->all());
+
+        return $config->get($key, $default) === null ? null : $config->string($key, $default)->toString();
     }
 }

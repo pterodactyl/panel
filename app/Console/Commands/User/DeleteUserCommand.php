@@ -7,10 +7,10 @@ namespace Pterodactyl\Console\Commands\User;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Users\DeletesUsers;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Description('Deletes a user from the Panel if no servers are attached to their account.')]
 #[Signature('p:user:delete {--user=}')]
@@ -23,7 +23,7 @@ class DeleteUserCommand extends Command
             throw new InvalidArgumentException(sprintf('Search term should be an email address, got: %s.', get_debug_type($search)));
         }
 
-        $search = JsonValueGuard::string($search);
+        $search = Arr::string(['search' => $search], 'search');
 
         $results = User::query()
             ->where('id', 'LIKE', "$search%")
@@ -61,7 +61,14 @@ class DeleteUserCommand extends Command
         }
 
         if ($this->confirm(trans('command/messages.user.confirm_delete')) || ! $this->input->isInteractive()) {
-            $user = $deleteUser instanceof User ? $deleteUser : User::query()->findOrFail(JsonValueGuard::integer($deleteUser));
+            if ($deleteUser instanceof User) {
+                $user = $deleteUser;
+            } else {
+                $id = filter_var($deleteUser, FILTER_VALIDATE_INT);
+                throw_if($id === false, InvalidArgumentException::class, 'Expected a numeric user id.');
+                $user = User::query()->findOrFail($id);
+            }
+
             $users->delete($user);
             $this->info(trans('command/messages.user.deleted'));
         }

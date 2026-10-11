@@ -7,9 +7,9 @@ namespace Pterodactyl\Console\Commands\Location;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Description('Creates a new location on the system via the CLI.')]
 #[Signature('p:location:make
@@ -22,13 +22,15 @@ class MakeLocationCommand extends Command
      */
     public function handle(CreatesLocations $locations): int
     {
-        $short = $this->option('short') ?? $this->ask(trans('command/messages.location.ask_short'));
-        $long = $this->option('long') ?? $this->ask(trans('command/messages.location.ask_long'));
+        $input = Fluent::make([
+            'short' => $this->option('short') ?? $this->ask(trans('command/messages.location.ask_short')),
+            'long' => $this->option('long') ?? $this->ask(trans('command/messages.location.ask_long')),
+        ]);
 
         try {
             $location = $locations->create([
-                'short' => JsonValueGuard::nullableString($short),
-                'long' => JsonValueGuard::nullableString($long),
+                'short' => $input->get('short') === null ? null : $input->string('short')->toString(),
+                'long' => $input->get('long') === null ? null : $input->string('long')->toString(),
             ]);
         } catch (ValidationException $validationException) {
             foreach ($validationException->validator->errors()->all() as $error) {
