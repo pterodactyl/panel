@@ -15,7 +15,6 @@ use Pterodactyl\Contracts\Allocations\UnassignsAllocations;
 use Pterodactyl\Contracts\Allocations\UpdatesAllocationNotes;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest;
@@ -74,16 +73,7 @@ class NetworkAllocationController extends ClientApiController
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocation notes updated.', factoryStates: ['withServer'], resourceKey: 'allocation')]
     public function update(UpdateAllocationRequest $request, UpdatesAllocationNotes $notes, Server $server, Allocation $allocation): array
     {
-        $original = $allocation->notes;
-
         $allocation = $notes->update($allocation, JsonValueGuard::nullableString($request->validated('notes')));
-
-        if ($original !== $allocation->notes) {
-            Activity::event('server:allocation.notes')
-                ->subject($allocation)
-                ->property(['allocation' => $allocation->toString(), 'old' => $original, 'new' => $allocation->notes])
-                ->log();
-        }
 
         return Fractal::item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -100,11 +90,6 @@ class NetworkAllocationController extends ClientApiController
     public function setPrimary(SetPrimaryAllocationRequest $request, SetsPrimaryAllocations $allocations, Server $server, Allocation $allocation): array
     {
         $allocation = $allocations->setPrimary($server, $allocation);
-
-        Activity::event('server:allocation.primary')
-            ->subject($allocation)
-            ->property('allocation', $allocation->toString())
-            ->log();
 
         return Fractal::item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -123,8 +108,6 @@ class NetworkAllocationController extends ClientApiController
     {
         $allocation = $allocations->assign($server);
 
-        Activity::event('server:allocation.create')->subject($allocation)->property('allocation', $allocation->toString())->log();
-
         return Fractal::item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toResponseArray();
@@ -140,12 +123,7 @@ class NetworkAllocationController extends ClientApiController
     #[ScribeResponse(self::DELETE_PRIMARY_ERROR, status: 400, description: 'The allocation cannot be removed because it is primary or the server has no allocation limit.')]
     public function delete(DeleteAllocationRequest $request, UnassignsAllocations $allocations, Server $server, Allocation $allocation): JsonResponse
     {
-        $allocation = $allocations->unassign($server, $allocation);
-
-        Activity::event('server:allocation.delete')
-            ->subject($allocation)
-            ->property('allocation', $allocation->toString())
-            ->log();
+        $allocations->unassign($server, $allocation);
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

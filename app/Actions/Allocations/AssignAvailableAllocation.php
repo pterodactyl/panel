@@ -11,6 +11,7 @@ use Pterodactyl\Data\AllocationRange;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Support\JsonValueGuard;
@@ -43,6 +44,8 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
         }
 
         $allocation->update(['server_id' => $server->id]);
+
+        Activity::event('server:allocation.create')->subject($server, $allocation)->property('allocation', $allocation->toString())->log();
 
         return $allocation;
     }

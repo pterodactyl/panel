@@ -22,6 +22,7 @@ test('allocation can be deleted from server', function (array $permission) {
     $allocation = Allocation::factory()->create(['server_id' => $server->id, 'node_id' => $server->node_id, 'notes' => 'hodor']);
     $this->actingAs($user)->deleteJson($this->link($allocation))->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null, 'notes' => null]);
+    $this->assertActivityFor('server:allocation.delete', $user, $server, $allocation);
 })->with('permissionDataProvider');
 test('error is returned if user does not have permission', function () {
     /** @var Server $server */
