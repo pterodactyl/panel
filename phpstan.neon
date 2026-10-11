@@ -74,6 +74,15 @@ parameters:
         ApiPayload: 'array<string, ApiValue10>'
         ApiPayload9: 'array<string, ApiValue9>'
         FractalTransformedPayload: 'array{relationships?: array<string, ApiValue9>, ...<string, ApiValue9>}'
+        # What an API resource renders: a model, the live state of a server, or a daemon payload.
+        ApiResourceData: '\Illuminate\Database\Eloquent\Model|\Pterodactyl\Data\ServerState|array<array-key, ApiValue9>'
+        # An API resource's rendered attributes: toArray() with the includes in `relationships`,
+        # held as the resolved resource objects the way Laravel nests resources in toArray().
+        ApiResourceAttributes: 'array<string, ApiValue10|array<string, \Pterodactyl\Http\Resources\Api\Includes\IncludedResource>>'
+        ApiResourceMeta: 'array<string, ApiValue9>'
+        ApiResourceItem: 'array{object: string|null, attributes: ApiResourceAttributes, meta?: ApiResourceMeta}'
+        ApiResourcePagination: 'array{total: int, count: int, per_page: int, current_page: int, total_pages: int, links: array{previous?: string, next?: string}|\Pterodactyl\Support\JsonEmptyObject}'
+        ApiResourceList: 'array{object: string, data: list<ApiResourceItem>, meta?: array<string, ApiValue9|ApiResourcePagination>}'
         DaemonFileObject: 'array{name?: string, mode?: string, mode_bits?: string, size?: int, file?: bool, symlink?: bool, mime?: string, created?: string, modified?: string}'
         DaemonStats: 'array{state?: string, is_suspended?: bool, utilization?: array{memory_bytes?: int, cpu_absolute?: float|int, disk_bytes?: int, network?: array{rx_bytes?: int, tx_bytes?: int}, uptime?: int}}'
         DatabaseCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null}'

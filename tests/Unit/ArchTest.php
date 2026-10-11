@@ -16,9 +16,22 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Resources\ConditionallyLoadsAttributes;
+use Illuminate\Http\Resources\MergeValue;
+use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\ServiceProvider;
+use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\NodeFinder;
+use PhpParser\ParserFactory;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
@@ -27,6 +40,8 @@ use Pterodactyl\Services\Tags\TagBackfiller;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer as AdminUserTransformer;
 use Pterodactyl\Transformers\Api\Client\UserTransformer as ClientUserTransformer;
 use Pterodactyl\Transformers\Concerns\FormatsActivityLogs;
+use ReflectionClass;
+use ReflectionMethod;
 use Throwable;
 
 arch()->preset()->php()->ignoring('Rules');
@@ -192,3 +207,41 @@ arch('enums and traits')
 arch('traits')
     ->expect('Pterodactyl\Traits')
     ->toBeTraits();
+
+// API resources render Fractal's exact output: dropping missing values would also turn
+// arrays with numeric keys into lists, so Laravel's conditional attributes are off limits.
+arch('api resources never drop missing values')
+    ->expect('Pterodactyl\Http\Resources\Api')
+    ->not->toUse([MissingValue::class, MergeValue::class, PotentiallyMissing::class]);
+
+test('api resources never use laravel conditional attributes or response wrapping', function (): void {
+    // Every helper of ConditionallyLoadsAttributes, plus the ways to wrap or extend the
+    // response that resolve() and toResponse() ignore.
+    $forbidden = [
+        ...array_map(fn (ReflectionMethod $method): string => mb_strtolower($method->getName()), (new ReflectionClass(ConditionallyLoadsAttributes::class))->getMethods()),
+        'additional', 'withoutwrapping', 'wrap',
+    ];
+
+    $parser = (new ParserFactory)->createForHostVersion();
+    $finder = new NodeFinder;
+    $root = dirname(__DIR__, 2).'/app/';
+
+    // Static calls are checked across the app: JsonResource::withoutWrapping() is global
+    // state that would unwrap the Wings resources, which keep Laravel's `data` wrapper.
+    foreach ((new Filesystem)->allFiles($root) as $file) {
+        if ($file->getExtension() !== 'php') {
+            continue;
+        }
+
+        $resource = str_starts_with($file->getPathname(), $root.'Http/Resources/Api/');
+        $calls = $finder->find($parser->parse($file->getContents()) ?? [], fn (Node $node): bool => match (true) {
+            $node instanceof StaticCall => $node->name instanceof Identifier
+                && ($node->name->toLowerString() === 'withoutwrapping' || ($resource && in_array($node->name->toLowerString(), $forbidden, true))),
+            $node instanceof MethodCall, $node instanceof NullsafeMethodCall => $resource && $node->var instanceof Variable && $node->var->name === 'this'
+                && $node->name instanceof Identifier && in_array($node->name->toLowerString(), $forbidden, true),
+            default => false,
+        });
+
+        expect(array_map(fn (Node $call): int => $call->getStartLine(), $calls))->toBe([], $file->getRelativePathname());
+    }
+});
