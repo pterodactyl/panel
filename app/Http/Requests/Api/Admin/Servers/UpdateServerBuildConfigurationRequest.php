@@ -28,12 +28,12 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'allocation_id' => $rules['allocation_id'],
             'oom_disabled' => $rules['oom_disabled'],
 
-            'memory' => $this->requiredToOptional('memory', $rules['memory']),
-            'swap' => $this->requiredToOptional('swap', $rules['swap']),
-            'io' => $this->requiredToOptional('io', $rules['io']),
-            'cpu' => $this->requiredToOptional('cpu', $rules['cpu']),
-            'threads' => $this->requiredToOptional('threads', $rules['threads']),
-            'disk' => $this->requiredToOptional('disk', $rules['disk']),
+            'memory' => $rules['memory'],
+            'swap' => $rules['swap'],
+            'io' => $rules['io'],
+            'cpu' => $rules['cpu'],
+            'threads' => $rules['threads'],
+            'disk' => $rules['disk'],
 
             'add_allocation_ids' => $rules['add_allocations'],
             'add_allocation_ids.*' => $rules['add_allocations.*'],
@@ -77,27 +77,5 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'allocation_limit' => 'Allocation Limit',
             'backup_limit' => 'Backup Limit',
         ];
-    }
-
-    /**
-     * Relax a `required` limit rule into required_with/without:limits for backwards compat. @see https://github.com/pterodactyl/panel/issues/1500
-     *
-     * @param  ValidationRuleSet  $rules
-     * @return ValidationRuleSet
-     */
-    protected function requiredToOptional(string $field, array $rules, bool $limits = false): array
-    {
-        if (! in_array('required', $rules, true)) {
-            return $rules;
-        }
-
-        $optional = [$limits ? 'required_with:limits' : 'required_without:limits'];
-        foreach ($rules as $rule) {
-            if ($rule !== 'required') {
-                $optional[] = $rule;
-            }
-        }
-
-        return $optional;
     }
 }

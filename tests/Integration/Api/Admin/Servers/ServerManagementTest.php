@@ -170,7 +170,7 @@ test('update server build keeps the admin rules', function (array $payload, stri
     expect($fake->callsFor('sync'))->toBe([]);
 })->with([
     'a missing default allocation' => [['allocation_id' => 'missing'], 'allocation_id', 'required'],
-    'a missing memory limit' => [['memory' => 'missing'], 'memory', 'required_without'],
+    'a missing memory limit' => [['memory' => 'missing'], 'memory', 'required'],
     'a missing database limit' => [['database_limit' => 'missing'], 'database_limit', 'present'],
     'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
     'allocations to add that are not a list' => [['add_allocation_ids' => ['first' => 1]], 'add_allocation_ids', 'list'],

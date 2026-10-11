@@ -1646,29 +1646,29 @@ export type AdminUpdateServerBuildRequest = {
      */
     oom_disabled?: boolean;
     /**
-     * The memory limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The memory limit in megabytes. Must be at least 0.
      */
-    memory?: number;
+    memory: number;
     /**
-     * The swap limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least -1.
+     * The swap limit in megabytes. Must be at least -1.
      */
-    swap?: number;
+    swap: number;
     /**
-     * The block IO weight. This field is required when <code>limits</code> is not present. Must be between 10 and 1000.
+     * The block IO weight. Must be between 10 and 1000.
      */
-    io?: number;
+    io: number;
     /**
-     * The CPU limit percentage. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The CPU limit percentage. Must be at least 0.
      */
-    cpu?: number;
+    cpu: number;
     /**
      * CPU threads available to the server. Must match the regex /^[0-9-,]+$/.
      */
     threads?: string | null;
     /**
-     * The disk limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The disk limit in megabytes. Must be at least 0.
      */
-    disk?: number;
+    disk: number;
     add_allocation_ids?: Array<number>;
     remove_allocation_ids?: Array<number>;
     /**
