@@ -54,6 +54,18 @@ test('string lists reject invalid shapes', function (mixed $value) {
     'associative array' => [['name' => 'value']],
     'non-string item' => [['value', 1]],
 ]);
+test('booleans accept what the boolean validation rule accepts', function (mixed $value, bool $expected) {
+    expect(JsonValueGuard::boolean($value))->toBe($expected);
+})->with([[true, true], [1, true], ['1', true], [false, false], [0, false], ['0', false]]);
+test('booleans reject anything else', function (mixed $value) {
+    expect(fn (): bool => JsonValueGuard::boolean($value))->toThrow(UnexpectedValueException::class, 'Expected a boolean value.');
+})->with([[null], ['true'], ['yes'], [2], [1.0], [[]]]);
+test('integers accept what the integer validation rule accepts', function (mixed $value, int $expected) {
+    expect(JsonValueGuard::integer($value))->toBe($expected);
+})->with([[5, 5], ['5', 5], ['-5', -5], [1024.0, 1024]]);
+test('integers reject anything else', function (mixed $value) {
+    expect(fn (): int => JsonValueGuard::integer($value))->toThrow(UnexpectedValueException::class, 'Expected an integer value.');
+})->with([[null], [true], [1024.5], ['1024.0'], ['1e3'], [[]]]);
 test('rejects invalid json', function () {
     $this->expectException(JsonException::class);
     JsonValueGuard::decode('{');

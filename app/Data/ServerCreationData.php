@@ -82,11 +82,11 @@ final class ServerCreationData
     /** @param JsonInputValue $value */
     private static function boolean(mixed $value, string $key): bool
     {
-        return match ($value) {
-            true, 1, '1' => true,
-            false, 0, '0' => false,
-            default => throw self::invalid($key, 'a boolean'),
-        };
+        try {
+            return JsonValueGuard::boolean($value);
+        } catch (UnexpectedValueException) {
+            throw self::invalid($key, 'a boolean');
+        }
     }
 
     /** @param JsonInputValue $value */

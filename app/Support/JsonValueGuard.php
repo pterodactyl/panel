@@ -124,12 +124,18 @@ final class JsonValueGuard
         return $value === null ? null : (string) $value;
     }
 
-    /** @phpstan-assert bool $value */
+    /**
+     * Accepts what Laravel's `boolean` rule accepts: true, false, 1, 0, "1" and "0".
+     *
+     * @phpstan-assert bool|int|string $value
+     */
     public static function boolean(mixed $value): bool
     {
-        throw_unless(is_bool($value), UnexpectedValueException::class, 'Expected a boolean value.');
-
-        return $value;
+        return match ($value) {
+            true, 1, '1' => true,
+            false, 0, '0' => false,
+            default => throw new UnexpectedValueException('Expected a boolean value.'),
+        };
     }
 
     /** @phpstan-assert int|float|string|null $value */
