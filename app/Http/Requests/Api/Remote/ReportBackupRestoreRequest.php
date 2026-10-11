@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Remote;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ReportBackupRestoreRequest extends FormRequest
 {
@@ -30,10 +28,8 @@ class ReportBackupRestoreRequest extends FormRequest
      */
     public function payload(): array
     {
-        $data = parent::validated();
-
         return [
-            'successful' => JsonValueGuard::boolean(Arr::get($data, 'successful')),
+            'successful' => $this->boolean('successful'),
         ];
     }
 }

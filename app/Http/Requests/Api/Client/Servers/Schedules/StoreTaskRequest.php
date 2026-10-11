@@ -69,7 +69,7 @@ class StoreTaskRequest extends ViewScheduleRequest
             'payload' => JsonValueGuard::nullableScalarString(Arr::get($data, 'payload')) ?? '',
             'time_offset' => JsonValueGuard::integer(Arr::get($data, 'time_offset')),
             'sequence_id' => $sequenceId === null || $sequenceId === '' ? null : JsonValueGuard::integer($sequenceId),
-            'continue_on_failure' => JsonValueGuard::boolean(Arr::get($data, 'continue_on_failure', false)),
+            'continue_on_failure' => $this->boolean('continue_on_failure'),
         ];
     }
 }

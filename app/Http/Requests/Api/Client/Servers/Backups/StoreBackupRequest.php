@@ -38,7 +38,7 @@ class StoreBackupRequest extends ClientApiRequest implements ClientPermissionsRe
 
         return [
             'name' => JsonValueGuard::nullableString(Arr::get($data, 'name')),
-            'is_locked' => JsonValueGuard::boolean(Arr::get($data, 'is_locked', false)),
+            'is_locked' => $this->boolean('is_locked'),
             'ignored' => JsonValueGuard::nullableString(Arr::get($data, 'ignored')),
         ];
     }

@@ -47,6 +47,15 @@ test('schedule can be created for server', function (array $permissions): void {
     ]);
     $response->assertJsonCount(0, 'attributes.relationships.tasks.data');
 })->with('permissionsDataProvider');
+test('schedule flags accept every value the boolean rule allows', function (bool|int|string $active, bool $expected): void {
+    [$user, $server] = $this->generateTestAccount();
+    $id = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules", ['name' => 'Flags', 'is_active' => $active, 'only_when_online' => $active, 'minute' => '0', 'hour' => '*', 'day_of_week' => '*', 'month' => '*', 'day_of_month' => '*'])
+        ->assertOk()
+        ->json('attributes.id');
+
+    $schedule = Schedule::query()->findOrFail($id);
+    expect($schedule->is_active)->toBe($expected)->and($schedule->only_when_online)->toBe($expected);
+})->with([[1, true], ['1', true], [0, false], ['0', false], [true, true]]);
 test('schedule validation rules', function (): void {
     [$user, $server] = $this->generateTestAccount();
     $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules", []);

@@ -44,13 +44,13 @@ class StoreScheduleRequest extends ViewScheduleRequest
 
         return [
             'name' => JsonValueGuard::string(Arr::get($data, 'name')),
-            'is_active' => array_key_exists('is_active', $data) && JsonValueGuard::boolean(Arr::get($data, 'is_active')),
+            'is_active' => $this->boolean('is_active'),
             'minute' => JsonValueGuard::string(Arr::get($data, 'minute')),
             'hour' => JsonValueGuard::string(Arr::get($data, 'hour')),
             'day_of_month' => JsonValueGuard::string(Arr::get($data, 'day_of_month')),
             'month' => JsonValueGuard::string(Arr::get($data, 'month')),
             'day_of_week' => JsonValueGuard::string(Arr::get($data, 'day_of_week')),
-            'only_when_online' => JsonValueGuard::boolean(Arr::get($data, 'only_when_online', false)),
+            'only_when_online' => $this->boolean('only_when_online'),
         ];
     }
 }

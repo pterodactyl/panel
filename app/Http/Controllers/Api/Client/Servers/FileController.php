@@ -387,11 +387,14 @@ class FileController extends ClientApiController
     {
         $url = JsonValueGuard::string($request->validated('url'));
         $directory = JsonValueGuard::nullableString($request->validated('directory'));
-        $operation->pull($server,
-            $url,
-            $directory,
-            JsonValueGuard::jsonArray($request->safe()->only(['filename', 'use_header', 'foreground']))
-        );
+        $options = $request->safe()->only(['filename']);
+        foreach (['use_header', 'foreground'] as $flag) {
+            if ($request->safe()->has($flag)) {
+                $options[$flag] = $request->boolean($flag);
+            }
+        }
+
+        $operation->pull($server, $url, $directory, JsonValueGuard::jsonArray($options));
 
         Activity::event('server:file.pull')
             ->property('directory', $directory)

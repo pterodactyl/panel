@@ -97,6 +97,10 @@ test('a user can be created with an eight character password', function (): void
     $this->postJson('/api/application/users', ['username' => 'okuser', 'email' => 'ok@example.com', 'first_name' => 'Ok', 'last_name' => 'Password', 'password' => 'abcdefgh'])->assertCreated();
     expect(Hash::check('abcdefgh', User::query()->where('username', 'okuser')->firstOrFail()->password))->toBeTrue();
 });
+test('root admin status accepts integer and string flags', function (int|string $flag, bool $expected): void {
+    $this->postJson('/api/application/users', ['username' => 'flaguser', 'email' => 'flag@example.com', 'first_name' => 'Flag', 'last_name' => 'User', 'root_admin' => $flag])->assertCreated();
+    expect(User::query()->where('username', 'flaguser')->firstOrFail()->root_admin)->toBe($expected);
+})->with([[1, true], ['0', false]]);
 test('a user email must not start with a dash', function (string $method, string $suffix): void {
     $user = User::factory()->create();
     $this->{$method}('/api/application/users'.str_replace('{user}', (string) $user->id, $suffix), ['username' => 'dashuser', 'email' => '-x@example.com', 'first_name' => 'Dash', 'last_name' => 'User'])

@@ -16,7 +16,6 @@ use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\GetEggScriptRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\UpdateEggScriptRequest;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\EggTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -58,10 +57,7 @@ class EggScriptController extends AdminApiController
     #[ScribeResponse(self::INVALID_COPY_FROM_ERROR, status: 400, description: 'The selected copy source is invalid.')]
     public function update(UpdateEggScriptRequest $request, UpdatesEggInstallScripts $scripts, Egg $egg): array
     {
-
-        $data = $request->validated();
-        JsonValueGuard::assertPayload9($data);
-        $egg = $scripts->update($egg, $data);
+        $egg = $scripts->update($egg, $request->payload());
 
         Activity::event('admin:egg.scripts')
             ->subject($egg)

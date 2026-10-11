@@ -71,7 +71,7 @@ class StoreUserRequest extends AdminApiRequest
         }
 
         if (array_key_exists('root_admin', $validated)) {
-            $data['root_admin'] = JsonValueGuard::boolean(Arr::get($validated, 'root_admin'));
+            $data['root_admin'] = $this->boolean('root_admin');
         }
 
         $language = Arr::get($validated, 'preferences.language');

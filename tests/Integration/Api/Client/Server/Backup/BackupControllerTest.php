@@ -43,6 +43,15 @@ test('backup can be created without a name', function (): void {
     expect($response->json('attributes.name'))->toStartWith('Backup at ');
     $fake->assertBackedUp($response->json('attributes.uuid'));
 });
+test('backup lock accepts null and every value the boolean rule allows', function (bool|int|string|null $locked, bool $expected): void {
+    $user = User::factory()->create();
+    $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 3]);
+    new FakeDaemonBackup;
+
+    $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => 'Flagged', 'is_locked' => $locked])
+        ->assertOk()
+        ->assertJsonPath('attributes.is_locked', $expected);
+})->with([[null, false], [1, true], ['1', true], [0, false]]);
 test('backup cannot be created past the server limit', function () {
     $user = User::factory()->create();
     $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 1]);
@@ -67,7 +76,8 @@ test('backup can be restored', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupRestore->value]);
     $backup = Backup::factory()->create(['server_id' => $server->id, 'completed_at' => now(), 'is_successful' => true]);
     $fake = new FakeDaemonBackup;
-    $this->actingAs($user)->postJson($this->link($backup, '/restore'), ['truncate' => false])->assertNoContent();
+    // A form-encoded "0" is as valid as false.
+    $this->actingAs($user)->post($this->link($backup, '/restore'), ['truncate' => '0'], ['Accept' => 'application/json'])->assertNoContent();
     // The server is placed into a restoring state while Wings works.
     expect($server->refresh()->status)->toBe('restoring_backup');
     $fake->assertRestored($backup->uuid);

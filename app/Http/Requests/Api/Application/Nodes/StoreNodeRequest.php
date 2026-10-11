@@ -105,7 +105,7 @@ class StoreNodeRequest extends ApplicationApiRequest
 
         foreach (['public', 'behind_proxy', 'maintenance_mode'] as $boolean) {
             if (array_key_exists($boolean, $data)) {
-                $response[$boolean] = JsonValueGuard::boolean(Arr::get($data, $boolean));
+                $response[$boolean] = $this->boolean($boolean);
             }
         }
 
