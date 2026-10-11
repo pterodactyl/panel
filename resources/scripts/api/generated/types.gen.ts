@@ -2202,10 +2202,9 @@ export type AdminCreateEggVariableRequest = {
      */
     description?: string | null;
     /**
-     * The environment variable name. Must match the regex /^[\w]{1,191}$/. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, or <code>UUID</code>.
+     * The environment variable name. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, <code>UUID</code>, in any letter case. Must match the regex /^[\w]{1,191}$/.
      */
     env_variable: string;
-    options?: Array<string>;
     /**
      * Laravel validation rules applied to user-submitted values.
      */
@@ -2214,6 +2213,7 @@ export type AdminCreateEggVariableRequest = {
      * The default value.
      */
     default_value?: string;
+    options?: Array<string>;
 };
 
 export type AdminReorderEggVariablesRequest = {
@@ -2230,10 +2230,9 @@ export type AdminUpdateEggVariableRequest = {
      */
     description?: string | null;
     /**
-     * The environment variable name. Must match the regex /^[\w]{1,191}$/. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, or <code>UUID</code>.
+     * The environment variable name. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, <code>UUID</code>, in any letter case. Must match the regex /^[\w]{1,191}$/.
      */
     env_variable: string;
-    options?: Array<string>;
     /**
      * Laravel validation rules applied to user-submitted values.
      */
@@ -2242,6 +2241,7 @@ export type AdminUpdateEggVariableRequest = {
      * The default value.
      */
     default_value?: string;
+    options?: Array<string>;
 };
 
 export type AdminUpdateEggInstallScriptRequest = {

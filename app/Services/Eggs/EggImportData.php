@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Eggs;
 
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Validation\EggRules;
 
 final readonly class EggImportData
 {
@@ -55,7 +57,7 @@ final readonly class EggImportData
         $scripts = self::object($root['scripts'] ?? null, 'scripts');
         $installation = self::object($scripts['installation'] ?? null, 'scripts.installation');
 
-        return new self(
+        $data = new self(
             name: self::string($root['name'] ?? null, 'name'),
             author: self::string($root['author'] ?? null, 'author'),
             description: self::nullableString($root['description'] ?? null, 'description'),
@@ -73,6 +75,9 @@ final readonly class EggImportData
             scriptContainer: self::string($installation['container'] ?? null, 'scripts.installation.container'),
             variables: self::variables($root['variables'] ?? []),
         );
+        $data->validate();
+
+        return $data;
     }
 
     /**
@@ -221,5 +226,31 @@ final readonly class EggImportData
     private static function invalid(string $field): InvalidFileUploadException
     {
         return new InvalidFileUploadException(sprintf('The egg field "%s" is missing or invalid.', $field));
+    }
+
+    /**
+     * Holds an imported egg to the rules an egg written through the admin API meets, so a
+     * file cannot store config that every node serving the egg would later fail to read.
+     */
+    private function validate(): void
+    {
+        $validator = Validator::make([
+            'name' => $this->name,
+            'author' => $this->author,
+            'docker_images' => $this->dockerImages,
+            'startup' => $this->startup,
+            'config_stop' => $this->configStop,
+            'config_startup' => $this->configStartup,
+            'config_logs' => $this->configLogs,
+            'config_files' => $this->configFiles,
+            'variables' => array_map(fn (EggImportVariable $variable): array => $variable->attributes(), $this->variables),
+        ], EggRules::import());
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $field = JsonValueGuard::string(array_key_first($errors->messages()));
+
+            throw new InvalidFileUploadException(sprintf('The egg field "%s" is invalid: %s', $field, $errors->first($field)));
+        }
     }
 }

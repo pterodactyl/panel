@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables;
 
-use Closure;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
-use Illuminate\Validation\Validator;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Rules\ValidRuleSet;
 use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Validation\EggVariableRules;
 
 class StoreVariableRequest extends AdminApiRequest
 {
@@ -29,39 +27,13 @@ class StoreVariableRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'min:1', 'max:191'],
-            'description' => ['sometimes', 'nullable', 'string'],
-            'env_variable' => [
-                'required',
-                'regex:/^[\w]{1,191}$/',
-                Rule::notIn($this->reservedEnvironmentVariables()),
-                $this->uniqueEnvironmentVariable(),
-            ],
+        $rules = EggVariableRules::rules();
+        $rules['env_variable'][] = $this->uniqueEnvironmentVariable();
+
+        return array_merge($rules, [
             'options' => ['sometimes', 'required', 'array', 'list'],
             'options.*' => ['string'],
-            'rules' => ['bail', 'required', 'string', new ValidRuleSet],
-            'default_value' => ['present', 'string'],
-        ];
-    }
-
-    /**
-     * Reserved names are rejected in any letter case.
-     *
-     * @return list<Closure(Validator): void>
-     */
-    public function after(): array
-    {
-        return [
-            function (Validator $validator): void {
-                $name = $this->string('env_variable')->toString();
-                if ($validator->errors()->has('env_variable') || ! in_array(mb_strtoupper($name), $this->reservedEnvironmentVariables(), true)) {
-                    return;
-                }
-
-                $validator->errors()->add('env_variable', trans('exceptions.service.variables.reserved_name', ['name' => $name]));
-            },
-        ];
+        ]);
     }
 
     /**
@@ -90,11 +62,5 @@ class StoreVariableRequest extends AdminApiRequest
     protected function uniqueEnvironmentVariable(): Unique
     {
         return Rule::unique(EggVariable::class, 'env_variable')->where('egg_id', $this->parameter('egg', Egg::class)->id);
-    }
-
-    /** @return list<string> */
-    private function reservedEnvironmentVariables(): array
-    {
-        return explode(',', EggVariable::RESERVED_ENV_NAMES);
     }
 }
