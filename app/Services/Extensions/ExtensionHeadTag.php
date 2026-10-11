@@ -7,7 +7,6 @@ namespace Pterodactyl\Services\Extensions;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * One validated `<meta>` or `<link>` element an extension adds to the panel's document
@@ -99,11 +98,11 @@ final readonly class ExtensionHeadTag
         throw_if($unknown !== [], InvalidArgumentException::class, sprintf('Head tag <%s> does not support the "%s" attribute.', $tag, reset($unknown)));
         throw_if($validator->fails(), InvalidArgumentException::class, sprintf('Invalid <%s> head tag: %s', $tag, $validator->errors()->first()));
 
+        $validated = $validator->safe();
         $attributes = [];
         foreach (self::ATTRIBUTES[$tag] as $attribute) {
-            $value = $validator->validated()[$attribute] ?? null;
-            if ($value !== null) {
-                $attributes[$attribute] = JsonValueGuard::string($value);
+            if ($validated->has($attribute)) {
+                $attributes[$attribute] = $validated->string($attribute)->toString();
             }
         }
 

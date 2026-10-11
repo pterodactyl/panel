@@ -285,7 +285,7 @@ final readonly class EggImportData
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $field = JsonValueGuard::string(array_key_first($errors->messages()));
+            $field = $errors->keys()[0];
 
             throw new InvalidFileUploadException(sprintf('The egg field "%s" is invalid: %s', $field, $errors->first($field)));
         }

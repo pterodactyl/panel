@@ -8,10 +8,10 @@ use Closure;
 use Illuminate\Auth\Events\PasswordResetLinkSent;
 use Illuminate\Auth\Passwords\PasswordBroker as IlluminatePasswordBroker;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use SensitiveParameter;
 
 class PasswordBroker extends IlluminatePasswordBroker
@@ -23,7 +23,7 @@ class PasswordBroker extends IlluminatePasswordBroker
      */
     public function sendResetLink(#[SensitiveParameter] array $credentials, ?Closure $callback = null): string
     {
-        return JsonValueGuard::string($this->timebox->call(function () use ($credentials, $callback): string {
+        return $this->timebox->call(function () use ($credentials, $callback): string {
             $user = $this->getUser($credentials);
 
             if ($user === null) {
@@ -41,7 +41,7 @@ class PasswordBroker extends IlluminatePasswordBroker
             $token = $this->tokens->create($user);
 
             if ($callback instanceof Closure) {
-                return JsonValueGuard::nullableString($callback($user, $token)) ?? static::RESET_LINK_SENT;
+                return Arr::string(['status' => $callback($user, $token) ?? static::RESET_LINK_SENT], 'status');
             }
 
             $user->sendPasswordResetNotification($token);
@@ -49,7 +49,7 @@ class PasswordBroker extends IlluminatePasswordBroker
             $this->events?->dispatch(new PasswordResetLinkSent($user));
 
             return static::RESET_LINK_SENT;
-        }, $this->timeboxDuration));
+        }, $this->timeboxDuration);
     }
 
     /**

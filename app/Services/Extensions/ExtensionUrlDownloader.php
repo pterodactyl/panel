@@ -7,6 +7,7 @@ namespace Pterodactyl\Services\Extensions;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -19,7 +20,6 @@ use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 use UnexpectedValueException;
 
@@ -128,7 +128,7 @@ class ExtensionUrlDownloader
             'This install URL has expired. Copy a new install command.',
         );
 
-        $base = rescue(fn (): ?string => JsonValueGuard::nullableString($claims->get('url')), report: false);
+        $base = rescue(fn (): string => Arr::string($claims->all(), 'url'), report: false);
         throw_unless($base !== null && $this->isUrl($base), InvalidExtensionException::class, 'This install URL does not say where to download the extension from.');
 
         return $base.$jwt;
@@ -148,7 +148,7 @@ class ExtensionUrlDownloader
     /** The server explains refusals in a JSON body, which was written to the sink file. */
     private function failureMessage(string $path, int $status): string
     {
-        $message = rescue(fn (): ?string => JsonValueGuard::nullableString(data_get(JsonValueGuard::decode(File::get($path)), 'error.message')), report: false);
+        $message = rescue(fn (): string => Arr::string(File::json($path), 'error.message'), report: false);
 
         return $message !== null
             ? "The download was refused: {$message}"
