@@ -171,6 +171,13 @@ describe('useTerminal', () => {
         expect(Object.keys(theme)).toHaveLength(22);
     });
 
+    it('scrolls without easing, so new output cannot drag a scrolled-up view along', async () => {
+        render(<Harness />);
+        await waitFor(() => expect(terminals).toHaveLength(1));
+
+        expect(terminals[0].options.smoothScrollDuration).toBe(0);
+    });
+
     it('keeps the on-screen keyboard closed when the read-only terminal takes focus', async () => {
         const { container } = render(<Harness />);
 

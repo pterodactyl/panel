@@ -76,6 +76,9 @@ const terminalProps: ITerminalOptions = {
     cursorBlink: false,
     allowTransparency: true,
     rows: 30,
+    // Ghostty eases wheel scrolls toward a target it doesn't move when output arrives, so on a busy
+    // console each new line dragged the view forward and swallowed most of the scroll.
+    smoothScrollDuration: 0,
 };
 
 const countLineFeeds = (data: string | Uint8Array) =>
