@@ -1,0 +1,28 @@
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_5c2a9d7f58b9f5 158-163,173-190
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_4cabae41bceed9::t_8bbd347bd9343e 502
+  s_4cabae41bceed9::t_c2f1985fb8bfd0 559
+resources/scripts/extensions/loader.spec.ts
+  s_4cabae41bceed9::t_794c085c4cd14f 65-81
+resources/scripts/extensions/loader.ts
+  s_4cabae41bceed9::t_b05168eb513f35 47-50,55-59,66-70
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_4cabae41bceed9::t_71658169307e3a 268-290
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b860d8dae00e14bc7dcd32a6d202236d5d08741b",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
