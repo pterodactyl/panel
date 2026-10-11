@@ -547,7 +547,8 @@ run outside their transactions:
   failed drop is reported and the rest are dropped.
 - `InitiatesTransfers` calls Wings after the transfer records commit. A transfer Wings
   rejects is marked failed through `FailsTransfers`.
-- `RotatesDatabasePasswords` finishes before the controller writes the activity log entry.
+- `RotatesDatabasePasswords` logs the rotation after its transaction around the remote user
+  change commits.
 
 The wrapper owns the call: it decides whether and when to invoke the inner action and
 must forward fluent options such as `withForce()` itself, returning itself. Whatever it
@@ -581,8 +582,18 @@ reimplementing it. An action that takes an input array validates it with the sam
 as the API, whoever calls it, and throws a `ValidationException` naming the field that
 failed; values arrive as Laravel's rules accept them, so `"1"` is a boolean and `"25"` an
 integer. Pass the field names the Admin API uses. Extension form field values for a model
-go under `extensions` and are only accepted from a request that validated them. Beside
-the mutating actions, these read or complete on your behalf:
+go under `extensions` and are only accepted from a request that validated them.
+
+An action that changes a server or an account writes the `server:*` or `user:*` activity
+entry for that change itself, so it shows on the server's or user's activity feed whoever
+calls it. A call from an extension, a console command or the Application API is logged the
+same way as one from the client API, with the signed-in user, if there is one, as the
+actor. The admin API also writes its own `admin:*` entry to the admin activity log. A
+wrapper that does not call the inner action leaves no entry. Reading a file and downloading
+a file or a backup are logged by the endpoint the user called, not by `ReadsFileContents`
+or `GeneratesBackupDownloadLinks`.
+
+Beside the mutating actions, these read or complete on your behalf:
 
 | Contract | Call |
 | --- | --- |
