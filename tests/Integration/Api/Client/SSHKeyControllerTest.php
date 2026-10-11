@@ -74,6 +74,15 @@ test('only supported public key material can be stored', function (string $publi
     'key with a NUL byte' => fn (): string => substr_replace(EC::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'), "\0", 20, 0),
     'key over 16 KB' => fn (): string => 'ssh-ed25519 '.str_repeat('A', 16400),
 ]);
+test('a key needs a name and a public key', function (): void {
+    $user = User::factory()->create();
+    $this->actingAs($user)->postJson('/api/client/account/ssh-keys', ['name' => ['Laptop']])
+        ->assertUnprocessable()
+        ->assertJsonCount(2, 'errors')
+        ->assertJsonPath('errors.0.meta', ['source_field' => 'name', 'rule' => 'string'])
+        ->assertJsonPath('errors.1.meta', ['source_field' => 'public_key', 'rule' => 'required']);
+    expect($user->sshKeys()->count())->toBe(0);
+});
 test('public key can be stored', function (): void {
     $user = User::factory()->create();
     $key = UserSSHKey::factory()->make();

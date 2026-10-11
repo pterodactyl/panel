@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
+use Pterodactyl\Actions\Users\CreateSshKey;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Facades\Activity;
@@ -23,7 +24,6 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Traits\Helpers\ThrottlesLogins;
-use Pterodactyl\Validation\UserSSHKeyRules;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -69,7 +69,7 @@ class SftpAuthenticationController extends Controller
         } else {
             $key = null;
             $publicKey = mb_trim($request->safe()->string('password')->toString());
-            if (UserSSHKeyRules::isSupportedPublicKey($publicKey)) {
+            if (CreateSshKey::isSupportedPublicKey($publicKey)) {
                 try {
                     $key = PublicKeyLoader::loadPublicKey($publicKey);
                 } catch (NoKeyLoadedException) {
