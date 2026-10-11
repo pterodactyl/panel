@@ -50,6 +50,20 @@ test('built in tags cannot be deleted', function () {
     $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
     $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException')->assertJsonPath('errors.0.detail', 'Built-in game tags cannot be deleted.');
 });
+test('deleting an egg or node removes its tag attachments', function () {
+    $tag = Tag::factory()->create(['slug' => 'attached']);
+    $reservation = Tag::factory()->create(['slug' => 'reserved']);
+    $egg = Egg::factory()->create();
+    $node = Node::factory()->withLocation()->create();
+    $egg->tags()->attach($tag->id);
+    $node->eggTags()->attach($tag->id);
+    $node->deploymentTags()->attach($reservation->id);
+
+    $this->delete(route('api.admin.eggs.delete', ['egg' => $egg->id]))->assertNoContent();
+    $this->delete(route('api.admin.nodes.delete', ['node' => $node->id]))->assertNoContent();
+
+    expect(DB::table('taggables')->whereIn('tag_id', [$tag->id, $reservation->id])->count())->toBe(0);
+});
 test('tags sync accepts integer ids', function () {
     $tag = Tag::factory()->create(['slug' => 'integer-id']);
     $node = Node::factory()->withLocation()->create();
