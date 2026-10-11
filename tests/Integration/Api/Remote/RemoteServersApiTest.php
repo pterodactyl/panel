@@ -76,6 +76,25 @@ test('node can mark a backup as completed', function () {
     expect($backup->bytes)->toBe(1024);
     expect($backup->completed_at)->not->toBeNull();
 });
+test('a backup report keeps the wings field names and rules', function () {
+    $server = $this->createServerModel();
+    $backup = Backup::factory()->create(['server_id' => $server->id, 'is_successful' => false, 'completed_at' => null]);
+
+    actingAsNode($server->node)->postJson("/api/remote/backups/{$backup->uuid}", ['successful' => true, 'parts' => [['etag' => 'a']]])
+        ->assertUnprocessable()
+        ->assertJsonCount(4, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'checksum')
+        ->assertJsonPath('errors.1.meta.source_field', 'checksum_type')
+        ->assertJsonPath('errors.2.meta.source_field', 'size')
+        ->assertJsonPath('errors.3.meta.source_field', 'parts.0.part_number');
+    expect($backup->refresh()->completed_at)->toBeNull();
+
+    actingAsNode($server->node)->postJson("/api/remote/backups/{$backup->uuid}", ['successful' => '0'])->assertNoContent();
+    $backup->refresh();
+    expect($backup->is_successful)->toBeFalse();
+    expect($backup->completed_at)->not->toBeNull();
+    expect($server->activity()->where('event', 'server:backup.fail')->exists())->toBeTrue();
+});
 test('completed backup cannot be reported again', function () {
     $server = $this->createServerModel();
     $backup = Backup::factory()->create(['server_id' => $server->id, 'is_successful' => true]);

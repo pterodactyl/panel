@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Backups;
 
-use Illuminate\Support\Arr;
+use Pterodactyl\Actions\Backups\InitiateBackup;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
 
 class StoreBackupRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
@@ -18,28 +17,30 @@ class StoreBackupRequest extends ClientApiRequest implements ClientPermissionsRe
     }
 
     /**
+     * The backup's name and lock take the action's rules. The files to ignore are sent as
+     * one string, a file or folder per line, which ignoredFiles() splits into the list the
+     * action takes.
+     *
      * @return ValidationRules
      */
     public function rules(): array
     {
+        $rules = InitiateBackup::rules();
+
         return [
-            'name' => ['nullable', 'string', 'max:191'],
-            'is_locked' => ['nullable', 'boolean'],
+            'name' => $rules['name'],
+            'is_locked' => $rules['is_locked'],
             'ignored' => ['nullable', 'string'],
         ];
     }
 
     /**
-     * @return array{name: string|null, is_locked: bool, ignored: string|null}
+     * The files and folders to leave out of the backup, one per line of the ignored field.
+     *
+     * @return list<string>
      */
-    public function payload(): array
+    public function ignoredFiles(): array
     {
-        $data = parent::validated();
-
-        return [
-            'name' => JsonValueGuard::nullableString(Arr::get($data, 'name')),
-            'is_locked' => $this->boolean('is_locked'),
-            'ignored' => JsonValueGuard::nullableString(Arr::get($data, 'ignored')),
-        ];
+        return explode(PHP_EOL, $this->safe()->string('ignored')->toString());
     }
 }

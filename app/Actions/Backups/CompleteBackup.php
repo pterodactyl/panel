@@ -7,6 +7,8 @@ namespace Pterodactyl\Actions\Backups;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\CompletesBackups;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\DisplayException;
@@ -15,36 +17,87 @@ use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Models\Backup;
 use Throwable;
 
+/**
+ * @phpstan-type CompletionAttributes array{successful: bool, checksum: string|null, checksum_type: string|null, size: int, parts: list<MultipartUploadPart>|null}
+ */
 final readonly class CompleteBackup implements CompletesBackups
 {
     public function __construct(private BackupManager $backupManager) {}
 
     /**
+     * The outcome Wings reports for a backup, under the field names of its protocol. A
+     * successful backup carries its checksum, the checksum's type and its size in bytes. An
+     * S3 backup may list the parts of its multipart upload.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'successful' => ['required', 'boolean'],
+            'checksum' => ['nullable', 'string', 'required_if:successful,true'],
+            'checksum_type' => ['nullable', 'string', 'required_if:successful,true'],
+            'size' => ['nullable', 'integer', 'required_if:successful,true'],
+            'parts' => ['nullable', 'array', 'list'],
+            'parts.*.etag' => ['required', 'string'],
+            'parts.*.part_number' => ['required', 'integer'],
+        ];
+    }
+
+    /**
+     * Validates a reported outcome and returns the outcome it describes. A size left out is
+     * 0, and parts left out or null are null, so the upload's parts are listed from S3.
+     *
+     * @param  ActionInput  $input
+     * @return CompletionAttributes
+     */
+    public static function attributes(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        return [
+            'successful' => $input->boolean('successful'),
+            'checksum' => $input->filled('checksum') ? $input->string('checksum')->toString() : null,
+            'checksum_type' => $input->filled('checksum_type') ? $input->string('checksum_type')->toString() : null,
+            'size' => $input->integer('size'),
+            'parts' => $input->filled('parts')
+                ? array_map(fn (int|string $key): array => [
+                    'etag' => $input->string('parts.'.$key.'.etag')->toString(),
+                    'part_number' => $input->integer('parts.'.$key.'.part_number'),
+                ], array_keys($input->array('parts')))
+                : null,
+        ];
+    }
+
+    /**
      * Records the outcome Wings reported for a backup and, for S3 storage, closes the
      * multipart upload it belongs to.
      *
-     * @param  BackupCompletionData  $data
+     * @param  ActionInput  $input
      *
      * @throws DisplayException
+     * @throws ValidationException
      * @throws Throwable
      */
-    public function complete(Backup $backup, array $data): void
+    public function complete(Backup $backup, array $input): void
     {
-        DB::transaction(function () use ($backup, $data): void {
-            $successful = $data['successful'];
+        $attributes = self::attributes($input);
+
+        DB::transaction(function () use ($backup, $attributes): void {
+            $successful = $attributes['successful'];
 
             $backup->fill([
                 'is_successful' => $successful,
                 // A failed backup is unlocked so it can be deleted easily.
                 'is_locked' => $successful && $backup->is_locked,
-                'checksum' => $successful ? ($data['checksum_type'].':'.$data['checksum']) : null,
-                'bytes' => $successful ? $data['size'] : 0,
+                'checksum' => $successful ? ($attributes['checksum_type'].':'.$attributes['checksum']) : null,
+                'bytes' => $successful ? $attributes['size'] : 0,
                 'completed_at' => CarbonImmutable::now(),
             ])->save();
 
             $adapter = $this->backupManager->adapter();
             if ($adapter instanceof S3Filesystem) {
-                $this->completeMultipartUpload($backup, $adapter, $successful, $data['parts']);
+                $this->completeMultipartUpload($backup, $adapter, $successful, $attributes['parts']);
             }
 
             Event::dispatch(new OperationCompleted($backup->server->uuid, 'backup', $successful, $backup->uuid));

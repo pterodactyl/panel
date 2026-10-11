@@ -7,6 +7,8 @@ namespace Pterodactyl\Actions\Backups;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
@@ -22,7 +24,7 @@ use UnexpectedValueException;
 
 final class InitiateBackup implements InitiatesBackups
 {
-    /** @var array<int, string> */
+    /** @var list<string> */
     private array $ignoredFiles = [];
 
     private bool $isLocked = false;
@@ -31,6 +33,44 @@ final class InitiateBackup implements InitiatesBackups
         private readonly DeletesBackups $deleteBackup,
         private readonly BackupManager $backupManager,
     ) {}
+
+    /**
+     * A backup's fields: an optional name, whether it is locked against deletion, and the
+     * files and folders to leave out of it.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'name' => ['nullable', 'string', 'max:191'],
+            'is_locked' => ['nullable', 'boolean'],
+            'ignored_files' => ['nullable', 'array', 'list'],
+            'ignored_files.*' => ['string'],
+        ];
+    }
+
+    /**
+     * Validates backup input and returns the backup it describes. A name left out or blank
+     * is null, and empty entries are dropped from the ignored files.
+     *
+     * @param  ActionInput  $input
+     * @return array{name: string|null, is_locked: bool, ignored_files: list<string>}
+     */
+    public static function attributes(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        // Don't use the PHP empty function here in case anything that is "empty" by default
+        // (0, false, etc.) was passed as a file or folder name.
+        $ignored = array_map(fn (int|string $key): string => $input->string('ignored_files.'.$key)->toString(), array_keys($input->array('ignored_files')));
+
+        return [
+            'name' => $input->filled('name') ? $input->string('name')->toString() : null,
+            'is_locked' => $input->boolean('is_locked'),
+            'ignored_files' => array_values(array_filter($ignored, fn (string $file): bool => $file !== '')),
+        ];
+    }
 
     /**
      * Set if the backup should be locked once it is created which will prevent
@@ -44,16 +84,14 @@ final class InitiateBackup implements InitiatesBackups
     }
 
     /**
-     * Sets the files to be ignored by this backup.
+     * Sets the files to be ignored by this backup. They are validated when the backup is
+     * initiated.
      *
      * @param  list<string>|null  $ignored
      */
     public function setIgnoredFiles(?array $ignored): InitiatesBackups
     {
-        // Set the ignored files to be any values that are not empty in the array. Don't use
-        // the PHP empty function here incase anything that is "empty" by default (0, false, etc.)
-        // were passed as a file or folder name.
-        $this->ignoredFiles = ($ignored) === null ? [] : array_filter($ignored, fn (string $value): bool => $value !== '');
+        $this->ignoredFiles = $ignored ?? [];
 
         return $this;
     }
@@ -69,10 +107,13 @@ final class InitiateBackup implements InitiatesBackups
      * @throws Throwable
      * @throws TooManyBackupsException
      * @throws TooManyRequestsHttpException
+     * @throws ValidationException
      */
     public function initiate(Server $server, ?string $name = null, bool $override = false): Backup
     {
-        [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $name, $override): array {
+        $attributes = self::attributes(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles]);
+
+        [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $attributes, $override): array {
             $limit = JsonValueGuard::integer(config('backups.throttles.limit'));
             $period = JsonValueGuard::integer(config('backups.throttles.period'));
             if ($period > 0) {
@@ -122,10 +163,10 @@ final class InitiateBackup implements InitiatesBackups
 
             $backup = $server->backups()->create([
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => mb_trim($name ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => array_values($this->ignoredFiles),
+                'name' => mb_trim($attributes['name'] ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
+                'ignored_files' => $attributes['ignored_files'],
                 'disk' => $this->backupManager->getDefaultAdapter(),
-                'is_locked' => $this->isLocked,
+                'is_locked' => $attributes['is_locked'],
             ]);
 
             return [$backup, $rotated];

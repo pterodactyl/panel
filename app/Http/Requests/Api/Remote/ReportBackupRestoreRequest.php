@@ -14,22 +14,14 @@ class ReportBackupRestoreRequest extends FormRequest
     }
 
     /**
+     * Whether the restore succeeded only picks the activity event that is logged.
+     *
      * @return ValidationRules
      */
     public function rules(): array
     {
         return [
             'successful' => ['required', 'boolean'],
-        ];
-    }
-
-    /**
-     * @return array{successful: bool}
-     */
-    public function payload(): array
-    {
-        return [
-            'successful' => $this->boolean('successful'),
         ];
     }
 }

@@ -52,6 +52,23 @@ test('backup lock accepts null and every value the boolean rule allows', functio
         ->assertOk()
         ->assertJsonPath('attributes.is_locked', $expected);
 })->with([[null, false], [1, true], ['1', true], [0, false]]);
+test('backup ignores the files sent one per line and keeps its own rules', function (): void {
+    $user = User::factory()->create();
+    $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 3]);
+    new FakeDaemonBackup;
+
+    $uuid = $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => 'Ignoring', 'ignored' => "logs/\n\ncache/"])
+        ->assertOk()
+        ->json('attributes.uuid');
+    expect(Backup::query()->where('uuid', $uuid)->firstOrFail()->ignored_files)->toBe(['logs/', 'cache/']);
+
+    $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => str_repeat('a', 192), 'is_locked' => 'yes', 'ignored' => ['logs/']])
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'is_locked')
+        ->assertJsonPath('errors.2.meta.source_field', 'ignored');
+});
 test('backup cannot be created past the server limit', function () {
     $user = User::factory()->create();
     $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 1]);

@@ -69,9 +69,7 @@ class BackupController extends ClientApiController
     #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backups returned.', collection: true, resourceKey: 'backup', paginate: [IlluminatePaginatorAdapter::class, 20], meta: ['backup_count' => 1])]
     public function index(ListBackupsRequest $request, Server $server): array
     {
-        $validated = $request->payload();
-
-        return Fractal::collection($server->backups()->paginate($validated['per_page']))
+        return Fractal::collection($server->backups()->paginate($request->perPage()))
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->addMeta([
                 'backup_count' => $server->backups()->nonFailed()->count(),
@@ -94,19 +92,18 @@ class BackupController extends ClientApiController
     public function store(StoreBackupRequest $request, InitiatesBackups $initiate, Server $server): array
     {
         $user = $this->authenticatedUser($request);
-        $validated = $request->payload();
-        $action = $initiate
-            ->setIgnoredFiles(explode(PHP_EOL, $validated['ignored'] ?? ''));
+        $validated = $request->safe();
+        $action = $initiate->setIgnoredFiles($request->ignoredFiles());
 
         // Only set the lock status if the user even has permission to delete backups,
         // otherwise ignore this status. This gets a little funky since it isn't clear
         // how best to allow a user to create a backup that is locked without also preventing
         // them from just filling up a server with backups that can never be deleted?
         if ($user->can(Permissions::BackupDelete->value, $server)) {
-            $action->setIsLocked($validated['is_locked']);
+            $action->setIsLocked($validated->boolean('is_locked'));
         }
 
-        $backup = $action->initiate($server, $validated['name']);
+        $backup = $action->initiate($server, $validated->filled('name') ? $validated->string('name')->toString() : null);
 
         Activity::event('server:backup.start')->subject($backup)->property([
             'name' => $backup->name,
@@ -213,8 +210,7 @@ class BackupController extends ClientApiController
     public function restore(RestoreBackupRequest $request, RestoresBackups $restore, Server $server, Backup $backup): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        $validated = $request->payload();
-        $truncate = $validated['truncate'];
+        $truncate = $request->safe()->boolean('truncate');
 
         $restore->restore($server, $backup, $user, $truncate);
 

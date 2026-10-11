@@ -21,6 +21,19 @@ final readonly class RestoreBackup implements RestoresBackups
     ) {}
 
     /**
+     * A restore's fields: whether the server's files are deleted before the backup is
+     * unpacked over them. The action takes the flag as a bool, which always meets them.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'truncate' => ['required', 'boolean'],
+        ];
+    }
+
+    /**
      * Marks the server as restoring and asks Wings to unpack the backup over its files.
      * S3 backups are handed to Wings as a signed download link.
      *
