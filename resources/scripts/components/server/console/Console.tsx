@@ -11,15 +11,13 @@ import { useTerminal } from '@/components/server/console/useTerminal';
 
 const terminalClass = 'relative flex flex-col w-full';
 
-const overflowsContainerClass = '-ml-4 w-[calc(100%+2rem)] sm:ml-0 sm:w-full';
+const overflowsContainerClass = 'w-full';
 
-const terminalContainerClass = [
-    'relative min-h-[16rem] flex-1 rounded-t-sm bg-terminal p-1 font-mono text-sm caret-transparent sm:p-2',
-    '[&_#terminal]:h-full [&_#terminal::-webkit-scrollbar-track]:w-2 [&_#terminal::-webkit-scrollbar-thumb]:bg-terminal',
-].join(' ');
+const terminalContainerClass =
+    'relative min-h-[16rem] flex-1 overflow-hidden rounded-t-sm bg-terminal px-2 pt-2 pb-0 font-mono text-sm caret-transparent';
 
 const commandInputClass = [
-    'peer relative w-full bg-terminal px-2 py-2 pr-4 pl-10 font-mono text-sm text-foreground sm:rounded-b-sm',
+    'peer relative w-full rounded-b-sm bg-terminal px-2 py-2 pr-4 pl-10 font-mono text-sm text-foreground',
     'border-0 border-b-2 border-transparent transition-colors duration-100',
     'outline-hidden focus:ring-0 focus-visible:outline-hidden active:border-accent focus:border-accent',
 ].join(' ');
@@ -53,10 +51,10 @@ export default function Console() {
             )}
             <div
                 className={cn(terminalContainerClass, overflowsContainerClass, {
-                    'rounded-b-sm': !canSendCommands,
+                    'rounded-b-sm pb-1 sm:pb-2': !canSendCommands,
                 })}
             >
-                <div className='h-full w-full' ref={ref} />
+                <div className='h-full w-full overflow-hidden' ref={ref} />
                 {scrolledUp && (
                     <button
                         type='button'
