@@ -68,6 +68,7 @@ test('a failed backup is unlocked and keeps no checksum or size', function (bool
         ->and($backup->checksum)->toBeNull()
         ->and($backup->bytes)->toBe(0)
         ->and($backup->completed_at)->not->toBeNull();
+    $this->assertActivityOn('server:backup.fail', $backup->server, $backup);
 })->with([false, 0, '0']);
 
 test('the parts wings uploaded close the multipart upload, and parts left out are listed from s3', function (): void {

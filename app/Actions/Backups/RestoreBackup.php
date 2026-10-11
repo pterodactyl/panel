@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Backups;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Backups\GeneratesBackupDownloadLinks;
 use Pterodactyl\Contracts\Backups\RestoresBackups;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -53,5 +54,11 @@ final readonly class RestoreBackup implements RestoresBackups
 
             Daemon::server($server)->backups()->restore($backup, $url, $truncate);
         });
+
+        // ResetServerStates finds the backup a restoring server was given through this entry.
+        Activity::event('server:backup.restore')
+            ->subject($server, $backup)
+            ->property(['name' => $backup->name, 'truncate' => $truncate])
+            ->log();
     }
 }

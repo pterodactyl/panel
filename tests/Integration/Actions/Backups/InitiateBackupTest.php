@@ -34,6 +34,8 @@ test('a server at its limit rotates out the oldest backup once wings accepts the
     $this->assertSoftDeleted($oldest);
     $this->assertNotSoftDeleted($newer);
     expect($backup->completed_at)->toBeNull();
+    $this->assertActivityOn('server:backup.start', $server, $backup);
+    $this->assertActivityOn('server:backup.delete', $server, $oldest);
 });
 
 test('a backup wings rejects is marked failed and the oldest backup is kept', function (): void {

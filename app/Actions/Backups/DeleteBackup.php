@@ -11,6 +11,7 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Backup\BackupLockedException;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Throwable;
@@ -37,26 +38,29 @@ final readonly class DeleteBackup implements DeletesBackups
         // the lock, so this condition should really never happen.
         throw_if($backup->is_locked && ($backup->is_successful && ($backup->completed_at) !== null), BackupLockedException::class);
 
+        // The stored archive is removed first, so the row is kept if its disk rejects the request.
         if ($backup->disk === Backup::ADAPTER_AWS_S3) {
             $this->deleteFromS3($backup);
-
-            return;
-        }
-
-        try {
-            Daemon::server($backup->server)->backups()->delete($backup);
-        } catch (DaemonConnectionException $daemonConnectionException) {
-            // Don't fail the request if the Daemon responds with a 404, just assume the backup
-            // doesn't actually exist and remove its reference from the Panel as well.
-            throw_if($daemonConnectionException->getStatusCode() !== Response::HTTP_NOT_FOUND, $daemonConnectionException);
+        } else {
+            try {
+                Daemon::server($backup->server)->backups()->delete($backup);
+            } catch (DaemonConnectionException $daemonConnectionException) {
+                // Don't fail the request if the Daemon responds with a 404, just assume the backup
+                // doesn't actually exist and remove its reference from the Panel as well.
+                throw_if($daemonConnectionException->getStatusCode() !== Response::HTTP_NOT_FOUND, $daemonConnectionException);
+            }
         }
 
         $backup->delete();
+
+        Activity::event('server:backup.delete')
+            ->subject($backup->server, $backup)
+            ->property(['name' => $backup->name, 'failed' => ! $backup->is_successful])
+            ->log();
     }
 
     /**
-     * Deletes a backup from an S3 disk. The object is removed first so the row is
-     * kept if S3 rejects the request.
+     * Deletes a backup's archive from an S3 disk.
      *
      * @throws Throwable
      */
@@ -69,7 +73,5 @@ final readonly class DeleteBackup implements DeletesBackups
             'Bucket' => $adapter->getBucket(),
             'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
         ]);
-
-        $backup->delete();
     }
 }

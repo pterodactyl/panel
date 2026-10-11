@@ -105,11 +105,6 @@ class BackupController extends ClientApiController
 
         $backup = $action->initiate($server, $validated->filled('name') ? $validated->string('name')->toString() : null);
 
-        Activity::event('server:backup.start')->subject($backup)->property([
-            'name' => $backup->name,
-            'locked' => $backup->is_locked,
-        ])->log();
-
         return Fractal::item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->toResponseArray();
@@ -128,10 +123,6 @@ class BackupController extends ClientApiController
     public function toggleLock(ToggleBackupLockRequest $request, TogglesBackupLocks $toggle, Server $server, Backup $backup): array
     {
         $backup = $toggle->toggle($backup);
-
-        $action = $backup->is_locked ? 'server:backup.lock' : 'server:backup.unlock';
-
-        Activity::event($action)->subject($backup)->property('name', $backup->name)->log();
 
         return Fractal::item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
@@ -164,11 +155,6 @@ class BackupController extends ClientApiController
     public function delete(DeleteBackupRequest $request, DeletesBackups $delete, Server $server, Backup $backup): JsonResponse
     {
         $delete->delete($backup);
-
-        Activity::event('server:backup.delete')
-            ->subject($backup)
-            ->property(['name' => $backup->name, 'failed' => ! $backup->is_successful])
-            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
@@ -213,11 +199,6 @@ class BackupController extends ClientApiController
         $truncate = $request->safe()->boolean('truncate');
 
         $restore->restore($server, $backup, $user, $truncate);
-
-        Activity::event('server:backup.restore')
-            ->subject($backup)
-            ->property(['name' => $backup->name, 'truncate' => $truncate])
-            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

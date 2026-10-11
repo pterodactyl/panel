@@ -14,6 +14,7 @@ use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Backup;
 use Throwable;
 
@@ -102,6 +103,11 @@ final readonly class CompleteBackup implements CompletesBackups
 
             Event::dispatch(new OperationCompleted($backup->server->uuid, 'backup', $successful, $backup->uuid));
         });
+
+        Activity::event($attributes['successful'] ? 'server:backup.complete' : 'server:backup.fail')
+            ->subject($backup->server, $backup)
+            ->property('name', $backup->name)
+            ->log();
     }
 
     /**

@@ -43,6 +43,8 @@ test('toggle backup lock', function () {
     $this->assertDatabaseHas('backups', ['id' => $backup->id, 'is_locked' => true]);
     $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $uuid]));
     $this->assertDatabaseHas('backups', ['id' => $backup->id, 'is_locked' => false]);
+    // The owner sees both toggles on the server's own feed.
+    expect($server->activity()->pluck('event')->sort()->values()->all())->toBe(['server:backup.lock', 'server:backup.unlock']);
 });
 test('toggle backup not on server returns not found', function () {
     $server = $this->createServerModel();

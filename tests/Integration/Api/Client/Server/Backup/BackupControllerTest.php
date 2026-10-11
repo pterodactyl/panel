@@ -34,6 +34,7 @@ test('backup can be created', function () {
     $this->assertDatabaseHas('backups', ['server_id' => $server->id, 'name' => 'Test Backup']);
     $backup = Backup::query()->where('server_id', $server->id)->where('name', 'Test Backup')->firstOrFail();
     $fake->assertBackedUp($backup->uuid);
+    $this->assertActivityFor('server:backup.start', $user, $server, $backup);
 });
 test('backup can be created without a name', function (): void {
     $user = User::factory()->create();
@@ -83,6 +84,8 @@ test('backup lock can be toggled', function () {
     expect($backup->refresh()->is_locked)->toBeTrue();
     $this->postJson($this->link($backup, '/lock'))->assertOk()->assertJsonPath('attributes.is_locked', false);
     expect($backup->refresh()->is_locked)->toBeFalse();
+    $this->assertActivityFor('server:backup.lock', $user, $server, $backup);
+    $this->assertActivityFor('server:backup.unlock', $user, $server, $backup);
 });
 test('lock toggle requires delete permission', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupCreate->value]);
@@ -98,6 +101,7 @@ test('backup can be restored', function () {
     // The server is placed into a restoring state while Wings works.
     expect($server->refresh()->status)->toBe('restoring_backup');
     $fake->assertRestored($backup->uuid);
+    $this->assertActivityFor('server:backup.restore', $user, $server, $backup);
 });
 test('a restore interrupted by a wings restart is logged as failed', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupRestore->value]);

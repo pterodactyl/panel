@@ -13,6 +13,7 @@ use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -184,6 +185,11 @@ final class InitiateBackup implements InitiatesBackups
 
             throw $throwable;
         }
+
+        Activity::event('server:backup.start')
+            ->subject($server, $backup)
+            ->property(['name' => $backup->name, 'locked' => $backup->is_locked])
+            ->log();
 
         foreach ($rotated as $old) {
             // Re-read the row: it may have been deleted or locked since it was picked.
