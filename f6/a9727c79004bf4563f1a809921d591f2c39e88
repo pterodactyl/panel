@@ -1,0 +1,39 @@
+app/Providers/HashidsServiceProvider.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 24
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 51
+app/Providers/AppServiceProvider.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 90
+phpstan.neon
+  s_4cabae41bceed9::t_1079504080380c 8-9
+app/Http/Middleware/VerifyReCaptcha.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 33
+composer.json
+  s_4cabae41bceed9::t_1079504080380c 63,74-75,103,106,154
+app/Models/ActivityLog.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 145-146,148
+app/Services/Helpers/SoftwareVersionService.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 66-67,71
+app/Services/Servers/EnvironmentService.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 112
+app/Actions/Backups/PresignBackupUpload.php
+  s_4cabae41bceed9::t_c9c4ec123ba697 75,77
+composer.lock
+  s_4cabae41bceed9::t_170fe965149951 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f6a9727c79004bf4563f1a809921d591f2c39e88",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
