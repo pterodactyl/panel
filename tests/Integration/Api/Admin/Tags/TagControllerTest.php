@@ -67,6 +67,19 @@ test('tags sync independently to eggs and node kinds', function () {
     expect($node->deploymentTags()->pluck('tags.id')->all())->toBe([$reservation->id]);
 });
 
+test('a node cannot hold the same tag as a game and as a reservation', function () {
+    $tag = Tag::factory()->create(['slug' => 'both-kinds', 'name' => 'Both Kinds']);
+    $node = Node::factory()->withLocation()->create();
+    $this->putJson(route('api.admin.nodes.tags.sync', ['node' => $node->id]), ['tags' => [(string) $tag->id]])->assertOk();
+
+    $this->putJson(route('api.admin.nodes.deployment-tags.sync', ['node' => $node->id]), ['tags' => [(string) $tag->id]])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'tags')
+        ->assertJsonPath('errors.0.detail', 'These tags are already on the node as the other kind: Both Kinds.');
+
+    expect($node->eggTags()->pluck('tags.id')->all())->toBe([$tag->id])
+        ->and($node->deploymentTags()->pluck('tags.id')->all())->toBe([]);
+});
 test('syncing existing tags resolves ids and slugs in a single read', function () {
     $node = Node::factory()->withLocation()->create();
     $tags = Tag::factory()->count(10)->create();
