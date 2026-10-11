@@ -1,0 +1,23 @@
+config/recaptcha.php
+  s_4cabae41bceed9::t_08a8db4fcb28c2 9
+tests/Unit/Config/EnvironmentFlagsTest.php
+  s_4cabae41bceed9::t_66836fd6fac300 1-34
+config/pterodactyl.php
+  s_4cabae41bceed9::t_08a8db4fcb28c2 110-111,120,165,178,180,192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fee9dfa3405188a5eac70b31151a466aa61f0d16",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
