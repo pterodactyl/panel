@@ -1,0 +1,51 @@
+app/Http/Controllers/Api/Client/AccountController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 71,89
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 34
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 75
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 95,107,126
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 134
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_ae19873e9efb61 10
+  s_4cabae41bceed9::t_ac2ee2d5acde97 127,146,169,205,224,239,254,269,284,299,314,329-331,338,343-349
+  s_4cabae41bceed9::t_0c11bd8e4423fd 350-351
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 121-122
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 138-139
+app/Http/Controllers/Auth/LoginController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 120-121
+app/Http/Controllers/Api/Client/Servers/PowerController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 28
+app/Http/Controllers/Api/Client/Servers/CommandController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 42
+app/Http/Controllers/Api/Client/Servers/LogController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 55
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 27
+app/Http/Controllers/Base/LocaleController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 29-30
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 97,100,125
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_4cabae41bceed9::t_ac2ee2d5acde97 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1d1f097ad475bb4f050c66ff00d1f82ed095ab9a",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
