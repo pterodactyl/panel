@@ -1,0 +1,34 @@
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_6b6bf6dd4e7aec 114,820-821,824
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_27ebfce63e7584 487-510
+  s_4cabae41bceed9::t_7a456376a77b4e 37-39
+  s_4cabae41bceed9::t_2767e4598dd405 16
+  s_4cabae41bceed9::t_bc762ea2df48cf 825-826
+  s_4cabae41bceed9::t_ed56db6791eff7 953-959
+  s_4cabae41bceed9::t_c4c3e0b29dafd5 486
+app/Transformers/Api/Admin/BackupTransformer.php
+  s_4cabae41bceed9::t_eb7fcc03d4ca91 7,10-11
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_6b6bf6dd4e7aec 101,744-745,748
+resources/scripts/api/generated/sdk.gen.ts
+  s_4cabae41bceed9::t_6b6bf6dd4e7aec 78-82,122-126,154-158,171-175,191-195,207-211,222-226
+app/Transformers/Api/Application/EggTransformer.php
+  s_4cabae41bceed9::t_eb7fcc03d4ca91 25,27-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f24cb78376ac7a4b6ff267aad6fd6f8af687bf8d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
