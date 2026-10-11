@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Closure;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use Pterodactyl\Actions\Transfers\InitiateTransfer;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 
 class TransferServerRequest extends ServerWriteRequest
 {
@@ -29,23 +28,11 @@ class TransferServerRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $server = $this->parameter('server', Server::class);
-
-        return [
-            'node_id' => [
-                'required',
-                'integer',
-                'exists:nodes,id',
-                Rule::notIn([$server->node_id]),
-            ],
-            'allocation_id' => ['required', 'bail', 'unique:servers', 'exists:allocations,id'],
-            'allocation_additional' => ['nullable', 'array', 'list'],
-            'allocation_additional.*' => ['required', Rule::anyOf([['integer:strict'], ['string']]), 'integer'],
-        ];
+        return InitiateTransfer::rules($this->parameter('server', Server::class));
     }
 
     /**
-     * Chosen allocations must belong to the target node and be unassigned.
+     * Chosen allocations must exist, belong to the target node and be unassigned.
      *
      * @return list<Closure(Validator): void>
      */
@@ -53,43 +40,19 @@ class TransferServerRequest extends ServerWriteRequest
     {
         return [function (Validator $validator): void {
             $this->validateArrayExistence($validator, 'allocation_additional', Allocation::query());
-
-            // Skip cross-field checks if the basic rules already failed.
-            if ($validator->errors()->isNotEmpty()) {
-                return;
-            }
-
-            $nodeId = $this->integer('node_id');
-            $ids = array_unique([$this->integer('allocation_id'), ...$this->additionalAllocations()]);
-            $count = Allocation::query()
-                ->whereIn('id', $ids)
-                ->where('node_id', $nodeId)
-                ->whereNull('server_id')
-                ->count();
-
-            if ($count !== count($ids)) {
-                $validator->errors()->add('allocation_id', 'The selected allocation must be an unassigned allocation on the target node.');
-            }
+            InitiateTransfer::validateAllocations($validator);
         }];
     }
 
     /**
-     * Normalize the validated transfer payload for the controller.
+     * The validated additional allocation ids, as integers.
      *
-     * @return ServerTransferData
+     * @return list<int>
      */
-    public function payload(): array
+    public function additionalAllocations(): array
     {
-        return [
-            'node_id' => $this->integer('node_id'),
-            'allocation_id' => $this->integer('allocation_id'),
-            'allocation_additional' => $this->additionalAllocations(),
-        ];
-    }
+        $validated = $this->safe();
 
-    /** @return list<int> */
-    private function additionalAllocations(): array
-    {
-        return JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->input('allocation_additional') ?? []));
+        return array_map(fn (int|string $key): int => $validated->integer('allocation_additional.'.$key), array_keys($validated->array('allocation_additional')));
     }
 }
