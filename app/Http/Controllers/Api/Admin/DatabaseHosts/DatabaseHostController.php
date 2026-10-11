@@ -174,7 +174,7 @@ class DatabaseHostController extends AdminApiController
     public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost): JsonResponse
     {
         try {
-            $host = $createHost->create($request->payload());
+            $host = $createHost->create($request->actionInput());
         } catch (Exception $exception) {
             $this->handleConnectionException($exception);
         }
@@ -208,7 +208,7 @@ class DatabaseHostController extends AdminApiController
     public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): array
     {
         try {
-            $host = $updateHost->update($databaseHost, $request->payload());
+            $host = $updateHost->update($databaseHost, $request->actionInput());
         } catch (Exception $exception) {
             $this->handleConnectionException($exception);
         }

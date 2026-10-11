@@ -20,24 +20,21 @@ final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
     /**
      * Update a database host and persist to the database.
      *
-     * @param  DatabaseHostUpdateData  $data
+     * @param  ActionInput  $input
      *
      * @throws Throwable
      */
-    public function update(DatabaseHost $host, array $data): DatabaseHost
+    public function update(DatabaseHost $host, array $input): DatabaseHost
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateDatabaseHost::attributes($input);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        $password = $data['password'] ?? null;
-        if ($password !== null && $password !== '') {
-            $data['password'] = Crypt::encrypt($password);
-        } else {
-            unset($data['password']);
+        if (isset($attributes['password'])) {
+            $attributes['password'] = Crypt::encrypt($attributes['password']);
         }
 
         // Confirm access using the new credentials before saving them.
-        $host->fill($data);
+        $host->fill($attributes);
         $this->dynamic->set('dynamic', $host);
         DB::connection('dynamic')->select('SELECT 1 FROM dual');
 

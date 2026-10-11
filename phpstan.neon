@@ -86,7 +86,6 @@ parameters:
         DatabaseCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null}'
         DatabaseDeploymentData: 'array{database: string, remote: string, database_host_id?: int|null, max_connections?: int|null}'
         DatabaseModelCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null, server_id: int, username: string, password: string}'
-        DatabaseHostUpdateData: 'array{name: string, host: string, port: int, username: string, password?: string|null, node_id: int|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         EggVariableData: 'array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
         ApiKeyUpdateData: 'array{memo: string|null}'

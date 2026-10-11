@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
@@ -20,24 +19,66 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
     public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
     /**
-     * Create a new database host on the Panel.
+     * A database host's fields, for creating one and for updating one. The host is a hostname
+     * or IP address, and the node, when given, must exist.
      *
-     * @param  DatabaseHostUpdateData  $data
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:191'],
+            'host' => ['required', 'string', 'regex:/^[\w\-\.]+$/'],
+            'port' => ['required', 'integer', 'between:1,65535'],
+            'username' => ['required', 'string', 'max:32'],
+            'password' => ['nullable', 'string'],
+            'node_id' => ['sometimes', 'nullable', 'integer', 'exists:nodes,id'],
+        ];
+    }
+
+    /**
+     * Validates database host input and returns the model attributes it describes. The
+     * password comes back in plain text, for the action to encrypt, and is left out when it
+     * is blank so an updated host keeps its stored one. A host given no node is global.
+     *
+     * @param  ActionInput  $input
+     * @return array{name: string, host: string, port: int, username: string, node_id: int|null, password?: string}
+     */
+    public static function attributes(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        $attributes = [
+            'name' => $input->string('name')->toString(),
+            'host' => $input->string('host')->toString(),
+            'port' => $input->integer('port'),
+            'username' => $input->string('username')->toString(),
+            'node_id' => $input->filled('node_id') ? $input->integer('node_id') : null,
+        ];
+
+        if ($input->filled('password')) {
+            $attributes['password'] = $input->string('password')->toString();
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Create a new database host on the Panel once it accepts the given credentials.
+     *
+     * @param  ActionInput  $input
      *
      * @throws Throwable
      */
-    public function create(array $data): DatabaseHost
+    public function create(array $input): DatabaseHost
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
+        $attributes = self::attributes($input);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
         $host = DatabaseHost::query()->make([
-            'password' => Crypt::encrypt(Arr::get($data, 'password')),
-            'name' => JsonValueGuard::string(Arr::get($data, 'name')),
-            'host' => JsonValueGuard::string(Arr::get($data, 'host')),
-            'port' => JsonValueGuard::integer(Arr::get($data, 'port')),
-            'username' => JsonValueGuard::string(Arr::get($data, 'username')),
+            ...$attributes,
+            'password' => Crypt::encrypt($attributes['password'] ?? null),
             'max_databases' => null,
-            'node_id' => JsonValueGuard::nullableInteger(Arr::get($data, 'node_id')),
         ]);
 
         // Confirm access using the provided credentials before saving data.
