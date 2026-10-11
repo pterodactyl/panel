@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Api\CreatesAccountApiKeys;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
 use Pterodactyl\Validation\Concerns\ValidatesAllowedIps;
 
@@ -60,11 +61,18 @@ final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
     {
         $attributes = self::attributes(['description' => $description, 'allowed_ips' => $allowedIps]);
 
-        return DB::transaction(function () use ($user, $attributes): NewAccessToken {
+        $token = DB::transaction(function () use ($user, $attributes): NewAccessToken {
             $user = User::query()->lockForUpdate()->findOrFail($user->id);
             throw_if($user->apiKeys()->count() >= 25, DisplayException::class, 'You have reached the account limit for number of API keys.');
 
             return $user->createToken($attributes['description'], $attributes['allowed_ips']);
         });
+
+        Activity::event('user:api-key.create')
+            ->subject($user, $token->accessToken)
+            ->property('identifier', $token->accessToken->identifier)
+            ->log();
+
+        return $token;
     }
 }

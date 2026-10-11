@@ -43,4 +43,5 @@ test('a key is stored with the name, key and fingerprint it is given', function 
         ->and($created->name)->toBe('Laptop')
         ->and($created->public_key)->toBe($key->public_key)
         ->and($created->fingerprint)->toBe($key->fingerprint);
+    $this->assertActivityOn('user:ssh-key.create', $user, $created);
 });

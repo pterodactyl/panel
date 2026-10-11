@@ -43,6 +43,7 @@ test('a key keeps its description and allowed ips, and one given none can be use
     expect($restricted->memo)->toBe('Restricted')
         ->and($restricted->key_type)->toBe(ApiKey::TYPE_ACCOUNT)
         ->and($restricted->allowed_ips)->toBe(['127.0.0.1', '192.168.10.10/28', '::1']);
+    $this->assertActivityOn('user:api-key.create', $user, $restricted);
 
     expect($keys->create($user, 'Open', null)->accessToken->refresh()->allowed_ips)->toBe([])
         ->and($keys->create($user, 'Empty', [])->accessToken->refresh()->allowed_ips)->toBe([]);

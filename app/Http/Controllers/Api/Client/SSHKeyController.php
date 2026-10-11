@@ -12,7 +12,6 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\CreatesSshKeys;
 use Pterodactyl\Contracts\Users\DeletesSshKeys;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Requests\Api\Client\Account\DeleteSSHKeyRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;
@@ -50,11 +49,6 @@ class SSHKeyController extends ClientApiController
     {
         $model = $keys->create($request->user(), $request->string('name')->toString(), $request->getPublicKey(), $request->getKeyFingerprint());
 
-        Activity::event('user:ssh-key.create')
-            ->subject($model)
-            ->property('fingerprint', $request->getKeyFingerprint())
-            ->log();
-
         return Fractal::item($model)
             ->transformWith($this->getTransformer(UserSSHKeyTransformer::class))
             ->toResponseArray();
@@ -73,11 +67,6 @@ class SSHKeyController extends ClientApiController
 
         if (($key) !== null) {
             $keys->delete($key);
-
-            Activity::event('user:ssh-key.delete')
-                ->subject($key)
-                ->property('fingerprint', $key->fingerprint)
-                ->log();
         }
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);

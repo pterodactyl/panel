@@ -40,6 +40,7 @@ test('ssh key can be deleted', function (): void {
     $this->postJson($endpoint, ['fingerprint' => $key->fingerprint])->assertNoContent();
     $this->assertSoftDeleted($key);
     $this->assertNotSoftDeleted($key2);
+    $this->assertActivityFor('user:ssh-key.delete', $user, $user, $key);
     $this->postJson($endpoint, ['fingerprint' => $key->fingerprint])->assertNoContent();
     $this->postJson($endpoint, ['fingerprint' => $key2->fingerprint])->assertNoContent();
     $this->assertNotSoftDeleted($key2);

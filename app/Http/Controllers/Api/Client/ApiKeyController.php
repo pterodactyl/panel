@@ -13,7 +13,6 @@ use Pterodactyl\Contracts\Api\CreatesAccountApiKeys;
 use Pterodactyl\Contracts\Api\DeletesApiKeys;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
@@ -63,11 +62,6 @@ class ApiKeyController extends ClientApiController
     {
         $token = $creation->create($request->user(), $request->safe()->string('description')->toString(), $request->allowedIps());
 
-        Activity::event('user:api-key.create')
-            ->subject($token->accessToken)
-            ->property('identifier', $token->accessToken->identifier)
-            ->log();
-
         return Fractal::item($token->accessToken)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta(['secret_token' => $token->plainTextToken])
@@ -87,10 +81,6 @@ class ApiKeyController extends ClientApiController
             ->firstOrFail();
 
         $keys->delete($key);
-
-        Activity::event('user:api-key.delete')
-            ->property('identifier', $key->identifier)
-            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

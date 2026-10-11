@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Users;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Users\CreatesSshKeys;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 
@@ -92,6 +93,10 @@ final readonly class CreateSshKey implements CreatesSshKeys
     /** @throws ValidationException */
     public function create(User $user, string $name, string $publicKey, string $fingerprint): UserSSHKey
     {
-        return $user->sshKeys()->create(self::attributes(['name' => $name, 'public_key' => $publicKey, 'fingerprint' => $fingerprint]));
+        $key = $user->sshKeys()->create(self::attributes(['name' => $name, 'public_key' => $publicKey, 'fingerprint' => $fingerprint]));
+
+        Activity::event('user:ssh-key.create')->subject($user, $key)->property('fingerprint', $key->fingerprint)->log();
+
+        return $key;
     }
 }
