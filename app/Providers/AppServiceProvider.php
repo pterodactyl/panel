@@ -29,6 +29,7 @@ use Pterodactyl\Enum\ResourceLimit;
 use Pterodactyl\Extensions\Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Pterodactyl\Extensions\Scribe\Support\PathParameterNames;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
+use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Backup;
@@ -47,7 +48,6 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Daemon\DaemonManager;
 use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionFunctionAbstract;
 
 class AppServiceProvider extends ServiceProvider
@@ -131,18 +131,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->extend('auth.password', fn (): PasswordBrokerManager => new PasswordBrokerManager($this->app));
 
-        $this->app->bind(function (): Fractal {
-            $requested = JsonValueGuard::stringList(array_values($this->app->make(Request::class)->collect('include')->all()));
-
-            $includes = collect($requested)
-                ->flatMap(fn (string $value): array => explode(',', $value))
-                ->map(fn (string $value): string => mb_trim($value))
-                ->filter()
-                ->values()
-                ->all();
-
-            return (new Fractal(new Manager))->parseIncludes($includes)->limitRecursion(2);
-        });
+        $this->app->bind(fn (): Fractal => (new Fractal(new Manager))
+            ->parseIncludes(IncludeSet::fromRequest($this->app->make(Request::class))->requestedNames())
+            ->limitRecursion(2));
 
         // Only load the settings service provider if the environment
         // is configured to allow it.

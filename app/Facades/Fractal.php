@@ -14,7 +14,6 @@ use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal as Fractalistic;
  * @method static Fractalistic item(mixed $data = null, TransformerAbstract|callable|null $transformer = null, string|null $resourceName = null)
  * @method static Fractalistic collection(mixed $data = null, TransformerAbstract|callable|null $transformer = null, string|null $resourceName = null)
  * @method static Fractalistic transformWith(TransformerAbstract|callable $transformer)
- * @method static list<string> requestedIncludes()
  *
  * @see Fractalistic
  */

@@ -11,7 +11,6 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Scope;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Extensions\League\Fractal\Serializers\PterodactylSerializer;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use Spatie\Fractal\Fractal as SpatieFractal;
 use Spatie\Fractalistic\Exceptions\InvalidTransformation;
@@ -20,16 +19,6 @@ use UnexpectedValueException;
 
 class Fractal extends SpatieFractal
 {
-    /**
-     * The includes requested through parseIncludes().
-     *
-     * @return list<string>
-     */
-    public function requestedIncludes(): array
-    {
-        return array_values(JsonValueGuard::stringList($this->includes));
-    }
-
     /**
      * Serialize a non-null API resource.
      *
