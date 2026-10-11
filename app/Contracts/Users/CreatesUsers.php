@@ -16,9 +16,12 @@ interface CreatesUsers
      * The UUID and password hash are handled by the model itself (HasVersion4Uuids
      * and the hashed password cast).
      *
-     * @param  UserCreationData  $data
+     * The input is validated here, so it can come straight from any caller; extension
+     * field values go under `extensions` as ValidatedExtensionValues.
+     *
+     * @param  ActionInput  $input  email, username, name_first, name_last, and optionally external_id, password, root_admin and language
      *
      * @throws Throwable
      */
-    public function create(array $data): User;
+    public function create(array $input): User;
 }

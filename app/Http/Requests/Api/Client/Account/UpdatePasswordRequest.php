@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
 use Illuminate\Support\Facades\Hash;
+use Pterodactyl\Actions\Users\CreateUser;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\UserRules;
 
 class UpdatePasswordRequest extends ClientApiRequest
 {
@@ -19,7 +19,7 @@ class UpdatePasswordRequest extends ClientApiRequest
     {
         return [
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'confirmed', ...UserRules::PASSWORD],
+            'password' => ['required', 'confirmed', ...CreateUser::PASSWORD],
         ];
     }
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
 use Illuminate\Support\Facades\Hash;
+use Pterodactyl\Actions\Users\CreateUser;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Validation\UserRules;
 
 class UpdateEmailRequest extends ClientApiRequest
 {
@@ -31,7 +31,7 @@ class UpdateEmailRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'email' => UserRules::rules($this->user())['email'],
+            'email' => CreateUser::rules($this->user())['email'],
             'password' => ['required', 'string'],
         ];
     }

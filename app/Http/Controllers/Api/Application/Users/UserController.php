@@ -87,7 +87,7 @@ class UserController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
     {
-        $user = $users->update($user, $request->payload());
+        $user = $users->update($user, $request->actionInput());
 
         $response = Fractal::item($user)
             ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields());
@@ -106,7 +106,7 @@ class UserController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
-        $user = $users->create($request->payload());
+        $user = $users->create($request->actionInput());
 
         Activity::event('user:user.create')
             ->subject($user)

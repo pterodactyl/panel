@@ -7,11 +7,10 @@ namespace Pterodactyl\Console\Commands\User;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\UserRules;
 use Throwable;
 
 #[Description('Creates a user on the system via the CLI.')]
@@ -37,25 +36,22 @@ class MakeUserCommand extends Command
             $password = $this->secret(trans('command/messages.user.ask_password'));
         }
 
-        $data = ['email' => $email, 'username' => $username, 'name_first' => $name_first, 'name_last' => $name_last, 'password' => $password, 'root_admin' => $root_admin];
-
-        $validator = Validator::make($data, UserRules::rules());
-        if ($validator->fails()) {
-            foreach ($validator->errors()->all() as $error) {
+        try {
+            $user = $users->create([
+                'email' => JsonValueGuard::nullableString($email),
+                'username' => JsonValueGuard::nullableString($username),
+                'name_first' => JsonValueGuard::nullableString($name_first),
+                'name_last' => JsonValueGuard::nullableString($name_last),
+                'password' => JsonValueGuard::nullableString($password),
+                'root_admin' => JsonValueGuard::scalar($root_admin),
+            ]);
+        } catch (ValidationException $validationException) {
+            foreach ($validationException->validator->errors()->all() as $error) {
                 $this->error($error);
             }
 
             return 1;
         }
-
-        $user = $users->create([
-            'email' => JsonValueGuard::string($email),
-            'username' => JsonValueGuard::string($username),
-            'name_first' => JsonValueGuard::string($name_first),
-            'name_last' => JsonValueGuard::string($name_last),
-            'password' => JsonValueGuard::nullableString($password),
-            'root_admin' => filter_var($root_admin, FILTER_VALIDATE_BOOL),
-        ]);
 
         Activity::event('user:user.create')
             ->subject($user)

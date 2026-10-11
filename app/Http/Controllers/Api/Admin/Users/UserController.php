@@ -121,7 +121,7 @@ class UserController extends AdminApiController
     #[ExtensionFieldsParam]
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
-        $user = $users->create($request->payload());
+        $user = $users->create($request->actionInput());
 
         Activity::event('admin:user.create')
             ->subject($user)
@@ -148,7 +148,7 @@ class UserController extends AdminApiController
     #[ExtensionFieldsParam]
     public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
     {
-        $user = $users->update($user, $request->payload());
+        $user = $users->update($user, $request->actionInput());
 
         Activity::event('admin:user.update')
             ->subject($user)

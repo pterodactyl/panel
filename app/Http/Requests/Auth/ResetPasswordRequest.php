@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Pterodactyl\Validation\UserRules;
+use Pterodactyl\Actions\Users\CreateUser;
 
 class ResetPasswordRequest extends FormRequest
 {
@@ -22,7 +22,7 @@ class ResetPasswordRequest extends FormRequest
         return [
             'token' => ['required', 'string'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', ...UserRules::PASSWORD],
+            'password' => ['required', 'confirmed', ...CreateUser::PASSWORD],
         ];
     }
 }

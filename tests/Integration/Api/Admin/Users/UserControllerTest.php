@@ -165,6 +165,11 @@ test('a blank password leaves the password unchanged', function (): void {
     $this->putJson(route('api.admin.users.update', ['user' => $user->id]), ['username' => $user->username, 'email' => $user->email, 'name_first' => $user->name_first, 'name_last' => $user->name_last, 'password' => ''])->assertOk();
     expect($user->fresh()->password)->toBe($hash);
 });
+test('the language is read from preferences', function (): void {
+    $user = User::factory()->create(['language' => 'xx']);
+    $this->putJson(route('api.admin.users.update', ['user' => $user->id]), ['username' => $user->username, 'email' => $user->email, 'name_first' => $user->name_first, 'name_last' => $user->name_last, 'preferences' => ['language' => 'en']])->assertOk();
+    expect($user->fresh()->language)->toBe('en');
+});
 test('invalid payloads return validation errors', function (): void {
     $response = $this->postJson(route('api.admin.users.store'), []);
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

@@ -95,8 +95,6 @@ parameters:
         ApiKeyUpdateData: 'array{memo: string|null}'
         NodeUpdateData: 'NodeCreationData&array{daemon_token?: string, daemon_token_id?: string}'
         NodeCreationData: 'array{name: string, location_id: int, fqdn: string, scheme: string, memory: int, memory_overallocate: int, disk: int, disk_overallocate: int, daemonListen: int, daemonSFTP: int, daemonBase: string, description?: string|null, public?: bool, behind_proxy?: bool, maintenance_mode?: bool, upload_size?: int, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
-        UserCreationData: 'array{email: string, username: string, name_first: string, name_last: string, external_id?: string|null, password?: string|null, root_admin?: bool, language?: string, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
-        UserUpdateData: 'array{email?: string, username?: string, name_first?: string, name_last?: string, external_id?: string|null, password?: string|null, root_admin?: bool, language?: string, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'
         EggCreationData: 'array{name: string, description: string|null, docker_images: array<string, string>, force_outgoing_ip: bool, features: list<string>, startup: string, file_denylist?: list<string>, config_from?: int|null, config_stop?: string|null, config_startup?: string|null, config_logs?: string|null, config_files?: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         ServerTransferData: 'array{node_id: int, allocation_id: int, allocation_additional: list<int>}'

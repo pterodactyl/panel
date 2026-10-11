@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Users;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Events\User\PasswordChanged;
@@ -21,25 +20,21 @@ final readonly class UpdateUser implements UpdatesUsers
      * Update the user model instance and return the updated model. The hashed
      * password cast on the model takes care of hashing a new password.
      *
-     * @param  UserUpdateData  $data
+     * @param  ActionInput  $input
      *
      * @throws Throwable
      */
-    public function update(User $user, array $data): User
+    public function update(User $user, array $input): User
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateUser::attributes($input, $user);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        if (empty(Arr::get($data, 'password'))) {
-            unset($data['password']);
-        }
-
-        DB::transaction(function () use ($user, $data, $extensions): void {
-            $user->forceFill($data)->saveOrFail();
+        DB::transaction(function () use ($user, $attributes, $extensions): void {
+            $user->forceFill($attributes)->saveOrFail();
             $this->extensions->save($user, $extensions);
         });
 
-        if (isset($data['password'])) {
+        if (isset($attributes['password'])) {
             event(new PasswordChanged($user));
         }
 
