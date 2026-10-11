@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Pterodactyl\Extensions\Fields;
 use Pterodactyl\Rules\ExtensionFieldValue;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
+use UnexpectedValueException;
 
 /**
  * Runs the Fields extensions register for a model: authorizes and validates their
@@ -93,7 +93,7 @@ final readonly class ExtensionFields
      * and its values are refused.
      *
      * @param  Model|class-string<Model>  $model  the model being updated, or the class being created
-     * @param  array<string, array<array-key, ApiValue9>>  $submitted  each extension's submitted values
+     * @param  array<string, array<mixed>>  $submitted  each extension's submitted values
      * @param  list<string>  $defaults  extensions to validate even when $submitted leaves them out
      */
     public function validate(Validator $validator, Model|string $model, array $submitted, bool $applicationApi = false, array $defaults = []): ValidatedExtensionValues
@@ -208,7 +208,7 @@ final readonly class ExtensionFields
      *
      * @param  class-string<Fields>  $fields
      * @param  Model|class-string<Model>  $model
-     * @param  array<array-key, ApiValue9>  $submitted
+     * @param  array<mixed>  $submitted
      * @return array{array<string, array<string>>, ExtensionFieldValues}
      */
     private function check(string $extension, string $fields, Model|string $model, array $submitted): array
@@ -268,7 +268,6 @@ final readonly class ExtensionFields
         $settings = $this->extensions->settings($extension)->fields($model);
         $values = [];
         foreach ($this->fieldNames($this->rules($fields, $model)) as $field) {
-            // SAFETY: the panel only stores values that passed the ExtensionFieldValue rule.
             $values[$field] = ExtensionSettingValueGuard::fieldValue($settings->get($field));
         }
 
@@ -283,8 +282,8 @@ final readonly class ExtensionFields
      *
      * @param  class-string<Fields>  $fields
      * @param  Model|class-string<Model>  $model
-     * @param  array<array-key, ApiValue9>  $submitted
-     * @return array<array-key, ApiValue9>
+     * @param  array<mixed>  $submitted
+     * @return array<mixed>
      */
     private function withStoredSecrets(string $extension, string $fields, Model|string $model, array $submitted): array
     {
@@ -356,9 +355,20 @@ final readonly class ExtensionFields
      */
     private function secrets(string $fields, Model|string $model): array
     {
-        return method_exists($fields, 'secrets')
-            ? JsonValueGuard::stringList($this->container->call($fields.'@secrets', $this->modelParameters($model)))
-            : [];
+        if (! method_exists($fields, 'secrets')) {
+            return [];
+        }
+
+        $secrets = $this->container->call($fields.'@secrets', $this->modelParameters($model));
+        throw_unless(is_array($secrets), UnexpectedValueException::class, 'Extension field secrets must be a list of field names.');
+
+        $names = [];
+        foreach ($secrets as $name) {
+            throw_unless(is_string($name), UnexpectedValueException::class, 'Extension field secrets must be a list of field names.');
+            $names[] = $name;
+        }
+
+        return $names;
     }
 
     /**

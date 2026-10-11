@@ -65,7 +65,7 @@ final readonly class ExtensionHeadTag
     ) {}
 
     /**
-     * @param  array<array-key, ApiValue9>  $entry  `['tag' => 'meta'|'link', <attribute> => <value>, ...]`
+     * @param  array<mixed>  $entry  `['tag' => 'meta'|'link', <attribute> => <value>, ...]`
      *
      * @throws InvalidArgumentException
      */

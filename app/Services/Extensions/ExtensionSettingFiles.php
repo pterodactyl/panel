@@ -147,7 +147,7 @@ class ExtensionSettingFiles
                 continue;
             }
 
-            $value = rescue(fn (): bool|float|int|string|array|null => ExtensionSettingValueGuard::decode($encoded), report: false);
+            $value = rescue(fn (): mixed => ExtensionSettingValueGuard::decode($encoded), report: false);
             if (ExtensionSettingValueGuard::fileReference($value) !== null) {
                 $references[] = $row->id;
             }

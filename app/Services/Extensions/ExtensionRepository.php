@@ -288,7 +288,7 @@ class ExtensionRepository
      * as ctx.config; with $publicOnly just the ->public() ones, for guests.
      * Never allowed to break page rendering.
      *
-     * @return ExtensionSettingValues
+     * @return array<string, mixed>
      */
     private function frontendConfig(string $identifier, bool $publicOnly): array
     {

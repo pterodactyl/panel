@@ -38,7 +38,7 @@ class ExtensionSettings
         'database_host' => DatabaseHost::class,
     ];
 
-    /** @var ExtensionSettingValues|null all rows, loaded once per instance on first read */
+    /** @var array<string, mixed>|null all rows, loaded once per instance on first read */
     private ?array $loaded = null;
 
     public function __construct(
@@ -118,10 +118,6 @@ class ExtensionSettings
         return $this->for($server);
     }
 
-    /**
-     * @param  ExtensionSettingValue  $default
-     * @return ExtensionSettingValue
-     */
     public function get(string $key, mixed $default = null): mixed
     {
         $loaded = $this->loaded ??= $this->all();
@@ -129,7 +125,7 @@ class ExtensionSettings
         return array_key_exists($key, $loaded) ? $loaded[$key] : $default;
     }
 
-    /** @return ExtensionSettingValues */
+    /** @return array<string, mixed> */
     public function all(): array
     {
         $values = [];
@@ -140,26 +136,24 @@ class ExtensionSettings
         return $this->loaded = $values;
     }
 
-    /** @param ExtensionSettingValue $value */
     public function set(string $key, mixed $value): void
     {
         $this->setMany([$key => $value]);
     }
 
-    /** @param ExtensionSettingValue $value */
     public function setSecret(string $key, mixed $value): void
     {
         $this->setManySecrets([$key => $value], [$key]);
     }
 
-    /** @param ExtensionSettingValues $values */
+    /** @param array<string, mixed> $values */
     public function setMany(array $values): void
     {
         $this->persist($values, []);
     }
 
     /**
-     * @param  ExtensionSettingValues  $values
+     * @param  array<string, mixed>  $values
      * @param  list<string>  $secretKeys
      */
     public function setManySecrets(array $values, array $secretKeys): void
@@ -176,7 +170,7 @@ class ExtensionSettings
         unset($this->loaded[$key]);
     }
 
-    /** @return ExtensionSettingValues keys matching the prefix, prefix stripped */
+    /** @return array<string, mixed> keys matching the prefix, prefix stripped */
     public function getByPrefix(string $prefix): array
     {
         return $this->query()
@@ -198,7 +192,7 @@ class ExtensionSettings
     }
 
     /**
-     * @param  ExtensionSettingValues  $values
+     * @param  array<string, mixed>  $values
      * @param  list<string>  $secretKeys
      */
     private function persist(array $values, array $secretKeys): void

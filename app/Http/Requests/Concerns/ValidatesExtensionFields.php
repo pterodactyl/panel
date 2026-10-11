@@ -8,8 +8,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 /**
@@ -86,7 +86,7 @@ trait ValidatesExtensionFields
      * ignored without being read.
      *
      * @param  list<string>  $running
-     * @return array<string, array<array-key, ApiValue9>>
+     * @return array<string, array<mixed>>
      */
     private function submittedExtensionValues(Validator $validator, array $running): array
     {
@@ -110,7 +110,8 @@ trait ValidatesExtensionFields
             }
 
             try {
-                $submitted[$extension] = JsonValueGuard::jsonArray($values);
+                ExtensionSettingValueGuard::assertValue($values);
+                $submitted[$extension] = $values;
             } catch (UnexpectedValueException) {
                 $validator->errors()->add('extensions.'.$extension, sprintf('The %s values are nested too deeply.', $extension));
             }

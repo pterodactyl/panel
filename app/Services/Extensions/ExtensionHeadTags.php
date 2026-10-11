@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 use UnexpectedValueException;
 
@@ -33,7 +32,7 @@ final class ExtensionHeadTags implements Htmlable
     public function __construct(private readonly ExtensionRepository $extensions) {}
 
     /**
-     * @param  array<array-key, ApiValue9>|Closure  $tags
+     * @param  array<mixed>|Closure  $tags
      *
      * @throws InvalidArgumentException|UnexpectedValueException
      */
@@ -89,7 +88,7 @@ final class ExtensionHeadTags implements Htmlable
     }
 
     /**
-     * @param  array<array-key, ApiValue9>  $tags
+     * @param  array<mixed>  $tags
      * @return list<ExtensionHeadTag>
      *
      * @throws InvalidArgumentException|UnexpectedValueException
@@ -100,7 +99,8 @@ final class ExtensionHeadTags implements Htmlable
 
         $parsed = [];
         foreach ($tags as $tag) {
-            $parsed[] = ExtensionHeadTag::fromArray(JsonValueGuard::jsonArray($tag));
+            throw_unless(is_array($tag), UnexpectedValueException::class, 'Each head tag must be an array of attributes.');
+            $parsed[] = ExtensionHeadTag::fromArray($tag);
         }
 
         return $parsed;
@@ -148,12 +148,14 @@ final class ExtensionHeadTags implements Htmlable
         $key = $this->cacheKey($identifier, $version);
         $seconds = config()->integer('extensions.head_tags_cache_seconds');
         $cached = $seconds > 0 ? Cache::get($key) : null;
-        if ($cached !== null) {
-            return $this->parse(JsonValueGuard::jsonArray($cached));
+        if (is_array($cached)) {
+            return $this->parse($cached);
         }
 
         try {
-            $parsed = $this->parse(JsonValueGuard::jsonArray($tags()));
+            $resolved = $tags();
+            throw_unless(is_array($resolved), UnexpectedValueException::class, 'Head tag callbacks must return a list of tags.');
+            $parsed = $this->parse($resolved);
         } catch (Throwable $throwable) {
             // Remember the failure too, or a broken callback would run on every page load.
             $this->remember($key, $seconds, []);

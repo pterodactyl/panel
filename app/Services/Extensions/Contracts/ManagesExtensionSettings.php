@@ -6,12 +6,12 @@ namespace Pterodactyl\Services\Extensions\Contracts;
 
 interface ManagesExtensionSettings
 {
-    /** @return ExtensionSettingValues */
+    /** @return array<string, mixed> */
     public function publicSettings(): array;
 
     /** @return NormalizedValidationRules */
     public function validationRules(): array;
 
-    /** @param ExtensionSettingValues $settings */
+    /** @param array<string, mixed> $settings */
     public function update(array $settings): void;
 }

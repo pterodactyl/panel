@@ -16,7 +16,7 @@ final class ExtensionLock
     private int $depth = 0;
 
     /**
-     * @template T of object|ApiValue10|void
+     * @template T
      *
      * @param  Closure(): T  $callback
      * @return T

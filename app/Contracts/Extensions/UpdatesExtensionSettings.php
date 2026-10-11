@@ -9,7 +9,7 @@ use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 interface UpdatesExtensionSettings
 {
     /**
-     * @param  ExtensionSettingValues  $settings
+     * @param  array<string, mixed>  $settings
      * @return list<ExtensionSettingField>
      */
     public function update(ExtensionSettingsDefinition $definition, array $settings): array;
