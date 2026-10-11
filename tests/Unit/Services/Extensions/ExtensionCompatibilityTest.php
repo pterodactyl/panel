@@ -65,6 +65,19 @@ test('rejects upgrades and disabling that would break an enabled dependent', fun
     $compatibility->assertCanDisable('child', $enabled);
 });
 
+test('an extension that is already failing does not stop another from being enabled', function (): void {
+    $enabled = collect([
+        'future' => manifest('future', ['panel' => '^3.0']),
+        'orphan' => manifest('orphan', ['extensions' => ['gone' => '*']]),
+    ]);
+    $compatibility = resolve(ExtensionCompatibility::class);
+
+    $compatibility->assertCompatible(manifest('healthy'), $enabled);
+
+    expect(fn () => $compatibility->assertCompatible(manifest('dependent', ['extensions' => ['future' => '*']]), $enabled))
+        ->toThrow(InvalidExtensionException::class, 'Extension "dependent" requires unavailable extension "future".');
+});
+
 /** @param list<string> $components */
 function presentation(string $id, array $components): ExtensionManifest
 {

@@ -60,9 +60,13 @@ final class ExtensionCompatibility
     /** @param Collection<string, ExtensionManifest> $enabled */
     public function assertCompatible(ExtensionManifest $manifest, Collection $enabled): void
     {
-        $errors = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
-        // A claim both sides make is reported from the side of the extension being checked.
-        $reason = $errors[$manifest->id] ?? reset($errors);
+        $before = $this->resolve($enabled)['errors'];
+        $after = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
+        // An extension that was already failing does not hold this one back: only a failure
+        // of its own, or one it causes in another extension, does. A claim both sides make
+        // is reported from the side of the extension being checked.
+        $caused = array_diff_key($after, $before);
+        $reason = $after[$manifest->id] ?? reset($caused);
         throw_if($reason !== false, InvalidExtensionException::class, $reason);
         $this->assertDistinctAutoloader($manifest, $enabled);
     }
