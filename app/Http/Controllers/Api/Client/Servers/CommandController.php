@@ -11,7 +11,6 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\SendsServerCommands;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use Pterodactyl\Models\Server;
@@ -43,8 +42,6 @@ class CommandController extends ClientApiController
     {
         $command = JsonValueGuard::string($request->validated('command'));
         $commands->send($server, $command);
-
-        Activity::event('server:console.command')->property('command', $command)->log();
 
         return $this->returnNoContent();
     }

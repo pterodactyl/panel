@@ -45,4 +45,5 @@ test('action can be sent to server', function (string $action, string $permissio
     [$user, $server] = $this->generateTestAccount([$permission]);
     $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => $action])->assertStatus(Response::HTTP_NO_CONTENT);
     $fake->assertSentTo(mb_trim($action), $server->uuid);
+    $this->assertActivityFor('server:power.'.mb_trim($action), $user, $server);
 })->with('validPowerActionDataProvider');

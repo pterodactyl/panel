@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Assertions;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Assert;
 use Pterodactyl\Events\ActivityLogged;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\ActivityLogSubject;
 
 trait AssertsActivityLogged
@@ -20,6 +22,27 @@ trait AssertsActivityLogged
         $this->assertActivityLogged($event);
         $this->assertActivityActor($event, $actor);
         $this->assertActivitySubjects($event, ...$subjects);
+    }
+
+    /**
+     * Asserts that exactly one entry was stored for the event against all of the given
+     * subjects, which is what puts it on that server's or user's activity feed.
+     */
+    public function assertActivityOn(string $event, Model ...$subjects): ActivityLog
+    {
+        $query = ActivityLog::query()->where('event', $event);
+        foreach ($subjects as $subject) {
+            $query->whereHas('subjects', fn (Builder $builder) => $builder->where('subject_type', $subject->getMorphClass())->where('subject_id', $subject->getKey()));
+        }
+
+        $found = $query->get();
+        Assert::assertCount(1, $found, sprintf(
+            'Failed asserting that one "%s" event was logged against %s.',
+            $event,
+            implode(', ', array_map(fn (Model $subject): string => sprintf('%s[%d]', $subject::class, $subject->getKey()), $subjects)),
+        ));
+
+        return $found->sole();
     }
 
     /**
@@ -49,7 +72,7 @@ trait AssertsActivityLogged
             foreach ($subjects as $subject) {
                 $match = $e->model->subjects->first(function (ActivityLogSubject $model) use ($subject) {
                     return $model->subject_type === $subject->getMorphClass()
-                        && $model->subject_id = $subject->getKey();
+                        && $model->subject_id === $subject->getKey();
                 });
 
                 Assert::assertNotNull(

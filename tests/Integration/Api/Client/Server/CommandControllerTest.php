@@ -30,6 +30,7 @@ test('command can send to server', function () {
     $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", ['command' => 'say Test']);
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $fake->assertSent('say Test');
+    $this->assertActivityFor('server:console.command', $user, $server);
     Http::assertSent(fn (HttpRequest $request): bool => str_contains($request->url(), "/api/servers/{$server->uuid}/"));
 });
 test('error is returned when server is offline', function () {

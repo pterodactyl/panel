@@ -10,7 +10,6 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\SendsServerPower;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest;
 use Pterodactyl\Models\Server;
@@ -29,8 +28,6 @@ class PowerController extends ClientApiController
     {
         $signal = JsonValueGuard::string($request->validated('signal'));
         $power->send($server, $signal);
-
-        Activity::event(mb_strtolower("server:power.{$signal}"))->log();
 
         return $this->returnNoContent();
     }
