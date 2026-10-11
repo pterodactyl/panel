@@ -27,7 +27,9 @@ class ServerInstallController extends Controller
      */
     public function store(InstallationDataRequest $request, RecordsServerInstallResults $installResult, string $uuid): JsonResponse
     {
-        $installResult->record($request, $uuid, $request->boolean('successful'), $request->boolean('reinstall'));
+        $validated = $request->safe();
+
+        $installResult->record($request, $uuid, $validated->boolean('successful'), $validated->boolean('reinstall'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

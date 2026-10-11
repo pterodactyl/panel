@@ -22,7 +22,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Helpers\ThrottlesLogins;
 use Pterodactyl\Validation\UserSSHKeyRules;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -42,7 +41,7 @@ class SftpAuthenticationController extends Controller
      */
     public function __invoke(SftpAuthenticationFormRequest $request, GetUserPermissionsService $permissions): JsonResponse
     {
-        $connection = $this->parseUsername(JsonValueGuard::string($request->validated('username')));
+        $connection = $this->parseUsername($request->safe()->string('username')->toString());
         throw_if(empty($connection['server']), BadRequestHttpException::class, 'No valid server identifier was included in the request.');
 
         $server = $this->getServer($request, $connection['server']);
@@ -56,7 +55,7 @@ class SftpAuthenticationController extends Controller
         $user = User::query()->where('username', $connection['username'])->first();
 
         if ($request->validated('type') !== 'public_key') {
-            $password = JsonValueGuard::string($request->validated('password'));
+            $password = $request->safe()->string('password')->toString();
             if ($user === null) {
                 Hash::make($password);
                 $this->reject($request);
@@ -69,7 +68,7 @@ class SftpAuthenticationController extends Controller
             }
         } else {
             $key = null;
-            $publicKey = mb_trim(JsonValueGuard::string($request->validated('password')));
+            $publicKey = mb_trim($request->safe()->string('password')->toString());
             if (UserSSHKeyRules::isSupportedPublicKey($publicKey)) {
                 try {
                     $key = PublicKeyLoader::loadPublicKey($publicKey);
@@ -171,8 +170,7 @@ class SftpAuthenticationController extends Controller
      */
     protected function throttleKey(Request $request): string
     {
-        $raw = JsonValueGuard::nullableString($request->input('username', '')) ?? '';
-        $username = Str::transliterate(mb_strtolower(mb_rtrim($this->parseUsername($raw)['username'], ' ')));
+        $username = Str::transliterate(mb_strtolower(mb_rtrim($this->parseUsername($request->string('username')->toString())['username'], ' ')));
 
         return $username.'|'.($this->throttleServer->uuid ?? '');
     }

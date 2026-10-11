@@ -54,6 +54,15 @@ test('node can report a failed install', function () {
     actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['successful' => false, 'reinstall' => false])->assertNoContent();
     expect($server->refresh()->status)->toBe(Server::STATUS_INSTALL_FAILED);
 });
+test('an install report takes boolean strings and needs its outcome', function () {
+    $server = $this->createServerModel(['status' => Server::STATUS_INSTALLING, 'installed_at' => null]);
+    actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['reinstall' => '1'])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'successful');
+    actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['successful' => '0', 'reinstall' => '1'])->assertNoContent();
+    expect($server->refresh()->status)->toBe(Server::STATUS_REINSTALL_FAILED);
+});
 test('node can reset restoring servers', function () {
     $server = $this->createServerModel();
     $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);

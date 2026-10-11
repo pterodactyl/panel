@@ -35,8 +35,6 @@ parameters:
         ApiError: 'array{code: string, status: string, detail: string, source?: ApiErrorSource, meta?: ApiErrorMetadata}'
         ApiErrorOverride: 'array{code?: string, status?: string, detail?: string, source?: ApiErrorSource, meta?: ApiErrorMetadata}'
         ApiErrorEnvelope: 'array{errors: list<ApiError>}'
-        ActivityEvent: 'array{user: string|null, server: string, event: string, metadata: array<string, ApiValue7>, ip: string|null, timestamp: string}'
-        ActivityEvents: 'list<ActivityEvent>'
         ViteManifestEntry: 'array{file: string, integrity?: string, css?: list<string>, cssIntegrity?: array<string, string>}'
         ViteManifest: 'array<string, ViteManifestEntry>'
         JwtClaimValue: 'JsonValue|\DateTimeImmutable'
@@ -82,7 +80,6 @@ parameters:
         DatabaseDeploymentData: 'array{database: string, remote: string, database_host_id?: int|null, max_connections?: int|null}'
         DatabaseModelCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null, server_id: int, username: string, password: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
-        SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'
         BackupUploadParts: 'array{parts: list<string>, part_size: int}'
         GeneralSettingsData: "array{'app:name': string, 'pterodactyl:auth:2fa_required': int, 'app:locale': string}"
         AdvancedSettingsData: "array{'recaptcha:enabled': string, 'recaptcha:secret_key'?: string, 'recaptcha:website_key': string, 'pterodactyl:guzzle:timeout': int, 'pterodactyl:guzzle:connect_timeout': int, 'pterodactyl:client_features:allocations:enabled': string, 'pterodactyl:client_features:allocations:range_start': int|null, 'pterodactyl:client_features:allocations:range_end': int|null}"

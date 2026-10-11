@@ -17,6 +17,21 @@ final readonly class RecordServerInstallResult implements RecordsServerInstallRe
 {
     public function __construct(private ServerInstallService $serverInstallService) {}
 
+    /**
+     * An install report's fields, as Wings sends them: whether the install script
+     * succeeded, and whether it ran as a reinstall. The action takes both as bools, which
+     * always meet them.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'successful' => ['present', 'boolean'],
+            'reinstall' => ['sometimes', 'boolean'],
+        ];
+    }
+
     public function record(Request $request, string $uuid, bool $successful, bool $reinstall): Server
     {
         $server = $this->serverInstallService->resolveForNode($request, $uuid);

@@ -8,7 +8,9 @@ use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Activity\IngestsActivityLogs;
 use Pterodactyl\Models\ActivityLog;
@@ -16,12 +18,78 @@ use Pterodactyl\Models\ActivityLogSubject;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Support\JsonValueGuard;
 
+/**
+ * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<string, ApiValue9>, ip: string|null, timestamp: string}
+ */
 final class IngestActivityLogs implements IngestsActivityLogs
 {
-    /** @param ActivityEvents $events */
-    public function ingest(Node $node, array $events): void
+    /**
+     * The activity Wings reports, under the field names of its protocol: `data` lists the
+     * events, each naming the server it happened on, the event, its metadata and when it
+     * happened, and optionally the user who caused it and their IP address.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
     {
+        return [
+            'data' => ['required', 'array'],
+            'data.*' => ['array'],
+            'data.*.user' => ['sometimes', 'nullable', 'uuid'],
+            'data.*.server' => ['required', 'uuid'],
+            'data.*.event' => ['required', 'string'],
+            'data.*.metadata' => ['present', 'nullable', 'array'],
+            'data.*.ip' => ['sometimes', 'nullable', 'ip'],
+            'data.*.timestamp' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Validates reported activity and returns the events it lists. Metadata given as null
+     * is empty.
+     *
+     * @param  ActionInput  $input
+     * @return list<ActivityEvent>
+     *
+     * @throws ValidationException
+     */
+    public static function events(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        $events = [];
+        foreach (array_keys($input->array('data')) as $key) {
+            $event = 'data.'.$key.'.';
+
+            // Metadata is whatever Wings recorded for the event, so Laravel's typed accessors
+            // have no type to give it; it is checked as the JSON object it was sent as.
+            $metadata = $input->array($event.'metadata');
+            JsonValueGuard::assertPayload9($metadata);
+
+            $events[] = [
+                'user' => $input->filled($event.'user') ? $input->string($event.'user')->toString() : null,
+                'server' => $input->string($event.'server')->toString(),
+                'event' => $input->string($event.'event')->toString(),
+                'metadata' => $metadata,
+                'ip' => $input->filled($event.'ip') ? $input->string($event.'ip')->toString() : null,
+                'timestamp' => $input->string($event.'timestamp')->toString(),
+            ];
+        }
+
+        return $events;
+    }
+
+    /**
+     * @param  ActionInput  $input
+     *
+     * @throws ValidationException
+     */
+    public function ingest(Node $node, array $input): void
+    {
+        $events = self::events($input);
+
         $tz = now()->getTimezone();
         $servers = $node->servers()->whereIn('uuid', array_column($events, 'server'))->get()->keyBy('uuid');
         $users = User::query()->whereIn('uuid', array_filter(array_column($events, 'user')))->get()->keyBy('uuid');
