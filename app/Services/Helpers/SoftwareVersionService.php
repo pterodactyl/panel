@@ -67,7 +67,7 @@ class SoftwareVersionService
             return true;
         }
 
-        return version_compare(JsonValueGuard::string(config('app.version')), $this->getPanel()) >= 0;
+        return version_compare(config()->string('app.version'), $this->getPanel()) >= 0;
     }
 
     /**
@@ -87,9 +87,9 @@ class SoftwareVersionService
      */
     protected function cacheVersionData(): array
     {
-        $cached = $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(JsonValueGuard::integer(config('pterodactyl.cdn.cache_time', 60))), function (): array {
+        $cached = $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config()->integer('pterodactyl.cdn.cache_time', 60)), function (): array {
             try {
-                $response = $this->client->request('GET', JsonValueGuard::string(config('pterodactyl.cdn.url')), ['timeout' => 5, 'connect_timeout' => 2]);
+                $response = $this->client->request('GET', config()->string('pterodactyl.cdn.url'), ['timeout' => 5, 'connect_timeout' => 2]);
 
                 if ($response->getStatusCode() === 200) {
                     return JsonValueGuard::decodeArray8($response->getBody()->__toString());

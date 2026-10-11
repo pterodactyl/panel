@@ -146,7 +146,7 @@ final class ExtensionHeadTags implements Htmlable
     private function resolve(string $identifier, string $version, Closure $tags): array
     {
         $key = $this->cacheKey($identifier, $version);
-        $seconds = JsonValueGuard::integer(config('extensions.head_tags_cache_seconds'));
+        $seconds = config()->integer('extensions.head_tags_cache_seconds');
         $cached = $seconds > 0 ? Cache::get($key) : null;
         if ($cached !== null) {
             return $this->parse(JsonValueGuard::jsonArray($cached));

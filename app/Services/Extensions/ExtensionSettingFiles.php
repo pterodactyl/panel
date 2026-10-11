@@ -10,10 +10,10 @@ use DOMElement;
 use DOMText;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\ExtensionSetting;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 /**
@@ -166,7 +166,7 @@ class ExtensionSettingFiles
      */
     private function disk(): Filesystem
     {
-        $name = JsonValueGuard::string(config('extensions.files_disk'));
+        $name = config()->string('extensions.files_disk');
         throw_if($this->servedDirectly($name), UnexpectedValueException::class, sprintf('The "%s" disk is served directly by the web server; extensions.files_disk must name a private disk so setting files are only served through /%s.', $name, self::ROUTE_PREFIX));
 
         return Storage::disk($name);
@@ -182,8 +182,9 @@ class ExtensionSettingFiles
             return false;
         }
 
-        $root = mb_rtrim(JsonValueGuard::string(config("filesystems.disks.{$disk}.root")), '/\\').'/';
-        $links = JsonValueGuard::stringList(array_values(JsonValueGuard::jsonArray(config('filesystems.links', []))));
+        $root = mb_rtrim(config()->string("filesystems.disks.{$disk}.root"), '/\\').'/';
+        $configured = config()->array('filesystems.links', []);
+        $links = array_map(fn (int|string $link): string => Arr::string($configured, $link), array_keys($configured));
 
         return array_any([public_path(), ...$links], fn (string $directory): bool => str_starts_with($root, mb_rtrim($directory, '/\\').'/'));
     }

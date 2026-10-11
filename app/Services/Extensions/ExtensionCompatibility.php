@@ -7,7 +7,6 @@ namespace Pterodactyl\Services\Extensions;
 use Composer\Semver\Semver;
 use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final class ExtensionCompatibility
 {
@@ -195,8 +194,8 @@ final class ExtensionCompatibility
     private function runtimeFailureReason(ExtensionManifest $manifest): ?string
     {
         $versions = [
-            'panel' => JsonValueGuard::string(config('extensions.panel_version')),
-            'sdk' => JsonValueGuard::string(config('extensions.sdk_version')),
+            'panel' => config()->string('extensions.panel_version'),
+            'sdk' => config()->string('extensions.sdk_version'),
             'php' => PHP_VERSION,
         ];
         foreach ($manifest->requirements as $runtime => $constraint) {

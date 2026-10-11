@@ -13,7 +13,6 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Rules\DockerImageList;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class CreateEgg implements CreatesEggs
 {
@@ -125,7 +124,7 @@ final readonly class CreateEgg implements CreatesEggs
         return DB::transaction(function () use ($attributes, $extensions): Egg {
             $egg = Egg::query()->forceCreate([
                 ...$attributes,
-                'author' => JsonValueGuard::string(Config::get('pterodactyl.service.author')),
+                'author' => Config::string('pterodactyl.service.author'),
             ]);
             $this->extensions->save($egg, $extensions);
 

@@ -16,7 +16,6 @@ use Pterodactyl\Enum\JwtScope;
 use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 class NodeJWTService
 {
@@ -93,10 +92,13 @@ class NodeJWTService
         $connectionAddress = $node->getConnectionAddress();
         throw_if($connectionAddress === '', InvalidArgumentException::class, 'Cannot generate a JWT for a node with an empty connection address.');
 
+        $issuer = config()->string('app.url');
+        throw_if($issuer === '', InvalidArgumentException::class, 'Cannot generate a JWT without an application URL.');
+
         $config = Configuration::forSymmetricSigner(new Sha256, InMemory::plainText($nodeKey));
 
         $builder = $config->builder(new TimestampDates)
-            ->issuedBy(JsonValueGuard::nonEmptyString(config('app.url')))
+            ->issuedBy($issuer)
             ->permittedFor($connectionAddress)
             ->identifiedBy($identifier)
             ->withHeader('jti', $identifier)

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
@@ -124,7 +125,7 @@ class LoginCheckpointController extends AbstractLoginController
                 $decrypted,
                 JsonValueGuard::nullableString($request->validated('authentication_code')) ?? '',
                 $oldTimestamp,
-                JsonValueGuard::integer(config('pterodactyl.auth.2fa.window', 1))
+                Fluent::make(config()->array('pterodactyl.auth.2fa'))->integer('window', 1)
             );
 
             if ($verified !== false) {

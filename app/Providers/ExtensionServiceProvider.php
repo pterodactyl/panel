@@ -25,7 +25,6 @@ use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 class ExtensionServiceProvider extends ServiceProvider
@@ -61,7 +60,7 @@ class ExtensionServiceProvider extends ServiceProvider
         RateLimiter::for('extensions.root', function (Request $request): Limit {
             $user = $request->user();
 
-            return Limit::perMinute(JsonValueGuard::integer(config('extensions.root_routes_per_minute')))
+            return Limit::perMinute(config()->integer('extensions.root_routes_per_minute'))
                 ->by($user instanceof User ? $user->uuid : $request->ip());
         });
 

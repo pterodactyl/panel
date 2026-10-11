@@ -9,7 +9,6 @@ use Pterodactyl\Contracts\Backups\PresignsBackupUploads;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Models\Backup;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class PresignBackupUpload implements PresignsBackupUploads
@@ -32,7 +31,7 @@ final readonly class PresignBackupUpload implements PresignsBackupUploads
         throw_unless($adapter instanceof S3Filesystem, BadRequestHttpException::class, 'The configured backup adapter is not an S3 compatible adapter.');
 
         $client = $adapter->getClient();
-        $expires = CarbonImmutable::now()->addMinutes(JsonValueGuard::integer(config('backups.presigned_url_lifespan', 60)));
+        $expires = CarbonImmutable::now()->addMinutes(config()->integer('backups.presigned_url_lifespan', 60));
 
         $params = [
             'Bucket' => $adapter->getBucket(),

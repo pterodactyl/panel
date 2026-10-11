@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpFoundation\Response;
 
 class LanguageMiddleware
@@ -28,7 +27,7 @@ class LanguageMiddleware
     public function handle(Request $request, Closure $next): mixed
     {
         $user = $request->user();
-        $this->app->setLocale($user instanceof User ? $user->language : JsonValueGuard::string(config('app.locale', 'en')));
+        $this->app->setLocale($user instanceof User ? $user->language : config()->string('app.locale', 'en'));
 
         return $next($request);
     }

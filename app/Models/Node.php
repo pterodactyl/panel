@@ -149,6 +149,9 @@ class Node extends Model implements Identifiable
             $allowedMounts[] = $mount->source;
         }
 
+        $remote = config()->string('app.url');
+        throw_if($remote === '', UnexpectedValueException::class, 'The application URL must not be empty.');
+
         return [
             'debug' => false,
             'uuid' => $this->uuid,
@@ -171,7 +174,7 @@ class Node extends Model implements Identifiable
                 ],
             ],
             'allowed_mounts' => $allowedMounts,
-            'remote' => mb_rtrim(JsonValueGuard::nonEmptyString(config('app.url')), '/'),
+            'remote' => mb_rtrim($remote, '/'),
         ];
     }
 

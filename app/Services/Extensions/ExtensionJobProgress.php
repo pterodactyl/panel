@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use Pterodactyl\Data\Extensions\ExtensionJobSnapshot;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 /** Shared snapshots survive reconnects and worker boundaries for the configured retention period. */
 final class ExtensionJobProgress
@@ -70,7 +69,7 @@ final class ExtensionJobProgress
 
     private function store(ExtensionJobSnapshot $snapshot): void
     {
-        Cache::put($this->key($snapshot->extension, $snapshot->id), $snapshot, max(60, JsonValueGuard::integer(config('extensions.progress_retention_seconds'))));
+        Cache::put($this->key($snapshot->extension, $snapshot->id), $snapshot, max(60, config()->integer('extensions.progress_retention_seconds')));
     }
 
     private function key(string $extension, string $id): string

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Themes;
 
-use Pterodactyl\Support\JsonValueGuard;
-
 /**
  * Installs theme.json + tokens.css themes and publishes the active one to public/assets/theme.css.
  */
@@ -15,7 +13,7 @@ class ThemeService
 
     public function directory(): string
     {
-        return mb_rtrim(JsonValueGuard::string(config('extensions.themes_directory', base_path('themes'))), '/\\');
+        return mb_rtrim(config()->string('extensions.themes_directory', base_path('themes')), '/\\');
     }
 
     public function publishedStylesheet(): string

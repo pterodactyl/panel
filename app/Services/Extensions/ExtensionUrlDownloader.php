@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
+use UnexpectedValueException;
 
 /**
  * Downloads extension packages from signed install URLs.
@@ -95,7 +96,9 @@ class ExtensionUrlDownloader
         if ($jwt !== '') {
             try {
                 $token = (new Parser(new JoseEncoder))->parse($jwt);
-                $key = InMemory::base64Encoded(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.public_key')));
+                $publicKey = config()->string('extensions.signed_urls.public_key');
+                throw_if($publicKey === '', UnexpectedValueException::class, 'Signed install URLs need a public key.');
+                $key = InMemory::base64Encoded($publicKey);
                 $signed = $token instanceof UnencryptedToken && (new Validator)->validate($token, new SignedWith(new Eddsa, $key));
             } catch (Throwable) {
                 $signed = false;
@@ -110,8 +113,11 @@ class ExtensionUrlDownloader
         );
 
         $claims = $token->claims();
+        $issuer = config()->string('extensions.signed_urls.issuer');
+        $audience = config()->string('extensions.signed_urls.audience');
+        throw_if($issuer === '' || $audience === '', UnexpectedValueException::class, 'Signed install URLs need an issuer and an audience.');
         throw_unless(
-            $token->hasBeenIssuedBy(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.issuer'))) && $token->isPermittedFor(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.audience'))),
+            $token->hasBeenIssuedBy($issuer) && $token->isPermittedFor($audience),
             InvalidExtensionException::class,
             'This signed URL is not an extension install URL.',
         );

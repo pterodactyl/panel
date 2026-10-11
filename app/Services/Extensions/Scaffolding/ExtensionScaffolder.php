@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * Scaffolds a new extension package the way `php artisan make:*` scaffolds core
@@ -48,7 +47,7 @@ class ExtensionScaffolder
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless(ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
 
-        $target = mb_rtrim($outDir ?? JsonValueGuard::string(config('extensions.directory')), '/\\').DIRECTORY_SEPARATOR.$id;
+        $target = mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id;
         throw_if(is_dir($target) && ! $force, InvalidExtensionException::class, "{$target} already exists - pass --force to overwrite it.");
 
         File::deleteDirectory($target);

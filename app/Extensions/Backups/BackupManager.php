@@ -6,7 +6,7 @@ namespace Pterodactyl\Extensions\Backups;
 
 use Aws\S3\S3Client;
 use Closure;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
@@ -88,7 +88,7 @@ class BackupManager
      */
     public function getDefaultAdapter(): string
     {
-        return JsonValueGuard::string($this->config->get('backups.default'));
+        return $this->config->string('backups.default');
     }
 
     /**

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Middleware;
 
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Pterodactyl\Support\JsonValueGuard;
 
 class EnsureStatefulRequests extends EnsureFrontendRequestsAreStateful
 {
@@ -20,6 +19,6 @@ class EnsureStatefulRequests extends EnsureFrontendRequestsAreStateful
             return true;
         }
 
-        return $request->hasCookie(JsonValueGuard::string(config('session.cookie')));
+        return $request->hasCookie(config()->string('session.cookie'));
     }
 }

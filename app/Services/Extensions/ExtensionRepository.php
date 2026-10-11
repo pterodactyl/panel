@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Schema;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
@@ -44,7 +43,7 @@ class ExtensionRepository
 
     public function directory(): string
     {
-        return mb_rtrim(JsonValueGuard::string(config('extensions.directory')), '/\\');
+        return mb_rtrim(config()->string('extensions.directory'), '/\\');
     }
 
     /**

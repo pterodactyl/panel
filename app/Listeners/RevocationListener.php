@@ -15,7 +15,6 @@ use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 
 class RevocationListener implements SubscribesToEvents
 {
@@ -28,7 +27,7 @@ class RevocationListener implements SubscribesToEvents
         ])->saveQuietly();
 
         if (config('session.driver') === 'database') {
-            $table = JsonValueGuard::string(config('session.table', 'sessions'));
+            $table = config()->string('session.table', 'sessions');
             if ($table !== '') {
                 $currentSessionId = session()->isStarted() ? session()->getId() : null;
 

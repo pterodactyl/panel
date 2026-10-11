@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
@@ -17,7 +18,6 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Throwable;
@@ -115,8 +115,9 @@ final class InitiateBackup implements InitiatesBackups
         $attributes = self::attributes(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles]);
 
         [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $attributes, $override): array {
-            $limit = JsonValueGuard::integer(config('backups.throttles.limit'));
-            $period = JsonValueGuard::integer(config('backups.throttles.period'));
+            $throttles = Fluent::make(config()->array('backups.throttles'));
+            $limit = $throttles->integer('limit');
+            $period = $throttles->integer('period');
             if ($period > 0) {
                 $previousCount = $server->backups()
                     ->withTrashed()

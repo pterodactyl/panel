@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Users;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
@@ -43,7 +44,7 @@ final readonly class ToggleTwoFactor implements TogglesTwoFactor
 
         $secret = JsonValueGuard::string(Crypt::decrypt($encryptedSecret));
 
-        $isValidToken = $this->google2FA->verifyKey($secret, $token, JsonValueGuard::integer(config()->get('pterodactyl.auth.2fa.window')));
+        $isValidToken = $this->google2FA->verifyKey($secret, $token, Fluent::make(config()->array('pterodactyl.auth.2fa'))->integer('window'));
 
         throw_unless($isValidToken, TwoFactorAuthenticationTokenInvalid::class);
 

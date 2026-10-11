@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -86,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
         // doesn't, and it triggers a lot of support requests, so lets just head it off here.
         //
         // @see https://github.com/pterodactyl/panel/issues/3623
-        if (Str::startsWith(JsonValueGuard::nullableString(config('app.url')) ?? '', 'https://')) {
+        if (config('app.url') !== null && Str::startsWith(config()->string('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 
@@ -213,9 +214,8 @@ class AppServiceProvider extends ServiceProvider
         $user = $request->user();
         $key = $user instanceof User ? $user->uuid : $request->ip();
 
-        return Limit::perMinutes(
-            JsonValueGuard::integer(config("http.rate_limit.{$name}_period")),
-            JsonValueGuard::integer(config("http.rate_limit.{$name}")),
-        )->by($key);
+        $limits = Fluent::make(config()->array('http.rate_limit'));
+
+        return Limit::perMinutes($limits->integer("{$name}_period"), $limits->integer($name))->by($key);
     }
 }
