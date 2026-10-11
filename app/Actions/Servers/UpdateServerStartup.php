@@ -9,9 +9,9 @@ use LogicException;
 use Pterodactyl\Contracts\Servers\ChangesServerEgg;
 use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
+use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Throwable;
@@ -22,6 +22,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
         private VariableValidatorService $validatorService,
         private ChangesServerEgg $eggs,
         private UpdatesServerDockerImage $dockerImage,
+        private UpdatesServerVariable $variables,
     ) {}
 
     /**
@@ -47,10 +48,8 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
 
                 $results = $this->validatorService->setUserLevel($userLevel)->handle($egg, $data['environment']);
                 foreach ($results as $result) {
-                    ServerVariable::query()->updateOrCreate(
-                        ['server_id' => $server->id, 'variable_id' => $result->id],
-                        ['variable_value' => $result->value ?? '']
-                    );
+                    // SAFETY: validated variable values are JSON scalars, which all have a string form.
+                    $this->variables->update($server, $result->id, $result->value === null ? '' : (string) $result->value);
                 }
             }
 

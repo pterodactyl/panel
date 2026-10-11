@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Actions\Servers\UpdateServerDockerImage;
+use Pterodactyl\Actions\Servers\UpdateServerVariable;
 use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
+use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerVariable;
@@ -134,6 +136,30 @@ test('admin image changes go through the docker image contract only when the ima
     expect($spy->images)->toBe(['new/image'])
         ->and($response->image)->toBe('new/image')
         ->and($response->startup)->toBe('new startup');
+});
+test('variable writes from the admin update and the client endpoint both go through the variable contract', function (): void {
+    $spy = new class(new UpdateServerVariable()) implements UpdatesServerVariable
+    {
+        /** @var list<array{int, string}> */
+        public array $writes = [];
+
+        public function __construct(private readonly UpdatesServerVariable $inner) {}
+
+        public function update(Server $server, int $variableId, string $value): void
+        {
+            $this->writes[] = [$variableId, $value];
+            $this->inner->update($server, $variableId, $value);
+        }
+    };
+    $this->app->instance(UpdatesServerVariable::class, $spy);
+    $server = $this->createServerModel();
+    $user = $server->user;
+    $variable = $server->variables()->where('env_variable', 'BUNGEE_VERSION')->firstOrFail();
+
+    getService()->update($server, ['environment' => ['BUNGEE_VERSION' => '10', 'SERVER_JARFILE' => 'server.jar']], User::USER_LEVEL_ADMIN);
+    $this->actingAs($user)->putJson("/api/client/servers/{$server->uuid}/startup/variable", ['key' => 'BUNGEE_VERSION', 'value' => '20'])->assertOk();
+
+    expect($spy->writes)->toContain([$variable->id, '10'], [$variable->id, '20']);
 });
 test('invalid egg id triggers exception', function (): void {
     $server = $this->createServerModel();

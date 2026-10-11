@@ -8,6 +8,7 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
@@ -68,7 +69,7 @@ class StartupController extends ClientApiController
     #[Endpoint('Update startup variable', 'Updates one editable startup variable for the server and returns the updated rendered startup command.')]
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Startup variable updated.', factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
     #[ScribeResponse(self::BAD_REQUEST_ERROR, status: 400, description: 'The variable does not exist, is hidden, or is read-only.')]
-    public function update(UpdateStartupVariableRequest $request, StartupCommandService $startupCommand, Server $server): array
+    public function update(UpdateStartupVariableRequest $request, UpdatesServerVariable $variables, StartupCommandService $startupCommand, Server $server): array
     {
         $variable = $request->variable();
         throw_if(! $variable instanceof EggVariable || ! $variable->user_viewable, BadRequestHttpException::class, 'The environment variable you are trying to edit does not exist.');
@@ -78,10 +79,7 @@ class StartupController extends ClientApiController
         $original = $variable->server_value;
         $value = JsonValueGuard::nullableScalarString($request->validated('value'));
 
-        $server->serverVariables()->updateOrCreate(
-            ['variable_id' => $variable->id],
-            ['variable_value' => $value ?? ''],
-        );
+        $variables->update($server, $variable->id, $value ?? '');
 
         $variable->server_value = $value;
 

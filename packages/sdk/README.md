@@ -564,7 +564,9 @@ Core controllers resolve these contracts, not the classes behind them. Renaming 
 Deleting an allocation block calls `DeletesAllocations` once per allocation. Disabling
 two-factor, by an admin or by the user, calls `DisablesTwoFactor`, which clears the TOTP
 secret. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
-endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image.
+endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image. Changing a
+startup variable calls `UpdatesServerVariable`, once from the client endpoint and once per
+variable in a startup update.
 `UpdatesEggs`, `UpdatesEggInstallScripts` and `UpdatesEggVariables` return the updated model.
 Mounts (`CreatesMounts`, `UpdatesMounts`, `DeletesMounts`, `AttachesEggsToMounts`,
 `AttachesNodesToMounts`, `DetachesEggsFromMounts`, `DetachesNodesFromMounts`), tags
