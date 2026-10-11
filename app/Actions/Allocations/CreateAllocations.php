@@ -113,6 +113,8 @@ final readonly class CreateAllocations implements CreatesAllocations
             $underlying = gethostbyname($attributes['ip']);
             $parsed = Network::parse($underlying);
         } catch (Exception $exception) {
+            report($exception);
+
             throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
         }
 

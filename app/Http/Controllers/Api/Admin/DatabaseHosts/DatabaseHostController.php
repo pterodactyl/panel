@@ -245,6 +245,8 @@ class DatabaseHostController extends AdminApiController
     private function handleConnectionException(Throwable $exception): never
     {
         if ($exception instanceof PDOException || $exception->getPrevious() instanceof PDOException) {
+            report($exception);
+
             throw new DisplayException(sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage()), $exception);
         }
 
