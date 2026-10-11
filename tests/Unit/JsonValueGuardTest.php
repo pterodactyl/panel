@@ -39,10 +39,6 @@ test('rejects objects', function () {
 test('accepts json empty objects', function () {
     expect(fn () => JsonValueGuard::assertValue(new JsonEmptyObject()))->not->toThrow(UnexpectedValueException::class);
 });
-test('nullable strings preserve strings and null', function () {
-    expect(JsonValueGuard::nullableString('value'))->toBe('value');
-    expect(JsonValueGuard::nullableString(null))->toBeNull();
-});
 test('string lists preserve sequential string values', function () {
     expect(JsonValueGuard::stringList(['first', 'second']))->toBe(['first', 'second']);
 });
@@ -54,12 +50,6 @@ test('string lists reject invalid shapes', function (mixed $value) {
     'associative array' => [['name' => 'value']],
     'non-string item' => [['value', 1]],
 ]);
-test('booleans accept what the boolean validation rule accepts', function (mixed $value, bool $expected) {
-    expect(JsonValueGuard::boolean($value))->toBe($expected);
-})->with([[true, true], [1, true], ['1', true], [false, false], [0, false], ['0', false]]);
-test('booleans reject anything else', function (mixed $value) {
-    expect(fn (): bool => JsonValueGuard::boolean($value))->toThrow(UnexpectedValueException::class, 'Expected a boolean value.');
-})->with([[null], ['true'], ['yes'], [2], [1.0], [[]]]);
 test('integers accept what the integer validation rule accepts', function (mixed $value, int $expected) {
     expect(JsonValueGuard::integer($value))->toBe($expected);
 })->with([[5, 5], ['5', 5], ['-5', -5], [1024.0, 1024]]);

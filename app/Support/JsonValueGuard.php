@@ -74,74 +74,12 @@ final class JsonValueGuard
         throw_if($value !== null && ! is_bool($value) && ! is_float($value) && ! is_int($value) && ! is_string($value), UnexpectedValueException::class, 'Expected a scalar JSON value.');
     }
 
-    /**
-     * @phpstan-assert ApiScalar $value
-     *
-     * @return ApiScalar
-     */
-    public static function scalar(mixed $value): bool|float|int|string|null
-    {
-        self::assertScalar($value);
-
-        return $value;
-    }
-
     /** @phpstan-assert string $value */
     public static function string(mixed $value): string
     {
         throw_unless(is_string($value), UnexpectedValueException::class, 'Expected a string value.');
 
         return $value;
-    }
-
-    /**
-     * @phpstan-assert non-empty-string $value
-     *
-     * @return non-empty-string
-     */
-    public static function nonEmptyString(mixed $value): string
-    {
-        $value = self::string($value);
-        throw_if($value === '', UnexpectedValueException::class, 'Expected a non-empty string value.');
-
-        return $value;
-    }
-
-    /** @phpstan-assert string|null $value */
-    public static function nullableString(mixed $value): ?string
-    {
-        throw_if($value !== null && ! is_string($value), UnexpectedValueException::class, 'Expected a nullable string value.');
-
-        return $value;
-    }
-
-    /** @phpstan-assert ApiScalar $value */
-    public static function nullableScalarString(mixed $value): ?string
-    {
-        $value = self::scalar($value);
-
-        // SAFETY: assertScalar() limits the value to JSON scalars, all of which have a defined string representation.
-        return $value === null ? null : (string) $value;
-    }
-
-    /**
-     * Accepts what Laravel's `boolean` rule accepts: true, false, 1, 0, "1" and "0".
-     *
-     * @phpstan-assert bool|int|string $value
-     */
-    public static function boolean(mixed $value): bool
-    {
-        return match ($value) {
-            true, 1, '1' => true,
-            false, 0, '0' => false,
-            default => throw new UnexpectedValueException('Expected a boolean value.'),
-        };
-    }
-
-    /** @phpstan-assert int|float|string|null $value */
-    public static function nullableInteger(mixed $value): ?int
-    {
-        return $value === null ? null : self::integer($value);
     }
 
     /**
@@ -190,47 +128,6 @@ final class JsonValueGuard
 
         foreach ($value as $item) {
             throw_unless(is_string($item), UnexpectedValueException::class, 'Expected a list of strings.');
-        }
-
-        return $value;
-    }
-
-    /**
-     * @phpstan-assert list<int> $value
-     *
-     * @return list<int>
-     */
-    public static function integerList(mixed $value): array
-    {
-        throw_if(! is_array($value) || ! array_is_list($value), UnexpectedValueException::class, 'Expected a list of integers.');
-
-        foreach ($value as $item) {
-            throw_unless(is_int($item), UnexpectedValueException::class, 'Expected a list of integers.');
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param  list<int|string>  $value
-     * @return list<int>
-     */
-    public static function normalizedIntegerList(array $value): array
-    {
-        return array_map(self::integer(...), $value);
-    }
-
-    /**
-     * @phpstan-assert list<int|string> $value
-     *
-     * @return list<int|string>
-     */
-    public static function integerStringList(mixed $value): array
-    {
-        throw_if(! is_array($value) || ! array_is_list($value), UnexpectedValueException::class, 'Expected a list of integers or strings.');
-
-        foreach ($value as $item) {
-            throw_if(! is_int($item) && ! is_string($item), UnexpectedValueException::class, 'Expected a list of integers or strings.');
         }
 
         return $value;
