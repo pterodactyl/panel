@@ -577,7 +577,12 @@ egg variable deletion (`DeletesEggVariables`) and the server install-status togg
 (`TogglesServerInstallStatus`) have contracts of their own as well.
 
 Resolve the same contracts from the container to call core behaviour instead of
-reimplementing it. Beside the mutating actions, these read or complete on your behalf:
+reimplementing it. An action that takes an input array validates it with the same rules
+as the API, whoever calls it, and throws a `ValidationException` naming the field that
+failed; values arrive as Laravel's rules accept them, so `"1"` is a boolean and `"25"` an
+integer. Pass the field names the Admin API uses. Extension form field values for a model
+go under `extensions` and are only accepted from a request that validated them. Beside
+the mutating actions, these read or complete on your behalf:
 
 | Contract | Call |
 | --- | --- |

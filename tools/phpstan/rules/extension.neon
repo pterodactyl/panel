@@ -27,6 +27,7 @@ parameters:
         boundaryPaths:
             - src/Boundary/**
             - app/Http/Requests/**
+            - app/Validation/**
             - app/Http/Middleware/**
             - app/Http/Controllers/Api/Client/ClientApiController.php
             - app/Http/Controllers/Api/Admin/Nodes/AllocationController.php

@@ -8,9 +8,9 @@ use Closure;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Actions\Transfers\InitiateTransfer;
 use Pterodactyl\Enum\Permissions;
-use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 
 class TransferServerRequest extends ServerWriteRequest
 {

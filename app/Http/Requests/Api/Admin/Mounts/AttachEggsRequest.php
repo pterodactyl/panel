@@ -9,8 +9,8 @@ use Illuminate\Validation\Validator;
 use Pterodactyl\Actions\Mounts\AttachEggsToMount;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 
 class AttachEggsRequest extends AdminApiRequest
 {

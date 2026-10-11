@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Actions\Api\CreateAccountApiKey;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Http\Requests\Concerns\ValidatesAllowedIps;
+use Pterodactyl\Validation\Concerns\ValidatesAllowedIps;
 
 class StoreApiKeyRequest extends ClientApiRequest
 {

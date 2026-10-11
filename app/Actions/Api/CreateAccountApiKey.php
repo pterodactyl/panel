@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Api\CreatesAccountApiKeys;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
-use Pterodactyl\Http\Requests\Concerns\ValidatesAllowedIps;
 use Pterodactyl\Models\User;
+use Pterodactyl\Validation\Concerns\ValidatesAllowedIps;
 
 final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
 {

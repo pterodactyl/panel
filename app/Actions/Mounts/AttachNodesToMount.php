@@ -7,9 +7,9 @@ namespace Pterodactyl\Actions\Mounts;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Contracts\Mounts\AttachesNodesToMounts;
-use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 
 final readonly class AttachNodesToMount implements AttachesNodesToMounts
 {

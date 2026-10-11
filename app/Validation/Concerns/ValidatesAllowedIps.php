@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Http\Requests\Concerns;
+namespace Pterodactyl\Validation\Concerns;
 
 use Illuminate\Validation\Validator;
 use InvalidArgumentException;

@@ -7,9 +7,9 @@ namespace Pterodactyl\Actions\Mounts;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Contracts\Mounts\AttachesEggsToMounts;
-use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Mount;
+use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 
 final readonly class AttachEggsToMount implements AttachesEggsToMounts
 {

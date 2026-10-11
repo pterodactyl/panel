@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Api\CreatesApiKeys;
-use Pterodactyl\Http\Requests\Concerns\ValidatesAllowedIps;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Validation\Concerns\ValidatesAllowedIps;
 
 final readonly class CreateApiKey implements CreatesApiKeys
 {

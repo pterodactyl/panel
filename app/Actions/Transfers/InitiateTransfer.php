@@ -15,12 +15,12 @@ use Pterodactyl\Contracts\Transfers\InitiatesTransfers;
 use Pterodactyl\Enum\JwtScope;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Facades\Daemon;
-use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 use Throwable;
 
 final readonly class InitiateTransfer implements InitiatesTransfers

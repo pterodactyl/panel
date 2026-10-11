@@ -16,7 +16,7 @@ use UnexpectedValueException;
  * Accepts the `extensions` input of a request that creates or updates a model extensions
  * add Fields to: refuses values the signed-in user may not change, validates each
  * extension's values against its own rules alongside the request's, and hands the
- * validated values to the action through payload()'s `extensions` key.
+ * validated values to the action under the `extensions` key of actionInput().
  */
 trait ValidatesExtensionFields
 {
