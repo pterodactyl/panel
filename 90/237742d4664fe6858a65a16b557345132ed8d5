@@ -1,0 +1,31 @@
+tests/Integration/Api/Client/Server/Subuser/DeleteSubuserTest.php
+  s_4cabae41bceed9::t_d9d78f70db27f7 31
+tests/Integration/Actions/Subusers/UpdateSubuserTest.php
+  s_4cabae41bceed9::t_008693e1910833 54-69
+app/Actions/Subusers/CreateSubuser.php
+  s_4cabae41bceed9::t_0df35cbddd82e2 15,95,108-114
+app/Actions/Subusers/DeleteSubuser.php
+  s_4cabae41bceed9::t_0df35cbddd82e2 10,31-35
+app/Actions/Subusers/UpdateSubuser.php
+  s_4cabae41bceed9::t_0df35cbddd82e2 10,23,35-43,49-55
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_4cabae41bceed9::t_0df35cbddd82e2 88,105,119
+tests/Integration/Actions/Subusers/CreateSubuserTest.php
+  s_4cabae41bceed9::t_8c5814dfc3cf96 69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90237742d4664fe6858a65a16b557345132ed8d5",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
