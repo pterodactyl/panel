@@ -62,7 +62,8 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
 
     /**
      * The permissions to store for the subuser: the submitted keys the panel or an enabled
-     * extension knows about, always including websocket access.
+     * extension knows about, always including websocket access. The API drops any other key
+     * it is sent, where the action would refuse it.
      *
      * @return list<string>
      */

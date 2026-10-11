@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Pterodactyl\Actions\Subusers\CreateSubuser;
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Support\ValidationRuleSubset;
 
 class UpdateSubuserRequest extends SubuserRequest
 {
@@ -19,10 +21,7 @@ class UpdateSubuserRequest extends SubuserRequest
      */
     public function rules(): array
     {
-        return [
-            'permissions' => ['required', 'array'],
-            'permissions.*' => ['string'],
-        ];
+        return ValidationRuleSubset::select(CreateSubuser::rules(), ['permissions', 'permissions.*']);
     }
 
     /**

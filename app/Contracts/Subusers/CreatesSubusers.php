@@ -17,6 +17,10 @@ interface CreatesSubusers
      * If the email address already belongs to a user on the system a new user will not
      * be created.
      *
+     * The email address and the permissions are validated here, so they can come straight
+     * from any caller: each permission must be one the panel or an enabled extension
+     * defines. Whether the caller may grant them is left to the caller.
+     *
      * @param  list<string>  $permissions  The permission keys to grant, deduplicated
      *                                     before they are stored.
      *
