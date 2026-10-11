@@ -207,8 +207,6 @@ class FileController extends ClientApiController
 
         $operation->write($server, $file, $request->getContent());
 
-        Activity::event('server:file.write')->property('file', $file)->log();
-
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
@@ -222,14 +220,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the folder.')]
     public function create(CreateFolderRequest $request, CreatesDirectories $operation, Server $server): JsonResponse
     {
-        $name = JsonValueGuard::string($request->validated('name'));
-        $root = JsonValueGuard::string($request->validated('root', '/'));
-        $operation->create($server, $name, $root);
-
-        Activity::event('server:file.create-directory')
-            ->property('name', $name)
-            ->property('directory', $root)
-            ->log();
+        $operation->create($server, JsonValueGuard::string($request->validated('name')), JsonValueGuard::string($request->validated('root', '/')));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -244,14 +235,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not rename the files.')]
     public function rename(RenameFileRequest $request, RenamesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->rename($server, $root, $files);
-
-        Activity::event('server:file.rename')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->rename($server, JsonValueGuard::nullableString($request->validated('root')), JsonValueGuard::jsonArray($request->validated('files')));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -266,10 +250,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not copy the file.')]
     public function copy(CopyFileRequest $request, CopiesFiles $operation, Server $server): JsonResponse
     {
-        $location = JsonValueGuard::string($request->validated('location'));
-        $operation->copy($server, $location);
-
-        Activity::event('server:file.copy')->property('file', $location)->log();
+        $operation->copy($server, JsonValueGuard::string($request->validated('location')));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -284,17 +265,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the archive.')]
     public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): array
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $file = $operation->compress($server,
-            $root,
-            $files
-        );
-
-        Activity::event('server:file.compress')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $file = $operation->compress($server, JsonValueGuard::nullableString($request->validated('root')), JsonValueGuard::jsonArray($request->validated('files')));
 
         return Fractal::item($file)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -309,18 +280,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not extract the archive.')]
     public function decompress(DecompressFilesRequest $request, DecompressesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $file = JsonValueGuard::string($request->validated('file'));
-
-        $operation->decompress($server,
-            $root,
-            $file
-        );
-
-        Activity::event('server:file.decompress')
-            ->property('directory', $root)
-            ->property('files', $file)
-            ->log();
+        $operation->decompress($server, JsonValueGuard::nullableString($request->validated('root')), JsonValueGuard::string($request->validated('file')));
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
@@ -335,17 +295,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not delete the files.')]
     public function delete(DeleteFileRequest $request, DeletesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->delete($server,
-            $root,
-            $files
-        );
-
-        Activity::event('server:file.delete')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->delete($server, JsonValueGuard::nullableString($request->validated('root')), JsonValueGuard::jsonArray($request->validated('files')));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -360,17 +310,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not update file permissions.')]
     public function chmod(ChmodFilesRequest $request, ChangesFilePermissions $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->change($server,
-            $root,
-            $files
-        );
-
-        Activity::event('server:file.chmod')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->change($server, JsonValueGuard::nullableString($request->validated('root')), JsonValueGuard::jsonArray($request->validated('files')));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -395,11 +335,6 @@ class FileController extends ClientApiController
         }
 
         $operation->pull($server, $url, $directory, JsonValueGuard::jsonArray($options));
-
-        Activity::event('server:file.pull')
-            ->property('directory', $directory)
-            ->property('url', $url)
-            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
