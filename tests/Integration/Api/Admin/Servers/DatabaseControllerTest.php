@@ -85,6 +85,13 @@ test('create database', function (): void {
     $gateway->assertAssigned('s'.$server->id.'_admindb', $database->username, '%');
     $gateway->assertFlushed(1);
 });
+test('a database created without a connection limit has none', function (): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create();
+    $this->app->instance(DatabaseHostGateway::class, new FakeDatabaseHostGateway());
+    $this->postJson(route('api.admin.servers.databases.store', ['server' => $server->id]), ['database' => 'unlimited', 'remote' => '%', 'database_host_id' => $host->id])->assertCreated();
+    expect(Database::query()->where('server_id', $server->id)->firstOrFail()->max_connections)->toBeNull();
+});
 test('create database validation', function (): void {
     $server = $this->createServerModel();
     $response = $this->postJson(route('api.admin.servers.databases.store', ['server' => $server->id]), []);

@@ -153,6 +153,13 @@ test('server database can be created', function (): void {
     $gateway->assertCreated("s{$server->id}_apidb");
     $gateway->assertFlushed(1);
 });
+test('a server database created through the application api takes the default connection limit', function (): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create();
+    $this->app->instance(DatabaseHostGateway::class, new FakeDatabaseHostGateway());
+    $this->postJson("/api/application/servers/{$server->id}/databases", ['database' => 'apidb', 'remote' => '%', 'host' => (string) $host->id])->assertStatus(Response::HTTP_CREATED);
+    expect(Database::query()->where('server_id', $server->id)->firstOrFail()->max_connections)->toBe(0);
+});
 test('server database password can be reset', function (): void {
     $server = $this->createServerModel();
     $host = DatabaseHost::factory()->create();

@@ -95,9 +95,7 @@ class DatabaseController extends ApplicationApiController
     #[ScribeResponse(self::DATABASE_LIMIT_ERROR, status: 400, description: 'The server has reached its configured database limit.')]
     public function store(StoreServerDatabaseRequest $request, CreatesDatabases $createDatabase, Server $server): JsonResponse
     {
-        $database = $createDatabase->create($server, array_merge($request->payload(), [
-            'database' => $request->databaseName(),
-        ]));
+        $database = $createDatabase->create($server, $request->actionInput());
 
         return Fractal::item($database)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))

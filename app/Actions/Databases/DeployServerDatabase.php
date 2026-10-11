@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Databases;
 
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Databases\CreatesDatabases;
 use Pterodactyl\Contracts\Databases\DeploysServerDatabases;
 use Pterodactyl\Exceptions\DisplayException;
@@ -22,18 +22,57 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
 {
     public function __construct(private CreatesDatabases $createDatabase) {}
 
-    /** @param DatabaseDeploymentData $data
+    /**
+     * The fields of a database to deploy. The name is the one a user picks, before the
+     * "s{server_id}_" prefix is added; with no host given, one is picked for the server.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        $rules = CreateDatabase::rules();
+
+        return [
+            'database' => ['required', 'alpha_dash', 'min:3', 'max:48'],
+            'remote' => $rules['remote'],
+            'database_host_id' => ['nullable', 'integer', 'exists:database_hosts,id'],
+            'max_connections' => $rules['max_connections'],
+        ];
+    }
+
+    /**
+     * Validates deployment input and returns the database it describes, its name not yet
+     * prefixed. A database given no connection limit gets none.
+     *
+     * @param  ActionInput  $input
+     * @return DatabaseDeploymentData
+     */
+    public static function attributes(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        return [
+            'database' => $input->string('database')->toString(),
+            'remote' => $input->string('remote')->toString(),
+            'database_host_id' => $input->filled('database_host_id') ? $input->integer('database_host_id') : null,
+            'max_connections' => $input->filled('max_connections') ? $input->integer('max_connections') : null,
+        ];
+    }
+
+    /**
+     * @param  ActionInput  $input
+     *
      * @throws Throwable
      * @throws TooManyDatabasesException
      * @throws DatabaseClientFeatureNotEnabledException
      * @throws NoSuitableDatabaseHostException
      * @throws DisplayException
      */
-    public function deploy(Server $server, array $data): Database
+    public function deploy(Server $server, array $input): Database
     {
-        return DB::transaction(function () use ($server, $data): Database {
-            throw_if(empty($data['database']), InvalidArgumentException::class, 'Expected a non-empty database name.');
-            throw_if(empty($data['remote']), InvalidArgumentException::class, 'Expected a non-empty remote database host.');
+        $attributes = self::attributes($input);
+
+        return DB::transaction(function () use ($server, $attributes): Database {
             throw_if($server->databases()->lockForUpdate()->count() >= $server->database_limit, DisplayException::class, 'Cannot create additional databases on this server: limit has been reached.');
 
             $hosts = DatabaseHost::query()->get()->toBase();
@@ -42,15 +81,11 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
             $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
             throw_if($nodeHosts->isEmpty() && ! config('pterodactyl.client_features.databases.allow_random'), NoSuitableDatabaseHostException::class);
 
-            $hostId = $data['database_host_id'] ?? null;
-
             return $this->createDatabase->create($server, [
-                'database_host_id' => $hostId
-                    ? (int) $hostId
-                    : ($nodeHosts->isEmpty() ? $hosts->random()->id : $nodeHosts->random()->id),
-                'database' => DatabaseName::generateUnique($data['database'], $server->id),
-                'remote' => $data['remote'],
-                'max_connections' => $data['max_connections'] ?? null,
+                'database_host_id' => $attributes['database_host_id'] ?? ($nodeHosts->isEmpty() ? $hosts->random()->id : $nodeHosts->random()->id),
+                'database' => DatabaseName::generateUnique($attributes['database'], $server->id),
+                'remote' => $attributes['remote'],
+                'max_connections' => $attributes['max_connections'] ?? null,
             ]);
         });
     }

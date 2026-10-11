@@ -10,7 +10,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\DatabaseName;
-use Pterodactyl\Support\JsonValueGuard;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
@@ -43,16 +42,19 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
     }
 
     /**
-     * Return data formatted in the correct format for the service to consume.
+     * The validated input under the action's field names: the database name gets its
+     * "s{server_id}_" prefix, and host is the action's database_host_id.
      *
-     * @return DatabaseCreationData
+     * @return ActionInput
      */
-    public function payload(): array
+    public function actionInput(): array
     {
+        $input = parent::actionInput();
+
         return [
-            'database' => $this->string('database')->toString(),
-            'remote' => $this->string('remote')->toString(),
-            'database_host_id' => $this->integer('host'),
+            'database' => $this->databaseName(),
+            'remote' => $input['remote'] ?? null,
+            'database_host_id' => $input['host'] ?? null,
         ];
     }
 
@@ -75,6 +77,6 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
     {
         $server = $this->parameter('server', Server::class);
 
-        return DatabaseName::generateUnique(JsonValueGuard::string($this->input('database')), $server->id);
+        return DatabaseName::generateUnique($this->string('database')->toString(), $server->id);
     }
 }

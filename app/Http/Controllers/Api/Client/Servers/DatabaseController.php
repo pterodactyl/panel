@@ -73,7 +73,7 @@ class DatabaseController extends ClientApiController
     #[ScribeResponse(self::DATABASE_LIMIT_ERROR, status: 400, description: 'The server has reached its configured database limit or client database creation is disabled.')]
     public function store(StoreDatabaseRequest $request, DeploysServerDatabases $deployDatabase, Server $server): array
     {
-        $database = $deployDatabase->deploy($server, $request->payload());
+        $database = $deployDatabase->deploy($server, $request->actionInput());
 
         Activity::event('server:database.create')->subject($database)->property('name', $database->database)->log();
 

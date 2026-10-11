@@ -23,7 +23,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Servers\Databases\ServerDatabaseWriteReq
 use Pterodactyl\Http\Requests\Api\Admin\Servers\Databases\StoreDatabaseRequest;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\DatabaseName;
 use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -88,14 +87,7 @@ class DatabaseController extends AdminApiController
     {
         $this->assertServerInstalled($server);
 
-        $data = $request->payload();
-
-        $database = $createDatabase->create($server, [
-            'database_host_id' => $data['database_host_id'],
-            'database' => DatabaseName::generateUnique($data['database'], $server->id),
-            'remote' => $data['remote'],
-            'max_connections' => $data['max_connections'] ?? null,
-        ]);
+        $database = $createDatabase->create($server, $request->actionInput());
 
         Activity::event('admin:server-database.create')
             ->subject($database)
