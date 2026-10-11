@@ -1,0 +1,51 @@
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_16ed41b14196e0 98
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_198b9fb2babca2 90
+tests/Integration/Actions/Databases/CreateDatabaseTest.php
+  s_4cabae41bceed9::t_66dc68bf9f52ea 76
+  s_4cabae41bceed9::t_d6f959b5279a73 10
+  s_4cabae41bceed9::t_b531a873f5b204 54,56-65
+  s_4cabae41bceed9::t_74e6601fb63ac9 157-202
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_a7a52bfcf9606f 156-162
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_4cabae41bceed9::t_ea127294fc268d 57-58,60,62
+  s_4cabae41bceed9::t_522db21f1588ae 9,23-24,31,44-45,50-51,53,55,61,77,82
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_9ab05e7d81e648 76
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_4cabae41bceed9::t_00be548e6b5065 9,29,33,37,40
+app/Actions/Databases/DeployServerDatabase.php
+  s_4cabae41bceed9::t_ac49454a35ee52 8,25-64,71,73-75,85-88
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_4cabae41bceed9::t_af25a5c62a0264 45-46,48,50,52-53,55-57,80
+tests/Integration/Actions/Databases/DeployServerDatabaseTest.php
+  s_4cabae41bceed9::t_b76f386603585c 39,41-47,49-90
+  s_4cabae41bceed9::t_26b8e0baae46e5 8
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_dcf57b0e3a2b92 62
+  s_4cabae41bceed9::t_cf6ccf69e60e69 9,25-32,43-61,63-83,91-93,98,107
+app/Contracts/Databases/CreatesDatabases.php
+  s_4cabae41bceed9::t_146f71d539a2dd 17-24,29
+app/Contracts/Databases/DeploysServerDatabases.php
+  s_4cabae41bceed9::t_58978967e287d9 17-24,31
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_4cabae41bceed9::t_ed0be27b02cc73 88-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "871a083773630da8625128446fb584e2710b2cd0",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
