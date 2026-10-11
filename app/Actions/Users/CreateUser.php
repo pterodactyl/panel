@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
@@ -21,14 +22,18 @@ use Throwable;
 
 final readonly class CreateUser implements CreatesUsers
 {
-    /**
-     * Rules every new user password must pass, wherever it is set.
-     *
-     * @var list<string>
-     */
-    public const array PASSWORD = ['string', 'min:8'];
-
     public function __construct(private ExtensionFields $extensions) {}
+
+    /**
+     * Rules every new password must pass, wherever it is set. The policy itself is
+     * Password::defaults(), set in AppServiceProvider.
+     *
+     * @return list<string|PasswordRule>
+     */
+    public static function passwordRules(): array
+    {
+        return ['string', PasswordRule::default()];
+    }
 
     /**
      * A user's fields. Pass the user being updated so its own email, username and external
@@ -44,7 +49,7 @@ final readonly class CreateUser implements CreatesUsers
             'username' => ['required', 'between:1,191', Rule::unique('users', 'username')->ignore($user), new Username],
             'name_first' => ['required', 'string', 'between:1,191'],
             'name_last' => ['required', 'string', 'between:1,191'],
-            'password' => ['sometimes', 'nullable', ...self::PASSWORD],
+            'password' => ['sometimes', 'nullable', ...self::passwordRules()],
             'root_admin' => ['boolean'],
             'language' => ['string', new In(array_keys((new User)->getAvailableLanguages()))],
         ];
@@ -90,9 +95,9 @@ final readonly class CreateUser implements CreatesUsers
             $attributes['external_id'] = $input->filled('external_id') ? $input->string('external_id')->toString() : null;
         }
 
-        $password = $input->string('password')->toString();
-        if ($password !== '') {
-            $attributes['password'] = $password;
+        // A blank password, spaces included, is no password at all.
+        if ($input->filled('password')) {
+            $attributes['password'] = $input->string('password')->toString();
         }
 
         if ($input->has('root_admin')) {

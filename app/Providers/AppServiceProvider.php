@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Knuckles\Scribe\Scribe;
 use League\Fractal\Manager;
 use Pterodactyl\Enum\ResourceLimit;
@@ -56,6 +57,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        // The password policy every password rule applies (see CreateUser::passwordRules()).
+        Password::defaults(Password::min(8));
 
         Route::model('database', Database::class);
 

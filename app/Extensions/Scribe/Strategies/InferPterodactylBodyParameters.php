@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Route;
+use Illuminate\Validation\Rules\Password;
 use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromFormRequest;
 use Knuckles\Scribe\Tools\Globals;
 use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
@@ -141,9 +142,15 @@ class InferPterodactylBodyParameters extends GetFromFormRequest
                 continue;
             }
 
-            $data[$name] = [
-                'description' => PterodactylDocumentation::fieldDescription($name),
-            ];
+            $description = PterodactylDocumentation::fieldDescription($name);
+            foreach (is_array($rules[$name]) ? $rules[$name] : [] as $rule) {
+                // Laravel's Password rule has no docs() of its own, so its policy is described here.
+                if ($rule instanceof Password) {
+                    $description .= sprintf(' Must be at least %d characters.', JsonValueGuard::integer($rule->appliedRules()['min']));
+                }
+            }
+
+            $data[$name] = ['description' => $description];
         }
 
         return $data;

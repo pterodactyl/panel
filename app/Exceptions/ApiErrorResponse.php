@@ -164,7 +164,8 @@ final class ApiErrorResponse
             foreach (array_keys($reasons) as $reason) {
                 throw_unless(is_string($reason), UnexpectedValueException::class, 'Laravel returned a malformed validation rule name.');
 
-                $cleaned[] = Str::snake($reason);
+                // Laravel's own rule objects, such as Password, are named after their class.
+                $cleaned[] = str_starts_with($reason, 'Illuminate\\') ? Str::snake(class_basename($reason)) : Str::snake($reason);
             }
 
             $codes[str_replace('.', '_', $field)] = $cleaned;

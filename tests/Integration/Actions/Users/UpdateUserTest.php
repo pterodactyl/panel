@@ -97,3 +97,20 @@ test('the email and password actions meet the user rules', function (): void {
     $this->app->make(UpdatesUserPasswords::class)->update($user, 'long-enough');
     expect(Hash::check('long-enough', $user->refresh()->password))->toBeTrue();
 });
+
+test('a password of only spaces counts as no password, as Laravel validation treats it', function (): void {
+    $user = User::factory()->create();
+    $hash = $user->password;
+
+    $this->app->make(UpdatesUsers::class)->update($user, ['password' => '        ']);
+
+    expect($user->refresh()->password)->toBe($hash);
+    Event::assertNotDispatched(PasswordChanged::class);
+});
+
+test('new passwords meet the default password policy', function (): void {
+    $user = User::factory()->create();
+
+    expect(fn () => $this->app->make(UpdatesUserPasswords::class)->update($user, 'short'))
+        ->toThrow(ValidationException::class);
+});

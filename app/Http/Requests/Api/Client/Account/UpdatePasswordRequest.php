@@ -19,7 +19,7 @@ class UpdatePasswordRequest extends ClientApiRequest
     {
         return [
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'confirmed', ...CreateUser::PASSWORD],
+            'password' => ['required', 'confirmed', ...CreateUser::passwordRules()],
         ];
     }
 

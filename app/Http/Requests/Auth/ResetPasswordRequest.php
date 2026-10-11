@@ -22,7 +22,7 @@ class ResetPasswordRequest extends FormRequest
         return [
             'token' => ['required', 'string'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', ...CreateUser::PASSWORD],
+            'password' => ['required', 'confirmed', ...CreateUser::passwordRules()],
         ];
     }
 }
