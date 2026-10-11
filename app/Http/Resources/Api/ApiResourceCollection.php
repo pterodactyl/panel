@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Http\Resources\Api\Concerns\BuildsResponse;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeScope;
+use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Support\JsonEmptyObject;
 use Traversable;
 
@@ -68,11 +69,23 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     final public function resolve($request = null): array
     {
         $request ??= $this->resolveRequestFromContainer();
-        $scope = $this->rootScope($request);
+        $includes = $this->includeSet($request);
 
-        $this->prepare($scope, $request);
+        $this->prepare($includes->root(), $request);
 
-        $list = $this->render($scope, $request);
+        return $this->resolveFor($includes, $request);
+    }
+
+    /**
+     * Renders the list as the root of a response for $includes, without the eager loading
+     * resolve() batches first. Documentation examples render this way, as they did with
+     * Fractal.
+     *
+     * @return ApiResourceList
+     */
+    final public function resolveFor(IncludeSet $includes, Request $request): array
+    {
+        $list = $this->render($includes->root(), $request);
 
         $meta = $this->meta;
         if ($this->resource instanceof LengthAwarePaginator) {

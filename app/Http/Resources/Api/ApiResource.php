@@ -19,6 +19,7 @@ use Pterodactyl\Data\ServerState;
 use Pterodactyl\Http\Resources\Api\Concerns\BuildsResponse;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeScope;
+use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Support\JsonEmptyObject;
 use UnexpectedValueException;
@@ -141,14 +142,26 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     final public function resolve($request = null): array
     {
         $request ??= $this->resolveRequestFromContainer();
-        $scope = $this->rootScope($request);
+        $includes = $this->includeSet($request);
 
         $model = $this->model();
         if ($model instanceof Model) {
-            $this->prepare(new ModelCollection([$model]), $scope, $request);
+            $this->prepare(new ModelCollection([$model]), $includes->root(), $request);
         }
 
-        return $this->render($scope, $request, $this->hasResourceKey ? $this->resourceKey : $this->resourceName());
+        return $this->resolveFor($includes, $request);
+    }
+
+    /**
+     * Renders the resource as the root of a response for $includes, without the eager
+     * loading resolve() batches first. Documentation examples render this way, as they did
+     * with Fractal.
+     *
+     * @return ApiResourceItem
+     */
+    final public function resolveFor(IncludeSet $includes, Request $request): array
+    {
+        return $this->render($includes->root(), $request, $this->hasResourceKey ? $this->resourceKey : $this->resourceName());
     }
 
     final public function resolveIncluded(IncludeScope $scope, Request $request): static

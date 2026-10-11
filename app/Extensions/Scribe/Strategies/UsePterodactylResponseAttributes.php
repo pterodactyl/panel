@@ -7,7 +7,9 @@ namespace Pterodactyl\Extensions\Scribe\Strategies;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Request as RequestFacade;
 use InvalidArgumentException;
+use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 use Knuckles\Scribe\Attributes\ResponseFromTransformer as BaseResponseFromTransformer;
 use Knuckles\Scribe\Extracting\DatabaseTransactionHelpers;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
@@ -17,7 +19,11 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\Serializer;
 use League\Fractal\TransformerAbstract;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Http\Resources\Api\ApiResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Models\User;
 use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
@@ -68,28 +74,62 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
             $this->endDbTransaction();
         }
 
-        if ($attributeInstance instanceof ResponseFromTransformer && $attributeInstance->meta !== []) {
-            $decoded = json_decode($content, true);
-            if (is_array($decoded)) {
-                $existingMeta = $decoded['meta'] ?? null;
-                if (! is_array($existingMeta)) {
-                    $existingMeta = [];
-                }
+        return [
+            'status' => $attributeInstance->status,
+            'description' => $attributeInstance->description,
+            'content' => $attributeInstance instanceof ResponseFromTransformer ? $this->withExampleMeta($content, $attributeInstance->meta) : $content,
+        ];
+    }
 
-                $decoded['meta'] = array_merge($existingMeta, $attributeInstance->meta);
-                $content = json_encode($decoded);
+    /**
+     * Renders #[ResponseFromResource] examples as getTransformerResponse() renders the
+     * transformer ones: inside a transaction, for a root administrator, from a factory model
+     * whose counts are loaded afterwards, with the attribute's object name and meta.
+     *
+     * @return array{status: int, description: string|null, content: string|false}
+     */
+    protected function getApiResourceResponse(ResponseFromApiResource $attributeInstance): array
+    {
+        throw_unless($attributeInstance instanceof ResponseFromResource, InvalidArgumentException::class, 'Document API resource responses with #['.ResponseFromResource::class.'].');
+
+        $resourceClass = $this->resourceClass($attributeInstance);
+        $modelInstantiator = function () use ($attributeInstance): Model {
+            $factoryStates = $attributeInstance->factoryStates;
+            $relations = $attributeInstance->with;
+            $withCount = $attributeInstance->withCount;
+            JsonValueGuard::assertValue($factoryStates);
+            JsonValueGuard::assertValue($relations);
+            JsonValueGuard::assertValue($withCount);
+
+            // withCount is applied after instantiation, as for transformers.
+            $model = $this->instantiateExampleModel($attributeInstance->model, $this->stringList($factoryStates), $this->stringList($relations));
+            throw_unless($model instanceof Model, InvalidArgumentException::class, 'The model referenced by #[ResponseFromResource] must be an Eloquent model.');
+
+            $counts = $this->stringList($withCount);
+            if ($counts !== [] && $model->exists) {
+                $model->loadCount($counts);
             }
+
+            return $model;
+        };
+
+        $this->startDbTransaction();
+        try {
+            $this->authenticateGenerationRequest();
+            $content = $this->fetchResourceContent($attributeInstance, $resourceClass, $modelInstantiator);
+        } finally {
+            $this->endDbTransaction();
         }
 
         return [
             'status' => $attributeInstance->status,
             'description' => $attributeInstance->description,
-            'content' => $content,
+            'content' => $this->withExampleMeta($content, $attributeInstance->meta),
         ];
     }
 
     /**
-     * Transformers render user-dependent fields (ownership flags, permission-gated
+     * Transformers and resources render user-dependent fields (ownership flags, permission-gated
      * includes), so give the console request a root administrator for the duration
      * of the fetch. The user row lives inside the surrounding transaction.
      */
@@ -153,6 +193,82 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
         }
 
         return $fractal->createData($resource)->toJson();
+    }
+
+    /**
+     * Rendered like the transformer examples: only the attribute's includes, as deep as
+     * Fractal's default of ten levels, and none of the eager loading a controller's response
+     * batches first.
+     *
+     * @param  class-string<ApiResource<*>>  $resourceClass
+     * @param  Closure(): Model  $modelInstantiator
+     */
+    private function fetchResourceContent(ResponseFromResource $attribute, string $resourceClass, Closure $modelInstantiator): string
+    {
+        $includes = IncludeSet::parse($this->stringList($attribute->include));
+        $request = RequestFacade::instance();
+
+        if (! $attribute->collection) {
+            // Controllers add extension field values to responses about one resource. The
+            // example shows the attribute without running installed extensions' code.
+            $resource = (new $resourceClass($modelInstantiator()))
+                ->withExtensionFields(read: false)
+                ->withResourceKey($attribute->resourceKey);
+
+            return json_encode($resource->resolveFor($includes, $request), JSON_THROW_ON_ERROR);
+        }
+
+        $models = [$modelInstantiator()];
+        $data = $attribute->paginate === null ? $models : new LengthAwarePaginator($models, count($models), $attribute->paginate);
+
+        $collection = (new ApiResourceCollection($data, $resourceClass))->withResourceKey($attribute->resourceKey);
+
+        return json_encode($collection->resolveFor($includes, $request), JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Merges an attribute's example meta into the rendered envelope's top-level meta, after
+     * any pagination, mirroring what the controller adds and rendering alone cannot.
+     *
+     * @param  ApiPayload  $meta
+     */
+    private function withExampleMeta(string $content, array $meta): string|false
+    {
+        if ($meta === []) {
+            return $content;
+        }
+
+        $decoded = json_decode($content, true);
+        if (is_array($decoded)) {
+            $existingMeta = $decoded['meta'] ?? null;
+            if (! is_array($existingMeta)) {
+                $existingMeta = [];
+            }
+
+            $decoded['meta'] = array_merge($existingMeta, $meta);
+            $content = json_encode($decoded);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Resolves and validates the API resource class referenced by a #[ResponseFromResource]
+     * attribute.
+     *
+     * @return class-string<ApiResource<*>>
+     */
+    private function resourceClass(ResponseFromResource $attribute): string
+    {
+        if (! is_a($attribute->name, ApiResource::class, true)) {
+            throw new InvalidArgumentException(sprintf(
+                'The class [%s] referenced by #[ResponseFromResource] must extend %s.',
+                $attribute->name,
+                ApiResource::class,
+            ));
+        }
+
+        return $attribute->name;
     }
 
     /**

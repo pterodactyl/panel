@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Resources\Api\Concerns;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Resources\Api\Includes\IncludeScope;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 
 /**
@@ -79,8 +78,11 @@ trait BuildsResponse
         return new JsonResponse($this->resolve($request));
     }
 
-    private function rootScope(Request $request): IncludeScope
+    /**
+     * The includes the request asked for, with the ones the controller always returns.
+     */
+    private function includeSet(Request $request): IncludeSet
     {
-        return IncludeSet::fromRequest($request, $this->forcedIncludes)->root();
+        return IncludeSet::fromRequest($request, $this->forcedIncludes);
     }
 }

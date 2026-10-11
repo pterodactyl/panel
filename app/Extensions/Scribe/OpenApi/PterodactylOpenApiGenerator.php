@@ -12,6 +12,7 @@ use Knuckles\Camel\Output\OutputEndpointData;
 use Knuckles\Scribe\Attributes\ResponseFromTransformer;
 use Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
 use Pterodactyl\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 use Pterodactyl\Models\Permission;
@@ -268,7 +269,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
     /**
      * Applies field metadata declared as ResponseField attributes - on the
-     * endpoint's transformer class, or on the controller method itself - to a
+     * endpoint's transformer or API resource class, or on the controller method itself - to a
      * fractal attributes schema. This is how nullability, enums, and map/union
      * shapes that cannot be inferred from a single example reach the spec.
      *
@@ -509,8 +510,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @return array<string, class-string> map of "METHOD uri" to the transformer class
-     *                                     declared by the route action's attribute
+     * @return array<string, class-string> map of "METHOD uri" to the transformer or API
+     *                                     resource class declared by the route action's
+     *                                     attribute
      */
     private function transformerClasses(): array
     {
@@ -526,10 +528,11 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 continue;
             }
 
-            $attributes = (new ReflectionMethod($class, $method))->getAttributes(
-                ResponseFromTransformer::class,
-                ReflectionAttribute::IS_INSTANCEOF,
-            );
+            $reflection = new ReflectionMethod($class, $method);
+            $attributes = [
+                ...$reflection->getAttributes(ResponseFromTransformer::class, ReflectionAttribute::IS_INSTANCEOF),
+                ...$reflection->getAttributes(ResponseFromResource::class, ReflectionAttribute::IS_INSTANCEOF),
+            ];
             if ($attributes === []) {
                 continue;
             }
