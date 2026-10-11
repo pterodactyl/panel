@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 
+use Pterodactyl\Actions\Tags\SyncTags;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Services\Tags\TagResolutionService;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * Replace the full set of tags on an egg or a node.
@@ -24,16 +24,16 @@ class SyncTagsRequest extends AdminApiRequest
     }
 
     /**
+     * The action's rules, with every value held to its text rules: integer ids are numeric
+     * strings by now (see prepareForValidation()).
+     *
      * @return ValidationRules
      */
     public function rules(): array
     {
         return [
-            'tags' => ['present', 'array'],
-            // A numeric value is read as an existing tag id rather than a new name.
-            // \Pterodactyl\Rules\TagSlug is what keeps those two spaces from
-            // overlapping, so no rule is needed here beyond the length bound.
-            'tags.*' => ['string', 'max:191'],
+            'tags' => SyncTags::rules()['tags'],
+            'tags.*' => SyncTags::TEXT,
         ];
     }
 
@@ -44,7 +44,9 @@ class SyncTagsRequest extends AdminApiRequest
      */
     public function tagValues(): array
     {
-        return JsonValueGuard::stringList(array_values(JsonValueGuard::jsonArray($this->validated('tags', []))));
+        $validated = $this->safe();
+
+        return array_map(fn (int|string $key): string => $validated->string('tags.'.$key)->toString(), array_keys($validated->array('tags')));
     }
 
     /** Tag ids sent as JSON integers are read the same as the numeric strings the panel sends. */

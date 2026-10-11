@@ -15,10 +15,9 @@ class TagResolutionService
      * any tag that does not exist yet. This is what lets the node and egg tag
      * pickers create a tag inline by typing a new name.
      *
-     * Callers validate the submitted values first (SyncTagsRequest bounds each entry
-     * to a string of at most 191 characters); combined with the numeric guard below
-     * that satisfies every rule in TagRules::rules(), so tags created here need no
-     * separate check.
+     * SyncTags validates the values first (it bounds each name to at most 191
+     * characters); combined with the numeric guard below that satisfies every rule
+     * in CreateTag::rules(), so tags created here need no separate check.
      *
      * @param  string[]  $values
      * @return int[]

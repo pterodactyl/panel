@@ -97,7 +97,7 @@ class TagController extends AdminApiController
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, status: 201, description: 'Tag created.', resourceKey: 'tag', meta: ['resource' => 'https://panel.example.com/api/admin/tags/1'])]
     public function store(StoreTagRequest $request, CreatesTags $tags): JsonResponse
     {
-        $tag = $tags->create($request->payload());
+        $tag = $tags->create($request->actionInput());
 
         Activity::event('admin:tag.create')
             ->subject($tag)
@@ -127,7 +127,7 @@ class TagController extends AdminApiController
     #[ScribeResponse(self::BUILT_IN_ERROR, status: 400, description: 'The tag is a built-in game tag.')]
     public function update(UpdateTagRequest $request, UpdatesTags $tags, Tag $tag): array
     {
-        $tag = $tags->update($tag, $request->payload());
+        $tag = $tags->update($tag, $request->actionInput());
 
         Activity::event('admin:tag.update')
             ->subject($tag)

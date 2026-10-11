@@ -6,6 +6,8 @@ namespace Pterodactyl\Actions\Tags;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Tags\SyncsTags;
 use Pterodactyl\Models\Egg;
@@ -15,24 +17,63 @@ use Pterodactyl\Services\Tags\TagResolutionService;
 
 final readonly class SyncTags implements SyncsTags
 {
+    /**
+     * Rules for a tag value given as text: an existing tag's id as a numeric string, or the
+     * name of a tag to find or create.
+     *
+     * @var list<string>
+     */
+    public const array TEXT = ['string', 'max:191'];
+
     public function __construct(private TagResolutionService $resolver) {}
 
-    /** @param list<string> $values */
+    /**
+     * The tags to sync, each an existing tag's id or a new tag's name. An id may also be an
+     * integer.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'tags' => ['present', 'array'],
+            // A numeric value is read as an existing tag id rather than a new name.
+            // \Pterodactyl\Rules\TagSlug is what keeps those two spaces from
+            // overlapping, so no rule is needed here beyond the length bound.
+            'tags.*' => [Rule::anyOf([['integer:strict'], self::TEXT])],
+        ];
+    }
+
+    /**
+     * Validates tag values under `tags` and returns them as strings for the resolver, an
+     * integer id becoming the numeric string the panel sends.
+     *
+     * @param  list<ApiValue9>  $values
+     * @return list<string>
+     */
+    public static function values(array $values): array
+    {
+        $input = Validator::make(['tags' => $values], self::rules())->safe();
+
+        return array_map(fn (int|string $key): string => $input->string('tags.'.$key)->toString(), array_keys($input->array('tags')));
+    }
+
+    /** @param list<ApiValue9> $values */
     public function syncEgg(Egg $egg, array $values): void
     {
-        $this->sync($egg, $egg->tags(), $values);
+        $this->sync($egg, $egg->tags(), self::values($values));
     }
 
-    /** @param list<string> $values */
+    /** @param list<ApiValue9> $values */
     public function syncNodeGames(Node $node, array $values): void
     {
-        $this->sync($node, $node->eggTags(), $values, $node->deploymentTags());
+        $this->sync($node, $node->eggTags(), self::values($values), $node->deploymentTags());
     }
 
-    /** @param list<string> $values */
+    /** @param list<ApiValue9> $values */
     public function syncNodeDeployments(Node $node, array $values): void
     {
-        $this->sync($node, $node->deploymentTags(), $values, $node->eggTags());
+        $this->sync($node, $node->deploymentTags(), self::values($values), $node->eggTags());
     }
 
     /**
