@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,6 @@ use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 final class CreateDatabase implements CreatesDatabases
@@ -121,7 +121,7 @@ final class CreateDatabase implements CreatesDatabases
                 $this->gateway->createUser(
                     $database->username,
                     $database->remote,
-                    JsonValueGuard::string(Crypt::decrypt($database->password)),
+                    Arr::string(['password' => Crypt::decrypt($database->password)], 'password'),
                     $database->max_connections
                 );
                 $this->gateway->assignUserToDatabase($database->database, $database->username, $database->remote);

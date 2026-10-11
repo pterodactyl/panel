@@ -6,6 +6,7 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\ApiKeys;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -25,7 +26,6 @@ use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\GetApiKeysRequest;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\StoreApiKeyRequest;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\UpdateApiKeyRequest;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\ApiKeyTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -75,7 +75,7 @@ class ApiKeyController extends AdminApiController
         return Fractal::item($key)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta([
-                'secret_token' => $key->identifier.JsonValueGuard::string(Crypt::decrypt($key->token)),
+                'secret_token' => $key->identifier.Arr::string(['token' => Crypt::decrypt($key->token)], 'token'),
             ])
             ->respond(Response::HTTP_CREATED);
     }
