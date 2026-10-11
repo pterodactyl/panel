@@ -1,0 +1,33 @@
+app/Actions/Users/CreateSshKey.php
+  s_4cabae41bceed9::t_c7d172a6071b20 10,96-100
+app/Actions/Api/CreateAccountApiKey.php
+  s_4cabae41bceed9::t_c7d172a6071b20 12,64,70-76
+tests/Integration/Actions/Api/CreateAccountApiKeyTest.php
+  s_4cabae41bceed9::t_6865c1f4d44d7a 46
+app/Actions/Api/DeleteApiKey.php
+  s_4cabae41bceed9::t_c7d172a6071b20 8,16-21
+tests/Integration/Actions/Users/CreateSshKeyTest.php
+  s_4cabae41bceed9::t_6865c1f4d44d7a 46
+app/Actions/Users/DeleteSshKey.php
+  s_4cabae41bceed9::t_c7d172a6071b20 8,16-17
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_4cabae41bceed9::t_6865c1f4d44d7a 43
+tests/Integration/Api/Admin/ApiKeys/ApiKeyControllerTest.php
+  s_4cabae41bceed9::t_d35c7a72f04b5b 87-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5154447b65016f794081760af07afde866674c9f",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
