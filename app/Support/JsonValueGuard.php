@@ -83,28 +83,6 @@ final class JsonValueGuard
     }
 
     /**
-     * Accepts what Laravel's `integer` rule accepts: integers, integer strings, and floats
-     * with no fractional part, which is how JSON decodes a value such as `1024.0`.
-     *
-     * @phpstan-assert int|float|string $value
-     */
-    public static function integer(mixed $value): int
-    {
-        if (is_int($value)) {
-            return $value;
-        }
-
-        if (is_string($value) || is_float($value)) {
-            $integer = filter_var($value, FILTER_VALIDATE_INT);
-            if ($integer !== false) {
-                return $integer;
-            }
-        }
-
-        throw new UnexpectedValueException('Expected an integer value.');
-    }
-
-    /**
      * @phpstan-assert array<array-key, ApiValue9> $value
      *
      * @return array<array-key, ApiValue9>
@@ -153,66 +131,6 @@ final class JsonValueGuard
 
         foreach (array_keys($value) as $key) {
             throw_unless(is_string($key), UnexpectedValueException::class, 'OpenAPI schema keys must be strings.');
-        }
-    }
-
-    /** @phpstan-assert OpenApiSchemaMap $value */
-    public static function assertOpenApiSchemaMap(mixed $value): void
-    {
-        throw_unless(is_array($value), UnexpectedValueException::class, 'OpenAPI schema maps must be arrays.');
-
-        foreach ($value as $key => $schema) {
-            throw_unless(is_string($key), UnexpectedValueException::class, 'OpenAPI schema map keys must be strings.');
-
-            self::assertPayload9($schema);
-        }
-    }
-
-    /** @phpstan-assert OpenApiSchemaInput $value */
-    public static function assertOpenApiSchemaInput(mixed $value): void
-    {
-        throw_unless(is_array($value), UnexpectedValueException::class, 'OpenAPI schemas must be arrays.');
-
-        foreach ($value as $key => $item) {
-            throw_unless(is_string($key), UnexpectedValueException::class, 'OpenAPI schema keys must be strings.');
-
-            if ($key === 'properties') {
-                self::assertOpenApiSchemaMap($item);
-            } else {
-                self::assertValue($item, 8);
-            }
-        }
-    }
-
-    /** @phpstan-assert OpenApiOperation $value */
-    public static function assertOpenApiOperation(mixed $value): void
-    {
-        throw_unless(is_array($value), UnexpectedValueException::class, 'OpenAPI operations must be arrays.');
-
-        foreach (array_keys($value) as $key) {
-            throw_unless(is_string($key), UnexpectedValueException::class, 'OpenAPI operation keys must be strings.');
-        }
-
-    }
-
-    /** @phpstan-assert OpenApiContent $value */
-    public static function assertOpenApiContent(mixed $value): void
-    {
-        throw_unless(is_array($value), UnexpectedValueException::class, 'OpenAPI content must be an array.');
-
-        foreach ($value as $contentType => $media) {
-            throw_if(! is_string($contentType) || ! is_array($media), UnexpectedValueException::class, 'OpenAPI media entries must be string-keyed arrays.');
-
-        }
-    }
-
-    /** @phpstan-assert list<string> $value */
-    public static function assertStringList(mixed $value): void
-    {
-        throw_if(! is_array($value) || ! array_is_list($value), UnexpectedValueException::class, 'Expected a list of strings.');
-
-        foreach ($value as $item) {
-            throw_unless(is_string($item), UnexpectedValueException::class, 'Expected a list of strings.');
         }
     }
 

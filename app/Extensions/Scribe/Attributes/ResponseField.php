@@ -17,9 +17,9 @@ use Knuckles\Scribe\Attributes\ResponseField as BaseResponseField;
 class ResponseField extends BaseResponseField
 {
     /**
-     * @param  OpenApiSchema  $schema  Raw OpenAPI schema fragment replacing the inferred
-     *                                 one - for shapes the simple parameters cannot
-     *                                 express (additionalProperties maps, oneOf unions).
+     * @param  array<string, mixed>  $schema  Raw OpenAPI schema fragment replacing the inferred
+     *                                        one - for shapes the simple parameters cannot
+     *                                        express (additionalProperties maps, oneOf unions).
      */
     public function __construct(
         string $name,

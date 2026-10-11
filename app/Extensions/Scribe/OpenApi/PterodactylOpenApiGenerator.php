@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Extensions\Scribe\OpenApi;
 
 use BackedEnum;
+use Closure;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Knuckles\Camel\Extraction\Response as ExtractedResponse;
@@ -19,7 +21,6 @@ use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettings;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -27,6 +28,10 @@ use stdClass;
 use UnexpectedValueException;
 use UnitEnum;
 
+/**
+ * @phpstan-type OpenApiDocument array{components: array{schemas: array<string, array<mixed>>, securitySchemes: array<string, mixed>, ...}, paths?: array<string, array<string, mixed>>, ...}
+ * @phpstan-type FieldMetadata array{description: ?string, type: ?string, required: ?bool, example: mixed, enum: mixed, nullable: ?bool, schema: array<mixed>}
+ */
 class PterodactylOpenApiGenerator extends OpenApiGenerator
 {
     /** @var array<string, string>|null */
@@ -38,28 +43,28 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     /** @var array<string, true>|null */
     private ?array $sessionOnlyEndpoints = null;
 
-    /** @var OpenApiSchemaMap */
+    /** @var array<string, array<mixed>> */
     private array $requestBodySchemas = [];
 
-    /** @var OpenApiSchemaMap */
+    /** @var array<string, array<mixed>> */
     private array $responseBodySchemas = [];
 
-    /** @var OpenApiSchemaMap */
+    /** @var array<string, array<mixed>> */
     private array $parameterSchemas = [];
 
     /** @var array<string, true> */
     private array $operationSchemaRefs = [];
 
     /**
-     * @param  OpenApiRoot  $root
-     * @return OpenApiRoot
+     * @param  OpenApiDocument  $root
+     * @return OpenApiDocument
      */
     public function root(array $root, array $groupedEndpoints): array
     {
         $root['components']['securitySchemes']['panelSession'] = [
             'type' => 'apiKey',
             'in' => 'cookie',
-            'name' => JsonValueGuard::string(config('session.cookie', 'pterodactyl_session')),
+            'name' => config('session.cookie'),
             'description' => 'Browser session cookie used by the panel frontend.',
         ];
 
@@ -86,8 +91,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
-     * @return OpenApiOperation
+     * @param  array<mixed>  $pathItem
+     * @return array<mixed>
      */
     public function pathItem(array $pathItem, array $groupedEndpoints, OutputEndpointData $endpoint): array
     {
@@ -107,15 +112,14 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         $this->extractRequestBodySchemas($pathItem);
         $this->extractResponseBodySchemas($pathItem);
         $this->extractOperationParameterSchemas($pathItem);
-        JsonValueGuard::assertValue($pathItem);
         $this->collectComponentRefs($pathItem, $this->operationSchemaRefs);
 
         return $pathItem;
     }
 
     /**
-     * @param  list<ScribeParameter>  $parameters
-     * @return list<ScribeParameter>
+     * @param  list<array<mixed>>  $parameters
+     * @return list<array<mixed>>
      */
     public function pathParameters(array $parameters, array $endpoints, array $urlParameters): array
     {
@@ -130,7 +134,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
         unset($parameter);
 
-        JsonValueGuard::assertValue($parameters);
         $this->collectComponentRefs($parameters, $this->operationSchemaRefs);
 
         return $parameters;
@@ -138,7 +141,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
     /**
      * @param  array<int, array{description: string, name: string, endpoints: OutputEndpointData[]}>  $groupedEndpoints
-     * @return OpenApiSchemaMap
+     * @return array<string, array<mixed>>
      */
     private function componentSchemas(array $groupedEndpoints): array
     {
@@ -216,10 +219,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                     }
                 }
 
-                JsonValueGuard::assertOpenApiSchemaInput($schemas[$attributes]);
                 $this->applyDeclaredFieldMetadata($schemas[$attributes], $endpoint);
                 if (isset($fractal['attributes']['extensions'])) {
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$attributes]);
                     $this->addExtensionFieldsToAttributesSchema($schemas[$attributes]);
                 }
 
@@ -228,40 +229,29 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 if ($attributes === 'ClientServerSubuserAttributes') {
                     $properties = $schemas[$attributes]['properties'] ?? null;
                     if (is_array($properties) && isset($properties['permissions'])) {
-                        JsonValueGuard::assertOpenApiSchemaMap($properties);
                         $properties['permissions'] = $this->permissionsSchema();
                         $schemas[$attributes]['properties'] = $properties;
                     }
                 }
 
                 if (isset($fractal['relationships'])) {
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$attributes]);
                     $this->addRelationshipsToAttributesSchema($schemas[$attributes], $endpoint, $fractal['relationships'], $knownComponents);
                 }
 
                 $schemas[$components['item']] ??= $this->fractalItemSchema($fractal['resource'], $attributes);
                 if (isset($fractal['meta'])) {
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$components['item']]);
                     $this->addMetaToItemSchema($schemas[$components['item']], $fractal['meta']);
                 }
 
                 $schemas[$components['list']] ??= $this->fractalListSchema($components['item']);
                 $schemas[$components['page']] ??= $this->fractalPaginatedSchema($components['item']);
                 if (isset($fractal['top_meta'])) {
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$components['list']]);
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$components['page']]);
                     $this->addMetaToListSchema($schemas[$components['list']], $fractal['top_meta']);
-                    JsonValueGuard::assertOpenApiSchemaInput($schemas[$components['page']]);
                     $this->addMetaToPaginatedSchema($schemas[$components['page']], $fractal['top_meta']);
                 }
             }
         }
 
-        foreach ($schemas as &$schema) {
-            JsonValueGuard::assertPayload9($schema);
-        }
-
-        unset($schema);
         ksort($schemas);
 
         return $schemas;
@@ -273,8 +263,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      * fractal attributes schema. This is how nullability, enums, and map/union
      * shapes that cannot be inferred from a single example reach the spec.
      *
-     * @param  OpenApiSchemaInput  $schema
-     *                                      a reference into the schema and loses the key type
+     * @param  array<mixed>  $schema
      */
     private function applyDeclaredFieldMetadata(array &$schema, OutputEndpointData $endpoint): void
     {
@@ -282,16 +271,12 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         if ($transformer !== null) {
             foreach ((new ReflectionClass($transformer))->getAttributes(ResponseField::class) as $attribute) {
                 $field = $attribute->newInstance();
-                $example = $field->example;
-                JsonValueGuard::assertValue($example);
-                $enum = $field->enum;
-                JsonValueGuard::assertValue($enum);
                 $schema = $this->applyFieldMetadata($schema, $field->name, [
                     'description' => $field->description,
                     'type' => $field->type,
                     'required' => $field->required,
-                    'example' => $this->arrayValue($example),
-                    'enum' => $this->arrayValue($enum),
+                    'example' => $this->arrayValue($field->example),
+                    'enum' => $this->arrayValue($field->enum),
                     'nullable' => $field->nullable,
                     'schema' => $field->name === 'config.files'
                         ? ['$ref' => '#/components/schemas/AdminEggConfigurationFiles']
@@ -305,14 +290,12 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 continue;
             }
 
-            $enumValues = $field->enumValues;
-            JsonValueGuard::assertValue($enumValues);
             $schema = $this->applyFieldMetadata($schema, mb_substr($field->name, mb_strlen('attributes.')), [
                 'description' => $field->description,
                 'type' => $field->type,
                 'required' => $field->required,
                 'example' => null,
-                'enum' => $enumValues,
+                'enum' => $field->enumValues,
                 'nullable' => $field->nullable,
                 'schema' => [],
             ]);
@@ -320,41 +303,54 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  array{description: ?string, type: ?string, required: ?bool, example: JsonValue, enum: JsonValue, nullable: ?bool, schema: OpenApiSchema}  $meta
-     * @return OpenApiSchemaInput
+     * Applies $meta to the property at the dotted $path. A top-level property declared as
+     * not required is also dropped from the schema's `required` list.
+     *
+     * @param  array<mixed>  $schema
+     * @param  FieldMetadata  $meta
+     * @return array<mixed>
      */
     private function applyFieldMetadata(array $schema, string $path, array $meta): array
     {
-        $segments = explode('.', $path);
-        $leaf = array_pop($segments);
-
-        $parent = &$schema;
-        foreach ($segments as $segment) {
-            if (! isset($parent['properties'][$segment]) || ! is_array($parent['properties'][$segment])) {
-                JsonValueGuard::assertOpenApiSchemaInput($schema);
-
-                return $schema;
-            }
-
-            $parent = &$parent['properties'][$segment];
+        if ($meta['required'] === false && ! str_contains($path, '.') && is_array($schema['required'] ?? null)) {
+            $schema['required'] = array_values(array_filter($schema['required'], fn (mixed $key): bool => $key !== $path));
         }
 
-        if ($meta['required'] === false && isset($schema['required']) && is_array($schema['required']) && $segments === []) {
-            $schema['required'] = array_values(array_filter(JsonValueGuard::stringList($schema['required']), fn (string $key): bool => $key !== $leaf));
-        }
+        return $this->applyPropertyMetadata($schema, explode('.', $path), $meta);
+    }
 
-        if (! isset($parent['properties'][$leaf]) || ! is_array($parent['properties'][$leaf])) {
-            JsonValueGuard::assertOpenApiSchemaInput($schema);
-
+    /**
+     * @param  array<mixed>  $schema
+     * @param  list<string>  $segments
+     * @param  FieldMetadata  $meta
+     * @return array<mixed>
+     */
+    private function applyPropertyMetadata(array $schema, array $segments, array $meta): array
+    {
+        $name = array_shift($segments);
+        $properties = $schema['properties'] ?? null;
+        if ($name === null || ! is_array($properties) || ! is_array($properties[$name] ?? null)) {
             return $schema;
         }
 
-        if ($meta['schema'] !== []) {
-            $parent['properties'][$leaf] = $meta['schema'];
-        }
+        $properties[$name] = $segments === []
+            ? $this->withFieldMetadata($properties[$name], $meta)
+            : $this->applyPropertyMetadata($properties[$name], $segments, $meta);
+        $schema['properties'] = $properties;
 
-        $property = &$parent['properties'][$leaf];
+        return $schema;
+    }
+
+    /**
+     * @param  array<mixed>  $property
+     * @param  FieldMetadata  $meta
+     * @return array<mixed>
+     */
+    private function withFieldMetadata(array $property, array $meta): array
+    {
+        if ($meta['schema'] !== []) {
+            $property = $meta['schema'];
+        }
 
         if (($type = $meta['type']) !== null && $type !== '' && $meta['schema'] === []) {
             if (str_ends_with($type, '[]')) {
@@ -384,7 +380,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         if (is_array($enum) && $enum !== []) {
-            if (($property['type'] ?? null) === 'array' && isset($property['items']) && is_array($property['items'])) {
+            if (($property['type'] ?? null) === 'array' && is_array($property['items'] ?? null)) {
                 $property['items']['enum'] = $enum;
             } else {
                 $property['enum'] = $enum;
@@ -395,9 +391,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             $property['example'] = $meta['example'];
         }
 
-        JsonValueGuard::assertOpenApiSchemaInput($schema);
-
-        return $schema;
+        return $property;
     }
 
     /**
@@ -405,36 +399,56 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      * response schemas (endpoints documented with literal examples), matching
      * properties by bare field name at any depth.
      *
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function applyResponseFieldsToInlineSchemas(array &$pathItem, OutputEndpointData $endpoint): void
     {
-        if ($endpoint->responseFields === [] || ! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
+        if ($endpoint->responseFields === []) {
             return;
         }
 
-        foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2') || ! isset($response['content']['application/json']['schema'])) {
-                continue;
-            }
-
-            $schema = &$response['content']['application/json']['schema'];
+        $this->replaceResponseSchemas($pathItem, fn (string $status): bool => str_starts_with($status, '2'), function (mixed $schema) use ($endpoint): mixed {
             if (is_array($schema) && ! isset($schema['$ref'])) {
                 $this->walkPropertiesApplyingResponseFields($schema, $endpoint);
             }
-        }
 
-        unset($response);
+            return $schema;
+        });
     }
 
     /**
-     * @param  OpenApiRecursiveNode  $schema
+     * Replaces the JSON schema of each response whose status passes $filter with what $replace
+     * returns for it. Responses without a JSON schema are left alone.
      *
-     * @param-out mixed $schema
+     * @param  array<mixed>  $pathItem
+     * @param  Closure(string): bool  $filter
+     * @param  Closure(mixed, string): mixed  $replace
+     */
+    private function replaceResponseSchemas(array &$pathItem, Closure $filter, Closure $replace): void
+    {
+        $responses = $pathItem['responses'] ?? null;
+        if (! is_array($responses)) {
+            return;
+        }
+
+        foreach ($responses as $status => $response) {
+            $schema = data_get($response, 'content.application/json.schema');
+            if ($schema === null || ! $filter((string) $status)) {
+                continue;
+            }
+
+            data_set($response, 'content.application/json.schema', $replace($schema, (string) $status));
+            $responses[$status] = $response;
+        }
+
+        $pathItem['responses'] = $responses;
+    }
+
+    /**
+     * @param  array<mixed>  $schema
      */
     private function walkPropertiesApplyingResponseFields(array &$schema, OutputEndpointData $endpoint): void
     {
-        // SAFETY: Scribe supplies a heterogeneous recursive OpenAPI tree; every node is narrowed before array access.
         if (isset($schema['properties']) && is_array($schema['properties'])) {
             foreach ($schema['properties'] as $name => &$property) {
                 if (! is_array($property)) {
@@ -456,11 +470,10 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                     }
 
                     if ($field->required === false && isset($schema['required']) && is_array($schema['required'])) {
-                        $schema['required'] = array_values(array_filter(JsonValueGuard::stringList($schema['required']), fn (string $key): bool => $key !== $name));
+                        $schema['required'] = array_values(array_filter($schema['required'], fn (mixed $key): bool => $key !== $name));
                     }
                 }
 
-                JsonValueGuard::assertValue($property);
                 $this->walkPropertiesApplyingResponseFields($property, $endpoint);
             }
 
@@ -469,7 +482,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
         foreach (['items', 'additionalProperties'] as $key) {
             if (isset($schema[$key]) && is_array($schema[$key])) {
-                JsonValueGuard::assertValue($schema[$key]);
                 $this->walkPropertiesApplyingResponseFields($schema[$key], $endpoint);
             }
         }
@@ -556,7 +568,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         return $this->transformerClasses = $map;
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function adminServerVariableAttributesSchema(): array
     {
         $schema = PterodactylDocumentation::schemaForValue([
@@ -576,20 +588,14 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'updated_at' => '2026-01-01T00:00:00+00:00',
         ]);
 
-        $properties = $schema['properties'] ?? null;
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
-        $properties['server_value']['nullable'] = true;
-        $properties['sort_order']['nullable'] = true;
-        $schema['properties'] = $properties;
-
-        $required = $schema['required'] ?? null;
-        JsonValueGuard::assertStringList($required);
-        $schema['required'] = array_values(array_diff($required, ['required']));
+        Arr::set($schema, 'properties.server_value.nullable', true);
+        Arr::set($schema, 'properties.sort_order.nullable', true);
+        $schema['required'] = array_values(array_filter(Arr::array($schema, 'required'), fn (mixed $field): bool => $field !== 'required'));
 
         return $schema;
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function clientTwoFactorSetupSchema(): array
     {
         return [
@@ -614,7 +620,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function clientSystemPermissionsSchema(): array
     {
         return [
@@ -649,7 +655,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authLoginResponseSchema(): array
     {
         return [
@@ -660,7 +666,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authLoginCompleteResponseSchema(): array
     {
         return [
@@ -687,7 +693,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authLoginCheckpointResponseSchema(): array
     {
         return [
@@ -713,7 +719,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authPasswordResetEmailResponseSchema(): array
     {
         return [
@@ -728,7 +734,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authResetPasswordResponseSchema(): array
     {
         return [
@@ -753,7 +759,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function authUserSchema(): array
     {
         return [
@@ -833,7 +839,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function replaceSuccessResponseSchema(array &$pathItem, OutputEndpointData $endpoint): void
     {
@@ -849,40 +855,22 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             default => $components['item'],
         };
 
-        if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
-            return;
-        }
-
-        foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2') || $this->arrayKeyString($status) === '204') {
-                continue;
-            }
-
-            if (isset($response['content']['application/json']['schema'])) {
-                $response['content']['application/json']['schema'] = ['$ref' => "#/components/schemas/{$schema}"];
-            }
-        }
-
-        unset($response);
+        $this->replaceResponseSchemas(
+            $pathItem,
+            fn (string $status): bool => str_starts_with($status, '2') && $status !== '204',
+            fn (): array => ['$ref' => "#/components/schemas/{$schema}"],
+        );
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function replacePlainSuccessResponseSchema(array &$pathItem): void
     {
+        $isSuccess = fn (string $status): bool => str_starts_with($status, '2');
+
         if (in_array($pathItem['operationId'] ?? null, ['adminGetExtensionSettings', 'adminUpdateExtensionSettings', 'adminUploadExtensionSettingFile', 'adminClearExtensionSettingFile'], true)) {
-            if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
-                return;
-            }
-
-            foreach ($pathItem['responses'] as $status => &$response) {
-                if (str_starts_with($this->arrayKeyString($status), '2') && isset($response['content']['application/json']['schema'])) {
-                    $response['content']['application/json']['schema'] = $this->adminExtensionSettingsSchema();
-                }
-            }
-
-            unset($response);
+            $this->replaceResponseSchemas($pathItem, $isSuccess, fn (): array => $this->adminExtensionSettingsSchema());
 
             return;
         }
@@ -905,51 +893,39 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             default => null,
         };
 
-        if ($schema === null || ! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
-            return;
+        if ($schema !== null) {
+            $this->replaceResponseSchemas($pathItem, $isSuccess, fn (): array => ['$ref' => "#/components/schemas/{$schema}"]);
         }
-
-        foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2') || ! isset($response['content']['application/json']['schema'])) {
-                continue;
-            }
-
-            $response['content']['application/json']['schema'] = ['$ref' => "#/components/schemas/{$schema}"];
-        }
-
-        unset($response);
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function stripEmptySuccessResponseContent(array &$pathItem): void
     {
-        if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
+        $responses = $pathItem['responses'] ?? null;
+        if (! is_array($responses)) {
             return;
         }
 
-        foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2')) {
-                continue;
-            }
-
-            $schema = $response['content']['application/json']['schema'] ?? null;
-            if (! is_array($schema)) {
+        foreach ($responses as $status => $response) {
+            $schema = data_get($response, 'content.application/json.schema');
+            if (! is_array($response) || ! str_starts_with((string) $status, '2') || ! is_array($schema)) {
                 continue;
             }
 
             if (($schema['type'] ?? null) === 'object' && ($schema['nullable'] ?? false) === true && ! isset($schema['properties'])) {
                 unset($response['content']);
+                $responses[$status] = $response;
             }
         }
 
-        unset($response);
+        $pathItem['responses'] = $responses;
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
-     * @return OpenApiOperation
+     * @param  array<mixed>  $pathItem
+     * @return array<mixed>
      */
     private function normalizeBrowserSessionOperation(array $pathItem, OutputEndpointData $endpoint): array
     {
@@ -986,23 +962,20 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function normalizeRawResponseMediaTypes(array &$pathItem, OutputEndpointData $endpoint): void
     {
         $isEggExport = ($pathItem['operationId'] ?? null) === 'adminExportEgg'
             || preg_match('#^api/admin/eggs/\{[^}]+\}/export$#', $endpoint->uri) === 1;
         $isExtensionIcon = preg_match('#^api/admin/extensions/\{[^}]+\}/icon$#', $endpoint->uri) === 1;
-        if (! $isEggExport && ! $isExtensionIcon) {
+        $responses = $pathItem['responses'] ?? null;
+        if ((! $isEggExport && ! $isExtensionIcon) || ! is_array($responses)) {
             return;
         }
 
-        if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
-            return;
-        }
-
-        foreach ($pathItem['responses'] as $status => &$response) {
-            if (! str_starts_with($this->arrayKeyString($status), '2')) {
+        foreach ($responses as $status => $response) {
+            if (! is_array($response) || ! str_starts_with((string) $status, '2')) {
                 continue;
             }
 
@@ -1014,15 +987,16 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                         'description' => 'Icon image bytes.',
                     ],
                 ]);
+                $responses[$status] = $response;
 
                 continue;
             }
 
-            if (! isset($response['content']['application/json'])) {
+            $media = data_get($response, 'content.application/json');
+            if (! is_array($media)) {
                 continue;
             }
 
-            $media = $response['content']['application/json'];
             $media['schema'] = [
                 'type' => 'string',
                 'description' => 'Raw egg export JSON document returned as a text download.',
@@ -1032,49 +1006,44 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             $response['content'] = [
                 'text/plain' => $media,
             ];
+            $responses[$status] = $response;
         }
 
-        unset($response);
+        $pathItem['responses'] = $responses;
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function replaceErrorResponseSchemas(array &$pathItem): void
     {
-        if (! isset($pathItem['responses']) || ! is_array($pathItem['responses'])) {
-            return;
-        }
+        $this->replaceResponseSchemas(
+            $pathItem,
+            fn (string $status): bool => $this->errorResponseSchema($status) !== null,
+            fn (mixed $schema, string $status): array => ['$ref' => "#/components/schemas/{$this->errorResponseSchema($status)}"],
+        );
+    }
 
-        foreach ($pathItem['responses'] as $status => &$response) {
-            $schema = match ($this->arrayKeyString($status)) {
-                '400', '401', '403', '404', '409', '429', '500', '502', '504' => 'ErrorEnvelope',
-                '422' => 'ValidationErrorEnvelope',
-                default => null,
-            };
-
-            if ($schema !== null && isset($response['content']['application/json']['schema'])) {
-                $response['content']['application/json']['schema'] = ['$ref' => "#/components/schemas/{$schema}"];
-            }
-        }
-
-        unset($response);
+    private function errorResponseSchema(string $status): ?string
+    {
+        return match ($status) {
+            '400', '401', '403', '404', '409', '429', '500', '502', '504' => 'ErrorEnvelope',
+            '422' => 'ValidationErrorEnvelope',
+            default => null,
+        };
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
-     * @return OpenApiOperation
+     * @param  array<mixed>  $pathItem
+     * @return array<mixed>
      */
     private function normalizeSchemas(array $pathItem): array
     {
-        // SAFETY: root path entries include non-operation OpenAPI values; every operation field is narrowed before use.
         $parameters = $pathItem['parameters'] ?? null;
         if (is_array($parameters)) {
             foreach ($parameters as &$parameter) {
-                if (isset($parameter['schema']) && is_array($parameter['schema'])) {
-                    JsonValueGuard::assertValue($parameter['schema']);
+                if (is_array($parameter) && is_array($parameter['schema'] ?? null)) {
                     $this->normalizeSchema($parameter['schema']);
-                    JsonValueGuard::assertPayload9($parameter['schema']);
                 }
             }
 
@@ -1083,10 +1052,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         if (isset($pathItem['requestBody'])) {
-            $requestBody = $this->openApiContainerValue($pathItem['requestBody']);
+            $requestBody = $this->arrayValue($pathItem['requestBody']);
             $content = is_array($requestBody) ? ($requestBody['content'] ?? null) : null;
             if (is_array($content)) {
-                JsonValueGuard::assertOpenApiContent($content);
                 $requestBody['content'] = $this->normalizeContentSchemas($content);
             }
 
@@ -1096,14 +1064,13 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         $responses = $pathItem['responses'] ?? null;
         if (is_array($responses)) {
             foreach ($responses as &$response) {
-                $response = $this->openApiContainerValue($response);
+                $response = $this->arrayValue($response);
                 if (! is_array($response)) {
                     continue;
                 }
 
                 $content = $response['content'] ?? null;
                 if (is_array($content)) {
-                    JsonValueGuard::assertOpenApiContent($content);
                     $response['content'] = $this->normalizeContentSchemas($content);
                 }
             }
@@ -1112,20 +1079,17 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             $pathItem['responses'] = $responses;
         }
 
-        JsonValueGuard::assertOpenApiOperation($pathItem);
-
         return $pathItem;
     }
 
     /**
-     * @param  OpenApiRoot  $root
+     * @param  OpenApiDocument  $root
      */
     private function normalizeRootSchemas(array &$root): void
     {
         foreach ($root['paths'] ?? [] as &$pathItem) {
             foreach ($pathItem as &$operation) {
                 if (is_array($operation)) {
-                    JsonValueGuard::assertOpenApiOperation($operation);
                     $operation = $this->normalizeSchemas($operation);
                 }
             }
@@ -1143,7 +1107,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiRoot  $root
+     * @param  OpenApiDocument  $root
      */
     private function pruneUnreferencedSchemas(array &$root): void
     {
@@ -1175,7 +1139,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  JsonInputValue  $node
      * @param  array<string, true>  $refs
      */
     private function collectComponentRefs(mixed $node, array &$refs): void
@@ -1190,56 +1153,50 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         foreach ($node as $value) {
-            JsonValueGuard::assertValue($value);
             $this->collectComponentRefs($value, $refs);
         }
     }
 
     /**
-     * @param  OpenApiOperation  $operation
+     * @param  array<mixed>  $operation
      */
     private function extractResponseBodySchemas(array &$operation): void
     {
-        $operationId = $operation['operationId'] ?? '';
-        $operationId = is_string($operationId) ? $operationId : '';
-        if ($operationId === '' || ! isset($operation['responses']) || ! is_array($operation['responses'])) {
+        $operationId = $operation['operationId'] ?? null;
+        $responses = $operation['responses'] ?? null;
+        if (! is_string($operationId) || $operationId === '' || ! is_array($responses)) {
             return;
         }
 
-        $inlineSchemas = [];
-        foreach ($operation['responses'] as $status => $response) {
-            $content = $response['content'] ?? null;
-            if (! is_array($content)) {
-                continue;
-            }
-
-            foreach ($content as $contentType => $media) {
-                if (isset($media['schema']) && is_array($media['schema']) && ! isset($media['schema']['$ref'])) {
-                    $inlineSchemas[] = [$this->arrayKeyString($status), $this->arrayKeyString($contentType)];
+        $inlineSchemas = 0;
+        foreach ($responses as $response) {
+            $content = data_get($response, 'content');
+            foreach (is_array($content) ? $content : [] as $media) {
+                if ($this->inlineSchema($media) !== null) {
+                    $inlineSchemas++;
                 }
             }
         }
 
-        $hasMultipleSchemas = count($inlineSchemas) > 1;
+        $hasMultipleSchemas = $inlineSchemas > 1;
 
-        foreach ($operation['responses'] as $status => &$response) {
-            if (! isset($response['content']) || ! is_array($response['content'])) {
+        foreach ($responses as $status => &$response) {
+            if (! is_array($response) || ! is_array($response['content'] ?? null)) {
                 continue;
             }
 
             foreach ($response['content'] as $contentType => &$media) {
-                if (! isset($media['schema']) || ! is_array($media['schema']) || isset($media['schema']['$ref'])) {
+                $schema = $this->inlineSchema($media);
+                if ($schema === null || ! is_array($media)) {
                     continue;
                 }
 
-                $this->normalizeNestedArrayItemSchemas($media['schema']);
-                JsonValueGuard::assertPayload9($media['schema']);
-                $this->normalizeSchema($media['schema']);
-                JsonValueGuard::assertPayload9($media['schema']);
+                $this->normalizeNestedArrayItemSchemas($schema);
+                $this->normalizeSchema($schema);
 
-                $component = $this->responseBodyComponentName($operationId, $this->arrayKeyString($status), $this->arrayKeyString($contentType), $hasMultipleSchemas);
-                $component = $this->availableComponentName($this->responseBodySchemas, $component, $media['schema']);
-                $this->responseBodySchemas[$component] = $media['schema'];
+                $component = $this->responseBodyComponentName($operationId, (string) $status, (string) $contentType, $hasMultipleSchemas);
+                $component = $this->availableComponentName($this->responseBodySchemas, $component, $schema);
+                $this->responseBodySchemas[$component] = $schema;
                 $media['schema'] = ['$ref' => "#/components/schemas/{$component}"];
             }
 
@@ -1247,75 +1204,89 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         unset($response);
+        $operation['responses'] = $responses;
     }
 
     /**
-     * @param  OpenApiOperation  $operation
+     * The schema a media entry declares inline, or null when it has none or refers to a component.
+     *
+     * @return array<mixed>|null
+     */
+    private function inlineSchema(mixed $media): ?array
+    {
+        $schema = is_array($media) ? ($media['schema'] ?? null) : null;
+
+        return is_array($schema) && ! isset($schema['$ref']) ? $schema : null;
+    }
+
+    /**
+     * @param  array<mixed>  $operation
      */
     private function extractOperationParameterSchemas(array &$operation): void
     {
-        $operationId = $operation['operationId'] ?? '';
-        $operationId = is_string($operationId) ? $operationId : '';
-        if ($operationId === '' || ! isset($operation['parameters']) || ! is_array($operation['parameters'])) {
+        $operationId = $operation['operationId'] ?? null;
+        $parameters = $operation['parameters'] ?? null;
+        if (! is_string($operationId) || $operationId === '' || ! is_array($parameters)) {
             return;
         }
 
-        foreach ($operation['parameters'] as &$parameter) {
-            $this->extractParameterSchema($parameter, $this->operationParameterSchemaComponentName($operationId, $parameter));
+        foreach ($parameters as &$parameter) {
+            if (is_array($parameter)) {
+                $this->extractParameterSchema($parameter, $this->operationParameterSchemaComponentName($operationId, $parameter));
+            }
         }
 
         unset($parameter);
+        $operation['parameters'] = $parameters;
     }
 
     /**
-     * @param  ScribeParameter  $parameter
+     * @param  array<mixed>  $parameter
      */
     private function extractParameterSchema(array &$parameter, string $component): void
     {
-        if (! isset($parameter['schema']) || ! is_array($parameter['schema']) || isset($parameter['schema']['$ref'])) {
+        $schema = $this->inlineSchema($parameter);
+        if ($schema === null) {
             return;
         }
 
-        JsonValueGuard::assertPayload9($parameter['schema']);
-        $component = $this->availableComponentName($this->parameterSchemas, $component, $parameter['schema']);
-        $this->parameterSchemas[$component] = $parameter['schema'];
+        $component = $this->availableComponentName($this->parameterSchemas, $component, $schema);
+        $this->parameterSchemas[$component] = $schema;
         $parameter['schema'] = ['$ref' => "#/components/schemas/{$component}"];
     }
 
     /**
-     * @param  OpenApiOperation  $operation
+     * @param  array<mixed>  $operation
      */
     private function extractRequestBodySchemas(array &$operation): void
     {
-        $operationId = $operation['operationId'] ?? '';
-        $operationId = is_string($operationId) ? $operationId : '';
-        if ($operationId === '' || ! isset($operation['requestBody']['content']) || ! is_array($operation['requestBody']['content'])) {
+        $operationId = $operation['operationId'] ?? null;
+        $content = data_get($operation, 'requestBody.content');
+        if (! is_string($operationId) || $operationId === '' || ! is_array($content) || ! is_array($operation['requestBody'] ?? null)) {
             return;
         }
 
-        $mediaWithSchemas = array_filter(
-            $operation['requestBody']['content'],
-            fn (array $media): bool => isset($media['schema']) && is_array($media['schema']) && ! isset($media['schema']['$ref'])
-        );
-        $hasMultipleSchemas = count($mediaWithSchemas) > 1;
+        $hasMultipleSchemas = count(array_filter($content, fn (mixed $media): bool => $this->inlineSchema($media) !== null)) > 1;
 
-        foreach ($operation['requestBody']['content'] as $contentType => &$media) {
-            if (! isset($media['schema']) || ! is_array($media['schema']) || isset($media['schema']['$ref'])) {
+        foreach ($content as $contentType => &$media) {
+            $schema = $this->inlineSchema($media);
+            if ($schema === null || ! is_array($media)) {
                 continue;
             }
 
-            $component = $this->requestBodyComponentName($operationId, $this->arrayKeyString($contentType), $hasMultipleSchemas);
-            $component = $this->availableComponentName($this->requestBodySchemas, $component, $media['schema']);
-            $this->requestBodySchemas[$component] = $media['schema'];
+            $component = $this->requestBodyComponentName($operationId, (string) $contentType, $hasMultipleSchemas);
+            $component = $this->availableComponentName($this->requestBodySchemas, $component, $schema);
+            $this->requestBodySchemas[$component] = $schema;
             $media['schema'] = ['$ref' => "#/components/schemas/{$component}"];
         }
 
         unset($media);
+        $operation['requestBody']['content'] = $content;
     }
 
     /**
-     * @param  OpenApiSchemaMap  $schemas
-     * @param  DeepOpenApiSchema  $schema
+     * @param  array<string, array<mixed>>  $schemas
+     * @param  array<mixed>  $schema
      */
     private function availableComponentName(array $schemas, string $name, array $schema): string
     {
@@ -1356,7 +1327,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  ScribeParameter  $parameter
+     * @param  array<mixed>  $parameter
      */
     private function operationParameterSchemaComponentName(string $operationId, array $parameter): string
     {
@@ -1373,7 +1344,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  ScribeParameter  $parameter
+     * @param  array<mixed>  $parameter
      */
     private function pathParameterSchemaComponentName(OutputEndpointData $endpoint, array $parameter): string
     {
@@ -1385,7 +1356,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  ScribeParameter  $parameter
+     * @param  array<mixed>  $parameter
      */
     private function parameterNameSegment(array $parameter): string
     {
@@ -1399,38 +1370,27 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
+     * @param  array<mixed>  $pathItem
      */
     private function enforceKnownBodyParameterSchemas(array &$pathItem, OutputEndpointData $endpoint): void
     {
-        if (! isset($pathItem['requestBody']['content']) || ! is_array($pathItem['requestBody']['content'])) {
+        $requestBody = $pathItem['requestBody'] ?? null;
+        if (! is_array($requestBody) || ! is_array($requestBody['content'] ?? null)) {
             return;
         }
 
-        $contentType = array_key_first($pathItem['requestBody']['content']);
-        if (! is_string($contentType)) {
+        $content = $requestBody['content'];
+        $contentType = array_key_first($content);
+        $media = $contentType === null ? null : $content[$contentType];
+        $schema = is_array($media) ? ($media['schema'] ?? null) : null;
+        if (! is_string($contentType) || ! is_array($media) || ! is_array($schema) || ! is_array($schema['properties'] ?? null)) {
             return;
         }
 
-        $media = &$pathItem['requestBody']['content'][$contentType];
-        $schema = $media['schema'] ?? null;
-        if (! is_array($schema)) {
-            return;
-        }
-
-        $properties = $schema['properties'];
+        $properties = $this->normalizeScribeValue($schema['properties']);
         if (! is_array($properties)) {
             return;
         }
-
-        $properties = $this->normalizeScribeValue($properties);
-        if (! is_array($properties)) {
-            return;
-        }
-
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
-        $schema['properties'] = &$properties;
-        $media['schema'] = &$schema;
 
         if (isset($endpoint->bodyParameters['environment'])) {
             $properties['environment'] = [
@@ -1459,24 +1419,18 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             ];
         }
 
-        if (isset($endpoint->bodyParameters['preferences.language'])) {
-            $preferenceProperties = $properties['preferences']['properties'] ?? null;
-            if (is_array($preferenceProperties)) {
-                JsonValueGuard::assertOpenApiSchemaMap($preferenceProperties);
-                $preferenceProperties['language'] = [
-                    'type' => 'string',
-                    'description' => PterodactylDocumentation::fieldDescription('preferences.language'),
-                    'example' => 'en',
-                ];
-                $properties['preferences']['properties'] = $preferenceProperties;
-            }
+        if (isset($endpoint->bodyParameters['preferences.language']) && is_array(data_get($properties, 'preferences.properties'))) {
+            Arr::set($properties, 'preferences.properties.language', [
+                'type' => 'string',
+                'description' => PterodactylDocumentation::fieldDescription('preferences.language'),
+                'example' => 'en',
+            ]);
         }
 
         if (isset($properties['extensions'])) {
             $properties['extensions'] = ['$ref' => '#/components/schemas/ExtensionFields'];
         }
 
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
         match ($pathItem['operationId'] ?? null) {
             'applicationCreateServer' => $this->enforceApplicationCreateServerBodySchema($properties),
             'adminUpdateGeneralSettings' => $this->enforceAdminGeneralSettingsBodySchema($properties),
@@ -1485,25 +1439,29 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'adminUpdateExtensionSettings' => $this->enforceAdminExtensionSettingsBodySchema($properties),
             default => null,
         };
+
+        $schema['properties'] = $properties;
+        $media['schema'] = $schema;
+        $content[$contentType] = $media;
+        $requestBody['content'] = $content;
+        $pathItem['requestBody'] = $requestBody;
     }
 
     /**
-     * @param  OpenApiSchemaMap  $properties
+     * @param  array<mixed>  $properties
      */
     private function enforceApplicationCreateServerBodySchema(array &$properties): void
     {
-        if (! isset($properties['deploy']['properties'])) {
+        if (data_get($properties, 'deploy.properties') === null) {
             return;
         }
 
-        $deploy = &$properties['deploy']['properties'];
-        JsonValueGuard::assertOpenApiSchemaMap($deploy);
-        $deploy['dedicated_ip'] = [
+        Arr::set($properties, 'deploy.properties.dedicated_ip', [
             'type' => 'boolean',
             'description' => PterodactylDocumentation::fieldDescription('deploy.dedicated_ip'),
             'example' => false,
-        ];
-        $deploy['tags'] = [
+        ]);
+        Arr::set($properties, 'deploy.properties.tags', [
             'type' => 'array',
             'description' => PterodactylDocumentation::fieldDescription('deploy.tags'),
             'items' => [
@@ -1513,11 +1471,11 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ],
             ],
             'example' => ['minecraft', 1],
-        ];
+        ]);
     }
 
     /**
-     * @param  OpenApiSchemaMap  $properties
+     * @param  array<mixed>  $properties
      */
     private function enforceAdminExtensionSettingsBodySchema(array &$properties): void
     {
@@ -1537,7 +1495,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaMap  $properties
+     * @param  array<mixed>  $properties
      */
     private function enforceMinecraftVersionChangerSettingsBodySchema(array &$properties): void
     {
@@ -1555,7 +1513,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaMap  $properties
+     * @param  array<mixed>  $properties
      */
     private function enforceAdminGeneralSettingsBodySchema(array &$properties): void
     {
@@ -1569,35 +1527,31 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaMap  $properties
+     * @param  array<mixed>  $properties
      */
     private function enforceAdminMailSettingsBodySchema(array &$properties): void
     {
-        if (! isset($properties['smtp']['properties']['encryption'])) {
+        if (data_get($properties, 'smtp.properties.encryption') === null) {
             return;
         }
 
-        $properties['smtp']['properties']['encryption'] = [
+        Arr::set($properties, 'smtp.properties.encryption', [
             'type' => 'string',
             'nullable' => true,
             'enum' => ['tls', 'ssl', null],
             'description' => PterodactylDocumentation::fieldDescription('smtp.encryption'),
             'example' => 'tls',
-        ];
+        ]);
     }
 
     /**
-     * @param  OpenApiOperation  $pathItem
-     * @return OpenApiOperation
+     * @param  array<mixed>  $pathItem
+     * @return array<mixed>
      */
     private function normalizeOperationRequestBody(array $pathItem, OutputEndpointData $endpoint): array
     {
-        // SAFETY: Scribe supplies the operation tree; the value is narrowed before request-body mutation.
         if (mb_strtoupper($endpoint->httpMethods[0]) === 'GET') {
-            $pathItem = array_diff_key($pathItem, ['requestBody' => true]);
-            JsonValueGuard::assertOpenApiOperation($pathItem);
-
-            return $pathItem;
+            return array_diff_key($pathItem, ['requestBody' => true]);
         }
 
         if (($pathItem['operationId'] ?? null) !== 'clientWriteFileContents') {
@@ -1621,38 +1575,32 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiContent  $content
-     * @return OpenApiContent
+     * @param  array<mixed>  $content
+     * @return array<mixed>
      */
     private function normalizeContentSchemas(array $content): array
     {
         foreach ($content as &$media) {
-            if (isset($media['schema']) && is_array($media['schema'])) {
-                $media['schema'] = $this->normalizeScribeValue($media['schema']);
-                if (! is_array($media['schema'])) {
-                    continue;
-                }
+            if (! is_array($media) || ! is_array($media['schema'] ?? null)) {
+                continue;
+            }
 
+            $media['schema'] = $this->normalizeScribeValue($media['schema']);
+            if (is_array($media['schema'])) {
                 $this->normalizeSchema($media['schema']);
-                JsonValueGuard::assertPayload9($media['schema']);
             }
         }
 
         unset($media);
 
-        JsonValueGuard::assertOpenApiContent($content);
-
         return $content;
     }
 
     /**
-     * @param  OpenApiRecursiveNode  $schema
-     *
-     * @param-out mixed $schema
+     * @param  array<mixed>  $schema
      */
     private function normalizeSchema(array &$schema): void
     {
-        // SAFETY: recursive OpenAPI nodes have varying bounded depths; every value is narrowed before array access.
         if (($schema['type'] ?? null) === 'object<string,string>') {
             $schema['type'] = 'object';
             $schema['additionalProperties'] = ['type' => 'string'];
@@ -1672,6 +1620,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             && is_array($schema['items'])
             && ($schema['items']['type'] ?? null) === 'array'
             && ! isset($schema['items']['items'])
+            && is_array($schema['example'] ?? null)
             && isset($schema['example'][0])
         ) {
             $schema['items'] = PterodactylDocumentation::schemaForValue($schema['example'][0]);
@@ -1686,7 +1635,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             if (array_is_list($child)) {
                 foreach ($child as &$item) {
                     if (is_array($item)) {
-                        JsonValueGuard::assertValue($item);
                         $this->normalizeSchema($item);
                     }
                 }
@@ -1697,7 +1645,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             }
 
             if (isset($child['type']) || isset($child['$ref'])) {
-                JsonValueGuard::assertValue($schema[$key]);
                 $this->normalizeSchema($schema[$key]);
 
                 continue;
@@ -1712,7 +1659,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                         ];
                     }
 
-                    JsonValueGuard::assertValue($item);
                     $this->normalizeSchema($item);
                 }
             }
@@ -1723,28 +1669,24 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiRecursiveNode  $schema
-     *
-     * @param-out mixed $schema
+     * @param  array<mixed>  $schema
      */
     private function normalizeNestedArrayItemSchemas(array &$schema): void
     {
-        // SAFETY: recursive OpenAPI nodes have varying bounded depths; every value is narrowed before array access.
         if (
             ($schema['type'] ?? null) === 'array'
             && isset($schema['items'])
             && is_array($schema['items'])
             && ($schema['items']['type'] ?? null) === 'array'
             && ! isset($schema['items']['items'])
-            && isset($schema['example'][0])
-            && is_array($schema['example'][0])
+            && is_array($schema['example'] ?? null)
+            && is_array($schema['example'][0] ?? null)
         ) {
             $schema['items'] = PterodactylDocumentation::schemaForValue($schema['example'][0]);
         }
 
         foreach ($schema as &$value) {
             if (is_array($value)) {
-                JsonValueGuard::assertValue($value);
                 $this->normalizeNestedArrayItemSchemas($value);
             }
         }
@@ -1753,41 +1695,16 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  JsonInputValue|stdClass  $value
-     * @return JsonValue
+     * Scribe hands some decoded JSON objects over as stdClass; the spec is built from arrays.
      */
-    private function arrayValue(bool|float|int|string|array|stdClass|null $value): bool|float|int|string|array|null
+    private function arrayValue(mixed $value): mixed
     {
-        // SAFETY: Scribe exposes decoded values as mixed; this boundary rejects non-JSON values before returning them.
-        if ($value instanceof stdClass) {
-            return JsonValueGuard::decode(json_encode($value, JSON_THROW_ON_ERROR));
-        }
-
-        JsonValueGuard::assertValue($value);
-
-        return $value;
+        return $value instanceof stdClass ? $this->normalizeScribeValue($value) : $value;
     }
 
-    /**
-     * @param  JsonValue|OpenApiRequestBody|OpenApiResponse|stdClass  $value
-     * @return JsonValue|OpenApiRequestBody|OpenApiResponse
-     */
-    private function openApiContainerValue(bool|float|int|string|array|stdClass|null $value): bool|float|int|string|array|null
+    private function normalizeScribeValue(mixed $value): mixed
     {
-        if ($value instanceof stdClass) {
-            return JsonValueGuard::decode(json_encode($value, JSON_THROW_ON_ERROR));
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param  JsonInputValue|stdClass  $value
-     * @return JsonValue
-     */
-    private function normalizeScribeValue(mixed $value): bool|float|int|string|array|null
-    {
-        return JsonValueGuard::decode(json_encode($value, JSON_THROW_ON_ERROR));
+        return json_decode(json_encode($value, JSON_THROW_ON_ERROR), true, flags: JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -1816,54 +1733,42 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  ApiPayload9  $relationships
+     * @param  array<mixed>  $schema
+     * @param  array<mixed>  $relationships
      * @param  array<string, true>  $knownComponents
      */
     private function addRelationshipsToAttributesSchema(array &$schema, OutputEndpointData $endpoint, array $relationships, array $knownComponents): void
     {
-        // SAFETY: generated schemas vary in depth; the mutable object-schema fields are validated before use.
-        $properties = $schema['properties'] ?? null;
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
+        $properties = Arr::array($schema, 'properties');
         $relationshipSchema = $this->relationshipsSchema($endpoint, $relationships, $knownComponents);
         $existing = $properties['relationships'] ?? null;
 
         if (is_array($existing)) {
-            $existingProperties = $existing['properties'] ?? [];
-            JsonValueGuard::assertOpenApiSchemaMap($existingProperties);
             $relationshipSchema['properties'] = [
-                ...$existingProperties,
+                ...Arr::array($existing, 'properties', []),
                 ...$relationshipSchema['properties'],
             ];
         }
 
         $properties['relationships'] = $relationshipSchema;
-        $updatedSchema = $schema;
-        $updatedSchema['properties'] = $properties;
+        $schema['properties'] = $properties;
 
-        if (isset($updatedSchema['required'])) {
-            JsonValueGuard::assertStringList($updatedSchema['required']);
-            $updatedSchema['required'] = array_values(array_filter(
-                $updatedSchema['required'],
-                fn (string $key): bool => $key !== 'relationships'
-            ));
+        if (isset($schema['required'])) {
+            $schema['required'] = array_values(array_filter(Arr::array($schema, 'required'), fn (mixed $key): bool => $key !== 'relationships'));
         }
-
-        JsonValueGuard::assertOpenApiSchemaInput($updatedSchema);
-        $schema = $updatedSchema;
     }
 
     /**
-     * @param  ApiPayload9  $relationships
+     * @param  array<mixed>  $relationships
      * @param  array<string, true>  $knownComponents
-     * @return OpenApiObjectSchema
+     * @return array{type: string, properties: array<array<mixed>>}
      */
     private function relationshipsSchema(OutputEndpointData $endpoint, array $relationships, array $knownComponents): array
     {
         $properties = [];
 
         foreach ($relationships as $name => $relationship) {
-            $properties[$name] = $this->relationshipValueSchema($endpoint, $this->arrayKeyString($name), $relationship, $knownComponents);
+            $properties[$name] = $this->relationshipValueSchema($endpoint, (string) $name, $relationship, $knownComponents);
         }
 
         return [
@@ -1873,9 +1778,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  JsonInputValue  $relationship
      * @param  array<string, true>  $knownComponents
-     * @return DeepOpenApiSchema
+     * @return array<mixed>
      */
     private function relationshipValueSchema(OutputEndpointData $endpoint, string $name, mixed $relationship, array $knownComponents): array
     {
@@ -1884,7 +1788,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         }
 
         if (($relationship['object'] ?? null) === 'list') {
-            $item = $relationship['data'][0] ?? null;
+            $item = data_get($relationship, 'data.0');
             if (is_array($item) && is_string($item['object'] ?? null)) {
                 return $this->relationshipRefSchema($endpoint, $knownComponents, 'list', $name, $item['object'])
                     ?? PterodactylDocumentation::schemaForValue($relationship);
@@ -1905,7 +1809,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     /**
      * @param  array<string, true>  $knownComponents
      * @param  'item'|'list'  $kind
-     * @return DeepOpenApiSchema|null
+     * @return array<mixed>|null
      */
     private function relationshipRefSchema(OutputEndpointData $endpoint, array $knownComponents, string $kind, string $relationship, ?string $resource = null): ?array
     {
@@ -1928,7 +1832,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         return null;
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function nullResourceSchema(): array
     {
         return [
@@ -1968,7 +1872,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         return array_values(array_unique($candidates));
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function fractalItemSchema(string $resource, string $attributesSchema): array
     {
         return [
@@ -1985,8 +1889,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  ApiPayload9  $meta
+     * @param  array<mixed>  $schema
+     * @param  array<mixed>  $meta
      */
     private function addMetaToItemSchema(array &$schema, array $meta): void
     {
@@ -1994,8 +1898,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  ApiPayload9  $meta
+     * @param  array<mixed>  $schema
+     * @param  array<mixed>  $meta
      */
     private function addMetaToListSchema(array &$schema, array $meta): void
     {
@@ -2003,81 +1907,61 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  ApiPayload9  $meta
+     * @param  array<mixed>  $schema
+     * @param  array<mixed>  $meta
      */
     private function addMetaToPaginatedSchema(array &$schema, array $meta): void
     {
-        // SAFETY: generated paginated schemas vary in depth; each mutable schema map and list is validated before use.
-        $properties = $schema['properties'] ?? null;
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
-        $paginationMeta = $properties['meta'] ?? [];
+        $properties = Arr::array($schema, 'properties');
+        $paginationMeta = Arr::array($properties, 'meta', []);
         $metaSchema = $this->metaSchema($meta);
-        $required = $paginationMeta['required'] ?? [];
-        JsonValueGuard::assertStringList($required);
-        $metaRequired = $metaSchema['required'] ?? [];
         $paginationMeta['required'] = array_values(array_unique([
-            ...$required,
-            ...$metaRequired,
-        ]));
-        $paginationProperties = $paginationMeta['properties'] ?? [];
-        JsonValueGuard::assertOpenApiSchemaMap($paginationProperties);
+            ...Arr::array($paginationMeta, 'required', []),
+            ...$metaSchema['required'],
+        ], SORT_REGULAR));
         $paginationMeta['properties'] = [
-            ...$paginationProperties,
+            ...Arr::array($paginationMeta, 'properties', []),
             ...$metaSchema['properties'],
         ];
         $properties['meta'] = $paginationMeta;
-        $updatedSchema = $schema;
-        $updatedSchema['properties'] = $properties;
-        JsonValueGuard::assertOpenApiSchemaInput($updatedSchema);
-        $schema = $updatedSchema;
+        $schema['properties'] = $properties;
     }
 
     /**
-     * @param  OpenApiSchemaInput  $schema
-     * @param  ApiPayload9  $meta
+     * @param  array<mixed>  $schema
+     * @param  array<mixed>  $meta
      */
     private function addMetaProperty(array &$schema, array $meta): void
     {
-        // SAFETY: generated schemas vary in depth; the properties map is validated before mutation.
-        $properties = $schema['properties'] ?? null;
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
+        $properties = Arr::array($schema, 'properties');
         $properties['meta'] = $this->metaSchema($meta);
-        $updatedSchema = $schema;
-        $updatedSchema['properties'] = $properties;
-        JsonValueGuard::assertOpenApiSchemaInput($updatedSchema);
-        $schema = $updatedSchema;
+        $schema['properties'] = $properties;
     }
 
     /**
-     * @param  array<string, JsonInputValue>  $meta
-     * @return OpenApiObjectSchema
+     * @param  array<mixed>  $meta
+     * @return array{type: string, required: list<array-key>, properties: array<array<mixed>>}
      */
     private function metaSchema(array $meta): array
     {
-        $properties = [];
-        foreach ($meta as $key => $value) {
-            $properties[$key] = PterodactylDocumentation::schemaForValue($value);
-        }
+        $properties = array_map(PterodactylDocumentation::schemaForValue(...), $meta);
 
-        $schema = [
-            'type' => 'object',
-            'required' => array_keys($properties),
-            'properties' => $properties,
-        ];
-
-        if (isset($schema['properties']['docker_images'])) {
-            $schema['properties']['docker_images'] = [
+        if (isset($properties['docker_images'])) {
+            $properties['docker_images'] = [
                 'type' => 'object',
                 'additionalProperties' => ['type' => 'string'],
                 'example' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23'],
             ];
         }
 
-        return $schema;
+        return [
+            'type' => 'object',
+            'required' => array_keys($properties),
+            'properties' => $properties,
+        ];
     }
 
-    /** @return FractalListOpenApiSchema */
+    /** @return array{type: string, required: list<string>, properties: array<string, array<string, mixed>>} */
     private function fractalListSchema(string $itemSchema): array
     {
         return [
@@ -2096,7 +1980,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return FractalPaginatedOpenApiSchema */
+    /** @return array<mixed> */
     private function fractalPaginatedSchema(string $itemSchema): array
     {
         $schema = $this->fractalListSchema($itemSchema);
@@ -2112,7 +1996,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         return $schema;
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function paginationMetaSchema(): array
     {
         return [
@@ -2132,7 +2016,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminLanguagesSchema(): array
     {
         return [
@@ -2143,7 +2027,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function permissionsSchema(): array
     {
         $permissions = Permission::permissions()
@@ -2154,7 +2038,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             ->flatten()
             ->values()
             ->all();
-        JsonValueGuard::assertStringList($permissions);
 
         return [
             'type' => 'array',
@@ -2168,7 +2051,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminEggConfigurationFilesSchema(): array
     {
         return [
@@ -2178,7 +2061,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminEggConfigurationFileSchema(): array
     {
         return [
@@ -2190,7 +2073,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminEggConfigurationFindSchema(): array
     {
         return [
@@ -2206,7 +2089,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function adminNodeConfigurationSchema(): array
     {
         return PterodactylDocumentation::schemaForValue([
@@ -2235,7 +2118,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ]);
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function adminNodeDeployTokenSchema(): array
     {
         return PterodactylDocumentation::schemaForValue([
@@ -2246,7 +2129,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ]);
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function adminNodeSystemInformationSchema(): array
     {
         return PterodactylDocumentation::schemaForValue([
@@ -2258,7 +2141,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ]);
     }
 
-    /** @return DeepOpenApiSchema */
+    /** @return array<mixed> */
     private function adminNodeUtilizationSchema(): array
     {
         $metric = [
@@ -2274,7 +2157,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ]);
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminExtensionSettingsSchema(): array
     {
         return [
@@ -2296,7 +2179,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminExtensionFormsSchema(): array
     {
         $forms = implode(', ', array_map(fn (string $alias): string => "admin.{$alias}", array_keys(ExtensionSettings::SCOPES)));
@@ -2325,7 +2208,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminExtensionSettingFieldSchema(): array
     {
         return [
@@ -2368,7 +2251,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminExtensionSettingOptionSchema(): array
     {
         return [
@@ -2397,7 +2280,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @return OpenApiSchema
+     * @return array<mixed>
      */
     private function extensionFieldsSchema(): array
     {
@@ -2421,19 +2304,17 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      * Extension field values depend on the extensions installed, so the example response
      * cannot describe them; lists leave them out, so they are never required.
      *
-     * @param  OpenApiSchemaInput  $schema
+     * @param  array<mixed>  $schema
      */
     private function addExtensionFieldsToAttributesSchema(array &$schema): void
     {
-        $properties = $schema['properties'] ?? [];
-        JsonValueGuard::assertOpenApiSchemaMap($properties);
+        $properties = Arr::array($schema, 'properties', []);
         $properties['extensions'] = ['$ref' => '#/components/schemas/ExtensionFields'];
         $schema['properties'] = $properties;
 
         $required = $schema['required'] ?? null;
         if (is_array($required)) {
-            // SAFETY: an object schema's `required` lists its property names.
-            $schema['required'] = array_values(array_diff(JsonValueGuard::stringList($required), ['extensions']));
+            $schema['required'] = array_values(array_filter($required, fn (mixed $key): bool => $key !== 'extensions'));
         }
     }
 
@@ -2451,7 +2332,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminSettingsSchema(): array
     {
         return [
@@ -2530,7 +2411,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function adminVersionInformationSchema(): array
     {
         return [
@@ -2547,7 +2428,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
     }
 
-    /** @return OpenApiSchema */
+    /** @return array<mixed> */
     private function errorEnvelopeSchema(bool $validation): array
     {
         $error = [
@@ -2692,14 +2573,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         return mb_strtoupper($endpoint->httpMethods[0]).' '.$endpoint->uri;
     }
 
-    private function arrayKeyString(int|string $key): string
-    {
-        // SAFETY: PHP array keys are restricted to integers and strings, both of which have lossless string forms for OpenAPI names.
-        return (string) $key;
-    }
-
     /**
-     * @return array{resource: string, attributes: ApiPayload9, relationships?: ApiPayload9, collection: bool, paginated: bool, meta?: ApiPayload9, top_meta?: ApiPayload9}|null
+     * @return array{resource: string, attributes: array<mixed>, relationships?: array<mixed>, collection: bool, paginated: bool, meta?: array<mixed>, top_meta?: array<mixed>}|null
      */
     private function fractalResponse(OutputEndpointData $endpoint): ?array
     {
@@ -2709,7 +2584,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             }
 
             $status = $response->status;
-            $status = $this->arrayKeyString($status);
+            $status = (string) $status;
             if (! str_starts_with($status, '2') || $status === '204') {
                 continue;
             }
@@ -2724,16 +2599,13 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 continue;
             }
 
-            JsonValueGuard::assertPayload9($decoded);
-
             if (($decoded['object'] ?? null) === 'list') {
-                $item = $decoded['data'][0] ?? null;
+                $item = data_get($decoded, 'data.0');
                 if (! is_array($item) || ! is_array($item['attributes'] ?? null)) {
                     continue;
                 }
 
                 $attributes = $item['attributes'];
-                JsonValueGuard::assertPayload9($attributes);
                 $relationships = $this->extractRelationships($attributes);
                 $pagination = $decoded['meta'] ?? null;
                 $fractal = [
@@ -2744,7 +2616,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
 
                 if (isset($item['meta']) && is_array($item['meta'])) {
-                    JsonValueGuard::assertPayload9($item['meta']);
                     $fractal['meta'] = $item['meta'];
                 }
 
@@ -2752,7 +2623,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                     $topMeta = $decoded['meta'];
                     unset($topMeta['pagination']);
                     if ($topMeta !== []) {
-                        JsonValueGuard::assertPayload9($topMeta);
                         $fractal['top_meta'] = $topMeta;
                     }
                 }
@@ -2766,7 +2636,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
             if (is_string($decoded['object'] ?? null) && is_array($decoded['attributes'] ?? null)) {
                 $attributes = $decoded['attributes'];
-                JsonValueGuard::assertPayload9($attributes);
                 $relationships = $this->extractRelationships($attributes);
                 $fractal = [
                     'resource' => $decoded['object'],
@@ -2776,7 +2645,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
 
                 if (isset($decoded['meta']) && is_array($decoded['meta'])) {
-                    JsonValueGuard::assertPayload9($decoded['meta']);
                     $fractal['meta'] = $decoded['meta'];
                 }
 
@@ -2792,8 +2660,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @param  ApiPayload9  $attributes
-     * @return ApiPayload9|null
+     * @param  array<mixed>  $attributes
+     * @return array<mixed>|null
      */
     private function extractRelationships(array &$attributes): ?array
     {
@@ -2803,8 +2671,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         if (! is_array($relationships) || $relationships === []) {
             return null;
         }
-
-        JsonValueGuard::assertPayload9($relationships);
 
         return $relationships;
     }

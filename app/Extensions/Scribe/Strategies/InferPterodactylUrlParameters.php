@@ -7,13 +7,12 @@ namespace Pterodactyl\Extensions\Scribe\Strategies;
 use Knuckles\Camel\Extraction\ExtractedEndpointData;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI;
 use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
-use Pterodactyl\Support\JsonValueGuard;
 
 class InferPterodactylUrlParameters extends GetFromLaravelAPI
 {
     /**
-     * @param  array<string, ApiValue10>  $routeRules
-     * @return ScribeParameters
+     * @param  array<string, mixed>  $routeRules
+     * @return array<string, array<mixed>>
      */
     public function __invoke(ExtractedEndpointData $endpointData, array $routeRules = []): ?array
     {
@@ -24,7 +23,6 @@ class InferPterodactylUrlParameters extends GetFromLaravelAPI
                 continue;
             }
 
-            JsonValueGuard::assertPayload($parameter);
             $parameters[$name] = $parameter;
         }
 

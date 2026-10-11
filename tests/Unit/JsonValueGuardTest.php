@@ -50,12 +50,6 @@ test('string lists reject invalid shapes', function (mixed $value) {
     'associative array' => [['name' => 'value']],
     'non-string item' => [['value', 1]],
 ]);
-test('integers accept what the integer validation rule accepts', function (mixed $value, int $expected) {
-    expect(JsonValueGuard::integer($value))->toBe($expected);
-})->with([[5, 5], ['5', 5], ['-5', -5], [1024.0, 1024]]);
-test('integers reject anything else', function (mixed $value) {
-    expect(fn (): int => JsonValueGuard::integer($value))->toThrow(UnexpectedValueException::class, 'Expected an integer value.');
-})->with([[null], [true], [1024.5], ['1024.0'], ['1e3'], [[]]]);
 test('rejects invalid json', function () {
     $this->expectException(JsonException::class);
     JsonValueGuard::decode('{');

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Extensions\Scribe\Support;
 
 use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionMethod;
 
 class PterodactylDocumentation
@@ -221,8 +220,7 @@ class PterodactylDocumentation
         return self::FIELD_TYPES[$name] ?? null;
     }
 
-    /** @return ApiValue1 */
-    public static function fieldExample(string $name, string $type): bool|float|int|string|array|null
+    public static function fieldExample(string $name, string $type): mixed
     {
         return match (true) {
             str_starts_with($name, 'feature_limits.'), str_starts_with($name, 'limits.') => 1,
@@ -292,8 +290,7 @@ class PterodactylDocumentation
     }
 
     /**
-     * @param  JsonInputValue  $value
-     * @return DeepOpenApiSchema an OpenAPI schema fragment describing the value
+     * @return array<string, mixed> an OpenAPI schema fragment describing the value
      */
     public static function schemaForValue(mixed $value): array
     {
@@ -312,50 +309,38 @@ class PterodactylDocumentation
                     }
                 }
 
-                return self::openApiSchema([
+                return [
                     'type' => 'object',
                     'required' => array_keys($properties),
                     'properties' => $properties,
-                ]);
+                ];
             }
 
-            return self::openApiSchema([
+            return [
                 'type' => 'array',
                 'items' => isset($value[0]) ? self::schemaForValue($value[0]) : ['type' => 'string'],
-            ]);
+            ];
         }
 
         if ($value === null) {
-            return self::openApiSchema([
+            return [
                 'type' => 'string',
                 'nullable' => true,
-            ]);
+            ];
         }
 
         if ($value instanceof JsonEmptyObject) {
-            return self::openApiSchema([
+            return [
                 'type' => 'object',
                 'properties' => new JsonEmptyObject,
-            ]);
+            ];
         }
 
-        return self::openApiSchema(match (gettype($value)) {
-            'boolean' => ['type' => 'boolean', 'example' => $value],
-            'integer' => ['type' => 'integer', 'example' => $value],
-            'double' => ['type' => 'number', 'example' => $value],
-            default => ['type' => 'string', 'example' => (string) $value],
-        });
-    }
-
-    /**
-     * @phpstan-assert DeepOpenApiSchema $schema
-     *
-     * @return DeepOpenApiSchema
-     */
-    private static function openApiSchema(mixed $schema): array
-    {
-        JsonValueGuard::assertPayload9($schema);
-
-        return $schema;
+        return match (true) {
+            is_bool($value) => ['type' => 'boolean', 'example' => $value],
+            is_int($value) => ['type' => 'integer', 'example' => $value],
+            is_float($value) => ['type' => 'number', 'example' => $value],
+            default => ['type' => 'string', 'example' => $value],
+        };
     }
 }

@@ -25,7 +25,6 @@ use Pterodactyl\Http\Resources\Api\ApiResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use ReflectionClass;
 
@@ -48,14 +47,10 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
         $withCount = $attributeInstance instanceof ResponseFromTransformer ? $attributeInstance->withCount : [];
         $transformerClass = $this->transformerClass($attributeInstance);
         $modelInstantiator = function () use ($attributeInstance, $withCount, $transformerClass) {
-            $factoryStates = $attributeInstance->factoryStates;
-            $relations = $attributeInstance->with;
-            JsonValueGuard::assertValue($factoryStates);
-            JsonValueGuard::assertValue($relations);
             $model = $this->instantiateExampleModel(
                 $attributeInstance->model,
-                $this->stringList($factoryStates),
-                $this->stringList($relations),
+                $this->stringList($attributeInstance->factoryStates),
+                $this->stringList($attributeInstance->with),
                 (new ReflectionClass($transformerClass))->getMethod('transform'),
             );
 
@@ -94,18 +89,11 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
 
         $resourceClass = $this->resourceClass($attributeInstance);
         $modelInstantiator = function () use ($attributeInstance): Model {
-            $factoryStates = $attributeInstance->factoryStates;
-            $relations = $attributeInstance->with;
-            $withCount = $attributeInstance->withCount;
-            JsonValueGuard::assertValue($factoryStates);
-            JsonValueGuard::assertValue($relations);
-            JsonValueGuard::assertValue($withCount);
-
             // withCount is applied after instantiation, as for transformers.
-            $model = $this->instantiateExampleModel($attributeInstance->model, $this->stringList($factoryStates), $this->stringList($relations));
+            $model = $this->instantiateExampleModel($attributeInstance->model, $this->stringList($attributeInstance->factoryStates), $this->stringList($attributeInstance->with));
             throw_unless($model instanceof Model, InvalidArgumentException::class, 'The model referenced by #[ResponseFromResource] must be an Eloquent model.');
 
-            $counts = $this->stringList($withCount);
+            $counts = $this->stringList($attributeInstance->withCount);
             if ($counts !== [] && $model->exists) {
                 $model->loadCount($counts);
             }
@@ -291,7 +279,7 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
     }
 
     /**
-     * @param  array<array-key, ApiValue9>  $values
+     * @param  array<mixed>  $values
      * @return list<string>
      */
     private function stringList(array $values): array
