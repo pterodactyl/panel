@@ -10,11 +10,18 @@ use Throwable;
 interface UpdatesNodes
 {
     /**
-     * Update the configuration values for a given node on the machine.
+     * Update the configuration values for a given node on the machine, minting a new daemon
+     * token pair when $resetToken is set.
      *
-     * @param  NodeUpdateData  $data
+     * The input is validated here, so it can come straight from any caller. It takes the
+     * fields a node is created with, required ones included; a node given no daemon_base goes
+     * back to /var/lib/pterodactyl/volumes, and the other optional fields keep their stored
+     * values when they are left out. Extension field values go under `extensions` as
+     * ValidatedExtensionValues.
+     *
+     * @param  ActionInput  $input  the fields a node is created with
      *
      * @throws Throwable
      */
-    public function update(Node $node, array $data, bool $resetToken = false): Node;
+    public function update(Node $node, array $input, bool $resetToken = false): Node;
 }

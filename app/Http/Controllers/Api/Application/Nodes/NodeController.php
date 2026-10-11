@@ -105,7 +105,7 @@ class NodeController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function store(StoreNodeRequest $request, CreatesNodes $nodes): JsonResponse
     {
-        $node = $nodes->create($request->payload());
+        $node = $nodes->create($request->actionInput());
 
         return Fractal::item($node)
             ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
@@ -133,7 +133,7 @@ class NodeController extends ApplicationApiController
     {
         $node = $nodes->update(
             $node,
-            $request->payload(),
+            $request->actionInput(),
             $request->boolean('reset_secret')
         );
 

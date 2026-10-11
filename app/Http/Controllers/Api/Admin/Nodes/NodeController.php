@@ -95,7 +95,7 @@ class NodeController extends AdminApiController
     #[ExtensionFieldsParam]
     public function store(StoreNodeRequest $request, CreatesNodes $nodes): JsonResponse
     {
-        $node = $nodes->create($request->payload());
+        $node = $nodes->create($request->actionInput());
 
         Activity::event('admin:node.create')
             ->subject($node)
@@ -125,7 +125,7 @@ class NodeController extends AdminApiController
     {
         $node = $nodes->update(
             $node,
-            $request->payload(),
+            $request->actionInput(),
             $request->boolean('reset_secret')
         );
 

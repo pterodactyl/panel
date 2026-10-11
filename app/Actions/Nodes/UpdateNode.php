@@ -24,21 +24,21 @@ final readonly class UpdateNode implements UpdatesNodes
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param  NodeUpdateData  $data
+     * @param  ActionInput  $input
      *
      * @throws Throwable
      */
-    public function update(Node $node, array $data, bool $resetToken = false): Node
+    public function update(Node $node, array $input, bool $resetToken = false): Node
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateNode::attributes($input);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
         if ($resetToken) {
-            $data['daemon_token'] = Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
-            $data['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
+            $attributes['daemon_token'] = Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
+            $attributes['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
         }
 
-        [$updated, $exception] = DB::transaction(function () use ($data, $node, $extensions): array {
+        [$updated, $exception] = DB::transaction(function () use ($attributes, $node, $extensions): array {
             // Wings is reached with the pre-update scheme and port, but at the newly provided
             // FQDN: if the node was pointed at a "valid" FQDN that is not actually running
             // Wings, the operator can still change it back. Only the Panel uses the FQDN for
@@ -47,7 +47,7 @@ final readonly class UpdateNode implements UpdatesNodes
             // @see https://github.com/pterodactyl/panel/issues/1931
             $daemon = clone $node;
 
-            $node->forceFill($data)->save();
+            $node->forceFill($attributes)->save();
             $this->extensions->save($node, $extensions);
             // A location loaded before the save may no longer match location_id.
             $node->unsetRelation('location');

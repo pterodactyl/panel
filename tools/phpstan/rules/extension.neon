@@ -62,7 +62,6 @@ parameters:
             - app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
             - app/Console/Commands/User/DeleteUserCommand.php
             - app/Console/Commands/Node/NodeConfigurationCommand.php
-            - app/Console/Commands/Node/MakeNodeCommand.php
             - app/Helpers/Utilities.php
             - app/Traits/Helpers/AvailableLanguages.php
             - app/Http/Controllers/Api/Application/ApplicationApiController.php
