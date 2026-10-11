@@ -14,9 +14,11 @@ interface UpdatesScheduleTasks
      * Updates the task and, when its position changes, shifts the tasks between the
      * old and new positions to keep the sequence contiguous.
      *
-     * @param  TaskData  $data
+     * Validates the input itself, so it can come straight from any caller.
+     *
+     * @param  ActionInput  $input  action, payload, time_offset, and optionally sequence_id and continue_on_failure
      *
      * @throws Throwable
      */
-    public function update(Schedule $schedule, Task $task, array $data): Task;
+    public function update(Schedule $schedule, Task $task, array $input): Task;
 }

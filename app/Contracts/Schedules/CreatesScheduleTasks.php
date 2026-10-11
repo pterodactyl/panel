@@ -15,10 +15,12 @@ interface CreatesScheduleTasks
      * Appends a task to the schedule, or slots it into the requested position by
      * shifting the tasks that follow it.
      *
-     * @param  TaskData  $data
+     * Validates the input itself, so it can come straight from any caller.
+     *
+     * @param  ActionInput  $input  action, payload, time_offset, and optionally sequence_id and continue_on_failure
      *
      * @throws ServiceLimitExceededException
      * @throws Throwable
      */
-    public function create(Schedule $schedule, array $data): Task;
+    public function create(Schedule $schedule, array $input): Task;
 }

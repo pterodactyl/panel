@@ -46,6 +46,8 @@ parameters:
         JwtClaims: 'array<non-empty-string, JwtClaimValue>'
         ApiKeyCreationData: 'array{memo: string, user_id: int, allowed_ips?: list<string>}'
         ValidationData: 'array<string, JsonValue>'
+        # Input an action validates itself, from a request or from any other caller.
+        ActionInput: 'array<string, ApiValue9>'
         SoftwareVersionData: 'array{panel?: string, wings?: string, discord?: string, donations?: string}'
         ServerBuildModificationData: 'array{oom_disabled?: bool, memory?: int, swap?: int, io?: int, cpu?: int, threads?: string|null, disk?: int, allocation_id?: int, database_limit?: int|null, allocation_limit?: int|null, backup_limit?: int|null, add_allocations?: list<int>, remove_allocations?: list<int>}'
         ServerStartupModificationData: 'array{environment?: array<string, ApiScalar>, egg_id?: int, startup?: string, skip_scripts?: bool, docker_image?: string}'
@@ -100,9 +102,6 @@ parameters:
         SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'
         EggCreationData: 'array{name: string, description: string|null, docker_images: array<string, string>, force_outgoing_ip: bool, features: list<string>, startup: string, file_denylist?: list<string>, config_from?: int|null, config_stop?: string|null, config_startup?: string|null, config_logs?: string|null, config_files?: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         ServerTransferData: 'array{node_id: int, allocation_id: int, allocation_additional: list<int>}'
-        TaskData: 'array{action: string, payload: string, time_offset: int, sequence_id: int|null, continue_on_failure: bool}'
-        ScheduleCreationData: 'array{name: string, is_active: bool, minute: string, hour: string, day_of_month: string, month: string, day_of_week: string, only_when_online: bool}'
-        ScheduleUpdateData: 'array{name: string, is_active: bool, minute: string, hour: string, day_of_month: string, month: string, day_of_week: string, only_when_online: bool}'
         BackupCompletionData: 'array{successful: bool, checksum: string|null, checksum_type: string|null, size: int, parts: list<MultipartUploadPart>|null}'
         BackupUploadParts: 'array{parts: list<string>, part_size: int}'
         ServerDetailsModificationData: 'array{external_id: string|null, name: string, owner_id: int, description: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'

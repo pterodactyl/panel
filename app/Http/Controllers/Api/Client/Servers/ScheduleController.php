@@ -18,7 +18,6 @@ use Pterodactyl\Contracts\Schedules\ProcessesSchedules;
 use Pterodactyl\Contracts\Schedules\UpdatesSchedules;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
@@ -78,12 +77,7 @@ class ScheduleController extends ClientApiController
     #[ScribeResponse(self::CRON_ERROR, status: 400, description: 'The cron expression is invalid.')]
     public function store(StoreScheduleRequest $request, CreatesSchedules $schedules, Server $server): array
     {
-        $model = $schedules->create($server, $request->payload());
-
-        Activity::event('server:schedule.create')
-            ->subject($model)
-            ->property('name', $model->name)
-            ->log();
+        $model = $schedules->create($server, $request->actionInput());
 
         return Fractal::item($model)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -124,12 +118,7 @@ class ScheduleController extends ClientApiController
     #[ScribeResponse(self::CRON_ERROR, status: 400, description: 'The cron expression is invalid.')]
     public function update(UpdateScheduleRequest $request, UpdatesSchedules $schedules, Server $server, Schedule $schedule): array
     {
-        $schedule = $schedules->update($schedule, $request->payload());
-
-        Activity::event('server:schedule.update')
-            ->subject($schedule)
-            ->property(['name' => $schedule->name, 'active' => $schedule->is_active])
-            ->log();
+        $schedule = $schedules->update($schedule, $request->actionInput());
 
         return Fractal::item($schedule)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -148,8 +137,6 @@ class ScheduleController extends ClientApiController
     {
         $schedules->process($schedule, true);
 
-        Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();
-
         return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
     }
 
@@ -161,8 +148,6 @@ class ScheduleController extends ClientApiController
     public function delete(DeleteScheduleRequest $request, DeletesSchedules $schedules, Server $server, Schedule $schedule): JsonResponse
     {
         $schedules->delete($schedule);
-
-        Activity::event('server:schedule.delete')->subject($schedule)->property('name', $schedule->name)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

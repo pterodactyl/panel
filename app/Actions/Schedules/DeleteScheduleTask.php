@@ -6,6 +6,7 @@ namespace Pterodactyl\Actions\Schedules;
 
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Schedules\DeletesScheduleTasks;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Task;
 use Throwable;
@@ -29,5 +30,7 @@ final readonly class DeleteScheduleTask implements DeletesScheduleTasks
 
             $task->delete();
         });
+
+        Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
     }
 }

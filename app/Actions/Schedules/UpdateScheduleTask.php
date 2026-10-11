@@ -6,6 +6,8 @@ namespace Pterodactyl\Actions\Schedules;
 
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Schedules\UpdatesScheduleTasks;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Task;
 use Throwable;
@@ -16,17 +18,20 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
      * Updates the task and, when its position changes, shifts the tasks between the
      * old and new positions to keep the sequence contiguous.
      *
-     * @param  TaskData  $data
+     * @param  ActionInput  $input
      *
+     * @throws HttpForbiddenException
      * @throws Throwable
      */
-    public function update(Schedule $schedule, Task $task, array $data): Task
+    public function update(Schedule $schedule, Task $task, array $input): Task
     {
-        return DB::transaction(function () use ($schedule, $task, $data): Task {
+        $attributes = CreateScheduleTask::attributes($schedule, $input);
+
+        $task = DB::transaction(function () use ($schedule, $task, $attributes): Task {
             $schedule = $schedule->newQuery()->whereKey($schedule->getKey())->lockForUpdate()->firstOrFail();
             $task = $schedule->tasks()->whereKey($task->getKey())->firstOrFail();
 
-            $sequenceId = max(1, $data['sequence_id'] ?? $task->sequence_id);
+            $sequenceId = $attributes['sequence_id'] ?? $task->sequence_id;
 
             if ($sequenceId < $task->sequence_id) {
                 $schedule->tasks()
@@ -40,15 +45,16 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
                     ->decrement('sequence_id');
             }
 
-            $task->update([
-                'sequence_id' => $sequenceId,
-                'action' => $data['action'],
-                'payload' => $data['payload'],
-                'time_offset' => $data['time_offset'],
-                'continue_on_failure' => $data['continue_on_failure'],
-            ]);
+            $task->update([...$attributes, 'sequence_id' => $sequenceId]);
 
             return $task;
         });
+
+        Activity::event('server:task.update')
+            ->subject($schedule, $task)
+            ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
+            ->log();
+
+        return $task;
     }
 }

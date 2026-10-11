@@ -10,9 +10,11 @@ use Pterodactyl\Models\Schedule;
 interface UpdatesSchedules
 {
     /**
-     * @param  ScheduleUpdateData  $data
+     * Validates the input itself, so it can come straight from any caller.
+     *
+     * @param  ActionInput  $input  the same fields a schedule is created with
      *
      * @throws DisplayException
      */
-    public function update(Schedule $schedule, array $data): Schedule;
+    public function update(Schedule $schedule, array $input): Schedule;
 }

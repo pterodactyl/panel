@@ -4,54 +4,33 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Schedules;
 
-use Illuminate\Support\Arr;
 use Pterodactyl\Contracts\Schedules\UpdatesSchedules;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Helpers\Utilities;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Support\JsonValueGuard;
-use Throwable;
 
 final class UpdateSchedule implements UpdatesSchedules
 {
     /**
-     * @param  ScheduleUpdateData  $data
+     * @param  ActionInput  $input
      *
      * @throws DisplayException
      */
-    public function update(Schedule $schedule, array $data): Schedule
+    public function update(Schedule $schedule, array $input): Schedule
     {
-        $minute = JsonValueGuard::string(Arr::get($data, 'minute'));
-        $hour = JsonValueGuard::string(Arr::get($data, 'hour'));
-        $dayOfMonth = JsonValueGuard::string(Arr::get($data, 'day_of_month'));
-        $month = JsonValueGuard::string(Arr::get($data, 'month'));
-        $dayOfWeek = JsonValueGuard::string(Arr::get($data, 'day_of_week'));
+        $attributes = CreateSchedule::attributes($input);
 
-        try {
-            $nextRunAt = Utilities::getScheduleNextRunDate($minute, $hour, $dayOfMonth, $month, $dayOfWeek);
-        } catch (Throwable) {
-            throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
-        }
-
-        $active = JsonValueGuard::boolean(Arr::get($data, 'is_active'));
-
-        $attributes = [
-            'name' => JsonValueGuard::string(Arr::get($data, 'name')),
-            'cron_day_of_week' => $dayOfWeek,
-            'cron_month' => $month,
-            'cron_day_of_month' => $dayOfMonth,
-            'cron_hour' => $hour,
-            'cron_minute' => $minute,
-            'is_active' => $active,
-            'only_when_online' => JsonValueGuard::boolean(Arr::get($data, 'only_when_online')),
-            'next_run_at' => $nextRunAt,
-        ];
-
-        if ($schedule->is_active !== $active) {
+        // A schedule switched on or off is no longer mid-run.
+        if ($schedule->is_active !== $attributes['is_active']) {
             $attributes['is_processing'] = false;
         }
 
         $schedule->update($attributes);
+
+        Activity::event('server:schedule.update')
+            ->subject($schedule)
+            ->property(['name' => $schedule->name, 'active' => $schedule->is_active])
+            ->log();
 
         return $schedule;
     }
