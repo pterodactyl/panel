@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
@@ -44,7 +45,9 @@ test('reinstall server', function (): void {
     $response = $this->postJson(route('api.admin.servers.reinstall', ['server' => $server->id]));
     $response->assertStatus(Response::HTTP_ACCEPTED);
 
-    expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING);
+    expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING)
+        ->and($server->activity()->pluck('event')->all())->toBe(['server:reinstall'])
+        ->and(ActivityLog::query()->where('event', 'admin:server.reinstall')->exists())->toBeTrue();
     $fake->assertReinstalled();
 });
 test('a server that skips its install script cannot be reinstalled', function (): void {

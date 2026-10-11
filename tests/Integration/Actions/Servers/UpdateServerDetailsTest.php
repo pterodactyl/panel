@@ -103,6 +103,15 @@ test('an unchanged owner keeps sftp access', function (): void {
     Bus::assertNotDispatched(RevokeSftpAccessJob::class);
 });
 
+test('a rename made without the http api is logged on the server, and an unchanged description is not', function (): void {
+    $server = $this->createServerModel(['name' => 'Old Name', 'description' => 'Same.']);
+
+    $this->app->make(UpdatesServerDetails::class)->update($server, details($server, ['name' => 'New Name', 'description' => 'Same.']));
+
+    expect($this->assertActivityOn('server:settings.rename', $server)->properties->all())->toBe(['old' => 'Old Name', 'new' => 'New Name'])
+        ->and($server->activity()->where('event', 'server:settings.description')->exists())->toBeFalse();
+});
+
 test('extension values must come from a request that validated them', function (): void {
     $server = $this->createServerModel()->refresh();
     $before = $server->getAttributes();

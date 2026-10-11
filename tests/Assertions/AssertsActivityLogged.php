@@ -66,7 +66,11 @@ trait AssertsActivityLogged
         }
 
         Event::assertDispatched(ActivityLogged::class, function (ActivityLogged $e) use ($event, $subjects) {
-            Assert::assertEquals($event, $e->model->event);
+            // Other events the same request logged are skipped, not failed.
+            if (! $e->is($event)) {
+                return false;
+            }
+
             Assert::assertNotEmpty($e->model->subjects);
 
             foreach ($subjects as $subject) {
@@ -92,7 +96,9 @@ trait AssertsActivityLogged
     public function assertActivityActor(string $event, ?Model $actor = null): void
     {
         Event::assertDispatched(ActivityLogged::class, function (ActivityLogged $e) use ($event, $actor) {
-            Assert::assertEquals($event, $e->model->event);
+            if (! $e->is($event)) {
+                return false;
+            }
 
             if (is_null($actor)) {
                 Assert::assertNull($e->actor());

@@ -246,6 +246,7 @@ test('server can be reinstalled', function (): void {
     $server = $this->createServerModel();
     $this->postJson("/api/application/servers/{$server->id}/reinstall")->assertStatus(Response::HTTP_NO_CONTENT);
     expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING);
+    $this->assertActivityOn('server:reinstall', $server);
 });
 test('a server that skips its install script cannot be reinstalled', function (): void {
     $fake = new FakeDaemonServer;

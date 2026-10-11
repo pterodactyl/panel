@@ -235,6 +235,28 @@ test('startup values are coerced the way laravel validates them', function (int|
     expect($response->egg_id)->toBe($nextEgg->id)
         ->and($response->skip_scripts)->toBe($expected);
 })->with([[1, true], ['1', true], [0, false], ['0', false]]);
+test('variable and image changes made without the client api are logged on the server', function (): void {
+    $server = $this->createServerModel(['image' => 'old/image']);
+    $values = ['BUNGEE_VERSION' => '1234', 'SERVER_JARFILE' => 'server.jar'];
+    foreach ($server->variables as $variable) {
+        ServerVariable::query()->updateOrCreate(['server_id' => $server->id, 'variable_id' => $variable->id], ['variable_value' => $values[$variable->env_variable]]);
+    }
+
+    getService()->update($server, [
+        'egg_id' => $server->egg_id,
+        'startup' => $server->startup,
+        'skip_scripts' => false,
+        'docker_image' => 'new/image',
+        'environment' => [...$values, 'BUNGEE_VERSION' => '4321'],
+    ], User::USER_LEVEL_ADMIN);
+
+    expect($this->assertActivityOn('server:startup.edit', $server)->properties->all())->toBe(['variable' => 'BUNGEE_VERSION', 'old' => '1234', 'new' => '4321'])
+        ->and($this->assertActivityOn('server:startup.image', $server)->properties->all())->toBe(['old' => 'old/image', 'new' => 'new/image']);
+
+    getService()->update($server->fresh(), ['environment' => [...$values, 'BUNGEE_VERSION' => '4321']]);
+
+    expect($server->activity()->where('event', 'server:startup.edit')->count())->toBe(1);
+});
 test('environment values must be scalars', function (array $environment): void {
     $server = $this->createServerModel();
 

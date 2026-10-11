@@ -10,7 +10,6 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
@@ -76,7 +75,6 @@ class StartupController extends ClientApiController
 
         throw_unless($variable->user_editable, BadRequestHttpException::class, 'The environment variable you are trying to edit is read-only.');
 
-        $original = $variable->server_value;
         $value = JsonValueGuard::nullableScalarString($request->validated('value'));
 
         $variables->update($server, $variable->id, $value ?? '');
@@ -84,17 +82,6 @@ class StartupController extends ClientApiController
         $variable->server_value = $value;
 
         $startup = $startupCommand->handle($server);
-
-        if ($original !== $value) {
-            Activity::event('server:startup.edit')
-                ->subject($variable)
-                ->property([
-                    'variable' => $variable->env_variable,
-                    'old' => $original,
-                    'new' => $value,
-                ])
-                ->log();
-        }
 
         return Fractal::item($variable)
             ->transformWith($this->getTransformer(EggVariableTransformer::class))

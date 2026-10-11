@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Extensions\ExtensionFields;
@@ -66,8 +67,10 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
     {
         $attributes = self::attributes($input, $server);
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+        $name = $server->name;
+        $description = $server->description;
 
-        return DB::transaction(function () use ($server, $attributes, $extensions): Server {
+        $server = DB::transaction(function () use ($server, $attributes, $extensions): Server {
             $original = $server->user;
             $server->forceFill($attributes)->saveOrFail();
             $this->extensions->save($server, $extensions);
@@ -80,5 +83,21 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
 
             return $server->refresh();
         });
+
+        if ($name !== $server->name) {
+            Activity::event('server:settings.rename')
+                ->subject($server)
+                ->property(['old' => $name, 'new' => $server->name])
+                ->log();
+        }
+
+        if ($description !== $server->description) {
+            Activity::event('server:settings.description')
+                ->subject($server)
+                ->property(['old' => $description, 'new' => $server->description])
+                ->log();
+        }
+
+        return $server;
     }
 }

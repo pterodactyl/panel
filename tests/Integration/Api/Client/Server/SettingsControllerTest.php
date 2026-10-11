@@ -31,6 +31,8 @@ test('server name can be changed', function (array $permissions): void {
     $server = $server->refresh();
     expect($server->name)->toBe('Test Server Name');
     expect($server->description)->toBe('This is a test server.');
+    $this->assertActivityFor('server:settings.rename', $user, $server);
+    $this->assertActivityFor('server:settings.description', $user, $server);
 })->with('renamePermissionsDataProvider');
 test('renaming a server keeps its owner, external id and a description it is not sent', function (): void {
     [$user, $server] = $this->generateTestAccount();
@@ -71,6 +73,7 @@ test('server can be reinstalled', function (array $permissions): void {
     $fake->assertReinstalled();
     $server = $server->refresh();
     expect($server->status)->toBe(Server::STATUS_INSTALLING);
+    $this->assertActivityFor('server:reinstall', $user, $server);
 })->with('reinstallPermissionsDataProvider');
 test('a server that skips its install script cannot be reinstalled', function (array $permissions): void {
     [$user, $server] = $this->generateTestAccount($permissions);
@@ -98,6 +101,7 @@ test('docker image can be changed', function (): void {
     $target = end($images);
     $this->actingAs($user)->putJson("/api/client/servers/{$server->uuid}/settings/docker-image", ['docker_image' => $target])->assertStatus(Response::HTTP_NO_CONTENT);
     expect($server->refresh()->image)->toBe($target);
+    $this->assertActivityFor('server:startup.image', $user, $server);
 });
 test('docker image change goes through the contract', function (): void {
     [$user, $server] = $this->generateTestAccount();

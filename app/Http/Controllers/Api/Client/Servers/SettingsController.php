@@ -14,13 +14,11 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\ReinstallsServers;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
 use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Throwable;
 use UnexpectedValueException;
@@ -48,29 +46,14 @@ class SettingsController extends ClientApiController
     #[ScribeResponse(status: 204, description: 'Server renamed.')]
     public function rename(RenameServerRequest $request, UpdatesServerDetails $details, Server $server): JsonResponse
     {
-        $previousName = $server->name;
-        $previousDescription = $server->description;
-
         // The action replaces the owner, external ID and description too, so pass the
         // current values through; the name, and a description if sent, come from the request.
-        $server = $details->update($server, [
+        $details->update($server, [
             'external_id' => $server->external_id,
             'owner_id' => $server->owner_id,
             'description' => $server->description,
             ...$request->actionInput(),
         ]);
-
-        if ($previousName !== $server->name) {
-            Activity::event('server:settings.rename')
-                ->property(['old' => $previousName, 'new' => $server->name])
-                ->log();
-        }
-
-        if ($previousDescription !== $server->description) {
-            Activity::event('server:settings.description')
-                ->property(['old' => $previousDescription, 'new' => $server->description])
-                ->log();
-        }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -85,8 +68,6 @@ class SettingsController extends ClientApiController
     public function reinstall(ReinstallServerRequest $request, ReinstallsServers $reinstall, Server $server): JsonResponse
     {
         $reinstall->reinstall($server);
-
-        Activity::event('server:reinstall')->log();
 
         return new JsonResponse([], Response::HTTP_ACCEPTED);
     }
@@ -105,15 +86,7 @@ class SettingsController extends ClientApiController
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
         throw_unless(in_array($server->image, $egg->docker_images, true), BadRequestHttpException::class, "This server's Docker image has been manually set by an administrator and cannot be updated.");
 
-        $original = $server->image;
-        $image = JsonValueGuard::string($request->validated('docker_image'));
-        $server = $dockerImage->update($server, $image);
-
-        if ($original !== $server->image) {
-            Activity::event('server:startup.image')
-                ->property(['old' => $original, 'new' => $image])
-                ->log();
-        }
+        $dockerImage->update($server, $request->string('docker_image')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
