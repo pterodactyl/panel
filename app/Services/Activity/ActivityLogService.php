@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Activity;
 
-use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -173,29 +172,6 @@ class ActivityLogService
     public function clone(): self
     {
         return clone $this;
-    }
-
-    /**
-     * Executes the provided callback within the scope of a database transaction
-     * and will only save the activity log entry if everything else successfully
-     * settles.
-     *
-     * @template TReturn of object|ApiValue10
-     *
-     * @param  Closure($this): TReturn  $callback
-     * @return TReturn
-     *
-     * @throws Throwable
-     */
-    public function transaction(Closure $callback): array|bool|float|int|object|string|null
-    {
-        return DB::transaction(function () use ($callback) {
-            $response = $callback($this);
-
-            $this->save();
-
-            return $response;
-        });
     }
 
     /**
