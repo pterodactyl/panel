@@ -190,7 +190,11 @@ export const useTerminal = () => {
                 const term = new Terminal({ ...terminalProps, ...style, ghostty });
                 const fit = new FitAddon();
 
+                // Ghostty focuses its editable mount on open and its hidden textarea on tap, even with
+                // stdin disabled; without this every server page opens the on-screen keyboard on mobile.
+                mount.setAttribute('inputmode', 'none');
                 term.open(mount);
+                term.textarea?.setAttribute('inputmode', 'none');
                 term.loadAddon(fit);
                 fit.fit();
                 fit.observeResize();

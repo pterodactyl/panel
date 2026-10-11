@@ -39,10 +39,13 @@ vi.mock('ghostty-web', () => ({
                 this.renderedViewportY = viewportY;
             },
         };
+        textarea: HTMLTextAreaElement | undefined;
         constructor(public options: ITerminalOptions) {
             terminals.push(this);
         }
-        open() {}
+        open(element: HTMLElement) {
+            this.textarea = element.appendChild(document.createElement('textarea'));
+        }
         loadAddon() {}
         registerLinkProvider() {}
         attachCustomKeyEventHandler() {}
@@ -130,6 +133,15 @@ describe('useTerminal', () => {
         expect(theme.foreground).toBe('#cccccc');
         expect(theme.background).toBe('#1e2430');
         expect(Object.keys(theme)).toHaveLength(22);
+    });
+
+    it('keeps the on-screen keyboard closed when the read-only terminal takes focus', async () => {
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        expect(container.firstElementChild).toHaveAttribute('inputmode', 'none');
+        expect(container.querySelector('textarea')).toHaveAttribute('inputmode', 'none');
     });
 
     it('keeps a scrolled-up viewport on the same lines when new output arrives', async () => {
