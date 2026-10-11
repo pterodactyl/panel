@@ -1,0 +1,101 @@
+app/Http/Middleware/EnsureStatefulRequests.php
+  s_4cabae41bceed9::t_0be9ab43674e01 22
+app/Services/Daemon/DaemonConnection.php
+  s_4cabae41bceed9::t_1e21199b427fdc 13
+  s_4cabae41bceed9::t_0be9ab43674e01 34-35,41-42
+  s_4cabae41bceed9::t_35e4cd91c85333 36
+app/Models/ActivityLog.php
+  s_4cabae41bceed9::t_1e21199b427fdc 21
+  s_4cabae41bceed9::t_0be9ab43674e01 148
+app/Providers/AppServiceProvider.php
+  s_4cabae41bceed9::t_0be9ab43674e01 90,217-219
+  s_4cabae41bceed9::t_1e21199b427fdc 22
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_4cabae41bceed9::t_1e21199b427fdc 13
+  s_4cabae41bceed9::t_0be9ab43674e01 128
+app/Services/Extensions/ExtensionJobProgress.php
+  s_4cabae41bceed9::t_0be9ab43674e01 72
+app/Actions/Files/ReadFileContents.php
+  s_4cabae41bceed9::t_0be9ab43674e01 7,18
+app/Http/Middleware/VerifyReCaptcha.php
+  s_4cabae41bceed9::t_0be9ab43674e01 60
+app/Actions/Schedules/CreateScheduleTask.php
+  s_4cabae41bceed9::t_0be9ab43674e01 84
+  s_4cabae41bceed9::t_1e21199b427fdc 9
+app/Providers/ExtensionServiceProvider.php
+  s_4cabae41bceed9::t_0be9ab43674e01 63
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_0be9ab43674e01 46
+app/Models/Node.php
+  s_4cabae41bceed9::t_1830ba48991049 152-154,177
+app/Services/Extensions/ExtensionSettingFiles.php
+  s_4cabae41bceed9::t_4b88db664d0dec 169,185
+  s_4cabae41bceed9::t_3df9e74f69fd78 186-187
+  s_4cabae41bceed9::t_1e21199b427fdc 13
+app/Actions/Users/SetupTwoFactor.php
+  s_4cabae41bceed9::t_0be9ab43674e01 28,37
+app/Services/Extensions/ExtensionHeadTags.php
+  s_4cabae41bceed9::t_0be9ab43674e01 149
+app/Services/Extensions/ExtensionCompatibility.php
+  s_4cabae41bceed9::t_0be9ab43674e01 197-198
+app/Services/Nodes/NodeJWTService.php
+  s_4cabae41bceed9::t_1830ba48991049 95-97,101
+app/Actions/Backups/PresignBackupUpload.php
+  s_4cabae41bceed9::t_0be9ab43674e01 34
+app/Services/Extensions/ExtensionLock.php
+  s_4cabae41bceed9::t_0be9ab43674e01 43
+app/Extensions/Backups/BackupManager.php
+  s_4cabae41bceed9::t_1e21199b427fdc 9
+  s_4cabae41bceed9::t_0be9ab43674e01 91
+app/Http/Middleware/LanguageMiddleware.php
+  s_4cabae41bceed9::t_0be9ab43674e01 30
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_1e21199b427fdc 11
+  s_4cabae41bceed9::t_0be9ab43674e01 118-120
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_4cabae41bceed9::t_1e21199b427fdc 8
+  s_4cabae41bceed9::t_0be9ab43674e01 59-61,65,71,80,83-85,90
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_4cabae41bceed9::t_0be9ab43674e01 50
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_4cabae41bceed9::t_0be9ab43674e01 198
+app/Services/Extensions/ExtensionUrlDownloader.php
+  s_4cabae41bceed9::t_1830ba48991049 99-101,116-118,120
+  s_4cabae41bceed9::t_1e21199b427fdc 24
+app/Notifications/AccountCreated.php
+  s_4cabae41bceed9::t_0be9ab43674e01 42
+app/Console/Commands/InfoCommand.php
+  s_4cabae41bceed9::t_0be9ab43674e01 36,50
+app/Providers/HashidsServiceProvider.php
+  s_4cabae41bceed9::t_0be9ab43674e01 7,24,26
+app/Listeners/RevocationListener.php
+  s_4cabae41bceed9::t_0be9ab43674e01 30
+app/Extensions/Illuminate/Auth/Passwords/PasswordBrokerManager.php
+  s_4cabae41bceed9::t_0be9ab43674e01 28,33,36,38,40-41,48
+  s_4cabae41bceed9::t_1e21199b427fdc 9
+app/Actions/Eggs/CreateEgg.php
+  s_4cabae41bceed9::t_0be9ab43674e01 127
+app/Services/Themes/ThemeService.php
+  s_4cabae41bceed9::t_0be9ab43674e01 16
+app/Services/Helpers/SoftwareVersionService.php
+  s_4cabae41bceed9::t_0be9ab43674e01 70,90,92
+app/Actions/Users/ToggleTwoFactor.php
+  s_4cabae41bceed9::t_1e21199b427fdc 10
+  s_4cabae41bceed9::t_0be9ab43674e01 47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3855b3e300e15760d7d6af9235d2c49ed4a9290c",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
