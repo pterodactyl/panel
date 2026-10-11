@@ -26,7 +26,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\StoreAllocationRequest
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\UpdateAllocationRequest;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\AllocationTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -132,7 +131,7 @@ class AllocationController extends AdminApiController
     {
         $this->assertAllocationBelongsToNode($node, $allocation);
 
-        $allocation = $allocations->update($allocation, JsonValueGuard::nullableString($request->validated('alias')));
+        $allocation = $allocations->update($allocation, $request->filled('alias') ? $request->string('alias')->toString() : null);
 
         Activity::event('admin:node-allocation.alias')
             ->subject($allocation)

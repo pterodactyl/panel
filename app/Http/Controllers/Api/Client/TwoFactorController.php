@@ -19,7 +19,6 @@ use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 use Pterodactyl\Http\Requests\Api\Client\Account\DisableTwoFactorRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\EnableTwoFactorRequest;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Throwable;
 
@@ -95,10 +94,10 @@ class TwoFactorController extends ClientApiController
     public function store(EnableTwoFactorRequest $request, TogglesTwoFactor $twoFactor): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        $password = JsonValueGuard::string($request->validated('password'));
+        $password = $request->string('password')->toString();
         throw_unless(Hash::check($password, $user->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
 
-        $code = JsonValueGuard::string($request->validated('code'));
+        $code = $request->string('code')->toString();
 
         $tokens = $twoFactor->toggle($user, $code, true);
 
@@ -123,7 +122,7 @@ class TwoFactorController extends ClientApiController
     public function delete(DisableTwoFactorRequest $request, DisablesTwoFactor $twoFactor): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        $password = JsonValueGuard::string($request->validated('password'));
+        $password = $request->string('password')->toString();
         throw_unless(Hash::check($password, $user->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
 
         $twoFactor->disable($user);

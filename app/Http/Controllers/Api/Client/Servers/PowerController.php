@@ -13,7 +13,6 @@ use Pterodactyl\Contracts\Servers\SendsServerPower;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Overview', 'Inspect and control an accessible server.')]
@@ -26,7 +25,7 @@ class PowerController extends ClientApiController
     #[ScribeResponse(status: 204, description: 'Power signal accepted by Wings.')]
     public function index(SendPowerRequest $request, SendsServerPower $power, Server $server): Response
     {
-        $signal = JsonValueGuard::string($request->validated('signal'));
+        $signal = $request->string('signal')->toString();
         $power->send($server, $signal);
 
         return $this->returnNoContent();

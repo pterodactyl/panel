@@ -14,7 +14,6 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerLogsRequest;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Overview', 'Inspect and control an accessible server.')]
@@ -53,7 +52,7 @@ class LogController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not read the console output.')]
     public function __invoke(GetServerLogsRequest $request, ReadsServerLogs $logs, Server $server): array
     {
-        $lines = JsonValueGuard::integer($request->validated('lines') ?? ReadsServerLogs::MAX_LINES);
+        $lines = $request->integer('lines', ReadsServerLogs::MAX_LINES);
 
         return [
             'object' => 'server_logs',

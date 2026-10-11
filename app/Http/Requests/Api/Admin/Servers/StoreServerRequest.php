@@ -15,7 +15,6 @@ use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 
 class StoreServerRequest extends AdminApiRequest
 {
@@ -119,8 +118,8 @@ class StoreServerRequest extends AdminApiRequest
 
         $object = new DeploymentObject;
         $object->setDedicated($this->boolean('deploy.dedicated_ip'));
-        $object->setLocations(JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->input('deploy.locations', []))));
-        $object->setPorts(JsonValueGuard::stringList($this->input('deploy.port_range', [])));
+        $object->setLocations(array_map(fn (int|string $index): int => $this->integer("deploy.locations.{$index}"), array_keys($this->array('deploy.locations'))));
+        $object->setPorts(array_map(fn (int|string $index): string => $this->string("deploy.port_range.{$index}")->toString(), array_keys($this->array('deploy.port_range'))));
         $object->setTags($this->resolveDeployTagSlugs());
 
         return $object;

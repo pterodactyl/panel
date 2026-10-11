@@ -24,7 +24,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationReq
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -73,7 +72,7 @@ class NetworkAllocationController extends ClientApiController
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocation notes updated.', factoryStates: ['withServer'], resourceKey: 'allocation')]
     public function update(UpdateAllocationRequest $request, UpdatesAllocationNotes $notes, Server $server, Allocation $allocation): array
     {
-        $allocation = $notes->update($allocation, JsonValueGuard::nullableString($request->validated('notes')));
+        $allocation = $notes->update($allocation, $request->filled('notes') ? $request->string('notes')->toString() : null);
 
         return Fractal::item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))

@@ -17,7 +17,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRe
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use UnexpectedValueException;
@@ -75,7 +74,7 @@ class StartupController extends ClientApiController
 
         throw_unless($variable->user_editable, BadRequestHttpException::class, 'The environment variable you are trying to edit is read-only.');
 
-        $value = JsonValueGuard::nullableScalarString($request->validated('value'));
+        $value = $request->filled('value') ? $request->string('value')->toString() : null;
 
         $variables->update($server, $variable->id, $value ?? '');
 

@@ -19,7 +19,6 @@ use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Throwable;
 
@@ -69,7 +68,7 @@ class AccountController extends ClientApiController
     #[ScribeResponse(self::THROTTLED_ERROR, status: 429, description: 'The account has changed email too many times in the current throttle window.')]
     public function updateEmail(UpdateEmailRequest $request, UpdatesUserEmails $emails): JsonResponse
     {
-        $emails->update($request->user(), JsonValueGuard::string($request->validated('email')));
+        $emails->update($request->user(), $request->string('email')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -87,7 +86,7 @@ class AccountController extends ClientApiController
     #[ScribeResponse(self::INVALID_PASSWORD_ERROR, status: 400, description: 'The current password is invalid.')]
     public function updatePassword(UpdatePasswordRequest $request, UpdatesUserPasswords $passwords): JsonResponse
     {
-        $passwords->update($request->user(), JsonValueGuard::string($request->validated('password')));
+        $passwords->update($request->user(), $request->string('password')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

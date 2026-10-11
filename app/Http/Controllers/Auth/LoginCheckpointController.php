@@ -92,7 +92,7 @@ class LoginCheckpointController extends AbstractLoginController
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
         }
 
-        if (! $checkpoint->matches(JsonValueGuard::nullableString($request->validated('confirmation_token')) ?? '')) {
+        if (! $checkpoint->matches($request->string('confirmation_token')->toString())) {
             $this->sendFailedLoginResponse($request);
         }
 
@@ -104,7 +104,7 @@ class LoginCheckpointController extends AbstractLoginController
 
         // Recovery tokens go through a slightly different pathway for usage.
         if (($recoveryToken = $request->validated('recovery_token')) !== null) {
-            if ($this->isValidRecoveryToken($user, JsonValueGuard::string($recoveryToken))) {
+            if ($this->isValidRecoveryToken($user, $request->string('recovery_token')->toString())) {
                 Event::dispatch(new ProvidedAuthenticationToken($user, true));
 
                 return $this->sendLoginResponse($logins->establish($user), $request);
@@ -123,7 +123,7 @@ class LoginCheckpointController extends AbstractLoginController
 
             $verified = $google2FA->verifyKeyNewer(
                 $decrypted,
-                JsonValueGuard::nullableString($request->validated('authentication_code')) ?? '',
+                $request->string('authentication_code')->toString(),
                 $oldTimestamp,
                 Fluent::make(config()->array('pterodactyl.auth.2fa'))->integer('window', 1)
             );

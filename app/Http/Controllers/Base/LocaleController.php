@@ -26,8 +26,8 @@ class LocaleController extends Controller
      */
     public function __invoke(LocaleRequest $request): JsonResponse
     {
-        $locale = JsonValueGuard::string($request->validated('locale'));
-        $namespace = JsonValueGuard::string($request->validated('namespace'));
+        $locale = $request->string('locale')->toString();
+        $namespace = $request->string('namespace')->toString();
         $segments = explode('::', $namespace, 2);
         $translations = count($segments) === 2
             ? $this->loader->load($locale, $segments[1], $segments[0])
