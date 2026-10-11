@@ -49,10 +49,11 @@ class AdminAcl
 
     /**
      * Determine if an API key has permission to perform a specific read/write operation.
+     * Asking for no action is denied, so a request that never set one fails closed.
      */
     public static function can(int $permission, int $action = self::READ): bool
     {
-        return ($permission & $action) === $action;
+        return $action !== self::NONE && ($permission & $action) === $action;
     }
 
     /**
