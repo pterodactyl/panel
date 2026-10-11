@@ -2521,12 +2521,15 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             ],
         ];
 
+        // Mirrors ApiErrorResponse::validation(), which names the offending field and the
+        // rule that rejected it under meta. Optional because a 422 can also come from a
+        // non-validation exception (e.g. InvalidExtensionException) that carries no meta.
         if ($validation) {
-            $error['properties']['source'] = [
+            $error['properties']['meta'] = [
                 'type' => 'object',
-                'required' => ['field'],
                 'properties' => [
-                    'field' => ['type' => 'string'],
+                    'source_field' => ['type' => 'string', 'example' => 'email'],
+                    'rule' => ['type' => 'string', 'example' => 'required'],
                 ],
             ];
         }

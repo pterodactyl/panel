@@ -10,6 +10,7 @@ use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Support\JsonValueGuard;
 
+#[ResponseField('description', nullable: true)]
 #[ResponseField('mounted', 'boolean', 'Present only when listed in the context of a server.', required: false, nullable: true)]
 class MountTransformer extends BaseAdminTransformer
 {

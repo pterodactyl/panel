@@ -109,6 +109,22 @@ export const adminGetExtensionSettings = <ThrowOnError extends boolean = true>(o
 });
 
 /**
+ * Update extension settings
+ *
+ * Validates against each field's type and the extension's declared rules and persists the submitted values. Omitted fields keep their stored values, as do secrets submitted empty or as their mask.
+ */
+export const adminUpdateExtensionSettings = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateExtensionSettingsData, ThrowOnError>): RequestResult<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError> => (options.client ?? client).patch<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/extensions/{extension}/settings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Get extension icon
  *
  * Returns the PNG, JPEG or WebP image an extension declares as its "icon". Extensions with a lucide icon name or no icon return not found.
@@ -118,22 +134,6 @@ export const adminGetExtensionIcon = <ThrowOnError extends boolean = true>(optio
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/extensions/{extension}/icon',
     ...options
-});
-
-/**
- * Update extension settings
- *
- * Validates against each field's type and the extension's declared rules and persists the submitted values. Omitted fields keep their stored values, as do secrets submitted empty or as their mask.
- */
-export const adminUpdateExtensionSettings = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateExtensionSettingsData, ThrowOnError>): RequestResult<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError> => (options.client ?? client).patch<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/extensions/{extension_id}/settings',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -264,6 +264,22 @@ export const adminGetUser = <ThrowOnError extends boolean = true>(options: Optio
 });
 
 /**
+ * Update user
+ *
+ * Updates an existing panel user. Supplying a password changes the user password.
+ */
+export const adminUpdateUser = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/users/{user_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Disable user two-factor authentication
  *
  * Clears the configured TOTP secret and disables two-factor authentication for a user.
@@ -272,22 +288,6 @@ export const adminDisableUserTwoFactorAuthentication = <ThrowOnError extends boo
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/users/{user_id}/disable-2fa',
     ...options
-});
-
-/**
- * Update user
- *
- * Updates an existing panel user. Supplying a password changes the user password.
- */
-export const adminUpdateUser = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/users/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -700,6 +700,22 @@ export const adminGetNode = <ThrowOnError extends boolean = true>(options: Optio
 });
 
 /**
+ * Update node
+ *
+ * Updates a Wings node and optionally rotates its daemon secret.
+ */
+export const adminUpdateNode = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateNodeData, ThrowOnError>): RequestResult<AdminUpdateNodeResponses, AdminUpdateNodeErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateNodeResponses, AdminUpdateNodeErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/nodes/{node_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Get node configuration
  *
  * Returns the raw Wings configuration payload for a node, including daemon authentication tokens.
@@ -709,22 +725,6 @@ export const adminGetNodeConfiguration = <ThrowOnError extends boolean = true>(o
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/nodes/{node_id}/configuration',
     ...options
-});
-
-/**
- * Update node
- *
- * Updates a Wings node and optionally rotates its daemon secret.
- */
-export const adminUpdateNode = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateNodeData, ThrowOnError>): RequestResult<AdminUpdateNodeResponses, AdminUpdateNodeErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateNodeResponses, AdminUpdateNodeErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/nodes/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -841,22 +841,6 @@ export const adminDeleteNodeAllocationIpBlock = <ThrowOnError extends boolean = 
 });
 
 /**
- * Update node allocation
- *
- * Updates the alias for a single allocation on a node.
- */
-export const adminUpdateNodeAllocation = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateNodeAllocationData, ThrowOnError>): RequestResult<AdminUpdateNodeAllocationResponses, AdminUpdateNodeAllocationErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateNodeAllocationResponses, AdminUpdateNodeAllocationErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/nodes/{node_id}/allocations/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
  * Delete node allocation
  *
  * Deletes a single unassigned allocation from a node.
@@ -865,6 +849,22 @@ export const adminDeleteNodeAllocation = <ThrowOnError extends boolean = true>(o
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}',
     ...options
+});
+
+/**
+ * Update node allocation
+ *
+ * Updates the alias for a single allocation on a node.
+ */
+export const adminUpdateNodeAllocation = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateNodeAllocationData, ThrowOnError>): RequestResult<AdminUpdateNodeAllocationResponses, AdminUpdateNodeAllocationErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateNodeAllocationResponses, AdminUpdateNodeAllocationErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
@@ -919,6 +919,22 @@ export const adminGetLocation = <ThrowOnError extends boolean = true>(options: O
 });
 
 /**
+ * Update location
+ *
+ * Updates a location short identifier and description.
+ */
+export const adminUpdateLocation = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateLocationData, ThrowOnError>): RequestResult<AdminUpdateLocationResponses, AdminUpdateLocationErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateLocationResponses, AdminUpdateLocationErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/locations/{location_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * List eligible location nodes
  *
  * Returns nodes assigned to a location that can be selected for location-scoped workflows.
@@ -928,22 +944,6 @@ export const adminListEligibleLocationNodes = <ThrowOnError extends boolean = tr
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/locations/{location_id}/eligible-nodes',
     ...options
-});
-
-/**
- * Update location
- *
- * Updates a location short identifier and description.
- */
-export const adminUpdateLocation = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateLocationData, ThrowOnError>): RequestResult<AdminUpdateLocationResponses, AdminUpdateLocationErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateLocationResponses, AdminUpdateLocationErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/locations/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -1005,7 +1005,7 @@ export const adminGetMount = <ThrowOnError extends boolean = true>(options: Opti
 export const adminUpdateMount = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateMountData, ThrowOnError>): RequestResult<AdminUpdateMountResponses, AdminUpdateMountErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateMountResponses, AdminUpdateMountErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/mounts/{id}',
+    url: '/api/admin/mounts/{mount_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1151,22 +1151,6 @@ export const adminReorderEggVariables = <ThrowOnError extends boolean = true>(op
 });
 
 /**
- * Update egg variable
- *
- * Updates a startup variable for an egg.
- */
-export const adminUpdateEggVariable = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateEggVariableData, ThrowOnError>): RequestResult<AdminUpdateEggVariableResponses, AdminUpdateEggVariableErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateEggVariableResponses, AdminUpdateEggVariableErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/eggs/{egg_id}/variables/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
  * Delete egg variable
  *
  * Deletes a startup variable from an egg.
@@ -1175,6 +1159,22 @@ export const adminDeleteEggVariable = <ThrowOnError extends boolean = true>(opti
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/eggs/{egg_id}/variables/{variable_id}',
     ...options
+});
+
+/**
+ * Update egg variable
+ *
+ * Updates a startup variable for an egg.
+ */
+export const adminUpdateEggVariable = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateEggVariableData, ThrowOnError>): RequestResult<AdminUpdateEggVariableResponses, AdminUpdateEggVariableErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateEggVariableResponses, AdminUpdateEggVariableErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
@@ -1326,7 +1326,7 @@ export const adminGetEgg = <ThrowOnError extends boolean = true>(options: Option
 export const adminUpdateEgg = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateEggData, ThrowOnError>): RequestResult<AdminUpdateEggResponses, AdminUpdateEggErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateEggResponses, AdminUpdateEggErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/eggs/{id}',
+    url: '/api/admin/eggs/{egg_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1393,7 +1393,7 @@ export const adminGetTag = <ThrowOnError extends boolean = true>(options: Option
 export const adminUpdateTag = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateTagData, ThrowOnError>): RequestResult<AdminUpdateTagResponses, AdminUpdateTagErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateTagResponses, AdminUpdateTagErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/tags/{id}',
+    url: '/api/admin/tags/{tag_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1770,6 +1770,22 @@ export const applicationGetNode = <ThrowOnError extends boolean = true>(options:
 });
 
 /**
+ * Update node
+ *
+ * Updates an existing Wings node by internal numeric ID.
+ */
+export const applicationUpdateNode = <ThrowOnError extends boolean = true>(options: Options<ApplicationUpdateNodeData, ThrowOnError>): RequestResult<ApplicationUpdateNodeResponses, ApplicationUpdateNodeErrors, ThrowOnError> => (options.client ?? client).patch<ApplicationUpdateNodeResponses, ApplicationUpdateNodeErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/application/nodes/{node_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Get node configuration
  *
  * Returns the Wings configuration payload for a node, including node authentication tokens. Requires write access to nodes.
@@ -1779,22 +1795,6 @@ export const applicationGetNodeConfiguration = <ThrowOnError extends boolean = t
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/application/nodes/{node_id}/configuration',
     ...options
-});
-
-/**
- * Update node
- *
- * Updates an existing Wings node by internal numeric ID.
- */
-export const applicationUpdateNode = <ThrowOnError extends boolean = true>(options: Options<ApplicationUpdateNodeData, ThrowOnError>): RequestResult<ApplicationUpdateNodeResponses, ApplicationUpdateNodeErrors, ThrowOnError> => (options.client ?? client).patch<ApplicationUpdateNodeResponses, ApplicationUpdateNodeErrors, ThrowOnError>({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/application/nodes/{id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -3032,23 +3032,23 @@ export const clientCreateServerSubuser = <ThrowOnError extends boolean = true>(o
 });
 
 /**
+ * Delete server subuser
+ *
+ * Removes a subuser assignment from the server and revokes SFTP access tokens.
+ */
+export const clientDeleteServerSubuser = <ThrowOnError extends boolean = true>(options: Options<ClientDeleteServerSubuserData, ThrowOnError>): RequestResult<ClientDeleteServerSubuserResponses, ClientDeleteServerSubuserErrors, ThrowOnError> => (options.client ?? client).delete<ClientDeleteServerSubuserResponses, ClientDeleteServerSubuserErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/client/servers/{server_uuid}/users/{user}',
+    ...options
+});
+
+/**
  * Get server subuser
  *
  * Returns one subuser assignment for the server.
  */
 export const clientGetServerSubuser = <ThrowOnError extends boolean = true>(options: Options<ClientGetServerSubuserData, ThrowOnError>): RequestResult<ClientGetServerSubuserResponses, ClientGetServerSubuserErrors, ThrowOnError> => (options.client ?? client).get<ClientGetServerSubuserResponses, ClientGetServerSubuserErrors, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/client/servers/{server}/users/{user}',
-    ...options
-});
-
-/**
- * Delete server subuser
- *
- * Removes a subuser assignment from the server and revokes SFTP access tokens.
- */
-export const clientDeleteServerSubuser = <ThrowOnError extends boolean = true>(options: Options<ClientDeleteServerSubuserData, ThrowOnError>): RequestResult<ClientDeleteServerSubuserResponses, ClientDeleteServerSubuserErrors, ThrowOnError> => (options.client ?? client).delete<ClientDeleteServerSubuserResponses, ClientDeleteServerSubuserErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/client/servers/{server_uuid}/users/{user}',
     ...options

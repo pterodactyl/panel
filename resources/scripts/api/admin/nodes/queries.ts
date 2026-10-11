@@ -175,7 +175,7 @@ export const updateAdminNodeInput = (
     values: NodeValues,
     resetSecret = false
 ): Options<AdminUpdateNodeData> => ({
-    path: { id },
+    path: { node_id: id },
     body: nodeValuesToUpdateBody(values, resetSecret),
 });
 
@@ -205,7 +205,7 @@ export const updateAdminNodeAllocationAliasInput = (
     allocationId: number,
     alias: string
 ): Options<AdminUpdateNodeAllocationData> => ({
-    path: { node_id: nodeId, id: allocationId },
+    path: { node_id: nodeId, allocation_id: allocationId },
     body: { alias },
 });
 
@@ -390,9 +390,9 @@ export const useUpdateAdminNode = () => {
         onSuccess: async (node, variables) => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListNodes']),
-                queryClient.invalidateQueries({ queryKey: adminNodeDetailKey(variables.path.id) }),
+                queryClient.invalidateQueries({ queryKey: adminNodeDetailKey(variables.path.node_id) }),
                 queryClient.invalidateQueries({
-                    queryKey: adminGetNodeConfigurationQueryKey({ path: { node_id: variables.path.id } }),
+                    queryKey: adminGetNodeConfigurationQueryKey({ path: { node_id: variables.path.node_id } }),
                 }),
             ]);
             const messages = resourceMutationMessages('node', 'update', node.attributes.name);

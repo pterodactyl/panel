@@ -35,7 +35,7 @@ export type AdminTagsQueryParams = QueryBuilderParams<TagFilters, TagSorts>;
 export const createAdminTagInput = (values: AdminTagValues): Options<AdminCreateTagData> => ({ body: values });
 
 export const updateAdminTagInput = (id: number, values: AdminTagValues): Options<AdminUpdateTagData> => ({
-    path: { id },
+    path: { tag_id: id },
     body: values,
 });
 

@@ -95,7 +95,7 @@ describe('NodeAllocationTab', () => {
         expect(state.updateAlias).toHaveBeenCalledOnce();
         const [variables, options] = state.updateAlias.mock.calls[0]!;
 
-        expect(variables).toEqual({ path: { node_id: 7, id: 1 }, body: { alias: 'lobby' } });
+        expect(variables).toEqual({ path: { node_id: 7, allocation_id: 1 }, body: { alias: 'lobby' } });
 
         page = allocationPage([allocation(1, 25565, 'lobby-1'), allocation(2, 25566, 'proxy')]);
         rerender(<NodeAllocationTab />);

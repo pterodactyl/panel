@@ -2,7 +2,7 @@
 // Do not edit this directory by hand; run npm run api:generate instead.
 
 export type ClientOptions = {
-    baseURL: 'http://localhost' | (string & {});
+    baseURL: 'https://panel.test' | (string & {});
 };
 
 export type AdminActivityLogAttributes = {
@@ -13,7 +13,7 @@ export type AdminActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number   | boolean | Array<string> | {
+        [key: string]: string | number | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -368,7 +368,7 @@ export type AdminMountAttributes = {
     id: number;
     uuid: string;
     name: string;
-    description: string;
+    description: string | null;
     source: string;
     target: string;
     read_only: boolean;
@@ -1109,7 +1109,7 @@ export type ClientActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number   | boolean | Array<string> | {
+        [key: string]: string | number | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -1554,8 +1554,9 @@ export type ValidationErrorEnvelope = {
         code: string;
         status: string;
         detail: string;
-        source?: {
-            field: string;
+        meta?: {
+            source_field?: string;
+            rule?: string;
         };
     }>;
 };
@@ -3685,6 +3686,13 @@ export type AdminGetExtensionSettingsResponseBody = {
     };
 };
 
+export type AdminUpdateExtensionSettingsResponseBody = {
+    data: {
+        registered: boolean;
+        schema: Array<AdminExtensionSettingField>;
+    };
+};
+
 /**
  * Icon image bytes.
  */
@@ -3699,13 +3707,6 @@ export type AdminGetExtensionIcon200ImageJpegResponseBody = Blob | File;
  * Icon image bytes.
  */
 export type AdminGetExtensionIcon200ImageWebpResponseBody = Blob | File;
-
-export type AdminUpdateExtensionSettingsResponseBody = {
-    data: {
-        registered: boolean;
-        schema: Array<AdminExtensionSettingField>;
-    };
-};
 
 export type AdminUploadExtensionSettingFileResponseBody = {
     data: {
@@ -3977,8 +3978,6 @@ export type AdminGetExtensionSettingsExtensionPathParameter = string;
 
 export type AdminGetExtensionIconExtensionPathParameter = string;
 
-export type AdminUpdateExtensionSettingsExtensionIdPathParameter = string;
-
 export type AdminUploadExtensionSettingFileExtensionPathParameter = string;
 
 export type AdminUploadExtensionSettingFileInputPathParameter = string;
@@ -4039,8 +4038,6 @@ export type AdminGetUserIncludeQueryParameter = string;
 export type AdminGetUserUserIdPathParameter = number;
 
 export type AdminDisableUserTwoFactorAuthenticationUserIdPathParameter = number;
-
-export type AdminUpdateUserIdPathParameter = number;
 
 export type AdminGetNodeSystemInformationNodeIdPathParameter = number;
 
@@ -4233,8 +4230,6 @@ export type AdminGetNodeNodeIdPathParameter = number;
 
 export type AdminGetNodeConfigurationNodeIdPathParameter = number;
 
-export type AdminUpdateNodeIdPathParameter = number;
-
 export type AdminSyncNodeGameTagsNodeIdPathParameter = number;
 
 export type AdminSyncNodeDeploymentTagsNodeIdPathParameter = number;
@@ -4309,11 +4304,7 @@ export type AdminDeleteNodeAllocationIpBlockNodeIdPathParameter = number;
 
 export type AdminUpdateNodeAllocationNodeIdPathParameter = number;
 
-export type AdminUpdateNodeAllocationIdPathParameter = number;
-
-export type AdminDeleteNodeAllocationNodeIdPathParameter = number;
-
-export type AdminDeleteNodeAllocationAllocationIdPathParameter = number;
+export type AdminUpdateNodeAllocationAllocationIdPathParameter = number;
 
 /**
  * Filter locations by short identifier.
@@ -4349,8 +4340,6 @@ export type AdminGetLocationLocationIdPathParameter = number;
 
 export type AdminListEligibleLocationNodesLocationIdPathParameter = number;
 
-export type AdminUpdateLocationIdPathParameter = number;
-
 /**
  * Filter mounts by name.
  */
@@ -4382,8 +4371,6 @@ export type AdminListMountsIncludeQueryParameter = 'eggs' | 'nodes' | 'servers' 
 export type AdminGetMountIncludeQueryParameter = 'eggs' | 'nodes' | 'servers' | 'eggs,nodes' | 'eggs,nodes,servers';
 
 export type AdminGetMountMountIdPathParameter = number;
-
-export type AdminUpdateMountIdPathParameter = number;
 
 /**
  * Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".
@@ -4418,11 +4405,7 @@ export type AdminReorderEggVariablesEggIdPathParameter = number;
 
 export type AdminUpdateEggVariableEggIdPathParameter = number;
 
-export type AdminUpdateEggVariableIdPathParameter = number;
-
-export type AdminDeleteEggVariableEggIdPathParameter = number;
-
-export type AdminDeleteEggVariableVariableIdPathParameter = number;
+export type AdminUpdateEggVariableVariableIdPathParameter = number;
 
 export type AdminGetEggInstallScriptEggIdPathParameter = number;
 
@@ -4464,8 +4447,6 @@ export type AdminGetEggIncludeQueryParameter = 'variables' | 'tags' | 'servers' 
 
 export type AdminGetEggEggIdPathParameter = number;
 
-export type AdminUpdateEggIdPathParameter = number;
-
 /**
  * Filter tags by name.
  */
@@ -4502,8 +4483,6 @@ export type AdminListTagsIncludeQueryParameter = 'eggs' | 'nodes' | 'eggs,nodes'
 export type AdminGetTagIncludeQueryParameter = 'eggs' | 'nodes' | 'eggs,nodes';
 
 export type AdminGetTagTagIdPathParameter = number;
-
-export type AdminUpdateTagIdPathParameter = number;
 
 /**
  * Page number to retrieve.
@@ -4693,8 +4672,6 @@ export type ApplicationGetNodeIncludeQueryParameter = 'allocations' | 'location'
 export type ApplicationGetNodeNodeIdPathParameter = number;
 
 export type ApplicationGetNodeConfigurationNodeIdPathParameter = number;
-
-export type ApplicationUpdateNodeIdPathParameter = number;
 
 /**
  * Number of allocations to return per page, up to 100.
@@ -5189,13 +5166,9 @@ export type ClientSetPrimaryAllocationAllocationIdPathParameter = number;
 
 export type ClientListServerSubusersServerUuidPathParameter = string;
 
-export type ClientGetServerSubuserServerPathParameter = string;
+export type ClientGetServerSubuserServerUuidPathParameter = string;
 
 export type ClientGetServerSubuserUserPathParameter = string;
-
-export type ClientUpdateServerSubuserServerUuidPathParameter = string;
-
-export type ClientUpdateServerSubuserUserPathParameter = string;
 
 /**
  * The page number to return.
@@ -5496,6 +5469,48 @@ export type AdminGetExtensionSettingsResponses = {
 
 export type AdminGetExtensionSettingsResponse = AdminGetExtensionSettingsResponses[keyof AdminGetExtensionSettingsResponses];
 
+export type AdminUpdateExtensionSettingsData = {
+    body: AdminUpdateExtensionSettingsRequest;
+    path: {
+        /**
+         * The extension identifier.
+         */
+        extension: AdminGetExtensionSettingsExtensionPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/extensions/{extension}/settings';
+};
+
+export type AdminUpdateExtensionSettingsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateExtensionSettingsError = AdminUpdateExtensionSettingsErrors[keyof AdminUpdateExtensionSettingsErrors];
+
+export type AdminUpdateExtensionSettingsResponses = {
+    /**
+     * Settings updated; fresh schema returned.
+     */
+    200: AdminUpdateExtensionSettingsResponseBody;
+};
+
+export type AdminUpdateExtensionSettingsResponse = AdminUpdateExtensionSettingsResponses[keyof AdminUpdateExtensionSettingsResponses];
+
 export type AdminGetExtensionIconData = {
     body?: never;
     path: {
@@ -5533,48 +5548,6 @@ export type AdminGetExtensionIconResponses = {
 };
 
 export type AdminGetExtensionIconResponse = AdminGetExtensionIconResponses[keyof AdminGetExtensionIconResponses];
-
-export type AdminUpdateExtensionSettingsData = {
-    body: AdminUpdateExtensionSettingsRequest;
-    path: {
-        /**
-         * The ID of the extension.
-         */
-        extension_id: AdminUpdateExtensionSettingsExtensionIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/extensions/{extension_id}/settings';
-};
-
-export type AdminUpdateExtensionSettingsErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type AdminUpdateExtensionSettingsError = AdminUpdateExtensionSettingsErrors[keyof AdminUpdateExtensionSettingsErrors];
-
-export type AdminUpdateExtensionSettingsResponses = {
-    /**
-     * Settings updated; fresh schema returned.
-     */
-    200: AdminUpdateExtensionSettingsResponseBody;
-};
-
-export type AdminUpdateExtensionSettingsResponse = AdminUpdateExtensionSettingsResponses[keyof AdminUpdateExtensionSettingsResponses];
 
 export type AdminClearExtensionSettingFileData = {
     body?: never;
@@ -5996,6 +5969,48 @@ export type AdminGetUserResponses = {
 
 export type AdminGetUserResponse = AdminGetUserResponses[keyof AdminGetUserResponses];
 
+export type AdminUpdateUserData = {
+    body: AdminUpdateUserRequest;
+    path: {
+        /**
+         * The user ID.
+         */
+        user_id: AdminGetUserUserIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}';
+};
+
+export type AdminUpdateUserErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
+
+export type AdminUpdateUserResponses = {
+    /**
+     * User updated.
+     */
+    200: AdminUserResource;
+};
+
+export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
+
 export type AdminDisableUserTwoFactorAuthenticationData = {
     body?: never;
     path: {
@@ -6033,48 +6048,6 @@ export type AdminDisableUserTwoFactorAuthenticationResponses = {
 };
 
 export type AdminDisableUserTwoFactorAuthenticationResponse = AdminDisableUserTwoFactorAuthenticationResponses[keyof AdminDisableUserTwoFactorAuthenticationResponses];
-
-export type AdminUpdateUserData = {
-    body: AdminUpdateUserRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateUserIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/users/{id}';
-};
-
-export type AdminUpdateUserErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
-
-export type AdminUpdateUserResponses = {
-    /**
-     * User updated.
-     */
-    200: AdminUserResource;
-};
-
-export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
 
 export type AdminGetNodeSystemInformationData = {
     body?: never;
@@ -7445,6 +7418,48 @@ export type AdminGetNodeResponses = {
 
 export type AdminGetNodeResponse = AdminGetNodeResponses[keyof AdminGetNodeResponses];
 
+export type AdminUpdateNodeData = {
+    body: AdminUpdateNodeRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: AdminGetNodeNodeIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/nodes/{node_id}';
+};
+
+export type AdminUpdateNodeErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateNodeError = AdminUpdateNodeErrors[keyof AdminUpdateNodeErrors];
+
+export type AdminUpdateNodeResponses = {
+    /**
+     * Node updated.
+     */
+    200: AdminNodeResource;
+};
+
+export type AdminUpdateNodeResponse = AdminUpdateNodeResponses[keyof AdminUpdateNodeResponses];
+
 export type AdminGetNodeConfigurationData = {
     body?: never;
     path: {
@@ -7482,48 +7497,6 @@ export type AdminGetNodeConfigurationResponses = {
 };
 
 export type AdminGetNodeConfigurationResponse = AdminGetNodeConfigurationResponses[keyof AdminGetNodeConfigurationResponses];
-
-export type AdminUpdateNodeData = {
-    body: AdminUpdateNodeRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateNodeIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/nodes/{id}';
-};
-
-export type AdminUpdateNodeErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type AdminUpdateNodeError = AdminUpdateNodeErrors[keyof AdminUpdateNodeErrors];
-
-export type AdminUpdateNodeResponses = {
-    /**
-     * Node updated.
-     */
-    200: AdminNodeResource;
-};
-
-export type AdminUpdateNodeResponse = AdminUpdateNodeResponses[keyof AdminUpdateNodeResponses];
 
 export type AdminSyncNodeGameTagsData = {
     body?: AdminSyncNodeGameTagsRequest;
@@ -7903,63 +7876,17 @@ export type AdminDeleteNodeAllocationIpBlockResponses = {
 
 export type AdminDeleteNodeAllocationIpBlockResponse = AdminDeleteNodeAllocationIpBlockResponses[keyof AdminDeleteNodeAllocationIpBlockResponses];
 
-export type AdminUpdateNodeAllocationData = {
-    body?: AdminUpdateNodeAllocationRequest;
-    path: {
-        /**
-         * The node ID.
-         */
-        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateNodeAllocationIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/nodes/{node_id}/allocations/{id}';
-};
-
-export type AdminUpdateNodeAllocationErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type AdminUpdateNodeAllocationError = AdminUpdateNodeAllocationErrors[keyof AdminUpdateNodeAllocationErrors];
-
-export type AdminUpdateNodeAllocationResponses = {
-    /**
-     * Allocation updated.
-     */
-    200: AdminAllocationResource;
-};
-
-export type AdminUpdateNodeAllocationResponse = AdminUpdateNodeAllocationResponses[keyof AdminUpdateNodeAllocationResponses];
-
 export type AdminDeleteNodeAllocationData = {
     body?: never;
     path: {
         /**
          * The node ID.
          */
-        node_id: AdminDeleteNodeAllocationNodeIdPathParameter;
+        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
         /**
          * The ID of the allocation.
          */
-        allocation_id: AdminDeleteNodeAllocationAllocationIdPathParameter;
+        allocation_id: AdminUpdateNodeAllocationAllocationIdPathParameter;
     };
     query?: never;
     url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}';
@@ -7994,6 +7921,52 @@ export type AdminDeleteNodeAllocationResponses = {
 };
 
 export type AdminDeleteNodeAllocationResponse = AdminDeleteNodeAllocationResponses[keyof AdminDeleteNodeAllocationResponses];
+
+export type AdminUpdateNodeAllocationData = {
+    body?: AdminUpdateNodeAllocationRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
+        /**
+         * The ID of the allocation.
+         */
+        allocation_id: AdminUpdateNodeAllocationAllocationIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}';
+};
+
+export type AdminUpdateNodeAllocationErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateNodeAllocationError = AdminUpdateNodeAllocationErrors[keyof AdminUpdateNodeAllocationErrors];
+
+export type AdminUpdateNodeAllocationResponses = {
+    /**
+     * Allocation updated.
+     */
+    200: AdminAllocationResource;
+};
+
+export type AdminUpdateNodeAllocationResponse = AdminUpdateNodeAllocationResponses[keyof AdminUpdateNodeAllocationResponses];
 
 export type AdminListLocationsData = {
     body?: never;
@@ -8159,6 +8132,48 @@ export type AdminGetLocationResponses = {
 
 export type AdminGetLocationResponse = AdminGetLocationResponses[keyof AdminGetLocationResponses];
 
+export type AdminUpdateLocationData = {
+    body: AdminUpdateLocationRequest;
+    path: {
+        /**
+         * The location ID.
+         */
+        location_id: AdminGetLocationLocationIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/locations/{location_id}';
+};
+
+export type AdminUpdateLocationErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateLocationError = AdminUpdateLocationErrors[keyof AdminUpdateLocationErrors];
+
+export type AdminUpdateLocationResponses = {
+    /**
+     * Location updated.
+     */
+    200: AdminLocationResource;
+};
+
+export type AdminUpdateLocationResponse = AdminUpdateLocationResponses[keyof AdminUpdateLocationResponses];
+
 export type AdminListEligibleLocationNodesData = {
     body?: never;
     path: {
@@ -8196,48 +8211,6 @@ export type AdminListEligibleLocationNodesResponses = {
 };
 
 export type AdminListEligibleLocationNodesResponse = AdminListEligibleLocationNodesResponses[keyof AdminListEligibleLocationNodesResponses];
-
-export type AdminUpdateLocationData = {
-    body: AdminUpdateLocationRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateLocationIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/locations/{id}';
-};
-
-export type AdminUpdateLocationErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type AdminUpdateLocationError = AdminUpdateLocationErrors[keyof AdminUpdateLocationErrors];
-
-export type AdminUpdateLocationResponses = {
-    /**
-     * Location updated.
-     */
-    200: AdminLocationResource;
-};
-
-export type AdminUpdateLocationResponse = AdminUpdateLocationResponses[keyof AdminUpdateLocationResponses];
 
 export type AdminListMountsData = {
     body?: never;
@@ -8407,12 +8380,12 @@ export type AdminUpdateMountData = {
     body: AdminUpdateMountRequest;
     path: {
         /**
-         * The resource ID.
+         * The mount ID.
          */
-        id: AdminUpdateMountIdPathParameter;
+        mount_id: AdminGetMountMountIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/mounts/{id}';
+    url: '/api/admin/mounts/{mount_id}';
 };
 
 export type AdminUpdateMountErrors = {
@@ -8853,6 +8826,48 @@ export type AdminReorderEggVariablesResponses = {
 
 export type AdminReorderEggVariablesResponse = AdminReorderEggVariablesResponses[keyof AdminReorderEggVariablesResponses];
 
+export type AdminDeleteEggVariableData = {
+    body?: never;
+    path: {
+        /**
+         * The egg ID.
+         */
+        egg_id: AdminUpdateEggVariableEggIdPathParameter;
+        /**
+         * The variable ID.
+         */
+        variable_id: AdminUpdateEggVariableVariableIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
+};
+
+export type AdminDeleteEggVariableErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminDeleteEggVariableError = AdminDeleteEggVariableErrors[keyof AdminDeleteEggVariableErrors];
+
+export type AdminDeleteEggVariableResponses = {
+    /**
+     * Egg variable deleted.
+     */
+    204: void;
+};
+
+export type AdminDeleteEggVariableResponse = AdminDeleteEggVariableResponses[keyof AdminDeleteEggVariableResponses];
+
 export type AdminUpdateEggVariableData = {
     body: AdminUpdateEggVariableRequest;
     path: {
@@ -8861,12 +8876,12 @@ export type AdminUpdateEggVariableData = {
          */
         egg_id: AdminUpdateEggVariableEggIdPathParameter;
         /**
-         * The resource ID.
+         * The variable ID.
          */
-        id: AdminUpdateEggVariableIdPathParameter;
+        variable_id: AdminUpdateEggVariableVariableIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/eggs/{egg_id}/variables/{id}';
+    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
 };
 
 export type AdminUpdateEggVariableErrors = {
@@ -8898,48 +8913,6 @@ export type AdminUpdateEggVariableResponses = {
 };
 
 export type AdminUpdateEggVariableResponse = AdminUpdateEggVariableResponses[keyof AdminUpdateEggVariableResponses];
-
-export type AdminDeleteEggVariableData = {
-    body?: never;
-    path: {
-        /**
-         * The egg ID.
-         */
-        egg_id: AdminDeleteEggVariableEggIdPathParameter;
-        /**
-         * The variable ID.
-         */
-        variable_id: AdminDeleteEggVariableVariableIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
-};
-
-export type AdminDeleteEggVariableErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-};
-
-export type AdminDeleteEggVariableError = AdminDeleteEggVariableErrors[keyof AdminDeleteEggVariableErrors];
-
-export type AdminDeleteEggVariableResponses = {
-    /**
-     * Egg variable deleted.
-     */
-    204: void;
-};
-
-export type AdminDeleteEggVariableResponse = AdminDeleteEggVariableResponses[keyof AdminDeleteEggVariableResponses];
 
 export type AdminGetEggInstallScriptData = {
     body?: never;
@@ -9352,12 +9325,12 @@ export type AdminUpdateEggData = {
     body: AdminUpdateEggRequest;
     path: {
         /**
-         * The resource ID.
+         * The egg ID.
          */
-        id: AdminUpdateEggIdPathParameter;
+        egg_id: AdminGetEggEggIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/eggs/{id}';
+    url: '/api/admin/eggs/{egg_id}';
 };
 
 export type AdminUpdateEggErrors = {
@@ -9566,12 +9539,12 @@ export type AdminUpdateTagData = {
     body: AdminUpdateTagRequest;
     path: {
         /**
-         * The resource ID.
+         * The ID of the tag.
          */
-        id: AdminUpdateTagIdPathParameter;
+        tag_id: AdminGetTagTagIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/tags/{id}';
+    url: '/api/admin/tags/{tag_id}';
 };
 
 export type AdminUpdateTagErrors = {
@@ -10736,6 +10709,49 @@ export type ApplicationGetNodeResponses = {
 
 export type ApplicationGetNodeResponse = ApplicationGetNodeResponses[keyof ApplicationGetNodeResponses];
 
+export type ApplicationUpdateNodeData = {
+    body: ApplicationUpdateNodeRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: ApplicationGetNodeNodeIdPathParameter;
+    };
+    query?: never;
+    url: '/api/application/nodes/{node_id}';
+};
+
+export type ApplicationUpdateNodeErrors = {
+    /**
+     * The panel saved the node changes but could not persist the configuration to Wings.
+     */
+    400: ErrorEnvelope;
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type ApplicationUpdateNodeError = ApplicationUpdateNodeErrors[keyof ApplicationUpdateNodeErrors];
+
+export type ApplicationUpdateNodeResponses = {
+    200: ApplicationNodeResource;
+};
+
+export type ApplicationUpdateNodeResponse = ApplicationUpdateNodeResponses[keyof ApplicationUpdateNodeResponses];
+
 export type ApplicationGetNodeConfigurationData = {
     body?: never;
     path: {
@@ -10773,49 +10789,6 @@ export type ApplicationGetNodeConfigurationResponses = {
 };
 
 export type ApplicationGetNodeConfigurationResponse = ApplicationGetNodeConfigurationResponses[keyof ApplicationGetNodeConfigurationResponses];
-
-export type ApplicationUpdateNodeData = {
-    body: ApplicationUpdateNodeRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: ApplicationUpdateNodeIdPathParameter;
-    };
-    query?: never;
-    url: '/api/application/nodes/{id}';
-};
-
-export type ApplicationUpdateNodeErrors = {
-    /**
-     * The panel saved the node changes but could not persist the configuration to Wings.
-     */
-    400: ErrorEnvelope;
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-
-export type ApplicationUpdateNodeError = ApplicationUpdateNodeErrors[keyof ApplicationUpdateNodeErrors];
-
-export type ApplicationUpdateNodeResponses = {
-    200: ApplicationNodeResource;
-};
-
-export type ApplicationUpdateNodeResponse = ApplicationUpdateNodeResponses[keyof ApplicationUpdateNodeResponses];
 
 export type ApplicationListNodeAllocationsData = {
     body?: never;
@@ -14776,59 +14749,17 @@ export type ClientCreateServerSubuserResponses = {
 
 export type ClientCreateServerSubuserResponse = ClientCreateServerSubuserResponses[keyof ClientCreateServerSubuserResponses];
 
-export type ClientGetServerSubuserData = {
-    body?: never;
-    path: {
-        /**
-         * The server UUID.
-         */
-        server: ClientGetServerSubuserServerPathParameter;
-        /**
-         * The user UUID.
-         */
-        user: ClientGetServerSubuserUserPathParameter;
-    };
-    query?: never;
-    url: '/api/client/servers/{server}/users/{user}';
-};
-
-export type ClientGetServerSubuserErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-};
-
-export type ClientGetServerSubuserError = ClientGetServerSubuserErrors[keyof ClientGetServerSubuserErrors];
-
-export type ClientGetServerSubuserResponses = {
-    /**
-     * Server subuser returned.
-     */
-    200: ClientServerSubuserResource;
-};
-
-export type ClientGetServerSubuserResponse = ClientGetServerSubuserResponses[keyof ClientGetServerSubuserResponses];
-
 export type ClientDeleteServerSubuserData = {
     body?: never;
     path: {
         /**
          * The server UUID.
          */
-        server_uuid: ClientUpdateServerSubuserServerUuidPathParameter;
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
         /**
          * The user UUID.
          */
-        user: ClientUpdateServerSubuserUserPathParameter;
+        user: ClientGetServerSubuserUserPathParameter;
     };
     query?: never;
     url: '/api/client/servers/{server_uuid}/users/{user}';
@@ -14860,17 +14791,59 @@ export type ClientDeleteServerSubuserResponses = {
 
 export type ClientDeleteServerSubuserResponse = ClientDeleteServerSubuserResponses[keyof ClientDeleteServerSubuserResponses];
 
+export type ClientGetServerSubuserData = {
+    body?: never;
+    path: {
+        /**
+         * The server UUID.
+         */
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
+        /**
+         * The user UUID.
+         */
+        user: ClientGetServerSubuserUserPathParameter;
+    };
+    query?: never;
+    url: '/api/client/servers/{server_uuid}/users/{user}';
+};
+
+export type ClientGetServerSubuserErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type ClientGetServerSubuserError = ClientGetServerSubuserErrors[keyof ClientGetServerSubuserErrors];
+
+export type ClientGetServerSubuserResponses = {
+    /**
+     * Server subuser returned.
+     */
+    200: ClientServerSubuserResource;
+};
+
+export type ClientGetServerSubuserResponse = ClientGetServerSubuserResponses[keyof ClientGetServerSubuserResponses];
+
 export type ClientUpdateServerSubuserData = {
     body?: ClientUpdateServerSubuserRequest;
     path: {
         /**
          * The server UUID.
          */
-        server_uuid: ClientUpdateServerSubuserServerUuidPathParameter;
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
         /**
          * The user UUID.
          */
-        user: ClientUpdateServerSubuserUserPathParameter;
+        user: ClientGetServerSubuserUserPathParameter;
     };
     query?: never;
     url: '/api/client/servers/{server_uuid}/users/{user}';

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\Route as IlluminateRoute;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +21,11 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Knuckles\Scribe\Scribe;
 use League\Fractal\Manager;
 use Pterodactyl\Enum\ResourceLimit;
 use Pterodactyl\Extensions\Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Pterodactyl\Extensions\Scribe\Support\PathParameterNames;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\ApiKey;
@@ -43,6 +46,7 @@ use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Daemon\DaemonManager;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Support\JsonValueGuard;
+use ReflectionFunctionAbstract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -81,6 +85,12 @@ class AppServiceProvider extends ServiceProvider
         // @see https://github.com/pterodactyl/panel/issues/3623
         if (Str::startsWith(JsonValueGuard::nullableString(config('app.url')) ?? '', 'https://')) {
             URL::forceScheme('https');
+        }
+
+        if ($this->app->runningConsoleCommand('scribe:generate')) {
+            Scribe::normalizeEndpointUrlUsing(
+                fn (string $url, IlluminateRoute $route, ReflectionFunctionAbstract $method): string => PathParameterNames::normalize($route, $method),
+            );
         }
 
         Relation::enforceMorphMap([

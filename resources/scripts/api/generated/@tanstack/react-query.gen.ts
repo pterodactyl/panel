@@ -273,26 +273,6 @@ export const adminGetExtensionSettingsOptions = (options: Options<AdminGetExtens
     queryKey: adminGetExtensionSettingsQueryKey(options)
 });
 
-export const adminGetExtensionIconQueryKey = (options: Options<AdminGetExtensionIconData>) => createQueryKey('adminGetExtensionIcon', options);
-
-/**
- * Get extension icon
- *
- * Returns the PNG, JPEG or WebP image an extension declares as its "icon". Extensions with a lucide icon name or no icon return not found.
- */
-export const adminGetExtensionIconOptions = (options: Options<AdminGetExtensionIconData>) => queryOptions<AdminGetExtensionIconResponse, AxiosError<AdminGetExtensionIconError>, AdminGetExtensionIconResponse, ReturnType<typeof adminGetExtensionIconQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await adminGetExtensionIcon({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: adminGetExtensionIconQueryKey(options)
-});
-
 export const adminUpdateExtensionSettingsMutationKey = (options?: Partial<Options<AdminUpdateExtensionSettingsData>>) => createMutationKey('adminUpdateExtensionSettings', options);
 
 /**
@@ -314,6 +294,26 @@ export const adminUpdateExtensionSettingsMutation = (options?: Partial<Options<A
     };
     return mutationOptions;
 };
+
+export const adminGetExtensionIconQueryKey = (options: Options<AdminGetExtensionIconData>) => createQueryKey('adminGetExtensionIcon', options);
+
+/**
+ * Get extension icon
+ *
+ * Returns the PNG, JPEG or WebP image an extension declares as its "icon". Extensions with a lucide icon name or no icon return not found.
+ */
+export const adminGetExtensionIconOptions = (options: Options<AdminGetExtensionIconData>) => queryOptions<AdminGetExtensionIconResponse, AxiosError<AdminGetExtensionIconError>, AdminGetExtensionIconResponse, ReturnType<typeof adminGetExtensionIconQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await adminGetExtensionIcon({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: adminGetExtensionIconQueryKey(options)
+});
 
 export const adminClearExtensionSettingFileMutationKey = (options?: Partial<Options<AdminClearExtensionSettingFileData>>) => createMutationKey('adminClearExtensionSettingFile', options);
 
@@ -561,28 +561,6 @@ export const adminGetUserOptions = (options: Options<AdminGetUserData>) => query
     queryKey: adminGetUserQueryKey(options)
 });
 
-export const adminDisableUserTwoFactorAuthenticationMutationKey = (options?: Partial<Options<AdminDisableUserTwoFactorAuthenticationData>>) => createMutationKey('adminDisableUserTwoFactorAuthentication', options);
-
-/**
- * Disable user two-factor authentication
- *
- * Clears the configured TOTP secret and disables two-factor authentication for a user.
- */
-export const adminDisableUserTwoFactorAuthenticationMutation = (options?: Partial<Options<AdminDisableUserTwoFactorAuthenticationData>>): UseMutationOptions<AdminDisableUserTwoFactorAuthenticationResponse, AxiosError<AdminDisableUserTwoFactorAuthenticationError>, Options<AdminDisableUserTwoFactorAuthenticationData>> => {
-    const mutationOptions: UseMutationOptions<AdminDisableUserTwoFactorAuthenticationResponse, AxiosError<AdminDisableUserTwoFactorAuthenticationError>, Options<AdminDisableUserTwoFactorAuthenticationData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await adminDisableUserTwoFactorAuthentication({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        },
-        mutationKey: adminDisableUserTwoFactorAuthenticationMutationKey(options)
-    };
-    return mutationOptions;
-};
-
 export const adminUpdateUserMutationKey = (options?: Partial<Options<AdminUpdateUserData>>) => createMutationKey('adminUpdateUser', options);
 
 /**
@@ -601,6 +579,28 @@ export const adminUpdateUserMutation = (options?: Partial<Options<AdminUpdateUse
             return data;
         },
         mutationKey: adminUpdateUserMutationKey(options)
+    };
+    return mutationOptions;
+};
+
+export const adminDisableUserTwoFactorAuthenticationMutationKey = (options?: Partial<Options<AdminDisableUserTwoFactorAuthenticationData>>) => createMutationKey('adminDisableUserTwoFactorAuthentication', options);
+
+/**
+ * Disable user two-factor authentication
+ *
+ * Clears the configured TOTP secret and disables two-factor authentication for a user.
+ */
+export const adminDisableUserTwoFactorAuthenticationMutation = (options?: Partial<Options<AdminDisableUserTwoFactorAuthenticationData>>): UseMutationOptions<AdminDisableUserTwoFactorAuthenticationResponse, AxiosError<AdminDisableUserTwoFactorAuthenticationError>, Options<AdminDisableUserTwoFactorAuthenticationData>> => {
+    const mutationOptions: UseMutationOptions<AdminDisableUserTwoFactorAuthenticationResponse, AxiosError<AdminDisableUserTwoFactorAuthenticationError>, Options<AdminDisableUserTwoFactorAuthenticationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await adminDisableUserTwoFactorAuthentication({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        },
+        mutationKey: adminDisableUserTwoFactorAuthenticationMutationKey(options)
     };
     return mutationOptions;
 };
@@ -1349,26 +1349,6 @@ export const adminGetNodeOptions = (options: Options<AdminGetNodeData>) => query
     queryKey: adminGetNodeQueryKey(options)
 });
 
-export const adminGetNodeConfigurationQueryKey = (options: Options<AdminGetNodeConfigurationData>) => createQueryKey('adminGetNodeConfiguration', options);
-
-/**
- * Get node configuration
- *
- * Returns the raw Wings configuration payload for a node, including daemon authentication tokens.
- */
-export const adminGetNodeConfigurationOptions = (options: Options<AdminGetNodeConfigurationData>) => queryOptions<AdminGetNodeConfigurationResponse, AxiosError<AdminGetNodeConfigurationError>, AdminGetNodeConfigurationResponse, ReturnType<typeof adminGetNodeConfigurationQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await adminGetNodeConfiguration({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: adminGetNodeConfigurationQueryKey(options)
-});
-
 export const adminUpdateNodeMutationKey = (options?: Partial<Options<AdminUpdateNodeData>>) => createMutationKey('adminUpdateNode', options);
 
 /**
@@ -1390,6 +1370,26 @@ export const adminUpdateNodeMutation = (options?: Partial<Options<AdminUpdateNod
     };
     return mutationOptions;
 };
+
+export const adminGetNodeConfigurationQueryKey = (options: Options<AdminGetNodeConfigurationData>) => createQueryKey('adminGetNodeConfiguration', options);
+
+/**
+ * Get node configuration
+ *
+ * Returns the raw Wings configuration payload for a node, including daemon authentication tokens.
+ */
+export const adminGetNodeConfigurationOptions = (options: Options<AdminGetNodeConfigurationData>) => queryOptions<AdminGetNodeConfigurationResponse, AxiosError<AdminGetNodeConfigurationError>, AdminGetNodeConfigurationResponse, ReturnType<typeof adminGetNodeConfigurationQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await adminGetNodeConfiguration({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: adminGetNodeConfigurationQueryKey(options)
+});
 
 export const adminSyncNodeGameTagsMutationKey = (options?: Partial<Options<AdminSyncNodeGameTagsData>>) => createMutationKey('adminSyncNodeGameTags', options);
 
@@ -1593,28 +1593,6 @@ export const adminDeleteNodeAllocationIpBlockMutation = (options?: Partial<Optio
     return mutationOptions;
 };
 
-export const adminUpdateNodeAllocationMutationKey = (options?: Partial<Options<AdminUpdateNodeAllocationData>>) => createMutationKey('adminUpdateNodeAllocation', options);
-
-/**
- * Update node allocation
- *
- * Updates the alias for a single allocation on a node.
- */
-export const adminUpdateNodeAllocationMutation = (options?: Partial<Options<AdminUpdateNodeAllocationData>>): UseMutationOptions<AdminUpdateNodeAllocationResponse, AxiosError<AdminUpdateNodeAllocationError>, Options<AdminUpdateNodeAllocationData>> => {
-    const mutationOptions: UseMutationOptions<AdminUpdateNodeAllocationResponse, AxiosError<AdminUpdateNodeAllocationError>, Options<AdminUpdateNodeAllocationData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await adminUpdateNodeAllocation({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        },
-        mutationKey: adminUpdateNodeAllocationMutationKey(options)
-    };
-    return mutationOptions;
-};
-
 export const adminDeleteNodeAllocationMutationKey = (options?: Partial<Options<AdminDeleteNodeAllocationData>>) => createMutationKey('adminDeleteNodeAllocation', options);
 
 /**
@@ -1633,6 +1611,28 @@ export const adminDeleteNodeAllocationMutation = (options?: Partial<Options<Admi
             return data;
         },
         mutationKey: adminDeleteNodeAllocationMutationKey(options)
+    };
+    return mutationOptions;
+};
+
+export const adminUpdateNodeAllocationMutationKey = (options?: Partial<Options<AdminUpdateNodeAllocationData>>) => createMutationKey('adminUpdateNodeAllocation', options);
+
+/**
+ * Update node allocation
+ *
+ * Updates the alias for a single allocation on a node.
+ */
+export const adminUpdateNodeAllocationMutation = (options?: Partial<Options<AdminUpdateNodeAllocationData>>): UseMutationOptions<AdminUpdateNodeAllocationResponse, AxiosError<AdminUpdateNodeAllocationError>, Options<AdminUpdateNodeAllocationData>> => {
+    const mutationOptions: UseMutationOptions<AdminUpdateNodeAllocationResponse, AxiosError<AdminUpdateNodeAllocationError>, Options<AdminUpdateNodeAllocationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await adminUpdateNodeAllocation({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        },
+        mutationKey: adminUpdateNodeAllocationMutationKey(options)
     };
     return mutationOptions;
 };
@@ -1753,26 +1753,6 @@ export const adminGetLocationOptions = (options: Options<AdminGetLocationData>) 
     queryKey: adminGetLocationQueryKey(options)
 });
 
-export const adminListEligibleLocationNodesQueryKey = (options: Options<AdminListEligibleLocationNodesData>) => createQueryKey('adminListEligibleLocationNodes', options);
-
-/**
- * List eligible location nodes
- *
- * Returns nodes assigned to a location that can be selected for location-scoped workflows.
- */
-export const adminListEligibleLocationNodesOptions = (options: Options<AdminListEligibleLocationNodesData>) => queryOptions<AdminListEligibleLocationNodesResponse, AxiosError<AdminListEligibleLocationNodesError>, AdminListEligibleLocationNodesResponse, ReturnType<typeof adminListEligibleLocationNodesQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await adminListEligibleLocationNodes({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: adminListEligibleLocationNodesQueryKey(options)
-});
-
 export const adminUpdateLocationMutationKey = (options?: Partial<Options<AdminUpdateLocationData>>) => createMutationKey('adminUpdateLocation', options);
 
 /**
@@ -1794,6 +1774,26 @@ export const adminUpdateLocationMutation = (options?: Partial<Options<AdminUpdat
     };
     return mutationOptions;
 };
+
+export const adminListEligibleLocationNodesQueryKey = (options: Options<AdminListEligibleLocationNodesData>) => createQueryKey('adminListEligibleLocationNodes', options);
+
+/**
+ * List eligible location nodes
+ *
+ * Returns nodes assigned to a location that can be selected for location-scoped workflows.
+ */
+export const adminListEligibleLocationNodesOptions = (options: Options<AdminListEligibleLocationNodesData>) => queryOptions<AdminListEligibleLocationNodesResponse, AxiosError<AdminListEligibleLocationNodesError>, AdminListEligibleLocationNodesResponse, ReturnType<typeof adminListEligibleLocationNodesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await adminListEligibleLocationNodes({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: adminListEligibleLocationNodesQueryKey(options)
+});
 
 export const adminListMountsQueryKey = (options?: Options<AdminListMountsData>) => createQueryKey('adminListMounts', options);
 
@@ -2149,28 +2149,6 @@ export const adminReorderEggVariablesMutation = (options?: Partial<Options<Admin
     return mutationOptions;
 };
 
-export const adminUpdateEggVariableMutationKey = (options?: Partial<Options<AdminUpdateEggVariableData>>) => createMutationKey('adminUpdateEggVariable', options);
-
-/**
- * Update egg variable
- *
- * Updates a startup variable for an egg.
- */
-export const adminUpdateEggVariableMutation = (options?: Partial<Options<AdminUpdateEggVariableData>>): UseMutationOptions<AdminUpdateEggVariableResponse, AxiosError<AdminUpdateEggVariableError>, Options<AdminUpdateEggVariableData>> => {
-    const mutationOptions: UseMutationOptions<AdminUpdateEggVariableResponse, AxiosError<AdminUpdateEggVariableError>, Options<AdminUpdateEggVariableData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await adminUpdateEggVariable({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        },
-        mutationKey: adminUpdateEggVariableMutationKey(options)
-    };
-    return mutationOptions;
-};
-
 export const adminDeleteEggVariableMutationKey = (options?: Partial<Options<AdminDeleteEggVariableData>>) => createMutationKey('adminDeleteEggVariable', options);
 
 /**
@@ -2189,6 +2167,28 @@ export const adminDeleteEggVariableMutation = (options?: Partial<Options<AdminDe
             return data;
         },
         mutationKey: adminDeleteEggVariableMutationKey(options)
+    };
+    return mutationOptions;
+};
+
+export const adminUpdateEggVariableMutationKey = (options?: Partial<Options<AdminUpdateEggVariableData>>) => createMutationKey('adminUpdateEggVariable', options);
+
+/**
+ * Update egg variable
+ *
+ * Updates a startup variable for an egg.
+ */
+export const adminUpdateEggVariableMutation = (options?: Partial<Options<AdminUpdateEggVariableData>>): UseMutationOptions<AdminUpdateEggVariableResponse, AxiosError<AdminUpdateEggVariableError>, Options<AdminUpdateEggVariableData>> => {
+    const mutationOptions: UseMutationOptions<AdminUpdateEggVariableResponse, AxiosError<AdminUpdateEggVariableError>, Options<AdminUpdateEggVariableData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await adminUpdateEggVariable({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        },
+        mutationKey: adminUpdateEggVariableMutationKey(options)
     };
     return mutationOptions;
 };
@@ -3315,26 +3315,6 @@ export const applicationGetNodeOptions = (options: Options<ApplicationGetNodeDat
     queryKey: applicationGetNodeQueryKey(options)
 });
 
-export const applicationGetNodeConfigurationQueryKey = (options: Options<ApplicationGetNodeConfigurationData>) => createQueryKey('applicationGetNodeConfiguration', options);
-
-/**
- * Get node configuration
- *
- * Returns the Wings configuration payload for a node, including node authentication tokens. Requires write access to nodes.
- */
-export const applicationGetNodeConfigurationOptions = (options: Options<ApplicationGetNodeConfigurationData>) => queryOptions<ApplicationGetNodeConfigurationResponse, AxiosError<ApplicationGetNodeConfigurationError>, ApplicationGetNodeConfigurationResponse, ReturnType<typeof applicationGetNodeConfigurationQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await applicationGetNodeConfiguration({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: applicationGetNodeConfigurationQueryKey(options)
-});
-
 export const applicationUpdateNodeMutationKey = (options?: Partial<Options<ApplicationUpdateNodeData>>) => createMutationKey('applicationUpdateNode', options);
 
 /**
@@ -3356,6 +3336,26 @@ export const applicationUpdateNodeMutation = (options?: Partial<Options<Applicat
     };
     return mutationOptions;
 };
+
+export const applicationGetNodeConfigurationQueryKey = (options: Options<ApplicationGetNodeConfigurationData>) => createQueryKey('applicationGetNodeConfiguration', options);
+
+/**
+ * Get node configuration
+ *
+ * Returns the Wings configuration payload for a node, including node authentication tokens. Requires write access to nodes.
+ */
+export const applicationGetNodeConfigurationOptions = (options: Options<ApplicationGetNodeConfigurationData>) => queryOptions<ApplicationGetNodeConfigurationResponse, AxiosError<ApplicationGetNodeConfigurationError>, ApplicationGetNodeConfigurationResponse, ReturnType<typeof applicationGetNodeConfigurationQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await applicationGetNodeConfiguration({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: applicationGetNodeConfigurationQueryKey(options)
+});
 
 export const applicationListNodeAllocationsQueryKey = (options: Options<ApplicationListNodeAllocationsData>) => createQueryKey('applicationListNodeAllocations', options);
 
@@ -5425,26 +5425,6 @@ export const clientCreateServerSubuserMutation = (options?: Partial<Options<Clie
     return mutationOptions;
 };
 
-export const clientGetServerSubuserQueryKey = (options: Options<ClientGetServerSubuserData>) => createQueryKey('clientGetServerSubuser', options);
-
-/**
- * Get server subuser
- *
- * Returns one subuser assignment for the server.
- */
-export const clientGetServerSubuserOptions = (options: Options<ClientGetServerSubuserData>) => queryOptions<ClientGetServerSubuserResponse, AxiosError<ClientGetServerSubuserError>, ClientGetServerSubuserResponse, ReturnType<typeof clientGetServerSubuserQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await clientGetServerSubuser({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: clientGetServerSubuserQueryKey(options)
-});
-
 export const clientDeleteServerSubuserMutationKey = (options?: Partial<Options<ClientDeleteServerSubuserData>>) => createMutationKey('clientDeleteServerSubuser', options);
 
 /**
@@ -5466,6 +5446,26 @@ export const clientDeleteServerSubuserMutation = (options?: Partial<Options<Clie
     };
     return mutationOptions;
 };
+
+export const clientGetServerSubuserQueryKey = (options: Options<ClientGetServerSubuserData>) => createQueryKey('clientGetServerSubuser', options);
+
+/**
+ * Get server subuser
+ *
+ * Returns one subuser assignment for the server.
+ */
+export const clientGetServerSubuserOptions = (options: Options<ClientGetServerSubuserData>) => queryOptions<ClientGetServerSubuserResponse, AxiosError<ClientGetServerSubuserError>, ClientGetServerSubuserResponse, ReturnType<typeof clientGetServerSubuserQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await clientGetServerSubuser({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: clientGetServerSubuserQueryKey(options)
+});
 
 export const clientUpdateServerSubuserMutationKey = (options?: Partial<Options<ClientUpdateServerSubuserData>>) => createMutationKey('clientUpdateServerSubuser', options);
 
