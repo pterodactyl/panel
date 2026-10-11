@@ -1,0 +1,23 @@
+app/Actions/Eggs/DeleteEgg.php
+  s_4cabae41bceed9::t_0d19d22c3463a6 7,32-36
+app/Actions/Nodes/DeleteNode.php
+  s_4cabae41bceed9::t_0d19d22c3463a6 7,25-30
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_93515fcf8a0f3d 53-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b0bf459c8853a9ceae27032e78a815bfc019a988",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
