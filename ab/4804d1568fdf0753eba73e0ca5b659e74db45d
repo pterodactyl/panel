@@ -1,0 +1,31 @@
+tests/Integration/Services/BackendWriteConsistencyTest.php
+  s_4cabae41bceed9::t_f70f97dec13fab 52,61,64-67
+  s_4cabae41bceed9::t_c4bffceff30399 7,59-60,62-63
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_4cabae41bceed9::t_2051ef121f2340 9,31,35,43,48,50,52,54,56
+app/Actions/Transfers/InitiateTransfer.php
+  s_4cabae41bceed9::t_5a67d1e79dda0c 9-12,18,28-29,35-80,89,94-95,148-174
+app/Contracts/Transfers/InitiatesTransfers.php
+  s_4cabae41bceed9::t_3be1e0c2afe55e 7,20-24,28
+tests/Integration/Actions/Transfers/InitiateTransferTest.php
+  s_4cabae41bceed9::t_6bf7c988810bc6 71,76
+  s_4cabae41bceed9::t_923eaa652ce300 1-70,72-75,77-79
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_4cabae41bceed9::t_e39cf921fa1428 45-46,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab4804d1568fdf0753eba73e0ca5b659e74db45d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
