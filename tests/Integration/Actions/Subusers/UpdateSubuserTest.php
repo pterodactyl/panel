@@ -51,6 +51,22 @@ test('the permissions are replaced and the subuser loses its sftp sessions', fun
     Bus::assertDispatched(RevokeSftpAccessJob::class, fn (RevokeSftpAccessJob $job): bool => $job->user === $subuser->user->uuid && $job->target->is($server));
 });
 
+test('a change is logged on the server and the subuser\'s account, and unchanged permissions change nothing', function (): void {
+    $server = $this->createServerModel();
+    $subuser = Subuser::factory()->for($server)->for(User::factory()->create())->create(['permissions' => ['control.start', 'control.stop']]);
+    $updates = $this->app->make(UpdatesSubusers::class);
+
+    $updates->update($server, $subuser, ['control.stop', 'control.start']);
+
+    Bus::assertNotDispatched(RevokeSftpAccessJob::class);
+    expect($server->activity()->where('event', 'server:subuser.update')->exists())->toBeFalse();
+
+    $updates->update($server, $subuser, ['control.stop']);
+
+    expect($this->assertActivityOn('server:subuser.update', $server, $subuser->user)->properties->only(['old', 'new'])->all())
+        ->toBe(['old' => ['control.start', 'control.stop'], 'new' => ['control.stop']]);
+});
+
 test('a permission the subuser already holds can be kept once nothing defines it', function (): void {
     $server = $this->createServerModel();
     $subuser = Subuser::factory()->for($server)->for(User::factory()->create())->create(['permissions' => ['control.start', 'ext.disabled.view']]);

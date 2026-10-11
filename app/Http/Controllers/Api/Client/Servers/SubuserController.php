@@ -15,7 +15,6 @@ use Pterodactyl\Contracts\Subusers\UpdatesSubusers;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest;
@@ -86,18 +85,7 @@ class SubuserController extends ClientApiController
     #[ScribeResponse(self::SUBUSER_EXISTS_ERROR, status: 400, description: 'The user is already assigned to the server or is the server owner.')]
     public function store(StoreSubuserRequest $request, CreatesSubusers $subusers, Server $server): array
     {
-        $email = $request->string('email')->toString();
-        $permissions = $request->permissions();
-        $response = $subusers->create(
-            $server,
-            $email,
-            $permissions,
-        );
-
-        Activity::event('server:subuser.create')
-            ->subject($response->user)
-            ->property(['email' => $email, 'permissions' => $permissions])
-            ->log();
+        $response = $subusers->create($server, $request->string('email')->toString(), $request->permissions());
 
         return Fractal::item($response)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
@@ -114,28 +102,7 @@ class SubuserController extends ClientApiController
     #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser updated.', resourceKey: 'server_subuser')]
     public function update(UpdateSubuserRequest $request, UpdatesSubusers $subusers, Server $server): array
     {
-        $subuser = $request->subuser();
-        $permissions = $request->permissions();
-
-        $current = $subuser->permissions;
-        $requested = $permissions;
-        sort($current);
-        sort($requested);
-
-        // Only touch the database and Wings when the permissions actually change.
-        if ($requested !== $current) {
-            $subuser = $subusers->update($server, $subuser, $permissions);
-
-            Activity::event('server:subuser.update')
-                ->subject($subuser->user)
-                ->property([
-                    'email' => $subuser->user->email,
-                    'old' => $current,
-                    'new' => $requested,
-                    'revoked' => true,
-                ])
-                ->log();
-        }
+        $subuser = $subusers->update($server, $request->subuser(), $request->permissions());
 
         return Fractal::item($subuser)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
@@ -149,15 +116,7 @@ class SubuserController extends ClientApiController
     #[ScribeResponse(status: 204, description: 'Server subuser removed.')]
     public function delete(DeleteSubuserRequest $request, DeletesSubusers $subusers, Server $server): JsonResponse
     {
-        $subuser = $request->subuser();
-
-        $subusers->delete($server, $subuser);
-
-        Activity::event('server:subuser.delete')
-            ->subject($subuser->user)
-            ->property('email', $subuser->user->email)
-            ->property('revoked', true)
-            ->log();
+        $subusers->delete($server, $request->subuser());
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

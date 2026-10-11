@@ -66,6 +66,7 @@ test('an existing user is given access rather than invited', function (): void {
     expect($subuser->user->is($existing))->toBeTrue()
         ->and($subuser->user->wasRecentlyCreated)->toBeFalse()
         ->and(User::query()->count())->toBe($users);
+    $this->assertActivityOn('server:subuser.create', $server, $existing);
 });
 
 test('the owner and an existing subuser cannot be added again', function (): void {

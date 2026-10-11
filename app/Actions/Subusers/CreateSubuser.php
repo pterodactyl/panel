@@ -12,6 +12,7 @@ use Pterodactyl\Contracts\Subusers\CreatesSubusers;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
@@ -91,7 +92,7 @@ final readonly class CreateSubuser implements CreatesSubusers
     {
         $attributes = self::attributes(['email' => $email, 'permissions' => $permissions], $this->catalog->keys());
 
-        return DB::transaction(function () use ($server, $attributes): Subuser {
+        $subuser = DB::transaction(function () use ($server, $attributes): Subuser {
             $server = $server->newQuery()->whereKey($server->getKey())->lockForUpdate()->firstOrFail();
             $user = User::query()->where('email', $attributes['email'])->first() ?? $this->createUser($attributes['email']);
 
@@ -104,6 +105,13 @@ final readonly class CreateSubuser implements CreatesSubusers
                 'permissions' => array_values(array_unique($attributes['permissions'])),
             ])->setRelation('user', $user);
         });
+
+        Activity::event('server:subuser.create')
+            ->subject($server, $subuser->user)
+            ->property(['email' => $attributes['email'], 'permissions' => $attributes['permissions']])
+            ->log();
+
+        return $subuser;
     }
 
     private function createUser(string $email): User

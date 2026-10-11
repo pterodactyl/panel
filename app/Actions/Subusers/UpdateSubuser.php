@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Subusers;
 use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Subusers\UpdatesSubusers;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -19,6 +20,7 @@ final readonly class UpdateSubuser implements UpdatesSubusers
 
     /**
      * Replaces the subuser's permissions and revokes their outstanding SFTP sessions on Wings.
+     * Permissions that are already the subuser's, in any order, change nothing.
      *
      * @param  list<string>  $permissions
      *
@@ -30,13 +32,26 @@ final readonly class UpdateSubuser implements UpdatesSubusers
         // it, such as one of a disabled extension, so a caller can hand it back unchanged.
         $permissions = CreateSubuser::permissions($permissions, [...$this->catalog->keys(), ...$subuser->permissions]);
 
-        return DB::transaction(function () use ($server, $subuser, $permissions): Subuser {
+        $current = $subuser->permissions;
+        $requested = $permissions;
+        sort($current);
+        sort($requested);
+        if ($requested === $current) {
+            return $subuser;
+        }
+
+        DB::transaction(function () use ($server, $subuser, $permissions): void {
             $subuser->update(['permissions' => $permissions]);
 
             $job = new RevokeSftpAccessJob($subuser->user->uuid, $server);
             DB::afterCommit(fn (): PendingDispatch => dispatch($job));
-
-            return $subuser;
         });
+
+        Activity::event('server:subuser.update')
+            ->subject($server, $subuser->user)
+            ->property(['email' => $subuser->user->email, 'old' => $current, 'new' => $requested, 'revoked' => true])
+            ->log();
+
+        return $subuser;
     }
 }
