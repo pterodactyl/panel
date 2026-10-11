@@ -563,7 +563,8 @@ Core controllers resolve these contracts, not the classes behind them. Renaming 
 `UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
 Deleting an allocation block calls `DeletesAllocations` once per allocation. Disabling
 two-factor, by an admin or by the user, calls `DisablesTwoFactor`, which clears the TOTP
-secret. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
+secret. Changing a password, from the account page or with a reset link, calls
+`UpdatesUserPasswords`. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
 endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image. Changing a
 startup variable calls `UpdatesServerVariable`, once from the client endpoint and once per
 variable in a startup update.

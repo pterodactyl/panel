@@ -9,13 +9,12 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Unauthenticated;
-use Pterodactyl\Events\User\PasswordChanged;
+use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
@@ -57,6 +56,8 @@ class ResetPasswordController extends Controller
 
     protected bool $hasTwoFactor = false;
 
+    public function __construct(private readonly UpdatesUserPasswords $passwords) {}
+
     /**
      * Reset the given user's password.
      *
@@ -97,24 +98,18 @@ class ResetPasswordController extends Controller
      * form with a note telling them their password was changed and to log back in.
      *
      * @param  CanResetPassword&User  $user
-     * @param  string  $password
      */
-    protected function resetPassword($user, $password): void // @pest-ignore-type
+    protected function resetPassword($user, string $password): void // @pest-ignore-type
     {
-        $user->forceFill([
-            'password' => $password,
-            $user->getRememberTokenName() => Str::random(60),
-        ])->save();
+        // The same action as a change from the account page, so extensions wrapping it see resets too.
+        $user = $this->passwords->update($user, $password);
 
         event(new PasswordReset($user));
-        event(new PasswordChanged($user));
 
         // If the user is not using 2FA log them in, otherwise skip this step and force a
         // fresh login where they'll be prompted to enter a token.
         if (! $user->use_totp) {
             Auth::guard()->login($user);
-
-            Auth::guard()->logoutOtherDevices($password);
         }
 
         $this->hasTwoFactor = $user->use_totp;

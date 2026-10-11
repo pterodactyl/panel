@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Events\Auth\FailedPasswordReset;
 use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Models\User;
@@ -49,6 +50,29 @@ test('two factor account is sent back to login after reset', function () {
     $this->postJson(route('auth.reset-password'), ['email' => $user->email, 'token' => $token, 'password' => 'new-password-123', 'password_confirmation' => 'new-password-123'])->assertOk()->assertJsonPath('send_to_login', true);
     $this->assertGuest();
     expect(Hash::check('new-password-123', $user->refresh()->password))->toBeTrue();
+});
+test('a reset goes through the password action and ends remember me logins', function () {
+    $spy = new class($this->app->make(UpdatesUserPasswords::class)) implements UpdatesUserPasswords
+    {
+        public int $calls = 0;
+
+        public function __construct(private readonly UpdatesUserPasswords $inner) {}
+
+        public function update(User $user, string $password): User
+        {
+            $this->calls++;
+
+            return $this->inner->update($user, $password);
+        }
+    };
+    $this->app->instance(UpdatesUserPasswords::class, $spy);
+    $user = User::factory()->create(['remember_token' => 'remembered-elsewhere']);
+    $token = Password::broker()->createToken($user);
+
+    $this->postJson(route('auth.reset-password'), ['email' => $user->email, 'token' => $token, 'password' => 'new-password-123', 'password_confirmation' => 'new-password-123'])->assertOk();
+
+    expect($spy->calls)->toBe(1)
+        ->and($user->refresh()->remember_token)->not->toBe('remembered-elsewhere');
 });
 test('reset fails with invalid token', function () {
     $user = User::factory()->create();
