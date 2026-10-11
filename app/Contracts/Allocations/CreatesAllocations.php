@@ -14,7 +14,11 @@ use Pterodactyl\Models\Node;
 interface CreatesAllocations
 {
     /**
-     * @param  AllocationAssignmentData  $data
+     * Create the allocations of one address on a node. The input is validated here, so it can
+     * come straight from any caller. A port that cannot be read, falls outside 1025-65535 or
+     * opens a range of more than 1000 ports is refused with the exceptions below.
+     *
+     * @param  ActionInput  $input  allocation_ip (an IP address, CIDR range or hostname), allocation_ports (port numbers, or ranges such as "25565-25570") and optionally allocation_alias
      *
      * @throws DisplayException
      * @throws CidrOutOfRangeException
@@ -22,5 +26,5 @@ interface CreatesAllocations
      * @throws PortOutOfRangeException
      * @throws TooManyPortsInRangeException
      */
-    public function create(Node $node, array $data): void;
+    public function create(Node $node, array $input): void;
 }

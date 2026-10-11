@@ -39,4 +39,42 @@ class StoreAllocationRequest extends AdminApiRequest
             'ports' => 'Ports',
         ];
     }
+
+    /**
+     * The validated ports and alias under the action's field names. The action creates the
+     * allocations of one address at a time, so the controller adds each of addresses() in turn.
+     *
+     * @return array{allocation_ports: list<string>, allocation_alias: string|null}
+     */
+    public function actionInput(): array
+    {
+        $validated = $this->safe();
+
+        return [
+            'allocation_ports' => $this->strings('ports'),
+            'allocation_alias' => $validated->filled('alias') ? $validated->string('alias')->toString() : null,
+        ];
+    }
+
+    /**
+     * The validated addresses, each an IP address or CIDR range.
+     *
+     * @return list<string>
+     */
+    public function addresses(): array
+    {
+        return $this->strings('ip');
+    }
+
+    /**
+     * The validated strings listed under a field.
+     *
+     * @return list<string>
+     */
+    private function strings(string $field): array
+    {
+        $validated = $this->safe();
+
+        return array_map(fn (int|string $key): string => $validated->string($field.'.'.$key)->toString(), array_keys($validated->array($field)));
+    }
 }

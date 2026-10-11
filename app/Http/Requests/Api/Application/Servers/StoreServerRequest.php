@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use Pterodactyl\Actions\Allocations\CreateAllocations;
 use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
@@ -17,7 +18,6 @@ use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\AllocationRules;
 use Pterodactyl\Validation\ServerRules;
 
 class StoreServerRequest extends ApplicationApiRequest
@@ -66,8 +66,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'feature_limits.backups' => $rules['backup_limit'],
 
             // Allocations are chosen by hand unless a deployment object picks them.
-            'allocation.default' => ['exclude_with:deploy', 'required', 'integer', 'bail', AllocationRules::unassigned()],
-            'allocation.additional.*' => ['exclude_with:deploy', 'integer', AllocationRules::unassigned()],
+            'allocation.default' => ['exclude_with:deploy', 'required', 'integer', 'bail', CreateAllocations::unassigned()],
+            'allocation.additional.*' => ['exclude_with:deploy', 'integer', CreateAllocations::unassigned()],
 
             // Automatic deployment rules
             'deploy' => ['sometimes', 'required', 'array'],

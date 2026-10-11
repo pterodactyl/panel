@@ -104,23 +104,18 @@ class AllocationController extends AdminApiController
     #[ScribeResponse(status: 204, description: 'Allocations created.')]
     public function store(StoreAllocationRequest $request, CreatesAllocations $allocations, Node $node): Response
     {
-        $ips = JsonValueGuard::stringList($request->validated('ip'));
-        $ports = JsonValueGuard::integerStringList($request->validated('ports'));
-        $alias = JsonValueGuard::nullableString($request->validated('alias'));
+        $input = $request->actionInput();
+        $addresses = $request->addresses();
 
         // The creation action handles one (CIDR-capable) IP at a time, so fan out per IP.
-        foreach ($ips as $ip) {
-            $allocations->create($node, [
-                'allocation_ip' => $ip,
-                'allocation_ports' => $ports,
-                'allocation_alias' => $alias,
-            ]);
+        foreach ($addresses as $address) {
+            $allocations->create($node, [...$input, 'allocation_ip' => $address]);
         }
 
         Activity::event('admin:node-allocation.create')
             ->subject($node)
-            ->property('address', $ips)
-            ->property('ports', $ports)
+            ->property('address', $addresses)
+            ->property('ports', $input['allocation_ports'])
             ->log();
 
         return $this->returnNoContent();

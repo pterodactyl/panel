@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use Pterodactyl\Actions\Allocations\CreateAllocations;
 use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
@@ -17,7 +18,6 @@ use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\AllocationRules;
 use Pterodactyl\Validation\ServerRules;
 
 class StoreServerRequest extends AdminApiRequest
@@ -63,8 +63,8 @@ class StoreServerRequest extends AdminApiRequest
             'backup_limit' => $rules['backup_limit'],
 
             // Allocations are chosen by hand unless a deployment object picks them.
-            'primary_allocation_id' => ['exclude_with:deploy', 'required', 'integer', 'bail', AllocationRules::unassigned()],
-            'secondary_allocations_ids.*' => ['exclude_with:deploy', 'integer', AllocationRules::unassigned()],
+            'primary_allocation_id' => ['exclude_with:deploy', 'required', 'integer', 'bail', CreateAllocations::unassigned()],
+            'secondary_allocations_ids.*' => ['exclude_with:deploy', 'integer', CreateAllocations::unassigned()],
 
             'deploy' => ['sometimes', 'required', 'array'],
             'deploy.locations' => ['present_with:deploy', 'array', 'list'],

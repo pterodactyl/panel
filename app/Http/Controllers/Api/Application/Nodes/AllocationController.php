@@ -119,7 +119,7 @@ class AllocationController extends ApplicationApiController
     #[ScribeResponse(self::ALLOCATION_REJECTED_ERROR, status: 400, description: 'The allocation IP, CIDR, or port mapping could not be processed.')]
     public function store(StoreAllocationRequest $request, CreatesAllocations $allocations, Node $node): JsonResponse
     {
-        $allocations->create($node, $request->payload());
+        $allocations->create($node, $request->actionInput());
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
