@@ -22,9 +22,10 @@ use Pterodactyl\Support\JsonValueGuard;
 #[ResponseField('description', nullable: true)]
 #[ResponseField('docker_images', schema: ['type' => 'object', 'additionalProperties' => ['type' => 'string'], 'example' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23']])]
 #[ResponseField('config.files', schema: ['type' => 'object', 'additionalProperties' => ['type' => 'object', 'properties' => ['parser' => ['type' => 'string'], 'find' => ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean'], ['type' => 'object', 'additionalProperties' => ['type' => 'string']]]]]]], 'example' => ['server.properties' => ['parser' => 'properties', 'find' => ['server-port' => '{{server.build.default.port}}']]]])]
-#[ResponseField('config.logs', schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean']]], 'example' => ['custom' => true, 'location' => 'logs/latest.log']])]
+#[ResponseField('config.logs', schema: ['type' => 'object', 'nullable' => true, 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'number'], ['type' => 'boolean']]], 'example' => ['custom' => true, 'location' => 'logs/latest.log']])]
 #[ResponseField('config.file_denylist', schema: ['type' => 'array', 'nullable' => true, 'items' => ['type' => 'string'], 'example' => ['secret.txt']])]
-#[ResponseField('config.startup', schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'array', 'items' => ['type' => 'string']]]], 'example' => ['done' => ['Done']]])]
+#[ResponseField('config.stop', nullable: true)]
+#[ResponseField('config.startup', schema: ['type' => 'object', 'nullable' => true, 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'array', 'items' => ['type' => 'string']]]], 'example' => ['done' => ['Done']]])]
 class EggTransformer extends BaseTransformer
 {
     protected array $includeRelations = [

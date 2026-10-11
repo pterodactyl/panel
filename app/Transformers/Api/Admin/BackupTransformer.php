@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Transformers\Api\Admin;
 
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Backup;
 
+#[ResponseField('checksum', example: 'sha256:0123456789abcdef', nullable: true)]
+#[ResponseField('completed_at', example: '2026-06-29T12:05:00+00:00', nullable: true)]
 class BackupTransformer extends BaseAdminTransformer
 {
     public function getResourceName(): string

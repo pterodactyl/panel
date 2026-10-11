@@ -111,7 +111,7 @@ export type AdminBackupAttributes = {
     is_successful: boolean;
     is_locked: boolean;
     created_at: string;
-    completed_at: string;
+    completed_at: string | null;
 };
 
 export type AdminBackupPaginatedResponse = {
@@ -817,11 +817,11 @@ export type ApplicationEggAttributes = {
         files: AdminEggConfigurationFiles;
         startup: {
             [key: string]: string | Array<string>;
-        };
-        stop: string;
+        } | null;
+        stop: string | null;
         logs: {
             [key: string]: string | number | boolean;
-        };
+        } | null;
         file_denylist: Array<string> | null;
         extends: number | null;
     };

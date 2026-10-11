@@ -13,6 +13,7 @@ use Knuckles\Scribe\Attributes\ResponseFromTransformer;
 use Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
+use Pterodactyl\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
@@ -32,6 +33,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
     /** @var array<string, class-string>|null */
     private ?array $transformerClasses = null;
+
+    /** @var array<string, true>|null */
+    private ?array $sessionOnlyEndpoints = null;
 
     /** @var OpenApiSchemaMap */
     private array $requestBodySchemas = [];
@@ -480,6 +484,31 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
+     * @return array<string, true> "METHOD uri" of every route that only accepts a browser session
+     */
+    private function sessionOnlyEndpoints(): array
+    {
+        if ($this->sessionOnlyEndpoints !== null) {
+            return $this->sessionOnlyEndpoints;
+        }
+
+        $map = [];
+        foreach (Route::getRoutes()->getRoutes() as $route) {
+            if (! in_array(RequireSessionAuthentication::class, $route->gatherMiddleware(), true)) {
+                continue;
+            }
+
+            foreach ($route->methods() as $httpMethod) {
+                if (is_string($httpMethod)) {
+                    $map[$this->anonymousEndpointKey($httpMethod, $route->uri())] = true;
+                }
+            }
+        }
+
+        return $this->sessionOnlyEndpoints = $map;
+    }
+
+    /**
      * @return array<string, class-string> map of "METHOD uri" to the transformer class
      *                                     declared by the route action's attribute
      */
@@ -793,8 +822,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ],
                 'identifier' => [
                     'type' => 'string',
-                    'pattern' => '^usr_[a-zA-Z0-9]+$',
-                    'example' => 'usr_1a2b3c4d',
+                    'pattern' => '^user_[a-z2-7]{26}$',
+                    'example' => 'user_tkfxy3k6j5bsdgdwci2fm6e2xq',
                 ],
             ],
         ];
@@ -921,6 +950,13 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      */
     private function normalizeBrowserSessionOperation(array $pathItem, OutputEndpointData $endpoint): array
     {
+        if (isset($this->sessionOnlyEndpoints()[$this->anonymousEndpointKey(mb_strtoupper($endpoint->httpMethods[0]), $endpoint->uri)])) {
+            // RequireSessionAuthentication refuses every API key on these routes.
+            $pathItem['security'] = [['panelSession' => []]];
+
+            return $pathItem;
+        }
+
         if (! str_starts_with($endpoint->uri, 'auth/') && $endpoint->uri !== 'sanctum/csrf-cookie') {
             return $pathItem;
         }

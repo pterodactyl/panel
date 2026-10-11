@@ -75,7 +75,11 @@ export const adminListExtensions = <ThrowOnError extends boolean = true>(options
 export const adminInstallExtension = <ThrowOnError extends boolean = true>(options: Options<AdminInstallExtensionData, ThrowOnError>): RequestResult<AdminInstallExtensionResponses, AdminInstallExtensionErrors, ThrowOnError> => (options.client ?? client).post<AdminInstallExtensionResponses, AdminInstallExtensionErrors, ThrowOnError>({
     ...formDataBodySerializer,
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions',
     ...options,
     headers: {
@@ -115,7 +119,11 @@ export const adminGetExtensionSettings = <ThrowOnError extends boolean = true>(o
  */
 export const adminUpdateExtensionSettings = <ThrowOnError extends boolean = true>(options: Options<AdminUpdateExtensionSettingsData, ThrowOnError>): RequestResult<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError> => (options.client ?? client).patch<AdminUpdateExtensionSettingsResponses, AdminUpdateExtensionSettingsErrors, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}/settings',
     ...options,
     headers: {
@@ -143,7 +151,11 @@ export const adminGetExtensionIcon = <ThrowOnError extends boolean = true>(optio
  */
 export const adminClearExtensionSettingFile = <ThrowOnError extends boolean = true>(options: Options<AdminClearExtensionSettingFileData, ThrowOnError>): RequestResult<AdminClearExtensionSettingFileResponses, AdminClearExtensionSettingFileErrors, ThrowOnError> => (options.client ?? client).delete<AdminClearExtensionSettingFileResponses, AdminClearExtensionSettingFileErrors, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}/settings/{input}/file',
     ...options
 });
@@ -156,7 +168,11 @@ export const adminClearExtensionSettingFile = <ThrowOnError extends boolean = tr
 export const adminUploadExtensionSettingFile = <ThrowOnError extends boolean = true>(options: Options<AdminUploadExtensionSettingFileData, ThrowOnError>): RequestResult<AdminUploadExtensionSettingFileResponses, AdminUploadExtensionSettingFileErrors, ThrowOnError> => (options.client ?? client).post<AdminUploadExtensionSettingFileResponses, AdminUploadExtensionSettingFileErrors, ThrowOnError>({
     ...formDataBodySerializer,
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}/settings/{input}/file',
     ...options,
     headers: {
@@ -172,7 +188,11 @@ export const adminUploadExtensionSettingFile = <ThrowOnError extends boolean = t
  */
 export const adminEnableExtension = <ThrowOnError extends boolean = true>(options: Options<AdminEnableExtensionData, ThrowOnError>): RequestResult<AdminEnableExtensionResponses, AdminEnableExtensionErrors, ThrowOnError> => (options.client ?? client).post<AdminEnableExtensionResponses, AdminEnableExtensionErrors, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}/enable',
     ...options
 });
@@ -184,7 +204,11 @@ export const adminEnableExtension = <ThrowOnError extends boolean = true>(option
  */
 export const adminDisableExtension = <ThrowOnError extends boolean = true>(options: Options<AdminDisableExtensionData, ThrowOnError>): RequestResult<AdminDisableExtensionResponses, AdminDisableExtensionErrors, ThrowOnError> => (options.client ?? client).post<AdminDisableExtensionResponses, AdminDisableExtensionErrors, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}/disable',
     ...options
 });
@@ -195,7 +219,11 @@ export const adminDisableExtension = <ThrowOnError extends boolean = true>(optio
  * Deletes extension files, published assets, settings, subuser permission grants, and the install record.
  */
 export const adminRemoveExtension = <ThrowOnError extends boolean = true>(options: Options<AdminRemoveExtensionData, ThrowOnError>): RequestResult<AdminRemoveExtensionResponses, AdminRemoveExtensionErrors, ThrowOnError> => (options.client ?? client).delete<AdminRemoveExtensionResponses, AdminRemoveExtensionErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{
+            in: 'cookie',
+            name: 'pterodactyl_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/extensions/{extension}',
     ...options
 });
