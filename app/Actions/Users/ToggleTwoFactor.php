@@ -14,6 +14,7 @@ use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\RecoveryToken;
 use Pterodactyl\Models\User;
 use Pterodactyl\Support\JsonValueGuard;
@@ -46,7 +47,7 @@ final readonly class ToggleTwoFactor implements TogglesTwoFactor
 
         throw_unless($isValidToken, TwoFactorAuthenticationTokenInvalid::class);
 
-        return DB::transaction(function () use ($user, $toggleState): array {
+        $tokens = DB::transaction(function () use ($user, $toggleState): array {
             // Now that we're enabling 2FA on the account, generate 10 recovery tokens for the account
             // and store them hashed in the database. We'll return them to the caller so that the user
             // can see and save them.
@@ -86,5 +87,9 @@ final readonly class ToggleTwoFactor implements TogglesTwoFactor
 
             return $tokens;
         });
+
+        Activity::event($user->use_totp ? 'user:two-factor.create' : 'user:two-factor.delete')->subject($user)->log();
+
+        return $tokens;
     }
 }

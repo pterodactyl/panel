@@ -118,6 +118,12 @@ test('disable two factor', function (): void {
     $response = $this->postJson(route('api.admin.users.disable-2fa', ['user' => $user->id]));
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseHas('users', ['id' => $user->id, 'use_totp' => false, 'totp_secret' => null]);
+    // The user's own feed shows the change once.
+    expect($user->activity()->pluck('event')->all())->toBe(['user:two-factor.delete']);
+
+    // Disabling it again changes nothing, so nothing more reaches the user's feed.
+    $this->postJson(route('api.admin.users.disable-2fa', ['user' => $user->id]))->assertNoContent();
+    expect($user->activity()->count())->toBe(1);
 });
 test('disable two factor goes through the contract', function (): void {
     $user = User::factory()->create(['use_totp' => true, 'totp_secret' => 'encrypted-secret']);

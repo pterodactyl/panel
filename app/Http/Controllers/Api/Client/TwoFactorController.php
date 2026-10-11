@@ -17,7 +17,6 @@ use Pterodactyl\Contracts\Users\DisablesTwoFactor;
 use Pterodactyl\Contracts\Users\SetsUpTwoFactor;
 use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Requests\Api\Client\Account\DisableTwoFactorRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\EnableTwoFactorRequest;
 use Pterodactyl\Support\JsonValueGuard;
@@ -103,8 +102,6 @@ class TwoFactorController extends ClientApiController
 
         $tokens = $twoFactor->toggle($user, $code, true);
 
-        Activity::event('user:two-factor.create')->log();
-
         return new JsonResponse([
             'object' => 'recovery_tokens',
             'attributes' => [
@@ -130,8 +127,6 @@ class TwoFactorController extends ClientApiController
         throw_unless(Hash::check($password, $user->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
 
         $twoFactor->disable($user);
-
-        Activity::event('user:two-factor.delete')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

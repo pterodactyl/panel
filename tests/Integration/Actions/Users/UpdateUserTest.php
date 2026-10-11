@@ -98,6 +98,20 @@ test('the email and password actions meet the user rules', function (): void {
     expect(Hash::check('long-enough', $user->refresh()->password))->toBeTrue();
 });
 
+test('email and password changes made without the http api are logged on the user\'s feed', function (): void {
+    $user = User::factory()->create(['email' => 'old@example.com']);
+    $emails = $this->app->make(UpdatesUserEmails::class);
+
+    $emails->update($user, 'OLD@example.com');
+    expect($user->activity()->where('event', 'user:account.email-changed')->exists())->toBeFalse();
+
+    $emails->update($user, 'new@example.com');
+    $this->app->make(UpdatesUserPasswords::class)->update($user, 'long-enough');
+
+    expect($this->assertActivityOn('user:account.email-changed', $user)->properties->all())->toBe(['old' => 'old@example.com', 'new' => 'new@example.com']);
+    $this->assertActivityOn('user:account.password-changed', $user);
+});
+
 test('a password of only spaces counts as no password, as Laravel validation treats it', function (): void {
     $user = User::factory()->create();
     $hash = $user->password;

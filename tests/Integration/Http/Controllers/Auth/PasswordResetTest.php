@@ -43,6 +43,7 @@ test('password can be reset with valid token', function () {
     expect(Hash::check('new-password-123', $user->refresh()->password))->toBeTrue();
     Event::assertDispatched(fn (PasswordReset $event) => $event->user->is($user));
     Event::assertDispatched(fn (PasswordChanged $event) => $event->user->is($user));
+    $this->assertActivityOn('user:account.password-changed', $user);
 });
 test('two factor account is sent back to login after reset', function () {
     $user = User::factory()->create(['use_totp' => true, 'totp_secret' => encrypt(str_repeat('a', 16))]);

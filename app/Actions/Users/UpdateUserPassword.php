@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
 
 final readonly class UpdateUserPassword implements UpdatesUserPasswords
@@ -23,6 +24,8 @@ final readonly class UpdateUserPassword implements UpdatesUserPasswords
         $user = $this->users->update($user, ['password' => $password]);
         $user->setRememberToken(Str::random(60));
         $user->save();
+
+        Activity::event('user:account.password-changed')->subject($user)->log();
 
         // Users changing their own password keep this session. A reset link has no session
         // to keep, and is never signed in here: an account with two-factor authentication
