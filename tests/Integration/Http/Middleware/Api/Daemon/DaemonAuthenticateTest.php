@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Integration\Http\Middleware\Api\Daemon\DaemonAuthenticateTest;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Tests\Assertions\MiddlewareAttributeAssertionsTrait;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-uses(IntegrationTestCase::class, RequestMockHelpers::class, MocksMiddlewareClosure::class, MiddlewareAttributeAssertionsTrait::class);
+uses(IntegrationTestCase::class, DatabaseTransactions::class, RequestMockHelpers::class, MocksMiddlewareClosure::class, MiddlewareAttributeAssertionsTrait::class);
 beforeEach(function () {
     $this->buildRequestMock();
 });

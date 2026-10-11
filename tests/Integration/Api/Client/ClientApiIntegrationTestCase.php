@@ -4,39 +4,21 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use InvalidArgumentException;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Task;
-use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Tests\Integration\TestResponse;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
-    /**
-     * Cleanup after running tests.
-     */
-    protected function tearDown(): void
-    {
-        Database::query()->forceDelete();
-        DatabaseHost::query()->forceDelete();
-        Backup::query()->forceDelete();
-        Server::query()->forceDelete();
-        Node::query()->forceDelete();
-        Location::query()->forceDelete();
-        User::query()->forceDelete();
-
-        parent::tearDown();
-    }
+    use DatabaseTransactions;
 
     /**
      * Override the default createTestResponse from Illuminate so that we can

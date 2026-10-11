@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Integration\Console\Commands\Location\LocationCommandsTest;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
-uses(IntegrationTestCase::class);
+uses(IntegrationTestCase::class, DatabaseTransactions::class);
 test('make creates a location', function () {
     $this->artisan('p:location:make', ['--short' => 'cli-made', '--long' => 'Made from the CLI'])->assertExitCode(0);
     $this->assertDatabaseHas('locations', ['short' => 'cli-made', 'long' => 'Made from the CLI']);
