@@ -1,0 +1,27 @@
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_a3e898d1b728ed 7,124
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_4cabae41bceed9::t_a3e898d1b728ed 9,78
+app/Actions/Users/ToggleTwoFactor.php
+  s_4cabae41bceed9::t_a3e898d1b728ed 7,45
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_4cabae41bceed9::t_a3e898d1b728ed 8,66
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_4cabae41bceed9::t_a3e898d1b728ed 10,118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1724a1e0d97e033d8bb6189e27985155a348d346",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
