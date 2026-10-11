@@ -6,6 +6,7 @@ namespace Pterodactyl\Services\Eggs;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use JsonException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Support\JsonEmptyObject;
@@ -246,10 +247,27 @@ class EggConfigurationService
         return $files;
     }
 
-    /** @return array<string, ApiValue9> */
+    /**
+     * Decodes one of an egg's JSON config blocks. Wings receives every server on a node in
+     * one list, so a block that is empty or not JSON is reported and read as empty rather
+     * than failing the list for every other server.
+     *
+     * @return array<string, ApiValue9>
+     */
     private function jsonObject(?string $encoded): array
     {
-        $value = JsonValueGuard::decode($encoded ?? '{}');
+        if ($encoded === null || mb_trim($encoded) === '') {
+            return [];
+        }
+
+        try {
+            $value = JsonValueGuard::decode($encoded);
+        } catch (JsonException $jsonException) {
+            report($jsonException);
+
+            return [];
+        }
+
         if (! is_array($value)) {
             return [];
         }

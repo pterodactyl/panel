@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\EggConfigurationServiceTest;
 
+use Illuminate\Support\Facades\Exceptions;
+use JsonException;
 use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
@@ -29,6 +31,14 @@ test('preserves an enabled strip ansi flag', function () {
 
     expect($service->handle($server)['startup']['strip_ansi'])->toBeTrue();
 });
+test('reads config that is empty or not json as empty instead of failing', function (string $broken) {
+    $exceptions = Exceptions::fake();
+    $server = server($broken, $broken);
+    $service = new EggConfigurationService(configurationStructure($server));
+
+    expect($service->handle($server))->toBe(['startup' => ['done' => null, 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => 'stop'], 'configs' => []]);
+    $broken === '' ? $exceptions->assertNothingReported() : $exceptions->assertReported(JsonException::class);
+})->with(['empty' => '', 'not json' => '{"done":']);
 function server(string $configurationFiles, ?string $configurationStartup = '{"done":"Server started","strip_ansi":false}', ?string $configurationStop = 'stop'): Server
 {
     $egg = new Egg();
