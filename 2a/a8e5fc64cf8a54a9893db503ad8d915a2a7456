@@ -1,0 +1,22 @@
+resources/scripts/components/server/console/useTerminal.ts
+  s_4cabae41bceed9::t_578eff079a3722 193-195,197
+resources/scripts/components/server/console/useTerminal.spec.tsx
+  s_4cabae41bceed9::t_43e9179554a184 42,46-48
+  s_4cabae41bceed9::t_0ef4247bb9cceb 138-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2aa8e5fc64cf8a54a9893db503ad8d915a2a7456",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
