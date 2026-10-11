@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 import { useCurrentServerIdentifier } from '@/api/server/queries';
 import Button from '@/components/elements/Button';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -5,6 +6,7 @@ import { useSocketConnected, useSocketInstance } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
 import { cn } from '@/lib/cn';
 import { ChevronsDown, ChevronsRight } from 'lucide-react';
+import ConsoleScrollbar from '@/components/server/console/ConsoleScrollbar';
 import { useConsoleCommandHistory } from '@/components/server/console/useConsoleCommandHistory';
 import { useConsoleSocketLogs } from '@/components/server/console/useConsoleSocketLogs';
 import { useTerminal } from '@/components/server/console/useTerminal';
@@ -13,10 +15,8 @@ const terminalClass = 'relative flex flex-col w-full';
 
 const overflowsContainerClass = '-ml-4 w-[calc(100%+2rem)] sm:ml-0 sm:w-full';
 
-const terminalContainerClass = [
-    'relative min-h-[16rem] flex-1 rounded-t-sm bg-terminal p-1 font-mono text-sm caret-transparent sm:p-2',
-    '[&_#terminal]:h-full [&_#terminal::-webkit-scrollbar-track]:w-2 [&_#terminal::-webkit-scrollbar-thumb]:bg-terminal',
-].join(' ');
+const terminalContainerClass =
+    'relative min-h-[16rem] flex-1 rounded-t-sm bg-terminal p-1 font-mono text-sm caret-transparent sm:p-2';
 
 const commandInputClass = [
     'peer relative w-full bg-terminal px-2 py-2 pr-4 pl-10 font-mono text-sm text-foreground sm:rounded-b-sm',
@@ -28,7 +28,9 @@ const commandIconClass =
     'absolute left-0 top-0 z-10 flex h-full select-none items-center px-3 text-foreground transition-colors duration-100 peer-focus:text-foreground peer-focus:animate-pulse';
 
 export default function Console() {
-    const { ref, retry, scrolledUp, setScrolledUp, terminal, terminalError, terminalReady } = useTerminal();
+    const { ref, retry, scroll, terminal, terminalError, terminalReady } = useTerminal();
+    // Smooth scrolling can settle a fraction of a line above the bottom, which still counts as at the bottom.
+    const scrolledUp = useSyncExternalStore(scroll.subscribe, () => scroll.getSnapshot().viewportY > 0.5);
     const connected = useSocketConnected();
     const instance = useSocketInstance();
     const [canSendCommands] = usePermissions(['control.console']);
@@ -56,17 +58,17 @@ export default function Console() {
                     'rounded-b-sm': !canSendCommands,
                 })}
             >
-                <div className='h-full w-full' ref={ref} />
+                <div className='relative h-full w-full'>
+                    <div className='h-full w-full' ref={ref} />
+                    <ConsoleScrollbar scroll={scroll} terminal={terminal} />
+                </div>
                 {scrolledUp && (
                     <button
                         type='button'
-                        onClick={() => {
-                            terminal.current?.scrollToBottom();
-                            setScrolledUp(false);
-                        }}
+                        onClick={() => terminal.current?.scrollToBottom()}
                         aria-label='Scroll to bottom'
                         className={
-                            // right-5 clears Ghostty's ~14px canvas scrollbar.
+                            // right-5 clears the scrollbar in the terminal's right gutter.
                             'absolute bottom-3 right-5 z-10 rounded-full bg-popover/90 p-2 text-foreground shadow-lg transition-colors hover:bg-popover'
                         }
                     >

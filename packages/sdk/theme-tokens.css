@@ -51,6 +51,8 @@
     --color-sidebar-ring: var(--sidebar-ring);
     --color-terminal: var(--terminal-background);
     --color-terminal-foreground: var(--terminal-foreground);
+    --color-scrollbar-thumb: var(--scrollbar-thumb);
+    --color-scrollbar-thumb-fill: var(--scrollbar-thumb-fill);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);

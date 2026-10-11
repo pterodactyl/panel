@@ -3,6 +3,7 @@ import type { ITerminalOptions, ITheme } from 'ghostty-web';
 import { FitAddon, Ghostty, Terminal, UrlRegexProvider } from 'ghostty-web';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
+import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
 import { TouchScrollAddon } from '@/components/server/console/TouchScrollAddon';
 
 // Ghostty reads a slot that resolves to pure black (#000000) as unset.
@@ -102,8 +103,12 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
     };
 };
 
-/** Wheel and touch scrolling leave the viewport between lines; draw it snapped to a whole line. */
-const renderWholeLines = (term: Terminal) => {
+/**
+ * Draws the viewport snapped to a whole line, since wheel and touch scrolling leave it between
+ * lines. Never draws Ghostty's scrollbar: it paints over the last columns of output rather than
+ * the gutter FitAddon reserves, so ConsoleScrollbar draws one in the gutter instead.
+ */
+const adjustRendering = (term: Terminal) => {
     const renderer = term.renderer;
 
     if (!renderer) {
@@ -112,8 +117,33 @@ const renderWholeLines = (term: Terminal) => {
 
     const render = renderer.render.bind(renderer);
 
-    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider, scrollbarOpacity) =>
-        render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, scrollbarOpacity);
+    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider) =>
+        render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, 0);
+};
+
+// Ghostty's scrollbar hit area: the canvas's right 12px (an 8px bar inset 4px from the edge).
+const CANVAS_SCROLLBAR_HIT_WIDTH = 12;
+
+/**
+ * Ghostty still treats a press on the right edge of the canvas as grabbing the scrollbar it no
+ * longer draws, which would jump the history when someone clicks the end of a line. Registered
+ * before `open()` so it runs ahead of Ghostty's own listener on the mount.
+ */
+const ignoreCanvasScrollbarPresses = (mount: HTMLElement, signal: AbortSignal) => {
+    mount.addEventListener(
+        'mousedown',
+        (event) => {
+            const canvas = event.target;
+
+            if (
+                canvas instanceof HTMLCanvasElement &&
+                event.offsetX >= canvas.clientWidth - CANVAS_SCROLLBAR_HIT_WIDTH
+            ) {
+                event.stopImmediatePropagation();
+            }
+        },
+        { capture: true, signal }
+    );
 };
 
 /** The canvas has no DOM selection, so copy reads the terminal's own selection. */
@@ -135,8 +165,8 @@ const copySelectionOnShortcut = (term: Terminal) => {
     });
 };
 
-/** Opens a read-only console terminal in `mount`, sized to fill it. */
-const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
+/** Opens a read-only console terminal in `mount`, sized to fill it; `signal` removes its listeners on the mount. */
+const openTerminal = (mount: HTMLElement, options: ITerminalOptions, signal: AbortSignal) => {
     const term = new Terminal({ ...terminalProps, ...options });
     const fit = new FitAddon();
 
@@ -144,6 +174,7 @@ const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
     // every tap, even with stdin disabled. Commands go through the console's own input, so keep the
     // on-screen keyboard closed for both.
     mount.setAttribute('inputmode', 'none');
+    ignoreCanvasScrollbarPresses(mount, signal);
     term.open(mount);
     term.textarea?.setAttribute('inputmode', 'none');
 
@@ -154,7 +185,7 @@ const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
 
     term.registerLinkProvider(new UrlRegexProvider(term));
     preserveScrollPositionOnWrite(term);
-    renderWholeLines(term);
+    adjustRendering(term);
     copySelectionOnShortcut(term);
 
     return { term, fit };
@@ -177,7 +208,7 @@ export const useTerminal = () => {
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useRef<Terminal | null>(null);
     const [terminalReady, setTerminalReady] = useState(false);
-    const [scrolledUp, setScrolledUp] = useState(false);
+    const [scroll] = useState(() => new TerminalScrollStore());
     const [terminalError, setTerminalError] = useState<Error | null>(null);
     const [revision, setRevision] = useState(0);
     const appliedStyle = useRef<string | null>(null);
@@ -201,6 +232,7 @@ export const useTerminal = () => {
     useEffect(() => {
         let cancelled = false;
         let mountedTerminal: Terminal | null = null;
+        const listeners = new AbortController();
         const mount = ref.current;
 
         if (!mount) {
@@ -214,14 +246,9 @@ export const useTerminal = () => {
                 }
 
                 const style = buildTerminalStyle();
-                const { term, fit } = openTerminal(mount, { ...style, ghostty });
+                const { term, fit } = openTerminal(mount, { ...style, ghostty }, listeners.signal);
 
-                term.onScroll(() => {
-                    if (!cancelled) {
-                        setScrolledUp(term.getViewportY() > 0.5);
-                    }
-                });
-
+                scroll.attach(term);
                 terminal.current = term;
                 appliedStyle.current = JSON.stringify(style);
                 mountedTerminal = term;
@@ -245,14 +272,15 @@ export const useTerminal = () => {
 
         return () => {
             cancelled = true;
+            listeners.abort();
+            scroll.detach();
             // Also disposes the terminal's addons.
             mountedTerminal?.dispose();
             terminal.current = null;
             appliedStyle.current = null;
             setTerminalReady(false);
-            setScrolledUp(false);
         };
-    }, [revision]);
+    }, [revision, scroll]);
 
-    return { ref, retry, scrolledUp, setScrolledUp, terminal, terminalError, terminalReady };
+    return { ref, retry, scroll, terminal, terminalError, terminalReady };
 };
