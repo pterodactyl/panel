@@ -1,0 +1,21 @@
+tests/Integration/Api/Admin/Servers/ServerBackupControllerTest.php
+  s_4cabae41bceed9::t_96a486a424dff7 38-40,44,51,58
+routes/api-admin.php
+  s_4cabae41bceed9::t_96a486a424dff7 206
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ea2e7d79426c727c25b4e6266e8ec5d2c6a1e3fa",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
