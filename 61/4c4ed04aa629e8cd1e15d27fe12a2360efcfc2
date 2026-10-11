@@ -1,0 +1,25 @@
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_435c8f27ba451d 1814,1816,1818,1820,1822,1824,1826,1828,1834,1836
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_4cabae41bceed9::t_435c8f27ba451d 31-36
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_435c8f27ba451d 173
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_435c8f27ba451d 1649,1651,1653,1655,1657,1659,1661,1663,1669,1671
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "614c4ed04aa629e8cd1e15d27fe12a2360efcfc2",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
