@@ -38,6 +38,16 @@ trait ValidatesExtensionFields
     }
 
     /**
+     * The validated input, with the validated extension field values under `extensions`.
+     *
+     * @return ActionInput
+     */
+    public function actionInput(): array
+    {
+        return [...parent::actionInput(), 'extensions' => $this->extensionValues()];
+    }
+
+    /**
      * Refuses extension values the signed-in user may not change before anything is
      * validated, then validates each extension's values once the request's own rules ran,
      * whether the request builds its validator itself or Laravel does.

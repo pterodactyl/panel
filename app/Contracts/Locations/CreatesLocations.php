@@ -9,9 +9,10 @@ use Pterodactyl\Models\Location;
 interface CreatesLocations
 {
     /**
-     * Create a new location from validated attributes.
+     * Create a new location. The input is validated here, so it can come straight from any caller;
+     * extension field values go under `extensions` as ValidatedExtensionValues.
      *
-     * @param  LocationCreationData  $data
+     * @param  ActionInput  $input  short and long
      */
-    public function create(array $data): Location;
+    public function create(array $input): Location;
 }

@@ -15,17 +15,15 @@ final readonly class UpdateLocation implements UpdatesLocations
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * Update an existing location from validated attributes.
-     *
-     * @param  LocationUpdateData  $data
+     * @param  ActionInput  $input
      */
-    public function update(Location $location, array $data): Location
+    public function update(Location $location, array $input): Location
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateLocation::attributes($input, $location);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        DB::transaction(function () use ($location, $data, $extensions): void {
-            $location->update($data);
+        DB::transaction(function () use ($location, $attributes, $extensions): void {
+            $location->update($attributes);
             $this->extensions->save($location, $extensions);
         });
 

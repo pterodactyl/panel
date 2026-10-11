@@ -91,7 +91,7 @@ class LocationController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
     {
-        $location = $locations->create($request->payload());
+        $location = $locations->create($request->actionInput());
 
         return Fractal::item($location)
             ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
@@ -113,7 +113,7 @@ class LocationController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
     {
-        $location = $locations->update($location, $request->payload());
+        $location = $locations->update($location, $request->actionInput());
 
         return Fractal::item($location)
             ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())

@@ -47,7 +47,7 @@ parameters:
         ApiKeyCreationData: 'array{memo: string, user_id: int, allowed_ips?: list<string>}'
         ValidationData: 'array<string, JsonValue>'
         # Input an action validates itself, from a request or from any other caller.
-        ActionInput: 'array<string, ApiValue9>'
+        ActionInput: 'array<string, ApiValue9|\Pterodactyl\Services\Extensions\ValidatedExtensionValues>'
         SoftwareVersionData: 'array{panel?: string, wings?: string, discord?: string, donations?: string}'
         ServerBuildModificationData: 'array{oom_disabled?: bool, memory?: int, swap?: int, io?: int, cpu?: int, threads?: string|null, disk?: int, allocation_id?: int, database_limit?: int|null, allocation_limit?: int|null, backup_limit?: int|null, add_allocations?: list<int>, remove_allocations?: list<int>}'
         ServerStartupModificationData: 'array{environment?: array<string, ApiScalar>, egg_id?: int, startup?: string, skip_scripts?: bool, docker_image?: string}'
@@ -90,8 +90,6 @@ parameters:
         DatabaseHostUpdateData: 'array{name: string, host: string, port: int, username: string, password?: string|null, node_id: int|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         EggVariableData: 'array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
-        LocationCreationData: 'array{short: string, long?: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
-        LocationUpdateData: 'array{short?: string, long?: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         MountData: 'array{name: string, description?: string|null, source: string, target: string, read_only?: bool, user_mountable?: bool, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         TagData: 'array{name: string, slug: string, color?: string|null}'
         ApiKeyUpdateData: 'array{memo: string|null}'

@@ -7,10 +7,9 @@ namespace Pterodactyl\Console\Commands\Location;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\LocationRules;
 
 #[Description('Creates a new location on the system via the CLI.')]
 #[Signature('p:location:make
@@ -26,19 +25,19 @@ class MakeLocationCommand extends Command
         $short = $this->option('short') ?? $this->ask(trans('command/messages.location.ask_short'));
         $long = $this->option('long') ?? $this->ask(trans('command/messages.location.ask_long'));
 
-        $validator = Validator::make(['short' => $short, 'long' => $long], LocationRules::rules());
-        if ($validator->fails()) {
-            foreach ($validator->errors()->all() as $error) {
+        try {
+            $location = $locations->create([
+                'short' => JsonValueGuard::nullableString($short),
+                'long' => JsonValueGuard::nullableString($long),
+            ]);
+        } catch (ValidationException $validationException) {
+            foreach ($validationException->validator->errors()->all() as $error) {
                 $this->error($error);
             }
 
             return 1;
         }
 
-        $location = $locations->create([
-            'short' => JsonValueGuard::string($short),
-            'long' => JsonValueGuard::nullableString($long),
-        ]);
         $this->line(trans('command/messages.location.created', [
             'name' => $location->short,
             'id' => $location->id,

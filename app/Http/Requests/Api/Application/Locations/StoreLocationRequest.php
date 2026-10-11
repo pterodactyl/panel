@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Application\Locations;
 
 use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Actions\Locations\CreateLocation;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Validation\LocationRules;
 
 class StoreLocationRequest extends ApplicationApiRequest
 {
@@ -26,7 +26,7 @@ class StoreLocationRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
-        return LocationRules::rules();
+        return CreateLocation::rules();
     }
 
     /**
@@ -37,16 +37,6 @@ class StoreLocationRequest extends ApplicationApiRequest
         return [
             'long' => 'Location Description',
             'short' => 'Location Identifier',
-        ];
-    }
-
-    /** @return LocationCreationData */
-    public function payload(): array
-    {
-        return [
-            'short' => $this->string('short')->toString(),
-            'long' => $this->filled('long') ? $this->string('long')->toString() : null,
-            'extensions' => $this->extensionValues(),
         ];
     }
 
