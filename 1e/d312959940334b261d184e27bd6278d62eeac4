@@ -1,0 +1,39 @@
+tests/Integration/Http/Controllers/Auth/PasswordResetTest.php
+  s_4cabae41bceed9::t_a4bec7532d4c99 46
+tests/Integration/Api/Client/TwoFactorControllerTest.php
+  s_4cabae41bceed9::t_f0591eb6e4dfbe 75,91
+app/Actions/Users/DisableTwoFactor.php
+  s_4cabae41bceed9::t_0db878c00b4c63 8,15-16,22-25
+app/Actions/Users/ToggleTwoFactor.php
+  s_4cabae41bceed9::t_0db878c00b4c63 17,50,90-93
+app/Actions/Users/UpdateUserEmail.php
+  s_4cabae41bceed9::t_0db878c00b4c63 10,38
+  s_4cabae41bceed9::t_2fda9dbfc43d8d 39
+app/Http/Controllers/Api/Admin/Users/DisableTwoFactorController.php
+  s_4cabae41bceed9::t_0db878c00b4c63 31
+app/Http/Controllers/Api/Client/AccountController.php
+  s_4cabae41bceed9::t_0db878c00b4c63 72,90
+app/Actions/Users/UpdateUserPassword.php
+  s_4cabae41bceed9::t_0db878c00b4c63 11,28
+  s_4cabae41bceed9::t_a9f4d71741f01e 29
+tests/Integration/Actions/Users/UpdateUserTest.php
+  s_4cabae41bceed9::t_a4bec7532d4c99 101-114
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_4cabae41bceed9::t_a4bec7532d4c99 121-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1ed312959940334b261d184e27bd6278d62eeac4",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
