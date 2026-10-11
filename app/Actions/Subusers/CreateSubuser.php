@@ -51,7 +51,9 @@ final readonly class CreateSubuser implements CreatesSubusers
     private function createUser(string $email): User
     {
         $localPart = strtok($email, '@') ?: $email;
-        $username = mb_substr(preg_replace('/([^\w\.-]+)/', '', $localPart) ?? '', 0, 64).Str::random(3);
+        // A username must start with a letter or number, so leading punctuation such as the
+        // underscore in "_alice@example.com" is dropped; the random suffix ends it with one.
+        $username = mb_substr(mb_ltrim(preg_replace('/([^\w\.-]+)/', '', $localPart) ?? '', '_.-'), 0, 64).Str::random(3);
 
         return $this->users->create([
             'email' => $email,
