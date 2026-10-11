@@ -18,7 +18,6 @@ use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -62,11 +61,7 @@ class ApiKeyController extends ClientApiController
     #[ScribeResponse(self::LIMIT_ERROR, status: 400, description: 'The account already has the maximum number of API keys.')]
     public function store(StoreApiKeyRequest $request, CreatesAccountApiKeys $creation): array
     {
-        $token = $creation->create(
-            $request->user(),
-            JsonValueGuard::nullableString($request->validated('description')),
-            $request->validated('allowed_ips') === null ? null : JsonValueGuard::stringList($request->validated('allowed_ips')),
-        );
+        $token = $creation->create($request->user(), $request->safe()->string('description')->toString(), $request->allowedIps());
 
         Activity::event('user:api-key.create')
             ->subject($token->accessToken)

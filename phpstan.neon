@@ -43,7 +43,6 @@ parameters:
         ViteManifest: 'array<string, ViteManifestEntry>'
         JwtClaimValue: 'JsonValue|\DateTimeImmutable'
         JwtClaims: 'array<non-empty-string, JwtClaimValue>'
-        ApiKeyCreationData: 'array{memo: string, user_id: int, allowed_ips?: list<string>}'
         ValidationData: 'array<string, JsonValue>'
         # Input an action validates itself, from a request or from any other caller.
         ActionInput: 'array<string, ApiValue9|\Pterodactyl\Services\Extensions\ValidatedExtensionValues>'
@@ -88,7 +87,6 @@ parameters:
         DatabaseModelCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null, server_id: int, username: string, password: string}'
         EggVariableData: 'array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
-        ApiKeyUpdateData: 'array{memo: string|null}'
         SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'
         EggCreationData: 'array{name: string, description: string|null, docker_images: array<string, string>, force_outgoing_ip: bool, features: list<string>, startup: string, file_denylist?: list<string>, config_from?: int|null, config_stop?: string|null, config_startup?: string|null, config_logs?: string|null, config_files?: string|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         ServerTransferData: 'array{node_id: int, allocation_id: int, allocation_additional: list<int>}'

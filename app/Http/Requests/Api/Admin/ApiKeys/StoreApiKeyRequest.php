@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\ApiKeys;
 
+use Pterodactyl\Actions\Api\CreateApiKey;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Validation\ApiKeyRules;
-use UnexpectedValueException;
 
 class StoreApiKeyRequest extends AdminApiRequest
 {
@@ -18,20 +16,14 @@ class StoreApiKeyRequest extends AdminApiRequest
     }
 
     /**
-     * Validation rules for creating an application API key.
+     * Validation rules for creating an application API key: its memo, then its resource
+     * permissions.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $modelRules = ApiKeyRules::rules();
-        $rules = ['memo' => $modelRules['memo']];
-        foreach (AdminAcl::getResourceList() as $resource) {
-            $column = AdminAcl::COLUMN_IDENTIFIER.$resource;
-            $rules[$column] = $modelRules[$column];
-        }
-
-        return $rules;
+        return ['memo' => CreateApiKey::rules()['memo'], ...CreateApiKey::permissionRules()];
     }
 
     /** Rename fields to be more clear in error messages. */
@@ -43,23 +35,23 @@ class StoreApiKeyRequest extends AdminApiRequest
     }
 
     /**
-     * The per-resource permission values from the validated payload.
+     * The validated input without the resource permissions, which getKeyPermissions()
+     * returns.
      *
-     * @return array<string, int>
+     * @return ActionInput
+     */
+    public function actionInput(): array
+    {
+        return array_diff_key(parent::actionInput(), CreateApiKey::permissionRules());
+    }
+
+    /**
+     * The validated resource permissions, keyed by r_* column, for the action to read.
+     *
+     * @return ActionInput
      */
     public function getKeyPermissions(): array
     {
-        $permissions = [];
-        foreach ($this->validated() as $key => $value) {
-            if (! str_starts_with($key, AdminAcl::COLUMN_IDENTIFIER)) {
-                continue;
-            }
-
-            throw_unless(is_int($value), UnexpectedValueException::class, 'Validated API key permissions must be integers.');
-
-            $permissions[$key] = $value;
-        }
-
-        return $permissions;
+        return array_intersect_key(parent::actionInput(), CreateApiKey::permissionRules());
     }
 }

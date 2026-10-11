@@ -64,10 +64,7 @@ class ApiKeyController extends AdminApiController
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, status: 201, description: 'API key created.', resourceKey: 'api_key', meta: ['secret_token' => 'ptla_1234567890abcdef'])]
     public function store(StoreApiKeyRequest $request, CreatesApiKeys $keyCreator): JsonResponse
     {
-        $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [
-            'memo' => $request->string('memo')->toString(),
-            'user_id' => $request->user()->id,
-        ], $request->getKeyPermissions());
+        $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [...$request->actionInput(), 'user_id' => $request->user()->id], $request->getKeyPermissions());
         $key->load('user');
 
         Activity::event('admin:api-key.create')
@@ -117,7 +114,7 @@ class ApiKeyController extends AdminApiController
             ->where('identifier', $identifier)
             ->firstOrFail();
 
-        $key = $keyUpdater->update($key, ['memo' => JsonValueGuard::nullableString($request->validated('memo'))], $request->getKeyPermissions());
+        $key = $keyUpdater->update($key, $request->actionInput(), $request->getKeyPermissions());
         $key->load('user');
 
         Activity::event('admin:api-key.update')

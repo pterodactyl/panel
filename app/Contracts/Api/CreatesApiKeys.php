@@ -9,8 +9,14 @@ use Pterodactyl\Models\ApiKey;
 interface CreatesApiKeys
 {
     /**
-     * @param  ApiKeyCreationData  $data
-     * @param  array<string, int>  $permissions  The r_* ACL columns, only applied to application keys.
+     * Create an API key of the given type with a fresh identifier and token. The input and
+     * the permissions are validated here, so they can come straight from any caller. Each
+     * allowed IP must be an IP address or a CIDR range. The permissions are only applied to
+     * application keys: each is AdminAcl::NONE or AdminAcl::READ and AdminAcl::WRITE
+     * combined, and a resource left out gets AdminAcl::NONE.
+     *
+     * @param  ActionInput  $input  memo and user_id, and optionally allowed_ips
+     * @param  ActionInput  $permissions  the r_* column of any AdminAcl resource
      */
-    public function create(int $keyType, array $data, array $permissions = []): ApiKey;
+    public function create(int $keyType, array $input, array $permissions = []): ApiKey;
 }
