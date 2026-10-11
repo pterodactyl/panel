@@ -16,7 +16,6 @@ use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
 use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
@@ -75,8 +74,6 @@ class DatabaseController extends ClientApiController
     {
         $database = $deployDatabase->deploy($server, $request->actionInput());
 
-        Activity::event('server:database.create')->subject($database)->property('name', $database->database)->log();
-
         return Fractal::item($database)
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
@@ -97,14 +94,7 @@ class DatabaseController extends ClientApiController
     #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]
     public function rotatePassword(RotatePasswordRequest $request, RotatesDatabasePasswords $passwordService, Server $server, Database $database): array
     {
-        // The action commits its own transaction around the remote user change, so the
-        // activity is logged afterwards instead of wrapping a change it cannot undo.
         $passwordService->rotate($database);
-
-        Activity::event('server:database.rotate-password')
-            ->subject($database)
-            ->property('name', $database->database)
-            ->log();
 
         return Fractal::item($database->refresh())
             ->parseIncludes(['password'])
@@ -120,11 +110,6 @@ class DatabaseController extends ClientApiController
     public function delete(DeleteDatabaseRequest $request, DeletesDatabases $deleteDatabase, Server $server, Database $database): Response
     {
         $deleteDatabase->delete($database);
-
-        Activity::event('server:database.delete')
-            ->subject($database)
-            ->property('name', $database->database)
-            ->log();
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }

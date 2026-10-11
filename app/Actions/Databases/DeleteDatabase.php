@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Databases;
 use Exception;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
 
@@ -26,6 +27,10 @@ final readonly class DeleteDatabase implements DeletesDatabases
         $this->gateway->dropUser($database->username, $database->remote);
         $this->gateway->flush();
 
-        return $database->delete();
+        $deleted = $database->delete();
+
+        Activity::event('server:database.delete')->subject($database->server, $database)->property('name', $database->database)->log();
+
+        return $deleted;
     }
 }

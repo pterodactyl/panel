@@ -44,6 +44,7 @@ test('database password can be rotated', function () {
     expect($fake->createdUsers[0]['maxConnections'])->toBe($expectedMaxConnections);
     $fake->assertAssigned($database->database, $database->username, $database->remote);
     $fake->assertFlushed(1);
+    $this->assertActivityOn('server:database.rotate-password', $server, $database);
 });
 function getService(): RotatesDatabasePasswords
 {

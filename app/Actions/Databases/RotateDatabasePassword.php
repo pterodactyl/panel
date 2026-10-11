@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
@@ -35,6 +36,8 @@ final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
             $this->gateway->assignUserToDatabase($database->database, $database->username, $database->remote);
             $this->gateway->flush();
         });
+
+        Activity::event('server:database.rotate-password')->subject($database->server, $database)->property('name', $database->database)->log();
 
         return $password;
     }

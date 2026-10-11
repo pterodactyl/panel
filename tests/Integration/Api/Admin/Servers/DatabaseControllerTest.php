@@ -117,6 +117,8 @@ test('rotate password', function (): void {
     $gateway->assertFlushed(1);
     expect($gateway->count('createUser'))->toBe(1);
     $this->assertDatabaseHas('activity_logs', ['event' => 'admin:server-database.rotate-password']);
+    // The owner sees the rotation on the server's own feed.
+    expect($server->activity()->pluck('event')->all())->toBe(['server:database.rotate-password']);
 });
 test('a failed password rotation keeps the stored password and logs no activity', function (): void {
     $server = $this->createServerModel();

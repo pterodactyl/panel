@@ -13,6 +13,7 @@ use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
@@ -113,7 +114,7 @@ final class CreateDatabase implements CreatesDatabases
         $database = null;
 
         try {
-            return DB::transaction(function () use ($data, &$database): Database {
+            $database = DB::transaction(function () use ($data, &$database): Database {
                 $this->dynamic->set('dynamic', $data['database_host_id']);
                 $database = $this->createModel($data);
                 $this->gateway->createDatabase($database->database);
@@ -138,6 +139,10 @@ final class CreateDatabase implements CreatesDatabases
 
             throw $throwable;
         }
+
+        Activity::event('server:database.create')->subject($server, $database)->property('name', $database->database)->log();
+
+        return $database;
     }
 
     /** @param DatabaseModelCreationData $data */

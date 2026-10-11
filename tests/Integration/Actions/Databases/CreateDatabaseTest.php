@@ -102,6 +102,7 @@ test('server database can be created', function (): void {
 
     $fake->assertAssigned($name, $fake->createdUsers[0]['username'], '%');
     $fake->assertFlushed(1);
+    $this->assertActivityOn('server:database.create', $server, $response);
 });
 test('exception encountered while creating database attempts to cleanup', function (): void {
     $server = $this->createServerModel();
