@@ -6,6 +6,7 @@ namespace Pterodactyl\Services\Extensions;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Egg;
@@ -15,7 +16,6 @@ use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 /**
@@ -209,7 +209,7 @@ class ExtensionSettings
 
         $subjects = [];
         foreach (self::SCOPES as $alias => $model) {
-            $subjects[$alias.'_id'] = $this->subject instanceof $model ? $this->subjectKey() : null;
+            $subjects[$alias.'_id'] = $this->subject instanceof $model ? $this->subjectKey($this->subject) : null;
         }
 
         $rows = [];
@@ -237,7 +237,7 @@ class ExtensionSettings
             return 'global';
         }
 
-        return ($this->fields ? 'fields:' : '').$this->subject->getMorphClass().':'.$this->subjectKey();
+        return ($this->fields ? 'fields:' : '').$this->subject->getMorphClass().':'.$this->subjectKey($this->subject);
     }
 
     /** A LIKE pattern for keys starting with the prefix, its wildcards and escape character taken literally. */
@@ -246,9 +246,9 @@ class ExtensionSettings
         return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $prefix).'%';
     }
 
-    private function subjectKey(): int
+    private function subjectKey(Model $subject): int
     {
-        return JsonValueGuard::integer($this->subject?->getKey());
+        return Arr::integer($subject, $subject->getKeyName());
     }
 
     /** @return Builder<ExtensionSetting> */

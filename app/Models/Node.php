@@ -17,10 +17,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Yaml\Yaml;
 use UnexpectedValueException;
 
@@ -294,7 +294,7 @@ class Node extends Model implements Identifiable
      */
     public function eggTagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->eggTags->pluck('slug')->all());
+        return $this->eggTags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
@@ -302,7 +302,7 @@ class Node extends Model implements Identifiable
      */
     public function deploymentTagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->deploymentTags->pluck('slug')->all());
+        return $this->deploymentTags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
@@ -338,12 +338,10 @@ class Node extends Model implements Identifiable
     public function allocatedResources(): array
     {
         if (array_key_exists('sum_memory', $this->getAttributes()) && array_key_exists('sum_disk', $this->getAttributes())) {
-            // SAFETY: these aliases are database SUM projections and therefore integer-like.
-            $sumMemory = $this->getAttribute('sum_memory');
-            $memory = $sumMemory === null ? 0 : JsonValueGuard::integer($sumMemory);
-            // SAFETY: these aliases are database SUM projections and therefore integer-like.
-            $sumDisk = $this->getAttribute('sum_disk');
-            $disk = $sumDisk === null ? 0 : JsonValueGuard::integer($sumDisk);
+            // The SUM aliases come back from the database as numeric strings, or null for no servers.
+            $sums = Fluent::make($this->getAttributes());
+            $memory = $sums->integer('sum_memory');
+            $disk = $sums->integer('sum_disk');
         } else {
             $resources = $this->servers()->toBase()
                 ->selectRaw('COALESCE(SUM(memory), 0) AS memory, COALESCE(SUM(disk), 0) AS disk')

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Acl\Api;
 
+use Illuminate\Support\Fluent;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionClass;
 use ReflectionException;
 
@@ -62,7 +62,7 @@ class AdminAcl
      */
     public static function check(ApiKey $key, string $resource, int $action = self::READ): bool
     {
-        return self::can(JsonValueGuard::integer(data_get($key, self::COLUMN_IDENTIFIER.$resource, self::NONE)), $action);
+        return self::can(Fluent::make($key->getAttributes())->integer(self::COLUMN_IDENTIFIER.$resource, self::NONE), $action);
     }
 
     /**

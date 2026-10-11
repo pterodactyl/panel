@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use ParagonIE\ConstantTime\Base32;
 use Pterodactyl\Models\Attributes\Identifiable;
-use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 
@@ -76,7 +76,7 @@ trait HasRealtimeIdentifier
     protected function identifier(): Attribute
     {
         return Attribute::get(function (): string {
-            $bytes = Uuid::fromString(JsonValueGuard::string($this->getRawOriginal(self::$identifierDataColumn)))->getBytes();
+            $bytes = Uuid::fromString(Arr::string($this->getRawOriginal(), self::$identifierDataColumn))->getBytes();
 
             return sprintf('%s_%s', self::$identifierPrefix, Base32::encodeUnpadded($bytes));
         });

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Tag;
 use Pterodactyl\Rules\TagSlug;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * Shared "deploy.tags" handling for the server store requests: tags may be given by
@@ -63,7 +62,7 @@ trait FiltersDeployTags
      */
     protected function resolveDeployTagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->matchedDeployTags()->pluck('slug')->all());
+        return $this->matchedDeployTags()->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**

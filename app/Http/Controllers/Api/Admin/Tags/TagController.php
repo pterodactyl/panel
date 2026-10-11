@@ -30,7 +30,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Tags\UpdateTagRequest;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Tag;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\TagTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -173,13 +172,14 @@ class TagController extends AdminApiController
     public function syncEgg(SyncTagsRequest $request, SyncsTags $sync, Egg $egg): array
     {
         $sync->syncEgg($egg, $request->tagValues());
+        $tags = $egg->tags()->get();
 
         Activity::event('admin:egg.tags')
             ->subject($egg)
-            ->property('tags', JsonValueGuard::stringList($egg->tags()->pluck('slug')->all()))
+            ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($egg->tags()->get())
+        return Fractal::collection($tags)
             ->transformWith($this->getTransformer(TagTransformer::class))
             ->toResponseArray();
     }
@@ -196,13 +196,14 @@ class TagController extends AdminApiController
     public function syncNode(SyncTagsRequest $request, SyncsTags $sync, Node $node): array
     {
         $sync->syncNodeGames($node, $request->tagValues());
+        $tags = $node->eggTags()->get();
 
         Activity::event('admin:node.tags')
             ->subject($node)
-            ->property('tags', JsonValueGuard::stringList($node->eggTags()->pluck('slug')->all()))
+            ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($node->eggTags()->get())
+        return Fractal::collection($tags)
             ->transformWith($this->getTransformer(TagTransformer::class))
             ->toResponseArray();
     }
@@ -218,13 +219,14 @@ class TagController extends AdminApiController
     public function syncNodeDeploymentTags(SyncTagsRequest $request, SyncsTags $sync, Node $node): array
     {
         $sync->syncNodeDeployments($node, $request->tagValues());
+        $tags = $node->deploymentTags()->get();
 
         Activity::event('admin:node.deployment-tags')
             ->subject($node)
-            ->property('tags', JsonValueGuard::stringList($node->deploymentTags()->pluck('slug')->all()))
+            ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($node->deploymentTags()->get())
+        return Fractal::collection($tags)
             ->transformWith($this->getTransformer(TagTransformer::class))
             ->toResponseArray();
     }

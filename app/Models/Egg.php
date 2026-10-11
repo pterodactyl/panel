@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 use RuntimeException;
 
 /**
@@ -161,7 +160,7 @@ class Egg extends Model implements Identifiable
      */
     public function tagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->tags->pluck('slug')->all());
+        return $this->tags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**

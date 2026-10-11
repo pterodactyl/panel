@@ -25,7 +25,6 @@ use Illuminate\Support\Carbon;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * \Pterodactyl\Models\Server.
@@ -308,7 +307,7 @@ class Server extends Model implements Identifiable
     {
         $this->loadMissing('egg.tags');
 
-        return $this->egg === null ? [] : JsonValueGuard::stringList($this->egg->tags->pluck('slug')->all());
+        return $this->egg === null ? [] : $this->egg->tags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
