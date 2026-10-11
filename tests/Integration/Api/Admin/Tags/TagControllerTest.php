@@ -48,7 +48,15 @@ test('built in tags cannot be updated', function () {
 test('built in tags cannot be deleted', function () {
     /** @var Tag $tag */
     $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
-    $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException');
+    $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException')->assertJsonPath('errors.0.detail', 'Built-in game tags cannot be deleted.');
+});
+test('tags sync accepts integer ids', function () {
+    $tag = Tag::factory()->create(['slug' => 'integer-id']);
+    $node = Node::factory()->withLocation()->create();
+
+    $this->putJson(route('api.admin.nodes.tags.sync', ['node' => $node->id]), ['tags' => [$tag->id]])->assertOk();
+
+    expect($node->eggTags()->pluck('tags.id')->all())->toBe([$tag->id]);
 });
 test('tags sync independently to eggs and node kinds', function () {
     /** @var Tag $game */

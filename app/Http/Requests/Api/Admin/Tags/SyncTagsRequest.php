@@ -7,6 +7,7 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Services\Tags\TagResolutionService;
+use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * Replace the full set of tags on an egg or a node.
@@ -37,27 +38,30 @@ class SyncTagsRequest extends AdminApiRequest
     }
 
     /**
-     * The submitted values, normalised to strings for the resolver.
+     * The validated values, as strings for the resolver.
      *
      * @return list<string>
      */
     public function tagValues(): array
     {
-        $values = $this->input('tags', []);
-        if (! is_array($values)) {
-            return [];
+        return JsonValueGuard::stringList(array_values(JsonValueGuard::jsonArray($this->validated('tags', []))));
+    }
+
+    /** Tag ids sent as JSON integers are read the same as the numeric strings the panel sends. */
+    protected function prepareForValidation(): void
+    {
+        $tags = $this->input('tags');
+        if (! is_array($tags)) {
+            return;
         }
 
-        $tags = [];
-        foreach ($values as $tag) {
-            if (is_string($tag)) {
-                $tags[] = $tag;
-            } elseif (is_int($tag)) {
+        foreach ($tags as $key => $tag) {
+            if (is_int($tag)) {
                 // SAFETY: integer tag IDs have an exact decimal string representation.
-                $tags[] = (string) $tag;
+                $tags[$key] = (string) $tag;
             }
         }
 
-        return $tags;
+        $this->merge(['tags' => $tags]);
     }
 }

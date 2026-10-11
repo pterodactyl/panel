@@ -40,12 +40,13 @@ trait FiltersDeployTags
             return;
         }
 
+        // Slugs match without regard to case in the database, so they do here too.
         $known = $this->matchedDeployTags()
-            ->flatMap(fn (Tag $tag): array => [(string) $tag->id, $tag->slug])
+            ->flatMap(fn (Tag $tag): array => [(string) $tag->id, mb_strtolower($tag->slug)])
             ->all();
 
-        foreach (array_diff($submitted, $known) as $value) {
-            if (TagSlug::isReserved($value)) {
+        foreach ($submitted as $value) {
+            if (in_array(mb_strtolower($value), $known, true) || TagSlug::isReserved($value)) {
                 continue;
             }
 

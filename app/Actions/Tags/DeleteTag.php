@@ -20,7 +20,7 @@ final readonly class DeleteTag implements DeletesTags
      */
     public function delete(Tag $tag): void
     {
-        throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be edited.');
+        throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be deleted.');
 
         $tag->delete();
     }
