@@ -1,0 +1,37 @@
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_4cabae41bceed9::t_9f16c76d7833c2 7,9,19-20,26,29-33,38-39,41,43,45-50
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_3ef37584f8aae0 200-202,204-235
+  s_4cabae41bceed9::t_714801333b8ddc 203
+app/Contracts/Servers/UpdatesServerStartup.php
+  s_4cabae41bceed9::t_b8f2cd3063a632 14-21,25
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_4cabae41bceed9::t_468e8c3f170a60 7,9,25
+tests/Integration/Actions/Servers/UpdateServerStartupTest.php
+  s_4cabae41bceed9::t_196867abf27b3c 166-214,216-245
+  s_4cabae41bceed9::t_d4363ea29a1359 20
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_6868776f7ed6fc 188-205
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_4cabae41bceed9::t_1a52f4fb1d7f5f 33
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_4cabae41bceed9::t_176db0964d4921 50
+app/Actions/Servers/UpdateServerStartup.php
+  s_4cabae41bceed9::t_bc89c3063053a4 8,18,21-23,34-103,107,109-112,120,125,134-135,140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b74e241d8bfe5fbb82fda9be75626391fe110c23",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
