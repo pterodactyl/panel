@@ -11,12 +11,12 @@ import { useConsoleCommandHistory } from '@/components/server/console/useConsole
 import { useConsoleSocketLogs } from '@/components/server/console/useConsoleSocketLogs';
 import { useTerminal } from '@/components/server/console/useTerminal';
 
-const terminalClass = 'relative flex flex-col w-full';
+const terminalClass = 'relative flex min-w-0 flex-col w-full';
 
 const overflowsContainerClass = 'w-full';
 
 const terminalContainerClass =
-    'relative min-h-[16rem] flex-1 rounded-t-sm bg-terminal p-1 font-mono text-sm caret-transparent sm:p-2';
+    'relative min-h-[16rem] flex-1 overflow-hidden rounded-t-sm bg-terminal px-2 pt-2 pb-0 font-mono text-sm caret-transparent';
 
 const commandInputClass = [
     'peer relative w-full rounded-b-sm bg-terminal px-2 py-2 pr-4 pl-10 font-mono text-sm text-foreground',
@@ -58,8 +58,8 @@ export default function Console() {
                     'rounded-b-sm pb-1 sm:pb-2': !canSendCommands,
                 })}
             >
-                <div className='relative h-full w-full'>
-                    <div className='h-full w-full' ref={ref} />
+                <div className='relative h-full w-full overflow-hidden'>
+                    <div className='h-full w-full overflow-hidden' ref={ref} />
                     <ConsoleScrollbar scroll={scroll} terminal={terminal} />
                 </div>
                 {scrolledUp && (
