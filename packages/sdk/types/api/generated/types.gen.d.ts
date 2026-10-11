@@ -3840,7 +3840,7 @@ export type AdminListServerBackupsSortQueryParameter = string;
 export type AdminListServerBackupsPerPageQueryParameter = number;
 export type AdminListServerBackupsServerAdminIdentifierPathParameter = string;
 export type AdminToggleServerBackupLockServerAdminIdentifierPathParameter = string;
-export type AdminToggleServerBackupLockBackupIdPathParameter = string;
+export type AdminToggleServerBackupLockBackupUuidPathParameter = string;
 /**
  * Filter nodes by UUID.
  */
@@ -6347,12 +6347,12 @@ export type AdminToggleServerBackupLockData = {
          */
         server_admin_identifier: AdminToggleServerBackupLockServerAdminIdentifierPathParameter;
         /**
-         * The ID of the backup.
+         * The backup UUID.
          */
-        backup_id: AdminToggleServerBackupLockBackupIdPathParameter;
+        backup_uuid: AdminToggleServerBackupLockBackupUuidPathParameter;
     };
     query?: never;
-    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_id}/toggle';
+    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_uuid}/toggle';
 };
 export type AdminToggleServerBackupLockErrors = {
     /**

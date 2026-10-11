@@ -203,7 +203,7 @@ Route::prefix('/servers/{server:admin_identifier}/databases')->name('api.admin.s
 */
 Route::prefix('/servers/{server:admin_identifier}/backups')->name('api.admin.servers.backups')->group(function (): void {
     Route::get('/', [ServerBackupController::class, 'index']);
-    Route::post('/{backup:id}/toggle', ToggleBackupController::class)->name('.toggle')->withoutScopedBindings();
+    Route::post('/{backup:uuid}/toggle', ToggleBackupController::class)->name('.toggle')->withoutScopedBindings();
 });
 
 /*

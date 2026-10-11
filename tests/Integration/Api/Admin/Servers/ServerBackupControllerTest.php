@@ -35,24 +35,26 @@ test('list backups is scoped to server', function () {
 test('toggle backup lock', function () {
     $server = $this->createServerModel();
     $backup = Backup::factory()->create(['server_id' => $server->id, 'is_locked' => false, 'ignored_files' => []]);
-    $response = $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $backup->id]));
+    // The listing only exposes uuids, so toggling has to work from one.
+    $uuid = $this->getJson(route('api.admin.servers.backups', ['server' => $server->id]))->json('data.0.attributes.uuid');
+    $response = $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $uuid]));
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonPath('attributes.is_locked', true);
     $this->assertDatabaseHas('backups', ['id' => $backup->id, 'is_locked' => true]);
-    $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $backup->id]));
+    $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $uuid]));
     $this->assertDatabaseHas('backups', ['id' => $backup->id, 'is_locked' => false]);
 });
 test('toggle backup not on server returns not found', function () {
     $server = $this->createServerModel();
     $other = $this->createServerModel();
     $backup = Backup::factory()->create(['server_id' => $other->id]);
-    $response = $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $backup->id]));
+    $response = $this->postJson(route('api.admin.servers.backups.toggle', ['server' => $server->id, 'backup' => $backup->uuid]));
     $this->assertNotFoundJson($response);
 });
 test('non admin forbidden', function (string $method, string $routeName) {
     $this->actingAsNonAdmin();
     $server = $this->createServerModel();
     $backup = Backup::factory()->create(['server_id' => $server->id]);
-    $response = $this->{$method}(route($routeName, ['server' => $server->id, 'backup' => $backup->id]));
+    $response = $this->{$method}(route($routeName, ['server' => $server->id, 'backup' => $backup->uuid]));
     $this->assertAccessDeniedJson($response);
 })->with('backupEndpointsDataProvider');

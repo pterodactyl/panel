@@ -644,7 +644,7 @@ export const adminListServerBackups = <ThrowOnError extends boolean = true>(opti
 export const adminToggleServerBackupLock = <ThrowOnError extends boolean = true>(options: Options<AdminToggleServerBackupLockData, ThrowOnError>): RequestResult<AdminToggleServerBackupLockResponses, AdminToggleServerBackupLockErrors, ThrowOnError> => (options.client ?? client).post<AdminToggleServerBackupLockResponses, AdminToggleServerBackupLockErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_id}/toggle',
+    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_uuid}/toggle',
     ...options
 });
 
