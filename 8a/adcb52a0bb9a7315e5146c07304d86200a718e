@@ -1,0 +1,38 @@
+app/Actions/Databases/DeleteDatabase.php
+  s_4cabae41bceed9::t_c77d643310546e 10,30-34
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_c77d643310546e 16,117,142-145
+tests/Integration/Actions/Databases/CreateDatabaseTest.php
+  s_4cabae41bceed9::t_a847c63986d9c2 105
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_4cabae41bceed9::t_a847c63986d9c2 17,166
+  s_4cabae41bceed9::t_bc0a1464fe3297 167
+app/Actions/Servers/DeleteServer.php
+  s_4cabae41bceed9::t_c77d643310546e 57
+  s_4cabae41bceed9::t_b738d1dca3abc9 55
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_4cabae41bceed9::t_6b918558bba5cd 120-121
+app/Actions/Databases/RotateDatabasePassword.php
+  s_4cabae41bceed9::t_c77d643310546e 11,40
+  s_4cabae41bceed9::t_3b5658edf869dd 41
+tests/Integration/Actions/Databases/RotateDatabasePasswordTest.php
+  s_4cabae41bceed9::t_a847c63986d9c2 47
+tests/Integration/Api/Client/Server/Database/DatabaseControllerTest.php
+  s_4cabae41bceed9::t_e600138da3d26c 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8aadcb52a0bb9a7315e5146c07304d86200a718e",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
