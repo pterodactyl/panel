@@ -90,11 +90,11 @@ class ApiKeyController extends ClientApiController
             ->where('identifier', $identifier)
             ->firstOrFail();
 
+        $key->delete();
+
         Activity::event('user:api-key.delete')
             ->property('identifier', $key->identifier)
             ->log();
-
-        $key->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

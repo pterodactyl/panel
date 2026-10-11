@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Testing\Assert;
 use PDOException;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
@@ -149,6 +150,15 @@ test('delete database host', function (): void {
     $response = $this->delete(route('api.admin.database-hosts.delete', ['databaseHost' => $host->id]));
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseMissing('database_hosts', ['id' => $host->id]);
+});
+test('a database host that still has databases is not logged as deleted', function (): void {
+    $host = DatabaseHost::factory()->create();
+    Database::factory()->create(['server_id' => $this->createServerModel()->id, 'database_host_id' => $host->id]);
+
+    $this->delete(route('api.admin.database-hosts.delete', ['databaseHost' => $host->id]))->assertBadRequest();
+
+    $this->assertDatabaseHas('database_hosts', ['id' => $host->id]);
+    expect(ActivityLog::query()->where('event', 'admin:database-host.delete')->exists())->toBeFalse();
 });
 test('non admin forbidden', function (string $method, string $routeName): void {
     $this->actingAsNonAdmin();

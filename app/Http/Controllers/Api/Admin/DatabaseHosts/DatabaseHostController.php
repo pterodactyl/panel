@@ -232,12 +232,12 @@ class DatabaseHostController extends AdminApiController
     #[ScribeResponse(status: 204, description: 'Database host deleted.')]
     public function destroy(DeleteDatabaseHostRequest $request, DeletesDatabaseHosts $deleteHost, DatabaseHost $databaseHost): Response
     {
+        $deleteHost->delete($databaseHost);
+
         Activity::event('admin:database-host.delete')
             ->subject($databaseHost)
             ->property('name', $databaseHost->name)
             ->log();
-
-        $deleteHost->delete($databaseHost);
 
         return $this->returnNoContent();
     }

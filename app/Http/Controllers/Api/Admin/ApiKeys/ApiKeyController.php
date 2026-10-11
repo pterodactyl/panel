@@ -142,12 +142,12 @@ class ApiKeyController extends AdminApiController
             ->where('identifier', $identifier)
             ->firstOrFail();
 
+        $keyDeleter->delete($key);
+
         Activity::event('admin:api-key.delete')
             ->subject($key)
             ->property('identifier', $key->identifier)
             ->log();
-
-        $keyDeleter->delete($key);
 
         return $this->returnNoContent();
     }
