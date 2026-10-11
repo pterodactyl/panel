@@ -60,3 +60,20 @@ it('runs the latest save handler for Mod-s', () => {
     expect(first).not.toHaveBeenCalled();
     expect(latest).toHaveBeenCalledOnce();
 });
+
+it('renders the search and replace panel with theme controls', () => {
+    const { container } = render(<CodemirrorEditor mode='text/plain' onContentSaved={vi.fn()} />);
+    const view = viewOf(container);
+
+    container
+        .querySelector('.cm-content')!
+        .dispatchEvent(new KeyboardEvent('keydown', { key: 'f', ctrlKey: true, bubbles: true }));
+
+    const searchPanel = container.querySelector('.cm-search');
+    expect(searchPanel).not.toBeNull();
+    expect(searchPanel?.querySelector('input[name="search"]')).not.toBeNull();
+    expect(searchPanel?.querySelector('input[name="replace"]')).not.toBeNull();
+    expect(searchPanel?.querySelector('button[name="close"]')).not.toBeNull();
+    expect(searchPanel?.querySelectorAll('.cm-button').length).toBeGreaterThanOrEqual(4);
+});
+
