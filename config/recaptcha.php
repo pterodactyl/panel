@@ -6,7 +6,7 @@ return [
     /*
      * Enable or disable captchas
      */
-    'enabled' => env('RECAPTCHA_ENABLED', true),
+    'enabled' => (bool) env('RECAPTCHA_ENABLED', true),
 
     /*
      * API endpoint for recaptcha checks. You should not edit this.

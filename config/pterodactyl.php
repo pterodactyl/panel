@@ -107,8 +107,8 @@ return [
 
     'client_features' => [
         'databases' => [
-            'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
-            'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
+            'enabled' => (bool) env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
+            'allow_random' => (bool) env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
         ],
 
         'schedules' => [
@@ -117,7 +117,7 @@ return [
         ],
 
         'allocations' => [
-            'enabled' => env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', false),
+            'enabled' => (bool) env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', false),
             'range_start' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_START'),
             'range_end' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_END'),
         ],
@@ -162,7 +162,7 @@ return [
     */
 
     'assets' => [
-        'use_hash' => env('PTERODACTYL_USE_ASSET_HASH', false),
+        'use_hash' => (bool) env('PTERODACTYL_USE_ASSET_HASH', false),
     ],
 
     /*
@@ -175,9 +175,9 @@ return [
 
     'email' => [
         // Should an email be sent to a server owner once their server has completed it's first install process?
-        'send_install_notification' => env('PTERODACTYL_SEND_INSTALL_NOTIFICATION', true),
+        'send_install_notification' => (bool) env('PTERODACTYL_SEND_INSTALL_NOTIFICATION', true),
         // Should an email be sent to a server owner whenever their server is reinstalled?
-        'send_reinstall_notification' => env('PTERODACTYL_SEND_REINSTALL_NOTIFICATION', true),
+        'send_reinstall_notification' => (bool) env('PTERODACTYL_SEND_REINSTALL_NOTIFICATION', true),
     ],
 
     /*
@@ -189,7 +189,7 @@ return [
     */
 
     'telemetry' => [
-        'enabled' => env('PTERODACTYL_TELEMETRY_ENABLED', true),
+        'enabled' => (bool) env('PTERODACTYL_TELEMETRY_ENABLED', true),
     ],
 
     'features' => [
