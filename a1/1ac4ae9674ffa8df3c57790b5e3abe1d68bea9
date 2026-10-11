@@ -1,0 +1,23 @@
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_4cabae41bceed9::t_2de3aba688c154 56
+  s_4cabae41bceed9::t_75f4e5da21fe54 50-55
+  s_4cabae41bceed9::t_fdf5f22658834f 9,14
+app/Actions/Subusers/CreateSubuser.php
+  s_4cabae41bceed9::t_491ef3c474df34 54-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a11ac4ae9674ffa8df3c57790b5e3abe1d68bea9",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
