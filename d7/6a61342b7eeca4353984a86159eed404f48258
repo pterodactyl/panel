@@ -1,0 +1,26 @@
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_4cabae41bceed9::t_2fe1421caf3f2c 93-94
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_4cabae41bceed9::t_2fe1421caf3f2c 145-146
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_4cabae41bceed9::t_86d8b04674ffee 12
+  s_4cabae41bceed9::t_f16d018da6c203 154-162
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_4cabae41bceed9::t_2fe1421caf3f2c 235-236
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d76a61342b7eeca4353984a86159eed404f48258",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
