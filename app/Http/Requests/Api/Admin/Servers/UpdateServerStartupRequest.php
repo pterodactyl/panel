@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Concerns\ParsesServerStartupData;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerStartupRequest extends ServerWriteRequest
@@ -25,7 +24,7 @@ class UpdateServerStartupRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $data = ServerRules::rules($this->parameter('server', Server::class));
+        $data = ServerRules::rules();
 
         return [
             'startup' => $data['startup'],

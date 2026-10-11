@@ -104,6 +104,32 @@ test('server details can be updated', function (): void {
     expect($server->owner_id)->toBe($owner->id);
     $revocation->assertDeauthorized($previousOwner->uuid, [$server->uuid]);
 });
+test('server details update replaces every detail and keeps its own rules', function (): void {
+    $server = $this->createServerModel(['external_id' => 'ext-old', 'description' => 'Old description.']);
+    $other = $this->createServerModel(['external_id' => 'ext-taken']);
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => (string) $server->owner_id, 'external_id' => 'ext-old'])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', 'ext-old')
+        ->assertJsonPath('attributes.description', '');
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => $server->owner_id])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', null);
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => $server->owner_id, 'external_id' => $other->external_id])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'external_id')
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => str_repeat('a', 192), 'user' => 0, 'description' => ['text']])
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'user')
+        ->assertJsonPath('errors.1.meta.rule', 'exists')
+        ->assertJsonPath('errors.2.meta.source_field', 'description');
+});
 test('server build can be updated', function (): void {
     mockDaemon();
     $server = $this->createServerModel();

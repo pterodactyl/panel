@@ -32,6 +32,29 @@ test('server name can be changed', function (array $permissions): void {
     expect($server->name)->toBe('Test Server Name');
     expect($server->description)->toBe('This is a test server.');
 })->with('renamePermissionsDataProvider');
+test('renaming a server keeps its owner, external id and a description it is not sent', function (): void {
+    [$user, $server] = $this->generateTestAccount();
+    $server->forceFill(['external_id' => 'ext-rename', 'description' => 'Kept description.'])->saveOrFail();
+    $owner = $server->owner_id;
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/rename", ['name' => 'Renamed Only'])->assertNoContent();
+
+    $server->refresh();
+    expect($server->name)->toBe('Renamed Only')
+        ->and($server->description)->toBe('Kept description.')
+        ->and($server->external_id)->toBe('ext-rename')
+        ->and($server->owner_id)->toBe($owner);
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/rename", ['name' => 'Renamed Again', 'description' => null])->assertNoContent();
+
+    expect($server->refresh()->description)->toBe('')
+        ->and($server->external_id)->toBe('ext-rename');
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/rename", ['name' => 'Renamed Again', 'description' => ['text']])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'description')
+        ->assertJsonPath('errors.0.meta.rule', 'string');
+});
 test('subuser cannot change server name without permission', function (): void {
     [$user, $server] = $this->generateTestAccount([Permissions::WebsocketConnect->value]);
     $originalName = $server->name;

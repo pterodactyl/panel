@@ -104,6 +104,32 @@ test('update server details', function (): void {
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'name' => 'UpdatedServer', 'owner_id' => $owner->id]);
     Bus::assertDispatched(RevokeSftpAccessJob::class);
 });
+test('update server details replaces every detail', function (): void {
+    Bus::fake();
+    $server = $this->createServerModel(['external_id' => 'ext-old', 'description' => 'Old description.']);
+    $other = $this->createServerModel(['external_id' => 'ext-taken']);
+
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => 'Renamed', 'owner_id' => (string) $server->owner_id])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', null);
+
+    $server->refresh();
+    expect($server->name)->toBe('Renamed')
+        ->and($server->external_id)->toBeNull()
+        ->and($server->description)->toBe('');
+    Bus::assertNotDispatched(RevokeSftpAccessJob::class);
+
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => 'Renamed', 'owner_id' => $server->owner_id, 'external_id' => $other->external_id])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'external_id')
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => '', 'owner_id' => 0])
+        ->assertUnprocessable()
+        ->assertJsonCount(2, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'owner_id');
+});
 test('update server build', function (): void {
     $server = $this->createServerModel();
     new FakeDaemonServer;

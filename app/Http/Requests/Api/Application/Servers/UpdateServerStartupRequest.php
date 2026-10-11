@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ParsesServerStartupData;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Validation\ServerRules;
 
@@ -25,7 +24,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
-        $data = ServerRules::rules($this->parameter('server', Server::class));
+        $data = ServerRules::rules();
 
         return [
             'startup' => $data['startup'],

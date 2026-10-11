@@ -33,7 +33,7 @@ class DetailsController extends AdminApiController
     {
         $updated = $details->update(
             $server,
-            $request->payload()
+            $request->actionInput()
         );
 
         Activity::event('admin:server.details')

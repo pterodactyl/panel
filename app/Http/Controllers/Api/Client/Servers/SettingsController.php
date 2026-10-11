@@ -51,13 +51,13 @@ class SettingsController extends ClientApiController
         $previousName = $server->name;
         $previousDescription = $server->description;
 
-        // The action writes owner and external ID too, so pass the current values
-        // through unchanged; only the name and description come from the request.
+        // The action replaces the owner, external ID and description too, so pass the
+        // current values through; the name, and a description if sent, come from the request.
         $server = $details->update($server, [
             'external_id' => $server->external_id,
             'owner_id' => $server->owner_id,
-            'name' => $request->string('name')->toString(),
-            'description' => $request->has('description') ? $request->description() : $server->description,
+            'description' => $server->description,
+            ...$request->actionInput(),
         ]);
 
         if ($previousName !== $server->name) {

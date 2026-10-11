@@ -49,7 +49,7 @@ class ServerDetailsController extends ApplicationApiController
     {
         $updated = $details->update(
             $server,
-            $request->payload()
+            $request->actionInput()
         );
 
         return Fractal::item($updated)

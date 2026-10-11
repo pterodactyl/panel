@@ -52,14 +52,15 @@ final readonly class CreateServer implements CreatesServers
      * A new server's fields. The default allocation and any additional ones must exist and
      * belong to no server. Memory, disk, CPU and the feature limits take 0 for unlimited,
      * and swap takes -1. The CPU threads are a pattern of cores such as "0-1,3", which a
-     * bare number also matches.
+     * bare number also matches. Pass a server being updated so its own external id is not
+     * taken for a duplicate.
      *
      * @return NormalizedValidationRules
      */
-    public static function rules(): array
+    public static function rules(?Server $ignore = null): array
     {
         return [
-            'external_id' => ['sometimes', 'nullable', 'string', 'between:1,191', Rule::unique('servers', 'external_id')],
+            'external_id' => ['sometimes', 'nullable', 'string', 'between:1,191', Rule::unique('servers', 'external_id')->ignore($ignore)],
             'name' => ['required', 'string', 'min:1', 'max:191'],
             'description' => ['nullable', 'string'],
             'owner_id' => ['required', 'integer', 'exists:users,id'],

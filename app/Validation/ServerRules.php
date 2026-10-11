@@ -4,25 +4,18 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Validation;
 
-use Illuminate\Validation\Rule;
-use Pterodactyl\Models\Server;
-
 final class ServerRules
 {
     /**
-     * Validation rules for the requests that update a server's details and startup.
-     * Creating a server uses CreateServer::rules(), and its build UpdateServerBuild::rules().
+     * Validation rules for the requests that update a server's startup. Creating a server
+     * uses CreateServer::rules(), its build UpdateServerBuild::rules() and its details
+     * UpdateServerDetails::rules().
      *
-     * @param  Server|null  $ignore  the server being updated
      * @return NormalizedValidationRules
      */
-    public static function rules(?Server $ignore = null): array
+    public static function rules(): array
     {
         return [
-            'external_id' => ['sometimes', 'nullable', 'string', 'between:1,191', Rule::unique('servers', 'external_id')->ignore($ignore)],
-            'owner_id' => ['required', 'integer', 'exists:users,id'],
-            'name' => ['required', 'string', 'min:1', 'max:191'],
-            'description' => ['string'],
             'egg_id' => ['required', 'exists:eggs,id'],
             'startup' => ['required', 'string'],
             'image' => ['required', 'string', 'max:191', 'regex:/^~?[\w\.\/\-:@ ]*$/'],
