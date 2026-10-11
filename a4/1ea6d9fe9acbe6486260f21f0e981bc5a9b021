@@ -1,0 +1,39 @@
+app/Actions/Allocations/UnassignAllocation.php
+  s_4cabae41bceed9::t_ee298563af70fc 9,28-31
+  s_4cabae41bceed9::t_16afbc1ef160e7 32
+tests/Integration/Api/Client/Server/Allocation/CreateNewAllocationTest.php
+  s_4cabae41bceed9::t_94ab17b986b67c 40
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_4cabae41bceed9::t_ee298563af70fc 126
+app/Actions/Allocations/AssignAvailableAllocation.php
+  s_4cabae41bceed9::t_ee298563af70fc 14,48
+  s_4cabae41bceed9::t_5deb96102940bb 49
+tests/Integration/Actions/Allocations/AssignAvailableAllocationTest.php
+  s_4cabae41bceed9::t_94ab17b986b67c 36
+app/Actions/Allocations/UpdateAllocationNotes.php
+  s_4cabae41bceed9::t_ee298563af70fc 8,15,18-23
+  s_4cabae41bceed9::t_8dbfe09bbc6f6e 24
+app/Actions/Allocations/SetPrimaryAllocation.php
+  s_4cabae41bceed9::t_ee298563af70fc 8,18-21
+  s_4cabae41bceed9::t_9fc14b426c27c9 22
+tests/Integration/Api/Client/Server/Allocation/DeleteAllocationTest.php
+  s_4cabae41bceed9::t_94ab17b986b67c 25
+tests/Integration/Api/Client/Server/NetworkAllocationControllerTest.php
+  s_4cabae41bceed9::t_94ab17b986b67c 52,72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a41ea6d9fe9acbe6486260f21f0e981bc5a9b021",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
