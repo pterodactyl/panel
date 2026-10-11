@@ -203,7 +203,7 @@ class ExtensionRepository
         rescue(fn (): int => Extension::query()
             ->where('identifier', $identifier)
             ->where(fn (Builder $query): Builder => $query->whereNull('error')->orWhere('error', '<>', $reason))
-            ->update(['error' => $reason]), report: false);
+            ->update(['error' => $reason, 'error_phase' => $phase, 'errored_at' => now()]), report: false);
 
         $context = array_filter(['exception' => $exception]);
         $exception instanceof Throwable
@@ -213,7 +213,12 @@ class ExtensionRepository
         rescue(fn () => $this->events->dispatch(new ExtensionLoadFailed($identifier, $phase, $reason, $exception)));
     }
 
-    /** @param list<string> $identifiers */
+    /**
+     * Clears the load failures of extensions that have just loaded cleanly. Failures
+     * at runtime are kept, so they are still there for an administrator to read.
+     *
+     * @param  list<string>  $identifiers
+     */
     public function clearErrors(array $identifiers): void
     {
         if ($identifiers === []) {
@@ -229,7 +234,17 @@ class ExtensionRepository
             $this->enabled = null;
         }
 
-        rescue(fn (): int => Extension::query()->whereIn('identifier', $identifiers)->whereNotNull('error')->update(['error' => null]), report: false);
+        // Runs on every boot, so it only writes when there is a load failure to clear.
+        rescue(function () use ($identifiers): void {
+            $loadFailures = Extension::query()
+                ->whereIn('identifier', $identifiers)
+                ->whereNotNull('error')
+                ->where(fn (Builder $query): Builder => $query->whereNull('error_phase')->orWhereIn('error_phase', Extension::LOAD_PHASES));
+
+            if ($loadFailures->exists()) {
+                $loadFailures->update(Extension::NO_ERROR);
+            }
+        }, report: false);
     }
 
     public function settings(string $identifier): ExtensionSettings

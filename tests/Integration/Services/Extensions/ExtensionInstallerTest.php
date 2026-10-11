@@ -271,6 +271,35 @@ test('provider recovery clears errors in one write and leaves healthy timestamps
     }
 });
 
+test('a clean boot keeps runtime failures and writes nothing without a load failure', function (): void {
+    $repository = $this->app->make(ExtensionRepository::class);
+    try {
+        $this->app->make(InstallsExtensions::class)->install(writeExtension('runtime-failure'), enable: true);
+        $repository->recordFailure('runtime-failure', 'listener exploded', new RuntimeException('listener exploded'), 'event');
+        $enabled = $repository->enabled();
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        try {
+            $this->app->make(ExtensionProviderLoader::class)->registerProviders($enabled);
+            $writes = array_filter(DB::getQueryLog(), fn (array $query): bool => str_starts_with(mb_strtolower($query['query']), 'update'));
+            expect($writes)->toBe([]);
+        } finally {
+            DB::disableQueryLog();
+        }
+
+        $record = Extension::query()->where('identifier', 'runtime-failure')->firstOrFail();
+        expect($record->error)->toBe('listener exploded')
+            ->and($record->error_phase)->toBe('event')
+            ->and($record->errored_at)->not->toBeNull();
+
+        $this->app->make(SetsExtensionEnabled::class)->setEnabled('runtime-failure', false);
+        expect(Extension::query()->where('identifier', 'runtime-failure')->firstOrFail()->only(['error', 'error_phase', 'errored_at']))
+            ->toBe(['error' => null, 'error_phase' => null, 'errored_at' => null]);
+    } finally {
+        Extension::query()->where('identifier', 'runtime-failure')->delete();
+    }
+});
+
 test('extension settings batch reads preserve values and subsequent mutations', function (): void {
     $settings = [];
     for ($i = 0; $i < 10; $i++) {

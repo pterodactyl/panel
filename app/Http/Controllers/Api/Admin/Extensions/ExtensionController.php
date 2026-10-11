@@ -44,6 +44,8 @@ use Pterodactyl\Support\JsonEmptyObject;
 #[ResponseField('frontend_entry', nullable: true)]
 #[ResponseField('icon', nullable: true)]
 #[ResponseField('icon_url', nullable: true)]
+#[ResponseField('error_phase', 'string', 'Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.', nullable: true)]
+#[ResponseField('errored_at', 'string', 'When the last failure was recorded.', nullable: true)]
 class ExtensionController extends AdminApiController
 {
     private const array EXTENSION_EXAMPLE = [
@@ -63,6 +65,8 @@ class ExtensionController extends AdminApiController
         'enabled' => true,
         'state' => 'enabled',
         'error' => null,
+        'error_phase' => null,
+        'errored_at' => null,
     ];
 
     private const array LIST_EXAMPLE = [
@@ -268,6 +272,8 @@ class ExtensionController extends AdminApiController
                 'compatible' => false,
                 'state' => 'invalid',
                 'error' => $error,
+                'error_phase' => 'manifest',
+                'errored_at' => null,
             ]);
         }
 
@@ -309,6 +315,8 @@ class ExtensionController extends AdminApiController
             'enabled' => (bool) ($record->enabled ?? false),
             'state' => $this->state($record),
             'error' => $record?->error,
+            'error_phase' => $record?->error_phase,
+            'errored_at' => $record?->errored_at?->toAtomString(),
         ];
     }
 

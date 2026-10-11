@@ -3400,6 +3400,14 @@ export type AdminListExtensionsResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     }>;
     meta?: {
         enabled?: boolean;
@@ -3424,6 +3432,14 @@ export type AdminInstallExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminGetExtensionSettingsResponseBody = {
@@ -3480,6 +3496,14 @@ export type AdminEnableExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminDisableExtensionResponseBody = {
@@ -3500,6 +3524,14 @@ export type AdminDisableExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminListNodeAllocationIpsResponseBody = {
