@@ -1,0 +1,45 @@
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_2cd21273810493 11-13,241-255
+  s_4cabae41bceed9::t_744a06cd8a14b1 41-78,80-95
+  s_4cabae41bceed9::t_f8706d60fd5c0f 79
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_4cabae41bceed9::t_868a1ec5bc57bd 99
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_4cabae41bceed9::t_bb43be59a48b41 106
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_4cabae41bceed9::t_45ada35c5df1f1 116-142,144-180
+  s_4cabae41bceed9::t_f8706d60fd5c0f 143
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_3055502e1b1d38 100,105-106,109-114
+  s_4cabae41bceed9::t_27418437fcf3e2 11,23-25,32-33,39,44,46,50,64,66,69-70,85,90,95,97,99,101-104,107,115-117
+  s_4cabae41bceed9::t_e450dde1c906a7 92-93
+  s_4cabae41bceed9::t_8e694e29d207d2 91
+  s_4cabae41bceed9::t_44354fad5223b4 108
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_01fdd82019681d 11,23-25,42,47,49,53,63,65,68-69,83,88-90,92,94,96-100,102
+  s_4cabae41bceed9::t_73f9b5cef36268 33-36
+app/Validation/ServerRules.php
+  s_4cabae41bceed9::t_71df28a7aff84a 13-14
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_aeb890a3d3dfce 10-11,13,34,38-40,52-140,148,150-151,153,156-158,162,165-167,169,175,187-188,192-193,209-210,215,218-220,222-237,241-242,244
+app/Contracts/Servers/CreatesServers.php
+  s_4cabae41bceed9::t_48858ae0c2796b 18-24,32
+tests/Integration/Actions/Servers/CreateServerTest.php
+  s_4cabae41bceed9::t_32c7c6a8c91121 13,24,27,41-42,115-291
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2d6929c54988b365c8b94ff9668cd5b6a796ef98",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
