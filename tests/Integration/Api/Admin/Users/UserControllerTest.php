@@ -7,6 +7,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\Users\UserControllerTest;
 use Illuminate\Http\Response;
 use Illuminate\Testing\Assert;
 use Pterodactyl\Contracts\Users\DisablesTwoFactor;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
@@ -87,6 +88,10 @@ test('create user', function (): void {
     $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
     $user = User::query()->where('username', 'testuser')->first();
     $response->assertJson(['object' => 'user', 'attributes' => ['id' => $user->id, 'external_id' => $user->external_id, 'uuid' => $user->uuid, 'username' => $user->username, 'email' => $user->email, 'language' => $user->language, 'first_name' => $user->name_first, 'last_name' => $user->name_last, 'root_admin' => (bool) $user->root_admin, '2fa' => (bool) $user->use_totp], 'meta' => ['resource' => route('api.admin.users.view', ['user' => $user->id])]], true);
+
+    // The new account's own feed shows its creation once; the admin log keeps the admin entry.
+    expect($user->activity()->pluck('event')->all())->toBe(['user:user.create'])
+        ->and(ActivityLog::query()->where('event', 'admin:user.create')->where('properties->email', 'test@example.com')->exists())->toBeTrue();
 });
 test('update user', function (): void {
     $user = User::factory()->create();

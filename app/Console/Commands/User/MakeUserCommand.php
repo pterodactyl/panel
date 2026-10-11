@@ -9,7 +9,6 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Users\CreatesUsers;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
@@ -52,11 +51,6 @@ class MakeUserCommand extends Command
 
             return 1;
         }
-
-        Activity::event('user:user.create')
-            ->subject($user)
-            ->property(['email' => $user->email, 'username' => $user->username, 'admin' => $user->root_admin])
-            ->log();
 
         $this->table(['Field', 'Value'], [
             ['UUID', $user->uuid],

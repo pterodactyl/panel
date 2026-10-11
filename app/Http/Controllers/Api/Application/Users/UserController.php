@@ -17,7 +17,6 @@ use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
@@ -107,11 +106,6 @@ class UserController extends ApplicationApiController
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
         $user = $users->create($request->actionInput());
-
-        Activity::event('user:user.create')
-            ->subject($user)
-            ->property(['email' => $user->email, 'username' => $user->username, 'admin' => $user->root_admin])
-            ->log();
 
         return Fractal::item($user)
             ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())

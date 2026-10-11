@@ -123,8 +123,8 @@ class UserController extends AdminApiController
     {
         $user = $users->create($request->actionInput());
 
+        // The action logs the new account on the user's own feed.
         Activity::event('admin:user.create')
-            ->subject($user)
             ->property('email', $user->email)
             ->log();
 

@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Pterodactyl\Contracts\Users\CreatesUsers;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Rules\UserEmail;
@@ -136,6 +137,11 @@ final readonly class CreateUser implements CreatesUsers
 
             return [$user->refresh(), $generateResetToken ? Password::createToken($user) : null];
         });
+
+        Activity::event('user:user.create')
+            ->subject($user)
+            ->property(['email' => $user->email, 'username' => $user->username, 'admin' => $user->root_admin])
+            ->log();
 
         $user->notify(new AccountCreated($user, $token));
 

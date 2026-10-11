@@ -94,13 +94,6 @@ class SubuserController extends ClientApiController
             $permissions,
         );
 
-        if ($response->user->wasRecentlyCreated) {
-            Activity::event('user:user.create')
-                ->subject($response->user)
-                ->property(['email' => $response->user->email, 'username' => $response->user->username, 'admin' => $response->user->root_admin])
-                ->log();
-        }
-
         Activity::event('server:subuser.create')
             ->subject($response->user)
             ->property(['email' => $email, 'permissions' => $permissions])
