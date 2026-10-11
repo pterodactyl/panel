@@ -45,7 +45,6 @@ parameters:
         # Input an action validates itself, from a request or from any other caller.
         ActionInput: 'array<string, ApiValue9|\Pterodactyl\Services\Extensions\ValidatedExtensionValues>'
         SoftwareVersionData: 'array{panel?: string, wings?: string, discord?: string, donations?: string}'
-        ServerBuildModificationData: 'array{oom_disabled?: bool, memory?: int, swap?: int, io?: int, cpu?: int, threads?: string|null, disk?: int, allocation_id?: int, database_limit?: int|null, allocation_limit?: int|null, backup_limit?: int|null, add_allocations?: list<int>, remove_allocations?: list<int>}'
         ServerStartupModificationData: 'array{environment?: array<string, ApiScalar>, egg_id?: int, startup?: string, skip_scripts?: bool, docker_image?: string}'
         NodeConfiguration: 'array{debug: bool, uuid: string, token_id: string, token: string, api: array{host: string, port: int, ssl: array{enabled: bool, cert: string, key: string}, upload_limit: int}, system: array{data: string, sftp: array{bind_port: int}}, allowed_mounts: list<string>, remote: string}'
         BackupDiskConfig: 'array{}|array{adapter: string, key?: string, secret?: string, token?: string, bucket?: string, prefix?: string, options?: array<string, JsonValue>, ...<string, ApiValue9>}'

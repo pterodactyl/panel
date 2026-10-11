@@ -70,7 +70,7 @@ class ServerDetailsController extends ApplicationApiController
     #[ScribeResponse(self::ALLOCATION_ERROR, status: 400, description: 'The requested allocation change is invalid.')]
     public function build(UpdateServerBuildConfigurationRequest $request, UpdatesServerBuild $build, Server $server): array
     {
-        $server = $build->update($server, $request->payload());
+        $server = $build->update($server, $request->actionInput());
 
         return Fractal::item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())

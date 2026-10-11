@@ -10,8 +10,8 @@ use Pterodactyl\Models\Server;
 final class ServerRules
 {
     /**
-     * Validation rules for the requests that update a server's build, details and startup.
-     * Creating a server uses CreateServer::rules().
+     * Validation rules for the requests that update a server's details and startup.
+     * Creating a server uses CreateServer::rules(), and its build UpdateServerBuild::rules().
      *
      * @param  Server|null  $ignore  the server being updated
      * @return NormalizedValidationRules
@@ -23,20 +23,9 @@ final class ServerRules
             'owner_id' => ['required', 'integer', 'exists:users,id'],
             'name' => ['required', 'string', 'min:1', 'max:191'],
             'description' => ['string'],
-            'memory' => ['required', 'integer', 'min:0'],
-            'swap' => ['required', 'integer', 'min:-1'],
-            'io' => ['required', 'integer', 'between:10,1000'],
-            'cpu' => ['required', 'integer', 'min:0'],
-            'threads' => ['nullable', 'regex:/^[0-9-,]+$/'],
-            'oom_disabled' => ['sometimes', 'boolean'],
-            'disk' => ['required', 'integer', 'min:0'],
-            'allocation_id' => ['required', 'bail', Rule::unique('servers', 'allocation_id')->ignore($ignore), 'exists:allocations,id'],
             'egg_id' => ['required', 'exists:eggs,id'],
             'startup' => ['required', 'string'],
             'image' => ['required', 'string', 'max:191', 'regex:/^~?[\w\.\/\-:@ ]*$/'],
-            'database_limit' => ['present', 'nullable', 'integer', 'min:0'],
-            'allocation_limit' => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'backup_limit' => ['present', 'nullable', 'integer', 'min:0'],
         ];
     }
 }

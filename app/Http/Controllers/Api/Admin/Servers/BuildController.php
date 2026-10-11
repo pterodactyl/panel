@@ -29,7 +29,7 @@ class BuildController extends AdminApiController
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server build updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     public function __invoke(UpdateServerBuildConfigurationRequest $request, UpdatesServerBuild $build, Server $server): array
     {
-        $server = $build->update($server, $request->payload());
+        $server = $build->update($server, $request->actionInput());
 
         Activity::event('admin:server.build')
             ->subject($server)

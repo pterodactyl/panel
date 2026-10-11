@@ -116,6 +116,39 @@ test('update server build', function (): void {
     $response->assertJsonPath('attributes.feature_limits.backups', 3);
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'memory' => 1024, 'disk' => 2048]);
 });
+test('update server build adds and removes allocations under the admin field names', function (): void {
+    $server = $this->createServerModel();
+    $fake = new FakeDaemonServer;
+    [$added, $removed] = Allocation::factory()->times(2)->create(['node_id' => $server->node_id]);
+    $removed->update(['server_id' => $server->id]);
+
+    $this->putJson(route('api.admin.servers.build', ['server' => $server->id]), ['allocation_id' => $server->allocation_id, 'memory' => '1024', 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 2048, 'add_allocation_ids' => [(string) $added->id], 'remove_allocation_ids' => [$removed->id], 'database_limit' => null, 'backup_limit' => '1'])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 1024)
+        ->assertJsonPath('attributes.feature_limits.backups', 1);
+
+    expect($added->refresh()->server_id)->toBe($server->id)
+        ->and($removed->refresh()->server_id)->toBeNull();
+    $fake->assertSynced();
+});
+test('update server build keeps the admin rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel();
+    $fake = new FakeDaemonServer;
+
+    $this->putJson(route('api.admin.servers.build', ['server' => $server->id]), array_filter([...['allocation_id' => $server->allocation_id, 'memory' => 1024, 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 2048, 'database_limit' => 0, 'backup_limit' => 0], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($fake->callsFor('sync'))->toBe([]);
+})->with([
+    'a missing default allocation' => [['allocation_id' => 'missing'], 'allocation_id', 'required'],
+    'a missing memory limit' => [['memory' => 'missing'], 'memory', 'required_without'],
+    'a missing database limit' => [['database_limit' => 'missing'], 'database_limit', 'present'],
+    'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
+    'allocations to add that are not a list' => [['add_allocation_ids' => ['first' => 1]], 'add_allocation_ids', 'list'],
+]);
 test('update server startup', function (): void {
     $server = $this->createServerModel(['skip_scripts' => true]);
     $response = $this->putJson(route('api.admin.servers.startup', ['server' => $server->id]), ['startup' => 'java -jar updated.jar', 'egg_id' => $server->egg_id, 'docker_image' => 'java:11', 'skip_scripts' => true, 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar']]);

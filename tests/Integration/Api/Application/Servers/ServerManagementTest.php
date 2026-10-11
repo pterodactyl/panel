@@ -130,6 +130,40 @@ test('server build rejects fractional limits with a validation error', function 
         ->assertUnprocessable()
         ->assertJsonPath('errors.0.meta.source_field', 'limits.memory');
 });
+test('server build takes the legacy flat limits, and limits over them', function (): void {
+    $fake = new FakeDaemonServer;
+    $server = $this->createServerModel(['oom_disabled' => true, 'threads' => '0-1', 'database_limit' => 4, 'allocation_limit' => 5, 'backup_limit' => 6]);
+    [$added, $removed] = Allocation::factory()->times(2)->create(['node_id' => $server->node_id]);
+    $removed->update(['server_id' => $server->id]);
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => (string) $server->allocation_id, 'oom_disabled' => '0', 'memory' => '768', 'swap' => -1, 'io' => 400, 'cpu' => 50, 'threads' => 2, 'disk' => 4096, 'add_allocations' => [$added->id], 'remove_allocations' => [(string) $removed->id], 'feature_limits' => ['databases' => null, 'backups' => '1']])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 768)
+        ->assertJsonPath('attributes.limits.threads', '2');
+
+    $server->refresh();
+    expect($server->oom_disabled)->toBeFalse()
+        ->and($server->memory)->toBe(768)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->io)->toBe(400)
+        ->and($server->cpu)->toBe(50)
+        ->and($server->threads)->toBe('2')
+        ->and($server->disk)->toBe(4096)
+        ->and($server->database_limit)->toBeNull()
+        ->and($server->allocation_limit)->toBeNull()
+        ->and($server->backup_limit)->toBe(1)
+        ->and($added->refresh()->server_id)->toBe($server->id)
+        ->and($removed->refresh()->server_id)->toBeNull();
+    $fake->assertSynced();
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'memory' => 128, 'threads' => '3', 'limits' => ['memory' => 256, 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 1024, 'threads' => null], 'feature_limits' => ['databases' => 1, 'backups' => 2, 'allocations' => 3]])
+        ->assertOk();
+
+    $server->refresh();
+    expect($server->memory)->toBe(256)
+        ->and($server->threads)->toBeNull()
+        ->and($server->allocation_limit)->toBe(3);
+});
 test('server startup can be updated', function (): void {
     mockDaemon();
     $server = $this->createServerModel();
