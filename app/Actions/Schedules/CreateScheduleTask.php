@@ -6,7 +6,6 @@ namespace Pterodactyl\Actions\Schedules;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Contracts\Schedules\CreatesScheduleTasks;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
@@ -81,7 +80,7 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
 
         $task = DB::transaction(function () use ($schedule, $attributes): Task {
             $schedule = $schedule->newQuery()->whereKey($schedule->getKey())->lockForUpdate()->firstOrFail();
-            $limit = Fluent::make(config()->array('pterodactyl.client_features.schedules'))->integer('per_schedule_task_limit', 10);
+            $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit');
             throw_if($schedule->tasks()->count() >= $limit, ServiceLimitExceededException::class, "Schedules may not have more than $limit tasks associated with them. Creating this task would put this schedule over the limit.");
 
             $next = ($schedule->tasks()->orderByDesc('sequence_id')->first()->sequence_id ?? 0) + 1;

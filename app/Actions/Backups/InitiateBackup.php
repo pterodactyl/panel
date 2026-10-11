@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
@@ -115,9 +114,8 @@ final class InitiateBackup implements InitiatesBackups
         $attributes = self::attributes(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles]);
 
         [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $attributes, $override): array {
-            $throttles = Fluent::make(config()->array('backups.throttles'));
-            $limit = $throttles->integer('limit');
-            $period = $throttles->integer('period');
+            $limit = config('backups.throttles.limit');
+            $period = config('backups.throttles.period');
             if ($period > 0) {
                 $previousCount = $server->backups()
                     ->withTrashed()

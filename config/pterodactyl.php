@@ -38,10 +38,10 @@ return [
     */
 
     'auth' => [
-        '2fa_required' => env('APP_2FA_REQUIRED', 0),
+        '2fa_required' => (int) env('APP_2FA_REQUIRED', 0),
         '2fa' => [
             'bytes' => 32,
-            'window' => env('APP_2FA_WINDOW', 4),
+            'window' => (int) env('APP_2FA_WINDOW', 4),
             'verify_newer' => true,
         ],
     ],
@@ -57,16 +57,16 @@ return [
 
     'paginate' => [
         'frontend' => [
-            'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
+            'servers' => (int) env('APP_PAGINATE_FRONT_SERVERS', 15),
         ],
         'admin' => [
-            'servers' => env('APP_PAGINATE_ADMIN_SERVERS', 25),
-            'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
+            'servers' => (int) env('APP_PAGINATE_ADMIN_SERVERS', 25),
+            'users' => (int) env('APP_PAGINATE_ADMIN_USERS', 25),
         ],
         'api' => [
-            'nodes' => env('APP_PAGINATE_API_NODES', 25),
-            'servers' => env('APP_PAGINATE_API_SERVERS', 25),
-            'users' => env('APP_PAGINATE_API_USERS', 25),
+            'nodes' => (int) env('APP_PAGINATE_API_NODES', 25),
+            'servers' => (int) env('APP_PAGINATE_API_SERVERS', 25),
+            'users' => (int) env('APP_PAGINATE_API_USERS', 25),
         ],
     ],
 
@@ -79,8 +79,8 @@ return [
     */
 
     'guzzle' => [
-        'timeout' => env('GUZZLE_TIMEOUT', 15),
-        'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 5),
+        'timeout' => (int) env('GUZZLE_TIMEOUT', 15),
+        'connect_timeout' => (int) env('GUZZLE_CONNECT_TIMEOUT', 5),
     ],
 
     /*
@@ -113,7 +113,7 @@ return [
 
         'schedules' => [
             // The total number of tasks that can exist for any given schedule at once.
-            'per_schedule_task_limit' => env('PTERODACTYL_PER_SCHEDULE_TASK_LIMIT', 10),
+            'per_schedule_task_limit' => (int) env('PTERODACTYL_PER_SCHEDULE_TASK_LIMIT', 10),
         ],
 
         'allocations' => [
@@ -132,7 +132,7 @@ return [
     */
 
     'files' => [
-        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
+        'max_edit_size' => (int) env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
     ],
 
     /*

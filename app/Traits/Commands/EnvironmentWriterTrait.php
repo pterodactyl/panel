@@ -76,8 +76,8 @@ trait EnvironmentWriterTrait
      */
     protected function configured(string $key, int|string|null $default = null): ?string
     {
-        $config = Fluent::make(config()->all());
+        $value = config($key, $default);
 
-        return $config->get($key, $default) === null ? null : $config->string($key, $default)->toString();
+        return is_scalar($value) ? (string) $value : null;
     }
 }

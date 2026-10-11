@@ -142,7 +142,7 @@ class ActivityLog extends Model implements Identifiable
      */
     public function prunable(): Builder
     {
-        $days = (int) config('activity.prune_days');
+        $days = config('activity.prune_days');
         throw_unless($days > 0, LogicException::class, 'Cannot prune activity logs: no "prune_days" configuration value is set.');
 
         return static::query()->where('timestamp', '<=', now()->subDays($days));

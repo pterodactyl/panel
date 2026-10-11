@@ -104,7 +104,7 @@ class ExtensionController extends AdminApiController
         return new JsonResponse([
             'data' => $this->extensionList($extensions, $assets),
             'meta' => [
-                'enabled' => (bool) config('extensions.enabled'),
+                'enabled' => config('extensions.enabled'),
                 'directory' => $extensions->directory(),
             ],
         ]);

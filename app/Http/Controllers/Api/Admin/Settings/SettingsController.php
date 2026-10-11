@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Controllers\Api\Admin\Settings;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Fluent;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
@@ -56,19 +55,16 @@ class SettingsController extends AdminApiController
     #[ScribeResponse(self::SETTINGS_EXAMPLE, description: 'Settings returned.')]
     public function index(GetSettingsRequest $request): JsonResponse
     {
-        // Settings saved from the panel come back from the database as strings, so numbers are cast on read.
-        $settings = Fluent::make(config()->all());
-
         return new JsonResponse([
             'general' => [
                 'app:name' => config('app.name'),
-                'pterodactyl:auth:2fa_required' => $settings->integer('pterodactyl.auth.2fa_required'),
+                'pterodactyl:auth:2fa_required' => config('pterodactyl.auth.2fa_required'),
                 'app:locale' => config('app.locale'),
             ],
             'mail' => [
                 'mail:default' => config('mail.default'),
                 'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),
-                'mail:mailers:smtp:port' => $settings->integer('mail.mailers.smtp.port'),
+                'mail:mailers:smtp:port' => config('mail.mailers.smtp.port'),
                 'mail:mailers:smtp:encryption' => config('mail.mailers.smtp.encryption'),
                 'mail:mailers:smtp:username' => config('mail.mailers.smtp.username'),
                 // Never return the SMTP password to the client.
@@ -77,17 +73,17 @@ class SettingsController extends AdminApiController
                 'mail:from:name' => config('mail.from.name'),
             ],
             'advanced' => [
-                'recaptcha:enabled' => config()->boolean('recaptcha.enabled'),
+                'recaptcha:enabled' => config('recaptcha.enabled'),
                 'recaptcha:secret_key' => '',
                 'recaptcha:website_key' => config('recaptcha.website_key'),
-                'pterodactyl:guzzle:timeout' => $settings->integer('pterodactyl.guzzle.timeout'),
-                'pterodactyl:guzzle:connect_timeout' => $settings->integer('pterodactyl.guzzle.connect_timeout'),
-                'pterodactyl:client_features:allocations:enabled' => config()->boolean('pterodactyl.client_features.allocations.enabled'),
+                'pterodactyl:guzzle:timeout' => config('pterodactyl.guzzle.timeout'),
+                'pterodactyl:guzzle:connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
+                'pterodactyl:client_features:allocations:enabled' => config('pterodactyl.client_features.allocations.enabled'),
                 'pterodactyl:client_features:allocations:range_start' => config('pterodactyl.client_features.allocations.range_start'),
                 'pterodactyl:client_features:allocations:range_end' => config('pterodactyl.client_features.allocations.range_end'),
             ],
             'meta' => [
-                'load_environment_only' => config()->boolean('pterodactyl.load_environment_only', false),
+                'load_environment_only' => config('pterodactyl.load_environment_only'),
                 'show_recaptcha_warning' => config('recaptcha._shipped_secret_key') === config('recaptcha.secret_key')
                     || config('recaptcha._shipped_website_key') === config('recaptcha.website_key'),
             ],

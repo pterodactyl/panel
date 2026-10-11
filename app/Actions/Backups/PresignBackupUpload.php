@@ -72,7 +72,7 @@ final readonly class PresignBackupUpload implements PresignsBackupUploads
      */
     private function maxPartSize(): int
     {
-        $maxPartSize = (int) config('backups.max_part_size', self::DEFAULT_MAX_PART_SIZE);
+        $maxPartSize = config('backups.max_part_size');
 
         return $maxPartSize > 0 ? $maxPartSize : self::DEFAULT_MAX_PART_SIZE;
     }

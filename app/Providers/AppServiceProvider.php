@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -205,8 +204,6 @@ class AppServiceProvider extends ServiceProvider
         $user = $request->user();
         $key = $user instanceof User ? $user->uuid : $request->ip();
 
-        $limits = Fluent::make(config()->array('http.rate_limit'));
-
-        return Limit::perMinutes($limits->integer("{$name}_period"), $limits->integer($name))->by($key);
+        return Limit::perMinutes(config()->integer("http.rate_limit.{$name}_period"), config()->integer("http.rate_limit.{$name}"))->by($key);
     }
 }

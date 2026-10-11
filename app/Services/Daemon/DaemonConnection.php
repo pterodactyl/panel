@@ -10,7 +10,6 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use JsonException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -31,15 +30,12 @@ final readonly class DaemonConnection
     /** @param RequestOptions $options */
     public function request(string $method, string $path, array $options = [], bool $useStatusCode = true): Response
     {
-        // Timeouts saved from the panel's settings come back from the database as strings.
-        $guzzle = Fluent::make(config()->array('pterodactyl.guzzle'));
-
         $request = Http::baseUrl($this->url)
             ->withToken($this->token)
             ->acceptJson()
             ->asJson()
-            ->timeout($guzzle->integer('timeout'))
-            ->connectTimeout($guzzle->integer('connect_timeout'))
+            ->timeout(config('pterodactyl.guzzle.timeout'))
+            ->connectTimeout(config('pterodactyl.guzzle.connect_timeout'))
             ->withOptions(['verify' => App::isProduction()]);
 
         if (isset($options['body'])) {

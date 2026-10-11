@@ -11,7 +11,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
@@ -125,7 +124,7 @@ class LoginCheckpointController extends AbstractLoginController
                 $decrypted,
                 $request->string('authentication_code')->toString(),
                 $oldTimestamp,
-                Fluent::make(config()->array('pterodactyl.auth.2fa'))->integer('window', 1)
+                config('pterodactyl.auth.2fa.window')
             );
 
             if ($verified !== false) {
