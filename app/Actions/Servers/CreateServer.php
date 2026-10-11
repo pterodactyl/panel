@@ -7,11 +7,12 @@ namespace Pterodactyl\Actions\Servers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use InvalidArgumentException;
+use Pterodactyl\Actions\Allocations\CreateAllocations;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
-use Pterodactyl\Data\ServerCreationData;
 use Pterodactyl\Data\ValidatedEggVariable;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\DisplayException;
@@ -30,9 +31,13 @@ use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Services\Servers\VariableValidatorService;
+use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 
+/**
+ * @phpstan-type CreationAttributes array{external_id: string|null, name: string, description: string, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, ApiScalar>, skip_scripts: bool, oom_disabled: bool, memory: int, swap: int, disk: int, io: int, threads: string|null, cpu: int, database_limit: int, allocation_limit: int, backup_limit: int, allocation_id: int|null, allocation_additional: list<int>, start_on_completion: bool}
+ */
 final readonly class CreateServer implements CreatesServers
 {
     public function __construct(
@@ -44,7 +49,95 @@ final readonly class CreateServer implements CreatesServers
     ) {}
 
     /**
-     * @param  ServerCreationInput  $data
+     * A new server's fields. The default allocation and any additional ones must exist and
+     * belong to no server. Memory, disk, CPU and the feature limits take 0 for unlimited,
+     * and swap takes -1. The CPU threads are a pattern of cores such as "0-1,3", which a
+     * bare number also matches.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'external_id' => ['sometimes', 'nullable', 'string', 'between:1,191', Rule::unique('servers', 'external_id')],
+            'name' => ['required', 'string', 'min:1', 'max:191'],
+            'description' => ['nullable', 'string'],
+            'owner_id' => ['required', 'integer', 'exists:users,id'],
+            'egg_id' => ['required', 'integer', 'exists:eggs,id'],
+            'image' => ['required', 'string', 'max:191', 'regex:/^~?[\w\.\/\-:@ ]*$/'],
+            'startup' => ['required', 'string'],
+            'environment' => ['sometimes', 'array'],
+            'skip_scripts' => ['sometimes', 'boolean'],
+            'oom_disabled' => ['sometimes', 'nullable', 'boolean'],
+            'memory' => ['required', 'integer', 'min:0'],
+            'swap' => ['required', 'integer', 'min:-1'],
+            'disk' => ['required', 'integer', 'min:0'],
+            'io' => ['required', 'integer', 'between:10,1000'],
+            'threads' => ['nullable', 'regex:/^[0-9-,]+$/'],
+            'cpu' => ['required', 'integer', 'min:0'],
+            'database_limit' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'allocation_limit' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'backup_limit' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'allocation_id' => ['required', 'integer', 'bail', CreateAllocations::unassigned()],
+            'allocation_additional' => ['sometimes', 'nullable', 'array', 'list'],
+            'allocation_additional.*' => ['integer', CreateAllocations::unassigned()],
+            'start_on_completion' => ['sometimes', 'boolean'],
+        ];
+    }
+
+    /**
+     * Validates server input and returns the server it describes. Given a deployment, the
+     * deployment picks the default allocation, so none is read from the input.
+     *
+     * A server given no description gets an empty one, and a feature limit given as null or
+     * left out is 0. A server given no OOM flag, or null, has the OOM killer disabled. The
+     * environment keeps each value as it was given, for the egg's variable rules to check.
+     *
+     * @param  ActionInput  $input
+     * @return CreationAttributes
+     */
+    public static function attributes(array $input, ?DeploymentObject $deployment = null): array
+    {
+        $rules = self::rules();
+        if ($deployment instanceof DeploymentObject) {
+            unset($rules['allocation_id']);
+        }
+
+        $input = Validator::make($input, $rules)->safe();
+
+        // Laravel's typed accessors would turn every value into one type, but the egg's
+        // variable rules have to see each value as it was sent.
+        $environment = $input->array('environment');
+        JsonValueGuard::assertScalarPayload($environment);
+
+        return [
+            'external_id' => $input->filled('external_id') ? $input->string('external_id')->toString() : null,
+            'name' => $input->string('name')->toString(),
+            'description' => $input->string('description')->toString(),
+            'owner_id' => $input->integer('owner_id'),
+            'egg_id' => $input->integer('egg_id'),
+            'image' => $input->string('image')->toString(),
+            'startup' => $input->string('startup')->toString(),
+            'environment' => $environment,
+            'skip_scripts' => $input->boolean('skip_scripts'),
+            'oom_disabled' => $input->filled('oom_disabled') ? $input->boolean('oom_disabled') : true,
+            'memory' => $input->integer('memory'),
+            'swap' => $input->integer('swap'),
+            'disk' => $input->integer('disk'),
+            'io' => $input->integer('io'),
+            'threads' => $input->filled('threads') ? $input->string('threads')->toString() : null,
+            'cpu' => $input->integer('cpu'),
+            'database_limit' => $input->integer('database_limit'),
+            'allocation_limit' => $input->integer('allocation_limit'),
+            'backup_limit' => $input->integer('backup_limit'),
+            'allocation_id' => $input->has('allocation_id') ? $input->integer('allocation_id') : null,
+            'allocation_additional' => array_map(fn (int|string $key): int => $input->integer('allocation_additional.'.$key), array_keys($input->array('allocation_additional'))),
+            'start_on_completion' => $input->boolean('start_on_completion'),
+        ];
+    }
+
+    /**
+     * @param  ActionInput  $input
      *
      * @throws Throwable
      * @throws DisplayException
@@ -52,44 +145,34 @@ final readonly class CreateServer implements CreatesServers
      * @throws NoViableNodeException
      * @throws NoViableAllocationException
      */
-    public function create(array $data, ?DeploymentObject $deployment = null): Server
+    public function create(array $input, ?DeploymentObject $deployment = null): Server
     {
-        // Normalize the validated request once before applying any deployment rules.
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
-        $data = [...ServerCreationData::parse($data), 'extensions' => $extensions];
-        throw_if(empty($data['egg_id']), InvalidArgumentException::class, 'Expected a non-empty egg_id in server creation data.');
+        $attributes = self::attributes($input, $deployment);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        $egg = Egg::query()->with('tags')->findOrFail((int) $data['egg_id']);
+        $egg = Egg::query()->with('tags')->findOrFail($attributes['egg_id']);
 
         // Resolve the egg first because its tags constrain which nodes are viable.
-        if ($deployment instanceof DeploymentObject) {
-            $allocation = $this->configureDeployment($data, $deployment, $egg);
-            $data['allocation_id'] = $allocation->id;
-            $data['node_id'] = $allocation->node_id;
-        }
-
-        if (empty($data['node_id'])) {
-            throw_if(empty($data['allocation_id']), InvalidArgumentException::class, 'Expected a non-empty allocation_id in server creation data.');
-            $data['node_id'] = Allocation::query()->findOrFail((int) $data['allocation_id'])->node_id;
-        }
+        $allocation = $deployment instanceof DeploymentObject
+            ? $this->configureDeployment($attributes, $deployment, $egg)
+            : Allocation::query()->findOrFail($attributes['allocation_id']);
 
         $eggVariableData = $this->validatorService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($egg, $data['environment']);
+            ->handle($egg, $attributes['environment']);
 
         // Wings requires the server to exist in the Panel before it can start creation.
-        $server = DB::transaction(function () use ($data, $eggVariableData): Server {
-            $server = $this->createModel($data);
-            $this->storeAssignedAllocations($server, $data);
+        $server = DB::transaction(function () use ($attributes, $allocation, $eggVariableData, $extensions): Server {
+            $server = $this->createModel($attributes, $allocation);
+            $this->storeAssignedAllocations($server, [$allocation->id, ...$attributes['allocation_additional']]);
             $this->storeEggVariables($server, $eggVariableData);
-            $this->extensions->save($server, $data['extensions']);
+            $this->extensions->save($server, $extensions);
 
             return $server;
         }, 5);
 
         try {
-            Daemon::server($server)->create($data['start_on_completion']);
+            Daemon::server($server)->create($attributes['start_on_completion']);
         } catch (DaemonConnectionException $daemonConnectionException) {
             // Remove the persisted record even when Wings could not be reached.
             $this->deleteServer->withForce()->delete($server);
@@ -101,13 +184,13 @@ final readonly class CreateServer implements CreatesServers
         return $server;
     }
 
-    /** @param ServerCreationAttributes $data */
-    private function configureDeployment(array $data, DeploymentObject $deployment, Egg $egg): Allocation
+    /** @param CreationAttributes $attributes */
+    private function configureDeployment(array $attributes, DeploymentObject $deployment, Egg $egg): Allocation
     {
         // Egg tags are matched against accepted game tags on viable nodes.
         $nodes = $this->findViableNodesService->setLocations($deployment->getLocations())
-            ->setDisk($data['disk'])
-            ->setMemory($data['memory'])
+            ->setDisk($attributes['disk'])
+            ->setMemory($attributes['memory'])
             ->setEggTags($egg->tagSlugs())
             ->setDeployTags($deployment->getTags())
             ->handle();
@@ -123,49 +206,42 @@ final readonly class CreateServer implements CreatesServers
             ->handle();
     }
 
-    /** @param ServerCreationAttributes $data */
-    private function createModel(array $data): Server
+    /** @param CreationAttributes $attributes */
+    private function createModel(array $attributes, Allocation $allocation): Server
     {
         $uuid = $this->generateUniqueUuidCombo();
 
         return Server::query()->create([
-            'external_id' => $data['external_id'],
+            'external_id' => $attributes['external_id'],
             'uuid' => $uuid,
             'uuidShort' => mb_substr($uuid, 0, 8),
-            'node_id' => $data['node_id'] ?? throw new InvalidArgumentException('Expected node_id in server creation data.'),
-            'name' => $data['name'],
-            'description' => $data['description'] ?? '',
+            'node_id' => $allocation->node_id,
+            'name' => $attributes['name'],
+            'description' => $attributes['description'],
             'status' => Server::STATUS_INSTALLING,
-            'skip_scripts' => $data['skip_scripts'],
-            'owner_id' => $data['owner_id'],
-            'memory' => $data['memory'],
-            'swap' => $data['swap'],
-            'disk' => $data['disk'],
-            'io' => $data['io'],
-            'cpu' => $data['cpu'],
-            'threads' => $data['threads'],
-            'oom_disabled' => $data['oom_disabled'] ?? true,
-            'allocation_id' => $data['allocation_id'],
-            'egg_id' => $data['egg_id'],
-            'startup' => $data['startup'],
-            'image' => $data['image'],
-            'database_limit' => $data['database_limit'] ?? 0,
-            'allocation_limit' => $data['allocation_limit'] ?? 0,
-            'backup_limit' => $data['backup_limit'] ?? 0,
+            'skip_scripts' => $attributes['skip_scripts'],
+            'owner_id' => $attributes['owner_id'],
+            'memory' => $attributes['memory'],
+            'swap' => $attributes['swap'],
+            'disk' => $attributes['disk'],
+            'io' => $attributes['io'],
+            'cpu' => $attributes['cpu'],
+            'threads' => $attributes['threads'],
+            'oom_disabled' => $attributes['oom_disabled'],
+            'allocation_id' => $allocation->id,
+            'egg_id' => $attributes['egg_id'],
+            'startup' => $attributes['startup'],
+            'image' => $attributes['image'],
+            'database_limit' => $attributes['database_limit'],
+            'allocation_limit' => $attributes['allocation_limit'],
+            'backup_limit' => $attributes['backup_limit'],
         ])->refresh();
     }
 
-    /** @param ServerCreationAttributes $data */
-    private function storeAssignedAllocations(Server $server, array $data): void
+    /** @param list<int> $allocationIds */
+    private function storeAssignedAllocations(Server $server, array $allocationIds): void
     {
-        $allocationId = $data['allocation_id'];
-        throw_if($allocationId === null, InvalidArgumentException::class, 'Expected an allocation_id before storing server allocations.');
-        $records = [$allocationId];
-        if ($data['allocation_additional'] !== null) {
-            $records = array_merge($records, $data['allocation_additional']);
-        }
-
-        Allocation::query()->whereIn('id', $records)->update(['server_id' => $server->id]);
+        Allocation::query()->whereIn('id', $allocationIds)->update(['server_id' => $server->id]);
     }
 
     /** @param Collection<int, ValidatedEggVariable> $variables */

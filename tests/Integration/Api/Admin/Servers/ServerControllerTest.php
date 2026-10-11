@@ -113,6 +113,71 @@ test('create server', function (): void {
     $response->assertJson(['object' => 'server', 'meta' => ['resource' => route('api.admin.servers.view', ['server' => $server->id])]]);
     $fake->assertCreated();
 });
+test('create server hands its admin fields to the server', function (): void {
+    $node = Node::factory()->for(Location::factory())->create();
+    [$primary, $secondary] = Allocation::factory()->times(2)->create(['node_id' => $node->id]);
+    $fake = new FakeDaemonServer;
+
+    $response = $this->postJson(route('api.admin.servers.store'), [...adminServerPayload($primary->id), 'external_id' => 'admin-ext-1', 'oom_disabled' => false, 'skip_scripts' => '1', 'threads' => 0, 'memory' => '512', 'swap' => -1, 'database_limit' => null, 'allocation_limit' => 3, 'secondary_allocations_ids' => [(string) $secondary->id], 'start_on_completion' => true])
+        ->assertCreated();
+
+    $server = Server::query()->findOrFail($response->json('attributes.id'));
+    expect($server->external_id)->toBe('admin-ext-1')
+        ->and($server->image)->toBe('ghcr.io/pterodactyl/yolks:java_21')
+        ->and($server->oom_disabled)->toBeFalse()
+        ->and($server->skip_scripts)->toBeTrue()
+        ->and($server->threads)->toBe('0')
+        ->and($server->memory)->toBe(512)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->database_limit)->toBe(0)
+        ->and($server->allocation_limit)->toBe(3)
+        ->and($server->node_id)->toBe($node->id)
+        ->and($server->allocation_id)->toBe($primary->id)
+        ->and($secondary->refresh()->server_id)->toBe($server->id);
+    $fake->assertCreatedWith(true);
+});
+test('create server keeps the admin rules where they differ from the action', function (array $payload, string $field, string $rule): void {
+    $allocation = Allocation::factory()->for(Node::factory()->for(Location::factory()))->create();
+    $fake = new FakeDaemonServer;
+
+    $this->postJson(route('api.admin.servers.store'), array_filter([...adminServerPayload($allocation->id), ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($fake->callsFor('create'))->toBe([]);
+})->with([
+    'a missing environment' => [['environment' => 'missing'], 'environment', 'present'],
+    'a missing database limit' => [['database_limit' => 'missing'], 'database_limit', 'present'],
+    'a missing backup limit' => [['backup_limit' => 'missing'], 'backup_limit', 'present'],
+    'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
+    'an egg that does not exist' => [['egg_id' => 'none'], 'egg_id', 'exists'],
+    'a missing primary allocation' => [['primary_allocation_id' => 'missing'], 'primary_allocation_id', 'required'],
+    'a secondary allocation that does not exist' => [['secondary_allocations_ids' => [0]], 'secondary_allocations_ids.0', 'exists'],
+    'a docker image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image', 'regex'],
+]);
+/** @return array<string, mixed> */
+function adminServerPayload(int $allocationId): array
+{
+    return [
+        'name' => 'Admin Server',
+        'owner_id' => User::factory()->create()->id,
+        'egg_id' => Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail()->id,
+        'docker_image' => 'ghcr.io/pterodactyl/yolks:java_21',
+        'startup' => 'java -jar server.jar',
+        'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'server.jar'],
+        'memory' => 512,
+        'swap' => 0,
+        'disk' => 1024,
+        'io' => 500,
+        'cpu' => 0,
+        'database_limit' => 0,
+        'allocation_limit' => 0,
+        'backup_limit' => 0,
+        'primary_allocation_id' => $allocationId,
+    ];
+}
 test('delete server', function (): void {
     $server = $this->createServerModel();
     $this->assertDatabaseHas('servers', ['id' => $server->id]);

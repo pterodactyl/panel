@@ -96,7 +96,7 @@ class ServerController extends AdminApiController
     #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
-        $server = $creation->create($request->payload(), $request->getDeploymentObject());
+        $server = $creation->create($request->actionInput(), $request->getDeploymentObject());
 
         Activity::event('admin:server.create')
             ->subject($server)

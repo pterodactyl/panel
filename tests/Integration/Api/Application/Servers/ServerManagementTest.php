@@ -8,6 +8,9 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
@@ -35,6 +38,61 @@ test('server can be created', function (): void {
     $this->assertDatabaseHas('servers', ['name' => 'Created Via API', 'owner_id' => $owner->id]);
     expect($allocation->refresh()->server_id)->toBe($response->json('attributes.id'));
 });
+test('a server created through the application api takes its nested fields', function (): void {
+    $fake = new FakeDaemonServer;
+    $node = Node::factory()->for(Location::factory())->create();
+    [$default, $additional] = Allocation::factory()->times(2)->create(['node_id' => $node->id]);
+
+    $response = $this->postJson('/api/application/servers', [
+        ...applicationServerPayload($default->id),
+        'external_id' => 'app-ext-1',
+        'description' => 'Provisioned by billing.',
+        'oom_disabled' => false,
+        'start_on_completion' => '1',
+        'limits' => ['memory' => '512', 'swap' => -1, 'disk' => 1024.0, 'io' => 500, 'cpu' => 100, 'threads' => 0],
+        'feature_limits' => ['databases' => null, 'backups' => '2'],
+        'allocation' => ['default' => (string) $default->id, 'additional' => [$additional->id]],
+    ], options: JSON_PRESERVE_ZERO_FRACTION)->assertCreated();
+
+    $server = Server::query()->findOrFail($response->json('attributes.id'));
+    expect($server->external_id)->toBe('app-ext-1')
+        ->and($server->description)->toBe('Provisioned by billing.')
+        ->and($server->image)->toBe('ghcr.io/pterodactyl/yolks:java_17')
+        ->and($server->oom_disabled)->toBeFalse()
+        ->and($server->memory)->toBe(512)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->disk)->toBe(1024)
+        ->and($server->cpu)->toBe(100)
+        ->and($server->threads)->toBe('0')
+        ->and($server->database_limit)->toBe(0)
+        ->and($server->allocation_limit)->toBe(0)
+        ->and($server->backup_limit)->toBe(2)
+        ->and($server->node_id)->toBe($node->id)
+        ->and($server->allocation_id)->toBe($default->id)
+        ->and($additional->refresh()->server_id)->toBe($server->id);
+    $fake->assertCreatedWith(true);
+});
+test('a server created through the application api keeps its own rules', function (array $payload, string $field, string $rule): void {
+    $fake = new FakeDaemonServer;
+    $allocation = Allocation::factory()->for(Node::factory()->for(Location::factory()))->create();
+
+    $this->postJson('/api/application/servers', array_filter([...applicationServerPayload($allocation->id), ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($fake->callsFor('create'))->toBe([]);
+})->with([
+    'a missing environment' => [['environment' => 'missing'], 'environment', 'present'],
+    'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
+    'an owner that does not exist' => [['user' => 0], 'user', 'exists'],
+    'an egg that does not exist' => [['egg' => 'none'], 'egg', 'exists'],
+    'a docker image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image', 'regex'],
+    'a missing database limit' => [['feature_limits' => ['allocations' => 0, 'backups' => 0]], 'feature_limits.databases', 'present'],
+    'a negative memory limit' => [['limits' => ['memory' => -1, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 100]], 'limits.memory', 'min'],
+    'a missing default allocation' => [['allocation' => ['additional' => []]], 'allocation.default', 'required'],
+]);
 test('server details can be updated', function (): void {
     $revocation = new FakeDaemonRevocation;
     $server = $this->createServerModel();
@@ -180,6 +238,21 @@ test('server database can be deleted', function (): void {
     $gateway->assertDroppedUser($database->username, $database->remote);
     $gateway->assertFlushed(1);
 });
+/** @return array<string, mixed> */
+function applicationServerPayload(int $allocationId): array
+{
+    return [
+        'name' => 'Application Server',
+        'user' => User::factory()->create()->id,
+        'egg' => Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail()->id,
+        'docker_image' => 'ghcr.io/pterodactyl/yolks:java_17',
+        'startup' => 'java -jar server.jar',
+        'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'server.jar'],
+        'limits' => ['memory' => 512, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 100],
+        'feature_limits' => ['databases' => 0, 'allocations' => 0, 'backups' => 0],
+        'allocation' => ['default' => $allocationId],
+    ];
+}
 /** Fake the Wings server endpoints exercised by state-changing requests. */
 function mockDaemon(): void
 {

@@ -6,11 +6,9 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use Pterodactyl\Actions\Allocations\CreateAllocations;
-use Pterodactyl\Data\ServerCreationData;
+use Pterodactyl\Actions\Servers\CreateServer;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
@@ -18,12 +16,13 @@ use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\ServerRules;
 
 class StoreServerRequest extends AdminApiRequest
 {
     use FiltersDeployTags;
-    use ValidatesExtensionFields;
+    use ValidatesExtensionFields {
+        actionInput as private inputWithExtensions;
+    }
 
     public function permissions(): array
     {
@@ -31,24 +30,27 @@ class StoreServerRequest extends AdminApiRequest
     }
 
     /**
-     * Validation rules for creating a server.
+     * Validation rules for creating a server, under the admin API's field names. The fields
+     * it checks differently from the action keep their own rules: it requires the environment
+     * and the database and backup limits, refuses a null OOM flag, and checks only that the
+     * egg exists, so a missing egg reports one error.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules();
+        $rules = CreateServer::rules();
 
         return [
             'external_id' => $rules['external_id'],
             'name' => $rules['name'],
-            'description' => array_merge(['nullable'], $rules['description']),
+            'description' => $rules['description'],
             'owner_id' => $rules['owner_id'],
-            'egg_id' => $rules['egg_id'],
+            'egg_id' => ['required', 'exists:eggs,id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
             'environment' => ['present', 'array'],
-            'skip_scripts' => ['sometimes', 'boolean'],
+            'skip_scripts' => $rules['skip_scripts'],
             'oom_disabled' => ['sometimes', 'boolean'],
 
             'memory' => $rules['memory'],
@@ -58,13 +60,13 @@ class StoreServerRequest extends AdminApiRequest
             'threads' => $rules['threads'],
             'cpu' => $rules['cpu'],
 
-            'database_limit' => $rules['database_limit'],
+            'database_limit' => ['present', 'nullable', 'integer', 'min:0'],
             'allocation_limit' => $rules['allocation_limit'],
-            'backup_limit' => $rules['backup_limit'],
+            'backup_limit' => ['present', 'nullable', 'integer', 'min:0'],
 
             // Allocations are chosen by hand unless a deployment object picks them.
-            'primary_allocation_id' => ['exclude_with:deploy', 'required', 'integer', 'bail', CreateAllocations::unassigned()],
-            'secondary_allocations_ids.*' => ['exclude_with:deploy', 'integer', CreateAllocations::unassigned()],
+            'primary_allocation_id' => ['exclude_with:deploy', ...$rules['allocation_id']],
+            'secondary_allocations_ids.*' => ['exclude_with:deploy', ...$rules['allocation_additional.*']],
 
             'deploy' => ['sometimes', 'required', 'array'],
             'deploy.locations' => ['present_with:deploy', 'array', 'list'],
@@ -78,46 +80,26 @@ class StoreServerRequest extends AdminApiRequest
             'deploy.tags' => ['array'],
             'deploy.tags.*' => ['string'],
 
-            'start_on_completion' => ['sometimes', 'boolean'],
+            'start_on_completion' => $rules['start_on_completion'],
         ];
     }
 
     /**
-     * Normalize the validated data for the server creation service.
+     * The validated input under the action's field names: docker_image is its image, and
+     * primary_allocation_id and secondary_allocations_ids its allocation_id and
+     * allocation_additional. The deployment goes to the action as getDeploymentObject().
      *
-     * @return ServerCreationAttributes
+     * @return ActionInput
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $data = parent::validated();
+        $input = $this->inputWithExtensions();
+        $input['image'] = $input['docker_image'] ?? null;
+        $input['allocation_id'] = $input['primary_allocation_id'] ?? null;
+        $input['allocation_additional'] = $input['secondary_allocations_ids'] ?? null;
+        unset($input['docker_image'], $input['primary_allocation_id'], $input['secondary_allocations_ids'], $input['deploy']);
 
-        $payload = [
-            'external_id' => Arr::get($data, 'external_id'),
-            'name' => Arr::get($data, 'name'),
-            'description' => Arr::get($data, 'description'),
-            'owner_id' => Arr::get($data, 'owner_id'),
-            'egg_id' => Arr::get($data, 'egg_id'),
-            'image' => Arr::get($data, 'docker_image'),
-            'startup' => Arr::get($data, 'startup'),
-            'environment' => Arr::get($data, 'environment'),
-            'memory' => Arr::get($data, 'memory'),
-            'swap' => Arr::get($data, 'swap'),
-            'disk' => Arr::get($data, 'disk'),
-            'io' => Arr::get($data, 'io'),
-            'cpu' => Arr::get($data, 'cpu'),
-            'threads' => Arr::get($data, 'threads'),
-            'skip_scripts' => Arr::get($data, 'skip_scripts', false),
-            'allocation_id' => Arr::get($data, 'primary_allocation_id'),
-            'allocation_additional' => Arr::get($data, 'secondary_allocations_ids'),
-            'start_on_completion' => Arr::get($data, 'start_on_completion', false),
-            'database_limit' => Arr::get($data, 'database_limit'),
-            'allocation_limit' => Arr::get($data, 'allocation_limit'),
-            'backup_limit' => Arr::get($data, 'backup_limit'),
-            'oom_disabled' => Arr::get($data, 'oom_disabled'),
-        ];
-        JsonValueGuard::assertPayload9($payload);
-
-        return [...ServerCreationData::parse($payload), 'extensions' => $this->extensionValues()];
+        return $input;
     }
 
     /**

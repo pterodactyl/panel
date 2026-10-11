@@ -103,7 +103,7 @@ class ServerController extends ApplicationApiController
     #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
-        $server = $creation->create($request->payload(), $request->getDeploymentObject());
+        $server = $creation->create($request->actionInput(), $request->getDeploymentObject());
 
         return Fractal::item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())

@@ -30,8 +30,6 @@ parameters:
         JsonInputValue: 'ApiValue0|ApiValue1|ApiValue2|ApiValue3|ApiValue4|ApiValue5|ApiValue6|ApiValue7|ApiValue8|ApiValue9|ApiValue10'
         ModelAttributeValue: 'JsonInputValue|\DateTimeInterface|\UnitEnum|\Stringable|\Illuminate\Contracts\Support\Arrayable<array-key, JsonValue>'
         ModelAttributes: 'array<string, ModelAttributeValue>'
-        ServerCreationAttributes: 'array{external_id: string|null, name: string, description: string|null, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, ApiScalar>, memory: int, swap: int, disk: int, io: int, cpu: int, threads: string|null, skip_scripts: bool, allocation_id: int|null, allocation_additional: list<int>|null, start_on_completion: bool, database_limit: int|null, allocation_limit: int|null, backup_limit: int|null, oom_disabled: bool|null, node_id?: int, extensions: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
-        ServerCreationInput: 'array{extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues, ...<string, ApiValue9>}'
         ApiErrorSource: 'array{line: int, file: string}'
         ApiErrorMetadata: 'array<string, JsonValue>'
         ApiError: 'array{code: string, status: string, detail: string, source?: ApiErrorSource, meta?: ApiErrorMetadata}'
