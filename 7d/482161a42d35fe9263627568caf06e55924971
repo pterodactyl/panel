@@ -1,0 +1,38 @@
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_4cabae41bceed9::t_b9c10f19ecfe04 13
+  s_4cabae41bceed9::t_c39043466a54fd 87,94
+app/Providers/ActionServiceProvider.php
+  s_4cabae41bceed9::t_c39043466a54fd 118,120,238,240,295-296
+packages/sdk/README.md
+  s_4cabae41bceed9::t_0f5201ebcb3e23 574-575
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_4cabae41bceed9::t_d173b904c05b47 9-12,90,92-93,96-105,108-116,119-133
+  s_4cabae41bceed9::t_962bab5d1e56ef 7,91,94-95,106-107,117-118,134
+  s_4cabae41bceed9::t_0a404e4202a4a0 135
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_4cabae41bceed9::t_c39043466a54fd 12-13,49,51,68,75
+app/Contracts/Users/CreatesSshKeys.php
+  s_4cabae41bceed9::t_9a73bb97a981d4 1-17
+app/Actions/Users/CreateSshKey.php
+  s_4cabae41bceed9::t_05e98eb6ed66af 1-21
+app/Contracts/Users/DeletesSshKeys.php
+  s_4cabae41bceed9::t_db8d19e34397c9 1-12
+app/Actions/Users/DeleteSshKey.php
+  s_4cabae41bceed9::t_9b81ded484765b 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7d482161a42d35fe9263627568caf06e55924971",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

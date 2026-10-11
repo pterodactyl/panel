@@ -1,0 +1,26 @@
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_4cabae41bceed9::t_e9e636076fd303 17,59-60,104-105
+app/Actions/Users/UpdateUserPassword.php
+  s_4cabae41bceed9::t_e9e636076fd303 8,17-20,24-25,27-29,31-33,35-37
+packages/sdk/README.md
+  s_4cabae41bceed9::t_44a4d25da5dcb5 566-567
+tests/Integration/Http/Controllers/Auth/PasswordResetTest.php
+  s_4cabae41bceed9::t_66d78f61a97f5e 54-76
+  s_4cabae41bceed9::t_1ba437fd7abade 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fcb87f95d9bd97ff1c33a4cc6320bea4f5949e69",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
