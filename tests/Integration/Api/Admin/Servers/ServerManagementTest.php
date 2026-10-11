@@ -185,6 +185,24 @@ test('update server startup', function (): void {
     $response->assertJsonPath('attributes.container.skip_scripts', true);
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'startup' => 'java -jar updated.jar', 'image' => 'java:11', 'skip_scripts' => true]);
 });
+test('update server startup keeps the admin rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel(['startup' => 'old startup']);
+
+    $this->putJson(route('api.admin.servers.startup', ['server' => $server->id]), array_filter([...['startup' => 'java -jar updated.jar', 'egg_id' => $server->egg_id, 'docker_image' => 'java:11', 'skip_scripts' => false, 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar']], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($server->refresh()->startup)->toBe('old startup');
+})->with([
+    'a missing startup command' => [['startup' => 'missing'], 'startup', 'required'],
+    'a missing environment' => [['environment' => 'missing'], 'environment', 'present'],
+    'an egg that does not exist' => [['egg_id' => 0], 'egg_id', 'exists'],
+    'a docker image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image', 'regex'],
+    'a missing skip scripts flag' => [['skip_scripts' => 'missing'], 'skip_scripts', 'present'],
+    'an environment value the egg refuses' => [['environment' => ['BUNGEE_VERSION' => '$$', 'SERVER_JARFILE' => 'updated.jar']], 'environment.BUNGEE_VERSION', 'alpha_num'],
+]);
 test('build rejects unassigned default allocation', function (): void {
     $server = $this->createServerModel();
     /** @var Allocation $allocation */

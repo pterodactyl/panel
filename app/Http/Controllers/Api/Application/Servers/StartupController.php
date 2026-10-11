@@ -47,7 +47,7 @@ class StartupController extends ApplicationApiController
     #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while syncing startup changes.')]
     public function index(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): array
     {
-        $server = $modification->update($server, $request->payload(), User::USER_LEVEL_ADMIN);
+        $server = $modification->update($server, $request->actionInput(), User::USER_LEVEL_ADMIN);
 
         return Fractal::item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))

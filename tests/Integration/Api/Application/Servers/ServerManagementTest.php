@@ -197,6 +197,42 @@ test('server startup can be updated', function (): void {
     $this->patchJson("/api/application/servers/{$server->id}/startup", ['startup' => 'java -jar updated.jar', 'environment' => $environment, 'egg' => $server->egg_id, 'image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => false])->assertOk()->assertJsonPath('attributes.container.startup_command', 'java -jar updated.jar')->assertJsonPath('attributes.container.image', 'ghcr.io/pterodactyl/yolks:java_17');
     expect($server->refresh()->startup)->toBe('java -jar updated.jar');
 });
+test('server startup takes the application field names', function (): void {
+    mockDaemon();
+    $server = $this->createServerModel(['skip_scripts' => false]);
+    $nextEgg = $this->cloneEggAndVariables($server->egg);
+
+    $this->patchJson("/api/application/servers/{$server->id}/startup", ['startup' => 'java -jar moved.jar', 'environment' => ['BUNGEE_VERSION' => '456', 'SERVER_JARFILE' => 'moved.jar'], 'egg' => (string) $nextEgg->id, 'image' => 'ghcr.io/pterodactyl/yolks:java_21', 'skip_scripts' => '1'])
+        ->assertOk()
+        ->assertJsonPath('attributes.egg', $nextEgg->id)
+        ->assertJsonPath('attributes.container.image', 'ghcr.io/pterodactyl/yolks:java_21')
+        ->assertJsonPath('attributes.container.skip_scripts', true);
+
+    $server->refresh();
+    expect($server->egg_id)->toBe($nextEgg->id)
+        ->and($server->startup)->toBe('java -jar moved.jar')
+        ->and($server->skip_scripts)->toBeTrue()
+        ->and($server->variables->pluck('server_value', 'env_variable')->all())->toEqual(['BUNGEE_VERSION' => '456', 'SERVER_JARFILE' => 'moved.jar']);
+});
+test('server startup keeps its own rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel(['startup' => 'old startup']);
+
+    $this->patchJson("/api/application/servers/{$server->id}/startup", array_filter([...['startup' => 'java -jar updated.jar', 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar'], 'egg' => $server->egg_id, 'image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => false], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($server->refresh()->startup)->toBe('old startup');
+})->with([
+    'a missing startup command' => [['startup' => 'missing'], 'startup', 'required'],
+    'an environment that is not an object' => [['environment' => 'BUNGEE_VERSION=123'], 'environment', 'array'],
+    'a missing egg' => [['egg' => 'missing'], 'egg', 'required'],
+    'an egg that does not exist' => [['egg' => 'none'], 'egg', 'exists'],
+    'an image that is too long' => [['image' => str_repeat('a', 192)], 'image', 'max'],
+    'a skip scripts flag that is not a boolean' => [['skip_scripts' => 'yes'], 'skip_scripts', 'boolean'],
+    'an environment value the egg refuses' => [['environment' => ['BUNGEE_VERSION' => '$$', 'SERVER_JARFILE' => 'updated.jar']], 'environment.BUNGEE_VERSION', 'alpha_num'],
+]);
 test('server can be suspended and unsuspended', function (): void {
     mockDaemon();
     $server = $this->createServerModel();

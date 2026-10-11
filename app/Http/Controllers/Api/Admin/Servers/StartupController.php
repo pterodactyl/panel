@@ -30,7 +30,7 @@ class StartupController extends AdminApiController
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server startup updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     public function __invoke(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): array
     {
-        $server = $modification->update($server, $request->payload(), User::USER_LEVEL_ADMIN);
+        $server = $modification->update($server, $request->actionInput(), User::USER_LEVEL_ADMIN);
 
         Activity::event('admin:server.startup')
             ->subject($server)
