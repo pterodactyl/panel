@@ -3,6 +3,7 @@ import type { ITerminalOptions, ITheme } from 'ghostty-web';
 import { FitAddon, Ghostty, Terminal, UrlRegexProvider } from 'ghostty-web';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
+import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
 import { TouchScrollAddon } from '@/components/server/console/TouchScrollAddon';
 
 // Ghostty reads a slot that resolves to pure black (#000000) as unset.
@@ -76,6 +77,9 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     smoothScrollDuration: 0,
     rows: 30,
+    // Ghostty eases wheel scrolls toward a target it doesn't move when output arrives, so on a busy
+    // console each new line dragged the view forward and swallowed most of the scroll.
+    smoothScrollDuration: 0,
 };
 
 const countLineFeeds = (data: string | Uint8Array) =>
@@ -190,175 +194,15 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
 
         term.scrollLines(-(viewportY + (grown < 0 ? countLineFeeds(data) : grown)));
     };
-
-    term.writeln = (data, callback) => {
-        const payload = hasOutput || term.getScrollbackLength() > 0 ? prefixNewline(data) : data;
-
-        hasOutput = true;
-        term.write(payload, callback);
-    };
 };
 
-const fitFullWidth = (term: Terminal, fit: FitAddon) => {
-    const internalFit = toInternalFitAddon(fit);
-    const originalFit = fit.fit.bind(fit);
-
-    // Ghostty's FitAddon locks _isResizing for 50ms via setTimeout, which drops immediate post-layout re-fits.
-    fit.fit = () => {
-        internalFit._isResizing = false;
-        originalFit();
-    };
-
-    // Ghostty renders its scrollbar on the canvas rather than in an external 15px DOM track.
-    fit.proposeDimensions = () => {
-        const element = term.element;
-        const metrics = term.renderer?.getMetrics?.();
-
-        if (
-            !element ||
-            !metrics ||
-            metrics.width === 0 ||
-            metrics.height === 0 ||
-            element.clientWidth === 0 ||
-            element.clientHeight === 0
-        ) {
-            return;
-        }
-
-        const style = window.getComputedStyle(element);
-        const padX = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
-        const padY = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
-
-        return {
-            cols: Math.max(4, Math.floor(Math.max(0, element.clientWidth - padX) / metrics.width)),
-            rows: Math.max(1, Math.floor(Math.max(0, element.clientHeight - padY) / metrics.height)),
-        };
-    };
-};
-
-const drawRoundedRect = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    radius: number
-) => {
-    const optionalRoundRectCtx: { roundRect?: CanvasRenderingContext2D['roundRect'] } = ctx;
-
-    if (!optionalRoundRectCtx.roundRect) {
-        ctx.fillRect(x, y, width, height);
-
-        return;
-    }
-
-    ctx.beginPath();
-    optionalRoundRectCtx.roundRect.call(ctx, x, y, width, height, radius);
-    ctx.fill();
-};
-
-const measureTerminalFont = (fontSize = 12, fontFamily = 'monospace') => {
-    const ctx = document.createElement('canvas').getContext('2d');
-
-    if (!ctx) {
-        return {
-            width: Math.ceil(fontSize * 0.6),
-            height: Math.ceil(fontSize * 1.35),
-            baseline: Math.ceil(fontSize),
-        };
-    }
-
-    ctx.font = `${fontSize}px ${fontFamily}`;
-    const width = Math.max(1, Math.ceil(ctx.measureText('M').width));
-    const box = ctx.measureText('Mgjpqy[]()_|');
-    const ascent = box.actualBoundingBoxAscent || fontSize * 0.8;
-    const descent = box.actualBoundingBoxDescent || fontSize * 0.2;
-
-    return {
-        width,
-        height: Math.ceil(ascent + descent) + 2,
-        baseline: Math.ceil(ascent) + 1,
-    };
-};
-
-const drawScrollbar = (
-    term: Terminal,
-    renderer: InternalRenderer,
-    viewportY: number,
-    scrollbackLength: number,
-    rows: number,
-    opacity = 1
-) => {
-    const ctx = renderer.ctx;
-    const metrics = renderer.getMetrics?.();
-    const foreground = renderer.theme?.foreground;
-
-    if (!ctx || !metrics || !foreground || opacity <= 0 || scrollbackLength <= 0) {
-        return;
-    }
-
-    const barWidth = Math.min(6, Math.max(4, metrics.width - 2));
-    const x = term.cols * metrics.width - barWidth;
-    const trackHeight = rows * metrics.height - 4;
-    const thumbHeight = Math.max(20, (rows / (scrollbackLength + rows)) * trackHeight);
-    const clampedY = Math.max(0, Math.min(scrollbackLength, viewportY));
-    const thumbY = 2 + (trackHeight - thumbHeight) * (1 - clampedY / scrollbackLength);
-
-    ctx.save();
-    ctx.fillStyle = foreground;
-    ctx.globalAlpha = 0.12 * opacity;
-    drawRoundedRect(ctx, x, 2, barWidth, trackHeight, barWidth / 2);
-    ctx.globalAlpha = (clampedY > 0 ? 0.5 : 0.35) * opacity;
-    drawRoundedRect(ctx, x, thumbY, barWidth, thumbHeight, barWidth / 2);
-    ctx.restore();
-};
-
-const configureScrollbarGutter = (term: Terminal, internalTerm: InternalTerminal, renderer: InternalRenderer) => {
-    const wasmTerm = internalTerm.wasmTerm;
-
-    if (!wasmTerm) {
-        return;
-    }
-
-    const getLine = wasmTerm.getLine?.bind(wasmTerm);
-    const getScrollbackLine = wasmTerm.getScrollbackLine?.bind(wasmTerm);
-
-    wasmTerm.getLine = getLine ? (row) => getLine(row) ?? [] : wasmTerm.getLine;
-    wasmTerm.getScrollbackLine = getScrollbackLine
-        ? (offset) => getScrollbackLine(offset) ?? []
-        : wasmTerm.getScrollbackLine;
-    wasmTerm.getDimensions = () => ({ cols: term.cols, rows: term.rows });
-
-    if (!wasmTerm.resize || !renderer.resize) {
-        return;
-    }
-
-    wasmTerm.resize(Math.max(2, term.cols - 2), term.rows);
-    renderer.resize(term.cols, term.rows);
-
-    term.resize = (newCols, newRows) => {
-        if (newCols === term.cols && newRows === term.rows) {
-            return;
-        }
-
-        term.cols = newCols;
-        term.rows = newRows;
-        wasmTerm.resize?.(Math.max(2, newCols - 2), newRows);
-        renderer.resize?.(newCols, newRows);
-
-        const clampedViewportY = Math.min(term.getViewportY(), term.getScrollbackLength());
-
-        internalTerm.viewportY = clampedViewportY;
-        internalTerm.targetViewportY = clampedViewportY;
-        internalTerm.resizeEmitter?.fire({ cols: newCols, rows: newRows });
-        renderer.render(wasmTerm, true, clampedViewportY, term);
-    };
-};
-
-/** Wheel and touch scrolling leave the viewport between lines; draw it snapped to a whole line. */
-const renderWholeLines = (term: Terminal) => {
-    const internalTerm = toInternalTerminal(term);
-    const renderer = internalTerm.renderer;
+/**
+ * Draws the viewport snapped to a whole line, since wheel and touch scrolling leave it between
+ * lines. Never draws Ghostty's scrollbar: it paints over the last columns of output rather than
+ * the gutter FitAddon reserves, so ConsoleScrollbar draws one in the gutter instead.
+ */
+const adjustRendering = (term: Terminal) => {
+    const renderer = term.renderer;
 
     if (!renderer) {
         return;
@@ -371,29 +215,33 @@ const renderWholeLines = (term: Terminal) => {
     renderer.renderScrollbar = (viewportY, scrollbackLength, rows, opacity) =>
         drawScrollbar(term, renderer, viewportY, scrollbackLength, rows, opacity);
 
-    configureScrollbarGutter(term, internalTerm, renderer);
+    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider) =>
+        render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, 0);
+};
 
-    const render = renderer.render.bind(renderer);
-    let lastViewportY = 0;
-    let lastOpacity = 0;
+// Ghostty's scrollbar hit area: the canvas's right 12px (an 8px bar inset 4px from the edge).
+const CANVAS_SCROLLBAR_HIT_WIDTH = 12;
 
-    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider, scrollbarOpacity) => {
-        const opacity = scrollbarOpacity ?? internalTerm.scrollbarOpacity ?? 0;
-        const maxScrollback = scrollbackProvider?.getScrollbackLength?.() ?? Number.POSITIVE_INFINITY;
-        const wholeViewportY = Math.max(0, Math.min(maxScrollback, Math.floor(viewportY)));
-        const forceRedraw = Boolean(forceAll) || wholeViewportY !== lastViewportY || opacity !== lastOpacity;
-        const metrics = renderer.getMetrics?.();
+/**
+ * Ghostty still treats a press on the right edge of the canvas as grabbing the scrollbar it no
+ * longer draws, which would jump the history when someone clicks the end of a line. Registered
+ * before `open()` so it runs ahead of Ghostty's own listener on the mount.
+ */
+const ignoreCanvasScrollbarPresses = (mount: HTMLElement, signal: AbortSignal) => {
+    mount.addEventListener(
+        'mousedown',
+        (event) => {
+            const canvas = event.target;
 
-        lastViewportY = wholeViewportY;
-        lastOpacity = opacity;
-
-        if (forceRedraw && renderer.ctx && renderer.theme?.background && metrics) {
-            renderer.ctx.fillStyle = renderer.theme.background;
-            renderer.ctx.fillRect(0, 0, term.cols * metrics.width, term.rows * metrics.height);
-        }
-
-        return render(buffer, forceRedraw, wholeViewportY, scrollbackProvider, opacity);
-    };
+            if (
+                canvas instanceof HTMLCanvasElement &&
+                event.offsetX >= canvas.clientWidth - CANVAS_SCROLLBAR_HIT_WIDTH
+            ) {
+                event.stopImmediatePropagation();
+            }
+        },
+        { capture: true, signal }
+    );
 };
 
 /** The canvas has no DOM selection, so copy reads the terminal's own selection. */
@@ -415,8 +263,8 @@ const copySelectionOnShortcut = (term: Terminal) => {
     });
 };
 
-/** Opens a read-only console terminal in `mount`, sized to fill it. */
-const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
+/** Opens a read-only console terminal in `mount`, sized to fill it; `signal` removes its listeners on the mount. */
+const openTerminal = (mount: HTMLElement, options: ITerminalOptions, signal: AbortSignal) => {
     const term = new Terminal({ ...terminalProps, ...options });
     const fit = new FitAddon();
 
@@ -424,6 +272,7 @@ const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
     // every tap, even with stdin disabled. Commands go through the console's own input, so keep the
     // on-screen keyboard closed for both.
     mount.setAttribute('inputmode', 'none');
+    ignoreCanvasScrollbarPresses(mount, signal);
     term.open(mount);
     term.textarea?.setAttribute('inputmode', 'none');
 
@@ -436,6 +285,8 @@ const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
     fit.observeResize();
 
     term.registerLinkProvider(new UrlRegexProvider(term));
+    preserveScrollPositionOnWrite(term);
+    adjustRendering(term);
     copySelectionOnShortcut(term);
 
     return { term, fit };
@@ -458,7 +309,7 @@ export const useTerminal = () => {
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useRef<Terminal | null>(null);
     const [terminalReady, setTerminalReady] = useState(false);
-    const [scrolledUp, setScrolledUp] = useState(false);
+    const [scroll] = useState(() => new TerminalScrollStore());
     const [terminalError, setTerminalError] = useState<Error | null>(null);
     const [revision, setRevision] = useState(0);
     const appliedStyle = useRef<string | null>(null);
@@ -482,6 +333,7 @@ export const useTerminal = () => {
     useEffect(() => {
         let cancelled = false;
         let mountedTerminal: Terminal | null = null;
+        const listeners = new AbortController();
         const mount = ref.current;
 
         if (!mount) {
@@ -495,14 +347,9 @@ export const useTerminal = () => {
                 }
 
                 const style = buildTerminalStyle();
-                const { term, fit } = openTerminal(mount, { ...style, ghostty });
+                const { term, fit } = openTerminal(mount, { ...style, ghostty }, listeners.signal);
 
-                term.onScroll(() => {
-                    if (!cancelled) {
-                        setScrolledUp(Math.floor(term.getViewportY()) > 0);
-                    }
-                });
-
+                scroll.attach(term);
                 terminal.current = term;
                 appliedStyle.current = JSON.stringify(style);
                 mountedTerminal = term;
@@ -526,14 +373,15 @@ export const useTerminal = () => {
 
         return () => {
             cancelled = true;
+            listeners.abort();
+            scroll.detach();
             // Also disposes the terminal's addons.
             mountedTerminal?.dispose();
             terminal.current = null;
             appliedStyle.current = null;
             setTerminalReady(false);
-            setScrolledUp(false);
         };
-    }, [revision]);
+    }, [revision, scroll]);
 
-    return { ref, retry, scrolledUp, setScrolledUp, terminal, terminalError, terminalReady };
+    return { ref, retry, scroll, terminal, terminalError, terminalReady };
 };
