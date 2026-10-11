@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { IRenderable, ITerminalOptions } from 'ghostty-web';
+import type { IRenderable, ITerminalAddon, ITerminalOptions } from 'ghostty-web';
 import type { notifyThemeChange as NotifyThemeChange } from '@/lib/theme';
 import type { useTerminal as UseTerminal } from './useTerminal';
 
@@ -23,6 +23,7 @@ const ghostty = vi.hoisted(() => ({ load: vi.fn<() => Promise<object>>() }));
 vi.mock('ghostty-web', () => ({
     Ghostty: { load: () => ghostty.load() },
     FitAddon: class {
+        activate() {}
         fit() {}
         observeResize() {}
         dispose() {}
@@ -38,15 +39,22 @@ vi.mock('ghostty-web', () => ({
             render: (_buffer: IRenderable, _forceAll: boolean, viewportY: number) => {
                 this.renderedViewportY = viewportY;
             },
+            getMetrics: () => ({ width: 8, height: 10, baseline: 8 }),
         };
+        cols = 80;
+        rows = 30;
+        element: HTMLElement | undefined;
         textarea: HTMLTextAreaElement | undefined;
         constructor(public options: ITerminalOptions) {
             terminals.push(this);
         }
         open(element: HTMLElement) {
+            this.element = element;
             this.textarea = element.appendChild(document.createElement('textarea'));
         }
-        loadAddon() {}
+        loadAddon(addon: ITerminalAddon) {
+            addon.activate(this);
+        }
         registerLinkProvider() {}
         attachCustomKeyEventHandler() {}
         onScroll() {}
@@ -142,6 +150,20 @@ describe('useTerminal', () => {
 
         expect(container.firstElementChild).toHaveAttribute('inputmode', 'none');
         expect(container.querySelector('textarea')).toHaveAttribute('inputmode', 'none');
+    });
+
+    it('scrolls the history with a vertical swipe', async () => {
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const mount = container.firstElementChild!;
+
+        terminals[0].scrollbackLength = 100;
+        fireEvent.touchStart(mount, { touches: [{ clientY: 200 }] });
+        fireEvent.touchMove(mount, { touches: [{ clientY: 300 }] });
+
+        expect(terminals[0].viewportY).toBe(10);
     });
 
     it('keeps a scrolled-up viewport on the same lines when new output arrives', async () => {

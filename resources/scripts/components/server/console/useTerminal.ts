@@ -3,6 +3,7 @@ import type { ITerminalOptions, ITheme } from 'ghostty-web';
 import { FitAddon, Ghostty, Terminal, UrlRegexProvider } from 'ghostty-web';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
+import { TouchScrollAddon } from '@/components/server/console/TouchScrollAddon';
 
 // Ghostty reads a slot that resolves to pure black (#000000) as unset.
 const TERMINAL_COLOR_VARS = {
@@ -79,6 +80,7 @@ const terminalProps: ITerminalOptions = {
 const countLineFeeds = (data: string | Uint8Array) =>
     (data instanceof Uint8Array ? data : new TextEncoder().encode(data)).filter((byte) => byte === 0x0a).length;
 
+/** Ghostty jumps to the bottom on every write; keep a reader who scrolled up on the same lines, even as old history is trimmed. */
 const preserveScrollPositionOnWrite = (term: Terminal) => {
     const write = term.write.bind(term);
 
@@ -100,6 +102,7 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
     };
 };
 
+/** Wheel and touch scrolling leave the viewport between lines; draw it snapped to a whole line. */
 const renderWholeLines = (term: Terminal) => {
     const renderer = term.renderer;
 
@@ -130,6 +133,31 @@ const copySelectionOnShortcut = (term: Terminal) => {
 
         return false;
     });
+};
+
+/** Opens a read-only console terminal in `mount`, sized to fill it. */
+const openTerminal = (mount: HTMLElement, options: ITerminalOptions) => {
+    const term = new Terminal({ ...terminalProps, ...options });
+    const fit = new FitAddon();
+
+    // Ghostty makes the mount editable and focuses it on open, then focuses its hidden textarea on
+    // every tap, even with stdin disabled. Commands go through the console's own input, so keep the
+    // on-screen keyboard closed for both.
+    mount.setAttribute('inputmode', 'none');
+    term.open(mount);
+    term.textarea?.setAttribute('inputmode', 'none');
+
+    term.loadAddon(fit);
+    term.loadAddon(new TouchScrollAddon(term));
+    fit.fit();
+    fit.observeResize();
+
+    term.registerLinkProvider(new UrlRegexProvider(term));
+    preserveScrollPositionOnWrite(term);
+    renderWholeLines(term);
+    copySelectionOnShortcut(term);
+
+    return { term, fit };
 };
 
 /** Runs after the browser has laid out and painted the next frame. */
@@ -173,7 +201,6 @@ export const useTerminal = () => {
     useEffect(() => {
         let cancelled = false;
         let mountedTerminal: Terminal | null = null;
-        let mountedFitAddon: FitAddon | null = null;
         const mount = ref.current;
 
         if (!mount) {
@@ -187,23 +214,7 @@ export const useTerminal = () => {
                 }
 
                 const style = buildTerminalStyle();
-                const term = new Terminal({ ...terminalProps, ...style, ghostty });
-                const fit = new FitAddon();
-
-                // Ghostty focuses its editable mount on open and its hidden textarea on tap, even with
-                // stdin disabled; without this every server page opens the on-screen keyboard on mobile.
-                mount.setAttribute('inputmode', 'none');
-                term.open(mount);
-                term.textarea?.setAttribute('inputmode', 'none');
-                term.loadAddon(fit);
-                fit.fit();
-                fit.observeResize();
-
-                term.registerLinkProvider(new UrlRegexProvider(term));
-                preserveScrollPositionOnWrite(term);
-                renderWholeLines(term);
-
-                copySelectionOnShortcut(term);
+                const { term, fit } = openTerminal(mount, { ...style, ghostty });
 
                 term.onScroll(() => {
                     if (!cancelled) {
@@ -214,7 +225,6 @@ export const useTerminal = () => {
                 terminal.current = term;
                 appliedStyle.current = JSON.stringify(style);
                 mountedTerminal = term;
-                mountedFitAddon = fit;
                 setTerminalReady(true);
 
                 // Re-fit once layout settles; a mount mid route-transition can leave the history unpainted.
@@ -235,7 +245,7 @@ export const useTerminal = () => {
 
         return () => {
             cancelled = true;
-            mountedFitAddon?.dispose();
+            // Also disposes the terminal's addons.
             mountedTerminal?.dispose();
             terminal.current = null;
             appliedStyle.current = null;
