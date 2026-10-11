@@ -1,0 +1,41 @@
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_4cabae41bceed9::t_b1bcc188634230 93
+tests/Integration/Actions/Users/UpdateUserTest.php
+  s_4cabae41bceed9::t_238bf70590c650 100-116
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_4cabae41bceed9::t_b1bcc188634230 159
+app/Actions/Users/CreateUser.php
+  s_4cabae41bceed9::t_2aa8c91dd1b996 25-26
+  s_4cabae41bceed9::t_b1bcc188634230 28-29,33-34,36,52,98-100
+  s_4cabae41bceed9::t_71b0a2dcf3695c 13,31,35
+app/Exceptions/ApiErrorResponse.php
+  s_4cabae41bceed9::t_b1bcc188634230 167-168
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_4cabae41bceed9::t_2d32758b8dc7d5 145-153
+  s_4cabae41bceed9::t_f51023faa0b6b8 11
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_4cabae41bceed9::t_2aa8c91dd1b996 116
+app/Http/Requests/Auth/ResetPasswordRequest.php
+  s_4cabae41bceed9::t_b1bcc188634230 25
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_4cabae41bceed9::t_b1bcc188634230 22
+app/Providers/AppServiceProvider.php
+  s_4cabae41bceed9::t_b1bcc188634230 24
+  s_4cabae41bceed9::t_c012e818db8f86 60-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d8a2ca7fe829774f1c58c10eb182732781d00345",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
