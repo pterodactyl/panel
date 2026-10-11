@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Daemon;
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class FilesClient
 {
@@ -25,7 +26,7 @@ final readonly class FilesClient
         $response = $this->connection->request('GET', "/api/servers/{$this->uuid}/files/contents", [
             'query' => ['file' => $path],
         ]);
-        $length = JsonValueGuard::integer($response->header('Content-Length') ?: 0);
+        $length = Str::of($response->header('Content-Length'))->toInteger();
         throw_if($notLargerThan && $length > $notLargerThan, FileSizeTooLargeException::class);
 
         return $response->body();
@@ -122,17 +123,18 @@ final readonly class FilesClient
     /** @param array<array-key, ApiValue9> $params */
     public function pull(string $url, ?string $directory, array $params = []): Response
     {
+        $input = Fluent::make($params);
         $attributes = [
             'url' => $url,
             'root' => $directory ?? '/',
-            'file_name' => JsonValueGuard::nullableString($params['filename'] ?? null),
-            'use_header' => isset($params['use_header']) ? JsonValueGuard::boolean($params['use_header']) : null,
-            'foreground' => isset($params['foreground']) ? JsonValueGuard::boolean($params['foreground']) : null,
+            'file_name' => $input->get('filename') === null ? null : $input->string('filename')->toString(),
+            'use_header' => $input->get('use_header') === null ? null : $input->boolean('use_header'),
+            'foreground' => $input->get('foreground') === null ? null : $input->boolean('foreground'),
         ];
         $options = ['json' => array_filter($attributes, fn (bool|string|null $value): bool => $value !== null)];
 
-        if (isset($params['timeout'])) {
-            $options['timeout'] = JsonValueGuard::integer($params['timeout']);
+        if ($input->get('timeout') !== null) {
+            $options['timeout'] = $input->integer('timeout');
         }
 
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/pull", $options);
