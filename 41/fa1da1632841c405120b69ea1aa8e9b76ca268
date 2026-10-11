@@ -1,0 +1,44 @@
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_4cabae41bceed9::t_260ba9c9010afe 24
+  s_4cabae41bceed9::t_bd55617ab54104 11,148
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_4cabae41bceed9::t_f05a19d7331785 23,46
+  s_4cabae41bceed9::t_dcc256469db0dc 22
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_ae34f064c968d6 1377-1378,1382-1386,1390,1422-1427,1442-1447,1451,1455,1459,1463-1464,1474,1478,1498,1516,1530,1534,1538,1544,1584-1586,1588-1589,1623,1682-1683,1742,1748,1754,1756-1757,1764,1791,1915-1916,1919-1921,1923,1927,1936,1938,1943,1947,1949-1950,1957-1961,1964,2311,2317,2603
+  s_4cabae41bceed9::t_3abbc4370157db 31-34,59-60,278-279,298,306-308,310,315-316,319-320,322-332,336-350,352,383,394,429,434-435,441-444,1197,1277,1771,2587
+  s_4cabae41bceed9::t_1d7668df9f72d6 46,49,52,94-95,121-122,144,266,309,311,402,448,571,598,623,658,669,696,722,737,762,842,866,902,927-928,965,1016,1037-1038,1161,1223,1244,1259,1288-1289,1330,1347,1359,1373,1548-1549,1578-1579,1600,1672,1736-1737,1762,1782,1812,1835,1875,1892-1893,1901-1902,1910-1911,1931-1932,1942,1983,1999,2019,2030,2054,2064,2076,2092,2121,2132,2144,2160,2182,2211,2254,2283,2307,2335,2414,2431,2577,2663-2664
+  s_4cabae41bceed9::t_96d29f22902cdb 9,591-593,1045,1086,1110
+  s_4cabae41bceed9::t_976daa5e711aa8 8,406,410,415-416,420-421,423-428,430,436-440,445,447,858-862,870,872-873,896-897,906-907,911-913,919,923,972-973,977-978,990,995-996,1009,1012,1020-1025,1027-1033,1165-1167,1171-1176,1181,1183-1184,1189-1190,1194-1195,1198-1199,1207,1211-1222,1227-1229,1233-1236,1240,1248-1249,1253-1254,1263-1265,1269,1271-1273,1278-1279,1284
+  s_4cabae41bceed9::t_0bffb323dde548 67,473,1055,1067,1698,1700,1702,1705,1707
+  s_4cabae41bceed9::t_ac1859b9d9e0a8 1554
+  s_4cabae41bceed9::t_ad014cb46422ab 431-433,446
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_4cabae41bceed9::t_dcc256469db0dc 293
+  s_4cabae41bceed9::t_260ba9c9010afe 223,339-344
+  s_4cabae41bceed9::t_95f9a6edba48d9 312,316,319,322,326,329,333,336
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_4cabae41bceed9::t_acbc1564f45f8d 52-53,93,96,282
+app/Extensions/Scribe/Strategies/InferPterodactylUrlParameters.php
+  s_4cabae41bceed9::t_dcc256469db0dc 14
+  s_4cabae41bceed9::t_260ba9c9010afe 15
+app/Extensions/Scribe/Attributes/ResponseField.php
+  s_4cabae41bceed9::t_bd55617ab54104 21-22
+  s_4cabae41bceed9::t_dcc256469db0dc 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "41fa1da1632841c405120b69ea1aa8e9b76ca268",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
