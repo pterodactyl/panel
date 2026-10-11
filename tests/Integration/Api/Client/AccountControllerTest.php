@@ -113,7 +113,7 @@ test('password is not updated if current password is invalid', function (): void
 test('error is returned for invalid request data', function (): void {
     $user = User::factory()->create();
     $this->actingAs($user)->putJson('/api/client/account/password', ['current_password' => 'password'])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'required');
-    $this->actingAs($user)->putJson('/api/client/account/password', ['current_password' => 'password', 'password' => 'pass', 'password_confirmation' => 'pass'])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'password');
+    $this->actingAs($user)->putJson('/api/client/account/password', ['current_password' => 'password', 'password' => 'pass', 'password_confirmation' => 'pass'])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'min');
 });
 test('error is returned if password is not confirmed', function (): void {
     /** @var User $user */

@@ -90,7 +90,7 @@ test('passwords shorter than eight characters are rejected', function (string $m
     $user = User::factory()->create();
     $url = '/api/application/users'.str_replace('{user}', (string) $user->id, $suffix);
     $response = $this->{$method}($url, ['username' => 'weakuser', 'email' => 'weak@example.com', 'first_name' => 'Weak', 'last_name' => 'Password', 'password' => 'abc']);
-    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.source_field', 'password')->assertJsonPath('errors.0.meta.rule', 'password');
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.source_field', 'password')->assertJsonPath('errors.0.meta.rule', 'min');
     $this->assertDatabaseMissing('users', ['username' => 'weakuser']);
 })->with([['postJson', ''], ['patchJson', '/{user}']]);
 test('a user can be created with an eight character password', function (): void {

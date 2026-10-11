@@ -167,7 +167,7 @@ test('non admin forbidden', function (string $method, string $routeName): void {
 test('passwords shorter than eight characters are rejected', function (string $method, string $route): void {
     $user = User::factory()->create();
     $response = $this->{$method}(route($route, $route === 'api.admin.users.update' ? ['user' => $user->id] : []), ['username' => 'weakuser', 'email' => 'weak@example.com', 'name_first' => 'Weak', 'name_last' => 'Password', 'password' => 'abc']);
-    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.source_field', 'password')->assertJsonPath('errors.0.meta.rule', 'password');
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.source_field', 'password')->assertJsonPath('errors.0.meta.rule', 'min');
     $this->assertDatabaseMissing('users', ['username' => 'weakuser']);
 })->with([['postJson', 'api.admin.users.store'], ['putJson', 'api.admin.users.update']]);
 test('a blank password leaves the password unchanged', function (): void {

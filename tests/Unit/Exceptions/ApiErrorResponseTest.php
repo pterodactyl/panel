@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Exceptions\ApiErrorResponseTest;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Tests\TestCase;
 use RuntimeException;
@@ -31,6 +34,16 @@ test('debug traces remove arguments and use each previous exception trace', func
         $this->assertArrayNotHasKey('args', $frame);
         $this->assertArrayNotHasKey('object', $frame);
     }
+});
+test('a password shorter than the policy reports the min rule, and any other password failure reports password', function () {
+    $rule = fn (string $password): string => json_decode(ApiErrorResponse::validation(
+        new ValidationException(Validator::make(['password' => $password], ['password' => ['required', 'string', Password::default()]]))
+    )->getContent(), true)['errors'][0]['meta']['rule'];
+
+    expect($rule('short'))->toBe('min');
+
+    Password::defaults(Password::min(8)->mixedCase());
+    expect($rule('all-lower-case'))->toBe('password');
 });
 function nestedException(): Throwable
 {
