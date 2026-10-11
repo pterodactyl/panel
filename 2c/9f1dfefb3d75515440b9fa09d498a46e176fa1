@@ -1,0 +1,21 @@
+app/Http/Controllers/Api/Admin/Nodes/BulkDeleteAllocationsController.php
+  s_4cabae41bceed9::t_f0c99c3a0945b8 7,9,18,33-39,41-44,46
+tests/Integration/Api/Admin/Nodes/AllocationControllerTest.php
+  s_4cabae41bceed9::t_6c92d1a14fd04c 133-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2c9f1dfefb3d75515440b9fa09d498a46e176fa1",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
