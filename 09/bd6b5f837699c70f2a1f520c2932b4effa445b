@@ -1,0 +1,35 @@
+app/Extensions/Scribe/Attributes/ResponseFromResource.php
+  s_4cabae41bceed9::t_6d1a43e1946df2 1-48
+tests/Integration/Extensions/Scribe/ResponseFromResourceTest.php
+  s_4cabae41bceed9::t_6d1a43e1946df2 1-76
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_708b66c0dbea07 15,272
+  s_4cabae41bceed9::t_8ffe7dcec6a940 513-515,531-535
+app/Http/Resources/Api/Concerns/BuildsResponse.php
+  s_4cabae41bceed9::t_6d1a43e1946df2 81-84,86
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_4cabae41bceed9::t_fefcc3487b416c 108-110
+  s_4cabae41bceed9::t_ea3964b402bf57 132
+  s_4cabae41bceed9::t_8ffe7dcec6a940 10,12,22,24-26,77-106,112-121,127,198-272
+  s_4cabae41bceed9::t_d47404b5a8f234 273
+app/Http/Resources/Api/ApiResource.php
+  s_4cabae41bceed9::t_6d1a43e1946df2 22,145,149,152-164
+app/Http/Resources/Api/ApiResourceCollection.php
+  s_4cabae41bceed9::t_6d1a43e1946df2 17,72,74,76-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "09bd6b5f837699c70f2a1f520c2932b4effa445b",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
