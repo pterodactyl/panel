@@ -265,6 +265,29 @@ test('leaves settings out of the bootstrap payload when config is not included',
     expect($payload[0]['translations'])->toBeNull();
     expect((array) $payload[0]['config'])->toBe([]);
 });
+test('describes extensions to guests only as far as the sign-in pages need', function (): void {
+    $screen = ['id' => 'main', 'area' => 'admin', 'path' => 'example', 'nav' => ['label' => 'Example']];
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.2.3', 'ui' => ['entry' => 'dist/client.js', 'prefix' => 'ex', 'screens' => [$screen]]]);
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+    $repository = Mockery::mock(ExtensionRepository::class, [
+        new ExtensionManifestValidator,
+        resolve(ExtensionAssetPublisher::class),
+        resolve(Dispatcher::class),
+        resolve(ExtensionSettingsRegistry::class),
+        resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
+    ])->makePartial();
+    $repository->shouldReceive('enabled')->andReturn(collect(['example' => $manifest]));
+    $repository->shouldReceive('settings')->andThrow(new RuntimeException('settings not ready'));
+
+    $guest = $repository->frontendPayload(authenticated: false)[0];
+    expect($guest)->toHaveKeys(['id', 'entry', 'prefix', 'translations', 'config'])
+        ->not->toHaveKeys(['version', 'screens', 'components']);
+
+    $user = $repository->frontendPayload(authenticated: true)[0];
+    expect($user['version'])->toBe('1.2.3')
+        ->and($user['screens'])->toBe([$screen])
+        ->and($user['components'])->toBe([]);
+});
 test('reports a translations revision that changes with the translation files', function (): void {
     writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js']]);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);

@@ -155,7 +155,12 @@ class ExtensionRepository
      * The enabled frontend extensions for the SPA to load. Signed-in users receive
      * each extension's frontend settings; everyone else only those marked ->public().
      *
-     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
+     * Guests only need what renders on the sign-in pages: the bundle, its styles and
+     * translations, and public settings. Versions, screens and component claims are
+     * left out so the login page does not describe the panel's extensions, and the
+     * SPA skips screen and component registrations for an entry that has none.
+     *
+     * @return array<int, array{id: string, version?: string, entry: string, prefix: string|null, translations: string|null, config: object, screens?: list<ExtensionScreenDefinition>, components?: list<string>, development: array{url: string, version: string}|null}>
      */
     public function frontendPayload(bool $authenticated): array
     {
@@ -165,17 +170,24 @@ class ExtensionRepository
             rescue(fn () => ExtensionSettings::preload(array_values($configured->map(fn (ExtensionManifest $manifest): ExtensionSettings => $this->settings($manifest->id))->all())), report: false);
         }
 
-        return $enabled->map(fn (ExtensionManifest $manifest): array => [
-            'id' => $manifest->id,
-            'version' => $manifest->version,
-            'entry' => $this->assets->entryUrl($manifest),
-            'prefix' => $manifest->uiPrefix,
-            'translations' => $this->translationsRevision($manifest),
-            'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
-            'screens' => $manifest->screens,
-            'components' => $manifest->components,
-            'development' => $this->assets->developmentPayload($manifest->id),
-        ])
+        return $enabled->map(function (ExtensionManifest $manifest) use ($authenticated): array {
+            $entry = [
+                'id' => $manifest->id,
+                'entry' => $this->assets->entryUrl($manifest),
+                'prefix' => $manifest->uiPrefix,
+                'translations' => $this->translationsRevision($manifest),
+                'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
+                'development' => $this->assets->developmentPayload($manifest->id),
+            ];
+
+            if ($authenticated) {
+                $entry['version'] = $manifest->version;
+                $entry['screens'] = $manifest->screens;
+                $entry['components'] = $manifest->components;
+            }
+
+            return $entry;
+        })
             ->values()
             ->all();
     }

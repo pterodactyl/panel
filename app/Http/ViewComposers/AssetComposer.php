@@ -46,7 +46,7 @@ class AssetComposer
      * frontend settings for signed-in users and only the public ones for guests.
      * Never allowed to break page rendering - worst case the SPA sees no extensions.
      *
-     * @return array<int, array{id: string, version: string, entry: string}>
+     * @return array<int, array{id: string, version?: string, entry: string}>
      */
     private function extensionPayload(): array
     {
