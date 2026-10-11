@@ -19,7 +19,6 @@ use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServerMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerMountRequest;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Admin\MountTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -93,7 +92,7 @@ class ServerMountController extends AdminApiController
     {
         $this->assertServerInstalled($server);
 
-        $mount = $attach->attach($server, JsonValueGuard::integer($request->validated('mount_id')));
+        $mount = $attach->attach($server, $request->safe()->integer('mount_id'));
 
         Activity::event('admin:server.mount')
             ->subject($server, $mount)

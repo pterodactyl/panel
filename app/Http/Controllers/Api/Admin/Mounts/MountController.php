@@ -99,7 +99,7 @@ class MountController extends AdminApiController
     #[ExtensionFieldsParam]
     public function store(StoreMountRequest $request, CreatesMounts $mounts): JsonResponse
     {
-        $mount = $mounts->create($request->payload());
+        $mount = $mounts->create($request->actionInput());
 
         Activity::event('admin:mount.create')
             ->subject($mount)
@@ -126,7 +126,7 @@ class MountController extends AdminApiController
     #[ExtensionFieldsParam]
     public function update(UpdateMountRequest $request, UpdatesMounts $mounts, Mount $mount): array
     {
-        $mount = $mounts->update($mount, $request->payload());
+        $mount = $mounts->update($mount, $request->actionInput());
 
         Activity::event('admin:mount.update')
             ->subject($mount)

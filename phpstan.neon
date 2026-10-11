@@ -89,7 +89,6 @@ parameters:
         DatabaseHostUpdateData: 'array{name: string, host: string, port: int, username: string, password?: string|null, node_id: int|null, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         EggVariableData: 'array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
-        MountData: 'array{name: string, description?: string|null, source: string, target: string, read_only?: bool, user_mountable?: bool, extensions?: \Pterodactyl\Services\Extensions\ValidatedExtensionValues}'
         TagData: 'array{name: string, slug: string, color?: string|null}'
         ApiKeyUpdateData: 'array{memo: string|null}'
         SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'

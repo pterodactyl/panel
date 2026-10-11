@@ -15,17 +15,15 @@ final readonly class UpdateMount implements UpdatesMounts
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * Update an existing mount from validated attributes.
-     *
-     * @param  MountData  $data
+     * @param  ActionInput  $input
      */
-    public function update(Mount $mount, array $data): Mount
+    public function update(Mount $mount, array $input): Mount
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $attributes = CreateMount::attributes($input, $mount);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        DB::transaction(function () use ($mount, $data, $extensions): void {
-            $mount->forceFill($data)->save();
+        DB::transaction(function () use ($mount, $attributes, $extensions): void {
+            $mount->forceFill($attributes)->save();
             $this->extensions->save($mount, $extensions);
         });
 

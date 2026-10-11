@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Mounts;
 
 use Closure;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use Pterodactyl\Actions\Mounts\AttachNodesToMount;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 
 class AttachNodesRequest extends AdminApiRequest
 {
@@ -37,15 +36,18 @@ class AttachNodesRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'nodes' => ['required', 'array', 'list', 'min:1'],
-            'nodes.*' => [Rule::anyOf([['integer:strict'], ['string']]), 'required', 'integer'],
-        ];
+        return AttachNodesToMount::rules();
     }
 
-    /** @return list<int> */
+    /**
+     * The validated node ids, as integers.
+     *
+     * @return list<int>
+     */
     public function nodes(): array
     {
-        return JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->validated('nodes')));
+        $validated = $this->safe();
+
+        return array_map(fn (int|string $key): int => $validated->integer('nodes.'.$key), array_keys($validated->array('nodes')));
     }
 }

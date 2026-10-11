@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Mounts;
 
 use Closure;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use Pterodactyl\Actions\Mounts\AttachEggsToMount;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesArrayExistence;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Support\JsonValueGuard;
 
 class AttachEggsRequest extends AdminApiRequest
 {
@@ -37,15 +36,18 @@ class AttachEggsRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'eggs' => ['required', 'array', 'list', 'min:1'],
-            'eggs.*' => [Rule::anyOf([['integer:strict'], ['string']]), 'required', 'integer'],
-        ];
+        return AttachEggsToMount::rules();
     }
 
-    /** @return list<int> */
+    /**
+     * The validated egg ids, as integers.
+     *
+     * @return list<int>
+     */
     public function eggs(): array
     {
-        return JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->validated('eggs')));
+        $validated = $this->safe();
+
+        return array_map(fn (int|string $key): int => $validated->integer('eggs.'.$key), array_keys($validated->array('eggs')));
     }
 }
