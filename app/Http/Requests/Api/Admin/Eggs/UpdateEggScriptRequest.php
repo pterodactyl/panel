@@ -27,7 +27,7 @@ class UpdateEggScriptRequest extends AdminApiRequest
             'script_is_privileged' => ['sometimes', 'required', 'boolean'],
             'script_entry' => ['sometimes', 'required', 'string'],
             'script_container' => ['sometimes', 'required', 'string'],
-            'copy_script_from' => ['sometimes', 'nullable', 'numeric'],
+            'copy_script_from' => ['sometimes', 'nullable', 'integer'],
         ];
     }
 

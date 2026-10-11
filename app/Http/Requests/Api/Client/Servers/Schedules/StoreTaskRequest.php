@@ -49,8 +49,8 @@ class StoreTaskRequest extends ViewScheduleRequest
         return [
             'action' => ['required', 'in:command,power,backup'],
             'payload' => $payload,
-            'time_offset' => ['required', 'numeric', 'min:0', 'max:900'],
-            'sequence_id' => ['sometimes', 'required', 'numeric', 'min:1'],
+            'time_offset' => ['required', 'integer', 'min:0', 'max:900'],
+            'sequence_id' => ['sometimes', 'required', 'integer', 'min:1'],
             'continue_on_failure' => ['sometimes', 'required', 'boolean'],
         ];
     }

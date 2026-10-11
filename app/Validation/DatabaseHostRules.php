@@ -16,7 +16,7 @@ final class DatabaseHostRules
         return [
             'name' => ['required', 'string', 'max:191'],
             'host' => ['required', 'string', 'regex:/^[\w\-\.]+$/'],
-            'port' => ['required', 'numeric', 'between:1,65535'],
+            'port' => ['required', 'integer', 'between:1,65535'],
             'username' => ['required', 'string', 'max:32'],
             'password' => ['nullable', 'string'],
             'node_id' => ['sometimes', 'nullable', 'integer', 'exists:nodes,id'],

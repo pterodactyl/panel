@@ -20,6 +20,20 @@ dataset('taskActionPermissions', [
     'power kill' => ['power', 'kill', Permissions::ControlStop],
     'backup' => ['backup', null, Permissions::BackupCreate],
 ]);
+test('task numbers accept integer strings and reject fractions', function (): void {
+    [$user, $server] = $this->generateTestAccount();
+    $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+    $id = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'command', 'payload' => 'say Test', 'time_offset' => '10', 'sequence_id' => '1', 'continue_on_failure' => '1'])
+        ->assertOk()
+        ->json('attributes.id');
+    $task = Task::query()->findOrFail($id);
+    expect($task->time_offset)->toBe(10)->and($task->continue_on_failure)->toBeTrue();
+
+    $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'command', 'payload' => 'say Test', 'time_offset' => 10.5])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.rule', 'integer');
+});
 test('task can be created', function (array $permissions): void {
     [$user, $server] = $this->generateTestAccount($permissions);
     /** @var Schedule $schedule */
@@ -57,7 +71,7 @@ test('validation errors are returned', function (): void {
 
     $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'hodor', 'payload' => 'say Test', 'time_offset' => 0])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'in')->assertJsonPath('errors.0.meta.source_field', 'action');
     $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'command', 'time_offset' => 0])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'required_unless')->assertJsonPath('errors.0.meta.source_field', 'payload');
-    $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'command', 'payload' => 'say Test', 'time_offset' => 0, 'sequence_id' => 'hodor'])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'numeric')->assertJsonPath('errors.0.meta.source_field', 'sequence_id');
+    $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), ['action' => 'command', 'payload' => 'say Test', 'time_offset' => 0, 'sequence_id' => 'hodor'])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonPath('errors.0.meta.rule', 'integer')->assertJsonPath('errors.0.meta.source_field', 'sequence_id');
 });
 test('backups can not be tasked if limit0', function (): void {
     [$user, $server] = $this->generateTestAccount();

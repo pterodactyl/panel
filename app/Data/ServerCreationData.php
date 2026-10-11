@@ -6,6 +6,7 @@ namespace Pterodactyl\Data;
 
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Support\JsonEmptyObject;
+use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 final class ServerCreationData
@@ -32,7 +33,8 @@ final class ServerCreationData
             'disk' => self::integer($value['disk'] ?? null, 'disk'),
             'io' => self::integer($value['io'] ?? null, 'io'),
             'cpu' => self::integer($value['cpu'] ?? null, 'cpu'),
-            'threads' => self::nullableString($value['threads'] ?? null, 'threads'),
+            // The threads rule is a pattern, which a bare integer such as 0 also matches.
+            'threads' => JsonValueGuard::nullableScalarString($value['threads'] ?? null),
             'skip_scripts' => self::boolean($value['skip_scripts'] ?? false, 'skip_scripts'),
             'allocation_id' => self::nullableInteger($value['allocation_id'] ?? null, 'allocation_id'),
             'allocation_additional' => self::nullableIntegerList($value['allocation_additional'] ?? null, 'allocation_additional'),
@@ -64,16 +66,11 @@ final class ServerCreationData
     /** @param JsonInputValue $value */
     private static function integer(mixed $value, string $key): int
     {
-        if (is_int($value)) {
-            return $value;
-        }
-
-        if (! is_string($value) || preg_match('/^-?\d+$/', $value) !== 1) {
+        try {
+            return JsonValueGuard::integer($value);
+        } catch (UnexpectedValueException) {
             throw self::invalid($key, 'an integer');
         }
-
-        // SAFETY: the anchored decimal-integer pattern above proves this string has an integer representation.
-        return (int) $value;
     }
 
     /** @param JsonInputValue $value */

@@ -132,22 +132,25 @@ final class JsonValueGuard
         return $value;
     }
 
-    /** @phpstan-assert int|null $value */
+    /** @phpstan-assert int|float|string|null $value */
     public static function nullableInteger(mixed $value): ?int
     {
-        throw_if($value !== null && ! is_int($value), UnexpectedValueException::class, 'Expected a nullable integer value.');
-
-        return $value;
+        return $value === null ? null : self::integer($value);
     }
 
-    /** @phpstan-assert int|string $value */
+    /**
+     * Accepts what Laravel's `integer` rule accepts: integers, integer strings, and floats
+     * with no fractional part, which is how JSON decodes a value such as `1024.0`.
+     *
+     * @phpstan-assert int|float|string $value
+     */
     public static function integer(mixed $value): int
     {
         if (is_int($value)) {
             return $value;
         }
 
-        if (is_string($value)) {
+        if (is_string($value) || is_float($value)) {
             $integer = filter_var($value, FILTER_VALIDATE_INT);
             if ($integer !== false) {
                 return $integer;

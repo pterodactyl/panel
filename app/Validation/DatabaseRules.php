@@ -14,7 +14,7 @@ final class DatabaseRules
     public static function rules(): array
     {
         return [
-            'server_id' => ['required', 'numeric', 'exists:servers,id'],
+            'server_id' => ['required', 'integer', 'exists:servers,id'],
             'database_host_id' => ['required', 'exists:database_hosts,id'],
             'database' => ['required', 'string', 'alpha_dash', 'between:3,48'],
             'username' => ['string', 'alpha_dash', 'between:3,100'],

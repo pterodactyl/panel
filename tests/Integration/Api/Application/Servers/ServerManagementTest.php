@@ -54,6 +54,24 @@ test('server build can be updated', function (): void {
     expect($server->memory)->toBe(1024);
     expect($server->database_limit)->toBe(5);
 });
+test('server build accepts integer strings and whole floats', function (): void {
+    mockDaemon();
+    $server = $this->createServerModel();
+    $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'add_allocations' => [(string) $allocation->id], 'limits' => ['memory' => 1024.0, 'swap' => '0', 'io' => 500, 'cpu' => 200, 'disk' => 5120], 'feature_limits' => ['databases' => 0, 'backups' => 0, 'allocations' => 2]])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 1024);
+
+    expect($allocation->refresh()->server_id)->toBe($server->id);
+});
+test('server build rejects fractional limits with a validation error', function (): void {
+    $server = $this->createServerModel();
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'limits' => ['memory' => 1024.5, 'swap' => 0, 'io' => 500, 'cpu' => 200, 'disk' => 5120], 'feature_limits' => ['databases' => 0, 'backups' => 0, 'allocations' => 1]])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'limits.memory');
+});
 test('server startup can be updated', function (): void {
     mockDaemon();
     $server = $this->createServerModel();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Validation\ServerRules;
 use UnexpectedValueException;
 
@@ -42,9 +43,9 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'threads' => $this->requiredToOptional('threads', $rules['threads']),
             'disk' => $this->requiredToOptional('disk', $rules['disk']),
 
-            'add_allocations' => ['bail', 'array'],
+            'add_allocations' => ['bail', 'array', 'list'],
             'add_allocations.*' => ['integer'],
-            'remove_allocations' => ['bail', 'array'],
+            'remove_allocations' => ['bail', 'array', 'list'],
             'remove_allocations.*' => ['integer'],
 
             'feature_limits' => ['required', 'array'],
@@ -147,9 +148,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
         $integers = [];
         foreach ($values as $value) {
-            throw_unless(is_int($value), UnexpectedValueException::class, "The validated [{$field}] field must contain integers.");
-
-            $integers[] = $value;
+            $integers[] = JsonValueGuard::integer($value);
         }
 
         return $integers;
