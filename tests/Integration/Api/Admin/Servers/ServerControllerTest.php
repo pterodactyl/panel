@@ -35,6 +35,16 @@ test('get servers filtered by node', function (): void {
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $server->id);
 });
+test('the node filter matches the node id exactly', function (): void {
+    $node = Node::factory()->create(['id' => 9001, 'location_id' => Location::factory()->create()->id]);
+    $server = $this->createServerModel(['node_id' => $node->id]);
+    $this->createServerModel(['node_id' => Node::factory()->create(['id' => 19001, 'location_id' => $node->location_id])->id]);
+
+    $this->getJson(route('api.admin.servers', ['filter' => ['node_id' => 9001]]))
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.attributes.id', $server->id);
+});
 test('get servers sorted by name', function (): void {
     $alpha = $this->createServerModel(['name' => 'Alpha']);
     $bravo = $this->createServerModel(['name' => 'Bravo']);

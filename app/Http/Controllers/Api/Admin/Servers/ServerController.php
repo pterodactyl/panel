@@ -235,7 +235,7 @@ class ServerController extends AdminApiController
                 'name',
                 'external_id',
                 'image',
-                'node_id',
+                AllowedFilter::exact('node_id'),
                 AllowedFilter::exact('owner_id'),
                 AllowedFilter::custom('*', new AdminServerFilter),
             ])
