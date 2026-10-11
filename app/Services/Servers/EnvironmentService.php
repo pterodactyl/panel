@@ -108,11 +108,8 @@ class EnvironmentService
     /** @return array<string, string|callable> */
     private function configuredEnvironmentVariables(): array
     {
-        $configured = config('pterodactyl.environment_variables', []);
-        throw_unless(is_array($configured), InvalidArgumentException::class, 'Configured server environment variables must be an array.');
-
         $variables = [];
-        foreach ($configured as $key => $source) {
+        foreach (config()->array('pterodactyl.environment_variables', []) as $key => $source) {
             throw_if(! is_string($key) || (! is_string($source) && ! is_callable($source)), InvalidArgumentException::class, 'Each configured server environment variable must map a string key to an attribute path or callable.');
 
             $variables[$key] = $source;

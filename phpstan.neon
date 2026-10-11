@@ -5,7 +5,8 @@ rules:
 
 parameters:
     level: 10
-    checkImplicitMixed: true
+    checkConfigTypes: true
+    generalizeEnvReturnType: true
     stubFiles:
         - tools/phpstan/stubs/EloquentHasAttributes.stub
     typeAliases:

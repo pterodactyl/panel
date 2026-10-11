@@ -30,7 +30,7 @@ class VerifyReCaptcha
 
         $result = $this->verifyCaptcha($request);
 
-        $domainValid = ! config('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
+        $domainValid = ! config()->boolean('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
 
         if ($result['success'] && $domainValid) {
             return $next($request);

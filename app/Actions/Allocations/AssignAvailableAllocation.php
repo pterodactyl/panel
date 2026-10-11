@@ -14,7 +14,6 @@ use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableExce
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 final readonly class AssignAvailableAllocation implements AssignsAvailableAllocations
@@ -31,8 +30,6 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
         if ($allocation === null) {
             $start = config('pterodactyl.client_features.allocations.range_start');
             $end = config('pterodactyl.client_features.allocations.range_end');
-            JsonValueGuard::assertValue($start);
-            JsonValueGuard::assertValue($end);
             $range = AllocationRange::fromConfig($start, $end);
             throw_unless($range instanceof AllocationRange, NoAutoAllocationSpaceAvailableException::class);
             $ports = $server->node->allocations()->where('ip', $primaryAllocation->ip)->whereBetween('port', [$range->start, $range->end])->get(['port'])->map(fn (Allocation $allocation): int => $allocation->port)->all();

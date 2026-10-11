@@ -87,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
         // doesn't, and it triggers a lot of support requests, so lets just head it off here.
         //
         // @see https://github.com/pterodactyl/panel/issues/3623
-        if (config('app.url') !== null && Str::startsWith(config()->string('app.url'), 'https://')) {
+        if (Str::startsWith(config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 

@@ -63,11 +63,12 @@ class SoftwareVersionService
      */
     public function isLatestPanel(): bool
     {
-        if (config('app.version') === 'canary') {
+        $version = config()->string('app.version');
+        if ($version === 'canary') {
             return true;
         }
 
-        return version_compare(config()->string('app.version'), $this->getPanel()) >= 0;
+        return version_compare($version, $this->getPanel()) >= 0;
     }
 
     /**

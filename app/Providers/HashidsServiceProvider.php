@@ -18,11 +18,10 @@ class HashidsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(function (): HashidsInterface {
             $config = $this->app->make(Repository::class);
-            $length = filter_var($config->get('hashids.length', 0), FILTER_VALIDATE_INT);
 
             return new Hashids(
                 $config->string('hashids.salt', ''),
-                $length === false ? 0 : $length,
+                (int) $config->get('hashids.length', 0),
                 $config->string('hashids.alphabet', 'abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
             );
         });

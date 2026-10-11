@@ -59,11 +59,8 @@
         "pestphp/pest-plugin-laravel": "^4.0",
         "pestphp/pest-plugin-type-coverage": "^4.0",
         "phpstan/extension-installer": "^1.4",
-        "phpstan/phpstan-strict-rules": "^2.0",
         "rector/rector": "^2.6",
-        "roave/security-advisories": "dev-latest",
-        "spaze/phpstan-disallowed-calls": "^4.14",
-        "symplify/phpstan-rules": "^14.10"
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
@@ -74,13 +71,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Pterodactyl\\Tests\\": "tests/",
-            "Rules\\": "tools/phpstan/rules/src/",
-            "Rules\\Tests\\": "tools/phpstan/rules/tests/"
-        },
-        "classmap": [
-            "tools/phpstan/rules/tests/Rules/data/"
-        ]
+            "Pterodactyl\\Tests\\": "tests/"
+        }
     },
     "scripts": {
         "setup": [
@@ -108,10 +100,10 @@
             "pint --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests"
         ],
         "test:lint": [
-            "pint --test --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests tools/phpstan",
+            "pint --test --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests",
             "rector --dry-run"
         ],
-        "test:types": "phpstan analyse -c phpstan-rules.neon --memory-limit=2G",
+        "test:types": "phpstan analyse --memory-limit=2G",
         "test:type-coverage": [
             "@putenv __PEST_PLUGIN_ENV=1",
             "@php -d variables_order=EGPCS vendor/bin/pest --type-coverage --min=100"
@@ -159,14 +151,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "extra": {
-        "phpstan/extension-installer": {
-            "ignore": [
-                "phpstan/phpstan-strict-rules",
-                "spaze/phpstan-disallowed-calls",
-                "symplify/phpstan-rules"
-            ]
-        }
-    }
+    "prefer-stable": true
 }

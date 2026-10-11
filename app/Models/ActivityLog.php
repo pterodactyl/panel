@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Fluent;
 use LogicException;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Events\ActivityLogged;
@@ -143,9 +142,10 @@ class ActivityLog extends Model implements Identifiable
      */
     public function prunable(): Builder
     {
-        throw_if((config('activity.prune_days')) === null, LogicException::class, 'Cannot prune activity logs: no "prune_days" configuration value is set.');
+        $days = (int) config('activity.prune_days');
+        throw_unless($days > 0, LogicException::class, 'Cannot prune activity logs: no "prune_days" configuration value is set.');
 
-        return static::query()->where('timestamp', '<=', now()->subDays(Fluent::make(config()->array('activity'))->integer('prune_days')));
+        return static::query()->where('timestamp', '<=', now()->subDays($days));
     }
 
     /**
