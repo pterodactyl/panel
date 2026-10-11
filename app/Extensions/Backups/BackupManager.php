@@ -13,7 +13,6 @@ use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
-use Pterodactyl\Support\JsonValueGuard;
 
 class BackupManager
 {
@@ -173,7 +172,6 @@ class BackupManager
     protected function getConfig(string $name): array
     {
         $config = $this->config->get("backups.disks.$name") ?: [];
-        JsonValueGuard::assertValue($config);
         if (! is_array($config)) {
             return [];
         }

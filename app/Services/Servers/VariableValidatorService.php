@@ -26,7 +26,7 @@ class VariableValidatorService
     /**
      * Validate all of the passed data against the given service option variables.
      *
-     * @param  array<string, ApiScalar>  $fields  environment variable name => submitted value
+     * @param  array<string, bool|float|int|string|null>  $fields  environment variable name => submitted value
      * @return Collection<int, ValidatedEggVariable>
      *
      * @throws ValidationException

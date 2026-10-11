@@ -24,7 +24,7 @@ final class CallbackResource extends ApiResource
 {
     /**
      * @param  TResource  $resource
-     * @param  Closure(TResource): ApiPayload  $callback
+     * @param  Closure(TResource): array<string, mixed>  $callback
      */
     public function __construct($resource, private readonly Closure $callback, private readonly ?string $name = null)
     {
@@ -37,7 +37,7 @@ final class CallbackResource extends ApiResource
      * @template TData of ApiResourceData
      *
      * @param  array<array-key, TData>|Collection<covariant array-key, covariant TData>|AbstractPaginator<covariant array-key, covariant TData>  $resource
-     * @param  Closure(TData): ApiPayload  $callback
+     * @param  Closure(TData): array<string, mixed>  $callback
      */
     public static function list(array|Collection|AbstractPaginator $resource, Closure $callback, ?string $name = null): ApiResourceCollection
     {
@@ -69,7 +69,7 @@ final class CallbackResource extends ApiResource
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {

@@ -11,7 +11,6 @@ use Pterodactyl\Http\Resources\Api\NullResource;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * @extends ApplicationResource<EggVariable>
@@ -33,14 +32,11 @@ class ServerVariableResource extends ApplicationResource
     /**
      * Return a generic transformed server variable array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
-        $attributes = $this->resource->attributesToArray();
-        JsonValueGuard::assertPayload($attributes);
-
-        return $attributes;
+        return $this->resource->attributesToArray();
     }
 
     protected function resolveInclude(string $include): ?IncludedResource

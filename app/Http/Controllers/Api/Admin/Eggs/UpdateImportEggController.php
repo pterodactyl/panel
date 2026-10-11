@@ -23,7 +23,7 @@ class UpdateImportEggController extends AdminApiController
     /**
      * Import updates into existing egg.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update egg from import', 'Updates an existing egg from an uploaded egg share JSON file.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg updated from import.', resourceKey: 'egg')]

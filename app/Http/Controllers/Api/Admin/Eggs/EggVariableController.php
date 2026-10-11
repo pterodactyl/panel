@@ -34,7 +34,7 @@ class EggVariableController extends AdminApiController
     /**
      * List egg variables.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List egg variables', 'Returns variables for an egg in display order.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Unknown includes are ignored.', required: false, example: 'egg')]
@@ -70,7 +70,7 @@ class EggVariableController extends AdminApiController
     /**
      * Update egg variable.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update egg variable', 'Updates a startup variable for an egg.')]
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]

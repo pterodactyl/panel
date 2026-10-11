@@ -195,7 +195,7 @@ final class ResourceParity
 
     /**
      * @param  Closure(Request): JsonResponse  $respond
-     * @return array{status: int, body: string, queries: list<array{0: string, 1: array<array-key, mixed>}>}
+     * @return array{status: int, body: string, queries: list<array{0: string, 1: array<mixed>}>}
      */
     private function render(Closure $respond): array
     {

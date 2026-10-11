@@ -24,7 +24,7 @@ class ReorderVariablesController extends AdminApiController
     /**
      * Reorder egg variables.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Reorder egg variables', 'Updates the display order for variables on an egg.')]
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variables reordered.', collection: true, resourceKey: 'egg_variable')]

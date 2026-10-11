@@ -33,7 +33,7 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
      * Validates install script input and returns the attributes it changes: only the fields
      * given, so the rest keep their stored values. A blank script or copy source is cleared.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{script_install?: string|null, script_is_privileged?: bool, script_entry?: string, script_container?: string, copy_script_from?: int|null}
      */
     public static function attributes(array $input): array
@@ -67,7 +67,7 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
     /**
      * Modify the install script for a given Egg.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws InvalidCopyFromException
      */

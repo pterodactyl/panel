@@ -22,7 +22,6 @@ use LogicException;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Events\ActivityLogged;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * \Pterodactyl\Models\ActivityLog.
@@ -35,7 +34,7 @@ use Pterodactyl\Support\JsonValueGuard;
  * @property string|null $actor_type
  * @property int|null $actor_id
  * @property int|null $api_key_id
- * @property Collection<string, JsonValue> $properties
+ * @property Collection<string, mixed> $properties
  * @property Carbon $timestamp
  * @property IlluminateModel|null $actor
  * @property \Illuminate\Database\Eloquent\Collection<int, ActivityLogSubject> $subjects
@@ -124,13 +123,10 @@ class ActivityLog extends Model implements Identifiable
         return $this->hasOne(ApiKey::class, 'id', 'api_key_id');
     }
 
-    /** @return array<string, JsonValue> */
+    /** @return array<string, mixed> */
     public function propertyValues(): array
     {
-        $values = $this->properties->all();
-        JsonValueGuard::assertValue($values);
-
-        return $values;
+        return $this->properties->all();
     }
 
     /**

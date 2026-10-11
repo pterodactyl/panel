@@ -17,7 +17,7 @@ interface UpdatesUsers
      * given are changed; a blank password leaves the password alone. Extension field values
      * go under `extensions` as ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  any of the fields a user is created with
+     * @param  array<string, mixed>  $input  any of the fields a user is created with
      *
      * @throws Throwable
      */

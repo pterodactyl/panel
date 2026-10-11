@@ -31,7 +31,7 @@ final readonly class AttachEggsToMount implements AttachesEggsToMounts
     /**
      * Attach eggs to a mount, keeping any eggs already attached.
      *
-     * @param  list<ApiValue9>  $eggIds
+     * @param  list<mixed>  $eggIds
      */
     public function attach(Mount $mount, array $eggIds): void
     {
@@ -43,7 +43,7 @@ final readonly class AttachEggsToMount implements AttachesEggsToMounts
      * egg; they are all looked up in one query, and a missing one fails `eggs.N` as an exists
      * rule would.
      *
-     * @param  list<ApiValue9>  $eggIds
+     * @param  list<mixed>  $eggIds
      * @return list<int>
      */
     private function eggIds(array $eggIds): array

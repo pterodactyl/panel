@@ -43,7 +43,7 @@ class DatabaseController extends AdminApiController
     /**
      * List server databases.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server databases', 'Returns all databases assigned to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password".', required: false, example: 'password', enum: ['password'])]
@@ -61,7 +61,7 @@ class DatabaseController extends AdminApiController
     /**
      * Show server database.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server database', 'Returns a single database assigned to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password".', required: false, example: 'password', enum: ['password'])]

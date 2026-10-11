@@ -23,7 +23,7 @@ class BuildController extends AdminApiController
     /**
      * Update server build configuration.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update server build', 'Updates server limits, primary allocation, and feature limits.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server build updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]

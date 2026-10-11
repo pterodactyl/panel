@@ -61,7 +61,7 @@ final readonly class CreateUser implements CreatesUsers
      * being updated, only the fields in the input are validated and returned, so the rest
      * keep their stored values. A blank password is left out.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{email?: string, username?: string, name_first?: string, name_last?: string, external_id?: string|null, password?: string, root_admin?: bool, language?: string}
      */
     public static function attributes(array $input, ?User $user = null): array
@@ -119,7 +119,7 @@ final readonly class CreateUser implements CreatesUsers
      * The UUID and password hash are handled by the model itself (HasVersion4Uuids
      * and the hashed password cast).
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

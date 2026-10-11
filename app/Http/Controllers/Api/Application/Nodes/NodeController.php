@@ -56,7 +56,7 @@ class NodeController extends ApplicationApiController
     /**
      * Return all the nodes currently available on the Panel.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List nodes', 'Returns a paginated list of Wings nodes registered on the panel.')]
     #[QueryParam('per_page', 'integer', 'Number of nodes to return per page, up to 100.', required: false, example: 50)]
@@ -84,7 +84,7 @@ class NodeController extends ApplicationApiController
     /**
      * Return data for a single instance of a node.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get node', 'Returns a single Wings node by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.', required: false, example: 'location,allocations', enum: ['allocations', 'location', 'servers', 'location,allocations'])]
@@ -121,7 +121,7 @@ class NodeController extends ApplicationApiController
      * Update an existing node on the Panel.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws Throwable
      */

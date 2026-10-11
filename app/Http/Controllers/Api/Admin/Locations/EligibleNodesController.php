@@ -22,7 +22,7 @@ class EligibleNodesController extends AdminApiController
     /**
      * List nodes eligible for location.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List eligible location nodes', 'Returns nodes assigned to a location that can be selected for location-scoped workflows.')]
     #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Eligible nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node')]

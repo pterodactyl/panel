@@ -194,7 +194,7 @@ final class ApiErrorResponse
         return is_int($min) && is_string($value) && mb_strlen($value) < $min ? 'min' : 'password';
     }
 
-    /** @return list<array<string, ApiScalar>> */
+    /** @return list<array<string, bool|float|int|string|null>> */
     private static function cleanTrace(Throwable $exception): array
     {
         $cleaned = [];

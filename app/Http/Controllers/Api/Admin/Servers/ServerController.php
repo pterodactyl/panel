@@ -36,7 +36,7 @@ class ServerController extends AdminApiController
     /**
      * List servers.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List servers', 'Returns a paginated list of servers.')]
     #[QueryParam('filter[*]', 'string', 'Search servers by UUID, name, owner, node, allocation, or external identifier.', required: false, example: 'Survival')]
@@ -76,7 +76,7 @@ class ServerController extends AdminApiController
     /**
      * Show server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server', 'Returns a single server by admin identifier.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports allocation, allocations, user, subusers, egg, variables, location, node, and databases.', required: false, example: 'allocations,user,node,egg,variables')]

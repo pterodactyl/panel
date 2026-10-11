@@ -43,7 +43,7 @@ class SubuserController extends ClientApiController
     /**
      * Return the users associated with this server instance.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server subusers', 'Returns subusers assigned to the server.')]
     #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subusers returned.', collection: true, resourceKey: 'server_subuser')]
@@ -57,7 +57,7 @@ class SubuserController extends ClientApiController
     /**
      * Returns a single subuser associated with this server instance.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server subuser', 'Returns one subuser assignment for the server.')]
     #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser returned.', resourceKey: 'server_subuser')]
@@ -74,7 +74,7 @@ class SubuserController extends ClientApiController
      * Create a new subuser for the given server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws ServerSubuserExistsException
      * @throws UserIsServerOwnerException
@@ -96,7 +96,7 @@ class SubuserController extends ClientApiController
      * Update a given subuser in the system for the server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update server subuser', 'Updates permissions for a server subuser and revokes their SFTP access tokens.')]
     #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser updated.', resourceKey: 'server_subuser')]

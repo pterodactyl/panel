@@ -50,7 +50,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * The validated input under the action's field names: add_allocation_ids and
      * remove_allocation_ids are its add_allocations and remove_allocations.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

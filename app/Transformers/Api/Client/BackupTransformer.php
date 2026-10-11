@@ -17,7 +17,7 @@ class BackupTransformer extends BaseClientTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Backup $backup): array
     {

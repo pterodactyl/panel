@@ -37,7 +37,7 @@ class LocationController extends AdminApiController
     /**
      * List locations.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List locations', 'Returns a paginated list of locations.')]
     #[QueryParam('filter[short]', 'string', 'Filter locations by short identifier.', required: false, example: 'us-east')]
@@ -64,7 +64,7 @@ class LocationController extends AdminApiController
     /**
      * Show location.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get location', 'Returns a single location by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "nodes" and "servers".', required: false, example: 'nodes', enum: ['nodes', 'servers', 'nodes,servers'])]
@@ -109,7 +109,7 @@ class LocationController extends AdminApiController
     /**
      * Update location.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update location', 'Updates a location short identifier and description.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, description: 'Location updated.', resourceKey: 'location')]

@@ -27,7 +27,7 @@ class SSHKeyController extends ClientApiController
      * Returns all the SSH keys that have been configured for the logged-in
      * user account.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List SSH keys', 'Returns all SSH public keys configured for the authenticated user.')]
     #[ResponseFromTransformer(UserSSHKeyTransformer::class, UserSSHKey::class, description: 'SSH keys returned.', collection: true, resourceKey: 'ssh_key')]
@@ -41,7 +41,7 @@ class SSHKeyController extends ClientApiController
     /**
      * Stores a new SSH key for the authenticated user's account.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Create SSH key', 'Adds an SSH public key to the authenticated user account.')]
     #[ResponseFromTransformer(UserSSHKeyTransformer::class, UserSSHKey::class, description: 'SSH key created.', resourceKey: 'ssh_key')]

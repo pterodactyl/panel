@@ -44,7 +44,7 @@ class DatabaseController extends ApplicationApiController
      * Return a listing of all databases currently available to a single
      * server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server databases', 'Returns all databases attached to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" and "host" when the key can read database hosts.', required: false, example: 'password,host', enum: ['password', 'host', 'password,host'])]
@@ -59,7 +59,7 @@ class DatabaseController extends ApplicationApiController
     /**
      * Return a single server database.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server database', 'Returns a single database attached to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" and "host" when the key can read database hosts.', required: false, example: 'password,host', enum: ['password', 'host', 'password,host'])]

@@ -21,7 +21,7 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Support\JsonValueGuard;
 
 /**
- * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<string, ApiValue9>, ip: string|null, timestamp: string}
+ * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<string, mixed>, ip: string|null, timestamp: string}
  */
 final class IngestActivityLogs implements IngestsActivityLogs
 {
@@ -50,7 +50,7 @@ final class IngestActivityLogs implements IngestsActivityLogs
      * Validates reported activity and returns the events it lists. Metadata given as null
      * is empty.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return list<ActivityEvent>
      *
      * @throws ValidationException
@@ -82,7 +82,7 @@ final class IngestActivityLogs implements IngestsActivityLogs
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws ValidationException
      */

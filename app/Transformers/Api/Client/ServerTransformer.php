@@ -62,7 +62,7 @@ class ServerTransformer extends BaseClientTransformer
      * Transform a server model into a representation that can be returned
      * to a client.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Server $server): array
     {

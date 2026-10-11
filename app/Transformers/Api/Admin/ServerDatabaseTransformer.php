@@ -26,7 +26,7 @@ class ServerDatabaseTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Database $model): array
     {

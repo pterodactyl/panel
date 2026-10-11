@@ -62,7 +62,7 @@ final class CreateDatabase implements CreatesDatabases
      * limit is left out when it is not given, so the database takes the column default; a
      * blank one is stored as null. Null and 0 both leave the user's connections unlimited.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return DatabaseCreationData
      */
     public static function attributes(array $input): array
@@ -90,7 +90,7 @@ final class CreateDatabase implements CreatesDatabases
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      * @throws TooManyDatabasesException

@@ -11,7 +11,6 @@ use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 #[ResponseField('max_databases', 'integer', example: 50, nullable: true)]
@@ -37,11 +36,11 @@ class DatabaseHostTransformer extends BaseAdminTransformer
 
     /** The host password is never exposed through the API surface. */
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(DatabaseHost $model): array
     {
-        $payload = [
+        return [
             'id' => $model->id,
             'name' => $model->name,
             'host' => $model->host,
@@ -55,9 +54,6 @@ class DatabaseHostTransformer extends BaseAdminTransformer
             'updated_at' => $this->formatTimestamp($model->updated_at),
             ...$this->extensionFields($model),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     public function includeNode(DatabaseHost $model): Item|NullResource

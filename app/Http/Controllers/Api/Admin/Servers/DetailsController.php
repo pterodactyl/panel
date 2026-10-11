@@ -24,7 +24,7 @@ class DetailsController extends AdminApiController
     /**
      * Update server details.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update server details', 'Updates a server name, owner, description, and external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]

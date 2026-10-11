@@ -36,7 +36,7 @@ use Ramsey\Uuid\Uuid;
 use Throwable;
 
 /**
- * @phpstan-type CreationAttributes array{external_id: string|null, name: string, description: string, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, ApiScalar>, skip_scripts: bool, oom_disabled: bool, memory: int, swap: int, disk: int, io: int, threads: string|null, cpu: int, database_limit: int, allocation_limit: int, backup_limit: int, allocation_id: int|null, allocation_additional: list<int>, start_on_completion: bool}
+ * @phpstan-type CreationAttributes array{external_id: string|null, name: string, description: string, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, bool|float|int|string|null>, skip_scripts: bool, oom_disabled: bool, memory: int, swap: int, disk: int, io: int, threads: string|null, cpu: int, database_limit: int, allocation_limit: int, backup_limit: int, allocation_id: int|null, allocation_additional: list<int>, start_on_completion: bool}
  */
 final readonly class CreateServer implements CreatesServers
 {
@@ -94,7 +94,7 @@ final readonly class CreateServer implements CreatesServers
      * left out is 0. A server given no OOM flag, or null, has the OOM killer disabled. The
      * environment keeps each value as it was given, for the egg's variable rules to check.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return CreationAttributes
      */
     public static function attributes(array $input, ?DeploymentObject $deployment = null): array
@@ -138,7 +138,7 @@ final readonly class CreateServer implements CreatesServers
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      * @throws DisplayException

@@ -24,7 +24,7 @@ class AttachEggsController extends AdminApiController
     /**
      * Attach eggs to mount.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Attach eggs to mount', 'Attaches one or more eggs to a mount definition without removing existing egg attachments.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]

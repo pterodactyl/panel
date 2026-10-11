@@ -37,7 +37,7 @@ class StartupController extends ApplicationApiController
      * Update the startup and environment settings for a specific server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws ValidationException
      * @throws DaemonConnectionException

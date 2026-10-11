@@ -23,7 +23,7 @@ class ServerController extends ClientApiController
      * Transform an individual server into a response that can be consumed by a
      * client using the API.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server', 'Returns details for one server the authenticated user can access.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server details returned.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['is_server_owner' => true, 'user_permissions' => ['websocket.connect', 'control.console', 'control.start', 'control.stop', 'control.restart']])]

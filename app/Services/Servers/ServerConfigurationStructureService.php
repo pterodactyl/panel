@@ -24,8 +24,8 @@ class ServerConfigurationStructureService
      * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
      * daemon, if you modify the structure eggs will break unexpectedly.
      *
-     * @param  array<string, JsonValue>  $override  server attributes to override on a cloned model
-     * @return array<string, JsonValue>
+     * @param  array<string, mixed>  $override  server attributes to override on a cloned model
+     * @return array<string, mixed>
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
@@ -51,7 +51,7 @@ class ServerConfigurationStructureService
     /**
      * Returns the new data format used for the Wings daemon.
      *
-     * @return array<string, JsonValue>
+     * @return array<string, mixed>
      */
     protected function returnCurrentFormat(Server $server, Egg $egg, Allocation $allocation): array
     {
@@ -106,7 +106,7 @@ class ServerConfigurationStructureService
      * Returns the legacy server data format to continue support for old egg configurations
      * that have not yet been updated.
      *
-     * @return array<string, JsonValue>
+     * @return array<string, mixed>
      *
      * @deprecated
      */

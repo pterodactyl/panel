@@ -25,7 +25,7 @@ class ToggleBackupController extends AdminApiController
     /**
      * Toggle backup lock state.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Toggle server backup lock', 'Toggles whether a server backup is locked against deletion.')]
     #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backup lock state toggled.', resourceKey: 'backup')]

@@ -16,7 +16,7 @@ interface UpdatesDatabaseHosts
      * stored one, and a host given no node_id becomes global. Extension field values go under
      * `extensions` as ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  the fields a host is created with
+     * @param  array<string, mixed>  $input  the fields a host is created with
      *
      * @throws Throwable
      */

@@ -61,8 +61,8 @@ class AllocationSelectionService
      * empty, all ports will be considered when finding an allocation. If set, only ports appearing
      * in the array or range will be used.
      *
-     * @param  list<ApiScalar>  $ports  Entries that are neither a port nor a port range
-     *                                  are discarded rather than rejected.
+     * @param  list<bool|float|int|string|null>  $ports  Entries that are neither a port nor a port range
+     *                                                   are discarded rather than rejected.
      *
      * @throws DisplayException
      */

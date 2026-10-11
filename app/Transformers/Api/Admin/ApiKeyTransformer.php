@@ -19,7 +19,7 @@ class ApiKeyTransformer extends BaseAdminTransformer
 
     /** Never exposes the token; the plaintext secret is only returned once on create. */
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(ApiKey $model): array
     {

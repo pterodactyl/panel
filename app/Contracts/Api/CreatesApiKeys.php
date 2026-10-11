@@ -15,8 +15,8 @@ interface CreatesApiKeys
      * application keys: each is AdminAcl::NONE or AdminAcl::READ and AdminAcl::WRITE
      * combined, and a resource left out gets AdminAcl::NONE.
      *
-     * @param  ActionInput  $input  memo and user_id, and optionally allowed_ips
-     * @param  ActionInput  $permissions  the r_* column of any AdminAcl resource
+     * @param  array<string, mixed>  $input  memo and user_id, and optionally allowed_ips
+     * @param  array<string, mixed>  $permissions  the r_* column of any AdminAcl resource
      */
     public function create(int $keyType, array $input, array $permissions = []): ApiKey;
 }

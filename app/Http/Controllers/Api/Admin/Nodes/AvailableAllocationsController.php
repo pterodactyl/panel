@@ -26,7 +26,7 @@ class AvailableAllocationsController extends AdminApiController
     /**
      * Return available allocations for node.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List available node allocations', 'Returns unassigned allocations for a node.')]
     #[QueryParam('filter[ip]', 'string', 'Filter allocations by exact IP address.', example: '192.168.1.1')]

@@ -54,7 +54,7 @@ class NetworkAllocationController extends ClientApiController
      * Lists all the allocations available to a server and whether
      * they are currently assigned as the primary for this server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server allocations', 'Returns all network allocations assigned to the server.')]
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Server allocations returned.', collection: true, factoryStates: ['withServer'], resourceKey: 'allocation')]
@@ -66,7 +66,7 @@ class NetworkAllocationController extends ClientApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update allocation notes', 'Updates notes attached to a server allocation.')]
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocation notes updated.', factoryStates: ['withServer'], resourceKey: 'allocation')]
@@ -82,7 +82,7 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Set the primary allocation for a server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Set primary allocation', 'Sets the primary network allocation for the server.')]
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Primary allocation updated.', factoryStates: ['withServer'], resourceKey: 'allocation')]
@@ -96,7 +96,7 @@ class NetworkAllocationController extends ClientApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */

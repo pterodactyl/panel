@@ -281,7 +281,7 @@ class ExtensionController extends AdminApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     private function serializeInstalled(string $identifier, ExtensionRepository $extensions, ExtensionAssetPublisher $assets): array
     {
@@ -294,7 +294,7 @@ class ExtensionController extends AdminApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     private function serializeManifest(ExtensionManifest $manifest, ?Extension $record, ExtensionAssetPublisher $assets): array
     {

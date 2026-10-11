@@ -53,7 +53,7 @@ class MountController extends AdminApiController
     /**
      * List mounts.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List mounts', 'Returns a paginated list of mount definitions.')]
     #[QueryParam('filter[name]', 'string', 'Filter mounts by name.', required: false, example: 'Shared Mods')]
@@ -77,7 +77,7 @@ class MountController extends AdminApiController
     /**
      * Show mount.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get mount', 'Returns a single mount definition by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]
@@ -119,7 +119,7 @@ class MountController extends AdminApiController
     /**
      * Update mount.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update mount', 'Updates an existing mount definition.')]
     #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]

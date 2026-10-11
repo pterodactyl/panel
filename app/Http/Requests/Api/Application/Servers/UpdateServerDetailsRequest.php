@@ -35,7 +35,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
     /**
      * The validated input under the action's field names: user is its owner_id.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

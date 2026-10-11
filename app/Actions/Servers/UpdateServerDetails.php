@@ -43,7 +43,7 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
      * detail is replaced: an external id left out or empty is cleared, and a description
      * left out or null becomes empty.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{external_id: string|null, owner_id: int, name: string, description: string}
      */
     public static function attributes(array $input, ?Server $server = null): array
@@ -59,7 +59,7 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

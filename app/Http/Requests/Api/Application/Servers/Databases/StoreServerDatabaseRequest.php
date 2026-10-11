@@ -45,7 +45,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
      * The validated input under the action's field names: the database name gets its
      * "s{server_id}_" prefix, and host is the action's database_host_id.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

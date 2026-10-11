@@ -16,7 +16,7 @@ class EggVariableTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(EggVariable $model): array
     {

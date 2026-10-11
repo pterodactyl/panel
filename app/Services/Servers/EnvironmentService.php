@@ -11,14 +11,15 @@ use Pterodactyl\Models\Server;
 
 class EnvironmentService
 {
-    /** @var array<string, callable(Server): ApiScalar> */
+    /** @var array<string, callable(Server): EnvironmentValue> */
     private array $additional = [];
 
     /**
      * Dynamically configure additional environment variables to be assigned
      * with a specific server.
+     *
+     * @param  callable(Server): EnvironmentValue  $closure
      */
-    /** @param callable(Server): ApiScalar $closure */
     public function setEnvironmentKey(string $key, callable $closure): void
     {
         $this->additional[$key] = $closure;
@@ -28,7 +29,7 @@ class EnvironmentService
      * Take all of the environment variables configured for this server and return
      * them in an easy to process format.
      *
-     * @return array<string, ApiScalar> environment variable name => value
+     * @return array<string, EnvironmentValue> environment variable name => value
      */
     public function handle(Server $server): array
     {
@@ -118,17 +119,10 @@ class EnvironmentService
         return $variables;
     }
 
-    /**
-     * @phpstan-assert ApiScalar $value
-     *
-     * @return ApiScalar
-     */
     private function environmentValue(string $key, mixed $value): bool|float|int|string|null
     {
-        if ($value === null || is_bool($value) || is_float($value) || is_int($value) || is_string($value)) {
-            return $value;
-        }
+        throw_unless($value === null || is_scalar($value), InvalidArgumentException::class, sprintf('Server environment variable "%s" must resolve to a JSON scalar.', $key));
 
-        throw new InvalidArgumentException(sprintf('Server environment variable "%s" must resolve to a JSON scalar.', $key));
+        return $value;
     }
 }

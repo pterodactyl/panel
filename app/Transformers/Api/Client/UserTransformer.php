@@ -21,7 +21,7 @@ class UserTransformer extends BaseClientTransformer
      * Transforms a User model into a representation that can be shown to regular
      * users of the API.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(User $model): array
     {

@@ -37,7 +37,7 @@ class UserController extends ApplicationApiController
      * of a collection of users including any defined relations passed in
      * the request.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List users', 'Returns a paginated list of panel users visible to the application API key.')]
     #[QueryParam('per_page', 'integer', 'Number of users to return per page, up to 100.', required: false, example: 50)]
@@ -64,7 +64,7 @@ class UserController extends ApplicationApiController
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get user', 'Returns a single panel user by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "servers" when the key can read servers.', required: false, example: 'servers', enum: ['servers'])]
@@ -77,7 +77,7 @@ class UserController extends ApplicationApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws Throwable
      */

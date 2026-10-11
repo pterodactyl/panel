@@ -8,10 +8,7 @@ use UnexpectedValueException;
 
 final class JsonValueGuard
 {
-    /**
-     * @return JsonValue
-     */
-    public static function decode(string $encoded, int $maximumDepth = 10): bool|float|int|string|array|null
+    public static function decode(string $encoded, int $maximumDepth = 10): mixed
     {
         $value = json_decode($encoded, true, flags: JSON_THROW_ON_ERROR);
         self::assertValue($value, $maximumDepth);
@@ -19,8 +16,7 @@ final class JsonValueGuard
         return $value;
     }
 
-    /** @return ApiValue8 */
-    public static function decode8(string $encoded): bool|float|int|string|array|null
+    public static function decode8(string $encoded): mixed
     {
         $value = json_decode($encoded, true, flags: JSON_THROW_ON_ERROR);
         self::assertValue8($value);
@@ -28,7 +24,7 @@ final class JsonValueGuard
         return $value;
     }
 
-    /** @return array<array-key, ApiValue7> */
+    /** @return array<mixed> */
     public static function decodeArray8(string $encoded): array
     {
         $value = self::decode8($encoded);
@@ -37,9 +33,6 @@ final class JsonValueGuard
         return $value;
     }
 
-    /**
-     * @phpstan-assert JsonValue $value
-     */
     public static function assertValue(mixed $value, int $remainingDepth = 10): void
     {
         if ($value === null || is_bool($value) || is_float($value) || is_int($value) || is_string($value)) {
@@ -57,7 +50,7 @@ final class JsonValueGuard
         }
     }
 
-    /** @phpstan-assert ApiPayload $value */
+    /** @phpstan-assert array<string, mixed> $value */
     public static function assertPayload(mixed $value): void
     {
         self::assertValue($value);
@@ -68,7 +61,7 @@ final class JsonValueGuard
         }
     }
 
-    /** @phpstan-assert ApiScalar $value */
+    /** @phpstan-assert bool|float|int|string|null $value */
     public static function assertScalar(mixed $value): void
     {
         throw_if($value !== null && ! is_bool($value) && ! is_float($value) && ! is_int($value) && ! is_string($value), UnexpectedValueException::class, 'Expected a scalar JSON value.');
@@ -83,9 +76,9 @@ final class JsonValueGuard
     }
 
     /**
-     * @phpstan-assert array<array-key, ApiValue9> $value
+     * @phpstan-assert array<mixed> $value
      *
-     * @return array<array-key, ApiValue9>
+     * @return array<mixed>
      */
     public static function jsonArray(mixed $value): array
     {
@@ -111,7 +104,7 @@ final class JsonValueGuard
         return $value;
     }
 
-    /** @phpstan-assert array<string, ApiScalar> $value */
+    /** @phpstan-assert array<string, bool|float|int|string|null> $value */
     public static function assertScalarPayload(mixed $value): void
     {
         throw_unless(is_array($value), UnexpectedValueException::class, 'Expected a scalar payload.');
@@ -123,7 +116,7 @@ final class JsonValueGuard
         }
     }
 
-    /** @phpstan-assert array<string, ApiValue9> $value */
+    /** @phpstan-assert array<string, mixed> $value */
     public static function assertPayload9(mixed $value): void
     {
         self::assertValue($value, 9);
@@ -134,7 +127,6 @@ final class JsonValueGuard
         }
     }
 
-    /** @phpstan-assert ApiValue8 $value */
     private static function assertValue8(mixed $value): void
     {
         self::assertValue($value, 8);

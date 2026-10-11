@@ -11,7 +11,6 @@ use League\Fractal\Resource\NullResource;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
 
 class NodeTransformer extends BaseTransformer
 {
@@ -42,12 +41,11 @@ class NodeTransformer extends BaseTransformer
      * Return a node transformed into a format that can be consumed by the
      * external administrative API.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Node $node): array
     {
         $attributes = $node->attributesToArray();
-        JsonValueGuard::assertValue($attributes);
 
         $response = [];
         foreach ($attributes as $key => $value) {
@@ -64,11 +62,8 @@ class NodeTransformer extends BaseTransformer
         unset($response['sum_memory'], $response['sum_disk']);
         $response['allocated_resources'] = $node->allocatedResources();
         $response['relationships'] = [];
-        $response = [...$response, ...$this->extensionFields($node)];
 
-        JsonValueGuard::assertPayload($response);
-
-        return $response;
+        return [...$response, ...$this->extensionFields($node)];
     }
 
     /**

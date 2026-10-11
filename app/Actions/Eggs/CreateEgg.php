@@ -64,7 +64,7 @@ final readonly class CreateEgg implements CreatesEggs
      * not given, so a new egg takes the column defaults and an updated one keeps its stored
      * values; a blank one is cleared.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, description: string|null, docker_images: array<string, string>, force_outgoing_ip: bool, features: list<string>, startup: string, file_denylist?: list<string>, config_from?: int|null, config_stop?: string|null, config_startup?: string|null, config_logs?: string|null, config_files?: string|null}
      */
     public static function attributes(array $input): array
@@ -114,7 +114,7 @@ final readonly class CreateEgg implements CreatesEggs
     /**
      * Create an egg, stamping the configured service author.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(array $input): Egg
     {

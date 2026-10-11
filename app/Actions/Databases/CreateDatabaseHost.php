@@ -41,7 +41,7 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
      * password comes back in plain text, for the action to encrypt, and is left out when it
      * is blank so an updated host keeps its stored one. A host given no node is global.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, host: string, port: int, username: string, node_id: int|null, password?: string}
      */
     public static function attributes(array $input): array
@@ -66,7 +66,7 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
     /**
      * Create a new database host on the Panel once it accepts the given credentials.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

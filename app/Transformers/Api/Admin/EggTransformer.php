@@ -43,11 +43,11 @@ class EggTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Egg $model): array
     {
-        $payload = [
+        return [
             'id' => $model->id,
             'uuid' => $model->uuid,
             'author' => $model->author,
@@ -79,9 +79,6 @@ class EggTransformer extends BaseAdminTransformer
             $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
             ...$this->extensionFields($model),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     public function includeVariables(Egg $model): Collection|NullResource
@@ -121,10 +118,8 @@ class EggTransformer extends BaseAdminTransformer
      * A configuration column exactly as stored. Null means the egg inherits the value from the
      * egg it copies configuration from, while "{}" means it has none, so neither may turn into
      * the other on the way to the editor and back.
-     *
-     * @return JsonValue|JsonEmptyObject
      */
-    private function configuration(?string $encoded): bool|float|int|string|array|JsonEmptyObject|null
+    private function configuration(?string $encoded): mixed
     {
         if ($encoded === null) {
             return null;

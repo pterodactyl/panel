@@ -13,8 +13,8 @@ interface UpdatesApiKeys
      * permissions are validated here, so they can come straight from any caller. Only what
      * is given changes, and the permissions are only applied to application keys.
      *
-     * @param  ActionInput  $input  optionally memo
-     * @param  ActionInput  $permissions  the r_* column of any AdminAcl resource
+     * @param  array<string, mixed>  $input  optionally memo
+     * @param  array<string, mixed>  $permissions  the r_* column of any AdminAcl resource
      */
     public function update(ApiKey $key, array $input, array $permissions = []): ApiKey;
 }

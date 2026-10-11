@@ -24,7 +24,7 @@ class TransferProgressController extends AdminApiController
     /**
      * Return server transfer progress.
      *
-     * @return ApiPayload|Response
+     * @return array<string, mixed>|Response
      */
     #[Endpoint('Get server transfer progress', 'Returns the active transfer for a server, or 204 when no transfer is in progress.')]
     #[ResponseFromTransformer(ServerTransferTransformer::class, ServerTransfer::class, description: 'Transfer progress returned.', resourceKey: 'server_transfer')]

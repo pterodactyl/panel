@@ -25,7 +25,7 @@ class TagController extends ApplicationApiController
     /**
      * Return all tags that exist on the panel.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List tags', 'Returns a paginated list of the tags that group eggs.')]
     #[QueryParam('per_page', 'integer', 'Number of tags to return per page, up to 100.', required: false, example: 50)]
@@ -49,7 +49,7 @@ class TagController extends ApplicationApiController
     /**
      * Return a single tag.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get tag', 'Returns a single tag by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs" and "nodes" when the key can read those resources.', required: false, example: 'eggs', enum: ['eggs', 'nodes', 'eggs,nodes'])]

@@ -10,7 +10,6 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('servers_count', 'integer', 'Present when the endpoint loads server counts.', required: false, example: 0)]
 class NodeTransformer extends BaseAdminTransformer
@@ -34,12 +33,11 @@ class NodeTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Node $node): array
     {
         $attributes = $node->attributesToArray();
-        JsonValueGuard::assertValue($attributes);
 
         $response = [];
         foreach ($attributes as $key => $value) {
@@ -55,11 +53,8 @@ class NodeTransformer extends BaseAdminTransformer
         unset($response['sum_memory'], $response['sum_disk']);
         $response['allocated_resources'] = $node->allocatedResources();
         $response['relationships'] = [];
-        $response = [...$response, ...$this->extensionFields($node)];
 
-        JsonValueGuard::assertPayload($response);
-
-        return $response;
+        return [...$response, ...$this->extensionFields($node)];
     }
 
     public function includeAllocations(Node $node): Collection|NullResource

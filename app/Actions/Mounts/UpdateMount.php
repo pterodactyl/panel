@@ -15,7 +15,7 @@ final readonly class UpdateMount implements UpdatesMounts
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function update(Mount $mount, array $input): Mount
     {

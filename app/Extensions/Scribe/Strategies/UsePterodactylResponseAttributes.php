@@ -218,7 +218,7 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
      * Merges an attribute's example meta into the rendered envelope's top-level meta, after
      * any pagination, mirroring what the controller adds and rendering alone cannot.
      *
-     * @param  ApiPayload  $meta
+     * @param  array<string, mixed>  $meta
      */
     private function withExampleMeta(string $content, array $meta): string|false
     {

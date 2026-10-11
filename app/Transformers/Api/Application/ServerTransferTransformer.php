@@ -14,7 +14,7 @@ class ServerTransferTransformer extends BaseTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(ServerTransfer $model): array
     {

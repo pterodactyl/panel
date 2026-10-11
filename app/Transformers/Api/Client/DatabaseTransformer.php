@@ -28,7 +28,7 @@ class DatabaseTransformer extends BaseClientTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Database $model): array
     {

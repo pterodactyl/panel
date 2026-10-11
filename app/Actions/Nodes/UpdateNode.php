@@ -24,7 +24,7 @@ final readonly class UpdateNode implements UpdatesNodes
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

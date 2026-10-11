@@ -30,7 +30,7 @@ class StoreAllocationRequest extends ApplicationApiRequest
      * The validated input under the action's field names: ip, ports and alias are its
      * allocation_ip, allocation_ports and allocation_alias.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

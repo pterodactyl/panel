@@ -17,7 +17,7 @@ class StatsTransformer extends BaseClientTransformer
      * Transform the live state of a server into a result set that can be used
      * in the client API.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(ServerState $state): array
     {

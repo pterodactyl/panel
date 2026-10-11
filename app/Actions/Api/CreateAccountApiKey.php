@@ -38,7 +38,7 @@ final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
      * Validates account API key input and returns the description and the allowed IPs, or
      * null when none were given.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{description: string, allowed_ips: list<string>|null}
      */
     public static function attributes(array $input): array

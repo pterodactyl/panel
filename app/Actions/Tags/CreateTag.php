@@ -36,7 +36,7 @@ final readonly class CreateTag implements CreatesTags
      * nest id are left out when they are not given, so an edited tag keeps its stored values;
      * a blank colour is cleared.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, slug: string, color?: string|null, legacy_nest_id?: int|null}
      */
     public static function attributes(array $input, ?Tag $tag = null): array
@@ -60,7 +60,7 @@ final readonly class CreateTag implements CreatesTags
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(array $input): Tag
     {

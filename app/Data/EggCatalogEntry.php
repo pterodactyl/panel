@@ -45,7 +45,6 @@ final readonly class EggCatalogEntry
         return $entries;
     }
 
-    /** @param JsonInputValue $value */
     public static function fromValue(mixed $value): ?self
     {
         if (! is_array($value) || ! is_string($value['id'] ?? null) || ! is_string($value['name'] ?? null)

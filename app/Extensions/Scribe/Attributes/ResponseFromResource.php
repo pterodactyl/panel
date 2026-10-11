@@ -20,10 +20,10 @@ class ResponseFromResource extends ResponseFromApiResource
      * @param  list<string>  $with  Relationships eager loaded onto the example model.
      * @param  string|null  $resourceKey  The `object` of the rendered items; null renders null.
      * @param  int|null  $paginate  Renders a list paginated by this many per page.
-     * @param  ApiPayload  $meta  Example values merged into the response envelope's
-     *                            top-level meta key, mirroring the controller's
-     *                            withMeta() output that rendering the resource alone
-     *                            cannot reproduce.
+     * @param  array<string, mixed>  $meta  Example values merged into the response envelope's
+     *                                      top-level meta key, mirroring the controller's
+     *                                      withMeta() output that rendering the resource alone
+     *                                      cannot reproduce.
      * @param  string[]  $include  Includes to render so the documented response carries
      *                             the relationships the endpoint can embed.
      * @param  string[]  $withCount  Relationship counts to load on the example model,

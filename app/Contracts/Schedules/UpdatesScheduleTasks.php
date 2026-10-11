@@ -16,7 +16,7 @@ interface UpdatesScheduleTasks
      *
      * Validates the input itself, so it can come straight from any caller.
      *
-     * @param  ActionInput  $input  action, payload, time_offset, and optionally sequence_id and continue_on_failure
+     * @param  array<string, mixed>  $input  action, payload, time_offset, and optionally sequence_id and continue_on_failure
      *
      * @throws Throwable
      */

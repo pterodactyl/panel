@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Base\LocaleRequest;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 class LocaleController extends Controller
@@ -32,7 +31,6 @@ class LocaleController extends Controller
         $translations = count($segments) === 2
             ? $this->loader->load($locale, $segments[1], $segments[0])
             : $this->loader->load($locale, $namespace);
-        JsonValueGuard::assertValue($translations);
         $response[$locale][$namespace] = $this->i18n($translations);
 
         $json = new JsonResponse($response, 200, [
@@ -59,8 +57,8 @@ class LocaleController extends Controller
      * into key structures that are supported by the front-end i18n
      * library, like "{{foo}}".
      *
-     * @param  array<array-key, JsonInputValue>  $data
-     * @return array<array-key, JsonInputValue>
+     * @param  array<mixed>  $data
+     * @return array<mixed>
      */
     protected function i18n(array $data): array
     {

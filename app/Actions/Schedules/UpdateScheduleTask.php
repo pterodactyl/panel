@@ -18,7 +18,7 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
      * Updates the task and, when its position changes, shifts the tasks between the
      * old and new positions to keep the sequence contiguous.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws HttpForbiddenException
      * @throws Throwable

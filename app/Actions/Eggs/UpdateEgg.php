@@ -17,7 +17,7 @@ final readonly class UpdateEgg implements UpdatesEggs
     /**
      * Update an egg with the fields it is created with.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function update(Egg $egg, array $input): Egg
     {

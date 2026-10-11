@@ -17,7 +17,7 @@ final readonly class NodeClient
         return new self(DaemonConnection::forNode($node));
     }
 
-    /** @return ApiPayload */
+    /** @return array<string, mixed> */
     public function systemInformation(?int $version = null): array
     {
         $response = $this->connection->request('GET', '/api/system', [

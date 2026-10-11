@@ -21,7 +21,7 @@ class ExternalUserController extends ApplicationApiController
     /**
      * Retrieve a specific user from the database using their external ID.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get user by external ID', 'Returns a single panel user by its external identifier.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, resourceKey: 'user')]

@@ -54,7 +54,7 @@ final readonly class CreateSshKey implements CreatesSshKeys
     /**
      * Validates SSH key input and returns the key it describes.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, public_key: string, fingerprint: string}
      */
     public static function attributes(array $input): array

@@ -46,7 +46,7 @@ class LocationController extends ApplicationApiController
     /**
      * Return all the locations currently registered on the Panel.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List locations', 'Returns a paginated list of all locations registered on the panel.')]
     #[QueryParam('per_page', 'integer', 'Number of locations to return per page, up to 100.', required: false, example: 50)]
@@ -70,7 +70,7 @@ class LocationController extends ApplicationApiController
     /**
      * Return a single location.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get location', 'Returns a single location by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "nodes" and "servers" when the key can read those resources.', required: false, example: 'nodes,servers', enum: ['nodes', 'servers', 'nodes,servers'])]
@@ -106,7 +106,7 @@ class LocationController extends ApplicationApiController
     /**
      * Update a location on the Panel and return the updated record to the user.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update location', 'Updates an existing location by internal numeric ID.')]
     #[ResponseFromTransformer(LocationTransformer::class, Location::class, resourceKey: 'location')]

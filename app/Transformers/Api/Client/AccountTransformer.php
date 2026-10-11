@@ -19,7 +19,7 @@ class AccountTransformer extends BaseClientTransformer
     /**
      * Return basic information about the currently logged-in user.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(User $model): array
     {

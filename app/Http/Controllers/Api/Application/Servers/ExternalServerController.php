@@ -21,7 +21,7 @@ class ExternalServerController extends ApplicationApiController
     /**
      * Retrieve a specific server from the database using its external ID.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server by external ID', 'Returns a single server by its external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]

@@ -15,20 +15,20 @@ use Pterodactyl\Models\Node;
  */
 interface SyncsTags
 {
-    /** @param list<ApiValue9> $values */
+    /** @param list<mixed> $values */
     public function syncEgg(Egg $egg, array $values): void;
 
     /**
      * Replace the games a node accepts. A tag the node holds as a reservation is refused.
      *
-     * @param  list<ApiValue9>  $values
+     * @param  list<mixed>  $values
      */
     public function syncNodeGames(Node $node, array $values): void;
 
     /**
      * Replace the reservations on a node. A tag the node accepts as a game is refused.
      *
-     * @param  list<ApiValue9>  $values
+     * @param  list<mixed>  $values
      */
     public function syncNodeDeployments(Node $node, array $values): void;
 }

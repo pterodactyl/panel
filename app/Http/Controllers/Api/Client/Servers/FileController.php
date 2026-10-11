@@ -114,7 +114,7 @@ class FileController extends ClientApiController
      * Returns a listing of files in a given directory.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DaemonConnectionException
      */
@@ -257,7 +257,7 @@ class FileController extends ClientApiController
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DaemonConnectionException
      */

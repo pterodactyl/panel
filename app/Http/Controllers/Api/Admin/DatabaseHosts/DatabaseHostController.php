@@ -85,7 +85,7 @@ class DatabaseHostController extends AdminApiController
     /**
      * List database hosts.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List database hosts', 'Returns a paginated list of database hosts.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -114,7 +114,7 @@ class DatabaseHostController extends AdminApiController
     /**
      * Show database host.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get database host', 'Returns a single database host by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports node and databases.', required: false, example: 'node')]
@@ -132,7 +132,7 @@ class DatabaseHostController extends AdminApiController
     /**
      * List databases associated with a database host.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List database host databases', 'Returns a paginated list of server databases assigned to a database host.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -199,7 +199,7 @@ class DatabaseHostController extends AdminApiController
     /**
      * Update database host.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update database host', 'Updates a database host after validating that the panel can connect to the supplied host details.')]
     #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]

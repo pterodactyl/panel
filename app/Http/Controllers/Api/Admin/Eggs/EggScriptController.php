@@ -35,7 +35,7 @@ class EggScriptController extends AdminApiController
     /**
      * Show egg install script.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get egg install script', 'Returns an egg with its install script block.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg install script returned.', resourceKey: 'egg')]
@@ -50,7 +50,7 @@ class EggScriptController extends AdminApiController
     /**
      * Update egg install script.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update egg install script', 'Updates the install script configuration for an egg.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg install script updated.', resourceKey: 'egg')]

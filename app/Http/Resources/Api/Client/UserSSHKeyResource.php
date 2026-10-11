@@ -20,7 +20,7 @@ class UserSSHKeyResource extends ClientResource
     /**
      * Return's a user's SSH key in an API response format.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {

@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 class UserTransformer extends BaseAdminTransformer
 {
@@ -28,11 +27,11 @@ class UserTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(User $user): array
     {
-        $payload = [
+        return [
             'id' => $user->id,
             'external_id' => $user->external_id,
             'uuid' => $user->uuid,
@@ -51,9 +50,6 @@ class UserTransformer extends BaseAdminTransformer
             'relationships' => [],
             ...$this->extensionFields($user),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     public function includeServers(User $user): Collection|NullResource

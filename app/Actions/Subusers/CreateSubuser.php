@@ -46,7 +46,7 @@ final readonly class CreateSubuser implements CreatesSubusers
      * Validates subuser input and returns the email address and the permissions it
      * describes, each permission one of the grantable keys.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @param  list<string>  $grantable
      * @return array{email: string, permissions: list<string>}
      */

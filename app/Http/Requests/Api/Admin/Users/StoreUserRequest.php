@@ -53,7 +53,7 @@ class StoreUserRequest extends AdminApiRequest
      * The validated input, with the language sent under `preferences` moved to the
      * action's `language` key.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

@@ -41,7 +41,7 @@ class TagTransformer extends BaseTransformer
      * Transform a tag into its application API representation. Built-in game tags
      * report the name and colour that the Panel assigns them.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Tag $model): array
     {

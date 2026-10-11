@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Extensions\League\Fractal\Serializers;
 
+use Illuminate\Support\Arr;
 use League\Fractal\Serializer\ArraySerializer;
 
 class PterodactylSerializer extends ArraySerializer
@@ -11,8 +12,8 @@ class PterodactylSerializer extends ArraySerializer
     /**
      * Serialize an item.
      *
-     * @param  ApiPayload9  $data
-     * @return array{object: string|null, attributes: ApiPayload9}
+     * @param  array<string, mixed>  $data
+     * @return array{object: string|null, attributes: array<string, mixed>}
      */
     public function item(?string $resourceKey, array $data): array
     {
@@ -25,8 +26,8 @@ class PterodactylSerializer extends ArraySerializer
     /**
      * Serialize a collection.
      *
-     * @param  list<ApiPayload9>  $data
-     * @return array{object: string, data: list<array{object: string|null, attributes: ApiPayload9}>}
+     * @param  list<array<string, mixed>>  $data
+     * @return array{object: string, data: list<array{object: string|null, attributes: array<string, mixed>}>}
      */
     public function collection(?string $resourceKey, array $data): array
     {
@@ -57,9 +58,9 @@ class PterodactylSerializer extends ArraySerializer
     /**
      * Merge the included resources with the parent resource being serialized.
      *
-     * @param  FractalTransformedPayload  $transformedData
-     * @param  ApiPayload9  $includedData
-     * @return FractalTransformedPayload
+     * @param  array<string, mixed>  $transformedData
+     * @param  array<string, mixed>  $includedData
+     * @return array<string, mixed>
      */
     public function mergeIncludes(array $transformedData, array $includedData): array
     {
@@ -67,7 +68,7 @@ class PterodactylSerializer extends ArraySerializer
             return $transformedData;
         }
 
-        $relationships = $transformedData['relationships'] ?? [];
+        $relationships = Arr::array($transformedData, 'relationships', []);
         foreach ($includedData as $key => $datum) {
             $relationships[$key] = $datum;
         }

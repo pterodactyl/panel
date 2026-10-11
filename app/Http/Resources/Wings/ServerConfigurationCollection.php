@@ -8,7 +8,6 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 class ServerConfigurationCollection extends ResourceCollection
@@ -27,7 +26,7 @@ class ServerConfigurationCollection extends ResourceCollection
      * relationships on the Server models before calling this function, otherwise you'll
      * have some serious performance issues from all the N+1 queries.
      *
-     * @return array<array-key, array{uuid: string, settings: array<string, JsonValue>, process_configuration: array<string, JsonValue>}>
+     * @return array<array-key, array{uuid: string, settings: array<string, mixed>, process_configuration: array<string, mixed>}>
      */
     public function toArray($request): array
     {
@@ -36,7 +35,6 @@ class ServerConfigurationCollection extends ResourceCollection
             throw_unless($server instanceof Server, UnexpectedValueException::class, 'Server configuration resources require Server models.');
 
             $processConfiguration = $this->egg->handle($server);
-            JsonValueGuard::assertPayload9($processConfiguration);
 
             $result[] = [
                 'uuid' => $server->uuid,

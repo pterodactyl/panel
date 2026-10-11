@@ -49,7 +49,7 @@ final readonly class CompleteBackup implements CompletesBackups
      * Validates a reported outcome and returns the outcome it describes. A size left out is
      * 0, and parts left out or null are null, so the upload's parts are listed from S3.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return CompletionAttributes
      */
     public static function attributes(array $input): array
@@ -74,7 +74,7 @@ final readonly class CompleteBackup implements CompletesBackups
      * Records the outcome Wings reported for a backup and, for S3 storage, closes the
      * multipart upload it belongs to.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
      * @throws ValidationException

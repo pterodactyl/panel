@@ -166,7 +166,7 @@ class User extends Authenticatable implements Identifiable
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toVueObject(): array
     {

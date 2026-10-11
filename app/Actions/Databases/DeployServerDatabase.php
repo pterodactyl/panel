@@ -44,7 +44,7 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
      * Validates deployment input and returns the database it describes, its name not yet
      * prefixed. A database given no connection limit gets none.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return DatabaseDeploymentData
      */
     public static function attributes(array $input): array
@@ -60,7 +60,7 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      * @throws TooManyDatabasesException

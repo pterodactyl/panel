@@ -51,7 +51,7 @@ final readonly class CreateNode implements CreatesNodes
      * upload size are left out when they are not given, so a new node takes the column defaults
      * and an updated one keeps its stored values; a blank description is cleared.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, location_id: int, fqdn: string, scheme: string, memory: int, memory_overallocate: int, disk: int, disk_overallocate: int, daemonListen: int, daemonSFTP: int, daemonBase: string, description?: string|null, public?: bool, behind_proxy?: bool, maintenance_mode?: bool, upload_size?: int}
      */
     public static function attributes(array $input): array
@@ -98,7 +98,7 @@ final readonly class CreateNode implements CreatesNodes
     /**
      * Create a node and mint its daemon token pair.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(array $input): Node
     {

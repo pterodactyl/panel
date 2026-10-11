@@ -22,7 +22,7 @@ class AllocationTransformer extends BaseClientTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Allocation $model): array
     {

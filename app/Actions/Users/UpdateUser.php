@@ -20,7 +20,7 @@ final readonly class UpdateUser implements UpdatesUsers
      * Update the user model instance and return the updated model. The hashed
      * password cast on the model takes care of hashing a new password.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

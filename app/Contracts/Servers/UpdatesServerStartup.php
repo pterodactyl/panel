@@ -18,7 +18,7 @@ interface UpdatesServerStartup
      * startup command, egg, Docker image and install script flag; at the admin level an
      * install script flag left out turns it off.
      *
-     * @param  ActionInput  $input  any of environment and, at the admin level, startup, egg_id, docker_image and skip_scripts
+     * @param  array<string, mixed>  $input  any of environment and, at the admin level, startup, egg_id, docker_image and skip_scripts
      *
      * @throws Throwable
      */

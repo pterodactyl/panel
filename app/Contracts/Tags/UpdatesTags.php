@@ -15,7 +15,7 @@ interface UpdatesTags
      * required ones included; the colour and legacy nest id keep their stored values when they
      * are left out.
      *
-     * @param  ActionInput  $input  the fields a tag is created with
+     * @param  array<string, mixed>  $input  the fields a tag is created with
      *
      * @throws DisplayException
      */

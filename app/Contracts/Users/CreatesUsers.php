@@ -19,7 +19,7 @@ interface CreatesUsers
      * The input is validated here, so it can come straight from any caller; extension
      * field values go under `extensions` as ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  email, username, name_first, name_last, and optionally external_id, password, root_admin and language
+     * @param  array<string, mixed>  $input  email, username, name_first, name_last, and optionally external_id, password, root_admin and language
      *
      * @throws Throwable
      */

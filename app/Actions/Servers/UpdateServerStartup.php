@@ -19,7 +19,7 @@ use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 /**
- * @phpstan-type StartupAttributes array{environment: array<string, ApiScalar>, egg_id?: int, startup?: string, docker_image?: string, skip_scripts?: bool}
+ * @phpstan-type StartupAttributes array{environment: array<string, bool|float|int|string|null>, egg_id?: int, startup?: string, docker_image?: string, skip_scripts?: bool}
  */
 final readonly class UpdateServerStartup implements UpdatesServerStartup
 {
@@ -60,7 +60,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
      * Only the fields given are validated, and fields above the user level are ignored. The
      * environment keeps each value as it was given, for the egg's variable rules to check.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return StartupAttributes
      */
     public static function attributes(array $input, int $userLevel = User::USER_LEVEL_USER): array
@@ -100,7 +100,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

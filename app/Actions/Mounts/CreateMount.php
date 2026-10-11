@@ -63,7 +63,7 @@ final readonly class CreateMount implements CreatesMounts
      * stored as given. The description and flags are left out when they are not given, so an
      * updated mount keeps its stored values; a blank description is cleared.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, source: string, target: string, description?: string|null, read_only?: bool, user_mountable?: bool}
      */
     public static function attributes(array $input, ?Mount $mount = null): array
@@ -94,7 +94,7 @@ final readonly class CreateMount implements CreatesMounts
     /**
      * Create a new mount, assigning it a fresh UUID.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(array $input): Mount
     {

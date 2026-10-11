@@ -12,7 +12,7 @@ interface AttachesEggsToMounts
      * Attach eggs to a mount, keeping any eggs already attached. The ids are validated here,
      * so they can come straight from any caller; errors are reported under `eggs` and `eggs.N`.
      *
-     * @param  list<ApiValue9>  $eggIds  ids of existing eggs, as integers or numeric strings
+     * @param  list<mixed>  $eggIds  ids of existing eggs, as integers or numeric strings
      */
     public function attach(Mount $mount, array $eggIds): void;
 }

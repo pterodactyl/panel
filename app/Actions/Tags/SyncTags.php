@@ -48,7 +48,7 @@ final readonly class SyncTags implements SyncsTags
      * Validates tag values under `tags` and returns them as strings for the resolver, an
      * integer id becoming the numeric string the panel sends.
      *
-     * @param  list<ApiValue9>  $values
+     * @param  list<mixed>  $values
      * @return list<string>
      */
     public static function values(array $values): array
@@ -58,19 +58,19 @@ final readonly class SyncTags implements SyncsTags
         return array_map(fn (int|string $key): string => $input->string('tags.'.$key)->toString(), array_keys($input->array('tags')));
     }
 
-    /** @param list<ApiValue9> $values */
+    /** @param list<mixed> $values */
     public function syncEgg(Egg $egg, array $values): void
     {
         $this->sync($egg, $egg->tags(), self::values($values));
     }
 
-    /** @param list<ApiValue9> $values */
+    /** @param list<mixed> $values */
     public function syncNodeGames(Node $node, array $values): void
     {
         $this->sync($node, $node->eggTags(), self::values($values), $node->deploymentTags());
     }
 
-    /** @param list<ApiValue9> $values */
+    /** @param list<mixed> $values */
     public function syncNodeDeployments(Node $node, array $values): void
     {
         $this->sync($node, $node->deploymentTags(), self::values($values), $node->eggTags());

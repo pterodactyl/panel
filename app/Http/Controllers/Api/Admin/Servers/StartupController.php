@@ -24,7 +24,7 @@ class StartupController extends AdminApiController
     /**
      * Update server startup configuration.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update server startup', 'Updates the egg, Docker image, startup command, environment, and install-script behavior.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server startup updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]

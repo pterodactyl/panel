@@ -38,7 +38,7 @@ class NodeDeploymentController extends ApplicationApiController
      * to this endpoint and get back a list of all Nodes satisfying the requirements.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws NoViableNodeException
      */

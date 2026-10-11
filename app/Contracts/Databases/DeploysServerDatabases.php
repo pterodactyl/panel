@@ -20,7 +20,7 @@ interface DeploysServerDatabases
      * any host when random hosts are allowed. The input is validated here, so it can come
      * straight from any caller.
      *
-     * @param  ActionInput  $input  database and remote, and optionally database_host_id and max_connections
+     * @param  array<string, mixed>  $input  database and remote, and optionally database_host_id and max_connections
      *
      * @throws Throwable
      * @throws TooManyDatabasesException

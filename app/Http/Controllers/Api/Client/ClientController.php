@@ -51,7 +51,7 @@ class ClientController extends ClientApiController
      * Return all the servers available to the client making the API
      * request, including servers the user has access to as a subuser.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List client servers', 'Returns a paginated list of servers the authenticated user can access as an owner, subuser, or administrator.')]
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]

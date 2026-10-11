@@ -54,7 +54,7 @@ final class InitiateBackup implements InitiatesBackups
      * Validates backup input and returns the backup it describes. A name left out or blank
      * is null, and empty entries are dropped from the ignored files.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string|null, is_locked: bool, ignored_files: list<string>}
      */
     public static function attributes(array $input): array

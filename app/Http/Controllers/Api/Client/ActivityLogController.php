@@ -25,7 +25,7 @@ class ActivityLogController extends ClientApiController
     /**
      * Returns a paginated set of the user's activity logs.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List account activity', 'Returns a paginated list of activity log entries for the authenticated user account.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]

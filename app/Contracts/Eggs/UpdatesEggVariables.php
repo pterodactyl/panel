@@ -15,7 +15,7 @@ interface UpdatesEggVariables
      * when options lists user_viewable or user_editable. The variable keeps its own
      * environment variable name without it counting as taken.
      *
-     * @param  ActionInput  $input  the fields a variable is created with
+     * @param  array<string, mixed>  $input  the fields a variable is created with
      */
     public function update(EggVariable $variable, array $input): EggVariable;
 }

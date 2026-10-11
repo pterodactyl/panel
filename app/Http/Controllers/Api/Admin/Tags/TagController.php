@@ -50,7 +50,7 @@ class TagController extends AdminApiController
     /**
      * List tags.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List tags', 'Returns a paginated list of tags.')]
     #[QueryParam('filter[name]', 'string', 'Filter tags by name.', required: false, example: 'Minecraft')]
@@ -75,7 +75,7 @@ class TagController extends AdminApiController
     /**
      * Show tag.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get tag', 'Returns a single tag by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs" and "nodes".', required: false, example: 'eggs', enum: ['eggs', 'nodes', 'eggs,nodes'])]
@@ -117,7 +117,7 @@ class TagController extends AdminApiController
      * Update tag.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */
@@ -165,7 +165,7 @@ class TagController extends AdminApiController
     /**
      * Replace the full set of tags on an egg.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Sync egg tags', 'Replaces the tags applied to an egg. Values may be tag IDs or new tag names.')]
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tags applied to the egg.', collection: true, resourceKey: 'tag')]
@@ -189,7 +189,7 @@ class TagController extends AdminApiController
      * reservations are managed separately by syncNodeDeploymentTags(), and syncing
      * one kind never disturbs the other.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Sync node game tags', 'Replaces the games a node accepts. A node with no game tags accepts any egg.')]
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Games the node accepts.', collection: true, resourceKey: 'tag')]
@@ -212,7 +212,7 @@ class TagController extends AdminApiController
      * Replace the reservations on a node (the 'deployment'-kind attachments). A
      * deploy only lands on this node when it declares exactly these tags.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Sync node deployment tags', 'Replaces the reservations on a node. A deploy must declare exactly these tags to land here.')]
     #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Reservations on the node.', collection: true, resourceKey: 'tag')]

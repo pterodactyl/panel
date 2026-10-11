@@ -17,7 +17,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Tag;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('description', nullable: true)]
 #[ResponseField('docker_images', schema: ['type' => 'object', 'additionalProperties' => ['type' => 'string'], 'example' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23']])]
@@ -61,7 +60,7 @@ class EggTransformer extends BaseTransformer
      * Transform an Egg model into a representation that can be consumed by
      * the application api.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws JsonException
      */
@@ -72,7 +71,7 @@ class EggTransformer extends BaseTransformer
             $files = new JsonEmptyObject;
         }
 
-        $payload = [
+        return [
             'id' => $model->id,
             'uuid' => $model->uuid,
             'name' => $model->name,
@@ -103,9 +102,6 @@ class EggTransformer extends BaseTransformer
             $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
             $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     /**

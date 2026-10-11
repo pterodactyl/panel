@@ -47,7 +47,7 @@ class AllocationController extends AdminApiController
     /**
      * List allocations.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List node allocations', 'Returns a paginated list of allocations for a node.')]
     #[QueryParam('filter[ip]', 'string', 'Filter allocations by exact IP address.', required: false, example: '192.168.1.1')]
@@ -123,7 +123,7 @@ class AllocationController extends AdminApiController
     /**
      * Update allocation.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update node allocation', 'Updates the alias for a single allocation on a node.')]
     #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocation updated.', resourceKey: 'allocation')]

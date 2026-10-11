@@ -15,7 +15,7 @@ final readonly class UpdateLocation implements UpdatesLocations
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function update(Location $location, array $input): Location
     {

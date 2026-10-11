@@ -47,7 +47,7 @@ class NodeController extends AdminApiController
     /**
      * List nodes.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List nodes', 'Returns a paginated list of Wings nodes.')]
     #[QueryParam('filter[uuid]', 'string', 'Filter nodes by UUID.', required: false, example: '1b19cf3f-2f89-4f88-a81e-321e7fe326bc')]
@@ -73,7 +73,7 @@ class NodeController extends AdminApiController
     /**
      * Show node.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get node', 'Returns a single Wings node by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers'])]
@@ -115,7 +115,7 @@ class NodeController extends AdminApiController
     /**
      * Update node.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update node', 'Updates a Wings node and optionally rotates its daemon secret.')]
     #[BodyParam('reset_secret', 'boolean', 'Whether to rotate the daemon secret.', required: false, example: false)]

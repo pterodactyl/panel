@@ -21,7 +21,7 @@ class ExternalController extends AdminApiController
     /**
      * Show user by external identifier.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get user by external ID', 'Returns a single panel user by external identifier.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'User returned.', resourceKey: 'user')]

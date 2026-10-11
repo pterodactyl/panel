@@ -12,7 +12,7 @@ class FileObjectTransformer extends BaseClientTransformer
      * Transform a file object response from the daemon into a standardized response.
      *
      * @param  DaemonFileObject  $item
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(array $item): array
     {

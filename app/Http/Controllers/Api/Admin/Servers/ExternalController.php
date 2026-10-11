@@ -21,7 +21,7 @@ class ExternalController extends AdminApiController
     /**
      * Show server by external identifier.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server by external ID', 'Returns a single server by external identifier.')]
     #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server returned.', factoryStates: ['withRelationships'], resourceKey: 'server')]

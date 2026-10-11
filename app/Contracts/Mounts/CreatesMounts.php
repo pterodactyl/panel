@@ -13,7 +13,7 @@ interface CreatesMounts
      * come straight from any caller; extension field values go under `extensions` as
      * ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  name, source and target, and optionally description, read_only and user_mountable
+     * @param  array<string, mixed>  $input  name, source and target, and optionally description, read_only and user_mountable
      */
     public function create(array $input): Mount;
 }

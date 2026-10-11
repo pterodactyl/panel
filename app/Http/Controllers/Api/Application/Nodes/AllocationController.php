@@ -59,7 +59,7 @@ class AllocationController extends ApplicationApiController
     /**
      * Return all the allocations that exist for a given node.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List node allocations', 'Returns a paginated list of allocations belonging to a node.')]
     #[QueryParam('per_page', 'integer', 'Number of allocations to return per page, up to 100.', required: false, example: 50)]

@@ -61,7 +61,7 @@ class BackupController extends ClientApiController
      * result set.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server backups', 'Returns a paginated list of backups for the server.')]
     #[QueryParam('page', 'integer', 'The page number to return.', required: false, example: 1)]
@@ -81,7 +81,7 @@ class BackupController extends ClientApiController
      * Starts the backup process for a server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws InvalidTransformation
      * @throws NoTransformerSpecified
@@ -114,7 +114,7 @@ class BackupController extends ClientApiController
      * Toggles the lock status of a given backup for a server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws Throwable
      */
@@ -133,7 +133,7 @@ class BackupController extends ClientApiController
      * Returns information about a single backup.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server backup', 'Returns information about one server backup.')]
     #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backup returned.', resourceKey: 'backup')]

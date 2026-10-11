@@ -48,7 +48,7 @@ class ScheduleController extends ClientApiController
     /**
      * Returns all the schedules belonging to a given server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server schedules', 'Returns all schedules configured for the server, including their tasks.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports tasks.', required: false, example: 'tasks')]
@@ -66,7 +66,7 @@ class ScheduleController extends ClientApiController
      * Store a new schedule for a server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */
@@ -87,7 +87,7 @@ class ScheduleController extends ClientApiController
     /**
      * Returns a specific schedule for the server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get server schedule', 'Returns one schedule configured for the server, including its tasks.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports tasks.', required: false, example: 'tasks')]
@@ -107,7 +107,7 @@ class ScheduleController extends ClientApiController
      * Updates a given schedule with the new data provided.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */

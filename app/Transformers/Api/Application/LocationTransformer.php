@@ -9,7 +9,6 @@ use League\Fractal\Resource\NullResource;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
 
 class LocationTransformer extends BaseTransformer
 {
@@ -36,11 +35,11 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed location array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Location $location): array
     {
-        $payload = [
+        return [
             'id' => $location->id,
             'short' => $location->short,
             'long' => $location->long,
@@ -49,9 +48,6 @@ class LocationTransformer extends BaseTransformer
             $location->getCreatedAtColumn() => $this->formatTimestamp($location->created_at),
             ...$this->extensionFields($location),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     /**

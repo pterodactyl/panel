@@ -20,7 +20,7 @@ final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
     /**
      * Update a database host and persist to the database.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */

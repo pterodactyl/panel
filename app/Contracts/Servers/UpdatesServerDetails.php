@@ -16,7 +16,7 @@ interface UpdatesServerDetails
      * the previous one. Extension field values go under `extensions` as
      * ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  name and owner_id, and optionally external_id and description
+     * @param  array<string, mixed>  $input  name and owner_id, and optionally external_id and description
      *
      * @throws Throwable
      */

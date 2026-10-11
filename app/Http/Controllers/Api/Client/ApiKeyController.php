@@ -36,7 +36,7 @@ class ApiKeyController extends ClientApiController
     /**
      * Returns all the API keys that exist for the given client.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List account API keys', 'Returns all client API keys owned by the authenticated user.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API keys returned.', collection: true, factoryStates: ['withAllowedIps'], resourceKey: 'api_key')]
@@ -51,7 +51,7 @@ class ApiKeyController extends ClientApiController
      * Store a new API key for a user's account.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */

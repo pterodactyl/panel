@@ -11,7 +11,7 @@ interface CreatesTags
     /**
      * Create a new tag. The input is validated here, so it can come straight from any caller.
      *
-     * @param  ActionInput  $input  name and slug, and optionally color and legacy_nest_id
+     * @param  array<string, mixed>  $input  name and slug, and optionally color and legacy_nest_id
      */
     public function create(array $input): Tag;
 }

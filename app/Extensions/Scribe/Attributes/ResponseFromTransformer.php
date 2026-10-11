@@ -14,10 +14,10 @@ class ResponseFromTransformer extends BaseResponseFromTransformer
      * @param  list<string>  $factoryStates  Factory states applied to the example model.
      * @param  list<string>  $with  Relationships eager loaded onto the example model.
      * @param  array{}|array{class-string, int}  $paginate  Format: [adapter, numberPerPage].
-     * @param  ApiPayload  $meta  Example values merged into the response envelope's
-     *                            top-level meta key, mirroring the controller's
-     *                            Fractal ->addMeta() output that transformer
-     *                            execution alone cannot reproduce.
+     * @param  array<string, mixed>  $meta  Example values merged into the response envelope's
+     *                                      top-level meta key, mirroring the controller's
+     *                                      Fractal ->addMeta() output that transformer
+     *                                      execution alone cannot reproduce.
      * @param  string[]  $include  Fractal includes to execute so the documented response
      *                             carries the relationships the endpoint can embed.
      * @param  string[]  $withCount  Relationship counts to load on the example model,

@@ -36,7 +36,7 @@ class ServerDatabaseTransformer extends BaseTransformer
     /**
      * Transform a database model in a representation for the application API.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Database $model): array
     {

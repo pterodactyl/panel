@@ -31,7 +31,7 @@ class ActivityController extends AdminApiController
     /**
      * List activity.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List activity', 'Returns a paginated list of administrative activity. Only events in the "admin" namespace are returned; customer activity against a server or account is excluded.')]
     #[QueryParam('filter[event]', 'string', 'Filter activity by event name.', required: false, example: 'admin:server.build')]

@@ -14,7 +14,7 @@ class SubuserTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Subuser $subuser): array
     {

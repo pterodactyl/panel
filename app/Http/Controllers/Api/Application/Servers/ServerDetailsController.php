@@ -38,7 +38,7 @@ class ServerDetailsController extends ApplicationApiController
      * Update the details for a specific server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */
@@ -61,7 +61,7 @@ class ServerDetailsController extends ApplicationApiController
      * Update the build details for a specific server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DisplayException
      */

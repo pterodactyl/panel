@@ -6,8 +6,6 @@ namespace Pterodactyl\Transformers\Concerns;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\ActivityLog;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Support\JsonValueTree;
 use stdClass;
 
 trait FormatsActivityLogs
@@ -45,22 +43,21 @@ trait FormatsActivityLogs
         }
 
         $properties = collect($values)
-            ->mapWithKeys(function (array|bool|float|int|string|null $value, string $key) use ($canViewIp): array {
+            ->mapWithKeys(function (mixed $value, string $key) use ($canViewIp): array {
                 if ($key === 'ip' && ! $canViewIp) {
                     return [$key => '[hidden]'];
                 }
 
-                $arraySize = JsonValueTree::from($value)->arraySize();
-                if ($arraySize === null) {
-                    // Perform some directory normalization at this point.
-                    if ($key === 'directory') {
-                        $value = str_replace('//', '/', '/'.mb_trim(JsonValueGuard::string($value), '/').'/');
-                    }
-
-                    return [$key => $value];
+                if (is_array($value)) {
+                    return [$key => $value, "{$key}_count" => count($value)];
                 }
 
-                return [$key => $value, "{$key}_count" => $arraySize];
+                // Perform some directory normalization at this point.
+                if ($key === 'directory' && is_string($value)) {
+                    $value = str_replace('//', '/', '/'.mb_trim($value, '/').'/');
+                }
+
+                return [$key => $value];
             });
 
         $keys = $properties->keys()->filter(fn (int|string $key): bool => Str::endsWith((string) $key, '_count'))->values();
@@ -71,7 +68,6 @@ trait FormatsActivityLogs
             }
         }
 
-        // SAFETY: JSON object properties are string-keyed, and object casting preserves those keys for response encoding.
         return (object) $properties->all();
     }
 
@@ -92,7 +88,7 @@ trait FormatsActivityLogs
         }
 
         $str = trans('activity.'.str_replace(':', '.', $model->event));
-        preg_match_all('/:(?<key>[\w.-]+\w)(?:[^\w:]?|$)/', JsonValueGuard::string($str), $matches);
+        preg_match_all('/:(?<key>[\w.-]+\w)(?:[^\w:]?|$)/', is_string($str) ? $str : '', $matches);
 
         $exclude = array_merge($matches['key'], ['ip', 'useragent', 'using_sftp']);
         foreach (array_keys($properties) as $key) {

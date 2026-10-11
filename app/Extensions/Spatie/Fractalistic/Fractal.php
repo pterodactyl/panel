@@ -22,7 +22,7 @@ class Fractal extends SpatieFractal
     /**
      * Serialize a non-null API resource.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws InvalidTransformation
      * @throws NoTransformerSpecified

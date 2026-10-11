@@ -18,7 +18,7 @@ interface CreatesAllocations
      * come straight from any caller. A port that cannot be read, falls outside 1025-65535 or
      * opens a range of more than 1000 ports is refused with the exceptions below.
      *
-     * @param  ActionInput  $input  allocation_ip (an IP address, CIDR range or hostname), allocation_ports (port numbers, or ranges such as "25565-25570") and optionally allocation_alias
+     * @param  array<string, mixed>  $input  allocation_ip (an IP address, CIDR range or hostname), allocation_ports (port numbers, or ranges such as "25565-25570") and optionally allocation_alias
      *
      * @throws DisplayException
      * @throws CidrOutOfRangeException

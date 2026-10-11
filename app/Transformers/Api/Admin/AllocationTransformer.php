@@ -30,7 +30,7 @@ class AllocationTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Allocation $allocation): array
     {

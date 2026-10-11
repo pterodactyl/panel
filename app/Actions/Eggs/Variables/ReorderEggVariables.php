@@ -29,7 +29,7 @@ final readonly class ReorderEggVariables implements ReordersEggVariables
     /**
      * Validates variable ids under `order` and returns them as integers.
      *
-     * @param  list<ApiValue9>  $order
+     * @param  list<mixed>  $order
      * @return list<int>
      */
     public static function order(array $order): array
@@ -39,7 +39,7 @@ final readonly class ReorderEggVariables implements ReordersEggVariables
         return array_map(fn (int|string $key): int => $input->integer('order.'.$key), array_keys($input->array('order')));
     }
 
-    /** @param list<ApiValue9> $order */
+    /** @param list<mixed> $order */
     public function reorder(Egg $egg, array $order): void
     {
         $order = self::order($order);

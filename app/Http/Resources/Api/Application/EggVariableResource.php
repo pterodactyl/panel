@@ -7,7 +7,6 @@ namespace Pterodactyl\Http\Resources\Api\Application;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * @extends ApplicationResource<EggVariable>
@@ -20,13 +19,10 @@ class EggVariableResource extends ApplicationResource
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
-        $attributes = $this->resource->attributesToArray();
-        JsonValueGuard::assertPayload($attributes);
-
-        return $attributes;
+        return $this->resource->attributesToArray();
     }
 }

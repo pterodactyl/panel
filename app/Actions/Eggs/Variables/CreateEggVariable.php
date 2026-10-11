@@ -45,7 +45,7 @@ final class CreateEggVariable implements CreatesEggVariables
      * The options become the user_viewable and user_editable flags, each set only when it is
      * listed; any other option is ignored. A variable given no description gets a blank one.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}
      */
     public static function attributes(array $input, Egg $egg, ?EggVariable $ignore = null): array
@@ -68,7 +68,7 @@ final class CreateEggVariable implements CreatesEggVariables
     /**
      * Create a new variable for a given Egg.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(Egg $egg, array $input): EggVariable
     {

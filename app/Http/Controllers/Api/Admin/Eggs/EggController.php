@@ -46,7 +46,7 @@ class EggController extends AdminApiController
     /**
      * List eggs.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List eggs', 'Returns a paginated list of egg definitions.')]
     #[QueryParam('filter[name]', 'string', 'Filter eggs by name.', required: false, example: 'Paper')]
@@ -70,7 +70,7 @@ class EggController extends AdminApiController
     /**
      * Show egg.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get egg', 'Returns a single egg definition by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include: variables, tags, servers.', required: false, example: 'variables,tags', enum: ['variables', 'tags', 'servers', 'variables,tags', 'variables,servers', 'tags,servers', 'variables,tags,servers'])]
@@ -108,7 +108,7 @@ class EggController extends AdminApiController
     /**
      * Update egg.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update egg', 'Updates an egg definition.')]
     #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg updated.', resourceKey: 'egg')]

@@ -71,7 +71,7 @@ final readonly class CreateAllocations implements CreatesAllocations
      * Validates allocation input and returns the address, ports and alias it describes. Each
      * port comes back as written, for create() to read as a single port or a range.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{ip: string, ports: list<string>, ip_alias: string|null}
      */
     public static function attributes(array $input): array
@@ -91,7 +91,7 @@ final readonly class CreateAllocations implements CreatesAllocations
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
      * @throws CidrOutOfRangeException

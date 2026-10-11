@@ -51,7 +51,7 @@ class StoreUserRequest extends ApplicationApiRequest
      * The validated input under the action's field names: first_name and last_name are
      * its name_first and name_last.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

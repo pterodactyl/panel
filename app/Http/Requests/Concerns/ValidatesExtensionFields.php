@@ -40,7 +40,7 @@ trait ValidatesExtensionFields
     /**
      * The validated input, with the validated extension field values under `extensions`.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

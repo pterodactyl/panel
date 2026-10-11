@@ -32,7 +32,7 @@ class ServerDatabaseResource extends AdminResource
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {

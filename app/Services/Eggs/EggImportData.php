@@ -44,7 +44,6 @@ final readonly class EggImportData
         return self::fromValue(JsonValueGuard::decodeArray8($contents));
     }
 
-    /** @param JsonInputValue $value */
     private static function fromValue(mixed $value): self
     {
         $root = self::object($value, 'egg');
@@ -83,7 +82,7 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  array<string, JsonInputValue>  $root
+     * @param  array<string, mixed>  $root
      * @return array<string, string>
      */
     private static function dockerImages(array $root, string $version): array
@@ -109,7 +108,6 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return list<EggImportVariable>
      */
     private static function variables(mixed $value): array
@@ -136,7 +134,6 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return list<string>
      */
     private static function fileDenylist(mixed $value): array
@@ -151,8 +148,7 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  JsonInputValue  $value
-     * @return array<string, JsonInputValue>
+     * @return array<string, mixed>
      */
     private static function object(mixed $value, string $field): array
     {
@@ -172,7 +168,6 @@ final readonly class EggImportData
         return $object;
     }
 
-    /** @param JsonInputValue $value */
     private static function string(mixed $value, string $field): string
     {
         if (! is_string($value)) {
@@ -182,13 +177,11 @@ final readonly class EggImportData
         return $value;
     }
 
-    /** @param JsonInputValue $value */
     private static function nullableString(mixed $value, string $field): ?string
     {
         return $value === null ? null : self::string($value, $field);
     }
 
-    /** @param JsonInputValue $value */
     private static function boolean(mixed $value, string $field): bool
     {
         if (! is_bool($value)) {
@@ -199,7 +192,6 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return list<string>|null
      */
     private static function nullableStringList(mixed $value, string $field): ?array
@@ -208,7 +200,6 @@ final readonly class EggImportData
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return list<string>
      */
     private static function stringList(mixed $value, string $field): array

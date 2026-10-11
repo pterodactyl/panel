@@ -24,7 +24,7 @@ class AttachNodesController extends AdminApiController
     /**
      * Attach nodes to mount.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Attach nodes to mount', 'Attaches one or more nodes to a mount definition without removing existing node attachments.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]

@@ -15,7 +15,7 @@ interface CreatesEggVariables
      * variables and not one the panel reserves, and the rules must be a valid rule set.
      * Listing user_viewable or user_editable in options lets users see or edit the variable.
      *
-     * @param  ActionInput  $input  name, env_variable, rules and default_value, and optionally description and options
+     * @param  array<string, mixed>  $input  name, env_variable, rules and default_value, and optionally description and options
      */
     public function create(Egg $egg, array $input): EggVariable;
 }

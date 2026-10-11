@@ -35,7 +35,7 @@ class TagTransformer extends BaseAdminTransformer
      * label and colour owned by the EggSpecificTags enum rather than whatever is
      * stored, so a client never has to know that distinction to render a tag.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Tag $model): array
     {

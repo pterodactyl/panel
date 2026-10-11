@@ -43,7 +43,7 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
      * Validates task input for a schedule and returns the model attributes it describes.
      * A backup task is refused while the server cannot hold any backups.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{action: string, payload: string, time_offset: int, continue_on_failure: bool, sequence_id: int|null}
      *
      * @throws HttpForbiddenException
@@ -68,7 +68,7 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
      * Appends a task to the schedule, or slots it into the requested position by
      * shifting the tasks that follow it.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws HttpForbiddenException
      * @throws ServiceLimitExceededException

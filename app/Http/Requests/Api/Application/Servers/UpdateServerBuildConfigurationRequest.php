@@ -59,7 +59,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * and the feature limits move to its top level. A limit sent both under limits and flat
      * is taken from limits, read with Laravel's typed accessors.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

@@ -111,7 +111,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * includes go in `relationships`: emitting it empty keeps its place, otherwise it is
      * appended last when something is included.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
@@ -248,7 +248,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * @template TData of ApiResourceData
      *
      * @param  TData  $data
-     * @param  class-string<ApiResource<TData>>|Closure(TData): ApiPayload  $resource
+     * @param  class-string<ApiResource<TData>>|Closure(TData): array<string, mixed>  $resource
      * @return ApiResource<TData>
      */
     protected function item(Model|ServerState|array $data, string|Closure $resource, ?string $resourceKey = null): self
@@ -264,7 +264,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * @template TData of ApiResourceData
      *
      * @param  array<array-key, TData>|Collection<covariant array-key, covariant TData>  $data
-     * @param  class-string<ApiResource<TData>>|Closure(TData): ApiPayload  $resource
+     * @param  class-string<ApiResource<TData>>|Closure(TData): array<string, mixed>  $resource
      */
     protected function items(array|Collection $data, string|Closure $resource, ?string $resourceKey = null): ApiResourceCollection
     {

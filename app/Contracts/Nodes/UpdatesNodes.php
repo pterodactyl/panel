@@ -19,7 +19,7 @@ interface UpdatesNodes
      * values when they are left out. Extension field values go under `extensions` as
      * ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  the fields a node is created with
+     * @param  array<string, mixed>  $input  the fields a node is created with
      *
      * @throws Throwable
      */

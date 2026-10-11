@@ -20,7 +20,7 @@ class DeploymentObject
      * Individual ports and port ranges exactly as they arrived from the request;
      * AllocationSelectionService discards the entries it cannot use.
      *
-     * @var list<ApiScalar>
+     * @var list<bool|float|int|string|null>
      */
     private array $ports = [];
 
@@ -63,7 +63,7 @@ class DeploymentObject
     }
 
     /**
-     * @return list<ApiScalar>
+     * @return list<bool|float|int|string|null>
      */
     public function getPorts(): array
     {
@@ -71,7 +71,7 @@ class DeploymentObject
     }
 
     /**
-     * @param  list<ApiScalar>  $ports
+     * @param  list<bool|float|int|string|null>  $ports
      */
     public function setPorts(array $ports): self
     {

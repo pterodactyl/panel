@@ -20,7 +20,7 @@ interface CreatesDatabases
      * "s{server_id}_" prefix (see DatabaseName::generateUnique()); a database given no
      * max_connections takes the column default.
      *
-     * @param  ActionInput  $input  database, remote and database_host_id, and optionally max_connections
+     * @param  array<string, mixed>  $input  database, remote and database_host_id, and optionally max_connections
      *
      * @throws Throwable
      * @throws TooManyDatabasesException

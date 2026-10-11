@@ -34,7 +34,7 @@ class DatabaseResource extends ClientResource
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {

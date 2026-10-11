@@ -64,7 +64,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function renameFiles(?string $root, array $files): Response
     {
         return $this->connection->request('PUT', "/api/servers/{$this->uuid}/files/rename", [
@@ -79,7 +79,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function deleteFiles(?string $root, array $files): Response
     {
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/delete", [
@@ -88,7 +88,7 @@ final readonly class FilesClient
     }
 
     /**
-     * @param  array<array-key, ApiValue9>  $files
+     * @param  array<mixed>  $files
      * @return DaemonFileObject
      */
     public function compressFiles(?string $root, array $files): array
@@ -112,7 +112,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function chmodFiles(?string $root, array $files): Response
     {
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/chmod", [
@@ -120,7 +120,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $params */
+    /** @param array<mixed> $params */
     public function pull(string $url, ?string $directory, array $params = []): Response
     {
         $input = Fluent::make($params);

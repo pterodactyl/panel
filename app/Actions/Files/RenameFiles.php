@@ -11,7 +11,7 @@ use Pterodactyl\Models\Server;
 
 final readonly class RenameFiles implements RenamesFiles
 {
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function rename(Server $server, ?string $root, array $files): void
     {
         Daemon::server($server)->files()->renameFiles($root, $files);

@@ -25,7 +25,7 @@ class ServerBackupController extends AdminApiController
     /**
      * List server backups.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server backups', 'Returns a paginated list of backups assigned to a server.')]
     #[QueryParam('filter[uuid]', 'string', 'Filter backups by UUID.', example: '1b19cf3f-2f89-4f88-a81e-321e7fe326bc')]

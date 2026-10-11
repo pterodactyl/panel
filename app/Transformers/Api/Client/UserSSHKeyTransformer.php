@@ -16,7 +16,7 @@ class UserSSHKeyTransformer extends BaseClientTransformer
     /**
      * Return's a user's SSH key in an API response format.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(UserSSHKey $model): array
     {

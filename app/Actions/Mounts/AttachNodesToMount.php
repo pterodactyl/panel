@@ -31,7 +31,7 @@ final readonly class AttachNodesToMount implements AttachesNodesToMounts
     /**
      * Attach nodes to a mount, keeping any nodes already attached.
      *
-     * @param  list<ApiValue9>  $nodeIds
+     * @param  list<mixed>  $nodeIds
      */
     public function attach(Mount $mount, array $nodeIds): void
     {
@@ -43,7 +43,7 @@ final readonly class AttachNodesToMount implements AttachesNodesToMounts
      * node; they are all looked up in one query, and a missing one fails `nodes.N` as an
      * exists rule would.
      *
-     * @param  list<ApiValue9>  $nodeIds
+     * @param  list<mixed>  $nodeIds
      * @return list<int>
      */
     private function nodeIds(array $nodeIds): array

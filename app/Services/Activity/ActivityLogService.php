@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\ActivityLogSubject;
-use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 class ActivityLogService
@@ -107,10 +105,10 @@ class ActivityLogService
     /**
      * Sets a custom property on the activity log instance.
      *
-     * @param  string|array<string, JsonValue>  $key
-     * @param  JsonInputValue  $value  Ignored when an array of properties is provided.
+     * @param  string|array<string, mixed>  $key
+     * @param  mixed  $value  Ignored when an array of properties is provided.
      */
-    public function property(array|string $key, array|bool|float|int|string|JsonEmptyObject|null $value = null): self
+    public function property(array|string $key, mixed $value = null): self
     {
         $activity = $this->getActivity();
         $properties = $activity->properties;
@@ -119,7 +117,6 @@ class ActivityLogService
                 $properties->put($name, $property);
             }
         } else {
-            JsonValueGuard::assertValue($value);
             $properties->put($key, $value);
         }
 

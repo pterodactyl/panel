@@ -18,7 +18,7 @@ class TaskTransformer extends BaseClientTransformer
     /**
      * Transforms a schedule's task into a client viewable format.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Task $model): array
     {

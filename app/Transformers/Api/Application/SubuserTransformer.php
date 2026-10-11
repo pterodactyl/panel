@@ -35,7 +35,7 @@ class SubuserTransformer extends BaseTransformer
     /**
      * Return a transformed Subuser model that can be consumed by external services.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Subuser $subuser): array
     {

@@ -47,7 +47,7 @@ class AccountController extends ClientApiController
     ];
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get account', 'Returns profile details for the authenticated user.')]
     #[ResponseFromTransformer(AccountTransformer::class, User::class, resourceKey: 'user')]

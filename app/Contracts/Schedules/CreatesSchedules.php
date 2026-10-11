@@ -13,7 +13,7 @@ interface CreatesSchedules
     /**
      * Validates the input itself, so it can come straight from any caller.
      *
-     * @param  ActionInput  $input  name, is_active, minute, hour, day_of_month, month, day_of_week and only_when_online
+     * @param  array<string, mixed>  $input  name, is_active, minute, hour, day_of_month, month, day_of_week and only_when_online
      *
      * @throws DisplayException
      */

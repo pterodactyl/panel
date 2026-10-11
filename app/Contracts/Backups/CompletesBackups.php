@@ -17,7 +17,7 @@ interface CompletesBackups
      * successful backup needs its checksum, checksum type and size; S3 parts left out are
      * listed from S3 when the multipart upload is completed.
      *
-     * @param  ActionInput  $input  successful, checksum, checksum_type, size and optionally parts, each with an etag and part_number
+     * @param  array<string, mixed>  $input  successful, checksum, checksum_type, size and optionally parts, each with an etag and part_number
      *
      * @throws DisplayException
      * @throws ValidationException

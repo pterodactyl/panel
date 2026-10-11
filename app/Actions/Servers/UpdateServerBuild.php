@@ -62,7 +62,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
      * fields given are validated and changed, except the feature limits: a database or
      * allocation limit left out or null is cleared, and a backup limit becomes 0.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return BuildAttributes
      */
     public static function attributes(array $input, Server $server): array
@@ -104,7 +104,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      * @throws DisplayException

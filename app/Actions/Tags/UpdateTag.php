@@ -16,7 +16,7 @@ final readonly class UpdateTag implements UpdatesTags
      * and its presentation comes from the EggSpecificTags enum, so it must never be renamed or
      * relabelled.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
      */

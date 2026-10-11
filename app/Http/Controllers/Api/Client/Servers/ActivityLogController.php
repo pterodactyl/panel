@@ -29,7 +29,7 @@ class ActivityLogController extends ClientApiController
     /**
      * Returns the activity logs for a server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server activity', 'Returns a paginated list of activity log entries for the server.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]

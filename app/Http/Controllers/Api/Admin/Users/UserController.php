@@ -50,7 +50,7 @@ class UserController extends AdminApiController
     /**
      * List users.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List users', 'Returns a paginated list of panel users, sorted with root administrators first by default.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -101,7 +101,7 @@ class UserController extends AdminApiController
     /**
      * Show user.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get user', 'Returns a single panel user by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports servers.', required: false, example: 'servers')]
@@ -141,7 +141,7 @@ class UserController extends AdminApiController
     /**
      * Update user.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update user', 'Updates an existing panel user. Supplying a password changes the user password.')]
     #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'User updated.', resourceKey: 'user')]

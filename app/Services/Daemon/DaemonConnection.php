@@ -17,7 +17,7 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
-/** @phpstan-type RequestOptions array{json?: ApiPayload, query?: array<string, int|string>, body?: string, timeout?: int} */
+/** @phpstan-type RequestOptions array{json?: array<string, mixed>, query?: array<string, int|string>, body?: string, timeout?: int} */
 final readonly class DaemonConnection
 {
     private function __construct(private string $url, private string $token) {}
@@ -52,7 +52,7 @@ final readonly class DaemonConnection
 
     /**
      * @param  NormalizedValidationRules  $rules
-     * @return array<array-key, ApiValue9>
+     * @return array<mixed>
      */
     public function decode(Response $response, array $rules = [], bool $expectsList = false): array
     {

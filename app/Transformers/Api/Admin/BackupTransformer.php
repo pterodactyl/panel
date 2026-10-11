@@ -17,7 +17,7 @@ class BackupTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Backup $backup): array
     {

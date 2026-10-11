@@ -17,7 +17,7 @@ interface UpdatesServerBuild
      * out becomes 0. Allocations to add are assigned only when they are free and on the
      * server's node; removing the default allocation needs a newly added one to replace it.
      *
-     * @param  ActionInput  $input  any of allocation_id, oom_disabled, memory, swap, io, cpu, threads, disk, add_allocations, remove_allocations, database_limit, allocation_limit and backup_limit
+     * @param  array<string, mixed>  $input  any of allocation_id, oom_disabled, memory, swap, io, cpu, threads, disk, add_allocations, remove_allocations, database_limit, allocation_limit and backup_limit
      *
      * @throws Throwable
      * @throws DisplayException

@@ -13,8 +13,8 @@ final readonly class UpdateApiKey implements UpdatesApiKeys
     /**
      * Update an API key's attributes without regenerating its token.
      *
-     * @param  ActionInput  $input
-     * @param  ActionInput  $permissions
+     * @param  array<string, mixed>  $input
+     * @param  array<string, mixed>  $permissions
      */
     public function update(ApiKey $key, array $input, array $permissions = []): ApiKey
     {
@@ -34,7 +34,7 @@ final readonly class UpdateApiKey implements UpdatesApiKeys
      * Validates update input and returns the attributes it changes: the memo, when it is
      * given. A key's owner and allowed IPs are set when it is created.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{memo?: string}
      */
     private function attributes(array $input): array

@@ -88,7 +88,7 @@ class StoreServerRequest extends AdminApiRequest
      * primary_allocation_id and secondary_allocations_ids its allocation_id and
      * allocation_additional. The deployment goes to the action as getDeploymentObject().
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

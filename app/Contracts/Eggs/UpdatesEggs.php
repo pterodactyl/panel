@@ -15,7 +15,7 @@ interface UpdatesEggs
      * blocks left out keep their stored values. The file denylist cannot be changed here.
      * Extension field values go under `extensions` as ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  the fields an egg is created with
+     * @param  array<string, mixed>  $input  the fields an egg is created with
      */
     public function update(Egg $egg, array $input): Egg;
 }

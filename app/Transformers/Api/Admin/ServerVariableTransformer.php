@@ -6,7 +6,6 @@ namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\ServerVariable;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ServerVariableTransformer extends BaseAdminTransformer
 {
@@ -17,13 +16,10 @@ class ServerVariableTransformer extends BaseAdminTransformer
 
     /** The server variables relation resolves to EggVariable models carrying the server-specific value. */
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(EggVariable $variable): array
     {
-        $attributes = $variable->attributesToArray();
-        JsonValueGuard::assertPayload($attributes);
-
-        return $attributes;
+        return $variable->attributesToArray();
     }
 }

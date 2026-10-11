@@ -38,7 +38,7 @@ class StartupController extends ClientApiController
     /**
      * Returns the startup information for the server including all the variables.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get startup configuration', 'Returns the rendered startup command, available Docker images, raw startup command, and user-visible variables for the server.')]
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Startup configuration returned.', collection: true, factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'docker_images' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23'], 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
@@ -62,7 +62,7 @@ class StartupController extends ClientApiController
     /**
      * Updates a single variable for a server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update startup variable', 'Updates one editable startup variable for the server and returns the updated rendered startup command.')]
     #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Startup variable updated.', factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]

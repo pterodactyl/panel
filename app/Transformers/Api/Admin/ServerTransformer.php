@@ -11,7 +11,6 @@ use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('external_id', nullable: true)]
 #[ResponseField('description', nullable: true)]
@@ -57,11 +56,11 @@ class ServerTransformer extends BaseAdminTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Server $server): array
     {
-        $payload = [
+        return [
             'id' => $server->getKey(),
             'external_id' => $server->external_id,
             'uuid' => $server->uuid,
@@ -102,9 +101,6 @@ class ServerTransformer extends BaseAdminTransformer
             $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),
             ...$this->extensionFields($server),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     public function includeAllocation(Server $server): Item|NullResource

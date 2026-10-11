@@ -38,7 +38,7 @@ class StoreApiKeyRequest extends AdminApiRequest
      * The validated input without the resource permissions, which getKeyPermissions()
      * returns.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {
@@ -48,7 +48,7 @@ class StoreApiKeyRequest extends AdminApiRequest
     /**
      * The validated resource permissions, keyed by r_* column, for the action to read.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function getKeyPermissions(): array
     {

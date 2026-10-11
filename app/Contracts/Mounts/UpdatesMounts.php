@@ -14,7 +14,7 @@ interface UpdatesMounts
      * description and flags keep their stored values when they are left out. Extension field
      * values go under `extensions` as ValidatedExtensionValues.
      *
-     * @param  ActionInput  $input  the fields a mount is created with
+     * @param  array<string, mixed>  $input  the fields a mount is created with
      */
     public function update(Mount $mount, array $input): Mount;
 }

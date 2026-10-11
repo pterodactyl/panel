@@ -106,7 +106,6 @@ class SoftwareVersionService
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return SoftwareVersionData
      */
     private function normalizeVersionData(mixed $value): array

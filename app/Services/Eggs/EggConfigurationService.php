@@ -10,8 +10,7 @@ use JsonException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Support\JsonValueTree;
+use Stringable;
 use UnexpectedValueException;
 
 class EggConfigurationService
@@ -25,7 +24,7 @@ class EggConfigurationService
      * Return an Egg file to be used by the Daemon.
      *
      * @return array{
-     *     startup: array{done: ApiValue9, user_interaction: array{}, strip_ansi: ApiValue9},
+     *     startup: array{done: mixed, user_interaction: array{}, strip_ansi: mixed},
      *     stop: array{type: string, value: string},
      *     configs: EggConfigurationOutputs,
      * }
@@ -45,8 +44,8 @@ class EggConfigurationService
     /**
      * Convert the "done" variable into an array if it is not currently one.
      *
-     * @param  array<string, ApiValue9>  $startup
-     * @return array{done: ApiValue9, user_interaction: array{}, strip_ansi: ApiValue9}
+     * @param  array<string, mixed>  $startup
+     * @return array{done: mixed, user_interaction: array{}, strip_ansi: mixed}
      */
     protected function convertStartupToNewFormat(array $startup): array
     {
@@ -152,7 +151,7 @@ class EggConfigurationService
     }
 
     /**
-     * @param  array<string, JsonValue>  $structure  the legacy server configuration structure
+     * @param  array<string, mixed>  $structure  the legacy server configuration structure
      */
     protected function matchAndReplaceKeys(string $value, array $structure): string
     {
@@ -180,7 +179,6 @@ class EggConfigurationService
             // array that used to be created for the old daemon.
             if (Str::startsWith($key, 'server.')) {
                 $plucked = Arr::get($structure, Str::after($key, 'server.'), '');
-                JsonValueGuard::assertValue($plucked);
                 $value = str_replace("{{{$key}}}", $this->placeholderValue($plucked), $value);
 
                 continue;
@@ -194,7 +192,6 @@ class EggConfigurationService
                 ''
             );
 
-            JsonValueGuard::assertValue($plucked);
             $value = str_replace("{{{$key}}}", $this->placeholderValue($plucked), $value);
         }
 
@@ -202,23 +199,21 @@ class EggConfigurationService
     }
 
     /**
-     * Iterates over a set of "find" values for a given file in the parser configuration. If
-     * the value of the line match is something iterable, continue iterating, otherwise perform
-     * a match & replace.
+     * Replaces the placeholders in every string of a file's "find" values, at any depth.
      *
-     * The egg config is decoded associatively (see handle()), so nested "find" values are
-     * always arrays rather than objects -- PHP arrays are copy-on-write, so mutating $data
-     * below only affects this function's local copy, never the caller's.
-     *
-     * @param  array<array-key, ApiValue7>  $data
-     * @param  array<string, JsonValue>  $structure  the legacy server configuration structure
-     * @return array<array-key, ApiValue7>
+     * @param  array<mixed>  $data
+     * @param  array<string, mixed>  $structure  the legacy server configuration structure
+     * @return array<mixed>
      */
-    private function iterate(mixed $data, array $structure): mixed
+    private function iterate(array $data, array $structure): array
     {
-        return JsonValueTree::from($data)
-            ->mapStrings(fn (string $value): string => $this->matchAndReplaceKeys($value, $structure))
-            ->toArray8();
+        array_walk_recursive($data, function (mixed &$value) use ($structure): void {
+            if (is_string($value)) {
+                $value = $this->matchAndReplaceKeys($value, $structure);
+            }
+        });
+
+        return $data;
     }
 
     /** @return EggConfigurationFiles */
@@ -252,7 +247,7 @@ class EggConfigurationService
      * one list, so a block that is empty or not JSON is reported and read as empty rather
      * than failing the list for every other server.
      *
-     * @return array<string, ApiValue9>
+     * @return array<string, mixed>
      */
     private function jsonObject(?string $encoded): array
     {
@@ -261,7 +256,7 @@ class EggConfigurationService
         }
 
         try {
-            $value = JsonValueGuard::decode($encoded);
+            $value = json_decode($encoded, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $jsonException) {
             report($jsonException);
 
@@ -282,26 +277,16 @@ class EggConfigurationService
         return $object;
     }
 
-    /** @param JsonInputValue $value */
+    /**
+     * The value as PHP's string conversion would give it, with arrays and objects shown as "Array".
+     */
     private function placeholderValue(mixed $value): string
     {
-        if ($value === null) {
-            return '';
-        }
-
-        if (is_bool($value)) {
-            return $value ? '1' : '';
-        }
-
-        if (is_array($value)) {
-            return 'Array';
-        }
-
-        if ($value instanceof JsonEmptyObject) {
-            return 'Array';
-        }
-
-        // SAFETY: this preserves PHP's legacy scalar-to-string placeholder conversion after arrays, booleans, and null are handled explicitly.
-        return (string) $value;
+        return match (true) {
+            is_bool($value) => $value ? '1' : '',
+            is_array($value), $value instanceof JsonEmptyObject => 'Array',
+            is_scalar($value), $value instanceof Stringable => (string) $value,
+            default => '',
+        };
     }
 }

@@ -12,7 +12,7 @@ use Pterodactyl\Models\Schedule;
 final class UpdateSchedule implements UpdatesSchedules
 {
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
      */

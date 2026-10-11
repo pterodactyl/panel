@@ -53,7 +53,7 @@ class ResourceUtilizationController extends ClientApiController
      * a flood of unnecessary API calls.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws DaemonConnectionException
      */

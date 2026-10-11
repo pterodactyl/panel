@@ -26,7 +26,7 @@ class EggController extends ApplicationApiController
     /**
      * Return all eggs that exist on the panel.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List eggs', 'Returns a paginated list of server eggs available on the panel.')]
     #[QueryParam('per_page', 'integer', 'Number of eggs to return per page, up to 100.', required: false, example: 50)]
@@ -53,7 +53,7 @@ class EggController extends ApplicationApiController
     /**
      * Return a single egg.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get egg', 'Returns a single egg by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "servers", "config", "script", "variables", and "tags" when the key can read those resources.', required: false, example: 'variables', enum: ['servers', 'config', 'script', 'variables', 'tags'])]

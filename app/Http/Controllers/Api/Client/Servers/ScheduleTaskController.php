@@ -42,7 +42,7 @@ class ScheduleTaskController extends ClientApiController
      * Create a new task for a given schedule and store it in the database.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws ServiceLimitExceededException
      */
@@ -62,7 +62,7 @@ class ScheduleTaskController extends ClientApiController
      * Updates a given task for a server.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update schedule task', 'Updates a task in a server schedule, including its sequence position.')]
     #[ResponseFromTransformer(TaskTransformer::class, Task::class, description: 'Schedule task updated.', resourceKey: 'schedule_task')]

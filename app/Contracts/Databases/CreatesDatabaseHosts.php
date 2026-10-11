@@ -15,7 +15,7 @@ interface CreatesDatabaseHosts
      * extension field values go under `extensions` as ValidatedExtensionValues. The password
      * is stored encrypted, and a host given no node_id is global.
      *
-     * @param  ActionInput  $input  name, host, port and username, and optionally password and node_id
+     * @param  array<string, mixed>  $input  name, host, port and username, and optionally password and node_id
      *
      * @throws Throwable
      */

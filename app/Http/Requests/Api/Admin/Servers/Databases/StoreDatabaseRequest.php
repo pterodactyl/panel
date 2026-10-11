@@ -50,7 +50,7 @@ class StoreDatabaseRequest extends AdminApiRequest
      * The validated input, with the database name prefixed for the action. A database
      * created without a connection limit gets none.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

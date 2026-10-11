@@ -37,7 +37,7 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed allocation array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Allocation $allocation): array
     {

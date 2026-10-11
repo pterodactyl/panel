@@ -36,7 +36,7 @@ class ApiKeyController extends AdminApiController
     /**
      * List API keys.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List API keys', 'Returns a paginated list of application API keys.')]
     #[QueryParam('filter[memo]', 'string', 'Filter keys by memo.', required: false, example: 'Automation')]
@@ -83,7 +83,7 @@ class ApiKeyController extends AdminApiController
     /**
      * Show API key.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Get API key', 'Returns a single application API key by identifier without exposing its token.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API key returned.', resourceKey: 'api_key')]
@@ -103,7 +103,7 @@ class ApiKeyController extends AdminApiController
     /**
      * Update API key.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Update API key', 'Updates an application API key memo and resource permissions without regenerating the token.')]
     #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API key updated.', resourceKey: 'api_key')]

@@ -38,7 +38,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
      * The validated input under the action's field names: egg and image are its egg_id
      * and docker_image.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

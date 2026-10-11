@@ -25,7 +25,7 @@ uses(TestCase::class);
  * Emits `relationships` between its attributes, includes a callback by default, and
  * nests itself.
  *
- * @extends ApiResource<array<string, ApiValue9>>
+ * @extends ApiResource<array<string, mixed>>
  */
 final class TreeResource extends ApiResource
 {
@@ -58,7 +58,7 @@ final class TreeResource extends ApiResource
 /**
  * Never emits `relationships`, so includes are appended after its attributes.
  *
- * @extends ApiResource<array<string, ApiValue9>>
+ * @extends ApiResource<array<string, mixed>>
  */
 final class FlatResource extends ApiResource
 {
@@ -103,7 +103,7 @@ final class LocationFixtureResource extends ApiResource
     }
 }
 
-/** @extends ApplicationResource<array<string, ApiValue9>> */
+/** @extends ApplicationResource<array<string, mixed>> */
 final class ApplicationFixtureResource extends ApplicationResource
 {
     protected array $availableIncludes = ['admin'];
@@ -124,7 +124,7 @@ final class ApplicationFixtureResource extends ApplicationResource
     }
 }
 
-/** @extends AdminResource<array<string, ApiValue9>> */
+/** @extends AdminResource<array<string, mixed>> */
 final class AdminFixtureResource extends AdminResource
 {
     public function resourceName(): string
@@ -144,7 +144,7 @@ function render(ApiResource|ApiResourceCollection $resource, string $uri = '/'):
     return json_encode($resource->resolve(Request::create($uri)), JSON_THROW_ON_ERROR);
 }
 
-/** @return array<string, ApiValue9> */
+/** @return array<string, mixed> */
 function tree(int $id, string $name, array $children = [], ?array $parent = null): array
 {
     return ['id' => $id, 'name' => $name, 'children' => $children, ...($parent === null ? [] : ['parent' => $parent])];

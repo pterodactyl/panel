@@ -12,7 +12,6 @@ use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('description', nullable: true)]
 #[ResponseField('feature_limits.databases', 'integer', example: 0, nullable: true)]
@@ -64,11 +63,11 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic transformed server array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Server $server): array
     {
-        $payload = [
+        return [
             'id' => $server->getKey(),
             'external_id' => $server->external_id,
             'uuid' => $server->uuid,
@@ -109,9 +108,6 @@ class ServerTransformer extends BaseTransformer
             $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),
             ...$this->extensionFields($server),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     /**

@@ -33,7 +33,7 @@ final readonly class CreateLocation implements CreatesLocations
     /**
      * Validates location input and returns the model attributes it describes.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{short: string, long: string|null}
      */
     public static function attributes(array $input, ?Location $location = null): array
@@ -47,7 +47,7 @@ final readonly class CreateLocation implements CreatesLocations
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      */
     public function create(array $input): Location
     {

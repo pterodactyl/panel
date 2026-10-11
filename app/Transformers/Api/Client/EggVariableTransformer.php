@@ -15,7 +15,7 @@ class EggVariableTransformer extends BaseClientTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(EggVariable $variable): array
     {

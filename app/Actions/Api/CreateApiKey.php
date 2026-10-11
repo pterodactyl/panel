@@ -53,7 +53,7 @@ final readonly class CreateApiKey implements CreatesApiKeys
      * Validates API key input and returns the model attributes it describes. A key given
      * no allowed IPs, or null, can be used from any address.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{memo: string, user_id: int, allowed_ips?: list<string>}
      */
     public static function attributes(array $input): array
@@ -80,7 +80,7 @@ final readonly class CreateApiKey implements CreatesApiKeys
      * the permissions given are returned, so the rest keep their stored values, or the
      * column default of AdminAcl::NONE on a new key.
      *
-     * @param  ActionInput  $permissions
+     * @param  array<string, mixed>  $permissions
      * @return array<string, int>
      */
     public static function permissions(array $permissions): array
@@ -98,8 +98,8 @@ final readonly class CreateApiKey implements CreatesApiKeys
     }
 
     /**
-     * @param  ActionInput  $input
-     * @param  ActionInput  $permissions
+     * @param  array<string, mixed>  $input
+     * @param  array<string, mixed>  $permissions
      */
     public function create(int $keyType, array $input, array $permissions = []): ApiKey
     {

@@ -25,7 +25,7 @@ class RotateDatabasePasswordController extends AdminApiController
     /**
      * Rotate server database password.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('Rotate server database password', 'Rotates the password for a database assigned to a server.')]
     #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]

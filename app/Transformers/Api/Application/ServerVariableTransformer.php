@@ -10,7 +10,6 @@ use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ServerVariableTransformer extends BaseTransformer
 {
@@ -32,14 +31,11 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return a generic transformed server variable array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(EggVariable $variable): array
     {
-        $attributes = $variable->attributesToArray();
-        JsonValueGuard::assertPayload($attributes);
-
-        return $attributes;
+        return $variable->attributesToArray();
     }
 
     /**

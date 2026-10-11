@@ -35,7 +35,7 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * Returns a transformed schedule model such that a client can view the information.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(Schedule $model): array
     {

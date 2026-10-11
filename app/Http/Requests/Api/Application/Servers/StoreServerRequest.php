@@ -91,7 +91,7 @@ class StoreServerRequest extends ApplicationApiRequest
      * additional allocations move to its top level, read with Laravel's typed accessors. The
      * deployment goes to the action as getDeploymentObject().
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {

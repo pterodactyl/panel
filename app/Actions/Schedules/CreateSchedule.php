@@ -38,7 +38,7 @@ final class CreateSchedule implements CreatesSchedules
     /**
      * Validates schedule input and returns the model attributes it describes.
      *
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      * @return array{name: string, cron_minute: string, cron_hour: string, cron_day_of_month: string, cron_month: string, cron_day_of_week: string, is_active: bool, only_when_online: bool, next_run_at: CarbonImmutable}
      *
      * @throws DisplayException
@@ -70,7 +70,7 @@ final class CreateSchedule implements CreatesSchedules
     }
 
     /**
-     * @param  ActionInput  $input
+     * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
      */

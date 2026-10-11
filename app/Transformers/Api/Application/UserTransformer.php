@@ -9,7 +9,6 @@ use League\Fractal\Resource\NullResource;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
 
 class UserTransformer extends BaseTransformer
 {
@@ -35,11 +34,11 @@ class UserTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(User $user): array
     {
-        $payload = [
+        return [
             'id' => $user->id,
             'external_id' => $user->external_id,
             'uuid' => $user->uuid,
@@ -55,9 +54,6 @@ class UserTransformer extends BaseTransformer
             'updated_at' => $this->formatTimestamp($user->updated_at),
             ...$this->extensionFields($user),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
     /**

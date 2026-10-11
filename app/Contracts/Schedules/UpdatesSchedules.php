@@ -12,7 +12,7 @@ interface UpdatesSchedules
     /**
      * Validates the input itself, so it can come straight from any caller.
      *
-     * @param  ActionInput  $input  the same fields a schedule is created with
+     * @param  array<string, mixed>  $input  the same fields a schedule is created with
      *
      * @throws DisplayException
      */

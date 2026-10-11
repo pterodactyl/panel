@@ -24,7 +24,7 @@ class SubuserTransformer extends BaseClientTransformer
     /**
      * Transforms a subuser into a model that can be shown to a front-end user.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws InvalidTransformerLevelException
      */

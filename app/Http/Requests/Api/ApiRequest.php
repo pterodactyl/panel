@@ -7,7 +7,6 @@ namespace Pterodactyl\Http\Requests\Api;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use InvalidArgumentException;
-use Pterodactyl\Support\JsonValueGuard;
 
 abstract class ApiRequest extends FormRequest
 {
@@ -29,14 +28,11 @@ abstract class ApiRequest extends FormRequest
      * The validated input, for an action that validates it again itself so that
      * extensions and commands calling the action directly meet the same rules.
      *
-     * @return ActionInput
+     * @return array<string, mixed>
      */
     public function actionInput(): array
     {
-        $validated = $this->validated();
-        JsonValueGuard::assertPayload9($validated);
-
-        return $validated;
+        return $this->validated();
     }
 
     public function perPage(int $default = self::DEFAULT_PER_PAGE): int

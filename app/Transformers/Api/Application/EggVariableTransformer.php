@@ -6,7 +6,6 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Support\JsonValueGuard;
 
 class EggVariableTransformer extends BaseTransformer
 {
@@ -19,13 +18,10 @@ class EggVariableTransformer extends BaseTransformer
     }
 
     /**
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function transform(EggVariable $model): array
     {
-        $attributes = $model->attributesToArray();
-        JsonValueGuard::assertPayload($attributes);
-
-        return $attributes;
+        return $model->attributesToArray();
     }
 }

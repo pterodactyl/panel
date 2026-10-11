@@ -44,7 +44,7 @@ class DatabaseController extends ClientApiController
     /**
      * Return all the databases that belong to the given server.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     #[Endpoint('List server databases', 'Returns databases attached to a server visible to the authenticated user.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
@@ -60,7 +60,7 @@ class DatabaseController extends ClientApiController
      * Create a new database for the given server and return it.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws Throwable
      * @throws TooManyDatabasesException
@@ -85,7 +85,7 @@ class DatabaseController extends ClientApiController
      * the caller.
      *
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      *
      * @throws Throwable
      */
