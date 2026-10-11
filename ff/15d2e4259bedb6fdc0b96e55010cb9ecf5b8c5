@@ -1,0 +1,19 @@
+tests/Integration/Actions/Servers/DeleteServerTest.php
+  s_4cabae41bceed9::t_83a6ff963adecd 165-166
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ff15d2e4259bedb6fdc0b96e55010cb9ecf5b8c5",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
