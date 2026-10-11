@@ -96,7 +96,7 @@
         "lint": "oxfmt --check resources/scripts packages/hello-world tools/oxlint && oxlint --type-aware resources/scripts packages/hello-world/src/client tools/oxlint",
         "api:generate": "openapi-ts",
         "extension:api:generate": "node scripts/generate-extension-api.mjs",
-        "api:refresh": "PTERODACTYL_EXTENSIONS_ENABLED=false composer docs:openapi:verify && npm run api:generate",
+        "api:refresh": "APP_URL=http://localhost PTERODACTYL_EXTENSIONS_ENABLED=false composer docs:openapi:verify && npm run api:generate",
         "api:check": "npm run sdk:check && npm run tsc && npm run lint",
         "dev": "vite",
         "watch": "vite build --watch",

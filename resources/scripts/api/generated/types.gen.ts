@@ -2,7 +2,7 @@
 // Do not edit this directory by hand; run npm run api:generate instead.
 
 export type ClientOptions = {
-    baseURL: 'https://panel.test' | (string & {});
+    baseURL: 'http://localhost' | (string & {});
 };
 
 export type AdminActivityLogAttributes = {
