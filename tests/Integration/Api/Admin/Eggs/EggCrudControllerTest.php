@@ -56,6 +56,23 @@ test('create egg', function (): void {
     expect($egg->docker_images)->toBe(['Java 17' => 'ghcr.io/pterodactyl/yolks:java_17', 'Java 11' => 'ghcr.io/pterodactyl/yolks:java_11']);
     $response->assertJson(['object' => 'egg', 'attributes' => ['id' => $egg->id, 'uuid' => $egg->uuid, 'name' => $egg->name, 'author' => $egg->author, 'description' => $egg->description, 'docker_images' => $egg->docker_images, 'startup' => $egg->startup, 'force_outgoing_ip' => $egg->force_outgoing_ip], 'meta' => ['resource' => route('api.admin.eggs.view', ['egg' => $egg->id])]]);
 });
+test('every docker image line must be valid on its own', function (string $images): void {
+    $this->postJson(route('api.admin.eggs.store'), array_merge(validCreatePayload(), ['docker_images' => $images]))
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'docker_images');
+
+    $this->assertDatabaseMissing('eggs', ['name' => 'Test Egg']);
+})->with([
+    'shell characters after a valid line' => ["Java 17|ghcr.io/pterodactyl/yolks:java_17\nghcr.io/x;rm -rf /\$(id)"],
+    'an image over 191 characters' => ["Java 17|ghcr.io/pterodactyl/yolks:java_17\n".str_repeat('a', 192)],
+    'only blank lines' => ["\n \n"],
+]);
+test('blank lines between docker images are ignored', function (): void {
+    $this->postJson(route('api.admin.eggs.store'), array_merge(validCreatePayload(), ['docker_images' => "Java 17|ghcr.io/pterodactyl/yolks:java_17\n\nJava 11|ghcr.io/pterodactyl/yolks:java_11\n"]))
+        ->assertCreated();
+
+    expect(Egg::query()->where('name', 'Test Egg')->firstOrFail()->docker_images)->toBe(['Java 17' => 'ghcr.io/pterodactyl/yolks:java_17', 'Java 11' => 'ghcr.io/pterodactyl/yolks:java_11']);
+});
 test('update egg', function (): void {
     $egg = Egg::factory()->create();
     $response = $this->putJson(route('api.admin.eggs.update', ['egg' => $egg->id]), array_merge(validCreatePayload(), ['name' => 'Updated Egg', 'startup' => 'java -jar updated.jar']));

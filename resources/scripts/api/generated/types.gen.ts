@@ -2298,7 +2298,7 @@ export type AdminCreateEggRequest = {
      */
     description?: string | null;
     /**
-     * Docker images available to this resource. Must match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/im.
+     * Docker images available to this resource. One image per line, optionally prefixed with a display name and a pipe (<code>Java 21|ghcr.io/pterodactyl/yolks:java_21</code>). Each must be at most 191 characters and match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/.
      */
     docker_images: string;
     /**
@@ -2350,7 +2350,7 @@ export type AdminUpdateEggRequest = {
      */
     description?: string | null;
     /**
-     * Docker images available to this resource. Must match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/im.
+     * Docker images available to this resource. One image per line, optionally prefixed with a display name and a pipe (<code>Java 21|ghcr.io/pterodactyl/yolks:java_21</code>). Each must be at most 191 characters and match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/.
      */
     docker_images: string;
     /**

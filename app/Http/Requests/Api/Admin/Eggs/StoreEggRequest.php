@@ -10,6 +10,7 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Rules\DockerImageList;
 
 class StoreEggRequest extends AdminApiRequest
 {
@@ -30,7 +31,7 @@ class StoreEggRequest extends AdminApiRequest
         return [
             'name' => ['required', 'string', 'max:191'],
             'description' => ['nullable', 'string'],
-            'docker_images' => ['required', 'string', 'regex:/^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/im'],
+            'docker_images' => ['required', 'string', new DockerImageList],
             'force_outgoing_ip' => ['sometimes', 'boolean'],
             'file_denylist' => ['array'],
             'features' => ['sometimes', 'array'],
@@ -101,10 +102,8 @@ class StoreEggRequest extends AdminApiRequest
      */
     protected function normalizeDockerImages(?string $input = null): array
     {
-        $data = array_map(trim(...), explode("\n", $input ?? ''));
-
         $images = [];
-        foreach ($data as $value) {
+        foreach (DockerImageList::lines($input ?? '') as $value) {
             $parts = explode('|', $value, 2);
             $images[$parts[0]] = empty($parts[1]) ? $parts[0] : $parts[1];
         }
