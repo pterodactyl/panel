@@ -1,0 +1,325 @@
+app/Services/Themes/ThemeRepository.php
+  s_4cabae41bceed9::t_db79850c6fa3cf 28
+  s_4cabae41bceed9::t_37402bf3661001 13
+  s_4cabae41bceed9::t_03b76ecbfeb55a 82-87
+  s_4cabae41bceed9::t_79e94f6e3849cd 1-12,14-27,29-63,65-81,88-116,135-139
+  s_4cabae41bceed9::t_bc89f58644a68b 64
+  s_4cabae41bceed9::t_44162dc278a572 117-134
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_4cabae41bceed9::t_96be05a4de358a 121
+  s_4cabae41bceed9::t_0279c50e8664ed 11-12
+  s_4cabae41bceed9::t_74248915d177d8 23
+  s_4cabae41bceed9::t_68a20e5abf7bb0 220,228-233,241
+  s_4cabae41bceed9::t_f6a62cbb04acbf 176,183-184,187-189,195-199,202,206-208
+  s_4cabae41bceed9::t_3f5784d9fe78fa 69-73,77,80
+  s_4cabae41bceed9::t_b6e7ba81120927 68,242,244-252,256-281
+  s_4cabae41bceed9::t_a90bad649b87c9 253-255
+  s_488821bd68e9e0::t_89fed48f75ac22 243
+app/Providers/ExtensionServiceProvider.php
+  s_4cabae41bceed9::t_1d0d3d6bb8b325 48-50
+  s_4cabae41bceed9::t_f70319b81bf61d 28-29
+bootstrap/app.php
+  s_4cabae41bceed9::t_3b4b6b2e114501 37
+  s_4cabae41bceed9::t_057d48e947104f 90-93
+  s_4cabae41bceed9::t_04a51cfa4e7d49 41
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_4cabae41bceed9::t_be31e0c7ca04ef 17-18,20,24,34-36,51-52
+  s_488821bd68e9e0::t_0fb5dff8ec1f33 53-54
+app/Enum/Permissions.php
+  s_4cabae41bceed9::t_5be83e859f0ce6 79-81
+packages/sdk/theme-entry.css
+  s_4cabae41bceed9::t_ad98f73570930f 1-11
+app/Console/Commands/Extensions/MakeCommand.php
+  s_4cabae41bceed9::t_951ec961e26dac 14,22
+  s_4cabae41bceed9::t_f1378bf9187a46 39
+  s_4cabae41bceed9::t_9826eb07a5d40a 56,58
+app/Services/Extensions/ExtensionCompatibility.php
+  s_4cabae41bceed9::t_01282882d4f599 77
+  s_4cabae41bceed9::t_ea205d344b3924 33
+  s_4cabae41bceed9::t_8389d62764a56d 169-170,172-175
+app/Http/Resources/Api/Admin/ThemeResource.php
+  s_4cabae41bceed9::t_8cab802feb3f2f 1-47
+resources/scripts/api/generated/sdk.gen.ts
+  s_4cabae41bceed9::t_1bdd85989212ce 6,231-374,484-488,901-905
+tests/Unit/Services/Extensions/ExtensionRuntimeTest.php
+  s_4cabae41bceed9::t_cab2cfb4a10e21 52,56-63,68-73,75,77-78
+tests/Unit/Extensions/ExtensionProviderRuntimeTest.php
+  s_4cabae41bceed9::t_dc91070b1a564f 25
+  s_4cabae41bceed9::t_8743684023db92 189
+  s_4cabae41bceed9::t_13894da3ae0179 33
+resources/scripts/components/admin/themes/livePreview.ts
+  s_4cabae41bceed9::t_c1997c195da32e 24-25
+  s_4cabae41bceed9::t_c55e1ea1b5d7fd 1-3,6-23,26-34,38-39,41,43,45-46,48-52,59-60,64-67,72-73,75-81
+  s_4cabae41bceed9::t_d89b561f8c7e1a 68-71
+  s_4cabae41bceed9::t_a70c49698b0aa7 4-5,35-37,40,42,44,47,53-58,61-63,74
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_4cabae41bceed9::t_0eff9f848e932e 81-82,84,87,93,96-110,112,114-119
+resources/scripts/extensions/loader.ts
+  s_4cabae41bceed9::t_4efa7483da6bd8 1
+  s_4cabae41bceed9::t_8cddcd55cfee3a 170
+app/Services/Themes/ThemeBuild.php
+  s_4cabae41bceed9::t_6b7053045ecde1 1-39
+app/Console/Commands/Themes/ResetCommand.php
+  s_4cabae41bceed9::t_8e646e932b3ed5 12,20
+app/Services/Extensions/Scaffolding/stubs/theme-tsx.stub
+  s_4cabae41bceed9::t_cbdd3e90d423fd 1-28
+app/Http/Controllers/Api/Admin/Themes/ThemeController.php
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 10,172,200,203,223,243-244
+  s_4cabae41bceed9::t_ac471780de791c 159
+  s_4cabae41bceed9::t_6025148d3fb82f 9
+  s_4cabae41bceed9::t_c4c3d908d78bb1 197
+  s_4cabae41bceed9::t_4fe4f1993e8302 1-8,11-108,111-158,160-171,173-196,198-199,201-202,204-222,224-242,245,247-251,253,255-258
+  s_4cabae41bceed9::t_53fc1af29e5fe7 110
+  s_4cabae41bceed9::t_1d258b94ef8e95 109,246,252
+  s_4cabae41bceed9::t_3b64fd66db8512 254
+app/Services/Extensions/Scaffolding/stubs/theme-css.stub
+  s_4cabae41bceed9::t_3090995c9681d1 8
+  s_4cabae41bceed9::t_f0968f71dcc9a5 1-7,9-14
+app/Contracts/Themes/ResetsThemes.php
+  s_4cabae41bceed9::t_a357145cd70ae1 9
+app/Http/Requests/Api/Admin/Themes/UpdateThemeSettingsRequest.php
+  s_4cabae41bceed9::t_ea2d463d4e8443 1-35
+routes/api-admin.php
+  s_4cabae41bceed9::t_b70cfb790ae5f5 60
+  s_4cabae41bceed9::t_547260d3c44878 101-123
+app/Console/Commands/Themes/ActivateCommand.php
+  s_4cabae41bceed9::t_0e5b9cde8df819 1-31
+app/Http/Requests/Api/Admin/Themes/UpdateThemeRequest.php
+  s_4cabae41bceed9::t_6dd3bf965f510e 1-16
+packages/sdk/prepack.mjs
+  s_4cabae41bceed9::t_c32c931d4ed679 3,6-7
+resources/lang/en/activity.php
+  s_4cabae41bceed9::t_8415fa12ae09f4 229-235
+resources/scripts/assets/tailwind.css
+  s_4cabae41bceed9::t_213c9a5f6fa765 1-2
+app/Services/Extensions/Scaffolding/stubs/theme-package.stub
+  s_4cabae41bceed9::t_d821afd1c691ad 1-39
+resources/scripts/components/admin/themes/ThemesContainer.spec.tsx
+  s_4cabae41bceed9::t_694abbb3d77ccb 1-197
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_4cabae41bceed9::t_c84f9f82b56a36 284,289
+  s_4cabae41bceed9::t_ba71adb582d393 350-352,354,357-358,362-366,372-373,378,381-382
+app/Services/Themes/ThemeDefinition.php
+  s_4cabae41bceed9::t_bbfe5231953405 1-6,8-51,53-54
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 7,52
+packages/sdk/types-drift.spec.ts
+  s_4cabae41bceed9::t_72cbdd2c9f5ab4 341,343-347
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_e8ac32aa0ece7f 158,160-161,163,167
+  s_4cabae41bceed9::t_428a130f504763 186
+app/Actions/Extensions/RemoveExtension.php
+  s_4cabae41bceed9::t_68aefc28f6562a 53
+  s_4cabae41bceed9::t_ccaf43da86cb8e 26
+  s_4cabae41bceed9::t_02cb8e4d281b6f 39
+resources/scripts/components/admin/themes/ThemeSettingsDialog.tsx
+  s_4cabae41bceed9::t_acc0dd620aeb52 1-27,32-44,53-77,82-140,144-181
+  s_4cabae41bceed9::t_73403da6ac2813 78-81
+  s_4cabae41bceed9::t_114ff9e01a5804 45-52
+  s_4cabae41bceed9::t_d1be26f31bb3a5 28-31
+  s_4cabae41bceed9::t_b9b9679d8dba38 141-143
+app/Services/Themes/ThemeSetting.php
+  s_4cabae41bceed9::t_7f3c7a552ccfc4 39-40
+  s_4cabae41bceed9::t_ac471780de791c 80-91,160
+  s_4cabae41bceed9::t_300ff77685815f 1-38,41-79,92-108,110-113,128-138,140-151,153-157,159,161-193
+  s_4cabae41bceed9::t_e7f0f7388c0b07 109
+  s_4cabae41bceed9::t_824d09f4053f21 114-127
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 139,152,158
+.gitignore
+  s_4cabae41bceed9::t_737d09a01efac9 51,53
+  s_4cabae41bceed9::t_43eed1b1e0e2c7 20
+app/Services/Extensions/Scaffolding/stubs/theme-readme.stub
+  s_4cabae41bceed9::t_62aac7df9e29c0 1-38
+phpstan.neon
+  s_4cabae41bceed9::t_534509bb6b7b2c 52-54
+app/Services/Themes/ThemeDocument.php
+  s_4cabae41bceed9::t_0793217c18b227 1-90
+packages/sdk/panel.css
+  s_4cabae41bceed9::t_0bb39d85ee5f5d 246-252
+  s_4cabae41bceed9::t_d5588f0e35931d 1-7,13,17,26,35,131,135,171,177,213,216
+  s_488821bd68e9e0::t_c8772dbebe2035 8-12,14-16,18-25,27-34,36-130,132-134,136-170,172-176,178-212,214-215,217-245,253-341
+app/Services/Extensions/ExtensionStylesheetInspector.php
+  s_4cabae41bceed9::t_76c4e3f0618b2c 60-68,70-72,74-81
+  s_4cabae41bceed9::t_fc29a5cd8bf5ce 151
+  s_4cabae41bceed9::t_2ffe54922715a3 69,73
+  s_4cabae41bceed9::t_61a53cd6f05322 149-150,152-153
+  s_488821bd68e9e0::t_3d687c15785374 59
+app/Services/Themes/ViewCatalog.php
+  s_4cabae41bceed9::t_6b2052786f3a6d 1-47
+app/Http/ViewComposers/AssetComposer.php
+  s_4cabae41bceed9::t_681e143751a2cd 7,13,25-26,34-35,39,47-49
+app/Services/Themes/ThemeResolver.php
+  s_4cabae41bceed9::t_9b7822d58456f4 1-58,60-77,81-113,117-134
+  s_4cabae41bceed9::t_62625d7b85ae17 78-79
+  s_4cabae41bceed9::t_34dc029a63b078 80
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 114-116
+  s_4cabae41bceed9::t_a07ada7d06ad5f 59
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_64f582975f944f 46
+  s_4cabae41bceed9::t_28aeb1fd03546e 926-932
+  s_488821bd68e9e0::t_3211d8f69e81ca 924-925
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_0d336f297218cf 597-632
+  s_4cabae41bceed9::t_c1cf19e486a77c 1542-1545,1547-1551
+  s_4cabae41bceed9::t_d2de20415c5069 23
+  s_4cabae41bceed9::t_5bafd0bb1a7583 166-168
+  s_4cabae41bceed9::t_188c490ab99568 913-918
+  s_4cabae41bceed9::t_7ba8269ce26897 1481
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 1546
+  s_4cabae41bceed9::t_fa36189822b547 596,1539-1541
+resources/scripts/bootstrap.ts
+  s_4cabae41bceed9::t_3080eb7441a90a 74
+  s_4cabae41bceed9::t_078af18e7af026 3,11,26-27
+resources/scripts/extensions/development.ts
+  s_4cabae41bceed9::t_380f60eefd0652 18-25
+  s_4cabae41bceed9::t_7460c16ff5b849 1,3-17,26-55,57,60,76-104,115
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_4cabae41bceed9::t_fa8cc84d962708 69
+  s_4cabae41bceed9::t_6e0cbe8b0539bf 25
+  s_4cabae41bceed9::t_cac8301159799f 37
+app/Http/Middleware/RememberThemeFlags.php
+  s_4cabae41bceed9::t_71a1a55c48c393 1-45
+resources/scripts/components/admin/themes/livePreview.spec.ts
+  s_4cabae41bceed9::t_a8c086ec5f9e70 1-58
+app/Http/Requests/Api/Admin/Themes/UploadThemeImageRequest.php
+  s_4cabae41bceed9::t_be1ce2d70a9d32 1-31
+resources/scripts/api/generated/index.ts
+  s_4cabae41bceed9::t_1bdd85989212ce 4-5
+resources/scripts/extensions/development.spec.ts
+  s_4cabae41bceed9::t_b3e88161da9cfd 51
+  s_4cabae41bceed9::t_cd526bac939d78 92
+  s_4cabae41bceed9::t_1f4cad05637acb 8,10,12-14,18,21,27-28,47-50,52-79
+  s_4cabae41bceed9::t_551dba856bfe34 80-82
+  s_0baff6d1b6c6cf::t_222751ed4c18cb 83-84
+app/Console/Commands/Extensions/DevCommand.php
+  s_4cabae41bceed9::t_447ffc4f4be37a 29
+app/Services/Extensions/Scaffolding/stubs/theme-test.stub
+  s_4cabae41bceed9::t_f96d61d4f5e6bd 1-12
+app/Console/Commands/Extensions/PackCommand.php
+  s_4cabae41bceed9::t_5cb37ef55ad20a 17
+  s_4cabae41bceed9::t_c8cf417c7986fb 24,29
+resources/scripts/components/admin/AdminSidebar.tsx
+  s_4cabae41bceed9::t_9fa327d780705c 14
+  s_4cabae41bceed9::t_4b32f61fbb5cea 42
+packages/sdk/manifest.schema.json
+  s_4cabae41bceed9::t_f9081c15ec8241 21-22,35-41,539,541-568,572-733,736,738-739,751,754,773-801
+app/Services/Helpers/AssetHashService.php
+  s_4cabae41bceed9::t_ca9740b9bcb854 18-23
+  s_4cabae41bceed9::t_c3f4768e13c46f 99-120
+app/Actions/Themes/ActivateTheme.php
+  s_4cabae41bceed9::t_4669fa86ecda7f 1-22
+scripts/generate-core-classes.mjs
+  s_4cabae41bceed9::t_615cfd95f8846e 6,18-23
+  s_4cabae41bceed9::t_29b2f6fb069b86 1-5,7-17
+packages/sdk/package.json
+  s_4cabae41bceed9::t_1fb2a7a0d3ebfc 29-31
+  s_4cabae41bceed9::t_83cf0053fbe177 50-52
+resources/views/templates/wrapper.blade.php
+  s_4cabae41bceed9::t_e65743501bd27b 2-3,10,58-73,75-76,78-88
+app/Console/Commands/Themes/ListCommand.php
+  s_4cabae41bceed9::t_6206190b08a884 19,21,23,26
+  s_4cabae41bceed9::t_2c54ff0e9347dd 10,12,16,18,20,22
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_4cabae41bceed9::t_7f25d6730343bb 12-13
+  s_4cabae41bceed9::t_5e412add06dc87 42,51,71-76
+  s_4cabae41bceed9::t_c6a25ed12bde63 145-193
+  s_488821bd68e9e0::t_c69af917494ade 77,144
+tests/Unit/Services/Extensions/ExtensionDistFilesTest.php
+  s_4cabae41bceed9::t_7e8f6c308a382e 13
+  s_4cabae41bceed9::t_8aed05c750de9a 69
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_4cabae41bceed9::t_eed72d38e22ddf 161-165,167-172,174-179
+  s_4cabae41bceed9::t_312d4625cdf8ba 166
+  s_4cabae41bceed9::t_293fdb3cc4eccc 250-253
+  s_4cabae41bceed9::t_111483bcc2c91c 200-208
+  s_4cabae41bceed9::t_dd69d6d6f83099 14,17-18
+  s_4cabae41bceed9::t_0ece618e5697f4 129-131
+  s_4cabae41bceed9::t_6044836648056d 114
+  s_4cabae41bceed9::t_0505d0f4b155a1 223-235
+  s_4cabae41bceed9::t_6c03c0b2fc81e1 236-249,254-275,277-279
+  s_4cabae41bceed9::t_95fea1ca1da5d1 122
+  s_4cabae41bceed9::t_784b71aca4afed 7
+  s_4cabae41bceed9::t_919b36e1cb32c8 173
+  s_4cabae41bceed9::t_7b540743812735 89-92
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 276
+  s_4cabae41bceed9::t_6d46332e4648b8 403
+resources/scripts/api/admin/themes/queries.ts
+  s_4cabae41bceed9::t_d1be26f31bb3a5 36-37
+  s_4cabae41bceed9::t_bfa8f52d0b68f6 1-35,38-188
+packages/hello-world/extension.json
+  s_4cabae41bceed9::t_368d54d7bd6c4c 21
+app/Http/Requests/Api/Application/Nodes/GetNodeConfigurationRequest.php
+  s_4cabae41bceed9::t_8e2eb6ebae85e8 21
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_4cabae41bceed9::t_1bdd85989212ce 8-9,428-620
+  s_4cabae41bceed9::t_63cd03de477f61 621
+.dockerignore
+  s_4cabae41bceed9::t_9d643b102d6e7e 21
+resources/scripts/components/admin/themes/ThemesContainer.tsx
+  s_4cabae41bceed9::t_5708c4478c90f5 1-29,31,38,43-47,49-226
+  s_4cabae41bceed9::t_da94c3d5059d07 30,32-37,39-42,48
+app/Contracts/Themes/ActivatesThemes.php
+  s_4cabae41bceed9::t_fded54afb82729 1-17
+app/Http/Requests/Api/Admin/Themes/GetThemesRequest.php
+  s_4cabae41bceed9::t_065dcc017a751a 1-16
+packages/sdk/vite.mjs
+  s_4cabae41bceed9::t_c9447c88771ae6 71-156
+  s_4cabae41bceed9::t_86b51af19afdf1 2,11-15,17-19,30
+app/Console/Commands/Extensions/TypesCommand.php
+  s_4cabae41bceed9::t_d2bc3fa3820b5e 17-18
+  s_4cabae41bceed9::t_95cb4d749f4a18 15
+  s_4cabae41bceed9::t_80dd5caf6e45ae 47-51
+  s_4cabae41bceed9::t_899f0150a17f60 62-79
+vite.config.mts
+  s_4cabae41bceed9::t_6806a7bde6950d 89-90
+app/Services/Extensions/Scaffolding/stubs/theme-vite.config.stub
+  s_4cabae41bceed9::t_65ac345c5b545e 1-3
+app/Services/Extensions/ExtensionManifest.php
+  s_4cabae41bceed9::t_e11763f293e243 136,142-143
+  s_4cabae41bceed9::t_7faf979e733373 192-218
+  s_4cabae41bceed9::t_73f4ec09e6915f 32-33
+  s_4cabae41bceed9::t_27ae75efd4ca1c 96-97,107-109
+  s_4cabae41bceed9::t_fa388495b7ad70 7-9,19-22
+app/Providers/ActionServiceProvider.php
+  s_4cabae41bceed9::t_528c3487f6aaf4 112,232,280
+app/Services/Extensions/Scaffolding/stubs/theme-tsconfig.stub
+  s_4cabae41bceed9::t_fa296d95fe348a 1-15
+app/Actions/Themes/ResetTheme.php
+  s_4cabae41bceed9::t_348332d6d01f91 8,12,16
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_1bdd85989212ce 739-811,1670-1685,4129-4138,5922-6251
+  s_4cabae41bceed9::t_ffdfd63ac0a0d3 6252
+app/Http/Resources/Api/Admin/ThemeSettingResource.php
+  s_4cabae41bceed9::t_be685af71c67d5 1-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "01787b8c22b9d8bcaf00604a13b0c60d62d5cc46",
+  "prompts": {},
+  "sessions": {
+    "s_0baff6d1b6c6cf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a1c1306e090ae7a51",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
