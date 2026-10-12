@@ -240,6 +240,15 @@ class Node extends Model implements Identifiable
     }
 
     /**
+     * Whether this node accepts the egg, as NodeBuilder::forEggTags() decides it: a node
+     * without egg tags accepts every egg, any other needs a tag in common with it.
+     */
+    public function acceptsEgg(Egg $egg): bool
+    {
+        return $this->eggTags->isEmpty() || $this->eggTags->intersect($egg->tags)->isNotEmpty();
+    }
+
+    /**
      * Whether an additional server of the given size fits within this node's
      * (over)allocatable memory and disk.
      */

@@ -1619,6 +1619,10 @@ export type AdminCreateServerRequest = {
      * Whether the server should start when the operation completes.
      */
     start_on_completion?: boolean;
+    /**
+     * Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.
+     */
+    ignore_tags?: boolean;
     secondary_allocations_ids?: Array<number>;
     extensions?: ExtensionFields;
 };
@@ -1712,6 +1716,10 @@ export type AdminUpdateServerStartupRequest = {
      * Whether install scripts should be skipped.
      */
     skip_scripts?: boolean;
+    /**
+     * Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.
+     */
+    ignore_tags?: boolean;
 };
 export type AdminUpdateServerSuspensionRequest = {
     /**
@@ -1732,6 +1740,10 @@ export type AdminTransferServerRequest = {
      * Additional allocation IDs on the destination node.
      */
     allocation_additional?: Array<number>;
+    /**
+     * Whether to move the server to a node whose egg tags its egg does not share.
+     */
+    ignore_tags?: boolean;
 };
 export type AdminCreateServerDatabaseRequest = {
     /**

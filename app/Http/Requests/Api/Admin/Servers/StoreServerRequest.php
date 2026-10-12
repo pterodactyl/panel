@@ -13,6 +13,9 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Http\Requests\Concerns\ValidatesNodeAcceptsEgg;
+use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 
@@ -22,6 +25,7 @@ class StoreServerRequest extends AdminApiRequest
     use ValidatesExtensionFields {
         actionInput as private inputWithExtensions;
     }
+    use ValidatesNodeAcceptsEgg;
 
     public function permissions(): array
     {
@@ -80,6 +84,7 @@ class StoreServerRequest extends AdminApiRequest
             'deploy.tags.*' => ['string'],
 
             'start_on_completion' => $rules['start_on_completion'],
+            'ignore_tags' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -96,7 +101,7 @@ class StoreServerRequest extends AdminApiRequest
         $input['image'] = $input['docker_image'] ?? null;
         $input['allocation_id'] = $input['primary_allocation_id'] ?? null;
         $input['allocation_additional'] = $input['secondary_allocations_ids'] ?? null;
-        unset($input['docker_image'], $input['primary_allocation_id'], $input['secondary_allocations_ids'], $input['deploy']);
+        unset($input['docker_image'], $input['primary_allocation_id'], $input['secondary_allocations_ids'], $input['deploy'], $input['ignore_tags']);
 
         return $input;
     }
@@ -106,7 +111,7 @@ class StoreServerRequest extends AdminApiRequest
      */
     public function after(): array
     {
-        return [$this->validateDeployTagsExist(...)];
+        return [$this->validateDeployTagsExist(...), $this->validateAllocationAcceptsEgg(...)];
     }
 
     /** Build a deployment object from the deploy payload, or null when absent. */
@@ -131,5 +136,21 @@ class StoreServerRequest extends AdminApiRequest
     protected function extensionFieldsModel(): Model|string
     {
         return Server::class;
+    }
+
+    /**
+     * A deployment picks a node that accepts the egg itself, so only a chosen allocation is
+     * checked.
+     */
+    private function validateAllocationAcceptsEgg(Validator $validator): void
+    {
+        if ($validator->errors()->isNotEmpty() || $this->has('deploy')) {
+            return;
+        }
+
+        $validated = $validator->safe();
+        $node = Allocation::query()->findOrFail($validated->integer('primary_allocation_id'))->node;
+
+        $this->validateNodeAcceptsEgg($validator, 'primary_allocation_id', $node, Egg::query()->findOrFail($validated->integer('egg_id')));
     }
 }

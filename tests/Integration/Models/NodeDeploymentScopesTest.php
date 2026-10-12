@@ -7,6 +7,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Models\NodeDeploymentScopesTest;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
@@ -111,6 +112,11 @@ function accepts(array $nodeEggTags, array $nodeDeploymentTags, array $eggTags, 
     $node = Node::factory()->withLocation()->create();
     $node->eggTags()->attach(array_map($tag, $nodeEggTags));
     $node->deploymentTags()->attach(array_map($tag, $nodeDeploymentTags));
+    $egg = Egg::factory()->create();
+    $egg->tags()->attach(array_map($tag, $eggTags));
+
+    // The in-memory check the admin API uses agrees with the query's egg half.
+    expect($node->acceptsEgg($egg))->toBe(Node::query()->whereKey($node->id)->forEggTags($eggTags)->exists());
 
     return Node::query()->whereKey($node->id)->forEggTags($eggTags)->forDeployTags($deployTags)->exists();
 }

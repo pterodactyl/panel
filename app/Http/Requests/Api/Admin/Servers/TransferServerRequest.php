@@ -8,13 +8,17 @@ use Closure;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Actions\Transfers\InitiateTransfer;
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Http\Requests\Concerns\ValidatesNodeAcceptsEgg;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 
 class TransferServerRequest extends ServerWriteRequest
 {
     use ValidatesArrayExistence;
+    use ValidatesNodeAcceptsEgg;
 
     public function permissions(): array
     {
@@ -28,11 +32,12 @@ class TransferServerRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        return InitiateTransfer::rules($this->parameter('server', Server::class));
+        return [...InitiateTransfer::rules($this->parameter('server', Server::class)), 'ignore_tags' => ['sometimes', 'boolean']];
     }
 
     /**
-     * Chosen allocations must exist, belong to the target node and be unassigned.
+     * Chosen allocations must exist, belong to the target node and be unassigned, and the
+     * target node must accept the server's egg.
      *
      * @return list<Closure(Validator): void>
      */
@@ -41,6 +46,11 @@ class TransferServerRequest extends ServerWriteRequest
         return [function (Validator $validator): void {
             $this->validateArrayExistence($validator, 'allocation_additional', Allocation::query());
             InitiateTransfer::validateAllocations($validator);
+
+            if ($validator->errors()->isEmpty()) {
+                $egg = Egg::query()->findOrFail($this->parameter('server', Server::class)->egg_id);
+                $this->validateNodeAcceptsEgg($validator, 'node_id', Node::query()->findOrFail($validator->safe()->integer('node_id')), $egg);
+            }
         }];
     }
 

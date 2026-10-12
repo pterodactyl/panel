@@ -133,6 +133,7 @@ class PterodactylDocumentation
         'force_outgoing_ip' => 'Whether servers should use their allocation IP for outgoing traffic.',
         'fqdn' => 'The fully qualified domain name.',
         'host' => 'The database host address.',
+        'ignore_tags' => "Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.",
         'ignored' => 'Whether this item should be ignored.',
         'import_file' => 'The file to import.',
         'io' => 'The block IO weight.',

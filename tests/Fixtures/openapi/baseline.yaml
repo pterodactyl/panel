@@ -4391,6 +4391,9 @@ components:
         start_on_completion:
           type: boolean
           description: 'Whether the server should start when the operation completes.'
+        ignore_tags:
+          type: boolean
+          description: "Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here."
         secondary_allocations_ids:
           type: array
           description: ''
@@ -4509,6 +4512,9 @@ components:
         skip_scripts:
           type: boolean
           description: 'Whether install scripts should be skipped.'
+        ignore_tags:
+          type: boolean
+          description: "Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here."
       required:
         - startup
         - egg_id
@@ -4534,6 +4540,9 @@ components:
           description: 'Additional allocation IDs on the destination node.'
           items:
             type: integer
+        ignore_tags:
+          type: boolean
+          description: 'Whether to move the server to a node whose egg tags its egg does not share.'
       required:
         - node_id
         - allocation_id

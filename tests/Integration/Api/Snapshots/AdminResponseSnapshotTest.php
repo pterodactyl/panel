@@ -150,6 +150,13 @@ function adminWrites(): array
     $node = ['name' => 'node-gamma', 'description' => 'Created by an admin', 'location_id' => 1, 'public' => true, 'fqdn' => 'gamma.example.test', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes'];
     $egg = ['name' => 'Created Egg', 'description' => 'A freshly created egg.', 'docker_images' => "Java 21|ghcr.io/pterodactyl/yolks:java_21\nJava 17|ghcr.io/pterodactyl/yolks:java_17", 'startup' => 'java -jar server.jar', 'config_stop' => 'stop', 'config_startup' => '{"done": ["Done"]}', 'config_logs' => '{}', 'config_files' => '{}', 'features' => ['eula', 'fastdl']];
     $environment = ['SERVER_JARFILE' => 'server.jar', 'BUILD_NUMBER' => '42', 'HIDDEN_TOKEN' => 'abc'];
+    $server = [
+        'name' => 'Admin Created', 'description' => 'Created by an admin.', 'external_id' => 'ext-admin-created', 'owner_id' => World::OWNER, 'egg_id' => 1,
+        'docker_image' => 'ghcr.io/pterodactyl/yolks:java_21', 'startup' => 'java -jar {{SERVER_JARFILE}}', 'environment' => $environment,
+        'memory' => 512, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 0, 'threads' => null, 'database_limit' => 0, 'allocation_limit' => 0,
+        'backup_limit' => 0, 'primary_allocation_id' => 4, 'start_on_completion' => false,
+    ];
+    $startup = ['startup' => 'java -jar {{SERVER_JARFILE}}', 'egg_id' => 1, 'docker_image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => true, 'environment' => [...$environment, 'SERVER_JARFILE' => 'renamed.jar']];
     $mount = ['name' => 'Created Mount', 'description' => 'Created by an admin.', 'source' => '/mnt/created', 'target' => '/mnt/created-target', 'read_only' => true, 'user_mountable' => false];
     $export = fn (int $id): Closure => fn (): UploadedFile => UploadedFile::fake()->createWithContent('egg.json', App::make(ExportsEggs::class)->export(Egg::query()->findOrFail($id)));
 
@@ -181,18 +188,21 @@ function adminWrites(): array
         'write nodes allocations update' => [['requests' => [['PUT', ADMIN.'/nodes/1/allocations/4', ['alias' => 'renamed.example.test']]]]],
         'write nodes deployment tags' => [['requests' => [['PUT', ADMIN.'/nodes/1/deployment-tags', ['tags' => [3]]]]]],
         'write nodes tags' => [['requests' => [['PUT', ADMIN.'/nodes/1/tags', ['tags' => [1, 2]]]]]],
-        'write servers store' => [['requests' => [['POST', ADMIN.'/servers', [
-            'name' => 'Admin Created', 'description' => 'Created by an admin.', 'external_id' => 'ext-admin-created', 'owner_id' => World::OWNER, 'egg_id' => 1,
-            'docker_image' => 'ghcr.io/pterodactyl/yolks:java_21', 'startup' => 'java -jar {{SERVER_JARFILE}}', 'environment' => $environment,
-            'memory' => 512, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 0, 'threads' => null, 'database_limit' => 0, 'allocation_limit' => 0,
-            'backup_limit' => 0, 'primary_allocation_id' => 4, 'start_on_completion' => false,
-        ]]]]],
+        'write servers store' => [['requests' => [['POST', ADMIN.'/servers', $server]]]],
+        'write servers store tag check' => [['requests' => [
+            ['POST', ADMIN.'/servers', [...$server, 'egg_id' => 3]],
+            ['POST', ADMIN.'/servers', [...$server, 'egg_id' => 3, 'ignore_tags' => true]],
+        ]]],
         'write servers backups toggle' => [['requests' => [['POST', ADMIN.'/servers/1/backups/'.World::BACKUP_FAILED.'/toggle']]]],
         'write servers build' => [['requests' => [['PUT', ADMIN.'/servers/1/build', ['allocation_id' => 1, 'oom_disabled' => false, 'memory' => 1024, 'swap' => 0, 'io' => 500, 'cpu' => 100, 'threads' => null, 'disk' => 2048, 'database_limit' => 2, 'allocation_limit' => 3, 'backup_limit' => 4, 'add_allocation_ids' => [4], 'remove_allocation_ids' => [2]]]]]],
         'write servers databases store' => [['redact' => ['password'], 'requests' => [['POST', ADMIN.'/servers/1/databases', ['database' => 'admindb', 'remote' => '%', 'database_host_id' => 1, 'max_connections' => 25]]]]],
         'write servers databases rotate password' => [['redact' => ['password'], 'requests' => [['POST', ADMIN.'/servers/1/databases/1/rotate-password']]]],
         'write servers details' => [['requests' => [['PUT', ADMIN.'/servers/1/details', ['name' => 'Survival Admin', 'owner_id' => World::OWNER, 'external_id' => 'ext-survival-admin', 'description' => 'Updated by an admin.']]]]],
-        'write servers startup' => [['requests' => [['PUT', ADMIN.'/servers/1/startup', ['startup' => 'java -jar {{SERVER_JARFILE}}', 'egg_id' => 1, 'docker_image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => true, 'environment' => [...$environment, 'SERVER_JARFILE' => 'renamed.jar']]]]]],
+        'write servers startup' => [['requests' => [['PUT', ADMIN.'/servers/1/startup', $startup]]]],
+        'write servers startup tag check' => [['requests' => [
+            ['PUT', ADMIN.'/servers/1/startup', [...$startup, 'egg_id' => 3]],
+            ['PUT', ADMIN.'/servers/1/startup', [...$startup, 'egg_id' => 3, 'ignore_tags' => true]],
+        ]]],
         'write tags store' => [['requests' => [['POST', ADMIN.'/tags', ['name' => 'Created Tag', 'slug' => 'created-tag', 'color' => '#123456']]]]],
         'write tags update' => [['requests' => [['PUT', ADMIN.'/tags/2', ['name' => 'Premium Plus', 'slug' => 'premium-plus', 'color' => '#654321']]]]],
         'write users store' => [['requests' => [['POST', ADMIN.'/users', ['username' => 'created', 'email' => 'created@example.test', 'name_first' => 'Cre', 'name_last' => 'Ated', 'external_id' => 'ext-created']]]]],

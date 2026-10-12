@@ -38,6 +38,7 @@ class TransferController extends AdminApiController
     #[BodyParam('node_id', 'integer', 'The destination node ID.', required: true, example: 2)]
     #[BodyParam('allocation_id', 'integer', 'The primary allocation ID on the destination node.', required: true, example: 10)]
     #[BodyParam('allocation_additional', 'integer[]', 'Additional allocation IDs on the destination node.', required: false, example: [11, 12])]
+    #[BodyParam('ignore_tags', 'boolean', 'Whether to move the server to a node whose egg tags its egg does not share.', required: false, example: false)]
     #[ScribeResponse(status: 204, description: 'Server transfer started.')]
     #[ScribeResponse(self::TRANSFER_NOT_VIABLE_ERROR, status: 400, description: 'The destination node cannot fit the server or the server cannot currently be transferred.')]
     public function __invoke(TransferServerRequest $request, InitiatesTransfers $transfers, Server $server): Response
