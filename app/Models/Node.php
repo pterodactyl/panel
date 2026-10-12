@@ -71,8 +71,7 @@ class Node extends Model implements Identifiable
     use Notifiable;
 
     /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
+     * The resource name for this model in API responses.
      */
     public const string RESOURCE_NAME = 'node';
 

@@ -279,7 +279,7 @@ test('responses answer 200 unless the controller asks for another status', funct
 
 test('resources nest only resources of their own api', function (): void {
     expect(fn () => render(new ApplicationFixtureResource(['id' => 1]), '/?include=admin'))
-        ->toThrow(\Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException::class);
+        ->toThrow(\Pterodactyl\Exceptions\Resource\InvalidResourceLevelException::class);
 });
 
 test('api resources never wrap their response while wings resources keep laravel wrapping', function (): void {

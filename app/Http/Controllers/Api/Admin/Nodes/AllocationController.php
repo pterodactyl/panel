@@ -57,7 +57,7 @@ class AllocationController extends AdminApiController
     #[ResponseFromResource(AllocationResource::class, Allocation::class, description: 'Allocations returned.', collection: true, resourceKey: 'allocation', paginate: 50)]
     public function index(GetAllocationsRequest $request, Node $node): ApiResourceCollection
     {
-        // Eager-load the owning server so the transformer avoids an N+1 on server name.
+        // Eager-load the owning server so the resource avoids an N+1 on server name.
         $query = $node->allocations()->with('server');
 
         // An empty filter[server_id] reaches us as null because of ConvertEmptyStringsToNull,

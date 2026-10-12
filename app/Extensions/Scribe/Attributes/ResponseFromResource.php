@@ -8,9 +8,8 @@ use Attribute;
 use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 
 /**
- * Documents a response rendered by one of our API resources, the way #[ResponseFromTransformer]
- * documents a Fractal one: the example is rendered from a factory model with the given
- * includes, object name and meta.
+ * Documents a response rendered by one of our API resources: the example is rendered from a
+ * factory model with the given includes, object name and meta.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_FUNCTION | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class ResponseFromResource extends ResponseFromApiResource

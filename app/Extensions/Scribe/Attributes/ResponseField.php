@@ -8,8 +8,8 @@ use Attribute;
 use Knuckles\Scribe\Attributes\ResponseField as BaseResponseField;
 
 /**
- * Declares schema metadata for one field of a transformer's output, placed on
- * the transformer class itself so the OpenAPI schema stays next to the code
+ * Declares schema metadata for one field of an API resource's attributes, placed on
+ * the resource class itself so the OpenAPI schema stays next to the code
  * that produces the field. Field names are relative to the attributes object
  * and may use dot paths (e.g. "feature_limits.databases").
  */

@@ -23,12 +23,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Knuckles\Scribe\Scribe;
-use League\Fractal\Manager;
 use Pterodactyl\Enum\ResourceLimit;
 use Pterodactyl\Extensions\Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Pterodactyl\Extensions\Scribe\Support\PathParameterNames;
-use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
-use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Backup;
@@ -129,10 +126,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(EnvironmentService::class);
 
         $this->app->extend('auth.password', fn (): PasswordBrokerManager => new PasswordBrokerManager($this->app));
-
-        $this->app->bind(fn (): Fractal => (new Fractal(new Manager))
-            ->parseIncludes(IncludeSet::fromRequest($this->app->make(Request::class))->requestedNames())
-            ->limitRecursion(2));
 
         // Only load the settings service provider if the environment
         // is configured to allow it.

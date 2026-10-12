@@ -7,7 +7,7 @@ namespace Pterodactyl\Http\Resources\Api\Client;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Pterodactyl\Data\ServerState;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Exceptions\Resource\InvalidResourceLevelException;
 use Pterodactyl\Http\Resources\Api\ApiResource;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
@@ -55,11 +55,11 @@ abstract class ClientResource extends ApiResource
      * @param  Model|ServerState|array<mixed>  $data
      * @return TNested
      *
-     * @throws InvalidTransformerLevelException
+     * @throws InvalidResourceLevelException
      */
     protected function makeResource(string $resource, Model|ServerState|array $data): ApiResource
     {
-        throw_unless(is_subclass_of($resource, self::class), InvalidTransformerLevelException::class, "Resource [$resource] must extend ".self::class.'.');
+        throw_unless(is_subclass_of($resource, self::class), InvalidResourceLevelException::class, "Resource [$resource] must extend ".self::class.'.');
 
         return parent::makeResource($resource, $data);
     }

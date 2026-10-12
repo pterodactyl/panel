@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Knuckles\Camel\Extraction\Response as ExtractedResponse;
 use Knuckles\Camel\Output\OutputEndpointData;
-use Knuckles\Scribe\Attributes\ResponseFromTransformer;
 use Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
@@ -38,7 +37,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     private ?array $operationIds = null;
 
     /** @var array<string, class-string>|null */
-    private ?array $transformerClasses = null;
+    private ?array $resourceClasses = null;
 
     /** @var array<string, true>|null */
     private ?array $sessionOnlyEndpoints = null;
@@ -159,9 +158,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'AdminNodeSystemInformationResponse' => $this->adminNodeSystemInformationSchema(),
             'AdminNodeUtilizationResponse' => $this->adminNodeUtilizationSchema(),
             'AdminServerVariableAttributes' => $this->adminServerVariableAttributesSchema(),
-            'AdminServerVariableListResponse' => $this->fractalListSchema('AdminServerVariableResource'),
-            'AdminServerVariablePaginatedResponse' => $this->fractalPaginatedSchema('AdminServerVariableResource'),
-            'AdminServerVariableResource' => $this->fractalItemSchema('server_variable', 'AdminServerVariableAttributes'),
+            'AdminServerVariableListResponse' => $this->resourceListSchema('AdminServerVariableResource'),
+            'AdminServerVariablePaginatedResponse' => $this->resourcePaginatedSchema('AdminServerVariableResource'),
+            'AdminServerVariableResource' => $this->resourceItemSchema('server_variable', 'AdminServerVariableAttributes'),
             'AdminSettingsResponse' => $this->adminSettingsSchema(),
             'AdminVersionInformationResponse' => $this->adminVersionInformationSchema(),
             'AuthLoginCheckpointResponse' => $this->authLoginCheckpointResponseSchema(),
@@ -184,12 +183,12 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ];
         foreach ($groupedEndpoints as $group) {
             foreach ($group['endpoints'] as $endpoint) {
-                $fractal = $this->fractalResponse($endpoint);
-                if ($fractal === null) {
+                $envelope = $this->exampleEnvelope($endpoint);
+                if ($envelope === null) {
                     continue;
                 }
 
-                foreach ($this->fractalComponents($endpoint, $fractal['resource']) as $component) {
+                foreach ($this->resourceComponents($endpoint, $envelope['resource']) as $component) {
                     $knownComponents[$component] = true;
                 }
             }
@@ -197,15 +196,15 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
         foreach ($groupedEndpoints as $group) {
             foreach ($group['endpoints'] as $endpoint) {
-                $fractal = $this->fractalResponse($endpoint);
-                if ($fractal === null) {
+                $envelope = $this->exampleEnvelope($endpoint);
+                if ($envelope === null) {
                     continue;
                 }
 
-                $components = $this->fractalComponents($endpoint, $fractal['resource']);
+                $components = $this->resourceComponents($endpoint, $envelope['resource']);
                 $attributes = $components['attributes'];
                 if (! isset($schemas[$attributes])) {
-                    $attributeValues = $fractal['attributes'];
+                    $attributeValues = $envelope['attributes'];
                     if (str_ends_with($attributes, 'EggAttributes') && is_array($attributeValues['config'] ?? null)) {
                         foreach (['files', 'startup', 'logs', 'file_denylist'] as $declaredField) {
                             $attributeValues['config'][$declaredField] = [];
@@ -220,7 +219,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 }
 
                 $this->applyDeclaredFieldMetadata($schemas[$attributes], $endpoint);
-                if (isset($fractal['attributes']['extensions'])) {
+                if (isset($envelope['attributes']['extensions'])) {
                     $this->addExtensionFieldsToAttributesSchema($schemas[$attributes]);
                 }
 
@@ -234,20 +233,20 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                     }
                 }
 
-                if (isset($fractal['relationships'])) {
-                    $this->addRelationshipsToAttributesSchema($schemas[$attributes], $endpoint, $fractal['relationships'], $knownComponents);
+                if (isset($envelope['relationships'])) {
+                    $this->addRelationshipsToAttributesSchema($schemas[$attributes], $endpoint, $envelope['relationships'], $knownComponents);
                 }
 
-                $schemas[$components['item']] ??= $this->fractalItemSchema($fractal['resource'], $attributes);
-                if (isset($fractal['meta'])) {
-                    $this->addMetaToItemSchema($schemas[$components['item']], $fractal['meta']);
+                $schemas[$components['item']] ??= $this->resourceItemSchema($envelope['resource'], $attributes);
+                if (isset($envelope['meta'])) {
+                    $this->addMetaToItemSchema($schemas[$components['item']], $envelope['meta']);
                 }
 
-                $schemas[$components['list']] ??= $this->fractalListSchema($components['item']);
-                $schemas[$components['page']] ??= $this->fractalPaginatedSchema($components['item']);
-                if (isset($fractal['top_meta'])) {
-                    $this->addMetaToListSchema($schemas[$components['list']], $fractal['top_meta']);
-                    $this->addMetaToPaginatedSchema($schemas[$components['page']], $fractal['top_meta']);
+                $schemas[$components['list']] ??= $this->resourceListSchema($components['item']);
+                $schemas[$components['page']] ??= $this->resourcePaginatedSchema($components['item']);
+                if (isset($envelope['top_meta'])) {
+                    $this->addMetaToListSchema($schemas[$components['list']], $envelope['top_meta']);
+                    $this->addMetaToPaginatedSchema($schemas[$components['page']], $envelope['top_meta']);
                 }
             }
         }
@@ -259,17 +258,17 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
     /**
      * Applies field metadata declared as ResponseField attributes - on the
-     * endpoint's transformer or API resource class, or on the controller method itself - to a
-     * fractal attributes schema. This is how nullability, enums, and map/union
+     * endpoint's API resource class, or on the controller method itself - to an
+     * attributes schema. This is how nullability, enums, and map/union
      * shapes that cannot be inferred from a single example reach the spec.
      *
      * @param  array<mixed>  $schema
      */
     private function applyDeclaredFieldMetadata(array &$schema, OutputEndpointData $endpoint): void
     {
-        $transformer = $this->transformerClasses()[$this->anonymousEndpointKey(mb_strtoupper($endpoint->httpMethods[0]), $endpoint->uri)] ?? null;
-        if ($transformer !== null) {
-            foreach ((new ReflectionClass($transformer))->getAttributes(ResponseField::class) as $attribute) {
+        $resourceClass = $this->resourceClasses()[$this->anonymousEndpointKey(mb_strtoupper($endpoint->httpMethods[0]), $endpoint->uri)] ?? null;
+        if ($resourceClass !== null) {
+            foreach ((new ReflectionClass($resourceClass))->getAttributes(ResponseField::class) as $attribute) {
                 $field = $attribute->newInstance();
                 $schema = $this->applyFieldMetadata($schema, $field->name, [
                     'description' => $field->description,
@@ -522,14 +521,13 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /**
-     * @return array<string, class-string> map of "METHOD uri" to the transformer or API
-     *                                     resource class declared by the route action's
-     *                                     attribute
+     * @return array<string, class-string> map of "METHOD uri" to the API resource class
+     *                                     declared by the route action's attribute
      */
-    private function transformerClasses(): array
+    private function resourceClasses(): array
     {
-        if ($this->transformerClasses !== null) {
-            return $this->transformerClasses;
+        if ($this->resourceClasses !== null) {
+            return $this->resourceClasses;
         }
 
         $map = [];
@@ -540,17 +538,13 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 continue;
             }
 
-            $reflection = new ReflectionMethod($class, $method);
-            $attributes = [
-                ...$reflection->getAttributes(ResponseFromTransformer::class, ReflectionAttribute::IS_INSTANCEOF),
-                ...$reflection->getAttributes(ResponseFromResource::class, ReflectionAttribute::IS_INSTANCEOF),
-            ];
+            $attributes = (new ReflectionMethod($class, $method))->getAttributes(ResponseFromResource::class, ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes === []) {
                 continue;
             }
 
-            $transformer = $attributes[0]->newInstance()->name;
-            if (! class_exists($transformer)) {
+            $resourceClass = $attributes[0]->newInstance()->name;
+            if (! class_exists($resourceClass)) {
                 continue;
             }
 
@@ -560,12 +554,12 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 }
 
                 if ($httpMethod !== 'HEAD' && $httpMethod !== 'OPTIONS') {
-                    $map[$this->anonymousEndpointKey($httpMethod, $route->uri())] = $transformer;
+                    $map[$this->anonymousEndpointKey($httpMethod, $route->uri())] = $resourceClass;
                 }
             }
         }
 
-        return $this->transformerClasses = $map;
+        return $this->resourceClasses = $map;
     }
 
     /** @return array<mixed> */
@@ -843,15 +837,15 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
      */
     private function replaceSuccessResponseSchema(array &$pathItem, OutputEndpointData $endpoint): void
     {
-        $fractal = $this->fractalResponse($endpoint);
-        if ($fractal === null) {
+        $envelope = $this->exampleEnvelope($endpoint);
+        if ($envelope === null) {
             return;
         }
 
-        $components = $this->fractalComponents($endpoint, $fractal['resource']);
+        $components = $this->resourceComponents($endpoint, $envelope['resource']);
         $schema = match (true) {
-            $fractal['paginated'] => $components['page'],
-            $fractal['collection'] => $components['list'],
+            $envelope['paginated'] => $components['page'],
+            $envelope['collection'] => $components['list'],
             default => $components['item'],
         };
 
@@ -1710,15 +1704,15 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     /**
      * @return array{attributes: string, item: string, list: string, page: string}
      */
-    private function fractalComponents(OutputEndpointData $endpoint, string $resource): array
+    private function resourceComponents(OutputEndpointData $endpoint, string $resource): array
     {
-        return $this->fractalComponentNames($this->surface($endpoint), $resource);
+        return $this->resourceComponentNames($this->surface($endpoint), $resource);
     }
 
     /**
      * @return array{attributes: string, item: string, list: string, page: string}
      */
-    private function fractalComponentNames(string $surface, string $resource): array
+    private function resourceComponentNames(string $surface, string $resource): array
     {
         $name = Str::of(ucfirst($surface).' '.$resource)
             ->studly()
@@ -1816,7 +1810,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         $componentKey = $kind === 'list' ? 'list' : 'item';
 
         foreach ($this->relationshipResourceCandidates($relationship, $resource) as $candidate) {
-            $components = $this->fractalComponentNames($this->surface($endpoint), $candidate);
+            $components = $this->resourceComponentNames($this->surface($endpoint), $candidate);
             if (isset($knownComponents[$components[$componentKey]])) {
                 // Any include resolves to a null resource when the viewer lacks
                 // permission for it, so relationships are documented as a union.
@@ -1873,7 +1867,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /** @return array<mixed> */
-    private function fractalItemSchema(string $resource, string $attributesSchema): array
+    private function resourceItemSchema(string $resource, string $attributesSchema): array
     {
         return [
             'type' => 'object',
@@ -1962,7 +1956,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /** @return array{type: string, required: list<string>, properties: array<string, array<string, mixed>>} */
-    private function fractalListSchema(string $itemSchema): array
+    private function resourceListSchema(string $itemSchema): array
     {
         return [
             'type' => 'object',
@@ -1981,9 +1975,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /** @return array<mixed> */
-    private function fractalPaginatedSchema(string $itemSchema): array
+    private function resourcePaginatedSchema(string $itemSchema): array
     {
-        $schema = $this->fractalListSchema($itemSchema);
+        $schema = $this->resourceListSchema($itemSchema);
         $schema['required'][] = 'meta';
         $schema['properties']['meta'] = [
             'type' => 'object',
@@ -2576,7 +2570,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     /**
      * @return array{resource: string, attributes: array<mixed>, relationships?: array<mixed>, collection: bool, paginated: bool, meta?: array<mixed>, top_meta?: array<mixed>}|null
      */
-    private function fractalResponse(OutputEndpointData $endpoint): ?array
+    private function exampleEnvelope(OutputEndpointData $endpoint): ?array
     {
         foreach ($endpoint->responses as $response) {
             if (! $response instanceof ExtractedResponse) {
@@ -2608,7 +2602,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 $attributes = $item['attributes'];
                 $relationships = $this->extractRelationships($attributes);
                 $pagination = $decoded['meta'] ?? null;
-                $fractal = [
+                $envelope = [
                     'resource' => is_string($item['object'] ?? null) ? $item['object'] : 'resource',
                     'attributes' => $attributes,
                     'collection' => true,
@@ -2616,28 +2610,28 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
 
                 if (isset($item['meta']) && is_array($item['meta'])) {
-                    $fractal['meta'] = $item['meta'];
+                    $envelope['meta'] = $item['meta'];
                 }
 
                 if (isset($decoded['meta']) && is_array($decoded['meta'])) {
                     $topMeta = $decoded['meta'];
                     unset($topMeta['pagination']);
                     if ($topMeta !== []) {
-                        $fractal['top_meta'] = $topMeta;
+                        $envelope['top_meta'] = $topMeta;
                     }
                 }
 
                 if ($relationships !== null) {
-                    $fractal['relationships'] = $relationships;
+                    $envelope['relationships'] = $relationships;
                 }
 
-                return $fractal;
+                return $envelope;
             }
 
             if (is_string($decoded['object'] ?? null) && is_array($decoded['attributes'] ?? null)) {
                 $attributes = $decoded['attributes'];
                 $relationships = $this->extractRelationships($attributes);
-                $fractal = [
+                $envelope = [
                     'resource' => $decoded['object'],
                     'attributes' => $attributes,
                     'collection' => false,
@@ -2645,14 +2639,14 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ];
 
                 if (isset($decoded['meta']) && is_array($decoded['meta'])) {
-                    $fractal['meta'] = $decoded['meta'];
+                    $envelope['meta'] = $decoded['meta'];
                 }
 
                 if ($relationships !== null) {
-                    $fractal['relationships'] = $relationships;
+                    $envelope['relationships'] = $relationships;
                 }
 
-                return $fractal;
+                return $envelope;
             }
         }
 

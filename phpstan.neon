@@ -60,5 +60,3 @@ parameters:
             identifier: argument.type
             message: '#usePersonalAccessTokenModel#'
             path: app/Providers/AuthServiceProvider.php
-    excludePaths:
-        - app/Extensions/Spatie/Fractalistic/Fractal.php

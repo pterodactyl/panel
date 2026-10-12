@@ -208,8 +208,8 @@ arch('traits')
     ->expect('Pterodactyl\Traits')
     ->toBeTraits();
 
-// API resources render Fractal's exact output: dropping missing values would also turn
-// arrays with numeric keys into lists, so Laravel's conditional attributes are off limits.
+// Dropping missing values would also turn arrays with numeric keys into lists, so Laravel's
+// conditional attributes are off limits in API resources.
 arch('api resources never drop missing values')
     ->expect('Pterodactyl\Http\Resources\Api')
     ->not->toUse([MissingValue::class, MergeValue::class, PotentiallyMissing::class]);

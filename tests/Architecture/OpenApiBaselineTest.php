@@ -11,8 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /*
  * Pins the generated OpenAPI document to a committed baseline, so changing how responses are
- * produced (the Fractal to API Resources port) cannot change the documented contract without
- * a visible diff. Regenerate the specification and the clients first, then run this test:
+ * produced cannot change the documented contract without a visible diff. Regenerate the specification and the clients first, then run this test:
  *
  *     npm run api:refresh && npm run sdk:generate
  *     composer docs:openapi:baseline

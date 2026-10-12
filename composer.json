@@ -40,7 +40,6 @@
         "pragmarx/google2fa": "~8.0.3",
         "predis/predis": "^3.3.0",
         "s1lentium/iptools": "~1.2.0",
-        "spatie/laravel-fractal": "^6.3.2",
         "spatie/laravel-query-builder": "^6.3.6",
         "symfony/http-client": "^7.4.0",
         "symfony/mailgun-mailer": "^7.4.0",

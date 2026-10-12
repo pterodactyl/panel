@@ -25,9 +25,8 @@ use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
 use Pterodactyl\Tests\Integration\Api\Snapshots\SnapshotWorld as World;
 
 /*
- * Golden snapshots of every Fractal-backed Admin API response, recorded before the Fractal
- * to API Resources port so the port can prove it changed no byte. Each dataset entry is one
- * scenario: a fresh deterministic world (see SnapshotWorld) acting as its root administrator,
+ * Golden snapshots of every Admin API response that renders a resource, so a change to how
+ * responses are built cannot change a byte unnoticed. Each dataset entry is one scenario: a fresh deterministic world (see SnapshotWorld) acting as its root administrator,
  * and the list of requests whose raw responses make up its snapshot file.
  */
 

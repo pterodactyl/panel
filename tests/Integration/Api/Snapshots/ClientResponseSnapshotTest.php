@@ -9,9 +9,8 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 use Pterodactyl\Tests\Integration\Api\Snapshots\SnapshotWorld as World;
 
 /*
- * Golden snapshots of every Fractal-backed Client API response, recorded before the Fractal
- * to API Resources port so the port can prove it changed no byte. Each dataset entry is one
- * scenario: a fresh deterministic world (see SnapshotWorld), one user (the server owner unless
+ * Golden snapshots of every Client API response that renders a resource, so a change to how
+ * responses are built cannot change a byte unnoticed. Each dataset entry is one scenario: a fresh deterministic world (see SnapshotWorld), one user (the server owner unless
  * the scenario names another), and the list of requests whose raw responses make up its
  * snapshot file. Subusers without the permissions that gate an include get their own
  * scenarios, since those includes become null resources or are narrowed for them.

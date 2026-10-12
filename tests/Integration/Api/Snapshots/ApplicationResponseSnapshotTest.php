@@ -20,9 +20,8 @@ use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestC
 use Pterodactyl\Tests\Integration\Api\Snapshots\SnapshotWorld as World;
 
 /*
- * Golden snapshots of every Fractal-backed Application API response, recorded before the
- * Fractal to API Resources port so the port can prove it changed no byte. Each dataset entry
- * is one scenario: a fresh deterministic world (see SnapshotWorld), one actor, and the list
+ * Golden snapshots of every Application API response that renders a resource, so a change to
+ * how responses are built cannot change a byte unnoticed. Each dataset entry is one scenario: a fresh deterministic world (see SnapshotWorld), one actor, and the list
  * of requests whose raw responses make up its snapshot file.
  */
 
