@@ -1,0 +1,135 @@
+CHANGELOG.md
+  s_4cabae41bceed9::t_9da1ff0d6b1cf7 39
+packages/sdk/docs-samples/level1-css/extension.json
+  s_4cabae41bceed9::t_f261029cba27ee 1-12
+packages/sdk/docs-samples/level3-sidebar/src/theme.tsx
+  s_4cabae41bceed9::t_5059ff4c109cdf 1-8
+packages/sdk/docs-samples/settings/src/AuthLayout.tsx
+  s_4cabae41bceed9::t_8a1d5532d7f6db 1-28
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_4cabae41bceed9::t_8359cd163de39e 146
+packages/sdk/docs-samples/level4-console/src/views/ConsolePage.tsx
+  s_4cabae41bceed9::t_15f4aa59e5d99e 1-34
+packages/sdk/docs-samples/level4-console/src/views/ServerLayout.tsx
+  s_4cabae41bceed9::t_97f1a4eb546c2e 1-15
+packages/sdk/docs-samples/level3-sidebar/src/theme.spec.tsx
+  s_4cabae41bceed9::t_7aae73b592cbe6 1-33
+packages/sdk/docs-samples/level3-sidebar/src/views/Shell.tsx
+  s_4cabae41bceed9::t_1df19a8ae95351 41
+  s_4cabae41bceed9::t_7d534a0267dace 49-53
+  s_4cabae41bceed9::t_8562cc0ef9b9e4 1-40,42-48,54-64
+packages/sdk/docs-samples/snippets/views.tsx
+  s_4cabae41bceed9::t_785578b04f2a71 1,38
+packages/sdk/docs-samples/level2-skins/src/theme.spec.tsx
+  s_4cabae41bceed9::t_a1274841bb9005 1-31
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_4cabae41bceed9::t_9c4d69716f6da7 42
+packages/sdk/package.json
+  s_4cabae41bceed9::t_cbfeed30f0443f 48
+app/Services/Extensions/Scaffolding/stubs/theme-css.stub
+  s_4cabae41bceed9::t_b31346efcef81e 3-4
+packages/sdk/docs-samples/settings/extension.json
+  s_4cabae41bceed9::t_8097ee7780c52a 21-22
+  s_4cabae41bceed9::t_1f3c0b3df8fc19 1-20,23-25
+packages/sdk/docs-samples/tsconfig.json
+  s_4cabae41bceed9::t_a9d747ea7a99c9 2-3
+packages/sdk/README.md
+  s_4cabae41bceed9::t_0529c21f053cf0 934
+  s_4cabae41bceed9::t_9810e5b5709c99 947-949
+  s_4cabae41bceed9::t_90727d33cd3045 859-860
+  s_4cabae41bceed9::t_db1dc873590e4f 16
+  s_4cabae41bceed9::t_2e848c76ef6798 937
+  s_4cabae41bceed9::t_338c529c79fdd1 741-744
+  s_4cabae41bceed9::t_ad19d4d089d98b 822
+  s_4cabae41bceed9::t_c35b3f4c7e0399 944-946,951-953
+  s_4cabae41bceed9::t_e8f28fefd53f98 153
+packages/sdk/docs-samples/settings/src/theme.tsx
+  s_4cabae41bceed9::t_13196ee293cd32 1-5
+packages/sdk/docs-samples/level2-skins/src/theme.css
+  s_4cabae41bceed9::t_54925df24436b3 4
+  s_4cabae41bceed9::t_98411db73410ad 1-3,5-15
+packages/sdk/docs-samples/level4-console/src/theme.spec.tsx
+  s_4cabae41bceed9::t_b8a79181cc091e 1,9-20
+  s_4cabae41bceed9::t_a9db31888dd5f6 6
+  s_4cabae41bceed9::t_396d5ba8f26446 2-5,7-8,21-29,31-42
+  s_4cabae41bceed9::t_5a8107fa9c265e 30
+packages/sdk/docs-samples/settings/src/theme-types.ts
+  s_4cabae41bceed9::t_e8d40462053382 1-17
+packages/sdk/docs-samples/level3-sidebar/src/views/AccountLayout.tsx
+  s_4cabae41bceed9::t_f8beff2b6e05de 2,25
+  s_4cabae41bceed9::t_7d534a0267dace 13-16
+  s_4cabae41bceed9::t_37eada9adcbf93 1,3-12,17-24,26-29
+packages/sdk/docs-samples/level1-css/vite.config.mjs
+  s_4cabae41bceed9::t_95052fbbf5d752 1-4
+packages/sdk/docs-samples/level2-skins/src/theme.tsx
+  s_4cabae41bceed9::t_126afdc9787acf 1-4
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_cb226272cc83fb 6-8,11
+  s_4cabae41bceed9::t_b1b4e5e7d973dd 437-440,442-443,445-451,454
+  s_4cabae41bceed9::t_c01dbb9bfe2379 133-134,142,149-153,157,161-163,175-176
+  s_4cabae41bceed9::t_04b8d95d95b578 95-120
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_0acacd57207c3d 344-345
+  s_4cabae41bceed9::t_a629878a429cbb 181-183
+  s_4cabae41bceed9::t_d9594545d4cab8 804
+  s_4cabae41bceed9::t_c830a9375344a2 111-160,164-177,198-206,216-221,228-246,252-269,273-277,289-294,308,310-320,331-341,383-392,415-425,427-435,437-440,454-502,508-519,549-554,562-571,613-629,638-673,690-710,713-716,724-735,759-761,852-876,953-1059,1065-1094,1113-1256
+  s_4cabae41bceed9::t_84fd0700670e5e 3-4,14,31,33-34,46-47,59,63-64,74-76,78-81,85-87,89-90,95-97,102-103,163,178-180,189-190,192-195,213,224-225,249,286,302-305,325-328,351,367-368,378-380,395,399-402,406-407,409-412,443-445,449-450,526,532-533,557,559,579,588-590,592-593,598-603,609-610,633-635,720-721,747-749,754-756,786,788,792-795,797-798,830-834,843-847,881-883,889-891,894-895,903,907-909,915-922,926-930,939-940,949-950,1108-1109,1268-1269,1271-1283
+  s_4cabae41bceed9::t_292493fccf4065 309,711-712
+  s_4cabae41bceed9::t_791b138d000164 838-840
+  s_4cabae41bceed9::t_1008f1740bf9f5 802-803,805-817
+  s_4cabae41bceed9::t_75479e8700a35f 910-911
+  s_4cabae41bceed9::t_9b19cdaa526663 544-546
+  s_4cabae41bceed9::t_30f36d9ab7abf0 21-22
+  s_4cabae41bceed9::t_ed7f1d0628068e 527
+  s_4cabae41bceed9::t_c4223382782780 535-536
+  s_4cabae41bceed9::t_6d35ff93ae113e 362-363
+  s_4cabae41bceed9::t_ebb9451931ea96 1270
+  s_4cabae41bceed9::t_0f7884947f3bfc 1-2,5-13,15-20,23-30,32,35-45,48-56,58,60-62,65-73,77,82-84,88,91-94,98-101,104-110,161-162,184-188,191,196-197,207-212,214-215,222-223,226-227,247-248,250-251,278-285,287-288,295-301,306-307,321-324,329-330,342-343,346-350,352-361,364-366,369-377,381-382,393-394,396-398,403-405,408,413-414,441-442,446-448,451-453,520-525,528-531,534,537-543,547-548,555-556,558,560-561,572-578,580,583-587,591,594-597,604-608,611-612,630-632,636-637,674-689,717-719,722-723,736-746,751-753,757-758,762-768,771-785,787,789-791,796,799-801,818-829,835-837,841-842,848-851,877-880,884-888,892-893,896-902,904-906,912-914,923-925,931-938,941-948,951-952,1060-1064,1095-1107,1110-1112,1257-1267
+  s_4cabae41bceed9::t_f6fb89196b020b 57
+  s_4cabae41bceed9::t_0453e007b8b978 750
+  s_4cabae41bceed9::t_bcfb64874a88b5 769-770
+  s_4cabae41bceed9::t_7d534a0267dace 270-272,426,436,503-507
+  s_4cabae41bceed9::t_a43bf85881f859 581-582
+packages/sdk/docs-samples/level1-css/src/theme.css
+  s_4cabae41bceed9::t_6b7d1b9d23829b 1-48
+packages/sdk/docs-samples/level4-console/src/theme.tsx
+  s_4cabae41bceed9::t_2ee6168d424ac0 1-9
+packages/sdk/docs-samples/vitest.config.ts
+  s_4cabae41bceed9::t_f849a0782d4a2f 5
+packages/sdk/docs-samples.spec.ts
+  s_4cabae41bceed9::t_d37b62d6405f3e 10-12,14-15,18-25,31,34-35
+  s_4cabae41bceed9::t_b308cedee5c41a 32-33
+  s_488821bd68e9e0::t_b884448ae7d362 36
+app/Services/Extensions/Scaffolding/stubs/theme-readme.stub
+  s_4cabae41bceed9::t_7c620487618083 3-12,18-19,48-49
+packages/sdk/docs-samples/level2-skins/src/skins.tsx
+  s_4cabae41bceed9::t_7d534a0267dace 48-50
+  s_4cabae41bceed9::t_6c1a64208abfd4 2-47,51-84
+  s_4cabae41bceed9::t_8441c9d8c7203c 1
+packages/sdk/docs-samples/settings/src/theme.css
+  s_4cabae41bceed9::t_051e34e89f98e1 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d4c8a8af5036fcbb1c371b566d3a6db1031ba2f8",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
