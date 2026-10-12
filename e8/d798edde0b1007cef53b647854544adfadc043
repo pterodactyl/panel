@@ -1,0 +1,111 @@
+tests/Fixtures/api/client/servers/databases.rotate-password.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-28
+tests/Fixtures/api/client/servers/databases.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-28
+tests/Fixtures/api/client/servers/databases.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-92
+tests/Fixtures/api/client/servers/databases.rotate-password.as-limited-subuser.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/client/servers/files.compress.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/client/servers/schedules.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-94
+tests/Fixtures/api/client/servers/users.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-24
+tests/Fixtures/api/client/servers/startup.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-43
+tests/Fixtures/api/client/account/activity.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-341
+tests/Fixtures/api/client/servers/startup/variable.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-22
+tests/Integration/Api/Fixtures/ClientApiFixturesTest.php
+  s_4cabae41bceed9::t_3bf21648cfb704 1-143
+tests/Integration/Api/Fixtures/ApiFixtureWorld.php
+  s_4cabae41bceed9::t_5350f101018490 18,370,410-414,416
+  s_4cabae41bceed9::t_fc6a48bb6b0d90 225-229,262
+  s_4cabae41bceed9::t_40aa42a95ca901 136-139,152
+  s_4cabae41bceed9::t_cf5e313f8fc148 5,12,22,58-60,62-63,65,111,114,153,167,172-174,176,179,182-183,185,187-191,193-195,198,232,240,245-251,255-256
+  s_4cabae41bceed9::t_a8a80fa6aa673a 1-4,6-11,13-17,19-21,23-57,61,64,66-110,112-113,115-135,140-151,154-166,168-171,175,177-178,180-181,184,186,192,196-197,199-224,230-231,233-239,241-244,252-254,257-261,263-369,371-409,415,417-780
+tests/Fixtures/api/client/servers/schedules/tasks.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/client/servers.index.as-admin.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-662
+tests/Fixtures/api/client/servers.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-997
+tests/Fixtures/api/client/account/ssh-keys.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/client/servers/activity.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-471
+tests/Fixtures/api/client/servers/network/allocations.primary.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-17
+tests/Fixtures/api/client/servers/network/allocations.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-17
+tests/Fixtures/api/client/servers/schedules.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-33
+tests/Fixtures/api/client/servers/users.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-60
+tests/Fixtures/api/client/servers/resources.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-21
+tests/Fixtures/api/client/servers.as-admin.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-653
+tests/Fixtures/api/client/servers.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-588
+tests/Fixtures/api/client/servers/schedules.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-62
+tests/Fixtures/api/client/servers/backups.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/client/servers/files.list.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-53
+tests/Fixtures/api/client/servers/users.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-59
+tests/Fixtures/api/client/account/ssh-keys.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-15
+tests/Fixtures/api/client/account/api-keys.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-22
+tests/Fixtures/api/client/account.empty.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-70
+tests/Fixtures/api/client/servers/backups.lock.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/client/servers/network/allocations.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-33
+tests/Fixtures/api/client/servers/network/allocations.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-17
+tests/Fixtures/api/client/servers/backups.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-61
+tests/Fixtures/api/client/servers/schedules/tasks.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/client/servers.as-full-subuser.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-751
+tests/Fixtures/api/client/account/api-keys.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-34
+tests/Fixtures/api/client/servers/databases.store.as-limited-subuser.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/client/account.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-18
+tests/Fixtures/api/client/servers/backups.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-166
+tests/Fixtures/api/client/servers/schedules.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-93
+tests/Fixtures/api/client/servers/users.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/client/servers.as-limited-subuser.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-759
+tests/Pest.php
+  s_4cabae41bceed9::t_7ed5874f3b710c 5-6,20-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e8d798edde0b1007cef53b647854544adfadc043",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
