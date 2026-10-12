@@ -7,13 +7,6 @@ namespace Pterodactyl\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 
-/**
- * Pterodactyl\Models\Setting.
- *
- * @property int $id
- * @property string $key
- * @property string $value
- */
 #[Fillable(['key', 'value'])]
 #[WithoutTimestamps]
 class Setting extends Model

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\CarbonImmutable;
 use Database\Factories\EggVariableFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,24 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $egg_id
- * @property string $name
- * @property string $description
- * @property string $env_variable
- * @property string $default_value
- * @property bool $user_viewable
- * @property bool $user_editable
- * @property string $rules
- * @property CarbonImmutable $created_at
- * @property CarbonImmutable $updated_at
- * @property bool $required
- * @property Egg $egg
- * @property ServerVariable $serverVariable
- *
- * The "server_value" variable is only present on the object if you've loaded this model
- * using the server relationship.
- * @property string|null $server_value
+ * @property string|null $server_value only set when loaded through Server::variables()
  */
 #[Guarded(['id', 'created_at', 'updated_at'])]
 class EggVariable extends Model
@@ -38,14 +20,8 @@ class EggVariable extends Model
     /** @use HasFactory<EggVariableFactory> */
     use HasFactory;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'egg_variable';
 
-    /**
-     * Reserved environment variable names.
-     */
     public const string RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
 
     protected $attributes = [
@@ -67,8 +43,6 @@ class EggVariable extends Model
     }
 
     /**
-     * The egg this variable is defined on.
-     *
      * @return BelongsTo<Egg, $this>
      */
     public function egg(): BelongsTo
@@ -77,8 +51,6 @@ class EggVariable extends Model
     }
 
     /**
-     * Return server variables associated with this variable.
-     *
      * @return HasMany<ServerVariable, $this>
      */
     public function serverVariable(): HasMany
@@ -91,6 +63,6 @@ class EggVariable extends Model
      */
     protected function required(): Attribute
     {
-        return Attribute::make(get: fn (): bool => in_array('required', explode('|', $this->rules)));
+        return Attribute::make(get: fn (): bool => in_array('required', explode('|', $this->rules ?? '')));
     }
 }

@@ -47,8 +47,8 @@ class ScheduleResource extends ClientResource
             'only_when_online' => $this->resource->only_when_online,
             'last_run_at' => $this->resource->last_run_at?->toAtomString(),
             'next_run_at' => $this->resource->next_run_at?->toAtomString(),
-            'created_at' => $this->resource->created_at->toAtomString(),
-            'updated_at' => $this->resource->updated_at->toAtomString(),
+            'created_at' => $this->resource->created_at?->toAtomString(),
+            'updated_at' => $this->resource->updated_at?->toAtomString(),
         ];
     }
 

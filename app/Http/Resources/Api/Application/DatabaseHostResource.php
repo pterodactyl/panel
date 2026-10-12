@@ -37,8 +37,8 @@ class DatabaseHostResource extends ApplicationResource
             'port' => $this->resource->port,
             'username' => $this->resource->username,
             'node' => $this->resource->node_id,
-            'created_at' => $this->resource->created_at->toAtomString(),
-            'updated_at' => $this->resource->updated_at->toAtomString(),
+            'created_at' => $this->resource->created_at?->toAtomString(),
+            'updated_at' => $this->resource->updated_at?->toAtomString(),
         ];
     }
 

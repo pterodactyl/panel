@@ -30,7 +30,7 @@ class BackupResource extends ClientResource
             'ignored_files' => $this->resource->ignored_files,
             'checksum' => $this->resource->checksum,
             'bytes' => $this->resource->bytes,
-            'created_at' => $this->resource->created_at->toAtomString(),
+            'created_at' => $this->resource->created_at?->toAtomString(),
             'completed_at' => $this->resource->completed_at ? $this->resource->completed_at->toAtomString() : null,
         ];
     }

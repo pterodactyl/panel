@@ -12,23 +12,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Enum\EggSpecificTags;
 use Pterodactyl\Rules\TagSlug;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string|null $color
- * @property int|null $legacy_nest_id
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Collection|Node[] $nodes
- * @property int|null $nodes_count
- * @property Collection|Egg[] $eggs
- * @property int|null $eggs_count
- */
 #[Fillable([
     'name',
     'slug',
@@ -41,14 +27,9 @@ class Tag extends Model
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'tag';
 
     /**
-     * Fields that are searchable.
-     *
      * @var list<string>
      */
     public static array $searchableColumns = [
@@ -90,8 +71,6 @@ class Tag extends Model
     }
 
     /**
-     * The eggs carrying this tag.
-     *
      * @return MorphToMany<Egg, $this>
      */
     public function eggs(): MorphToMany

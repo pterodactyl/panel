@@ -9,26 +9,12 @@ use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 
-/**
- * @property int $id
- * @property string $uuid
- * @property string $name
- * @property string $description
- * @property string $source
- * @property string $target
- * @property bool $read_only
- * @property bool $user_mountable
- * @property Egg[]|Collection $eggs
- * @property Node[]|Collection $nodes
- * @property Server[]|Collection $servers
- */
 #[Attributes\Identifiable('moun')]
 #[Guarded(['id', 'uuid'])]
 #[WithoutTimestamps]
@@ -39,14 +25,9 @@ class Mount extends Model implements Identifiable
 
     use HasRealtimeIdentifier;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'mount';
 
     /**
-     * Blacklisted source paths.
-     *
      * @var list<string>
      */
     public static array $invalidSourcePaths = [
@@ -65,8 +46,6 @@ class Mount extends Model implements Identifiable
     ];
 
     /**
-     * Blacklisted target paths.
-     *
      * @var list<string>
      */
     public static array $invalidTargetPaths = [
@@ -111,8 +90,6 @@ class Mount extends Model implements Identifiable
     }
 
     /**
-     * Returns all eggs that have this mount assigned.
-     *
      * @return BelongsToMany<Egg, $this>
      */
     public function eggs(): BelongsToMany
@@ -121,8 +98,6 @@ class Mount extends Model implements Identifiable
     }
 
     /**
-     * Returns all nodes that have this mount assigned.
-     *
      * @return BelongsToMany<Node, $this>
      */
     public function nodes(): BelongsToMany
@@ -131,8 +106,6 @@ class Mount extends Model implements Identifiable
     }
 
     /**
-     * Returns all servers that have this mount assigned.
-     *
      * @return BelongsToMany<Server, $this>
      */
     public function servers(): BelongsToMany

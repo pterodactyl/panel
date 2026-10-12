@@ -132,7 +132,7 @@ final class InitiateBackup implements InitiatesBackups
                         ->orderByDesc('created_at')
                         ->first() ?? throw new UnexpectedValueException('The backup throttle query returned an empty result set.');
 
-                    throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($latest->created_at->addSeconds($period)), $message);
+                    throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($latest->created_at?->addSeconds($period)), $message);
                 }
             }
 

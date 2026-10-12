@@ -29,8 +29,8 @@ class TaskResource extends ClientResource
             'time_offset' => $this->resource->time_offset,
             'is_queued' => $this->resource->is_queued,
             'continue_on_failure' => $this->resource->continue_on_failure,
-            'created_at' => $this->resource->created_at->toAtomString(),
-            'updated_at' => $this->resource->updated_at->toAtomString(),
+            'created_at' => $this->resource->created_at?->toAtomString(),
+            'updated_at' => $this->resource->updated_at?->toAtomString(),
         ];
     }
 }

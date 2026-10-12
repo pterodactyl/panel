@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use LogicException;
@@ -24,40 +23,7 @@ use Pterodactyl\Events\ActivityLogged;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 
 /**
- * \Pterodactyl\Models\ActivityLog.
- *
- * @property int $id
- * @property string|null $batch
- * @property string $event
- * @property string $ip
- * @property string|null $description
- * @property string|null $actor_type
- * @property int|null $actor_id
- * @property int|null $api_key_id
  * @property Collection<string, mixed> $properties
- * @property Carbon $timestamp
- * @property IlluminateModel|null $actor
- * @property \Illuminate\Database\Eloquent\Collection<int, ActivityLogSubject> $subjects
- * @property int|null $subjects_count
- * @property ApiKey|null $apiKey
- *
- * @method static Builder|ActivityLog forActor(\Illuminate\Database\Eloquent\Model $actor)
- * @method static Builder|ActivityLog forEvent(string $action)
- * @method static Builder|ActivityLog newModelQuery()
- * @method static Builder|ActivityLog newQuery()
- * @method static Builder|ActivityLog query()
- * @method static Builder|ActivityLog whereActorId($value)
- * @method static Builder|ActivityLog whereActorType($value)
- * @method static Builder|ActivityLog whereApiKeyId($value)
- * @method static Builder|ActivityLog whereBatch($value)
- * @method static Builder|ActivityLog whereDescription($value)
- * @method static Builder|ActivityLog whereEvent($value)
- * @method static Builder|ActivityLog whereId($value)
- * @method static Builder|ActivityLog whereIp($value)
- * @method static Builder|ActivityLog whereProperties($value)
- * @method static Builder|ActivityLog whereTimestamp($value)
- *
- * @mixin \Illuminate\Database\Eloquent\Model
  */
 #[Attributes\Identifiable('actl')]
 #[Guarded([
@@ -130,10 +96,6 @@ class ActivityLog extends Model implements Identifiable
     }
 
     /**
-     * Returns models to be pruned.
-     *
-     * @see https://laravel.com/docs/9.x/eloquent#pruning-models
-     *
      * @return Builder<static>
      */
     public function prunable(): Builder
@@ -144,10 +106,6 @@ class ActivityLog extends Model implements Identifiable
         return static::query()->where('timestamp', '<=', now()->subDays($days));
     }
 
-    /**
-     * Boots the model event listeners. This will trigger an activity log event every
-     * time a new model is inserted which can then be captured and worked with as needed.
-     */
     protected static function boot(): void
     {
         parent::boot();
@@ -167,8 +125,6 @@ class ActivityLog extends Model implements Identifiable
     }
 
     /**
-     * Scopes a query to only return results where the actor is a given model.
-     *
      * @param  Builder<static>  $builder
      */
     #[Scope]

@@ -41,8 +41,8 @@ class ServerDatabaseResource extends ApplicationResource
             'username' => $this->resource->username,
             'remote' => $this->resource->remote,
             'max_connections' => $this->resource->max_connections,
-            'created_at' => $this->resource->created_at->toAtomString(),
-            'updated_at' => $this->resource->updated_at->toAtomString(),
+            'created_at' => $this->resource->created_at?->toAtomString(),
+            'updated_at' => $this->resource->updated_at?->toAtomString(),
         ];
     }
 

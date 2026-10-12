@@ -9,31 +9,13 @@ use Cron\CronExpression;
 use Database\Factories\ScheduleFactory;
 use Exception;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Models\Traits\HasHashid;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $name
- * @property string $cron_day_of_week
- * @property string $cron_month
- * @property string $cron_day_of_month
- * @property string $cron_hour
- * @property string $cron_minute
- * @property bool $is_active
- * @property bool $is_processing
- * @property bool $only_when_online
- * @property Carbon|null $last_run_at
- * @property Carbon|null $next_run_at
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Server $server
- * @property Collection<int, Task> $tasks
+ * @property-read Server $server
  */
 #[Fillable([
     'server_id',
@@ -56,14 +38,8 @@ class Schedule extends Model
 
     use HasHashid;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'server_schedule';
 
-    /**
-     * Always return the tasks associated with this schedule.
-     */
     protected $with = ['tasks'];
 
     protected $attributes = [
@@ -100,8 +76,6 @@ class Schedule extends Model
     }
 
     /**
-     * Returns the schedule's execution crontab entry as a string.
-     *
      * @throws Exception
      */
     public function getNextRunDate(): CarbonImmutable
@@ -112,8 +86,6 @@ class Schedule extends Model
     }
 
     /**
-     * Return tasks belonging to a schedule.
-     *
      * @return HasMany<Task, $this>
      */
     public function tasks(): HasMany
@@ -122,8 +94,6 @@ class Schedule extends Model
     }
 
     /**
-     * Return the server model that a schedule belongs to.
-     *
      * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo

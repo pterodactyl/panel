@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\Carbon;
 use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Touches;
@@ -15,18 +14,8 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Traits\HasHashid;
 
 /**
- * @property int $id
- * @property int $schedule_id
- * @property int $sequence_id
- * @property string $action
- * @property string $payload
- * @property int $time_offset
- * @property bool $is_queued
- * @property bool $continue_on_failure
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Schedule $schedule
- * @property Server $server
+ * @property-read Schedule $schedule
+ * @property-read Server $server
  */
 #[Fillable([
     'schedule_id',
@@ -45,14 +34,8 @@ class Task extends Model
 
     use HasHashid;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'schedule_task';
 
-    /**
-     * The default actions that can exist for a task in Pterodactyl.
-     */
     public const string ACTION_POWER = 'power';
 
     public const string ACTION_COMMAND = 'command';
@@ -66,9 +49,6 @@ class Task extends Model
      */
     public const array POWER_ACTIONS = ['start', 'stop', 'restart', 'kill'];
 
-    /**
-     * Default attributes when creating a new model.
-     */
     protected $attributes = [
         'time_offset' => 0,
         'is_queued' => false,
@@ -115,8 +95,6 @@ class Task extends Model
     }
 
     /**
-     * Return the schedule that a task belongs to.
-     *
      * @return BelongsTo<Schedule, $this>
      */
     public function schedule(): BelongsTo

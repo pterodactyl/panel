@@ -11,41 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Models\Traits\HasHashid;
 
 /**
- * Pterodactyl\Models\Allocation.
- *
- * @property int $id
- * @property int $node_id
- * @property string $ip
- * @property string|null $ip_alias
- * @property int $port
- * @property int|null $server_id
- * @property string|null $notes
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property string $alias
- * @property bool $has_alias
- * @property Server|null $server
- * @property Node $node
- *
- * @method static AllocationFactory factory(...$parameters)
- * @method static Builder|Allocation newModelQuery()
- * @method static Builder|Allocation newQuery()
- * @method static Builder|Allocation query()
- * @method static Builder|Allocation whereCreatedAt($value)
- * @method static Builder|Allocation whereId($value)
- * @method static Builder|Allocation whereIp($value)
- * @method static Builder|Allocation whereIpAlias($value)
- * @method static Builder|Allocation whereNodeId($value)
- * @method static Builder|Allocation whereNotes($value)
- * @method static Builder|Allocation wherePort($value)
- * @method static Builder|Allocation whereServerId($value)
- * @method static Builder|Allocation whereUpdatedAt($value)
- *
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @property-read Node $node
  */
 #[Guarded(['id', 'created_at', 'updated_at'])]
 class Allocation extends Model
@@ -55,9 +24,6 @@ class Allocation extends Model
 
     use HasHashid;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'allocation';
 
     /**
@@ -83,8 +49,6 @@ class Allocation extends Model
     }
 
     /**
-     * Gets information for the server associated with this allocation.
-     *
      * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
@@ -93,8 +57,6 @@ class Allocation extends Model
     }
 
     /**
-     * Return the Node model associated with this allocation.
-     *
      * @return BelongsTo<Node, $this>
      */
     public function node(): BelongsTo
@@ -103,8 +65,6 @@ class Allocation extends Model
     }
 
     /**
-     * Accessor to automatically provide the IP alias if defined.
-     *
      * @return Attribute<string, never>
      */
     protected function alias(): Attribute
@@ -113,8 +73,6 @@ class Allocation extends Model
     }
 
     /**
-     * Accessor to quickly determine if this allocation has an alias.
-     *
      * @return Attribute<bool, never>
      */
     protected function hasAlias(): Attribute
@@ -123,8 +81,6 @@ class Allocation extends Model
     }
 
     /**
-     * Allocations not yet assigned to a server.
-     *
      * @param  Builder<self>  $query
      */
     #[Scope]

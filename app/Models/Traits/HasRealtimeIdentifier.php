@@ -21,12 +21,6 @@ use ReflectionClass;
  * the database. This allows us to make use of the existing data reliant on UUID columns
  * while still allowing for output and querying against a more human readable identifier
  * value.
- *
- * @property-read string $identifier
- *
- * @method static Builder<static> whereIdentifier(string $identifier)
- *
- * @mixin Model
  */
 trait HasRealtimeIdentifier
 {

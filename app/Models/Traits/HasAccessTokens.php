@@ -12,12 +12,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Models\Model;
 
 /**
  * @template TToken of \Laravel\Sanctum\Contracts\HasAbilities
- *
- * @mixin Model
  */
 trait HasAccessTokens
 {

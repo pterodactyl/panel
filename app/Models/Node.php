@@ -7,7 +7,6 @@ namespace Pterodactyl\Models;
 use Database\Factories\NodeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
@@ -24,32 +22,7 @@ use Symfony\Component\Yaml\Yaml;
 use UnexpectedValueException;
 
 /**
- * @property int $id
- * @property string $uuid
- * @property bool $public
- * @property string $name
- * @property string|null $description
- * @property int $location_id
- * @property string $fqdn
- * @property string $scheme
- * @property bool $behind_proxy
- * @property bool $maintenance_mode
- * @property int $memory
- * @property int $memory_overallocate
- * @property int $disk
- * @property int $disk_overallocate
- * @property int $upload_size
- * @property string $daemon_token_id
- * @property string $daemon_token
- * @property int $daemonListen
- * @property int $daemonSFTP
- * @property string $daemonBase
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Location $location
- * @property Collection<int, Mount> $mounts
- * @property Server[]|Collection $servers
- * @property Allocation[]|Collection $allocations
+ * @property-read Location $location
  */
 #[Attributes\Identifiable('node')]
 #[Fillable([
@@ -70,9 +43,6 @@ class Node extends Model implements Identifiable
     use HasVersion4Uuids;
     use Notifiable;
 
-    /**
-     * The resource name for this model in API responses.
-     */
     public const string RESOURCE_NAME = 'node';
 
     public const int DAEMON_TOKEN_ID_LENGTH = 16;
@@ -85,9 +55,6 @@ class Node extends Model implements Identifiable
     /** Utilization above this percentage renders red; between the two, yellow. */
     public const int THRESHOLD_PERCENTAGE_MEDIUM = 90;
 
-    /**
-     * Default values for specific columns that are generally not changed on base installs.
-     */
     protected $attributes = [
         'public' => true,
         'behind_proxy' => false,
@@ -127,17 +94,12 @@ class Node extends Model implements Identifiable
         return ['uuid'];
     }
 
-    /**
-     * Get the connection address to use when making calls to this node.
-     */
     public function getConnectionAddress(): string
     {
         return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
     }
 
     /**
-     * Returns the configuration as an array.
-     *
      * @return NodeConfiguration the wings configuration blob for this node
      */
     public function getConfiguration(): array
@@ -176,17 +138,11 @@ class Node extends Model implements Identifiable
         ];
     }
 
-    /**
-     * Returns the configuration in Yaml format.
-     */
     public function getYamlConfiguration(): string
     {
         return Yaml::dump($this->getConfiguration(), 4, 2, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
     }
 
-    /**
-     * Returns the configuration in JSON format.
-     */
     public function getJsonConfiguration(bool $pretty = false): string
     {
         return json_encode(
@@ -195,9 +151,6 @@ class Node extends Model implements Identifiable
         );
     }
 
-    /**
-     * Helper function to return the decrypted key for a node.
-     */
     public function getDecryptedKey(): string
     {
         $key = Crypt::decrypt($this->daemon_token);
@@ -220,8 +173,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the location associated with a node.
-     *
      * @return BelongsTo<Location, $this>
      */
     public function location(): BelongsTo
@@ -230,8 +181,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the servers associated with a node.
-     *
      * @return HasMany<Server, $this>
      */
     public function servers(): HasMany
@@ -240,8 +189,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the allocations associated with a node.
-     *
      * @return HasMany<Allocation, $this>
      */
     public function allocations(): HasMany
