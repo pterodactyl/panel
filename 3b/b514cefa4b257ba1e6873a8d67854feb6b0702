@@ -27,6 +27,7 @@ resources/scripts/views/navigation.spec.tsx
   s_4cabae41bceed9::t_f57cbc4f442e96 1,3-14,21-60,62,66-79,87,89-91,93-136,144-166,168-223
 packages/sdk/types/sdk/index.d.ts
   s_4cabae41bceed9::t_27d3a8e468744e 26-28
+  s_4cabae41bceed9::t_056f2479f115ac 22-25,29
 packages/sdk/types/views/models.d.ts
   s_4cabae41bceed9::t_27d3a8e468744e 2,4
 packages/sdk/slot-coverage.spec.ts
