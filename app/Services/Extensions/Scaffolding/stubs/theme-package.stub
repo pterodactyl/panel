@@ -11,7 +11,7 @@
         "test:watch": "vitest",
         "doctor": "php {{artisan}} p:extension:doctor .",
         "types": "php {{artisan}} p:extension:types .",
-        "pack": "php {{artisan}} p:extension:pack ."
+        "pack": "php {{artisan}} p:extension:pack . --force"
     },
     "devDependencies": {
         "@pterodactyl/sdk": "{{sdkDependency}}",

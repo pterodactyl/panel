@@ -26,9 +26,6 @@ class ThemeResolver
     /** Session key holding the theme a root admin previews. */
     public const string PREVIEW = 'theme.preview';
 
-    /** Session flag set by `?inspect=1` for root admins. */
-    public const string INSPECT = 'theme.inspect';
-
     /** `dark`, `light` or `system`, written by the SPA. */
     public const string SCHEME_COOKIE = 'pterodactyl_scheme';
 
@@ -82,7 +79,6 @@ class ThemeResolver
             stylesheet: $styled === null || $stylesheet === null ? null : $this->assets->assetUrl($styled, Str::after($stylesheet, 'dist/')),
             // Built against other core classes, the theme stylesheet is laid over the panel's own.
             stylesheetFallback: $styled !== null && $this->themes->coreMismatch($styled) !== null,
-            inspect: config('app.debug') === true || ($admin && $session?->get(self::INSPECT) === true),
         );
     }
 

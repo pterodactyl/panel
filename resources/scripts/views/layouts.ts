@@ -129,70 +129,6 @@ function useAuthLayoutModel(): AuthLayoutModel {
     return useMemo(() => ({ brand }), [brand]);
 }
 
-const appLinks = (rootAdmin: boolean): AppLayoutLink[] => [
-    { id: 'dashboard', label: 'Dashboard', destination: { to: '/' }, exact: true, icon: 'layers' },
-    ...(rootAdmin
-        ? [{ id: 'admin', label: 'Admin', destination: { to: '/panel' }, exact: false, icon: 'user-cog' } as const]
-        : []),
-    { id: 'account', label: 'Account Settings', destination: { to: '/account' }, exact: false, icon: 'user-round' },
-];
-
-const DASHBOARD: AppArea = Object.freeze({ kind: 'dashboard' });
-
-/** The routes that open an area, by id; the theme workbench is an admin page outside the admin layout. */
-const AREA_ROUTES: readonly (readonly [string, AppArea['kind']])[] = [
-    ['/authenticated/account', 'account'],
-    ['/authenticated/server/$id', 'server'],
-    ['/authenticated/panel', 'admin'],
-    ['/authenticated/panel/theme-workbench', 'admin'],
-];
-
-function useAppArea(): AppArea {
-    const kind = useRouterState({
-        select: ({ matches }) =>
-            AREA_ROUTES.find(([id]) => matches.some((match) => match.routeId === id))?.[1] ?? 'dashboard',
-    });
-    const account = useAccountLayoutModel();
-    const server = useServerFrame();
-    const admin = useAdminLayoutModel();
-
-    return useMemo(() => {
-        if (kind === 'account') {
-            return { kind, ...account };
-        }
-
-        if (kind === 'admin') {
-            return { kind, ...admin };
-        }
-
-        // A server that failed to load shows its error on the page, without its navigation.
-        return kind === 'server' && server ? { kind, ...server } : DASHBOARD;
-    }, [kind, account, server, admin]);
-}
-
-function useAppLayoutModel(): AppLayoutModel {
-    const brand = useBrand();
-    const { uuid, username, email, rootAdmin } = useCurrentUser();
-    const { scheme, schemes, setScheme } = useTheme();
-    const { mutate, isPending } = useLogout();
-    const area = useAppArea();
-
-    return useMemo(
-        () => ({
-            brand,
-            links: appLinks(rootAdmin),
-            area,
-            user: { uuid, username, email, rootAdmin },
-            scheme,
-            schemes,
-            setScheme: schemes.length > 1 ? setScheme : null,
-            signOut: () => mutate({}),
-            signingOut: isPending,
-        }),
-        [brand, area, uuid, username, email, rootAdmin, scheme, schemes, setScheme, mutate, isPending]
-    );
-}
-
 function useAccountLayoutModel(): AccountLayoutModel {
     const nav = useNavigation('account');
 
@@ -287,6 +223,69 @@ function useAdminLayoutModel(): AdminLayoutModel {
     const { uuid, username, email } = useCurrentUser();
 
     return useMemo(() => ({ nav, user: { uuid, username, email } }), [nav, uuid, username, email]);
+}
+
+const appLinks = (rootAdmin: boolean): AppLayoutLink[] => [
+    { id: 'dashboard', label: 'Dashboard', destination: { to: '/' }, exact: true, icon: 'layers' },
+    ...(rootAdmin
+        ? [{ id: 'admin', label: 'Admin', destination: { to: '/panel' }, exact: false, icon: 'user-cog' } as const]
+        : []),
+    { id: 'account', label: 'Account Settings', destination: { to: '/account' }, exact: false, icon: 'user-round' },
+];
+
+const DASHBOARD: AppArea = Object.freeze({ kind: 'dashboard' });
+
+/** The routes that open an area, by id. */
+const AREA_ROUTES: readonly (readonly [string, AppArea['kind']])[] = [
+    ['/authenticated/account', 'account'],
+    ['/authenticated/server/$id', 'server'],
+    ['/authenticated/panel', 'admin'],
+];
+
+function useAppArea(): AppArea {
+    const kind = useRouterState({
+        select: ({ matches }) =>
+            AREA_ROUTES.find(([id]) => matches.some((match) => match.routeId === id))?.[1] ?? 'dashboard',
+    });
+    const account = useAccountLayoutModel();
+    const server = useServerFrame();
+    const admin = useAdminLayoutModel();
+
+    return useMemo(() => {
+        if (kind === 'account') {
+            return { kind, ...account };
+        }
+
+        if (kind === 'admin') {
+            return { kind, ...admin };
+        }
+
+        // A server that failed to load shows its error on the page, without its navigation.
+        return kind === 'server' && server ? { kind, ...server } : DASHBOARD;
+    }, [kind, account, server, admin]);
+}
+
+function useAppLayoutModel(): AppLayoutModel {
+    const brand = useBrand();
+    const { uuid, username, email, rootAdmin } = useCurrentUser();
+    const { scheme, schemes, setScheme } = useTheme();
+    const { mutate, isPending } = useLogout();
+    const area = useAppArea();
+
+    return useMemo(
+        () => ({
+            brand,
+            links: appLinks(rootAdmin),
+            area,
+            user: { uuid, username, email, rootAdmin },
+            scheme,
+            schemes,
+            setScheme: schemes.length > 1 ? setScheme : null,
+            signOut: () => mutate({}),
+            signingOut: isPending,
+        }),
+        [brand, area, uuid, username, email, rootAdmin, scheme, schemes, setScheme, mutate, isPending]
+    );
 }
 
 const noop = () => {};

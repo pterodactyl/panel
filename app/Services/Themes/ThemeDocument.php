@@ -31,7 +31,6 @@ final readonly class ThemeDocument
         public bool $preview = false,
         public ?string $stylesheet = null,
         public bool $stylesheetFallback = false,
-        public bool $inspect = false,
     ) {}
 
     /**
@@ -50,7 +49,6 @@ final readonly class ThemeDocument
             'safeMode' => $this->safeMode,
             'preview' => $this->preview,
             'stylesheetFallback' => $this->stylesheetFallback,
-            'inspect' => $this->inspect,
         ];
     }
 

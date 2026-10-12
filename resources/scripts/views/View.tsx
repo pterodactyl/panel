@@ -14,7 +14,6 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { reportExtensionError } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
-import { FailedLayerMark, InspectedViewBoundary, ViewInspectionContext } from './inspect';
 import { isLazyView } from './lazy';
 import {
     declaredParts,
@@ -160,6 +159,8 @@ function SuspendedLayer({ onSuspend }: { onSuspend: () => void }) {
     return null;
 }
 
+const causeMessage = (cause: unknown): string => (cause instanceof Error ? cause.message : String(cause));
+
 /** A theme or extension layer of a view that failed, so the layer below rendered in its place. */
 export class ViewLayerError extends Error {
     constructor(
@@ -167,9 +168,7 @@ export class ViewLayerError extends Error {
         readonly layer: string,
         cause: unknown
     ) {
-        super(`The "${layer}" layer of view "${view}" failed: ${cause instanceof Error ? cause.message : String(cause)}`, {
-            cause,
-        });
+        super(`The "${layer}" layer of view "${view}" failed: ${causeMessage(cause)}`, { cause });
         this.name = 'ViewLayerError';
     }
 }
@@ -210,12 +209,7 @@ function LayerFallback({
 }) {
     useLayoutEffect(() => reportViewLayerFailure(new ViewLayerError(name, layer.id, error)), [name, layer.id, error]);
 
-    return (
-        <>
-            <FailedLayerMark layerId={layer.id} />
-            <ErrorBoundary onReset={retry}>{children}</ErrorBoundary>
-        </>
-    );
+    return <ErrorBoundary onReset={retry}>{children}</ErrorBoundary>;
 }
 
 /** A failing layer is reported against its package and replaced by the layer below. */
@@ -322,7 +316,6 @@ interface BodyProps {
 
 function ViewBody({ definition, model, inputs, className, children }: BodyProps & { model: unknown }) {
     const fixtures = useContext(FixtureContext);
-    const inspection = useContext(ViewInspectionContext);
     const base = useViewChain(definition.name);
     const decision = useViewDecision(definition.name);
     const layers = useMemo(
@@ -352,7 +345,7 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
         }
     }
 
-    const chain = (
+    return (
         <SlotCheck definition={definition} layer={layers.at(-1)}>
             <ViewChain
                 name={definition.name}
@@ -361,20 +354,6 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
                 frame={{ model, inputs, className, children }}
             />
         </SlotCheck>
-    );
-
-    return inspection ? (
-        <InspectedViewBoundary
-            inspection={inspection}
-            definition={definition}
-            model={model}
-            inputs={inputs}
-            layers={layers}
-        >
-            {chain}
-        </InspectedViewBoundary>
-    ) : (
-        chain
     );
 }
 

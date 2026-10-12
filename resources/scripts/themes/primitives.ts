@@ -152,7 +152,7 @@ export interface PrimitiveMeta<N extends PrimitiveName> {
     readonly replaceable: N extends ReplaceableName ? true : false;
 }
 
-/** The primitives and their parts at runtime, for the registry, the workbench and the docs. */
+/** The primitives and their parts at runtime, for the registry, the tests and the docs. */
 export const UI_PRIMITIVES = {
     Alert: { parts: ['root', 'icon', 'body', 'title', 'content'], replaceable: true },
     Avatar: { parts: ['root'], replaceable: true },

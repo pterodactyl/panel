@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * `?safe_mode=1` renders this session with the classic theme and no extension bundles, and
- * `?inspect=1` turns the theme inspector on for a root admin; `=0` turns either off again.
+ * `?safe_mode=0` turns it off again.
  */
 class RememberThemeFlags
 {
@@ -22,9 +22,6 @@ class RememberThemeFlags
     {
         if ($request->hasSession()) {
             $this->remember($request, 'safe_mode', ThemeResolver::SAFE_MODE);
-            if ($request->user()?->root_admin === true) {
-                $this->remember($request, 'inspect', ThemeResolver::INSPECT);
-            }
         }
 
         return $next($request);

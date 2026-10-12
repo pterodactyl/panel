@@ -37,6 +37,10 @@ export interface ResolvedPanelDestination {
 }
 export declare function resolvePanelDestination(destination: PanelDestination): ResolvedPanelDestination;
 export declare function usePanelNavigate(): (destination: PanelDestination) => Promise<void>;
+/**
+ * The current path, params and search. A view rendered from fixtures, as in tests, sits
+ * outside any route and sees empty params and search.
+ */
 export declare function usePanelLocation(): RouteSlotData;
 export interface PanelLinkProps extends Omit<ComponentProps<'a'>, 'href'> {
     destination: PanelDestination;

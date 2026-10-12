@@ -3,7 +3,6 @@ import { Menu } from '@base-ui/react/menu';
 import { ContextMenu } from '@base-ui/react/context-menu';
 import type { LucideIcon } from 'lucide-react';
 import Icon from '@/components/elements/Icon';
-import { usePortalContainer } from '@/components/elements/Portal';
 import { PanelLink, type PanelDestination } from '@/sdk/navigation';
 import { useSkin } from '@/themes/skins';
 
@@ -22,7 +21,6 @@ export interface DropdownMenuProps {
 
 function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children, className }: DropdownMenuProps) {
     const ui = useSkin('DropdownMenu', { context: false });
-    const container = usePortalContainer();
 
     return (
         <Menu.Root>
@@ -33,7 +31,7 @@ function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children,
             >
                 {triggerContent}
             </Menu.Trigger>
-            <Menu.Portal container={container}>
+            <Menu.Portal>
                 <Menu.Positioner {...ui('positioner')} sideOffset={4} align='end'>
                     <Menu.Popup {...ui('root', className)}>
                         <MenuItemContext.Provider value={Menu.Item as MenuItemComponent}>
@@ -56,12 +54,11 @@ export interface ContextDropdownMenuProps {
 /** Opens `items` at the cursor on right-click or long-press over `children`. */
 export function ContextDropdownMenu({ className, menuClassName, children, items }: ContextDropdownMenuProps) {
     const ui = useSkin('DropdownMenu', { context: true });
-    const container = usePortalContainer();
 
     return (
         <ContextMenu.Root>
             <ContextMenu.Trigger {...ui('trigger', className)}>{children}</ContextMenu.Trigger>
-            <ContextMenu.Portal container={container}>
+            <ContextMenu.Portal>
                 <ContextMenu.Positioner {...ui('positioner')}>
                     <ContextMenu.Popup {...ui('root', menuClassName)}>
                         <MenuItemContext.Provider value={ContextMenuItem}>{items}</MenuItemContext.Provider>

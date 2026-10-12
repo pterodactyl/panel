@@ -100,11 +100,9 @@ describe('view implementations', () => {
         expect(placed.filter((name) => !ready(name))).toEqual([]);
     });
 
-    it('loads every fixture when the workbench opens, and only then', async () => {
-        const workbench = router.looseRoutesById['/authenticated/panel/theme-workbench'];
-
+    it('loads every fixture when the test runtime loads the catalog, and only then', async () => {
         expect(views.getViewDefinition('server.backups')?.fixtures).toBeUndefined();
-        await workbench.options.loader?.({} as never);
+        await (await import('./catalog')).loadViewCatalog();
 
         const definitions = views.getViewDefinitions().filter((definition) => definition.load);
 

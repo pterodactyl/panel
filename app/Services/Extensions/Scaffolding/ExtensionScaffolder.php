@@ -26,9 +26,9 @@ class ExtensionScaffolder
     public function __construct(private readonly ExtensionManifestValidator $validator) {}
 
     /**
-     * Scaffolds <outDir>/<id>/ and returns the created package path. The manifest
-     * is re-validated through the normal loader before returning, so a scaffold
-     * that succeeds is guaranteed installable.
+     * Scaffolds <outDir>/<id>/, or exactly `path` when given, and returns the created
+     * package path. The manifest is re-validated through the normal loader before
+     * returning, so a scaffold that succeeds is guaranteed installable.
      */
     public function scaffold(
         string $id,
@@ -40,6 +40,7 @@ class ExtensionScaffolder
         bool $force = false,
         ?string $prefix = null,
         bool $theme = false,
+        ?string $path = null,
     ): string {
         $this->files = [];
 
@@ -47,10 +48,14 @@ class ExtensionScaffolder
 
         throw_if(in_array($id, ExtensionManifest::RESERVED_IDS, true), InvalidExtensionException::class, "Extension id \"{$id}\" is reserved.");
 
+        throw_if($path !== null && $outDir !== null, InvalidExtensionException::class, 'Pass --path (the package directory) or --out (the directory it is created in), not both.');
+
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
 
-        $target = mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id;
+        $target = $path === null
+            ? mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id
+            : mb_rtrim($path, '/\\');
         throw_if(is_dir($target) && ! $force, InvalidExtensionException::class, "{$target} already exists - pass --force to overwrite it.");
 
         File::deleteDirectory($target);

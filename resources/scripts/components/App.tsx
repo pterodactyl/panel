@@ -7,7 +7,6 @@ import { router } from '@/router/router';
 import { setupInterceptors } from '@/api/interceptors';
 import AppToaster from '@/components/elements/AppToaster';
 import { ThemeFailureNotice } from '@/views/boot';
-import { ViewInspector } from '@/views/inspector/ViewInspector';
 import { ViewSessionProvider } from '@/views/session';
 
 setupInterceptors();
@@ -20,9 +19,7 @@ const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <ViewSessionProvider>
-                <ViewInspector>
-                    <RouterProvider router={router} />
-                </ViewInspector>
+                <RouterProvider router={router} />
             </ViewSessionProvider>
             <AppToaster />
             <ThemeFailureNotice />

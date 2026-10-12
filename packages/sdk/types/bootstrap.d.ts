@@ -21,7 +21,6 @@ export interface ThemeBootstrap {
     safeMode: boolean;
     preview: boolean;
     stylesheetFallback: boolean;
-    inspect: boolean;
 }
 export declare const getBootstrapUser: () => UserData | undefined;
 export declare const endBootstrapSession: () => void;

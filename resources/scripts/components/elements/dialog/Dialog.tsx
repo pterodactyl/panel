@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import Button from '@/components/elements/Button';
-import { usePortalContainer } from '@/components/elements/Portal';
 import { Check, Info, ShieldAlert, TriangleAlert, X } from 'lucide-react';
 import { useSkin, type SkinBinding } from '@/themes/skins';
 import { DialogContext } from './context';
@@ -42,7 +41,6 @@ export default function DialogComponent({
     const popupRef = React.useRef<HTMLDivElement>(null);
     const described = !!description;
     const ui = useSkin('Dialog', { described });
-    const container = usePortalContainer();
 
     const initialFocus = (interactionType: string) => {
         if (interactionType === 'touch') {
@@ -75,7 +73,7 @@ export default function DialogComponent({
         <DialogContext.Provider value={context}>
             {/* Base UI unmounts the popup after its data-ending-style transition finishes. */}
             <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
-                <BaseDialog.Portal container={container}>
+                <BaseDialog.Portal>
                     <BaseDialog.Backdrop {...ui('backdrop')} />
                     <div {...ui('viewport')}>
                         <div {...ui('container')}>

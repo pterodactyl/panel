@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloudUpload, X } from 'lucide-react';
 import { Button, Code, Dialog, NewButton, Portal, Tooltip } from '@/sdk';
-import { useViewDocument, type FileManagerModel } from '@/sdk/theme';
+import type { FileManagerModel } from '@/sdk/theme';
 
 const isFileOrDirectory = (event: DragEvent): boolean =>
     event.dataTransfer?.types.some((value) => value.toLowerCase() === 'files') ?? false;
@@ -9,8 +9,6 @@ const isFileOrDirectory = (event: DragEvent): boolean =>
 /** Shows the drop target while files are dragged over the window. */
 function useDropOverlay(): [boolean, (open: boolean) => void] {
     const [open, setOpen] = useState(false);
-    // A workbench preview's window, so the overlay follows drags over the preview.
-    const { window: view } = useViewDocument();
 
     useEffect(() => {
         const enter = (event: DragEvent) => {
@@ -23,16 +21,16 @@ function useDropOverlay(): [boolean, (open: boolean) => void] {
 
         const hide = () => setOpen(false);
 
-        view.addEventListener('dragenter', enter, { capture: true });
-        view.addEventListener('dragexit', hide, { capture: true });
-        view.addEventListener('keydown', hide);
+        window.addEventListener('dragenter', enter, { capture: true });
+        window.addEventListener('dragexit', hide, { capture: true });
+        window.addEventListener('keydown', hide);
 
         return () => {
-            view.removeEventListener('dragenter', enter, true);
-            view.removeEventListener('dragexit', hide, true);
-            view.removeEventListener('keydown', hide);
+            window.removeEventListener('dragenter', enter, true);
+            window.removeEventListener('dragexit', hide, true);
+            window.removeEventListener('keydown', hide);
         };
-    }, [view]);
+    }, []);
 
     return [open, setOpen];
 }

@@ -257,7 +257,10 @@
             "user",
             "admin",
             "schemes",
-            "logo"
+            "logo",
+            "accountArea",
+            "serverArea",
+            "adminArea"
         ],
         "classic": {
             "file": "views/layout/AppLayout.tsx",
@@ -288,6 +291,7 @@
             "owner",
             "subuser",
             "admin",
+            "offline",
             "installing",
             "suspended"
         ],
@@ -756,12 +760,6 @@
             "panel.themes.before",
             "panel.themes.after"
         ],
-        "fixtures": []
-    },
-    "page.admin.themeWorkbench": {
-        "kind": "page",
-        "context": "admin",
-        "slots": [],
         "fixtures": []
     },
     "page.admin.users": {

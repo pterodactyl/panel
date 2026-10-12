@@ -2,7 +2,7 @@
 import { act, cleanup, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { serverResourceUsageQueryOptions } from '@/api/account/servers/queries';
-import type { ClientGetServerResourcesResponse } from '@/api/generated';
+import type { SdkServerResources } from '@/sdk/server';
 import { getServerWebsocketCredentials, serverQueryOptions, type Server } from '@/api/server/queries';
 import type * as ServerQueries from '@/api/server/queries';
 import { Websocket } from '@/plugins/Websocket';
@@ -74,7 +74,7 @@ it('writes each status into the cached resources, which the app shell and the da
     const server = createTestServer();
     const host = createExtensionTestHost({ server });
     const { queryKey } = serverResourceUsageQueryOptions(server.attributes.uuid);
-    const resources = { object: 'stats', attributes: { current_state: 'offline' } } as ClientGetServerResourcesResponse;
+    const resources = { object: 'stats', attributes: { current_state: 'offline' } } as SdkServerResources;
 
     host.queryClient.setQueryData(queryKey, resources);
     render(<WebsocketHandler />, { wrapper: host.Wrapper });

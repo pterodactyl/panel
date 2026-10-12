@@ -225,6 +225,8 @@ export declare function registerExtensionView(extensionId: string, name: string,
 export declare function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void;
 export declare function registerSlotComponent(extensionId: string, name: SlotName, component: ComponentType<SlotComponentProps>, batch: ExtensionRegistryBatch): void;
 export declare function getSlotComponents(name: SlotName): readonly SlotRegistration[];
+/** Mounts components in slots without an extension batch, as the SDK's `renderView` does; returns their removal. */
+export declare function mountSlotComponents(extensionId: string, components: Readonly<Partial<Record<SlotName, ComponentType<SlotComponentProps>>>>): () => void;
 export declare function registerExtensionTableColumn(column: ExtensionTableColumnRegistration, batch: ExtensionRegistryBatch): void;
 export declare function getExtensionTableColumns(name: ExtensionTableName): readonly ExtensionTableColumnRegistration[];
 export declare function registerFormExtension(registration: FormExtensionRegistration, batch: ExtensionRegistryBatch): void;

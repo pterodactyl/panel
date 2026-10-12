@@ -20,6 +20,15 @@ export interface ViewFixtureSelection {
 export declare function ViewFixtureProvider({ fixtures, models, children }: ViewFixtureSelection & {
     children?: ReactNode;
 }): import("react").JSX.Element;
+/** A theme or extension layer of a view that failed, so the layer below rendered in its place. */
+export declare class ViewLayerError extends Error {
+    readonly view: string;
+    readonly layer: string;
+    constructor(view: string, layer: string, cause: unknown);
+}
+/** Calls `listener` for each layer that fails; the SDK's test renderers fail the test on it. */
+export declare function onViewLayerFailure(listener: (failure: ViewLayerError) => void): () => void;
+export declare function reportViewLayerFailure(failure: ViewLayerError): void;
 /** Loads a view's implementation and the chunks of its lazy layers, so the router waits for them like a route chunk. */
 export declare function preloadView(name: string): Promise<void>;
 type ViewElementBase = {

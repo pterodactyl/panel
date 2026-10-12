@@ -10,7 +10,7 @@ import {
     RouterProvider,
 } from '@tanstack/react-router';
 import { afterEach, expect, it, vi } from 'vitest';
-import { LayoutMainCheck, Main, MainRoot, RouteAnnouncer, SkipLink } from './a11y';
+import { LayoutMainCheck, Main, RouteAnnouncer, SkipLink } from './a11y';
 
 afterEach(() => {
     cleanup();
@@ -49,20 +49,6 @@ it('keeps the classes of a nested Main on a wrapper inside the one main landmark
     expect(screen.getByText('Sign in').parentElement).toHaveClass('mx-auto', 'max-w-auth');
     // A nested Main without classes adds no element.
     expect(container.querySelectorAll('main div')).toHaveLength(1);
-});
-
-it('places a main landmark of its own in content rendered into another document', () => {
-    render(
-        <Main>
-            <MainRoot>
-                <Main className='preview'>Previewed layout</Main>
-            </MainRoot>
-        </Main>
-    );
-
-    expect(screen.getAllByRole('main')).toHaveLength(2);
-    expect(screen.getByText('Previewed layout')).toHaveRole('main');
-    expect(screen.getByText('Previewed layout')).toHaveClass('preview');
 });
 
 it('moves focus to the main content from the skip link without touching the URL hash', () => {

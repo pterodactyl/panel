@@ -287,6 +287,7 @@ const tokens = [
             ['--font-sans', 'Body typeface (`font-sans`).'],
             ['--font-header', 'Heading typeface (`font-header`).'],
             ['--layout-content-width', 'Width of page content (`max-w-panel`).'],
+            ['--layout-gutter', 'Side margin of page content until it centres; `page-width` applies both.'],
             ['--layout-auth-width', 'Width of the sign-in card (`max-w-auth`).'],
             ['--layout-sidebar-width', 'Width of sidebars (`w-sidebar`).'],
             ['--spinner-overlay-opacity', 'Opacity of the background behind a loading overlay.'],

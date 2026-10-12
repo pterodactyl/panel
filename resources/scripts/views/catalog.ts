@@ -1,4 +1,4 @@
-// Every engine view: the source of the SDK's views.json, the workbench and the SDK's test runtime.
+// Every engine view: the source of the SDK's views.json and the SDK's test runtime.
 import { getViewDefinitions, loadViewImplementation, type ViewDefinition } from './registry';
 import './definitions';
 import './pages';

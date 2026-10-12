@@ -30,11 +30,6 @@ export function Main({ className, children }: { className?: string; children?: R
     );
 }
 
-/** Content rendered into another document, as a workbench preview is, places its own `<main>`. */
-export function MainRoot({ children }: { children?: ReactNode }) {
-    return <InsideMain.Provider value={false}>{children}</InsideMain.Provider>;
-}
-
 /** In development, warns when the layout view below never places its content in `<Main>`. */
 export function LayoutMainCheck({ name, children }: { name: string; children?: ReactNode }) {
     const found = useRef(false);

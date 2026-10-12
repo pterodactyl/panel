@@ -10,6 +10,9 @@
     --container-auth: var(--layout-auth-width);
     --container-sidebar: var(--layout-sidebar-width);
     --color-*: initial;
+    /* The palette is the role tokens below; plain white and black stay for text and scrims over images. */
+    --color-white: #fff;
+    --color-black: #000;
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);

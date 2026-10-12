@@ -20,7 +20,8 @@ use Pterodactyl\Services\Extensions\Scaffolding\ExtensionScaffolder;
                             {--prefix= : Tailwind prefix for the classes of the extension: 2-12 lowercase letters (defaults to one derived from the id).}
                             {--no-ui : Skip the frontend scaffold (backend-only extension).}
                             {--theme : Scaffold a theme: stylesheet, a layout override, a skin, settings and a test.}
-                            {--out= : Directory to scaffold into (defaults to the extensions directory).}
+                            {--out= : Parent directory: the package is created in <out>/<id> (defaults to the extensions directory).}
+                            {--path= : The package directory itself, created exactly as given (instead of --out).}
                             {--force : Overwrite the target directory if it already exists.}')]
 class MakeCommand extends Command implements PromptsForMissingInput
 {
@@ -37,6 +38,7 @@ class MakeCommand extends Command implements PromptsForMissingInput
                 force: (bool) $this->option('force'),
                 prefix: $this->option('prefix'),
                 theme: (bool) $this->option('theme'),
+                path: $this->option('path'),
             );
         } catch (InvalidExtensionException $invalidExtensionException) {
             $this->components->error($invalidExtensionException->getMessage());

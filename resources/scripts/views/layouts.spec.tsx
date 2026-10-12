@@ -2,7 +2,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { serverResourceUsageQueryOptions, type ServerPowerState } from '@/api/account/servers/queries';
-import type { ClientGetServerResourcesResponse } from '@/api/generated';
+import type { SdkServerResources } from '@/sdk/server';
 import { publishAreaNav } from '@/router/nav';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { Main } from './a11y';
@@ -158,14 +158,21 @@ describe('layout.app', () => {
 });
 
 describe('the area layout.app renders', () => {
-    const server = createTestServer({ identifier: 'a1b2c3d4', name: 'Survival', owner: false, permissions: ['file.read'] });
+    const server = createTestServer({
+        identifier: 'a1b2c3d4',
+        name: 'Survival',
+        owner: false,
+        permissions: ['file.read'],
+    });
 
     function AreaProbe({ model, children }: ViewProps<'layout.app'>) {
         const { area } = model;
 
         return (
             <>
-                <p data-testid='area'>{area.kind === 'server' ? `${area.kind} ${area.name} ${area.state}` : area.kind}</p>
+                <p data-testid='area'>
+                    {area.kind === 'server' ? `${area.kind} ${area.name} ${area.state}` : area.kind}
+                </p>
                 {'nav' in area && (
                     <nav aria-label='Area'>
                         <Navigation items={area.nav.items}>
@@ -188,7 +195,7 @@ describe('the area layout.app renders', () => {
         host.queryClient.setQueryData(serverResourceUsageQueryOptions(server.attributes.uuid).queryKey, {
             object: 'stats',
             attributes: { current_state: power },
-        } as ClientGetServerResourcesResponse);
+        } as SdkServerResources);
 
         await act(async () => {
             render(
@@ -226,7 +233,10 @@ describe('the area layout.app renders', () => {
 
     it('carries the navigation of the account and admin areas, with their icons', async () => {
         expect(await renderArea('/account/api')).toHaveTextContent('account');
-        expect(screen.getByRole('link', { name: 'key-round API Credentials' })).toHaveAttribute('data-status', 'active');
+        expect(screen.getByRole('link', { name: 'key-round API Credentials' })).toHaveAttribute(
+            'data-status',
+            'active'
+        );
         cleanup();
         host?.dispose();
 

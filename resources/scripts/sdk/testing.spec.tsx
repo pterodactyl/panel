@@ -280,7 +280,7 @@ it('renders a layer reading the panel location from fixtures, outside any route'
 
         return (
             <>
-                <p>{`at ${pathname} with ${Object.keys({ ...params, ...search }).length} params`}</p>
+                <p>{`at ${pathname} with ${Object.keys(params).length} params and ${JSON.stringify(search)}`}</p>
                 <Default />
             </>
         );
@@ -288,7 +288,7 @@ it('renders a layer reading the panel location from fixtures, outside any route'
 
     const { container, unmount } = renderView('layout.app', { theme: defineTheme({ views: { 'layout.app': Shell } }) });
 
-    expect(container).toHaveTextContent('at / with 0 params');
+    expect(container).toHaveTextContent('at / with 0 params and {}');
     unmount();
 });
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Menu } from '@base-ui/react/menu';
 import type { LucideIcon } from 'lucide-react';
+import { type PanelDestination } from "../../../sdk/navigation.js";
 export interface DropdownMenuProps {
     /** Rendered inside the trigger `<button>`. */
     triggerContent: React.ReactNode;
@@ -24,9 +25,11 @@ export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof 
     icon?: LucideIcon;
     danger?: boolean;
     description?: React.ReactNode;
+    /** Makes the item a link to a panel page; following it closes the menu. */
+    destination?: PanelDestination;
 }
 /** An item for either DropdownMenu or ContextDropdownMenu. */
-export declare function DropdownMenuItem({ icon, danger, description, className, children, ...props }: DropdownMenuItemProps): React.JSX.Element;
+export declare function DropdownMenuItem({ icon, danger, description, destination, className, children, ...props }: DropdownMenuItemProps): React.JSX.Element;
 declare const DropdownMenuWithItems: typeof DropdownMenu & {
     Item: typeof DropdownMenuItem;
 };

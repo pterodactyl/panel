@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, LayoutTemplate, LifeBuoy, Palette, RotateCcw, Settings2, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LifeBuoy, Palette, RotateCcw, Settings2, Sparkles } from 'lucide-react';
 import {
     activateAdminThemeInput,
     previewAdminThemeInput,
@@ -173,10 +173,6 @@ function ThemeToolbar({ meta, themes }: { meta?: AdminThemesMeta; themes: AdminT
                 >
                     Reset to classic
                 </NewButton>
-                <LinkButton href='/panel/theme-workbench' isSecondary className='inline-flex h-9 items-center gap-2'>
-                    <Icon icon={LayoutTemplate} className='h-4 w-4' />
-                    Workbench
-                </LinkButton>
                 <LinkButton
                     href={meta?.safe_mode ? '/panel/themes?safe_mode=0' : '/?safe_mode=1'}
                     isSecondary

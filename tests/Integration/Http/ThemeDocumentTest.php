@@ -99,7 +99,6 @@ test('guests get the classic theme with the panel stylesheet and a zoomable view
         'safeMode' => false,
         'preview' => false,
         'stylesheetFallback' => false,
-        'inspect' => false,
     ]);
 
     // The import map moved into <head>, ahead of the theme entries it serves.
@@ -181,18 +180,6 @@ test('a root admin previewing a theme sees it alone', function (): void {
 
     $this->actingAs(User::factory()->create())->withSession([ThemeResolver::PREVIEW => 'nebula'])->get('/')
         ->assertSee('data-theme="aurora"', false);
-});
-
-test('the inspector is on in debug mode, or for a root admin who asks for it', function (): void {
-    config(['app.debug' => false]);
-    $admin = User::factory()->create(['root_admin' => true]);
-
-    expect(themePayload($this->actingAs($admin)->get('/'))['inspect'])->toBeFalse();
-    expect(themePayload($this->actingAs($admin)->get('/?inspect=1'))['inspect'])->toBeTrue();
-    expect(themePayload($this->actingAs(User::factory()->create())->get('/?inspect=1'))['inspect'])->toBeFalse();
-
-    config(['app.debug' => true]);
-    expect(themePayload($this->get('/'))['inspect'])->toBeTrue();
 });
 
 test('the scheme follows the preference cookie when the theme supports it', function (?string $cookie, array $schemes, string $scheme, bool $script): void {

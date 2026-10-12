@@ -2,7 +2,7 @@
 import { type ReactNode } from 'react';
 /**
  * The routed content of a layout and the target of the skip link. Layouts nest, so only the
- * outermost renders the `<main>` element.
+ * outermost renders the `<main>` element; a nested one with a `className` renders a `<div>` with it.
  */
 export declare function Main({ className, children }: {
     className?: string;

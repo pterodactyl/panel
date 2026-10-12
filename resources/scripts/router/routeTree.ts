@@ -77,7 +77,7 @@ import RootNotFound from '@/router/RootNotFound';
 import { RouteAccessDenied } from '@/router/RouteError';
 import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
 import { parseRedirectSearch } from '@/router/redirect';
-import { bareAreaPageRoute, layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
+import { layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
 import { preloadView } from '@/views/View';
 import {
     parseActivitySearch,
@@ -93,7 +93,6 @@ import {
     parseServerListSearch,
     parseTagListSearch,
     parseUserListSearch,
-    parseWorkbenchSearch,
 } from '@/router/search';
 
 type RouterContext = {
@@ -431,25 +430,6 @@ const panelRoute = createRoute({
         }
     },
     component: layoutRoute('layout.admin', 'admin'),
-});
-
-/** Full width beside the admin area rather than inside its layout. */
-const themeWorkbenchRoute = createRoute({
-    getParentRoute: () => authenticatedRoute,
-    path: 'panel/theme-workbench',
-    validateSearch: parseWorkbenchSearch,
-    beforeLoad: async ({ context }) => {
-        const user = await context.queryClient.ensureQueryData(currentUserQueryOptions());
-
-        if (!user.rootAdmin) {
-            throw new RouteAccessDenied('You do not have permission to access the administrative area.');
-        }
-    },
-    // The workbench lists every view's fixtures, which load with their areas.
-    loader: async () => {
-        await (await import('@/views/catalog')).loadViewCatalog();
-    },
-    component: bareAreaPageRoute('page.admin.themeWorkbench', 'admin'),
 });
 
 export const nodeDetailRoute = createRoute({
@@ -1025,8 +1005,7 @@ export function buildRouteTree(extensions: readonly SiteExtensionEntry[] = getBo
         {
             account: accountChildren.map(declaredPath),
             server: serverChildren.map(declaredPath),
-            // The workbench sits beside the admin layout rather than under it, but still owns its path.
-            admin: [...[...panelChildren, ...panelResourceRoutes].map(declaredPath), 'theme-workbench'],
+            admin: [...panelChildren, ...panelResourceRoutes].map(declaredPath),
         },
         {
             'admin.node': nodeDetailChildren.map(declaredPath),
@@ -1067,7 +1046,6 @@ export function buildRouteTree(extensions: readonly SiteExtensionEntry[] = getBo
             accountRoute.addChildren(accountRouteChildren),
             serverRoute.addChildren(serverRouteChildren),
             panelRoute.addChildren(panelRouteChildren),
-            themeWorkbenchRoute,
         ]),
     ]);
 }

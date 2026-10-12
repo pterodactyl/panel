@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import ContentContainer from '@/components/elements/ContentContainer';
-import { useOwnerDocument } from '@/components/elements/Portal';
 import { cn } from '@/lib/cn';
 
 export interface PageContentBlockProps {
@@ -10,12 +9,9 @@ export interface PageContentBlockProps {
 }
 
 const PageContentBlock = ({ title, className, children }: PageContentBlockProps) => {
-    // A page previewed in the theme workbench titles its frame, not the workbench.
-    const owner = useOwnerDocument();
-
     useEffect(() => {
-        owner.title = title || owner.title;
-    }, [owner, title]);
+        document.title = title || document.title;
+    }, [title]);
 
     return (
         <div>

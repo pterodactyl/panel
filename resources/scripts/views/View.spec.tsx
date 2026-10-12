@@ -6,7 +6,6 @@ import type * as RegistryModule from './registry';
 import type * as ViewModule from './View';
 import type * as LazyModule from './lazy';
 import type * as SessionModule from './session';
-import type { ViewProbe } from './inspect';
 import type * as ExtensionRegistry from '@/extensions/registry';
 
 interface ProbeModel {
@@ -82,17 +81,6 @@ function commitOverrides(entries: { id: string; component: ComponentType<never> 
         extensions.commitExtensionRegistryBatch(id, batch);
     }
 }
-
-const wrapping = { wrap: true };
-const probes: ViewProbe[] = [];
-const collecting = {
-    wrap: false,
-    collect: (probe: ViewProbe) => {
-        probes.push(probe);
-
-        return () => {};
-    },
-};
 
 describe('<View>', () => {
     it('stacks classic, the theme chain parent first, then extensions in configured order', async () => {
@@ -407,53 +395,6 @@ describe('<View>', () => {
         expect(load).toHaveBeenCalledTimes(1);
     });
 
-    it('wraps each view for the inspector only while inspection is on', async () => {
-        const { ViewInspectionContext } = await import('./inspect');
-
-        views.registerViewDefinition({ name: 'test.inspect', kind: 'block', context: 'app', use });
-        views.registerViewLayer('classic', 'classic', { 'test.inspect': Classic });
-
-        const { container, rerender } = render(<engine.View name='test.inspect' />);
-
-        expect(container.querySelector('[data-view]')).toBeNull();
-
-        rerender(
-            <ViewInspectionContext.Provider value={wrapping}>
-                <engine.View name='test.inspect' />
-            </ViewInspectionContext.Provider>
-        );
-
-        expect(container.querySelector('[data-view="test.inspect"]')).toHaveStyle({ display: 'contents' });
-    });
-
-    it('records what each view rendered with, including a layer that failed', async () => {
-        const { ViewInspectionContext } = await import('./inspect');
-
-        define('test.probe');
-        views.registerViewLayer('classic', 'classic', { 'test.probe': Classic });
-        views.registerViewLayer('aurora', 'theme', {
-            'test.probe': () => {
-                throw new Error('theme exploded');
-            },
-        });
-
-        render(
-            <ViewInspectionContext.Provider value={collecting}>
-                <engine.ViewFixtureProvider fixtures={{ 'test.probe': 'second' }}>
-                    <engine.View name='test.probe' />
-                </engine.ViewFixtureProvider>
-            </ViewInspectionContext.Provider>
-        );
-
-        expect(screen.getByText('classic:second fixture')).toBeInTheDocument();
-        expect(probes).toHaveLength(1);
-        expect(probes[0].current()).toMatchObject({
-            model: { name: 'second fixture' },
-            layers: [{ id: 'classic' }, { id: 'aurora' }],
-            failed: ['aurora'],
-        });
-    });
-
     it('renders a fixture with the inputs and scope its view declares', () => {
         function Scope({ model, children }: { model: unknown; children?: ReactNode }) {
             return <section aria-label={`scope of ${String(Reflect.get(Object(model), 'name'))}`}>{children}</section>;
@@ -566,7 +507,7 @@ describe('views implemented by their area module', () => {
         expect(screen.getByText('installing')).toBeVisible();
     });
 
-    it('reads fixtures from the module, so the workbench renders the view without a backend', async () => {
+    it('reads fixtures from the module, so tests render the view without a backend', async () => {
         const { arrive } = area();
 
         arrive();

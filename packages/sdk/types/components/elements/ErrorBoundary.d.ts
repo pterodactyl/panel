@@ -4,6 +4,8 @@ type ResetKey = string | number | boolean | null | undefined;
 interface Props {
     children?: React.ReactNode;
     resetKeys?: readonly ResetKey[];
+    /** Called by Retry before the children render again. */
+    onReset?: () => void;
 }
 interface State {
     hasError: boolean;
@@ -16,6 +18,7 @@ declare class ErrorBoundary extends React.Component<Props, State> {
     componentDidCatch(error: Error): void;
     componentDidUpdate(prevProps: Props, prevState: State): void;
     reset: () => void;
+    retry: () => void;
     render(): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;
 }
 export default ErrorBoundary;

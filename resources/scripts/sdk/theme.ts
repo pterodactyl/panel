@@ -45,7 +45,6 @@ export {
 export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';
-export { useViewDocument, type ViewDocument } from '@/components/elements/Portal';
 export {
     Navigation,
     NavigationLink,

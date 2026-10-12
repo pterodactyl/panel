@@ -15,7 +15,6 @@ import {
 import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
 import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
-import { uiPrimitives, type UiPrimitiveName, type UiPrimitiveProps } from '@/themes/gallery';
 import { isPendingLazyView } from '@/views/lazy';
 import {
     createViewHarness,
@@ -34,6 +33,7 @@ import {
     useLayoutEffect,
     useMemo,
     useSyncExternalStore,
+    type ComponentProps,
     type ComponentType,
     type JSXElementConstructor,
     type ReactNode,
@@ -71,6 +71,37 @@ import type { ExtensionResourceContext } from '@/extensions/resourceContext';
 import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
 import { createTestServer } from '@/views/fixtures';
+import {
+    Alert,
+    Avatar,
+    Badge,
+    Button,
+    Card,
+    Checkbox,
+    Code,
+    ContentBox,
+    CopyOnClick,
+    Dialog,
+    DropdownMenu,
+    Empty,
+    FileInput,
+    Input,
+    Label,
+    ListRow,
+    NewButton,
+    NumberInput,
+    PageHeading,
+    Pagination,
+    ProgressBar,
+    Select,
+    Spinner,
+    SpinnerOverlay,
+    Switch,
+    Table,
+    TextArea,
+    TitledGreyBox,
+    Tooltip,
+} from './index';
 import type { SdkServer, SdkSiteSettings, SdkUser } from './index';
 import type { ServerWebsocketEvent } from './index';
 
@@ -81,8 +112,75 @@ export {
     createTestFileManager,
     createTestFileManagerEntry,
 } from '@/views/server/fileFixtures';
-export type { UiPrimitiveName, UiPrimitiveProps };
 export { ViewLayerError };
+
+/** The component of each UI kit primitive `renderPrimitive` renders, by name. */
+export interface UiPrimitiveComponents {
+    Button: typeof Button;
+    NewButton: typeof NewButton;
+    Input: typeof Input;
+    TextArea: typeof TextArea;
+    NumberInput: typeof NumberInput;
+    FileInput: typeof FileInput;
+    Select: typeof Select;
+    Checkbox: typeof Checkbox;
+    Switch: typeof Switch;
+    Label: typeof Label;
+    Card: typeof Card;
+    ListRow: typeof ListRow;
+    PageHeading: typeof PageHeading;
+    Badge: typeof Badge;
+    Alert: typeof Alert;
+    ProgressBar: typeof ProgressBar;
+    Dialog: typeof Dialog;
+    Tooltip: typeof Tooltip;
+    DropdownMenu: typeof DropdownMenu;
+    Table: typeof Table;
+    Pagination: typeof Pagination;
+    Empty: typeof Empty;
+    Spinner: typeof Spinner;
+    SpinnerOverlay: typeof SpinnerOverlay;
+    Avatar: typeof Avatar;
+    Code: typeof Code;
+    CopyOnClick: typeof CopyOnClick;
+    ContentBox: typeof ContentBox;
+    TitledGreyBox: typeof TitledGreyBox;
+}
+
+const uiPrimitives: UiPrimitiveComponents = {
+    Button,
+    NewButton,
+    Input,
+    TextArea,
+    NumberInput,
+    FileInput,
+    Select,
+    Checkbox,
+    Switch,
+    Label,
+    Card,
+    ListRow,
+    PageHeading,
+    Badge,
+    Alert,
+    ProgressBar,
+    Dialog,
+    Tooltip,
+    DropdownMenu,
+    Table,
+    Pagination,
+    Empty,
+    Spinner,
+    SpinnerOverlay,
+    Avatar,
+    Code,
+    CopyOnClick,
+    ContentBox,
+    TitledGreyBox,
+};
+
+export type UiPrimitiveName = keyof UiPrimitiveComponents;
+export type UiPrimitiveProps<N extends UiPrimitiveName> = ComponentProps<UiPrimitiveComponents[N]>;
 
 registerClassicTheme();
 // Views' hooks and fixtures and classic's own views are lazy; loading them here lets a test render them synchronously.
@@ -111,11 +209,6 @@ export interface ExtensionTestHost {
     emitWebsocket(event: ServerWebsocketEvent, data: string): void;
     setConnected(connected: boolean): void;
     dispose(): void;
-}
-
-/** Create one host per test; call dispose after unmounting its Wrapper. */
-export function createExtensionTestHost(options: ExtensionTestHostOptions = {}): ExtensionTestHost {
-    return createHost(options);
 }
 
 /** Reports what the host's mount caught, which a strict view test host fails on. */
@@ -267,6 +360,11 @@ function createHost(options: ExtensionTestHostOptions, failing?: string): Extens
     };
 }
 
+/** Create one host per test; call dispose after unmounting its Wrapper. */
+export function createExtensionTestHost(options: ExtensionTestHostOptions = {}): ExtensionTestHost {
+    return createHost(options);
+}
+
 export interface ViewTestHostOptions<N extends ViewName> {
     /** Defaults to the named fixture, or the view's first. */
     model?: ViewModel<N>;
@@ -330,6 +428,8 @@ function collectLayerFailures(): LayerFailures {
     };
 }
 
+const noFailures: LayerFailures = { current: () => null, subscribe: () => () => {}, stop: () => {} };
+
 /** Throws the first failure, outside every boundary below it, so the render fails instead of falling back. */
 function FailOnLayerError({ failures, children }: { failures: LayerFailures; children?: ReactNode }) {
     const failure = useSyncExternalStore(failures.subscribe, failures.current);
@@ -358,46 +458,43 @@ export async function createViewTestHost<N extends ViewName>(
     const extensionId = options.extensionId ?? 'test-extension';
     const model = options.model ?? fixtureModel(view, options.fixture);
     const manager = view === 'server.files.manager' ? (model as FileManagerModel) : undefined;
-    const failures = options.strict === false ? null : collectLayerFailures();
+    const strict = options.strict !== false;
+    const failures = strict ? collectLayerFailures() : noFailures;
     const host = createHost(
         {
             extensionId,
             server: createTestServer(),
             path: manager ? `/server/test-server/files#${manager.directory}` : undefined,
         },
-        failures ? name : undefined
+        strict ? name : undefined
     );
-    const portal =
-        manager && !document.getElementById('modal-portal')
-            ? document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }))
-            : null;
     const input = options.input === undefined ? (definition?.fixtureInput?.(model) ?? {}) : Object(options.input);
     const Session = definition?.fixtureScope ?? NoSession;
     const harness = createViewHarness(name, { model, inputs: input });
 
     function Wrapper({ children }: { children?: ReactNode }) {
         const context = useMemo(() => ({ extensionId, context: `view "${name}" test host` }), []);
-        const content = (
-            <host.Wrapper>
-                <ExtensionContext.Provider value={context}>
-                    <ViewFixtureProvider>
-                        <Session model={model}>
-                            <harness.Scope>{children}</harness.Scope>
-                        </Session>
-                    </ViewFixtureProvider>
-                </ExtensionContext.Provider>
-            </host.Wrapper>
-        );
 
-        return failures ? <FailOnLayerError failures={failures}>{content}</FailOnLayerError> : content;
+        return (
+            <FailOnLayerError failures={failures}>
+                <host.Wrapper>
+                    <ExtensionContext.Provider value={context}>
+                        <ViewFixtureProvider>
+                            <Session model={model}>
+                                <harness.Scope>{children}</harness.Scope>
+                            </Session>
+                        </ViewFixtureProvider>
+                    </ExtensionContext.Provider>
+                </host.Wrapper>
+            </FailOnLayerError>
+        );
     }
 
     return {
         Wrapper,
         props: harness.props,
         dispose: () => {
-            failures?.stop();
-            portal?.remove();
+            failures.stop();
             host.dispose();
         },
     };
@@ -551,7 +648,7 @@ export function renderPrimitive(
     options: RenderPrimitiveOptions = {}
 ): RenderedView {
     // The overload ties the props to the named primitive.
-    const primitive = uiPrimitives[name].component as JSXElementConstructor<UiPrimitiveProps<UiPrimitiveName>>;
+    const primitive = uiPrimitives[name] as JSXElementConstructor<UiPrimitiveProps<UiPrimitiveName>>;
 
     return mount(createElement(primitive, props), { theme: options.theme });
 }

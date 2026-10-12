@@ -90,7 +90,7 @@ export function usePanelNavigate(): (destination: PanelDestination) => Promise<v
 }
 
 /**
- * The current path, params and search. A view rendered from fixtures, in tests and the workbench, sits
+ * The current path, params and search. A view rendered from fixtures, as in tests, sits
  * outside any route and sees empty params and search.
  */
 export function usePanelLocation(): RouteSlotData {

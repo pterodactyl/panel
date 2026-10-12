@@ -3,6 +3,7 @@ import type { Server } from "../api/server/types.js";
 import type { CorePanelDestination } from "../sdk/navigation.js";
 import { type NavigationModel, type NavItem } from "./navigation.js";
 import type { OpaqueModel } from "./pages.js";
+import type { ServerRunState } from "./server/console.js";
 import { type ThemeScheme } from "./theme.js";
 export interface LayoutBrand {
     /** The panel's name. */
@@ -19,11 +20,15 @@ export interface AppLayoutLink {
     readonly destination: CorePanelDestination;
     /** Active only on the destination itself, not below it. */
     readonly exact: boolean;
+    /** A lucide icon name, as `NamedIcon` takes it. */
+    readonly icon: string;
 }
 export interface AppLayoutModel {
     readonly brand: LayoutBrand;
     /** The dashboard, the admin area for root admins, and the account. */
     readonly links: readonly AppLayoutLink[];
+    /** Where the user is, with the model of that area's layout, so the shell can draw its navigation. */
+    readonly area: AppArea;
     readonly user: {
         readonly uuid: string;
         readonly username: string;
@@ -50,8 +55,11 @@ export type ServerConflict = 'installing' | 'suspended' | 'maintenance' | 'trans
 export interface ServerLayoutModel {
     readonly name: string;
     readonly identifier: string;
+    readonly uuid: string;
     /** The server's id in the admin area. */
     readonly internalId: number;
+    /** What Wings last reported the server doing, as `server.power` has it; null until it has. */
+    readonly state: ServerRunState | null;
     readonly conflict: ServerConflict | null;
     /** The server's admin page, for root admins. */
     readonly adminLink: NavItem | null;
@@ -67,6 +75,19 @@ export interface AdminLayoutModel {
         readonly email: string;
     };
 }
+/**
+ * The area `layout.app` renders: the dashboard (and any page outside the areas below), or an area with
+ * the model of its own layout, which `layout.app` renders around the area's pages.
+ */
+export type AppArea = {
+    readonly kind: 'dashboard';
+} | ({
+    readonly kind: 'account';
+} & AccountLayoutModel) | ({
+    readonly kind: 'server';
+} & ServerLayoutModel) | ({
+    readonly kind: 'admin';
+} & AdminLayoutModel);
 declare module './registry' {
     interface ViewModels {
         'layout.auth': AuthLayoutModel;

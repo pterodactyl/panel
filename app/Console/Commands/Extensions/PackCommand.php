@@ -18,7 +18,11 @@ use Pterodactyl\Services\Themes\ThemeRepository;
 use ZipArchive;
 
 #[Description('Package the runtime files of a built extension into a .pteroext archive.')]
-#[Signature('p:extension:pack {path : Path to the unpacked extension.} {--output= : Archive filename.} {--force : Overwrite an existing archive.}')]
+#[Signature('p:extension:pack
+                            {path : Path to the unpacked extension.}
+                            {--output= : Archive filename.}
+                            {--force : Overwrite an existing archive.}
+                            {--sourcemaps : Include *.map files, which can embed the full sources.}')]
 class PackCommand extends Command
 {
     public function handle(ExtensionManifestValidator $validator, ExtensionAssetPublisher $assets, ExtensionComposerInspector $composer, ThemeRepository $themes): int
@@ -53,6 +57,10 @@ class PackCommand extends Command
 
                     foreach (File::allFiles($manifest->path($directory)) as $file) {
                         if ($file->isLink() || array_any(explode('/', str_replace('\\', '/', $file->getRelativePathname())), fn (string $part): bool => str_starts_with($part, '.') || in_array($part, ['node_modules', 'tests', 'test', 'coverage'], true))) {
+                            continue;
+                        }
+
+                        if ($file->getExtension() === 'map' && ! $this->option('sourcemaps')) {
                             continue;
                         }
 

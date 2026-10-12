@@ -141,8 +141,9 @@ const themeBuildInfo = () => {
 /**
  * Builds a theme: `entry` (optional) to dist/client.js with the shared modules external and
  * no stylesheet loader, `stylesheet` to dist/theme.css with Tailwind, and dist/theme.json.
+ * `sourcemap` is off: a map embeds the theme's sources, so turn it on only for builds you keep.
  */
-export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins = [] } = {}) {
+export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins = [], sourcemap = false } = {}) {
     if (!stylesheet && !entry) {
         throw new Error(
             'defineThemeConfig requires a { stylesheet } path such as "src/theme.css", an { entry } such as "src/theme.tsx", or both.'
@@ -159,7 +160,7 @@ export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins 
         build: {
             outDir,
             emptyOutDir: true,
-            sourcemap: true,
+            sourcemap,
             target: 'es2022',
             modulePreload: false,
             rollupOptions: {

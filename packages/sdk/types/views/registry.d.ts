@@ -55,7 +55,7 @@ export type ViewFixtureScope<N> = ComponentType<{
 export interface ViewImplementation<N extends string> {
     /** The engine hook producing the model; the only data source of the view. */
     use(input: ViewInput<N>): ViewModel<N>;
-    /** Models for the workbench and tests; the first is the default. */
+    /** Models for tests; the first is the default. */
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
     /** The inputs a fixture renders with, for views that take inputs. */
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;

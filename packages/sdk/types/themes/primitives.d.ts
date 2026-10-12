@@ -232,7 +232,7 @@ export interface PrimitiveMeta<N extends PrimitiveName> {
     readonly parts: readonly SkinPart<N>[];
     readonly replaceable: N extends ReplaceableName ? true : false;
 }
-/** The primitives and their parts at runtime, for the registry, the workbench and the docs. */
+/** The primitives and their parts at runtime, for the registry, the tests and the docs. */
 export declare const UI_PRIMITIVES: {
     Alert: {
         parts: ("content" | "title" | "icon" | "root" | "body")[];

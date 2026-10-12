@@ -24,6 +24,20 @@
 }
 
 /*
+ * The horizontal geometry of page content (PageContentBlock, ServerContentBlock): at most
+ * `--layout-content-width` wide with `--layout-gutter` at the sides, centred from `xl`. A layout's own
+ * header uses it to line up with the pages below.
+ */
+@utility page-width {
+    max-width: var(--layout-content-width);
+    margin-inline: var(--layout-gutter);
+
+    @variant xl {
+        margin-inline: auto;
+    }
+}
+
+/*
  * Semantic role tokens (shadcn/ui convention).
  *
  * Values are bare tokens defined per theme: `.dark` is Pterodactyl - the shipping
@@ -41,6 +55,8 @@
     --layout-content-width: 75rem;
     --layout-auth-width: 43.75rem;
     --layout-sidebar-width: 16rem;
+    /* Page content's side margins until it centres; the `page-width` utility applies both. */
+    --layout-gutter: calc(var(--spacing) * 4);
 
     /* Browser chrome: native widget scheme and the `<meta name="theme-color">` the SPA keeps in sync. */
     --color-scheme: light;

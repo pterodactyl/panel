@@ -7,7 +7,7 @@ import { build } from 'vite';
 import { expect, it } from 'vitest';
 import { defineExtensionConfig, defineThemeConfig } from './vite.mjs';
 
-const buildTheme = async (directory: string, files: Record<string, string>, entry = true) => {
+const buildTheme = async (directory: string, files: Record<string, string>, entry = true, sourcemap?: boolean) => {
     for (const [name, contents] of Object.entries(files)) {
         writeFileSync(resolve(directory, name), contents);
     }
@@ -17,6 +17,7 @@ const buildTheme = async (directory: string, files: Record<string, string>, entr
             entry: entry ? resolve(directory, 'theme.jsx') : undefined,
             stylesheet: resolve(directory, 'theme.css'),
             outDir: resolve(directory, 'dist'),
+            sourcemap,
         }),
         configFile: false,
         logLevel: 'silent',
@@ -49,6 +50,26 @@ it('builds a theme entry without a style loader, its stylesheet and its build in
             sdk: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version,
             views: ['layout.app', 'page', 'server.power'],
         });
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+});
+
+it('ships no source map, which would embed the theme sources, unless asked to', async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
+    const files = {
+        'theme.css': '.a { color: red; }',
+        'theme.jsx': "import { defineTheme } from '@pterodactyl/sdk/theme'; export default defineTheme({});",
+    };
+    try {
+        const plain = await buildTheme(directory, files);
+
+        expect(plain('client.js')).not.toContain('sourceMappingURL');
+        expect(() => plain('client.js.map')).toThrow();
+
+        const mapped = await buildTheme(directory, files, true, true);
+
+        expect(JSON.parse(mapped('client.js.map')).sourcesContent.join('')).toContain('defineTheme');
     } finally {
         rmSync(directory, { recursive: true, force: true });
     }

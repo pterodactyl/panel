@@ -96,8 +96,13 @@ export default function WebsocketHandler() {
                 if (isServerStatus(status)) {
                     setServerStatus(status);
                     // The cached resources carry the state the app shell and the dashboard show.
-                    queryClient.setQueryData(serverResourceUsageQueryOptions(uuid).queryKey, (resources) =>
-                        resources && { ...resources, attributes: { ...resources.attributes, current_state: status } }
+                    queryClient.setQueryData(
+                        serverResourceUsageQueryOptions(uuid).queryKey,
+                        (resources) =>
+                            resources && {
+                                ...resources,
+                                attributes: { ...resources.attributes, current_state: status },
+                            }
                     );
                 }
             });

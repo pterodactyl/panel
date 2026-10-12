@@ -22,7 +22,6 @@ export interface ThemeBootstrap {
     safeMode: boolean;
     preview: boolean;
     stylesheetFallback: boolean;
-    inspect: boolean;
 }
 
 interface ExtendedWindow extends Window {
@@ -81,7 +80,6 @@ const classicTheme: ThemeBootstrap = {
     safeMode: false,
     preview: false,
     stylesheetFallback: false,
-    inspect: false,
 };
 
 export const getBootstrapTheme = (): ThemeBootstrap => ({
