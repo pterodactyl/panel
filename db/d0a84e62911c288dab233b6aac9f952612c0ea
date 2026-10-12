@@ -1,0 +1,29 @@
+resources/scripts/themes/__fixtures__/classic-classes.json
+  s_4cabae41bceed9::t_e87a629d6c0d24 1-990
+resources/scripts/themes/classicClasses.spec.tsx
+  s_4cabae41bceed9::t_792795be58f643 42
+  s_4cabae41bceed9::t_63532ce2361c13 1-41,43-52,54-55,57-58,60-63,76-270,272-279,281-388,390-427,429-500,509-519,521
+  s_4cabae41bceed9::t_0382b11fa6a4e0 271
+  s_4cabae41bceed9::t_42cabc0141b0ee 501-508
+  s_4cabae41bceed9::t_56621a2c28ca61 520
+  s_4cabae41bceed9::t_355859127776d5 428
+  s_4cabae41bceed9::t_2bc435e6b28100 53,56,59,64-75
+  s_4cabae41bceed9::t_7aa0765b632edd 280
+  s_4cabae41bceed9::t_a9c4729ea79e16 389
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dbd0a84e62911c288dab233b6aac9f952612c0ea",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
