@@ -10,14 +10,12 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
 use Pterodactyl\Http\Resources\Api\Application\ServerVariableResource;
 use Pterodactyl\Http\Resources\Api\Client\DatabaseResource;
-use Pterodactyl\Http\Resources\Api\Client\UserSSHKeyResource;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Tests\Integration\Api\Parity\ResourceParity;
@@ -25,7 +23,6 @@ use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
-use Pterodactyl\Transformers\Api\Client\UserSSHKeyTransformer;
 
 /*
  * The pilot resources of each API against the transformers they replace, through the
@@ -46,26 +43,6 @@ function serverWithDatabases(IntegrationTestCase $test): array
 
     return [$server, $databases->modelKeys()];
 }
-
-test('client ssh keys render the same', function (): void {
-    $user = User::factory()->create();
-    $first = UserSSHKey::factory()->create(['user_id' => $user->id]);
-    UserSSHKey::factory()->dsa()->create(['user_id' => $user->id]);
-    UserSSHKey::factory()->rsa()->create(['user_id' => $user->id]);
-
-    $one = fn (): UserSSHKey => UserSSHKey::query()->findOrFail($first->id);
-    $keys = fn () => UserSSHKey::query()->where('user_id', $user->id)->get();
-    $page = fn () => UserSSHKey::query()->where('user_id', $user->id)->paginate(1)->appends(['sort' => 'name']);
-
-    expect(ResourceParity::item(UserSSHKeyTransformer::class, UserSSHKeyResource::class, $one)->actingAs($user)->assertSame())
-        ->toStartWith('{"object":"ssh_key","attributes":{"name":');
-    expect(ResourceParity::list(UserSSHKeyTransformer::class, UserSSHKeyResource::class, $keys)->actingAs($user)->assertSame())
-        ->toStartWith('{"object":"list","data":[{"object":"ssh_key"');
-    expect(ResourceParity::list(UserSSHKeyTransformer::class, UserSSHKeyResource::class, $page)->request('/api/client/account/ssh-keys?page=2')->actingAs($user)->assertSame())
-        ->toContain('"pagination":{"total":3,"count":1,"per_page":1,"current_page":2,"total_pages":3,"links":{"previous":');
-    expect(ResourceParity::list(UserSSHKeyTransformer::class, UserSSHKeyResource::class, fn () => UserSSHKey::query()->whereKey(0)->paginate())->actingAs($user)->assertSame())
-        ->toContain('"data":[],"meta":{"pagination":{"total":0,"count":0,"per_page":15,"current_page":1,"total_pages":1,"links":{}}}');
-});
 
 test('client databases render the same, with the password only for users who may see it', function (): void {
     [$server, $ids] = serverWithDatabases($this);

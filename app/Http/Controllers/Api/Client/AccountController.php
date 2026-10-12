@@ -14,12 +14,11 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -46,16 +45,11 @@ class AccountController extends ClientApiController
         ],
     ];
 
-    /**
-     * @return array<string, mixed>
-     */
     #[Endpoint('Get account', 'Returns profile details for the authenticated user.')]
-    #[ResponseFromTransformer(AccountTransformer::class, User::class, resourceKey: 'user')]
-    public function index(Request $request): array
+    #[ResponseFromResource(AccountResource::class, User::class, resourceKey: 'user')]
+    public function index(Request $request): AccountResource
     {
-        return Fractal::item($request->user())
-            ->transformWith($this->getTransformer(AccountTransformer::class))
-            ->toResponseArray();
+        return AccountResource::make($request->user());
     }
 
     /**

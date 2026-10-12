@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Transformers\Concerns;
+namespace Pterodactyl\Http\Resources\Api\Concerns;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\ActivityLog;

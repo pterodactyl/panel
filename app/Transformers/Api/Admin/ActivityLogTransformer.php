@@ -7,9 +7,9 @@ namespace Pterodactyl\Transformers\Api\Admin;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Http\Resources\Api\Concerns\FormatsActivityLogs;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Concerns\FormatsActivityLogs;
 
 #[ResponseField('ip', example: '192.0.2.10', nullable: true)]
 #[ResponseField('description', example: 'Changed account email address.', nullable: true)]

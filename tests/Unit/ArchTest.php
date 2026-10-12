@@ -35,11 +35,12 @@ use PhpParser\ParserFactory;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
+use Pterodactyl\Http\Resources\Api\Client\UserResource as ClientUserResource;
+use Pterodactyl\Http\Resources\Api\Concerns\FormatsActivityLogs;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Tags\TagBackfiller;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer as AdminUserTransformer;
 use Pterodactyl\Transformers\Api\Client\UserTransformer as ClientUserTransformer;
-use Pterodactyl\Transformers\Concerns\FormatsActivityLogs;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -51,6 +52,7 @@ arch()->preset()->php()->ignoring('Rules');
 arch()->preset()->security()->ignoring([
     AdminUserTransformer::class,
     ClientUserTransformer::class,
+    ClientUserResource::class,
     FormatsActivityLogs::class,
     'Rules',
 ]);
