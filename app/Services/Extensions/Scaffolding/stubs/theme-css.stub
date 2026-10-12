@@ -1,14 +1,38 @@
 /*
  * The panel stylesheet with every class the panel uses, then this theme's own. Write plain
- * Tailwind: there is no prefix, and anything here can retune the panel's tokens.
+ * Tailwind: there is no prefix, and anything here can retune the panel's tokens. The SDK
+ * README lists every token under "Tokens".
  */
 @import '@pterodactyl/sdk/theme-entry.css';
 
+/* Both schemes. The "accent" setting writes --{{id}}-accent; the roles below derive from it. */
 :root {
+    --primary: var(--{{id}}-accent, #8b5cf6);
+    --ring: color-mix(in oklab, var(--primary) 60%, transparent);
     --layout-content-width: 80rem;
 }
 
-/* The "compact" setting writes data-{{id}}-compact on <html>. */
+/* Dark: the first scheme in extension.json, so the default. */
+.dark {
+    --background: oklch(0.2 0.02 275);
+    --card: oklch(0.25 0.025 275);
+    --popover: oklch(0.3 0.03 275);
+    --border: oklch(0.33 0.03 275);
+}
+
+/* Light. Classic's light palette is provisional, so a theme that offers light sets its own. */
+.light {
+    --background: oklch(0.98 0.005 275);
+    --foreground: oklch(0.22 0.02 275);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.22 0.02 275);
+    --popover: oklch(0.96 0.01 275);
+    --popover-foreground: oklch(0.22 0.02 275);
+    --muted-foreground: oklch(0.5 0.02 275);
+    --border: oklch(0.9 0.01 275);
+}
+
+/* The "compact" setting writes data-{{id}}-compact on <html>; spacing utilities multiply --spacing. */
 [data-{{id}}-compact='true'] {
     --spacing: 0.2rem;
 }

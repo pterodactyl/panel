@@ -127,7 +127,7 @@ class ExtensionScaffolder
             'id' => $id,
             'name' => $replacements['{{name}}'],
             'version' => '1.0.0',
-            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => '^2.0.0-beta.4', 'php' => '^8.3'],
+            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => $this->sdkConstraint(), 'php' => '^8.3'],
             'description' => $replacements['{{description}}'] ?: null,
             'author' => $replacements['{{author}}'] ?: null,
             'provider' => $namespace.'\\'.$namespace.'Provider',
@@ -142,8 +142,9 @@ class ExtensionScaffolder
     }
 
     /**
-     * A theme with a stylesheet, a layout override and a skin, three settings and a test. It
-     * needs no PHP; a provider can be added like an extension's.
+     * A theme with a stylesheet for both schemes, a skin, a layout override, four settings and a
+     * test, laid out as the SDK README's theme chapter describes. It needs no PHP; a provider can be
+     * added like an extension's.
      *
      * @param  array<string, string>  $replacements  stub placeholder => literal substitution
      */
@@ -155,7 +156,7 @@ class ExtensionScaffolder
             'type' => 'theme',
             'name' => $replacements['{{name}}'],
             'version' => '1.0.0',
-            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => '^'.config()->string('extensions.sdk_version')],
+            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => $this->sdkConstraint()],
             'description' => $replacements['{{description}}'] ?: null,
             'author' => $replacements['{{author}}'] ?: null,
             'icon' => 'palette',
@@ -165,9 +166,10 @@ class ExtensionScaffolder
                 'stylesheet' => ThemeDefinition::STYLESHEET,
                 'schemes' => ThemeDefinition::SCHEMES,
                 'settings' => [
-                    'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#8b5cf6', 'token' => '--accent'],
+                    'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#8b5cf6', 'token' => "--{$id}-accent"],
                     'radius' => ['type' => 'number', 'label' => 'Corner radius', 'default' => 0.75, 'min' => 0, 'max' => 1.5, 'step' => 0.125, 'unit' => 'rem', 'token' => '--radius'],
                     'compact' => ['type' => 'toggle', 'label' => 'Compact spacing', 'default' => false, 'attribute' => "data-{$id}-compact"],
+                    'logo' => ['type' => 'image', 'label' => 'Logo', 'help' => 'Shown in place of the panel name.', 'token' => '--brand-logo'],
                 ],
             ],
         ], fn (array|string|null $value): bool => $value !== null);
@@ -175,6 +177,7 @@ class ExtensionScaffolder
         File::put($target.DIRECTORY_SEPARATOR.ExtensionManifest::FILENAME, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION)."\n");
         $this->files[] = ExtensionManifest::FILENAME;
 
+        $replacements['{{artisan}}'] = $this->artisanPath($target);
         foreach ([
             'theme-package.stub' => 'package.json',
             'theme-vite.config.stub' => 'vite.config.mjs',
@@ -183,12 +186,28 @@ class ExtensionScaffolder
             'vitest.config.stub' => 'vitest.config.mjs',
             'theme-css.stub' => 'src/theme.css',
             'theme-tsx.stub' => 'src/theme.tsx',
+            'theme-skins.stub' => 'src/skins.ts',
+            'theme-layout.stub' => 'src/views/AppLayout.tsx',
             'theme-test.stub' => 'src/theme.spec.tsx',
             'gitignore.stub' => '.gitignore',
             'theme-readme.stub' => 'README.md',
         ] as $stub => $relative) {
             $this->stub($target, $stub, $relative, $replacements);
         }
+    }
+
+    /** The `requires.sdk` constraint of a new package: this SDK or a later 2.x one. */
+    private function sdkConstraint(): string
+    {
+        return '>='.config()->string('extensions.sdk_version').' <3.0';
+    }
+
+    /** The panel's artisan as the package's npm scripts reach it: relative when they share a root. */
+    private function artisanPath(string $target): string
+    {
+        $relative = $this->relativePath($target, base_path());
+
+        return $relative === null ? str_replace('\\', '/', base_path('artisan')) : mb_rtrim($relative, '/').'/artisan';
     }
 
     /**
@@ -239,7 +258,7 @@ class ExtensionScaffolder
     {
         $sdk = base_path('packages'.DIRECTORY_SEPARATOR.'sdk');
         if (! is_file($sdk.DIRECTORY_SEPARATOR.'package.json')) {
-            return '^2.0.0-beta.4';
+            return '^'.config()->string('extensions.sdk_version');
         }
 
         $relative = $this->relativePath($target, $sdk);
@@ -249,7 +268,7 @@ class ExtensionScaffolder
 
         $version = File::json($sdk.DIRECTORY_SEPARATOR.'package.json')['version'] ?? null;
 
-        return '^'.(is_string($version) ? $version : '2.0.0-beta.4');
+        return '^'.(is_string($version) ? $version : config()->string('extensions.sdk_version'));
     }
 
     private function relativePath(string $from, string $to): ?string

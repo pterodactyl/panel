@@ -1,12 +1,19 @@
 # @pterodactyl/sdk
 
-Build extensions for the Pterodactyl panel (v2+). This package provides:
+Build extensions and themes for the Pterodactyl panel (v2+). This package provides:
 
 - **Types** for the runtime API. The implementation is provided *by the panel*
   through its import map, so your built extension never bundles the SDK, React, or
   TanStack Query: it shares the panel's own instances.
-- **The Vite build preset** (`@pterodactyl/sdk/vite`) that keeps those modules external
-  and emits `dist/client.js` plus lazy screen chunks.
+- **The Vite build presets** (`@pterodactyl/sdk/vite`): `defineExtensionConfig` keeps those
+  modules external and emits `dist/client.js` plus lazy screen chunks; `defineThemeConfig`
+  also builds a theme's stylesheet.
+- **Test helpers** (`@pterodactyl/sdk/testing`, `@pterodactyl/sdk/vitest`) that render views,
+  UI primitives and screens with the real runtime and no backend.
+- **The `pterodactyl-theme` CLI**, which lists the panel's views, ejects the stock theme's source
+  for one, and prints its skins.
+
+Extensions start at [Quick start](#quick-start). Themes start at [Themes](#themes).
 
 ## Quick start
 
@@ -143,17 +150,13 @@ matches the panel's empty states; pass it as a `Table`'s `emptyState`.
 `resources/lang/<locale>/messages.php` group. Extension CSS is built with the extension's own
 Tailwind prefix (see [Styling](#styling)). The Vite preset waits for entry CSS before setup.
 
-Themes override the panel's CSS tokens: colour roles, the `--terminal-*`
-and `--editor-*` palettes, `--selection`, `--scrollbar-*`, `--color-scheme`, `--theme-color`,
-and the layout tokens `--layout-content-width`, `--layout-auth-width`,
-`--layout-sidebar-width` (`max-w-panel`, `max-w-auth`, `w-sidebar`) and `--spacing` (density).
-Extension utilities read the same live tokens (`hw:bg-card`, `hw:w-sidebar`, `hw:p-4` for the prefix `hw`).
-`document.documentElement.dataset.subNavigation = 'side'` moves the account and server
-sub-navigation into a sidebar. The console and the `theme-color` meta re-read their tokens
-when a stylesheet or an inline property on `<html>` changes; `onThemeChange(listener)` gives
-canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
-`notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own
-`theme-color` tag follows the token; one registered with `registerHeadTags` is left as rendered.
+The active theme sets the panel's CSS tokens (see [Tokens](#tokens)). Extension utilities read
+the same live tokens (`hw:bg-card`, `hw:w-sidebar`, `hw:p-4` for the prefix `hw`), so an
+extension follows the theme without knowing it. The console and the `theme-color` meta re-read
+their tokens when a stylesheet or an inline property on `<html>` changes; `onThemeChange(listener)`
+gives canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
+`notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own `theme-color`
+tag follows the token; one registered with `registerHeadTags` is left as rendered.
 
 ## Conditional screens, badges, and icons
 
@@ -733,55 +736,68 @@ build with either layer and no `ui.prefix` is rejected with the line to add.
 
 Every layout, page and block of the panel is a named view: an engine hook that produces its
 model, and a stack of layers that render it. Classic, the stock UI, is the bottom layer; the
-active theme and its parents stack above it, then extension overrides in the configured
-order. Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders
-the layer below. The catalog of names, with each view's kind, context, slots and fixtures,
-ships as `@pterodactyl/sdk/views.json`.
+active theme and its parents stack above it, then extension overrides in the configured order.
+Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders the layer
+below. Themes and extensions write layers the same way; [Views](#views-1) in the Themes chapter
+covers the API in full, and the [view catalogue](#view-catalogue) lists every view with its
+model, inputs, slots and fixtures. The catalogue also ships as `@pterodactyl/sdk/views.json`.
+
+### Overriding a view
 
 Declare the views an extension overrides in `extension.json` under `ui.views`, with a
-`requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Overrides are not exclusive: several enabled
-extensions and the active theme may override the same view, and `p:extension:doctor` reports a
-name under a core namespace that the panel does not have.
+`requires.sdk` constraint such as `>=2.0.0-beta.5 <3.0`, and register each layer with
+`views.override(name, layer)` during `setup`. A layer is a component, or `{ load }` with an
+importer the panel calls when the view first renders. Overrides are not exclusive: several
+enabled extensions and the active theme may override the same view, and each layer's `Default`
+renders the one below. `p:extension:doctor` reports a name under a core namespace that the
+panel does not have.
 
-```tsx
-import { definePterodactylExtension, type ViewProps } from '@pterodactyl/sdk';
-
-function ServerCard({ Default }: ViewProps<'dashboard.serverCard'>) {
-    return <Default className="hw:gap-3" />;
-}
-
-export default definePterodactylExtension({
-    setup({ views }) {
-        views.override('dashboard.serverCard', ServerCard);
-        views.override('server.files.details', { load: () => import('./FileDetails') });
-    },
-});
+```json
+{ "ui": { "entry": "dist/client.js", "prefix": "hw", "views": ["dashboard.serverCard", "server.files.details"] } }
 ```
 
-`packages/hello-world` overrides the server card, the file details and the file editor, each with a test.
+<!-- sample: snippets/extension.tsx#override -->
+<!-- /sample -->
 
-`Default` takes optional `model`, `className` and `children`, which replace what this layer
-received for the layer below: `<Default model={{ ...model, name: model.name.toUpperCase() }} />`.
-Views with parts also receive `parts`, the parts of the layer below, and `Default` accepts
-partial `parts` overrides. A part receives the model and the view's inputs, typed by
-`ViewPartProps<Name>`; define parts outside the layer's render function.
+<!-- sample: snippets/extension.tsx#setup -->
+<!-- /sample -->
 
-| Name | Model | Inputs | Parts |
-| --- | --- | --- | --- |
-| `dashboard.serverCard` | `ServerCardModel` | `server` | `identity`, `address`, `metrics` |
-| `server.files.details` | `FileDetailsModel` | `file` | `icon`, `name`, `size`, `modified` |
-| `server.files.editor` | `FileEditorModel` | | `notice`, `editor`, `language`, `actions` |
-| `server.files.manager` | `FileManagerModel` | | `toolbar`, `list`, `selection` |
+`packages/hello-world` overrides the server card, the file details and the file editor, each with
+a test. Classes passed to `Default` merge with the layer below's under the extension's prefix (see
+[Styling](#styling)).
 
-The server card and file details render inside core links. Keep interactive controls in
-action slots. The panel retains queries, permissions, navigation, accessible link names,
-selection, and menus. The classic server-card identity part includes the
-`dashboard.serverRow.name.after` slot.
+The server card and file details render inside core links. Keep interactive controls in action
+slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
+menus. The classic server-card identity part includes the `dashboard.serverRow.name.after` slot.
 
-`views.define(name, { context, use, Default, fixtures })` adds a view of the extension's own,
-so a theme can restyle or place it. `Default` is its bottom layer. A theme renders it with
-`<View name="billing.balance" optional />`, which renders nothing while the extension is not
-installed.
+### Defining a view
+
+`views.define(name, { context, use, Default, fixtures, placeholder })` adds a view of the
+extension's own, so themes and other extensions can restyle or place it:
+
+| Option | |
+| --- | --- |
+| `context` | Where it can render: `app` (every signed-in page), `server`, `account`, `admin` or `auth`. |
+| `use(inputs)` | The hook that produces the model. It is the view's only data source. |
+| `Default` | The bottom layer, typed by `ExtensionViewProps<Model>`. Build it from the [UI kit](#ui-kit) and it takes the active theme's skins. |
+| `fixtures` | Models by name, which the workbench and tests render without a backend. The first is the default. |
+| `placeholder` | Shown while a layer above it loads. |
+
+Use a namespace of your own, such as your extension id: `layout.` and `page.` names are refused,
+and so is a second definition of a name. The view renders wherever a layer or a slot places it
+with `<View name="billing.balance" />`; a theme that may run without the extension places it
+with `optional`, which renders nothing while no installed package defines it.
+
+<!-- sample: snippets/extension.tsx#define -->
+<!-- /sample -->
+
+### Slots inside views
+
+A view renders the slots listed for it in the catalogue, and a layer that replaces it has to
+render them too, or the extensions mounted there disappear. Rendering `Default` renders the
+slots of the layers below. In development, a layer that renders none of its view's slots logs
+a warning naming them after three seconds. The before and after slots of a page are rendered by
+the engine around the page view, so no layer can drop them.
 
 ### File editor
 
@@ -851,3 +867,15 @@ export default function Browser({ model, parts }: ViewProps<'server.files.manage
 While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering is reported against its package and replaced by the layer below. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
 
 The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting.
+
+## UI kit
+
+The SDK's components are the panel's design system: `Button`, `Input`, `Select`, `Card`,
+`ListRow`, `Badge`, `Dialog`, `Table`, `Empty` and the rest of the [primitives](#primitives).
+Each one takes its classes from the active theme's skin and marks its parts with `data-ui`,
+`data-part` and its state (`data-color="red"`). An extension built from them looks native under
+every theme, and a theme restyles it without knowing it exists. The workbench's UI kit shows each
+primitive in every variant under the active theme.
+
+A `className` passed to a primitive is appended to its skin's classes, and a conflicting utility
+replaces the skin's: `<Button className="hw:mt-4">` drops the button's own `mt-*` class.

@@ -1,38 +1,45 @@
 # {{name}}
 
-A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`.
+A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`. The "Themes" chapter of the
+SDK README (`node_modules/@pterodactyl/sdk/README.md`) documents everything used here: the
+manifest, the stylesheet and tokens, skins, views, the workbench, the CLI and the test helpers.
 
-## Layout
+## Files
 
-- `extension.json`: the manifest. `"type": "theme"` and its `theme` section declare the
-  stylesheet, the colour schemes and the settings administrators change on the Themes page.
-- `src/theme.css`: the panel stylesheet with this theme's styles. It starts with
-  `@import '@pterodactyl/sdk/theme-entry.css';`, so the build holds every class the panel
-  uses and replaces the panel's stylesheet. Write plain Tailwind; there is no prefix.
-- `src/theme.tsx`: `defineTheme` with skins for the UI kit and view overrides. Render
-  `Default` from an override to keep the layer below.
-- `src/theme.spec.tsx`: renders a view with the theme through `@pterodactyl/sdk/testing`.
+| File | |
+| --- | --- |
+| `extension.json` | The manifest. `"type": "theme"` and its `theme` section declare the stylesheet, the colour schemes and the settings administrators change on the Themes page. |
+| `src/theme.css` | The panel stylesheet with this theme's tokens and classes. It starts with `@import '@pterodactyl/sdk/theme-entry.css';` and replaces the panel's stylesheet. Plain Tailwind, no prefix. |
+| `src/theme.tsx` | `defineTheme`: skins for the UI kit and views by name. |
+| `src/skins.ts` | Class recipes for UI primitives such as `Button` and `Card`. |
+| `src/views/AppLayout.tsx` | A layer over classic's app layout. |
+| `src/theme.spec.tsx` | Renders views and primitives with the theme through `@pterodactyl/sdk/testing`. |
 
-Each setting writes a CSS token (`token`), an `<html>` attribute (`attribute`), or both,
-before the page renders. `php artisan p:extension:types` generates `src/theme-types.ts`,
-whose `ThemeSettings` types `useThemeSettings<ThemeSettings>()`.
+Each setting writes a CSS token (`token`), an `<html>` attribute (`attribute`), or both, before the
+page renders. `npm run types` writes `src/theme-types.ts`, whose `ThemeSettings` types
+`useThemeSettings<ThemeSettings>()`.
+
+## Scripts
+
+| Script | |
+| --- | --- |
+| `npm run build` | `dist/client.js`, `dist/theme.css` and `dist/theme.json`. |
+| `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
+| `npm run typecheck` | Checks the theme against the SDK's types. |
+| `npm test` | Runs the tests. |
+| `npm run doctor` | The panel's checks: manifest, build, budgets, remote URLs and view names. |
+| `npm run types` | Generates `src/theme-types.ts` from the settings. |
+| `npm run pack` | Packs a `.pteroext` archive to install on another panel. |
 
 ## Develop
 
 ```sh
 npm install
-npm run build
-php artisan p:extension:dev /path/to/{{id}} --enable --watch
-php artisan p:theme:activate {{id}}
+php {{artisan}} p:extension:dev . --enable
+php {{artisan}} p:theme:activate {{id}}
+php {{artisan}} p:extension:dev . --watch
 ```
 
-While `p:extension:dev --watch` runs, a change to `src/theme.css` is swapped into open pages
-without a reload; a change to the JavaScript reloads them.
-
-## Install
-
-```sh
-php artisan p:extension:pack /path/to/{{id}}
-php artisan p:extension:install {{id}}-1.0.0.pteroext --enable
-php artisan p:theme:activate {{id}}
-```
+The first command builds, installs and enables the theme. While the last one runs on a panel with
+`APP_DEBUG=true`, a change to `src/theme.css` swaps into open pages without a reload, and any other
+change reloads them. `/panel/theme-workbench` renders every view and primitive from fixtures.

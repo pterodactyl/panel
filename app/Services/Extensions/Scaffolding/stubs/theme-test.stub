@@ -1,12 +1,21 @@
-import { afterEach, expect, test } from 'vitest';
-import { cleanup } from '@testing-library/react';
-import { renderView } from '@pterodactyl/sdk/testing';
+import { afterEach, beforeAll, expect, test } from 'vitest';
+import { preloadTheme, renderPrimitive, renderView, type RenderedView } from '@pterodactyl/sdk/testing';
 import theme from './theme';
 
-afterEach(cleanup);
+let rendered: RenderedView | undefined;
+
+// Loads the chunks of views declared with lazyView, so renderView renders them at once.
+beforeAll(() => preloadTheme(theme));
+afterEach(() => rendered?.unmount());
 
 test('frames the classic app layout', () => {
-    const { container } = renderView('layout.app', { theme });
+    rendered = renderView('layout.app', { theme, fixture: 'admin' });
 
-    expect(container.querySelector('[data-{{id}}-layout]')).not.toBeNull();
+    expect(rendered.container.querySelector('[data-{{id}}-layout] main')).not.toBeNull();
+});
+
+test('draws buttons as pills', () => {
+    rendered = renderPrimitive('Button', { children: 'Save' }, { theme });
+
+    expect(rendered.container.querySelector('button')?.className).toContain('rounded-full');
 });

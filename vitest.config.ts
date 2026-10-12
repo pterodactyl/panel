@@ -12,7 +12,11 @@ export default defineConfig({
         },
     },
     test: {
-        projects: [{ extends: true, test: { name: 'panel' } }, 'packages/hello-world/vitest.config.ts'],
+        projects: [
+            { extends: true, test: { name: 'panel' } },
+            'packages/hello-world/vitest.config.ts',
+            'packages/sdk/docs-samples/vitest.config.ts',
+        ],
         environment: 'node',
         setupFiles: ['./resources/scripts/setup-tests.ts'],
         include: [

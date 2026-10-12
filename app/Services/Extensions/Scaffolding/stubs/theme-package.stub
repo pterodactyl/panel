@@ -8,7 +8,10 @@
         "dev": "vite build --watch",
         "typecheck": "tsc",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "doctor": "php {{artisan}} p:extension:doctor .",
+        "types": "php {{artisan}} p:extension:types .",
+        "pack": "php {{artisan}} p:extension:pack ."
     },
     "devDependencies": {
         "@pterodactyl/sdk": "{{sdkDependency}}",

@@ -27,14 +27,27 @@ test('scaffolds a theme with a stylesheet, a layout override, a skin, settings a
     expect($manifest->isTheme())->toBeTrue()
         ->and($manifest->uiPrefix)->toBeNull()
         ->and($manifest->provider)->toBeNull()
+        ->and($manifest->requirements['sdk'] ?? null)->toBe('>='.config('extensions.sdk_version').' <3.0')
         ->and($manifest->theme->stylesheet)->toBe('dist/theme.css')
-        ->and(array_keys($manifest->theme->settings))->toBe(['accent', 'radius', 'compact']);
-    expect($this->scaffolder->files())->toBe(['extension.json', 'package.json', 'vite.config.mjs', 'postcss.config.mjs', 'tsconfig.json', 'vitest.config.mjs', 'src/theme.css', 'src/theme.tsx', 'src/theme.spec.tsx', '.gitignore', 'README.md']);
+        ->and($manifest->theme->schemes)->toBe(['dark', 'light'])
+        ->and(array_keys($manifest->theme->settings))->toBe(['accent', 'radius', 'compact', 'logo'])
+        ->and($manifest->theme->settings['accent']->token)->toBe('--aurora-accent');
+    expect($this->scaffolder->files())->toBe(['extension.json', 'package.json', 'vite.config.mjs', 'postcss.config.mjs', 'tsconfig.json', 'vitest.config.mjs', 'src/theme.css', 'src/theme.tsx', 'src/skins.ts', 'src/views/AppLayout.tsx', 'src/theme.spec.tsx', '.gitignore', 'README.md']);
     expect(File::get($target.'/vite.config.mjs'))->toContain("defineThemeConfig({ entry: 'src/theme.tsx', stylesheet: 'src/theme.css' })");
-    expect(File::get($target.'/src/theme.css'))->toStartWith('/*')->toContain("@import '@pterodactyl/sdk/theme-entry.css';", "[data-aurora-compact='true']");
-    expect(File::get($target.'/src/theme.tsx'))->toContain("'layout.app': AppLayout", "skin('Button'");
-    expect(File::get($target.'/src/theme.spec.tsx'))->toContain("renderView('layout.app', { theme })");
-    expect(File::json($target.'/package.json')['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'tailwindcss', '@tailwindcss/forms']);
+    expect(File::get($target.'/src/theme.css'))->toStartWith('/*')->toContain("@import '@pterodactyl/sdk/theme-entry.css';", 'var(--aurora-accent', '.light {', "[data-aurora-compact='true']");
+    expect(File::get($target.'/src/theme.tsx'))->toContain("'layout.app': AppLayout", 'ui: skins');
+    expect(File::get($target.'/src/skins.ts'))->toContain("skin('Button'", "skin('Card', (classic)");
+    expect(File::get($target.'/src/views/AppLayout.tsx'))->toContain("data-aurora-layout=''", '<Default />');
+    expect(File::get($target.'/src/theme.spec.tsx'))->toContain('preloadTheme(theme)', "renderView('layout.app', { theme, fixture: 'admin' })", '[data-aurora-layout] main');
+    expect(File::get($target.'/README.md'))->toContain('"Themes" chapter', 'p:extension:dev . --watch')->not->toContain('{{');
+
+    $package = File::json($target.'/package.json');
+    expect($package['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'tailwindcss', '@tailwindcss/forms'])
+        ->and($package['scripts'])->toHaveKeys(['build', 'dev', 'typecheck', 'test', 'doctor', 'types', 'pack'])
+        ->and($package['scripts']['doctor'])->toMatch('~^php \S+/artisan p:extension:doctor \.$~');
+    // The scripts reach the panel's artisan from the package directory.
+    preg_match('~^php (\S+) ~', $package['scripts']['doctor'], $doctor);
+    expect(realpath(str_starts_with($doctor[1], '/') ? $doctor[1] : $target.'/'.$doctor[1]))->toBe(realpath(base_path('artisan')));
     expect($target.'/composer.json')->not->toBeFile();
 });
 

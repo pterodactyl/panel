@@ -91,9 +91,12 @@ export interface RenderedView {
     container: HTMLElement;
     unmount(): void;
 }
+/** Loads the chunks of a theme's `lazyView` views, which `renderView` renders synchronously. */
+export declare function preloadTheme(theme: ThemeDefinition): Promise<void>;
 /**
  * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
- * replaces what was rendered before it; nested views read their fixtures too.
+ * replaces what was rendered before it; nested views read their fixtures too. Await `preloadTheme(theme)`
+ * first when the theme has lazy views.
  */
 export declare function renderView<N extends ViewName>(name: N, options?: RenderViewOptions<N>): RenderedView;
 export interface RenderPrimitiveOptions {

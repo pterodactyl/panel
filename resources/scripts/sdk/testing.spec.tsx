@@ -1,9 +1,11 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
+import { lazyView } from '@/views/lazy';
 import type { ViewPartProps, ViewProps } from '@/views/registry';
 import { defineTheme } from '@/views/theme';
 import {
+    preloadTheme,
     renderPrimitive,
     renderView,
     createTestFileEditor,
@@ -150,6 +152,27 @@ it('renders a view synchronously from fixtures with a theme layered over classic
     expect(container.querySelector('a[aria-label="Admin"]')).toHaveAttribute('href', '/panel');
     unmount();
     expect(container.isConnected).toBe(false);
+});
+
+it('renders the lazy views of a theme once they are preloaded', async () => {
+    const theme = defineTheme({
+        views: {
+            'page.dashboard': lazyView(async () => ({
+                default: ({ model }: ViewProps<'page.dashboard'>) => <p>{`lazy dashboard ${model.error ?? 'ok'}`}</p>,
+            })),
+        },
+    });
+
+    expect(() => renderView('page.dashboard', { theme })).toThrow(
+        "The theme's views page.dashboard are lazy and not loaded yet."
+    );
+
+    await preloadTheme(theme);
+
+    const { container, unmount } = renderView('page.dashboard', { theme, fixture: 'error' });
+
+    expect(container).toHaveTextContent('lazy dashboard Request failed with status code 500.');
+    unmount();
 });
 
 it('renders a UI kit primitive under a theme, replacing what was rendered before', () => {

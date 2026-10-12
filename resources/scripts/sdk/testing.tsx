@@ -31,6 +31,7 @@ import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
 import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
 import { uiPrimitives, type UiPrimitiveName, type UiPrimitiveProps } from '@/themes/gallery';
+import { isPendingLazyView } from '@/views/lazy';
 import { createViewHarness, LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
 import {
     act,
@@ -389,11 +390,31 @@ function mount(content: ReactNode, theme: ThemeDefinition | undefined): Rendered
     return rendered;
 }
 
+const pendingViews = (theme: ThemeDefinition | undefined): string[] =>
+    Object.entries(theme?.views ?? {}).flatMap(([name, view]) => (view && isPendingLazyView(view) ? [name] : []));
+
+/** Loads the chunks of a theme's `lazyView` views, which `renderView` renders synchronously. */
+export async function preloadTheme(theme: ThemeDefinition): Promise<void> {
+    await Promise.all(
+        Object.values(theme.views ?? {}).map((view) => (view && isPendingLazyView(view) ? view.preload() : null))
+    );
+}
+
 /**
  * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
- * replaces what was rendered before it; nested views read their fixtures too.
+ * replaces what was rendered before it; nested views read their fixtures too. Await `preloadTheme(theme)`
+ * first when the theme has lazy views.
  */
 export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
+    const pending = pendingViews(options.theme);
+
+    if (pending.length) {
+        throw new Error(
+            `The theme's views ${pending.join(', ')} are lazy and not loaded yet. ` +
+                'Await preloadTheme(theme) before renderView, for example in beforeAll.'
+        );
+    }
+
     // The model is the one of the view being rendered.
     const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
     const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };

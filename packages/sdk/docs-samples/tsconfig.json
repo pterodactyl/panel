@@ -1,7 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler", "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": [], "strict": true, "noEmit": true, "skipLibCheck": true
-  },
-  "include": ["**/*.ts", "**/*.tsx"]
+    // The README's code samples. `npm run sdk:check` compiles them against the SDK's published types,
+    // which "@pterodactyl/sdk" resolves to from inside this package.
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "types": [],
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "isolatedModules": true
+    },
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["vitest.config.ts"]
 }
