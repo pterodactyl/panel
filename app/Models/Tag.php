@@ -60,54 +60,6 @@ class Tag extends Model
     }
 
     /**
-     * The ids of the given tags, creating a tag for each new name. This is what lets the node
-     * and egg tag pickers create a tag by typing its name.
-     *
-     * SyncTags validates the values first (it bounds each name to at most 191 characters);
-     * with the numeric check below that satisfies every rule in CreateTag::rules(), so tags
-     * created here need no separate check.
-     *
-     * @param  string[]  $values  existing tag ids or names
-     * @return int[]
-     */
-    public static function resolveIds(array $values): array
-    {
-        $values = array_values(array_unique(array_filter(array_map(mb_trim(...), $values), fn (string $value): bool => $value !== '')));
-        if ($values === []) {
-            return [];
-        }
-
-        $tags = self::matchingKeysOrSlugs($values);
-        $byId = $tags->keyBy('id');
-        $bySlug = $tags->keyBy('slug');
-        $ids = [];
-
-        foreach ($values as $value) {
-            // A purely numeric value is either an existing tag id or a leftover legacy nest
-            // id, never a slug to create (see TagSlug). It is resolved if it names a real tag
-            // and dropped otherwise, rather than creating a tag named after a stale nest id.
-            if (TagSlug::isReserved($value)) {
-                $existing = $byId->get($value)?->id;
-
-                if ($existing !== null) {
-                    $ids[] = $existing;
-                }
-
-                continue;
-            }
-
-            // Anything else is a tag name. The slug is the typed text verbatim, so a name keeps
-            // its exact casing and spacing and matches a backfilled nest tag of the same name.
-            // An exact built-in slug still resolves to its canonical, enum-named tag.
-            $name = EggSpecificTags::tryFrom($value)?->friendlyName() ?? $value;
-
-            $ids[] = ($bySlug->get($value) ?? self::query()->firstOrCreate(['slug' => $value], ['name' => $name]))->id;
-        }
-
-        return array_values(array_unique($ids));
-    }
-
-    /**
      * The nodes carrying this tag, under either pivot kind. The deploy gate reads
      * the kind-scoped Node::eggTags()/deploymentTags() instead.
      *
