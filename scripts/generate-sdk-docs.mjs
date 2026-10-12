@@ -38,11 +38,7 @@ function declared(file, name) {
 
 const properties = (type) => new Map(checker.getPropertiesOfType(type).map((property) => [property.name, property]));
 
-const opaque = checker.getDeclaredTypeOfSymbol(
-    checker
-        .getExportsOfModule(checker.getSymbolAtLocation(program.getSourceFile(resolve(sdk, 'types/views/layouts.d.ts'))))
-        .find((entry) => entry.name === 'OpaqueModel')
-);
+const opaque = declared('types/views/pages.d.ts', 'OpaqueModel');
 
 /** The type a property is declared with, as written, or as the checker prints it. */
 function typeText(property) {
