@@ -1,0 +1,268 @@
+packages/sdk/types/components/elements/Badge.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-13
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 3
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 239
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_3ce0ddf077adc4 34-42,46-54,59,61-79,84
+  s_4cabae41bceed9::t_188dd2ae2d5871 85
+resources/scripts/components/elements/ListRow.tsx
+  s_4cabae41bceed9::t_013e131e261d7e 1-29
+resources/scripts/themes/classic/views/dashboard/ServerCard.tsx
+  s_4cabae41bceed9::t_3578f8e8f2c7d0 3,55-64,68
+  s_4cabae41bceed9::t_ccb70594a4791a 4-11
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_5885344deadaed 22,416
+packages/sdk/types/sdk/ui.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 3-6
+resources/scripts/themes/classic/skins/overlays.ts
+  s_4cabae41bceed9::t_80f04b825406c3 1-100
+resources/scripts/components/ui/Switch.tsx
+  s_4cabae41bceed9::t_3111c91378f04b 4,40,52,54,58,60,65,73
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 37
+resources/scripts/components/elements/Card.tsx
+  s_4cabae41bceed9::t_5137b52b476678 1-55
+packages/sdk/types/components/elements/PageHeading.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 2-3,9-10
+resources/scripts/sdk/ui.tsx
+  s_4cabae41bceed9::t_188dd2ae2d5871 10-12,14-26
+packages/sdk/types/themes/primitives.d.ts
+  s_4cabae41bceed9::t_b073dcc8bdfa11 237-321,323-348
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-170,172-236,349-353
+  s_4cabae41bceed9::t_ec2ac88fb06513 171,322
+resources/scripts/components/elements/dialog/DialogIcon.tsx
+  s_4cabae41bceed9::t_7d0978e3887e31 5,10
+resources/scripts/components/elements/alert/Alert.tsx
+  s_4cabae41bceed9::t_71909a7d94fb44 3,7,14-19,21-23,26-30,35-38
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 342
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 27
+resources/scripts/themes/classic/skins/forms.ts
+  s_4cabae41bceed9::t_de49aacd007833 1-69,71-118
+  s_4cabae41bceed9::t_50d0ca2dd55a19 70
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_5885344deadaed 6,39-43,51,91
+packages/sdk/types/components/elements/SpinnerOverlay.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 4,11
+docs-notes/skins.md
+  s_4cabae41bceed9::t_50d0ca2dd55a19 65
+  s_4cabae41bceed9::t_889acc679b6639 1-64,66-111
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 374
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 125
+packages/sdk/types/components/elements/Label.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 3,7
+packages/sdk/types/components/elements/Pagination.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 8,27
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 67
+resources/scripts/components/form/controls.tsx
+  s_4cabae41bceed9::t_5650c2c639911f 4,11,15-17,23,25-26,28-29,31-41,55-72
+resources/scripts/components/elements/table/DataTable.tsx
+  s_4cabae41bceed9::t_360d85544f42bf 5,16,51,53,56,58,60,68-70,72,78,88,90,92
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 140
+resources/scripts/components/elements/PageHeading.tsx
+  s_4cabae41bceed9::t_397520b90a64b2 1-2,4,11-13,15-18,20,24-27
+resources/scripts/components/elements/Label.tsx
+  s_4cabae41bceed9::t_3111c91378f04b 2,4,9,11,13
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_4cabae41bceed9::t_ec1d7c37efbd72 71-72
+  s_4cabae41bceed9::t_da75030f0d2071 6,12,22-23,26-30,34-35,46,55-56,59,61-62,79,81,84,86-87,90-92
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 144
+resources/scripts/setup-tests.ts
+  s_4cabae41bceed9::t_a4e7bacf20b1fc 2-3,13-15
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 261,354
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 64
+resources/scripts/components/elements/dialog/DialogFooter.tsx
+  s_4cabae41bceed9::t_65c9d98169e26e 1-3,5-9
+resources/scripts/components/elements/Pagination.tsx
+  s_4cabae41bceed9::t_afb049555e3094 13,66-67,86
+  s_4cabae41bceed9::t_1cb7978099468c 5,42-53,88,90,93,95-96,100,103,105
+resources/scripts/components/elements/ContentBox.tsx
+  s_4cabae41bceed9::t_e0c70d98f3f167 2,14,18,20
+packages/sdk/types/components/elements/ListRow.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-13
+packages/sdk/types/components/elements/Card.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-19
+resources/scripts/themes/classic/skins/index.ts
+  s_4cabae41bceed9::t_d4f7da3b0875c4 1-39
+resources/scripts/themes/classic/skins/surfaces.ts
+  s_4cabae41bceed9::t_f9252f45316702 1-41
+packages/sdk/types/components/elements/Button.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 4-5,8-9,12-14,21,23,25,27,31
+packages/sdk/types/components/ui/empty.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 2-9,13
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_4cabae41bceed9::t_cb319268ae031c 3,13,15-17
+resources/scripts/themes/__fixtures__/classic-classes.json
+  s_4cabae41bceed9::t_ccb70594a4791a 336-337,503,634-637
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_4cabae41bceed9::t_3c1a7c108e4113 10-11,16,18,22,26,29,66
+resources/scripts/components/ui/Checkbox.tsx
+  s_4cabae41bceed9::t_3111c91378f04b 4,16-17,24,26
+packages/sdk/types/components/elements/TitledGreyBox.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 11
+resources/scripts/components/elements/Badge.tsx
+  s_4cabae41bceed9::t_d7176a6fdb424e 1-23
+resources/scripts/themes/classic/skins/buttons.ts
+  s_4cabae41bceed9::t_29c8423f5661fa 1-76
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 68
+resources/scripts/components/elements/NewButton.tsx
+  s_4cabae41bceed9::t_c887d628dd8ec0 3,5,12-13,15-17,19-21,28-30,32-34,36-37
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 104
+resources/scripts/themes/classicClasses.spec.tsx
+  s_4cabae41bceed9::t_439653621ce07b 35,38-39,518
+  s_4cabae41bceed9::t_b260d30f3afb1c 446
+  s_4cabae41bceed9::t_e744d819b909ca 26,31,380,401,406,442,444-445,447-449
+  s_4cabae41bceed9::t_4d227a6f570d15 81-113,133,467,474,488,501,503,511
+  s_4cabae41bceed9::t_ccb70594a4791a 143,148,154-155,161-162,166,168,170,217,220,232,238,353,363,387,391,397-398,408,414,429,435,441,443,450
+resources/scripts/components/elements/alert/index.ts
+  s_4cabae41bceed9::t_c57067fd19f870 2
+resources/scripts/components/ui/Select.tsx
+  s_4cabae41bceed9::t_ccb70594a4791a 436-441
+  s_4cabae41bceed9::t_50d0ca2dd55a19 123
+  s_4cabae41bceed9::t_c34f624bbda6f1 5,282,297,342,346-348,358,360-362,368,383,422-425,432,434-435,469-476,484,508
+  s_4cabae41bceed9::t_09b00a19d2ea29 60,113-122,125,129,133,137,142,144-145,148-153,158,160,162,164,168,173,179-184
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_4cabae41bceed9::t_5fd1f74a1b2a21 112
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 67
+resources/scripts/router/layouts/RootLayout.tsx
+  s_4cabae41bceed9::t_041b18af94b56c 2,9
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_4cabae41bceed9::t_459eb19d1b7c54 4-5,8,12-28,39,42-43,64,70,77-87,89,96,102,107,109
+resources/scripts/themes/skins.ts
+  s_4cabae41bceed9::t_970af3721f3978 117-129,134,145,162-166,170,172-173,211,233-234,236-238,242,244,246,250,253,258-259,262,270-271,275,281-284,302-303,306,308,312-320,330-332,335,373-374,376
+  s_4cabae41bceed9::t_e8373bd35afc4f 159-161,176
+  s_4cabae41bceed9::t_ccb70594a4791a 167-169
+  s_4cabae41bceed9::t_0bce2ede5780ba 1,3-14,16-27,31-92,94,96-116,130-133,135-144,146-158,171,174-175,177-210,212-232,235,239-241,243,245,247-249,251-252,254-257,260-261,263-269,272-274,276-280,299-301,304-305,309-310,321-329,333-334,336-372,375,377-381
+  s_4cabae41bceed9::t_3aa1b8df8f97e3 285-298
+  s_4cabae41bceed9::t_163297a2632c77 2,29-30,93,95,307,311
+resources/scripts/themes/primitives.ts
+  s_4cabae41bceed9::t_ccb70594a4791a 146-148
+  s_4cabae41bceed9::t_d9a87968484e3d 74,188
+  s_4cabae41bceed9::t_e5fe123b155db6 16-17,46,83,92,144
+  s_4cabae41bceed9::t_50d0ca2dd55a19 111,208
+  s_4cabae41bceed9::t_4fce14ce3433b2 1-15,18-45,47-73,75-82,84-91,93-110,112-143,145,149-155,157-187,189-207,209-226,228-236
+  s_4cabae41bceed9::t_3aa1b8df8f97e3 156,227
+resources/scripts/components/elements/CopyOnClick.tsx
+  s_4cabae41bceed9::t_0a9f94b98b8cb0 7,9,49,90,102-104
+resources/scripts/themes/classic/skins/data.ts
+  s_4cabae41bceed9::t_e71371449e6aa4 1-37
+resources/scripts/components/elements/Button.tsx
+  s_4cabae41bceed9::t_13488ce9ec988f 4-7,11-12,18-28,35,46,48,51,53-84,86-87,89,93
+resources/scripts/components/dashboard/ssh/AccountSSHContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 41
+packages/sdk/types/components/elements/alert/index.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 3
+resources/scripts/components/elements/ProgressBar.tsx
+  s_4cabae41bceed9::t_5f06bd205fbcd9 4,6-43,79
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 39,69
+resources/scripts/components/ui/empty.spec.tsx
+  s_4cabae41bceed9::t_7527d0728138ff 10,30-31,35-37,57-58,60-62
+resources/scripts/components/elements/Code.tsx
+  s_4cabae41bceed9::t_0a9f94b98b8cb0 2,4,11-13
+packages/sdk/types/components/elements/ContentBox.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 8
+packages/sdk/types/components/elements/Code.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-8
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 60
+packages/sdk/types/components/Avatar.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-18
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 265
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 66
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 11-12,16-20,25,27-31,36-37
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 205
+packages/sdk/types/components/elements/CopyOnClick.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 3
+packages/sdk/types/themes/skins.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 2-94
+resources/scripts/components/Avatar.tsx
+  s_4cabae41bceed9::t_8826987a056eb3 3,7,9-17,19-20,22-27
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 26
+resources/scripts/themes/classic/skins/feedback.ts
+  s_4cabae41bceed9::t_016665b07a25ee 1-127
+resources/scripts/views/boot.spec.tsx
+  s_4cabae41bceed9::t_20e1b49172bcd3 8,23,41,46,78-83,88-96
+  s_4cabae41bceed9::t_fcabcd479c6eb4 77,84-87
+  s_4cabae41bceed9::t_0b693bdd2474cd 97-98
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 108
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_163297a2632c77 31
+  s_4cabae41bceed9::t_5885344deadaed 16-30,32-44
+resources/scripts/components/elements/table/RowActions.tsx
+  s_4cabae41bceed9::t_7ec3387a9614df 5,9,12-13,89-90,93,102-103,106
+packages/sdk/types/components/elements/alert/Alert.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 4,10-11
+packages/sdk/types/components/elements/dialog/types.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 28,30-31
+packages/sdk/types/components/elements/dropdown/DropdownMenu.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 5,14,22-23,29
+resources/scripts/components/elements/SpinnerOverlay.tsx
+  s_4cabae41bceed9::t_a23cf1a3b0f215 4,6,15-17,24,32
+packages/sdk/types/components/elements/NewButton.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 4,9,11-12,14-16
+packages/sdk/types/components/elements/ProgressBar.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 1-18
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_4cabae41bceed9::t_e31db930fd9cf0 20,28,40,63,67,71,74,109,119,124
+resources/scripts/components/elements/Spinner.tsx
+  s_4cabae41bceed9::t_6166c38fbe0850 4,8,15,18,21-23,25-26,28
+packages/sdk/types/components/elements/Spinner.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 4,10,13
+resources/scripts/components/ui/empty.tsx
+  s_4cabae41bceed9::t_d603db238238da 1-17,20-22,26-27,29,37-38,42,46,50
+resources/scripts/components/elements/dialog/types.d.ts
+  s_4cabae41bceed9::t_d785148251cc3e 27,29-30
+resources/scripts/themes/skins.spec.tsx
+  s_4cabae41bceed9::t_8271bb32bf1245 1-4,6-30,37-64,66-107,112,117-160,162-168,174-198,206-208,214-244,247-260
+  s_4cabae41bceed9::t_70aa8ef9faeb97 5,31-36,65,108-111,113-116,161,169-173,199-205,209-213,245-246
+packages/sdk/types/components/form/controls.d.ts
+  s_4cabae41bceed9::t_ec1d7c37efbd72 12-15,17-18
+resources/scripts/components/admin/tags/NoTagsYet.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 7
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 84
+resources/scripts/components/admin/AdminListEmpty.tsx
+  s_4cabae41bceed9::t_7b17d3f032a5b8 34
+resources/scripts/components/elements/dialog/context.ts
+  s_4cabae41bceed9::t_d785148251cc3e 7
+resources/scripts/themes/classic/views/dashboard/ServerList.tsx
+  s_4cabae41bceed9::t_3578f8e8f2c7d0 10,31,34,49
+resources/scripts/components/elements/table/DataTable.spec.tsx
+  s_4cabae41bceed9::t_7527d0728138ff 134-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9cf7804d205feaecfc239204795e355f4f928779",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
