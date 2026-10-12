@@ -17,9 +17,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Throwable;
 
-/**
- * @phpstan-type BuildAttributes array{allocation_id?: int, oom_disabled?: bool, memory?: int, swap?: int, io?: int, cpu?: int, threads?: string|null, disk?: int, database_limit: int|null, allocation_limit: int|null, backup_limit: int, add_allocations: list<int>, remove_allocations: list<int>}
- */
 final readonly class UpdateServerBuild implements UpdatesServerBuild
 {
     public function __construct(
@@ -58,52 +55,6 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
     }
 
     /**
-     * Validates build input for the server and returns the changes it describes. Only the
-     * fields given are validated and changed, except the feature limits: a database or
-     * allocation limit left out or null is cleared, and a backup limit becomes 0.
-     *
-     * @param  array<string, mixed>  $input
-     * @return BuildAttributes
-     */
-    public static function attributes(array $input, Server $server): array
-    {
-        $rules = [];
-        foreach (self::rules($server) as $field => $fieldRules) {
-            $rules[$field] = ['sometimes', ...$fieldRules];
-        }
-
-        $input = Validator::make($input, $rules)->safe();
-
-        $attributes = [
-            'database_limit' => $input->filled('database_limit') ? $input->integer('database_limit') : null,
-            'allocation_limit' => $input->filled('allocation_limit') ? $input->integer('allocation_limit') : null,
-            'backup_limit' => $input->integer('backup_limit'),
-            'add_allocations' => array_map(fn (int|string $key): int => $input->integer('add_allocations.'.$key), array_keys($input->array('add_allocations'))),
-            'remove_allocations' => array_map(fn (int|string $key): int => $input->integer('remove_allocations.'.$key), array_keys($input->array('remove_allocations'))),
-        ];
-
-        if ($input->has('allocation_id')) {
-            $attributes['allocation_id'] = $input->integer('allocation_id');
-        }
-
-        if ($input->has('oom_disabled')) {
-            $attributes['oom_disabled'] = $input->boolean('oom_disabled');
-        }
-
-        foreach (['memory', 'swap', 'io', 'cpu', 'disk'] as $limit) {
-            if ($input->has($limit)) {
-                $attributes[$limit] = $input->integer($limit);
-            }
-        }
-
-        if ($input->has('threads')) {
-            $attributes['threads'] = $input->filled('threads') ? $input->string('threads')->toString() : null;
-        }
-
-        return $attributes;
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      *
      * @throws Throwable
@@ -111,18 +62,40 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
      */
     public function update(Server $server, array $input): Server
     {
-        $attributes = self::attributes($input, $server);
+        $rules = array_map(fn (array $rules): array => ['sometimes', ...$rules], self::rules($server));
+        $validator = Validator::make($input, $rules);
+        $validated = $validator->safe();
+
+        // Only the fields given change, apart from the feature limits: a database or allocation
+        // limit left out or blank is cleared, and a backup limit left out becomes 0.
+        $attributes = [
+            ...$validator->safe(['oom_disabled', 'memory', 'swap', 'io', 'cpu', 'threads', 'disk']),
+            'database_limit' => $validated->filled('database_limit') ? $validated['database_limit'] : null,
+            'allocation_limit' => $validated->filled('allocation_limit') ? $validated['allocation_limit'] : null,
+            'backup_limit' => $validated['backup_limit'] ?? 0,
+        ];
+
+        if ($validated->has('threads') && ! $validated->filled('threads')) {
+            $attributes['threads'] = null;
+        }
+
+        // Allocations are matched by id, so they are read as integers.
+        if ($validated->has('allocation_id')) {
+            $attributes['allocation_id'] = $validated->integer('allocation_id');
+        }
+
+        $add = array_map(fn (int|string $key): int => $validated->integer('add_allocations.'.$key), array_keys($validated->array('add_allocations')));
+        $remove = array_map(fn (int|string $key): int => $validated->integer('remove_allocations.'.$key), array_keys($validated->array('remove_allocations')));
 
         // Allocation assignments and server attributes must change together.
-        $server = DB::transaction(function () use ($server, $attributes): Server {
-            $this->processAllocations($server, $attributes);
+        $server = DB::transaction(function () use ($server, $attributes, $add, $remove): Server {
+            $this->processAllocations($server, $add, $remove, $attributes);
             if (isset($attributes['allocation_id']) && $attributes['allocation_id'] !== $server->allocation_id) {
                 $allocationExists = Allocation::query()->where('id', $attributes['allocation_id'])
                     ->where('server_id', $server->id)->exists();
                 throw_if(! $allocationExists, DisplayException::class, 'The requested default allocation is not currently assigned to this server.');
             }
 
-            unset($attributes['add_allocations'], $attributes['remove_allocations']);
             $server->forceFill($attributes)->saveOrFail();
 
             return $server->refresh();
@@ -142,17 +115,21 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
         return $server;
     }
 
-    /** @param BuildAttributes $attributes */
-    private function processAllocations(Server $server, array &$attributes): void
+    /**
+     * @param  list<int>  $add
+     * @param  list<int>  $remove
+     * @param  array<string, mixed>  $attributes
+     */
+    private function processAllocations(Server $server, array $add, array $remove, array &$attributes): void
     {
-        if ($attributes['add_allocations'] === [] && $attributes['remove_allocations'] === []) {
+        if ($add === [] && $remove === []) {
             return;
         }
 
-        if ($attributes['add_allocations'] !== []) {
+        if ($add !== []) {
             // Assign only currently unassigned allocations on this server's node.
             $assignable = Allocation::query()->where('node_id', $server->node_id)
-                ->whereIn('id', $attributes['add_allocations'])->whereNull('server_id')
+                ->whereIn('id', $add)->whereNull('server_id')
                 ->orderBy('id')->lockForUpdate()->get(['id']);
             Allocation::query()->whereKey($assignable->modelKeys())->update(['server_id' => $server->id, 'notes' => null]);
             // If the default allocation is removed below, use the first newly assigned
@@ -160,8 +137,8 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
             $freshlyAllocated = $assignable->first()?->id;
         }
 
-        if ($attributes['remove_allocations'] !== []) {
-            foreach ($attributes['remove_allocations'] as $allocation) {
+        if ($remove !== []) {
+            foreach ($remove as $allocation) {
                 if ($allocation === ($attributes['allocation_id'] ?? $server->allocation_id)) {
                     throw_if(empty($freshlyAllocated), DisplayException::class, 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.');
                     $attributes['allocation_id'] = $freshlyAllocated;
@@ -172,7 +149,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
             // Do not remove an allocation also requested in add_allocations.
             Allocation::query()->where('node_id', $server->node_id)
                 ->where('server_id', $server->id)
-                ->whereIn('id', array_diff($attributes['remove_allocations'], $attributes['add_allocations']))
+                ->whereIn('id', array_diff($remove, $add))
                 ->update(['notes' => null, 'server_id' => null]);
         }
     }

@@ -18,9 +18,6 @@ use Pterodactyl\Services\Servers\VariableValidatorService;
 use Throwable;
 use UnexpectedValueException;
 
-/**
- * @phpstan-type StartupAttributes array{environment: array<string, bool|float|int|string|null>, egg_id?: int, startup?: string, docker_image?: string, skip_scripts?: bool}
- */
 final readonly class UpdateServerStartup implements UpdatesServerStartup
 {
     public function __construct(
@@ -56,63 +53,26 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
     }
 
     /**
-     * Validates startup input at the given user level and returns the changes it describes.
-     * Only the fields given are validated, and fields above the user level are ignored. The
-     * environment keeps each value as it was given, for the egg's variable rules to check.
-     *
-     * @param  array<string, mixed>  $input
-     * @return StartupAttributes
-     */
-    public static function attributes(array $input, int $userLevel = User::USER_LEVEL_USER): array
-    {
-        $rules = [];
-        foreach (self::rules($userLevel) as $field => $fieldRules) {
-            $rules[$field] = ['sometimes', ...$fieldRules];
-        }
-
-        $input = Validator::make($input, $rules)->safe();
-
-        // Laravel's typed accessors would turn every value into one type, but the egg's
-        // variable rules have to see each value as it was sent.
-        $environment = [];
-        foreach ($input->array('environment') as $key => $value) {
-            throw_unless(is_string($key) && ($value === null || is_scalar($value)), UnexpectedValueException::class, 'Server environment variables must map names to scalar values.');
-            $environment[$key] = $value;
-        }
-
-        $attributes = ['environment' => $environment];
-        if ($userLevel !== User::USER_LEVEL_ADMIN) {
-            return $attributes;
-        }
-
-        if ($input->has('egg_id')) {
-            $attributes['egg_id'] = $input->integer('egg_id');
-        }
-
-        if ($input->has('startup')) {
-            $attributes['startup'] = $input->string('startup')->toString();
-        }
-
-        if ($input->has('docker_image')) {
-            $attributes['docker_image'] = $input->string('docker_image')->toString();
-        }
-
-        $attributes['skip_scripts'] = $input->boolean('skip_scripts');
-
-        return $attributes;
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */
     public function update(Server $server, array $input, int $userLevel = User::USER_LEVEL_USER): Server
     {
-        $attributes = self::attributes($input, $userLevel);
+        // Only the fields given are validated, and fields above the user level are ignored.
+        $rules = array_map(fn (array $rules): array => ['sometimes', ...$rules], self::rules($userLevel));
+        $validated = Validator::make($input, $rules)->safe();
 
-        return DB::transaction(function () use ($server, $attributes, $userLevel): Server {
-            $eggId = $attributes['egg_id'] ?? null;
+        // Laravel's typed accessors would turn every value into one type, but the egg's
+        // variable rules have to see each value as it was sent.
+        $environment = [];
+        foreach ($validated->array('environment') as $key => $value) {
+            throw_unless(is_string($key) && ($value === null || is_scalar($value)), UnexpectedValueException::class, 'Server environment variables must map names to scalar values.');
+            $environment[$key] = $value;
+        }
+
+        return DB::transaction(function () use ($server, $validated, $environment, $userLevel): Server {
+            $eggId = $validated->has('egg_id') ? $validated->integer('egg_id') : null;
             if ($userLevel === User::USER_LEVEL_ADMIN && $eggId !== null && $server->egg_id !== $eggId) {
                 // Only administrators may move a server to another egg. Values the
                 // new egg still accepts are kept, and anything submitted below
@@ -120,12 +80,12 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
                 $server = $this->eggs->change($server, Egg::query()->findOrFail($eggId), keepVariables: true);
             }
 
-            if ($attributes['environment'] !== []) {
+            if ($environment !== []) {
                 $egg = $server->relationLoaded('egg') && $server->egg instanceof Egg
                     ? $server->egg
                     : Egg::query()->findOrFail($server->egg_id);
 
-                $results = $this->validatorService->setUserLevel($userLevel)->handle($egg, $attributes['environment']);
+                $results = $this->validatorService->setUserLevel($userLevel)->handle($egg, $environment);
                 foreach ($results as $result) {
                     $this->variables->update($server, $result->id, $result->value === null ? '' : (string) $result->value);
                 }
@@ -133,13 +93,13 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
 
             if ($userLevel === User::USER_LEVEL_ADMIN) {
                 $server->fill([
-                    'startup' => $attributes['startup'] ?? $server->startup,
-                    'skip_scripts' => $attributes['skip_scripts'] ?? false,
+                    'startup' => $validated['startup'] ?? $server->startup,
+                    'skip_scripts' => $validated['skip_scripts'] ?? false,
                 ])->save();
 
                 // Image changes go through their own contract so extensions wrapping
                 // it see this path too. Skip it when the image is unchanged.
-                $image = $attributes['docker_image'] ?? null;
+                $image = $validated->has('docker_image') ? $validated->string('docker_image')->toString() : null;
                 if ($image !== null && $image !== $server->image) {
                     $server = $this->dockerImage->update($server, $image);
                 }

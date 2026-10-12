@@ -39,34 +39,18 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
     }
 
     /**
-     * Validates details input for the server and returns the details it describes. Every
-     * detail is replaced: an external id left out or empty is cleared, and a description
-     * left out or null becomes empty.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{external_id: string|null, owner_id: int, name: string, description: string}
-     */
-    public static function attributes(array $input, ?Server $server = null): array
-    {
-        $input = Validator::make($input, self::rules($server))->safe();
-
-        return [
-            'external_id' => $input->filled('external_id') ? $input->string('external_id')->toString() : null,
-            'owner_id' => $input->integer('owner_id'),
-            'name' => $input->string('name')->toString(),
-            'description' => $input->string('description')->toString(),
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      *
      * @throws Throwable
      */
     public function update(Server $server, array $input): Server
     {
-        $attributes = self::attributes($input, $server);
+        $validated = Validator::validate($input, self::rules($server));
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+
+        // Every detail is replaced: a blank external id is cleared and a blank description is empty.
+        $attributes = ['external_id' => null, 'description' => '', ...array_filter($validated, filled(...))];
+
         $name = $server->name;
         $description = $server->description;
 
