@@ -3,10 +3,13 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import { classicViewSources } from './classic-sources.mjs';
 
-// Loads the engine's view definitions and writes the catalog, keyed by name, `p:extension:doctor` validates names against.
+// Loads the engine's view definitions and writes the catalog, keyed by name, `p:extension:doctor` validates names
+// against; `classic` names the file and export `pterodactyl-theme eject` copies.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const output = resolve(root, 'packages/sdk/views.json');
+const classic = classicViewSources(resolve(root, 'resources/scripts/themes/classic'));
 const server = await createServer({
     configFile: false,
     root,
@@ -28,6 +31,7 @@ try {
                 context: view.context,
                 slots: view.slots ?? [],
                 fixtures: Object.keys(view.fixtures ?? {}),
+                ...(classic[view.name] ? { classic: classic[view.name] } : {}),
             },
         ])
     );

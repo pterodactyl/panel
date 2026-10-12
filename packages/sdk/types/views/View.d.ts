@@ -7,8 +7,12 @@ export declare function ViewArea({ area, children }: {
     children?: ReactNode;
 }): import("react").JSX.Element;
 export interface ViewFixtureSelection {
-    /** The fixture each view renders; views not listed render their first fixture. */
-    readonly fixtures?: Readonly<Partial<Record<ViewName, string>>>;
+    /** The fixture each view renders, extension-defined views included; views not listed render their first. */
+    readonly fixtures?: {
+        readonly [N in ViewName]?: string;
+    } & {
+        readonly [name: string]: string | undefined;
+    };
     /** Explicit models, used before any fixture. */
     readonly models?: Readonly<Partial<ViewModels>>;
 }

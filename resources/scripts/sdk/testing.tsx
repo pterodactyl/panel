@@ -1,10 +1,8 @@
 import { ExtensionContext } from '@/extensions/context';
 import '@/components/server/files/FileDetailsView';
-import { FileEditorContext } from '@/components/server/files/FileEditorView';
-import { FileManagerContext } from '@/components/server/files/FileManagerView';
-import type { FileObject } from '@/api/server/files/queries';
-import type { FileDetailsModel, FileEditorModel, FileManagerModel } from '@/views/files';
-import type { ServerCardModel } from '@/views/dashboard';
+import '@/components/server/files/FileEditorView';
+import '@/components/server/files/FileManagerView';
+import type { FileManagerModel } from '@/views/files';
 import { registerClassicTheme } from '@/views/classic';
 import '@/views/dashboard';
 import '@/views/layouts';
@@ -21,8 +19,19 @@ import {
 import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
 import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
+import { uiPrimitives, type UiPrimitiveName, type UiPrimitiveProps } from '@/themes/gallery';
 import { createViewHarness, LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
-import { act, createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
+import {
+    act,
+    createContext,
+    createElement,
+    useContext,
+    useLayoutEffect,
+    useMemo,
+    type ComponentType,
+    type JSXElementConstructor,
+    type ReactNode,
+} from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query';
 import {
@@ -61,6 +70,7 @@ export {
     createTestServerCard,
     type TestServerOptions,
 } from '@/views/fixtures';
+export type { UiPrimitiveName, UiPrimitiveProps };
 
 registerClassicTheme();
 // Classic's own views are lazy; loading them here lets a test render them synchronously.
@@ -255,63 +265,7 @@ function fixtureModel(name: ViewName, fixture: string | undefined) {
     return factory();
 }
 
-function fileObject(model: FileDetailsModel): FileObject {
-    const directory = model.kind === 'directory';
-
-    return {
-        object: 'file_object',
-        attributes: {
-            name: model.name,
-            mode: directory ? 'drwxr-xr-x' : '-rw-r--r--',
-            mode_bits: directory ? '0755' : '0644',
-            size: model.size,
-            is_file: !directory,
-            is_symlink: model.kind === 'symlink',
-            mimetype: directory ? 'inode/directory' : 'text/plain',
-            created_at: model.modifiedAt,
-            modified_at: model.modifiedAt,
-        },
-    };
-}
-
-type Session = ComponentType<{ children?: ReactNode }>;
-const NoSession: Session = ({ children }) => children;
-
-function editorSession(model: FileEditorModel): Session {
-    return function EditorSession({ children }) {
-        const value = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), []);
-
-        return <FileEditorContext.Provider value={value}>{children}</FileEditorContext.Provider>;
-    };
-}
-
-function managerSession(model: FileManagerModel): Session {
-    const files = model.entries.map((entry) => ({
-        object: 'file_object',
-        attributes: {
-            name: entry.name,
-            mode: entry.mode,
-            mode_bits: entry.modeBits,
-            size: entry.size,
-            is_file: entry.kind !== 'directory',
-            is_symlink: entry.kind === 'symlink',
-            mimetype: entry.mimetype,
-            created_at: entry.modifiedAt,
-            modified_at: entry.modifiedAt,
-        },
-    }));
-
-    return function ManagerSession({ children }) {
-        const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
-        const value = useMemo(() => ({ model, files }), []);
-
-        useLayoutEffect(() => {
-            setSelectedFiles({ directory: model.directory, files: [...model.selection] });
-        }, [setSelectedFiles]);
-
-        return <FileManagerContext.Provider value={value}>{children}</FileManagerContext.Provider>;
-    };
-}
+const NoSession = ({ children }: { model: unknown; children?: ReactNode }) => children;
 
 /**
  * Tests a layer against the view's classic layers without issuing core queries: render it with `props`
@@ -326,6 +280,7 @@ export async function createViewTestHost<N extends ViewName>(
     await preloadView(name);
 
     const view: ViewName = name;
+    const definition = getViewDefinition(view);
     const extensionId = options.extensionId ?? 'test-extension';
     const model = options.model ?? fixtureModel(view, options.fixture);
     const manager = view === 'server.files.manager' ? (model as FileManagerModel) : undefined;
@@ -338,27 +293,8 @@ export async function createViewTestHost<N extends ViewName>(
         manager && !document.getElementById('modal-portal')
             ? document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }))
             : null;
-    const derivedInput = () => {
-        if (view === 'dashboard.serverCard') {
-            const card = model as ServerCardModel;
-
-            return { server: createTestServer({ identifier: card.identifier, uuid: card.uuid, name: card.name }) };
-        }
-
-        return view === 'server.files.details' ? { file: fileObject(model as FileDetailsModel) } : {};
-    };
-
-    const session = (): Session => {
-        if (view === 'server.files.editor') {
-            return editorSession(model as FileEditorModel);
-        }
-
-        return manager ? managerSession(manager) : NoSession;
-    };
-
-    const input = options.input === undefined ? derivedInput() : Object(options.input);
-    const Session = session();
-
+    const input = options.input === undefined ? (definition?.fixtureInput?.(model) ?? {}) : Object(options.input);
+    const Session = definition?.fixtureScope ?? NoSession;
     const harness = createViewHarness(name, { model, inputs: input });
 
     function Wrapper({ children }: { children?: ReactNode }) {
@@ -368,7 +304,7 @@ export async function createViewTestHost<N extends ViewName>(
             <host.Wrapper>
                 <ExtensionContext.Provider value={context}>
                     <ViewFixtureProvider>
-                        <Session>
+                        <Session model={model}>
                             <harness.Scope>{children}</harness.Scope>
                         </Session>
                     </ViewFixtureProvider>
@@ -406,37 +342,28 @@ const viewRouter = createRouter({
 });
 let rendered: RenderedView | undefined;
 
-/**
- * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
- * replaces the view rendered before it; nested views read their fixtures too.
- */
-export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
+/** Replaces whatever was rendered before with `content`, under a theme's skins, views and icons. */
+function mount(content: ReactNode, theme: ThemeDefinition | undefined): RenderedView {
     rendered?.unmount();
     clearThemeLayers();
     clearThemeSkins();
-    if (options.theme) {
-        registerSkins('theme', options.theme.ui ?? {});
-        registerViewLayer('theme', 'theme', options.theme.views ?? {});
-        registerThemeIcons(options.theme.icons ?? {});
+    if (theme) {
+        registerSkins('theme', theme.ui ?? {});
+        registerViewLayer('theme', 'theme', theme.views ?? {});
+        registerThemeIcons(theme.icons ?? {});
     }
 
     const container = document.body.appendChild(document.createElement('div'));
     const root = createRoot(container);
-    // The model is the one of the view being rendered.
-    const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
-    const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };
-    const view = (
-        <QueryClientProvider client={queryClient}>
-            <RouterContextProvider router={viewRouter}>
-                <ViewFixtureProvider fixtures={fixtures} models={models}>
-                    <LooseView name={name} {...Object(options.input ?? {})} />
-                </ViewFixtureProvider>
-            </RouterContextProvider>
-        </QueryClientProvider>
-    );
 
     Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', true);
-    act(() => root.render(view));
+    act(() =>
+        root.render(
+            <QueryClientProvider client={queryClient}>
+                <RouterContextProvider router={viewRouter}>{content}</RouterContextProvider>
+            </QueryClientProvider>
+        )
+    );
     rendered = {
         container,
         unmount: () => {
@@ -447,4 +374,46 @@ export function renderView<N extends ViewName>(name: N, options: RenderViewOptio
     };
 
     return rendered;
+}
+
+/**
+ * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
+ * replaces what was rendered before it; nested views read their fixtures too.
+ */
+export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
+    // The model is the one of the view being rendered.
+    const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
+    const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };
+
+    return mount(
+        <ViewFixtureProvider fixtures={fixtures} models={models}>
+            <LooseView name={name} {...Object(options.input ?? {})} />
+        </ViewFixtureProvider>,
+        options.theme
+    );
+}
+
+export interface RenderPrimitiveOptions {
+    /** The theme to render the primitive with: what its entry exports. */
+    theme?: ThemeDefinition;
+}
+
+/**
+ * Renders a UI kit primitive synchronously with the theme's skins and replacements over classic's.
+ * Each call replaces what was rendered before it.
+ */
+export function renderPrimitive<N extends UiPrimitiveName>(
+    name: N,
+    props: UiPrimitiveProps<N>,
+    options?: RenderPrimitiveOptions
+): RenderedView;
+export function renderPrimitive(
+    name: UiPrimitiveName,
+    props: UiPrimitiveProps<UiPrimitiveName>,
+    options: RenderPrimitiveOptions = {}
+): RenderedView {
+    // The overload ties the props to the named primitive.
+    const primitive = uiPrimitives[name].component as JSXElementConstructor<UiPrimitiveProps<UiPrimitiveName>>;
+
+    return mount(createElement(primitive, props), options.theme);
 }

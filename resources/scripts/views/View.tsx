@@ -12,8 +12,8 @@ import {
 } from 'react';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { reportExtensionError } from '@/extensions/registry';
-import { getBootstrapTheme } from '@/bootstrap';
 import { cn } from '@/lib/cn';
+import { FailedLayerMark, InspectedViewBoundary, ViewInspectionContext } from './inspect';
 import { isPendingLazyView } from './lazy';
 import {
     declaredParts,
@@ -43,8 +43,8 @@ export function ViewArea({ area, children }: { area: ViewContext; children?: Rea
 }
 
 export interface ViewFixtureSelection {
-    /** The fixture each view renders; views not listed render their first fixture. */
-    readonly fixtures?: Readonly<Partial<Record<ViewName, string>>>;
+    /** The fixture each view renders, extension-defined views included; views not listed render their first. */
+    readonly fixtures?: { readonly [N in ViewName]?: string } & { readonly [name: string]: string | undefined };
     /** Explicit models, used before any fixture. */
     readonly models?: Readonly<Partial<ViewModels>>;
 }
@@ -239,7 +239,12 @@ function ViewChain({
                     name={name}
                     layer={top}
                     placeholder={placeholder}
-                    fallback={<ViewChain name={name} layers={below} frame={frame} placeholder={placeholder} />}
+                    fallback={
+                        <>
+                            <FailedLayerMark layerId={top.id} />
+                            <ViewChain name={name} layers={below} frame={frame} placeholder={placeholder} />
+                        </>
+                    }
                 >
                     {element}
                 </LayerBoundary>
@@ -257,6 +262,7 @@ interface BodyProps {
 
 function ViewBody({ definition, model, inputs, className, children }: BodyProps & { model: unknown }) {
     const fixtures = useContext(FixtureContext);
+    const inspection = useContext(ViewInspectionContext);
     const base = useViewChain(definition.name);
     const decision = useViewDecision(definition.name);
     const layers = useMemo(
@@ -286,13 +292,27 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
         }
     }
 
-    return (
+    const chain = (
         <ViewChain
             name={definition.name}
             layers={layers}
             placeholder={placeholder}
             frame={{ model, inputs, className, children }}
         />
+    );
+
+    return inspection ? (
+        <InspectedViewBoundary
+            inspection={inspection}
+            definition={definition}
+            model={model}
+            inputs={inputs}
+            layers={layers}
+        >
+            {chain}
+        </InspectedViewBoundary>
+    ) : (
+        chain
     );
 }
 
@@ -302,8 +322,6 @@ function LiveView(props: BodyProps) {
     return <ViewBody {...props} model={useModel(props.inputs)} />;
 }
 
-let inspecting: boolean | undefined;
-
 type ViewElementBase = {
     readonly name: string;
     /** Renders nothing when no installed package defines the view. */
@@ -312,6 +330,10 @@ type ViewElementBase = {
     readonly children?: ReactNode;
 };
 export type ViewElementProps<N extends string> = ViewElementBase & { readonly name: N } & ViewInput<N>;
+
+function FixtureScope({ children }: { children?: ReactNode }) {
+    return children;
+}
 
 function RenderView({ name, optional = false, className, children, ...inputs }: ViewElementBase & LooseViewInput) {
     const definition = useViewDefinition(name);
@@ -332,17 +354,28 @@ function RenderView({ name, optional = false, className, children, ...inputs }: 
     }
 
     const fixture = selection ? fixtureModel(definition, selection) : undefined;
-    const body = { definition, inputs, className, children };
-    const content = fixture ? <ViewBody {...body} model={fixture.model} /> : <LiveView key={name} {...body} />;
 
-    inspecting ??= getBootstrapTheme().inspect;
+    if (!fixture) {
+        return (
+            <LiveView key={name} definition={definition} inputs={inputs} className={className}>
+                {children}
+            </LiveView>
+        );
+    }
 
-    return inspecting ? (
-        <div data-view={name} style={{ display: 'contents' }}>
-            {content}
-        </div>
-    ) : (
-        content
+    const Scope = definition.fixtureScope ?? FixtureScope;
+
+    return (
+        <Scope model={fixture.model}>
+            <ViewBody
+                definition={definition}
+                inputs={{ ...definition.fixtureInput?.(fixture.model), ...inputs }}
+                className={className}
+                model={fixture.model}
+            >
+                {children}
+            </ViewBody>
+        </Scope>
     );
 }
 

@@ -80,3 +80,20 @@ export function pageRoute(
 
     return PageRoute;
 }
+
+/** A page of an area rendered outside that area's layout, as the full-width theme workbench is. */
+export function bareAreaPageRoute(name: Exclude<PageViewName, 'page.server.console'>, area: ViewContext) {
+    const Page = pageRoute(name);
+
+    function BarePageRoute() {
+        return (
+            <ViewArea area={area}>
+                <Page />
+            </ViewArea>
+        );
+    }
+
+    BarePageRoute.preload = Page.preload;
+
+    return BarePageRoute;
+}

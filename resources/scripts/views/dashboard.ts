@@ -329,6 +329,9 @@ export const dashboardViews = [
         context: 'app',
         use: useServerCardModel,
         slots: ['dashboard.serverRow.name.after'],
+        fixtureInput: (card) => ({
+            server: createTestServer({ identifier: card.identifier, uuid: card.uuid, name: card.name }),
+        }),
         placeholder: createElement('div', {
             className: 'h-12 animate-pulse rounded-sm bg-muted',
             'aria-label': 'Loading server card',

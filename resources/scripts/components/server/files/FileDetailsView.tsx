@@ -5,7 +5,7 @@ import dayjs from '@/lib/dayjs';
 import { bytesToString } from '@/lib/formatters';
 import { cn } from '@/lib/cn';
 import { fileObjectKind, type FileObject } from '@/api/server/files/queries';
-import { createTestFileDetails } from '@/views/fixtures';
+import { createTestFileDetails, createTestFileObject } from '@/views/fixtures';
 import type { FileDetailsModel } from '@/views/files';
 import { defineView, registerBaseView, type ViewPartProps, type ViewParts, type ViewProps } from '@/views/registry';
 
@@ -82,5 +82,6 @@ export const fileDetailsView = defineView('server.files.details', {
         file: () => createTestFileDetails(),
         directory: () => createTestFileDetails({ name: 'plugins', kind: 'directory', size: 0 }),
     },
+    fixtureInput: (model) => ({ file: createTestFileObject(model) }),
 });
 registerBaseView('classic', 'classic', 'server.files.details', DefaultFileDetails);

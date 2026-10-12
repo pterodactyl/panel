@@ -6,6 +6,7 @@ import type * as RegistryModule from './registry';
 import type * as ViewModule from './View';
 import type * as LazyModule from './lazy';
 import type * as SessionModule from './session';
+import type { ViewProbe } from './inspect';
 import type * as ExtensionRegistry from '@/extensions/registry';
 
 interface ProbeModel {
@@ -81,6 +82,17 @@ function commitOverrides(entries: { id: string; component: ComponentType<never> 
         extensions.commitExtensionRegistryBatch(id, batch);
     }
 }
+
+const wrapping = { wrap: true };
+const probes: ViewProbe[] = [];
+const collecting = {
+    wrap: false,
+    collect: (probe: ViewProbe) => {
+        probes.push(probe);
+
+        return () => {};
+    },
+};
 
 describe('<View>', () => {
     it('stacks classic, the theme chain parent first, then extensions in configured order', async () => {
@@ -309,18 +321,76 @@ describe('<View>', () => {
         expect(load).toHaveBeenCalledTimes(1);
     });
 
-    it('wraps each view for the inspector when inspection is on', async () => {
-        vi.stubGlobal('SiteConfiguration', undefined);
-        Object.assign(window, { SiteConfiguration: { theme: { inspect: true } } });
-        vi.resetModules();
-        const [registry, view] = await Promise.all([import('./registry'), import('./View')]);
+    it('wraps each view for the inspector only while inspection is on', async () => {
+        const { ViewInspectionContext } = await import('./inspect');
 
-        registry.registerViewDefinition({ name: 'test.inspect', kind: 'block', context: 'app', use });
-        registry.registerViewLayer('classic', 'classic', { 'test.inspect': Classic });
+        views.registerViewDefinition({ name: 'test.inspect', kind: 'block', context: 'app', use });
+        views.registerViewLayer('classic', 'classic', { 'test.inspect': Classic });
 
-        const { container } = render(<view.View name='test.inspect' />);
+        const { container, rerender } = render(<engine.View name='test.inspect' />);
+
+        expect(container.querySelector('[data-view]')).toBeNull();
+
+        rerender(
+            <ViewInspectionContext.Provider value={wrapping}>
+                <engine.View name='test.inspect' />
+            </ViewInspectionContext.Provider>
+        );
 
         expect(container.querySelector('[data-view="test.inspect"]')).toHaveStyle({ display: 'contents' });
-        Object.assign(window, { SiteConfiguration: undefined });
+    });
+
+    it('records what each view rendered with, including a layer that failed', async () => {
+        const { ViewInspectionContext } = await import('./inspect');
+
+        define('test.probe');
+        views.registerViewLayer('classic', 'classic', { 'test.probe': Classic });
+        views.registerViewLayer('aurora', 'theme', {
+            'test.probe': () => {
+                throw new Error('theme exploded');
+            },
+        });
+
+        render(
+            <ViewInspectionContext.Provider value={collecting}>
+                <engine.ViewFixtureProvider fixtures={{ 'test.probe': 'second' }}>
+                    <engine.View name='test.probe' />
+                </engine.ViewFixtureProvider>
+            </ViewInspectionContext.Provider>
+        );
+
+        expect(screen.getByText('classic:second fixture')).toBeInTheDocument();
+        expect(probes).toHaveLength(1);
+        expect(probes[0].current()).toMatchObject({
+            model: { name: 'second fixture' },
+            layers: [{ id: 'classic' }, { id: 'aurora' }],
+            failed: ['aurora'],
+        });
+    });
+
+    it('renders a fixture with the inputs and scope its view declares', () => {
+        function Scope({ model, children }: { model: unknown; children?: ReactNode }) {
+            return <section aria-label={`scope of ${String(Reflect.get(Object(model), 'name'))}`}>{children}</section>;
+        }
+
+        function Card({ model, server }: ProbeProps & { server?: string }) {
+            return <p>{`${model.name} on ${server}`}</p>;
+        }
+
+        define('test.inputs', {
+            fixtureInput: (model) => ({ server: `${Reflect.get(Object(model), 'name')} host` }),
+            fixtureScope: Scope,
+        });
+        views.registerViewLayer('classic', 'classic', { 'test.inputs': Card });
+
+        render(
+            <engine.ViewFixtureProvider>
+                <engine.View name='test.inputs' />
+            </engine.ViewFixtureProvider>
+        );
+
+        expect(screen.getByRole('region', { name: 'scope of first fixture' })).toHaveTextContent(
+            'first fixture on first fixture host'
+        );
     });
 });

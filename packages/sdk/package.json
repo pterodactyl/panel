@@ -5,6 +5,9 @@
     "license": "MIT",
     "type": "module",
     "types": "./types/index.d.ts",
+    "bin": {
+        "pterodactyl-theme": "./bin/pterodactyl-theme.mjs"
+    },
     "exports": {
         ".": {
             "types": "./types/index.d.ts",
@@ -34,6 +37,8 @@
         "./manifest.schema.json": "./manifest.schema.json"
     },
     "files": [
+        "bin",
+        "classic",
         "types",
         "api-runtime-stub.mjs",
         "runtime-stub.mjs",

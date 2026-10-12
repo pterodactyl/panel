@@ -50,12 +50,18 @@ export type ViewProps<N> = {
 /** A layer of a view; `parts` declares the parts it renders for the layers above it. */
 export type ViewComponent<N> = ComponentType<ViewProps<N>> & { readonly parts?: ViewParts<N> };
 
+/** Wraps a view rendered from a fixture, for views whose parts read an engine session. */
+export type ViewFixtureScope<N> = ComponentType<{ readonly model: ViewModel<N>; readonly children?: ReactNode }>;
+
 export interface ViewOptions<N extends ViewName> {
     readonly context: ViewContext;
     /** The engine hook producing the model; the only data source of the view. */
     use(input: ViewInput<N>): ViewModel<N>;
     /** Models for the workbench and tests; the first is the default. */
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
+    /** The inputs a fixture renders with, for views that take inputs. */
+    fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    readonly fixtureScope?: ViewFixtureScope<N>;
     readonly slots?: readonly SlotName[];
     /** Shown while extension layers of this view load. */
     readonly placeholder?: ReactNode;
@@ -67,6 +73,8 @@ export interface ViewDefinition<N extends string = string> {
     readonly context: ViewContext;
     use(input: ViewInput<N>): ViewModel<N>;
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
+    fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    readonly fixtureScope?: ViewFixtureScope<N>;
     readonly slots?: readonly SlotName[];
     readonly placeholder?: ReactNode;
     /** The extension that defined the view; core views have none. */
@@ -127,9 +135,11 @@ const layers = new Map<string, LayerSet>();
 const chains = new Map<string, readonly ViewLayer[]>();
 const listeners = new Set<() => void>();
 const emptyChain: readonly ViewLayer[] = Object.freeze([]);
+let sortedDefinitions: readonly ViewDefinition[] | undefined;
 
 function publish(): void {
     chains.clear();
+    sortedDefinitions = undefined;
     for (const listener of listeners) {
         listener();
     }
@@ -180,7 +190,14 @@ export function getViewDefinition(name: string): ViewDefinition | undefined {
 }
 
 export function getViewDefinitions(): readonly ViewDefinition[] {
-    return [...definitions.values()].sort((a, b) => a.name.localeCompare(b.name));
+    return (sortedDefinitions ??= Object.freeze(
+        [...definitions.values()].sort((a, b) => a.name.localeCompare(b.name))
+    ));
+}
+
+/** Every defined view by name, including those extensions define as they load. */
+export function useViewDefinitions(): readonly ViewDefinition[] {
+    return useSyncExternalStore(subscribeViews, getViewDefinitions);
 }
 
 export function useViewDefinition(name: string): ViewDefinition | undefined {

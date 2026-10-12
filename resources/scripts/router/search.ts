@@ -132,6 +132,47 @@ export const parseActivitySearch = (search: RawSearch): ActivitySearch => {
     return result;
 };
 
+export const WORKBENCH_WIDTHS = ['phone', 'tablet', 'desktop', 'full'] as const;
+export type WorkbenchWidth = (typeof WORKBENCH_WIDTHS)[number];
+export type WorkbenchSearch = {
+    view?: string;
+    /** A UI kit primitive, shown instead of a view. */
+    ui?: string;
+    /** A fixture of the view, or `*` for all of them side by side. */
+    fixture?: string;
+    scheme?: 'dark' | 'light';
+    width?: WorkbenchWidth;
+};
+
+export const parseWorkbenchSearch = (search: RawSearch): WorkbenchSearch => {
+    const result: WorkbenchSearch = {};
+    const view = searchText(search.view);
+    const ui = searchText(search.ui);
+    const fixture = searchText(search.fixture);
+    const scheme = search.scheme === 'dark' || search.scheme === 'light' ? search.scheme : undefined;
+    const width = WORKBENCH_WIDTHS.find((preset) => preset === search.width);
+
+    if (view) {
+        result.view = view;
+    } else if (ui) {
+        result.ui = ui;
+    }
+
+    if (fixture) {
+        result.fixture = fixture;
+    }
+
+    if (scheme) {
+        result.scheme = scheme;
+    }
+
+    if (width) {
+        result.width = width;
+    }
+
+    return result;
+};
+
 export const parseEmailSearch = (search: RawSearch): { email?: string } => {
     const email = searchText(search.email);
 

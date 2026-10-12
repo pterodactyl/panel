@@ -94,6 +94,10 @@ import { renderView } from '@pterodactyl/sdk/testing';
 const framed: HTMLElement = renderView('layout.app', {theme, fixture: 'admin'}).container;
 // @ts-expect-error Models stay typed by the rendered view.
 renderView('layout.app', {model: createTestServerCard()});
+import { renderPrimitive } from '@pterodactyl/sdk/testing';
+const primitive: HTMLElement = renderPrimitive('Button', {children: 'Save', color: 'red'}, {theme}).container;
+// @ts-expect-error Primitive props stay typed by the primitive's name.
+renderPrimitive('Button', {isLoading: 'yes'});
 interface GeneratedSettings { accent: string; compact: boolean }
 const compact: boolean = useThemeSettings<GeneratedSettings>().compact;
 // @ts-expect-error The card needs the server it shows.

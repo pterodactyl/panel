@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useState } from 'react';
+import { createContext, createElement, useContext, useMemo, useState, type ReactNode } from 'react';
 import Button from '@/components/elements/Button';
 import CodemirrorEditor from '@/components/elements/LazyCodemirrorEditor';
 import Spinner from '@/components/elements/Spinner';
@@ -121,9 +121,16 @@ function useFileEditorModel(): FileEditorModel {
     return session.model;
 }
 
+function FixtureEditorSession({ model, children }: { model: FileEditorModel; children?: ReactNode }) {
+    const value = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), [model]);
+
+    return <FileEditorContext.Provider value={value}>{children}</FileEditorContext.Provider>;
+}
+
 export const fileEditorView = defineView('server.files.editor', {
     context: 'server',
     use: useFileEditorModel,
+    fixtureScope: FixtureEditorSession,
     placeholder: createElement(Spinner, { size: 'large', centered: true }),
     fixtures: {
         file: () => createTestFileEditor(),

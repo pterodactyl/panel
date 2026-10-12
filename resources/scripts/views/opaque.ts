@@ -81,5 +81,6 @@ export const opaqueViews = {
     'page.admin.tags': page(() => import('@/components/admin/tags/TagsContainer')),
     'page.admin.extensions': page(() => import('@/components/admin/extensions/ExtensionsContainer')),
     'page.admin.themes': page(() => import('@/components/admin/themes/ThemesContainer')),
+    'page.admin.themeWorkbench': page(() => import('@/components/admin/themes/workbench/ThemeWorkbench')),
     'page.admin.apiKeys': page(() => import('@/components/admin/api/ApiKeysContainer')),
 } satisfies ThemeViews & Record<OpaquePageName, JSXElementConstructor<never>>;

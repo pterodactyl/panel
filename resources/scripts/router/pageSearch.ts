@@ -13,10 +13,15 @@ export interface RawSearch {
     email?: string | number | boolean | null;
     event?: string | number | boolean | null;
     filter?: string | number | boolean | null;
+    fixture?: string | number | boolean | null;
     page?: string | number | boolean | null;
+    scheme?: string | number | boolean | null;
     sort?: string | number | boolean | null;
     type?: string | number | boolean | null;
+    ui?: string | number | boolean | null;
     user?: string | number | boolean | null;
+    view?: string | number | boolean | null;
+    width?: string | number | boolean | null;
 }
 
 /** The URL text of a search value the router JSON-parsed. */

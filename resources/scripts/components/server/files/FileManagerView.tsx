@@ -1,8 +1,9 @@
-import { createContext, createElement, useContext } from 'react';
+import { createContext, createElement, useContext, useLayoutEffect, useMemo, type ReactNode } from 'react';
 import { Link } from '@tanstack/react-router';
 import { FolderOpen } from 'lucide-react';
 import { useCurrentServerIdentifier } from '@/api/server/queries';
-import { fileObjectKey, type FileObject } from '@/api/server/files/queries';
+import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
+import { fileObjectKey } from '@/api/server/files/queries';
 import { NewButton } from '@/components/elements/NewButton';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
@@ -18,8 +19,10 @@ import { FileRowActionsProvider } from '@/components/server/files/useFileActions
 import Slot from '@/extensions/Slot';
 import { encodePathSegments } from '@/helpers';
 import { cn } from '@/lib/cn';
+import { ServerContext } from '@/state/server/context';
+import { useServerStore } from '@/state/server';
 import { createTestFileManager } from '@/views/fixtures';
-import type { FileManagerModel } from '@/views/files';
+import type { FileManagerEntry, FileManagerModel } from '@/views/files';
 import { defineView, registerBaseView, type ViewPartProps, type ViewParts, type ViewProps } from '@/views/registry';
 import useFileManagerExtensionData from './useFileManagerExtensionData';
 
@@ -149,9 +152,46 @@ function useFileBrowserModel(): FileManagerModel {
     return session.model;
 }
 
+const fixtureFile = (entry: FileManagerEntry): FileObject => ({
+    object: 'file_object',
+    attributes: {
+        name: entry.name,
+        mode: entry.mode,
+        mode_bits: entry.modeBits,
+        size: entry.size,
+        is_file: entry.kind !== 'directory',
+        is_symlink: entry.kind === 'symlink',
+        mimetype: entry.mimetype,
+        created_at: entry.modifiedAt,
+        modified_at: entry.modifiedAt,
+    },
+});
+
+function FixtureFiles({ model, children }: { model: FileManagerModel; children?: ReactNode }) {
+    const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
+    const value = useMemo(() => ({ model, files: model.entries.map(fixtureFile) }), [model]);
+    const selection = model.selection.join('/');
+
+    useLayoutEffect(() => {
+        setSelectedFiles({ directory: model.directory, files: selection ? selection.split('/') : [] });
+    }, [setSelectedFiles, model.directory, selection]);
+
+    return <FileManagerContext.Provider value={value}>{children}</FileManagerContext.Provider>;
+}
+
+/** The selection lives in a server store, so a fixture brings its own. */
+function FixtureManagerSession({ model, children }: { model: FileManagerModel; children?: ReactNode }) {
+    return (
+        <ServerContext.Provider>
+            <FixtureFiles model={model}>{children}</FixtureFiles>
+        </ServerContext.Provider>
+    );
+}
+
 export const fileManagerView = defineView('server.files.manager', {
     context: 'server',
     use: useFileBrowserModel,
+    fixtureScope: FixtureManagerSession,
     slots: ['server.files.toolbar', 'server.files.rowActions', 'server.files.selectionActions'],
     placeholder: createElement(Spinner, { size: 'large', centered: true }),
     fixtures: {

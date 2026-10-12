@@ -4,6 +4,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { ViewPartProps, ViewProps } from '@/views/registry';
 import { defineTheme } from '@/views/theme';
 import {
+    renderPrimitive,
     renderView,
     createTestFileEditor,
     createTestFileManager,
@@ -149,6 +150,26 @@ it('renders a view synchronously from fixtures with a theme layered over classic
     expect(container.querySelector('a[aria-label="Admin"]')).toHaveAttribute('href', '/panel');
     unmount();
     expect(container.isConnected).toBe(false);
+});
+
+it('renders a UI kit primitive under a theme, replacing what was rendered before', () => {
+    const first = renderPrimitive('Button', { children: 'Save changes', color: 'red' }, { theme: defineTheme({}) });
+
+    expect(first.container.querySelector('button')).toHaveTextContent('Save changes');
+
+    const second = renderPrimitive('Alert', { type: 'warning', children: 'Disk is nearly full.' });
+
+    expect(first.container.isConnected).toBe(false);
+    expect(second.container.querySelector('[role="alert"]')).toHaveTextContent('Disk is nearly full.');
+    second.unmount();
+});
+
+it('renders a fixture of a view that takes inputs with the inputs it declares', () => {
+    const { container, unmount } = renderView('dashboard.serverCard', { fixture: 'suspended' });
+
+    expect(container).toHaveTextContent('Test server');
+    expect(container).toHaveTextContent('Suspended');
+    unmount();
 });
 
 it('renders nested views from their fixtures', () => {

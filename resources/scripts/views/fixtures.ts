@@ -1,3 +1,4 @@
+import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
 import type { Server } from '@/api/server/types';
 import type { ServerCardModel } from './dashboard';
 import type { FileDetailsModel, FileEditorModel, FileManagerEntry, FileManagerModel } from './files';
@@ -68,6 +69,26 @@ export function createTestServerCard(options: Partial<ServerCardModel> = {}): Se
 
 export function createTestFileDetails(options: Partial<FileDetailsModel> = {}): FileDetailsModel {
     return { name: 'config.json', kind: 'file', size: 1024, modifiedAt: '2026-01-01T12:00:00Z', ...options };
+}
+
+/** The file object a file details model was read from. */
+export function createTestFileObject(model: FileDetailsModel): FileObject {
+    const directory = model.kind === 'directory';
+
+    return {
+        object: 'file_object',
+        attributes: {
+            name: model.name,
+            mode: directory ? 'drwxr-xr-x' : '-rw-r--r--',
+            mode_bits: directory ? '0755' : '0644',
+            size: model.size,
+            is_file: !directory,
+            is_symlink: model.kind === 'symlink',
+            mimetype: directory ? 'inode/directory' : 'text/plain',
+            created_at: model.modifiedAt,
+            modified_at: model.modifiedAt,
+        },
+    };
 }
 
 export function createTestFileEditor(options: Partial<FileEditorModel> = {}): FileEditorModel {

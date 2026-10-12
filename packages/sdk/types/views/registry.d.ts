@@ -46,12 +46,20 @@ export type ViewProps<N> = {
 export type ViewComponent<N> = ComponentType<ViewProps<N>> & {
     readonly parts?: ViewParts<N>;
 };
+/** Wraps a view rendered from a fixture, for views whose parts read an engine session. */
+export type ViewFixtureScope<N> = ComponentType<{
+    readonly model: ViewModel<N>;
+    readonly children?: ReactNode;
+}>;
 export interface ViewOptions<N extends ViewName> {
     readonly context: ViewContext;
     /** The engine hook producing the model; the only data source of the view. */
     use(input: ViewInput<N>): ViewModel<N>;
     /** Models for the workbench and tests; the first is the default. */
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
+    /** The inputs a fixture renders with, for views that take inputs. */
+    fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    readonly fixtureScope?: ViewFixtureScope<N>;
     readonly slots?: readonly SlotName[];
     /** Shown while extension layers of this view load. */
     readonly placeholder?: ReactNode;
@@ -62,6 +70,8 @@ export interface ViewDefinition<N extends string = string> {
     readonly context: ViewContext;
     use(input: ViewInput<N>): ViewModel<N>;
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
+    fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    readonly fixtureScope?: ViewFixtureScope<N>;
     readonly slots?: readonly SlotName[];
     readonly placeholder?: ReactNode;
     /** The extension that defined the view; core views have none. */
@@ -122,6 +132,8 @@ export declare function defineView<N extends ViewName>(name: N, options: ViewOpt
 export declare function registerViewDefinition(definition: ViewDefinition): void;
 export declare function getViewDefinition(name: string): ViewDefinition | undefined;
 export declare function getViewDefinitions(): readonly ViewDefinition[];
+/** Every defined view by name, including those extensions define as they load. */
+export declare function useViewDefinitions(): readonly ViewDefinition[];
 export declare function useViewDefinition(name: string): ViewDefinition | undefined;
 /** A function component, or a memo, forwardRef or lazy wrapper of one. */
 export declare function isViewComponent<T>(value: T): value is T & JSXElementConstructor<never>;

@@ -16,7 +16,11 @@
             "offline",
             "suspended",
             "loading"
-        ]
+        ],
+        "classic": {
+            "file": "views/dashboard/ServerCard.tsx",
+            "export": "default"
+        }
     },
     "dashboard.serverList": {
         "kind": "block",
@@ -32,7 +36,11 @@
             "servers",
             "empty",
             "loading"
-        ]
+        ],
+        "classic": {
+            "file": "views/dashboard/ServerList.tsx",
+            "export": "default"
+        }
     },
     "layout.account": {
         "kind": "layout",
@@ -44,7 +52,11 @@
         "fixtures": [
             "default",
             "extension"
-        ]
+        ],
+        "classic": {
+            "file": "views/layout/AccountLayout.tsx",
+            "export": "default"
+        }
     },
     "layout.admin": {
         "kind": "layout",
@@ -56,7 +68,11 @@
         "fixtures": [
             "default",
             "extension"
-        ]
+        ],
+        "classic": {
+            "file": "views/layout/AdminLayout.tsx",
+            "export": "default"
+        }
     },
     "layout.app": {
         "kind": "layout",
@@ -70,7 +86,11 @@
             "admin",
             "schemes",
             "logo"
-        ]
+        ],
+        "classic": {
+            "file": "views/layout/AppLayout.tsx",
+            "export": "default"
+        }
     },
     "layout.auth": {
         "kind": "layout",
@@ -79,7 +99,11 @@
         "fixtures": [
             "default",
             "logo"
-        ]
+        ],
+        "classic": {
+            "file": "views/layout/AuthLayout.tsx",
+            "export": "default"
+        }
     },
     "layout.server": {
         "kind": "layout",
@@ -94,7 +118,11 @@
             "admin",
             "installing",
             "suspended"
-        ]
+        ],
+        "classic": {
+            "file": "views/layout/ServerLayout.tsx",
+            "export": "default"
+        }
     },
     "page.account.activity": {
         "kind": "page",
@@ -528,6 +556,12 @@
         ],
         "fixtures": []
     },
+    "page.admin.themeWorkbench": {
+        "kind": "page",
+        "context": "admin",
+        "slots": [],
+        "fixtures": []
+    },
     "page.admin.users": {
         "kind": "page",
         "context": "admin",
@@ -604,7 +638,11 @@
         "fixtures": [
             "default",
             "error"
-        ]
+        ],
+        "classic": {
+            "file": "views/dashboard/Dashboard.tsx",
+            "export": "default"
+        }
     },
     "page.server.activity": {
         "kind": "page",
