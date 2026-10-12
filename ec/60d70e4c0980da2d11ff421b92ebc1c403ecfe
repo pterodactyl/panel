@@ -26,6 +26,7 @@ resources/scripts/sdk/testing.tsx
   s_4cabae41bceed9::t_09347a436d8de5 408-412,415-416
   s_4cabae41bceed9::t_46ae028164f55b 268
   s_4cabae41bceed9::t_9b5fdfdc855143 283,296-297,307
+  s_4cabae41bceed9::t_54da9ce4b40cec 22
 resources/scripts/views/inspector/snippets.ts
   s_4cabae41bceed9::t_744637431caad3 1-14,16
   s_4cabae41bceed9::t_0352211fccdf55 15
@@ -35,12 +36,15 @@ resources/scripts/components/admin/themes/workbench/ThemeWorkbench.tsx
   s_4cabae41bceed9::t_9028d010c21b73 1-5,7,9-70,76-96,98-122,132-139,142-148,152-187
   s_4cabae41bceed9::t_991ae5d77e7251 140-141
   s_4cabae41bceed9::t_4f015249e7b586 71-73,97,123-131,149-151
+  s_4cabae41bceed9::t_54da9ce4b40cec 6
 resources/scripts/components/App.tsx
   s_4cabae41bceed9::t_4adece47262049 23-25
   s_4cabae41bceed9::t_5ed23895b369e0 10
 scripts/classic-sources.mjs
   s_4cabae41bceed9::t_63b7ad95098611 2,7,11,13
   s_4cabae41bceed9::t_6b2c65f925593a 1,3-6,8-10,12,14-34,45-93,95-108
+  s_4cabae41bceed9::t_3034992c4ca396 94
+  s_4cabae41bceed9::t_d063483551bae1 35-44
 resources/scripts/router/pageSearch.ts
   s_4cabae41bceed9::t_10d9cbe6db6278 16,18,21,23-24
 resources/scripts/views/inspector/tokens.ts
@@ -63,6 +67,7 @@ resources/scripts/views/View.spec.tsx
   s_4cabae41bceed9::t_591a6d58382f3f 324-328,330,332,334,336-338
 packages/sdk/types/sdk/testing.d.ts
   s_4cabae41bceed9::t_a9aa69659522f6 3-4,18,85,88-96
+  s_4cabae41bceed9::t_54da9ce4b40cec 9
 resources/scripts/router/search.ts
   s_4cabae41bceed9::t_fc2d9d10444595 135-175
 resources/scripts/components/admin/themes/workbench/ViewPreview.tsx
@@ -78,6 +83,7 @@ packages/sdk/types/components/server/files/FileManagerView.d.ts
 resources/scripts/components/admin/themes/workbench/catalog.ts
   s_4cabae41bceed9::t_e91b5877f5398d 27,33
   s_4cabae41bceed9::t_fbf1726222598f 1,3-26,28-32,34-94
+  s_4cabae41bceed9::t_54da9ce4b40cec 2
 resources/scripts/views/inspector/inspector.spec.tsx
   s_4cabae41bceed9::t_d9f1e498bbb1f5 1-2,4-11,16-71,76-77,79-82,84-95,97-112,114-139,141-148,150-180,188-223
   s_4cabae41bceed9::t_61526219d6be95 12-15
@@ -138,6 +144,7 @@ resources/scripts/components/admin/themes/workbench/WorkbenchSidebar.tsx
   s_4cabae41bceed9::t_4f015249e7b586 117-119
 packages/sdk/views.json
   s_4cabae41bceed9::t_6a2d97a885bb7e 19-23,39-43,89-93,559-564,641-645
+  s_4cabae41bceed9::t_2a5f375d6124d7 55-59,71-75,102-106,121-125
 resources/scripts/views/inspector/InspectorPanel.tsx
   s_4cabae41bceed9::t_d3865009e22b12 32-38
   s_4cabae41bceed9::t_509d76fdaa820d 52-53
@@ -181,6 +188,7 @@ resources/scripts/components/server/files/FileManagerView.tsx
   s_4cabae41bceed9::t_9d576aec3364c2 155-190,194
 packages/sdk/types/components/server/files/FileEditorView.d.ts
   s_4cabae41bceed9::t_a9aa69659522f6 1-14,16-17,19-20,22-23,25-29
+  s_4cabae41bceed9::t_54da9ce4b40cec 15,18,21,24
 resources/scripts/components/admin/themes/workbench/workbench.spec.tsx
   s_4cabae41bceed9::t_bdc79afd584c17 109-113,129-135,149-151,242-244
   s_4cabae41bceed9::t_38cfc3eb9213f1 1-9,11-16,18-108,114-128,136-148,152-241,245-246,248-249
@@ -204,6 +212,7 @@ resources/scripts/components/admin/themes/workbench/PrimitivePreview.tsx
   s_4cabae41bceed9::t_5f487746cbe0d1 1-2,5-53,56-74
   s_4cabae41bceed9::t_734a3531e955af 4
   s_4cabae41bceed9::t_ee214211c05405 54-55
+  s_4cabae41bceed9::t_54da9ce4b40cec 3
 packages/sdk/types/views/pages.d.ts
   s_4cabae41bceed9::t_a9aa69659522f6 276-278,298
 .gitignore
@@ -219,6 +228,10 @@ resources/scripts/components/admin/themes/workbench/PreviewFrame.tsx
 scripts/generate-sdk-views.mjs
   s_4cabae41bceed9::t_4a7be6151f2fc4 6,8-9,12
   s_4cabae41bceed9::t_0daed71d200573 34
+packages/sdk/types/themes/gallery.d.ts
+  s_4cabae41bceed9::t_54da9ce4b40cec 1-42
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_54da9ce4b40cec 11-12,16-20,25,27-31,39-40
 ---
 {
   "schema_version": "authorship/3.0.0",
