@@ -1,0 +1,38 @@
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_4cabae41bceed9::t_72a5f054b79f49 58-59
+  s_4cabae41bceed9::t_b3831d0f036c28 40
+  s_4cabae41bceed9::t_96e08c1d212a4d 19
+app/Services/Nodes/NodeJwt.php
+  s_4cabae41bceed9::t_b68b15131ccf74 1-72
+app/Actions/Transfers/InitiateTransfer.php
+  s_4cabae41bceed9::t_c6f7cf8d212f88 22
+  s_4cabae41bceed9::t_d4e2afaf51014f 30
+  s_4cabae41bceed9::t_26be62252add06 115-116
+app/Http/Controllers/Api/Client/Servers/FileUploadController.php
+  s_4cabae41bceed9::t_280e7845a30a3a 49,51-52
+  s_4cabae41bceed9::t_c7195f20c928b0 18
+  s_4cabae41bceed9::t_1301874513f546 36,41
+app/Actions/Backups/GenerateBackupDownloadLink.php
+  s_4cabae41bceed9::t_beb12306e34810 30-31
+  s_4cabae41bceed9::t_40e7b91338c5e1 20
+  s_4cabae41bceed9::t_eb83f06889361d 15
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_b6fc4d46f188e8 161,164-165
+  s_4cabae41bceed9::t_64c1be7f7069ec 48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d087d9f0a2763afeb11a352a0ee5228c1ad0d987",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
