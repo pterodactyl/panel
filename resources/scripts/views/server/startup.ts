@@ -11,8 +11,7 @@ import {
 import type { StartupFormSlotData } from '@/extensions/registry';
 import { usePermissions } from '@/plugins/usePermissions';
 import { createTestServer } from '../fixtures';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import type { ServerPageModel } from './page';
 
 export interface StartupPageModel extends ServerPageModel {
@@ -266,11 +265,9 @@ const configuration: StartupFormSlotData['configuration'] = {
     },
 };
 
-export const startupViews = [
-    defineView('page.server.startup', {
-        ...viewPage('page.server.startup'),
+implementViews({
+    'page.server.startup': {
         use: useStartupPageModel,
-        slots: ['server.startup.before', 'server.startup.after', 'server.startup.form'],
         fixtures: {
             default: () => ({
                 loading: false,
@@ -293,14 +290,12 @@ export const startupViews = [
                 slot: null,
             }),
         },
-    }),
-    defineView('server.startup.command', {
-        context: 'server',
+    },
+    'server.startup.command': {
         use: useStartupCommandModel,
         fixtures: { default: () => ({ command: 'java -Xms128M -Xmx2048M -jar server.jar nogui' }) },
-    }),
-    defineView('server.startup.image', {
-        context: 'server',
+    },
+    'server.startup.image': {
         use: useDockerImage,
         fixtures: {
             selectable: () => image(),
@@ -308,14 +303,13 @@ export const startupViews = [
             custom: () => image({ image: 'ghcr.io/example/custom:latest', custom: true }),
             pending: () => image({ pending: true }),
         },
-    }),
-    defineView('server.startup.variables', {
-        context: 'server',
+    },
+    'server.startup.variables': {
         use: useStartupVariablesModel,
         fixtures: {
             variables: () => ({ variables, canEdit: true, update: resolved }),
             readOnly: () => ({ variables, canEdit: false, update: resolved }),
             empty: () => ({ variables: [], canEdit: true, update: resolved }),
         },
-    }),
-];
+    },
+});

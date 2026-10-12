@@ -9,19 +9,40 @@ interface ModuleState {
 /** Load state per importer, so every view exported by one chunk is ready once any of them is. */
 const modules = new WeakMap<() => Promise<object>, ModuleState>();
 
+/**
+ * Marks a load done on its promise the way React's `use` reads it. A component that suspended on the load
+ * passes it to `use` on every render after, which returns at once once it has loaded. A failed load is
+ * dropped and imported again, so its failure is not recorded.
+ */
+export function settledLoad(promise: Promise<void>): Promise<void> {
+    const settled: Promise<void> & { status?: 'fulfilled'; value?: undefined } = promise;
+
+    void promise.then(
+        () => {
+            settled.status = 'fulfilled';
+            settled.value = undefined;
+        },
+        () => {}
+    );
+
+    return promise;
+}
+
 function loadModule(importer: () => Promise<object>): ModuleState {
     let state = modules.get(importer);
 
     if (!state) {
         const created: ModuleState = {
-            ready: importer().then(
-                (module) => {
-                    created.module = module;
-                },
-                (cause: unknown) => {
-                    modules.delete(importer);
-                    throw cause;
-                }
+            ready: settledLoad(
+                importer().then(
+                    (module) => {
+                        created.module = module;
+                    },
+                    (cause: unknown) => {
+                        modules.delete(importer);
+                        throw cause;
+                    }
+                )
             ),
         };
 
@@ -37,10 +58,14 @@ export interface LazyViewStatics {
     readonly loaded: boolean;
 }
 
+export function isLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics {
+    return 'loaded' in component && 'preload' in component;
+}
+
 export function isPendingLazyView<T extends JSXElementConstructor<never>>(
     component: T
 ): component is T & LazyViewStatics {
-    return 'loaded' in component && component.loaded === false && 'preload' in component;
+    return isLazyView(component) && component.loaded === false;
 }
 
 /**
@@ -58,9 +83,7 @@ export function lazyView(importer: () => Promise<object>, exportName = 'default'
     function LazyView(props: LooseViewInput) {
         const state = loadModule(importer);
 
-        if (!state.module) {
-            use(state.ready);
-        }
+        use(state.ready);
 
         return createElement(Reflect.get(state.module ?? {}, exportName), props);
     }

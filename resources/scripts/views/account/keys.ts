@@ -9,8 +9,7 @@ import {
 import { useCreateSSHKey, useDeleteSSHKey, useSSHKeys, type SSHKey } from '@/api/account/ssh-keys/queries';
 import { httpErrorToHuman } from '@/api/http';
 import { boundField, fixtureField } from '../forms';
-import { VIEW_PAGES } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import type {
     AccountListPageModel,
     ApiKeyCreateModel,
@@ -201,19 +200,16 @@ const listPageFixtures = {
     error: (): AccountListPageModel => ({ error: 'Request failed with status code 500.', retry: noop }),
 };
 
-export const keyViews = [
-    defineView('page.account.api', {
-        ...VIEW_PAGES['page.account.api'],
+implementViews({
+    'page.account.api': {
         use: useApiKeysPageModel,
         fixtures: listPageFixtures,
-    }),
-    defineView('page.account.ssh', {
-        ...VIEW_PAGES['page.account.ssh'],
+    },
+    'page.account.ssh': {
         use: useSshKeysPageModel,
         fixtures: listPageFixtures,
-    }),
-    defineView('account.apiKeys.list', {
-        context: 'account',
+    },
+    'account.apiKeys.list': {
         use: useApiKeyListModel,
         fixtures: {
             keys: () => apiKeyListFixture(),
@@ -221,9 +217,8 @@ export const keyViews = [
             loading: () => apiKeyListFixture({ keys: [], loading: true }),
             deleting: () => apiKeyListFixture({ deleting: true }),
         },
-    }),
-    defineView('account.apiKeys.create', {
-        context: 'account',
+    },
+    'account.apiKeys.create': {
         use: useApiKeyCreateModel,
         fixtures: {
             default: () => apiKeyCreateFixture(),
@@ -246,18 +241,16 @@ export const keyViews = [
             },
             created: () => apiKeyCreateFixture('ptlc_9mQ4rT2xVbN8kLw3Zp7Hy1Jc6Fs0Dg5Ae'),
         },
-    }),
-    defineView('account.sshKeys.list', {
-        context: 'account',
+    },
+    'account.sshKeys.list': {
         use: useSshKeyListModel,
         fixtures: {
             keys: () => sshKeyListFixture(),
             empty: () => sshKeyListFixture({ keys: [] }),
             loading: () => sshKeyListFixture({ keys: [], loading: true }),
         },
-    }),
-    defineView('account.sshKeys.create', {
-        context: 'account',
+    },
+    'account.sshKeys.create': {
         use: useSshKeyCreateModel,
         fixtures: {
             default: () => ({
@@ -276,5 +269,5 @@ export const keyViews = [
                 submitting: true,
             }),
         },
-    }),
-];
+    },
+});

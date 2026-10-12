@@ -98,4 +98,3 @@ declare module '../registry' {
         'server.subuserForm': SubuserFormInput;
     }
 }
-export declare const userViews: (import("../registry.js").ViewDefinition<"page.server.users"> | import("../registry.js").ViewDefinition<"server.subusers"> | import("../registry.js").ViewDefinition<"page.server.users.create"> | import("../registry.js").ViewDefinition<"server.subuserForm">)[];

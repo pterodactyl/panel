@@ -79,7 +79,6 @@ import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
 import { parseRedirectSearch } from '@/router/redirect';
 import { bareAreaPageRoute, layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
 import { preloadView } from '@/views/View';
-import FileEditorFrame from '@/components/server/files/fileEditorSession';
 import {
     parseActivitySearch,
     parseAdminListSearch,
@@ -250,9 +249,17 @@ const serverRoute = createRoute({
         return { serverUuid: server.attributes.uuid, serverPermissions: selectServerPermissions(server) };
     },
     component: lazyRouteComponent(
-        async () => (await Promise.all([import('@/router/layouts/ServerLayout'), preloadView('layout.server')]))[0]
+        async () =>
+            (
+                await Promise.all([
+                    import('@/router/layouts/ServerLayout'),
+                    preloadView('layout.server'),
+                    preloadView('server.conflict'),
+                ])
+            )[0]
     ),
 });
+const FileEditorFrame = lazyRouteComponent(() => import('@/components/server/files/fileEditorSession'));
 const serverChildren = [
     // ServerLayout renders the console itself.
     createRoute({
@@ -437,6 +444,10 @@ const themeWorkbenchRoute = createRoute({
         if (!user.rootAdmin) {
             throw new RouteAccessDenied('You do not have permission to access the administrative area.');
         }
+    },
+    // The workbench lists every view's fixtures, which load with their areas.
+    loader: async () => {
+        await (await import('@/views/catalog')).loadViewCatalog();
     },
     component: bareAreaPageRoute('page.admin.themeWorkbench', 'admin'),
 });

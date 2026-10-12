@@ -8,7 +8,7 @@ import {
     usePidLimitPrompt,
     useSteamDiskSpacePrompt,
 } from '@/components/server/features/prompts';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 
 /** The egg features whose prompt the console opens when the server's output asks for it. */
 export const SERVER_FEATURES = {
@@ -110,9 +110,8 @@ const javaVersion = (open: boolean, canChangeImage = true): JavaVersionPromptMod
     update: resolved,
 });
 
-export const featureViews = [
-    defineView('server.features', {
-        context: 'server',
+implementViews({
+    'server.features': {
         use: useServerFeaturesModel,
         fixtures: {
             minecraft: () => ({
@@ -120,18 +119,16 @@ export const featureViews = [
             }),
             none: () => ({ views: [] }),
         },
-    }),
-    defineView('server.feature.eula', {
-        context: 'server',
+    },
+    'server.feature.eula': {
         use: useEulaPrompt,
         fixtures: {
             closed: () => ({ ...closed, pending: false, accept: resolved }),
             open: () => ({ ...opened, pending: false, accept: resolved }),
             accepting: () => ({ ...opened, pending: true, accept: resolved }),
         },
-    }),
-    defineView('server.feature.javaVersion', {
-        context: 'server',
+    },
+    'server.feature.javaVersion': {
         use: useJavaVersionPrompt,
         fixtures: {
             closed: () => javaVersion(false),
@@ -139,35 +136,31 @@ export const featureViews = [
             loading: () => ({ ...javaVersion(true), images: null, loading: true }),
             noPermission: () => javaVersion(true, false),
         },
-    }),
-    defineView('server.feature.gslToken', {
-        context: 'server',
+    },
+    'server.feature.gslToken': {
         use: useGslTokenPrompt,
         fixtures: {
             closed: () => ({ ...closed, pending: false, submit: resolved }),
             open: () => ({ ...opened, pending: false, submit: resolved }),
         },
-    }),
-    defineView('server.feature.pidLimit', {
-        context: 'server',
+    },
+    'server.feature.pidLimit': {
         use: usePidLimitPrompt,
         fixtures: {
             closed: () => ({ ...closed, admin: false }),
             admin: () => ({ ...opened, admin: true }),
             user: () => ({ ...opened, admin: false }),
         },
-    }),
-    defineView('server.feature.steamDiskSpace', {
-        context: 'server',
+    },
+    'server.feature.steamDiskSpace': {
         use: useSteamDiskSpacePrompt,
         fixtures: {
             closed: () => ({ ...closed, admin: false }),
             admin: () => ({ ...opened, admin: true }),
             user: () => ({ ...opened, admin: false }),
         },
-    }),
-    defineView('server.feature.hytaleOauth', {
-        context: 'server',
+    },
+    'server.feature.hytaleOauth': {
         use: useHytaleOauthPrompt,
         fixtures: {
             closed: () => ({ ...closed, link: null, login: noop }),
@@ -177,5 +170,5 @@ export const featureViews = [
                 login: noop,
             }),
         },
-    }),
-];
+    },
+});

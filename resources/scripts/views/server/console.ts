@@ -15,9 +15,10 @@ import {
     useSocketInstance,
 } from '@/state/server';
 import { createTestServer } from '../fixtures';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { useLoadedServer } from './loadedServer';
+// The console page places the feature prompts, so they are implemented with it.
+import './features';
 
 export type { ServerGraphPoint, ServerNetworkPoint };
 
@@ -339,11 +340,9 @@ function graphsFixture(live: boolean): ServerGraphsModel {
     };
 }
 
-export const consoleViews = [
-    defineView('page.server.console', {
-        ...viewPage('page.server.console'),
+implementViews({
+    'page.server.console': {
         use: useServerConsoleModel,
-        slots: ['server.console.before', 'server.console.after'],
         fixtureInput: () => ({ active: true }),
         fixtures: {
             default: () => ({
@@ -365,9 +364,8 @@ export const consoleViews = [
                 server: fixtureServer(),
             }),
         },
-    }),
-    defineView('server.terminal', {
-        context: 'server',
+    },
+    'server.terminal': {
         use: useServerTerminal,
         fixtures: {
             running: () => terminalFixture(),
@@ -377,11 +375,9 @@ export const consoleViews = [
             scrolledUp: () => terminalFixture({ scrolledUp: true }),
             readOnly: () => terminalFixture({ command: command({ allowed: false }) }),
         },
-    }),
-    defineView('server.power', {
-        context: 'server',
+    },
+    'server.power': {
         use: useServerPowerModel,
-        slots: ['server.console.power.before', 'server.console.power.after'],
         fixtures: {
             running: () => powerFixture('running'),
             offline: () => powerFixture('offline'),
@@ -394,9 +390,8 @@ export const consoleViews = [
                 }),
             noPermission: () => powerFixture('running', { permissions: { start: false, stop: false, restart: false } }),
         },
-    }),
-    defineView('server.stats', {
-        context: 'server',
+    },
+    'server.stats': {
         use: useServerStatsModel,
         fixtures: {
             running: () => statsFixture('running'),
@@ -416,10 +411,9 @@ export const consoleViews = [
                     disk: metric(12 * GiB, 0),
                 }),
         },
-    }),
-    defineView('server.graphs', {
-        context: 'server',
+    },
+    'server.graphs': {
         use: useServerGraphsModel,
         fixtures: { running: () => graphsFixture(true), offline: () => graphsFixture(false) },
-    }),
-];
+    },
+});

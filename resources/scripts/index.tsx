@@ -15,10 +15,12 @@ const container = document.getElementById('app');
 if (container) {
     const root = createRoot(container);
 
-    await bootTheme();
-    root.render(
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
+    // Not a top-level await: one in the entry turns off the bundler's chunk merging for the whole build.
+    void bootTheme().then(() =>
+        root.render(
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>
+        )
     );
 }

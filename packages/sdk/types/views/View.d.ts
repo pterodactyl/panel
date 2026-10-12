@@ -20,6 +20,8 @@ export interface ViewFixtureSelection {
 export declare function ViewFixtureProvider({ fixtures, models, children }: ViewFixtureSelection & {
     children?: ReactNode;
 }): import("react").JSX.Element;
+/** Loads a view's implementation and the chunks of its lazy layers, so the router waits for them like a route chunk. */
+export declare function preloadView(name: string): Promise<void>;
 type ViewElementBase = {
     readonly name: string;
     /** Renders nothing when no installed package defines the view. */
@@ -38,8 +40,6 @@ export { RenderView as LooseView };
  * extension overrides, and renders the top layer with `{ model, Default, ...inputs, children }`.
  */
 export declare const View: <N extends string>(props: ViewElementProps<N>) => ReactNode;
-/** Loads the chunks of a view's lazy layers, so the router waits for them like a route chunk. */
-export declare function preloadView(name: string): Promise<void>;
 /**
  * Binds a `Default` to a view's registered layers and builds the props a layer above them receives,
  * so a single layer can be rendered by hand inside `Scope` (the SDK's view test host).

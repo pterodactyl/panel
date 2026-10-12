@@ -42,4 +42,3 @@ declare module '../registry' {
         'server.allocations': ServerAllocationsModel;
     }
 }
-export declare const networkViews: (import("../registry.js").ViewDefinition<"page.server.network"> | import("../registry.js").ViewDefinition<"server.allocations">)[];

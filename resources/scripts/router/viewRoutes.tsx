@@ -61,7 +61,7 @@ export function layoutRoute(name: LayoutViewName, area: ViewContext) {
 export function pageRoute(
     name: Exclude<PageViewName, 'page.server.console'>,
     permission: string | string[] | null = null,
-    Frame?: ComponentType<{ children?: ReactNode }>
+    Frame?: ComponentType<{ children?: ReactNode }> & { preload?: () => Promise<unknown> }
 ) {
     const slots = pageSlots(name);
 
@@ -82,7 +82,9 @@ export function pageRoute(
         );
     }
 
-    PageRoute.preload = () => preloadView(name);
+    PageRoute.preload = async () => {
+        await Promise.all([preloadView(name), Frame?.preload?.()]);
+    };
 
     return PageRoute;
 }

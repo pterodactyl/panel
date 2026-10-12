@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { serverConflict, type ServerConflict } from '../layouts';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { useLoadedServer } from './loadedServer';
 
 export interface ServerConflictModel {
@@ -20,9 +20,8 @@ function useConflictModel(): ServerConflictModel {
     return useMemo(() => ({ kind }), [kind]);
 }
 
-export const conflictViews = [
-    defineView('server.conflict', {
-        context: 'server',
+implementViews({
+    'server.conflict': {
         use: useConflictModel,
         fixtures: {
             installing: () => ({ kind: 'installing' }),
@@ -31,5 +30,5 @@ export const conflictViews = [
             transferring: () => ({ kind: 'transferring' }),
             restoring: () => ({ kind: 'restoring-backup' }),
         },
-    }),
-];
+    },
+});

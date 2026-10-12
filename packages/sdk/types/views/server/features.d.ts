@@ -64,4 +64,3 @@ declare module '../registry' {
         'server.feature.hytaleOauth': HytaleOauthPromptModel;
     }
 }
-export declare const featureViews: (import("../registry.js").ViewDefinition<"server.features"> | import("../registry.js").ViewDefinition<"server.feature.eula"> | import("../registry.js").ViewDefinition<"server.feature.javaVersion"> | import("../registry.js").ViewDefinition<"server.feature.gslToken"> | import("../registry.js").ViewDefinition<"server.feature.pidLimit"> | import("../registry.js").ViewDefinition<"server.feature.steamDiskSpace"> | import("../registry.js").ViewDefinition<"server.feature.hytaleOauth">)[];

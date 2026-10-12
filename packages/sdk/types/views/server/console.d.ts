@@ -2,6 +2,7 @@
 import { type ComponentType } from 'react';
 import type { Server } from "../../api/server/types.js";
 import { type ServerGraphPoint, type ServerNetworkPoint } from "../../components/server/console/chart.js";
+import "./features.js";
 export type { ServerGraphPoint, ServerNetworkPoint };
 /** What Wings reports the server doing; null until it has. */
 export type ServerRunState = 'offline' | 'starting' | 'running' | 'stopping';
@@ -132,4 +133,3 @@ declare module '../registry' {
         };
     }
 }
-export declare const consoleViews: (import("../registry.js").ViewDefinition<"page.server.console"> | import("../registry.js").ViewDefinition<"server.terminal"> | import("../registry.js").ViewDefinition<"server.power"> | import("../registry.js").ViewDefinition<"server.stats"> | import("../registry.js").ViewDefinition<"server.graphs">)[];

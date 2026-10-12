@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { fileURLToPath, URL } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -46,8 +46,41 @@ function manifestIntegrity() {
     };
 }
 
+/**
+ * The chunks the main entry imports statically. They are loaded before any lazy import runs, so the
+ * preload list of a lazy import leaves them out.
+ */
+function mainEntryChunks(entry: string) {
+    const chunks = new Set<string>();
+    const plugin: Plugin = {
+        name: 'pterodactyl-main-entry-chunks',
+        apply: 'build',
+        generateBundle(_options, bundle) {
+            const visit = (fileName: string) => {
+                const chunk = bundle[fileName];
+
+                if (chunks.has(fileName) || chunk?.type !== 'chunk') {
+                    return;
+                }
+
+                chunks.add(fileName);
+                chunk.imports.forEach(visit);
+            };
+            const main = Object.values(bundle).find((output) => output.type === 'chunk' && output.facadeModuleId === entry);
+
+            chunks.clear();
+            if (main) {
+                visit(main.fileName);
+            }
+        },
+    };
+
+    return { plugin, resolveDependencies: (_file: string, deps: string[]) => deps.filter((dep) => !chunks.has(dep)) };
+}
+
 export default defineConfig(({ mode }) => {
     const isProduction = mode === 'production';
+    const mainChunks = mainEntryChunks(fileURLToPath(new URL('./resources/scripts/index.tsx', import.meta.url)));
 
     return {
         base: '/assets/',
@@ -73,10 +106,12 @@ export default defineConfig(({ mode }) => {
             // No custom transforms are needed (twin.macro / styled-components are long gone).
             react(),
             manifestIntegrity(),
+            mainChunks.plugin,
         ],
         build: {
             outDir: 'public/assets',
             manifest: 'manifest.json',
+            modulePreload: { resolveDependencies: mainChunks.resolveDependencies },
             // Don't wipe the directory — it holds tracked legacy webpack output + fonts/images.
             // Hashed filenames prevent collisions; stale files can be pruned separately.
             emptyOutDir: false,

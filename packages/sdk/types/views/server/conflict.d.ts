@@ -9,4 +9,3 @@ declare module '../registry' {
         'server.conflict': ServerConflictModel;
     }
 }
-export declare const conflictViews: import("../registry.js").ViewDefinition<"server.conflict">[];

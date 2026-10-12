@@ -124,4 +124,3 @@ declare module '../registry' {
 }
 /** The task form for a server allowed `backupLimit` backups. */
 export declare function scheduleTaskForm(backupLimit: number | null): ScheduleTaskForm;
-export declare const scheduleViews: (import("../registry.js").ViewDefinition<"page.server.schedules"> | import("../registry.js").ViewDefinition<"server.schedules"> | import("../registry.js").ViewDefinition<"page.server.schedules.detail"> | import("../registry.js").ViewDefinition<"server.schedule"> | import("../registry.js").ViewDefinition<"server.schedule.tasks">)[];

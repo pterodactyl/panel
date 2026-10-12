@@ -3,8 +3,9 @@ import { useParams, useSearch } from '@tanstack/react-router';
 import { usePerformPasswordReset, useRequestPasswordResetEmail } from '@/api/auth/queries';
 import { parseEmailSearch } from '@/router/pageSearch';
 import { boundField, fixtureField } from '../forms';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { useCaptcha } from './captcha';
+import { authPage } from './page';
 import type { ForgotPasswordFormModel, ResetPasswordFormModel } from './types';
 
 const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -144,18 +145,18 @@ const resetFixture = (mismatch: boolean): ResetPasswordFormModel => ({
     login: { to: '/auth/login' },
 });
 
-export const passwordViews = [
-    defineView('auth.forgotPasswordForm', {
-        context: 'auth',
+implementViews({
+    'page.auth.password': authPage,
+    'page.auth.passwordReset': authPage,
+    'auth.forgotPasswordForm': {
         use: useForgotPasswordFormModel,
         fixtures: {
             default: () => forgotFixture(),
             invalid: () => forgotFixture('A valid email address must be provided to continue.'),
         },
-    }),
-    defineView('auth.resetPasswordForm', {
-        context: 'auth',
+    },
+    'auth.resetPasswordForm': {
         use: useResetPasswordFormModel,
         fixtures: { default: () => resetFixture(false), mismatch: () => resetFixture(true) },
-    }),
-];
+    },
+});

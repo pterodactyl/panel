@@ -51,8 +51,8 @@ export type ViewFixtureScope<N> = ComponentType<{
     readonly model: ViewModel<N>;
     readonly children?: ReactNode;
 }>;
-export interface ViewOptions<N extends ViewName> {
-    readonly context: ViewContext;
+/** The engine side of a view: the hook producing its model, and the fixtures standing in for it. */
+export interface ViewImplementation<N extends string> {
     /** The engine hook producing the model; the only data source of the view. */
     use(input: ViewInput<N>): ViewModel<N>;
     /** Models for the workbench and tests; the first is the default. */
@@ -60,20 +60,32 @@ export interface ViewOptions<N extends ViewName> {
     /** The inputs a fixture renders with, for views that take inputs. */
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
     readonly fixtureScope?: ViewFixtureScope<N>;
+}
+/** What a module passes to `implementViews`, by view name. */
+export type ViewImplementations = {
+    readonly [N in ViewName]?: ViewImplementation<N>;
+};
+/** Imports the module implementing a view; an area's views share one, so it loads once for all of them. */
+export type ViewLoader = () => Promise<unknown>;
+interface ViewDeclaration {
+    readonly context: ViewContext;
     readonly slots?: readonly SlotName[];
     /** Shown while extension layers of this view load. */
     readonly placeholder?: ReactNode;
 }
-export interface ViewDefinition<N extends string = string> {
+/** A view implemented where it is defined, or by the module `load` imports when the view is first needed. */
+export type ViewOptions<N extends ViewName> = ViewDeclaration & (ViewImplementation<N> | {
+    readonly load: ViewLoader;
+});
+export interface ViewDefinition<N extends string = string> extends ViewDeclaration {
     readonly name: N;
     readonly kind: ViewKind;
-    readonly context: ViewContext;
-    use(input: ViewInput<N>): ViewModel<N>;
+    /** Unset until the module `load` imports has implemented the view. */
+    use?(input: ViewInput<N>): ViewModel<N>;
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
     readonly fixtureScope?: ViewFixtureScope<N>;
-    readonly slots?: readonly SlotName[];
-    readonly placeholder?: ReactNode;
+    readonly load?: ViewLoader;
     /** The extension that defined the view; core views have none. */
     readonly extensionId?: string;
 }
@@ -129,6 +141,13 @@ export declare function viewKind(name: string): ViewKind;
 export declare function isViewContext(value: string): value is ViewContext;
 /** Core definitions replace an earlier one of the same name, so a hot reload re-registers cleanly. */
 export declare function defineView<N extends ViewName>(name: N, options: ViewOptions<N>): ViewDefinition<N>;
+/** Called by the module a view's `load` imports, which implements every view of its area. */
+export declare function implementViews(views: ViewImplementations): void;
+/**
+ * The import of the module implementing a view, started the first time one of its views needs it and
+ * shared by all of them; null when the view was implemented without one.
+ */
+export declare function loadViewImplementation(name: string): Promise<void> | null;
 export declare function registerViewDefinition(definition: ViewDefinition): void;
 export declare function getViewDefinition(name: string): ViewDefinition | undefined;
 export declare function getViewDefinitions(): readonly ViewDefinition[];

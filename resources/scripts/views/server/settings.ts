@@ -3,8 +3,7 @@ import { useCurrentUser } from '@/api/account/queries';
 import { useReinstallServer, useRenameServer } from '@/api/server/queries';
 import { canReinstallServer, SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
 import { usePermissions } from '@/plugins/usePermissions';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
 
@@ -129,42 +128,37 @@ const renameFixture = (options: Partial<ServerRenameModel> = {}): ServerRenameMo
     ...options,
 });
 
-export const settingsViews = [
-    defineView('page.server.settings', {
-        ...viewPage('page.server.settings'),
+implementViews({
+    'page.server.settings': {
         use: () => settingsPageModel,
         fixtures: { default: () => settingsPageModel },
-    }),
-    defineView('server.sftp', {
-        context: 'server',
+    },
+    'server.sftp': {
         use: useSftpModel,
         fixtures: {
             default: () => sftpFixture(),
             ipv6: () => sftpFixture({ ip: '2001:db8::10' }),
             denied: () => sftpFixture({ allowed: false }),
         },
-    }),
-    defineView('server.debug', {
-        context: 'server',
+    },
+    'server.debug': {
         use: useDebugModel,
         fixtures: { default: () => ({ node: 'Node 1', uuid: '11111111-1111-4111-8111-111111111111' }) },
-    }),
-    defineView('server.rename', {
-        context: 'server',
+    },
+    'server.rename': {
         use: useRenameModel,
         fixtures: {
             default: () => renameFixture(),
             empty: () => renameFixture({ values: { name: 'Survival', description: '' } }),
             denied: () => renameFixture({ allowed: false }),
         },
-    }),
-    defineView('server.reinstall', {
-        context: 'server',
+    },
+    'server.reinstall': {
         use: useReinstallModel,
         fixtures: {
             default: () => ({ allowed: true, unavailable: null, reinstall: succeeded }),
             skipped: () => ({ allowed: true, unavailable: SKIPPED_INSTALL_SCRIPT_MESSAGE, reinstall: succeeded }),
             denied: () => ({ allowed: false, unavailable: null, reinstall: succeeded }),
         },
-    }),
-];
+    },
+});

@@ -15,8 +15,7 @@ import {
 import { useCurrentServer } from '@/api/server/queries';
 import { ip } from '@/lib/formatters';
 import { usePermissions } from '@/plugins/usePermissions';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { serverPageFixtures, type ServerPageModel } from './page';
 
 export interface ServerAllocationItem {
@@ -167,14 +166,12 @@ const allocationsFixture = (options: Partial<ServerAllocationsModel> = {}): Serv
     ...options,
 });
 
-export const networkViews = [
-    defineView('page.server.network', {
-        ...viewPage('page.server.network'),
+implementViews({
+    'page.server.network': {
         use: useNetworkPageModel,
         fixtures: serverPageFixtures,
-    }),
-    defineView('server.allocations', {
-        context: 'server',
+    },
+    'server.allocations': {
         use: useServerAllocationsModel,
         fixtures: {
             allocations: () => allocationsFixture(),
@@ -189,5 +186,5 @@ export const networkViews = [
             empty: () => allocationsFixture({ allocations: [] }),
             loading: () => allocationsFixture({ allocations: [], loading: true }),
         },
-    }),
-];
+    },
+});

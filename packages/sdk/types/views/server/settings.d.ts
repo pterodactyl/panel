@@ -41,4 +41,3 @@ declare module '../registry' {
         'server.reinstall': ServerReinstallModel;
     }
 }
-export declare const settingsViews: (import("../registry.js").ViewDefinition<"page.server.settings"> | import("../registry.js").ViewDefinition<"server.sftp"> | import("../registry.js").ViewDefinition<"server.debug"> | import("../registry.js").ViewDefinition<"server.rename"> | import("../registry.js").ViewDefinition<"server.reinstall">)[];

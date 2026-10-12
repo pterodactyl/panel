@@ -2,11 +2,8 @@
 import type { Server } from "../api/server/types.js";
 import type { CorePanelDestination } from "../sdk/navigation.js";
 import { type NavigationModel, type NavItem } from "./navigation.js";
+import type { OpaqueModel } from "./pages.js";
 import { type ThemeScheme } from "./theme.js";
-/** A model with nothing in it yet: the view's default renders the existing container as is. */
-export type OpaqueModel = Readonly<Record<never, never>>;
-export declare const opaqueModel: OpaqueModel;
-export declare const useOpaqueModel: () => OpaqueModel;
 export interface LayoutBrand {
     /** The panel's name. */
     readonly name: string;
@@ -81,4 +78,3 @@ declare module './registry' {
     }
 }
 export declare function serverConflict({ attributes }: Server): ServerConflict | null;
-export declare const layoutViews: (import("./registry.js").ViewDefinition<"layout.auth"> | import("./registry.js").ViewDefinition<"layout.app"> | import("./registry.js").ViewDefinition<"layout.account"> | import("./registry.js").ViewDefinition<"layout.server"> | import("./registry.js").ViewDefinition<"layout.admin"> | import("./registry.js").ViewDefinition<"app.search">)[];

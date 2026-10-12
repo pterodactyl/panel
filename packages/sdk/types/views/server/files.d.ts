@@ -175,4 +175,3 @@ declare module '../registry' {
         'server.files.manager': 'toolbar' | 'list' | 'selection';
     }
 }
-export declare const fileViews: (import("../registry.js").ViewDefinition<"page.server.files"> | import("../registry.js").ViewDefinition<"server.files.manager"> | import("../registry.js").ViewDefinition<"server.files.details"> | import("../registry.js").ViewDefinition<"page.server.files.editor"> | import("../registry.js").ViewDefinition<"server.files.editor">)[];

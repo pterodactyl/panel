@@ -1,9 +1,8 @@
-import { createElement, useMemo, type ComponentType } from 'react';
+import { useMemo, type ComponentType } from 'react';
 import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
 import { httpErrorToHuman } from '@/api/http';
 import { fileObjectKind, useServerFiles } from '@/api/server/files/queries';
 import { useCurrentServerUuid } from '@/api/server/queries';
-import Spinner from '@/components/elements/Spinner';
 import {
     FileEditorFixtureScope,
     useFileEditorPage,
@@ -13,15 +12,14 @@ import useFileManagerModel from '@/components/server/files/useFileManagerModel';
 import type { FileManagerSlotData } from '@/extensions/registry';
 import type { CorePanelDestination } from '@/sdk/navigation';
 import { useServerDirectory } from '@/state/server';
+import { implementViews } from '../registry';
 import {
     createTestFileDetails,
     createTestFileEditor,
     createTestFileEditorPage,
     createTestFileManager,
     createTestFileObject,
-} from '../fixtures';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+} from './fileFixtures';
 import { serverPageFixtures, type ServerPageModel } from './page';
 
 export interface FileDetailsModel {
@@ -211,20 +209,13 @@ function useFileDetailsModel({ file }: { readonly file: FileObject }): FileDetai
     );
 }
 
-const loadingPlaceholder = createElement(Spinner, { size: 'large', centered: true });
-
-export const fileViews = [
-    defineView('page.server.files', {
-        ...viewPage('page.server.files'),
+implementViews({
+    'page.server.files': {
         use: useFilesPageModel,
-        slots: ['server.files.before', 'server.files.after'],
         fixtures: serverPageFixtures,
-    }),
-    defineView('server.files.manager', {
-        context: 'server',
+    },
+    'server.files.manager': {
         use: useFileManagerModel,
-        slots: ['server.files.toolbar', 'server.files.rowActions', 'server.files.selectionActions'],
-        placeholder: loadingPlaceholder,
         fixtures: {
             directory: () => createTestFileManager(),
             selected: () => createTestFileManager({ selection: ['config.json'] }),
@@ -237,22 +228,16 @@ export const fileViews = [
             empty: () => createTestFileManager({ entries: [] }),
             loading: () => createTestFileManager({ entries: [], loading: true }),
         },
-    }),
-    defineView('server.files.details', {
-        context: 'server',
+    },
+    'server.files.details': {
         use: useFileDetailsModel,
-        placeholder: createElement('div', {
-            className: 'h-5 w-full animate-pulse rounded-sm bg-muted',
-            'aria-label': 'Loading file details',
-        }),
         fixtures: {
             file: () => createTestFileDetails(),
             directory: () => createTestFileDetails({ name: 'plugins', kind: 'directory', size: 0 }),
         },
         fixtureInput: (model) => ({ file: createTestFileObject(model) }),
-    }),
-    defineView('page.server.files.editor', {
-        ...viewPage('page.server.files.editor'),
+    },
+    'page.server.files.editor': {
         use: useFileEditorPage,
         fixtures: {
             file: () => createTestFileEditorPage(),
@@ -260,12 +245,10 @@ export const fileViews = [
             loading: () => createTestFileEditorPage({ loading: true }),
             error: () => createTestFileEditorPage({ error: 'Request failed with status code 404.' }),
         },
-    }),
-    defineView('server.files.editor', {
-        context: 'server',
+    },
+    'server.files.editor': {
         use: useFileEditorSession,
         fixtureScope: FileEditorFixtureScope,
-        placeholder: loadingPlaceholder,
         fixtures: {
             file: () => createTestFileEditor(),
             dirty: () => createTestFileEditor({ dirty: true }),
@@ -275,5 +258,5 @@ export const fileViews = [
                 createTestFileEditor({ path: '/.pteroignore', name: '.pteroignore', content: '*.log\n' }),
             new: () => createTestFileEditor({ path: '/config', name: '', isNew: true, content: '' }),
         },
-    }),
-];
+    },
+});

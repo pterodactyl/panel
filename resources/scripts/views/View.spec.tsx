@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, render, screen } from '@testing-library/react';
-import { Suspense, type ComponentType, type ReactNode } from 'react';
+import { Suspense, useState, type ComponentType, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type * as RegistryModule from './registry';
 import type * as ViewModule from './View';
@@ -392,5 +392,130 @@ describe('<View>', () => {
         expect(screen.getByRole('region', { name: 'scope of first fixture' })).toHaveTextContent(
             'first fixture on first fixture host'
         );
+    });
+});
+
+describe('views implemented by their area module', () => {
+    const renders = vi.fn();
+
+    function useConflict() {
+        const [kind] = useState<'installing' | null>('installing');
+
+        renders();
+
+        return { kind };
+    }
+
+    /** An area module, implementing two views, that loads when `arrive` is called. */
+    function area() {
+        let arrive = () => {};
+
+        const arrived = new Promise<void>((resolve) => {
+            arrive = resolve;
+        });
+        const load = vi.fn(async () => {
+            await arrived;
+            views.implementViews({
+                'server.conflict': { use: useConflict, fixtures: { installing: () => ({ kind: 'installing' }) } },
+                'page.server.settings': { use: () => ({}) },
+            });
+        });
+
+        views.defineView('server.conflict', { context: 'server', load });
+        views.defineView('page.server.settings', { context: 'server', load });
+        views.registerViewLayer('classic', 'classic', {
+            'server.conflict': ({ model }) => <p>{`conflict:${model.kind}`}</p>,
+            'page.server.settings': () => <p>settings</p>,
+        });
+
+        return { load, arrive };
+    }
+
+    const suspended = (name: 'server.conflict' | 'page.server.settings') => (
+        <Suspense fallback={<span>loading area</span>}>
+            <engine.View name={name} />
+        </Suspense>
+    );
+
+    it('suspends once while the module loads, then renders every view of the area without loading it again', async () => {
+        const { load, arrive } = area();
+        const { rerender } = await act(async () => render(suspended('server.conflict')));
+
+        expect(screen.getByText('loading area')).toBeVisible();
+        expect(views.getViewDefinition('server.conflict')?.use).toBeUndefined();
+
+        await act(async () => arrive());
+
+        expect(screen.getByText('conflict:installing')).toBeVisible();
+
+        const before = renders.mock.calls.length;
+
+        rerender(suspended('server.conflict'));
+        render(<engine.View name='page.server.settings' />);
+
+        expect(screen.getByText('conflict:installing')).toBeVisible();
+        expect(screen.getByText('settings')).toBeVisible();
+        expect(renders.mock.calls.length).toBeGreaterThan(before);
+        expect(load).toHaveBeenCalledOnce();
+        expect(console.error).not.toHaveBeenCalled();
+    });
+
+    it('loads the module and the classic chunks together when the router preloads the view', async () => {
+        const { load, arrive } = area();
+        const importClassic = vi.fn(async () => ({
+            default: ({ model }: { model: { kind: string | null } }) => <p>{model.kind}</p>,
+        }));
+
+        views.registerViewLayer('classic', 'classic', { 'server.conflict': lazy.lazyView(importClassic) });
+
+        const preloading = engine.preloadView('server.conflict');
+
+        expect(load).toHaveBeenCalledOnce();
+        expect(importClassic).toHaveBeenCalledOnce();
+
+        arrive();
+        await preloading;
+        render(<engine.View name='server.conflict' />);
+
+        expect(screen.getByText('installing')).toBeVisible();
+    });
+
+    it('reads fixtures from the module, so the workbench renders the view without a backend', async () => {
+        const { arrive } = area();
+
+        arrive();
+        await act(async () => {
+            render(
+                <engine.ViewFixtureProvider>
+                    <Suspense fallback={<span>loading area</span>}>
+                        <engine.View name='server.conflict' />
+                    </Suspense>
+                </engine.ViewFixtureProvider>
+            );
+        });
+
+        expect(screen.getByText('conflict:installing')).toBeVisible();
+        expect(Object.keys(views.getViewDefinition('server.conflict')?.fixtures ?? {})).toEqual(['installing']);
+    });
+
+    it('imports a module that failed to load again the next time a view needs it', async () => {
+        let attempts = 0;
+        const load = async () => {
+            attempts += 1;
+
+            if (attempts === 1) {
+                throw new Error('chunk failed');
+            }
+
+            views.implementViews({ 'page.server.settings': { use: () => ({}) } });
+        };
+
+        views.defineView('page.server.settings', { context: 'server', load });
+
+        await expect(engine.preloadView('page.server.settings')).rejects.toThrow('chunk failed');
+        await engine.preloadView('page.server.settings');
+
+        expect(attempts).toBe(2);
+        expect(views.getViewDefinition('page.server.settings')?.use).toBeDefined();
     });
 });

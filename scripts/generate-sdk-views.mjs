@@ -22,9 +22,9 @@ const server = await createServer({
 });
 let catalog;
 try {
-    const { getViewDefinitions } = await server.ssrLoadModule('/resources/scripts/views/catalog.ts');
+    const { loadViewCatalog } = await server.ssrLoadModule('/resources/scripts/views/catalog.ts');
     catalog = Object.fromEntries(
-        getViewDefinitions().map((view) => [
+        (await loadViewCatalog()).map((view) => [
             view.name,
             {
                 kind: view.kind,

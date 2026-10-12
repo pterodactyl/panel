@@ -1,4 +1,4 @@
-import { createElement, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useCurrentUser } from '@/api/account/queries';
@@ -15,7 +15,7 @@ import { relationshipData } from '@/api/relationships';
 import { ip, mbToBytes } from '@/lib/formatters';
 import { getPageSearch, useDashboardSearch } from '@/router/pageSearch';
 import { createTestServer, createTestServerCard } from './fixtures';
-import { defineView } from './registry';
+import { implementViews } from './registry';
 
 export type ServerPower = 'offline' | 'stopped' | 'starting' | 'running' | 'stopping';
 export interface ServerCardMetric {
@@ -273,25 +273,16 @@ function useServerCardModel({ server }: { readonly server: Server }): ServerCard
 
 const noop = () => {};
 
-export const dashboardViews = [
-    defineView('page.dashboard', {
-        context: 'app',
+implementViews({
+    'page.dashboard': {
         use: useDashboardModel,
         fixtures: {
             default: () => ({ error: null, retry: noop }),
             error: () => ({ error: 'Request failed with status code 500.', retry: noop }),
         },
-    }),
-    defineView('dashboard.serverList', {
-        context: 'app',
+    },
+    'dashboard.serverList': {
         use: useServerListModel,
-        slots: [
-            'dashboard.before',
-            'dashboard.after',
-            'dashboard.serverRow.before',
-            'dashboard.serverRow.metrics.after',
-            'dashboard.serverRow.after',
-        ],
         fixtures: {
             servers: () => ({
                 servers: [
@@ -324,17 +315,11 @@ export const dashboardViews = [
                 actions: { setPage: noop, setScope: noop },
             }),
         },
-    }),
-    defineView('dashboard.serverCard', {
-        context: 'app',
+    },
+    'dashboard.serverCard': {
         use: useServerCardModel,
-        slots: ['dashboard.serverRow.name.after'],
         fixtureInput: (card) => ({
             server: createTestServer({ identifier: card.identifier, uuid: card.uuid, name: card.name }),
-        }),
-        placeholder: createElement('div', {
-            className: 'h-12 animate-pulse rounded-sm bg-muted',
-            'aria-label': 'Loading server card',
         }),
         fixtures: {
             running: () => createTestServerCard(),
@@ -351,5 +336,5 @@ export const dashboardViews = [
             suspended: () => createTestServerCard({ state: { kind: 'unavailable', reason: 'suspended' } }),
             loading: () => createTestServerCard({ address: null, state: { kind: 'loading' } }),
         },
-    }),
-];
+    },
+});

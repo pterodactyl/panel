@@ -17,8 +17,7 @@ export type {
     AppLayoutModel,
     AuthLayoutModel,
     LayoutBrand,
-    OpaqueModel,
     ServerConflict,
     ServerLayoutModel,
 } from './layouts';
-export type { OpaquePageName, PageViewName } from './pages';
+export type { OpaqueModel, OpaquePageName, PageViewName } from './pages';

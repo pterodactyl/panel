@@ -2,8 +2,12 @@ import { createElement } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import type { RouteSlotName } from '@/extensions/registry';
 import { getObjectKeys } from '@/lib/objects';
-import { useOpaqueModel, type OpaqueModel } from './layouts';
 import { defineView, type ViewContext } from './registry';
+
+/** A model with nothing in it yet: the view's default renders the existing container as is. */
+export type OpaqueModel = Readonly<Record<never, never>>;
+export const opaqueModel: OpaqueModel = Object.freeze({});
+export const useOpaqueModel = (): OpaqueModel => opaqueModel;
 
 interface PageSpec {
     readonly context: ViewContext;

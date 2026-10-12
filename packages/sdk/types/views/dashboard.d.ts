@@ -73,4 +73,3 @@ declare module './registry' {
         'dashboard.serverCard': 'identity' | 'address' | 'metrics';
     }
 }
-export declare const dashboardViews: (import("./registry.js").ViewDefinition<"page.dashboard"> | import("./registry.js").ViewDefinition<"dashboard.serverList"> | import("./registry.js").ViewDefinition<"dashboard.serverCard">)[];

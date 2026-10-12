@@ -12,8 +12,7 @@ import { isString } from '@/lib/objects';
 import { useServerRouteId } from '@/router/params';
 import { getPageSearch, useActivitySearch, type ActivitySearch } from '@/router/pageSearch';
 import type { CorePanelDestination } from '@/sdk/navigation';
-import { VIEW_PAGES } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import type {
     ActivityEntry,
     ActivityEventGroup,
@@ -281,9 +280,8 @@ function logFixture(scope: ActivityScope, overrides: Partial<ActivityLogModel> =
 const pageModel: ActivityPageModel = Object.freeze({});
 const page = { use: (): ActivityPageModel => pageModel, fixtures: { default: () => pageModel } };
 
-export const activityViews = [
-    defineView('activity.log', {
-        context: 'app',
+implementViews({
+    'activity.log': {
         use: useActivityLogModel,
         fixtureInput: (model) => ({ scope: model.scope }),
         fixtures: {
@@ -313,7 +311,7 @@ export const activityViews = [
                     error: 'Request failed with status code 500.',
                 }),
         },
-    }),
-    defineView('page.account.activity', { ...VIEW_PAGES['page.account.activity'], ...page }),
-    defineView('page.server.activity', { ...VIEW_PAGES['page.server.activity'], ...page }),
-];
+    },
+    'page.account.activity': page,
+    'page.server.activity': page,
+});

@@ -14,8 +14,7 @@ import {
 import { useCurrentServer } from '@/api/server/queries';
 import { jdbcConnectionString, serverDatabaseShortName } from '@/lib/databases';
 import { usePermissions } from '@/plugins/usePermissions';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { serverPageFixtures, type ServerPageModel } from './page';
 
 export interface ServerDatabaseItem {
@@ -219,14 +218,12 @@ const databasesFixture = (options: Partial<ServerDatabasesModel> = {}): ServerDa
     ...options,
 });
 
-export const databaseViews = [
-    defineView('page.server.databases', {
-        ...viewPage('page.server.databases'),
+implementViews({
+    'page.server.databases': {
         use: useDatabasesPageModel,
         fixtures: serverPageFixtures,
-    }),
-    defineView('server.databases', {
-        context: 'server',
+    },
+    'server.databases': {
         use: useServerDatabasesModel,
         fixtures: {
             databases: () => databasesFixture(),
@@ -241,5 +238,5 @@ export const databaseViews = [
                 }),
             loading: () => databasesFixture({ databases: [], loading: true }),
         },
-    }),
-];
+    },
+});

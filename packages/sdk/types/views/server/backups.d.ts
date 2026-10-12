@@ -71,4 +71,3 @@ declare module '../registry' {
         'server.backups': BackupListModel;
     }
 }
-export declare const backupViews: (import("../registry.js").ViewDefinition<"page.server.backups"> | import("../registry.js").ViewDefinition<"server.backups">)[];

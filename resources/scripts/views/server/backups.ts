@@ -22,8 +22,7 @@ import { SocketEvent } from '@/components/server/events';
 import { usePermissions } from '@/plugins/usePermissions';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { getPageSearch, usePageSearch } from '@/router/pageSearch';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { completeBackup, parseBackupCompletedPayload } from './backupCompletion';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
@@ -297,18 +296,16 @@ const listFixture = (options: Partial<BackupListModel> = {}): BackupListModel =>
     ...options,
 });
 
-export const backupViews = [
-    defineView('page.server.backups', {
-        ...viewPage('page.server.backups'),
+implementViews({
+    'page.server.backups': {
         use: useBackupsPageModel,
         fixtures: {
             default: () => ({ loading: false, error: null, retry: noop }),
             loading: () => ({ loading: true, error: null, retry: noop }),
             error: () => ({ loading: false, error: 'Request failed with status code 500.', retry: noop }),
         },
-    }),
-    defineView('server.backups', {
-        context: 'server',
+    },
+    'server.backups': {
         use: useBackupListModel,
         fixtures: {
             backups: () => listFixture(),
@@ -338,5 +335,5 @@ export const backupViews = [
             readOnly: () =>
                 listFixture({ permissions: { create: false, download: false, restore: false, delete: false } }),
         },
-    }),
-];
+    },
+});

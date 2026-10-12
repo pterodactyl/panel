@@ -10,13 +10,9 @@ import type { CorePanelDestination } from '@/sdk/navigation';
 import { useBrandLogo } from './brand';
 import { createTestServer } from './fixtures';
 import { useNavigation, type NavArea, type NavigationModel, type NavItem } from './navigation';
-import { defineView } from './registry';
+import type { OpaqueModel } from './pages';
+import { implementViews } from './registry';
 import { useTheme, type ThemeScheme } from './theme';
-
-/** A model with nothing in it yet: the view's default renders the existing container as is. */
-export type OpaqueModel = Readonly<Record<never, never>>;
-export const opaqueModel: OpaqueModel = Object.freeze({});
-export const useOpaqueModel = (): OpaqueModel => opaqueModel;
 
 export interface LayoutBrand {
     /** The panel's name. */
@@ -325,33 +321,26 @@ const adminNav = (extension = false) =>
 
 const adminUser = { uuid: '11111111-1111-4111-8111-111111111111', username: 'alex', email: 'alex@example.test' };
 
-export const layoutViews = [
-    defineView('layout.auth', {
-        context: 'auth',
+implementViews({
+    'layout.auth': {
         use: useAuthLayoutModel,
         fixtures: { default: () => ({ brand }), logo: () => ({ brand: logo }) },
-    }),
-    defineView('layout.app', {
-        context: 'app',
+    },
+    'layout.app': {
         use: useAppLayoutModel,
-        slots: ['nav.items.before', 'nav.items.after'],
         fixtures: {
             user: () => appLayoutFixture(false),
             admin: () => appLayoutFixture(true),
             schemes: () => appLayoutFixture(false, ['dark', 'light']),
             logo: () => ({ ...appLayoutFixture(false), brand: logo }),
         },
-    }),
-    defineView('layout.account', {
-        context: 'account',
+    },
+    'layout.account': {
         use: useAccountLayoutModel,
-        slots: ['account.navigation.before', 'account.navigation.after'],
         fixtures: { default: () => ({ nav: accountNav() }), extension: () => ({ nav: accountNav(true) }) },
-    }),
-    defineView('layout.server', {
-        context: 'server',
+    },
+    'layout.server': {
         use: useServerLayoutModel,
-        slots: ['server.navigation.before', 'server.navigation.after'],
         fixtures: {
             owner: () => serverLayoutFixture(),
             subuser: () => serverLayoutFixture({ allowed: ['index', 'files', 'backups'] }),
@@ -359,15 +348,12 @@ export const layoutViews = [
             installing: () => serverLayoutFixture({ status: 'installing' }),
             suspended: () => serverLayoutFixture({ status: 'suspended' }),
         },
-    }),
-    defineView('layout.admin', {
-        context: 'admin',
+    },
+    'layout.admin': {
         use: useAdminLayoutModel,
-        slots: ['panel.navigation.before', 'panel.navigation.after'],
         fixtures: {
             default: () => ({ nav: adminNav(), user: adminUser }),
             extension: () => ({ nav: adminNav(true), user: adminUser }),
         },
-    }),
-    defineView('app.search', { context: 'app', use: useOpaqueModel }),
-];
+    },
+});

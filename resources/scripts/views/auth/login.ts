@@ -7,8 +7,9 @@ import { parseRedirectSearch } from '@/router/redirect';
 import { useRouteSlotData } from '@/router/routeSlots';
 import { useOpenLoginCheckpoint } from '@/sdk/navigation';
 import { boundField, fixtureField } from '../forms';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { useCaptcha } from './captcha';
+import { authPage } from './page';
 import type { CheckpointFormModel, LoginFormModel } from './types';
 
 const required = (message: string) => ({
@@ -160,11 +161,11 @@ const checkpointFixture = (recovery: boolean): CheckpointFormModel => ({
     login: { to: '/auth/login', search: {} },
 });
 
-export const loginViews = [
-    defineView('auth.loginForm', {
-        context: 'auth',
+implementViews({
+    'page.auth.login': authPage,
+    'page.auth.checkpoint': authPage,
+    'auth.loginForm': {
         use: useLoginFormModel,
-        slots: ['auth.login.form.after'],
         fixtures: {
             default: () => loginFixture(),
             invalid: () => {
@@ -181,10 +182,9 @@ export const loginViews = [
             },
             submitting: () => loginFixture({ username: 'alex', password: 'correct horse' }, { submitting: true }),
         },
-    }),
-    defineView('auth.checkpointForm', {
-        context: 'auth',
+    },
+    'auth.checkpointForm': {
         use: useCheckpointFormModel,
         fixtures: { code: () => checkpointFixture(false), recovery: () => checkpointFixture(true) },
-    }),
-];
+    },
+});

@@ -26,8 +26,7 @@ import {
     type Task,
 } from '@/api/server/schedules/queries';
 import { usePermissions } from '@/plugins/usePermissions';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
 
@@ -525,17 +524,15 @@ const tasksFixture = (options: Partial<ScheduleTasksModel> = {}): ScheduleTasksM
     ...options,
 });
 
-export const scheduleViews = [
-    defineView('page.server.schedules', {
-        ...viewPage('page.server.schedules'),
+implementViews({
+    'page.server.schedules': {
         use: useSchedulesPageModel,
         fixtures: {
             default: () => ({ error: null, retry: noop }),
             error: () => ({ error: 'Request failed with status code 500.', retry: noop }),
         },
-    }),
-    defineView('server.schedules', {
-        context: 'server',
+    },
+    'server.schedules': {
         use: useScheduleListModel,
         fixtures: {
             schedules: () => listFixture(),
@@ -543,18 +540,16 @@ export const scheduleViews = [
             readOnly: () => listFixture({ canCreate: false, canUpdate: false }),
             loading: () => listFixture({ schedules: [], loading: true }),
         },
-    }),
-    defineView('page.server.schedules.detail', {
-        ...viewPage('page.server.schedules.detail'),
+    },
+    'page.server.schedules.detail': {
         use: useScheduleDetailPageModel,
         fixtures: {
             default: () => ({ loading: false, error: null, retry: noop }),
             loading: () => ({ loading: true, error: null, retry: noop }),
             error: () => ({ loading: false, error: 'Request failed with status code 404.', retry: noop }),
         },
-    }),
-    defineView('server.schedule', {
-        context: 'server',
+    },
+    'server.schedule': {
         use: useScheduleModel,
         fixtures: {
             active: () => scheduleModelFixture(),
@@ -566,9 +561,8 @@ export const scheduleViews = [
                 }),
             readOnly: () => scheduleModelFixture({ canUpdate: false, canDelete: false }),
         },
-    }),
-    defineView('server.schedule.tasks', {
-        context: 'server',
+    },
+    'server.schedule.tasks': {
         use: useScheduleTasksModel,
         fixtures: {
             tasks: () => tasksFixture(),
@@ -576,5 +570,5 @@ export const scheduleViews = [
             readOnly: () => tasksFixture({ canUpdate: false }),
             noBackups: () => tasksFixture({ form: scheduleTaskForm(0) }),
         },
-    }),
-];
+    },
+});

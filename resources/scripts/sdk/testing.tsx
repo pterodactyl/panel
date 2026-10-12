@@ -1,22 +1,7 @@
 import { ExtensionContext } from '@/extensions/context';
 import type { FileManagerModel } from '@/views/server/files';
 import { registerClassicTheme } from '@/views/classic';
-import '@/views/account';
-import '@/views/activity';
-import '@/views/auth';
-import '@/views/dashboard';
-import '@/views/layouts';
-import '@/views/server/backups';
-import '@/views/server/conflict';
-import '@/views/server/console';
-import '@/views/server/databases';
-import '@/views/server/features';
-import '@/views/server/files';
-import '@/views/server/network';
-import '@/views/server/schedules';
-import '@/views/server/settings';
-import '@/views/server/startup';
-import '@/views/server/users';
+import { loadViewCatalog } from '@/views/catalog';
 import {
     clearThemeLayers,
     getViewDefinition,
@@ -74,20 +59,18 @@ import { createTestServer } from '@/views/fixtures';
 import type { SdkServer, SdkSiteSettings, SdkUser } from './index';
 import type { ServerWebsocketEvent } from './index';
 
+export { createTestServer, createTestServerCard, type TestServerOptions } from '@/views/fixtures';
 export {
     createTestFileDetails,
     createTestFileEditor,
     createTestFileManager,
     createTestFileManagerEntry,
-    createTestServer,
-    createTestServerCard,
-    type TestServerOptions,
-} from '@/views/fixtures';
+} from '@/views/server/fileFixtures';
 export type { UiPrimitiveName, UiPrimitiveProps };
 
 registerClassicTheme();
-// Classic's own views are lazy; loading them here lets a test render them synchronously.
-await Promise.all(Object.keys(classic.views ?? {}).map(preloadView));
+// Views' hooks and fixtures and classic's own views are lazy; loading them here lets a test render them synchronously.
+await Promise.all([loadViewCatalog(), ...Object.keys(classic.views ?? {}).map(preloadView)]);
 
 export interface ExtensionTestHostOptions {
     extensionId?: string;

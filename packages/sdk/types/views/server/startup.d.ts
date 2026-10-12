@@ -64,4 +64,3 @@ declare module '../registry' {
         'server.startup.variables': StartupVariablesModel;
     }
 }
-export declare const startupViews: (import("../registry.js").ViewDefinition<"page.server.startup"> | import("../registry.js").ViewDefinition<"server.startup.command"> | import("../registry.js").ViewDefinition<"server.startup.image"> | import("../registry.js").ViewDefinition<"server.startup.variables">)[];

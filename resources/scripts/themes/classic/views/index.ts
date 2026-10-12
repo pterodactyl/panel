@@ -1,6 +1,5 @@
 import { lazyView, type ThemeViews } from '@/sdk/theme';
 import AuthLayout from './layout/AuthLayout';
-import ServerConflict from './server/ServerConflict';
 
 const dashboard = () => import('./dashboard');
 const auth = () => import('./auth');
@@ -52,8 +51,8 @@ export const classicViews: ThemeViews = {
     'page.account.activity': lazyView(activity, 'AccountActivityPage'),
     'page.server.activity': lazyView(activity, 'ServerActivityPage'),
 
-    // Shown in place of every server page, so it renders without waiting for a chunk.
-    'server.conflict': ServerConflict,
+    // Shown in place of every server page; the server route loads it with the server layout.
+    'server.conflict': lazyView(() => import('./server/ServerConflict')),
     'page.server.schedules': lazyView(schedules, 'SchedulesPage'),
     'server.schedules': lazyView(schedules, 'ScheduleList'),
     'page.server.schedules.detail': lazyView(schedules, 'ScheduleDetailPage'),

@@ -9,8 +9,7 @@ import {
 } from '@/api/account/two-factor/queries';
 import { httpErrorToHuman } from '@/api/http';
 import { boundField, fixtureField, stateField, type FieldAttributes } from '../forms';
-import { VIEW_PAGES } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import type {
     AccountEmailModel,
     AccountOverviewModel,
@@ -268,31 +267,26 @@ function twoFactorFixture(overrides: Partial<AccountTwoFactorModel> = {}): Accou
     };
 }
 
-export const overviewViews = [
-    defineView('page.account.overview', {
-        ...VIEW_PAGES['page.account.overview'],
+implementViews({
+    'page.account.overview': {
         use: useAccountOverviewModel,
-        slots: ['account.overview.before', 'account.overview.after'],
         fixtures: {
             default: () => ({ twoFactorRequired: false }),
             twoFactorRequired: () => ({ twoFactorRequired: true }),
         },
-    }),
-    defineView('account.password', {
-        context: 'account',
+    },
+    'account.password': {
         use: useAccountPasswordModel,
         fixtures: {
             default: () => passwordFixture(),
             invalid: () => passwordFixture('Your new password should be at least 8 characters in length.'),
         },
-    }),
-    defineView('account.email', {
-        context: 'account',
+    },
+    'account.email': {
         use: useAccountEmailModel,
         fixtures: { default: () => emailFixture(), submitting: () => emailFixture(true) },
-    }),
-    defineView('account.twoFactor', {
-        context: 'account',
+    },
+    'account.twoFactor': {
         use: useAccountTwoFactorModel,
         fixtures: {
             disabled: () => twoFactorFixture(),
@@ -317,5 +311,5 @@ export const overviewViews = [
                     ],
                 }),
         },
-    }),
-];
+    },
+});

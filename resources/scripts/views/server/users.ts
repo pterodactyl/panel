@@ -17,8 +17,7 @@ import {
 import { useSystemPermissions } from '@/api/system/queries';
 import type { SubuserPermissionsSlotData } from '@/extensions/registry';
 import { usePermissions } from '@/plugins/usePermissions';
-import { viewPage } from '../pages';
-import { defineView } from '../registry';
+import { implementViews } from '../registry';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
 import { permissionGroupRows, replaceEditablePermissions } from './permissionSelection';
@@ -441,38 +440,33 @@ const formFixture = (options: Partial<SubuserFormModel> = {}): SubuserFormModel 
 
 const editing = subuserFixtures[1];
 
-export const userViews = [
-    defineView('page.server.users', {
-        ...viewPage('page.server.users'),
+implementViews({
+    'page.server.users': {
         use: useSubusersPageModel,
         fixtures: {
             default: () => ({ loading: false, error: null, retry: noop }),
             loading: () => ({ loading: true, error: null, retry: noop }),
             error: () => ({ loading: false, error: 'Request failed with status code 500.', retry: noop }),
         },
-    }),
-    defineView('server.subusers', {
-        context: 'server',
+    },
+    'server.subusers': {
         use: useSubuserListModel,
         fixtures: {
             subusers: () => listFixture(),
             empty: () => listFixture({ subusers: [] }),
             readOnly: () => listFixture({ canCreate: false, canUpdate: false, canDelete: false }),
         },
-    }),
-    defineView('page.server.users.create', {
-        ...viewPage('page.server.users.create'),
+    },
+    'page.server.users.create': {
         use: useSubuserCreatePageModel,
         fixtures: {
             default: () => ({ serverId: 'a1b2c3d4', loading: false }),
             loading: () => ({ serverId: 'a1b2c3d4', loading: true }),
         },
-    }),
-    defineView('server.subuserForm', {
-        context: 'server',
+    },
+    'server.subuserForm': {
         use: useSubuserFormModel,
         fixtureInput: (model) => (model.subuser ? { subuser: model.subuser } : {}),
-        slots: ['server.users.permissions.before'],
         fixtures: {
             create: () => formFixture(),
             edit: () =>
@@ -495,5 +489,5 @@ export const userViews = [
                 }),
             loading: () => formFixture({ loading: true }),
         },
-    }),
-];
+    },
+});

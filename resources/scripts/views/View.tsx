@@ -14,10 +14,11 @@ import ExtensionMount from '@/extensions/ExtensionMount';
 import { reportExtensionError } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
 import { FailedLayerMark, InspectedViewBoundary, ViewInspectionContext } from './inspect';
-import { isPendingLazyView } from './lazy';
+import { isLazyView } from './lazy';
 import {
     declaredParts,
     getViewChain,
+    loadViewImplementation,
     useViewChain,
     useViewDefinition,
     type LooseViewInput,
@@ -34,6 +35,7 @@ import { useViewDecision } from './session';
 import { SlotCheck } from './slotCheck';
 
 const ViewAreaContext = createContext<readonly ViewContext[]>([]);
+const noop = () => {};
 
 /** Marks the contexts the views below can use; nested areas add to their parent's. */
 export function ViewArea({ area, children }: { area: ViewContext; children?: ReactNode }) {
@@ -288,7 +290,7 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     // Classic's lazy layers load up front, so their parts are known and layers above do not wait in turn.
     // Theme and extension layers load inside their own boundary, which falls back when they fail.
     for (const { source, component } of layers) {
-        if (source === 'classic' && isPendingLazyView(component)) {
+        if (source === 'classic' && isLazyView(component)) {
             use(component.preload());
         }
     }
@@ -319,10 +321,25 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     );
 }
 
-function LiveView(props: BodyProps) {
-    const useModel = props.definition.use;
-
+function LiveView({ use: useModel, ...props }: BodyProps & { use: (input: LooseViewInput) => unknown }) {
     return <ViewBody {...props} model={useModel(props.inputs)} />;
+}
+
+/** Loads a view's implementation and the chunks of its lazy layers, so the router waits for them like a route chunk. */
+export async function preloadView(name: string): Promise<void> {
+    await Promise.all([
+        loadViewImplementation(name),
+        ...getViewChain(name).map(({ source, component }) => {
+            if (!('preload' in component) || !(component.preload instanceof Function)) {
+                return null;
+            }
+
+            const loading = Promise.resolve(component.preload());
+
+            // A theme layer that fails to load falls back when it renders, so it must not fail the route.
+            return source === 'classic' ? loading : loading.catch(noop);
+        }),
+    ]);
 }
 
 type ViewElementBase = {
@@ -356,11 +373,26 @@ function RenderView({ name, optional = false, className, children, ...inputs }: 
         throw new Error(`View "${name}" renders in the "${definition.context}" context and was rendered outside it.`);
     }
 
+    const loading = loadViewImplementation(name);
+
+    if (loading) {
+        if (!definition.use) {
+            // Its classic chunks load alongside its implementation rather than after it.
+            preloadView(name).catch(noop);
+        }
+
+        use(loading);
+    }
+
+    if (!definition.use) {
+        throw new Error(`View "${name}" is not implemented by the module its definition loads.`);
+    }
+
     const fixture = selection ? fixtureModel(definition, selection) : undefined;
 
     if (!fixture) {
         return (
-            <LiveView key={name} definition={definition} inputs={inputs} className={className}>
+            <LiveView key={name} definition={definition} use={definition.use} inputs={inputs} className={className}>
                 {children}
             </LiveView>
         );
@@ -390,22 +422,6 @@ export { RenderView as LooseView };
  * extension overrides, and renders the top layer with `{ model, Default, ...inputs, children }`.
  */
 export const View = RenderView as <N extends string>(props: ViewElementProps<N>) => ReactNode;
-
-/** Loads the chunks of a view's lazy layers, so the router waits for them like a route chunk. */
-export async function preloadView(name: string): Promise<void> {
-    await Promise.all(
-        getViewChain(name).map(({ source, component }) => {
-            if (!('preload' in component) || !(component.preload instanceof Function)) {
-                return null;
-            }
-
-            const loading = Promise.resolve(component.preload());
-
-            // A theme layer that fails to load falls back when it renders, so it must not fail the route.
-            return source === 'classic' ? loading : loading.catch(() => {});
-        })
-    );
-}
 
 /**
  * Binds a `Default` to a view's registered layers and builds the props a layer above them receives,

@@ -54,4 +54,3 @@ declare module '../registry' {
         'server.databases': ServerDatabasesModel;
     }
 }
-export declare const databaseViews: (import("../registry.js").ViewDefinition<"page.server.databases"> | import("../registry.js").ViewDefinition<"server.databases">)[];
