@@ -1,0 +1,46 @@
+app/Http/Resources/Api/Client/UserResource.php
+  s_4cabae41bceed9::t_e0a24c3f7cd3b8 1-33
+app/Http/Resources/Api/Client/ActivityLogResource.php
+  s_4cabae41bceed9::t_42a741883a6732 5,8,10-13,18-20,24,29,34,39,41,44-55,57,61,71,78-79,84
+tests/Integration/Api/Client/Server/Files/CompressFilesTest.php
+  s_4cabae41bceed9::t_53d7bf6c1a3ba4 8,34
+tests/Unit/Http/ApplicationApiControllerTest.php
+  s_4cabae41bceed9::t_53d7bf6c1a3ba4 13,23
+app/Http/Resources/Api/Client/ApiKeyResource.php
+  s_4cabae41bceed9::t_96ca3beeb16104 1-32
+app/Transformers/Api/Admin/ActivityLogTransformer.php
+  s_4cabae41bceed9::t_35305f06e56b78 10
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_4cabae41bceed9::t_57007712f91f69 15,18-19,40-41,43,52,54,58
+app/Http/Resources/Api/Concerns/FormatsActivityLogs.php
+  s_4cabae41bceed9::t_8d534b0e2b9733 1-102
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_4cabae41bceed9::t_57007712f91f69 12,15-16,40-41,58
+app/Http/Resources/Api/Client/AccountResource.php
+  s_4cabae41bceed9::t_dcb0faa73969d0 1-32
+app/Http/Controllers/Api/Client/AccountController.php
+  s_4cabae41bceed9::t_57007712f91f69 17,20,49-50,52
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_4cabae41bceed9::t_57007712f91f69 11,13-14,36-37,50
+tests/Unit/ArchTest.php
+  s_4cabae41bceed9::t_35305f06e56b78 38-39
+  s_4cabae41bceed9::t_53d7bf6c1a3ba4 55
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_4cabae41bceed9::t_57007712f91f69 14,18-19,31-32,34,41-42,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f2a25519ecbf515006737d96cd1861e4db1c696f",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
