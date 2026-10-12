@@ -47,7 +47,7 @@ return RectorConfig::configure()
         EnvVariableToEnvHelperRector::class => [
             __DIR__.'/bootstrap/app.php',
         ],
-        __DIR__.'/database/migrations/old',
+        __DIR__.'/database/legacy-migrations',
         // These return tags carry project type aliases and array shapes that cannot
         // be expressed by the native array return type.
         RemoveReturnTagIncompatibleWithNativeTypeRector::class,
