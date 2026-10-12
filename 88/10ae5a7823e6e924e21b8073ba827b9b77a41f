@@ -1,0 +1,52 @@
+app/Actions/Allocations/CreateAllocations.php
+  s_4cabae41bceed9::t_0073102693d0f6 116-117
+app/Exceptions/Service/HasActiveServersException.php
+  s_4cabae41bceed9::t_325e7b1c03d471 9
+app/Exceptions/DisplayException.php
+  s_4cabae41bceed9::t_11c0e4777824b3 7,9-13
+app/Exceptions/Service/ServiceLimitExceededException.php
+  s_4cabae41bceed9::t_0a44c4c4eb7581 9-13
+bootstrap/app.php
+  s_4cabae41bceed9::t_6512d504aa4282 23-24
+  s_4cabae41bceed9::t_728e54cff013ab 121-124,135-138
+  s_488821bd68e9e0::t_536510c7811450 139
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_4cabae41bceed9::t_ae86cc845b74d7 11-12,16,20-21,26-29,31,34-37,40,61,68
+tests/Unit/Exceptions/Http/Connection/DaemonConnectionExceptionTest.php
+  s_4cabae41bceed9::t_b8fe7d415525db 7,13
+  s_4cabae41bceed9::t_0846f7828473bb 43-48
+tests/Integration/Api/Client/Server/ResourceUtilizationControllerTest.php
+  s_4cabae41bceed9::t_06a9f608d7d90d 8
+  s_4cabae41bceed9::t_0597e88eae1a8c 55-62
+app/Exceptions/Service/Location/HasActiveNodesException.php
+  s_4cabae41bceed9::t_cbad131097d4ea 9
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_4cabae41bceed9::t_da9e626930a355 103-113
+  s_4cabae41bceed9::t_bf1e0b67cc7e6e 9,12
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_4cabae41bceed9::t_72bb62a8418c4c 248-249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8810ae5a7823e6e924e21b8073ba827b9b77a41f",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

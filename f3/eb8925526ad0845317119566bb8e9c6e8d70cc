@@ -1,0 +1,68 @@
+app/Actions/Eggs/Sharing/ExportEgg.php
+  s_4cabae41bceed9::t_18df9fd2315d05 42
+  s_4cabae41bceed9::t_f1c737575761f2 15
+app/Actions/Eggs/Sharing/ImportEgg.php
+  s_4cabae41bceed9::t_b9cc786a8963ed 37-40
+  s_4cabae41bceed9::t_6df6a511715c88 13
+app/Data/EggImportData.php
+  s_4cabae41bceed9::t_0e321c75ab87cd 305
+  s_4cabae41bceed9::t_120ffd5304b2ed 181-193
+  s_4cabae41bceed9::t_4d8b0dc20c9e2b 334
+  s_4cabae41bceed9::t_ae854e6344a4a1 24
+  s_4cabae41bceed9::t_c88917efca38be 43
+  s_4cabae41bceed9::t_93a8e82290ece5 121
+  s_4cabae41bceed9::t_de1b57a0f8feda 13
+  s_488821bd68e9e0::t_bf46783a921e3f 180
+tests/Integration/Services/Eggs/EggImporterServiceTest.php
+  s_4cabae41bceed9::t_0cac8baeae7382 29-77
+  s_4cabae41bceed9::t_4fc8f1ae7f0863 9,12
+app/Models/Tag.php
+  s_4cabae41bceed9::t_320afa27f41ee4 63-72,77-84
+  s_4cabae41bceed9::t_8e1cba545b2b33 73-76
+  s_488821bd68e9e0::t_138ab9f3557542 62
+app/Actions/Tags/SyncTags.php
+  s_4cabae41bceed9::t_72e4f614608dcb 112,118,121
+  s_4cabae41bceed9::t_4f22a35020b2c2 102-103
+  s_4cabae41bceed9::t_56c07ac3d255dc 116-117
+  s_4cabae41bceed9::t_1a9109843144c6 119
+  s_4cabae41bceed9::t_29240e0cb2ecd4 7
+  s_4cabae41bceed9::t_188c0a513c8a72 84,86,91,96-99,105-106,108,115
+app/Actions/Eggs/Sharing/UpdateEggFromImport.php
+  s_4cabae41bceed9::t_a2e02caee1ed88 36-39
+  s_4cabae41bceed9::t_e34806ac3147c8 14
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_4cabae41bceed9::t_67c18b0524263e 30
+tests/Unit/Data/EggImportDataTest.php
+  s_4cabae41bceed9::t_7458d5a25c22c5 26-42
+tests/Integration/Api/Snapshots/AdminResponseSnapshotTest.php
+  s_4cabae41bceed9::t_d420b1c817e94b 162
+  s_4cabae41bceed9::t_4e3b1a1959d599 159
+tests/.pest/snapshots/Integration/Api/Snapshots/AdminResponseSnapshotTest/admin_api_responses_match_their_snapshots_with_data_set__dataset__write_eggs_import_tags__.snap
+  s_4cabae41bceed9::t_ddc31779987d89 1-3
+tests/.pest/snapshots/Integration/Api/Snapshots/AdminResponseSnapshotTest/admin_api_responses_match_their_snapshots_with_data_set__dataset__write_eggs_update_import_tags__.snap
+  s_4cabae41bceed9::t_5e22cd6b296bad 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f3eb8925526ad0845317119566bb8e9c6e8d70cc",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

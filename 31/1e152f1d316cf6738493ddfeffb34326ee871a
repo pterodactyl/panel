@@ -1,0 +1,93 @@
+app/Providers/HashidsServiceProvider.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 24
+config/database.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 53,61,78,86,132-133,136-137,151-152,155-156
+app/Actions/Files/ReadFileContents.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 17
+config/logging.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 37,72
+config/pterodactyl.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 41,44,60,63-64,67-69,82-83,116,135
+config/extensions.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 18,37
+tests/Integration/Providers/SettingsServiceProviderTest.php
+  s_4cabae41bceed9::t_c5efddbd2dae15 1-76
+app/Actions/Users/ToggleTwoFactor.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 46
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 127
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 51
+app/Services/Daemon/DaemonConnection.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 37-38
+config/hashids.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 15
+config/app.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 156
+config/cache.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 68
+config/hashing.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 33
+config/session.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 36,38,51,186,216
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 79,81
+tests/Integration/Services/Daemon/DaemonClientTest.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 105
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_4cabae41bceed9::t_4a5c47e598f934 107
+tests/Unit/Config/EnvironmentFlagsTest.php
+  s_4cabae41bceed9::t_d6790d9ba204ac 35-61
+config/mail.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 41
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 117-118
+app/Providers/AppServiceProvider.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 207
+tests/Unit/Actions/Files/ReadFilesTest.php
+  s_4cabae41bceed9::t_19c4f8aa4e9090 65-71
+app/Actions/Backups/PresignBackupUpload.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 75
+app/Providers/SettingsServiceProvider.php
+  s_4cabae41bceed9::t_a73604a2ace536 121,124-141
+  s_4cabae41bceed9::t_1d049d08870209 94-95
+  s_4cabae41bceed9::t_a624cce27b53e6 142
+config/backups.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 20,24,32-33,62-63
+config/addons.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 18
+config/filesystems.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 56
+config/activity.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 7,13
+app/Actions/Schedules/CreateScheduleTask.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 83
+config/http.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 18,21,24
+config/auth.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 132
+config/broadcasting.php
+  s_4cabae41bceed9::t_7fcddad7e0376c 40
+app/Models/ActivityLog.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 145
+app/Services/Extensions/ExtensionUrlDownloader.php
+  s_4cabae41bceed9::t_4a5c47e598f934 89
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_4cabae41bceed9::t_29cb4d603a10d2 61,67,76,79-81,86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "311e152f1d316cf6738493ddfeffb34326ee871a",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

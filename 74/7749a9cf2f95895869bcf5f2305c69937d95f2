@@ -1,0 +1,34 @@
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_4cabae41bceed9::t_30b4e2125b1eb7 12,28-29,42
+  s_4cabae41bceed9::t_25be22c9b5ef94 16
+app/Http/Resources/Api/Admin/ServerTransferResource.php
+  s_4cabae41bceed9::t_fba7f46200ce15 1-35
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_4cabae41bceed9::t_30b4e2125b1eb7 11,32-33,40
+  s_4cabae41bceed9::t_25be22c9b5ef94 14-15
+app/Http/Resources/Api/Admin/BackupResource.php
+  s_4cabae41bceed9::t_7e4db26cff4fb7 1-37
+app/Http/Resources/Api/Admin/ApiKeyResource.php
+  s_4cabae41bceed9::t_2d77dfcdc7aab1 1-55
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_4cabae41bceed9::t_792f44658f4687 18,25-26,44-45,52,59,73-74,84-85,93,100-101,116
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_4cabae41bceed9::t_25be22c9b5ef94 15
+  s_4cabae41bceed9::t_30b4e2125b1eb7 12,27,29,37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "747749a9cf2f95895869bcf5f2305c69937d95f2",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

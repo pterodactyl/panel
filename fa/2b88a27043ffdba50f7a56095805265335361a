@@ -1,0 +1,25 @@
+app/Actions/Tags/SyncTags.php
+  s_4cabae41bceed9::t_48882d1534f0e2 114
+  s_4cabae41bceed9::t_a2924efa8f9222 95-113,115-142
+  s_4cabae41bceed9::t_32af47eaa0248f 13,17
+  s_4cabae41bceed9::t_3b3beacb6e8f24 85
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_4cabae41bceed9::t_af2f6d5c3ba637 15
+  s_4cabae41bceed9::t_c5555212e9f72e 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fa2b88a27043ffdba50f7a56095805265335361a",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

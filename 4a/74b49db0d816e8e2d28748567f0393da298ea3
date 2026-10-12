@@ -1,0 +1,103 @@
+app/Models/Permission.php
+  s_4cabae41bceed9::t_55f976e7a0bf04 16
+app/Models/User.php
+  s_4cabae41bceed9::t_2a842f49f3d3aa 127
+app/Extensions/Scribe/Attributes/ResponseFromResource.php
+  s_4cabae41bceed9::t_3a709d7970ed9d 11-12
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_4cabae41bceed9::t_2c4ec30d0bd356 60
+app/Http/Resources/Api/Client/ClientResource.php
+  s_4cabae41bceed9::t_e6f4a6ac443311 10
+  s_4cabae41bceed9::t_6dc47d380533bd 58,62
+tests/Unit/Http/Resources/Api/ApiResourceTest.php
+  s_4cabae41bceed9::t_8aaa01bbee7469 282
+app/Extensions/Scribe/Attributes/ResponseField.php
+  s_4cabae41bceed9::t_ac28bb7594f401 11-12
+tests/Integration/Api/Snapshots/ClientResponseSnapshotTest.php
+  s_4cabae41bceed9::t_ab5649c583e174 12-13
+tests/Unit/Http/Resources/Api/Includes/IncludeSetTest.php
+  s_4cabae41bceed9::t_48a894a77d0d3d 13-62,64-65,67-71,75,78-79,81-126
+app/Models/Database.php
+  s_4cabae41bceed9::t_a9e6788cc36ad3 39
+app/Models/Node.php
+  s_4cabae41bceed9::t_130d2679796e15 74
+app/Exceptions/Resource/InvalidResourceLevelException.php
+  s_4cabae41bceed9::t_ee0bb2a52e468c 5-9
+tests/Unit/ArchTest.php
+  s_4cabae41bceed9::t_36f46b883fb19a 211-212
+app/Http/Resources/Api/Admin/AdminResource.php
+  s_4cabae41bceed9::t_5049e6de9fc1f4 9
+  s_4cabae41bceed9::t_e23a48b91b2cda 42,46
+app/Models/DatabaseHost.php
+  s_4cabae41bceed9::t_4bf2e79f894031 37
+app/Models/Tag.php
+  s_4cabae41bceed9::t_697ffd5eaa7313 45
+resources/scripts/api/relationships.ts
+  s_4cabae41bceed9::t_bd5bdae335c99b 1
+app/Http/Resources/Api/Application/ApplicationResource.php
+  s_4cabae41bceed9::t_507b6f0a55d217 9
+  s_4cabae41bceed9::t_a17574a6ad9364 58,62
+app/Models/EggVariable.php
+  s_4cabae41bceed9::t_9e48576d9d91f3 42
+tests/Architecture/OpenApiBaselineTest.php
+  s_4cabae41bceed9::t_882ec2922e5cb2 14
+app/Models/Location.php
+  s_4cabae41bceed9::t_4b771edfa2fff2 30
+app/Models/Schedule.php
+  s_4cabae41bceed9::t_28c0c59e1bb98a 60
+app/Models/ServerTransfer.php
+  s_4cabae41bceed9::t_848af4bfbdc9d1 38
+app/Models/ServerVariable.php
+  s_4cabae41bceed9::t_5d50f7949a3c06 25
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_6a000a65dc9853 40,527,529-530,562
+  s_4cabae41bceed9::t_2d53bfebcd96b1 1709,1715,1813
+  s_4cabae41bceed9::t_c67a39e29822ca 161,245,1959,1980
+  s_4cabae41bceed9::t_d69f19858f2116 163,1870
+  s_4cabae41bceed9::t_e2e7a798e3913d 261-262,269-271
+  s_4cabae41bceed9::t_2a559d30229ada 162,246,1978
+  s_4cabae41bceed9::t_e793a0e29379e2 186-187,191,199-200,204,207,222,236-237,240-242,247-249,840-841,845,847-848,2605,2613,2620,2625,2628,2634,2642,2646,2649
+  s_4cabae41bceed9::t_bed17c85210295 1707
+  s_4cabae41bceed9::t_671496fa4153ce 524-525,541,546-547,557
+  s_4cabae41bceed9::t_7201aeb9ba7584 2573
+tests/Integration/Api/Snapshots/ApplicationResponseSnapshotTest.php
+  s_4cabae41bceed9::t_0544e3a022fe8b 23-24
+app/Models/Server.php
+  s_4cabae41bceed9::t_abdd2ac9386993 128
+app/Models/ApiKey.php
+  s_4cabae41bceed9::t_bdfe93daabb1e1 85
+app/Models/Subuser.php
+  s_4cabae41bceed9::t_cb1006dc937dfa 36
+app/Models/Egg.php
+  s_4cabae41bceed9::t_67228e20cbc733 92
+tests/Integration/Api/Snapshots/AdminResponseSnapshotTest.php
+  s_4cabae41bceed9::t_01b0dc56d91ee5 28-29
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_4cabae41bceed9::t_e4b42d4bc4616b 68-70
+  s_4cabae41bceed9::t_50b31ef8b170d5 26-28,38-40
+  s_4cabae41bceed9::t_92f8c8c6a21613 80-81
+app/Models/Task.php
+  s_4cabae41bceed9::t_d03ea352cce053 49
+app/Models/Allocation.php
+  s_4cabae41bceed9::t_e6859d7461d725 59
+app/Models/Mount.php
+  s_4cabae41bceed9::t_9f57ee88a9118a 43
+composer.lock
+  s_4cabae41bceed9::t_52851118040fe7 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4a74b49db0d816e8e2d28748567f0393da298ea3",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

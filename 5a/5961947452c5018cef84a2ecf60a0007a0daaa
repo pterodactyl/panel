@@ -1,0 +1,66 @@
+app/Http/Resources/Api/ApiResourceCollection.php
+  s_4cabae41bceed9::t_f35ebae9540bf2 53,112
+  s_4cabae41bceed9::t_5aef921248b4e8 30
+  s_4cabae41bceed9::t_5714216d8240bb 1-17,19-29,31,33-37,39-44,46-52,55-100,109-110,113-127,130,136-172
+  s_4cabae41bceed9::t_8ffa46801cbd93 128-129,131,133-135
+  s_4cabae41bceed9::t_0c02d2e64b0086 18,32,38,45,54,101-108,111,132
+app/Http/Resources/Api/Includes/IncludedResource.php
+  s_4cabae41bceed9::t_ebaf2e6202d94c 1-19
+app/Http/Resources/Api/Application/ApplicationResource.php
+  s_4cabae41bceed9::t_5aef921248b4e8 24
+  s_4cabae41bceed9::t_1b8ef9d5473a4f 1-23,25-66
+app/Http/Resources/Api/Client/ClientResource.php
+  s_4cabae41bceed9::t_aa5ea4721cd4c1 1-25,27-66
+  s_4cabae41bceed9::t_5aef921248b4e8 26
+app/Http/Resources/Api/ApiResource.php
+  s_4cabae41bceed9::t_5aef921248b4e8 45,99,101,103,105,115,117,147,407
+  s_4cabae41bceed9::t_0d4547f8f80476 109-111,113,238,254,375-379
+  s_4cabae41bceed9::t_0c02d2e64b0086 14,146,148,351-358
+  s_4cabae41bceed9::t_852829cf645c73 1-13,15-44,46-98,100,102,104,106-108,112,114,116,118-145,149-237,239-252,255-350,359-374,380-406,408-414
+  s_4cabae41bceed9::t_f35ebae9540bf2 253
+app/Http/Resources/Api/Admin/AdminResource.php
+  s_4cabae41bceed9::t_5aef921248b4e8 22
+  s_4cabae41bceed9::t_97c35b6b8841e0 1-21,23-50
+tests/Unit/ArchTest.php
+  s_4cabae41bceed9::t_bf0ed0767a7b42 231
+  s_4cabae41bceed9::t_59105449dcab0d 232-235
+  s_4cabae41bceed9::t_6d753f2e7be151 43-44
+  s_4cabae41bceed9::t_434d2ab36faa92 19
+  s_4cabae41bceed9::t_7bed7d0ea8f9a2 21-24,27-34
+  s_4cabae41bceed9::t_a60b48d443c92a 238-239
+  s_4cabae41bceed9::t_97b228fe254254 210-230,236-237,240-247
+tests/Unit/Http/Resources/Api/ApiResourceTest.php
+  s_4cabae41bceed9::t_9f18f96281270f 1-293
+phpstan.neon
+  s_4cabae41bceed9::t_f35ebae9540bf2 84-85
+  s_4cabae41bceed9::t_43ee79c3e32c01 77-78,82-83
+  s_4cabae41bceed9::t_0d4547f8f80476 79-81
+app/Http/Resources/Api/NullResource.php
+  s_4cabae41bceed9::t_2f454d45214f75 1-29
+app/Http/Resources/Api/CallbackResource.php
+  s_4cabae41bceed9::t_0c02d2e64b0086 53
+  s_4cabae41bceed9::t_2ad37fea03c109 56-58,60-65
+  s_4cabae41bceed9::t_d0b010d02a4981 12
+  s_4cabae41bceed9::t_afc79a1cca592b 1-7,9-11,14-26,28-38,41-43,47,54-55,66-71,73-78
+  s_4cabae41bceed9::t_ed98fe0f8713a6 8,13,45
+  s_4cabae41bceed9::t_0d4547f8f80476 27,40,72
+  s_4cabae41bceed9::t_f35ebae9540bf2 39,44,46,48-52,59
+app/Http/Resources/Api/Concerns/BuildsResponse.php
+  s_4cabae41bceed9::t_a24d9c3a666b43 1-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5a5961947452c5018cef84a2ecf60a0007a0daaa",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

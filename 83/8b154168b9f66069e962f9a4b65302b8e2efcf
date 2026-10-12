@@ -1,0 +1,45 @@
+tools/phpstan/rules/extension.neon
+  s_4cabae41bceed9::t_a070524bbb5c18 30
+packages/sdk/README.md
+  s_4cabae41bceed9::t_49c7cf9fc2a593 580-585
+app/Actions/Mounts/AttachNodesToMount.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 12
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 13
+app/Validation/Concerns/ValidatesAllowedIps.php
+  s_4cabae41bceed9::t_c30edd4c909498 1-44
+app/Actions/Api/CreateAccountApiKey.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 13
+app/Actions/Transfers/InitiateTransfer.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 23
+app/Http/Requests/Concerns/ValidatesExtensionFields.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 19
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 13
+app/Actions/Mounts/AttachEggsToMount.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 12
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 13
+app/Validation/Concerns/ValidatesArrayExistence.php
+  s_4cabae41bceed9::t_c30edd4c909498 1-45
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_4cabae41bceed9::t_c30edd4c909498 11
+app/Actions/Api/CreateApiKey.php
+  s_4cabae41bceed9::t_49c7cf9fc2a593 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "838b154168b9f66069e962f9a4b65302b8e2efcf",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

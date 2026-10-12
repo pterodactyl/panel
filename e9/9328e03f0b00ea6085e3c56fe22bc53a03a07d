@@ -1,0 +1,48 @@
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_4cabae41bceed9::t_7427f6f90f6320 108
+  s_4cabae41bceed9::t_f806f90475fed2 136
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_4cabae41bceed9::t_c44d2846843980 10,57-59,63-66,73
+tests/Integration/Actions/Nodes/CreateNodeTest.php
+  s_4cabae41bceed9::t_3c3049feed0d5f 1-95
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_4cabae41bceed9::t_deb7dfe0116c7b 10,27-28,32,34,37
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_4cabae41bceed9::t_d050560a06bfad 8,27,29
+tests/Integration/Actions/Nodes/UpdateNodeTest.php
+  s_4cabae41bceed9::t_2975457393ace4 1-73
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_4cabae41bceed9::t_390a56a4d17053 98
+  s_4cabae41bceed9::t_3a599450a039ac 128
+app/Actions/Nodes/CreateNode.php
+  s_4cabae41bceed9::t_4963770c2cd9ef 50-52
+  s_4cabae41bceed9::t_2bbd7fe1475e7a 72
+  s_4cabae41bceed9::t_07c5916b117f0c 9,20-49,53-71,73-97,101,103,105-106,108,110
+app/Contracts/Nodes/CreatesNodes.php
+  s_4cabae41bceed9::t_97537b253e836e 12-15,17,19
+app/Contracts/Nodes/UpdatesNodes.php
+  s_4cabae41bceed9::t_a61cea2d9bcff0 13-14,16-22,26
+app/Http/Requests/Api/Admin/Nodes/UpdateNodeRequest.php
+  s_4cabae41bceed9::t_44eb1ab60cfe05 24,27
+app/Http/Requests/Api/Application/Nodes/UpdateNodeRequest.php
+  s_4cabae41bceed9::t_ba332195605b3b 12-13,17,20
+app/Actions/Nodes/UpdateNode.php
+  s_4cabae41bceed9::t_02edab258a079a 50
+  s_4cabae41bceed9::t_ecf996fb926c06 27,31,33-34,37-38,41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e99328e03f0b00ea6085e3c56fe22bc53a03a07d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

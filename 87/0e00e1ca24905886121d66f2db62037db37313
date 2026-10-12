@@ -1,0 +1,26 @@
+database/Factories/TagFactory.php
+  s_4cabae41bceed9::t_8a3b57f01b34f2 43
+database/Seeders/EggSeeder.php
+  s_4cabae41bceed9::t_b6195d5a0c3958 82-83
+  s_4cabae41bceed9::t_8b584b5bab0707 55-56,85-86,89-92
+tests/Integration/Database/EggSeederTest.php
+  s_4cabae41bceed9::t_e7e564c0204696 24,27,39-42,59-61
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_f41362363daf10 45,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "870e00e1ca24905886121d66f2db62037db37313",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

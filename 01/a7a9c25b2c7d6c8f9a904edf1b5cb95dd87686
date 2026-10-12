@@ -1,0 +1,99 @@
+tests/Fixtures/api/application/users.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-28
+tests/Fixtures/api/application/acl/without-servers.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-671
+tests/Fixtures/api/application/nodes/allocations.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1536
+tests/Fixtures/api/application/acl/without-locations.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-892
+tests/Fixtures/api/application/locations.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-490
+tests/Fixtures/api/application/servers/external.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-385
+tests/Fixtures/api/application/acl/without-nodes.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1208
+tests/Fixtures/api/application/extension-fields.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-486
+tests/Fixtures/api/application/nodes/deployable.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-468
+tests/Fixtures/api/application/nodes.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-704
+tests/Fixtures/api/application/servers/build.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-56
+tests/Fixtures/api/application/acl/without-allocations.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-752
+tests/Fixtures/api/application/tags.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-528
+tests/Fixtures/api/application/nodes.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-37
+tests/Fixtures/api/application/servers.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1235
+tests/Fixtures/api/application/servers/databases.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/application/users/external.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-148
+tests/Fixtures/api/application/users.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-25
+tests/Integration/Api/Fixtures/ApplicationApiFixturesTest.php
+  s_4cabae41bceed9::t_2006f22091a2af 1-260
+tests/Fixtures/api/application/acl/without-users.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-686
+tests/Fixtures/api/application/nodes.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-40
+tests/Fixtures/api/application/eggs.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-767
+tests/Fixtures/api/application/servers.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-56
+tests/Fixtures/api/application/locations.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-18
+tests/Fixtures/api/application/locations.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-445
+tests/Fixtures/api/application/nodes.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1040
+tests/Fixtures/api/application/servers/databases.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-126
+tests/Fixtures/api/application/users.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-388
+tests/Fixtures/api/application/servers.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1612
+tests/Fixtures/api/application/servers/startup.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-55
+tests/Fixtures/api/application/eggs.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1059
+tests/Fixtures/api/application/users.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-509
+tests/Fixtures/api/application/servers/databases.store.includes.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-44
+tests/Fixtures/api/application/acl/without-eggs.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-587
+tests/Fixtures/api/application/users.update.body-include.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-127
+tests/Fixtures/api/application/locations.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-21
+tests/Fixtures/api/application/tags.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-574
+tests/Fixtures/api/application/servers/details.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-56
+tests/Fixtures/api/application/servers/databases.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-200
+tests/Fixtures/api/application/acl/without-server-databases.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-566
+tests/Fixtures/api/application/acl/without-database-hosts.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-637
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "01a7a9c25b2c7d6c8f9a904edf1b5cb95dd87686",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

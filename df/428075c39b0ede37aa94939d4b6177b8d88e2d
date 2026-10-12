@@ -1,0 +1,49 @@
+app/Validation/AllocationRules.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 34
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_4cabae41bceed9::t_bbad93a16895bc 74
+  s_4cabae41bceed9::t_752e3ac006e303 23-36
+app/Support/JsonValueGuard.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 135,138,141-146,153
+app/Validation/DatabaseHostRules.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 19
+app/Validation/ServerRules.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 27-30,33
+app/Data/ServerCreationData.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 9,36-37,69-71
+app/Validation/NodeRules.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 24-27,29-30
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 9,40,42,135
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 52-53
+app/Http/Requests/Api/Remote/ReportBackupCompleteRequest.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 22
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 8,46,48,151
+app/Validation/DatabaseRules.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 17
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_4cabae41bceed9::t_7b345c6973c32c 49-58
+  s_4cabae41bceed9::t_2bab727e64e2c1 66
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_4cabae41bceed9::t_955f79e40af4c7 57-74
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_4cabae41bceed9::t_3eed5076cdbf3a 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "df428075c39b0ede37aa94939d4b6177b8d88e2d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

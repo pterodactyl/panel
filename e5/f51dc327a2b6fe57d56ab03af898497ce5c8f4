@@ -1,0 +1,74 @@
+app/Services/Servers/VariableValidatorService.php
+  s_4cabae41bceed9::t_3bb728e63c8c84 9,19-20,27,30,44
+app/Actions/Servers/UpdateServerStartup.php
+  s_4cabae41bceed9::t_6eb37d4185b765 80
+app/Services/Servers/ServerConfigurationStructureService.php
+  s_4cabae41bceed9::t_e4267182d64583 18-19,23,25-27,36,77-78,82,84-87,102
+app/Actions/Servers/UpdateServerBuild.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 89-90,92-93
+  s_4cabae41bceed9::t_36fdbd4b0c5926 91,94
+app/Http/Resources/Wings/ServerConfigurationCollection.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 41
+app/Http/Resources/Api/Admin/ServerResource.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 100,183
+app/Models/Server.php
+  s_4cabae41bceed9::t_c2272f636b06a2 12
+  s_4cabae41bceed9::t_b373539946bf83 245-289
+  s_4cabae41bceed9::t_dd060325f45e42 25
+app/Models/User.php
+  s_4cabae41bceed9::t_90f453698e6d24 187-205,207-208
+  s_4cabae41bceed9::t_c8600de1d3aebb 206
+  s_488821bd68e9e0::t_b0a271a930d0e6 186
+tests/Unit/EggConfigurationServiceTest.php
+  s_4cabae41bceed9::t_97907c3b813907 57
+app/Http/Resources/Api/Application/ServerResource.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 101,177
+tests/Integration/Services/Servers/VariableValidatorServiceTest.php
+  s_4cabae41bceed9::t_6eb37d4185b765 25,35,46,60,66,78,81,84
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 114
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 42,44,60,73
+tests/Unit/EnvironmentServiceTest.php
+  s_4cabae41bceed9::t_97907c3b813907 9,13,22-25,27,31,34,41,46-50,54-55,59-60
+app/Http/Resources/Api/Client/ServerResource.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 87,143
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 41,91,96,152,155
+app/Services/Servers/EnvironmentService.php
+  s_4cabae41bceed9::t_840e99ed509c63 29,34
+app/Services/Eggs/EggConfigurationService.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 95
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 39,44
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_6eb37d4185b765 107
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 26,30
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_4cabae41bceed9::t_5900f6cc161a8f 42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e5f51dc327a2b6fe57d56ab03af898497ce5c8f4",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

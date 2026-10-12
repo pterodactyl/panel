@@ -1,0 +1,45 @@
+app/Services/Tags/TagResolutionService.php
+  s_4cabae41bceed9::t_ea783d8756b02c 18-20
+tests/Integration/Actions/Tags/CreateTagTest.php
+  s_4cabae41bceed9::t_27ebe8d843e8fc 1-58
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_4cabae41bceed9::t_d181159a742ff0 7,23
+app/Actions/Tags/UpdateTag.php
+  s_4cabae41bceed9::t_ce004296e1f1fe 15-17,19,23,27
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_4cabae41bceed9::t_997c32bfd79c21 7,24,28,33,35
+app/Contracts/Tags/CreatesTags.php
+  s_4cabae41bceed9::t_6e7ded32ca34c8 12,14,16
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_4cabae41bceed9::t_b4256fa57abdc5 100,130
+tests/Integration/Actions/Tags/UpdateTagTest.php
+  s_4cabae41bceed9::t_4b4af2f29b61f5 1-68
+app/Contracts/Tags/UpdatesTags.php
+  s_4cabae41bceed9::t_cf5cc3a85734ae 13-16,18,22
+tests/Integration/Actions/Tags/SyncTagsTest.php
+  s_4cabae41bceed9::t_42d98c5312d89c 1-76
+app/Actions/Tags/SyncTags.php
+  s_4cabae41bceed9::t_0033ff48c1de9f 9-10,20-27,30-61,64,67,70,73,76
+app/Contracts/Tags/SyncsTags.php
+  s_4cabae41bceed9::t_7bfb7746d8f3cd 10-15,18,21-25,28-32
+app/Actions/Tags/CreateTag.php
+  s_4cabae41bceed9::t_2a28ea3d20c4ea 7-8,11,16-18,20,22,24-67
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_4cabae41bceed9::t_02b22a997076fe 7,27-29,35-36,47-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d006674f6d76da744ff9f905da5e79cb82ffed78",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

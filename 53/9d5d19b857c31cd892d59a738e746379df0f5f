@@ -1,0 +1,32 @@
+app/Contracts/Eggs/ImportsEggs.php
+  s_4cabae41bceed9::t_ec127dd0b94f8e 8
+app/Actions/Eggs/Sharing/ImportEgg.php
+  s_4cabae41bceed9::t_e408bdc14ce596 10
+app/Data/EggImportData.php
+  s_4cabae41bceed9::t_1acb110cff4797 5
+app/Data/EggImportVariable.php
+  s_4cabae41bceed9::t_b2d2c554861326 5
+tests/Unit/Data/EggImportDataTest.php
+  s_4cabae41bceed9::t_edad84785c060c 5-8
+  s_4cabae41bceed9::t_c438ae35a659f2 37
+app/Actions/Eggs/Sharing/ImportCatalogEgg.php
+  s_4cabae41bceed9::t_f9bfcbc7db5880 10
+app/Actions/Eggs/Sharing/UpdateEggFromImport.php
+  s_4cabae41bceed9::t_f8cff619ec5e47 10-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "539d5d19b857c31cd892d59a738e746379df0f5f",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

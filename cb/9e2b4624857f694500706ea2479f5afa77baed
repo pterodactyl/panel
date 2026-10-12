@@ -1,0 +1,51 @@
+tests/Integration/Actions/Tags/UpdateTagTest.php
+  s_4cabae41bceed9::t_e3a145c4555a3b 59-66
+tests/Integration/Api/Application/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_6d1f5fc5ac8813 40-45
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_4cabae41bceed9::t_8e9bfdcffc8c1b 25-26,33
+  s_4cabae41bceed9::t_6d1f5fc5ac8813 24,27-32,34
+tests/Fixtures/openapi/baseline.yaml
+  s_4cabae41bceed9::t_e8877707c7cec2 7487-7489,7822-7824,12589-12595,14941-14947
+tests/Integration/Api/Snapshots/ApplicationResponseSnapshotTest.php
+  s_4cabae41bceed9::t_8e9bfdcffc8c1b 135-139
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_4cabae41bceed9::t_33762bfe58f349 29,51,60
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_e3a145c4555a3b 48-56
+app/Http/Controllers/Api/Application/Tags/TagController.php
+  s_4cabae41bceed9::t_33762bfe58f349 18,32,39
+app/Actions/Tags/UpdateTag.php
+  s_4cabae41bceed9::t_0b41139203e88c 22-26
+  s_4cabae41bceed9::t_b353858c047e3e 8
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_e8877707c7cec2 4472-4476,4855-4859,9233-9236,11330-11333
+resources/scripts/api/generated/index.ts
+  s_4cabae41bceed9::t_e8877707c7cec2 5
+tests/Integration/Api/Snapshots/AdminResponseSnapshotTest.php
+  s_4cabae41bceed9::t_8e9bfdcffc8c1b 107-111,213
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_e8877707c7cec2 4064-4067,4362-4365,8138-8141,9985-9988
+tests/.pest/snapshots/Integration/Api/Snapshots/AdminResponseSnapshotTest/admin_api_responses_match_their_snapshots_with_data_set__dataset__eggs_index_tag_filter__.snap
+  s_4cabae41bceed9::t_387fb8e71a550a 1-11
+tests/.pest/snapshots/Integration/Api/Snapshots/AdminResponseSnapshotTest/admin_api_responses_match_their_snapshots_with_data_set__dataset__write_tags_update_built_in_slug__.snap
+  s_4cabae41bceed9::t_ae70094b29a3f6 1-3
+tests/.pest/snapshots/Integration/Api/Snapshots/ApplicationResponseSnapshotTest/application_api_responses_match_their_snapshots_with_data_set__dataset__tags_index_legacy_nest_filter__.snap
+  s_4cabae41bceed9::t_e6b4fffc59a8ca 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cb9e2b4624857f694500706ea2479f5afa77baed",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

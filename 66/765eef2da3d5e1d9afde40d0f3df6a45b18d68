@@ -1,0 +1,47 @@
+phpstan.neon
+  s_4cabae41bceed9::t_68836f7b329abd 50
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 92,119
+app/Http/Requests/Api/Application/Locations/StoreLocationRequest.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 8,29
+app/Actions/Locations/CreateLocation.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 8-9,20-21,23,25,27-55,57-58
+app/Http/Requests/Api/Admin/Locations/StoreLocationRequest.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 8,30
+app/Actions/Locations/UpdateLocation.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 18,20,22-23,25-26
+app/Contracts/Locations/UpdatesLocations.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 12-13,15,17
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_4cabae41bceed9::t_ed6e57c65f5998 33-34
+  s_4cabae41bceed9::t_7c694b8a06a39b 10,28-32
+tests/Integration/Actions/Locations/CreateLocationTest.php
+  s_4cabae41bceed9::t_009bdb7d0a3924 1-35
+app/Http/Requests/Concerns/ValidatesExtensionFields.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 41-49
+  s_4cabae41bceed9::t_6008dae2ef1a0a 40
+app/Http/Requests/Api/Admin/Locations/UpdateLocationRequest.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 7,25
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 7,19
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 94,116
+app/Contracts/Locations/CreatesLocations.php
+  s_4cabae41bceed9::t_7c694b8a06a39b 12-13,15,17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "66765eef2da3d5e1d9afde40d0f3df6a45b18d68",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

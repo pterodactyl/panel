@@ -1,0 +1,27 @@
+app/Extensions/Illuminate/Auth/Passwords/PasswordBroker.php
+  s_4cabae41bceed9::t_cb1e1b40b42cd3 11
+  s_4cabae41bceed9::t_765187090e47be 26,44,52
+app/Services/Extensions/ExtensionHeadTag.php
+  s_4cabae41bceed9::t_765187090e47be 101,104-105
+app/Services/Extensions/ExtensionUrlDownloader.php
+  s_4cabae41bceed9::t_cb1e1b40b42cd3 10
+  s_4cabae41bceed9::t_765187090e47be 131,151
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_765187090e47be 288
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f109450185e3eb4634668bec389013104776f077",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

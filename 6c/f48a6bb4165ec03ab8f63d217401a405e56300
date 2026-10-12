@@ -1,0 +1,89 @@
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_4cabae41bceed9::t_bfe672d9eaaeaf 76-88
+app/Actions/Eggs/UpdateEgg.php
+  s_4cabae41bceed9::t_327f9945c1971c 18,20,22,24-25,29,31-32
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_4cabae41bceed9::t_ef07e7d7d023b6 8,28,35
+app/Actions/Eggs/CreateEgg.php
+  s_4cabae41bceed9::t_f96af60d9af6ae 9-10,13,20-27,30-62,67-114,118,120,122-123,125,127,135-150
+  s_4cabae41bceed9::t_9fb80dc384df86 63-66
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_4cabae41bceed9::t_f17043624bd6d1 58,79
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_4cabae41bceed9::t_6dc6bf6128abde 8,30,41-45,52-55
+tests/Integration/Actions/Eggs/Variables/CreateEggVariableTest.php
+  s_4cabae41bceed9::t_8f34fa99d7d8c8 58
+  s_4cabae41bceed9::t_676b69f66da317 48,51
+  s_4cabae41bceed9::t_c8a5fa17941749 1-44,46-47,49-50,52-57,59-71
+  s_4cabae41bceed9::t_bf0ecbb8dd94a8 45
+app/Actions/Eggs/Variables/UpdateEggVariable.php
+  s_4cabae41bceed9::t_a44acd1f4041b1 8,14,16,18,20-22
+tests/Integration/Actions/Eggs/CreateEggTest.php
+  s_4cabae41bceed9::t_51dc7d01fae6b3 1-105
+app/Contracts/Eggs/UpdatesEggs.php
+  s_4cabae41bceed9::t_44cbbed5800f49 12-16,18,20
+app/Http/Requests/Api/Admin/Eggs/Variables/UpdateVariableRequest.php
+  s_4cabae41bceed9::t_6d53b75dff5044 7,9,19-25,27
+tests/Integration/Actions/Eggs/Variables/ReorderEggVariablesTest.php
+  s_4cabae41bceed9::t_0cc3322cd3ae7e 16,21-22,25,30-36
+  s_4cabae41bceed9::t_c3b0a6e41d1983 1-15,17-20,23-24,26-29,37-51
+tests/Integration/Actions/Eggs/Scripts/UpdateInstallScriptTest.php
+  s_4cabae41bceed9::t_60522a32d8e16a 1-78
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_4cabae41bceed9::t_ad68b160724862 13-15,17,21
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_4cabae41bceed9::t_d44c38702514fd 7,25,28-32,35-37
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_e0542c2fc95122 8-9,13,233-236,240-242,244-265
+  s_4cabae41bceed9::t_c3a05dfda72ead 237-239
+  s_4cabae41bceed9::t_f46d6a70b5b61a 243,284
+  s_4cabae41bceed9::t_d1588eb9760a19 266-267
+tests/Integration/Actions/Eggs/UpdateEggTest.php
+  s_4cabae41bceed9::t_f28281b6a6d682 18-26,49,53,55-64,70-72,85,89-92
+  s_4cabae41bceed9::t_8ae5f6b2d94b1a 1-17,27-47,50-52,54,65-69,73-84,86-88,93
+  s_4cabae41bceed9::t_7caa2204e50354 48
+tests/Integration/Actions/Eggs/Variables/UpdateEggVariableTest.php
+  s_4cabae41bceed9::t_f54e00c4cf6d44 1-67
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_4cabae41bceed9::t_ed4983515c6b05 12-16,18,20
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_4cabae41bceed9::t_1359efbdb3d984 7,25
+app/Actions/Eggs/Variables/ReorderEggVariables.php
+  s_4cabae41bceed9::t_83cbace520f6bc 8-9,15-42,45-46
+app/Contracts/Eggs/ReordersEggVariables.php
+  s_4cabae41bceed9::t_674c316fe0edb7 11-17
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_4cabae41bceed9::t_f17043624bd6d1 93,118
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_4cabae41bceed9::t_d15405837b34f2 7,26
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_4cabae41bceed9::t_9b9044c4d5b16d 58-72
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_4cabae41bceed9::t_f17043624bd6d1 60
+app/Actions/Eggs/Variables/CreateEggVariable.php
+  s_4cabae41bceed9::t_07dac9eb54c15d 7-8,12-13,18-21,23,25,27-75
+app/Contracts/Eggs/CreatesEggs.php
+  s_4cabae41bceed9::t_27e4f6a74bd165 12-16,18,20
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_4cabae41bceed9::t_50056b37d18e2e 7,14-66,70,74,76-78,83
+app/Rules/DockerImageList.php
+  s_4cabae41bceed9::t_ef07e7d7d023b6 11,50
+app/Contracts/Eggs/CreatesEggVariables.php
+  s_4cabae41bceed9::t_21a25306fff440 13-16,18,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6cf48a6bb4165ec03ab8f63d217401a405e56300",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_4cabae41bceed9::t_412831670f6e68 79
+  s_4cabae41bceed9::t_ba5b0fd8acf11b 11
+app/Services/Acl/Api/AdminAcl.php
+  s_4cabae41bceed9::t_412831670f6e68 7,65
+app/Services/Activity/ActivityLogFacetService.php
+  s_4cabae41bceed9::t_412831670f6e68 23,25-26,47
+  s_4cabae41bceed9::t_862b222e174fc7 24
+app/Services/Extensions/ExtensionSettings.php
+  s_4cabae41bceed9::t_ba5b0fd8acf11b 9
+  s_4cabae41bceed9::t_412831670f6e68 212,240,249,251
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_4cabae41bceed9::t_412831670f6e68 175,179,182,199,203,206,222,226,229
+app/Extensions/Illuminate/Auth/Passwords/DatabaseTokenRepository.php
+  s_4cabae41bceed9::t_412831670f6e68 23,25,31
+  s_4cabae41bceed9::t_ba5b0fd8acf11b 9
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_4cabae41bceed9::t_412831670f6e68 65
+app/Models/Egg.php
+  s_4cabae41bceed9::t_412831670f6e68 163
+app/Models/Node.php
+  s_4cabae41bceed9::t_ba5b0fd8acf11b 20
+  s_4cabae41bceed9::t_412831670f6e68 297,305,341-344
+app/Models/Server.php
+  s_4cabae41bceed9::t_412831670f6e68 310
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a3884101117fd46f7d5fa65d717268d26a8503ac",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

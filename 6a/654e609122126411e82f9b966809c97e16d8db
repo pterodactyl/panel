@@ -1,0 +1,57 @@
+tests/Integration/Api/Application/Nodes/NodeDeploymentControllerTest.php
+  s_4cabae41bceed9::t_e8109fd6c2a94f 42-52,59-70,73-74,76-87
+  s_4cabae41bceed9::t_cefdd282d43361 7,10
+  s_4cabae41bceed9::t_18f3bee9abf689 53-58,71-72,75
+resources/scripts/api/generated/index.ts
+  s_4cabae41bceed9::t_e9750916e770b7 5
+tests/Fixtures/openapi/baseline.yaml
+  s_4cabae41bceed9::t_db2a9b94cbac1e 5720,7676-7683,14143-14156
+  s_4cabae41bceed9::t_03055ed6cbb0db 4386
+tests/Integration/Api/Snapshots/ApplicationResponseSnapshotTest.php
+  s_4cabae41bceed9::t_6bdd86c2639f96 103-110
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_03055ed6cbb0db 1613-1615
+  s_4cabae41bceed9::t_e9750916e770b7 2799,4235-4242,9367-9374
+app/Http/Requests/Api/Application/Nodes/GetDeployableNodesRequest.php
+  s_4cabae41bceed9::t_0af83d629c2a34 45
+  s_4cabae41bceed9::t_14910b8c4d4125 7-10,13-14,27-29,33-38,55-56,61-64
+  s_4cabae41bceed9::t_7a0de08fa84c67 39-40
+  s_4cabae41bceed9::t_25bc55e54a3f93 65
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_4cabae41bceed9::t_ef643e23d9b341 53-54,113
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_03055ed6cbb0db 1776-1778
+  s_4cabae41bceed9::t_e9750916e770b7 3009,4694-4703,10635-10642
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_4cabae41bceed9::t_e9750916e770b7 30-33
+  s_4cabae41bceed9::t_f31e51b72ec98c 58
+  s_4cabae41bceed9::t_a142b379afb114 75
+  s_4cabae41bceed9::t_02d8986310abf3 97
+  s_4cabae41bceed9::t_178eae0907c989 13-18
+  s_4cabae41bceed9::t_f3ca8c0f1c3075 34
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_4cabae41bceed9::t_ef643e23d9b341 19,88
+  s_4cabae41bceed9::t_03055ed6cbb0db 9
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_4cabae41bceed9::t_e9750916e770b7 46-47
+  s_4cabae41bceed9::t_54a4ce98a98c77 18
+  s_4cabae41bceed9::t_1f91c606eb0cd8 59-63
+tests/.pest/snapshots/Integration/Api/Snapshots/ApplicationResponseSnapshotTest/application_api_responses_match_their_snapshots_with_data_set__dataset__nodes_deployable_tags__.snap
+  s_4cabae41bceed9::t_cd2706b4577970 1-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6a654e609122126411e82f9b966809c97e16d8db",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

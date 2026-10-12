@@ -1,0 +1,23 @@
+app/Services/Acl/Api/AdminAcl.php
+  s_4cabae41bceed9::t_4601750e54c9e3 52,56
+tests/Unit/Services/Acl/Api/AdminAclTest.php
+  s_4cabae41bceed9::t_ff392cefbefc86 16
+app/Http/Controllers/Api/Admin/Nodes/BulkDeleteAllocationsController.php
+  s_4cabae41bceed9::t_f0c99c3a0945b8 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e98e9e2bae1eb15101abd65bdd2291c38eec97ca",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

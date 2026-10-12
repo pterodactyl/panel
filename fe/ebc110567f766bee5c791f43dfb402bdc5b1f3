@@ -1,0 +1,66 @@
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_5c2a9d7f58b9f5 158-163,173-190
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_4cabae41bceed9::t_8bbd347bd9343e 502
+  s_4cabae41bceed9::t_c2f1985fb8bfd0 559
+resources/scripts/extensions/loader.spec.ts
+  s_4cabae41bceed9::t_794c085c4cd14f 65-81
+resources/scripts/extensions/loader.ts
+  s_4cabae41bceed9::t_b05168eb513f35 47-50,55-59,66-70
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_4cabae41bceed9::t_71658169307e3a 268-290
+app/Http/Requests/Api/Client/Servers/Schedules/StoreScheduleRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 47,53
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_4cabae41bceed9::t_a3a028793800d2 30
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 127
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 72
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 108
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 74
+app/Http/Requests/Api/Client/Servers/Backups/StoreBackupRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 41
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_4cabae41bceed9::t_fb779faf99d3b9 46-54
+  s_4cabae41bceed9::t_1f35260a6ad680 79-80
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_a3a028793800d2 390-397
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 72
+tests/Integration/Api/Client/Server/Schedule/CreateServerScheduleTest.php
+  s_4cabae41bceed9::t_c2e2fc540f6001 50-58
+app/Http/Requests/Api/Client/Servers/Backups/RestoreBackupRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 32
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 9,33-45
+  s_4cabae41bceed9::t_6b17b8d604015a 46
+app/Http/Requests/Api/Remote/ReportBackupRestoreRequest.php
+  s_4cabae41bceed9::t_a3a028793800d2 32
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_4cabae41bceed9::t_4c39328e9db446 100-103
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_4cabae41bceed9::t_a3a028793800d2 60
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_4cabae41bceed9::t_43bddd2cdfc355 64-70
+app/Http/ViewComposers/AssetComposer.php
+  s_4cabae41bceed9::t_63107ecb0892dd 49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "feebc110567f766bee5c791f43dfb402bdc5b1f3",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

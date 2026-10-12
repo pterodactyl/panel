@@ -1,0 +1,104 @@
+app/Services/Daemon/NodeClient.php
+  s_4cabae41bceed9::t_33d46ea494521e 19,26
+app/Console/Commands/UpgradeCommand.php
+  s_4cabae41bceed9::t_acc59d955223e6 49-50,62,69-70,80,87-88
+  s_4cabae41bceed9::t_720329abc43260 15
+app/Actions/Users/ToggleTwoFactor.php
+  s_4cabae41bceed9::t_0a1cc90ad8007f 21,44-45
+app/Actions/Files/PullFile.php
+  s_4cabae41bceed9::t_720329abc43260 14
+app/Services/Helpers/AssetHashService.php
+  s_4cabae41bceed9::t_4e1bc01ded94c7 10
+  s_4cabae41bceed9::t_6dc4423c1d3c62 209-211
+app/Extensions/Illuminate/Auth/Passwords/PasswordBroker.php
+  s_4cabae41bceed9::t_720329abc43260 15,44-47
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 238,268,298,313
+app/Actions/Activity/IngestActivityLogs.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 23,69
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_08ecf3eedd74e2 107,112,118,125
+  s_4cabae41bceed9::t_28fac270947595 106,111
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_4cabae41bceed9::t_720329abc43260 67,69
+app/Services/Daemon/FilesClient.php
+  s_4cabae41bceed9::t_720329abc43260 120,126-128,132-133
+app/Traits/Helpers/AvailableLanguages.php
+  s_4cabae41bceed9::t_07973de78efff5 22
+app/Console/Commands/User/DeleteUserCommand.php
+  s_4cabae41bceed9::t_acc59d955223e6 21
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_4cabae41bceed9::t_acc59d955223e6 24,27,30
+app/Console/Commands/User/MakeUserCommand.php
+  s_4cabae41bceed9::t_acc59d955223e6 25-26,32,34,37,41
+app/Transformers/Api/Admin/EggTransformer.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 127
+app/Models/User.php
+  s_4cabae41bceed9::t_c1661c659d5015 13,52,57,59,62,64
+  s_4cabae41bceed9::t_c34054efa4e4b7 168
+  s_4cabae41bceed9::t_07973de78efff5 172-173,175
+app/Models/Node.php
+  s_4cabae41bceed9::t_720329abc43260 341-343
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_4cabae41bceed9::t_c1661c659d5015 14,44
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_4e1bc01ded94c7 36
+  s_4cabae41bceed9::t_6dc4423c1d3c62 111-115
+app/Actions/Servers/UpdateServerStartup.php
+  s_4cabae41bceed9::t_4e1bc01ded94c7 19
+  s_4cabae41bceed9::t_6dc4423c1d3c62 77-81
+app/Http/Resources/Api/Admin/ServerDatabaseResource.php
+  s_4cabae41bceed9::t_0a1cc90ad8007f 71
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_4cabae41bceed9::t_0a1cc90ad8007f 28,117-118
+app/Http/Resources/Api/Client/DatabaseResource.php
+  s_4cabae41bceed9::t_0a1cc90ad8007f 76
+app/Data/EggCatalogEntry.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 26,31
+  s_4cabae41bceed9::t_c1661c659d5015 27-28
+app/Contracts/Files/PullsFiles.php
+  s_4cabae41bceed9::t_720329abc43260 11
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_4cabae41bceed9::t_8c4070838f9fc9 20,64-65
+  s_4cabae41bceed9::t_0a1cc90ad8007f 69
+  s_4cabae41bceed9::t_7844c47fea252e 66
+app/Services/Acl/Api/AdminAcl.php
+  s_4cabae41bceed9::t_720329abc43260 64-66
+app/Services/Helpers/SoftwareVersionService.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 95-97
+app/Data/LoginResult.php
+  s_4cabae41bceed9::t_b28ab62ba3e98d 35
+app/Services/Daemon/DaemonConnection.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 59-60
+  s_4cabae41bceed9::t_ffadea5c3b3047 61
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_4cabae41bceed9::t_8c4070838f9fc9 30,75-76
+  s_4cabae41bceed9::t_0a1cc90ad8007f 81
+  s_4cabae41bceed9::t_1d5ce077f2d0a5 77
+app/Services/Extensions/ExtensionJobProgress.php
+  s_4cabae41bceed9::t_f7160d37109f7c 13,52
+app/Http/Resources/Api/Includes/IncludeSet.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 33-34
+  s_4cabae41bceed9::t_4e1bc01ded94c7 8
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 43
+tests/Unit/Http/Resources/Api/Includes/IncludeSetTest.php
+  s_4cabae41bceed9::t_6dc4423c1d3c62 62-63
+  s_4cabae41bceed9::t_4e1bc01ded94c7 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "987eab6f720cebe5bb07d6377b85228125ebf64c",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,543 @@
+app/Transformers/Api/Client/UserTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Actions/Backups/CompleteBackup.php
+  s_4cabae41bceed9::t_cb63104f1482e9 52,77
+app/Contracts/Files/PullsFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 11
+app/Actions/Databases/DeployServerDatabase.php
+  s_4cabae41bceed9::t_cb63104f1482e9 47,63
+app/Contracts/Users/CreatesUsers.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22
+app/Extensions/Scribe/Attributes/ResponseFromTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+  s_4cabae41bceed9::t_f62deed88fcf18 18-20
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 88,117,135,202
+app/Actions/Schedules/CreateScheduleTask.php
+  s_4cabae41bceed9::t_cb63104f1482e9 46,71
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 64,84,117,136
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Services/Daemon/DaemonConnection.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+  s_4cabae41bceed9::t_f62deed88fcf18 55
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29,56
+app/Actions/Api/UpdateApiKey.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16-17,37
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 53,78,120,168,192,215
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 40,67,80
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41,51
+app/Http/Controllers/Api/Admin/Eggs/ReorderVariablesController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Contracts/Nodes/UpdatesNodes.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 53,104,144
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 117,260
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39,54
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 62
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 56
+app/Actions/Schedules/CreateSchedule.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41,73
+app/Http/Resources/Api/Application/EggVariableResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22
+  s_4cabae41bceed9::t_f62deed88fcf18 26
+app/Contracts/Api/UpdatesApiKeys.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16-17
+app/Extensions/League/Fractal/Serializers/PterodactylSerializer.php
+  s_4cabae41bceed9::t_bd1999572c82c3 7,71
+  s_4cabae41bceed9::t_cb63104f1482e9 15-16,29-30,61-63
+phpstan.neon
+  s_4cabae41bceed9::t_cb63104f1482e9 17,19,25,28-29,31-32,38-39,42
+  s_4cabae41bceed9::t_f62deed88fcf18 30,35
+app/Actions/Api/CreateAccountApiKey.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41
+app/Actions/Eggs/CreateEgg.php
+  s_4cabae41bceed9::t_cb63104f1482e9 67,117
+app/Http/Requests/Api/ApiRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 31
+  s_4cabae41bceed9::t_f62deed88fcf18 35
+app/Actions/Files/RenameFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 14
+tests/Unit/WingsJsonResponseTest.php
+  s_4cabae41bceed9::t_f62deed88fcf18 17
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_4cabae41bceed9::t_cb63104f1482e9 221
+app/Transformers/Api/Admin/SubuserTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Actions/Files/CompressFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 15
+app/Contracts/Databases/CreatesDatabaseHosts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Contracts/Allocations/CreatesAllocations.php
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Services/Servers/VariableValidatorService.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29
+app/Actions/Nodes/UpdateNode.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Contracts/Databases/DeploysServerDatabases.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Services/Activity/ActivityLogBatchService.php
+  s_4cabae41bceed9::t_595384945918ca 55
+app/Extensions/Scribe/Attributes/ResponseFromResource.php
+  s_4cabae41bceed9::t_f62deed88fcf18 24-26
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Transformers/Api/Application/LocationTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+  s_4cabae41bceed9::t_f62deed88fcf18 42
+app/Actions/Subusers/CreateSubuser.php
+  s_4cabae41bceed9::t_cb63104f1482e9 49
+app/Transformers/Api/Client/SubuserTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 40
+app/Transformers/Api/Client/EggTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Transformers/Api/Admin/ServerTransferTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Contracts/Tags/CreatesTags.php
+  s_4cabae41bceed9::t_cb63104f1482e9 14
+app/Contracts/Files/ChangesFilePermissions.php
+  s_4cabae41bceed9::t_f62deed88fcf18 11
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 36
+  s_4cabae41bceed9::t_f62deed88fcf18 57
+app/Contracts/Schedules/CreatesScheduleTasks.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Http/Controllers/Api/Application/Users/ExternalUserController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Services/Daemon/FilesClient.php
+  s_4cabae41bceed9::t_f62deed88fcf18 67,82,91,115,123
+app/Transformers/Api/Application/AllocationTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 40
+app/Http/Controllers/Api/Admin/Eggs/UpdateImportEggController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 26
+app/Contracts/Databases/UpdatesDatabaseHosts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Actions/Files/DeleteFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 14
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 91
+app/Actions/Schedules/UpdateSchedule.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Contracts/Tags/SyncsTags.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18,24,31
+app/Transformers/Api/Application/UserTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 41
+  s_4cabae41bceed9::t_cb63104f1482e9 37
+app/Actions/Nodes/CreateNode.php
+  s_4cabae41bceed9::t_cb63104f1482e9 54,101
+app/Http/Controllers/Api/Admin/Users/ExternalController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Exceptions/Service/Allocation/InvalidPortMappingException.php
+  s_4cabae41bceed9::t_cb63104f1482e9 11
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 53
+app/Transformers/Api/Application/EggTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 63
+  s_4cabae41bceed9::t_f62deed88fcf18 74
+app/Transformers/Api/Client/ServerTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 65
+app/Contracts/Mounts/AttachesEggsToMounts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Actions/Servers/UpdateServerDetails.php
+  s_4cabae41bceed9::t_cb63104f1482e9 46,62
+app/Transformers/Api/Client/BackupTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Contracts/Locations/UpdatesLocations.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 56
+app/Extensions/Filesystem/S3Filesystem.php
+  s_4cabae41bceed9::t_cb63104f1482e9 13
+app/Contracts/Servers/UpdatesServerDetails.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28
+app/Http/Controllers/Api/Client/AccountController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 50
+app/Transformers/Api/Application/ServerDatabaseTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39
+app/Actions/Users/CreateUser.php
+  s_4cabae41bceed9::t_cb63104f1482e9 64,122
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Actions/Users/UpdateUser.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_cb63104f1482e9 85,151
+app/Actions/Activity/IngestActivityLogs.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24,53,85
+app/Http/Controllers/Api/Admin/Locations/EligibleNodesController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 25
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 94
+app/Services/Activity/ActivityLogService.php
+  s_4cabae41bceed9::t_bd1999572c82c3 111
+  s_4cabae41bceed9::t_cb63104f1482e9 108-109
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 46,64
+app/Actions/Files/PullFile.php
+  s_4cabae41bceed9::t_f62deed88fcf18 14
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_cb63104f1482e9 57
+app/Contracts/Backups/CompletesBackups.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Contracts/Schedules/CreatesSchedules.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16
+app/Http/Requests/Concerns/ValidatesExtensionFields.php
+  s_4cabae41bceed9::t_cb63104f1482e9 43
+app/Services/Servers/EnvironmentService.php
+  s_4cabae41bceed9::t_6723e821e2699d 14,20-21,32,124,126
+app/Transformers/Api/Admin/TagTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Http/Resources/Api/Client/DatabaseResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 37
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28
+app/Contracts/Locations/CreatesLocations.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Http/Controllers/Api/Admin/Servers/BuildController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 26
+app/Models/Objects/DeploymentObject.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23,66,74
+app/Actions/Eggs/Variables/UpdateEggVariable.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 50,126
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 26
+tests/Support/Fakes/FakeDaemonHttpClient.php
+  s_4cabae41bceed9::t_f62deed88fcf18 47
+app/Contracts/Servers/UpdatesServerStartup.php
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Contracts/Files/RenamesFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 11
+app/Actions/Databases/CreateDatabaseHost.php
+  s_4cabae41bceed9::t_cb63104f1482e9 44,69
+app/Transformers/Api/Admin/LocationTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 35
+  s_4cabae41bceed9::t_cb63104f1482e9 31
+app/Support/JsonValueGuard.php
+  s_4cabae41bceed9::t_f62deed88fcf18 27,79,81
+  s_4cabae41bceed9::t_cb63104f1482e9 53,64,107,119
+  s_4cabae41bceed9::t_bd1999572c82c3 11,19
+app/Transformers/Api/Client/ApiKeyTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41
+app/Http/Resources/Wings/ServerConfigurationCollection.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29
+app/Contracts/Servers/CreatesServers.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Http/Resources/Api/Application/ServerVariableResource.php
+  s_4cabae41bceed9::t_f62deed88fcf18 39
+  s_4cabae41bceed9::t_cb63104f1482e9 35
+app/Http/Controllers/Base/LocaleController.php
+  s_4cabae41bceed9::t_f62deed88fcf18 60-61
+app/Contracts/Mounts/AttachesNodesToMounts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Transformers/Api/Admin/BackupTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Contracts/Schedules/UpdatesSchedules.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+app/Transformers/Api/Admin/ApiKeyTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39,79
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 62
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_cb63104f1482e9 65,93
+app/Actions/Locations/CreateLocation.php
+  s_4cabae41bceed9::t_cb63104f1482e9 36,50
+app/Contracts/Databases/CreatesDatabases.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Actions/Mounts/AttachEggsToMount.php
+  s_4cabae41bceed9::t_cb63104f1482e9 34,46
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39,97,141
+app/Transformers/Api/Admin/MountTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 42
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Transformers/Api/Application/SubuserTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 32
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 57,69,85,99
+app/Transformers/Api/Admin/EggTransformer.php
+  s_4cabae41bceed9::t_bd1999572c82c3 122
+  s_4cabae41bceed9::t_f62deed88fcf18 50
+  s_4cabae41bceed9::t_cb63104f1482e9 46
+app/Contracts/Activity/IngestsActivityLogs.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 54
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Policies/ServerPolicy.php
+  s_4cabae41bceed9::t_595384945918ca 17
+tests/Integration/Api/Parity/ResourceParity.php
+  s_4cabae41bceed9::t_f62deed88fcf18 198
+app/Transformers/Api/Client/DatabaseTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 31
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 49,73,109
+app/Transformers/Api/Client/UserSSHKeyTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 59
+  s_4cabae41bceed9::t_f62deed88fcf18 63
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 43
+  s_4cabae41bceed9::t_cb63104f1482e9 39
+app/Actions/Mounts/AttachNodesToMount.php
+  s_4cabae41bceed9::t_cb63104f1482e9 34,46
+app/Transformers/Concerns/FormatsActivityLogs.php
+  s_4cabae41bceed9::t_b1ec393e31eca6 46,51-53,55-57,60,91
+app/Actions/Users/CreateSshKey.php
+  s_4cabae41bceed9::t_cb63104f1482e9 57
+app/Data/LoginResult.php
+  s_4cabae41bceed9::t_cb63104f1482e9 35
+app/Services/Servers/ServerConfigurationStructureService.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27-28,54,109
+app/Http/Requests/Api/Application/Allocations/StoreAllocationRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 33
+app/Http/Requests/Api/Application/Servers/UpdateServerDetailsRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Transformers/Api/Admin/UserTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 34
+  s_4cabae41bceed9::t_cb63104f1482e9 30
+app/Transformers/Api/Client/StatsTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Transformers/Api/Application/ServerVariableTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 34
+  s_4cabae41bceed9::t_f62deed88fcf18 38
+app/Http/Resources/Api/Admin/ServerDatabaseResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 35
+app/Actions/Locations/UpdateLocation.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Controllers/Api/Admin/ActivityController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 34
+app/Actions/Tags/CreateTag.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39,63
+app/Actions/Api/CreateApiKey.php
+  s_4cabae41bceed9::t_cb63104f1482e9 56,83,101-102
+app/Actions/Mounts/CreateMount.php
+  s_4cabae41bceed9::t_cb63104f1482e9 66,97
+app/Services/FilesystemChanges.php
+  s_4cabae41bceed9::t_595384945918ca 18
+app/Transformers/Api/Client/FileObjectTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15
+tests/Unit/Http/Resources/Api/ApiResourceTest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28,61,106,127,147
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41,65
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_4cabae41bceed9::t_cb63104f1482e9 36,70
+app/Transformers/Api/Application/ServerTransferTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_4cabae41bceed9::t_f62deed88fcf18 85
+  s_4cabae41bceed9::t_cb63104f1482e9 28
+app/Actions/Servers/UpdateServerBuild.php
+  s_4cabae41bceed9::t_cb63104f1482e9 65,107
+app/Contracts/Mounts/UpdatesMounts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 47,62
+app/Actions/Files/ChangeFilePermissions.php
+  s_4cabae41bceed9::t_f62deed88fcf18 14
+app/Exceptions/ApiErrorResponse.php
+  s_4cabae41bceed9::t_cb63104f1482e9 197
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 53
+app/Transformers/Api/Client/ScheduleTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Http/Controllers/Api/Application/Tags/TagController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28,52
+app/Contracts/Users/UpdatesUsers.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Contracts/Eggs/CreatesEggs.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Contracts/Schedules/UpdatesScheduleTasks.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Actions/Servers/UpdateServerStartup.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22,63,103
+app/Actions/Eggs/Variables/ReorderEggVariables.php
+  s_4cabae41bceed9::t_cb63104f1482e9 32,42
+app/Contracts/Files/CompressesFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 12
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28
+app/Contracts/Files/DeletesFiles.php
+  s_4cabae41bceed9::t_f62deed88fcf18 11
+app/Contracts/Eggs/UpdatesEggs.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 49,73,111
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38,53
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 59,87,124
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 30,44
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 39,86,106
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29
+app/Transformers/Api/Client/TaskTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Transformers/Api/Application/DatabaseHostTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 38
+app/Actions/Eggs/UpdateEgg.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 50,76,118
+app/Services/Eggs/EggConfigurationService.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27,47-48,154,205,250
+  s_4cabae41bceed9::t_b1ec393e31eca6 202,204,206,208,210-216,259
+  s_4cabae41bceed9::t_bd1999572c82c3 13,280-282,285-290
+app/Transformers/Api/Admin/AllocationTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 33
+app/Transformers/Api/Application/EggVariableTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 25
+  s_4cabae41bceed9::t_cb63104f1482e9 21
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_4cabae41bceed9::t_cb63104f1482e9 25
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 40,67,112
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 45,65
+app/Transformers/Api/Admin/EggVariableTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Http/Resources/Api/Client/UserSSHKeyResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Transformers/Api/Client/EggVariableTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Resources/Api/ApiResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 114,251,267
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 25
+app/Actions/Eggs/Variables/CreateEggVariable.php
+  s_4cabae41bceed9::t_cb63104f1482e9 48,71
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 52,116
+app/Actions/Mounts/UpdateMount.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Transformers/Api/Admin/ServerVariableTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 23
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Services/Deployment/AllocationSelectionService.php
+  s_4cabae41bceed9::t_f62deed88fcf18 65
+  s_4cabae41bceed9::t_cb63104f1482e9 64
+app/Contracts/Api/CreatesApiKeys.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18-19
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Actions/Tags/SyncTags.php
+  s_4cabae41bceed9::t_cb63104f1482e9 51,61,67,73
+app/Contracts/Mounts/CreatesMounts.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16
+app/Contracts/Tags/UpdatesTags.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 28
+app/Transformers/Api/Admin/ServerDatabaseTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29
+app/Contracts/Nodes/CreatesNodes.php
+  s_4cabae41bceed9::t_cb63104f1482e9 17
+app/Transformers/Api/Application/NodeTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 66
+  s_4cabae41bceed9::t_cb63104f1482e9 44
+app/Services/Daemon/NodeClient.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Controllers/Api/Client/ClientController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 54
+app/Contracts/Eggs/CreatesEggVariables.php
+  s_4cabae41bceed9::t_cb63104f1482e9 18
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 24
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 37,73
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41,64
+app/Rules/Fqdn.php
+  s_4cabae41bceed9::t_cb63104f1482e9 15,32
+app/Transformers/Api/Application/TagTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 44
+tests/Unit/Services/Helpers/SoftwareVersionServiceTest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 29
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 56,80,122
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_4cabae41bceed9::t_cb63104f1482e9 48
+app/Contracts/Eggs/ReordersEggVariables.php
+  s_4cabae41bceed9::t_cb63104f1482e9 16
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_4cabae41bceed9::t_cb63104f1482e9 23
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 47,63,88
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 284,297
+app/Actions/Tags/UpdateTag.php
+  s_4cabae41bceed9::t_cb63104f1482e9 19
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 46,60,77,99
+app/Models/User.php
+  s_4cabae41bceed9::t_cb63104f1482e9 169
+app/Contracts/Servers/UpdatesServerBuild.php
+  s_4cabae41bceed9::t_cb63104f1482e9 20
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 51,69,90,110
+app/Models/ActivityLog.php
+  s_4cabae41bceed9::t_cb63104f1482e9 37,126
+  s_4cabae41bceed9::t_f62deed88fcf18 129
+app/Transformers/Api/Client/AccountTransformer.php
+  s_4cabae41bceed9::t_cb63104f1482e9 22
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_4cabae41bceed9::t_cb63104f1482e9 41
+app/Http/Resources/Api/CallbackResource.php
+  s_4cabae41bceed9::t_cb63104f1482e9 27,40,72
+app/Transformers/Api/Application/ServerTransformer.php
+  s_4cabae41bceed9::t_f62deed88fcf18 70
+  s_4cabae41bceed9::t_cb63104f1482e9 66
+app/Actions/Allocations/CreateAllocations.php
+  s_4cabae41bceed9::t_cb63104f1482e9 74,94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ae296bda867f5f2644e8f881498d26e13db70ab3",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

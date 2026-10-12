@@ -1,0 +1,53 @@
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_21f3eb9c17241c 3903,3905,3907,3909,4217,4219,4241,4243,6442,6541,9291,9440
+  s_4cabae41bceed9::t_741413523dcb50 400-401
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_21f3eb9c17241c 4254,4256,4259,4261,4672,4674,4702,4704,7308,7422,10547,10716
+  s_4cabae41bceed9::t_741413523dcb50 444-445
+tests/Fixtures/openapi/baseline.yaml
+  s_4cabae41bceed9::t_cc78a0c9152a23 7290,7297-7299,7302,7309-7311,7656,7662-7664,7684,7690-7692,10475,10547,14045,14191
+  s_4cabae41bceed9::t_741413523dcb50 1196-1207
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_4cabae41bceed9::t_741413523dcb50 73
+  s_4cabae41bceed9::t_cb9e442e321485 56,72
+tests/Integration/Api/Snapshots/AdminResponseSnapshotTest.php
+  s_4cabae41bceed9::t_ea8659a48d8537 117-121
+tests/Integration/Api/Snapshots/ApplicationResponseSnapshotTest.php
+  s_4cabae41bceed9::t_ca78296cca95d0 104-111
+app/Http/Resources/Api/Application/NodeResource.php
+  s_4cabae41bceed9::t_1e596348e4d0ac 68-69
+  s_4cabae41bceed9::t_901866e9b95115 15
+  s_4cabae41bceed9::t_7427edc6b4f011 29-30,33
+  s_4cabae41bceed9::t_4f7096d9a1a169 103-120
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_4cabae41bceed9::t_cb9e442e321485 65,83
+app/Http/Resources/Api/Admin/NodeResource.php
+  s_4cabae41bceed9::t_394888ff09f3f1 91-100
+  s_4cabae41bceed9::t_7eae4570231950 29-30,33
+  s_4cabae41bceed9::t_05b38d5faf8b26 68-69
+  s_4cabae41bceed9::t_117b5eb6e6a3e3 15
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_741413523dcb50 1857
+tests/.pest/snapshots/Integration/Api/Snapshots/AdminResponseSnapshotTest/admin_api_responses_match_their_snapshots_with_data_set__dataset__nodes_tags__.snap
+  s_4cabae41bceed9::t_82b078d316fc86 1-11
+tests/.pest/snapshots/Integration/Api/Snapshots/ApplicationResponseSnapshotTest/application_api_responses_match_their_snapshots_with_data_set__dataset__nodes_tags__.snap
+  s_4cabae41bceed9::t_6c1e3cebc1e220 1-11
+tests/.pest/snapshots/Integration/Api/Snapshots/ApplicationResponseSnapshotTest/application_api_responses_match_their_snapshots_with_data_set__dataset__nodes_tags_without_eggs_access__.snap
+  s_4cabae41bceed9::t_07491dc73ed0ac 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bdf28c1933247995bd64dc3adc0ae6808e0443e7",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

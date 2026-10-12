@@ -1,0 +1,34 @@
+tests/Unit/Http/Resources/Api/Includes/IncludeSetTest.php
+  s_4cabae41bceed9::t_282676cfd2e3a1 1-19,23-24,26-121,137-158
+  s_4cabae41bceed9::t_5ea85a6e64fae1 20-22,25
+  s_4cabae41bceed9::t_23d7b0acc550c8 122-136
+app/Http/Resources/Api/Includes/IncludeSet.php
+  s_4cabae41bceed9::t_29f44aaad19f1b 11-14
+  s_4cabae41bceed9::t_4453debd67dbda 60
+  s_4cabae41bceed9::t_d3111cc9464450 95,99
+  s_4cabae41bceed9::t_820da4033a6150 1-10,15-59,61-94,96-98,100-135
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_4cabae41bceed9::t_5a8b55917fb693 56
+  s_4cabae41bceed9::t_f472ebfb8d92be 7-8,11
+app/Http/Resources/Api/Includes/IncludeScope.php
+  s_4cabae41bceed9::t_b46d2aa3a992b8 1-39
+app/Providers/AppServiceProvider.php
+  s_4cabae41bceed9::t_1c4a0de04425e7 134-136
+  s_4cabae41bceed9::t_4453debd67dbda 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d5b8268411a6a6f1471dc55786ae234418cef1aa",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

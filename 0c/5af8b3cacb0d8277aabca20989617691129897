@@ -1,0 +1,53 @@
+app/Http/Resources/Api/Application/TagResource.php
+  s_4cabae41bceed9::t_9bf5f491ce6d5c 1-82
+app/Http/Resources/Api/Application/UserResource.php
+  s_4cabae41bceed9::t_928a671f5241da 1-68
+app/Http/Resources/Api/Application/AllocationResource.php
+  s_4cabae41bceed9::t_a222f6a25c3be5 1-82
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_4cabae41bceed9::t_ffb17e920d7cd1 15,19,42,44,51,60,62,66
+app/Http/Resources/Api/Application/ServerDatabaseResource.php
+  s_4cabae41bceed9::t_421638adb73e81 1-79
+app/Http/Resources/Api/Application/ServerTransferResource.php
+  s_4cabae41bceed9::t_ff971bcb2c9fb0 1-35
+app/Http/Resources/Api/Application/ServerResource.php
+  s_4cabae41bceed9::t_dd82d303cfbf67 1-231
+app/Http/Resources/Api/Application/DatabaseHostResource.php
+  s_4cabae41bceed9::t_26c740c7afc140 1-61
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_4cabae41bceed9::t_8fee83f6358f91 17
+  s_4cabae41bceed9::t_ffb17e920d7cd1 14,42,44,48
+app/Http/Resources/Api/Application/SubuserResource.php
+  s_4cabae41bceed9::t_e9bd5975327c9a 1-77
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_4cabae41bceed9::t_ffb17e920d7cd1 10,13,24-25,29
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_4cabae41bceed9::t_8fee83f6358f91 23-24
+  s_4cabae41bceed9::t_ffb17e920d7cd1 17,49-50,52,60-61,63,86,92-93
+app/Http/Resources/Api/Application/NodeResource.php
+  s_4cabae41bceed9::t_e304dbeed85692 1-98
+app/Http/Resources/Api/Application/EggResource.php
+  s_4cabae41bceed9::t_e1fa08848145b4 1-123,127-141,144,146-170
+  s_4cabae41bceed9::t_15163150c7de55 124-126,142-143,145
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_4cabae41bceed9::t_8fee83f6358f91 28
+  s_4cabae41bceed9::t_ffb17e920d7cd1 22,29,62-63,83,96,103-104,113-114,116
+app/Http/Resources/Api/Application/LocationResource.php
+  s_4cabae41bceed9::t_b7bc62a5d0462a 1-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0c5af8b3cacb0d8277aabca20989617691129897",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

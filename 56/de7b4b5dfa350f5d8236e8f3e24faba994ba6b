@@ -1,0 +1,166 @@
+tests/Fixtures/api/admin/nodes.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-40
+tests/Fixtures/api/admin/servers/startup.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-55
+tests/Integration/Api/Fixtures/AdminApiFixturesTest.php
+  s_4cabae41bceed9::t_18524b43c2a4c2 7,193
+  s_4cabae41bceed9::t_58975e0e7d3e9e 1-6,8-192,194-292
+tests/Fixtures/api/admin/tags.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-24
+tests/Fixtures/api/admin/servers.store.tag-check.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-73
+tests/Fixtures/api/admin/eggs/tags.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-41
+tests/Fixtures/api/admin/servers/details.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-56
+tests/Fixtures/api/admin/tags.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-21
+tests/Fixtures/api/admin/users.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-403
+tests/Fixtures/api/admin/eggs.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1000
+tests/Fixtures/api/admin/servers/databases.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-118
+tests/Fixtures/api/admin/users.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-31
+tests/Fixtures/api/admin/database-hosts/databases.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-167
+tests/Fixtures/api/admin/servers/databases.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-47
+tests/Fixtures/api/admin/eggs.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-960
+tests/Fixtures/api/admin/locations.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-22
+tests/Fixtures/api/admin/locations.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-456
+tests/Fixtures/api/admin/eggs.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-50
+tests/Fixtures/api/admin/mounts.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-549
+tests/Fixtures/api/admin/mounts/eggs.attach.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-120
+tests/Fixtures/api/admin/eggs/variables.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/admin/eggs.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-53
+tests/Fixtures/api/admin/nodes/allocations.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-19
+tests/Fixtures/api/admin/eggs/variables.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-70
+tests/Fixtures/api/admin/eggs/variables.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/admin/servers.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1289
+tests/Fixtures/api/admin/nodes/tags.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-41
+tests/Fixtures/api/admin/activity.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-700
+tests/Fixtures/api/admin/database-hosts.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-300
+tests/Fixtures/api/admin/locations.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-516
+tests/Fixtures/api/admin/servers/databases.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-31
+tests/Fixtures/api/admin/api-keys.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-32
+tests/Fixtures/api/admin/database-hosts.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/admin/servers/backups.toggle.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-20
+tests/Fixtures/api/admin/tags.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-560
+tests/Fixtures/api/admin/database-hosts.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-332
+tests/Fixtures/api/admin/locations.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-19
+tests/Fixtures/api/admin/servers.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-59
+tests/Fixtures/api/admin/locations/eligible-nodes.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-285
+tests/Fixtures/api/admin/tags.update.built-in-slug.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-19
+tests/Fixtures/api/admin/nodes.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1152
+tests/Fixtures/api/admin/api-keys.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-193
+tests/Fixtures/api/admin/mounts/nodes.attach.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-22
+tests/Fixtures/api/admin/users/external.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-154
+tests/Fixtures/api/admin/servers/backups.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-180
+tests/Fixtures/api/admin/servers.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1645
+tests/Fixtures/api/admin/eggs/import.update.tags.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-91
+tests/Fixtures/api/admin/eggs/scripts.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-55
+tests/Fixtures/api/admin/mounts.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-23
+tests/Fixtures/api/admin/users.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-130
+tests/Fixtures/api/admin/mounts.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-375
+tests/Fixtures/api/admin/servers/databases.rotate-password.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-28
+tests/Fixtures/api/admin/eggs/catalog/import.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-58
+tests/Fixtures/api/admin/servers/build.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-55
+tests/Fixtures/api/admin/servers/transfer/progress.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/admin/users.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-687
+tests/Fixtures/api/admin/eggs/scripts.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-218
+tests/Fixtures/api/admin/api-keys.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-29
+tests/Fixtures/api/admin/eggs/import.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-55
+tests/Fixtures/api/admin/nodes.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-37
+tests/Fixtures/api/admin/tags.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-511
+tests/Fixtures/api/admin/nodes/allocations/available.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-333
+tests/Fixtures/api/admin/mounts.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/admin/nodes/deployment-tags.update.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/admin/nodes.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-732
+tests/Fixtures/api/admin/eggs/variables.reorder.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-62
+tests/Fixtures/api/admin/database-hosts.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-26
+tests/Fixtures/api/admin/nodes/allocations.index.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-1615
+tests/Fixtures/api/admin/api-keys.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-56
+tests/Fixtures/api/admin/servers/startup.update.tag-check.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-69
+tests/Fixtures/api/admin/extension-fields.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-685
+tests/Fixtures/api/admin/eggs/import.store.tags.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-94
+tests/Fixtures/api/admin/servers/external.view.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-409
+tests/Fixtures/api/admin/eggs/import.store.json
+  s_4cabae41bceed9::t_9bacba68060b74 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "56de7b4b5dfa350f5d8236e8f3e24faba994ba6b",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

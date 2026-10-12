@@ -1,0 +1,237 @@
+app/Contracts/Users/CreatesSshKeys.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14-15
+app/Actions/Mounts/CreateMount.php
+  s_4cabae41bceed9::t_e442c474f261bc 22-25
+app/Contracts/Eggs/ReordersEggVariables.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-14
+app/Actions/Tags/CreateTag.php
+  s_4cabae41bceed9::t_e442c474f261bc 16-18
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_4cabae41bceed9::t_e442c474f261bc 13
+app/Contracts/Locations/CreatesLocations.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-13
+app/Contracts/Backups/InitiatesBackups.php
+  s_4cabae41bceed9::t_154dd3b234a4a5 8,11-12
+  s_4cabae41bceed9::t_e442c474f261bc 27-30,33-34
+  s_4cabae41bceed9::t_1a11fc21a8da7d 16,32,35-37,39
+app/Actions/Eggs/Variables/ReorderEggVariables.php
+  s_4cabae41bceed9::t_1d798574e4ca53 15
+app/Contracts/Servers/UpdatesServerDetails.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-15
+app/Contracts/Backups/GeneratesBackupDownloadLinks.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-15
+app/Actions/Api/CreateApiKey.php
+  s_4cabae41bceed9::t_1d798574e4ca53 20-21,36-37
+app/Contracts/Api/UpdatesApiKeys.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-13
+app/Actions/Mounts/AttachEggsToMount.php
+  s_4cabae41bceed9::t_1d798574e4ca53 18
+  s_4cabae41bceed9::t_e442c474f261bc 33-34
+app/Contracts/Backups/PresignsBackupUploads.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-17
+app/Actions/Activity/IngestActivityLogs.php
+  s_4cabae41bceed9::t_1d798574e4ca53 27,43
+app/Actions/Backups/CompleteBackup.php
+  s_4cabae41bceed9::t_1d798574e4ca53 23
+app/Actions/Servers/UpdateServerStartup.php
+  s_4cabae41bceed9::t_1d798574e4ca53 30-31
+app/Actions/Locations/CreateLocation.php
+  s_4cabae41bceed9::t_1d798574e4ca53 20
+app/Contracts/Backups/DeletesBackups.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-16
+app/Contracts/Http/ClientPermissionsRequest.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 9
+app/Contracts/Schedules/UpdatesSchedules.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-14
+app/Contracts/Themes/ResetsThemes.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 9
+app/Contracts/Schedules/DeletesScheduleTasks.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14
+app/Actions/Databases/CreateDatabaseHost.php
+  s_4cabae41bceed9::t_1d798574e4ca53 20
+app/Actions/Users/CreateUser.php
+  s_4cabae41bceed9::t_1d798574e4ca53 39-40
+app/Contracts/Backups/CompletesBackups.php
+  s_4cabae41bceed9::t_e442c474f261bc 16-18
+  s_4cabae41bceed9::t_1a11fc21a8da7d 15
+app/Actions/Nodes/CreateNode.php
+  s_4cabae41bceed9::t_1d798574e4ca53 22-23
+app/Actions/Servers/UpdateServerDetails.php
+  s_4cabae41bceed9::t_1d798574e4ca53 22
+app/Contracts/Activity/IngestsActivityLogs.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13-15
+app/Actions/Schedules/CreateScheduleTask.php
+  s_4cabae41bceed9::t_1d798574e4ca53 20
+app/Contracts/Allocations/DeletesAllocations.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Contracts/Extensions/InstallsExtensions.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Contracts/Mounts/AttachesEggsToMounts.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-13
+app/Contracts/Nodes/UpdatesNodes.php
+  s_4cabae41bceed9::t_e442c474f261bc 14-19
+  s_4cabae41bceed9::t_42f7d0c5499a0e 7
+  s_4cabae41bceed9::t_1a11fc21a8da7d 23
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_1d798574e4ca53 45-47
+app/Contracts/Schedules/ProcessesSchedules.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Contracts/Schedules/UpdatesScheduleTasks.php
+  s_4cabae41bceed9::t_e442c474f261bc 15-17
+  s_4cabae41bceed9::t_42f7d0c5499a0e 7
+  s_4cabae41bceed9::t_1a11fc21a8da7d 21
+app/Contracts/Servers/ReinstallsServers.php
+  s_4cabae41bceed9::t_42f7d0c5499a0e 7
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13-16
+app/Actions/Tags/DeleteTag.php
+  s_4cabae41bceed9::t_1389988c5b26b5 16-17
+app/Contracts/Tags/UpdatesTags.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-15
+app/Contracts/Users/UpdatesUserPasswords.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 11
+app/Actions/Eggs/Variables/CreateEggVariable.php
+  s_4cabae41bceed9::t_1d798574e4ca53 19-20
+app/Actions/Subusers/CreateSubuser.php
+  s_4cabae41bceed9::t_1d798574e4ca53 27
+app/Contracts/Servers/TogglesServerSuspension.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 16
+  s_4cabae41bceed9::t_154dd3b234a4a5 8
+app/Actions/Tags/SyncTags.php
+  s_4cabae41bceed9::t_1d798574e4ca53 30,43
+app/Contracts/Eggs/CreatesEggVariables.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 15
+  s_4cabae41bceed9::t_e442c474f261bc 13-14
+app/Actions/Mounts/AttachNodesToMount.php
+  s_4cabae41bceed9::t_1d798574e4ca53 18
+  s_4cabae41bceed9::t_e442c474f261bc 33-34
+app/Actions/Databases/DeployServerDatabase.php
+  s_4cabae41bceed9::t_1d798574e4ca53 23
+app/Contracts/Databases/UpdatesDatabaseHosts.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-16
+app/Actions/Backups/DeleteBackup.php
+  s_4cabae41bceed9::t_1d798574e4ca53 56
+app/Contracts/Servers/UpdatesServerBuild.php
+  s_4cabae41bceed9::t_e442c474f261bc 14-18
+app/Contracts/Themes/AppliesThemes.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 9
+app/Contracts/Subusers/UpdatesSubusers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14-17
+app/Contracts/Allocations/CreatesAllocations.php
+  s_4cabae41bceed9::t_e442c474f261bc 17-18
+app/Actions/Tags/UpdateTag.php
+  s_4cabae41bceed9::t_1389988c5b26b5 17-18
+app/Contracts/Transfers/InitiatesTransfers.php
+  s_4cabae41bceed9::t_e442c474f261bc 18-19
+  s_4cabae41bceed9::t_1a11fc21a8da7d 17,21-24
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-14
+app/Actions/Servers/RecordServerInstallResult.php
+  s_4cabae41bceed9::t_1d798574e4ca53 21
+app/Contracts/Users/TogglesTwoFactor.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 17
+app/Contracts/Eggs/UpdatesEggs.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-15
+app/Contracts/Tags/DeletesTags.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Contracts/Users/DeletesUsers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Contracts/Users/CreatesUsers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13-15
+app/Contracts/Databases/CreatesDatabases.php
+  s_4cabae41bceed9::t_e442c474f261bc 18-20
+app/Actions/Servers/UpdateServerBuild.php
+  s_4cabae41bceed9::t_1d798574e4ca53 26
+app/Contracts/Databases/CreatesDatabaseHosts.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-15
+app/Actions/Allocations/CreateAllocations.php
+  s_4cabae41bceed9::t_1d798574e4ca53 54
+app/Contracts/Databases/DeletesDatabaseHosts.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12-16
+app/Contracts/Locations/UpdatesLocations.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-13
+app/Contracts/Mounts/CreatesMounts.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-13
+app/Contracts/Servers/CreatesServers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 18
+  s_4cabae41bceed9::t_e442c474f261bc 19-22
+app/Contracts/Schedules/CreatesScheduleTasks.php
+  s_4cabae41bceed9::t_e442c474f261bc 16-18
+  s_4cabae41bceed9::t_1a11fc21a8da7d 22
+  s_4cabae41bceed9::t_42f7d0c5499a0e 7
+app/Contracts/Servers/UpdatesServerStartup.php
+  s_4cabae41bceed9::t_239d46e6ebe424 14
+  s_4cabae41bceed9::t_1a11fc21a8da7d 15-17
+app/Contracts/Subusers/DeletesSubusers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_1d798574e4ca53 36
+  s_4cabae41bceed9::t_1389988c5b26b5 125-126
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_1d798574e4ca53 44
+app/Contracts/Backups/RestoresBackups.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14,17-19
+  s_4cabae41bceed9::t_e442c474f261bc 15-16
+app/Actions/Users/CreateSshKey.php
+  s_4cabae41bceed9::t_1d798574e4ca53 39
+app/Actions/Schedules/CreateSchedule.php
+  s_4cabae41bceed9::t_1d798574e4ca53 17
+app/Actions/Api/CreateAccountApiKey.php
+  s_4cabae41bceed9::t_1d798574e4ca53 20
+app/Contracts/Databases/DeploysServerDatabases.php
+  s_4cabae41bceed9::t_e442c474f261bc 18-20
+app/Contracts/Eggs/CreatesEggs.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-16
+app/Contracts/Mounts/UpdatesMounts.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-14
+app/Contracts/Nodes/CreatesNodes.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-14
+app/Contracts/Nodes/DeletesNodes.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Actions/Eggs/CreateEgg.php
+  s_4cabae41bceed9::t_e442c474f261bc 31-32
+app/Contracts/Tags/CreatesTags.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12
+app/Contracts/Users/UpdatesUsers.php
+  s_4cabae41bceed9::t_e442c474f261bc 13-15
+app/Contracts/Tags/SyncsTags.php
+  s_4cabae41bceed9::t_42f7d0c5499a0e 13
+app/Contracts/Mounts/AttachesNodesToMounts.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-13
+app/Contracts/Schedules/CreatesSchedules.php
+  s_4cabae41bceed9::t_e442c474f261bc 14-15
+app/Contracts/Subusers/CreatesSubusers.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 16-17
+  s_4cabae41bceed9::t_e442c474f261bc 18-20
+app/Contracts/Extensions/HashidsInterface.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 12
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_4cabae41bceed9::t_1d798574e4ca53 14
+app/Contracts/Api/CreatesApiKeys.php
+  s_4cabae41bceed9::t_e442c474f261bc 12-15
+app/Contracts/Eggs/DeletesEggs.php
+  s_4cabae41bceed9::t_e442c474f261bc 14-15
+app/Contracts/Api/CreatesAccountApiKeys.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 14-16
+app/Contracts/Locations/DeletesLocations.php
+  s_4cabae41bceed9::t_1a11fc21a8da7d 13
+app/Actions/Transfers/InitiateTransfer.php
+  s_4cabae41bceed9::t_4fc82d0ad430d1 36,135-136
+app/Actions/Backups/RestoreBackup.php
+  s_4cabae41bceed9::t_1d798574e4ca53 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e7073ac2a2c0fd5dad2f9c83ade98c562d8306e8",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

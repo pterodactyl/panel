@@ -1,0 +1,44 @@
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_4cabae41bceed9::t_76bbcbaa9cb960 20,70
+tests/Integration/Extensions/Scribe/ResponseFromResourceTest.php
+  s_4cabae41bceed9::t_e6ca72a2af89bb 51
+  s_4cabae41bceed9::t_2a1009403d724b 27,49-50,54-55,59-60
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_4cabae41bceed9::t_de6df415ce804d 30-31
+  s_4cabae41bceed9::t_76bbcbaa9cb960 22,32,95-96,107,115-116,121,132,138-152,159,177-179,191,194,209
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_4cabae41bceed9::t_76bbcbaa9cb960 12,16,28-29,40
+app/Http/Resources/Api/Admin/DatabaseHostResource.php
+  s_4cabae41bceed9::t_7fe92f0066b331 1-103
+tests/Integration/Api/Parity/ResourceParityTest.php
+  s_4cabae41bceed9::t_e3672c0ee0f238 41
+  s_4cabae41bceed9::t_d133cbb27f5f9e 11,28-29,31,33-34,36-38,40,42-43
+tests/Integration/Api/Admin/Extensions/ExtensionFieldsTest.php
+  s_4cabae41bceed9::t_4fdf084a0b88dc 20
+  s_4cabae41bceed9::t_6d864579711ef8 635,637
+app/Http/Controllers/Api/Admin/AdminApiController.php
+  s_4cabae41bceed9::t_a12e14d6072e1b 9
+app/Http/Resources/Api/Admin/MountResource.php
+  s_4cabae41bceed9::t_7b2d13c9d5f841 1-77
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_4cabae41bceed9::t_76bbcbaa9cb960 12,16,28-29,40
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_4cabae41bceed9::t_de6df415ce804d 27
+  s_4cabae41bceed9::t_76bbcbaa9cb960 18,26,61-62,69,77-78,82,89,100-102,114,116,125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3287f12f294ca205cc842b996c5f9bcf5047779e",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+app/Models/Builders/NodeBuilder.php
+  s_4cabae41bceed9::t_f751bf100ad662 1-84
+app/Models/Objects/DeploymentObject.php
+  s_4cabae41bceed9::t_9b149d3313f422 23
+app/Models/Node.php
+  s_4cabae41bceed9::t_71a427fd00274d 21
+  s_4cabae41bceed9::t_a7bb4491c00317 10
+  s_4cabae41bceed9::t_86ff212922a257 232
+  s_4cabae41bceed9::t_cd910fe541607b 39
+app/Models/Allocation.php
+  s_4cabae41bceed9::t_4a28720abc5f21 9,13,20
+app/Models/Builders/AllocationBuilder.php
+  s_4cabae41bceed9::t_3fec97c1894367 1-78
+app/Models/Builders/ActivityLogBuilder.php
+  s_4cabae41bceed9::t_d006f559eb2a18 19-32
+  s_4cabae41bceed9::t_109777a286b75c 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5fbcede5bbe6fa5b7d5779792072ef23323ceb43",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
