@@ -184,6 +184,29 @@ class User extends Authenticatable implements Identifiable
     }
 
     /**
+     * The owner and root admins hold every permission, and root admins also receive the
+     * admin websocket events. Anyone else holds what their subuser entry grants, if any.
+     *
+     * @return array<array-key, string>
+     */
+    public function permissionsOn(Server $server): array
+    {
+        if ($this->root_admin || $this->id === $server->owner_id) {
+            $permissions = ['*'];
+
+            if ($this->root_admin) {
+                $permissions[] = 'admin.websocket.errors';
+                $permissions[] = 'admin.websocket.install';
+                $permissions[] = 'admin.websocket.transfer';
+            }
+
+            return $permissions;
+        }
+
+        return $server->subusers()->where('user_id', $this->id)->first()->permissions ?? [];
+    }
+
+    /**
      * Store the username as a lowercase string. Reads fall through to the stored
      * column, so the get side is the string it was written as.
      *

@@ -14,14 +14,9 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 final readonly class UpdateServerBuild implements UpdatesServerBuild
 {
-    public function __construct(
-        private ServerConfigurationStructureService $structureService,
-    ) {}
-
     /**
      * Pass the server being updated so its own default allocation is not taken for a clash.
      *
@@ -91,15 +86,12 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
             return $server->refresh();
         });
 
-        $updateData = $this->structureService->handle($server);
-        if (! empty($updateData['build'])) {
-            try {
-                Daemon::server($server)->sync();
-            } catch (DaemonConnectionException $exception) {
-                // Wings fetches fresh Panel configuration when the server boots, so a
-                // failed live sync can be logged without undoing the committed change.
-                Log::warning($exception->getMessage(), ['exception' => $exception, 'server_id' => $server->id]);
-            }
+        try {
+            Daemon::server($server)->sync();
+        } catch (DaemonConnectionException $daemonConnectionException) {
+            // Wings fetches fresh Panel configuration when the server boots, so a
+            // failed live sync can be logged without undoing the committed change.
+            Log::warning($daemonConnectionException->getMessage(), ['exception' => $daemonConnectionException, 'server_id' => $server->id]);
         }
 
         return $server;

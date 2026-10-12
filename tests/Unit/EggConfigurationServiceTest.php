@@ -54,11 +54,9 @@ function configurationStructure(Server $server): ServerConfigurationStructureSer
     {
         public function __construct(private readonly Server $expected) {}
 
-        public function handle(Server $server, array $override = [], bool $legacy = false): array
+        public function legacyForServer(Server $server): array
         {
             Assert::assertSame($this->expected, $server);
-            Assert::assertSame([], $override);
-            Assert::assertTrue($legacy);
 
             return ['build' => ['default' => ['port' => 25565], 'env' => ['PORT' => 3000, 'EMPTY_OBJECT' => new JsonEmptyObject()]]];
         }

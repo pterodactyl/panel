@@ -104,9 +104,7 @@ final readonly class CreateServer implements CreatesServers
             ? $this->configureDeployment($validated, $deployment, $egg)
             : Allocation::query()->findOrFail($validated->integer('allocation_id'));
 
-        $eggVariableData = $this->validatorService
-            ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($egg, $environment);
+        $eggVariableData = $this->validatorService->validate($egg, $environment, User::USER_LEVEL_ADMIN);
 
         // Wings requires the server to exist in the Panel before it can start creation.
         $server = DB::transaction(function () use ($validated, $allocation, $eggVariableData, $extensions): Server {

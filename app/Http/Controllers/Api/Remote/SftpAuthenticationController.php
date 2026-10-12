@@ -22,7 +22,6 @@ use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Traits\Helpers\ThrottlesLogins;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -39,7 +38,7 @@ class SftpAuthenticationController extends Controller
      * for a SFTP connection on the daemon. This supports both public key and password
      * based credentials.
      */
-    public function __invoke(SftpAuthenticationFormRequest $request, GetUserPermissionsService $permissions): JsonResponse
+    public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
         $connection = $this->parseUsername($request->safe()->string('username')->toString());
         throw_if(empty($connection['server']), BadRequestHttpException::class, 'No valid server identifier was included in the request.');
@@ -89,12 +88,12 @@ class SftpAuthenticationController extends Controller
             }
         }
 
-        $this->validateSftpAccess($user, $server, $permissions);
+        $this->validateSftpAccess($user, $server);
 
         return new JsonResponse([
             'user' => $user->uuid,
             'server' => $server->uuid,
-            'permissions' => $permissions->handle($server, $user),
+            'permissions' => $user->permissionsOn($server),
         ]);
     }
 
@@ -150,12 +149,10 @@ class SftpAuthenticationController extends Controller
     /**
      * Validates that a user should have permission to use SFTP for the given server.
      */
-    protected function validateSftpAccess(User $user, Server $server, GetUserPermissionsService $permissions): void
+    protected function validateSftpAccess(User $user, Server $server): void
     {
         if (! $user->root_admin && $server->owner_id !== $user->id) {
-            $resolved = $permissions->handle($server, $user);
-
-            if (! in_array(Permissions::FileSftp->value, $resolved)) {
+            if (! in_array(Permissions::FileSftp->value, $user->permissionsOn($server))) {
                 Activity::event('server:sftp.denied')->actor($user)->subject($server)->log();
 
                 throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use UnexpectedValueException;
 
 /**
  * @property int|null $database_limit Larastan's schema dump parser misses that this column is nullable
@@ -238,6 +240,51 @@ class Server extends Model implements Identifiable
     public function serverVariables(): HasMany
     {
         return $this->hasMany(ServerVariable::class);
+    }
+
+    /**
+     * The egg's variables with this server's values as server_value. When a list has eager
+     * loaded egg.variables and serverVariables this runs no query for each server.
+     *
+     * @return Collection<int, EggVariable>
+     */
+    public function resolvedVariables(): Collection
+    {
+        if (! $this->relationLoaded('egg')
+            || ! $this->egg?->relationLoaded('variables')
+            || ! $this->relationLoaded('serverVariables')
+        ) {
+            return $this->variables()->get();
+        }
+
+        $overrides = $this->serverVariables->pluck('variable_value', 'variable_id');
+
+        return $this->egg->variables->map(function (EggVariable $variable) use ($overrides): EggVariable {
+            $resolved = clone $variable;
+            $resolved->setAttribute('server_value', $overrides->get($variable->id));
+
+            return $resolved;
+        });
+    }
+
+    /**
+     * The startup command with its variables filled in. A variable the user cannot view, or
+     * every variable when $hideAllValues is set, shows as "[hidden]".
+     */
+    public function startupCommand(bool $hideAllValues = false): string
+    {
+        $this->loadMissing('allocation');
+        $allocation = $this->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.');
+
+        $find = ['{{SERVER_MEMORY}}', '{{SERVER_IP}}', '{{SERVER_PORT}}'];
+        $replace = [(string) $this->memory, $allocation->ip, (string) $allocation->port];
+
+        foreach ($this->resolvedVariables() as $variable) {
+            $find[] = '{{'.$variable->env_variable.'}}';
+            $replace[] = (string) (($variable->user_viewable && ! $hideAllValues) ? ($variable->server_value ?? $variable->default_value) : '[hidden]');
+        }
+
+        return str_replace($find, $replace, $this->startup);
     }
 
     /**

@@ -38,7 +38,7 @@ class ServerConfigurationCollection extends ResourceCollection
 
             $result[] = [
                 'uuid' => $server->uuid,
-                'settings' => $this->configuration->handle($server),
+                'settings' => $this->configuration->forServer($server),
                 'process_configuration' => $processConfiguration,
             ];
         }

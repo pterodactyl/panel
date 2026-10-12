@@ -39,7 +39,7 @@ class ServerDetailsController extends Controller
         throw_unless($valid, HttpForbiddenException::class, 'Requesting node does not have permission to access this server.');
 
         return new JsonResponse([
-            'settings' => $configuration->handle($server),
+            'settings' => $configuration->forServer($server),
             'process_configuration' => $eggConfiguration->handle($server),
         ]);
     }

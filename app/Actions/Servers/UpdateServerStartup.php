@@ -77,7 +77,7 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
                     ? $server->egg
                     : Egg::query()->findOrFail($server->egg_id);
 
-                $results = $this->validatorService->setUserLevel($userLevel)->handle($egg, $environment);
+                $results = $this->validatorService->validate($egg, $environment, $userLevel);
                 foreach ($results as $result) {
                     $this->variables->update($server, $result->id, $result->value === null ? '' : (string) $result->value);
                 }

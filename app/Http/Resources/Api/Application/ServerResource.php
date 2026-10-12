@@ -98,7 +98,7 @@ class ServerResource extends ApplicationResource
                 'image' => $server->image,
                 // This field is deprecated, please use "status".
                 'installed' => $server->isInstalled() ? 1 : 0,
-                'environment' => App::make(EnvironmentService::class)->handle($server),
+                'environment' => App::make(EnvironmentService::class)->forServer($server),
                 'skip_scripts' => $server->skip_scripts,
             ],
             'relationships' => [],
@@ -174,7 +174,7 @@ class ServerResource extends ApplicationResource
             return $this->null();
         }
 
-        return $this->items(App::make(EnvironmentService::class)->variables($this->resource), ServerVariableResource::class, 'server_variable');
+        return $this->items($this->resource->resolvedVariables(), ServerVariableResource::class, 'server_variable');
     }
 
     /**

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Client;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Http\Resources\Api\ApiResource;
@@ -17,8 +16,6 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Services\Servers\StartupCommandService;
 use UnexpectedValueException;
 
 /**
@@ -87,7 +84,7 @@ class ServerResource extends ClientResource
                 'threads' => $server->threads,
                 'oom_disabled' => $server->oom_disabled,
             ],
-            'invocation' => App::make(StartupCommandService::class)->handle($server, ! $user->can(Permissions::StartupRead->value, $server)),
+            'invocation' => $server->startupCommand(! $user->can(Permissions::StartupRead->value, $server)),
             'docker_image' => $server->image,
             'egg_features' => $egg->inherit_features,
             'egg_tags' => $egg->tagSlugs(),
@@ -143,7 +140,7 @@ class ServerResource extends ClientResource
         }
 
         return $this->items(
-            App::make(EnvironmentService::class)->variables($this->resource)->where('user_viewable', true)->values(),
+            $this->resource->resolvedVariables()->where('user_viewable', true)->values(),
             EggVariableResource::class,
             EggVariable::RESOURCE_NAME
         );

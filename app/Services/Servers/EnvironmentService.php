@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Database\Eloquent\Collection;
 use InvalidArgumentException;
-use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 
 class EnvironmentService
@@ -26,17 +24,14 @@ class EnvironmentService
     }
 
     /**
-     * Take all of the environment variables configured for this server and return
-     * them in an easy to process format.
-     *
      * @return array<string, EnvironmentValue> environment variable name => value
      */
-    public function handle(Server $server): array
+    public function forServer(Server $server): array
     {
         $server->loadMissing('location');
 
         $variables = [];
-        foreach ($this->variables($server) as $variable) {
+        foreach ($server->resolvedVariables() as $variable) {
             $variables[$variable->env_variable] = $this->environmentValue(
                 $variable->env_variable,
                 $variable->server_value ?? $variable->default_value,
@@ -64,32 +59,6 @@ class EnvironmentService
         }
 
         return $variables;
-    }
-
-    /**
-     * Resolve an egg's variables with the values overridden for this server. When
-     * the list endpoint has eagerly loaded both relationships this avoids issuing
-     * a query for every transformed server.
-     *
-     * @return Collection<int, EggVariable>
-     */
-    public function variables(Server $server): Collection
-    {
-        if (! $server->relationLoaded('egg')
-            || ! $server->egg?->relationLoaded('variables')
-            || ! $server->relationLoaded('serverVariables')
-        ) {
-            return $server->variables()->get();
-        }
-
-        $overrides = $server->serverVariables->pluck('variable_value', 'variable_id');
-
-        return $server->egg->variables->map(function (EggVariable $variable) use ($overrides): EggVariable {
-            $resolved = clone $variable;
-            $resolved->setAttribute('server_value', $overrides->get($variable->id));
-
-            return $resolved;
-        });
     }
 
     /**

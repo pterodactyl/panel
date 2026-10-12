@@ -97,7 +97,7 @@ class ServerResource extends AdminResource
                 'skip_scripts' => $server->skip_scripts,
                 // Deprecated, use "status".
                 'installed' => $server->isInstalled() ? 1 : 0,
-                'environment' => App::make(EnvironmentService::class)->handle($server),
+                'environment' => App::make(EnvironmentService::class)->forServer($server),
             ],
             'relationships' => [],
             $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
@@ -180,7 +180,7 @@ class ServerResource extends AdminResource
 
     private function includeVariables(): ApiResourceCollection
     {
-        return $this->items(App::make(EnvironmentService::class)->variables($this->resource), ServerVariableResource::class, 'server_variable');
+        return $this->items($this->resource->resolvedVariables(), ServerVariableResource::class, 'server_variable');
     }
 
     private function includeDatabases(): ApiResourceCollection
