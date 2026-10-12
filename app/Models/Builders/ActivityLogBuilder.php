@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Models\Builders;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\User;
 
@@ -16,20 +15,6 @@ use Pterodactyl\Models\User;
  */
 class ActivityLogBuilder extends Builder
 {
-    public function forEvent(string $action): static
-    {
-        $this->where('event', $action);
-
-        return $this;
-    }
-
-    public function forActor(Model $actor): static
-    {
-        $this->whereMorphedTo('actor', $actor);
-
-        return $this;
-    }
-
     public function withoutDisabledEvents(): static
     {
         $this->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS);
