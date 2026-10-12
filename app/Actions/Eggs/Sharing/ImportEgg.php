@@ -10,16 +10,13 @@ use Pterodactyl\Contracts\Eggs\ImportsEggs;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Eggs\EggImportData;
-use Pterodactyl\Services\Eggs\EggParserService;
 use Ramsey\Uuid\Uuid;
 
 final readonly class ImportEgg implements ImportsEggs
 {
-    public function __construct(private EggParserService $parser) {}
-
     public function import(UploadedFile $file): Egg
     {
-        return $this->importParsed($this->parser->handle($file));
+        return $this->importParsed(EggImportData::fromFile($file));
     }
 
     public function importParsed(EggImportData $parsed): Egg
@@ -29,8 +26,8 @@ final readonly class ImportEgg implements ImportsEggs
                 'uuid' => Uuid::uuid4()->toString(),
                 'author' => $parsed->author,
                 'copy_script_from' => null,
+                ...$parsed->attributes(),
             ]);
-            $egg = $this->parser->fillFromParsed($egg, $parsed);
             $egg->save();
             foreach ($parsed->variables as $variable) {
                 EggVariable::query()->forceCreate($variable->attributesForEgg($egg->id));

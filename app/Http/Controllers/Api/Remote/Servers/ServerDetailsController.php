@@ -40,7 +40,7 @@ class ServerDetailsController extends Controller
 
         return new JsonResponse([
             'settings' => $configuration->forServer($server),
-            'process_configuration' => $eggConfiguration->handle($server),
+            'process_configuration' => $eggConfiguration->forServer($server),
         ]);
     }
 

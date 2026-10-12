@@ -18,25 +18,25 @@ uses(TestCase::class);
 test('maps legacy placeholders into the wings configuration', function () {
     $server = server('{"scalar":"invalid","missing-find":{"parser":"json"},"server.properties":{"parser":"properties","find":{"server-port":"{{server.build.default.port}}","enabled":true,"conditional":{"old":"{{env.PORT}}","new":"{{server.build.default.port}}"},"docker-interface":"{{config.docker.interface}}","mixed-placeholders":"{{config.docker.interface}} {{server.build.default.port}} {{env.PORT}}","missing-server":"{{server.missing}}","missing-env":"{{env.MISSING}}","empty-object":"{{env.EMPTY_OBJECT}}"}}}');
     $service = new EggConfigurationService(configurationStructure($server));
-    expect($service->handle($server))->toBe(['startup' => ['done' => ['Server started'], 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => 'stop'], 'configs' => [['parser' => 'properties', 'file' => 'server.properties', 'replace' => [['match' => 'server-port', 'replace_with' => '25565'], ['match' => 'enabled', 'replace_with' => true], ['match' => 'conditional', 'if_value' => 'old', 'replace_with' => '3000'], ['match' => 'conditional', 'if_value' => 'new', 'replace_with' => '25565'], ['match' => 'docker-interface', 'replace_with' => '{{config.docker.network.interface}}'], ['match' => 'mixed-placeholders', 'replace_with' => '{{config.docker.network.interface}} 25565 3000'], ['match' => 'missing-server', 'replace_with' => ''], ['match' => 'missing-env', 'replace_with' => ''], ['match' => 'empty-object', 'replace_with' => 'Array']]]]]);
+    expect($service->forServer($server))->toBe(['startup' => ['done' => ['Server started'], 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => 'stop'], 'configs' => [['parser' => 'properties', 'file' => 'server.properties', 'replace' => [['match' => 'server-port', 'replace_with' => '25565'], ['match' => 'enabled', 'replace_with' => true], ['match' => 'conditional', 'if_value' => 'old', 'replace_with' => '3000'], ['match' => 'conditional', 'if_value' => 'new', 'replace_with' => '25565'], ['match' => 'docker-interface', 'replace_with' => '{{config.docker.network.interface}}'], ['match' => 'mixed-placeholders', 'replace_with' => '{{config.docker.network.interface}} 25565 3000'], ['match' => 'missing-server', 'replace_with' => ''], ['match' => 'missing-env', 'replace_with' => ''], ['match' => 'empty-object', 'replace_with' => 'Array']]]]]);
 });
 test('defaults missing startup flags and stop commands', function () {
     $server = server('{}', '{"done":[]}', null);
     $service = new EggConfigurationService(configurationStructure($server));
-    expect($service->handle($server))->toBe(['startup' => ['done' => [], 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => ''], 'configs' => []]);
+    expect($service->forServer($server))->toBe(['startup' => ['done' => [], 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => ''], 'configs' => []]);
 });
 test('preserves an enabled strip ansi flag', function () {
     $server = server('{}', '{"done":[],"strip_ansi":true}');
     $service = new EggConfigurationService(configurationStructure($server));
 
-    expect($service->handle($server)['startup']['strip_ansi'])->toBeTrue();
+    expect($service->forServer($server)['startup']['strip_ansi'])->toBeTrue();
 });
 test('reads config that is empty or not json as empty instead of failing', function (string $broken) {
     $exceptions = Exceptions::fake();
     $server = server($broken, $broken);
     $service = new EggConfigurationService(configurationStructure($server));
 
-    expect($service->handle($server))->toBe(['startup' => ['done' => null, 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => 'stop'], 'configs' => []]);
+    expect($service->forServer($server))->toBe(['startup' => ['done' => null, 'user_interaction' => [], 'strip_ansi' => false], 'stop' => ['type' => 'command', 'value' => 'stop'], 'configs' => []]);
     $broken === '' ? $exceptions->assertNothingReported() : $exceptions->assertReported(JsonException::class);
 })->with(['empty' => '', 'not json' => '{"done":']);
 function server(string $configurationFiles, ?string $configurationStartup = '{"done":"Server started","strip_ansi":false}', ?string $configurationStop = 'stop'): Server

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Eggs;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use JsonException;
 use Pterodactyl\Actions\Eggs\CreateEgg;
 use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
@@ -38,9 +40,48 @@ final readonly class EggImportData
         public array $variables,
     ) {}
 
+    /**
+     * @throws InvalidFileUploadException
+     * @throws JsonException
+     */
+    public static function fromFile(UploadedFile $file): self
+    {
+        throw_if($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile(), InvalidFileUploadException::class, 'The selected file is not valid and cannot be imported.');
+
+        $contents = $file->openFile()->fread($file->getSize());
+        throw_if($contents === false, InvalidFileUploadException::class, 'The selected file could not be read.');
+
+        return self::fromJson($contents);
+    }
+
     public static function fromJson(string $contents): self
     {
         return self::fromValue(json_decode($contents, true, flags: JSON_THROW_ON_ERROR));
+    }
+
+    /**
+     * The egg attributes an import sets, both on a new egg and on one it updates.
+     *
+     * @return array<string, mixed>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'features' => $this->features,
+            'docker_images' => $this->dockerImages,
+            'file_denylist' => $this->fileDenylist,
+            'update_url' => $this->updateUrl,
+            'config_files' => $this->configFiles,
+            'config_startup' => $this->configStartup,
+            'config_logs' => $this->configLogs,
+            'config_stop' => $this->configStop,
+            'startup' => $this->startup,
+            'script_install' => $this->scriptInstall,
+            'script_entry' => $this->scriptEntry,
+            'script_container' => $this->scriptContainer,
+        ];
     }
 
     private static function fromValue(mixed $value): self

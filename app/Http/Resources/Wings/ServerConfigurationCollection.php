@@ -34,7 +34,7 @@ class ServerConfigurationCollection extends ResourceCollection
         foreach ($this->collection ?? [] as $server) {
             throw_unless($server instanceof Server, UnexpectedValueException::class, 'Server configuration resources require Server models.');
 
-            $processConfiguration = $this->egg->handle($server);
+            $processConfiguration = $this->egg->forServer($server);
 
             $result[] = [
                 'uuid' => $server->uuid,

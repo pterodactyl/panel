@@ -15,13 +15,10 @@ use UnexpectedValueException;
 
 class EggConfigurationService
 {
-    /**
-     * EggConfigurationService constructor.
-     */
     public function __construct(private readonly ServerConfigurationStructureService $configurationStructureService) {}
 
     /**
-     * Return an Egg file to be used by the Daemon.
+     * The process configuration Wings reads for the server's egg.
      *
      * @return array{
      *     startup: array{done: mixed, user_interaction: array{}, strip_ansi: mixed},
@@ -29,7 +26,7 @@ class EggConfigurationService
      *     configs: EggConfigurationOutputs,
      * }
      */
-    public function handle(Server $server): array
+    public function forServer(Server $server): array
     {
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg assigned.');
         $configs = $this->replacePlaceholders($server, $this->configurationFiles($egg->inherit_config_files));

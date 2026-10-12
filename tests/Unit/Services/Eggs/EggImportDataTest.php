@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Unit\Services\Eggs\EggParserServiceTest;
+namespace Pterodactyl\Tests\Pest\Unit\Services\Eggs\EggImportDataTest;
 
 use Illuminate\Http\UploadedFile;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Services\Eggs\EggParserService;
+use Pterodactyl\Services\Eggs\EggImportData;
 use Pterodactyl\Tests\TestCase;
 
 uses(TestCase::class);
 test('parses a v2 egg into typed import data', function () {
-    $parsed = service()->handle(fixture('minecraft/egg-paper.json'));
+    $parsed = EggImportData::fromFile(fixture('minecraft/egg-paper.json'));
     expect($parsed->name)->toBe('Paper');
     expect($parsed->dockerImages['Java 21'])->toBe('ghcr.io/pterodactyl/yolks:java_21');
     expect($parsed->features)->toBe(['eula', 'java_version', 'pid_limit']);
@@ -19,7 +19,7 @@ test('parses a v2 egg into typed import data', function () {
     expect($parsed->variables[0]->userViewable)->toBeTrue();
 });
 test('normalizes a v1 image list', function () {
-    $parsed = service()->handle(fixture('source-engine/egg-garrys-mod.json'));
+    $parsed = EggImportData::fromFile(fixture('source-engine/egg-garrys-mod.json'));
     expect($parsed->dockerImages)->toBe(['ghcr.io/pterodactyl/games:source' => 'ghcr.io/pterodactyl/games:source']);
     expect($parsed->variables[0]->environmentVariable)->toBe('SRCDS_MAP');
 });
@@ -27,10 +27,10 @@ test('rejects unrecognized egg payloads', function () {
     $file = UploadedFile::fake()->createWithContent('invalid.json', '{"meta":{"version":"unknown"}}');
     $this->expectException(InvalidFileUploadException::class);
     $this->expectExceptionMessage('The egg field "meta.version" is missing or invalid.');
-    service()->handle($file);
+    EggImportData::fromFile($file);
 });
 test('every bundled egg passes import validation', function (string $path) {
-    expect(service()->handle(fixture($path))->name)->not->toBeEmpty();
+    expect(EggImportData::fromFile(fixture($path))->name)->not->toBeEmpty();
 })->with(fn (): array => array_map(
     // The dataset is built before the application boots, so base_path() is not available yet.
     fn (string $file): string => basename(dirname($file)).'/'.basename($file),
@@ -41,7 +41,7 @@ test('rejects egg contents an admin could not save', function (callable $corrupt
     $corrupt($egg);
     $file = UploadedFile::fake()->createWithContent('egg.json', (string) json_encode($egg));
 
-    expect(fn () => service()->handle($file))->toThrow(InvalidFileUploadException::class, "The egg field \"{$field}\" is invalid");
+    expect(fn () => EggImportData::fromFile($file))->toThrow(InvalidFileUploadException::class, "The egg field \"{$field}\" is invalid");
 })->with([
     'author that is not an email' => [function (array &$egg): void {
         $egg['author'] = 'not-an-email';
@@ -65,10 +65,6 @@ test('rejects egg contents an admin could not save', function (callable $corrupt
         $egg['variables'][1]['env_variable'] = $egg['variables'][0]['env_variable'];
     }, 'variables.0.env_variable'],
 ]);
-function service(): EggParserService
-{
-    return new EggParserService();
-}
 function fixture(string $path): UploadedFile
 {
     $absolutePath = base_path('database/Seeders/eggs/'.$path);

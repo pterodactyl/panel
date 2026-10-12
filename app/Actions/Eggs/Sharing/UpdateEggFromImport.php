@@ -9,20 +9,17 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\UpdatesEggsFromImports;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Services\Eggs\EggImportData;
 use Pterodactyl\Services\Eggs\EggImportVariable;
-use Pterodactyl\Services\Eggs\EggParserService;
 
 final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 {
-    public function __construct(private EggParserService $parser) {}
-
     public function update(Egg $egg, UploadedFile $file): Egg
     {
-        $parsed = $this->parser->handle($file);
+        $parsed = EggImportData::fromFile($file);
 
         return DB::transaction(function () use ($egg, $parsed): Egg {
-            $egg = $this->parser->fillFromParsed($egg, $parsed);
-            $egg->save();
+            $egg->forceFill($parsed->attributes())->save();
 
             foreach ($parsed->variables as $variable) {
                 EggVariable::unguarded(function () use ($egg, $variable): void {
