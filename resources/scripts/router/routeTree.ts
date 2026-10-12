@@ -31,6 +31,7 @@ import {
     adminNodeQueryOptions,
     adminNodeServersQueryOptions,
     adminNodesQueryOptions,
+    adminNodeTagsQueryOptions,
     allAdminNodesQueryOptions,
 } from '@/api/admin/nodes/queries';
 import {
@@ -534,6 +535,20 @@ const nodeDetailChildren = [
         component: adminPage(() => import('@/components/admin/nodes/NodeAllocationTab'), {
             before: 'panel.nodes.detail.allocations.before',
             after: 'panel.nodes.detail.allocations.after',
+        }),
+    }),
+    createRoute({
+        getParentRoute: () => nodeDetailRoute,
+        path: 'tags',
+        loader: async ({ context, params }) => {
+            await context.queryClient.ensureQueryData({
+                ...adminNodeTagsQueryOptions(params.id),
+                revalidateIfStale: true,
+            });
+        },
+        component: adminPage(() => import('@/components/admin/nodes/NodeTagsTab'), {
+            before: 'panel.nodes.detail.tags.before',
+            after: 'panel.nodes.detail.tags.after',
         }),
     }),
     createRoute({

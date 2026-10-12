@@ -119,6 +119,8 @@ export const SLOT_NAMES = [
     'panel.nodes.detail.configuration.after',
     'panel.nodes.detail.allocations.before',
     'panel.nodes.detail.allocations.after',
+    'panel.nodes.detail.tags.before',
+    'panel.nodes.detail.tags.after',
     'panel.nodes.detail.servers.before',
     'panel.nodes.detail.servers.after',
 

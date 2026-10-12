@@ -1,16 +1,19 @@
-import { queryOptions, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryOptions, useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 import { listQuery, listSorts } from '@/api/queryParameters';
 
 import { invalidateGeneratedOperations, resourceMutationMessages } from '@/api/mutationUtils';
 import { fetchAllPages, MAX_PER_PAGE } from '@/api/pagination';
+import { adminNodeDetailKey } from '@/api/admin/nodes/invalidation';
 import {
     adminCreateTagMutation,
     adminDeleteTagMutation,
     adminListTagsQueryKey,
     adminListTagsOptions,
     adminSyncEggTagsMutation,
+    adminSyncNodeDeploymentTagsMutation,
+    adminSyncNodeGameTagsMutation,
     adminUpdateTagMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import {
@@ -18,6 +21,8 @@ import {
     type AdminCreateTagData,
     type AdminDeleteTagData,
     type AdminSyncEggTagsData,
+    type AdminSyncNodeDeploymentTagsData,
+    type AdminSyncNodeGameTagsData,
     type AdminTagResource,
     type AdminUpdateTagData,
     type Options,
@@ -46,6 +51,19 @@ export const deleteAdminTagInput = (id: number, name?: string): Options<AdminDel
 
 export const syncAdminEggTagsInput = (eggId: number, tags: string[]): Options<AdminSyncEggTagsData> => ({
     path: { egg_id: eggId },
+    body: { tags },
+});
+
+export const syncAdminNodeGameTagsInput = (nodeId: number, tags: string[]): Options<AdminSyncNodeGameTagsData> => ({
+    path: { node_id: nodeId },
+    body: { tags },
+});
+
+export const syncAdminNodeDeploymentTagsInput = (
+    nodeId: number,
+    tags: string[]
+): Options<AdminSyncNodeDeploymentTagsData> => ({
+    path: { node_id: nodeId },
     body: { tags },
 });
 
@@ -147,5 +165,37 @@ export const useSyncAdminEggTags = () => {
             toast.success('Egg tags updated', { description: 'The egg tag assignments have been saved.' });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update egg tags'),
+    });
+};
+
+const onNodeTagsSynced = async (queryClient: QueryClient, nodeId: number) => {
+    await Promise.all([
+        queryClient.invalidateQueries({ queryKey: adminNodeDetailKey(nodeId) }),
+        invalidateGeneratedOperations(queryClient, ['adminListNodes', 'adminListTags']),
+    ]);
+    // Games and reservations save together, so both syncs update one toast.
+    toast.success('Node tags updated', {
+        id: `admin-node-tags-${nodeId}`,
+        description: 'The node tag assignments have been saved.',
+    });
+};
+
+export const useSyncAdminNodeGameTags = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...adminSyncNodeGameTagsMutation(),
+        onSuccess: (_tags, variables) => onNodeTagsSynced(queryClient, variables.path.node_id),
+        onError: (error) => notifyHttpError(error, 'Unable to update node tags'),
+    });
+};
+
+export const useSyncAdminNodeDeploymentTags = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...adminSyncNodeDeploymentTagsMutation(),
+        onSuccess: (_tags, variables) => onNodeTagsSynced(queryClient, variables.path.node_id),
+        onError: (error) => notifyHttpError(error, 'Unable to update node tags'),
     });
 };

@@ -1,10 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import { useStore } from '@tanstack/react-form';
 import { Tags } from 'lucide-react';
 import { httpErrorToHuman } from '@/api/http';
 import { useAdminEgg } from '@/api/admin/eggs/queries';
 import { syncAdminEggTagsInput, type AdminTag, useAllAdminTags, useSyncAdminEggTags } from '@/api/admin/tags/queries';
-import TagBadge from '@/components/admin/tags/TagBadge';
+import TagsField from '@/components/admin/tags/TagsField';
 import ContentBox from '@/components/elements/ContentBox';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { emptyCompactClass } from '@/components/ui/styles';
@@ -31,9 +30,6 @@ export default function EggTagsTab() {
             }
         },
     });
-    const selectedTagIds = useStore(form.store, (state) => state.values.tags);
-    const selectedTagIdSet = new Set(selectedTagIds);
-    const selectedTags = tags.filter((tag) => selectedTagIdSet.has(String(tag.attributes.id)));
 
     if (eggError || tagsError) {
         return (
@@ -74,30 +70,15 @@ export default function EggTagsTab() {
             ) : (
                 <Form form={form} className='m-0'>
                     <form.AppField name='tags'>
-                        {(field) => (
-                            <field.MultiSelectField
+                        {() => (
+                            <TagsField
+                                tags={tags}
                                 label='Assigned Tags'
                                 description='Tags organize eggs and match them with nodes configured to accept them.'
-                                placeholder='Select tags'
-                                searchPlaceholder='Search tags…'
-                                options={tags.map((tag) => ({
-                                    value: String(tag.attributes.id),
-                                    label: `${tag.attributes.name} (${tag.attributes.slug})`,
-                                }))}
+                                emptyText='No tags are assigned to this egg.'
                             />
                         )}
                     </form.AppField>
-                    <div className='mt-4 min-h-8'>
-                        {selectedTags.length > 0 ? (
-                            <div className='flex flex-wrap gap-2'>
-                                {selectedTags.map((tag) => (
-                                    <TagBadge key={tag.attributes.id} tag={tag} showSlug />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className='text-sm text-muted-foreground'>No tags are assigned to this egg.</p>
-                        )}
-                    </div>
                     <div className='mt-6 flex justify-end'>
                         <form.AppForm>
                             <form.SubmitButton>Save tags</form.SubmitButton>

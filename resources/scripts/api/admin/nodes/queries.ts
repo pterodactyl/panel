@@ -282,6 +282,14 @@ export const adminNodeQueryOptions = (id: number) => ({
     enabled: Number.isInteger(id) && id > 0,
 });
 
+export const adminNodeTagsQueryOptions = (id: number) => ({
+    ...adminGetNodeOptions({
+        path: { node_id: id },
+        query: { include: 'tags,deployment_tags' },
+    }),
+    enabled: Number.isInteger(id) && id > 0,
+});
+
 type AdminNodesQueryOptions = Pick<ReturnType<typeof adminNodesQueryOptions>, 'placeholderData'> & {
     enabled?: boolean;
 };
