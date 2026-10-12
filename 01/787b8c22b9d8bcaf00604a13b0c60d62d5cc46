@@ -104,6 +104,7 @@ app/Services/Themes/ThemeDefinition.php
   s_4cabae41bceed9::t_8e2eb6ebae85e8 7,52
 packages/sdk/types-drift.spec.ts
   s_4cabae41bceed9::t_72cbdd2c9f5ab4 341,343-347
+  s_4cabae41bceed9::t_72fc3c88f5730a 340,342,348
 app/Services/Extensions/ExtensionRepository.php
   s_4cabae41bceed9::t_e8ac32aa0ece7f 158,160-161,163,167
   s_4cabae41bceed9::t_428a130f504763 186
@@ -169,6 +170,7 @@ app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
 resources/scripts/bootstrap.ts
   s_4cabae41bceed9::t_3080eb7441a90a 74
   s_4cabae41bceed9::t_078af18e7af026 3,11,26-27
+  s_4cabae41bceed9::t_4fa629136bf224 17,91-94
 resources/scripts/extensions/development.ts
   s_4cabae41bceed9::t_380f60eefd0652 18-25
   s_4cabae41bceed9::t_7460c16ff5b849 1,3-17,26-55,57,60,76-104,115
@@ -290,6 +292,8 @@ resources/scripts/api/generated/types.gen.ts
   s_4cabae41bceed9::t_ffdfd63ac0a0d3 6252
 app/Http/Resources/Api/Admin/ThemeSettingResource.php
   s_4cabae41bceed9::t_be685af71c67d5 1-46
+package.json
+  s_4cabae41bceed9::t_4fa629136bf224 110
 ---
 {
   "schema_version": "authorship/3.0.0",
