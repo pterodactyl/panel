@@ -12,11 +12,12 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Nodes\NodeJwt;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownloadLinks
 {
-    public function __construct(private BackupManager $backupManager) {}
+    public function __construct(private BackupManager $backupManager, private NodeJwt $jwt) {}
 
     public function generate(Backup $backup, User $user): string
     {
@@ -26,7 +27,8 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
             return $this->getS3BackupUrl($backup);
         }
 
-        $token = $backup->server->node->createJwt(
+        $token = $this->jwt->issue(
+            $backup->server->node,
             JwtScope::BackupDownload,
             identifiedBy: $user->id.$backup->server->uuid,
             expiresAt: CarbonImmutable::now()->addMinutes(15),

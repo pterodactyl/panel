@@ -16,6 +16,7 @@ use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Nodes\NodeJwt;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Overview', 'Inspect and control an accessible server.')]
@@ -36,7 +37,7 @@ class WebsocketController extends ClientApiController
      */
     #[Endpoint('Get websocket credentials', 'Returns a short-lived Wings websocket token and socket URL for the server.')]
     #[ScribeResponse(self::WEBSOCKET_EXAMPLE, description: 'Websocket credentials returned.')]
-    public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
+    public function __invoke(ClientApiRequest $request, NodeJwt $jwt, Server $server): JsonResponse
     {
         $user = $request->user();
         throw_if($user->cannot(Permissions::WebsocketConnect->value, $server), HttpForbiddenException::class, "You do not have permission to connect to this server's websocket.");
@@ -54,7 +55,8 @@ class WebsocketController extends ClientApiController
             }
         }
 
-        $token = $node->createJwt(
+        $token = $jwt->issue(
+            $node,
             JwtScope::Websocket,
             identifiedBy: $user->id.$server->uuid,
             expiresAt: CarbonImmutable::now()->addMinutes(10),

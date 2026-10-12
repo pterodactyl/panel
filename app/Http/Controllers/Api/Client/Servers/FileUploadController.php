@@ -15,6 +15,7 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\UploadFileRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Nodes\NodeJwt;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Files', 'Browse, read, mutate, archive, and transfer server files through Wings.')]
@@ -32,12 +33,12 @@ class FileUploadController extends ClientApiController
      */
     #[Endpoint('Get file upload URL', 'Returns a short-lived signed URL for uploading a file directly to Wings.')]
     #[ScribeResponse(self::SIGNED_URL_EXAMPLE, description: 'Signed upload URL returned.')]
-    public function __invoke(UploadFileRequest $request, Server $server): JsonResponse
+    public function __invoke(UploadFileRequest $request, NodeJwt $jwt, Server $server): JsonResponse
     {
         return new JsonResponse([
             'object' => 'signed_url',
             'attributes' => [
-                'url' => $this->getUploadUrl($server, $request->user()),
+                'url' => $this->getUploadUrl($server, $request->user(), $jwt),
             ],
         ]);
     }
@@ -45,9 +46,10 @@ class FileUploadController extends ClientApiController
     /**
      * Returns an url where files can be uploaded to.
      */
-    protected function getUploadUrl(Server $server, User $user): string
+    protected function getUploadUrl(Server $server, User $user, NodeJwt $jwt): string
     {
-        $token = $server->node->createJwt(
+        $token = $jwt->issue(
+            $server->node,
             JwtScope::FileUpload,
             identifiedBy: $user->id.$server->uuid,
             expiresAt: CarbonImmutable::now()->addMinutes(15),
