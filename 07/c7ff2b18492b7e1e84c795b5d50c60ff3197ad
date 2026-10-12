@@ -1,0 +1,34 @@
+app/Http/Controllers/Api/Client/ActivityLogFilterController.php
+  s_4cabae41bceed9::t_10884be53f0c4d 27
+app/Models/ActivityLog.php
+  s_4cabae41bceed9::t_e351ea6a3ab7d4 36
+  s_4cabae41bceed9::t_77b4bbdbbe89ae 10
+  s_4cabae41bceed9::t_af4ad8bef9ec9d 24
+app/Models/Builders/ActivityLogBuilder.php
+  s_4cabae41bceed9::t_5f63e344130e29 1-19,23-60
+  s_4cabae41bceed9::t_27493cde840e31 20-22
+app/Models/Server.php
+  s_4cabae41bceed9::t_26a6e5dd5ccb66 364,366,368
+tests/Unit/ArchTest.php
+  s_4cabae41bceed9::t_c5f95479ac6cf7 137
+app/Http/Controllers/Api/Admin/ActivityFilterController.php
+  s_4cabae41bceed9::t_eb71fc9ee908f8 36
+app/Http/Controllers/Api/Client/Servers/ActivityLogFilterController.php
+  s_4cabae41bceed9::t_517b6c6ee802ea 31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "07c7ff2b18492b7e1e84c795b5d50c60ff3197ad",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
