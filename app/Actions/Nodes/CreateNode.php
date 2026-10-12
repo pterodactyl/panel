@@ -19,8 +19,8 @@ final readonly class CreateNode implements CreatesNodes
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * A node's fields, for creating one and for updating one. The daemon fields go by their
-     * API names, which map onto the daemonListen, daemonSFTP and daemonBase columns.
+     * The daemon fields go by their API names, which map onto the daemonListen, daemonSFTP and
+     * daemonBase columns.
      *
      * @return NormalizedValidationRules
      */
@@ -46,11 +46,6 @@ final readonly class CreateNode implements CreatesNodes
         ];
     }
 
-    /**
-     * Create a node and mint its daemon token pair.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function create(array $input): Node
     {
         $validated = Validator::validate($input, self::rules());

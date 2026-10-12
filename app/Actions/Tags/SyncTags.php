@@ -27,12 +27,7 @@ final readonly class SyncTags implements SyncsTags
 
     public function __construct(private TagResolutionService $resolver) {}
 
-    /**
-     * The tags to sync, each an existing tag's id or a new tag's name. An id may also be an
-     * integer.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -45,8 +40,7 @@ final readonly class SyncTags implements SyncsTags
     }
 
     /**
-     * Validates tag values under `tags` and returns them as strings for the resolver, an
-     * integer id becoming the numeric string the panel sends.
+     * An integer id becomes the numeric string the panel sends.
      *
      * @param  list<mixed>  $values
      * @return list<string>
@@ -58,19 +52,16 @@ final readonly class SyncTags implements SyncsTags
         return array_map(fn (int|string $key): string => $input->string('tags.'.$key)->toString(), array_keys($input->array('tags')));
     }
 
-    /** @param list<mixed> $values */
     public function syncEgg(Egg $egg, array $values): void
     {
         $this->sync($egg, $egg->tags(), self::values($values));
     }
 
-    /** @param list<mixed> $values */
     public function syncNodeGames(Node $node, array $values): void
     {
         $this->sync($node, $node->eggTags(), self::values($values), $node->deploymentTags());
     }
 
-    /** @param list<mixed> $values */
     public function syncNodeDeployments(Node $node, array $values): void
     {
         $this->sync($node, $node->deploymentTags(), self::values($values), $node->eggTags());

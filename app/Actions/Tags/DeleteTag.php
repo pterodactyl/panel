@@ -11,15 +11,10 @@ use Pterodactyl\Models\Tag;
 
 final readonly class DeleteTag implements DeletesTags
 {
-    /**
-     * Delete a tag and detach it from every egg and node. Built-in game tags cannot be
-     * deleted because the cascading pivot cleanup would discard every egg and node
-     * assignment, and recreating the tag later cannot restore those associations.
-     *
-     * @throws DisplayException
-     */
     public function delete(Tag $tag): void
     {
+        // The cascading pivot cleanup would discard every egg and node assignment of a built-in
+        // tag, and recreating the tag later cannot restore them.
         throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be deleted.');
 
         $tag->delete();

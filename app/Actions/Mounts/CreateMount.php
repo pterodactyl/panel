@@ -19,10 +19,10 @@ final readonly class CreateMount implements CreatesMounts
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * A mount's fields. Pass the mount being updated so its own name is not taken for a
-     * duplicate. Both paths are absolute. Once '.' and '..' are resolved, the source may not
-     * be the Wings configuration directory or anything in it, nor a whole volumes directory,
-     * and the target may not be the container's home directory itself.
+     * Pass the mount being updated so its own name is not taken for a duplicate. Once '.' and
+     * '..' are resolved, the source may not be the Wings configuration directory or anything in
+     * it, nor a whole volumes directory, and the target may not be the container's home
+     * directory itself.
      *
      * @return NormalizedValidationRules
      */
@@ -58,11 +58,6 @@ final readonly class CreateMount implements CreatesMounts
         ];
     }
 
-    /**
-     * Create a new mount, assigning it a fresh UUID.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function create(array $input): Mount
     {
         $validated = Validator::validate($input, self::rules());

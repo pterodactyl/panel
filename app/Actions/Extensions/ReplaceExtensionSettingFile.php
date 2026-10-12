@@ -16,9 +16,6 @@ final readonly class ReplaceExtensionSettingFile implements ReplacesExtensionSet
 {
     public function __construct(private ExtensionSettingFiles $files) {}
 
-    /**
-     * @return list<ExtensionSettingField>
-     */
     public function replace(ExtensionSettingsDefinition $definition, string $input, ?UploadedFile $upload): array
     {
         $field = $definition->fileField($input);

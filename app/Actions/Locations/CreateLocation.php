@@ -17,8 +17,7 @@ final readonly class CreateLocation implements CreatesLocations
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * A location's fields. Pass the location being updated so its own short code is not
-     * taken for a duplicate.
+     * Pass the location being updated so its own short code is not taken for a duplicate.
      *
      * @return NormalizedValidationRules
      */
@@ -30,9 +29,6 @@ final readonly class CreateLocation implements CreatesLocations
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     */
     public function create(array $input): Location
     {
         $validated = Validator::validate($input, self::rules());

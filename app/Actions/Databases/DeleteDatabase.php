@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
-use Exception;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Facades\Activity;
@@ -18,7 +17,6 @@ final readonly class DeleteDatabase implements DeletesDatabases
         private DatabaseHostGateway $gateway,
     ) {}
 
-    /** @throws Exception */
     public function delete(Database $database): ?bool
     {
         $this->dynamic->set('dynamic', $database->relationLoaded('host') ? $database->host : $database->database_host_id);

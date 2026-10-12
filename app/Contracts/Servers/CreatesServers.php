@@ -15,11 +15,11 @@ use Throwable;
 interface CreatesServers
 {
     /**
-     * Create a server and ask Wings to install it, deleting it again when Wings cannot be
-     * reached. The input is validated here, so it can come straight from any caller; extension
-     * field values go under `extensions` as ValidatedExtensionValues, and the environment is
-     * checked against the egg's variable rules. Without a deployment the server takes the
-     * allocation_id given; with one, the deployment picks its node and default allocation.
+     * Wings is asked to install the server, which is deleted again when Wings cannot be reached.
+     * The input is validated here; extension field values go under `extensions` as
+     * ValidatedExtensionValues, and the environment is checked against the egg's variable rules.
+     * Without a deployment the server takes the allocation_id given; with one, the deployment
+     * picks its node and default allocation.
      *
      * @param  array<string, mixed>  $input  name, owner_id, egg_id, image, startup, memory, swap, disk, io, cpu and, without a deployment, allocation_id, and optionally external_id, description, environment, skip_scripts, oom_disabled, threads, database_limit, allocation_limit, backup_limit, allocation_additional and start_on_completion
      *

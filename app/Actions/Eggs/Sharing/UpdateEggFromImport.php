@@ -7,18 +7,15 @@ namespace Pterodactyl\Actions\Eggs\Sharing;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\UpdatesEggsFromImports;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Eggs\EggImportVariable;
 use Pterodactyl\Services\Eggs\EggParserService;
-use Throwable;
 
 final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 {
     public function __construct(private EggParserService $parser) {}
 
-    /** @throws InvalidFileUploadException|Throwable */
     public function update(Egg $egg, UploadedFile $file): Egg
     {
         $parsed = $this->parser->handle($file);

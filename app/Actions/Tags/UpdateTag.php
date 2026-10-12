@@ -12,17 +12,10 @@ use Pterodactyl\Models\Tag;
 
 final readonly class UpdateTag implements UpdatesTags
 {
-    /**
-     * Update an existing tag. A built-in game tag's slug is the key feature gating matches on
-     * and its presentation comes from the EggSpecificTags enum, so it must never be renamed or
-     * relabelled.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws DisplayException
-     */
     public function update(Tag $tag, array $input): Tag
     {
+        // Feature gating matches on a built-in tag's slug and EggSpecificTags owns its
+        // presentation, so it is never renamed or relabelled.
         throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be edited.');
 
         $validated = Validator::validate($input, CreateTag::rules($tag));

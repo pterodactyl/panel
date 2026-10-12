@@ -17,12 +17,7 @@ final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
 {
     use ValidatesAllowedIps;
 
-    /**
-     * An account API key's fields: its description, held to the rules of an API key's memo,
-     * and the IP addresses or CIDR ranges it may be used from.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         $rules = CreateApiKey::rules();
@@ -34,7 +29,6 @@ final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
         ];
     }
 
-    /** @param list<string>|null $allowedIps */
     public function create(User $user, ?string $description, ?array $allowedIps): NewAccessToken
     {
         $validator = Validator::make(['description' => $description, 'allowed_ips' => $allowedIps], self::rules());

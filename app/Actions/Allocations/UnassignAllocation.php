@@ -12,9 +12,6 @@ use Pterodactyl\Models\Server;
 
 final class UnassignAllocation implements UnassignsAllocations
 {
-    /**
-     * @throws DisplayException
-     */
     public function unassign(Server $server, Allocation $allocation): Allocation
     {
         throw_if(empty($server->allocation_limit), DisplayException::class, 'You cannot delete allocations for this server: no allocation limit is set.');

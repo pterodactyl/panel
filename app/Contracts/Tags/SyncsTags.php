@@ -10,8 +10,7 @@ use Pterodactyl\Models\Node;
 /**
  * Replaces the full set of tags of one kind on an egg or a node. Each value is an existing
  * tag's id, as an integer or a numeric string, or the name of a tag to find or create. The
- * values are validated here, so they can come straight from any caller; errors are reported
- * under `tags` and `tags.N`.
+ * values are validated here; errors are reported under `tags` and `tags.N`.
  */
 interface SyncsTags
 {

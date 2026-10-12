@@ -9,10 +9,6 @@ use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 
 final readonly class UpdateExtensionSettings implements UpdatesExtensionSettings
 {
-    /**
-     * @param  array<string, mixed>  $settings
-     * @return list<ExtensionSettingField>
-     */
     public function update(ExtensionSettingsDefinition $definition, array $settings): array
     {
         $definition->update($settings);

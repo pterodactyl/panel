@@ -14,11 +14,7 @@ use Throwable;
 
 final class CreateSchedule implements CreatesSchedules
 {
-    /**
-     * A schedule's fields, for creating one and for updating one.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -33,11 +29,6 @@ final class CreateSchedule implements CreatesSchedules
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws DisplayException
-     */
     public function create(Server $server, array $input): Schedule
     {
         $validated = Validator::validate($input, self::rules());

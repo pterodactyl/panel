@@ -18,9 +18,7 @@ final readonly class RecordServerInstallResult implements RecordsServerInstallRe
     public function __construct(private ServerInstallService $serverInstallService) {}
 
     /**
-     * An install report's fields, as Wings sends them: whether the install script
-     * succeeded, and whether it ran as a reinstall. The action takes both as bools, which
-     * always meet them.
+     * The action takes both flags as bools, which always meet these rules.
      *
      * @return NormalizedValidationRules
      */

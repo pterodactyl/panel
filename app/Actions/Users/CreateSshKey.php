@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Users;
 
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Users\CreatesSshKeys;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
@@ -37,8 +36,7 @@ final readonly class CreateSshKey implements CreatesSshKeys
     ];
 
     /**
-     * An SSH key's fields: its name, the public key and the key's fingerprint. A key a
-     * request parses is first held to PUBLIC_KEY_MAX_LENGTH and isSupportedPublicKey().
+     * A key a request parses is first held to PUBLIC_KEY_MAX_LENGTH and isSupportedPublicKey().
      *
      * @return NormalizedValidationRules
      */
@@ -73,7 +71,6 @@ final readonly class CreateSshKey implements CreatesSshKeys
         return false;
     }
 
-    /** @throws ValidationException */
     public function create(User $user, string $name, string $publicKey, string $fingerprint): UserSSHKey
     {
         $attributes = Validator::validate(['name' => $name, 'public_key' => $publicKey, 'fingerprint' => $fingerprint], self::rules());

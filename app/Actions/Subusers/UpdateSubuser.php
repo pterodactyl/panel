@@ -14,20 +14,11 @@ use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
-use Throwable;
 
 final readonly class UpdateSubuser implements UpdatesSubusers
 {
     public function __construct(private SubuserPermissionCatalog $catalog) {}
 
-    /**
-     * Replaces the subuser's permissions and revokes their outstanding SFTP sessions on Wings.
-     * Permissions that are already the subuser's, in any order, change nothing.
-     *
-     * @param  list<string>  $permissions
-     *
-     * @throws Throwable
-     */
     public function update(Server $server, Subuser $subuser, array $permissions): Subuser
     {
         // A permission the subuser already holds stays grantable even once nothing defines

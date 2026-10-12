@@ -10,7 +10,8 @@ use Pterodactyl\Models\Schedule;
 interface UpdatesSchedules
 {
     /**
-     * Validates the input itself, so it can come straight from any caller.
+     * The input is validated here, and cron fields that do not form a valid expression are
+     * refused.
      *
      * @param  array<string, mixed>  $input  the same fields a schedule is created with
      *

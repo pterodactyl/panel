@@ -15,10 +15,9 @@ interface CreatesDatabases
     public function setValidateDatabaseLimit(bool $validate): self;
 
     /**
-     * Create a database for a server on the given database host. The input is validated here,
-     * so it can come straight from any caller. The name must already carry the server's
-     * "s{server_id}_" prefix (see DatabaseName::generateUnique()); a database given no
-     * max_connections takes the column default.
+     * The input is validated here. The name must already carry the server's "s{server_id}_"
+     * prefix (see DatabaseName::generateUnique()), and a database given no max_connections takes
+     * the column default.
      *
      * @param  array<string, mixed>  $input  database, remote and database_host_id, and optionally max_connections
      *

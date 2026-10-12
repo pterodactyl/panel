@@ -13,16 +13,13 @@ use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateServerDetails implements UpdatesServerDetails
 {
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * A server's details: its external id, name, owner and description, checked as they
-     * are when a server is created. Pass the server being updated so its own external id
-     * is not taken for a duplicate.
+     * Pass the server being updated so its own external id is not taken for a duplicate.
      *
      * @return NormalizedValidationRules
      */
@@ -38,11 +35,6 @@ final readonly class UpdateServerDetails implements UpdatesServerDetails
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function update(Server $server, array $input): Server
     {
         $validated = Validator::validate($input, self::rules($server));

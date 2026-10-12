@@ -13,13 +13,11 @@ use Throwable;
 interface CreatesSubusers
 {
     /**
-     * Creates a new user on the system and assigns them access to the provided server.
-     * If the email address already belongs to a user on the system a new user will not
-     * be created.
-     *
-     * The email address and the permissions are validated here, so they can come straight
-     * from any caller: each permission must be one the panel or an enabled extension
-     * defines. Whether the caller may grant them is left to the caller.
+     * Give the user with the email address access to the server, inviting a new user when no
+     * account has it; the returned subuser's user reports wasRecentlyCreated when one was. The
+     * email address and the permissions are validated here: each permission must be one the
+     * panel or an enabled extension defines. Whether the caller may grant them is left to the
+     * caller.
      *
      * @param  list<string>  $permissions  The permission keys to grant, deduplicated
      *                                     before they are stored.

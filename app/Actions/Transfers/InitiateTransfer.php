@@ -33,11 +33,7 @@ final readonly class InitiateTransfer implements InitiatesTransfers
     ) {}
 
     /**
-     * A transfer's fields: a node other than the server's own, the allocation the server
-     * takes as its default there, and any additional ones. The default allocation must
-     * exist and be no server's default; the additional ones are integers or numeric
-     * strings. Once these pass, validateAllocations() checks the allocations are free and
-     * on the node.
+     * Once these pass, validateAllocations() checks the allocations are free and on the node.
      *
      * @return NormalizedValidationRules
      */
@@ -78,17 +74,6 @@ final readonly class InitiateTransfer implements InitiatesTransfers
         }
     }
 
-    /**
-     * Records the transfer, reserves the target allocations, and tells the destination
-     * node to begin pulling the server. Wings is called after the records commit; if it
-     * rejects the transfer, it is marked failed and its allocations are released.
-     *
-     * @param  list<int>  $additionalAllocations
-     *
-     * @throws DisplayException
-     * @throws ValidationException
-     * @throws Throwable
-     */
     public function initiate(Server $server, Node $node, int $allocationId, array $additionalAllocations): ServerTransfer
     {
         $additionalAllocations = $this->additionalAllocations($server, $node, $allocationId, $additionalAllocations);
@@ -147,9 +132,8 @@ final readonly class InitiateTransfer implements InitiatesTransfers
     }
 
     /**
-     * Validates the transfer of the server to the node and returns the additional
-     * allocations, as integers. Missing additional allocations fail `allocation_additional.N`
-     * as an exists rule would, all looked up in one query.
+     * Missing additional allocations fail `allocation_additional.N` as an exists rule would, all
+     * looked up in one query.
      *
      * @param  list<int>  $additionalAllocations
      * @return list<int>

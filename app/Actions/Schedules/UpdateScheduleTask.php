@@ -11,19 +11,9 @@ use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Task;
-use Throwable;
 
 final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
 {
-    /**
-     * Updates the task and, when its position changes, shifts the tasks between the
-     * old and new positions to keep the sequence contiguous.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws HttpForbiddenException
-     * @throws Throwable
-     */
     public function update(Schedule $schedule, Task $task, array $input): Task
     {
         $validated = Validator::make($input, CreateScheduleTask::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();

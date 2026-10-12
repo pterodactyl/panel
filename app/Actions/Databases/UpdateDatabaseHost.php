@@ -13,19 +13,11 @@ use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
 {
     public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
-    /**
-     * Update a database host and persist to the database.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function update(DatabaseHost $host, array $input): DatabaseHost
     {
         $validated = Validator::validate($input, CreateDatabaseHost::rules());

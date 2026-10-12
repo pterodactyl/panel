@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\CompletesBackups;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\DisplayException;
@@ -16,19 +15,12 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Backup;
-use Throwable;
 
 final readonly class CompleteBackup implements CompletesBackups
 {
     public function __construct(private BackupManager $backupManager) {}
 
-    /**
-     * The outcome Wings reports for a backup, under the field names of its protocol. A
-     * successful backup carries its checksum, the checksum's type and its size in bytes. An
-     * S3 backup may list the parts of its multipart upload.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -42,16 +34,6 @@ final readonly class CompleteBackup implements CompletesBackups
         ];
     }
 
-    /**
-     * Records the outcome Wings reported for a backup and, for S3 storage, closes the
-     * multipart upload it belongs to.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws DisplayException
-     * @throws ValidationException
-     * @throws Throwable
-     */
     public function complete(Backup $backup, array $input): void
     {
         $validated = Validator::make($input, self::rules())->safe();
@@ -90,9 +72,6 @@ final readonly class CompleteBackup implements CompletesBackups
     }
 
     /**
-     * Marks a multipart upload in a given S3-compatible instance as failed or successful for
-     * the given backup.
-     *
      * @param  list<MultipartUploadPart>|null  $parts
      *
      * @throws DisplayException

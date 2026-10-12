@@ -19,9 +19,6 @@ final readonly class UpdateUserEmail implements UpdatesUserEmails
 
     public function __construct(private UpdatesUsers $users) {}
 
-    /**
-     * @return array{user: User, original: string, email: string, changed: bool}
-     */
     public function update(User $user, string $email): array
     {
         throw_if(RateLimiter::tooManyAttempts($key = $this->throttleKey($user), self::THROTTLE_MAX), TooManyRequestsHttpException::class, 'Your email address has been changed too many times today. Please try again later.');

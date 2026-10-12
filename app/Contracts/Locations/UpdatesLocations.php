@@ -9,8 +9,8 @@ use Pterodactyl\Models\Location;
 interface UpdatesLocations
 {
     /**
-     * Update an existing location. The input is validated here, so it can come straight from any caller;
-     * extension field values go under `extensions` as ValidatedExtensionValues.
+     * The input is validated here. Extension field values go under `extensions` as
+     * ValidatedExtensionValues.
      *
      * @param  array<string, mixed>  $input  short and long
      */

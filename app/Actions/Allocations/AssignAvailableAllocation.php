@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Contracts\Allocations\AssignsAvailableAllocations;
 use Pterodactyl\Contracts\Allocations\CreatesAllocations;
 use Pterodactyl\Data\AllocationRange;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 use Pterodactyl\Facades\Activity;
@@ -20,7 +19,6 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
 {
     public function __construct(private CreatesAllocations $allocations) {}
 
-    /** @throws DisplayException */
     public function assignAvailable(Server $server): Allocation
     {
         throw_unless(config('pterodactyl.client_features.allocations.enabled'), AutoAllocationNotEnabledException::class);

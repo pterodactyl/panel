@@ -11,11 +11,6 @@ use Pterodactyl\Models\Node;
 
 final class DeleteNode implements DeletesNodes
 {
-    /**
-     * Delete a node from the panel if no servers are attached to it.
-     *
-     * @throws HasActiveServersException
-     */
     public function delete(Node $node): void
     {
         if ($node->servers()->exists()) {

@@ -10,8 +10,7 @@ use Pterodactyl\Models\Egg;
 interface UpdatesEggInstallScripts
 {
     /**
-     * Modify the install script for a given Egg. The input is validated here, so it can come
-     * straight from any caller, and only the fields given are changed. An egg to copy the
+     * The input is validated here, and only the fields given are changed. An egg to copy the
      * script from must have a script of its own.
      *
      * @param  array<string, mixed>  $input  any of script_install, script_is_privileged, script_entry, script_container and copy_script_from

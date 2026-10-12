@@ -11,10 +11,6 @@ use Pterodactyl\Models\Server;
 
 final readonly class CompressFiles implements CompressesFiles
 {
-    /**
-     * @param  array<mixed>  $files
-     * @return DaemonFileObject
-     */
     public function compress(Server $server, ?string $root, array $files): array
     {
         $archive = Daemon::server($server)->files()->compressFiles($root, $files);

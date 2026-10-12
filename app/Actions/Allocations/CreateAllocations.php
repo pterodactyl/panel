@@ -51,12 +51,7 @@ final readonly class CreateAllocations implements CreatesAllocations
         });
     }
 
-    /**
-     * The fields of the allocations to create on one address: an IP address, CIDR range or
-     * hostname, the ports and port ranges ("25565-25570") to open on it, and an optional alias.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -67,15 +62,6 @@ final readonly class CreateAllocations implements CreatesAllocations
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws DisplayException
-     * @throws CidrOutOfRangeException
-     * @throws InvalidPortMappingException
-     * @throws PortOutOfRangeException
-     * @throws TooManyPortsInRangeException
-     */
     public function create(Node $node, array $input): void
     {
         $validated = Validator::make($input, self::rules())->safe();

@@ -16,11 +16,6 @@ final readonly class UpdateEgg implements UpdatesEggs
 {
     public function __construct(private ExtensionFields $extensions) {}
 
-    /**
-     * Update an egg with the fields it is created with.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function update(Egg $egg, array $input): Egg
     {
         // A parent egg of 0 is the legacy "no parent egg" sentinel.

@@ -13,7 +13,6 @@ use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Throwable;
 
 final readonly class RestoreBackup implements RestoresBackups
 {
@@ -22,8 +21,7 @@ final readonly class RestoreBackup implements RestoresBackups
     ) {}
 
     /**
-     * A restore's fields: whether the server's files are deleted before the backup is
-     * unpacked over them. The action takes the flag as a bool, which always meets them.
+     * The action takes `truncate` as a bool, which always meets these rules.
      *
      * @return NormalizedValidationRules
      */
@@ -34,12 +32,6 @@ final readonly class RestoreBackup implements RestoresBackups
         ];
     }
 
-    /**
-     * Marks the server as restoring and asks Wings to unpack the backup over its files.
-     * S3 backups are handed to Wings as a signed download link.
-     *
-     * @throws Throwable
-     */
     public function restore(Server $server, Backup $backup, User $user, bool $truncate): void
     {
         throw_if(($server->status) !== null, BadRequestHttpException::class, 'This server is not currently in a state that allows for a backup to be restored.');

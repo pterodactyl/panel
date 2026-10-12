@@ -12,13 +12,6 @@ use Pterodactyl\Models\Egg;
 
 final class DeleteEgg implements DeletesEggs
 {
-    /**
-     * Delete an egg, provided no servers use it and no eggs inherit their
-     * configuration from it.
-     *
-     * @throws HasActiveServersException
-     * @throws HasChildrenException
-     */
     public function delete(Egg $egg): void
     {
         if ($egg->servers()->exists()) {

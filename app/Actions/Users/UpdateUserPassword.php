@@ -15,10 +15,6 @@ final readonly class UpdateUserPassword implements UpdatesUserPasswords
 {
     public function __construct(private UpdatesUsers $users) {}
 
-    /**
-     * Changing a password, through the account page or a reset link, also ends every other
-     * session and "remember me" login made with the old one.
-     */
     public function update(User $user, string $password): User
     {
         $user = $this->users->update($user, ['password' => $password]);

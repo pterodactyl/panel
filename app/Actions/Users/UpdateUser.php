@@ -11,20 +11,11 @@ use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateUser implements UpdatesUsers
 {
     public function __construct(private ExtensionFields $extensions) {}
 
-    /**
-     * Update the user model instance and return the updated model. The hashed
-     * password cast on the model takes care of hashing a new password.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function update(User $user, array $input): User
     {
         $rules = array_map(fn (array $rules): array => ['sometimes', ...$rules], CreateUser::rules($user));

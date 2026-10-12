@@ -18,16 +18,13 @@ use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Rules\UserEmail;
 use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
-use Throwable;
 
 final readonly class CreateSubuser implements CreatesSubusers
 {
     public function __construct(private CreatesUsers $users, private SubuserPermissionCatalog $catalog) {}
 
     /**
-     * A subuser's fields: the email address of the user to give access, who is invited when
-     * no account has it, and the permission keys to grant. Pass the keys that can be granted
-     * to hold each permission to them.
+     * Pass the keys that can be granted to hold each permission to them.
      *
      * @param  list<string>|null  $grantable
      * @return NormalizedValidationRules
@@ -41,18 +38,6 @@ final readonly class CreateSubuser implements CreatesSubusers
         ];
     }
 
-    /**
-     * Creates a new user on the system and assigns them access to the provided server.
-     * If the email address already belongs to a user on the system a new user will not
-     * be created. The returned subuser's user reports wasRecentlyCreated when one was.
-     *
-     * @param  list<string>  $permissions  The permission keys to grant, deduplicated
-     *                                     before they are stored.
-     *
-     * @throws ServerSubuserExistsException
-     * @throws UserIsServerOwnerException
-     * @throws Throwable
-     */
     public function create(Server $server, string $email, array $permissions): Subuser
     {
         Validator::validate(['email' => $email, 'permissions' => $permissions], self::rules($this->catalog->keys()));

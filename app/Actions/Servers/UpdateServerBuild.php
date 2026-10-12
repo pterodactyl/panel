@@ -15,7 +15,6 @@ use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Throwable;
 
 final readonly class UpdateServerBuild implements UpdatesServerBuild
 {
@@ -24,10 +23,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
     ) {}
 
     /**
-     * A server's build fields. The default allocation must exist and be no other server's
-     * default; pass the server being updated so its own default is not taken for a clash.
-     * The limits take the values a new server takes, and the allocations to add or remove
-     * are lists of allocation ids.
+     * Pass the server being updated so its own default allocation is not taken for a clash.
      *
      * @return NormalizedValidationRules
      */
@@ -54,12 +50,6 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     * @throws DisplayException
-     */
     public function update(Server $server, array $input): Server
     {
         $rules = array_map(fn (array $rules): array => ['sometimes', ...$rules], self::rules($server));

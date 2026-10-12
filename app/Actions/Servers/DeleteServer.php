@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Events\Server\OperationCompleted;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Server;
@@ -33,10 +32,6 @@ final class DeleteServer implements DeletesServers
         return $this;
     }
 
-    /**
-     * @throws Throwable
-     * @throws DisplayException
-     */
     public function delete(Server $server): void
     {
         try {

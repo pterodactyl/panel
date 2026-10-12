@@ -17,14 +17,6 @@ final readonly class PresignBackupUpload implements PresignsBackupUploads
 
     public function __construct(private BackupManager $backupManager) {}
 
-    /**
-     * Opens a multipart upload for the backup in S3 and returns one presigned URL per part
-     * Wings needs to upload for an archive of the given size.
-     *
-     * @return BackupUploadParts
-     *
-     * @throws BadRequestHttpException
-     */
     public function presign(Backup $backup, int $size): array
     {
         $adapter = $this->backupManager->adapter();

@@ -12,7 +12,6 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
-use Throwable;
 
 final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
 {
@@ -21,7 +20,6 @@ final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
         private DatabaseHostGateway $gateway,
     ) {}
 
-    /** @throws Throwable */
     public function rotate(Database $database): string
     {
         $password = Utilities::randomStringWithSpecialCharacters(24);

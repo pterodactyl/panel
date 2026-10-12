@@ -16,10 +16,8 @@ use Pterodactyl\Rules\ValidRuleSet;
 final class CreateEggVariable implements CreatesEggVariables
 {
     /**
-     * An egg variable's fields, whether it is written through the admin API or arrives in an
-     * imported egg, and the options that set whether users can see and edit it. Pass the egg
-     * to hold the environment variable name unique among its variables, and the variable
-     * being updated so its own name is not taken for a duplicate.
+     * Pass the egg to hold the environment variable name unique among its variables, and the
+     * variable being updated so its own name is not taken for a duplicate.
      *
      * @return NormalizedValidationRules
      */
@@ -41,11 +39,6 @@ final class CreateEggVariable implements CreatesEggVariables
         ];
     }
 
-    /**
-     * Create a new variable for a given Egg.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function create(Egg $egg, array $input): EggVariable
     {
         $validated = Validator::validate($input, self::rules($egg));

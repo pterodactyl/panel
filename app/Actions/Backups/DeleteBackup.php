@@ -22,12 +22,6 @@ final readonly class DeleteBackup implements DeletesBackups
         private BackupManager $manager,
     ) {}
 
-    /**
-     * Deletes a backup from the system. If the backup is stored in S3 a request
-     * will be made to delete that backup from the disk as well.
-     *
-     * @throws Throwable
-     */
     public function delete(Backup $backup): void
     {
         // If the backup is marked as failed it can still be deleted, even if locked
@@ -59,11 +53,7 @@ final readonly class DeleteBackup implements DeletesBackups
             ->log();
     }
 
-    /**
-     * Deletes a backup's archive from an S3 disk.
-     *
-     * @throws Throwable
-     */
+    /** @throws Throwable */
     private function deleteFromS3(Backup $backup): void
     {
         $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);

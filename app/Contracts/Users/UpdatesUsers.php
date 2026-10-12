@@ -10,12 +10,9 @@ use Throwable;
 interface UpdatesUsers
 {
     /**
-     * Update the user model instance and return the updated model. The hashed
-     * password cast on the model takes care of hashing a new password.
-     *
-     * The input is validated here, so it can come straight from any caller. Only the fields
-     * given are changed; a blank password leaves the password alone. Extension field values
-     * go under `extensions` as ValidatedExtensionValues.
+     * Pass a new password in plain text; the model hashes it. The input is validated here, only
+     * the fields given are changed, and a blank password leaves the password alone. Extension
+     * field values go under `extensions` as ValidatedExtensionValues.
      *
      * @param  array<string, mixed>  $input  any of the fields a user is created with
      *

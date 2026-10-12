@@ -13,13 +13,11 @@ use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Task;
-use Throwable;
 
 final readonly class CreateScheduleTask implements CreatesScheduleTasks
 {
     /**
-     * A task's fields, for creating one and for updating one. A power task's payload
-     * must name the power action to send.
+     * A power task's payload must name the power action to send.
      *
      * @return NormalizedValidationRules
      */
@@ -39,16 +37,6 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
         ];
     }
 
-    /**
-     * Appends a task to the schedule, or slots it into the requested position by
-     * shifting the tasks that follow it.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws HttpForbiddenException
-     * @throws ServiceLimitExceededException
-     * @throws Throwable
-     */
     public function create(Schedule $schedule, array $input): Task
     {
         $validated = Validator::make($input, self::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();

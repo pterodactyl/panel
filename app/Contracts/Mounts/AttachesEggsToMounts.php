@@ -9,8 +9,8 @@ use Pterodactyl\Models\Mount;
 interface AttachesEggsToMounts
 {
     /**
-     * Attach eggs to a mount, keeping any eggs already attached. The ids are validated here,
-     * so they can come straight from any caller; errors are reported under `eggs` and `eggs.N`.
+     * Eggs already attached stay attached. The ids are validated here; errors are reported under
+     * `eggs` and `eggs.N`.
      *
      * @param  list<mixed>  $eggIds  ids of existing eggs, as integers or numeric strings
      */

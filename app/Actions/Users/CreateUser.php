@@ -19,7 +19,6 @@ use Pterodactyl\Rules\UserEmail;
 use Pterodactyl\Rules\Username;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class CreateUser implements CreatesUsers
 {
@@ -37,8 +36,8 @@ final readonly class CreateUser implements CreatesUsers
     }
 
     /**
-     * A user's fields. Pass the user being updated so its own email, username and external
-     * id are not taken for duplicates.
+     * Pass the user being updated so its own email, username and external id are not taken for
+     * duplicates.
      *
      * @return NormalizedValidationRules
      */
@@ -56,17 +55,6 @@ final readonly class CreateUser implements CreatesUsers
         ];
     }
 
-    /**
-     * Create a new user on the system. When no password is provided a random one is
-     * set and a password reset token is generated for the account welcome email.
-     *
-     * The UUID and password hash are handled by the model itself (HasVersion4Uuids
-     * and the hashed password cast).
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function create(array $input): User
     {
         $attributes = Validator::validate($input, self::rules());

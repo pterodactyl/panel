@@ -8,34 +8,18 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
-use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
-use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\RecoveryToken;
 use Pterodactyl\Models\User;
-use Throwable;
 use UnexpectedValueException;
 
 final readonly class ToggleTwoFactor implements TogglesTwoFactor
 {
     public function __construct(private Google2FA $google2FA) {}
 
-    /**
-     * Toggle 2FA on an account only if the token provided is valid.
-     *
-     * @return list<string> The plaintext recovery tokens generated for the account,
-     *                      empty when 2FA is being turned off.
-     *
-     * @throws Throwable
-     * @throws IncompatibleWithGoogleAuthenticatorException
-     * @throws InvalidCharactersException
-     * @throws SecretKeyTooShortException
-     * @throws TwoFactorAuthenticationTokenInvalid
-     */
     public function toggle(User $user, string $token, ?bool $toggleState = null): array
     {
         $encryptedSecret = $user->totp_secret;

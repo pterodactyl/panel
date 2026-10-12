@@ -19,10 +19,6 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
 {
     public function __construct(private BackupManager $backupManager, private NodeJWTService $jwtService) {}
 
-    /**
-     * Returns the URL that allows for a backup to be downloaded by an individual
-     * user, or by the Wings control software.
-     */
     public function generate(Backup $backup, User $user): string
     {
         throw_if($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS, BadRequestHttpException::class, 'The backup requested references an unknown disk driver type and cannot be downloaded.');
@@ -44,10 +40,6 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
         return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
     }
 
-    /**
-     * Returns a signed URL that allows us to download a file directly out of a non-public
-     * S3 bucket by using a signed URL.
-     */
     private function getS3BackupUrl(Backup $backup): string
     {
         $adapter = $this->backupManager->adapter(Backup::ADAPTER_AWS_S3);

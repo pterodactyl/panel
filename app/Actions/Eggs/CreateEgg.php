@@ -28,10 +28,8 @@ final readonly class CreateEgg implements CreatesEggs
     public function __construct(private ExtensionFields $extensions) {}
 
     /**
-     * An egg's fields, for creating one and for updating one. The Docker images are one per
-     * line, each held to DOCKER_IMAGE (see DockerImageList). An egg that copies its config from
-     * another needs none of its own; every config block given must be JSON, apart from the
-     * stop command.
+     * The Docker images are one per line, each held to DOCKER_IMAGE. An egg that copies its
+     * config from another needs none of its own.
      *
      * @return NormalizedValidationRules
      */
@@ -72,11 +70,6 @@ final readonly class CreateEgg implements CreatesEggs
         return $normalized;
     }
 
-    /**
-     * Create an egg, stamping the configured service author.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function create(array $input): Egg
     {
         // A parent egg of 0 is the legacy "no parent egg" sentinel.

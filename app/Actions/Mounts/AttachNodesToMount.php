@@ -15,11 +15,7 @@ final readonly class AttachNodesToMount implements AttachesNodesToMounts
 {
     use ValidatesArrayExistence;
 
-    /**
-     * The nodes to attach: a list of node ids, each an integer or a numeric string.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -28,20 +24,14 @@ final readonly class AttachNodesToMount implements AttachesNodesToMounts
         ];
     }
 
-    /**
-     * Attach nodes to a mount, keeping any nodes already attached.
-     *
-     * @param  list<mixed>  $nodeIds
-     */
     public function attach(Mount $mount, array $nodeIds): void
     {
         $mount->nodes()->syncWithoutDetaching($this->nodeIds($nodeIds));
     }
 
     /**
-     * Validates the node ids under `nodes` and returns them as integers. Each id must name a
-     * node; they are all looked up in one query, and a missing one fails `nodes.N` as an
-     * exists rule would.
+     * The nodes are looked up in one query, and a missing one fails `nodes.N` as an exists rule
+     * would.
      *
      * @param  list<mixed>  $nodeIds
      * @return list<int>

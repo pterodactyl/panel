@@ -18,11 +18,6 @@ use Throwable;
 
 final readonly class ProcessSchedule implements ProcessesSchedules
 {
-    /**
-     * Process a schedule and push the first task onto the queue worker.
-     *
-     * @throws Throwable
-     */
     public function process(Schedule $schedule, bool $now = false): void
     {
         $this->run($schedule, $now);

@@ -14,13 +14,14 @@ use Throwable;
 interface InitiatesTransfers
 {
     /**
-     * Records the transfer, reserves the target allocations, and tells the destination
-     * node to begin pulling the server.
+     * Records the transfer, reserves the target allocations, and tells the destination node to
+     * begin pulling the server once the records are committed; a transfer Wings rejects is
+     * marked failed and its allocations are released.
      *
-     * The node and allocations are validated here, so they can come straight from any
-     * caller: the node must not be the server's own, the default allocation must be no
-     * server's default, and every allocation must exist, be unassigned and be on the node.
-     * Errors are reported under node_id, allocation_id and allocation_additional.N.
+     * The node and allocations are validated here: the node must not be the server's own, the
+     * default allocation must be no server's default, and every allocation must exist, be
+     * unassigned and be on the node. Errors are reported under node_id, allocation_id and
+     * allocation_additional.N.
      *
      * @param  list<int>  $additionalAllocations
      *

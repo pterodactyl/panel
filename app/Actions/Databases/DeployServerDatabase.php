@@ -9,22 +9,18 @@ use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Databases\CreatesDatabases;
 use Pterodactyl\Contracts\Databases\DeploysServerDatabases;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
-use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Support\DatabaseName;
-use Throwable;
 
 final readonly class DeployServerDatabase implements DeploysServerDatabases
 {
     public function __construct(private CreatesDatabases $createDatabase) {}
 
     /**
-     * The fields of a database to deploy. The name is the one a user picks, before the
-     * "s{server_id}_" prefix is added; with no host given, one is picked for the server.
+     * The name is the one a user picks, before the "s{server_id}_" prefix is added.
      *
      * @return NormalizedValidationRules
      */
@@ -40,15 +36,6 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     * @throws TooManyDatabasesException
-     * @throws DatabaseClientFeatureNotEnabledException
-     * @throws NoSuitableDatabaseHostException
-     * @throws DisplayException
-     */
     public function deploy(Server $server, array $input): Database
     {
         $validated = Validator::make($input, self::rules())->safe();

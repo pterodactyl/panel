@@ -15,11 +15,7 @@ final readonly class AttachEggsToMount implements AttachesEggsToMounts
 {
     use ValidatesArrayExistence;
 
-    /**
-     * The eggs to attach: a list of egg ids, each an integer or a numeric string.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -28,20 +24,14 @@ final readonly class AttachEggsToMount implements AttachesEggsToMounts
         ];
     }
 
-    /**
-     * Attach eggs to a mount, keeping any eggs already attached.
-     *
-     * @param  list<mixed>  $eggIds
-     */
     public function attach(Mount $mount, array $eggIds): void
     {
         $mount->eggs()->syncWithoutDetaching($this->eggIds($eggIds));
     }
 
     /**
-     * Validates the egg ids under `eggs` and returns them as integers. Each id must name an
-     * egg; they are all looked up in one query, and a missing one fails `eggs.N` as an exists
-     * rule would.
+     * The eggs are looked up in one query, and a missing one fails `eggs.N` as an exists rule
+     * would.
      *
      * @param  list<mixed>  $eggIds
      * @return list<int>

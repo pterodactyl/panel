@@ -41,7 +41,7 @@ final class CreateDatabase implements CreatesDatabases
     ) {}
 
     /**
-     * A database's fields. The name is the full one, already prefixed with "s{server_id}_" by
+     * The name is the full one, already prefixed with "s{server_id}_" by
      * DatabaseName::generateUnique().
      *
      * @return NormalizedValidationRules
@@ -63,13 +63,6 @@ final class CreateDatabase implements CreatesDatabases
         return $this;
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     * @throws TooManyDatabasesException
-     * @throws DatabaseClientFeatureNotEnabledException
-     */
     public function create(Server $server, array $input): Database
     {
         throw_unless(config('pterodactyl.client_features.databases.enabled'), DatabaseClientFeatureNotEnabledException::class);

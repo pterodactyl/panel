@@ -17,9 +17,8 @@ final readonly class CreateApiKey implements CreatesApiKeys
     use ValidatesAllowedIps;
 
     /**
-     * An API key's fields: its memo, the user it belongs to, and the IP addresses or CIDR
-     * ranges it may be used from. Each allowed IP must also parse as an address or a range
-     * (see ValidatesAllowedIps).
+     * Each allowed IP must also parse as an address or a range, which ValidatesAllowedIps checks
+     * once these rules pass.
      *
      * @return NormalizedValidationRules
      */
@@ -34,8 +33,8 @@ final readonly class CreateApiKey implements CreatesApiKeys
     }
 
     /**
-     * The resource permissions of an application key: an r_* column for each AdminAcl
-     * resource, holding AdminAcl::NONE or AdminAcl::READ and AdminAcl::WRITE combined.
+     * An r_* column for each AdminAcl resource, holding AdminAcl::NONE or AdminAcl::READ and
+     * AdminAcl::WRITE combined.
      *
      * @return NormalizedValidationRules
      */
@@ -49,10 +48,6 @@ final readonly class CreateApiKey implements CreatesApiKeys
         return $rules;
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     * @param  array<string, mixed>  $permissions
-     */
     public function create(int $keyType, array $input, array $permissions = []): ApiKey
     {
         $validator = Validator::make($input, self::rules());

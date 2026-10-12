@@ -10,16 +10,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ValidatedInput;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Pterodactyl\Actions\Allocations\CreateAllocations;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Data\ValidatedEggVariable;
 use Pterodactyl\Events\Server\OperationCompleted;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Egg;
@@ -33,7 +29,6 @@ use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Ramsey\Uuid\Uuid;
-use Throwable;
 use UnexpectedValueException;
 
 final readonly class CreateServer implements CreatesServers
@@ -47,11 +42,9 @@ final readonly class CreateServer implements CreatesServers
     ) {}
 
     /**
-     * A new server's fields. The default allocation and any additional ones must exist and
-     * belong to no server. Memory, disk, CPU and the feature limits take 0 for unlimited,
-     * and swap takes -1. The CPU threads are a pattern of cores such as "0-1,3", which a
-     * bare number also matches. Pass a server being updated so its own external id is not
-     * taken for a duplicate.
+     * Memory, disk, CPU and the feature limits take 0 for unlimited, and swap takes -1. The CPU
+     * threads are a pattern of cores such as "0-1,3", which a bare number also matches. Pass a
+     * server being updated so its own external id is not taken for a duplicate.
      *
      * @return NormalizedValidationRules
      */
@@ -84,15 +77,6 @@ final readonly class CreateServer implements CreatesServers
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     * @throws DisplayException
-     * @throws ValidationException
-     * @throws NoViableNodeException
-     * @throws NoViableAllocationException
-     */
     public function create(array $input, ?DeploymentObject $deployment = null): Server
     {
         $rules = self::rules();

@@ -9,9 +9,8 @@ use Pterodactyl\Models\ApiKey;
 interface UpdatesApiKeys
 {
     /**
-     * Update an API key's attributes without regenerating its token. The input and the
-     * permissions are validated here, so they can come straight from any caller. Only what
-     * is given changes, and the permissions are only applied to application keys.
+     * The token is kept. The input and the permissions are validated here, only what is given
+     * changes, and the permissions only apply to application keys.
      *
      * @param  array<string, mixed>  $input  optionally memo
      * @param  array<string, mixed>  $permissions  the r_* column of any AdminAcl resource

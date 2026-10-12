@@ -13,11 +13,6 @@ use Throwable;
 
 final class UpdateSchedule implements UpdatesSchedules
 {
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws DisplayException
-     */
     public function update(Schedule $schedule, array $input): Schedule
     {
         $validated = Validator::validate($input, CreateSchedule::rules());

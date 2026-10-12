@@ -10,10 +10,9 @@ use Pterodactyl\Models\Tag;
 interface UpdatesTags
 {
     /**
-     * Update an existing tag. Built-in game tags cannot be edited. The input is validated here,
-     * so it can come straight from any caller. It takes the fields a tag is created with,
-     * required ones included; the colour and legacy nest id keep their stored values when they
-     * are left out.
+     * Built-in game tags cannot be edited. The input is validated here and takes the fields a
+     * tag is created with, required ones included; the colour and legacy nest id keep their
+     * stored values when they are left out.
      *
      * @param  array<string, mixed>  $input  the fields a tag is created with
      *

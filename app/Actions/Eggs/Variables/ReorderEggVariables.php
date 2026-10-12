@@ -12,12 +12,7 @@ use Pterodactyl\Models\Egg;
 
 final readonly class ReorderEggVariables implements ReordersEggVariables
 {
-    /**
-     * The variable ids of an egg in their new order, each once. An id may be an integer or
-     * a numeric string.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -27,8 +22,6 @@ final readonly class ReorderEggVariables implements ReordersEggVariables
     }
 
     /**
-     * Validates variable ids under `order` and returns them as integers.
-     *
      * @param  list<mixed>  $order
      * @return list<int>
      */
@@ -39,7 +32,6 @@ final readonly class ReorderEggVariables implements ReordersEggVariables
         return array_map(fn (int|string $key): int => $input->integer('order.'.$key), array_keys($input->array('order')));
     }
 
-    /** @param list<mixed> $order */
     public function reorder(Egg $egg, array $order): void
     {
         $order = self::order($order);

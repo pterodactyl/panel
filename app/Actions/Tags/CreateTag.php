@@ -13,9 +13,9 @@ use Pterodactyl\Rules\TagSlug;
 final readonly class CreateTag implements CreatesTags
 {
     /**
-     * A tag's fields. Pass the tag being edited so its own slug does not collide with the
-     * uniqueness check. A slug may not be purely numeric, so a leftover legacy nest id can be
-     * told apart from a real tag and a slug can never shadow a tag id (see TagSlug).
+     * Pass the tag being edited so its own slug does not collide with the uniqueness check. A
+     * slug may not be purely numeric, so a leftover legacy nest id can be told apart from a real
+     * tag and a slug can never shadow a tag id (see TagSlug).
      *
      * @return NormalizedValidationRules
      */
@@ -31,9 +31,6 @@ final readonly class CreateTag implements CreatesTags
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     */
     public function create(array $input): Tag
     {
         $validated = Validator::validate($input, self::rules());

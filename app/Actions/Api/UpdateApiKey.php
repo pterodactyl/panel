@@ -10,12 +10,6 @@ use Pterodactyl\Models\ApiKey;
 
 final readonly class UpdateApiKey implements UpdatesApiKeys
 {
-    /**
-     * Update an API key's attributes without regenerating its token.
-     *
-     * @param  array<string, mixed>  $input
-     * @param  array<string, mixed>  $permissions
-     */
     public function update(ApiKey $key, array $input, array $permissions = []): ApiKey
     {
         $attributes = Validator::validate($input, ['memo' => ['sometimes', ...CreateApiKey::rules()['memo']]]);

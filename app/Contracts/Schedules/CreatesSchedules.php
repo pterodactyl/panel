@@ -11,7 +11,8 @@ use Pterodactyl\Models\Server;
 interface CreatesSchedules
 {
     /**
-     * Validates the input itself, so it can come straight from any caller.
+     * The input is validated here, and cron fields that do not form a valid expression are
+     * refused.
      *
      * @param  array<string, mixed>  $input  name, is_active, minute, hour, day_of_month, month, day_of_week and only_when_online
      *

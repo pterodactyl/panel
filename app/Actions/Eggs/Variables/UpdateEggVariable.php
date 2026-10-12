@@ -12,11 +12,6 @@ use Pterodactyl\Models\EggVariable;
 
 final class UpdateEggVariable implements UpdatesEggVariables
 {
-    /**
-     * Update an egg variable with the fields it is created with.
-     *
-     * @param  array<string, mixed>  $input
-     */
     public function update(EggVariable $variable, array $input): EggVariable
     {
         $egg = Egg::query()->findOrFail($variable->egg_id);

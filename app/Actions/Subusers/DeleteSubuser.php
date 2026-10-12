@@ -11,15 +11,9 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Throwable;
 
 final readonly class DeleteSubuser implements DeletesSubusers
 {
-    /**
-     * Removes the subuser from the server and revokes their outstanding SFTP sessions on Wings.
-     *
-     * @throws Throwable
-     */
     public function delete(Server $server, Subuser $subuser): void
     {
         DB::transaction(function () use ($server, $subuser): void {

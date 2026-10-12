@@ -10,7 +10,7 @@ use Pterodactyl\Models\Location;
 interface DeletesLocations
 {
     /**
-     * Delete a location, provided no nodes are assigned to it.
+     * A location with nodes assigned to it is not deleted.
      *
      * @throws HasActiveNodesException
      */

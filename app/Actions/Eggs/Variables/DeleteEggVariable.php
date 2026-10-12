@@ -9,9 +9,6 @@ use Pterodactyl\Models\EggVariable;
 
 final readonly class DeleteEggVariable implements DeletesEggVariables
 {
-    /**
-     * Delete an egg variable.
-     */
     public function delete(EggVariable $variable): void
     {
         $variable->delete();

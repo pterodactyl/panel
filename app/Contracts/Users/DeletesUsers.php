@@ -10,7 +10,7 @@ use Pterodactyl\Models\User;
 interface DeletesUsers
 {
     /**
-     * Delete a user from the panel only if they have no servers attached to their account.
+     * A user who owns servers is not deleted.
      *
      * @throws DisplayException
      */

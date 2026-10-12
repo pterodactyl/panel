@@ -17,19 +17,11 @@ use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateNode implements UpdatesNodes
 {
     public function __construct(private ExtensionFields $extensions) {}
 
-    /**
-     * Update the configuration values for a given node on the machine.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function update(Node $node, array $input, bool $resetToken = false): Node
     {
         $validated = Validator::validate($input, CreateNode::rules());

@@ -14,7 +14,7 @@ use Throwable;
 interface TogglesTwoFactor
 {
     /**
-     * Toggle 2FA on an account only if the token provided is valid.
+     * The token must be valid.
      *
      * @return list<string> The plaintext recovery tokens generated for the account,
      *                      empty when 2FA is being turned off.

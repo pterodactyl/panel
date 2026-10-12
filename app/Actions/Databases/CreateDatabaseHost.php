@@ -12,18 +12,12 @@ use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
 {
     public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
-    /**
-     * A database host's fields, for creating one and for updating one. The host is a hostname
-     * or IP address, and the node, when given, must exist.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -36,13 +30,6 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
         ];
     }
 
-    /**
-     * Create a new database host on the Panel once it accepts the given credentials.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function create(array $input): DatabaseHost
     {
         $validated = Validator::validate($input, self::rules());

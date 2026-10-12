@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
@@ -34,12 +33,7 @@ final class InitiateBackup implements InitiatesBackups
         private readonly BackupManager $backupManager,
     ) {}
 
-    /**
-     * A backup's fields: an optional name, whether it is locked against deletion, and the
-     * files and folders to leave out of it.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -50,10 +44,6 @@ final class InitiateBackup implements InitiatesBackups
         ];
     }
 
-    /**
-     * Set if the backup should be locked once it is created which will prevent
-     * its deletion by users or automated system processes.
-     */
     public function setIsLocked(bool $isLocked): InitiatesBackups
     {
         $this->isLocked = $isLocked;
@@ -61,12 +51,6 @@ final class InitiateBackup implements InitiatesBackups
         return $this;
     }
 
-    /**
-     * Sets the files to be ignored by this backup. They are validated when the backup is
-     * initiated.
-     *
-     * @param  list<string>|null  $ignored
-     */
     public function setIgnoredFiles(?array $ignored): InitiatesBackups
     {
         $this->ignoredFiles = $ignored ?? [];
@@ -74,19 +58,6 @@ final class InitiateBackup implements InitiatesBackups
         return $this;
     }
 
-    /**
-     * Initiates the backup process for a server on Wings.
-     *
-     * The rows are written in a transaction, but Wings is only asked to start the backup
-     * once that transaction commits, and backups rotated out to make room are deleted only
-     * after Wings accepted the new one. A rejected backup is marked failed and nothing is
-     * rotated out, so the oldest backup survives a failed attempt.
-     *
-     * @throws Throwable
-     * @throws TooManyBackupsException
-     * @throws TooManyRequestsHttpException
-     * @throws ValidationException
-     */
     public function initiate(Server $server, ?string $name = null, bool $override = false): Backup
     {
         Validator::validate(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles], self::rules());
@@ -151,6 +122,8 @@ final class InitiateBackup implements InitiatesBackups
             return [$backup, $rotated];
         });
 
+        // Wings is only asked once the rows are committed, and backups rotated out to make room
+        // are deleted only after it accepts the new one.
         try {
             Daemon::server($server)->backups()->create($backup);
         } catch (Throwable $throwable) {

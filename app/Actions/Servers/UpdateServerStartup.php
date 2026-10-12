@@ -15,7 +15,6 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Servers\VariableValidatorService;
-use Throwable;
 use UnexpectedValueException;
 
 final readonly class UpdateServerStartup implements UpdatesServerStartup
@@ -28,10 +27,8 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
     ) {}
 
     /**
-     * A server's startup fields at the given user level. The environment maps each egg
-     * variable to its value, which the egg's own variable rules check. Only an administrator
-     * changes the startup command, egg, Docker image and install script flag, so below the
-     * admin level the environment is the only field.
+     * The environment maps each egg variable to its value, which the egg's own variable rules
+     * check. Below the admin level the environment is the only field.
      *
      * @return NormalizedValidationRules
      */
@@ -52,11 +49,6 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws Throwable
-     */
     public function update(Server $server, array $input, int $userLevel = User::USER_LEVEL_USER): Server
     {
         // Only the fields given are validated, and fields above the user level are ignored.

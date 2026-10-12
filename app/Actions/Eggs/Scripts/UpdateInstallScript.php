@@ -11,13 +11,7 @@ use Pterodactyl\Models\Egg;
 
 final class UpdateInstallScript implements UpdatesEggInstallScripts
 {
-    /**
-     * An egg's install script fields, each of them optional: the script, whether it runs
-     * privileged, the container entrypoint and image it runs in, and the egg to copy the
-     * script from instead.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -29,13 +23,6 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
         ];
     }
 
-    /**
-     * Modify the install script for a given Egg.
-     *
-     * @param  array<string, mixed>  $input
-     *
-     * @throws InvalidCopyFromException
-     */
     public function update(Egg $egg, array $input): Egg
     {
         $attributes = Validator::validate($input, self::rules());

@@ -24,13 +24,7 @@ use Pterodactyl\Models\User;
  */
 final class IngestActivityLogs implements IngestsActivityLogs
 {
-    /**
-     * The activity Wings reports, under the field names of its protocol: `data` lists the
-     * events, each naming the server it happened on, the event, its metadata and when it
-     * happened, and optionally the user who caused it and their IP address.
-     *
-     * @return NormalizedValidationRules
-     */
+    /** @return NormalizedValidationRules */
     public static function rules(): array
     {
         return [
@@ -46,8 +40,7 @@ final class IngestActivityLogs implements IngestsActivityLogs
     }
 
     /**
-     * Validates reported activity and returns the events it lists. Metadata given as null
-     * is empty.
+     * Metadata given as null is empty.
      *
      * @param  array<string, mixed>  $input
      * @return list<ActivityEvent>
@@ -75,11 +68,6 @@ final class IngestActivityLogs implements IngestsActivityLogs
         return $events;
     }
 
-    /**
-     * @param  array<string, mixed>  $input
-     *
-     * @throws ValidationException
-     */
     public function ingest(Node $node, array $input): void
     {
         $events = self::events($input);
