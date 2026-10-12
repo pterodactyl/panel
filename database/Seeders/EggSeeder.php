@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use DirectoryIterator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -40,14 +39,8 @@ class EggSeeder extends Seeder
         'source-engine/egg-garrys-mod.json' => [EggSpecificTags::GarrysMod],
     ];
 
-    /**
-     * EggSeeder constructor.
-     */
     public function __construct(protected ImportsEggs $importer, protected UpdatesEggsFromImports $updater) {}
 
-    /**
-     * Run the egg seeder.
-     */
     public function run(): void
     {
         foreach (static::$import as $directory => $tags) {
@@ -56,13 +49,11 @@ class EggSeeder extends Seeder
     }
 
     /**
-     * Loop through the list of egg files in one directory and import them.
-     *
      * Eggs are matched on author and name alone now that they are no longer scoped
      * to a nest, so an egg only ever exists once across every seed directory.
      *
-     * The seeder runs on every upgrade, so it only ever adds tags: an egg keeps every
-     * tag it had, including any an administrator added, even when its file has tags.
+     * The seeder runs on every upgrade, so only a newly created egg gets the built-in
+     * tags; an existing egg keeps exactly the tags an administrator left it with.
      *
      * @param  list<EggSpecificTags>  $tags
      */
@@ -88,16 +79,17 @@ class EggSeeder extends Seeder
                     ->first();
 
                 if ($egg instanceof Egg) {
-                    $kept = $egg->tags()->get();
-                    $egg = $this->updater->update($egg, $file);
+                    $current = $egg->tags()->get();
+                    $this->updater->update($egg, $file)->tags()->sync($current);
                     $this->command->info('Updated '.$decoded['name']);
-                } else {
-                    $kept = new Collection;
-                    $egg = $this->importer->import($file);
-                    $this->command->comment('Created '.$decoded['name']);
+
+                    return;
                 }
 
-                $egg->tags()->syncWithoutDetaching($kept->merge(Tag::findOrCreateFromSlugs(array_map(fn (EggSpecificTags $tag): string => $tag->value, $seeded))));
+                $this->importer->import($file)->tags()->syncWithoutDetaching(
+                    Tag::findOrCreateFromSlugs(array_map(fn (EggSpecificTags $tag): string => $tag->value, $seeded))
+                );
+                $this->command->comment('Created '.$decoded['name']);
             });
         }
 

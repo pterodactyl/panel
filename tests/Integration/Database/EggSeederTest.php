@@ -21,9 +21,10 @@ function slugs(string $egg): array
     return Egg::query()->where('name', $egg)->sole()->tags()->pluck('tags.slug')->sort()->values()->all();
 }
 
-test('seeded eggs carry the built-in tags of their directory', function (): void {
+test('created eggs carry the built-in tags of their directory', function (): void {
     DB::table('taggables')->delete();
     Tag::query()->whereIn('slug', ['minecraft', 'srcds', 'garrysmod', 'voice', 'rust'])->delete();
+    Egg::query()->delete();
 
     $this->seed(EggSeeder::class);
 
@@ -35,11 +36,11 @@ test('seeded eggs carry the built-in tags of their directory', function (): void
         ->and(Tag::query()->where('slug', 'srcds')->sole()->name)->toBe('Source Engine');
 });
 
-test('reseeding never removes a tag, even when an egg file replaces them', function (): void {
-    $custom = Tag::factory()->create(['slug' => 'admin-added']);
-    Egg::query()->where('name', 'Paper')->sole()->tags()->attach($custom);
+test('reseeding leaves the tags of existing eggs alone, even when an egg file replaces them', function (): void {
+    $paper = Egg::query()->where('name', 'Paper')->sole();
+    $paper->tags()->sync(Tag::factory()->create(['slug' => 'admin-added']));
+    Egg::query()->where('name', 'Rust')->sole()->tags()->detach();
 
-    // An egg file carrying tags replaces the egg's tags on update.
     $this->app->extend(UpdatesEggsFromImports::class, fn (UpdatesEggsFromImports $updater): UpdatesEggsFromImports => new readonly class($updater) implements UpdatesEggsFromImports
     {
         public function __construct(private UpdatesEggsFromImports $updater) {}
@@ -54,8 +55,8 @@ test('reseeding never removes a tag, even when an egg file replaces them', funct
     });
 
     $this->seed(EggSeeder::class);
-    $this->seed(EggSeeder::class);
 
-    expect(slugs('Paper'))->toBe(['admin-added', 'from-file', 'minecraft'])
-        ->and(slugs('Rust'))->toBe(['from-file', 'rust']);
+    expect(slugs('Paper'))->toBe(['admin-added'])
+        ->and(slugs('Rust'))->toBe([])
+        ->and(slugs('Insurgency'))->toBe(['srcds']);
 });
