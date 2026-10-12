@@ -1,0 +1,47 @@
+resources/scripts/components/admin/tags/TagsField.tsx
+  s_4cabae41bceed9::t_a317ccffd2abcb 1-15,17-49
+  s_4cabae41bceed9::t_26c78e349ffcc4 16
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_2f94a9880a8442 122-123
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_5b87fb848ced75 34
+  s_4cabae41bceed9::t_6bf95a5a3c7619 542-553
+  s_4cabae41bceed9::t_750d115b9df502 540-541
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_4cabae41bceed9::t_d7079eefe28a4f 71-73
+packages/sdk/types/extensions/registry.d.ts
+  s_4cabae41bceed9::t_2d2ec4ac9d1170 14
+resources/scripts/api/admin/tags/queries.ts
+  s_4cabae41bceed9::t_acb2264c8fd9a4 1,8,15-16,24-25
+  s_4cabae41bceed9::t_1b87faa1de7480 57-69
+  s_4cabae41bceed9::t_743a6b21b79ea7 170-201
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_4cabae41bceed9::t_26b85bb6ce3c9f 73-75,78
+  s_4cabae41bceed9::t_a4e7b6295d9031 6
+resources/scripts/components/admin/nodes/NodeTagsTab.tsx
+  s_4cabae41bceed9::t_036d6c4b0a3130 40-42,45-50,55,77-128
+  s_4cabae41bceed9::t_4767452024ff68 1-39,43-44,51-54,56-76,129-130
+resources/scripts/components/admin/nodes/NodeTagsTab.spec.tsx
+  s_4cabae41bceed9::t_262f6950ccab09 13
+  s_4cabae41bceed9::t_c4ba11d70569f2 15-26
+  s_4cabae41bceed9::t_9b4cec332c2907 39,70
+  s_4cabae41bceed9::t_b4fb06e3fefc3c 1-12,14,27-38,40-69,71-112
+resources/scripts/api/admin/nodes/queries.ts
+  s_4cabae41bceed9::t_c38a7512c5f2ce 285-292
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7bfdd90b0aa94649aad7864413b999119d342ddd",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
