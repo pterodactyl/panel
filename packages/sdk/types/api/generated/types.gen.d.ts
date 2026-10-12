@@ -397,6 +397,8 @@ export type AdminNodeAttributes = {
     extensions?: ExtensionFields;
     relationships?: {
         location?: AdminLocationResource | NullResource;
+        tags?: AdminTagListResponse | NullResource;
+        deployment_tags?: AdminTagListResponse | NullResource;
     };
 };
 export type AdminNodeConfigurationResponse = {
@@ -3898,13 +3900,13 @@ export type AdminListNodesPageQueryParameter = number;
  */
 export type AdminListNodesPerPageQueryParameter = number;
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
  */
-export type AdminListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers';
+export type AdminListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
  */
-export type AdminGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers';
+export type AdminGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 export type AdminGetNodeNodeIdPathParameter = number;
 export type AdminGetNodeConfigurationNodeIdPathParameter = number;
 export type AdminSyncNodeGameTagsNodeIdPathParameter = number;
@@ -4212,9 +4214,9 @@ export type ApplicationListNodesFilterDaemonTokenIdQueryParameter = string;
  */
 export type ApplicationListNodesSortQueryParameter = 'id' | '-id' | 'uuid' | '-uuid' | 'memory' | '-memory' | 'disk' | '-disk';
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
  */
-export type ApplicationListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations';
+export type ApplicationListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 /**
  * Memory required for the deployment, in megabytes.
  */
@@ -4236,9 +4238,9 @@ export type ApplicationListDeployableNodesPageQueryParameter = number;
  */
 export type ApplicationListDeployableNodesPerPageQueryParameter = number;
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
  */
-export type ApplicationGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations';
+export type ApplicationGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 export type ApplicationGetNodeNodeIdPathParameter = number;
 export type ApplicationGetNodeConfigurationNodeIdPathParameter = number;
 /**
@@ -6437,7 +6439,7 @@ export type AdminListNodesData = {
          */
         per_page?: AdminListNodesPerPageQueryParameter;
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
          */
         include?: AdminListNodesIncludeQueryParameter;
     };
@@ -6536,7 +6538,7 @@ export type AdminGetNodeData = {
     };
     query?: {
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
          */
         include?: AdminGetNodeIncludeQueryParameter;
     };
@@ -9286,7 +9288,7 @@ export type ApplicationListNodesData = {
          */
         sort?: ApplicationListNodesSortQueryParameter;
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
          */
         include?: ApplicationListNodesIncludeQueryParameter;
     };
@@ -9435,7 +9437,7 @@ export type ApplicationGetNodeData = {
     };
     query?: {
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
          */
         include?: ApplicationGetNodeIncludeQueryParameter;
     };

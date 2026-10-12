@@ -12,6 +12,7 @@ use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\NullResource;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Tag;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 /**
@@ -25,9 +26,11 @@ class NodeResource extends ApplicationResource
         'allocations' => ['relation' => 'allocations', 'resource' => AllocationResource::class, 'ability' => AdminAcl::RESOURCE_ALLOCATIONS],
         'location' => ['relation' => 'location', 'resource' => LocationResource::class, 'ability' => AdminAcl::RESOURCE_LOCATIONS],
         'servers' => ['relation' => 'servers', 'resource' => ServerResource::class, 'ability' => AdminAcl::RESOURCE_SERVERS],
+        'tags' => ['relation' => 'eggTags', 'resource' => TagResource::class, 'ability' => AdminAcl::RESOURCE_EGGS],
+        'deployment_tags' => ['relation' => 'deploymentTags', 'resource' => TagResource::class, 'ability' => AdminAcl::RESOURCE_EGGS],
     ];
 
-    protected array $availableIncludes = ['allocations', 'location', 'servers'];
+    protected array $availableIncludes = ['allocations', 'location', 'servers', 'tags', 'deployment_tags'];
 
     public function resourceName(): string
     {
@@ -62,6 +65,8 @@ class NodeResource extends ApplicationResource
             'allocations' => $this->includeAllocations(),
             'location' => $this->includeLocation(),
             'servers' => $this->includeServers(),
+            'tags' => $this->includeTags(),
+            'deployment_tags' => $this->includeDeploymentTags(),
             default => parent::resolveInclude($include),
         };
     }
@@ -94,5 +99,23 @@ class NodeResource extends ApplicationResource
         }
 
         return $this->items($this->resource->loadMissing('servers')->servers, ServerResource::class, 'server');
+    }
+
+    private function includeTags(): ApiResourceCollection|NullResource
+    {
+        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+            return $this->null();
+        }
+
+        return $this->items($this->resource->loadMissing('eggTags')->eggTags, TagResource::class, Tag::RESOURCE_NAME);
+    }
+
+    private function includeDeploymentTags(): ApiResourceCollection|NullResource
+    {
+        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+            return $this->null();
+        }
+
+        return $this->items($this->resource->loadMissing('deploymentTags')->deploymentTags, TagResource::class, Tag::RESOURCE_NAME);
     }
 }

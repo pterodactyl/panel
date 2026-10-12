@@ -1193,6 +1193,18 @@ components:
                   $ref: '#/components/schemas/AdminLocationResource'
                 -
                   $ref: '#/components/schemas/NullResource'
+            tags:
+              oneOf:
+                -
+                  $ref: '#/components/schemas/AdminTagListResponse'
+                -
+                  $ref: '#/components/schemas/NullResource'
+            deployment_tags:
+              oneOf:
+                -
+                  $ref: '#/components/schemas/AdminTagListResponse'
+                -
+                  $ref: '#/components/schemas/NullResource'
     AdminNodeConfigurationResponse:
       type: object
       required:
@@ -7275,22 +7287,28 @@ components:
       description: 'Results to return per page.'
     AdminListNodesIncludeQueryParameter:
       type: string
-      description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".'
+      description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).'
       enum:
         - allocations
         - location
         - servers
         - 'allocations,location'
         - 'location,servers'
+        - tags
+        - deployment_tags
+        - 'tags,deployment_tags'
     AdminGetNodeIncludeQueryParameter:
       type: string
-      description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".'
+      description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).'
       enum:
         - allocations
         - location
         - servers
         - 'allocations,location'
         - 'location,servers'
+        - tags
+        - deployment_tags
+        - 'tags,deployment_tags'
     AdminGetNodeNodeIdPathParameter:
       type: integer
     AdminGetNodeConfigurationNodeIdPathParameter:
@@ -7635,12 +7653,15 @@ components:
         - '-disk'
     ApplicationListNodesIncludeQueryParameter:
       type: string
-      description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.'
+      description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.'
       enum:
         - allocations
         - location
         - servers
         - 'location,allocations'
+        - tags
+        - deployment_tags
+        - 'tags,deployment_tags'
     ApplicationListDeployableNodesMemoryQueryParameter:
       type: integer
       description: 'Memory required for the deployment, in megabytes.'
@@ -7660,12 +7681,15 @@ components:
       description: 'Number of nodes to return per page when page is supplied, up to 100.'
     ApplicationGetNodeIncludeQueryParameter:
       type: string
-      description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.'
+      description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.'
       enum:
         - allocations
         - location
         - servers
         - 'location,allocations'
+        - tags
+        - deployment_tags
+        - 'tags,deployment_tags'
     ApplicationGetNodeNodeIdPathParameter:
       type: integer
     ApplicationGetNodeConfigurationNodeIdPathParameter:
@@ -10448,7 +10472,7 @@ paths:
         -
           in: query
           name: include
-          description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".'
+          description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).'
           required: false
           schema:
             $ref: '#/components/schemas/AdminListNodesIncludeQueryParameter'
@@ -10520,7 +10544,7 @@ paths:
         -
           in: query
           name: include
-          description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".'
+          description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).'
           required: false
           schema:
             $ref: '#/components/schemas/AdminGetNodeIncludeQueryParameter'
@@ -14018,7 +14042,7 @@ paths:
         -
           in: query
           name: include
-          description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.'
+          description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.'
           required: false
           schema:
             $ref: '#/components/schemas/ApplicationListNodesIncludeQueryParameter'
@@ -14164,7 +14188,7 @@ paths:
         -
           in: query
           name: include
-          description: 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.'
+          description: 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.'
           required: false
           schema:
             $ref: '#/components/schemas/ApplicationGetNodeIncludeQueryParameter'

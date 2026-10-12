@@ -101,6 +101,14 @@ function applicationReads(): array
             ['GET', APP.'/nodes/deployable?memory=128&disk=128&location_ids[]=1&page=1&per_page=1&include=location'],
         ]]],
         'nodes view' => [['requests' => [...applicationMatrix('node', APP.'/nodes/1'), ['GET', APP.'/nodes/2?include=allocations,location,servers']]]],
+        'nodes tags' => [['requests' => [
+            ['GET', APP.'/nodes?include=tags,deployment_tags'],
+            ['GET', APP.'/nodes/1?include=tags'],
+            ['GET', APP.'/nodes/2?include=deployment_tags.nodes'],
+        ]]],
+        'nodes tags without eggs access' => [['key' => [AdminAcl::COLUMN_IDENTIFIER.AdminAcl::RESOURCE_EGGS => AdminAcl::NONE], 'requests' => [
+            ['GET', APP.'/nodes/1?include=tags,deployment_tags'],
+        ]]],
         'nodes allocations' => [['requests' => [
             ...applicationMatrix('allocation', APP.'/nodes/1/allocations'),
             ...World::pages(APP.'/nodes/1/allocations', APP.'/nodes/1/allocations?filter[ip]=203.0.113.250'),

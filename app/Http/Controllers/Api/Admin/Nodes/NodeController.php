@@ -53,7 +53,7 @@ class NodeController extends AdminApiController
     #[QueryParam('sort', 'string', 'Sort nodes by id, uuid, name, memory, disk, or creation time. Prefix with a hyphen for descending order.', required: false, example: '-created_at')]
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
-    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers'])]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers', 'tags', 'deployment_tags', 'tags,deployment_tags'])]
     #[ResponseFromResource(NodeResource::class, Node::class, description: 'Nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node', paginate: 50, withCount: ['servers'])]
     public function index(GetNodesRequest $request): ApiResourceCollection
     {
@@ -69,8 +69,8 @@ class NodeController extends AdminApiController
      * Show node.
      */
     #[Endpoint('Get node', 'Returns a single Wings node by ID.')]
-    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers'])]
-    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Node returned.', factoryStates: ['withLocation'], resourceKey: 'node', include: ['location'], withCount: ['servers'])]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers', 'tags', 'deployment_tags', 'tags,deployment_tags'])]
+    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Node returned.', factoryStates: ['withLocation'], resourceKey: 'node', include: ['location', 'tags', 'deployment_tags'], withCount: ['servers'])]
     public function show(GetNodeRequest $request, Node $node): NodeResource
     {
         $node->loadCount('servers');

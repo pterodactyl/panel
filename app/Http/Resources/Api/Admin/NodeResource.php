@@ -12,6 +12,7 @@ use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Tag;
 
 /**
  * @extends AdminResource<Node>
@@ -25,9 +26,11 @@ class NodeResource extends AdminResource
         'allocations' => ['relation' => 'allocations', 'resource' => AllocationResource::class],
         'location' => ['relation' => 'location', 'resource' => LocationResource::class],
         'servers' => ['relation' => 'servers', 'resource' => ServerResource::class],
+        'tags' => ['relation' => 'eggTags', 'resource' => TagResource::class],
+        'deployment_tags' => ['relation' => 'deploymentTags', 'resource' => TagResource::class],
     ];
 
-    protected array $availableIncludes = ['allocations', 'location', 'servers'];
+    protected array $availableIncludes = ['allocations', 'location', 'servers', 'tags', 'deployment_tags'];
 
     public function resourceName(): string
     {
@@ -62,6 +65,8 @@ class NodeResource extends AdminResource
             'allocations' => $this->includeAllocations(),
             'location' => $this->includeLocation(),
             'servers' => $this->includeServers(),
+            'tags' => $this->includeTags(),
+            'deployment_tags' => $this->includeDeploymentTags(),
             default => parent::resolveInclude($include),
         };
     }
@@ -82,5 +87,15 @@ class NodeResource extends AdminResource
     private function includeServers(): ApiResourceCollection
     {
         return $this->items($this->resource->loadMissing('servers')->servers, ServerResource::class, 'server');
+    }
+
+    private function includeTags(): ApiResourceCollection
+    {
+        return $this->items($this->resource->loadMissing('eggTags')->eggTags, TagResource::class, Tag::RESOURCE_NAME);
+    }
+
+    private function includeDeploymentTags(): ApiResourceCollection
+    {
+        return $this->items($this->resource->loadMissing('deploymentTags')->deploymentTags, TagResource::class, Tag::RESOURCE_NAME);
     }
 }

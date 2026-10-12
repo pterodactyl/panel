@@ -114,6 +114,11 @@ function adminReads(): array
         'mounts view' => [['requests' => [...adminMatrix('mount', ADMIN.'/mounts/1'), ['GET', ADMIN.'/mounts/2?include=eggs,nodes,servers']]]],
         'nodes index' => [['requests' => [...adminMatrix('node', ADMIN.'/nodes'), ...World::pages(ADMIN.'/nodes', ADMIN.'/nodes?filter[name]=none')]]],
         'nodes view' => [['requests' => [...adminMatrix('node', ADMIN.'/nodes/1'), ['GET', ADMIN.'/nodes/2?include=allocations,location,servers']]]],
+        'nodes tags' => [['requests' => [
+            ['GET', ADMIN.'/nodes?include=tags,deployment_tags'],
+            ['GET', ADMIN.'/nodes/1?include=tags'],
+            ['GET', ADMIN.'/nodes/2?include=deployment_tags.nodes'],
+        ]]],
         'nodes allocations' => [['requests' => [
             ...adminMatrix('allocation', ADMIN.'/nodes/1/allocations'),
             ...World::pages(ADMIN.'/nodes/1/allocations', ADMIN.'/nodes/1/allocations?filter[ip]=203.0.113.250'),

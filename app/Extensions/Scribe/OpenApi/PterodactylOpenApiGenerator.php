@@ -1854,6 +1854,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
         $mapped = match ($relationship) {
             'allocations' => 'allocation',
+            'deployment_tags' => 'tag',
             'tasks' => 'schedule_task',
             'variables' => 'egg_variable',
             default => null,

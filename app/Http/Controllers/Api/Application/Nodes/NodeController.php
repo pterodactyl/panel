@@ -62,7 +62,7 @@ class NodeController extends ApplicationApiController
     #[QueryParam('filter[fqdn]', 'string', 'Filter nodes by fully qualified domain name.', required: false, example: 'node.example.com')]
     #[QueryParam('filter[daemon_token_id]', 'string', 'Filter nodes by daemon token identifier.', required: false, example: 'abcdefghijklmnop')]
     #[QueryParam('sort', 'string', 'Sort nodes by id, uuid, memory, or disk. Prefix with "-" for descending order.', required: false, example: '-id', enum: ['id', '-id', 'uuid', '-uuid', 'memory', '-memory', 'disk', '-disk'])]
-    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.', required: false, example: 'location,allocations', enum: ['allocations', 'location', 'servers', 'location,allocations'])]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.', required: false, example: 'location,allocations', enum: ['allocations', 'location', 'servers', 'location,allocations', 'tags', 'deployment_tags', 'tags,deployment_tags'])]
     #[ResponseFromResource(NodeResource::class, Node::class, collection: true, factoryStates: ['withLocation'], resourceKey: 'node', paginate: 50)]
     public function index(GetNodesRequest $request): ApiResourceCollection
     {
@@ -80,7 +80,7 @@ class NodeController extends ApplicationApiController
      * Return data for a single instance of a node.
      */
     #[Endpoint('Get node', 'Returns a single Wings node by internal numeric ID.')]
-    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.', required: false, example: 'location,allocations', enum: ['allocations', 'location', 'servers', 'location,allocations'])]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.', required: false, example: 'location,allocations', enum: ['allocations', 'location', 'servers', 'location,allocations', 'tags', 'deployment_tags', 'tags,deployment_tags'])]
     #[ResponseFromResource(NodeResource::class, Node::class, factoryStates: ['withLocation'], resourceKey: 'node')]
     public function view(GetNodeRequest $request, Node $node): NodeResource
     {
