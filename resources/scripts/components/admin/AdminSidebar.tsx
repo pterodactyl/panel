@@ -11,6 +11,7 @@ import {
     MapPin,
     Menu,
     Network,
+    Palette,
     Puzzle,
     Server,
     Settings,
@@ -38,6 +39,7 @@ const icons = new Map<string, LucideIcon>([
     ['eggs', Egg],
     ['tags', Tag],
     ['extensions', Blocks],
+    ['themes', Palette],
     ['api', KeyRound],
 ]);
 

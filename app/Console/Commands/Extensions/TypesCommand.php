@@ -12,9 +12,10 @@ use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
+use Pterodactyl\Services\Themes\ThemeSetting;
 
-#[Description('Generate literal screen ids and frontend configuration types for an extension.')]
-#[Signature('p:extension:types {path : Unpacked package path.} {--output= : Generated TypeScript file; defaults to src/client/extension-types.ts.}')]
+#[Description('Generate literal screen ids, frontend configuration types and theme settings types for an extension or theme.')]
+#[Signature('p:extension:types {path : Unpacked package path.} {--output= : Generated TypeScript file; defaults to src/client/extension-types.ts, or src/theme-types.ts for a theme.}')]
 class TypesCommand extends Command
 {
     public function handle(ExtensionManifestValidator $validator, ExtensionSettingsRegistry $settings, ExtensionPermissionRegistry $permissions): int
@@ -43,7 +44,11 @@ class TypesCommand extends Command
         $source .= "// Visitors who are not signed in receive only these keys; every other key is absent for them.\n";
         $source .= 'export type ExtensionPublicConfigKey = '.($publicNames === [] ? 'never' : implode(' | ', $publicNames)).";\n";
         $source .= "export type ExtensionPublicConfig = Pick<ExtensionConfig, ExtensionPublicConfigKey>;\n";
-        $output = $this->option('output') ?: $manifest->path('src', 'client', 'extension-types.ts');
+        if ($manifest->isTheme()) {
+            $source .= $this->themeSettings($manifest->theme->settings);
+        }
+
+        $output = $this->option('output') ?: ($manifest->isTheme() ? $manifest->path('src', 'theme-types.ts') : $manifest->path('src', 'client', 'extension-types.ts'));
         File::ensureDirectoryExists(dirname($output));
         File::replace($output, $source);
         if (! $definition instanceof ExtensionSettingsDefinition) {
@@ -53,5 +58,23 @@ class TypesCommand extends Command
         $this->components->info("Generated extension types: {$output}");
 
         return self::SUCCESS;
+    }
+
+    /** @param array<string, ThemeSetting> $settings */
+    private function themeSettings(array $settings): string
+    {
+        $properties = array_map(function (ThemeSetting $setting): string {
+            $type = match ($setting->type) {
+                'select' => implode(' | ', array_map(fn (string $option): string => json_encode($option, JSON_THROW_ON_ERROR), array_keys($setting->options))),
+                'toggle' => 'boolean',
+                'number' => 'number',
+                default => 'string',
+            };
+            $nullable = $setting->default === null ? ' | null' : '';
+
+            return '    readonly '.json_encode($setting->key, JSON_THROW_ON_ERROR).': '.$type.$nullable.';';
+        }, $settings);
+
+        return "// The theme's settings, as useThemeSettings<ThemeSettings>() returns them.\nexport interface ThemeSettings {\n".implode("\n", $properties)."\n}\n";
     }
 }

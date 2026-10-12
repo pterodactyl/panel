@@ -49,7 +49,9 @@ parameters:
         ExtensionScreenMatcher: 'array{any?: list<string>, all?: list<string>}'
         ExtensionScreenCondition: 'array{eggFeatures?: ExtensionScreenMatcher, eggTags?: ExtensionScreenMatcher, match?: string, runtime?: bool}'
         ExtensionScreenDefinition: 'array{id: string, area: string, path: string, parent?: string, nav?: array{label: string, exact?: bool, params?: array<string, string>, order?: int, group?: string, badge?: string, icon?: string}, permission?: list<string>, when?: ExtensionScreenCondition}'
-        ExtensionManifestInput: 'array{id: string, name: string, version: string, requires?: array{panel?: string, sdk?: string, php?: string, extensions?: array<string, string>}, description?: string|null, author?: string|null, provider?: string|null, icon?: string|null, autoload?: array<mixed>, ui?: array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, components?: list<string>}, routes?: array{root?: list<string>}, ...<string, mixed>}'
+        ExtensionThemeSettingInput: 'array{type: string, label: string, default?: string|int|float|bool|null, help?: string|null, token?: string|null, attribute?: string|null, options?: array<string, string>, min?: int|float|null, max?: int|float|null, step?: int|float|null, unit?: string|null, maxLength?: int}'
+        ExtensionThemeInput: 'array{extends?: string, stylesheet?: string|null, schemes?: list<''dark''|''light''>|null, settings?: array<string, ExtensionThemeSettingInput>}'
+        ExtensionManifestInput: 'array{id: string, name: string, version: string, type?: ''extension''|''theme'', requires?: array{panel?: string, sdk?: string, php?: string, extensions?: array<string, string>}, description?: string|null, author?: string|null, provider?: string|null, icon?: string|null, autoload?: array<mixed>, ui?: array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, views?: list<string>}, theme?: ExtensionThemeInput, routes?: array{root?: list<string>}, ...<string, mixed>}'
     paths:
         - app
     ignoreErrors:

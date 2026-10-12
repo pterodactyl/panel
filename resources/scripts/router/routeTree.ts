@@ -43,6 +43,7 @@ import {
 } from '@/api/admin/servers/queries';
 import { adminApiKeyListQueryParams, adminApiKeysQueryOptions } from '@/api/admin/api-keys/queries';
 import { adminExtensionsQueryOptions } from '@/api/admin/extensions/queries';
+import { adminThemesQueryOptions } from '@/api/admin/themes/queries';
 import { adminTagListQueryParams, adminTagsQueryOptions } from '@/api/admin/tags/queries';
 import { adminSettingsQueryOptions } from '@/api/admin/settings/queries';
 import { adminActivityFacetsQueryOptions, adminActivityLogsQueryOptions } from '@/api/admin/activity/queries';
@@ -919,6 +920,15 @@ const panelChildren = [
             await context.queryClient.ensureQueryData({ ...adminExtensionsQueryOptions(), revalidateIfStale: true });
         },
         component: pageRoute('page.admin.extensions'),
+    }),
+    createRoute({
+        getParentRoute: () => panelRoute,
+        path: 'themes',
+        staticData: { nav: { label: 'Themes' } },
+        loader: async ({ context }) => {
+            await context.queryClient.ensureQueryData({ ...adminThemesQueryOptions(), revalidateIfStale: true });
+        },
+        component: lazyRouteComponent(() => import('@/components/admin/themes/ThemesContainer')),
     }),
     createRoute({
         getParentRoute: () => panelRoute,

@@ -1,4 +1,4 @@
-import { getBootstrapExtensions } from '@/bootstrap';
+import { getBootstrapExtensions, getBootstrapThemeChain } from '@/bootstrap';
 import type { ExtensionDefinition, ExtensionSetupContext } from '@/sdk';
 import { isObject } from '@/lib/objects';
 import {
@@ -167,7 +167,7 @@ export function loadExtensions(importModule: ModuleImporter = nativeImport): Pro
     importBundle = importModule;
     const entries = prepareExtensions(getBootstrapExtensions());
 
-    startExtensionDevelopmentReload(entries);
+    startExtensionDevelopmentReload([...entries, ...getBootstrapThemeChain()]);
     loading = Promise.all(entries.map(bootExtension)).then(() => {});
 
     return loading;

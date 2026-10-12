@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
+use Pterodactyl\Services\Themes\ThemeDefinition;
+use Pterodactyl\Services\Themes\ThemeRepository;
 
 /**
  * Scaffolds a new extension package the way `php artisan make:*` scaffolds core
@@ -37,6 +39,7 @@ class ExtensionScaffolder
         ?string $outDir = null,
         bool $force = false,
         ?string $prefix = null,
+        bool $theme = false,
     ): string {
         $this->files = [];
 
@@ -45,7 +48,7 @@ class ExtensionScaffolder
         throw_if(in_array($id, ExtensionManifest::RESERVED_IDS, true), InvalidExtensionException::class, "Extension id \"{$id}\" is reserved.");
 
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
-        throw_unless(ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
+        throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
 
         $target = mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id;
         throw_if(is_dir($target) && ! $force, InvalidExtensionException::class, "{$target} already exists - pass --force to overwrite it.");
@@ -64,6 +67,13 @@ class ExtensionScaffolder
             '{{sdkDependency}}' => $this->sdkDependency($target),
             '{{prefix}}' => $prefix,
         ];
+
+        if ($theme) {
+            $this->scaffoldTheme($target, $id, $replacements);
+            $this->validator->fromDirectory($target);
+
+            return $target;
+        }
 
         $this->writeManifest($target, $id, $namespace, $replacements, $ui);
         $this->writeComposerJson($target, $namespace, $replacements);
@@ -129,6 +139,56 @@ class ExtensionScaffolder
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n",
         );
         $this->files[] = ExtensionManifest::FILENAME;
+    }
+
+    /**
+     * A theme with a stylesheet, a layout override and a skin, three settings and a test. It
+     * needs no PHP; a provider can be added like an extension's.
+     *
+     * @param  array<string, string>  $replacements  stub placeholder => literal substitution
+     */
+    private function scaffoldTheme(string $target, string $id, array $replacements): void
+    {
+        $manifest = array_filter([
+            '$schema' => './node_modules/@pterodactyl/sdk/manifest.schema.json',
+            'id' => $id,
+            'type' => 'theme',
+            'name' => $replacements['{{name}}'],
+            'version' => '1.0.0',
+            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => '^'.config()->string('extensions.sdk_version')],
+            'description' => $replacements['{{description}}'] ?: null,
+            'author' => $replacements['{{author}}'] ?: null,
+            'icon' => 'palette',
+            'ui' => ['entry' => ExtensionManifest::UI_ENTRY],
+            'theme' => [
+                'extends' => ThemeRepository::CLASSIC,
+                'stylesheet' => ThemeDefinition::STYLESHEET,
+                'schemes' => ThemeDefinition::SCHEMES,
+                'settings' => [
+                    'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#8b5cf6', 'token' => '--accent'],
+                    'radius' => ['type' => 'number', 'label' => 'Corner radius', 'default' => 0.75, 'min' => 0, 'max' => 1.5, 'step' => 0.125, 'unit' => 'rem', 'token' => '--radius'],
+                    'compact' => ['type' => 'toggle', 'label' => 'Compact spacing', 'default' => false, 'attribute' => "data-{$id}-compact"],
+                ],
+            ],
+        ], fn (array|string|null $value): bool => $value !== null);
+
+        File::put($target.DIRECTORY_SEPARATOR.ExtensionManifest::FILENAME, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION)."\n");
+        $this->files[] = ExtensionManifest::FILENAME;
+
+        foreach ([
+            'theme-package.stub' => 'package.json',
+            'theme-vite.config.stub' => 'vite.config.mjs',
+            'postcss.config.stub' => 'postcss.config.mjs',
+            'theme-tsconfig.stub' => 'tsconfig.json',
+            'vitest.config.stub' => 'vitest.config.mjs',
+            'theme-css.stub' => 'src/theme.css',
+            'theme-tsx.stub' => 'src/theme.tsx',
+            'theme-test.stub' => 'src/theme.spec.tsx',
+            'gitignore.stub' => '.gitignore',
+            'theme-readme.stub' => 'README.md',
+        ] as $stub => $relative) {
+            $this->stub($target, $stub, $relative, $replacements);
+        }
     }
 
     /**

@@ -1,0 +1,14 @@
+/*
+ * The panel stylesheet with every class the panel uses, then this theme's own. Write plain
+ * Tailwind: there is no prefix, and anything here can retune the panel's tokens.
+ */
+@import '@pterodactyl/sdk/theme-entry.css';
+
+:root {
+    --layout-content-width: 80rem;
+}
+
+/* The "compact" setting writes data-{{id}}-compact on <html>. */
+[data-{{id}}-compact='true'] {
+    --spacing: 0.2rem;
+}

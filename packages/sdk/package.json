@@ -26,6 +26,9 @@
         "./vitest": "./vitest.mjs",
         "./openapi": "./openapi.mjs",
         "./theme.css": "./theme.css",
+        "./panel.css": "./panel.css",
+        "./theme-entry.css": "./theme-entry.css",
+        "./core-classes.txt": "./core-classes.txt",
         "./icons.json": "./icons.json",
         "./views.json": "./views.json",
         "./manifest.schema.json": "./manifest.schema.json"
@@ -44,6 +47,9 @@
         "openapi.mjs",
         "theme.css",
         "theme-tokens.css",
+        "panel.css",
+        "theme-entry.css",
+        "core-classes.txt",
         "icons.json",
         "views.json",
         "manifest.schema.json"

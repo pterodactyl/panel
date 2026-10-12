@@ -10,6 +10,7 @@ use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionDistFiles;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionStylesheetInspector;
+use Pterodactyl\Services\Themes\ViewCatalog;
 use Pterodactyl\Tests\TestCase;
 
 uses(TestCase::class);
@@ -65,7 +66,7 @@ it('rejects a linked directory, naming it as the caller does', function () {
 });
 
 it('refuses to publish a build with a server-side file and publishes exactly the checked files', function () {
-    $publisher = new ExtensionAssetPublisher(new ExtensionStylesheetInspector);
+    $publisher = new ExtensionAssetPublisher(new ExtensionStylesheetInspector, new ViewCatalog);
     config()->set('extensions.assets_directory', $this->directory.'/public');
 
     put($this->directory, 'dist/CVS/x.php', '<?php echo 1;');

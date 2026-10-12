@@ -18,7 +18,8 @@
                 "enum": [
                     "pterodactyl",
                     "panel",
-                    "core"
+                    "core",
+                    "classic"
                 ]
             }
         },
@@ -30,6 +31,13 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 64
+        },
+        "type": {
+            "enum": [
+                "extension",
+                "theme"
+            ],
+            "description": "A theme (\"theme\") restyles the panel through its \"theme\" section; it is an extension in every other way. Defaults to \"extension\"."
         },
         "description": {
             "type": [
@@ -528,21 +536,207 @@
                         ]
                     }
                 },
-                "components": {
+                "views": {
                     "type": "array",
-                    "maxItems": 64,
+                    "maxItems": 256,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[a-z][a-zA-Z0-9]*(?:\\.[a-zA-Z0-9]+)+$"
+                    },
+                    "description": "The views this extension overrides with views.override, such as \"server.power\" or \"page.dashboard\". Declare a requires.sdk constraint. Themes override views through defineTheme instead."
+                }
+            }
+        },
+        "theme": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "extends": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                    "description": "The installed theme this one is built on. Defaults to the built-in \"classic\"."
+                },
+                "stylesheet": {
+                    "const": "dist/theme.css",
+                    "description": "The panel stylesheet built by defineThemeConfig, beside its dist/theme.json."
+                },
+                "schemes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2,
                     "uniqueItems": true,
                     "items": {
                         "enum": [
-                            "dashboard.serverCard",
-                            "server.files.details",
-                            "server.files.editor",
-                            "server.files.manager"
+                            "dark",
+                            "light"
                         ]
                     },
-                    "description": "Exclusive component replacements activated with this extension. Declare a requires.sdk constraint."
+                    "description": "The colour schemes the theme supports; the first is the default. Defaults to those of the theme it extends."
+                },
+                "settings": {
+                    "type": "object",
+                    "maxProperties": 64,
+                    "propertyNames": {
+                        "pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,47}$"
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "type",
+                            "label"
+                        ],
+                        "properties": {
+                            "type": {
+                                "enum": [
+                                    "color",
+                                    "select",
+                                    "toggle",
+                                    "number",
+                                    "text",
+                                    "image"
+                                ]
+                            },
+                            "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                            },
+                            "help": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 255
+                            },
+                            "default": {
+                                "type": [
+                                    "string",
+                                    "number",
+                                    "boolean",
+                                    "null"
+                                ]
+                            },
+                            "token": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "pattern": "^--[a-zA-Z][a-zA-Z0-9-]{0,62}$",
+                                "description": "The custom property the value is written to on :root, such as \"--accent\"."
+                            },
+                            "attribute": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "pattern": "^data-[a-z][a-z0-9-]{0,58}$",
+                                "not": {
+                                    "enum": [
+                                        "data-theme"
+                                    ]
+                                },
+                                "description": "The <html> attribute the value is written to, such as \"data-density\"."
+                            },
+                            "options": {
+                                "type": "object",
+                                "minProperties": 1,
+                                "maxProperties": 64,
+                                "propertyNames": {
+                                    "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$"
+                                },
+                                "additionalProperties": {
+                                    "type": "string",
+                                    "maxLength": 100
+                                },
+                                "description": "Select options: value => label."
+                            },
+                            "min": {
+                                "type": "number"
+                            },
+                            "max": {
+                                "type": "number"
+                            },
+                            "step": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                            },
+                            "unit": {
+                                "type": "string",
+                                "pattern": "^(?:%|[a-z]{1,4})$",
+                                "description": "Appended to a number token, such as \"rem\"."
+                            },
+                            "maxLength": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 1000
+                            }
+                        },
+                        "allOf": [
+                            {
+                                "if": {
+                                    "properties": {
+                                        "type": {
+                                            "const": "select"
+                                        }
+                                    }
+                                },
+                                "then": {
+                                    "required": [
+                                        "options"
+                                    ]
+                                },
+                                "else": {
+                                    "not": {
+                                        "required": [
+                                            "options"
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "type": {
+                                            "not": {
+                                                "const": "number"
+                                            }
+                                        }
+                                    }
+                                },
+                                "then": {
+                                    "properties": {
+                                        "min": false,
+                                        "max": false,
+                                        "step": false,
+                                        "unit": false
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "properties": {
+                                        "type": {
+                                            "not": {
+                                                "const": "text"
+                                            }
+                                        }
+                                    }
+                                },
+                                "then": {
+                                    "properties": {
+                                        "maxLength": false
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "description": "Settings administrators change on the Themes page. Each writes a token, an <html> attribute or both before the page renders; useThemeSettings() reads them all."
                 }
-            }
+            },
+            "description": "Only for \"type\": \"theme\"."
         }
     },
     "allOf": [
@@ -554,10 +748,10 @@
                 "properties": {
                     "ui": {
                         "required": [
-                            "components"
+                            "views"
                         ],
                         "properties": {
-                            "components": {
+                            "views": {
                                 "minItems": 1
                             }
                         }
@@ -574,6 +768,35 @@
                             "sdk"
                         ]
                     }
+                }
+            }
+        },
+        {
+            "if": {
+                "required": [
+                    "type"
+                ],
+                "properties": {
+                    "type": {
+                        "const": "theme"
+                    }
+                }
+            },
+            "then": {
+                "properties": {
+                    "ui": {
+                        "properties": {
+                            "prefix": false,
+                            "views": false
+                        }
+                    }
+                }
+            },
+            "else": {
+                "not": {
+                    "required": [
+                        "theme"
+                    ]
                 }
             }
         }

@@ -337,3 +337,12 @@ export const useContent = (uuid: string, file: string): string | undefined =>
         }
     }, 120_000);
 });
+
+it('declares view overrides by name rather than from a component catalog', () => {
+    const schema = JSON.parse(readFileSync(resolve(root, 'packages/sdk/manifest.schema.json'), 'utf8'));
+    const name = new RegExp(schema.properties.ui.properties.views.items.pattern);
+
+    expect(schema.properties.ui.properties.components).toBeUndefined();
+    expect(['server.power', 'page.server.backups', 'dashboard.serverCard'].every((view) => name.test(view))).toBe(true);
+    expect(['server', 'Server.power', 'server.'].some((view) => name.test(view))).toBe(false);
+});

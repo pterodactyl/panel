@@ -86,6 +86,8 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 input: {
                     main: fileURLToPath(new URL('./resources/scripts/index.tsx', import.meta.url)),
+                    // The panel stylesheet is linked by Blade, which links a theme's in its place.
+                    stylesheet: fileURLToPath(new URL('./resources/scripts/assets/tailwind.css', import.meta.url)),
                     // Shared extension-runtime entries: each is emitted as a real module
                     // chunk whose exports ARE the package's exports, at a URL recorded in
                     // manifest.json. The import map maps bare specifiers ("react", ...)

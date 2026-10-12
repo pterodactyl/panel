@@ -14,18 +14,19 @@ use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionComposerInspector;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
+use Pterodactyl\Services\Themes\ThemeRepository;
 use ZipArchive;
 
 #[Description('Package the runtime files of a built extension into a .pteroext archive.')]
 #[Signature('p:extension:pack {path : Path to the unpacked extension.} {--output= : Archive filename.} {--force : Overwrite an existing archive.}')]
 class PackCommand extends Command
 {
-    public function handle(ExtensionManifestValidator $validator, ExtensionAssetPublisher $assets, ExtensionComposerInspector $composer): int
+    public function handle(ExtensionManifestValidator $validator, ExtensionAssetPublisher $assets, ExtensionComposerInspector $composer, ThemeRepository $themes): int
     {
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
             throw_if($reason = $assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
-            foreach ($composer->warnings($manifest) as $warning) {
+            foreach (array_filter([...$composer->warnings($manifest), $manifest->isTheme() ? $themes->coreMismatch($manifest) : null]) as $warning) {
                 $this->components->warn($warning);
             }
 

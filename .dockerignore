@@ -18,11 +18,10 @@
 /extensions
 /public/assets/*
 !/public/assets/favicons
+!/public/assets/fonts
 !/public/assets/js
 !/public/assets/svgs
-!/public/assets/themes
 !/public/assets/vendor
-!/public/assets/theme.css
 /public/build
 /public/hot
 /public/vendor/scribe

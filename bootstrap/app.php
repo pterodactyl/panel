@@ -34,9 +34,11 @@ use Pterodactyl\Http\Middleware\EnsureStatefulRequests;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
+use Pterodactyl\Http\Middleware\RememberThemeFlags;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\SetSecurityHeaders;
 use Pterodactyl\Http\Middleware\VerifyReCaptcha;
+use Pterodactyl\Services\Themes\ThemeResolver;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__))
@@ -85,7 +87,10 @@ $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR_
 
         $middleware->priority([SubstituteClientBindings::class]);
 
-        $middleware->web(append: LanguageMiddleware::class);
+        $middleware->web(append: [LanguageMiddleware::class, RememberThemeFlags::class]);
+
+        // Written by the SPA, so it is never encrypted.
+        $middleware->encryptCookies(except: [ThemeResolver::SCHEME_COOKIE]);
 
         $middleware->group('api', [
             EnsureStatefulRequests::class,

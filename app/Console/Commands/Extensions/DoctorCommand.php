@@ -14,12 +14,14 @@ use Pterodactyl\Services\Extensions\ExtensionComposerInspector;
 use Pterodactyl\Services\Extensions\ExtensionIconCatalog;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
+use Pterodactyl\Services\Themes\ThemeRepository;
+use Pterodactyl\Services\Themes\ViewCatalog;
 
-#[Description('Check an extension manifest, compatibility, and built frontend before installation.')]
+#[Description('Check an extension or theme manifest, compatibility, and built frontend before installation.')]
 #[Signature('p:extension:doctor {path : Path to an unpacked extension package.}')]
 class DoctorCommand extends Command
 {
-    public function handle(ExtensionManifestValidator $validator, ExtensionCompatibility $compatibility, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, ExtensionIconCatalog $icons, ExtensionComposerInspector $composer): int
+    public function handle(ExtensionManifestValidator $validator, ExtensionCompatibility $compatibility, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, ExtensionIconCatalog $icons, ExtensionComposerInspector $composer, ViewCatalog $views, ThemeRepository $themes): int
     {
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
@@ -29,6 +31,9 @@ class DoctorCommand extends Command
             foreach ($manifest->autoload as $directory) {
                 throw_unless(is_dir($manifest->path($directory)), InvalidExtensionException::class, "Autoload directory \"{$directory}\" is missing.");
             }
+
+            $unknown = $views->unknown($manifest->views);
+            throw_if($unknown !== [], InvalidExtensionException::class, 'Manifest "ui.views" names views the panel does not have: '.implode(', ', $unknown).'.');
         } catch (InvalidExtensionException $invalidExtensionException) {
             $this->components->error($invalidExtensionException->getMessage());
 
@@ -41,6 +46,10 @@ class DoctorCommand extends Command
 
         if (($problem = $assets->iconProblem($manifest)) !== null) {
             $this->components->warn($problem.' The extension list shows its initials instead.');
+        }
+
+        if ($manifest->isTheme() && ($mismatch = $themes->coreMismatch($manifest)) !== null) {
+            $this->components->warn($mismatch);
         }
 
         foreach ($composer->warnings($manifest) as $warning) {

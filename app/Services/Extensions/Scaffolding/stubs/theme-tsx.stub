@@ -1,0 +1,28 @@
+import { defineTheme, skin, type ViewProps } from '@pterodactyl/sdk/theme';
+
+/** Puts the classic app layout inside a frame of this theme's own. */
+function AppLayout({ Default }: ViewProps<'layout.app'>) {
+    return (
+        <div data-{{id}}-layout='' className='min-h-dvh bg-background'>
+            <Default />
+        </div>
+    );
+}
+
+export default defineTheme({
+    ui: {
+        Button: skin('Button', {
+            root: {
+                base: 'inline-flex h-9 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-colors',
+                variants: {
+                    color: {
+                        primary: 'bg-accent text-accent-foreground hover:bg-accent/90',
+                    },
+                },
+            },
+        }),
+    },
+    views: {
+        'layout.app': AppLayout,
+    },
+});

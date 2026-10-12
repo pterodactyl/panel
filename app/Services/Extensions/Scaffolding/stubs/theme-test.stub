@@ -1,0 +1,12 @@
+import { afterEach, expect, test } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import { renderView } from '@pterodactyl/sdk/testing';
+import theme from './theme';
+
+afterEach(cleanup);
+
+test('frames the classic app layout', () => {
+    const { container } = renderView('layout.app', { theme });
+
+    expect(container.querySelector('[data-{{id}}-layout]')).not.toBeNull();
+});

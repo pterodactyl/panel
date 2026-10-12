@@ -1,0 +1,38 @@
+# {{name}}
+
+A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`.
+
+## Layout
+
+- `extension.json`: the manifest. `"type": "theme"` and its `theme` section declare the
+  stylesheet, the colour schemes and the settings administrators change on the Themes page.
+- `src/theme.css`: the panel stylesheet with this theme's styles. It starts with
+  `@import '@pterodactyl/sdk/theme-entry.css';`, so the build holds every class the panel
+  uses and replaces the panel's stylesheet. Write plain Tailwind; there is no prefix.
+- `src/theme.tsx`: `defineTheme` with skins for the UI kit and view overrides. Render
+  `Default` from an override to keep the layer below.
+- `src/theme.spec.tsx`: renders a view with the theme through `@pterodactyl/sdk/testing`.
+
+Each setting writes a CSS token (`token`), an `<html>` attribute (`attribute`), or both,
+before the page renders. `php artisan p:extension:types` generates `src/theme-types.ts`,
+whose `ThemeSettings` types `useThemeSettings<ThemeSettings>()`.
+
+## Develop
+
+```sh
+npm install
+npm run build
+php artisan p:extension:dev /path/to/{{id}} --enable --watch
+php artisan p:theme:activate {{id}}
+```
+
+While `p:extension:dev --watch` runs, a change to `src/theme.css` is swapped into open pages
+without a reload; a change to the JavaScript reloads them.
+
+## Install
+
+```sh
+php artisan p:extension:pack /path/to/{{id}}
+php artisan p:extension:install {{id}}-1.0.0.pteroext --enable
+php artisan p:theme:activate {{id}}
+```

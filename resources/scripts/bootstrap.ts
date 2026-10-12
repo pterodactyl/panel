@@ -1,5 +1,6 @@
 import type { UserData } from '@/api/account/types';
 import type { SiteSettings } from '@/api/settings/types';
+import type { DevelopmentPayload } from '@/extensions/development';
 import type { SiteExtensionEntry } from '@/extensions/registry';
 
 export type ThemeScheme = 'dark' | 'light';
@@ -13,7 +14,7 @@ export interface ThemeBootstrap {
         id: string;
         version: string;
         entry: string | null;
-        development?: { url: string; version: string; scripts?: string[] } | null;
+        development?: DevelopmentPayload | null;
     }[];
     settings: Record<string, ThemeSettingValue>;
     scheme: ThemeScheme;
@@ -87,3 +88,7 @@ export const getBootstrapTheme = (): ThemeBootstrap => ({
     ...classicTheme,
     ...(window as ExtendedWindow).SiteConfiguration?.theme,
 });
+
+export type ThemeChainEntry = ThemeBootstrap['chain'][number];
+
+export const getBootstrapThemeChain = (): ThemeChainEntry[] => getBootstrapTheme().chain;

@@ -8,6 +8,8 @@ use Closure;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
+use Pterodactyl\Services\Themes\ThemeBuild;
+use Pterodactyl\Services\Themes\ViewCatalog;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -18,7 +20,7 @@ class ExtensionAssetPublisher
 
     private const array ICON_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
-    public function __construct(private readonly ExtensionStylesheetInspector $stylesheets) {}
+    public function __construct(private readonly ExtensionStylesheetInspector $stylesheets, private readonly ViewCatalog $views) {}
 
     public function iconUrl(ExtensionManifest $manifest): ?string
     {
@@ -64,12 +66,18 @@ class ExtensionAssetPublisher
 
     public function entryUrl(ExtensionManifest $manifest): string
     {
+        return $this->assetUrl($manifest, 'client.js');
+    }
+
+    /** The URL of a file of the published build, by its path inside dist. */
+    public function assetUrl(ExtensionManifest $manifest, string $file): string
+    {
         $version = $this->currentVersion($manifest->id);
         if ($version !== null) {
-            return sprintf('/assets/extensions/%s/%s/client.js', $manifest->id, $version);
+            return sprintf('/assets/extensions/%s/%s/%s', $manifest->id, $version, $file);
         }
 
-        return sprintf('/assets/extensions/%s/client.js?v=%s', $manifest->id, Str::slug($manifest->version));
+        return sprintf('/assets/extensions/%s/%s?v=%s', $manifest->id, $file, Str::slug($manifest->version));
     }
 
     public function publish(ExtensionManifest $manifest): void
@@ -110,7 +118,7 @@ class ExtensionAssetPublisher
 
     public function stage(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
+        if (! $manifest->hasAssets()) {
             return null;
         }
 
@@ -165,32 +173,39 @@ class ExtensionAssetPublisher
         } else {
             File::replace($path, $version);
             if (is_file($this->developmentPath($identifier))) {
-                File::replace($this->developmentPath($identifier), $version);
+                $this->writeDevelopment($identifier, $version);
             }
         }
     }
 
     public function missingBuildReason(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
-            return null;
+        if ($manifest->hasUi() && ! is_file($manifest->path($manifest->uiEntry ?? ExtensionManifest::UI_ENTRY))) {
+            return "Extension \"{$manifest->id}\" declares ui.entry \"{$manifest->uiEntry}\" but the built file is missing - build the extension before installing.";
         }
 
-        if (! is_file($manifest->path($manifest->uiEntry ?? ExtensionManifest::UI_ENTRY))) {
-            return "Extension \"{$manifest->id}\" declares ui.entry \"{$manifest->uiEntry}\" but the built file is missing - build the extension before installing.";
+        $stylesheet = $manifest->theme?->stylesheet;
+        if ($stylesheet !== null && ! is_file($manifest->path(...explode('/', $stylesheet)))) {
+            return "Theme \"{$manifest->id}\" declares theme.stylesheet \"{$stylesheet}\" but the built file is missing - build the theme before installing.";
         }
 
         return null;
     }
 
-    /** Why the built frontend cannot be published: it is missing, or its styles would override the panel's or another extension's. */
+    /**
+     * Why the built frontend cannot be published: it is missing, its styles would override the
+     * panel's or another extension's, or, for a theme, it loads remote resources, exceeds its
+     * size budget or overrides views that do not exist.
+     */
     public function unusableBuildReason(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
+        if (! $manifest->hasAssets()) {
             return null;
         }
 
-        return $this->missingBuildReason($manifest) ?? $this->distFilesReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
+        return $this->missingBuildReason($manifest)
+            ?? $this->distFilesReason($manifest)
+            ?? ($manifest->isTheme() ? $this->themeBuildReason($manifest) : $this->stylesheets->conflictReason($manifest));
     }
 
     public function publishedPath(string $identifier): string
@@ -202,7 +217,7 @@ class ExtensionAssetPublisher
     {
         $version = $this->currentVersion($identifier);
         throw_if($version === null, InvalidExtensionException::class, 'Publish a frontend build before watching it.');
-        File::replace($this->developmentPath($identifier), $version);
+        $this->writeDevelopment($identifier, $version);
     }
 
     public function stopDevelopment(string $identifier): void
@@ -210,7 +225,12 @@ class ExtensionAssetPublisher
         File::delete($this->developmentPath($identifier));
     }
 
-    /** @return array{url: string, version: string}|null */
+    /**
+     * What the page polls while `p:extension:dev --watch` runs. `scripts` only changes when a
+     * file other than a stylesheet does, so a CSS-only rebuild is swapped in without a reload.
+     *
+     * @return array{url: string, version: string, scripts: string}|null
+     */
     public function developmentPayload(string $identifier): ?array
     {
         $version = $this->currentVersion($identifier);
@@ -218,7 +238,47 @@ class ExtensionAssetPublisher
             return null;
         }
 
-        return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version];
+        return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version, 'scripts' => $this->scriptsRevision($identifier, $version)];
+    }
+
+    private function themeBuildReason(ExtensionManifest $manifest): ?string
+    {
+        foreach (ExtensionDistFiles::list($manifest->path('dist')) as $relative => $path) {
+            $remote = pathinfo($path, PATHINFO_EXTENSION) === 'css' ? $this->stylesheets->remoteReferences(File::get($path)) : [];
+            if ($remote !== []) {
+                return "Theme \"{$manifest->id}\" loads \"{$remote[0]}\" from another origin in dist/{$relative}; bundle fonts and images into the build instead.";
+            }
+        }
+
+        // Both files exist by now: missingBuildReason() checked them.
+        foreach ([[$manifest->theme?->stylesheet, ThemeBuild::STYLESHEET_BUDGET], [$manifest->uiEntry, ThemeBuild::ENTRY_BUDGET]] as [$file, $budget]) {
+            $size = $file === null ? 0 : File::size($manifest->path(...explode('/', $file)));
+            if ($size > $budget) {
+                return sprintf('Theme "%s" ships %s at %d KB; a theme may ship at most %d KB there.', $manifest->id, $file, (int) ceil($size / 1024), $budget / 1024);
+            }
+        }
+
+        $unknown = $this->views->unknown(ThemeBuild::of($manifest)->views ?? []);
+
+        return $unknown === [] ? null : sprintf('Theme "%s" overrides views the panel does not have: %s.', $manifest->id, implode(', ', $unknown));
+    }
+
+    private function writeDevelopment(string $identifier, string $version): void
+    {
+        File::replace($this->developmentPath($identifier), json_encode(['version' => $version, 'scripts' => $this->scriptsRevision($identifier, $version)], JSON_THROW_ON_ERROR));
+    }
+
+    private function scriptsRevision(string $identifier, string $version): string
+    {
+        $hash = hash_init('sha256');
+        foreach (ExtensionDistFiles::list($this->publishedPath($identifier).DIRECTORY_SEPARATOR.$version) as $relative => $path) {
+            if (preg_match('/\.css(?:\.map)?$/', $relative) !== 1) {
+                hash_update($hash, $relative."\0");
+                hash_update_file($hash, $path);
+            }
+        }
+
+        return hash_final($hash);
     }
 
     /** Published assets are web-served, so dist may only hold static browser assets. */

@@ -1,5 +1,5 @@
 /**
- * Vite build preset for Pterodactyl extensions.
+ * Vite build presets for Pterodactyl extensions and themes.
  *
  * Produces a single ESM file (dist/client.js) with every shared-runtime module left
  * as a bare import - the panel's import map resolves them at load time, so React,
@@ -8,7 +8,15 @@
  *
  *   import { defineExtensionConfig } from '@pterodactyl/sdk/vite';
  *   export default defineExtensionConfig({ entry: 'src/client/index.tsx' });
+ *
+ * and in a theme's:
+ *
+ *   import { defineThemeConfig } from '@pterodactyl/sdk/vite';
+ *   export default defineThemeConfig({ entry: 'src/theme.tsx', stylesheet: 'src/theme.css' });
  */
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { parseAst } from 'vite';
 
 /** Modules provided by the panel's import map - never bundled into extensions. */
 export const SHARED_RUNTIME_MODULES = [
@@ -19,6 +27,7 @@ export const SHARED_RUNTIME_MODULES = [
     '@tanstack/react-query',
     '@pterodactyl/sdk',
     '@pterodactyl/sdk/api',
+    '@pterodactyl/sdk/theme',
 ];
 
 /** Entry CSS must load before setup; native ESM imports do not load Vite's extracted CSS. */
@@ -58,6 +67,92 @@ const extensionStyles = () => ({
         }
     },
 });
+
+/**
+ * The view names a `defineTheme({ views: { ... } })` call lists, when they are plain keys;
+ * null when the call is there but its views cannot be read without running it.
+ */
+function definedViews(program) {
+    const found = [];
+    const visit = (node) => {
+        if (Array.isArray(node)) return node.forEach(visit);
+        if (!node || typeof node.type !== 'string') return;
+        const callee = node.type === 'CallExpression' ? node.callee : null;
+        if ((callee?.type === 'Identifier' ? callee.name : callee?.property?.name) === 'defineTheme') {
+            const [theme] = node.arguments;
+            const views = theme?.type === 'ObjectExpression' ? theme.properties.find((property) => property.type === 'Property' && !property.computed && (property.key.name ?? property.key.value) === 'views') : undefined;
+            const keys = views?.value.type === 'ObjectExpression' ? views.value.properties.map((property) => (property.type === 'Property' && !property.computed ? (property.key.name ?? property.key.value) : null)) : null;
+            const plain = theme?.type === 'ObjectExpression' && !theme.properties.some((property) => property.type === 'SpreadElement');
+            found.push(!plain ? null : views === undefined ? [] : keys && !keys.includes(null) ? keys.map(String) : null);
+        }
+        for (const value of Object.values(node)) if (value && typeof value === 'object') visit(value);
+    };
+    visit(program);
+    return found;
+}
+
+/** Writes dist/theme.json, which the panel reads to decide whether the theme stylesheet can replace its own. */
+const themeBuildInfo = () => {
+    let views = [];
+    return {
+        name: 'pterodactyl-theme-build-info',
+        enforce: 'post',
+        buildStart() {
+            views = [];
+        },
+        transform(code, id) {
+            if (!id.includes('/node_modules/') && /\bdefineTheme\b/.test(code)) views.push(...definedViews(parseAst(code)));
+            return null;
+        },
+        generateBundle(_options, bundle) {
+            for (const chunk of Object.values(bundle)) {
+                if (chunk.type === 'chunk' && !chunk.facadeModuleId?.endsWith('.css') && chunk.viteMetadata?.importedCss.size) {
+                    this.error('Theme styles belong in the theme stylesheet: dist/client.js does not load CSS its modules import.');
+                }
+            }
+            const manifest = new URL('./core-classes.txt', import.meta.url);
+            const info = {
+                core: existsSync(manifest) ? createHash('sha256').update(readFileSync(manifest)).digest('hex').slice(0, 16) : null,
+                sdk: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version,
+                ...(views.length === 1 && views[0] !== null ? { views: views[0] } : {}),
+            };
+            this.emitFile({ type: 'asset', fileName: 'theme.json', source: `${JSON.stringify(info, null, 4)}\n` });
+        },
+    };
+};
+
+/**
+ * Builds a theme: `entry` (optional) to dist/client.js with the shared modules external and
+ * no stylesheet loader, `stylesheet` to dist/theme.css with Tailwind, and dist/theme.json.
+ */
+export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins = [] } = {}) {
+    if (!stylesheet && !entry) {
+        throw new Error('defineThemeConfig requires a { stylesheet } path such as "src/theme.css", an { entry } such as "src/theme.tsx", or both.');
+    }
+
+    return {
+        plugins: [...plugins, themeBuildInfo()],
+        publicDir: false,
+        build: {
+            outDir,
+            emptyOutDir: true,
+            sourcemap: true,
+            target: 'es2022',
+            modulePreload: false,
+            rollupOptions: {
+                input: { ...(entry ? { client: entry } : {}), ...(stylesheet ? { theme: stylesheet } : {}) },
+                external: SHARED_RUNTIME_MODULES,
+                preserveEntrySignatures: 'strict',
+                output: {
+                    format: 'es',
+                    entryFileNames: '[name].js',
+                    chunkFileNames: 'chunk.[name].[hash].js',
+                    assetFileNames: ({ names }) => (names.includes('theme.css') ? 'theme.css' : '[name].[hash][extname]'),
+                },
+            },
+        },
+    };
+}
 
 export function defineExtensionConfig({ entry, outDir = 'dist', plugins = [] } = {}) {
     if (!entry) {

@@ -18,6 +18,6 @@ class GetNodeConfigurationRequest extends GetNodesRequest
     {
         $token = $this->user()?->currentAccessToken();
 
-        return ! ($token instanceof ApiKey && $token->key_type === ApiKey::TYPE_ACCOUNT) && parent::authorize();
+        return (! $token instanceof ApiKey || $token->key_type !== ApiKey::TYPE_ACCOUNT) && parent::authorize();
     }
 }

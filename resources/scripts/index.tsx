@@ -4,7 +4,6 @@ import App from '@/components/App';
 import { queryClient } from '@/api/queryClient';
 import { syncThemeColorMeta } from '@/lib/theme';
 import { bootTheme } from '@/views/boot';
-import '@/assets/tailwind.css';
 import '@/router/view-transitions.css';
 import { followCurrentUserLanguage } from './i18n';
 

@@ -17,6 +17,7 @@ _ide_helper_models.php
 .phpstorm.meta.php
 .yarn
 public/assets/manifest.json
+public/assets/core-classes.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
@@ -47,5 +48,6 @@ result
 # Local extension development checkouts
 /extensions/
 
-# Generated SDK test host bundles
+# Generated SDK test host bundles and core class manifest
 /packages/sdk/testing-runtime/
+/packages/sdk/core-classes.txt

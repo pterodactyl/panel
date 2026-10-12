@@ -1,0 +1,11 @@
+/*
+ * Theme entry point. A theme's src/theme.css starts with
+ *
+ *   @import '@pterodactyl/sdk/theme-entry.css';
+ *
+ * which builds the panel stylesheet together with every class the panel's own markup uses
+ * (core-classes.txt, generated with the panel and shipped in this package) and, through
+ * Tailwind's source detection, the theme's own. Write unprefixed Tailwind after it.
+ */
+@import './panel.css';
+@source './core-classes.txt';

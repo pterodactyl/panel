@@ -6,6 +6,6 @@ namespace Pterodactyl\Contracts\Themes;
 
 interface ResetsThemes
 {
-    /** Remove the published theme, restoring the stock look. */
+    /** Make the built-in classic theme active again. */
     public function reset(): void;
 }
