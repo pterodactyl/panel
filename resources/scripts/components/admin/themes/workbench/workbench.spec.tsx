@@ -222,7 +222,7 @@ describe('view preview', () => {
 
         cleanup();
         host?.dispose();
-        await preview('page.server.backups');
+        await preview('page.admin.nodes');
 
         expect(screen.getByText('No fixtures yet')).toBeInTheDocument();
         expect(screen.getByText(/Classic has no source of its own to eject here yet/)).toBeInTheDocument();

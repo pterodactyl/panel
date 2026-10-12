@@ -14,7 +14,7 @@ const useActionButton = () => useSkin('Button', { color: 'grey', size: 'xsmall',
 
 type RowActionCount = 1 | 2 | 3;
 
-const actionWidths = { 1: 'w-14', 2: 'w-24', 3: 'w-32' } satisfies Record<RowActionCount, string>;
+export const actionWidths = { 1: 'w-14', 2: 'w-24', 3: 'w-32' } satisfies Record<RowActionCount, string>;
 
 /** The trailing, always-visible "Actions" column sized for `actions` icon buttons; `width` overrides the size. */
 export function actionsColumn<TData>(

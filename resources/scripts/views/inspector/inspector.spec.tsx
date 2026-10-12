@@ -167,7 +167,7 @@ describe('inspector helpers', () => {
     it('builds the override snippet and knows which views classic can eject', () => {
         expect(overrideSnippet('server.power')).toBe("'server.power': ({ model, Default }) => <Default />,");
         expect(isEjectable('dashboard.serverCard')).toBe(true);
-        expect(isEjectable('page.server.backups')).toBe(false);
+        expect(isEjectable('page.admin.nodes')).toBe(false);
     });
 
     it('names the top layer that did not fail as the one that rendered', () => {

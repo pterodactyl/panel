@@ -23,7 +23,7 @@ export { default as PageContentBlock } from "../components/elements/PageContentB
 export { default as ServerContentBlock } from "../components/elements/ServerContentBlock.js";
 export { default as TitledGreyBox } from "../components/elements/TitledGreyBox.js";
 export { default as CopyOnClick, type CopyOnClickProps } from "../components/elements/CopyOnClick.js";
-export { default as ScreenBlock, ServerError, NotFound } from "../components/elements/ScreenBlock.js";
+export { default as ScreenBlock, ServerError, NotFound, screenImages } from "../components/elements/ScreenBlock.js";
 export { default as PaginationFooter } from "../components/elements/table/PaginationFooter.js";
 export { default as Translate, type TranslationValue, type TranslationValues } from "../components/elements/Translate.js";
 export { default as Label, type LabelProps } from "../components/elements/Label.js";
@@ -51,7 +51,7 @@ export * from "./localization.js";
 export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
 export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
-export { formatDate, fromNow } from "./dates.js";
+export { formatDate, fromNow } from "../lib/dates.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";
 export type { SdkUser, SdkSiteSettings, SdkServer };
 /** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
@@ -118,6 +118,11 @@ export type * from "./models/forms.js";
 export type * from "./models/auth.js";
 export type * from "./models/account.js";
 export type * from "./models/activity.js";
+export * from "./models/schedules.js";
+export * from "./models/subusers.js";
+export * from "./models/backups.js";
+export * from "./models/settings.js";
+export * from "./models/conflict.js";
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }

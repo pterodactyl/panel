@@ -22,7 +22,7 @@ const legacySlotNames = [
 
 const anchorFiles = [
     '../../resources/scripts/themes/classic/views/auth/LoginForm.tsx',
-    '../../resources/scripts/components/server/users/EditSubuserModal.tsx',
+    '../../resources/scripts/themes/classic/views/server/users/SubuserForm.tsx',
     '../../resources/scripts/views/pages.ts',
     '../../resources/scripts/themes/classic/views/layout/AccountLayout.tsx',
     '../../resources/scripts/themes/classic/views/layout/AdminLayout.tsx',

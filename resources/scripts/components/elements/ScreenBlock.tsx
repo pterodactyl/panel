@@ -6,6 +6,16 @@ import Button from '@/components/elements/Button';
 import Icon from '@/components/elements/Icon';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import ServerInstallSvg from '@/assets/images/server_installing.svg';
+import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+
+/** The panel's illustrations for a `ScreenBlock`. */
+export const screenImages = {
+    error: ServerErrorSvg,
+    installing: ServerInstallSvg,
+    notFound: NotFoundSvg,
+    restoring: ServerRestoreSvg,
+} as const;
 
 interface BaseProps {
     title: string;

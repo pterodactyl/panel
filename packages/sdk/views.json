@@ -892,7 +892,15 @@
             "server.backups.before",
             "server.backups.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/backups/BackupsPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.console": {
         "kind": "page",
@@ -940,7 +948,14 @@
             "server.schedules.before",
             "server.schedules.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/schedules/SchedulesPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.schedules.detail": {
         "kind": "page",
@@ -949,7 +964,15 @@
             "server.schedules.detail.before",
             "server.schedules.detail.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/schedules/ScheduleDetailPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.settings": {
         "kind": "page",
@@ -958,7 +981,13 @@
             "server.settings.before",
             "server.settings.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/server/settings/SettingsPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.startup": {
         "kind": "page",
@@ -976,7 +1005,15 @@
             "server.users.before",
             "server.users.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/users/UsersPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.users.create": {
         "kind": "page",
@@ -985,7 +1022,60 @@
             "server.users.create.before",
             "server.users.create.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/server/users/CreateSubuserPage.tsx",
+            "export": "default"
+        }
+    },
+    "server.backups": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "backups",
+            "empty",
+            "full",
+            "noLimit",
+            "paged",
+            "pastEnd",
+            "readOnly"
+        ],
+        "classic": {
+            "file": "views/server/backups/BackupList.tsx",
+            "export": "default"
+        }
+    },
+    "server.conflict": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "installing",
+            "suspended",
+            "maintenance",
+            "transferring",
+            "restoring"
+        ],
+        "classic": {
+            "file": "views/server/ServerConflict.tsx",
+            "export": "default"
+        }
+    },
+    "server.debug": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/server/settings/ServerDebug.tsx",
+            "export": "default"
+        }
     },
     "server.files.details": {
         "kind": "block",
@@ -1020,5 +1110,124 @@
             "empty",
             "loading"
         ]
+    },
+    "server.reinstall": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "skipped",
+            "denied"
+        ],
+        "classic": {
+            "file": "views/server/settings/ServerReinstall.tsx",
+            "export": "default"
+        }
+    },
+    "server.rename": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "empty",
+            "denied"
+        ],
+        "classic": {
+            "file": "views/server/settings/ServerRename.tsx",
+            "export": "default"
+        }
+    },
+    "server.schedule": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "active",
+            "processing",
+            "inactive",
+            "readOnly"
+        ],
+        "classic": {
+            "file": "views/server/schedules/ScheduleDetails.tsx",
+            "export": "default"
+        }
+    },
+    "server.schedule.tasks": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "tasks",
+            "empty",
+            "readOnly",
+            "noBackups"
+        ],
+        "classic": {
+            "file": "views/server/schedules/ScheduleTasks.tsx",
+            "export": "default"
+        }
+    },
+    "server.schedules": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "schedules",
+            "empty",
+            "readOnly",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/server/schedules/ScheduleList.tsx",
+            "export": "default"
+        }
+    },
+    "server.sftp": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "ipv6",
+            "denied"
+        ],
+        "classic": {
+            "file": "views/server/settings/ServerSftp.tsx",
+            "export": "default"
+        }
+    },
+    "server.subuserForm": {
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.users.permissions.before"
+        ],
+        "fixtures": [
+            "create",
+            "edit",
+            "restricted",
+            "viewOnly",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/server/users/SubuserForm.tsx",
+            "export": "default"
+        }
+    },
+    "server.subusers": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "subusers",
+            "empty",
+            "readOnly"
+        ],
+        "classic": {
+            "file": "views/server/users/SubuserList.tsx",
+            "export": "default"
+        }
     }
 }

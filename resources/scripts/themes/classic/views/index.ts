@@ -1,10 +1,15 @@
 import { lazyView, type ThemeViews } from '@/sdk/theme';
 import AuthLayout from './layout/AuthLayout';
+import ServerConflict from './server/ServerConflict';
 
 const dashboard = () => import('./dashboard');
 const auth = () => import('./auth');
 const account = () => import('./account');
 const activity = () => import('./activity');
+const schedules = () => import('./server/schedules');
+const users = () => import('./server/users');
+const backups = () => import('./server/backups');
+const settings = () => import('./server/settings');
 
 /** Classic's own views; the rest still render the existing containers as their default. */
 export const classicViews: ThemeViews = {
@@ -41,4 +46,23 @@ export const classicViews: ThemeViews = {
     'activity.log': lazyView(activity, 'ActivityLog'),
     'page.account.activity': lazyView(activity, 'AccountActivityPage'),
     'page.server.activity': lazyView(activity, 'ServerActivityPage'),
+
+    // Shown in place of every server page, so it renders without waiting for a chunk.
+    'server.conflict': ServerConflict,
+    'page.server.schedules': lazyView(schedules, 'SchedulesPage'),
+    'server.schedules': lazyView(schedules, 'ScheduleList'),
+    'page.server.schedules.detail': lazyView(schedules, 'ScheduleDetailPage'),
+    'server.schedule': lazyView(schedules, 'ScheduleDetails'),
+    'server.schedule.tasks': lazyView(schedules, 'ScheduleTasks'),
+    'page.server.users': lazyView(users, 'UsersPage'),
+    'server.subusers': lazyView(users, 'SubuserList'),
+    'page.server.users.create': lazyView(users, 'CreateSubuserPage'),
+    'server.subuserForm': lazyView(users, 'SubuserForm'),
+    'page.server.backups': lazyView(backups, 'BackupsPage'),
+    'server.backups': lazyView(backups, 'BackupList'),
+    'page.server.settings': lazyView(settings, 'SettingsPage'),
+    'server.sftp': lazyView(settings, 'ServerSftp'),
+    'server.debug': lazyView(settings, 'ServerDebug'),
+    'server.rename': lazyView(settings, 'ServerRename'),
+    'server.reinstall': lazyView(settings, 'ServerReinstall'),
 };

@@ -10,7 +10,6 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import InstallListener from '@/components/server/InstallListener';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
-import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import { useIsRenderedRoute } from '@/router/renderedRoute';
 import { useCurrentUser } from '@/api/account/queries';
 import { LayoutView } from '@/router/viewRoutes';
@@ -40,7 +39,7 @@ function ServerContent({ id, server }: { id: string; server: Server }) {
             <TransferListener />
             <WebsocketHandler />
             {inConflictState && (!rootAdmin || !location.pathname.endsWith(`/server/${identifier}`)) ? (
-                <ConflictStateRenderer />
+                <View name='server.conflict' />
             ) : (
                 <>
                     {/* Stays mounted while hidden so the terminal survives tab switches. */}

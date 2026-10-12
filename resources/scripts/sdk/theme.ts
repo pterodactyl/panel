@@ -79,6 +79,11 @@ export type {
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
+export type * from './models/schedules';
+export type * from './models/subusers';
+export type * from './models/backups';
+export type * from './models/settings';
+export type * from './models/conflict';
 
 /**
  * Calls `listener`, at most once a frame, after a stylesheet or an `<html>` attribute changes.

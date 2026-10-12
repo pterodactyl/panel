@@ -9,6 +9,11 @@ import '@/views/activity';
 import '@/views/auth';
 import '@/views/dashboard';
 import '@/views/layouts';
+import '@/views/server/backups';
+import '@/views/server/conflict';
+import '@/views/server/schedules';
+import '@/views/server/settings';
+import '@/views/server/users';
 import {
     clearThemeLayers,
     getViewDefinition,

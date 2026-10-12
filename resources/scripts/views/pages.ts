@@ -26,17 +26,6 @@ export const VIEW_PAGES = {
     'page.account.activity': { context: 'account', slots: ['account.activity.before', 'account.activity.after'] },
 
     'page.server.activity': { context: 'server', slots: ['server.activity.before', 'server.activity.after'] },
-} as const satisfies Record<`page.${string}`, PageSpec>;
-
-/** Every routed page whose default is still the existing container. */
-export const OPAQUE_PAGES = {
-    'page.server.console': { context: 'server' },
-    'page.server.files': { context: 'server' },
-    'page.server.files.editor': {
-        context: 'server',
-        slots: ['server.files.editor.before', 'server.files.editor.after'],
-    },
-    'page.server.databases': { context: 'server', slots: ['server.databases.before', 'server.databases.after'] },
     'page.server.schedules': { context: 'server', slots: ['server.schedules.before', 'server.schedules.after'] },
     'page.server.schedules.detail': {
         context: 'server',
@@ -48,9 +37,20 @@ export const OPAQUE_PAGES = {
         slots: ['server.users.create.before', 'server.users.create.after'],
     },
     'page.server.backups': { context: 'server', slots: ['server.backups.before', 'server.backups.after'] },
+    'page.server.settings': { context: 'server', slots: ['server.settings.before', 'server.settings.after'] },
+} as const satisfies Record<`page.${string}`, PageSpec>;
+
+/** Every routed page whose default is still the existing container. */
+export const OPAQUE_PAGES = {
+    'page.server.console': { context: 'server' },
+    'page.server.files': { context: 'server' },
+    'page.server.files.editor': {
+        context: 'server',
+        slots: ['server.files.editor.before', 'server.files.editor.after'],
+    },
+    'page.server.databases': { context: 'server', slots: ['server.databases.before', 'server.databases.after'] },
     'page.server.network': { context: 'server', slots: ['server.network.before', 'server.network.after'] },
     'page.server.startup': { context: 'server', slots: ['server.startup.before', 'server.startup.after'] },
-    'page.server.settings': { context: 'server', slots: ['server.settings.before', 'server.settings.after'] },
 
     'page.admin.overview': { context: 'admin' },
     'page.admin.activity': { context: 'admin', slots: ['panel.activity.before', 'panel.activity.after'] },
@@ -204,6 +204,9 @@ export function pageSlots(name: PageViewName): readonly [RouteSlotName, RouteSlo
 }
 
 const placeholder = createElement(Spinner, { centered: true });
+
+/** What a real page's definition shares with the opaque ones: its context, slots and placeholder. */
+export const viewPage = (name: ViewPageName) => ({ ...VIEW_PAGES[name], placeholder });
 
 export const pageViews = getObjectKeys(OPAQUE_PAGES).map((name) => {
     const spec: PageSpec = OPAQUE_PAGES[name];

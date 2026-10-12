@@ -41,23 +41,6 @@ export declare const VIEW_PAGES: {
         readonly context: "server";
         readonly slots: readonly ["server.activity.before", "server.activity.after"];
     };
-};
-/** Every routed page whose default is still the existing container. */
-export declare const OPAQUE_PAGES: {
-    readonly 'page.server.console': {
-        readonly context: "server";
-    };
-    readonly 'page.server.files': {
-        readonly context: "server";
-    };
-    readonly 'page.server.files.editor': {
-        readonly context: "server";
-        readonly slots: readonly ["server.files.editor.before", "server.files.editor.after"];
-    };
-    readonly 'page.server.databases': {
-        readonly context: "server";
-        readonly slots: readonly ["server.databases.before", "server.databases.after"];
-    };
     readonly 'page.server.schedules': {
         readonly context: "server";
         readonly slots: readonly ["server.schedules.before", "server.schedules.after"];
@@ -78,6 +61,27 @@ export declare const OPAQUE_PAGES: {
         readonly context: "server";
         readonly slots: readonly ["server.backups.before", "server.backups.after"];
     };
+    readonly 'page.server.settings': {
+        readonly context: "server";
+        readonly slots: readonly ["server.settings.before", "server.settings.after"];
+    };
+};
+/** Every routed page whose default is still the existing container. */
+export declare const OPAQUE_PAGES: {
+    readonly 'page.server.console': {
+        readonly context: "server";
+    };
+    readonly 'page.server.files': {
+        readonly context: "server";
+    };
+    readonly 'page.server.files.editor': {
+        readonly context: "server";
+        readonly slots: readonly ["server.files.editor.before", "server.files.editor.after"];
+    };
+    readonly 'page.server.databases': {
+        readonly context: "server";
+        readonly slots: readonly ["server.databases.before", "server.databases.after"];
+    };
     readonly 'page.server.network': {
         readonly context: "server";
         readonly slots: readonly ["server.network.before", "server.network.after"];
@@ -85,10 +89,6 @@ export declare const OPAQUE_PAGES: {
     readonly 'page.server.startup': {
         readonly context: "server";
         readonly slots: readonly ["server.startup.before", "server.startup.after"];
-    };
-    readonly 'page.server.settings': {
-        readonly context: "server";
-        readonly slots: readonly ["server.settings.before", "server.settings.after"];
     };
     readonly 'page.admin.overview': {
         readonly context: "admin";
@@ -302,4 +302,68 @@ declare module './registry' {
 }
 /** The engine-rendered slots of a page, if it has any. */
 export declare function pageSlots(name: PageViewName): readonly [RouteSlotName, RouteSlotName] | undefined;
-export declare const pageViews: import("./registry.js").ViewDefinition<"page.server.console" | "page.server.files" | "page.server.files.editor" | "page.server.databases" | "page.server.schedules" | "page.server.schedules.detail" | "page.server.users" | "page.server.users.create" | "page.server.backups" | "page.server.network" | "page.server.startup" | "page.server.settings" | "page.admin.overview" | "page.admin.activity" | "page.admin.settings" | "page.admin.settings.mail" | "page.admin.settings.advanced" | "page.admin.users" | "page.admin.users.create" | "page.admin.users.detail" | "page.admin.users.detail.about" | "page.admin.locations" | "page.admin.locations.detail" | "page.admin.nodes" | "page.admin.nodes.create" | "page.admin.nodes.detail" | "page.admin.nodes.detail.about" | "page.admin.nodes.detail.settings" | "page.admin.nodes.detail.configuration" | "page.admin.nodes.detail.allocations" | "page.admin.nodes.detail.tags" | "page.admin.nodes.detail.servers" | "page.admin.servers" | "page.admin.servers.create" | "page.admin.servers.detail" | "page.admin.servers.detail.about" | "page.admin.servers.detail.details" | "page.admin.servers.detail.build" | "page.admin.servers.detail.startup" | "page.admin.servers.detail.databases" | "page.admin.servers.detail.mounts" | "page.admin.servers.detail.manage" | "page.admin.servers.detail.delete" | "page.admin.databaseHosts" | "page.admin.databaseHosts.create" | "page.admin.databaseHosts.detail" | "page.admin.mounts" | "page.admin.mounts.create" | "page.admin.mounts.detail" | "page.admin.eggs" | "page.admin.eggs.create" | "page.admin.eggs.catalog" | "page.admin.eggs.detail" | "page.admin.eggs.detail.configuration" | "page.admin.eggs.detail.tags" | "page.admin.eggs.detail.variables" | "page.admin.eggs.detail.script" | "page.admin.tags" | "page.admin.extensions" | "page.admin.themes" | "page.admin.themeWorkbench" | "page.admin.apiKeys">[];
+/** What a real page's definition shares with the opaque ones: its context, slots and placeholder. */
+export declare const viewPage: (name: ViewPageName) => {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "app";
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "auth";
+    slots: readonly ["auth.login.before", "auth.login.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "auth";
+    slots: readonly ["auth.checkpoint.before", "auth.checkpoint.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "auth";
+    slots: readonly ["auth.password.before", "auth.password.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "auth";
+    slots: readonly ["auth.passwordReset.before", "auth.passwordReset.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "account";
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "account";
+    slots: readonly ["account.api.before", "account.api.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "account";
+    slots: readonly ["account.ssh.before", "account.ssh.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "account";
+    slots: readonly ["account.activity.before", "account.activity.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.activity.before", "server.activity.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.schedules.before", "server.schedules.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.schedules.detail.before", "server.schedules.detail.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.users.before", "server.users.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.users.create.before", "server.users.create.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.backups.before", "server.backups.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.settings.before", "server.settings.after"];
+};
+export declare const pageViews: import("./registry.js").ViewDefinition<"page.server.console" | "page.server.files" | "page.server.files.editor" | "page.server.databases" | "page.server.network" | "page.server.startup" | "page.admin.overview" | "page.admin.activity" | "page.admin.settings" | "page.admin.settings.mail" | "page.admin.settings.advanced" | "page.admin.users" | "page.admin.users.create" | "page.admin.users.detail" | "page.admin.users.detail.about" | "page.admin.locations" | "page.admin.locations.detail" | "page.admin.nodes" | "page.admin.nodes.create" | "page.admin.nodes.detail" | "page.admin.nodes.detail.about" | "page.admin.nodes.detail.settings" | "page.admin.nodes.detail.configuration" | "page.admin.nodes.detail.allocations" | "page.admin.nodes.detail.tags" | "page.admin.nodes.detail.servers" | "page.admin.servers" | "page.admin.servers.create" | "page.admin.servers.detail" | "page.admin.servers.detail.about" | "page.admin.servers.detail.details" | "page.admin.servers.detail.build" | "page.admin.servers.detail.startup" | "page.admin.servers.detail.databases" | "page.admin.servers.detail.mounts" | "page.admin.servers.detail.manage" | "page.admin.servers.detail.delete" | "page.admin.databaseHosts" | "page.admin.databaseHosts.create" | "page.admin.databaseHosts.detail" | "page.admin.mounts" | "page.admin.mounts.create" | "page.admin.mounts.detail" | "page.admin.eggs" | "page.admin.eggs.create" | "page.admin.eggs.catalog" | "page.admin.eggs.detail" | "page.admin.eggs.detail.configuration" | "page.admin.eggs.detail.tags" | "page.admin.eggs.detail.variables" | "page.admin.eggs.detail.script" | "page.admin.tags" | "page.admin.extensions" | "page.admin.themes" | "page.admin.themeWorkbench" | "page.admin.apiKeys">[];

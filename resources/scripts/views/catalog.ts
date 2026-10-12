@@ -8,5 +8,10 @@ import './auth';
 import './dashboard';
 import './layouts';
 import './pages';
+import './server/backups';
+import './server/conflict';
+import './server/schedules';
+import './server/settings';
+import './server/users';
 
 export { getViewDefinitions } from './registry';
