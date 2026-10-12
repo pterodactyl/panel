@@ -1010,6 +1010,7 @@ stylesheet or an attribute of `<html>` changes.
 | `--font-sans` | Body typeface (`font-sans`). |  |
 | `--font-header` | Heading typeface (`font-header`). |  |
 | `--layout-content-width` | Width of page content (`max-w-panel`). | `*-panel` |
+| `--layout-gutter` | Side margin of page content until it centres; `page-width` applies both. |  |
 | `--layout-auth-width` | Width of the sign-in card (`max-w-auth`). | `*-auth` |
 | `--layout-sidebar-width` | Width of sidebars (`w-sidebar`). | `*-sidebar` |
 | `--spinner-overlay-opacity` | Opacity of the background behind a loading overlay. |  |
@@ -1116,9 +1117,9 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | --- | --- | --- | --- | --- | --- |
 | `layout.account` | account | `AccountLayoutModel` |  | `account.navigation.before` `account.navigation.after` | default, extension |
 | `layout.admin` | admin | `AdminLayoutModel` |  | `panel.navigation.before` `panel.navigation.after` | default, extension |
-| `layout.app` | app | `AppLayoutModel` |  | `nav.items.before` `nav.items.after` | user, admin, schemes, logo |
+| `layout.app` | app | `AppLayoutModel` |  | `nav.items.before` `nav.items.after` | user, admin, schemes, logo, accountArea, serverArea, adminArea |
 | `layout.auth` | auth | `AuthLayoutModel` |  |  | default, logo |
-| `layout.server` | server | `ServerLayoutModel` |  | `server.navigation.before` `server.navigation.after` | owner, subuser, admin, installing, suspended |
+| `layout.server` | server | `ServerLayoutModel` |  | `server.navigation.before` `server.navigation.after` | owner, subuser, admin, offline, installing, suspended |
 
 #### Pages
 
@@ -1249,7 +1250,6 @@ fixtures, and `Default` renders the container. Wrap them, or place blocks around
 | `page.admin.settings.mail` | `panel.settings.before` `panel.settings.after` |
 | `page.admin.tags` | `panel.tags.before` `panel.tags.after` |
 | `page.admin.themes` | `panel.themes.before` `panel.themes.after` |
-| `page.admin.themeWorkbench` |  |
 | `page.admin.users` | `panel.users.before` `panel.users.after` |
 | `page.admin.users.create` | `panel.users.create.before` `panel.users.create.after` |
 | `page.admin.users.detail` | `panel.users.detail.before` `panel.users.detail.after` |
