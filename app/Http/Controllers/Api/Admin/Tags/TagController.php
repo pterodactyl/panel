@@ -155,7 +155,7 @@ class TagController extends AdminApiController
     public function syncEgg(SyncTagsRequest $request, SyncsTags $sync, Egg $egg): ApiResourceCollection
     {
         $sync->syncEgg($egg, $request->tagValues());
-        $tags = $egg->tags()->get();
+        $tags = $egg->tags()->get()->loadCount(['eggs', 'nodes']);
 
         Activity::event('admin:egg.tags')
             ->subject($egg)
@@ -175,7 +175,7 @@ class TagController extends AdminApiController
     public function syncNode(SyncTagsRequest $request, SyncsTags $sync, Node $node): ApiResourceCollection
     {
         $sync->syncNodeGames($node, $request->tagValues());
-        $tags = $node->eggTags()->get();
+        $tags = $node->eggTags()->get()->loadCount(['eggs', 'nodes']);
 
         Activity::event('admin:node.tags')
             ->subject($node)
@@ -194,7 +194,7 @@ class TagController extends AdminApiController
     public function syncNodeDeploymentTags(SyncTagsRequest $request, SyncsTags $sync, Node $node): ApiResourceCollection
     {
         $sync->syncNodeDeployments($node, $request->tagValues());
-        $tags = $node->deploymentTags()->get();
+        $tags = $node->deploymentTags()->get()->loadCount(['eggs', 'nodes']);
 
         Activity::event('admin:node.deployment-tags')
             ->subject($node)
