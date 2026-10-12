@@ -1,0 +1,42 @@
+app/Http/Resources/Api/Client/AllocationResource.php
+  s_4cabae41bceed9::t_75dbdfc9190c9e 1-39
+app/Http/Resources/Api/Client/EggVariableResource.php
+  s_4cabae41bceed9::t_69b264996df4dc 1-38
+app/Http/Controllers/Api/Client/ClientController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 12,14-15,62-63,67,98
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 17,24-25,58-59,61,65-66,70,77-78,82,89,91,95
+app/Http/Resources/Api/Client/StatsResource.php
+  s_4cabae41bceed9::t_f4efbb6f0bfbaf 1-35
+app/Http/Resources/Api/Client/ServerResource.php
+  s_4cabae41bceed9::t_6a0fc59300e923 1-60,62-170
+  s_4cabae41bceed9::t_587d1566bb3850 61
+app/Http/Resources/Api/Client/SubuserResource.php
+  s_4cabae41bceed9::t_55f75a84750878 1-31
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 12,16-17,42-43,48-52,59,61,76-79
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 16,60,62
+app/Http/Resources/Api/Client/EggResource.php
+  s_4cabae41bceed9::t_32d95d2939a650 1-27
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 17,23-24,47-48,50,57-58,62,73,75,79,86-87,91
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_4cabae41bceed9::t_602f645cc4d8ca 10,13,26-27,29-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "63f2e8f8031217114133fb3a5b6a1d038e1c2338",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
