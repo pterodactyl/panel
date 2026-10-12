@@ -6,7 +6,6 @@ namespace Pterodactyl\Models;
 
 use Database\Factories\ActivityLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Builder;
@@ -116,23 +115,5 @@ class ActivityLog extends Model implements Identifiable
         static::created(function (self $model): void {
             Event::dispatch(new ActivityLogged($model));
         });
-    }
-
-    /**
-     * @param  Builder<static>  $builder
-     */
-    #[Scope]
-    protected function forEvent(Builder $builder, string $action): void
-    {
-        $builder->where('event', $action);
-    }
-
-    /**
-     * @param  Builder<static>  $builder
-     */
-    #[Scope]
-    protected function forActor(Builder $builder, IlluminateModel $actor): void
-    {
-        $builder->whereMorphedTo('actor', $actor);
     }
 }

@@ -20,7 +20,7 @@ class DeploymentObject
 
     /**
      * The deploy tags this deployment declares. A node's reservations are matched
-     * against these exactly (see Node::forDeployTags()).
+     * against these exactly (see NodeBuilder::forDeployTags()).
      *
      * @var array<string>
      */
