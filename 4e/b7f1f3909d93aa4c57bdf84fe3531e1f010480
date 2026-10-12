@@ -1,0 +1,29 @@
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_4cabae41bceed9::t_e054e934000c59 218-238,705,724
+  s_4cabae41bceed9::t_5068a23989804d 789-791,793-815,817-818,832-839,843-847
+  s_4cabae41bceed9::t_294ea2e2551955 383
+  s_4cabae41bceed9::t_8860896e9b8da9 498,528,548,553,567,592,618,643,648,663,698,707,709,715,726,738,750,766,769,781,865
+  s_4cabae41bceed9::t_01907db565a433 816,819-831
+  s_4cabae41bceed9::t_6de6e2e5108171 151
+  s_4cabae41bceed9::t_44db1a03aa3e95 848
+resources/scripts/assets/tailwind.css
+  s_4cabae41bceed9::t_1c4e7201a3c265 143-144
+resources/scripts/components/elements/CodemirrorEditor.spec.tsx
+  s_4cabae41bceed9::t_8860896e9b8da9 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4eb7f1f3909d93aa4c57bdf84fe3531e1f010480",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
