@@ -1,7 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useStore } from '@tanstack/react-form';
-import { Link } from '@tanstack/react-router';
-import { Tags } from 'lucide-react';
 import { httpErrorToHuman } from '@/api/http';
 import { adminNodeTagsQueryOptions } from '@/api/admin/nodes/queries';
 import {
@@ -13,12 +11,11 @@ import {
     useSyncAdminNodeGameTags,
 } from '@/api/admin/tags/queries';
 import { relationshipData } from '@/api/relationships';
+import NoTagsYet from '@/components/admin/tags/NoTagsYet';
 import TagsField from '@/components/admin/tags/TagsField';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { Form, useAppForm } from '@/components/form';
 import { nodeDetailRoute } from '@/router/routeTree';
 
@@ -75,56 +72,42 @@ export default function NodeTagsTab() {
 
     return (
         <TitledGreyBox title='Node Tags'>
-            {tags.length === 0 ? (
-                <Empty className={emptyCompactClass}>
-                    <EmptyHeader>
-                        <EmptyMedia variant='icon'>
-                            <Tags />
-                        </EmptyMedia>
-                        <EmptyTitle>No tags yet</EmptyTitle>
-                        <EmptyDescription>
-                            Create a tag on the <Link to='/panel/tags'>Tags page</Link> before assigning one to this
-                            node.
-                        </EmptyDescription>
-                    </EmptyHeader>
-                </Empty>
-            ) : (
-                <Form form={form} className='m-0'>
-                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                        <div>
-                            <form.AppField name='games'>
-                                {() => (
-                                    <TagsField
-                                        tags={tags}
-                                        exclude={reservations}
-                                        label='Games'
-                                        description='An egg runs here when it has one of these tags. Leave this empty to accept every egg.'
-                                        emptyText='This node accepts every egg.'
-                                    />
-                                )}
-                            </form.AppField>
-                        </div>
-                        <div>
-                            <form.AppField name='reservations'>
-                                {() => (
-                                    <TagsField
-                                        tags={tags}
-                                        exclude={games}
-                                        label='Reservations'
-                                        description='A reserved node only takes deployments that name every one of these tags.'
-                                        emptyText='This node is not reserved.'
-                                    />
-                                )}
-                            </form.AppField>
-                        </div>
+            {tags.length === 0 && <NoTagsYet />}
+            <Form form={form} className='m-0'>
+                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                    <div>
+                        <form.AppField name='games'>
+                            {() => (
+                                <TagsField
+                                    tags={tags}
+                                    exclude={reservations}
+                                    label='Games'
+                                    description='An egg runs here when it has one of these tags. Leave this empty to accept every egg.'
+                                    emptyText='This node accepts every egg.'
+                                />
+                            )}
+                        </form.AppField>
                     </div>
-                    <div className='mt-6 flex justify-end'>
-                        <form.AppForm>
-                            <form.SubmitButton>Save tags</form.SubmitButton>
-                        </form.AppForm>
+                    <div>
+                        <form.AppField name='reservations'>
+                            {() => (
+                                <TagsField
+                                    tags={tags}
+                                    exclude={games}
+                                    label='Reservations'
+                                    description='A reserved node only takes deployments that name every one of these tags.'
+                                    emptyText='This node is not reserved.'
+                                />
+                            )}
+                        </form.AppField>
                     </div>
-                </Form>
-            )}
+                </div>
+                <div className='mt-6 flex justify-end'>
+                    <form.AppForm>
+                        <form.SubmitButton>Save tags</form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Form>
         </TitledGreyBox>
     );
 }
