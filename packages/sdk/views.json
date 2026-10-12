@@ -41,7 +41,10 @@
             "account.navigation.before",
             "account.navigation.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "extension"
+        ]
     },
     "layout.admin": {
         "kind": "layout",
@@ -50,7 +53,10 @@
             "panel.navigation.before",
             "panel.navigation.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "extension"
+        ]
     },
     "layout.app": {
         "kind": "layout",
@@ -61,14 +67,19 @@
         ],
         "fixtures": [
             "user",
-            "admin"
+            "admin",
+            "schemes",
+            "logo"
         ]
     },
     "layout.auth": {
         "kind": "layout",
         "context": "auth",
         "slots": [],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "logo"
+        ]
     },
     "layout.server": {
         "kind": "layout",
@@ -77,7 +88,13 @@
             "server.navigation.before",
             "server.navigation.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "owner",
+            "subuser",
+            "admin",
+            "installing",
+            "suspended"
+        ]
     },
     "page.account.activity": {
         "kind": "page",

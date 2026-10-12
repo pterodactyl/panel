@@ -25,7 +25,7 @@ final readonly class ThemeDocument
         public array $tokens = [],
         public array $attributes = [],
         public string $scheme = 'dark',
-        public array $schemes = ThemeDefinition::SCHEMES,
+        public array $schemes = ThemeRepository::CLASSIC_SCHEMES,
         public bool $systemScheme = false,
         public bool $safeMode = false,
         public bool $preview = false,

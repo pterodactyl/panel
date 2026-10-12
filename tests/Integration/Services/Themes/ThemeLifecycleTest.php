@@ -106,6 +106,8 @@ test('a child theme needs its parent enabled, and the chain resolves parent firs
 
     expect(array_map(fn ($theme): string => $theme->id, $themes->chain('child')))->toBe(['base', 'child']);
     expect($themes->schemes($themes->chain('child')))->toBe(['light']);
+    // Without a declaration anywhere in the chain, a theme offers classic's dark scheme only.
+    expect($themes->schemes($themes->chain('base')))->toBe(['dark']);
     expect(fn () => app(SetsExtensionEnabled::class)->setEnabled('base', false))->toThrow(InvalidExtensionException::class, 'Disable dependent extension "child" before "base".');
     expect($themes->activationProblem('base'))->toBeNull();
 });

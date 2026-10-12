@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from '@tanstack/react-router';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
     Blocks,
     ChevronDown,
@@ -19,31 +18,34 @@ import {
     Users,
     type LucideIcon,
 } from 'lucide-react';
-import NavLink from '@/router/NavLink';
-import Icon from '@/components/elements/Icon';
-import Slot from '@/extensions/Slot';
-import NavigationLabel from '@/extensions/NavigationLabel';
-import { ScreenGate } from '@/extensions/screenNavigation';
-import { getAreaNav, type AreaNavEntry } from '@/router/nav';
-import { cn } from '@/lib/cn';
+import { cn, Icon, NavigationLabel, usePanelLocation } from '@/sdk';
+import {
+    Main,
+    Navigation,
+    NavigationLink,
+    Slot,
+    useActiveNavItem,
+    type NavigationModel,
+    type NavItem,
+    type ViewProps,
+} from '@/sdk/theme';
 
+// The panel's own items render these directly, so they never wait for the icon catalog.
 const icons = new Map<string, LucideIcon>([
-    ['', LayoutDashboard],
+    ['layout-dashboard', LayoutDashboard],
     ['settings', Settings],
     ['users', Users],
-    ['locations', MapPin],
-    ['nodes', Network],
-    ['servers', Server],
-    ['databases', Database],
-    ['mounts', FolderTree],
-    ['eggs', Egg],
-    ['tags', Tag],
-    ['extensions', Blocks],
-    ['themes', Palette],
-    ['api', KeyRound],
+    ['map-pin', MapPin],
+    ['network', Network],
+    ['server', Server],
+    ['database', Database],
+    ['folder-tree', FolderTree],
+    ['egg', Egg],
+    ['tag', Tag],
+    ['blocks', Blocks],
+    ['palette', Palette],
+    ['key-round', KeyRound],
 ]);
-
-const iconFor = (segment: string): LucideIcon => icons.get(segment) ?? Puzzle;
 
 const itemClass = [
     'flex items-center gap-3 rounded-md px-3 py-2 text-sm no-underline',
@@ -60,25 +62,23 @@ const extensionItemsClass = [
     '[&_a[data-status=active]]:bg-popover [&_a[data-status=active]]:text-foreground',
 ].join(' ');
 
-const hrefFor = ({ segment }: AreaNavEntry) => `/panel${segment ? `/${segment}` : ''}`;
+function ItemLabel({ item, badge }: { item: NavItem; badge: ReactNode }) {
+    const glyph = item.extensionId === undefined && item.icon ? icons.get(item.icon) : undefined;
 
-const activeEntry = (entries: AreaNavEntry[], pathname: string) =>
-    entries
-        .filter((entry) => {
-            const href = hrefFor(entry);
+    return (
+        <>
+            {(glyph !== undefined || !item.icon) && <Icon icon={glyph ?? Puzzle} className='w-4 h-4 shrink-0' />}
+            <NavigationLabel label={item.label} group={item.group} icon={glyph ? null : item.icon} badge={badge} />
+        </>
+    );
+}
 
-            return entry.exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
-        })
-        .sort((a, b) => b.segment.length - a.segment.length)[0];
-
-export default function AdminSidebar() {
+function AdminSidebar({ nav }: { nav: NavigationModel }) {
     const [open, setOpen] = useState(false);
-    const { pathname } = useLocation();
-    const entries = getAreaNav('admin');
+    const { pathname } = usePanelLocation();
+    const current = useActiveNavItem(nav.items);
 
     useEffect(() => setOpen(false), [pathname]);
-
-    const current = activeEntry(entries, pathname);
 
     return (
         <div className={cn('w-full shrink-0 px-4 pt-4', 'lg:w-sidebar lg:px-0 lg:pt-0')}>
@@ -111,18 +111,28 @@ export default function AdminSidebar() {
                 <div className={extensionItemsClass}>
                     <Slot name='panel.navigation.before' />
                 </div>
-                {entries.map((entry) => (
-                    <ScreenGate key={entry.segment || '/'} screen={entry.screen}>
-                        <NavLink to={hrefFor(entry)} exact={entry.exact ?? false} className={itemClass}>
-                            {!entry.icon && <Icon icon={iconFor(entry.segment)} className='w-4 h-4 shrink-0' />}
-                            <NavigationLabel {...entry} />
-                        </NavLink>
-                    </ScreenGate>
-                ))}
+                <Navigation items={nav.items}>
+                    {(item, state) => (
+                        <NavigationLink item={item} className={itemClass}>
+                            <ItemLabel item={item} badge={state.badge} />
+                        </NavigationLink>
+                    )}
+                </Navigation>
                 <div className={extensionItemsClass}>
                     <Slot name='panel.navigation.after' />
                 </div>
             </nav>
+        </div>
+    );
+}
+
+export default function AdminLayout({ model, children }: ViewProps<'layout.admin'>) {
+    return (
+        <div className='mx-auto flex w-full max-w-panel flex-col lg:flex-row'>
+            <AdminSidebar nav={model.nav} />
+            <div className='min-w-0 flex-1 xl:pl-4'>
+                <Main>{children}</Main>
+            </div>
         </div>
     );
 }

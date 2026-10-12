@@ -45,6 +45,19 @@ export {
 export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';
+export {
+    Navigation,
+    NavigationLink,
+    useActiveNavItem,
+    useNavigation,
+    type NavArea,
+    type NavigationLinkProps,
+    type NavigationModel,
+    type NavigationProps,
+    type NavigationRenderer,
+    type NavItem,
+    type NavItemState,
+} from '@/views/navigation';
 export { default as Slot } from '@/extensions/Slot';
 export type {
     DefaultViewProps,

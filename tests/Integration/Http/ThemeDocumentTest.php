@@ -95,7 +95,7 @@ test('guests get the classic theme with the panel stylesheet and a zoomable view
         'chain' => [],
         'settings' => [],
         'scheme' => 'dark',
-        'schemes' => ['dark', 'light'],
+        'schemes' => ['dark'],
         'safeMode' => false,
         'preview' => false,
         'stylesheetFallback' => false,

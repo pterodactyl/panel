@@ -256,7 +256,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'files',
-        staticData: { nav: { label: 'Files', permission: 'file.*' } },
+        staticData: { nav: { label: 'Files', permission: 'file.*', hash: '/' } },
         beforeLoad: requireServerPermission('file.*'),
         component: pageRoute('page.server.files', 'file.*'),
     }),
@@ -695,7 +695,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: '/',
-        staticData: { nav: { label: 'Overview', exact: true } },
+        staticData: { nav: { label: 'Overview', exact: true, icon: 'layout-dashboard' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminVersionQueryOptions(), revalidateIfStale: true });
         },
@@ -725,7 +725,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'settings',
-        staticData: { nav: { label: 'Settings' } },
+        staticData: { nav: { label: 'Settings', icon: 'settings' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
@@ -750,7 +750,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'users',
-        staticData: { nav: { label: 'Users' } },
+        staticData: { nav: { label: 'Users', icon: 'users' } },
         validateSearch: parseUserListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -769,7 +769,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'locations',
-        staticData: { nav: { label: 'Locations' } },
+        staticData: { nav: { label: 'Locations', icon: 'map-pin' } },
         validateSearch: parseLocationListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -784,7 +784,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'nodes',
-        staticData: { nav: { label: 'Nodes' } },
+        staticData: { nav: { label: 'Nodes', icon: 'network' } },
         validateSearch: parseNodeListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -803,7 +803,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'servers',
-        staticData: { nav: { label: 'Servers' } },
+        staticData: { nav: { label: 'Servers', icon: 'server' } },
         validateSearch: parseServerListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -839,7 +839,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'databases',
-        staticData: { nav: { label: 'Database Hosts' } },
+        staticData: { nav: { label: 'Database Hosts', icon: 'database' } },
         validateSearch: parseDatabaseHostListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -859,7 +859,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'mounts',
-        staticData: { nav: { label: 'Mounts' } },
+        staticData: { nav: { label: 'Mounts', icon: 'folder-tree' } },
         validateSearch: parseMountListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -879,7 +879,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'eggs',
-        staticData: { nav: { label: 'Eggs' } },
+        staticData: { nav: { label: 'Eggs', icon: 'egg' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
@@ -901,7 +901,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'tags',
-        staticData: { nav: { label: 'Tags' } },
+        staticData: { nav: { label: 'Tags', icon: 'tag' } },
         validateSearch: parseTagListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -915,7 +915,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'extensions',
-        staticData: { nav: { label: 'Extensions' } },
+        staticData: { nav: { label: 'Extensions', icon: 'blocks' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminExtensionsQueryOptions(), revalidateIfStale: true });
         },
@@ -924,7 +924,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'themes',
-        staticData: { nav: { label: 'Themes' } },
+        staticData: { nav: { label: 'Themes', icon: 'palette' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminThemesQueryOptions(), revalidateIfStale: true });
         },
@@ -933,7 +933,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'api',
-        staticData: { nav: { label: 'API Keys' } },
+        staticData: { nav: { label: 'API Keys', icon: 'key-round' } },
         validateSearch: parseApiKeyListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {

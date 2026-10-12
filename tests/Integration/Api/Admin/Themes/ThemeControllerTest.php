@@ -78,7 +78,7 @@ test('lists the built-in theme and every installed theme', function (): void {
 
     expect(array_keys($themes))->toBe(['classic', 'aurora', 'nebula']);
     expect($themes['classic'])->toMatchArray(['builtin' => true, 'active' => true, 'enabled' => true, 'extends' => null, 'problem' => null, 'settings_count' => 0]);
-    expect($themes['aurora'])->toMatchArray(['builtin' => false, 'active' => false, 'extends' => 'classic', 'schemes' => ['dark', 'light'], 'settings_count' => 6, 'problem' => null]);
+    expect($themes['aurora'])->toMatchArray(['builtin' => false, 'active' => false, 'extends' => 'classic', 'schemes' => ['dark'], 'settings_count' => 6, 'problem' => null]);
     expect($themes['nebula'])->toMatchArray(['enabled' => false, 'problem' => 'Theme "nebula" is not enabled or failed to load.']);
 });
 

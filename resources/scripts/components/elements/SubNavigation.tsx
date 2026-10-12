@@ -1,8 +1,20 @@
 import React, { useId, useLayoutEffect, useRef, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import Icon from '@/components/elements/Icon';
 import DropdownMenu from '@/components/elements/dropdown/DropdownMenu';
+import NavigationLabel from '@/extensions/NavigationLabel';
+import {
+    Navigation,
+    NavigationLink,
+    navItemBadge,
+    navItemKey,
+    useActiveNavItem,
+    useNavItemActive,
+    type NavItem,
+    type NavItemState,
+} from '@/views/navigation';
 
 const subNavigationClass = [
     'w-full bg-card shadow-sm overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden',
@@ -42,59 +54,46 @@ const collapsedNavigationClass = [
     '[&[data-collapsed]>div>a[data-status=active]]:bg-popover [&[data-collapsed]>div>div[data-status=active]]:bg-popover',
 ].join(' ');
 
-const activeSelector = '.active, [data-status=active], [aria-current=page]';
+export interface SubNavigationItemState extends NavItemState {
+    /** In the row, or in the "More" menu once the row ran out of room. */
+    readonly placement: 'row' | 'menu';
+}
 
-interface OverflowItem {
-    key: number;
-    element: HTMLElement;
-    html: string;
-    label: string;
-    active: boolean;
+export interface SubNavigationProps extends Omit<React.ComponentProps<'div'>, 'children'> {
+    readonly items: readonly NavItem[];
+    /** Rendered around the items, typically the area's navigation slots; it never moves into the menu. */
+    readonly before?: React.ReactNode;
+    readonly after?: React.ReactNode;
+    /** The items that may move into the "More" menu; by default those of extensions. */
+    readonly canOverflow?: (item: NavItem) => boolean;
+    /** The content of an item's link and menu entry; by default its icon, label and badge. */
+    readonly renderItem?: (item: NavItem, state: SubNavigationItemState) => React.ReactNode;
 }
 
 interface OverflowState {
-    items: OverflowItem[];
+    /** Keys of the items moved into the menu, in row order. */
+    overflowed: string[];
     collapsed: boolean;
-    current: string;
 }
 
-const elementKeys = new WeakMap<HTMLElement, number>();
-let lastElementKey = 0;
-
-const keyFor = (element: HTMLElement) => {
-    const key = elementKeys.get(element) ?? ++lastElementKey;
-
-    elementKeys.set(element, key);
-
-    return key;
-};
-
-const isActive = (element: HTMLElement) =>
-    element.matches(activeSelector) || element.querySelector(activeSelector) !== null;
-
-const isCore = (element: HTMLElement) => element.dataset.core !== undefined;
-
-const labelFor = (element: HTMLElement) =>
-    element.textContent?.trim() || element.getAttribute('aria-label') || element.title;
-
-const sameState = (previous: OverflowState, next: OverflowState) =>
-    previous.collapsed === next.collapsed &&
-    previous.current === next.current &&
-    previous.items.length === next.items.length &&
-    previous.items.every(
-        (item, index) =>
-            item.element === next.items[index].element &&
-            item.html === next.items[index].html &&
-            item.active === next.items[index].active
-    );
-
-const activate = (element: HTMLElement) =>
-    (element.matches('a, button') ? element : (element.querySelector<HTMLElement>('a, button') ?? element)).click();
+/** What the measurement needs from the model; read through a ref so observers see the latest. */
+interface OverflowPolicy {
+    movable: ReadonlySet<string>;
+    active: string | undefined;
+}
 
 type OverflowLayout = {
     collapsed: boolean;
     overflowed: HTMLElement[];
 };
+
+const itemKeyOf = (element: HTMLElement) => element.dataset.navItem;
+
+const defaultOverflow = (item: NavItem) => item.extensionId !== undefined;
+
+const defaultRender = (item: NavItem, state: SubNavigationItemState) => (
+    <NavigationLabel label={item.label} group={item.group} icon={item.icon} badge={state.badge} />
+);
 
 /** Each child's width including the gap before it, so the widths add up to the row's used space. */
 const measureWidths = (row: HTMLElement, children: HTMLElement[], style: CSSStyleDeclaration) => {
@@ -113,16 +112,25 @@ const measureWidths = (row: HTMLElement, children: HTMLElement[], style: CSSStyl
     return { available, widths };
 };
 
-/** Core items always stay; the active item claims the budget next, then the rest in order until it runs out. */
-const fitWithinBudget = (children: HTMLElement[], widths: number[], budget: number): OverflowLayout => {
-    const visible = new Set(children.filter(isCore));
+/**
+ * Pinned children (core items and slot content) always stay; the active item claims the budget
+ * next, then the rest in order until it runs out.
+ */
+const fitWithinBudget = (
+    children: HTMLElement[],
+    widths: number[],
+    budget: number,
+    policy: OverflowPolicy
+): OverflowLayout => {
+    const isMovable = (child: HTMLElement) => policy.movable.has(itemKeyOf(child) ?? '');
+    const visible = new Set(children.filter((child) => !isMovable(child)));
     let used = children.reduce((sum, child, index) => sum + (visible.has(child) ? widths[index] : 0), 0);
 
     if (used > budget) {
         return { collapsed: true, overflowed: [] };
     }
 
-    const active = children.findIndex((child) => !visible.has(child) && isActive(child));
+    const active = children.findIndex((child) => !visible.has(child) && itemKeyOf(child) === policy.active);
 
     if (active !== -1 && used + widths[active] <= budget) {
         visible.add(children[active]);
@@ -146,7 +154,12 @@ const fitWithinBudget = (children: HTMLElement[], widths: number[], budget: numb
 };
 
 /** Shows the "more" toggle while measuring its width when the row overflows. */
-const overflowLayout = (row: HTMLElement, children: HTMLElement[], more: HTMLElement): OverflowLayout => {
+const overflowLayout = (
+    row: HTMLElement,
+    children: HTMLElement[],
+    more: HTMLElement,
+    policy: OverflowPolicy
+): OverflowLayout => {
     const style = getComputedStyle(row);
 
     if (style.flexDirection === 'column') {
@@ -163,15 +176,28 @@ const overflowLayout = (row: HTMLElement, children: HTMLElement[], more: HTMLEle
     more.hidden = false;
     const budget = available - more.getBoundingClientRect().width - parseFloat(getComputedStyle(more).marginLeft);
 
-    return fitWithinBudget(children, widths, budget);
+    return fitWithinBudget(children, widths, budget, policy);
 };
 
+const sameState = (previous: OverflowState, next: OverflowState) =>
+    previous.collapsed === next.collapsed && previous.overflowed.join('\n') === next.overflowed.join('\n');
+
+/**
+ * Measures the rendered row and marks what does not fit with `data-overflowed` (or the whole
+ * navigation with `data-collapsed`). Gated items render nothing, so the row is what counts; the
+ * menu is then built from the model.
+ */
 function useOverflowNavigation(
     rootRef: React.RefObject<HTMLDivElement | null>,
     rowRef: React.RefObject<HTMLDivElement | null>,
-    moreRef: React.RefObject<HTMLSpanElement | null>
+    moreRef: React.RefObject<HTMLSpanElement | null>,
+    policy: OverflowPolicy
 ) {
-    const [state, setState] = useState<OverflowState>({ items: [], collapsed: false, current: '' });
+    const [state, setState] = useState<OverflowState>({ overflowed: [], collapsed: false });
+    const policyRef = useRef(policy);
+    const updateRef = useRef<() => void>(undefined);
+
+    policyRef.current = policy;
 
     useLayoutEffect(() => {
         const root = rootRef.current;
@@ -196,7 +222,7 @@ function useOverflowNavigation(
             delete root.dataset.collapsed;
             more.hidden = true;
 
-            const { collapsed, overflowed } = overflowLayout(row, children, more);
+            const { collapsed, overflowed } = overflowLayout(row, children, more, policyRef.current);
 
             if (collapsed) {
                 root.dataset.collapsed = '';
@@ -208,22 +234,15 @@ function useOverflowNavigation(
 
             more.hidden = overflowed.length === 0;
 
-            const activeChild = children.find(isActive);
             const next: OverflowState = {
                 collapsed,
-                current: activeChild ? labelFor(activeChild) : '',
-                items: overflowed.map((element) => ({
-                    key: keyFor(element),
-                    element,
-                    html: element.innerHTML,
-                    label: element.textContent?.trim() ? '' : labelFor(element),
-                    active: isActive(element),
-                })),
+                overflowed: overflowed.flatMap((child) => itemKeyOf(child) ?? []),
             };
 
             setState((previous) => (sameState(previous, next) ? previous : next));
         };
 
+        updateRef.current = update;
         update();
 
         const mutationObserver = new MutationObserver(update);
@@ -232,7 +251,7 @@ function useOverflowNavigation(
             childList: true,
             subtree: true,
             characterData: true,
-            attributeFilter: ['class', 'data-status', 'aria-current', 'data-core'],
+            attributeFilter: ['class', 'data-status', 'aria-current'],
         });
 
         const resizeObserver = new ResizeObserver(update);
@@ -243,22 +262,69 @@ function useOverflowNavigation(
 
         return () => {
             mounted = false;
+            updateRef.current = undefined;
             mutationObserver.disconnect();
             resizeObserver.disconnect();
         };
     }, [rootRef, rowRef, moreRef]);
 
+    const movable = [...policy.movable].join('\n');
+
+    // A model change that leaves the row's DOM alone still changes what may move.
+    useLayoutEffect(() => updateRef.current?.(), [movable, policy.active]);
+
     return state;
 }
 
-const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'div'>) => {
+function MenuEntry({
+    item,
+    render,
+}: {
+    item: NavItem;
+    render: (item: NavItem, state: SubNavigationItemState) => React.ReactNode;
+}) {
+    const navigate = useNavigate();
+    const active = useNavItemActive()(item);
+
+    return (
+        <DropdownMenu.Item
+            className={cn(active && 'bg-muted')}
+            onClick={() => void navigate({ to: item.to as never, params: item.params as never, hash: item.hash })}
+        >
+            <span className='inline-flex items-center gap-2'>
+                {render(item, { active, badge: navItemBadge(item), placement: 'menu' })}
+            </span>
+        </DropdownMenu.Item>
+    );
+}
+
+/**
+ * An area's horizontal navigation. Items that do not fit move into a "More" menu, and when even
+ * the pinned ones do not, the row collapses behind a toggle. `<html data-sub-navigation="side">`
+ * turns it into a sidebar.
+ */
+const SubNavigation = ({
+    items,
+    before,
+    after,
+    canOverflow = defaultOverflow,
+    renderItem = defaultRender,
+    className,
+    ...props
+}: SubNavigationProps) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const rowRef = useRef<HTMLDivElement>(null);
     const moreRef = useRef<HTMLSpanElement>(null);
     const rowId = useId();
     const [open, setOpen] = useState(false);
-    const { items, collapsed, current } = useOverflowNavigation(rootRef, rowRef, moreRef);
+    const isActive = useNavItemActive();
+    const current = useActiveNavItem(items);
+    const { overflowed, collapsed } = useOverflowNavigation(rootRef, rowRef, moreRef, {
+        movable: new Set(items.filter(canOverflow).map(navItemKey)),
+        active: current && navItemKey(current),
+    });
     const expanded = collapsed && open;
+    const menu = items.filter((item) => overflowed.includes(navItemKey(item)));
 
     return (
         <div
@@ -275,7 +341,7 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                 className='mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
             >
                 <Icon icon={Menu} className='h-4 w-4 shrink-0' aria-hidden />
-                <span className='min-w-0 flex-1 truncate text-left'>{current || 'Navigation'}</span>
+                <span className='min-w-0 flex-1 truncate text-left'>{current?.label || 'Navigation'}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-180')}
@@ -283,13 +349,21 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                 />
             </button>
             <div ref={rowRef} id={rowId} onClick={() => setOpen(false)}>
-                {children}
+                {before}
+                <Navigation items={items}>
+                    {(item, state) => (
+                        <NavigationLink item={item} data-nav-item={navItemKey(item)}>
+                            {renderItem(item, { ...state, placement: 'row' })}
+                        </NavigationLink>
+                    )}
+                </Navigation>
+                {after}
                 <span ref={moreRef} className='ml-2 shrink-0'>
                     <DropdownMenu
                         openOnHover
                         triggerClassName={cn(
                             'inline-flex cursor-pointer items-center gap-1 whitespace-nowrap px-4 py-3 text-muted-foreground transition-colors duration-150 hover:text-foreground',
-                            items.some((item) => item.active) && 'text-foreground shadow-navigation-active'
+                            menu.some(isActive) && 'text-foreground shadow-navigation-active'
                         )}
                         triggerContent={
                             <>
@@ -298,17 +372,8 @@ const SubNavigation = ({ className, children, ...props }: React.ComponentProps<'
                             </>
                         }
                     >
-                        {items.map((item) => (
-                            <DropdownMenu.Item
-                                key={item.key}
-                                className={cn(item.active && 'bg-muted')}
-                                onClick={() => activate(item.element)}
-                            >
-                                <span className='inline-flex items-center gap-2'>
-                                    <span data-overflowed dangerouslySetInnerHTML={{ __html: item.html }} />
-                                    {item.label && <span>{item.label}</span>}
-                                </span>
-                            </DropdownMenu.Item>
+                        {menu.map((item) => (
+                            <MenuEntry key={navItemKey(item)} item={item} render={renderItem} />
                         ))}
                     </DropdownMenu>
                 </span>

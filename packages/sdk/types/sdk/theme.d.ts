@@ -4,6 +4,7 @@ export { skin, useSkin, UI_PRIMITIVES, type CompleteSkin, type CompleteSkins, ty
 export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from "../views/View.js";
 export { lazyView } from "../views/lazy.js";
 export { Main } from "../views/a11y.js";
+export { Navigation, NavigationLink, useActiveNavItem, useNavigation, type NavArea, type NavigationLinkProps, type NavigationModel, type NavigationProps, type NavigationRenderer, type NavItem, type NavItemState, } from "../views/navigation.js";
 export { default as Slot } from "../extensions/Slot.js";
 export type { DefaultViewProps, ExtensionViewOptions, ExtensionViewProps, ThemeViews, ViewComponent, ViewContext, ViewImporter, ViewInput, ViewInputs, ViewModel, ViewModels, ViewName, ViewOverride, ViewPartNames, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
 export type * from "../views/models.js";

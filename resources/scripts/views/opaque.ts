@@ -1,17 +1,12 @@
 import type { JSXElementConstructor } from 'react';
 import { lazyRouteComponent } from '@tanstack/react-router';
-import AuthLayout from '@/router/layouts/AuthLayout';
 import type { ThemeViews } from './registry';
 import type { OpaquePageName } from './pages';
 
 const page = lazyRouteComponent;
 
-/** Classic defaults that are still the existing containers and layouts, until they become real classic views. */
+/** Classic defaults that are still the existing containers, until they become real classic views. */
 export const opaqueViews = {
-    'layout.auth': AuthLayout,
-    'layout.account': lazyRouteComponent(() => import('@/router/layouts/AccountLayout')),
-    'layout.server': lazyRouteComponent(() => import('@/router/layouts/ServerNavigationLayout')),
-    'layout.admin': lazyRouteComponent(() => import('@/router/layouts/AdminLayout')),
     'app.search': lazyRouteComponent(() => import('@/components/dashboard/search/SearchContainer')),
 
     'page.auth.login': page(() => import('@/components/auth/LoginContainer')),

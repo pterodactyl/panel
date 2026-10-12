@@ -20,6 +20,9 @@ class ThemeRepository
     /** The built-in theme every chain ends in. */
     public const string CLASSIC = 'classic';
 
+    /** Classic's light tokens are unaudited, so it only offers its dark scheme. */
+    public const array CLASSIC_SCHEMES = ['dark'];
+
     /** The `settings` row naming the active theme; without it classic is active. */
     public const string SETTING = 'pterodactyl:theme';
 
@@ -98,7 +101,7 @@ class ThemeRepository
     }
 
     /**
-     * The schemes of the nearest theme in the chain that declares them.
+     * The schemes of the nearest theme in the chain that declares them, else classic's.
      *
      * @param  list<ExtensionManifest>  $chain
      * @return non-empty-list<'dark'|'light'>
@@ -111,7 +114,7 @@ class ThemeRepository
             }
         }
 
-        return ThemeDefinition::SCHEMES;
+        return self::CLASSIC_SCHEMES;
     }
 
     /** Why the theme's stylesheet would be laid over the panel's instead of replacing it, or null. */

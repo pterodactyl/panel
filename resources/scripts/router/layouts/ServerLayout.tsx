@@ -16,7 +16,10 @@ import { useCurrentUser } from '@/api/account/queries';
 import { LayoutView } from '@/router/viewRoutes';
 import { View } from '@/views/View';
 
-/** The routed content of `layout.server`: the server's listeners, its console and the current page. */
+/**
+ * The children of `layout.server`: the server's listeners, its console and the current page, or
+ * the conflict notice instead of both. The engine owns them, so a theme's layout only places them in <Main>.
+ */
 function ServerContent({ id, server }: { id: string; server: Server }) {
     const location = useLocation();
     const rootAdmin = useCurrentUser().rootAdmin;

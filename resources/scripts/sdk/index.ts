@@ -77,6 +77,13 @@ export {
     type NumberInputProps,
     type FileInputProps,
 } from '@/components/form/controls';
+export {
+    default as SubNavigation,
+    type SubNavigationItemState,
+    type SubNavigationProps,
+} from '@/components/elements/SubNavigation';
+export { default as SubNavigationLayout } from '@/components/elements/SubNavigationLayout';
+export { default as NavigationLabel, type NavigationLabelProps } from '@/extensions/NavigationLabel';
 export { Form, useAppForm, useFieldContext, useFormContext, type AppForm, type SelectOption } from '@/components/form';
 export { default as Select, type SelectGroup, type SelectProps, type SelectValue } from '@/components/ui/Select';
 export { default as Checkbox, type CheckboxProps } from '@/components/ui/Checkbox';
