@@ -7,10 +7,10 @@ namespace Pterodactyl\Actions\Eggs\Sharing;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\UpdatesEggsFromImports;
+use Pterodactyl\Data\EggImportData;
+use Pterodactyl\Data\EggImportVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Eggs\EggImportData;
-use Pterodactyl\Services\Eggs\EggImportVariable;
 
 final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 {

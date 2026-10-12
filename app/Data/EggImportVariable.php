@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Services\Eggs;
+namespace Pterodactyl\Data;
 
 final readonly class EggImportVariable
 {

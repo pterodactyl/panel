@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Tests\Pest\Unit\Services\Eggs\EggImportDataTest;
+namespace Pterodactyl\Tests\Pest\Unit\Data\EggImportDataTest;
 
 use Illuminate\Http\UploadedFile;
+use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Services\Eggs\EggImportData;
 use Pterodactyl\Tests\TestCase;
 
 uses(TestCase::class);
@@ -34,7 +34,7 @@ test('every bundled egg passes import validation', function (string $path) {
 })->with(fn (): array => array_map(
     // The dataset is built before the application boots, so base_path() is not available yet.
     fn (string $file): string => basename(dirname($file)).'/'.basename($file),
-    glob(dirname(__DIR__, 4).'/database/Seeders/eggs/*/*.json') ?: [],
+    glob(dirname(__DIR__, 3).'/database/Seeders/eggs/*/*.json') ?: [],
 ));
 test('rejects egg contents an admin could not save', function (callable $corrupt, string $field) {
     $egg = json_decode((string) file_get_contents(base_path('database/Seeders/eggs/minecraft/egg-paper.json')), true);

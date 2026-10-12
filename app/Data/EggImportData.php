@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Services\Eggs;
+namespace Pterodactyl\Data;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;

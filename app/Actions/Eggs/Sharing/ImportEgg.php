@@ -7,9 +7,9 @@ namespace Pterodactyl\Actions\Eggs\Sharing;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\ImportsEggs;
+use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Eggs\EggImportData;
 use Ramsey\Uuid\Uuid;
 
 final readonly class ImportEgg implements ImportsEggs
