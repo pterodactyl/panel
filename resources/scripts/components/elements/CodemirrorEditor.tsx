@@ -148,7 +148,7 @@ const panelEditorTheme = EditorView.theme(
             backgroundColor: 'var(--card) !important',
             border: '1px solid var(--border) !important',
             borderRadius: 'var(--radius, 0.5rem) !important',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important',
+            boxShadow: 'var(--editor-panel-shadow) !important',
             padding: '0.5rem 0.625rem !important',
             display: 'flex !important',
             flexDirection: 'column !important',
@@ -215,25 +215,27 @@ const panelEditorTheme = EditorView.theme(
         '.cm-button, .cm-button:active': {
             backgroundImage: 'none !important',
         },
-        '.cm-search-vscode .cm-button, .cm-search-vscode .cm-search-close, .cm-search-vscode .cm-search-chevron, .cm-search-vscode .cm-search-toggle': {
-            appearance: 'none !important',
-            WebkitAppearance: 'none !important',
-            outline: 'none !important',
-            border: 'none !important',
-            backgroundImage: 'none !important',
-            backgroundColor: 'transparent !important',
-            color: 'var(--muted-foreground) !important',
-            cursor: 'pointer !important',
-            padding: '0 !important',
-            margin: '0 !important',
-            boxSizing: 'border-box !important',
-            fontFamily: 'var(--font-sans) !important',
-            display: 'inline-flex !important',
-            alignItems: 'center !important',
-            justifyContent: 'center !important',
-            borderRadius: 'var(--radius-sm, 0.25rem) !important',
-            transition: 'background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease, opacity 0.12s ease !important',
-        },
+        '.cm-search-vscode .cm-button, .cm-search-vscode .cm-search-close, .cm-search-vscode .cm-search-chevron, .cm-search-vscode .cm-search-toggle':
+            {
+                appearance: 'none !important',
+                WebkitAppearance: 'none !important',
+                outline: 'none !important',
+                border: 'none !important',
+                backgroundImage: 'none !important',
+                backgroundColor: 'transparent !important',
+                color: 'var(--muted-foreground) !important',
+                cursor: 'pointer !important',
+                padding: '0 !important',
+                margin: '0 !important',
+                boxSizing: 'border-box !important',
+                fontFamily: 'var(--font-sans) !important',
+                display: 'inline-flex !important',
+                alignItems: 'center !important',
+                justifyContent: 'center !important',
+                borderRadius: 'var(--radius-sm, 0.25rem) !important',
+                transition:
+                    'background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease, opacity 0.12s ease !important',
+            },
         '.cm-search-vscode .cm-search-toggle': {
             width: '1.375rem !important',
             height: '1.375rem !important',
@@ -378,7 +380,7 @@ const panelEditorTheme = EditorView.theme(
             gap: 'calc(var(--spacing) * 2) !important',
             borderRadius: 'var(--radius-md, 0.375rem) !important',
             border: '1px solid var(--border) !important',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5) !important',
+            boxShadow: 'var(--editor-dialog-shadow) !important',
             position: 'relative !important',
         },
         '.cm-dialog .cm-textfield': {
@@ -493,6 +495,7 @@ class CustomSearchPanel implements Panel {
     constructor(view: EditorView) {
         this.view = view;
         const query = (this.query = getSearchQuery(view.state));
+
         this.commit = this.commit.bind(this);
 
         this.dom = document.createElement('div');
@@ -522,6 +525,7 @@ class CustomSearchPanel implements Panel {
 
         // Row 1: Find
         const findRow = document.createElement('div');
+
         findRow.className = 'cm-search-row';
 
         if (!view.state.readOnly) {
@@ -541,10 +545,12 @@ class CustomSearchPanel implements Panel {
                     this.replaceField?.focus();
                 }
             };
+
             findRow.appendChild(this.toggleReplaceBtn);
         }
 
         const searchWrap = document.createElement('div');
+
         searchWrap.className = 'cm-search-input-wrap';
 
         this.searchField = document.createElement('input');
@@ -558,6 +564,7 @@ class CustomSearchPanel implements Panel {
         this.searchField.onkeyup = this.commit;
 
         const togglesWrap = document.createElement('div');
+
         togglesWrap.className = 'cm-search-toggles';
 
         this.caseBtn = this.createToggle('Aa', 'Match Case (Alt+C)', query.caseSensitive, () => {
@@ -582,6 +589,7 @@ class CustomSearchPanel implements Panel {
         searchWrap.append(this.searchField, togglesWrap);
 
         const findNav = document.createElement('div');
+
         findNav.className = 'cm-search-nav';
 
         const prevBtn = this.createIconButton(
@@ -607,6 +615,7 @@ class CustomSearchPanel implements Panel {
         );
 
         const closeBtn = document.createElement('button');
+
         closeBtn.type = 'button';
         closeBtn.className = 'cm-button cm-icon-button cm-search-close';
         closeBtn.name = 'close';
@@ -631,10 +640,12 @@ class CustomSearchPanel implements Panel {
             this.replaceRow.className = 'cm-search-row cm-replace-row';
 
             const spacer = document.createElement('div');
+
             spacer.className = 'cm-search-chevron-spacer';
             this.replaceRow.appendChild(spacer);
 
             const replaceWrap = document.createElement('div');
+
             replaceWrap.className = 'cm-search-input-wrap';
 
             this.replaceField = document.createElement('input');
@@ -649,6 +660,7 @@ class CustomSearchPanel implements Panel {
             replaceWrap.appendChild(this.replaceField);
 
             const replaceNav = document.createElement('div');
+
             replaceNav.className = 'cm-search-nav';
 
             const replaceBtn = this.createActionButton(
@@ -683,26 +695,24 @@ class CustomSearchPanel implements Panel {
             this.toggleReplaceBtn.title = this.isReplaceOpen ? 'Hide Replace' : 'Toggle Replace (Ctrl+H)';
             this.toggleReplaceBtn.setAttribute('aria-expanded', String(this.isReplaceOpen));
         }
+
         if (this.replaceRow) {
             this.replaceRow.classList.toggle('is-hidden', !this.isReplaceOpen);
             this.replaceRow.style.setProperty('display', this.isReplaceOpen ? 'flex' : 'none', 'important');
         }
     }
 
-    private createToggle(
-        label: string,
-        title: string,
-        active: boolean,
-        onClick: () => void
-    ): HTMLButtonElement {
+    private createToggle(label: string, title: string, active: boolean, onClick: () => void): HTMLButtonElement {
         const btn = document.createElement('button');
+
         btn.type = 'button';
-        btn.className = 'cm-search-toggle' + (active ? ' is-active' : '');
+        btn.className = `cm-search-toggle${active ? ' is-active' : ''}`;
         btn.title = title;
         btn.setAttribute('aria-pressed', String(active));
         btn.textContent = label;
         btn.style.backgroundImage = 'none';
         btn.onclick = onClick;
+
         return btn;
     }
 
@@ -711,13 +721,9 @@ class CustomSearchPanel implements Panel {
         btn.setAttribute('aria-pressed', String(active));
     }
 
-    private createIconButton(
-        svg: string,
-        title: string,
-        name: string,
-        onClick: () => void
-    ): HTMLButtonElement {
+    private createIconButton(svg: string, title: string, name: string, onClick: () => void): HTMLButtonElement {
         const btn = document.createElement('button');
+
         btn.type = 'button';
         btn.className = 'cm-button cm-icon-button';
         btn.name = name;
@@ -729,6 +735,7 @@ class CustomSearchPanel implements Panel {
         btn.style.border = '1px solid var(--border)';
         btn.innerHTML = svg;
         btn.onclick = onClick;
+
         return btn;
     }
 
@@ -740,6 +747,7 @@ class CustomSearchPanel implements Panel {
         variant: 'primary' | 'secondary' | 'ghost' = 'secondary'
     ): HTMLButtonElement {
         const btn = document.createElement('button');
+
         btn.type = 'button';
         btn.className = `cm-button cm-action-button cm-${variant}-action`;
         btn.name = name;
@@ -755,8 +763,10 @@ class CustomSearchPanel implements Panel {
             btn.style.color = 'var(--foreground)';
             btn.style.border = '1px solid var(--border)';
         }
+
         btn.textContent = text;
         btn.onclick = onClick;
+
         return btn;
     }
 
@@ -768,6 +778,7 @@ class CustomSearchPanel implements Panel {
             wholeWord: this.wordField.checked,
             replace: this.replaceField?.value ?? '',
         });
+
         if (!query.eq(this.query)) {
             this.query = query;
             this.view.dispatch({ effects: setSearchQuery.of(query) });
@@ -775,38 +786,64 @@ class CustomSearchPanel implements Panel {
     }
 
     keydown(e: KeyboardEvent) {
-        if (e.key === 'Escape') {
+        const action = this.shortcut(e);
+
+        if (action) {
             e.preventDefault();
-            closeSearchPanel(this.view);
-        } else if (e.key === 'Enter' && e.target === this.searchField) {
-            e.preventDefault();
-            (e.shiftKey ? findPrevious : findNext)(this.view);
-        } else if (e.key === 'Enter' && e.target === this.replaceField) {
-            e.preventDefault();
-            replaceNext(this.view);
-        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'h' && !this.view.state.readOnly) {
-            e.preventDefault();
-            this.isReplaceOpen = !this.isReplaceOpen;
-            this.updateChevron();
-            if (this.isReplaceOpen) {
-                this.replaceField?.focus();
-            }
-        } else if (e.altKey && e.key.toLowerCase() === 'c') {
-            e.preventDefault();
-            this.caseField.checked = !this.caseField.checked;
-            this.updateToggleState(this.caseBtn, this.caseField.checked);
-            this.commit();
-        } else if (e.altKey && e.key.toLowerCase() === 'w') {
-            e.preventDefault();
-            this.wordField.checked = !this.wordField.checked;
-            this.updateToggleState(this.wordBtn, this.wordField.checked);
-            this.commit();
-        } else if (e.altKey && e.key.toLowerCase() === 'r') {
-            e.preventDefault();
-            this.reField.checked = !this.reField.checked;
-            this.updateToggleState(this.reBtn, this.reField.checked);
-            this.commit();
+            action();
         }
+    }
+
+    shortcut(e: KeyboardEvent): (() => void) | null {
+        const key = e.key.toLowerCase();
+
+        if (e.key === 'Escape') {
+            return () => closeSearchPanel(this.view);
+        }
+
+        if (e.key === 'Enter' && e.target === this.searchField) {
+            return () => (e.shiftKey ? findPrevious : findNext)(this.view);
+        }
+
+        if (e.key === 'Enter' && e.target === this.replaceField) {
+            return () => replaceNext(this.view);
+        }
+
+        if ((e.ctrlKey || e.metaKey) && key === 'h' && !this.view.state.readOnly) {
+            return () => this.toggleReplace();
+        }
+
+        const toggle = e.altKey ? this.optionFor(key) : null;
+
+        return toggle ? () => this.toggleOption(...toggle) : null;
+    }
+
+    optionFor(key: string): [HTMLInputElement, HTMLButtonElement] | null {
+        switch (key) {
+            case 'c':
+                return [this.caseField, this.caseBtn];
+            case 'w':
+                return [this.wordField, this.wordBtn];
+            case 'r':
+                return [this.reField, this.reBtn];
+            default:
+                return null;
+        }
+    }
+
+    toggleReplace() {
+        this.isReplaceOpen = !this.isReplaceOpen;
+        this.updateChevron();
+
+        if (this.isReplaceOpen) {
+            this.replaceField?.focus();
+        }
+    }
+
+    toggleOption(field: HTMLInputElement, button: HTMLButtonElement) {
+        field.checked = !field.checked;
+        this.updateToggleState(button, field.checked);
+        this.commit();
     }
 
     update(update: ViewUpdate) {
@@ -825,6 +862,7 @@ class CustomSearchPanel implements Panel {
         if (this.replaceField) {
             this.replaceField.value = query.replace;
         }
+
         this.caseField.checked = query.caseSensitive;
         this.updateToggleState(this.caseBtn, query.caseSensitive);
         this.wordField.checked = query.wholeWord;
