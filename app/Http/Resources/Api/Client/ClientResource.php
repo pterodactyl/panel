@@ -16,7 +16,7 @@ use UnexpectedValueException;
 /**
  * A resource of the Client API, rendered for the signed-in user.
  *
- * @template TResource of ApiResourceData
+ * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
  */
@@ -52,7 +52,7 @@ abstract class ClientResource extends ApiResource
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource
-     * @param  ApiResourceData  $data
+     * @param  Model|ServerState|array<mixed>  $data
      * @return TNested
      *
      * @throws InvalidTransformerLevelException

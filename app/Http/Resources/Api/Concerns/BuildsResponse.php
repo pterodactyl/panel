@@ -17,7 +17,7 @@ trait BuildsResponse
     /** @var list<string> */
     private array $forcedIncludes = [];
 
-    /** @var ApiResourceMeta */
+    /** @var array<string, mixed> */
     private array $meta = [];
 
     private ?string $resourceKey = null;
@@ -38,7 +38,7 @@ trait BuildsResponse
     /**
      * Adds top-level meta. A key that is already set keeps its value, as with Fractal's addMeta().
      *
-     * @param  ApiResourceMeta  $meta
+     * @param  array<string, mixed>  $meta
      */
     public function withMeta(array $meta): static
     {

@@ -16,7 +16,6 @@ use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeScope;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Support\JsonEmptyObject;
-use Traversable;
 
 /**
  * A list of API objects, `{"object": "list", "data": [...]}`, as Fractal's collection
@@ -47,11 +46,10 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
      */
     public $resource;
 
-    /** @var ApiResourceList|null */
+    /** @var array<string, mixed>|null */
     private ?array $included = null;
 
     /**
-     * @param  array<array-key, ApiResourceData|ApiResource<*>>|Collection<covariant array-key, covariant ApiResourceData|ApiResource<*>>|AbstractPaginator<covariant array-key, covariant ApiResourceData|ApiResource<*>>  $resource
      * @param  class-string<ApiResource<*>>  $collects
      */
     public function __construct($resource, $collects)
@@ -64,7 +62,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
      * requested includes are batched first when every item is a model.
      *
      * @param  Request|null  $request
-     * @return ApiResourceList
+     * @return array<string, mixed>
      */
     final public function resolve($request = null): array
     {
@@ -81,7 +79,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
      * resolve() batches first. Documentation examples render this way, as they did with
      * Fractal.
      *
-     * @return ApiResourceList
+     * @return array<string, mixed>
      */
     final public function resolveFor(IncludeSet $includes, Request $request): array
     {
@@ -103,7 +101,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * @return ApiResourceList
+     * @return array<string, mixed>
      */
     final public function jsonSerialize(): array
     {
@@ -111,18 +109,10 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * @return Traversable<array-key, ApiResource<*>>
-     */
-    public function getIterator(): Traversable
-    {
-        return $this->collection->getIterator();
-    }
-
-    /**
      * Fractal's pagination meta. The links are an empty object on a single page.
      *
      * @param  LengthAwarePaginator<array-key, ApiResource<*>>  $paginator
-     * @return ApiResourcePagination
+     * @return array<string, mixed>
      */
     private function pagination(LengthAwarePaginator $paginator): array
     {
@@ -169,7 +159,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * @return ApiResourceList
+     * @return array<string, mixed>
      */
     private function render(IncludeScope $scope, Request $request): array
     {

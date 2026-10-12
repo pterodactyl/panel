@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Collection as ModelCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LogicException;
@@ -34,7 +33,7 @@ use UnexpectedValueException;
  * values (which would turn arrays with numeric keys into lists), never wraps the response
  * in `data`, and the response is always 200 unless respond() asks for another status.
  *
- * @template TResource of ApiResourceData
+ * @template TResource of Model|ServerState|array<mixed>
  */
 abstract class ApiResource extends JsonResource implements IncludedResource
 {
@@ -80,7 +79,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
 
     private bool $readExtensionFields = true;
 
-    /** @var ApiResourceItem|null */
+    /** @var array<string, mixed>|null */
     private ?array $included = null;
 
     /**
@@ -98,8 +97,6 @@ abstract class ApiResource extends JsonResource implements IncludedResource
 
     /**
      * A list of these resources, `{"object": "list", "data": [...]}`.
-     *
-     * @param  array<array-key, TResource>|Collection<covariant array-key, covariant TResource>|AbstractPaginator<covariant array-key, covariant TResource>  $resource
      */
     public static function collection($resource): ApiResourceCollection
     {
@@ -137,7 +134,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * requested includes are batched first, then the object is built with its includes.
      *
      * @param  Request|null  $request
-     * @return ApiResourceItem
+     * @return array<string, mixed>
      */
     final public function resolve($request = null): array
     {
@@ -157,7 +154,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * loading resolve() batches first. Documentation examples render this way, as they did
      * with Fractal.
      *
-     * @return ApiResourceItem
+     * @return array<string, mixed>
      */
     final public function resolveFor(IncludeSet $includes, Request $request): array
     {
@@ -172,7 +169,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * @return ApiResourceItem
+     * @return array<string, mixed>
      */
     final public function jsonSerialize(): array
     {
@@ -245,7 +242,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * Embeds one resource: $resource is a resource class, or a closure that returns the
      * attributes. Without a key the embedded object is named null, as with Fractal's item().
      *
-     * @template TData of ApiResourceData
+     * @template TData of Model|ServerState|array<mixed>
      *
      * @param  TData  $data
      * @param  class-string<ApiResource<TData>>|Closure(TData): array<string, mixed>  $resource
@@ -261,9 +258,9 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     /**
      * Embeds a list of resources, as with Fractal's collection().
      *
-     * @template TData of ApiResourceData
+     * @template TData of Model|ServerState|array<mixed>
      *
-     * @param  array<array-key, TData>|Collection<covariant array-key, covariant TData>  $data
+     * @param  array<TData>|Collection<int, TData>  $data
      * @param  class-string<ApiResource<TData>>|Closure(TData): array<string, mixed>  $resource
      */
     protected function items(array|Collection $data, string|Closure $resource, ?string $resourceKey = null): ApiResourceCollection
@@ -290,7 +287,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource
-     * @param  ApiResourceData  $data
+     * @param  Model|ServerState|array<mixed>  $data
      * @return TNested
      */
     protected function makeResource(string $resource, Model|ServerState|array $data): self
@@ -375,7 +372,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
      * The object for this resource under $scope: its attributes with the includes the
      * request asked for merged into `relationships`, then any meta.
      *
-     * @return ApiResourceItem
+     * @return array<string, mixed>
      */
     private function render(IncludeScope $scope, Request $request, ?string $resourceKey): array
     {

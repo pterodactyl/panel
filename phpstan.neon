@@ -31,15 +31,6 @@ parameters:
         EggConfigurationReplacement: 'array{match: array-key, if_value?: array-key, replace_with: mixed}'
         EggConfigurationOutput: 'array{file: string, replace: list<EggConfigurationReplacement>, ...<string, mixed>}'
         EggConfigurationOutputs: 'list<EggConfigurationOutput>'
-        # What an API resource renders: a model, the live state of a server, or a daemon payload.
-        ApiResourceData: '\Illuminate\Database\Eloquent\Model|\Pterodactyl\Data\ServerState|array<mixed>'
-        # An API resource's rendered attributes: toArray() with the includes in `relationships`,
-        # held as the resolved resource objects the way Laravel nests resources in toArray().
-        ApiResourceAttributes: 'array<string, mixed|array<string, \Pterodactyl\Http\Resources\Api\Includes\IncludedResource>>'
-        ApiResourceMeta: 'array<string, mixed>'
-        ApiResourceItem: 'array{object: string|null, attributes: ApiResourceAttributes, meta?: ApiResourceMeta}'
-        ApiResourcePagination: 'array{total: int, count: int, per_page: int, current_page: int, total_pages: int, links: array{previous?: string, next?: string}|\Pterodactyl\Support\JsonEmptyObject}'
-        ApiResourceList: 'array{object: string, data: list<ApiResourceItem>, meta?: array<string, mixed|ApiResourcePagination>}'
         DaemonFileObject: 'array{name?: string, mode?: string, mode_bits?: string, size?: int, file?: bool, symlink?: bool, mime?: string, created?: string, modified?: string}'
         DaemonStats: 'array{state?: string, is_suspended?: bool, utilization?: array{memory_bytes?: int, cpu_absolute?: float|int, disk_bytes?: int, network?: array{rx_bytes?: int, tx_bytes?: int}, uptime?: int}}'
         DatabaseCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null}'

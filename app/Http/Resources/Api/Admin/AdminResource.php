@@ -12,7 +12,7 @@ use Pterodactyl\Http\Resources\Api\ApiResource;
 /**
  * A resource of the admin API behind the admin panel.
  *
- * @template TResource of ApiResourceData
+ * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
  */
@@ -36,7 +36,7 @@ abstract class AdminResource extends ApiResource
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource
-     * @param  ApiResourceData  $data
+     * @param  Model|ServerState|array<mixed>  $data
      * @return TNested
      *
      * @throws InvalidTransformerLevelException

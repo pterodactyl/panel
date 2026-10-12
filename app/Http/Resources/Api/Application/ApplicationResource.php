@@ -14,7 +14,7 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
 /**
  * A resource of the Application API, which an application API key reads.
  *
- * @template TResource of ApiResourceData
+ * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
  */
@@ -52,7 +52,7 @@ abstract class ApplicationResource extends ApiResource
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource
-     * @param  ApiResourceData  $data
+     * @param  Model|ServerState|array<mixed>  $data
      * @return TNested
      *
      * @throws InvalidTransformerLevelException

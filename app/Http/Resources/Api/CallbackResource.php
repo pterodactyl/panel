@@ -16,7 +16,7 @@ use Pterodactyl\Data\ServerState;
  * A resource whose attributes come from a closure, as when Fractal transformed with a
  * callable: it has no includes, and it is named only when given a name.
  *
- * @template TResource of ApiResourceData
+ * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
  */
@@ -34,9 +34,9 @@ final class CallbackResource extends ApiResource
     /**
      * A list of resources rendered by $callback, each named $name.
      *
-     * @template TData of ApiResourceData
+     * @template TData of Model|ServerState|array<mixed>
      *
-     * @param  array<array-key, TData>|Collection<covariant array-key, covariant TData>|AbstractPaginator<covariant array-key, covariant TData>  $resource
+     * @param  array<TData>|Collection<int, TData>|AbstractPaginator<int, TData>  $resource
      * @param  Closure(TData): array<string, mixed>  $callback
      */
     public static function list(array|Collection|AbstractPaginator $resource, Closure $callback, ?string $name = null): ApiResourceCollection
@@ -55,8 +55,6 @@ final class CallbackResource extends ApiResource
 
     /**
      * Items of a list need their closure; build the list with list().
-     *
-     * @param  array<array-key, TResource>|Collection<covariant array-key, covariant TResource>|AbstractPaginator<covariant array-key, covariant TResource>  $resource
      */
     public static function collection($resource): ApiResourceCollection
     {
