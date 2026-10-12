@@ -1,0 +1,33 @@
+packages/sdk/docs-samples/aurora/src/views/AuthLayout.tsx
+  s_4cabae41bceed9::t_661e678d434cd3 1,4
+  s_4cabae41bceed9::t_0bd71d2a468e9b 12,14
+tests/Unit/Services/Themes/ThemeManifestTest.php
+  s_4cabae41bceed9::t_5fb23c1598b706 173,176,178-180
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_77a5570e2ab762 358,360-362,364-365,367-369,371-374,376-383
+packages/sdk/docs-samples/snippets/extension.tsx
+  s_4cabae41bceed9::t_c54399a193144d 16-17
+packages/sdk/docs-samples/extension/extension.json
+  s_4cabae41bceed9::t_c54399a193144d 8
+  s_4cabae41bceed9::t_440027c68b3f96 1-7,9-11
+packages/sdk/README.md
+  s_4cabae41bceed9::t_ef3d6cf41c8f33 755,769
+  s_4cabae41bceed9::t_62fb07154ec0ac 1126,1133
+  s_4cabae41bceed9::t_c54399a193144d 757-767,777-778,1128-1130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c3080173e5b9cb841a532b9c58f428599df596c5",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
