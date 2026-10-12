@@ -1,0 +1,273 @@
+resources/scripts/themes/classic/views/auth/CheckpointPage.tsx
+  s_4cabae41bceed9::t_739200314e0ec9 1-5
+resources/scripts/themes/classic/views/auth/PterodactylMark.tsx
+  s_4cabae41bceed9::t_81e32b75d32e9b 1-16
+resources/scripts/api/account/activity/queries.ts
+  s_4cabae41bceed9::t_46fa4f843958d5 8-9,11
+resources/scripts/api/extensionTypes.ts
+  s_4cabae41bceed9::t_836fd595e3ac77 9
+resources/scripts/sdk/navigation.tsx
+  s_4cabae41bceed9::t_8c854c494693c7 103-104,119
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 106-111
+  s_4cabae41bceed9::t_bdc122082bba4e 17-18
+resources/scripts/themes/classic/views/account/SshKeyList.tsx
+  s_4cabae41bceed9::t_6715713075aceb 1-113
+resources/scripts/views/activity/activity.spec.tsx
+  s_4cabae41bceed9::t_94bcbba74833f0 182-184
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 43,192-197,200-204
+  s_4cabae41bceed9::t_c3ebf9fb330fa1 254,262
+  s_4cabae41bceed9::t_80c8725b74c6c8 1-20,22,26,36-38,41-42,45-46,49-78,85-92,96-136,138-166,188-191,198-199,205-251,263-264
+  s_4cabae41bceed9::t_209302925b0a1c 23-25,27-35,39-40,44,47-48
+  s_4cabae41bceed9::t_35aa7eada86c9d 79-84,93-95,252-253,255-261
+  s_4cabae41bceed9::t_64c0f29a9b01b2 137
+  s_4cabae41bceed9::t_f62a0356192c25 21,167-181,185-187
+packages/sdk/types/views/activity/types.d.ts
+  s_4cabae41bceed9::t_c7199dc8811ce4 2
+  s_4cabae41bceed9::t_884cd246ab34be 7
+  s_4cabae41bceed9::t_bb1a2c3f243499 1,3-6,8-84
+resources/scripts/themes/classic/views/account/ApiKeyList.tsx
+  s_4cabae41bceed9::t_688fa59eb4e7a6 1-112
+resources/scripts/themes/classic/views/account/PasswordCard.tsx
+  s_4cabae41bceed9::t_22134b118a2b31 1-30
+resources/scripts/api/server/activity/queries.ts
+  s_4cabae41bceed9::t_51ff9913b3bdcc 8-11,19-21
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_5036179f250581 7-9
+resources/scripts/views/account/index.ts
+  s_4cabae41bceed9::t_1130714967392c 1-3
+packages/sdk/types/components/elements/Translate.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-14
+packages/sdk/types/sdk/navigation.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 6,44-45,47
+packages/sdk/views.json
+  s_4cabae41bceed9::t_bb1a2c3f243499 2-118,125-179,306-309,312,321-328,333-344,353-360,807-810,813,822-825,828,837-840,843,852-855,858,880-883,886
+  s_4cabae41bceed9::t_257fe92396cfd2 310-311,811-812,826-827,841-842,856-857,884-885
+resources/scripts/views/account/overview.ts
+  s_4cabae41bceed9::t_4d0598083b670c 169
+  s_4cabae41bceed9::t_f06f62fd081df8 33,35
+  s_4cabae41bceed9::t_1262a16be430cd 1-24,31-32,34,36-168,170-309,318-321
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 25-30,310-317
+resources/scripts/themes/classic/views/account/index.ts
+  s_4cabae41bceed9::t_0029b4e9981179 1-10
+resources/scripts/themes/classic/views/auth/ForgotPasswordForm.tsx
+  s_4cabae41bceed9::t_1040e6d024e6dc 1-28
+resources/scripts/themes/classic/views/auth/AuthCard.tsx
+  s_4cabae41bceed9::t_74f06c4aee1361 1-41
+packages/sdk/types/views/auth/password.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/views/auth/index.ts
+  s_4cabae41bceed9::t_fced3238cc4c07 1-15
+resources/scripts/themes/classic/views/auth/CheckpointForm.tsx
+  s_4cabae41bceed9::t_972c4735b60e7e 1-43
+resources/scripts/themes/classic/views/account/SshKeyCreate.tsx
+  s_4cabae41bceed9::t_0bcf13182402bc 1-25
+  s_4cabae41bceed9::t_6228bad9576296 26-27
+resources/scripts/themes/classic/views/account/ApiKeysPage.tsx
+  s_4cabae41bceed9::t_fc955712debcc6 1-13
+resources/scripts/views/account/types.ts
+  s_4cabae41bceed9::t_4a1b983a0a1d51 1
+  s_4cabae41bceed9::t_e8bd76a8a16b5e 18
+  s_4cabae41bceed9::t_ec76274aed7524 2-17,19-89
+resources/scripts/themes/classic/views/activity/ActivityMetadataButton.tsx
+  s_4cabae41bceed9::t_db9fbdd49e928e 2-4
+resources/scripts/themes/classic/views/account/EmailCard.tsx
+  s_4cabae41bceed9::t_e1ec05c4d3753a 1-20
+  s_488821bd68e9e0::t_3a38e303ac43c6 21-22
+resources/scripts/themes/classic/views/activity/index.ts
+  s_4cabae41bceed9::t_da38cac8e7c178 1
+  s_4cabae41bceed9::t_d0ed14e23473d3 2-3
+packages/sdk/types/sdk/ui.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 2,7,10-11,13-20,31-42,51-52,55-60
+packages/sdk/types/views/account/types.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-84
+resources/scripts/themes/classic/views/account/TwoFactorCard.tsx
+  s_4cabae41bceed9::t_8e5e192b7d4f52 1-27
+  s_488821bd68e9e0::t_206d8bd702a47a 28-29
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_882b00806a23b8 5-7,20-43
+resources/scripts/themes/classic/views/activity/ActivityLogEntry.tsx
+  s_4cabae41bceed9::t_2047bcd8a1e5b1 1-111
+packages/sdk/types/views/account/index.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-3
+resources/scripts/router/routeTree.spec.ts
+  s_4cabae41bceed9::t_0d52c26e59bf3a 235-253
+packages/sdk/types/views/forms.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-48
+resources/scripts/views/auth/captcha.ts
+  s_4cabae41bceed9::t_d31b36e1b2833c 1-11,20-40
+  s_4cabae41bceed9::t_94bcbba74833f0 12-19
+resources/scripts/themes/classic/views/account/ApiKeyCreate.tsx
+  s_4cabae41bceed9::t_ab608b696deff1 1-53
+resources/scripts/themes/classic/views/shared/fields.tsx
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 72-80
+  s_4cabae41bceed9::t_9bdcc29468020a 1-35,37-71,81-103
+  s_4cabae41bceed9::t_eeec296e269f6b 36
+resources/scripts/router/pageSearch.ts
+  s_4cabae41bceed9::t_6f99c57e341d5a 61-93
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_9ff486568c0480 129-134
+resources/scripts/themes/classic/views/account/SetupTwoFactorDialog.tsx
+  s_4cabae41bceed9::t_5e90a948017be5 13-95,98
+  s_4cabae41bceed9::t_d92913c0aaf9db 1-12
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_f0cb87dd4f854c 24,32
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_4cabae41bceed9::t_1fe0d9a652a6a6 21
+resources/scripts/components/admin/activity/ActivityContainer.tsx
+  s_4cabae41bceed9::t_bb8ca09fb40d29 2,11
+packages/sdk/types/views/auth/index.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-4
+packages/sdk/types/api/extensionTypes.d.ts
+  s_4cabae41bceed9::t_c7199dc8811ce4 2
+resources/scripts/themes/classic/views/auth/LoginForm.tsx
+  s_4cabae41bceed9::t_8cdc2d0dad62a5 1-29
+resources/scripts/themes/classic/views/auth/index.ts
+  s_4cabae41bceed9::t_5932f16b9a497a 5-8
+  s_4cabae41bceed9::t_530a6796a05989 1-4
+packages/sdk/types/sdk/models/activity.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/themes/classic/views/auth/LoginPage.tsx
+  s_4cabae41bceed9::t_ed8e69598b3e5f 1-5
+resources/scripts/themes/classic/views/account/DisableTwoFactorDialog.tsx
+  s_4cabae41bceed9::t_d92913c0aaf9db 1
+  s_4cabae41bceed9::t_b08c4d141af588 3-46
+resources/scripts/themes/classic/views/auth/ForgotPasswordPage.tsx
+  s_4cabae41bceed9::t_e36b105695a721 1-5
+packages/sdk/types/sdk/models/forms.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+packages/sdk/types/views/pages.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 4-8,40-46,291-292,305
+resources/scripts/sdk/dates.ts
+  s_4cabae41bceed9::t_84bd7941b3705e 1-11
+resources/scripts/views/account/account.spec.tsx
+  s_4cabae41bceed9::t_bcabf312ac6aee 1-134,136-166,171-240
+  s_4cabae41bceed9::t_5408efe84fbfe8 167-170
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 135
+resources/scripts/router/search.ts
+  s_4cabae41bceed9::t_6f99c57e341d5a 15,17,19,22
+resources/scripts/views/auth/login.ts
+  s_4cabae41bceed9::t_c64e1dff779613 128-132,134-152,170-174,176-177,180-182
+  s_4cabae41bceed9::t_1091362a7a0f5e 125
+  s_4cabae41bceed9::t_daf9f619a24722 1-2,4,6-7,9-19,21-43,45-49,55-61,67-78,81-124,127,133,153-169,175,178-179,183-190
+  s_4cabae41bceed9::t_f06f62fd081df8 3,5,8,20,44,79-80
+  s_4cabae41bceed9::t_413fcdeb741216 126
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 50-54,62-66
+packages/sdk/types/sdk/models/auth.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 63
+  s_4cabae41bceed9::t_84bd7941b3705e 36,62,108,235-238
+packages/sdk/types/views/account/overview.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/themes/classic/views/account/AccountOverview.tsx
+  s_4cabae41bceed9::t_db0ece5785e6db 1-20
+resources/scripts/views/catalog.ts
+  s_4cabae41bceed9::t_5036179f250581 5-7
+resources/scripts/api/admin/activity/queries.spec.tsx
+  s_4cabae41bceed9::t_9af1b62bd78f78 1-2
+packages/sdk/types/sdk/models/account.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/sdk/models/account.ts
+  s_4cabae41bceed9::t_7fb54ccf2bc666 1-16
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_c7199dc8811ce4 28
+  s_4cabae41bceed9::t_bb1a2c3f243499 11,27,54,117-120
+resources/scripts/views/activity/types.ts
+  s_4cabae41bceed9::t_df6f976fdb8e78 2-6,8-81
+  s_4cabae41bceed9::t_659b5c99aa3b16 1
+  s_4cabae41bceed9::t_884cd246ab34be 7
+resources/scripts/views/forms.ts
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 66-72
+  s_4cabae41bceed9::t_826f3635307b0c 1-24,26-40,43-65,73-84
+  s_4cabae41bceed9::t_68c888f3f7f52f 41-42
+  s_4cabae41bceed9::t_cfceb145c44cfb 25
+resources/scripts/sdk/models/auth.ts
+  s_4cabae41bceed9::t_7fb54ccf2bc666 1-8
+resources/scripts/themes/classic/views/activity/ServerActivityPage.tsx
+  s_4cabae41bceed9::t_f333b36a429c67 1-10
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_ea9174407c167b 201
+  s_4cabae41bceed9::t_62111402de10d5 14-17,28-32,203
+  s_4cabae41bceed9::t_74a4348cff1ce5 186-189
+resources/scripts/views/account/keys.ts
+  s_4cabae41bceed9::t_b58ed94a32eb8b 30-32,207,212
+  s_4cabae41bceed9::t_af4ccf1b1018ac 1-29,33-206,208-211,213-280
+resources/scripts/themes/classic/views/account/SshKeysPage.tsx
+  s_4cabae41bceed9::t_85eb301576faf2 1-13
+resources/scripts/views/auth/auth.spec.tsx
+  s_4cabae41bceed9::t_137e6966bbebc0 1-270
+resources/scripts/sdk/ui.tsx
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 15-18
+  s_4cabae41bceed9::t_bb1a2c3f243499 5,102-115
+  s_4cabae41bceed9::t_b7567e655de0bd 1-4,6-12,14,43,46-47,49-57,67-87,90-97,116,124-125,130-144
+  s_4cabae41bceed9::t_87f1911eb755d6 117
+packages/sdk/types/sdk/dates.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-5
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 5-7
+packages/sdk/types/components/elements/table/PaginationFooter.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-21
+packages/sdk/types/views/auth/types.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-47
+resources/scripts/themes/classic/views/auth/ResetPasswordPage.tsx
+  s_4cabae41bceed9::t_dea00d53746f55 1-5
+resources/scripts/views/auth/password.ts
+  s_4cabae41bceed9::t_9c3e131729f2ba 1-3,5-111,113-161
+  s_4cabae41bceed9::t_9d064a57db59e3 112
+  s_4cabae41bceed9::t_f06f62fd081df8 4
+resources/scripts/themes/classic/views/activity/ActivityLog.tsx
+  s_4cabae41bceed9::t_cdcf56218d8c41 1-123,125-126
+resources/scripts/sdk/models/forms.ts
+  s_4cabae41bceed9::t_d1c9fa40d9328f 1-2
+resources/scripts/sdk/models/activity.ts
+  s_4cabae41bceed9::t_7fb54ccf2bc666 1-11
+resources/scripts/views/activity/index.ts
+  s_4cabae41bceed9::t_489acec8915712 142
+  s_4cabae41bceed9::t_89b188270df6f8 131-133,135-137,140,144-148,151,299-303
+  s_4cabae41bceed9::t_413fcdeb741216 143
+  s_4cabae41bceed9::t_5036179f250581 292-298
+  s_4cabae41bceed9::t_d1672b0ea4d33c 1-12,14-52,58-130,134,138-139,141,149-150,152-244,253-291,304-319
+  s_4cabae41bceed9::t_f06f62fd081df8 13
+  s_4cabae41bceed9::t_c29d67ad7b1ffd 53-57,245-252
+resources/scripts/themes/classic/views/auth/ResetPasswordForm.tsx
+  s_4cabae41bceed9::t_cd0092780a05a0 1-37
+  s_4cabae41bceed9::t_1b2f0f5c0a8e3f 38-39
+packages/sdk/types/views/account/keys.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/views/auth/types.ts
+  s_4cabae41bceed9::t_4aca4ff6428906 1-52
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_5036179f250581 11-13
+packages/sdk/types/views/activity/index.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-5
+resources/scripts/themes/classic/views/account/RecoveryTokensDialog.tsx
+  s_4cabae41bceed9::t_f453975baefe4a 1-14
+packages/sdk/types/views/auth/login.d.ts
+  s_4cabae41bceed9::t_bb1a2c3f243499 1-2
+resources/scripts/themes/classic/views/activity/AccountActivityPage.tsx
+  s_4cabae41bceed9::t_bc2d46c3d2f015 1-2,4,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69a065ca02a1dd0e5e9b63fc1e95e6e2a9832c08",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
