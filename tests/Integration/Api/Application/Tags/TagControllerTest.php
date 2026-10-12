@@ -37,6 +37,12 @@ test('filter tags by slug', function (): void {
     $response = $this->getJson('/api/application/tags?filter[slug]=filter-me')->assertOk();
     expect($response->json('data.*.attributes.id'))->toBe([$tag->id]);
 });
+test('filter tags by legacy nest id', function (): void {
+    $tag = Tag::factory()->create(['legacy_nest_id' => 4242]);
+    Tag::factory()->create(['legacy_nest_id' => 42421]);
+    $response = $this->getJson('/api/application/tags?filter[legacy_nest_id]=4242')->assertOk();
+    expect($response->json('data.*.attributes.id'))->toBe([$tag->id]);
+});
 test('return single tag', function (): void {
     $tag = Tag::factory()->create(['legacy_nest_id' => 42]);
     $this->getJson('/api/application/tags/'.$tag->id)->assertOk()->assertJson(['object' => 'tag', 'attributes' => ['id' => $tag->id, 'name' => $tag->name, 'slug' => $tag->slug, 'color' => $tag->color, 'is_predefined' => false, 'legacy_nest_id' => 42, 'relationships' => [], 'created_at' => $tag->created_at->toAtomString(), 'updated_at' => $tag->updated_at->toAtomString()]], true);

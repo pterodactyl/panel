@@ -26,6 +26,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Eggs\UpdateEggRequest;
 use Pterodactyl\Http\Resources\Api\Admin\EggResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Egg;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -47,6 +48,7 @@ class EggController extends AdminApiController
      */
     #[Endpoint('List eggs', 'Returns a paginated list of egg definitions.')]
     #[QueryParam('filter[name]', 'string', 'Filter eggs by name.', required: false, example: 'Paper')]
+    #[QueryParam('filter[tag]', 'string', 'Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.', required: false, example: 'minecraft')]
     #[QueryParam('sort', 'string', 'Sort eggs by id or name. Prefix with a hyphen for descending order.', required: false, example: 'name')]
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
@@ -55,7 +57,7 @@ class EggController extends AdminApiController
     public function index(GetEggsRequest $request): ApiResourceCollection
     {
         $eggs = QueryBuilder::for(Egg::query())
-            ->allowedFilters(['name'])
+            ->allowedFilters(['name', AllowedFilter::exact('tag', 'tags.slug')])
             ->allowedSorts(['id', 'name'])
             ->paginate($request->perPage());
 

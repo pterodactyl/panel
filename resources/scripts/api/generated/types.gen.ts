@@ -4470,6 +4470,11 @@ export type AdminSyncEggTagsEggIdPathParameter = number;
 export type AdminListEggsFilterNameQueryParameter = string;
 
 /**
+ * Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.
+ */
+export type AdminListEggsFilterTagQueryParameter = string;
+
+/**
  * Sort eggs by id or name. Prefix with a hyphen for descending order.
  */
 export type AdminListEggsSortQueryParameter = string;
@@ -4846,6 +4851,11 @@ export type ApplicationListTagsFilterNameQueryParameter = string;
  * Filter tags by slug.
  */
 export type ApplicationListTagsFilterSlugQueryParameter = string;
+
+/**
+ * Filter tags by the ID of the nest they were created from.
+ */
+export type ApplicationListTagsFilterLegacyNestIdQueryParameter = number;
 
 /**
  * Sort tags by id, name, or slug. Prefix with "-" for descending order.
@@ -9221,6 +9231,10 @@ export type AdminListEggsData = {
          */
         'filter[name]'?: AdminListEggsFilterNameQueryParameter;
         /**
+         * Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.
+         */
+        'filter[tag]'?: AdminListEggsFilterTagQueryParameter;
+        /**
          * Sort eggs by id or name. Prefix with a hyphen for descending order.
          */
         sort?: AdminListEggsSortQueryParameter;
@@ -11313,6 +11327,10 @@ export type ApplicationListTagsData = {
          * Filter tags by slug.
          */
         'filter[slug]'?: ApplicationListTagsFilterSlugQueryParameter;
+        /**
+         * Filter tags by the ID of the nest they were created from.
+         */
+        'filter[legacy_nest_id]'?: ApplicationListTagsFilterLegacyNestIdQueryParameter;
         /**
          * Sort tags by id, name, or slug. Prefix with "-" for descending order.
          */

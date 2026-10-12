@@ -7484,6 +7484,9 @@ components:
     AdminListEggsFilterNameQueryParameter:
       type: string
       description: 'Filter eggs by name.'
+    AdminListEggsFilterTagQueryParameter:
+      type: string
+      description: 'Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.'
     AdminListEggsSortQueryParameter:
       type: string
       description: 'Sort eggs by id or name. Prefix with a hyphen for descending order.'
@@ -7816,6 +7819,9 @@ components:
     ApplicationListTagsFilterSlugQueryParameter:
       type: string
       description: 'Filter tags by slug.'
+    ApplicationListTagsFilterLegacyNestIdQueryParameter:
+      type: integer
+      description: 'Filter tags by the ID of the nest they were created from.'
     ApplicationListTagsSortQueryParameter:
       type: string
       description: 'Sort tags by id, name, or slug. Prefix with "-" for descending order.'
@@ -12582,6 +12588,13 @@ paths:
             $ref: '#/components/schemas/AdminListEggsFilterNameQueryParameter'
         -
           in: query
+          name: 'filter[tag]'
+          description: 'Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.'
+          required: false
+          schema:
+            $ref: '#/components/schemas/AdminListEggsFilterTagQueryParameter'
+        -
+          in: query
           name: sort
           description: 'Sort eggs by id or name. Prefix with a hyphen for descending order.'
           required: false
@@ -14925,6 +14938,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/ApplicationListTagsFilterSlugQueryParameter'
+        -
+          in: query
+          name: 'filter[legacy_nest_id]'
+          description: 'Filter tags by the ID of the nest they were created from.'
+          required: false
+          schema:
+            $ref: '#/components/schemas/ApplicationListTagsFilterLegacyNestIdQueryParameter'
         -
           in: query
           name: sort

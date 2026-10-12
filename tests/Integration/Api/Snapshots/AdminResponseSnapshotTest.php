@@ -104,6 +104,11 @@ function adminReads(): array
         'database hosts view' => [['requests' => [...adminMatrix('database_host', ADMIN.'/database-hosts/1'), ['GET', ADMIN.'/database-hosts/2?include=node,databases']]]],
         'database hosts databases' => [['requests' => [...adminMatrix(null, ADMIN.'/database-hosts/1/databases'), ...World::pages(ADMIN.'/database-hosts/1/databases', ADMIN.'/database-hosts/2/databases')]]],
         'eggs index' => [['requests' => [...adminMatrix('egg', ADMIN.'/eggs'), ...World::pages(ADMIN.'/eggs', ADMIN.'/eggs?filter[name]=no-such-egg')]]],
+        'eggs index tag filter' => [['requests' => [
+            ['GET', ADMIN.'/eggs?filter[tag]=premium'],
+            ['GET', ADMIN.'/eggs?filter[tag]=minecraft,premium&include=tags'],
+            ['GET', ADMIN.'/eggs?filter[tag]=none'],
+        ]]],
         'eggs view' => [['requests' => [...adminMatrix('egg', ADMIN.'/eggs/1'), ['GET', ADMIN.'/eggs/2'], ['GET', ADMIN.'/eggs/3?include=variables,tags,servers']]]],
         'eggs scripts' => [['requests' => [...adminMatrix('egg', ADMIN.'/eggs/2/scripts'), ['GET', ADMIN.'/eggs/3/scripts']]]],
         'eggs variables' => [['requests' => [...adminMatrix(null, ADMIN.'/eggs/1/variables'), ['GET', ADMIN.'/eggs/3/variables']]]],
@@ -205,6 +210,7 @@ function adminWrites(): array
         ]]],
         'write tags store' => [['requests' => [['POST', ADMIN.'/tags', ['name' => 'Created Tag', 'slug' => 'created-tag', 'color' => '#123456']]]]],
         'write tags update' => [['requests' => [['PUT', ADMIN.'/tags/2', ['name' => 'Premium Plus', 'slug' => 'premium-plus', 'color' => '#654321']]]]],
+        'write tags update built in slug' => [['requests' => [['PUT', ADMIN.'/tags/2', ['name' => 'Rust', 'slug' => 'rust', 'color' => '#654321']]]]],
         'write users store' => [['requests' => [['POST', ADMIN.'/users', ['username' => 'created', 'email' => 'created@example.test', 'name_first' => 'Cre', 'name_last' => 'Ated', 'external_id' => 'ext-created']]]]],
         'write users update' => [['requests' => [['PUT', ADMIN.'/users/2?include=servers', ['username' => 'owner', 'email' => 'owner@example.test', 'name_first' => 'Olivia', 'name_last' => 'Owner']]]]],
     ];

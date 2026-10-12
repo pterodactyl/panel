@@ -56,6 +56,14 @@ test('tags updated without the http api meet the same rules', function (array $i
     'a colour that is not hex' => [['color' => '#12345g'], 'color'],
 ]);
 
+test('a custom tag cannot take a built-in slug', function (): void {
+    $tag = Tag::factory()->create();
+
+    expect(fn () => $this->app->make(UpdatesTags::class)->update($tag, ['name' => 'FiveM', 'slug' => 'fivem']))
+        ->toThrow(ValidationException::class, 'The slug fivem belongs to a built-in game tag.');
+    expect($tag->fresh()->slug)->not->toBe('fivem');
+});
+
 test('built-in game tags cannot be edited, whatever the input', function (array $input): void {
     $tag = Tag::factory()->predefined('fivem')->create();
 

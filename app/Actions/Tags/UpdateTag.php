@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Tags;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Pterodactyl\Contracts\Tags\UpdatesTags;
 use Pterodactyl\Enum\EggSpecificTags;
 use Pterodactyl\Exceptions\DisplayException;
@@ -18,7 +19,11 @@ final readonly class UpdateTag implements UpdatesTags
         // presentation, so it is never renamed or relabelled.
         throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be edited.');
 
-        $validated = Validator::validate($input, CreateTag::rules($tag));
+        // Nor may a custom tag take a built-in slug and become one.
+        $rules = CreateTag::rules($tag);
+        $rules['slug'][] = Rule::notIn(EggSpecificTags::cases());
+
+        $validated = Validator::validate($input, $rules, ['slug.not_in' => 'The slug :input belongs to a built-in game tag.']);
         // Blank strings are null, as they are in a request, so a blank colour or legacy nest id
         // is cleared. The colour and legacy nest id it is not given keep their stored values.
         $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);

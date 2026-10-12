@@ -45,6 +45,15 @@ test('built in tags cannot be updated', function () {
     $tag = Tag::factory()->predefined('fivem')->create();
     $this->putJson(route('api.admin.tags.update', ['tag' => $tag->id]), ['name' => 'Changed', 'slug' => 'changed'])->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException');
 });
+test('a custom tag cannot be renamed onto a built in slug', function () {
+    $tag = Tag::factory()->create(['slug' => 'custom']);
+    $this->putJson(route('api.admin.tags.update', ['tag' => $tag->id]), ['name' => 'FiveM', 'slug' => 'fivem'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'slug')
+        ->assertJsonPath('errors.0.meta.rule', 'not_in')
+        ->assertJsonPath('errors.0.detail', 'The slug fivem belongs to a built-in game tag.');
+    $this->assertDatabaseHas('tags', ['id' => $tag->id, 'slug' => 'custom']);
+});
 test('built in tags cannot be deleted', function () {
     /** @var Tag $tag */
     $tag = Tag::factory()->predefined('fivem')->create();

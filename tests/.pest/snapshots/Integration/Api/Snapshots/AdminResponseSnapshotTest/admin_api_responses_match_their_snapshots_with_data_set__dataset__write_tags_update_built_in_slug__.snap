@@ -1,0 +1,3 @@
+PUT /api/admin/tags/2
+422 application/json
+{"errors":[{"code":"ValidationException","status":"422","detail":"The slug rust belongs to a built-in game tag.","meta":{"source_field":"slug","rule":"not_in"}}]}

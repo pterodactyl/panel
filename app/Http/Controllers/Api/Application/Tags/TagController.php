@@ -15,6 +15,7 @@ use Pterodactyl\Http\Requests\Api\Application\Tags\GetTagsRequest;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Application\TagResource;
 use Pterodactyl\Models\Tag;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
@@ -28,13 +29,14 @@ class TagController extends ApplicationApiController
     #[QueryParam('per_page', 'integer', 'Number of tags to return per page, up to 100.', required: false, example: 50)]
     #[QueryParam('filter[name]', 'string', 'Filter tags by name.', required: false, example: 'Minecraft')]
     #[QueryParam('filter[slug]', 'string', 'Filter tags by slug.', required: false, example: 'minecraft')]
+    #[QueryParam('filter[legacy_nest_id]', 'integer', 'Filter tags by the ID of the nest they were created from.', required: false, example: 1)]
     #[QueryParam('sort', 'string', 'Sort tags by id, name, or slug. Prefix with "-" for descending order.', required: false, example: 'name', enum: ['id', '-id', 'name', '-name', 'slug', '-slug'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs" and "nodes" when the key can read those resources.', required: false, example: 'eggs', enum: ['eggs', 'nodes', 'eggs,nodes'])]
     #[ResponseFromResource(TagResource::class, Tag::class, collection: true, resourceKey: 'tag', paginate: 50)]
     public function index(GetTagsRequest $request): ApiResourceCollection
     {
         $tags = QueryBuilder::for(Tag::query())
-            ->allowedFilters(['name', 'slug'])
+            ->allowedFilters(['name', 'slug', AllowedFilter::exact('legacy_nest_id')])
             ->allowedSorts(['id', 'name', 'slug'])
             ->paginate($request->perPage());
 

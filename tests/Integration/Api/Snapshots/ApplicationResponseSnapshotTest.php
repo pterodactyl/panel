@@ -132,6 +132,11 @@ function applicationReads(): array
         'servers databases index' => [['requests' => [...applicationMatrix('database', APP.'/servers/1/databases'), ['GET', APP.'/servers/2/databases']]]],
         'servers databases view' => [['requests' => applicationMatrix('database', APP.'/servers/1/databases/1')]],
         'tags index' => [['requests' => [...applicationMatrix('tag', APP.'/tags'), ...World::pages(APP.'/tags', APP.'/tags?filter[slug]=none')]]],
+        'tags index legacy nest filter' => [['requests' => [
+            ['GET', APP.'/tags?filter[legacy_nest_id]=1'],
+            ['GET', APP.'/tags?filter[legacy_nest_id]=7&include=eggs'],
+            ['GET', APP.'/tags?filter[legacy_nest_id]=99'],
+        ]]],
         'tags view' => [['requests' => [...applicationMatrix('tag', APP.'/tags/1'), ['GET', APP.'/tags/4?include=eggs,nodes']]]],
         'users index' => [['requests' => [...applicationMatrix('user', APP.'/users'), ...World::pages(APP.'/users', APP.'/users?filter[email]=none@example.test')]]],
         'users view' => [['requests' => [...applicationMatrix('user', APP.'/users/2'), ['GET', APP.'/users/5?include=servers']]]],
