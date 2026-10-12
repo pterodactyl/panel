@@ -1,0 +1,361 @@
+resources/scripts/themes/primitives.ts
+  s_4cabae41bceed9::t_62e2d383864f59 6,10,14,16,39-42,53-54,95,104-105,136-140,147-152,189,221,224,249
+  s_4cabae41bceed9::t_4d0648df734d68 96-100
+resources/scripts/themes/classic/views/server/console/Graphs.tsx
+  s_4cabae41bceed9::t_4c75fa87be65e0 2,14,18-19,28-29,38-39,59-60
+resources/scripts/themes/classic/views/server/backups/BackupsPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,18
+  s_4cabae41bceed9::t_566786cb2d116b 6,10-14
+resources/scripts/themes/classic/views/server/network/NetworkPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+packages/sdk/types/components/elements/SubNavigationLayout.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 5,9
+resources/scripts/themes/classic/views/auth/CheckpointPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 1,3-4
+resources/scripts/views/navigation.tsx
+  s_4cabae41bceed9::t_e244e4cd01cd76 18,31-32,59-65,68-81,131-146
+resources/scripts/views/pageTitle.ts
+  s_4cabae41bceed9::t_e2a74310a11a13 1-28
+resources/scripts/views/models.ts
+  s_4cabae41bceed9::t_153e083c8c82c1 7,11-13,16,18,24,26,29
+  s_4cabae41bceed9::t_58c072b58c2564 30
+resources/scripts/themes/classic/views/activity/AccountActivityPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 2,4,6
+resources/scripts/components/elements/SubNavigation.spec.tsx
+  s_4cabae41bceed9::t_4a4ec54a539186 6,49-64
+resources/scripts/themes/classic/views/auth/ResetPasswordPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 1,3-4
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_c798157ed0e72c 517-518,636
+  s_4cabae41bceed9::t_ab276dcefcabf7 80,94,101,134-135,137,169-170,172
+packages/sdk/types/views/server/state.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-17
+resources/scripts/themes/classic/views/dashboard/Dashboard.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+resources/scripts/themes/classic/views/server/startup/StartupVariables.tsx
+  s_4cabae41bceed9::t_85f28263638566 89
+  s_4cabae41bceed9::t_03292d62f254b7 91,112
+resources/scripts/themes/classic/views/server/users/SubuserForm.tsx
+  s_4cabae41bceed9::t_03292d62f254b7 267,279-283
+packages/sdk/types/components/elements/ListRow.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 4,12-13,15-22
+packages/sdk/docs-samples/aurora/src/views/ConsolePage.tsx
+  s_4cabae41bceed9::t_5cc6c4c461b90b 27
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_9a5a7c9ce0cb27 64-72,81-85,441
+  s_4cabae41bceed9::t_2bef7b7388db36 86
+packages/sdk/types/themes/skins.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 46-49,51
+packages/sdk/docs-samples/aurora/src/views/ServerGrid.tsx
+  s_4cabae41bceed9::t_ddc4c9d4a5dce2 17-18,21-25,29-46,58-59,135
+resources/scripts/probe.spec.ts
+  s_4cabae41bceed9::t_c5f10196ad91ed 1-6
+packages/sdk/theme-tokens.css
+  s_4cabae41bceed9::t_3300ff867faec0 35
+resources/scripts/extensions/loader.spec.ts
+  s_4cabae41bceed9::t_3c478cbb570ed3 413,417
+resources/scripts/themes/classic/views/server/backups/BackupList.tsx
+  s_4cabae41bceed9::t_03292d62f254b7 158,174
+  s_4cabae41bceed9::t_85f28263638566 151
+resources/scripts/themes/classic/views/server/users/SubuserList.tsx
+  s_4cabae41bceed9::t_03292d62f254b7 115,144
+  s_4cabae41bceed9::t_85f28263638566 111
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_4cabae41bceed9::t_96c335ea5bea16 18
+packages/sdk/bin/pterodactyl-theme.mjs
+  s_4cabae41bceed9::t_f11f5d4028b170 232-274
+  s_4cabae41bceed9::t_0e4732817426b5 280-282,284-285,294,305-308,313,315
+  s_4cabae41bceed9::t_7f275a7d0d767b 277
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_217f72bc06c15c 2,5,116,123-124,161
+  s_4cabae41bceed9::t_67b62c76676f88 392-396,401,422-424
+  s_4cabae41bceed9::t_f0ada8b1075b8a 209,215-216,238,262-263,269-276,322-359,380-383,385,387-391,397-400,402-410,412,420-421,425
+resources/scripts/components/elements/PageFooter.tsx
+  s_4cabae41bceed9::t_fec0c78456ff83 1-25
+packages/sdk/types/components/elements/PageFooter.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-6
+resources/scripts/components/elements/SubNavigationLayout.tsx
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 2,6,11-17
+resources/scripts/themes/classic/views/server/console/Power.tsx
+  s_4cabae41bceed9::t_372ec5dfdc33a4 1,8,11,54
+resources/scripts/themes/classic/views/server/schedules/ScheduleList.tsx
+  s_4cabae41bceed9::t_85f28263638566 127
+  s_4cabae41bceed9::t_566786cb2d116b 131-135
+  s_4cabae41bceed9::t_03292d62f254b7 139,168
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 11,31-32,34,113-114
+packages/sdk/types/views/fixtures.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 16
+resources/scripts/components/admin/eggs/EggCatalogContainer.tsx
+  s_4cabae41bceed9::t_0e31d28edce71d 155,197
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_469022b60395ae 13,50
+  s_4cabae41bceed9::t_cf01d8c0e8d46e 2,114-117
+  s_4cabae41bceed9::t_054fdc0b31a97f 85
+  s_4cabae41bceed9::t_ce9974c820b653 118
+packages/sdk/types/views/server/conflict.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 2
+resources/scripts/themes/classic/views/server/startup/StartupPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,18
+  s_4cabae41bceed9::t_566786cb2d116b 6
+  s_4cabae41bceed9::t_f0f4d5c33dcc95 10-14
+resources/scripts/views/server/conflict.ts
+  s_4cabae41bceed9::t_e244e4cd01cd76 2
+resources/scripts/themes/classic/views/auth/LoginPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 1,3-4
+resources/scripts/themes/classic/views/server/files/FilesPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+resources/scripts/themes/classic/views/server/users/UsersPage.tsx
+  s_4cabae41bceed9::t_566786cb2d116b 6,10-14
+  s_4cabae41bceed9::t_440a00455b6aba 4,18
+resources/scripts/themes/classic/views/server/schedules/SchedulesPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+resources/scripts/components/elements/PageContentBlock.tsx
+  s_4cabae41bceed9::t_e2a74310a11a13 4,20-22
+  s_4cabae41bceed9::t_f3267c97c96363 7,9,15-16,26-27
+  s_4cabae41bceed9::t_584846611b10e8 3,14,17,28
+app/Services/Extensions/Scaffolding/stubs/readme.stub
+  s_4cabae41bceed9::t_96c335ea5bea16 17,20,23-24
+resources/scripts/components/elements/ScreenBlock.tsx
+  s_4cabae41bceed9::t_21672f3e7e1f25 73,75,77
+  s_4cabae41bceed9::t_92efd5b501989d 24,45-46
+packages/sdk/types/views/navigation.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 4,15-16,38-39
+resources/scripts/views/dashboard.spec.tsx
+  s_4cabae41bceed9::t_34c1c6b445025d 72-76
+resources/scripts/themes/classic/views/server/network/Allocations.tsx
+  s_4cabae41bceed9::t_566786cb2d116b 137-141
+  s_4cabae41bceed9::t_8c8ab6200bebe5 44
+  s_4cabae41bceed9::t_03292d62f254b7 147,175
+  s_4cabae41bceed9::t_85f28263638566 132
+resources/scripts/themes/classic/views/dashboard/ServerList.tsx
+  s_4cabae41bceed9::t_4d0648df734d68 114
+  s_4cabae41bceed9::t_e03fcfda604536 17,19-22,25,33-36
+  s_4cabae41bceed9::t_92efd5b501989d 73,78,125
+resources/scripts/themes/classic/views/layout/AdminLayout.tsx
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 131,133
+resources/scripts/themes/classic/views/server/databases/Databases.tsx
+  s_4cabae41bceed9::t_85f28263638566 334
+  s_4cabae41bceed9::t_566786cb2d116b 343-347
+  s_4cabae41bceed9::t_03292d62f254b7 351,361
+resources/scripts/themes/classic/views/layout/AuthLayout.tsx
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 3,5
+  s_4cabae41bceed9::t_7009ebff2e88f2 1
+resources/scripts/themes/skins.ts
+  s_4cabae41bceed9::t_469022b60395ae 59-62,64,124,241-247
+resources/scripts/themes/classic/skins/index.ts
+  s_4cabae41bceed9::t_9e2ac8373fa259 3,7,16,30,37
+packages/sdk/theme.spec.ts
+  s_4cabae41bceed9::t_c9dfa2bd7bc5d4 158
+  s_4cabae41bceed9::t_66e826d8ebaf05 156
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_67b62c76676f88 1090,1124
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1055-1069,1073-1089,1094-1103,1107-1123,1125-1126,1130-1139,1143-1150,1154-1170,1181,1183,1194,1197,1202,1204,1233,1276
+resources/scripts/components/elements/Stat.tsx
+  s_4cabae41bceed9::t_4d0648df734d68 25-35
+  s_4cabae41bceed9::t_3d3f37eb060d4b 1-24,36-58
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_ab276dcefcabf7 37-39
+resources/scripts/themes/classic/views/server/files/EditorPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 5,11
+  s_4cabae41bceed9::t_566786cb2d116b 7
+resources/scripts/themes/classic/views/layout/ServerLayout.tsx
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 18,24
+packages/sdk/types/components/elements/Stat.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-22
+resources/scripts/themes/classic/skins/buttons.ts
+  s_4cabae41bceed9::t_9e2ac8373fa259 69
+resources/scripts/views/server/files.ts
+  s_4cabae41bceed9::t_fc420afc629e88 200-206,208,233
+resources/scripts/themes/classic/views/server/console/Stats.tsx
+  s_4cabae41bceed9::t_3c3f1d29869c6b 2,51,55-56,60,74,77-96
+  s_4cabae41bceed9::t_e1f3b27ff854dc 1,3,5,7,9,12,52,64-73,75-76,97-109
+resources/scripts/components/elements/ChartCard.tsx
+  s_4cabae41bceed9::t_74f99f12a0b337 1-30
+resources/scripts/themes/classic/views/server/settings/SettingsPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 2,4,6
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_4cabae41bceed9::t_0e31d28edce71d 149
+resources/scripts/views/server/console.ts
+  s_4cabae41bceed9::t_e7d692d18da3c1 20,24
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 2,7,12,32-33
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_4cabae41bceed9::t_0e31d28edce71d 177
+packages/sdk/types/views/dashboard.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 3-5,10,13-19,21-27,35-43,52-53,63-70,73
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_58c072b58c2564 26
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_24662460abe996 5,14,16-17,51,53-54,58,96-111,113-114,116,147-148,150-161,263,274,280,299,314-328
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_9a5a7c9ce0cb27 65-66,91
+packages/sdk/panel.css
+  s_4cabae41bceed9::t_3300ff867faec0 28-29,33,54,56-57,82,127,147-152
+packages/sdk/docs-samples/level2-skins/src/skins.tsx
+  s_4cabae41bceed9::t_e028b4178c2932 58-61,63-69,91
+resources/scripts/themes/classic/views/account/AccountOverview.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 6,8
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 18-20
+packages/sdk/types/views/pageTitle.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-5
+resources/scripts/themes/classic/views/server/schedules/ScheduleDetailPage.tsx
+  s_4cabae41bceed9::t_566786cb2d116b 6
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+packages/sdk/types/views/server/console.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 5,7
+packages/sdk/types/views/models.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 2-5
+tests/Unit/Services/Extensions/ExtensionToolingTest.php
+  s_4cabae41bceed9::t_b583c619390328 243-256
+resources/scripts/themes/classic/views/layout/AccountLayout.tsx
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 5,8
+packages/sdk/types/components/elements/ChartCard.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-12
+resources/scripts/views/theme.ts
+  s_4cabae41bceed9::t_152b8d39ccba60 72-73,75,78
+  s_4cabae41bceed9::t_6a026ddae08687 8-9,33,35-36,39,46-47,69-71,74,76-77,79-82,85,98-103,107-116,124,131
+  s_4cabae41bceed9::t_90c2424f9a3bb6 83-84,87
+resources/scripts/themes/classic/views/account/ApiKeysPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_a083b76e589430 342,344,346-347
+  s_4cabae41bceed9::t_34c1c6b445025d 337,339-341,343,345
+resources/scripts/themes/classic/skins/data.ts
+  s_4cabae41bceed9::t_983f06723a90c7 96
+  s_4cabae41bceed9::t_90c2424f9a3bb6 40,47-48,55,57,64
+  s_4cabae41bceed9::t_9e2ac8373fa259 1,38-39,41-46,49-54,56,58-63,65-95,97-121
+resources/scripts/themes/classic/views/server/schedules/ScheduleDetails.tsx
+  s_4cabae41bceed9::t_03292d62f254b7 42,130
+  s_4cabae41bceed9::t_85f28263638566 38
+resources/scripts/themes/classic/skins/forms.ts
+  s_4cabae41bceed9::t_8c8ab6200bebe5 7,40,85,98
+resources/scripts/themes/classic/skins/surfaces.ts
+  s_4cabae41bceed9::t_90c2424f9a3bb6 21,28
+  s_4cabae41bceed9::t_dbbc05440be6ed 1,22-27,29,32,39-42,45-50
+app/Console/Commands/Extensions/MakeCommand.php
+  s_4cabae41bceed9::t_96c335ea5bea16 59,61-62
+resources/scripts/themes/classic/views/server/databases/DatabasesPage.tsx
+  s_4cabae41bceed9::t_566786cb2d116b 6
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+resources/scripts/themes/classic/views/account/SshKeysPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 4,10
+  s_4cabae41bceed9::t_566786cb2d116b 6
+resources/scripts/views/dashboard.ts
+  s_4cabae41bceed9::t_3a5bea8239ed8f 325-326,328,330,332-333,350-356,358-362,366,369,374,379,401,414-423
+  s_4cabae41bceed9::t_e24a826db6aae9 274-276,368
+  s_4cabae41bceed9::t_01e0d8122f5ebb 336
+  s_4cabae41bceed9::t_90c2424f9a3bb6 337,345,363-364
+  s_4cabae41bceed9::t_4d0648df734d68 216-218,402-413
+  s_4cabae41bceed9::t_cce0f264220285 2,12-13,18,22-29,31-32,35,38-44,46-52,60-64,74-75,85-92,95,145-215,219-247,253-255,262,279-284,315,318-320,322-323,329,338-343,346,371-373,375-378,380-386,399-400,424-425,434,442-444
+  s_4cabae41bceed9::t_c63ebbd8c9930f 426
+  s_4cabae41bceed9::t_b45a82224455f6 348
+resources/scripts/themes/classic/views/server/console/ConsolePage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 10,12
+  s_4cabae41bceed9::t_4c75fa87be65e0 36
+resources/scripts/views/navigation.spec.tsx
+  s_4cabae41bceed9::t_f7c141160f987c 14
+  s_4cabae41bceed9::t_901171b50cab60 134,140,209,220
+packages/sdk/types/components/elements/ScreenBlock.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 14,27,31
+resources/scripts/themes/skins.spec.tsx
+  s_4cabae41bceed9::t_f7c141160f987c 34,41-42
+packages/sdk/types/views/layouts.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 5-6,37,39-40,44,78-79,81-83,85-87,89-91,93-98
+resources/scripts/themes/classic/views/layout/AppLayout.tsx
+  s_4cabae41bceed9::t_a691339854d3f1 48,54-59
+  s_4cabae41bceed9::t_9c92e44fc1fe2e 109,111,114
+packages/sdk/docs-samples/level2-skins/src/theme.spec.tsx
+  s_4cabae41bceed9::t_4d0648df734d68 32-34
+  s_4cabae41bceed9::t_162c7f7b30504b 18,25-31
+resources/scripts/components/elements/ListRow.tsx
+  s_4cabae41bceed9::t_f9753693874843 3,12-13,16-17,19-28,31-37,40-44,47-58,61
+  s_4cabae41bceed9::t_90c2424f9a3bb6 1,29-30
+resources/scripts/themes/classicClasses.spec.tsx
+  s_4cabae41bceed9::t_0bb1568db35ddf 54-55
+  s_4cabae41bceed9::t_e132cf9fc931df 33-35,38,507-535,537-539
+  s_4cabae41bceed9::t_b4ed020fe6f91f 37,123,472,479,502,536,560-561
+  s_4cabae41bceed9::t_4d0648df734d68 493-495
+  s_4cabae41bceed9::t_bea8f87529470b 44-45
+  s_4cabae41bceed9::t_fc2dc3eb64eb29 540-541
+resources/scripts/views/className.spec.tsx
+  s_4cabae41bceed9::t_e206869cdff60c 1-26
+packages/sdk/docs-samples/aurora/src/views/Stats.tsx
+  s_4cabae41bceed9::t_ddc4c9d4a5dce2 2,25
+resources/scripts/themes/classic/views/activity/ActivityLog.tsx
+  s_4cabae41bceed9::t_2dd8d9c9a56a6e 106,110,124
+packages/sdk/types/views/theme.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 8-9,27,29-30,33,39
+scripts/generate-sdk-views.mjs
+  s_4cabae41bceed9::t_be746cbce7274e 9-11,28-30,32-49
+packages/sdk/types/themes/primitives.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 7,11,15-16,55-58,78-83,145,147,150,165-170,201-205,221-229,292-295,337,348-351,376-379
+resources/scripts/themes/classic/views/auth/ForgotPasswordPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 1,3-4
+resources/scripts/themes/__fixtures__/classic-classes.json
+  s_4cabae41bceed9::t_2a01aee9ef06c2 834-839,841-855,857-866,868,870
+  s_4cabae41bceed9::t_4d0648df734d68 1454
+  s_4cabae41bceed9::t_fc09b278ff1215 3-4,7-8,11-12,15-16,19-20,23-24,27-28,31-32,35-36,39-40,43-44,47-48,51-52,55-56,59-60,63-64,67-68,71-72,75-76,79-80,83-84,87-88,91-92,95-96,99-100,103-104,107-108,111-112,115-116,119-120,123-124,127-128,131-132,135-136,139-140,143-144,147-148,151-152,155-156,159-160,163-164,167-168,171-172,175-176,179-180,183-184,187-188,191-192,195-196,199-200,203-204,207-208,211-212,215-216,219-220,223-224,227-228,231-232,235-236,239-240,243,246,249-250,253-254,257-258,273-274,279-280,404,407,415-416,418-419,423,426,433-434,448,451,460-461,465,468,477-478,482,485,494-495,497,500,509-510,514,517,524-527,529-530,534,537,544-546,549,655-672,758,761,783-785,789,797-802,804-810,812-818,820-822,826,871-873,902,910-915,917-923,925-931,933,938,946-951,953-959,961-967,969,974,988,1001,1015,1029,1043,1057,1071,1088-1089,1104-1105,1115-1453,1455-1560
+resources/scripts/themes/classic/views/dashboard/ServerCard.tsx
+  s_4cabae41bceed9::t_124ff1e02d1a0b 1-2,6-7,19,21,62,64,72-73,88,95,102,108-118
+app/Services/Extensions/Scaffolding/stubs/theme-tsconfig.stub
+  s_4cabae41bceed9::t_96c335ea5bea16 9
+app/Console/Commands/Extensions/TypesCommand.php
+  s_4cabae41bceed9::t_173011e8861859 13
+  s_4cabae41bceed9::t_d449ff7a2ed861 22,55-57
+resources/scripts/themes/classic/views/layout/Search.tsx
+  s_4cabae41bceed9::t_dd737bd85884a3 1-106
+resources/scripts/themes/classic/views/server/users/CreateSubuserPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 5,7
+packages/sdk/types/views/registry.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 62-63,89
+resources/scripts/views/server/state.ts
+  s_4cabae41bceed9::t_4d0648df734d68 10-11
+  s_4cabae41bceed9::t_08634988fe21b8 1-9,12-55
+app/Console/Commands/Themes/ListCommand.php
+  s_4cabae41bceed9::t_d449ff7a2ed861 10,13,17,20,23-27
+resources/scripts/views/fixtures.ts
+  s_4cabae41bceed9::t_c63ebbd8c9930f 3,51-53,64-66,68-70
+resources/scripts/views/definitions.ts
+  s_4cabae41bceed9::t_58c072b58c2564 3,9,47
+packages/sdk/docs-samples/level4-console/src/views/ConsolePage.tsx
+  s_4cabae41bceed9::t_5cc6c4c461b90b 27
+resources/scripts/themes/classic/views/server/ServerConflict.tsx
+  s_4cabae41bceed9::t_03292d62f254b7 32,39
+packages/sdk/views.json
+  s_4cabae41bceed9::t_be746cbce7274e 123-134,267-274,325-326,341-342,374-375,391-392,401-402,411-412,421-422,431-432,441-442,457-458,467-468,477-478,487-488,497-498,507-508,517-518,527-528,537-538,547-548,557-558,567-568,577-578,587-588,597-598,607-608,617-618,627-628,637-638,647-648,657-658,673-674,683-684,693-694,703-704,713-714,723-724,733-734,743-744,753-754,763-764,773-774,783-784,793-794,803-804,813-814,823-824,833-834,843-844,853-854,869-870,885-886,901-902,917-918,946-947,962-963,997-998,1030-1031,1049-1050,1066-1067,1083-1084,1101-1102,1120-1123,1137-1138,1155-1156
+packages/sdk/types/components/elements/PageContentBlock.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 4,6,10-13
+packages/sdk/docs-samples/aurora/src/views/ServerCard.tsx
+  s_4cabae41bceed9::t_ddc4c9d4a5dce2 2,6,8,12
+resources/scripts/views/search.ts
+  s_4cabae41bceed9::t_530c5af886e4bd 1-39,41-72,77-97,99-100,102-131,134-136
+  s_4cabae41bceed9::t_9870e2f2118267 40,98,101
+  s_4cabae41bceed9::t_4d0648df734d68 73-76,132-133
+packages/sdk/types/views/search.d.ts
+  s_4cabae41bceed9::t_b2bf1edd230cc7 1-37
+resources/scripts/themes/classic/views/activity/ServerActivityPage.tsx
+  s_4cabae41bceed9::t_440a00455b6aba 2,4,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cd05732f143a229307ac8672d11a33c64225c0a6",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
