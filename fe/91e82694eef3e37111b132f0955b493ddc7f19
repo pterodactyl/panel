@@ -1,0 +1,41 @@
+app/Http/Resources/Api/Includes/IncludeSet.php
+  s_4cabae41bceed9::t_d65d03e6f1da4d 35-36
+app/Http/Resources/Api/Admin/TagResource.php
+  s_4cabae41bceed9::t_b66d00cf1173c5 35
+app/Http/Resources/Api/ApiResource.php
+  s_4cabae41bceed9::t_9fb9338f662a00 46,52
+  s_4cabae41bceed9::t_0323572dd85846 206,214
+  s_4cabae41bceed9::t_504d3102f43c36 332
+  s_4cabae41bceed9::t_3c7e59d87b53d2 339-340
+  s_4cabae41bceed9::t_d0feae51b5ff15 133
+  s_4cabae41bceed9::t_962f1c1e3e868f 92,103-105
+  s_4cabae41bceed9::t_529d01a48bdf7e 27-29
+app/Http/Resources/Api/Includes/IncludeScope.php
+  s_4cabae41bceed9::t_74935ce4fbf380 8
+app/Http/Resources/Api/Includes/IncludedResource.php
+  s_4cabae41bceed9::t_37cf679ce7b40d 11-12
+app/Http/Resources/Api/ApiResourceCollection.php
+  s_4cabae41bceed9::t_4cc3d05ef8928f 115
+  s_4cabae41bceed9::t_49f6d10259e454 34,37
+  s_4cabae41bceed9::t_97305039688881 21-22
+  s_4cabae41bceed9::t_3e92583be1374c 66
+app/Http/Resources/Api/Concerns/BuildsResponse.php
+  s_4cabae41bceed9::t_be83a1236c3c98 46-47,63
+  s_4cabae41bceed9::t_28e90c8d8880e7 24,34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe91e82694eef3e37111b132f0955b493ddc7f19",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
