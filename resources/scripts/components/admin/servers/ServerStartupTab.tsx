@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useStore } from '@tanstack/react-form';
 import { Variable } from 'lucide-react';
 import type { AppForm } from '@/components/form';
@@ -15,6 +15,8 @@ import {
 import { serverStartupBodyFromFormValues, type ServerStartupValues } from '@/components/admin/servers/helpers';
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
 import { useServerDetail } from '@/components/admin/servers/useServerDetail';
+import TagCheckAlert from '@/components/admin/tags/TagCheckAlert';
+import { tagCheckError, type TagCheckMeta } from '@/components/admin/tags/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Label from '@/components/elements/Label';
 import Code from '@/components/elements/Code';
@@ -54,7 +56,7 @@ const serverToValues = (server: AdminServer): Values => {
     };
 };
 
-const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values>; egg: EggForServer | null }) => {
+const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values, TagCheckMeta>; egg: EggForServer | null }) => {
     if (!egg) {
         return null;
     }
@@ -113,7 +115,7 @@ const EggSelector = ({
     loading,
     onEggChange,
 }: {
-    form: AppForm<Values>;
+    form: AppForm<Values, TagCheckMeta>;
     eggs: AdminEggListItem[];
     egg: EggForServer | null;
     loading: boolean;
@@ -223,10 +225,12 @@ function ServerStartupTabContent({ server }: Props) {
     const updateServerStartup = useUpdateAdminServerStartup();
 
     const { data: eggs } = useAdminEggs();
+    const [rejection, setRejection] = useState<string | null>(null);
 
     const form = useAppForm({
         defaultValues: serverToValues(server),
-        onSubmit: async ({ value }) => {
+        onSubmitMeta: { ignoreTags: false },
+        onSubmit: async ({ value, meta }) => {
             const payload: ServerStartupValues = {
                 startup: value.startup,
                 eggId: Number(value.eggId),
@@ -237,19 +241,26 @@ function ServerStartupTabContent({ server }: Props) {
 
             try {
                 await updateServerStartup.mutateAsync(
-                    updateAdminServerStartupInput(server.attributes.id, serverStartupBodyFromFormValues(payload))
+                    updateAdminServerStartupInput(server.attributes.id, {
+                        ...serverStartupBodyFromFormValues(payload),
+                        ignore_tags: meta.ignoreTags,
+                    })
                 );
-            } catch {
-                // Error toast is handled by the mutation.
+                setRejection(null);
+            } catch (error) {
+                setRejection(tagCheckError(error, 'egg_id'));
             }
         },
     });
     const eggId = useStore(form.store, (state) => Number(state.values.eggId));
+    const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
     const { data: egg = null, isFetching: loadingEgg } = useAdminEggForServer(eggId);
     const latestEggLoad = useRef(0);
 
     const loadEgg = async (nextEggId: number) => {
         const eggLoad = ++latestEggLoad.current;
+
+        setRejection(null);
 
         if (nextEggId <= 0) {
             form.setFieldValue('environment', {});
@@ -337,6 +348,16 @@ function ServerStartupTabContent({ server }: Props) {
                 </div>
                 <EnvironmentVariables form={form} egg={egg} />
             </div>
+            {rejection && (
+                <div className='mt-6'>
+                    <TagCheckAlert
+                        message={rejection}
+                        action='Change anyway'
+                        pending={isSubmitting}
+                        onAction={() => void form.handleSubmit({ ignoreTags: true })}
+                    />
+                </div>
+            )}
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
                     <form.SubmitButton>Save Modifications</form.SubmitButton>

@@ -126,6 +126,10 @@ const allAdminNodesInput = {
     query: { sort: 'id', per_page: MAX_PER_PAGE, include: adminNodeListInclude },
 } satisfies Options<AdminListNodesData>;
 
+const allAdminNodeTagsInput = {
+    query: { sort: 'id', per_page: MAX_PER_PAGE, include: 'tags' },
+} satisfies Options<AdminListNodesData>;
+
 const nodeListSortFields = ['name', 'memory', 'disk', 'created_at'] as const;
 
 export const adminNodeListSorts = (sort?: AdminNodeListSort): AdminNodesQueryParams['sorts'] =>
@@ -271,6 +275,12 @@ export const allAdminNodesQueryOptions = () =>
         adminListNodes({ query: { ...allAdminNodesInput.query, page }, signal }).then(({ data }) => data)
     );
 
+/** Every node with the egg tags that decide which eggs it accepts. */
+export const allAdminNodeTagsQueryOptions = () =>
+    allPagesQueryOptions(adminListNodesQueryKey(allAdminNodeTagsInput), (page, signal) =>
+        adminListNodes({ query: { ...allAdminNodeTagsInput.query, page }, signal }).then(({ data }) => data)
+    );
+
 export const adminNodesQueryOptions = (params: AdminNodesQueryParams = {}) =>
     adminListNodesOptions({ query: { ...listQuery(params), include: adminNodeListInclude } });
 
@@ -338,6 +348,12 @@ export const useAdminNodes = (params: AdminNodesQueryParams = {}, options?: Admi
 
 export const useAdminNode = (id: number, options?: ResourceQueryOverrides) =>
     useQuery(withQueryOverrides(adminNodeQueryOptions(id), options));
+
+export const useAdminNodeTags = (id: number, options?: ResourceQueryOverrides) =>
+    useQuery(withQueryOverrides(adminNodeTagsQueryOptions(id), options));
+
+export const useAllAdminNodeTags = (options?: ResourceQueryOverrides) =>
+    useQuery({ ...allAdminNodeTagsQueryOptions(), enabled: options?.enabled });
 
 const combineNodesByLocation = ([nodes, locations]: [
     UseQueryResult<AdminListNodesResponse>,

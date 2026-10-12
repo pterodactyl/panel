@@ -1,6 +1,7 @@
+import { AxiosError, AxiosHeaders } from 'axios';
 import { describe, expect, it } from 'vitest';
 import type { AdminTag } from '@/api/admin/tags/queries';
-import { tagValueForName } from './helpers';
+import { nodeAcceptsEgg, nodeRejectsEggMessage, tagCheckError, tagValueForName } from './helpers';
 
 const tag = (id: number, name: string, slug: string): AdminTag => ({
     object: 'tag',
@@ -18,7 +19,19 @@ const tag = (id: number, name: string, slug: string): AdminTag => ({
     },
 });
 
-const tags = [tag(1, 'Source Engine', 'srcds'), tag(2, 'Premium', 'premium')];
+const srcds = tag(1, 'Source Engine', 'srcds');
+const premium = tag(2, 'Premium', 'premium');
+const minecraft = tag(3, 'Minecraft', 'minecraft');
+const tags = [srcds, premium];
+
+const unprocessable = (field: string, detail: string) =>
+    new AxiosError('Unprocessable', '422', undefined, undefined, {
+        status: 422,
+        statusText: 'Unprocessable Content',
+        headers: {},
+        config: { headers: new AxiosHeaders() },
+        data: { errors: [{ code: 'ValidationException', detail, meta: { source_field: field, rule: '' } }] },
+    });
 
 describe('tagValueForName', () => {
     it('picks the existing tag a name or slug refers to, ignoring case and spacing', () => {
@@ -34,5 +47,38 @@ describe('tagValueForName', () => {
     it('has no value for an empty or numeric name, which the API reads as a tag id', () => {
         expect(tagValueForName(tags, '   ')).toBeNull();
         expect(tagValueForName(tags, '42')).toBeNull();
+    });
+});
+
+describe('nodeAcceptsEgg', () => {
+    it('accepts every egg on a node without egg tags', () => {
+        expect(nodeAcceptsEgg([], [])).toBe(true);
+        expect(nodeAcceptsEgg([], [minecraft])).toBe(true);
+    });
+
+    it('needs one tag in common with a tagged node', () => {
+        expect(nodeAcceptsEgg([minecraft, srcds], [srcds, premium])).toBe(true);
+        expect(nodeAcceptsEgg([minecraft], [srcds, premium])).toBe(false);
+        expect(nodeAcceptsEgg([minecraft], [])).toBe(false);
+    });
+
+    it('words a refusal the way the API does', () => {
+        expect(nodeRejectsEggMessage('node-alpha', [minecraft, srcds])).toBe(
+            'node-alpha only accepts eggs tagged Minecraft, Source Engine.'
+        );
+    });
+});
+
+describe('tagCheckError', () => {
+    it('returns the tag check message for the field', () => {
+        const message = 'node-alpha only accepts eggs tagged Minecraft.';
+
+        expect(tagCheckError(unprocessable('node_id', message), 'node_id')).toBe(message);
+    });
+
+    it('ignores other validation errors and other fields', () => {
+        expect(tagCheckError(unprocessable('node_id', 'The node id field is required.'), 'node_id')).toBeNull();
+        expect(tagCheckError(unprocessable('egg_id', 'n only accepts eggs tagged A.'), 'node_id')).toBeNull();
+        expect(tagCheckError(new Error('offline'), 'node_id')).toBeNull();
     });
 });
