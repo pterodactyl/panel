@@ -1,0 +1,40 @@
+app/Models/Node.php
+  s_4cabae41bceed9::t_fe63d66dcd5337 181-230
+  s_4cabae41bceed9::t_24eaeb5d04d146 23-27,29-30
+  s_4cabae41bceed9::t_d16ef5093da43d 7,9
+  s_488821bd68e9e0::t_a2c4f63973412b 180
+app/Actions/Backups/GenerateBackupDownloadLink.php
+  s_4cabae41bceed9::t_556dc1cdd68cf4 19,29-35
+app/Actions/Transfers/InitiateTransfer.php
+  s_4cabae41bceed9::t_ca4680cbbedceb 29,114-119
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_4cabae41bceed9::t_645b36c62ad5f6 160,163-169
+app/Http/Controllers/Api/Client/Servers/FileUploadController.php
+  s_4cabae41bceed9::t_d5eb16e0c5f92b 35,40,48,50-56
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_4cabae41bceed9::t_0485ab2340d79f 40,58-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e902a6d8e8017c479ea9f264b8f11cb1dc71a79d",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
