@@ -1,0 +1,66 @@
+app/Models/Server.php
+  s_4cabae41bceed9::t_da46060ba9d030 55
+  s_4cabae41bceed9::t_ad5141704a7190 26-28
+app/Models/User.php
+  s_4cabae41bceed9::t_ad5141704a7190 28
+app/Models/ServerTransfer.php
+  s_4cabae41bceed9::t_ad5141704a7190 14-15
+app/Models/Subuser.php
+  s_4cabae41bceed9::t_ad5141704a7190 17-18
+app/Models/Allocation.php
+  s_4cabae41bceed9::t_ad5141704a7190 17
+app/Models/ActivityLogSubject.php
+  s_4cabae41bceed9::t_d53eac79de1bcc 16
+app/Models/ApiKey.php
+  s_4cabae41bceed9::t_ad5141704a7190 20
+app/Http/Resources/Api/Application/ServerDatabaseResource.php
+  s_4cabae41bceed9::t_9bad452b29dad2 44-45
+app/Models/ServerVariable.php
+  s_4cabae41bceed9::t_ad5141704a7190 11
+app/Models/Database.php
+  s_4cabae41bceed9::t_ad5141704a7190 15
+app/Models/UserSSHKey.php
+  s_4cabae41bceed9::t_90b197bf059e04 7
+  s_4cabae41bceed9::t_49c2823814f9a4 16,21
+app/Http/Resources/Api/Application/DatabaseHostResource.php
+  s_4cabae41bceed9::t_9bad452b29dad2 40-41
+app/Http/Resources/Api/Client/ScheduleResource.php
+  s_4cabae41bceed9::t_9bad452b29dad2 50-51
+phpstan.neon
+  s_4cabae41bceed9::t_013aa440b8cf0e 10
+app/Http/Resources/Api/Client/BackupResource.php
+  s_4cabae41bceed9::t_9bad452b29dad2 33
+app/Models/EggVariable.php
+  s_4cabae41bceed9::t_ad5141704a7190 15
+  s_4cabae41bceed9::t_9bad452b29dad2 66
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_9bad452b29dad2 135
+app/Models/Backup.php
+  s_4cabae41bceed9::t_ad5141704a7190 18-19
+app/Models/Task.php
+  s_4cabae41bceed9::t_ad5141704a7190 17-18
+app/Http/Resources/Api/Client/TaskResource.php
+  s_4cabae41bceed9::t_9bad452b29dad2 32-33
+app/Models/Node.php
+  s_4cabae41bceed9::t_ad5141704a7190 25
+app/Http/Requests/Api/Client/Servers/Startup/UpdateStartupVariableRequest.php
+  s_4cabae41bceed9::t_9bad452b29dad2 66-68
+app/Models/Schedule.php
+  s_4cabae41bceed9::t_ad5141704a7190 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "03fdfff5e04bda3a4d2c00ca19c083457363502a",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
