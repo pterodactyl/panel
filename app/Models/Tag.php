@@ -60,6 +60,29 @@ class Tag extends Model
     }
 
     /**
+     * The tags with these slugs, creating each one that does not exist yet. A built-in slug
+     * is created under its friendly name. A purely numeric value is never a slug (see
+     * TagSlug), so it is skipped rather than created.
+     *
+     * @param  list<string>  $slugs
+     * @return Collection<int, self>
+     */
+    public static function findOrCreateFromSlugs(array $slugs): Collection
+    {
+        $slugs = array_values(array_filter($slugs, fn (string $slug): bool => ! TagSlug::isReserved($slug)));
+        if ($slugs === []) {
+            return new Collection;
+        }
+
+        $existing = self::query()->whereIn('slug', $slugs)->get()->keyBy('slug');
+
+        return (new Collection(array_map(
+            fn (string $slug): self => $existing->get($slug) ?? self::query()->firstOrCreate(['slug' => $slug], ['name' => EggSpecificTags::tryFrom($slug)?->friendlyName() ?? $slug]),
+            $slugs,
+        )))->unique();
+    }
+
+    /**
      * The nodes carrying this tag, under either pivot kind. The deploy gate reads
      * the kind-scoped Node::eggTags()/deploymentTags() instead.
      *

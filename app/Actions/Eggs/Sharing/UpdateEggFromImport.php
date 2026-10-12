@@ -11,6 +11,7 @@ use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Data\EggImportVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Models\Tag;
 
 final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 {
@@ -31,6 +32,10 @@ final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 
             $imported = array_map(fn (EggImportVariable $variable): string => $variable->environmentVariable, $parsed->variables);
             $egg->variables()->whereNotIn('env_variable', $imported)->delete();
+
+            if ($parsed->tags !== null) {
+                $egg->tags()->sync(Tag::findOrCreateFromSlugs($parsed->tags));
+            }
 
             return $egg->refresh();
         });

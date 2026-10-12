@@ -10,6 +10,7 @@ use Pterodactyl\Contracts\Eggs\ImportsEggs;
 use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Models\Tag;
 use Ramsey\Uuid\Uuid;
 
 final readonly class ImportEgg implements ImportsEggs
@@ -31,6 +32,10 @@ final readonly class ImportEgg implements ImportsEggs
             $egg->save();
             foreach ($parsed->variables as $variable) {
                 EggVariable::query()->forceCreate($variable->attributesForEgg($egg->id));
+            }
+
+            if ($parsed->tags !== null) {
+                $egg->tags()->sync(Tag::findOrCreateFromSlugs($parsed->tags));
             }
 
             return $egg;

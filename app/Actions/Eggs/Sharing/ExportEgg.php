@@ -12,7 +12,7 @@ final class ExportEgg implements ExportsEggs
 {
     public function export(Egg $egg): string
     {
-        $egg->loadMissing('scriptFrom', 'configFrom', 'variables');
+        $egg->loadMissing('scriptFrom', 'configFrom', 'variables', 'tags');
 
         $variables = [];
         foreach ($egg->variables as $item) {
@@ -39,6 +39,7 @@ final class ExportEgg implements ExportsEggs
             'author' => $egg->author,
             'description' => $egg->description,
             'features' => $egg->features,
+            'tags' => $egg->tags->pluck('slug')->sort()->values(),
             'docker_images' => $egg->docker_images,
             'file_denylist' => Collection::make($egg->inherit_file_denylist)->filter(fn (string $value): bool => $value !== ''),
             'startup' => $egg->startup,

@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Tags;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Tags\SyncsTags;
-use Pterodactyl\Enum\EggSpecificTags;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Tag;
-use Pterodactyl\Rules\TagSlug;
 
 final readonly class SyncTags implements SyncsTags
 {
@@ -82,62 +81,43 @@ final readonly class SyncTags implements SyncsTags
     {
         DB::transaction(function () use ($parent, $tags, $values, $otherKind): void {
             $parent->newQuery()->lockForUpdate()->findOrFail($parent->id);
-            $ids = $this->resolveIds($values);
+            $resolved = $this->resolve($values);
 
-            $taken = $otherKind?->whereKey($ids)->pluck('tags.name')->implode(', ') ?? '';
+            $taken = $otherKind?->whereKey($resolved->modelKeys())->pluck('tags.name')->implode(', ') ?? '';
             if ($taken !== '') {
                 throw ValidationException::withMessages(['tags' => "These tags are already on the node as the other kind: {$taken}."]);
             }
 
-            $tags->sync($ids);
+            $tags->sync($resolved);
         });
     }
 
     /**
-     * The ids of the given tags, creating a tag for each new name. This is what lets the node
-     * and egg tag pickers create a tag by typing its name.
+     * The given tags, creating a tag for each new name. This is what lets the node and egg
+     * tag pickers create a tag by typing its name. The slug is the typed text verbatim, so a
+     * name keeps its exact casing and spacing and matches a backfilled nest tag of the same
+     * name.
      *
      * The values are validated first (rules() bounds each name to at most 191 characters);
-     * with the numeric check below that satisfies every rule in CreateTag::rules(), so tags
-     * created here need no separate check.
+     * with findOrCreateFromSlugs() skipping numeric values that satisfies every rule in
+     * CreateTag::rules(), so tags created here need no separate check.
      *
-     * @param  string[]  $values  existing tag ids or names
-     * @return int[]
+     * @param  list<string>  $values  existing tag ids or names
+     * @return Collection<int, Tag>
      */
-    private function resolveIds(array $values): array
+    private function resolve(array $values): Collection
     {
         $values = array_values(array_unique(array_filter(array_map(mb_trim(...), $values), fn (string $value): bool => $value !== '')));
         if ($values === []) {
-            return [];
+            return new Collection;
         }
 
-        $tags = Tag::matchingKeysOrSlugs($values);
-        $byId = $tags->keyBy('id');
-        $bySlug = $tags->keyBy('slug');
-        $ids = [];
+        // A purely numeric value is either an existing tag id or a leftover legacy nest id,
+        // never a name (see TagSlug). It is resolved here if it names a real tag, and
+        // findOrCreateFromSlugs() never creates a tag named after a stale nest id.
+        $existing = Tag::matchingKeysOrSlugs($values);
+        $missing = array_values(array_filter($values, fn (string $value): bool => $existing->doesntContain(fn (Tag $tag): bool => $tag->slug === $value)));
 
-        foreach ($values as $value) {
-            // A purely numeric value is either an existing tag id or a leftover legacy nest
-            // id, never a slug to create (see TagSlug). It is resolved if it names a real tag
-            // and dropped otherwise, rather than creating a tag named after a stale nest id.
-            if (TagSlug::isReserved($value)) {
-                $existing = $byId->get($value)?->id;
-
-                if ($existing !== null) {
-                    $ids[] = $existing;
-                }
-
-                continue;
-            }
-
-            // Anything else is a tag name. The slug is the typed text verbatim, so a name keeps
-            // its exact casing and spacing and matches a backfilled nest tag of the same name.
-            // An exact built-in slug still resolves to its canonical, enum-named tag.
-            $name = EggSpecificTags::tryFrom($value)?->friendlyName() ?? $value;
-
-            $ids[] = ($bySlug->get($value) ?? Tag::query()->firstOrCreate(['slug' => $value], ['name' => $name]))->id;
-        }
-
-        return array_values(array_unique($ids));
+        return $existing->merge(Tag::findOrCreateFromSlugs($missing));
     }
 }

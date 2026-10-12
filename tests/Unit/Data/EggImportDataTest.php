@@ -23,6 +23,23 @@ test('normalizes a v1 image list', function () {
     expect($parsed->dockerImages)->toBe(['ghcr.io/pterodactyl/games:source' => 'ghcr.io/pterodactyl/games:source']);
     expect($parsed->variables[0]->environmentVariable)->toBe('SRCDS_MAP');
 });
+test('reads tag slugs trimmed, without blanks or duplicates, and null when the key is absent', function (): void {
+    $egg = json_decode((string) file_get_contents(base_path('database/Seeders/eggs/minecraft/egg-paper.json')), true);
+    expect(EggImportData::fromJson((string) json_encode($egg))->tags)->toBeNull();
+
+    $egg['tags'] = [' minecraft ', '', 'Custom Tag', 'minecraft', '7'];
+    expect(EggImportData::fromJson((string) json_encode($egg))->tags)->toBe(['minecraft', 'Custom Tag', '7']);
+});
+test('rejects tags that are not short strings', function (mixed $tags, string $message): void {
+    $egg = json_decode((string) file_get_contents(base_path('database/Seeders/eggs/minecraft/egg-paper.json')), true);
+    $egg['tags'] = $tags;
+
+    expect(fn () => EggImportData::fromJson((string) json_encode($egg)))->toThrow(InvalidFileUploadException::class, $message);
+})->with([
+    'a string' => ['minecraft', 'The egg field "tags" is missing or invalid.'],
+    'a number' => [[1], 'The egg field "tags" is missing or invalid.'],
+    'a long slug' => [[str_repeat('a', 192)], 'The egg field "tags.0" is invalid'],
+]);
 test('rejects unrecognized egg payloads', function () {
     $file = UploadedFile::fake()->createWithContent('invalid.json', '{"meta":{"version":"unknown"}}');
     $this->expectException(InvalidFileUploadException::class);

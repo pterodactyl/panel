@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use JsonException;
 use Pterodactyl\Actions\Eggs\CreateEgg;
 use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
+use Pterodactyl\Actions\Tags\SyncTags;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
 
@@ -20,6 +21,7 @@ final readonly class EggImportData
      * @param  array<string, string>  $dockerImages
      * @param  list<string>  $fileDenylist
      * @param  list<EggImportVariable>  $variables
+     * @param  list<string>|null  $tags  tag slugs, null when the file has no tags key so an import leaves the egg's tags alone
      */
     public function __construct(
         public string $name,
@@ -38,6 +40,7 @@ final readonly class EggImportData
         public string $scriptEntry,
         public string $scriptContainer,
         public array $variables,
+        public ?array $tags = null,
     ) {}
 
     /**
@@ -115,6 +118,7 @@ final readonly class EggImportData
             scriptEntry: self::string($installation['entrypoint'] ?? null, 'scripts.installation.entrypoint'),
             scriptContainer: self::string($installation['container'] ?? null, 'scripts.installation.container'),
             variables: self::variables($root['variables'] ?? []),
+            tags: self::tags($root['tags'] ?? null),
         );
         $data->validate();
 
@@ -171,6 +175,20 @@ final readonly class EggImportData
         }
 
         return $variables;
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    private static function tags(mixed $value): ?array
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $tags = array_map(mb_trim(...), self::stringList($value, 'tags'));
+
+        return array_values(array_unique(array_filter($tags, fn (string $tag): bool => $tag !== '')));
     }
 
     /**
@@ -284,6 +302,7 @@ final readonly class EggImportData
             'config_logs' => ['nullable', 'json'],
             'config_files' => ['nullable', 'json'],
             'variables' => ['array'],
+            'tags.*' => SyncTags::TEXT,
         ];
 
         $variable = Arr::only(CreateEggVariable::rules(), ['name', 'description', 'env_variable', 'rules', 'default_value']);
@@ -312,6 +331,7 @@ final readonly class EggImportData
             'config_logs' => $this->configLogs,
             'config_files' => $this->configFiles,
             'variables' => array_map(fn (EggImportVariable $variable): array => $variable->attributes(), $this->variables),
+            'tags' => $this->tags,
         ], $this->rules());
 
         if ($validator->fails()) {
