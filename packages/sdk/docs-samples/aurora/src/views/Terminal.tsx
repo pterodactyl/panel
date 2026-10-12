@@ -35,7 +35,12 @@ export default function Terminal({ model }: ViewProps<'server.terminal'>) {
                     </div>
                 )}
                 {model.scrolledUp && (
-                    <Button size='xsmall' color='grey' className='absolute right-5 bottom-3' onClick={model.scrollToBottom}>
+                    <Button
+                        size='xsmall'
+                        color='grey'
+                        className='absolute right-5 bottom-3'
+                        onClick={model.scrollToBottom}
+                    >
                         Latest output
                     </Button>
                 )}

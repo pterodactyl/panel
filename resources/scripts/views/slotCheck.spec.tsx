@@ -8,8 +8,9 @@ import { clearThemeLayers, registerViewDefinition, registerViewLayer, type ViewP
 import { EngineSlots, SLOT_CHECK_DELAY_MS } from './slotCheck';
 import { View } from './View';
 
-const before = 'server.console.power.before' satisfies SlotName;
-const after = 'server.console.power.after' satisfies SlotName;
+const before = 'dashboard.before' satisfies SlotName;
+const after = 'dashboard.after' satisfies SlotName;
+
 type Props = ViewProps<'test.slotted'>;
 
 beforeAll(() => {

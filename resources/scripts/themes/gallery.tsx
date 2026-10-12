@@ -80,13 +80,7 @@ export interface UiPrimitiveComponents {
 const noop = () => {};
 
 /** A dialog the gallery can close and reopen; `open` samples start open, so the frame shows them at once. */
-function DialogSample({
-    open: initiallyOpen,
-    danger,
-}: {
-    open: boolean;
-    danger?: boolean;
-}): ReactElement {
+function DialogSample({ open: initiallyOpen, danger }: { open: boolean; danger?: boolean }): ReactElement {
     const [open, setOpen] = useState(initiallyOpen);
 
     return (

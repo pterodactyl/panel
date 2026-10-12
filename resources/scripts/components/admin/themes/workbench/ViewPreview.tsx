@@ -77,7 +77,10 @@ function FixtureFrame({
     );
     // Pages and layouts bring their own spacing; a block sits in some, as it would on a page.
     const view = definition.kind === 'block' ? <div className='p-4'>{rendered}</div> : rendered;
-    const engineSlots = isPageViewName(definition.name) ? (pageSlots(definition.name) ?? []) : [];
+    const engineSlots = useMemo(
+        () => (isPageViewName(definition.name) ? (pageSlots(definition.name) ?? []) : []),
+        [definition.name]
+    );
 
     return (
         <figure className='min-w-0'>

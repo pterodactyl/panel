@@ -23,7 +23,9 @@ const button = skin('Button', {
         [
             'relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition disabled:opacity-50',
             sizes[size],
-            secondary ? 'bg-transparent text-foreground ring-1 ring-border hover:not-disabled:bg-popover' : fills[color],
+            secondary
+                ? 'bg-transparent text-foreground ring-1 ring-border hover:not-disabled:bg-popover'
+                : fills[color],
         ].join(' '),
 });
 // #endregion button
@@ -33,7 +35,7 @@ const button = skin('Button', {
 const glass = {
     Card: skin('Card', {
         root: {
-            base: 'glass rounded-2xl shadow-xl shadow-black/10',
+            base: 'glass rounded-2xl shadow-xl',
             variants: { titled: { false: 'p-5' }, loading: { true: 'relative' } },
         },
         header: 'flex items-center gap-3 border-b border-(--glass-border) px-5 py-3',

@@ -8,7 +8,7 @@ const badge = skin('Badge', {
         base: 'inline-flex items-center gap-1 rounded-full font-medium',
         variants: {
             size: { sm: 'px-2 text-[0.6875rem]', md: 'px-2.5 py-0.5 text-xs' },
-            variant: { solid: 'text-white', soft: 'bg-transparent ring-1 ring-inset' },
+            variant: { solid: 'text-primary-foreground', soft: 'bg-transparent ring-1 ring-inset' },
         },
         compoundVariants: [
             { variant: 'solid', tone: ['success', 'info'], class: 'bg-success' },

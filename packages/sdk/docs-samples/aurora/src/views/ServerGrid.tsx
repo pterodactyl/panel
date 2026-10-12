@@ -36,7 +36,12 @@ function PowerButtons({ item }: { item: ServerListItem }) {
                     </Button>
                 </>
             ) : (
-                <Button size='xsmall' color='green' disabled={power.isPending || item.power === null} onClick={send('start')}>
+                <Button
+                    size='xsmall'
+                    color='green'
+                    disabled={power.isPending || item.power === null}
+                    onClick={send('start')}
+                >
                     <Play className='size-3.5' aria-hidden /> Start
                 </Button>
             )}
@@ -73,7 +78,12 @@ function Pager({ model }: { model: ServerListModel }) {
 
     return (
         <nav aria-label='Pages' className='mt-6 flex items-center justify-center gap-3 text-sm'>
-            <Button size='xsmall' color='grey' disabled={pagination.currentPage === 1} onClick={() => actions.setPage(pagination.currentPage - 1)}>
+            <Button
+                size='xsmall'
+                color='grey'
+                disabled={pagination.currentPage === 1}
+                onClick={() => actions.setPage(pagination.currentPage - 1)}
+            >
                 Previous
             </Button>
             {pagination.currentPage} of {pagination.totalPages}

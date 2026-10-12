@@ -51,7 +51,10 @@ export default definePterodactylExtension({
             context: 'app',
             use: useBalance,
             Default: Balance,
-            fixtures: { funded: () => ({ credits: 120, topUp: () => {} }), empty: () => ({ credits: 0, topUp: () => {} }) },
+            fixtures: {
+                funded: () => ({ credits: 120, topUp: () => {} }),
+                empty: () => ({ credits: 0, topUp: () => {} }),
+            },
         });
         // Wherever classic has no place for it yet, a slot places the view.
         slots.register('dashboard.after', () => <View name='billing.balance' />);

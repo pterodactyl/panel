@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { ViewDefinition, ViewLayer } from './registry';
 
 const SlotRecorder = createContext<((name: string) => void) | null>(null);
+
 /** The slots the engine renders around a page view, which the view itself does not render. */
 export const EngineSlots = createContext<readonly string[]>([]);
 

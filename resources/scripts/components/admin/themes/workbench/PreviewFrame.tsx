@@ -114,6 +114,7 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
 
                 setHeight(Math.min(dialog ? Math.max(content, DIALOG_HEIGHT) : content, MAX_HEIGHT));
             };
+
             const observer = new ResizeObserver(measure);
             // Resize observations wait for rendering, which a hidden tab skips; mutations do not.
             const mutations = new MutationObserver(measure);
