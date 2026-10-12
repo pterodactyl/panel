@@ -88,7 +88,8 @@ Tailwind with no prefix.
 
 A **token** is a CSS custom property the panel's classes read. Set one and everything that reads it
 changes: `--primary` colours primary buttons and selected items, `--radius` sets every rounded corner,
-and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all.
+and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all, each with the
+primitives and views classic reads it in, so you can tell what a change reaches before you make it.
 
 The colour classes are roles such as `bg-card` and `text-muted-foreground`. Of Tailwind's palette only
 `white` and `black` remain (`text-white`, `bg-black/15`). Add a colour of your own in `@theme`:
@@ -106,6 +107,14 @@ light sets its own light colours.
 Ship font files with the theme and reference them relative to the stylesheet; the build copies them
 beside `dist/theme.css`. Set `--font-sans` (body) and `--font-header` (headings) in `@theme`. Fonts from
 another origin, such as a CDN, are refused.
+
+### Shadows
+
+The build compiles the whole panel stylesheet with your `@theme`, so Tailwind's own theme variables are
+tokens too. Classic lifts cards, stat tiles, chart cards and dialogs with the shadow scale (`shadow-sm`
+to `shadow-lg`); set `--shadow-sm` and the rest to change every one, as the sample below does to draw
+hairlines instead. `--shadow-navigation-active` is the underline of the active navigation item and
+`--shadow-progress` the glow under the page progress bar.
 
 ### A complete level 1 theme
 
@@ -125,6 +134,11 @@ another origin, such as a CDN, are refused.
 @theme {
     --font-sans: 'Sunrise Sans', system-ui, sans-serif;
     --font-header: 'Sunrise Sans', system-ui, sans-serif;
+
+    /* Classic lifts cards, tiles and dialogs with Tailwind's shadow scale; these draw a hairline instead. */
+    --shadow-sm: 0 0 0 1px var(--border);
+    --shadow-md: 0 0 0 1px var(--border);
+    --shadow-lg: 0 0 0 1px var(--border);
 }
 
 /* Both schemes. Every p-*, m-*, gap-* and w-* class multiplies --spacing (Tailwind's is 0.25rem). */
@@ -191,7 +205,7 @@ From this level on, a theme has JavaScript: `src/theme.tsx`, built to the `dist/
 manifest's `ui.entry` names. Scaffold without `--css-only` to get it, with a skin, a layout and a test
 to start from; a level 1 theme moves over by copying its `src/theme.css` into the new package.
 
-The panel draws its interface with a UI kit of 28 **primitives**, such as `Button`, `Card` and `Dialog`.
+The panel draws its interface with a UI kit of 31 **primitives**, such as `Button`, `Card` and `Dialog`.
 Extensions use them too, so restyling a primitive restyles it everywhere.
 
 Each primitive has named **parts** (a `Card` has `root`, `header`, `title`, `icon`, `actions` and
@@ -206,12 +220,14 @@ export const skins = {
     Badge: badge,
     Button: button,
     Card: card,
+    Stat: stat,
     Alert: Banner,
 } satisfies ThemeSkins;
 ```
 <!-- /sample -->
 
-`npx pterodactyl-theme skins Button` prints classic's skin of a primitive, ready to paste and edit.
+`npx pterodactyl-theme skins Button` prints classic's skin of a primitive, with only the constants it
+reads, ready to paste and edit.
 
 ### Recipes
 
@@ -288,13 +304,22 @@ A recipe **replaces** the recipe below it for its part, whole. Classes are never
 classes a part needs to work, such as `z-9999` on a tooltip. Parts a skin leaves out keep the recipe
 below.
 
-To **extend** instead, pass `skin()` a function of the layers below:
+To **extend** instead, pass `skin()` a function of the layers below. `below.root(state, extra)` merges
+`extra` into their classes: a class of it replaces the one below it conflicts with, so `rounded-lg`
+replaces `rounded-sm` rather than sitting beside it. `cn` from `@pterodactyl/sdk/theme` merges the same
+way anywhere else.
 
 <!-- sample: level2-skins/src/skins.tsx#extend -->
 ```tsx
-/** Builds on the layers below: `below.root(state)` is their classes for the part. */
+/** Builds on the layers below: `below.root(state, extra)` is their classes for the part with `extra` merged in. */
 const card = skin('Card', (below) => ({
-    root: (state) => `${below.root(state)} ring-1 ring-border/60`,
+    root: (state) => below.root(state, 'rounded-lg ring-1 ring-border/60'),
+}));
+
+/** Stat values in tabular figures, and labels in the body face, on top of classic's stats. */
+const stat = skin('Stat', (below) => ({
+    value: (state) => below.value(state, 'tabular-nums'),
+    label: (state) => below.label(state, 'font-sans uppercase tracking-wide'),
 }));
 ```
 <!-- /sample -->
@@ -362,9 +387,9 @@ returns the props to spread, and `.classes('root')` only the class string.
 | `Badge` | Status labels | `root` | yes |
 | `Empty` | Empty states | `root`, `header`, `media`, `title`, `description`, `content` | yes |
 | `Tooltip` | Tooltips | `root`, `arrow` | no |
-| `Spinner` | Loading spinners | `root`, `container` | yes |
+| `Stat` | A labelled value, such as a server's memory: console tiles and dashboard metrics | `root`, `icon`, `glyph`, `label`, `value`, `limit` and 2 more | yes |
 
-[Primitives](#primitives) lists all 28 with their state. In development, skinning a primitive or part
+[Primitives](#primitives) lists all 31 with their state. In development, skinning a primitive or part
 that does not exist logs a warning, and a recipe that throws renders no classes.
 
 ## Level 3: change the layout
@@ -425,6 +450,7 @@ The other layouts each frame an **area**, a part of the panel with navigation of
 server, or the admin area. They have `model.nav.items`: the area's `NavItem`s, filtered by subuser
 permissions and egg rules, extension screens included. Links and items have an `icon`, a lucide name for
 `<NamedIcon>`.
+Each has a `destination` for `PanelLink` and `usePanelNavigate()`, so a keyboard shortcut can open it.
 `<Navigation>` calls its child with each item and `{ active, badge }`, and keeps an extension screen
 hidden until its runtime condition allows it. `NavigationLink` links to an item and carries
 `data-status="active"` while the item is active. [`AreaNav`](#the-shell-knows-the-area) below uses both.
@@ -438,22 +464,31 @@ link that navigates and closes the menu.
 
 `model.area` of `layout.app` says which area the user is in: `kind` is `account`, `server` or `admin`,
 with the model of that area's layout beside it, or `dashboard` on the dashboard and any page outside an
-area. So `layout.app` can draw every area's navigation itself, in one sidebar. The theme then overrides
-`layout.account`, `layout.server` and `layout.admin` with a **thin layout**, which places the page in
-`<Main>` and nothing else (`AreaLayout` above).
+area. `AccountArea`, `ServerArea`, `AdminArea` and `DashboardArea` type each one. So `layout.app` can
+draw every area's navigation itself, in one sidebar. The theme then overrides `layout.account`,
+`layout.server` and `layout.admin` with a **thin layout**, which places the page in `<Main>` and nothing
+else (`AreaLayout` above).
 
 A layer that replaces a view renders the view's slots, listed in the [catalogue](#view-catalogue), or
 the extensions mounted there disappear. The area layouts' slots sit in their navigation, so the shell
-renders them where it draws that navigation (`AreaSlot` below). In development, a layer that renders
-none of its view's slots logs a warning after three seconds; slots an enclosing view renders count, so
-the thin layouts do not warn.
+renders them where it draws that navigation (`AreaSlot` below); the catalogue lists them with
+`layout.app`. In development, a layer that renders none of its view's slots logs a warning after three
+seconds; slots an enclosing view renders count, so the thin layouts do not warn.
 
 <!-- sample: level3-sidebar/src/views/AreaNav.tsx -->
 ```tsx
 import { Badge, NamedIcon } from '@pterodactyl/sdk';
-import { Navigation, NavigationLink, Slot, type AppArea } from '@pterodactyl/sdk/theme';
+import {
+    Navigation,
+    NavigationLink,
+    Slot,
+    type AccountArea,
+    type AdminArea,
+    type AppArea,
+    type ServerArea,
+} from '@pterodactyl/sdk/theme';
 
-type Area = Exclude<AppArea, { kind: 'dashboard' }>;
+type Area = AccountArea | ServerArea | AdminArea;
 
 const link = [
     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground no-underline',
@@ -503,12 +538,21 @@ export default function AreaNav({ area }: { area: AppArea }) {
 
 The fixtures `accountArea`, `serverArea` and `adminArea` of `layout.app` render the shell in each area.
 
+### Slots in narrow regions
+
+What an extension puts in a slot is its own markup, at its own width. Contain it where you place it:
+`min-w-0` and `overflow-hidden` on the element around the slot, `truncate` for a line of text, and grid
+tracks of `minmax(0, 1fr)` (`grid-cols-1`) so one wide item cannot widen a column. A rail of icons is too
+narrow for most slot content; render its slots in a wider panel beside it, or below its items.
+
 ### A sidebar shell
 
 A complete `layout.app`: the brand, the links between their slots, the area's navigation, the panel's
-search, the user, the scheme switch, sign-out, and the page in `<Main>`. `w-sidebar` reads
-`--layout-sidebar-width` and `bg-sidebar` reads `--sidebar`. Below the `lg` breakpoint the sidebar is a
-drawer, which an effect on `usePanelLocation().pathname` closes when one of its links navigates.
+search, the user, the scheme switch, sign-out, and the page in `<Main>`. `app.search` draws the search
+trigger and its dialog; its model (`open`, `field`, `results` with their `destination`) lets a shell
+draw search in its own bar instead. `w-sidebar` reads `--layout-sidebar-width` and `bg-sidebar` reads
+`--sidebar`. Below the `lg` breakpoint the sidebar is a drawer, which an effect on
+`usePanelLocation().pathname` closes when one of its links navigates.
 
 <!-- sample: level3-sidebar/src/views/Shell.tsx -->
 ```tsx
@@ -596,9 +640,11 @@ export default function Shell({ model, children }: ViewProps<'layout.app'>) {
 
 ### Lining up with the page
 
-Page content is at most `--layout-content-width` wide, with `--layout-gutter` at the sides until it
-centres from the `xl` breakpoint. The `page-width` class applies the same geometry, so a header a
-layout draws above its pages lines up with them: `<header className="page-width mt-4 sm:mt-6">`.
+Page content is at most `--layout-content-width` wide and centred, never closer than `--layout-gutter`
+to the sides of the region it is in, with `--layout-page-spacing` above and below. The `page-width`
+class applies the same geometry, so a header a layout draws above its pages lines up with them:
+`<header className="page-width mt-4 sm:mt-6">`. `usePageTitle()` returns the title the page on show
+gave the document, such as `Survival | Console`, for a shell to show in its own bar.
 
 ## Level 4: rebuild pages
 
@@ -612,6 +658,17 @@ rearranging a page is a short layer that places the same blocks differently.
 Models are data plus actions. `model.actions.start()` of `server.power` sends the signal through the
 panel's own request, permission check and notifications; a view only decides what to show and when to
 call it. The [view catalogue](#view-catalogue) names each model type, and the types document each field.
+
+Server views share one vocabulary. `ServerRunState` (`offline`, `starting`, `running`, `stopping`) is
+what a server is doing in `layout.server`, `server.power`, `server.stats` and the dashboard cards.
+`ServerStatMetric` is a usage value with its `limit` (0 for unlimited) and an `alarm` of `warning` or
+`danger`, a `UiTone` to pass on as it is: `<Stat tone={metric.alarm ?? 'neutral'} />`. `ServerConflict`
+is why a server's pages are unavailable.
+
+Each server of `dashboard.serverList` is the model of its `dashboard.serverCard`, with the `server` the
+row slots receive: its state and usage, its `permissions` (`start`, `stop`, `restart`, `console`) and
+`actions` that send power signals through the API. `totals` has the number of servers on every page,
+and how many of the loaded page run and are offline.
 
 Some views also take **inputs**: props passed by whatever renders the view, which its layers receive
 beside `model`, such as the `server` of `dashboard.serverCard`.
@@ -662,11 +719,21 @@ view on the dashboard. Pass inputs as props: `<View name="dashboard.serverCard" 
 `<View name="billing.balance" optional />` renders nothing when no installed package defines the view,
 for blocks that extensions define. A layer for such a view is typed loosely: its `model` is `unknown`.
 
+`className` lands on the outermost element a view renders, in every classic view, so
+`<View name="server.sftp" className="h-full" />` stretches the card itself. Keep the rule in your own
+layers: a page's blocks are placed by the classes they are given.
+
 ### Slots in your views
 
 A layer that replaces a view renders its slots ([level 3](#the-shell-knows-the-area)); `<Default />`
 renders the slots of the layers below. The models carry what the slots receive:
 `<Slot name="server.console.before" data={model.server} />`.
+
+The dashboard's row slots belong to a row: `dashboard.serverRow.before` and `.after` around it,
+`.metrics.after` after its usage, and `.name.after` (rendered by `dashboard.serverCard`) after the name.
+A row drawn as table cells keeps them in its cells: `before` at the start of the first, `name.after` in
+the name's, and `metrics.after` and `after` in the last, each contained as
+[in narrow regions](#slots-in-narrow-regions).
 
 The **engine slots** of a page, listed in their own column of the catalogue, are rendered by the engine
 before and after the page view, so a layer neither renders nor drops them.
@@ -678,9 +745,28 @@ router preloads it with its route; `lazyView(importer, 'Name')` takes a named ex
 loads, the view shows its placeholder. If it fails, the layer below renders.
 
 The panel loads the theme entry before its first render, so keep it small. Make every view lazy except
-`layout.auth`, which renders before anything else, and layers as small as a thin layout. Import only
-`@pterodactyl/sdk/theme` in the modules the entry loads eagerly; views that use components from
-`@pterodactyl/sdk` belong behind `lazyView`.
+`layout.auth`, which renders before anything else, and layers as small as a thin layout. The entry and
+the modules it imports eagerly, skins included, may import `react`, `lucide-react` and
+`@pterodactyl/sdk/theme` (which has `cn`); anything from `@pterodactyl/sdk`, such as `Button` or
+`AreaChart`, belongs in a module behind `lazyView`.
+
+### Charts
+
+`AreaChart` from `@pterodactyl/sdk` draws what `server.graphs` samples: `data` is its points (`t`, a
+`performance.now()` time, and a value per series), `series` names each value's `dataKey` and `color`,
+and `live` and `windowMs` keep the plot sliding over the window the model gives. `suggestedMax` sets a
+y-axis maximum that grows with the data, `tickFormatter` formats the axis, and `height` defaults to
+180 pixels; the width follows its box. Classic frames each chart in a `ChartCard`.
+
+### A full-bleed page
+
+`PageContentBlock` and `ServerContentBlock`, which title a page and frame it, read the layout tokens,
+and the tokens cascade. A page sets them on its block to change its own geometry: edge to edge is
+`--layout-content-width: 100%` with `--layout-gutter: 0px` and `--layout-page-spacing: 0px`, written as
+`className='[--layout-content-width:100%] [--layout-gutter:0px] [--layout-page-spacing:0px]'`. A
+section inside it that keeps the usual width sets the tokens back on itself, with `page-width`. The
+copyright line below every page is the `PageFooter` primitive: skin it, or replace it with a component
+that renders nothing to drop it and draw your own in the shell.
 
 ### A console with power controls in the header
 
@@ -743,9 +829,7 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
                 <View name='server.terminal' />
                 <View name='server.stats' />
             </div>
-            <div className='mt-4 grid gap-4 md:grid-cols-3'>
-                <View name='server.graphs' />
-            </div>
+            <View name='server.graphs' className='mt-4 gap-4' />
             <Slot name='server.console.after' data={model.server} />
             <View name='server.features' />
         </ServerContentBlock>
@@ -756,8 +840,8 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
 
 ### Opaque views
 
-The admin pages and `app.search` still render the panel's own containers. Their model is `OpaqueModel`
-(empty) and they have no fixtures. Wrap them with `Default`, or place blocks around them.
+The admin pages still render the panel's own containers. Their model is `OpaqueModel` (empty) and they
+have no fixtures. Wrap them with `Default`, or place blocks around them.
 
 ## Settings, schemes and branding
 
@@ -844,11 +928,13 @@ const { tagline } = useThemeSettings<ThemeSettings>();
 
 ### Schemes
 
-`useTheme()` returns `{ id, chain, scheme, schemes, setScheme }`. `setScheme('dark' | 'light' | 'system')`
-stores the choice in the `pterodactyl_scheme` cookie and swaps the class on `<html>` without a reload.
-`system` follows the device, and a choice the theme does not offer falls back to its first scheme. The
-`layout.app` model carries the same `scheme`, `schemes` and `setScheme`, which is null unless the theme
-offers both; the [sidebar shell](#a-sidebar-shell) uses it for its switch.
+`useTheme()` returns `{ id, chain, scheme, preference, schemes, setScheme }`. `scheme` is the scheme in
+use and `preference` what the user chose, `system` included, for a switch to show as selected.
+`setScheme('dark' | 'light' | 'system')` stores the choice in the `pterodactyl_scheme` cookie and swaps
+the class on `<html>` without a reload. `system` follows the device as it changes, and a choice the
+theme does not offer falls back to its first scheme. The `layout.app` model carries the same `scheme`,
+`preference`, `schemes` and `setScheme`, which is null unless the theme offers both; the
+[sidebar shell](#a-sidebar-shell) uses it for its switch.
 
 ### Branding
 
@@ -1009,11 +1095,13 @@ at its real runtime and adds what jsdom lacks: an inert `ResizeObserver` and `In
 a `matchMedia` that matches nothing. Tests need no stubs of their own; `vi.stubGlobal` still replaces
 one that a test drives. `@pterodactyl/sdk/testing` renders with your theme:
 
-- `renderView(name, { theme, fixture, model, input, slots })` renders a view synchronously with the
-  theme's layers over classic, from the named fixture, the first fixture, or `model`. Nested views read
-  their first fixture, and `usePanelLocation()` returns the path with empty `params` and `search`. It
-  returns `{ container, unmount }`; each call replaces the previous render. A child theme passes its
-  chain, oldest first, as `themes: [parent, theme]` ([Building on another theme](#building-on-another-theme)).
+- `renderView(name, { theme, fixture, model, input, className, slots })` renders a view synchronously
+  with the theme's layers over classic, from the named fixture, the first fixture, or `model`. A nested
+  view placed with inputs reads the model they give, so each row of a list shows its own server, and
+  any other nested view reads its first fixture; `usePanelLocation()` returns the path with empty
+  `params` and `search`. It returns `{ container, unmount }`; each call replaces the previous render. A
+  child theme passes its chain, oldest first, as `themes: [parent, theme]`
+  ([Building on another theme](#building-on-another-theme)).
 - `slots` mounts components in slots, typed per slot, as an extension's `slots.register` would. Use it
   to test that a layer renders the slots of the view it replaces.
 - `renderPrimitive(name, props, { theme })` renders a primitive under the theme's skins.
@@ -1021,6 +1109,11 @@ one that a test drives. `@pterodactyl/sdk/testing` renders with your theme:
   `renderView` throws until it has.
 - `createViewTestHost(name, { model, themes })` renders one layer by hand with typed `props`, for
   asserting on actions with `vi.fn()`. Its `Default` renders the top layer of `themes`, else classic.
+
+To test the stylesheet, build it and read `dist/theme.css` with `readFileSync('dist/theme.css', 'utf8')`
+from `node:fs`: Vitest runs in the theme's directory, and the scaffold's `tsconfig.json` has Node's
+types. When Vitest runs under an AI agent it hides what passing tests log; `npx vitest run
+--reporter=default` shows it.
 
 `renderView` and `createViewTestHost` are strict: a theme or extension layer that throws, in the view or
 a nested one, fails the render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`,

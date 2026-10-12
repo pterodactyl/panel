@@ -57,7 +57,7 @@ class TypesCommand extends Command
         File::replace($output, $source);
         // Only a provider declares settings, and only once it is loaded; a package without one has none to miss.
         if (! $definition instanceof ExtensionSettingsDefinition && $manifest->provider !== null && ! $extensions->isAvailable($manifest->id)) {
-            $this->components->warn('The extension\'s provider is not loaded; enable the extension to include the frontend configuration keys it declares.');
+            $this->components->warn("The extension's provider is not loaded; enable the extension to include the frontend configuration keys it declares.");
         }
 
         $this->components->info("Generated extension types: {$output}");

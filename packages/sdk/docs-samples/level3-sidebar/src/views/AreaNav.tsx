@@ -1,7 +1,15 @@
 import { Badge, NamedIcon } from '@pterodactyl/sdk';
-import { Navigation, NavigationLink, Slot, type AppArea } from '@pterodactyl/sdk/theme';
+import {
+    Navigation,
+    NavigationLink,
+    Slot,
+    type AccountArea,
+    type AdminArea,
+    type AppArea,
+    type ServerArea,
+} from '@pterodactyl/sdk/theme';
 
-type Area = Exclude<AppArea, { kind: 'dashboard' }>;
+type Area = AccountArea | ServerArea | AdminArea;
 
 const link = [
     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground no-underline',

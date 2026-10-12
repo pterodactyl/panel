@@ -55,10 +55,7 @@ const button = skin('Button', {
 // #endregion function
 
 // #region extend
-/**
- * Builds on the layers below: `below.root(state)` is their classes for the part, and `below.root(state, extra)`
- * merges `extra` in, so `rounded-lg` replaces their `rounded-sm` instead of sitting beside it.
- */
+/** Builds on the layers below: `below.root(state, extra)` is their classes for the part with `extra` merged in. */
 const card = skin('Card', (below) => ({
     root: (state) => below.root(state, 'rounded-lg ring-1 ring-border/60'),
 }));

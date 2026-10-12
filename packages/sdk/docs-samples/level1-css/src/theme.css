@@ -12,6 +12,11 @@
 @theme {
     --font-sans: 'Sunrise Sans', system-ui, sans-serif;
     --font-header: 'Sunrise Sans', system-ui, sans-serif;
+
+    /* Classic lifts cards, tiles and dialogs with Tailwind's shadow scale; these draw a hairline instead. */
+    --shadow-sm: 0 0 0 1px var(--border);
+    --shadow-md: 0 0 0 1px var(--border);
+    --shadow-lg: 0 0 0 1px var(--border);
 }
 
 /* Both schemes. Every p-*, m-*, gap-* and w-* class multiplies --spacing (Tailwind's is 0.25rem). */
