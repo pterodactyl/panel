@@ -4383,7 +4383,7 @@ components:
                 type: string
             tags:
               type: array
-              description: ''
+              description: "Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node."
               items:
                 type: string
           required:
@@ -5717,7 +5717,7 @@ components:
                 type: string
             tags:
               type: array
-              description: 'The deploy tags.'
+              description: "Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node."
               items:
                 oneOf:
                   -
@@ -7673,6 +7673,14 @@ components:
       description: 'Restrict results to these location IDs.'
       items:
         type: integer
+    ApplicationListDeployableNodesTagsQueryParameter:
+      type: array
+      description: "Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned."
+      items:
+        type: string
+    ApplicationListDeployableNodesEggQueryParameter:
+      type: integer
+      description: "Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg."
     ApplicationListDeployableNodesPageQueryParameter:
       type: integer
       description: 'Page number to return. When omitted, all viable nodes are returned without pagination metadata.'
@@ -14132,6 +14140,20 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/ApplicationListDeployableNodesLocationIdsQueryParameter'
+        -
+          in: query
+          name: tags
+          description: "Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned."
+          required: false
+          schema:
+            $ref: '#/components/schemas/ApplicationListDeployableNodesTagsQueryParameter'
+        -
+          in: query
+          name: egg
+          description: "Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg."
+          required: false
+          schema:
+            $ref: '#/components/schemas/ApplicationListDeployableNodesEggQueryParameter'
         -
           in: query
           name: page

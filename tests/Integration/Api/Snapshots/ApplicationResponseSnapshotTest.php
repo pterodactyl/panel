@@ -100,6 +100,14 @@ function applicationReads(): array
             ...applicationMatrix('node', APP.'/nodes/deployable?memory=128&disk=128'),
             ['GET', APP.'/nodes/deployable?memory=128&disk=128&location_ids[]=1&page=1&per_page=1&include=location'],
         ]]],
+        'nodes deployable tags' => [['requests' => [
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&egg=1'],
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&egg=3'],
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&tags[]=reserved'],
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&tags[]=3'],
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&tags[]=999&egg=2'],
+            ['GET', APP.'/nodes/deployable?memory=128&disk=128&tags[]=missing&egg=999'],
+        ]]],
         'nodes view' => [['requests' => [...applicationMatrix('node', APP.'/nodes/1'), ['GET', APP.'/nodes/2?include=allocations,location,servers']]]],
         'nodes tags' => [['requests' => [
             ['GET', APP.'/nodes?include=tags,deployment_tags'],

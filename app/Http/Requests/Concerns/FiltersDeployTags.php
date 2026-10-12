@@ -10,11 +10,12 @@ use Pterodactyl\Models\Tag;
 use Pterodactyl\Rules\TagSlug;
 
 /**
- * Shared "deploy.tags" handling for the server store requests: tags may be given by
- * id or slug and are resolved to slugs from after() or later (never before
- * authorization), while a purely numeric value matching no tag is silently ignored as
- * a stale nest id left over in an un-updated billing module's configuration - a real
- * slug can never be purely numeric ({@see TagSlug}), so genuine typos still fail loudly.
+ * Shared deploy tag handling for the server store requests and the deployable nodes
+ * search: tags may be given by id or slug and are resolved to slugs from after() or later
+ * (never before authorization), while a purely numeric value matching no tag is silently
+ * ignored as a stale nest id left over in an un-updated billing module's configuration - a
+ * real slug can never be purely numeric ({@see TagSlug}), so genuine typos still fail
+ * loudly.
  */
 trait FiltersDeployTags
 {
@@ -25,6 +26,11 @@ trait FiltersDeployTags
      * @var Collection<int, Tag>|null
      */
     private $resolvedDeployTags;
+
+    protected function deployTagsField(): string
+    {
+        return 'deploy.tags';
+    }
 
     /**
      * Fail validation when a deploy tag names neither an existing tag id nor an
@@ -49,7 +55,7 @@ trait FiltersDeployTags
                 continue;
             }
 
-            $validator->errors()->add('deploy.tags', "The node tag '{$value}' does not exist.");
+            $validator->errors()->add($this->deployTagsField(), "The node tag '{$value}' does not exist.");
         }
     }
 
@@ -66,7 +72,7 @@ trait FiltersDeployTags
     }
 
     /**
-     * The tags named by deploy.tags, by id or slug, in one query.
+     * The tags named by the deploy tags, by id or slug, in one query.
      *
      * @return Collection<int, Tag>
      */
@@ -88,7 +94,7 @@ trait FiltersDeployTags
      */
     private function deployTagInput(): array
     {
-        $input = $this->input('deploy.tags', []);
+        $input = $this->input($this->deployTagsField(), []);
         if (! is_array($input)) {
             return [];
         }

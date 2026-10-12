@@ -6,6 +6,7 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\Servers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
@@ -15,6 +16,7 @@ use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
+use Pterodactyl\Extensions\Scribe\Support\PterodactylDocumentation;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\DeleteServerRequest;
@@ -83,6 +85,7 @@ class ServerController extends AdminApiController
      * Create server.
      */
     #[Endpoint('Create server', 'Creates a server using explicit allocations or automatic deployment constraints.')]
+    #[BodyParam('deploy.tags', 'string[]', PterodactylDocumentation::DEPLOY_TAGS, required: false, example: ['premium'])]
     #[ResponseFromResource(ServerResource::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse

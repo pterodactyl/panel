@@ -50,6 +50,8 @@ class PterodactylDocumentation
         ],
     ];
 
+    public const string DEPLOY_TAGS = "Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.";
+
     private const array URL_PARAMETERS = [
         'allocation' => ['integer', 'The allocation ID.', 1],
         'backup' => ['string', 'The backup UUID.', 'b6b9acf9-19b1-4bb1-8c75-4abac802c6cf'],
@@ -108,6 +110,7 @@ class PterodactylDocumentation
         'database_host_id' => 'The database host ID.',
         'database_limit' => 'The maximum number of databases allowed.',
         'default_value' => 'The default value.',
+        'deploy.tags' => self::DEPLOY_TAGS,
         'directory' => 'The directory path.',
         'disk' => 'The disk limit in megabytes.',
         'description' => 'A description for this resource.',

@@ -1610,6 +1610,9 @@ export type AdminCreateServerRequest = {
          */
         dedicated_ip?: boolean;
         port_range?: Array<string>;
+        /**
+         * Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.
+         */
         tags?: Array<string>;
     };
     /**
@@ -2793,7 +2796,7 @@ export type ApplicationCreateServerRequest = {
         dedicated_ip?: boolean;
         port_range?: Array<string>;
         /**
-         * The deploy tags.
+         * Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.
          */
         tags?: Array<number | string>;
     };
@@ -4229,6 +4232,14 @@ export type ApplicationListDeployableNodesDiskQueryParameter = number;
  * Restrict results to these location IDs.
  */
 export type ApplicationListDeployableNodesLocationIdsQueryParameter = Array<number>;
+/**
+ * Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned.
+ */
+export type ApplicationListDeployableNodesTagsQueryParameter = Array<string>;
+/**
+ * Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg.
+ */
+export type ApplicationListDeployableNodesEggQueryParameter = number;
 /**
  * Page number to return. When omitted, all viable nodes are returned without pagination metadata.
  */
@@ -9353,6 +9364,14 @@ export type ApplicationListDeployableNodesData = {
          * Restrict results to these location IDs.
          */
         location_ids?: ApplicationListDeployableNodesLocationIdsQueryParameter;
+        /**
+         * Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned.
+         */
+        tags?: ApplicationListDeployableNodesTagsQueryParameter;
+        /**
+         * Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg.
+         */
+        egg?: ApplicationListDeployableNodesEggQueryParameter;
         /**
          * Page number to return. When omitted, all viable nodes are returned without pagination metadata.
          */

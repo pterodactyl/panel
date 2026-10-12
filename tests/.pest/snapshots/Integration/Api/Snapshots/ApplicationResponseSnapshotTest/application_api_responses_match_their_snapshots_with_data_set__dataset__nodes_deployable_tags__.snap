@@ -1,0 +1,47 @@
+GET /api/application/nodes/deployable?memory=128&disk=128&egg=1
+200 application/json
+{"object":"list","data":[{"object":"node","attributes":{"id":1,"uuid":"d0de0001-0000-4000-8000-000000000001","public":true,"name":"node-alpha","description":"Primary \"alpha\" node","location_id":1,"fqdn":"alpha.example.test","scheme":"https","behind_proxy":false,"maintenance_mode":false,"memory":8192,"memory_overallocate":0,"disk":102400,"disk_overallocate":-1,"upload_size":100,"daemon_listen":8080,"daemon_sftp":2022,"daemon_base":"\/var\/lib\/pterodactyl\/volumes","created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-02-03T04:05:06+00:00","allocated_resources":{"memory":3072,"disk":15360},"relationships":[]}}]}
+
+GET /api/application/nodes/deployable?memory=128&disk=128&egg=3
+400 application/json
+{
+    "errors": [
+        {
+            "code": "NoViableNodeException",
+            "status": "400",
+            "detail": "No nodes satisfying the requirements specified for automatic deployment could be found."
+        }
+    ]
+}
+
+GET /api/application/nodes/deployable?memory=128&disk=128&tags[]=reserved
+400 application/json
+{
+    "errors": [
+        {
+            "code": "NoViableNodeException",
+            "status": "400",
+            "detail": "No nodes satisfying the requirements specified for automatic deployment could be found."
+        }
+    ]
+}
+
+GET /api/application/nodes/deployable?memory=128&disk=128&tags[]=3
+400 application/json
+{
+    "errors": [
+        {
+            "code": "NoViableNodeException",
+            "status": "400",
+            "detail": "No nodes satisfying the requirements specified for automatic deployment could be found."
+        }
+    ]
+}
+
+GET /api/application/nodes/deployable?memory=128&disk=128&tags[]=999&egg=2
+200 application/json
+{"object":"list","data":[{"object":"node","attributes":{"id":1,"uuid":"d0de0001-0000-4000-8000-000000000001","public":true,"name":"node-alpha","description":"Primary \"alpha\" node","location_id":1,"fqdn":"alpha.example.test","scheme":"https","behind_proxy":false,"maintenance_mode":false,"memory":8192,"memory_overallocate":0,"disk":102400,"disk_overallocate":-1,"upload_size":100,"daemon_listen":8080,"daemon_sftp":2022,"daemon_base":"\/var\/lib\/pterodactyl\/volumes","created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-02-03T04:05:06+00:00","allocated_resources":{"memory":3072,"disk":15360},"relationships":[]}}]}
+
+GET /api/application/nodes/deployable?memory=128&disk=128&tags[]=missing&egg=999
+422 application/json
+{"errors":[{"code":"ValidationException","status":"422","detail":"The selected egg is invalid.","meta":{"source_field":"egg","rule":"exists"}},{"code":"ValidationException","status":"422","detail":"The node tag 'missing' does not exist.","meta":{"source_field":"tags","rule":""}}]}
