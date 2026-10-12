@@ -1,0 +1,28 @@
+[
+    {
+        "request": "POST /api/application/users",
+        "status": 201,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 1001,
+                "external_id": "ext-created",
+                "uuid": "e45a916b-7b34-4394-9e17-48fad8d0185e",
+                "username": "created",
+                "email": "created@example.test",
+                "first_name": "Cre",
+                "last_name": "Ated",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": [],
+                "created_at": "2026-03-04T05:06:07+00:00",
+                "updated_at": "2026-03-04T05:06:07+00:00",
+                "extensions": {}
+            },
+            "meta": {
+                "resource": "https://panel.example.test/api/application/users/1001"
+            }
+        }
+    }
+]

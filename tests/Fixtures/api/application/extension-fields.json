@@ -1,0 +1,486 @@
+[
+    {
+        "request": "GET /api/application/users/2",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 2,
+                "external_id": "ext-owner",
+                "uuid": "00000000-0000-4000-8000-000000000002",
+                "username": "owner",
+                "email": "owner@example.test",
+                "first_name": "Olive",
+                "last_name": "Owner",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": [],
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/users/3",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 3,
+                "external_id": null,
+                "uuid": "00000000-0000-4000-8000-000000000003",
+                "username": "helper",
+                "email": "helper@example.test",
+                "first_name": "Hal",
+                "last_name": "Helper",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": [],
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/users/2?include=servers",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 2,
+                "external_id": "ext-owner",
+                "uuid": "00000000-0000-4000-8000-000000000002",
+                "username": "owner",
+                "email": "owner@example.test",
+                "first_name": "Olive",
+                "last_name": "Owner",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": {
+                    "servers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 1,
+                                    "external_id": "ext-survival",
+                                    "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                    "identifier": "5e7f0001",
+                                    "name": "Survival",
+                                    "description": "Main survival world",
+                                    "status": null,
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 2048,
+                                        "swap": 512,
+                                        "disk": 10240,
+                                        "io": 500,
+                                        "cpu": 200,
+                                        "threads": "0-3",
+                                        "oom_disabled": true
+                                    },
+                                    "feature_limits": {
+                                        "databases": 5,
+                                        "allocations": 5,
+                                        "backups": 5
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 1,
+                                    "egg": 1,
+                                    "container": {
+                                        "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                        "installed": 1,
+                                        "environment": {
+                                            "SERVER_JARFILE": "paper.jar",
+                                            "BUILD_NUMBER": "latest",
+                                            "HIDDEN_TOKEN": "hidden-value",
+                                            "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                            "P_SERVER_ALLOCATION_LIMIT": 5
+                                        },
+                                        "skip_scripts": false
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            },
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 2,
+                                    "external_id": null,
+                                    "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                    "identifier": "5e7f0002",
+                                    "name": "Creative",
+                                    "description": "",
+                                    "status": "installing",
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 1024,
+                                        "swap": 0,
+                                        "disk": 5120,
+                                        "io": 500,
+                                        "cpu": 0,
+                                        "threads": null,
+                                        "oom_disabled": false
+                                    },
+                                    "feature_limits": {
+                                        "databases": 0,
+                                        "allocations": null,
+                                        "backups": 0
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 3,
+                                    "egg": 2,
+                                    "container": {
+                                        "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                        "installed": 0,
+                                        "environment": {
+                                            "SERVER_JARFILE": "child.jar",
+                                            "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                            "P_SERVER_ALLOCATION_LIMIT": null
+                                        },
+                                        "skip_scripts": true
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/servers/1?include=user,node,location",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "id": 1,
+                "external_id": "ext-survival",
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "identifier": "5e7f0001",
+                "name": "Survival",
+                "description": "Main survival world",
+                "status": null,
+                "suspended": false,
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "user": 2,
+                "node": 1,
+                "allocation": 1,
+                "egg": 1,
+                "container": {
+                    "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                    "image": "ghcr.io/pterodactyl/yolks:java_21",
+                    "installed": 1,
+                    "environment": {
+                        "SERVER_JARFILE": "paper.jar",
+                        "BUILD_NUMBER": "latest",
+                        "HIDDEN_TOKEN": "hidden-value",
+                        "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "P_SERVER_LOCATION": "us-east",
+                        "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                        "P_SERVER_ALLOCATION_LIMIT": 5
+                    },
+                    "skip_scripts": false
+                },
+                "relationships": {
+                    "user": {
+                        "object": "user",
+                        "attributes": {
+                            "id": 2,
+                            "external_id": "ext-owner",
+                            "uuid": "00000000-0000-4000-8000-000000000002",
+                            "username": "owner",
+                            "email": "owner@example.test",
+                            "first_name": "Olive",
+                            "last_name": "Owner",
+                            "language": "en",
+                            "root_admin": false,
+                            "2fa": false,
+                            "relationships": [],
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00"
+                        }
+                    },
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 1,
+                            "short": "us-east",
+                            "long": "US East / Virginia",
+                            "relationships": [],
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "created_at": "2026-01-02T03:04:05+00:00"
+                        }
+                    },
+                    "node": {
+                        "object": "node",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                            "public": true,
+                            "name": "node-alpha",
+                            "description": "Primary \"alpha\" node",
+                            "location_id": 1,
+                            "fqdn": "alpha.example.test",
+                            "scheme": "https",
+                            "behind_proxy": false,
+                            "maintenance_mode": false,
+                            "memory": 8192,
+                            "memory_overallocate": 0,
+                            "disk": 102400,
+                            "disk_overallocate": -1,
+                            "upload_size": 100,
+                            "daemon_listen": 8080,
+                            "daemon_sftp": 2022,
+                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "allocated_resources": {
+                                "memory": 3072,
+                                "disk": 15360
+                            },
+                            "relationships": []
+                        }
+                    }
+                },
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/servers/1",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "id": 1,
+                "external_id": "ext-survival",
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "identifier": "5e7f0001",
+                "name": "Survival",
+                "description": "Main survival world",
+                "status": null,
+                "suspended": false,
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "user": 2,
+                "node": 1,
+                "allocation": 1,
+                "egg": 1,
+                "container": {
+                    "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                    "image": "ghcr.io/pterodactyl/yolks:java_21",
+                    "installed": 1,
+                    "environment": {
+                        "SERVER_JARFILE": "paper.jar",
+                        "BUILD_NUMBER": "latest",
+                        "HIDDEN_TOKEN": "hidden-value",
+                        "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "P_SERVER_LOCATION": "us-east",
+                        "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                        "P_SERVER_ALLOCATION_LIMIT": 5
+                    },
+                    "skip_scripts": false
+                },
+                "relationships": [],
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": [],
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/locations/1",
+        "status": 200,
+        "body": {
+            "object": "location",
+            "attributes": {
+                "id": 1,
+                "short": "us-east",
+                "long": "US East / Virginia",
+                "relationships": [],
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "pro"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/users?per_page=1",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "user",
+                    "attributes": {
+                        "id": 1,
+                        "external_id": null,
+                        "uuid": "00000000-0000-4000-8000-000000000001",
+                        "username": "admin",
+                        "email": "admin@example.test",
+                        "first_name": "Ada",
+                        "last_name": "Admin",
+                        "language": "en",
+                        "root_admin": true,
+                        "2fa": false,
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 5,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 1,
+                    "total_pages": 5,
+                    "links": {
+                        "next": "https://panel.example.test/api/application/users?page=2"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "PATCH /api/application/users/2",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 2,
+                "external_id": "ext-owner",
+                "uuid": "00000000-0000-4000-8000-000000000002",
+                "username": "owner",
+                "email": "owner@example.test",
+                "first_name": "Olive",
+                "last_name": "Owner",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": [],
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {
+                    "billing": {
+                        "plan": "free"
+                    }
+                }
+            }
+        }
+    }
+]
