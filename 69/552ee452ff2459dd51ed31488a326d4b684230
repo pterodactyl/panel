@@ -1,0 +1,276 @@
+resources/scripts/themes/classic/views/server/settings/ServerSftp.tsx
+  s_4cabae41bceed9::t_788685f0f6e4ef 1-41
+resources/scripts/themes/classic/views/server/schedules/ScheduleCronRow.tsx
+  s_4cabae41bceed9::t_943999cca393a7 1-29
+resources/scripts/themes/classic/views/server/backups/BackupActions.tsx
+  s_4cabae41bceed9::t_83c4acf814a869 1-115
+packages/sdk/types/views/server/schedules.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-127
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_ebf6015c879cc7 240-241
+  s_4cabae41bceed9::t_aa9fd96a69826b 61
+  s_4cabae41bceed9::t_1f8a990e5dd665 239,242-243
+  s_4cabae41bceed9::t_72e2b1ce8dff2f 108
+resources/scripts/themes/classic/views/server/schedules/ScheduleDialog.tsx
+  s_4cabae41bceed9::t_6075d9f604c789 3
+  s_4cabae41bceed9::t_187489c629af7b 1-2,4-100
+resources/scripts/themes/classic/views/server/backups/BackupsPage.tsx
+  s_4cabae41bceed9::t_1f914af1d67bb8 1-18
+packages/sdk/types/sdk/models/conflict.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-2
+resources/scripts/components/admin/themes/workbench/workbench.spec.tsx
+  s_4cabae41bceed9::t_2831add01bbfd5 225
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_45d372788be090 25
+resources/scripts/themes/classic/views/server/schedules/ScheduleTasks.tsx
+  s_4cabae41bceed9::t_37a0ef193b7419 1-62,91-133,135-155,159-170
+  s_4cabae41bceed9::t_2ab1b2726dc57f 134
+  s_4cabae41bceed9::t_e3ffa07d1895a1 63-90
+  s_4cabae41bceed9::t_186216701c5ff9 156-158
+resources/scripts/views/server/users.ts
+  s_4cabae41bceed9::t_ea234ae120aaef 224,228
+  s_4cabae41bceed9::t_c3e12593c1f181 184-192
+  s_4cabae41bceed9::t_8f2b0ae6b9cd0a 226-227
+  s_4cabae41bceed9::t_6a8485d75b081d 1-21,23-152,155,158-159,161,163-167,169,171-183,193-223,225,229-231,235-257,259-260,262,264,267,270,274,276,278-280,286-302,305-308,311,313-320,322-323
+  s_4cabae41bceed9::t_22f289da560aef 258,261,265-266,268-269,271-273
+  s_4cabae41bceed9::t_c110631bd47e55 326
+  s_4cabae41bceed9::t_186216701c5ff9 232-234
+  s_4cabae41bceed9::t_e8a5fd2d7eb80e 370
+  s_4cabae41bceed9::t_8d51fddab05da5 153-154,156-157,160,162
+  s_4cabae41bceed9::t_19e72c10c0c510 168,170
+  s_4cabae41bceed9::t_7f059d8a1394bc 403
+  s_4cabae41bceed9::t_d8e760c5e505a2 22
+  s_4cabae41bceed9::t_360e85d7617d42 281-285
+  s_4cabae41bceed9::t_08b8d984388f1e 303-304,309-310,312,321,324-325,327-369,371-402,404-499
+  s_4cabae41bceed9::t_6efc87b7a9f08c 263,275,277
+resources/scripts/sdk/models/schedules.ts
+  s_4cabae41bceed9::t_4d3cdd7b98f7ee 1-15
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_33be54b07cd042 17,21
+  s_4cabae41bceed9::t_5552a4ce8d6537 18-20
+resources/scripts/views/catalog.ts
+  s_4cabae41bceed9::t_0b975dbf3f08e3 11,15
+  s_4cabae41bceed9::t_b77088e6b0d6a0 12-14
+packages/sdk/types/views/server/users.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-101
+resources/scripts/views/server/loadedServer.ts
+  s_4cabae41bceed9::t_6c2c86de5185f5 1-13
+resources/scripts/views/server/conflict.ts
+  s_4cabae41bceed9::t_b7515732638d37 1-35
+resources/scripts/components/elements/ScreenBlock.tsx
+  s_4cabae41bceed9::t_c6e07a6125359e 9-18
+resources/scripts/views/server/settings.spec.tsx
+  s_4cabae41bceed9::t_0129fb61fcde93 1-19,21-132
+  s_4cabae41bceed9::t_c75c63d9faa1ec 20
+resources/scripts/api/server/backups/queries.ts
+  s_4cabae41bceed9::t_d5c37f6c4113c1 109,123
+  s_4cabae41bceed9::t_3980b374525904 110,115-116,118,124,139,146
+resources/scripts/sdk/ui.tsx
+  s_4cabae41bceed9::t_4577f9c0330fe3 200,202-212
+  s_4cabae41bceed9::t_435892b5aeacc6 190
+  s_4cabae41bceed9::t_1ffc316ac87d97 111,115,127-128,143-148
+  s_4cabae41bceed9::t_66f9f33d6c9a8d 1,4-12
+  s_4cabae41bceed9::t_dbb2fe4a319719 13-20,23-24,35,58,60,63-72,74-85,95-110,112-114,116-117,119-120,122-126,129-142,149-164,166-167,213-219,221,230-231
+  s_4cabae41bceed9::t_88cc5c822f911b 168-189,191-199,201
+  s_4cabae41bceed9::t_956f3053ad813d 27-28,30-32
+  s_4cabae41bceed9::t_874548a61f7dce 25-26,29,33
+resources/scripts/themes/classic/views/server/backups/index.ts
+  s_4cabae41bceed9::t_3a0d678bc7a29b 1-2
+resources/scripts/themes/classic/views/server/settings/SettingsPage.tsx
+  s_4cabae41bceed9::t_d0e4e69e376435 1-19
+resources/scripts/themes/classic/views/server/schedules/NewTaskButton.tsx
+  s_4cabae41bceed9::t_7b5b7168b9c097 1-22
+packages/sdk/types/views/server/backups.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-74
+packages/sdk/types/sdk/models/backups.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-2
+resources/scripts/themes/classic/views/server/users/UsersPage.tsx
+  s_4cabae41bceed9::t_c8c6cc52b69662 1-18
+resources/scripts/sdk/models/conflict.ts
+  s_4cabae41bceed9::t_b84fcb482a6c49 1
+resources/scripts/components/elements/table/RowActions.tsx
+  s_4cabae41bceed9::t_6beceec84ea382 17
+resources/scripts/themes/classic/views/server/schedules/ScheduleCheatsheet.tsx
+  s_4cabae41bceed9::t_b052b02320cd7a 1-90
+resources/scripts/themes/classic/views/server/users/SubuserForm.tsx
+  s_4cabae41bceed9::t_024da4c8c66260 268,270,278
+  s_4cabae41bceed9::t_d6015ddb5b77e7 1
+  s_4cabae41bceed9::t_186216701c5ff9 42-50,155-163
+  s_4cabae41bceed9::t_03f836ce2da7f5 2-41,51-154,164-267,269,271-277,279-295
+resources/scripts/themes/classic/views/server/backups/CreateBackupButton.tsx
+  s_4cabae41bceed9::t_8f9866d00b3830 1-2,9-31,33-81
+  s_4cabae41bceed9::t_163cdd74e30e29 3-8
+  s_4cabae41bceed9::t_186216701c5ff9 32
+resources/scripts/themes/classic/views/server/schedules/ScheduleList.tsx
+  s_4cabae41bceed9::t_db18ec97063bd6 1
+  s_4cabae41bceed9::t_d9970d5a0efe72 128-129
+  s_4cabae41bceed9::t_398ac66bce9a68 2-127,130-142,144-166
+  s_4cabae41bceed9::t_a620756bb24401 143
+resources/scripts/themes/classic/views/server/settings/ServerRename.tsx
+  s_4cabae41bceed9::t_6f163226f16d9f 2-14,23,37-38
+  s_4cabae41bceed9::t_20e7ac8aae7159 15-22,24-36
+  s_4cabae41bceed9::t_d63bf44c455756 1
+resources/scripts/views/server/backups.ts
+  s_4cabae41bceed9::t_186216701c5ff9 221-234
+  s_4cabae41bceed9::t_2bf70fa41bc124 2-23,25-27,29-220,235-237,239-325,331,338-342
+  s_4cabae41bceed9::t_b07b1c5841a38e 24
+  s_4cabae41bceed9::t_30b15f22394998 28
+  s_4cabae41bceed9::t_0961204b65d3a8 238
+  s_4cabae41bceed9::t_214cf977b6c8f0 1
+  s_4cabae41bceed9::t_3be2f344948433 326-330,332-337
+packages/sdk/types/components/elements/ListToolbar.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-12
+packages/sdk/views.json
+  s_4cabae41bceed9::t_eb05952f8e1daf 895-903,951-958,967-975,984-990,1008-1016,1025-1078,1113-1231
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_0910e644475139 83,88
+resources/scripts/views/server/schedules.ts
+  s_4cabae41bceed9::t_6713bbbf56e021 425-426,434,436,438,442-443
+  s_4cabae41bceed9::t_a43bd5802aee9d 561
+  s_4cabae41bceed9::t_d56303d0422b60 377-379,387-388,390,400,412-413,417
+  s_4cabae41bceed9::t_30b15f22394998 31
+  s_4cabae41bceed9::t_a91bd4e0e118ba 289-292,295-299,301-305
+  s_4cabae41bceed9::t_186216701c5ff9 494-501
+  s_4cabae41bceed9::t_e2f91ed2c20bae 1,3-30,32-288,293-294,300,306-376,380-386,389,391-399,401-411,414-416,418-424,427-433,435,437,439-441,444-493,502-560,562-580
+  s_4cabae41bceed9::t_38581d2262bd37 2
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_b1b52ec58b8797 10-11
+  s_4cabae41bceed9::t_563931ef293634 3,9,12,50-56,63-67
+  s_4cabae41bceed9::t_bb1006a8848e73 57-62
+packages/sdk/types/views/pages.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 291
+resources/scripts/views/server/users.spec.tsx
+  s_4cabae41bceed9::t_ba8f0f8dbd531a 15
+  s_4cabae41bceed9::t_77855ed2f6e6b3 134,184-186
+  s_4cabae41bceed9::t_50969dff31ff17 1-11,13-14,16-51,53-56,59-133,135-152,154-157,160-173,175-183,187-207
+  s_4cabae41bceed9::t_c75c63d9faa1ec 52
+  s_4cabae41bceed9::t_373a9a8157c22b 174
+  s_4cabae41bceed9::t_f76beba1ef5305 158-159
+  s_4cabae41bceed9::t_35a032f36f3a95 12
+  s_4cabae41bceed9::t_cc861af3e2d3bd 57-58
+  s_4cabae41bceed9::t_44683b44f51d68 153
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_54a000102d39a1 12,16
+  s_4cabae41bceed9::t_a9dc6eaf49f2e5 13-15
+resources/scripts/themes/classic/views/server/users/CreateSubuserPage.tsx
+  s_4cabae41bceed9::t_4bc89ddd6ea88e 1-18
+resources/scripts/themes/classic/views/server/settings/index.ts
+  s_4cabae41bceed9::t_3e4b6308af6a93 1-5
+packages/sdk/types/sdk/models/subusers.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-3
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 10-14
+resources/scripts/api/server/backups/queries.spec.tsx
+  s_4cabae41bceed9::t_c9e390dabf71cb 89,91,94,97-102,107
+packages/sdk/types/lib/dates.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-5
+packages/sdk/types/views/server/conflict.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-12
+resources/scripts/lib/dates.ts
+  s_4cabae41bceed9::t_652df226323164 1-11
+resources/scripts/sdk/models/backups.ts
+  s_4cabae41bceed9::t_34c5ad40f3f088 1
+resources/scripts/views/server/settings.ts
+  s_4cabae41bceed9::t_3232c45e7c4499 1-7,9-36,39-84,89-101,103-107,109-121,123-158,162-164
+  s_4cabae41bceed9::t_aac5884126ce66 108
+  s_4cabae41bceed9::t_970f50b97a105f 85-88
+  s_4cabae41bceed9::t_60eee0c806e189 122,159-161
+  s_4cabae41bceed9::t_8859a0882bfbdf 8
+  s_4cabae41bceed9::t_620dc3b1626689 37-38
+  s_4cabae41bceed9::t_e7d689d0f17396 102
+  s_4cabae41bceed9::t_9d42b072d54313 165-170
+packages/sdk/types/components/elements/ScreenBlock.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 3-9
+resources/scripts/sdk/models/settings.ts
+  s_4cabae41bceed9::t_74c35ef45712ec 1-8
+resources/scripts/themes/classic/views/server/schedules/ScheduleDetailPage.tsx
+  s_4cabae41bceed9::t_34a9019752861e 1-20
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_01fe74b4d6e540 83-84
+  s_4cabae41bceed9::t_b92ac4af645c9e 82,85-86
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_96bdf53474e348 208-209
+  s_4cabae41bceed9::t_e099567049519a 186
+  s_4cabae41bceed9::t_936fb7f21cf814 201
+  s_4cabae41bceed9::t_044087d99c44cf 203
+  s_4cabae41bceed9::t_b2dc365e3a002b 210
+resources/scripts/themes/classic/views/server/users/SubuserList.tsx
+  s_4cabae41bceed9::t_186216701c5ff9 41-43
+  s_4cabae41bceed9::t_09fa4838f6decb 1-40,44-146
+resources/scripts/themes/classic/views/server/ServerConflict.tsx
+  s_4cabae41bceed9::t_640289f90903d8 1-40
+resources/scripts/themes/classic/views/server/users/index.ts
+  s_4cabae41bceed9::t_7442232820b25a 1-4
+resources/scripts/sdk/models/subusers.ts
+  s_4cabae41bceed9::t_f8e78c229ceab3 1-12
+resources/scripts/themes/classic/views/server/backups/BackupList.tsx
+  s_4cabae41bceed9::t_2a9ecd1965699f 1-176
+packages/sdk/types/views/server/settings.d.ts
+  s_4cabae41bceed9::t_08253f6578fe16 25-26
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-24,27-44
+packages/sdk/types/sdk/models/settings.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-2
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 11-15
+resources/scripts/themes/classic/views/server/settings/ServerDebug.tsx
+  s_4cabae41bceed9::t_9ef2bbf25fa078 1-19
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_4cabae41bceed9::t_43c4300f53c5b2 42
+resources/scripts/components/elements/ServerContentBlock.tsx
+  s_4cabae41bceed9::t_acca0a7cfb31f9 11,14
+packages/sdk/types/sdk/models/schedules.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-2
+resources/scripts/themes/classic/views/server/schedules/SchedulesPage.tsx
+  s_4cabae41bceed9::t_25bc3b37f280d7 1-14
+resources/scripts/themes/classic/views/server/schedules/index.ts
+  s_4cabae41bceed9::t_8a8a40253b8352 1-5
+resources/scripts/views/server/fixtures.spec.tsx
+  s_4cabae41bceed9::t_c4b98404e1ed5e 1-88
+resources/scripts/themes/classic/views/server/schedules/ScheduleDetails.tsx
+  s_4cabae41bceed9::t_186216701c5ff9 79
+  s_4cabae41bceed9::t_70099e528623ed 60-78,80-82
+  s_4cabae41bceed9::t_f7e6e8104e79a4 1-59,83-132
+resources/scripts/api/server/users/queries.ts
+  s_4cabae41bceed9::t_9622eaa1f9b7b2 48,51,54,58-60
+  s_4cabae41bceed9::t_d5c37f6c4113c1 101
+  s_4cabae41bceed9::t_e521c570204ca1 102,107
+resources/scripts/themes/classic/views/server/settings/ServerReinstall.tsx
+  s_4cabae41bceed9::t_04c37259eeb29d 1-41
+resources/scripts/themes/classic/views/server/schedules/TaskDialog.tsx
+  s_4cabae41bceed9::t_d773423ace6242 1-140
+packages/sdk/types/sdk/ui.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 2,10-11,13-14,16,17,20,29,32-34,36,38
+packages/sdk/types/views/server/permissionSelection.d.ts
+  s_4cabae41bceed9::t_eb05952f8e1daf 1-10
+resources/scripts/views/inspector/inspector.spec.tsx
+  s_4cabae41bceed9::t_b228b8f70ff42a 170
+resources/scripts/views/server/schedules.spec.tsx
+  s_4cabae41bceed9::t_c75c63d9faa1ec 68
+  s_4cabae41bceed9::t_58c2481286602e 228-231
+  s_4cabae41bceed9::t_a0507056864aa9 1-67,69-227,232-236,245-247,254-270
+  s_4cabae41bceed9::t_cc861af3e2d3bd 237-244,248-253
+resources/scripts/views/server/backups.spec.tsx
+  s_4cabae41bceed9::t_cc861af3e2d3bd 154-155
+  s_4cabae41bceed9::t_a930a99103dd9e 189-190
+  s_4cabae41bceed9::t_c75c63d9faa1ec 45
+  s_4cabae41bceed9::t_6358e013760bb1 15-19
+  s_4cabae41bceed9::t_e8bba4eb7af0eb 1-14,20-44,46-153,156-188,191-200
+resources/scripts/views/server/attempt.ts
+  s_4cabae41bceed9::t_a153941dcafe03 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69552ee452ff2459dd51ed31488a326d4b684230",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
