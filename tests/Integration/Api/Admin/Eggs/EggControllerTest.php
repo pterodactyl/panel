@@ -25,13 +25,13 @@ test('egg tags can be included', function () {
     /** @var Egg $egg */
     $egg = Egg::factory()->create();
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
+    $tag = Tag::factory()->create(['name' => 'Survival', 'slug' => 'survival']);
     $egg->tags()->attach($tag);
 
     $this->getJson(route('api.admin.eggs.view', ['egg' => $egg->id, 'include' => 'tags']))
         ->assertOk()
         ->assertJsonPath('attributes.relationships.tags.data.0.attributes.id', $tag->id)
-        ->assertJsonPath('attributes.relationships.tags.data.0.attributes.slug', 'minecraft');
+        ->assertJsonPath('attributes.relationships.tags.data.0.attributes.slug', 'survival');
 });
 test('egg can be created', function () {
     $response = $this->postJson(route('api.admin.eggs.store'), ['name' => 'Standalone Egg', 'description' => 'Grouped by tags.', 'docker_images' => 'Java 21|ghcr.io/pterodactyl/yolks:java_21', 'startup' => 'java -jar server.jar', 'config_stop' => 'stop', 'config_startup' => '{"done":["Done"]}', 'config_logs' => '{}', 'config_files' => '{}']);

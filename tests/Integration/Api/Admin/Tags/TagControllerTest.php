@@ -42,12 +42,12 @@ test('single tag can be viewed', function () {
 });
 test('built in tags cannot be updated', function () {
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
+    $tag = Tag::factory()->predefined('fivem')->create();
     $this->putJson(route('api.admin.tags.update', ['tag' => $tag->id]), ['name' => 'Changed', 'slug' => 'changed'])->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException');
 });
 test('built in tags cannot be deleted', function () {
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
+    $tag = Tag::factory()->predefined('fivem')->create();
     $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException')->assertJsonPath('errors.0.detail', 'Built-in game tags cannot be deleted.');
 });
 test('deleting an egg or node removes its tag attachments', function () {

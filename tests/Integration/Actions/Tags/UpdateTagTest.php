@@ -57,11 +57,11 @@ test('tags updated without the http api meet the same rules', function (array $i
 ]);
 
 test('built-in game tags cannot be edited, whatever the input', function (array $input): void {
-    $tag = Tag::factory()->predefined()->create();
+    $tag = Tag::factory()->predefined('fivem')->create();
 
     expect(fn () => $this->app->make(UpdatesTags::class)->update($tag, $input))
         ->toThrow(DisplayException::class, 'Built-in game tags cannot be edited.');
-    expect($tag->fresh()->slug)->toBe('minecraft');
+    expect($tag->fresh()->slug)->toBe('fivem');
 })->with([
     'valid input' => [['name' => 'Changed', 'slug' => 'changed']],
     'invalid input' => [[]],
