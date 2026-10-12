@@ -171,6 +171,7 @@ export const OPAQUE_PAGES = {
     },
     'page.admin.tags': { context: 'admin', slots: ['panel.tags.before', 'panel.tags.after'] },
     'page.admin.extensions': { context: 'admin', slots: ['panel.extensions.before', 'panel.extensions.after'] },
+    'page.admin.themes': { context: 'admin', slots: ['panel.themes.before', 'panel.themes.after'] },
     'page.admin.apiKeys': { context: 'admin', slots: ['panel.apiKeys.before', 'panel.apiKeys.after'] },
 } as const satisfies Record<`page.${string}`, PageSpec>;
 

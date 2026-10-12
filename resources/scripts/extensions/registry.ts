@@ -195,6 +195,8 @@ export const SLOT_NAMES = [
     'panel.settings.after',
     'panel.extensions.before',
     'panel.extensions.after',
+    'panel.themes.before',
+    'panel.themes.after',
     'panel.apiKeys.before',
     'panel.apiKeys.after',
 ] as const;

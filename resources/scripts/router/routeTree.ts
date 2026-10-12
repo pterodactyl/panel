@@ -928,7 +928,7 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminThemesQueryOptions(), revalidateIfStale: true });
         },
-        component: lazyRouteComponent(() => import('@/components/admin/themes/ThemesContainer')),
+        component: pageRoute('page.admin.themes'),
     }),
     createRoute({
         getParentRoute: () => panelRoute,

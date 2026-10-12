@@ -502,6 +502,15 @@
         ],
         "fixtures": []
     },
+    "page.admin.themes": {
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.themes.before",
+            "panel.themes.after"
+        ],
+        "fixtures": []
+    },
     "page.admin.users": {
         "kind": "page",
         "context": "admin",
