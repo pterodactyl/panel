@@ -1,0 +1,142 @@
+app/Services/Themes/ThemeRepository.php
+  s_4cabae41bceed9::t_23fb479de42e8d 23-25
+  s_4cabae41bceed9::t_f5e4b2a802e875 104
+  s_4cabae41bceed9::t_ec9b6b7086b92f 117
+resources/scripts/views/navigation.tsx
+  s_4cabae41bceed9::t_86bf6b2eef2d95 61,66
+  s_4cabae41bceed9::t_b50690929d3ef2 1-10,12-15,17-18,20-60,62-65,67-212
+  s_4cabae41bceed9::t_df07b3ef70f692 11,16,19
+resources/scripts/extensions/screenNavigation.spec.tsx
+  s_4cabae41bceed9::t_a2bec38a93caf5 67-70
+  s_4cabae41bceed9::t_768a033ada39de 44
+tests/Integration/Api/Admin/Themes/ThemeControllerTest.php
+  s_4cabae41bceed9::t_df2c69f63bf0e8 81
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_d0861d186af5bd 109-110
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_5a696d66cd85b2 259,698,728,753,772,787,806,842,862,882,904,918,927,936
+resources/scripts/themes/classic/views/layout/AdminLayout.tsx
+  s_4cabae41bceed9::t_bffdc910bedf35 1-69,71-138
+  s_4cabae41bceed9::t_85a2596aad664a 70
+resources/scripts/views/navigation.spec.tsx
+  s_4cabae41bceed9::t_a5058ec3fa9d8f 61,63-65
+  s_4cabae41bceed9::t_a436c2bb8c6ed3 88,92
+  s_4cabae41bceed9::t_cd2ba7b95fdb68 2
+  s_4cabae41bceed9::t_ca183462852d26 15-20,80-86,137-143
+  s_4cabae41bceed9::t_3cbf3eea518dff 167
+  s_4cabae41bceed9::t_f57cbc4f442e96 1,3-14,21-60,62,66-79,87,89-91,93-136,144-166,168-223
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 26-28
+packages/sdk/types/views/models.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 2,4
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_6defb3e9232711 27-29
+resources/scripts/components/elements/SubNavigation.spec.tsx
+  s_4cabae41bceed9::t_93659b2629995d 58
+  s_4cabae41bceed9::t_c4ad47252cf6df 183-189,191-192
+  s_4cabae41bceed9::t_298b9efed6b2db 61-64,67,71-72
+  s_4cabae41bceed9::t_ca183462852d26 68-70,76-78
+  s_4cabae41bceed9::t_0882771d52f53e 2-3,5-6,18-19,23-24,27-28,30,32,36,42-43,46,49-57,59-60,65-66,73-75,79-81,119-120,125-126,137-147,154-160,163-182,190,193-200,209-216,222,224-227
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 7
+resources/scripts/themes/classic/views/layout/AuthLayout.tsx
+  s_4cabae41bceed9::t_32e6d39ee970ca 1-9
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_ee06b3abd6f1d2 20-32
+packages/sdk/types/extensions/NavigationLabel.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 1-13
+resources/scripts/views/models.ts
+  s_4cabae41bceed9::t_8ce39bedaab558 20-30
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_2cf51aa940a58e 7,247,264
+  s_4cabae41bceed9::t_807c8bd67928e5 4-5,8,10-12,14,21-31,40,49-53,58-90,93,95-97,102,104-116,118,131,134-136,140-183,188-200,207-213,218-222,229-231,236-246,248-263,265,267-289,291-292,295-327,329-333,338-343,347,349,353,355-356,358-361,365,367-370
+  s_4cabae41bceed9::t_0e8cd3a9f80f76 184-187,201-206
+  s_4cabae41bceed9::t_d8a1f7c7bb38a0 290,293-294
+  s_4cabae41bceed9::t_92d2f55d238771 357
+  s_4cabae41bceed9::t_eb5fdbb470f03d 266
+resources/scripts/themes/classic/views/layout/AccountLayout.tsx
+  s_4cabae41bceed9::t_4eb918d0dd13cb 1-18
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_4cabae41bceed9::t_686a8b931a7245 49
+  s_4cabae41bceed9::t_c19a8335da5c31 76-79
+  s_4cabae41bceed9::t_2f8fe8fda07ced 14-27
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_4cabae41bceed9::t_a1352cdd738356 14-23
+  s_4cabae41bceed9::t_330408e646aad7 61-64
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_6041f298f55685 49-55
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_4cabae41bceed9::t_074d49f46f6c35 19-22
+resources/scripts/views/opaque.ts
+  s_4cabae41bceed9::t_12b23dc207a4d7 8
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_4cabae41bceed9::t_c103eeadd1d236 68-71
+  s_4cabae41bceed9::t_a696df363272fb 17-24
+packages/sdk/types/components/elements/SubNavigation.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 1-27
+resources/scripts/router/nav.ts
+  s_4cabae41bceed9::t_f15279ef420be4 11-12
+resources/scripts/views/brand.ts
+  s_4cabae41bceed9::t_ca183462852d26 18-20
+  s_4cabae41bceed9::t_8449e8115c6b60 1-9,11-17,21-48
+  s_4cabae41bceed9::t_5c5df46f953f56 10
+resources/scripts/extensions/NavigationLabel.tsx
+  s_4cabae41bceed9::t_b2db147909bc50 1,4-12,14-15,17,20
+packages/sdk/types/views/navigation.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 1-2,5-72
+  s_4cabae41bceed9::t_7531f7da1c2665 3-4
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_4cabae41bceed9::t_eb5130abfa8b28 365-368
+  s_4cabae41bceed9::t_6324f7349a1310 52,56
+  s_488821bd68e9e0::t_22e48385cbcc0a 57
+packages/sdk/views.json
+  s_4cabae41bceed9::t_27d3a8e468744e 44-47,56-59,70-72,79-82,91-97
+app/Services/Themes/ThemeDocument.php
+  s_4cabae41bceed9::t_bebde5c8ee30aa 28
+resources/scripts/themes/classic/views/layout/AppLayout.tsx
+  s_4cabae41bceed9::t_9e4693563601ab 1-2,13-14,27,35-58,69-73,91
+  s_4cabae41bceed9::t_d75c999de28a9d 28-34
+packages/sdk/types/components/elements/SubNavigationLayout.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 1-9
+tests/Integration/Http/ThemeDocumentTest.php
+  s_4cabae41bceed9::t_2b4c5cbb994742 98
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_a8abea9cfa2233 2,8-13
+resources/scripts/themes/classic/views/layout/ServerLayout.tsx
+  s_4cabae41bceed9::t_ca183462852d26 31-36
+  s_4cabae41bceed9::t_c01fbc8330c27e 1-30,37-47
+resources/scripts/views/layouts.spec.tsx
+  s_4cabae41bceed9::t_ca183462852d26 77-79,201-205
+  s_4cabae41bceed9::t_8956a1fd73717d 70
+  s_4cabae41bceed9::t_ea92b959f7e466 16-23
+  s_4cabae41bceed9::t_afc9c6ce803563 2-3,5,7-9,38,41-50,52-58,61-63,65-66,69,71-73,75-76,80,82-83,85-86,89-200,206-226,228-234
+resources/scripts/components/elements/SubNavigation.tsx
+  s_4cabae41bceed9::t_1ce78c6cdee86c 2,7-17,57-60,62-70,74-75,79-83,90-97,115-126,133,157-162,179,182-189,193-194,196-200,225,245,254,265,271-275,279-314,320-325,327,344,352-360,366,375-376
+  s_4cabae41bceed9::t_ca183462852d26 239
+packages/sdk/types/views/layouts.d.ts
+  s_4cabae41bceed9::t_27d3a8e468744e 2,4-5,10-18,27,36-40,44-72,75,77-79,83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fbd56e039c4c9eb0c1e9e84c3655746c60ba001b",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
