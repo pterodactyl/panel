@@ -718,58 +718,78 @@ Hand-written classes are yours to name and belong outside the Tailwind layers. `
 defines `hw:card`, and a `@theme` variable `--color-brand` is emitted as `--hw-color-brand`
 and used as `hw:bg-brand`.
 
-Classes passed to SDK components and to `Default` in a component replacement are merged with
-the component's own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
+Classes passed to SDK components and to a view's `Default` are merged with the component's
+own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
 drops the button's `mt-*` default, per variant, exactly as a panel class would
 (`hw:hover:bg-accent` replaces `hover:bg-primary/90`; `hw:bg-accent` alone does not). In tests
-pass the prefix to the host: `createComponentTestHost(name, { model, prefix: 'hw' })`.
+pass the prefix to the host: `createViewTestHost(name, { model, prefix: 'hw' })`.
 
 `p:extension:doctor`, `p:extension:pack`, install and enable all reject a build whose CSS has
 a rule in `@layer utilities` that is not built on a `.hw\:` class, or a custom property in
 `@layer theme` that does not start with `--hw-`, for the prefix that extension declares. A
 build with either layer and no `ui.prefix` is rejected with the line to add.
 
-## Component replacements
+## Views
 
-Declare supported component names in `extension.json` under `ui.components`, with a `requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Enabling the extension activates its replacements. Enable and upgrade operations reject claims already owned by another enabled extension.
+Every layout, page and block of the panel is a named view: an engine hook that produces its
+model, and a stack of layers that render it. Classic, the stock UI, is the bottom layer; the
+active theme and its parents stack above it, then extension overrides in the configured
+order. Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders
+the layer below. The catalog of names, with each view's kind, context, slots and fixtures,
+ships as `@pterodactyl/sdk/views.json`.
+
+Declare the views an extension overrides in `extension.json` under `ui.views`, with a
+`requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Several extensions may override one view.
 
 ```tsx
-import { definePterodactylExtension, type ReplacementProps } from '@pterodactyl/sdk';
+import { definePterodactylExtension, type ViewProps } from '@pterodactyl/sdk';
 
-function ServerCard({ Default }: ReplacementProps<'dashboard.serverCard'>) {
+function ServerCard({ Default }: ViewProps<'dashboard.serverCard'>) {
     return <Default className="hw:gap-3" />;
 }
 
 export default definePterodactylExtension({
-    setup({ components }) {
-        components.replace('dashboard.serverCard', ServerCard);
-        components.replace('server.files.details', { load: () => import('./FileDetails') });
+    setup({ views }) {
+        views.override('dashboard.serverCard', ServerCard);
+        views.override('server.files.details', { load: () => import('./FileDetails') });
     },
 });
 ```
 
-`packages/hello-world` replaces the server card, the file details and the file editor, each with a test.
+`packages/hello-world` overrides the server card, the file details and the file editor, each with a test.
 
-`ReplacementProps<Name>` supplies a read-only `model`, native `Default`, and typed `parts`. `Default` accepts `className` and partial part overrides. Parts receive `{ model }`, typed by `ComponentPartProps<Name>`; define them outside the replacement's render function.
+`Default` takes optional `model`, `className` and `children`, which replace what this layer
+received for the layer below: `<Default model={{ ...model, name: model.name.toUpperCase() }} />`.
+Views with parts also receive `parts`, the parts of the layer below, and `Default` accepts
+partial `parts` overrides. A part receives the model and the view's inputs, typed by
+`ViewPartProps<Name>`; define parts outside the layer's render function.
 
-| Name | Model | Parts |
-| --- | --- | --- |
-| `dashboard.serverCard` | `ServerCardModel` | `identity`, `address`, `metrics` |
-| `server.files.details` | `FileDetailsModel` | `icon`, `name`, `size`, `modified` |
-| `server.files.editor` | `FileEditorModel` | `notice`, `editor`, `language`, `actions` |
-| `server.files.manager` | `FileManagerModel` | `toolbar`, `list`, `selection` |
+| Name | Model | Inputs | Parts |
+| --- | --- | --- | --- |
+| `dashboard.serverCard` | `ServerCardModel` | `server` | `identity`, `address`, `metrics` |
+| `server.files.details` | `FileDetailsModel` | `file` | `icon`, `name`, `size`, `modified` |
+| `server.files.editor` | `FileEditorModel` | | `notice`, `editor`, `language`, `actions` |
+| `server.files.manager` | `FileManagerModel` | | `toolbar`, `list`, `selection` |
 
-The server card and file details contain presentation inside core links. Keep interactive controls in action slots. The panel retains queries, permissions, navigation, accessible link names, selection, and menus. The native server-card identity part includes the `dashboard.serverRow.name.after` slot.
+The server card and file details render inside core links. Keep interactive controls in
+action slots. The panel retains queries, permissions, navigation, accessible link names,
+selection, and menus. The classic server-card identity part includes the
+`dashboard.serverRow.name.after` slot.
+
+`views.define(name, { context, use, Default, fixtures })` adds a view of the extension's own,
+so a theme can restyle or place it. `Default` is its bottom layer. A theme renders it with
+`<View name="billing.balance" optional />`, which renders nothing while the extension is not
+installed.
 
 ### File editor
 
-`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, breadcrumbs, loading and error screens, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard. The replacement mounts once per opened document, after its content has loaded.
+`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, breadcrumbs, loading and error screens, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard. The layer mounts once per opened document, after its content has loaded.
 
 | Model field | |
 | --- | --- |
 | `path`, `name`, `isNew` | The open file. For a new file `path` is its directory and `name` is empty. |
 | `content` | Text to open: the loaded file, or the restored draft of a new file. It does not change while the document is open. |
-| `language` | Syntax hint as a MIME type (`text/x-yaml`); the native `language` part changes it. |
+| `language` | Syntax hint as a MIME type (`text/x-yaml`); the classic `language` part changes it. |
 | `readOnly` | The user lacks `file.update` (or `file.create` for a new file). |
 | `dirty`, `saving` | Derived by the panel from the reported buffer and the running write. |
 | `change(content)` | Report the buffer after every edit. The panel saves exactly this text. |
@@ -777,9 +797,9 @@ The server card and file details contain presentation inside core links. Keep in
 | `saveAs(name)` | Write the buffer to a name beside the file, or an absolute path, and open it. Needs `file.create`. |
 
 ```tsx
-import { useExtensionAction, type ComponentPartProps, type ReplacementProps } from '@pterodactyl/sdk';
+import { useExtensionAction, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk';
 
-function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
+function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
     const save = useExtensionAction('save', async () => void (await model.save()));
     return (
         <textarea
@@ -790,23 +810,23 @@ function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
         />
     );
 }
-export default function Editor({ Default }: ReplacementProps<'server.files.editor'>) {
+export default function Editor({ Default }: ViewProps<'server.files.editor'>) {
     return <Default parts={{ editor: Buffer }} />;
 }
 ```
 
-Because the panel holds the buffer, a replaced `editor` part works with the native Save button, and the native editor continues with the user's text if the replacement fails to render. Do not add your own `useNavigationBlocker` here.
+Because the panel holds the buffer, a replaced `editor` part works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
 
 ### File browser
 
-`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the replacement; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` replacement belong to the native parts and render only where you keep those parts.
+`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` view belong to the classic parts and render only where you keep those parts.
 
 `model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt` and `openable`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has.
 
 `model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)` and `upload(files)`. They run the panel's own mutations, with its cache updates and notifications. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
 
 ```tsx
-export default function Browser({ model, parts }: ReplacementProps<'server.files.manager'>) {
+export default function Browser({ model, parts }: ViewProps<'server.files.manager'>) {
     const open = useExtensionAction('open', (name: string) => model.actions.open(name));
     return (
         <>
@@ -825,6 +845,6 @@ export default function Browser({ model, parts }: ReplacementProps<'server.files
 
 ### Loading and failure
 
-Rows share one loading decision per page and component. The five-second deadline, import failures, and render failures restore the native view. Late imports cannot replace a native view committed after a timeout. Core state remains outside the presentation boundary. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
+While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering is reported against its package and replaced by the layer below. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
 
-The testing entry exports `createComponentTestHost(name, { model, extensionId?, prefix? })`, returning `Wrapper`, typed `props` and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. This exercises the panel's native defaults and parts without issuing core queries. Pass `vi.fn()` callbacks in the fixture to assert on `save`, `change` or an action. The file browser host mounts a server, router and store for the native rows; call `dispose()` after unmounting.
+The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting.

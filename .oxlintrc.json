@@ -300,6 +300,12 @@
             }
         },
         {
+            "files": ["resources/scripts/themes/classic/**"],
+            "rules": {
+                "rules/classic-theme-imports": "error"
+            }
+        },
+        {
             // ESTree literals are discriminated only by the runtime type of `value`; this helper is that decoder.
             "files": ["tools/oxlint/rules/shared/literals.ts"],
             "rules": {

@@ -1,13 +1,11 @@
-[
-    {
-        "name": "app.search",
+{
+    "app.search": {
         "kind": "block",
         "context": "app",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "dashboard.serverCard",
+    "dashboard.serverCard": {
         "kind": "block",
         "context": "app",
         "slots": [
@@ -20,8 +18,7 @@
             "loading"
         ]
     },
-    {
-        "name": "dashboard.serverList",
+    "dashboard.serverList": {
         "kind": "block",
         "context": "app",
         "slots": [
@@ -37,8 +34,7 @@
             "loading"
         ]
     },
-    {
-        "name": "layout.account",
+    "layout.account": {
         "kind": "layout",
         "context": "account",
         "slots": [
@@ -47,8 +43,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "layout.admin",
+    "layout.admin": {
         "kind": "layout",
         "context": "admin",
         "slots": [
@@ -57,8 +52,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "layout.app",
+    "layout.app": {
         "kind": "layout",
         "context": "app",
         "slots": [
@@ -70,15 +64,13 @@
             "admin"
         ]
     },
-    {
-        "name": "layout.auth",
+    "layout.auth": {
         "kind": "layout",
         "context": "auth",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "layout.server",
+    "layout.server": {
         "kind": "layout",
         "context": "server",
         "slots": [
@@ -87,8 +79,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.account.activity",
+    "page.account.activity": {
         "kind": "page",
         "context": "account",
         "slots": [
@@ -97,8 +88,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.account.api",
+    "page.account.api": {
         "kind": "page",
         "context": "account",
         "slots": [
@@ -107,15 +97,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.account.overview",
+    "page.account.overview": {
         "kind": "page",
         "context": "account",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.account.ssh",
+    "page.account.ssh": {
         "kind": "page",
         "context": "account",
         "slots": [
@@ -124,8 +112,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.activity",
+    "page.admin.activity": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -134,8 +121,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.apiKeys",
+    "page.admin.apiKeys": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -144,8 +130,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.databaseHosts",
+    "page.admin.databaseHosts": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -154,8 +139,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.databaseHosts.create",
+    "page.admin.databaseHosts.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -164,8 +148,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.databaseHosts.detail",
+    "page.admin.databaseHosts.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -174,8 +157,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs",
+    "page.admin.eggs": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -184,15 +166,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.catalog",
+    "page.admin.eggs.catalog": {
         "kind": "page",
         "context": "admin",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.create",
+    "page.admin.eggs.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -201,8 +181,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.detail",
+    "page.admin.eggs.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -211,8 +190,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.detail.configuration",
+    "page.admin.eggs.detail.configuration": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -221,8 +199,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.detail.script",
+    "page.admin.eggs.detail.script": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -231,8 +208,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.detail.tags",
+    "page.admin.eggs.detail.tags": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -241,8 +217,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.eggs.detail.variables",
+    "page.admin.eggs.detail.variables": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -251,8 +226,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.extensions",
+    "page.admin.extensions": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -261,8 +235,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.locations",
+    "page.admin.locations": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -271,8 +244,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.locations.detail",
+    "page.admin.locations.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -281,8 +253,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.mounts",
+    "page.admin.mounts": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -291,8 +262,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.mounts.create",
+    "page.admin.mounts.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -301,8 +271,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.mounts.detail",
+    "page.admin.mounts.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -311,8 +280,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes",
+    "page.admin.nodes": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -321,8 +289,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.create",
+    "page.admin.nodes.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -331,8 +298,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail",
+    "page.admin.nodes.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -341,8 +307,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.about",
+    "page.admin.nodes.detail.about": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -351,8 +316,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.allocations",
+    "page.admin.nodes.detail.allocations": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -361,8 +325,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.configuration",
+    "page.admin.nodes.detail.configuration": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -371,8 +334,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.servers",
+    "page.admin.nodes.detail.servers": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -381,8 +343,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.settings",
+    "page.admin.nodes.detail.settings": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -391,8 +352,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.nodes.detail.tags",
+    "page.admin.nodes.detail.tags": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -401,15 +361,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.overview",
+    "page.admin.overview": {
         "kind": "page",
         "context": "admin",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers",
+    "page.admin.servers": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -418,8 +376,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.create",
+    "page.admin.servers.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -428,8 +385,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail",
+    "page.admin.servers.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -438,8 +394,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.about",
+    "page.admin.servers.detail.about": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -448,8 +403,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.build",
+    "page.admin.servers.detail.build": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -458,8 +412,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.databases",
+    "page.admin.servers.detail.databases": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -468,8 +421,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.delete",
+    "page.admin.servers.detail.delete": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -478,8 +430,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.details",
+    "page.admin.servers.detail.details": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -488,8 +439,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.manage",
+    "page.admin.servers.detail.manage": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -498,8 +448,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.mounts",
+    "page.admin.servers.detail.mounts": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -508,8 +457,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.servers.detail.startup",
+    "page.admin.servers.detail.startup": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -518,8 +466,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.settings",
+    "page.admin.settings": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -528,8 +475,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.settings.advanced",
+    "page.admin.settings.advanced": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -538,8 +484,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.settings.mail",
+    "page.admin.settings.mail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -548,8 +493,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.tags",
+    "page.admin.tags": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -558,8 +502,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.users",
+    "page.admin.users": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -568,8 +511,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.users.create",
+    "page.admin.users.create": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -578,8 +520,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.users.detail",
+    "page.admin.users.detail": {
         "kind": "page",
         "context": "admin",
         "slots": [
@@ -588,15 +529,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.admin.users.detail.about",
+    "page.admin.users.detail.about": {
         "kind": "page",
         "context": "admin",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.auth.checkpoint",
+    "page.auth.checkpoint": {
         "kind": "page",
         "context": "auth",
         "slots": [
@@ -605,8 +544,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.auth.login",
+    "page.auth.login": {
         "kind": "page",
         "context": "auth",
         "slots": [
@@ -615,8 +553,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.auth.password",
+    "page.auth.password": {
         "kind": "page",
         "context": "auth",
         "slots": [
@@ -625,8 +562,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.auth.passwordReset",
+    "page.auth.passwordReset": {
         "kind": "page",
         "context": "auth",
         "slots": [
@@ -635,8 +571,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.dashboard",
+    "page.dashboard": {
         "kind": "page",
         "context": "app",
         "slots": [],
@@ -645,8 +580,7 @@
             "error"
         ]
     },
-    {
-        "name": "page.server.activity",
+    "page.server.activity": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -655,8 +589,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.backups",
+    "page.server.backups": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -665,15 +598,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.console",
+    "page.server.console": {
         "kind": "page",
         "context": "server",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.server.databases",
+    "page.server.databases": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -682,15 +613,13 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.files",
+    "page.server.files": {
         "kind": "page",
         "context": "server",
         "slots": [],
         "fixtures": []
     },
-    {
-        "name": "page.server.files.editor",
+    "page.server.files.editor": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -699,8 +628,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.network",
+    "page.server.network": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -709,8 +637,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.schedules",
+    "page.server.schedules": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -719,8 +646,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.schedules.detail",
+    "page.server.schedules.detail": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -729,8 +655,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.settings",
+    "page.server.settings": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -739,8 +664,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.startup",
+    "page.server.startup": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -749,8 +673,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.users",
+    "page.server.users": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -759,8 +682,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "page.server.users.create",
+    "page.server.users.create": {
         "kind": "page",
         "context": "server",
         "slots": [
@@ -769,8 +691,7 @@
         ],
         "fixtures": []
     },
-    {
-        "name": "server.files.details",
+    "server.files.details": {
         "kind": "block",
         "context": "server",
         "slots": [],
@@ -779,8 +700,7 @@
             "directory"
         ]
     },
-    {
-        "name": "server.files.editor",
+    "server.files.editor": {
         "kind": "block",
         "context": "server",
         "slots": [],
@@ -791,8 +711,7 @@
             "new"
         ]
     },
-    {
-        "name": "server.files.manager",
+    "server.files.manager": {
         "kind": "block",
         "context": "server",
         "slots": [
@@ -806,4 +725,4 @@
             "loading"
         ]
     }
-]
+}

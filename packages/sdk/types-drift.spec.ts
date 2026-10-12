@@ -90,6 +90,12 @@ const themeViews: ThemeViews = {
 const wrongModel: ThemeViews = {'dashboard.serverList': Card};
 const theme = defineTheme({views: themeViews, icons: {layers: () => null}});
 const optional = <View name="billing.balance" optional />;
+import { renderView } from '@pterodactyl/sdk/testing';
+const framed: HTMLElement = renderView('layout.app', {theme, fixture: 'admin'}).container;
+// @ts-expect-error Models stay typed by the rendered view.
+renderView('layout.app', {model: createTestServerCard()});
+interface GeneratedSettings { accent: string; compact: boolean }
+const compact: boolean = useThemeSettings<GeneratedSettings>().compact;
 // @ts-expect-error The card needs the server it shows.
 const missingInput = <View name="dashboard.serverCard" />;
 const cardView = <View name="dashboard.serverCard" server={cardHost.props.server} />;

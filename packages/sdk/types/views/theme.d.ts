@@ -33,4 +33,5 @@ export declare function getThemeIcon(name: string): ThemeIcon | undefined;
 export declare function fallBackToClassic(): void;
 export declare function setThemeScheme(preference: ThemeScheme | 'system'): void;
 export declare function useTheme(): ThemeState;
-export declare function useThemeSettings(): ThemeSettings;
+/** Pass the `ThemeSettings` type `p:extension:types` generates for the theme to type the values. */
+export declare function useThemeSettings<T = ThemeSettings>(): T;

@@ -6,7 +6,6 @@ import { useSelectedFiles, useServerDirectory, useServerStore } from '@/state/se
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import Slot from '@/extensions/Slot';
 import { View } from '@/views/View';
-import { ViewSessionProvider } from '@/views/session';
 import { useServerFiles } from '@/api/server/files/queries';
 import { FileManagerExtensionContext } from './useFileManagerExtensionData';
 import useFileManagerModel, { FILE_LIST_LIMIT } from './useFileManagerModel';
@@ -15,7 +14,7 @@ import type { FileManagerSlotData } from '@/extensions/registry';
 
 const noFiles: FileManagerSlotData['files'] = [];
 
-function FileManagerContainerContent() {
+export default function FileManagerContainer() {
     const server = useCurrentServer()!;
     const directory = useServerDirectory();
     const { data: files, error, refetch, isFetching } = useServerFiles(server.attributes.uuid, directory);
@@ -72,13 +71,5 @@ function FileManagerContainerContent() {
                 <Slot name='server.files.after' />
             </ServerContentBlock>
         </FileManagerExtensionContext.Provider>
-    );
-}
-
-export default function FileManagerContainer() {
-    return (
-        <ViewSessionProvider>
-            <FileManagerContainerContent />
-        </ViewSessionProvider>
     );
 }

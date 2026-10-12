@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
-// Loads the engine's view definitions and writes the catalog `p:extension:doctor` validates names against.
+// Loads the engine's view definitions and writes the catalog, keyed by name, `p:extension:doctor` validates names against.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const output = resolve(root, 'packages/sdk/views.json');
 const server = await createServer({
@@ -20,13 +20,17 @@ const server = await createServer({
 let catalog;
 try {
     const { getViewDefinitions } = await server.ssrLoadModule('/resources/scripts/views/catalog.ts');
-    catalog = getViewDefinitions().map((view) => ({
-        name: view.name,
-        kind: view.kind,
-        context: view.context,
-        slots: view.slots ?? [],
-        fixtures: Object.keys(view.fixtures ?? {}),
-    }));
+    catalog = Object.fromEntries(
+        getViewDefinitions().map((view) => [
+            view.name,
+            {
+                kind: view.kind,
+                context: view.context,
+                slots: view.slots ?? [],
+                fixtures: Object.keys(view.fixtures ?? {}),
+            },
+        ])
+    );
 } finally {
     await server.close();
 }
@@ -43,4 +47,4 @@ if (process.argv.includes('--check')) {
 } else {
     writeFileSync(output, json);
 }
-console.log(`SDK: ${catalog.length} views`);
+console.log(`SDK: ${Object.keys(catalog).length} views`);

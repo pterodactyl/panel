@@ -256,6 +256,7 @@ interface BodyProps {
 }
 
 function ViewBody({ definition, model, inputs, className, children }: BodyProps & { model: unknown }) {
+    const fixtures = useContext(FixtureContext);
     const base = useViewChain(definition.name);
     const decision = useViewDecision(definition.name);
     const layers = useMemo(
@@ -269,6 +270,11 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     }
 
     if (!layers.length) {
+        // Engine-only views, such as the search, need the live panel; from fixtures they render nothing.
+        if (fixtures) {
+            return null;
+        }
+
         throw new Error(`View "${definition.name}" has no implementation.`);
     }
 
@@ -339,6 +345,9 @@ function RenderView({ name, optional = false, className, children, ...inputs }: 
         content
     );
 }
+
+/** `View` without the per-name typing, for the SDK test host. */
+export { RenderView as LooseView };
 
 /**
  * Renders a view: runs its hook once (or reads a fixture), resolves classic, the theme chain and

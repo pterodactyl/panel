@@ -8,8 +8,13 @@ export type ThemeSettingValue = string | number | boolean | null;
 /** The active theme as the server renders it; `classic` with an empty chain when none is active. */
 export interface ThemeBootstrap {
     id: string;
-    /** Parent first, excluding classic. */
-    chain: { id: string; version: string; entry: string | null }[];
+    /** Parent first, excluding classic; `development` is set while `p:extension:dev` serves an entry. */
+    chain: {
+        id: string;
+        version: string;
+        entry: string | null;
+        development?: { url: string; version: string; scripts?: string[] } | null;
+    }[];
     settings: Record<string, ThemeSettingValue>;
     scheme: ThemeScheme;
     schemes: ThemeScheme[];

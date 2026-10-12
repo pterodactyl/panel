@@ -2,7 +2,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { ViewPartProps, ViewProps } from '@/views/registry';
+import { defineTheme } from '@/views/theme';
 import {
+    renderView,
     createTestFileEditor,
     createTestFileManager,
     createTestFileManagerEntry,
@@ -127,4 +129,31 @@ it('gives a server card layer the classic parts and the server it was rendered f
     expect(await screen.findByText('metrics of Survival')).toBeVisible();
     expect(screen.getByText('abc')).toBeVisible();
     expect(screen.getAllByText('127.0.0.1:25565')).toHaveLength(2);
+});
+
+it('renders a view synchronously from fixtures with a theme layered over classic', () => {
+    function AppLayout({ Default }: ViewProps<'layout.app'>) {
+        return (
+            <div data-aurora-layout=''>
+                <Default />
+            </div>
+        );
+    }
+
+    const { container, unmount } = renderView('layout.app', {
+        theme: defineTheme({ views: { 'layout.app': AppLayout } }),
+        fixture: 'admin',
+    });
+
+    expect(container.querySelector('[data-aurora-layout] main')).not.toBeNull();
+    expect(container.querySelector('a[aria-label="Admin"]')).toHaveAttribute('href', '/panel');
+    unmount();
+    expect(container.isConnected).toBe(false);
+});
+
+it('renders nested views from their fixtures', () => {
+    const { container } = renderView('dashboard.serverList', { fixture: 'servers' });
+
+    expect(container.querySelector('a[aria-label="Creative"]')).toHaveAttribute('href', '/server/e5f6a7b8');
+    expect(container.querySelectorAll('.status-bar')).toHaveLength(2);
 });

@@ -7,9 +7,23 @@ import type { FileDetailsModel, FileEditorModel, FileManagerModel } from '@/view
 import type { ServerCardModel } from '@/views/dashboard';
 import { registerClassicTheme } from '@/views/classic';
 import '@/views/dashboard';
-import { getViewDefinition, type ViewInput, type ViewModel, type ViewName, type ViewProps } from '@/views/registry';
-import { createViewHarness, preloadView, ViewFixtureProvider } from '@/views/View';
-import { createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
+import '@/views/layouts';
+import {
+    clearThemeLayers,
+    getViewDefinition,
+    registerViewLayer,
+    type ViewInput,
+    type ViewModel,
+    type ViewModels,
+    type ViewName,
+    type ViewProps,
+} from '@/views/registry';
+import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
+import { registerSkins } from '@/themes/skins';
+import classic from '@/themes/classic';
+import { createViewHarness, LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
+import { act, createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query';
 import {
     createMemoryHistory,
@@ -17,6 +31,7 @@ import {
     createRoute,
     createRouter,
     Outlet,
+    RouterContextProvider,
     RouterProvider,
 } from '@tanstack/react-router';
 import { queryClient } from '@/api/queryClient';
@@ -46,6 +61,10 @@ export {
     createTestServerCard,
     type TestServerOptions,
 } from '@/views/fixtures';
+
+registerClassicTheme();
+// Classic's own views are lazy; loading them here lets a test render them synchronously.
+await Promise.all(Object.keys(classic.views ?? {}).map(preloadView));
 
 export interface ExtensionTestHostOptions {
     extensionId?: string;
@@ -366,4 +385,65 @@ export async function createViewTestHost<N extends ViewName>(
             host.dispose();
         },
     };
+}
+
+export interface RenderViewOptions<N extends ViewName> {
+    /** Defaults to the view's first fixture. */
+    fixture?: string;
+    model?: ViewModel<N>;
+    input?: ViewInput<N>;
+    /** The theme to render the view with: what its entry exports. */
+    theme?: ThemeDefinition;
+}
+export interface RenderedView {
+    container: HTMLElement;
+    unmount(): void;
+}
+
+const viewRouter = createRouter({
+    routeTree: createRootRoute(),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+});
+let rendered: RenderedView | undefined;
+
+/**
+ * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
+ * replaces the view rendered before it; nested views read their fixtures too.
+ */
+export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
+    rendered?.unmount();
+    clearThemeLayers();
+    if (options.theme) {
+        registerSkins('theme', options.theme.ui ?? {});
+        registerViewLayer('theme', 'theme', options.theme.views ?? {});
+        registerThemeIcons(options.theme.icons ?? {});
+    }
+
+    const container = document.body.appendChild(document.createElement('div'));
+    const root = createRoot(container);
+    // The model is the one of the view being rendered.
+    const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
+    const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };
+    const view = (
+        <QueryClientProvider client={queryClient}>
+            <RouterContextProvider router={viewRouter}>
+                <ViewFixtureProvider fixtures={fixtures} models={models}>
+                    <LooseView name={name} {...Object(options.input ?? {})} />
+                </ViewFixtureProvider>
+            </RouterContextProvider>
+        </QueryClientProvider>
+    );
+
+    Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', true);
+    act(() => root.render(view));
+    rendered = {
+        container,
+        unmount: () => {
+            act(() => root.unmount());
+            container.remove();
+            rendered = undefined;
+        },
+    };
+
+    return rendered;
 }

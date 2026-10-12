@@ -95,6 +95,8 @@ export function useTheme(): ThemeState {
     };
 }
 
+/** Pass the `ThemeSettings` type `p:extension:types` generates for the theme to type the values. */
+export function useThemeSettings<T = ThemeSettings>(): T;
 export function useThemeSettings(): ThemeSettings {
     return getBootstrapTheme().settings;
 }
