@@ -1,0 +1,22 @@
+database/migrations/2026_05_30_000000_require_complete_legacy_migration_history.php
+  s_4cabae41bceed9::t_9aebd3ca836d16 13
+  s_4cabae41bceed9::t_29b8dba5f1a8bf 20
+rector.php
+  s_4cabae41bceed9::t_f22abee853feff 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a96b130330f233a53c771dc9de5133b50507b0a1",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
