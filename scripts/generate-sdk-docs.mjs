@@ -1,7 +1,8 @@
 import ts from 'typescript';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { classicSkins } from '../packages/sdk/bin/pterodactyl-theme.mjs';
 
 // Fills the generated parts of the SDK docs: the view catalogue (views.json and the published view models),
 // the UI primitive reference and the token reference in THEMES.md, and every code sample in either file,
@@ -92,32 +93,6 @@ function literals(property) {
     return null;
 }
 
-/** The slots the engine renders before and after each page (`VIEW_PAGES` and `OPAQUE_PAGES`), by page. */
-function engineSlots() {
-    const source = program.getSourceFile(resolve(sdk, 'types/views/pages.d.ts'));
-    const exports = checker.getExportsOfModule(checker.getSymbolAtLocation(source));
-    const slots = new Map();
-
-    for (const table of ['VIEW_PAGES', 'OPAQUE_PAGES']) {
-        const symbol = exports.find((entry) => entry.name === table);
-
-        if (!symbol) throw new Error(`types/views/pages.d.ts does not export ${table}.`);
-
-        for (const page of checker.getPropertiesOfType(checker.getTypeOfSymbol(symbol))) {
-            const tuple = checker.getTypeOfSymbol(page).getProperty('slots');
-
-            if (tuple) {
-                slots.set(
-                    page.name,
-                    checker.getTypeArguments(checker.getTypeOfSymbol(tuple)).map((slot) => slot.value)
-                );
-            }
-        }
-    }
-
-    return slots;
-}
-
 function viewCatalogue() {
     const views = JSON.parse(read('views.json'));
     const models = properties(declared('types/views/registry.d.ts', 'ViewModels'));
@@ -130,7 +105,6 @@ function viewCatalogue() {
 
         return typeText(property);
     };
-    const engine = engineSlots();
     const row = (withEngine) => ([name, view]) => {
         const input = inputs.get(name);
         const inputText = input
@@ -139,18 +113,15 @@ function viewCatalogue() {
                   .join(', ')
             : '';
         const partNames = parts.get(name) ? literals(parts.get(name)) : null;
-        const around = engine.get(name) ?? [];
+        const area = view.areaSlots ? `<br>where it draws an area's navigation: ${view.areaSlots.map(code).join(' ')}` : '';
 
         return [
             code(name),
             view.context,
             code(model(name)),
             [inputText, partNames ? `parts: ${partNames.map(code).join(', ')}` : ''].filter(Boolean).join('<br>'),
-            view.slots
-                .filter((slot) => !around.includes(slot))
-                .map(code)
-                .join(' '),
-            ...(withEngine ? [around.map(code).join(' ')] : []),
+            view.slots.map(code).join(' ') + area,
+            ...(withEngine ? [(view.engineSlots ?? []).map(code).join(' ')] : []),
             view.fixtures.join(', '),
         ];
     };
@@ -187,7 +158,7 @@ function viewCatalogue() {
             '',
             '| View | Slots the engine renders around it |',
             '| --- | --- |',
-            ...opaquePages.map(([name, view]) => `| ${code(name)} | ${view.slots.map(code).join(' ')} |`),
+            ...opaquePages.map(([name, view]) => `| ${code(name)} | ${(view.engineSlots ?? []).map(code).join(' ')} |`),
         ].join('\n'),
     ].join('\n\n');
 }
@@ -235,13 +206,14 @@ const tokens = [
             ['--foreground', 'Body text.'],
             ['--card', 'Cards, rows and raised panels.'],
             ['--card-foreground', 'Text on cards.'],
-            ['--popover', 'Menus, tooltips, hover fills and the panel navigation bar.'],
+            ['--popover', 'Raised fills: menus, tooltips, hover fills, stat tiles and chart cards.'],
             ['--popover-foreground', 'Text on popovers.'],
             ['--muted', 'Quiet fills: table heads, disabled inputs.'],
             ['--muted-foreground', 'Secondary text, icons and placeholders.'],
             ['--sunken', 'A recessed surface on a card: meter tracks, code chips.'],
             ['--border', 'Borders and dividers.'],
-            ['--input', 'Input fills and borders.'],
+            ['--input', 'Input fills.'],
+            ['--input-border', 'Input borders; defaults to `--input`.'],
             ['--ring', 'Focus rings and outlines.'],
         ],
     ],
@@ -263,7 +235,7 @@ const tokens = [
             ['--caution', 'The orange button colour.'],
             ['--caution-foreground', 'Text on caution.'],
             ['--state-foreground', 'The text colour the success and warning foregrounds default to.'],
-            ['--chart-*', 'Five chart series colours (`--chart-1` to `--chart-5`).'],
+            ['--chart-*', 'Five chart series colours (`--chart-1` to `--chart-5`); generated avatars draw from them too.'],
         ],
     ],
     [
@@ -287,10 +259,19 @@ const tokens = [
             ['--font-sans', 'Body typeface (`font-sans`).'],
             ['--font-header', 'Heading typeface (`font-header`).'],
             ['--layout-content-width', 'Width of page content (`max-w-panel`).'],
-            ['--layout-gutter', 'Side margin of page content until it centres; `page-width` applies both.'],
+            ['--layout-gutter', 'The least space beside page content, which centres when wider; `page-width` applies both.'],
+            ['--layout-page-spacing', "Space above and below a page's content (`1rem`, `1.5rem` from `sm`)."],
             ['--layout-auth-width', 'Width of the sign-in card (`max-w-auth`).'],
             ['--layout-sidebar-width', 'Width of sidebars (`w-sidebar`).'],
             ['--spinner-overlay-opacity', 'Opacity of the background behind a loading overlay.'],
+        ],
+    ],
+    [
+        'Shadows',
+        [
+            ['--shadow-*', "Tailwind's shadow scale (`shadow-2xs` to `shadow-2xl`) that lifts cards, tiles and dialogs; retune it in `@theme`."],
+            ['--shadow-navigation-active', 'The underline of the active navigation item (`shadow-navigation-active`).'],
+            ['--shadow-progress', 'The glow under the page progress bar (`shadow-progress`).'],
         ],
     ],
     [
@@ -338,8 +319,44 @@ const tokens = [
         ],
     ],
 ];
-/** Read by the panel, but declared by Tailwind or by no stylesheet until a theme sets them. */
-const undeclared = ['--spacing', '--font-sans', '--font-header', '--selection', '--selection-foreground', '--brand-logo'];
+/** Read by the panel, but declared by Tailwind, by theme-tokens.css, or by no stylesheet until a theme sets them. */
+const undeclared = [
+    '--spacing',
+    '--font-sans',
+    '--font-header',
+    '--selection',
+    '--selection-foreground',
+    '--brand-logo',
+    '--shadow-*',
+    '--shadow-navigation-active',
+    '--shadow-progress',
+];
+
+const classicRoot = resolve(root, 'resources/scripts/themes/classic');
+
+/** A classic file with the classic files it imports, as one text. */
+function classicSource(file, seen = new Set()) {
+    if (seen.has(file) || !existsSync(file)) return '';
+    seen.add(file);
+
+    const text = readFileSync(file, 'utf8');
+    const imports = [...text.matchAll(/from\s+'(\.{1,2}\/[^']+)'/g)].map((match) => resolve(dirname(file), match[1]));
+    const files = imports.flatMap((path) => ['.tsx', '.ts'].map((suffix) => path + suffix)).filter(existsSync);
+
+    return [text, ...files.map((path) => classicSource(path, seen))].join('\n');
+}
+
+/** What classic draws, by primitive (its skin) and by view (its source), to list where each token is read. */
+function classicConsumers() {
+    const views = Object.entries(JSON.parse(read('views.json'))).flatMap(([name, view]) =>
+        view.classic ? [[code(name), classicSource(resolve(classicRoot, view.classic.file))]] : []
+    );
+
+    return [...[...classicSkins(classicRoot)].map(([primitive, source]) => [primitive, source()]), ...views];
+}
+
+const colourUtilities =
+    'bg|text|border(?:-[trblxyse])?|ring(?:-offset)?|outline|fill|stroke|divide|from|via|to|shadow|accent|caret|decoration|placeholder';
 
 function tokenReference() {
     const css = read('panel.css').replace(/\/\*[\s\S]*?\*\//g, '');
@@ -360,14 +377,39 @@ function tokenReference() {
 
     // `--color-card: var(--card)` makes `bg-card`, `text-card` and the rest.
     const theme = read('theme-tokens.css');
+    const names = (token) => ({
+        color: new RegExp(`--color-([\\w-]+):\\s*var\\(${token}\\)`).exec(theme)?.[1],
+        container: new RegExp(`--container-([\\w-]+):\\s*var\\(${token}\\)`).exec(theme)?.[1],
+    });
     const utility = (token) => {
-        const color = new RegExp(`--color-([\\w-]+):\\s*var\\(${token}\\)`).exec(theme);
-        const container = new RegExp(`--container-([\\w-]+):\\s*var\\(${token}\\)`).exec(theme);
+        const { color, container } = names(token);
 
-        if (color) return code(`*-${color[1]}`);
-        if (container) return code(`*-${container[1]}`);
+        return color || container ? code(`*-${color ?? container}`) : '';
+    };
+    // The custom utilities of panel.css with the tokens they read, such as `page-width`.
+    const custom = [...css.matchAll(/@utility ([\w-]+) \{([^}]*)\}/g)];
+    const consumers = classicConsumers();
+    // A group of tokens, such as `--chart-*`: their utilities, or Tailwind's shadow scale.
+    const groupPattern = (prefix) =>
+        prefix === 'shadow-'
+            ? '(?<![\\w-])shadow-(?:2xs|xs|sm|md|lg|xl|2xl)(?![\\w-])'
+            : `(?<![\\w-])(?:${colourUtilities})-${prefix}[\\w-]+|\\(--${prefix}`;
+    const readers = (token) => {
+        const { color, container } = names(token);
+        const pattern = new RegExp(
+            [
+                ...(token.endsWith('*') ? [groupPattern(token.slice(2, -1))] : [`\\(${token}\\)`]),
+                ...(color ? [`(?<![\\w-])(?:${colourUtilities})-${color}(?![\\w-])`] : []),
+                ...(container ? [`(?<![\\w-])(?:max-w|min-w|w)-${container}(?![\\w-])`] : []),
+                ...(/^--(font|shadow)-/.test(token) ? [`(?<![\\w-])${token.slice(2)}(?![\\w-])`] : []),
+                ...custom
+                    .filter(([, , body]) => body.includes(`var(${token})`))
+                    .map(([, name]) => `(?<![\\w-])${name}(?![\\w-])`),
+            ].join('|')
+        );
+        const found = consumers.filter(([, source]) => pattern.test(source)).map(([name]) => name);
 
-        return '';
+        return found.length > 6 ? `${found.slice(0, 6).join(', ')} and ${found.length - 6} more` : found.join(', ');
     };
 
     return tokens
@@ -375,9 +417,12 @@ function tokenReference() {
             [
                 `#### ${group}`,
                 '',
-                '| Token | Role | Utilities |',
-                '| --- | --- | --- |',
-                ...list.map(([token, role]) => `| ${code(token)} | ${role} | ${token.endsWith('*') ? '' : utility(token)} |`),
+                '| Token | Role | Utilities | Classic reads it in |',
+                '| --- | --- | --- | --- |',
+                ...list.map(
+                    ([token, role]) =>
+                        `| ${code(token)} | ${role} | ${token.endsWith('*') ? '' : utility(token)} | ${readers(token)} |`
+                ),
             ].join('\n')
         )
         .join('\n\n');

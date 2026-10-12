@@ -4,13 +4,16 @@ import type { AvatarProps, AvatarVariant } from "../components/Avatar.js";
 import type { BadgeProps, BadgeSize, BadgeVariant } from "../components/elements/Badge.js";
 import type { ButtonColor, ButtonProps, ButtonSize } from "../components/elements/Button.js";
 import type { CardProps } from "../components/elements/Card.js";
+import type { ChartCardProps } from "../components/elements/ChartCard.js";
 import type { DialogIconProps } from "../components/elements/dialog/types.js";
 import type { EmptyMediaVariant, EmptyProps, EmptySize } from "../components/ui/empty.js";
 import type { ListRowProps } from "../components/elements/ListRow.js";
+import type { PageFooterProps } from "../components/elements/PageFooter.js";
 import type { PageHeadingProps } from "../components/elements/PageHeading.js";
 import type { ProgressBarProps, ProgressBarVariant } from "../components/elements/ProgressBar.js";
 import type { SpinnerProps, SpinnerSize } from "../components/elements/Spinner.js";
-/** The colour roles shared by tone variants (Badge, ProgressBar). */
+import type { StatProps, StatVariant } from "../components/elements/Stat.js";
+/** The colour roles shared by tone variants (Badge, ProgressBar, Stat, ListRow's status). */
 export type UiTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'accent';
 type ControlState = {
     light: boolean;
@@ -49,6 +52,10 @@ export interface UiPrimitives {
         };
         props: BadgeProps;
     };
+    /**
+     * `label` wraps the children in a row with a gap, so an icon beside the text needs no margin.
+     * `Button.Text` is `color: grey` and `Button.Danger` is `color: red`.
+     */
     Button: {
         parts: 'root' | 'spinner' | 'label';
         state: {
@@ -67,6 +74,12 @@ export interface UiPrimitives {
             loading: boolean;
         };
         props: CardProps;
+    };
+    /** The frame of a chart: `legend` sits at the end of the header, `body` holds the chart. */
+    ChartCard: {
+        parts: 'root' | 'header' | 'title' | 'legend' | 'body';
+        state: NoState;
+        props: ChartCardProps;
     };
     Checkbox: {
         parts: 'root' | 'indicator';
@@ -129,10 +142,12 @@ export interface UiPrimitives {
             light: boolean;
         };
     };
+    /** `icon` is `ListRow.Icon`, placed by the row's content; `status` is drawn when the row has a `status`. */
     ListRow: {
-        parts: 'root';
+        parts: 'root' | 'icon' | 'status';
         state: {
             interactive: boolean;
+            status?: UiTone;
         };
         props: ListRowProps;
     };
@@ -146,6 +161,12 @@ export interface UiPrimitives {
     NumberInput: {
         parts: 'root' | 'input';
         state: ControlState;
+    };
+    /** The copyright line below each page; a replacement that renders nothing drops it. */
+    PageFooter: {
+        parts: 'root' | 'text' | 'link';
+        state: NoState;
+        props: PageFooterProps;
     };
     PageHeading: {
         parts: 'root' | 'text' | 'title' | 'description' | 'actions';
@@ -177,6 +198,11 @@ export interface UiPrimitives {
             searching: boolean;
         };
     };
+    /**
+     * `root` is the spinning element, an empty `span` with no text or role: the region that loads
+     * announces it. `container` centres it when `centered`. A skin can animate anything, such as the
+     * `content` of `::before`.
+     */
     Spinner: {
         parts: 'root' | 'container';
         state: {
@@ -191,6 +217,15 @@ export interface UiPrimitives {
         state: {
             fixed: boolean;
         };
+    };
+    /** `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. */
+    Stat: {
+        parts: 'root' | 'indicator' | 'icon' | 'glyph' | 'body' | 'label' | 'value' | 'limit';
+        state: {
+            variant: StatVariant;
+            tone: UiTone;
+        };
+        props: StatProps;
     };
     /** `label` is added to the Label it renders. */
     Switch: {
@@ -254,6 +289,10 @@ export declare const UI_PRIMITIVES: {
         parts: ("title" | "icon" | "root" | "body" | "header" | "actions")[];
         replaceable: true;
     };
+    ChartCard: {
+        parts: ("title" | "root" | "body" | "header" | "legend")[];
+        replaceable: true;
+    };
     Checkbox: {
         parts: ("root" | "indicator")[];
         replaceable: false;
@@ -295,7 +334,7 @@ export declare const UI_PRIMITIVES: {
         replaceable: false;
     };
     ListRow: {
-        parts: "root"[];
+        parts: ("icon" | "status" | "root")[];
         replaceable: true;
     };
     NewButton: {
@@ -305,6 +344,10 @@ export declare const UI_PRIMITIVES: {
     NumberInput: {
         parts: ("root" | "input")[];
         replaceable: false;
+    };
+    PageFooter: {
+        parts: ("text" | "link" | "root")[];
+        replaceable: true;
     };
     PageHeading: {
         parts: ("text" | "title" | "root" | "description" | "actions")[];
@@ -329,6 +372,10 @@ export declare const UI_PRIMITIVES: {
     SpinnerOverlay: {
         parts: ("text" | "root")[];
         replaceable: false;
+    };
+    Stat: {
+        parts: ("icon" | "root" | "body" | "label" | "value" | "indicator" | "limit" | "glyph")[];
+        replaceable: true;
     };
     Switch: {
         parts: ("text" | "root" | "label" | "description" | "control" | "thumb")[];

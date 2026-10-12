@@ -1,34 +1,31 @@
 import React, { useEffect } from 'react';
 import ContentContainer from '@/components/elements/ContentContainer';
-import { cn } from '@/lib/cn';
+import PageFooter from '@/components/elements/PageFooter';
+import { setPageTitle } from '@/views/pageTitle';
 
 export interface PageContentBlockProps {
+    /** Titles the document. */
     title?: string;
+    /** Classes for the block's outermost element, such as geometry tokens: `[--layout-gutter:0px]`. */
     className?: string;
     children?: React.ReactNode;
 }
 
+/**
+ * A page's content and its footer. The content is `page-width` with `--layout-page-spacing` above and
+ * below; the geometry tokens cascade, so a page changes its own by setting them in `className`.
+ */
 const PageContentBlock = ({ title, className, children }: PageContentBlockProps) => {
     useEffect(() => {
-        document.title = title || document.title;
+        if (title) {
+            setPageTitle(title);
+        }
     }, [title]);
 
     return (
-        <div>
-            <ContentContainer className={cn('my-4 sm:my-6', className)}>{children}</ContentContainer>
-            <ContentContainer className='mb-4'>
-                <p className='text-center text-muted-foreground text-xs'>
-                    <a
-                        rel='noopener nofollow noreferrer'
-                        href='https://pterodactyl.io'
-                        target='_blank'
-                        className='no-underline text-muted-foreground hover:text-muted-foreground'
-                    >
-                        Pterodactyl&reg;
-                    </a>
-                    &nbsp;&copy; 2015 - <span suppressHydrationWarning>{new Date().getFullYear()}</span>
-                </p>
-            </ContentContainer>
+        <div className={className}>
+            <ContentContainer className='my-(--layout-page-spacing)'>{children}</ContentContainer>
+            <PageFooter />
         </div>
     );
 };

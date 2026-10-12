@@ -35,11 +35,11 @@ const RunTime = ({ at }: { at: string | null }) =>
     at ? formatDate(at, 'MMM Do [at] h:mmA') : <span className='text-muted-foreground'>n/a</span>;
 
 /** The schedule's header, cron and actions; `children` (its tasks) render inside the box below the cron. */
-export default function ScheduleDetails({ model, children }: ViewProps<'server.schedule'>) {
+export default function ScheduleDetails({ model, className, children }: ViewProps<'server.schedule'>) {
     const { schedule, actions } = model;
 
     return (
-        <>
+        <div className={className}>
             <ScheduleCronRow cron={schedule.cron} className='sm:hidden bg-card rounded-sm mb-4 p-3' />
             <div className='rounded-sm shadow-sm'>
                 <div className='sm:flex items-center bg-muted p-3 sm:p-6 border-b-4 border-border rounded-t-sm'>
@@ -127,6 +127,6 @@ export default function ScheduleDetails({ model, children }: ViewProps<'server.s
                     </>
                 )}
             </div>
-        </>
+        </div>
     );
 }

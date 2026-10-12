@@ -15,6 +15,9 @@ export { default as NamedIcon, loadIconNames, type NamedIconProps } from "../com
 export { default as Can } from "../components/elements/Can.js";
 export { default as Card, type CardProps } from "../components/elements/Card.js";
 export { default as ListRow, type ListRowProps } from "../components/elements/ListRow.js";
+export { default as Stat, type StatProps, type StatVariant } from "../components/elements/Stat.js";
+export { default as ChartCard, type ChartCardProps } from "../components/elements/ChartCard.js";
+export { default as PageFooter, type PageFooterProps } from "../components/elements/PageFooter.js";
 export { default as Badge, type BadgeProps, type BadgeSize, type BadgeVariant } from "../components/elements/Badge.js";
 export { default as ProgressBar, type ProgressBarProps, type ProgressBarVariant, } from "../components/elements/ProgressBar.js";
 export { default as Code, type CodeProps } from "../components/elements/Code.js";

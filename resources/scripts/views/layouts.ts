@@ -2,21 +2,19 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouterState } from '@tanstack/react-router';
 import { useCurrentUser } from '@/api/account/queries';
-import { serverResourceUsageQueryOptions, type ServerPowerState } from '@/api/account/servers/queries';
+import { serverResourceUsageQueryOptions } from '@/api/account/servers/queries';
 import { useLogout } from '@/api/auth/queries';
 import { useCurrentServer } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
 import { useSiteSettings } from '@/api/settings/queries';
 import { SCREEN_ROOTS } from '@/extensions/registry';
-import { isInstallingStatus } from '@/lib/serverStatus';
 import type { CorePanelDestination } from '@/sdk/navigation';
 import { useBrandLogo } from './brand';
 import { createTestServer } from './fixtures';
-import { useNavigation, type NavArea, type NavigationModel, type NavItem } from './navigation';
-import type { OpaqueModel } from './pages';
+import { navItemDestination, useNavigation, type NavArea, type NavigationModel, type NavItem } from './navigation';
 import { implementViews } from './registry';
-import type { ServerRunState } from './server/console';
-import { useTheme, type ThemeScheme } from './theme';
+import { runState, serverConflict, type ServerConflict, type ServerRunState } from './server/state';
+import { useTheme, type ThemeScheme, type ThemeSchemePreference } from './theme';
 
 export interface LayoutBrand {
     /** The panel's name. */
@@ -50,11 +48,14 @@ export interface AppLayoutModel {
         readonly email: string;
         readonly rootAdmin: boolean;
     };
+    /** The scheme in use. */
     readonly scheme: ThemeScheme;
+    /** What the user chose, `system` included; a scheme switch shows this one as selected. */
+    readonly preference: ThemeSchemePreference;
     /** The schemes the theme offers; the first is its default. */
     readonly schemes: readonly ThemeScheme[];
     /** Switches the scheme without a reload; null unless the theme offers more than one. */
-    readonly setScheme: ((preference: ThemeScheme | 'system') => void) | null;
+    readonly setScheme: ((preference: ThemeSchemePreference) => void) | null;
     readonly signOut: () => void;
     readonly signingOut: boolean;
 }
@@ -62,9 +63,6 @@ export interface AppLayoutModel {
 export interface AccountLayoutModel {
     readonly nav: NavigationModel;
 }
-
-/** Why a server's pages show a notice instead of their content. */
-export type ServerConflict = 'installing' | 'suspended' | 'maintenance' | 'transferring' | 'restoring-backup';
 
 /**
  * The server area's frame. Its `children` already hold the server's console, which stays mounted
@@ -95,15 +93,27 @@ export interface AdminLayoutModel {
     };
 }
 
+/** The dashboard, and any page outside the areas below. */
+export interface DashboardArea {
+    readonly kind: 'dashboard';
+}
+/** The account area, with the model of `layout.account`. */
+export interface AccountArea extends AccountLayoutModel {
+    readonly kind: 'account';
+}
+/** A server's area, with the model of `layout.server`. */
+export interface ServerArea extends ServerLayoutModel {
+    readonly kind: 'server';
+}
+/** The admin area, with the model of `layout.admin`. */
+export interface AdminArea extends AdminLayoutModel {
+    readonly kind: 'admin';
+}
 /**
- * The area `layout.app` renders: the dashboard (and any page outside the areas below), or an area with
- * the model of its own layout, which `layout.app` renders around the area's pages.
+ * The area `layout.app` renders: the dashboard, or an area with the model of its own layout, which
+ * `layout.app` renders around the area's pages.
  */
-export type AppArea =
-    | { readonly kind: 'dashboard' }
-    | ({ readonly kind: 'account' } & AccountLayoutModel)
-    | ({ readonly kind: 'server' } & ServerLayoutModel)
-    | ({ readonly kind: 'admin' } & AdminLayoutModel);
+export type AppArea = DashboardArea | AccountArea | ServerArea | AdminArea;
 
 declare module './registry' {
     interface ViewModels {
@@ -112,7 +122,6 @@ declare module './registry' {
         'layout.account': AccountLayoutModel;
         'layout.server': ServerLayoutModel;
         'layout.admin': AdminLayoutModel;
-        'app.search': OpaqueModel;
     }
 }
 
@@ -135,38 +144,21 @@ function useAccountLayoutModel(): AccountLayoutModel {
     return useMemo(() => ({ nav }), [nav]);
 }
 
-export function serverConflict({ attributes }: Server): ServerConflict | null {
-    if (isInstallingStatus(attributes.status)) {
-        return 'installing';
-    }
+const adminLink = (internalId: number, order: number): NavItem => {
+    const params = { id: String(internalId) };
 
-    if (attributes.status === 'suspended') {
-        return 'suspended';
-    }
-
-    if (attributes.is_node_under_maintenance) {
-        return 'maintenance';
-    }
-
-    if (attributes.is_transferring) {
-        return 'transferring';
-    }
-
-    return attributes.status === null ? null : 'restoring-backup';
-}
-
-const adminLink = (internalId: number, order: number): NavItem => ({
-    id: 'admin',
-    label: 'Open Admin Area',
-    to: '/panel/servers/$id',
-    params: { id: String(internalId) },
-    icon: 'external-link',
-    group: null,
-    order,
-    exact: false,
-});
-
-const runState = (state: ServerPowerState): ServerRunState => (state === 'stopped' ? 'offline' : state);
+    return {
+        id: 'admin',
+        label: 'Open Admin Area',
+        to: '/panel/servers/$id',
+        params,
+        destination: { to: '/panel/servers/$id', params },
+        icon: 'external-link',
+        group: null,
+        order,
+        exact: false,
+    };
+};
 
 /** What Wings last reported: the resources query, fetched once and kept current by the server's websocket. */
 function useServerRunState(uuid: string): ServerRunState | null {
@@ -268,7 +260,7 @@ function useAppArea(): AppArea {
 function useAppLayoutModel(): AppLayoutModel {
     const brand = useBrand();
     const { uuid, username, email, rootAdmin } = useCurrentUser();
-    const { scheme, schemes, setScheme } = useTheme();
+    const { scheme, preference, schemes, setScheme } = useTheme();
     const { mutate, isPending } = useLogout();
     const area = useAppArea();
 
@@ -279,12 +271,13 @@ function useAppLayoutModel(): AppLayoutModel {
             area,
             user: { uuid, username, email, rootAdmin },
             scheme,
+            preference,
             schemes,
             setScheme: schemes.length > 1 ? setScheme : null,
             signOut: () => mutate({}),
             signingOut: isPending,
         }),
-        [brand, area, uuid, username, email, rootAdmin, scheme, schemes, setScheme, mutate, isPending]
+        [brand, area, uuid, username, email, rootAdmin, scheme, preference, schemes, setScheme, mutate, isPending]
     );
 }
 
@@ -303,6 +296,7 @@ const appLayoutFixture = (
     area,
     user: { uuid: '11111111-1111-4111-8111-111111111111', username: 'alex', email: 'alex@example.test', rootAdmin },
     scheme: schemes[0] ?? 'dark',
+    preference: schemes[0] ?? 'dark',
     schemes,
     setScheme: schemes.length > 1 ? noop : null,
     signOut: noop,
@@ -317,17 +311,21 @@ function navFixture(
     entries: readonly (readonly [string, string, string, Partial<NavItem>?])[]
 ): NavigationModel {
     return {
-        items: entries.map(([path, label, icon, options], order) => ({
-            id: path || 'index',
-            label,
-            to: path ? `${SCREEN_ROOTS[area]}/${path}` : SCREEN_ROOTS[area],
-            params: area === 'server' ? { id: SERVER_ID } : {},
-            icon,
-            group: null,
-            order,
-            exact: path === '',
-            ...options,
-        })),
+        items: entries.map(([path, label, icon, options], order) => {
+            const item = {
+                id: path || 'index',
+                label,
+                to: path ? `${SCREEN_ROOTS[area]}/${path}` : SCREEN_ROOTS[area],
+                params: area === 'server' ? { id: SERVER_ID } : {},
+                icon,
+                group: null,
+                order,
+                exact: path === '',
+                ...options,
+            };
+
+            return { ...item, destination: navItemDestination(item) };
+        }),
     };
 }
 

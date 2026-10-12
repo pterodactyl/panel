@@ -13,4 +13,5 @@ export interface TestServerOptions {
 }
 /** A server payload for fixtures and tests. */
 export declare function createTestServer(options?: TestServerOptions): Server;
+/** A running server's card, with every permission; `options` replace its fields. */
 export declare function createTestServerCard(options?: Partial<ServerCardModel>): ServerCardModel;

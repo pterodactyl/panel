@@ -1,11 +1,12 @@
 import { createElement } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import { useOpaqueModel, VIEW_PAGES, viewPage } from './pages';
+import { VIEW_PAGES, viewPage } from './pages';
 import { defineView } from './registry';
 
 // Every core view up front: its context, slots and placeholder. Hooks and fixtures stay in each area's module,
 // which loads with the area's routes and implements its views with `implementViews`.
 const layouts = { load: () => import('./layouts') };
+const search = { load: () => import('./search') };
 const dashboard = { load: () => import('./dashboard') };
 const login = { load: () => import('./auth/login') };
 const password = { load: () => import('./auth/password') };
@@ -43,7 +44,7 @@ defineView('layout.admin', {
     slots: ['panel.navigation.before', 'panel.navigation.after'],
     ...layouts,
 });
-defineView('app.search', { context: 'app', use: useOpaqueModel });
+defineView('app.search', { context: 'app', ...search });
 
 defineView('page.dashboard', { context: 'app', ...dashboard });
 defineView('dashboard.serverList', {

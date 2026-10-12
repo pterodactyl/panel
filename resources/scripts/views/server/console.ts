@@ -17,13 +17,11 @@ import {
 import { createTestServer } from '../fixtures';
 import { implementViews } from '../registry';
 import { useLoadedServer } from './loadedServer';
+import { statMetric as metric, type ServerRunState, type ServerStatMetric } from './state';
 // The console page places the feature prompts, so they are implemented with it.
 import './features';
 
-export type { ServerGraphPoint, ServerNetworkPoint };
-
-/** What Wings reports the server doing; null until it has. */
-export type ServerRunState = 'offline' | 'starting' | 'running' | 'stopping';
+export type { ServerGraphPoint, ServerNetworkPoint, ServerRunState, ServerStatMetric };
 
 export interface ServerConsoleModel {
     readonly name: string;
@@ -90,13 +88,6 @@ export interface ServerPowerModel {
     readonly server: Server;
 }
 
-/** A usage value against its limit, where a limit of 0 means unlimited. */
-export interface ServerStatMetric {
-    readonly value: number;
-    readonly limit: number;
-    /** Above 80% of the limit warns, above 90% is critical. */
-    readonly alarm: 'warning' | 'critical' | null;
-}
 export interface ServerStatsModel {
     readonly state: ServerRunState | null;
     /** The primary allocation as "host:port". */
@@ -201,18 +192,6 @@ function primaryAddress({ attributes }: Server): string | null {
 
     return allocation ? `${allocation.ip_alias || ip(allocation.ip)}:${allocation.port}` : null;
 }
-
-function alarm(value: number, limit: number): ServerStatMetric['alarm'] {
-    const used = limit ? value / limit : 0;
-
-    if (used > 0.9) {
-        return 'critical';
-    }
-
-    return used > 0.8 ? 'warning' : null;
-}
-
-const metric = (value: number, limit: number): ServerStatMetric => ({ value, limit, alarm: alarm(value, limit) });
 
 function useServerStatsModel(): ServerStatsModel {
     const server = useLoadedServer();

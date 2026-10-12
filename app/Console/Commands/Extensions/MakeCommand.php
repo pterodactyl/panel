@@ -58,9 +58,10 @@ class MakeCommand extends Command implements PromptsForMissingInput
 
         $this->line('');
         $this->components->info('Next steps:');
+        // p:extension:dev builds, installs and enables the package where it is; p:extension:install takes archives.
         $this->components->bulletList(array_filter([
-            $this->option('no-ui') && ! $this->option('theme') ? null : "cd {$target} && npm install && npm run build",
-            "php artisan p:extension:install {$target} --enable",
+            $this->option('no-ui') && ! $this->option('theme') ? null : "cd {$target} && npm install",
+            "php artisan p:extension:dev {$target} --enable",
             $this->option('theme') ? "php artisan p:theme:activate {$this->argument('id')}" : null,
         ]));
 

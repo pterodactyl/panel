@@ -31,14 +31,15 @@ describe('skin layers', () => {
         registerSkins('aurora', {
             Button: skin('Button', (parent) => ({
                 root: (state) => `${parent.root(state)} shadow-xl`,
-                label: (state) => `${parent.label(state)} tracking-tight`.trim(),
+                label: (state) => parent.label(state, 'gap-1 tracking-tight'),
             })),
         });
 
         render(<Button>Save</Button>);
 
         expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute('class', 'rounded-full shadow-xl');
-        expect(screen.getByText('Save')).toHaveAttribute('class', 'tracking-tight');
+        // `extra` merges: its gap replaces classic's.
+        expect(screen.getByText('Save')).toHaveAttribute('class', 'inline-flex items-center gap-1 tracking-tight');
     });
 
     it('stacks classic first, then the chain parent first, and moves a re-registered layer up', () => {

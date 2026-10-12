@@ -15,6 +15,7 @@ import { ScreenBadge, ScreenGate } from '@/extensions/screenNavigation';
 import { hasPermission } from '@/plugins/usePermissions';
 import { getAreaNav, type AreaNavEntry } from '@/router/nav';
 import { useServerRouteId } from '@/router/params';
+import type { CorePanelDestination, PanelDestination } from '@/sdk/navigation';
 
 export type NavArea = ScreenArea;
 
@@ -27,6 +28,8 @@ export interface NavItem {
     readonly to: string;
     readonly params: Readonly<Record<string, string>>;
     readonly hash?: string;
+    /** Where the item leads, for `usePanelNavigate`, `PanelLink` and keyboard shortcuts. */
+    readonly destination: PanelDestination;
     /** A lucide icon name, as `NamedIcon` takes it. */
     readonly icon: string | null;
     readonly group: string | null;
@@ -53,18 +56,28 @@ export type NavigationRenderer = (item: NavItem, state: NavItemState) => ReactNo
 /** A key that is unique within one navigation. */
 export const navItemKey = (item: NavItem): string => `${item.extensionId ?? ''}:${item.id}`;
 
-const toNavItem = (area: NavArea, entry: AreaNavEntry, order: number, params: Record<string, string>): NavItem => ({
-    id: entry.screen?.id ?? (entry.segment || 'index'),
-    label: entry.label,
-    to: entry.segment ? `${SCREEN_ROOTS[area]}/${entry.segment}` : SCREEN_ROOTS[area],
-    params,
-    hash: entry.hash,
-    icon: entry.icon ?? null,
-    group: entry.group ?? null,
-    order,
-    exact: entry.exact ?? false,
-    extensionId: entry.screen?.extensionId,
+/** An item's route path and params as a destination; extension screens' paths resolve the same way. */
+export const navItemDestination = ({ to, params, hash }: Pick<NavItem, 'to' | 'params' | 'hash'>): PanelDestination =>
+    ({ to, params, hash }) as CorePanelDestination;
+
+const withDestination = (item: Omit<NavItem, 'destination'>): NavItem => ({
+    ...item,
+    destination: navItemDestination(item),
 });
+
+const toNavItem = (area: NavArea, entry: AreaNavEntry, order: number, params: Record<string, string>): NavItem =>
+    withDestination({
+        id: entry.screen?.id ?? (entry.segment || 'index'),
+        label: entry.label,
+        to: entry.segment ? `${SCREEN_ROOTS[area]}/${entry.segment}` : SCREEN_ROOTS[area],
+        params,
+        hash: entry.hash,
+        icon: entry.icon ?? null,
+        group: entry.group ?? null,
+        order,
+        exact: entry.exact ?? false,
+        extensionId: entry.screen?.extensionId,
+    });
 
 /** Server items need one of their subuser permissions and, for extension screens, a matching egg. */
 function isListed(entry: AreaNavEntry, server: Server | undefined): boolean {
@@ -115,18 +128,22 @@ export function resourceNavigation(
     );
 
     return [
-        ...tabs.map((tab, order) => ({ ...tab, params, icon: null, group: null, order, exact: tab.exact ?? false })),
-        ...screens.map(({ id, path, nav, extensionId }, index) => ({
-            id,
-            label: nav.label,
-            to: `${SCREEN_ROOTS[parent]}/${resolveScreenPath(path, nav.params)}`,
-            params,
-            icon: nav.icon ?? null,
-            group: nav.group ?? null,
-            order: tabs.length + index,
-            exact: nav.exact ?? false,
-            extensionId,
-        })),
+        ...tabs.map((tab, order) =>
+            withDestination({ ...tab, params, icon: null, group: null, order, exact: tab.exact ?? false })
+        ),
+        ...screens.map(({ id, path, nav, extensionId }, index) =>
+            withDestination({
+                id,
+                label: nav.label,
+                to: `${SCREEN_ROOTS[parent]}/${resolveScreenPath(path, nav.params)}`,
+                params,
+                icon: nav.icon ?? null,
+                group: nav.group ?? null,
+                order: tabs.length + index,
+                exact: nav.exact ?? false,
+                extensionId,
+            })
+        ),
     ];
 }
 

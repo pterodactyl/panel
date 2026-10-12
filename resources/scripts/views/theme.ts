@@ -5,6 +5,8 @@ import type { ThemeSkins } from '@/themes/skins';
 import type { ThemeViews } from './registry';
 
 export type { ThemeScheme, ThemeSettingValue };
+/** A scheme the user chose, or `system` to follow the device. */
+export type ThemeSchemePreference = ThemeScheme | 'system';
 export type ThemeIcon = ComponentType<LucideProps>;
 export type ThemeIcons = Readonly<Record<string, ThemeIcon>>;
 
@@ -28,16 +30,21 @@ export interface ThemeSettings {
 export interface ThemeState {
     readonly id: string;
     readonly chain: ThemeBootstrap['chain'];
+    /** The scheme in use. */
     readonly scheme: ThemeScheme;
+    /** What the user chose, `system` included; a scheme switch shows this one as selected. */
+    readonly preference: ThemeSchemePreference;
     readonly schemes: readonly ThemeScheme[];
     /** Stores the preference in the `pterodactyl_scheme` cookie and swaps the `<html>` class. */
-    setScheme(preference: ThemeScheme | 'system'): void;
+    setScheme(preference: ThemeSchemePreference): void;
 }
 
 const icons = new Map<string, ThemeIcon>();
 const listeners = new Set<() => void>();
 let fallback = false;
 let scheme: ThemeScheme | undefined;
+let preference: ThemeSchemePreference | undefined;
+let followingDevice = false;
 
 export function registerThemeIcons(map: ThemeIcons): void {
     for (const [name, icon] of Object.entries(map)) {
@@ -59,13 +66,27 @@ function currentScheme(): ThemeScheme {
     return (scheme ??= getBootstrapTheme().scheme);
 }
 
-export function setThemeScheme(preference: ThemeScheme | 'system'): void {
+/** The stored preference; a scheme the theme does not offer was replaced by its default when the page loaded. */
+function currentPreference(): ThemeSchemePreference {
+    if (preference === undefined) {
+        const stored = /(?:^|;\s*)pterodactyl_scheme=(\w+)/.exec(document.cookie)?.[1];
+        const offered = getBootstrapTheme().schemes.find((candidate) => candidate === stored);
+
+        preference = stored === 'system' ? 'system' : (offered ?? currentScheme());
+    }
+
+    return preference;
+}
+
+const prefersLight = () => matchMedia('(prefers-color-scheme: light)');
+
+const deviceScheme = (): ThemeScheme => (prefersLight().matches ? 'light' : 'dark');
+
+function applyScheme(chosen: ThemeSchemePreference): void {
     const { schemes } = getBootstrapTheme();
-    const preferred = preference === 'system' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    const resolved = preference === 'system' ? preferred : preference;
+    const resolved = chosen === 'system' ? deviceScheme() : chosen;
     const next = schemes.includes(resolved) ? resolved : (schemes[0] ?? 'dark');
 
-    document.cookie = `pterodactyl_scheme=${preference}; path=/; max-age=31536000; samesite=lax`;
     document.documentElement.classList.remove('dark', 'light');
     document.documentElement.classList.add(next);
     scheme = next;
@@ -74,8 +95,24 @@ export function setThemeScheme(preference: ThemeScheme | 'system'): void {
     }
 }
 
+export function setThemeScheme(chosen: ThemeSchemePreference): void {
+    document.cookie = `pterodactyl_scheme=${chosen}; path=/; max-age=31536000; samesite=lax`;
+    preference = chosen;
+    applyScheme(chosen);
+}
+
 function subscribeScheme(listener: () => void): () => void {
     listeners.add(listener);
+
+    // While the preference is "system", the scheme follows the device as it changes.
+    if (!followingDevice) {
+        followingDevice = true;
+        prefersLight().addEventListener('change', () => {
+            if (currentPreference() === 'system') {
+                applyScheme('system');
+            }
+        });
+    }
 
     return () => {
         listeners.delete(listener);
@@ -84,12 +121,14 @@ function subscribeScheme(listener: () => void): () => void {
 
 export function useTheme(): ThemeState {
     const current = useSyncExternalStore(subscribeScheme, currentScheme);
+    const chosen = useSyncExternalStore(subscribeScheme, currentPreference);
     const theme = getBootstrapTheme();
 
     return {
         id: fallback ? 'classic' : theme.id,
         chain: fallback ? [] : theme.chain,
         scheme: current,
+        preference: chosen,
         schemes: theme.schemes,
         setScheme: setThemeScheme,
     };

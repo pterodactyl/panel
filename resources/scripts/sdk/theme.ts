@@ -1,4 +1,5 @@
 // "@pterodactyl/sdk/theme": what a theme needs on its critical path, without the full SDK closure.
+import { cn as mergeClasses } from '@/lib/cn';
 import * as tokens from '@/lib/theme';
 
 export {
@@ -9,6 +10,7 @@ export {
     type ThemeIcon,
     type ThemeIcons,
     type ThemeScheme,
+    type ThemeSchemePreference,
     type ThemeSettings,
     type ThemeSettingValue,
     type ThemeState,
@@ -45,6 +47,7 @@ export {
 export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';
+export { usePageTitle } from '@/views/pageTitle';
 export {
     Navigation,
     NavigationLink,
@@ -79,6 +82,7 @@ export type {
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
+export type * from './models/forms';
 export type * from './models/schedules';
 export type * from './models/subusers';
 export type * from './models/backups';
@@ -106,4 +110,9 @@ export function notifyThemeChange(): void {
 /** The current value of a token on `<html>`, e.g. `readThemeToken('--chart-1')`; '' when unset. */
 export function readThemeToken(name: `--${string}`): string {
     return tokens.readThemeToken(name);
+}
+
+/** Joins class names; a later Tailwind utility replaces an earlier one of the same kind: `cn('px-3', 'px-4')` is `px-4`. */
+export function cn(...classes: (string | false | null | undefined)[]): string {
+    return mergeClasses(...classes);
 }

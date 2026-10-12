@@ -69,8 +69,11 @@ it('renders the classic server list from a fixture, with a link and power state 
     const survival = await screen.findByRole('link', { name: 'Survival' });
 
     expect(survival).toHaveAttribute('href', '/server/a1b2c3d4');
-    expect(survival.querySelector('.status-bar')).toHaveClass('bg-success');
-    expect(screen.getByRole('link', { name: 'Creative' }).querySelector('.status-bar')).toHaveClass('bg-destructive');
+    expect(survival).toHaveAttribute('data-status', 'success');
+    expect(survival.querySelector('[data-part="status"]')).toHaveClass('bg-success');
+    expect(screen.getByRole('link', { name: 'Creative' }).querySelector('[data-part="status"]')).toHaveClass(
+        'bg-destructive'
+    );
     expect(screen.getByRole('switch')).toBeInTheDocument();
 });
 

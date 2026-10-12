@@ -66,7 +66,7 @@ export const button = {
         ],
     },
     spinner: 'flex absolute justify-center items-center w-full h-full left-0 top-0',
-    label: { variants: { loading: { true: 'text-transparent' } } },
+    label: { base: 'inline-flex items-center gap-2', variants: { loading: { true: 'text-transparent' } } },
 } satisfies CompleteSkin<'Button'>;
 
 export const newButton = {

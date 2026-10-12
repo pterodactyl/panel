@@ -4,7 +4,7 @@ const control = {
     base: [
         'resize-none appearance-none outline-hidden w-full min-w-0',
         'p-3 border-2 rounded-sm text-sm transition-[background-color,border-color,color,box-shadow] duration-150',
-        'bg-input border-input hover:border-input text-foreground shadow-none focus:ring-0',
+        'bg-input border-input-border hover:border-input-border text-foreground shadow-none focus:ring-0',
         'focus:shadow-md focus:border-primary focus:ring-2 focus:ring-ring/50',
         'disabled:opacity-75 read-only:cursor-text read-only:bg-muted/40',
         'required:shadow-none invalid:shadow-none',
@@ -37,7 +37,7 @@ export const select = {
     root: {
         base: [
             'relative flex items-center w-full rounded-sm border text-sm transition-colors duration-150',
-            'bg-input border-input text-foreground hover:border-input data-popup-open:border-input',
+            'bg-input border-input-border text-foreground hover:border-input-border data-popup-open:border-input-border',
             'focus-within:shadow-md focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/50',
             'data-disabled:opacity-75 data-disabled:cursor-default',
         ].join(' '),
@@ -82,7 +82,7 @@ export const select = {
 export const checkbox = {
     root: [
         'flex items-center justify-center shrink-0 w-4 h-4 rounded-xs cursor-pointer',
-        'bg-input border border-input text-primary-foreground transition-colors duration-75 hover:border-primary/70',
+        'bg-input border border-input-border text-primary-foreground transition-colors duration-75 hover:border-primary/70',
         'data-checked:bg-primary data-checked:border-transparent',
         'data-indeterminate:bg-primary data-indeterminate:border-transparent',
         'data-disabled:opacity-60 data-disabled:cursor-default',
@@ -95,7 +95,7 @@ export const switchSkin = {
     root: { base: 'flex gap-4', variants: { described: { true: 'items-start', false: 'items-center' } } },
     control: [
         'group relative inline-block shrink-0 w-12 h-6 rounded-full border cursor-pointer select-none p-0',
-        'bg-input border-input transition-colors duration-75',
+        'bg-input border-input-border transition-colors duration-75',
         'hover:border-primary/70 active:bg-popover data-checked:bg-primary data-checked:border-primary',
         'data-disabled:opacity-60 data-disabled:cursor-default',
     ].join(' '),

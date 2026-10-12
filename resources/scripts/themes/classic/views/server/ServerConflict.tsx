@@ -29,12 +29,12 @@ const notices = {
     },
 } satisfies Record<Conflict, { title: string; image: string; message: string }>;
 
-export default function ServerConflict({ model }: ViewProps<'server.conflict'>) {
+export default function ServerConflict({ model, className }: ViewProps<'server.conflict'>) {
     if (!model.kind) {
         return null;
     }
 
     const { title, image, message } = notices[model.kind];
 
-    return <ScreenBlock title={title} image={image} message={message} />;
+    return <ScreenBlock title={title} image={image} message={message} className={className} />;
 }

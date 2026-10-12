@@ -1,17 +1,21 @@
 import { ServerContentBlock, ServerError, Spinner } from '@/sdk';
 import { Slot, View, type ViewProps } from '@/sdk/theme';
 
-export default function StartupPage({ model }: ViewProps<'page.server.startup'>) {
+export default function StartupPage({ model, className }: ViewProps<'page.server.startup'>) {
     if (model.error !== null) {
-        return <ServerError title='Oops!' message={model.error} onRetry={model.retry} />;
+        return <ServerError title='Oops!' message={model.error} onRetry={model.retry} className={className} />;
     }
 
     if (model.loading) {
-        return <Spinner centered size='large' />;
+        return (
+            <div className={className}>
+                <Spinner centered size='large' />
+            </div>
+        );
     }
 
     return (
-        <ServerContentBlock title='Startup Settings'>
+        <ServerContentBlock title='Startup Settings' className={className}>
             {model.slot && <Slot name='server.startup.form' data={model.slot} />}
             <div className='md:flex md:items-start'>
                 <View name='server.startup.command' className='flex-1' />

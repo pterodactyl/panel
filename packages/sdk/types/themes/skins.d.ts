@@ -43,9 +43,12 @@ export type CompleteSkin<N extends PrimitiveName> = {
 export type CompleteSkins = {
     readonly [N in PrimitiveName]: CompleteSkin<N>;
 };
-/** Each part's classes as resolved from the layers below, which an extending skin builds on. */
+/**
+ * Each part's classes as resolved from the layers below, which an extending skin builds on. `extra`
+ * merges in: a class of it replaces the class below it conflicts with, as `cn` does.
+ */
 export type ResolvedSkin<N extends PrimitiveName> = {
-    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>) => string;
+    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>, extra?: SkinClassName) => string;
 };
 /** `skin(name, (parent) => ({ ... }))`: a skin computed from the layers below it. */
 export interface SkinExtension<N extends PrimitiveName> {

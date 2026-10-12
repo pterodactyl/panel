@@ -5,6 +5,8 @@ import { type ThemeBootstrap, type ThemeScheme, type ThemeSettingValue } from ".
 import type { ThemeSkins } from "../themes/skins.js";
 import type { ThemeViews } from "./registry.js";
 export type { ThemeScheme, ThemeSettingValue };
+/** A scheme the user chose, or `system` to follow the device. */
+export type ThemeSchemePreference = ThemeScheme | 'system';
 export type ThemeIcon = ComponentType<LucideProps>;
 export type ThemeIcons = Readonly<Record<string, ThemeIcon>>;
 export interface ThemeDefinition {
@@ -22,16 +24,19 @@ export interface ThemeSettings {
 export interface ThemeState {
     readonly id: string;
     readonly chain: ThemeBootstrap['chain'];
+    /** The scheme in use. */
     readonly scheme: ThemeScheme;
+    /** What the user chose, `system` included; a scheme switch shows this one as selected. */
+    readonly preference: ThemeSchemePreference;
     readonly schemes: readonly ThemeScheme[];
     /** Stores the preference in the `pterodactyl_scheme` cookie and swaps the `<html>` class. */
-    setScheme(preference: ThemeScheme | 'system'): void;
+    setScheme(preference: ThemeSchemePreference): void;
 }
 export declare function registerThemeIcons(map: ThemeIcons): void;
 export declare function getThemeIcon(name: string): ThemeIcon | undefined;
 /** The browser shows classic after the active theme failed to boot. */
 export declare function fallBackToClassic(): void;
-export declare function setThemeScheme(preference: ThemeScheme | 'system'): void;
+export declare function setThemeScheme(chosen: ThemeSchemePreference): void;
 export declare function useTheme(): ThemeState;
 /** Pass the `ThemeSettings` type `p:extension:types` generates for the theme to type the values. */
 export declare function useThemeSettings<T = ThemeSettings>(): T;

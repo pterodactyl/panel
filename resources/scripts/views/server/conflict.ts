@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { serverConflict, type ServerConflict } from '../layouts';
+import { serverConflict, type ServerConflict } from './state';
 import { implementViews } from '../registry';
 import { useLoadedServer } from './loadedServer';
 

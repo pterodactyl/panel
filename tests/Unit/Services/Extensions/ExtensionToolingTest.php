@@ -240,3 +240,17 @@ test('generates literal screen ids and only declared frontend configuration keys
     expect($source)->toContain('readonly "accent": string;', 'readonly "links": readonly ExtensionConfigValue[];', 'ExtensionPublicConfigKey = "enabled";', 'ExtensionPublicConfig = Pick<ExtensionConfig, ExtensionPublicConfigKey>');
     expect($source)->not->toContain('token', 'private');
 });
+
+test('warns about missing frontend configuration keys only when a provider could declare them', function (): void {
+    $this->artisan('p:extension:types', ['path' => $this->directory])
+        ->doesntExpectOutputToContain('provider is not loaded')
+        ->assertSuccessful();
+
+    $manifest = File::json($this->directory.'/extension.json');
+    $manifest['provider'] = 'Probe\\ProbeServiceProvider';
+    File::put($this->directory.'/extension.json', json_encode($manifest, JSON_THROW_ON_ERROR));
+
+    $this->artisan('p:extension:types', ['path' => $this->directory])
+        ->expectsOutputToContain('provider is not loaded')
+        ->assertSuccessful();
+});

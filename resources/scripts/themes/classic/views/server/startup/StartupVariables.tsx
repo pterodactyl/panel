@@ -86,9 +86,9 @@ function VariableBox({ model, variable }: { model: StartupVariablesModel; variab
     );
 }
 
-export default function StartupVariables({ model }: ViewProps<'server.startup.variables'>) {
+export default function StartupVariables({ model, className }: ViewProps<'server.startup.variables'>) {
     return (
-        <>
+        <div className={className}>
             <h3 className='mt-8 mb-2 text-2xl'>Variables</h3>
             {model.variables.length === 0 ? (
                 <Empty size='compact' className='border'>
@@ -109,6 +109,6 @@ export default function StartupVariables({ model }: ViewProps<'server.startup.va
                     ))}
                 </div>
             )}
-        </>
+        </div>
     );
 }

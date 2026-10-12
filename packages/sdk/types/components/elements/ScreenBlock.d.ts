@@ -11,6 +11,7 @@ interface BaseProps {
     title: string;
     image: string;
     message: string;
+    className?: string;
     onRetry?: () => void;
     onBack?: () => void;
 }
@@ -23,11 +24,11 @@ interface PropsWithBack extends BaseProps {
     onRetry?: never;
 }
 export type ScreenBlockProps = PropsWithBack | PropsWithRetry;
-declare const ScreenBlock: ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => React.JSX.Element;
+declare const ScreenBlock: ({ title, image, message, onBack, onRetry, className }: ScreenBlockProps) => React.JSX.Element;
 type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWithRetry, 'image' | 'title'>) & {
     title?: string;
 };
-declare const ServerError: ({ title, message, onBack, onRetry }: ServerErrorProps) => React.JSX.Element;
+declare const ServerError: ({ title, message, onBack, onRetry, className }: ServerErrorProps) => React.JSX.Element;
 declare const AccessDenied: ({ message }: Pick<BaseProps, "message">) => React.JSX.Element;
 declare const NotFound: ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, "title" | "message" | "onBack">>) => React.JSX.Element;
 export { AccessDenied, ServerError, NotFound };

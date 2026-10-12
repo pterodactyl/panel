@@ -197,16 +197,15 @@ function useFilesPageModel(): ServerPageModel {
     );
 }
 
+const fileDetails = ({ file }: { readonly file: FileObject }): FileDetailsModel => ({
+    name: file.attributes.name,
+    kind: fileObjectKind(file),
+    size: file.attributes.size ?? 0,
+    modifiedAt: file.attributes.modified_at,
+});
+
 function useFileDetailsModel({ file }: { readonly file: FileObject }): FileDetailsModel {
-    return useMemo(
-        () => ({
-            name: file.attributes.name,
-            kind: fileObjectKind(file),
-            size: file.attributes.size ?? 0,
-            modifiedAt: file.attributes.modified_at,
-        }),
-        [file]
-    );
+    return useMemo(() => fileDetails({ file }), [file]);
 }
 
 implementViews({
@@ -231,6 +230,7 @@ implementViews({
     },
     'server.files.details': {
         use: useFileDetailsModel,
+        fixtureFromInput: fileDetails,
         fixtures: {
             file: () => createTestFileDetails(),
             directory: () => createTestFileDetails({ name: 'plugins', kind: 'directory', size: 0 }),

@@ -15,7 +15,7 @@ use Pterodactyl\Services\Themes\ThemeRepository;
 /**
  * Scaffolds a new extension package the way `php artisan make:*` scaffolds core
  * classes: plain stub substitution, no templating engine. The result is a valid,
- * installable package - `npm run build` and `p:extension:install` away from
+ * installable package - `npm install` and `p:extension:dev --enable` away from
  * running in the panel.
  */
 class ExtensionScaffolder

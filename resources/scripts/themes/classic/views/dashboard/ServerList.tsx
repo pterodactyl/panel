@@ -14,14 +14,15 @@ import {
     Spinner,
     Switch,
 } from '@/sdk';
-import { Slot, View, type ServerListItem, type ServerListModel, type ViewProps } from '@/sdk/theme';
+import { Slot, View, type ServerListItem, type ServerListModel, type UiTone, type ViewProps } from '@/sdk/theme';
 
-function statusColor(power: ServerListItem['power']): string {
-    if (!power || power === 'offline') {
-        return 'bg-destructive';
+/** Running is good, starting and stopping are on their way, and anything else is down. */
+function status({ state }: ServerListItem): UiTone {
+    if (state.kind !== 'ready' || state.power === 'offline') {
+        return 'danger';
     }
 
-    return power === 'running' ? 'bg-success' : 'bg-warning';
+    return state.power === 'running' ? 'success' : 'warning';
 }
 
 function ServerRow({ item, className }: { item: ServerListItem; className?: string }) {
@@ -29,9 +30,10 @@ function ServerRow({ item, className }: { item: ServerListItem; className?: stri
 
     return (
         <ListRow
-            destination={{ to: '/server/$id', params: { id: server.attributes.identifier } }}
-            aria-label={server.attributes.name}
-            className={cn('group grid grid-cols-12 gap-4 relative', className)}
+            destination={{ to: '/server/$id', params: { id: item.identifier } }}
+            aria-label={item.name}
+            status={status(item)}
+            className={cn('grid grid-cols-12 gap-4', className)}
         >
             <Slot name='dashboard.serverRow.before' data={server} />
             <div className='col-span-12'>
@@ -39,13 +41,6 @@ function ServerRow({ item, className }: { item: ServerListItem; className?: stri
             </div>
             <Slot name='dashboard.serverRow.metrics.after' data={server} />
             <Slot name='dashboard.serverRow.after' data={server} />
-            <div
-                className={cn(
-                    'status-bar w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-opacity duration-150',
-                    'h-[calc(100%-0.5rem)] group-hover:opacity-75',
-                    statusColor(item.power)
-                )}
-            />
         </ListRow>
     );
 }
@@ -75,12 +70,12 @@ function NoServers({ model }: { model: ServerListModel }) {
     );
 }
 
-export default function ServerList({ model }: ViewProps<'dashboard.serverList'>) {
+export default function ServerList({ model, className }: ViewProps<'dashboard.serverList'>) {
     const others = model.scope === 'others';
     const { pagination } = model;
 
     return (
-        <>
+        <div className={className}>
             <PageHeading
                 title='Servers'
                 className='mb-4'
@@ -116,11 +111,7 @@ export default function ServerList({ model }: ViewProps<'dashboard.serverList'>)
                     {({ items }) =>
                         items.length > 0 ? (
                             items.map((item, index) => (
-                                <ServerRow
-                                    key={item.server.attributes.uuid}
-                                    item={item}
-                                    className={index > 0 ? 'mt-2' : undefined}
-                                />
+                                <ServerRow key={item.uuid} item={item} className={index > 0 ? 'mt-2' : undefined} />
                             ))
                         ) : (
                             <NoServers model={model} />
@@ -131,6 +122,6 @@ export default function ServerList({ model }: ViewProps<'dashboard.serverList'>)
                 <Spinner centered size='large' />
             )}
             <Slot name='dashboard.after' />
-        </>
+        </div>
     );
 }

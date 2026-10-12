@@ -229,13 +229,60 @@ function statements(source) {
     return found;
 }
 
+/** A statement's code without its comments and the text of its strings, so a name inside a class list is not a reference. */
+function codeOf(source) {
+    let code = '';
+
+    for (let index = 0; index < source.length; index++) {
+        const char = source[index];
+
+        if (char === '/' && source[index + 1] === '/') {
+            index = source.indexOf('\n', index);
+            if (index === -1) break;
+        } else if (char === '/' && source[index + 1] === '*') {
+            index = source.indexOf('*/', index + 2) + 1;
+            if (index === 0) break;
+        } else if (char === "'" || char === '"') {
+            for (index++; index < source.length && source[index] !== char; index++) {
+                if (source[index] === '\\') index++;
+            }
+        } else if (char === '`') {
+            // A template's text is skipped and its `${…}` expressions kept.
+            for (index++; index < source.length && source[index] !== '`'; index++) {
+                if (source[index] === '\\') {
+                    index++;
+                } else if (source[index] === '$' && source[index + 1] === '{') {
+                    const start = index + 2;
+                    let depth = 1;
+
+                    for (index = start; index < source.length && depth; index++) {
+                        if (source[index] === '{') depth++;
+                        else if (source[index] === '}') depth--;
+                    }
+
+                    code += ` ${source.slice(start, index - 1)} `;
+                    index--;
+                }
+            }
+        } else {
+            code += char;
+        }
+    }
+
+    return code;
+}
+
 /** The constant a statement declares, past any comments before it. */
 const declared = (statement) =>
-    /^(?:export\s+)?const\s+(\w+)\s*=/.exec(statement.replace(/^(?:\/\/[^\n]*\n\s*|\/\*[\s\S]*?\*\/\s*)*/, ''))?.[1];
+    /^(?:export\s+)?const\s+(\w+)\s*(?::[^=]+)?=/.exec(statement.replace(/^(?:\/\/[^\n]*\n\s*|\/\*[\s\S]*?\*\/\s*)*/, ''))?.[1];
 
 /** A skin's declaration in a classic skins file, after the constants of that file it reads. */
+/** Whether code reads a name: not as a property key or member, and not inside a string. */
+const reads = (code, name) => new RegExp(`(?<![.\\w$])${name}\\b(?!\\s*:)`).test(code);
+
 function skinSource(file, exportName, primitive) {
-    const all = statements(readFileSync(file, 'utf8'));
+    const source = readFileSync(file, 'utf8');
+    const all = statements(source);
     const byName = new Map(all.flatMap((statement) => (declared(statement) ? [[declared(statement), statement]] : [])));
     const needed = new Set([exportName]);
     const queue = [exportName];
@@ -244,7 +291,7 @@ function skinSource(file, exportName, primitive) {
         const statement = byName.get(queue.shift()) ?? '';
 
         for (const name of byName.keys()) {
-            if (!needed.has(name) && new RegExp(`\\b${name}\\b`).test(statement.slice(statement.indexOf('=')))) {
+            if (!needed.has(name) && reads(codeOf(statement.slice(statement.indexOf('='))), name)) {
                 needed.add(name);
                 queue.push(name);
             }
@@ -255,13 +302,17 @@ function skinSource(file, exportName, primitive) {
         throw new CliError(`Classic's skins/${basename(file)} does not declare ${exportName}.`);
     }
 
+    const printed = all.filter((statement) => needed.has(declared(statement)));
+    const types = /import type \{([^}]*)\} from '@\/sdk\/theme'/.exec(source)?.[1].split(',').map((name) => name.trim()) ?? [];
+    const imported = types.filter((name) => name === 'CompleteSkin' || printed.some((statement) => reads(codeOf(statement), name)));
+
     return [
         `// Classic's ${primitive} skin (skins/${basename(file)}) from @pterodactyl/sdk ${version}.`,
         `// Add it to defineTheme({ ui: { ${primitive}: ${exportName} } }) and edit it. Typed as Skin<'${primitive}'>`,
         "// instead of CompleteSkin, it may leave parts out; those keep classic's recipe.",
-        "import type { CompleteSkin } from '@pterodactyl/sdk/theme';",
+        `import type { ${imported.join(', ')} } from '@pterodactyl/sdk/theme';`,
         '',
-        ...all.filter((statement) => needed.has(declared(statement))).map((statement) => `${statement}\n`),
+        ...printed.map((statement) => `${statement}\n`),
     ].join('\n');
 }
 

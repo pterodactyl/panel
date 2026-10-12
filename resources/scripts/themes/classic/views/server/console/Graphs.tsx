@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
 import { CloudDownload, CloudUpload } from 'lucide-react';
-import { AreaChart, bytesToString, Tooltip, type ChartSeries } from '@/sdk';
+import { AreaChart, bytesToString, ChartCard, cn, Tooltip, type ChartSeries } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 const CYAN = 'var(--chart-1)';
@@ -12,26 +11,12 @@ const NETWORK_SERIES: ChartSeries[] = [
     { dataKey: 'rx', color: YELLOW },
 ];
 
-function ChartBlock({ title, legend, children }: { title: string; legend?: ReactNode; children: ReactNode }) {
-    return (
-        <div className='group relative rounded-sm bg-popover pt-2 shadow-lg border-b-4 border-border'>
-            <div className='flex items-center justify-between px-4 py-2'>
-                <h3 className='font-header font-medium transition-colors duration-100 group-hover:text-foreground'>
-                    {title}
-                </h3>
-                {legend && <p className='text-sm flex items-center'>{legend}</p>}
-            </div>
-            <div className='z-10 ml-2'>{children}</div>
-        </div>
-    );
-}
-
-export default function Graphs({ model }: ViewProps<'server.graphs'>) {
+export default function Graphs({ model, className }: ViewProps<'server.graphs'>) {
     const { live, windowMs } = model;
 
     return (
-        <>
-            <ChartBlock title='CPU Load'>
+        <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4', className)}>
+            <ChartCard title='CPU Load'>
                 <AreaChart
                     data={model.cpu.points}
                     series={VALUE_SERIES}
@@ -40,8 +25,8 @@ export default function Graphs({ model }: ViewProps<'server.graphs'>) {
                     suggestedMax={model.cpu.limit}
                     tickFormatter={(value) => `${value.toFixed(2)}%`}
                 />
-            </ChartBlock>
-            <ChartBlock title='Memory'>
+            </ChartCard>
+            <ChartCard title='Memory'>
                 <AreaChart
                     data={model.memory.points}
                     series={VALUE_SERIES}
@@ -50,8 +35,8 @@ export default function Graphs({ model }: ViewProps<'server.graphs'>) {
                     suggestedMax={model.memory.limit}
                     tickFormatter={(value) => `${value}MiB`}
                 />
-            </ChartBlock>
-            <ChartBlock
+            </ChartCard>
+            <ChartCard
                 title='Network'
                 legend={
                     <>
@@ -71,7 +56,7 @@ export default function Graphs({ model }: ViewProps<'server.graphs'>) {
                     windowMs={windowMs}
                     tickFormatter={bytesToString}
                 />
-            </ChartBlock>
-        </>
+            </ChartCard>
+        </div>
     );
 }

@@ -61,7 +61,15 @@ export function ViewFixtureProvider({ fixtures, models, children }: ViewFixtureS
     return <FixtureContext.Provider value={value}>{children}</FixtureContext.Provider>;
 }
 
-function fixtureModel(definition: ViewDefinition, selection: ViewFixtureSelection): { model: unknown } | undefined {
+/**
+ * A view's model from fixtures: an explicit model, the chosen fixture, the model its inputs give (a card
+ * placed for each server of a list), or its first fixture.
+ */
+function fixtureModel(
+    definition: ViewDefinition,
+    selection: ViewFixtureSelection,
+    inputs: LooseViewInput
+): { model: unknown } | undefined {
     const models = new Map<string, unknown>(Object.entries(selection.models ?? {}));
 
     if (models.has(definition.name)) {
@@ -70,6 +78,12 @@ function fixtureModel(definition: ViewDefinition, selection: ViewFixtureSelectio
 
     const fixtures = new Map(Object.entries(definition.fixtures ?? {}));
     const chosen = new Map<string, string | undefined>(Object.entries(selection.fixtures ?? {})).get(definition.name);
+
+    if (chosen === undefined && definition.fixtureFromInput && Object.keys(inputs).length) {
+        // Inputs are checked against the view's own type where it is placed.
+        return { model: definition.fixtureFromInput(inputs as never) };
+    }
+
     const factory = chosen === undefined ? [...fixtures.values()][0] : fixtures.get(chosen);
 
     if (chosen !== undefined && !factory) {
@@ -424,7 +438,7 @@ function RenderView({ name, optional = false, className, children, ...inputs }: 
         throw new Error(`View "${name}" is not implemented by the module its definition loads.`);
     }
 
-    const fixture = selection ? fixtureModel(definition, selection) : undefined;
+    const fixture = selection ? fixtureModel(definition, selection, inputs) : undefined;
 
     if (!fixture) {
         return (

@@ -108,11 +108,11 @@ function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
     ];
 }
 
-export default function SubuserList({ model }: ViewProps<'server.subusers'>) {
+export default function SubuserList({ model, className }: ViewProps<'server.subusers'>) {
     const tableColumns = useMemo(() => columns(model), [model]);
 
     return (
-        <>
+        <div className={className}>
             {model.canCreate && (
                 <ListToolbar>
                     <NewUserButton model={model} />
@@ -141,6 +141,6 @@ export default function SubuserList({ model }: ViewProps<'server.subusers'>) {
                     </Empty>
                 }
             />
-        </>
+        </div>
     );
 }

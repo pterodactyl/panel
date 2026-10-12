@@ -25,16 +25,12 @@
 
 /*
  * The horizontal geometry of page content (PageContentBlock, ServerContentBlock): at most
- * `--layout-content-width` wide with `--layout-gutter` at the sides, centred from `xl`. A layout's own
- * header uses it to line up with the pages below.
+ * `--layout-content-width` wide, centred, and never closer than `--layout-gutter` to the sides of its
+ * container. A layout's own header uses it to line up with the pages below.
  */
 @utility page-width {
     max-width: var(--layout-content-width);
-    margin-inline: var(--layout-gutter);
-
-    @variant xl {
-        margin-inline: auto;
-    }
+    margin-inline: max(var(--layout-gutter), (100% - var(--layout-content-width)) / 2);
 }
 
 /*
@@ -55,8 +51,10 @@
     --layout-content-width: 75rem;
     --layout-auth-width: 43.75rem;
     --layout-sidebar-width: 16rem;
-    /* Page content's side margins until it centres; the `page-width` utility applies both. */
+    /* The least space beside page content; the `page-width` utility applies both. */
     --layout-gutter: calc(var(--spacing) * 4);
+    /* The space above and below a page's content. */
+    --layout-page-spacing: calc(var(--spacing) * 4);
 
     /* Browser chrome: native widget scheme and the `<meta name="theme-color">` the SPA keeps in sync. */
     --color-scheme: light;
@@ -81,6 +79,7 @@
     --destructive-foreground: var(--primary-foreground);
     --border: oklch(0.858 0.013 248);
     --input: var(--border);
+    --input-border: var(--input);
     --ring: oklch(0.714 0.143 254.6);
     --chart-1: oklch(0.797 0.134 211.5);
     --chart-2: oklch(0.852 0.199 91.936);
@@ -125,6 +124,7 @@
     --destructive-foreground: var(--primary-foreground);
     --border: oklch(0.478 0.027 246.6);
     --input: var(--border);
+    --input-border: var(--input);
     --ring: oklch(0.714 0.143 254.6);
     --chart-1: oklch(0.797 0.134 211.5);
     --chart-2: oklch(0.852 0.199 91.936);
@@ -142,6 +142,12 @@
 /* Recessed surface on a card (progress tracks, code chips); --muted is identical to --card in the dark theme. */
 :root {
     --sunken: color-mix(in oklab, var(--card) 85%, black);
+}
+
+@media (width >= 40rem) {
+    :root {
+        --layout-page-spacing: calc(var(--spacing) * 6);
+    }
 }
 
 /*

@@ -1,5 +1,5 @@
-import { View } from '@/sdk/theme';
+import { View, type ViewProps } from '@/sdk/theme';
 
-export default function CheckpointPage() {
-    return <View name='auth.checkpointForm' />;
+export default function CheckpointPage({ className }: ViewProps<'page.auth.checkpoint'>) {
+    return <View name='auth.checkpointForm' className={className} />;
 }

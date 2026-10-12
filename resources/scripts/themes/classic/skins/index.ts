@@ -1,10 +1,10 @@
 import type { CompleteSkins } from '@/sdk/theme';
 import { button, newButton } from './buttons';
-import { avatar, code, copyOnClick, pagination, table } from './data';
+import { avatar, chartCard, code, copyOnClick, pagination, stat, table } from './data';
 import { alert, badge, empty, progressBar, spinner, spinnerOverlay } from './feedback';
 import { checkbox, fileInput, input, label, numberInput, select, switchSkin, textArea } from './forms';
 import { dialog, dropdownMenu, dropdownMenuItem, tooltip } from './overlays';
-import { card, listRow, pageHeading } from './surfaces';
+import { card, listRow, pageFooter, pageHeading } from './surfaces';
 
 /** The panel's own look: a recipe for every part of every primitive. */
 export const classicSkins = {
@@ -13,6 +13,7 @@ export const classicSkins = {
     Badge: badge,
     Button: button,
     Card: card,
+    ChartCard: chartCard,
     Checkbox: checkbox,
     Code: code,
     CopyOnClick: copyOnClick,
@@ -26,12 +27,14 @@ export const classicSkins = {
     ListRow: listRow,
     NewButton: newButton,
     NumberInput: numberInput,
+    PageFooter: pageFooter,
     PageHeading: pageHeading,
     Pagination: pagination,
     ProgressBar: progressBar,
     Select: select,
     Spinner: spinner,
     SpinnerOverlay: spinnerOverlay,
+    Stat: stat,
     Switch: switchSkin,
     Table: table,
     TextArea: textArea,

@@ -24,9 +24,7 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
                 <View name='server.terminal' />
                 <View name='server.stats' />
             </div>
-            <div className='mt-4 grid gap-4 md:grid-cols-3'>
-                <View name='server.graphs' />
-            </div>
+            <View name='server.graphs' className='mt-4 gap-4' />
             <Slot name='server.console.after' data={model.server} />
             <View name='server.features' />
         </ServerContentBlock>

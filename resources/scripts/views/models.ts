@@ -3,22 +3,29 @@
 export type {
     DashboardModel,
     DashboardScope,
-    ServerCardMetric,
     ServerCardModel,
+    ServerCardPermissions,
     ServerCardState,
     ServerListItem,
     ServerListModel,
-    ServerPower,
+    ServerListPagination,
+    ServerListTotals,
+    ServerUnavailableReason,
 } from './dashboard';
 export type {
+    AccountArea,
     AccountLayoutModel,
+    AdminArea,
     AdminLayoutModel,
     AppArea,
     AppLayoutLink,
     AppLayoutModel,
     AuthLayoutModel,
+    DashboardArea,
     LayoutBrand,
-    ServerConflict,
+    ServerArea,
     ServerLayoutModel,
 } from './layouts';
+export type { ServerConflict } from './server/state';
+export type { AppSearchModel, AppSearchResult } from './search';
 export type { OpaqueModel, OpaquePageName, PageViewName } from './pages';

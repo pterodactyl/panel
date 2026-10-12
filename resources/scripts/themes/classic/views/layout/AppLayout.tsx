@@ -45,13 +45,18 @@ function SchemeMenu({
             {model.schemes.map((scheme) => (
                 <DropdownMenu.Item
                     key={scheme}
-                    className={cn(scheme === model.scheme && 'bg-muted')}
+                    className={cn(scheme === model.preference && 'bg-muted')}
                     onClick={() => setScheme(scheme)}
                 >
                     {schemeLabels[scheme]}
                 </DropdownMenu.Item>
             ))}
-            <DropdownMenu.Item onClick={() => setScheme('system')}>System</DropdownMenu.Item>
+            <DropdownMenu.Item
+                className={cn(model.preference === 'system' && 'bg-muted')}
+                onClick={() => setScheme('system')}
+            >
+                System
+            </DropdownMenu.Item>
         </DropdownMenu>
     );
 }
@@ -101,11 +106,11 @@ function NavigationBar({ model }: { model: AppLayoutModel }) {
     );
 }
 
-export default function AppLayout({ model, children }: ViewProps<'layout.app'>) {
+export default function AppLayout({ model, className, children }: ViewProps<'layout.app'>) {
     return (
-        <>
+        <div className={className}>
             <NavigationBar model={model} />
             <Main>{children}</Main>
-        </>
+        </div>
     );
 }

@@ -6,7 +6,9 @@ import react from '@vitejs/plugin-react-swc';
 import { classicViewSources } from './classic-sources.mjs';
 
 // Loads the engine's view definitions and writes the catalog, keyed by name, `p:extension:doctor` validates names
-// against; `classic` names the file and export `pterodactyl-theme eject` copies.
+// against; `classic` names the file and export `pterodactyl-theme eject` copies. `slots` are the slots a layer of
+// the view renders, `engineSlots` those the engine renders around a page, and `areaSlots` those of the area layouts,
+// which a `layout.app` layer renders where it draws an area's navigation.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const output = resolve(root, 'packages/sdk/views.json');
 const classic = classicViewSources(resolve(root, 'resources/scripts/themes/classic'));
@@ -23,17 +25,28 @@ const server = await createServer({
 let catalog;
 try {
     const { loadViewCatalog } = await server.ssrLoadModule('/resources/scripts/views/catalog.ts');
+    const { pageSlots } = await server.ssrLoadModule('/resources/scripts/views/pages.ts');
+    const views = await loadViewCatalog();
+    const slotsOf = (name) => views.find((view) => view.name === name)?.slots ?? [];
     catalog = Object.fromEntries(
-        (await loadViewCatalog()).map((view) => [
-            view.name,
-            {
-                kind: view.kind,
-                context: view.context,
-                slots: view.slots ?? [],
-                fixtures: Object.keys(view.fixtures ?? {}),
-                ...(classic[view.name] ? { classic: classic[view.name] } : {}),
-            },
-        ])
+        views.map((view) => {
+            const engineSlots = view.kind === 'page' ? [...(pageSlots(view.name) ?? [])] : [];
+
+            return [
+                view.name,
+                {
+                    kind: view.kind,
+                    context: view.context,
+                    slots: (view.slots ?? []).filter((slot) => !engineSlots.includes(slot)),
+                    ...(engineSlots.length ? { engineSlots } : {}),
+                    ...(view.name === 'layout.app'
+                        ? { areaSlots: ['layout.account', 'layout.server', 'layout.admin'].flatMap(slotsOf) }
+                        : {}),
+                    fixtures: Object.keys(view.fixtures ?? {}),
+                    ...(classic[view.name] ? { classic: classic[view.name] } : {}),
+                },
+            ];
+        })
     );
 } finally {
     await server.close();

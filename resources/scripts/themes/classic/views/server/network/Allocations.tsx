@@ -41,7 +41,7 @@ function NotesCell({ model, allocation }: CellProps) {
         <InputSpinner visible={saving}>
             <TextArea
                 aria-label={`Notes for ${allocation.ip}:${allocation.port}`}
-                className='min-h-9 resize-y bg-input hover:border-input border-transparent'
+                className='min-h-9 resize-y bg-input hover:border-input-border border-transparent'
                 placeholder='Notes'
                 defaultValue={allocation.notes || undefined}
                 onChange={(event) => save(event.currentTarget.value)}
@@ -129,18 +129,22 @@ function allocationColumns(model: ServerAllocationsModel): TableColumn<ServerAll
     ];
 }
 
-export default function Allocations({ model }: ViewProps<'server.allocations'>) {
+export default function Allocations({ model, className }: ViewProps<'server.allocations'>) {
     const [creating, track] = usePending();
     const columns = useMemo(() => allocationColumns(model), [model]);
 
     if (model.loading) {
-        return <Spinner size='large' centered />;
+        return (
+            <div className={className}>
+                <Spinner size='large' centered />
+            </div>
+        );
     }
 
     const newAllocationButton = <NewButton onClick={() => track(model.actions.create())}>New allocation</NewButton>;
 
     return (
-        <>
+        <div className={className}>
             <SpinnerOverlay visible={creating} />
             {model.canManage && (
                 <ListToolbar
@@ -168,6 +172,6 @@ export default function Allocations({ model }: ViewProps<'server.allocations'>) 
                     </Empty>
                 }
             />
-        </>
+        </div>
     );
 }

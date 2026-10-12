@@ -56,9 +56,12 @@ export type Skin<N extends PrimitiveName> = { readonly [P in SkinPart<N>]?: Skin
 /** A skin with a recipe for every part, as classic's are. */
 export type CompleteSkin<N extends PrimitiveName> = { readonly [P in SkinPart<N>]: SkinRecipe<PrimitiveState<N>> };
 export type CompleteSkins = { readonly [N in PrimitiveName]: CompleteSkin<N> };
-/** Each part's classes as resolved from the layers below, which an extending skin builds on. */
+/**
+ * Each part's classes as resolved from the layers below, which an extending skin builds on. `extra`
+ * merges in: a class of it replaces the class below it conflicts with, as `cn` does.
+ */
 export type ResolvedSkin<N extends PrimitiveName> = {
-    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>) => string;
+    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>, extra?: SkinClassName) => string;
 };
 /** `skin(name, (parent) => ({ ... }))`: a skin computed from the layers below it. */
 export interface SkinExtension<N extends PrimitiveName> {
@@ -118,7 +121,7 @@ interface SkinLayer {
 // Resolution reads every primitive's recipes alike: state as a map, parts by name.
 type Resolver = (state: SkinStateMap) => string;
 type ErasedSkin = { readonly [part: string]: SkinRecipe<SkinStateMap> | undefined };
-type ErasedParent = { readonly [part: string]: Resolver };
+type ErasedParent = { readonly [part: string]: (state: SkinStateMap, extra?: SkinClassName) => string };
 type ErasedExtension = ((parent: ErasedParent) => ErasedSkin) & { readonly skinExtension: string };
 type LayerEntry =
     | { readonly kind: 'skin'; readonly skin: ErasedSkin }
@@ -235,7 +238,13 @@ function resolve(name: PrimitiveName): Resolution {
     const parts: readonly string[] = UI_PRIMITIVES[name].parts;
     const resolvers = new Map<string, Resolver>();
     const complete = (): ErasedParent =>
-        Object.fromEntries(parts.map((part) => [part, resolvers.get(part) ?? noClasses]));
+        Object.fromEntries(
+            parts.map((part) => {
+                const resolver = resolvers.get(part) ?? noClasses;
+
+                return [part, (state: SkinStateMap, extra?: SkinClassName) => cn(resolver(state), extra)];
+            })
+        );
     let component: ComponentType<never> | undefined;
 
     for (const layer of layers) {

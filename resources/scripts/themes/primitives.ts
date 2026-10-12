@@ -3,14 +3,17 @@ import type { AvatarProps, AvatarVariant } from '@/components/Avatar';
 import type { BadgeProps, BadgeSize, BadgeVariant } from '@/components/elements/Badge';
 import type { ButtonColor, ButtonProps, ButtonSize } from '@/components/elements/Button';
 import type { CardProps } from '@/components/elements/Card';
+import type { ChartCardProps } from '@/components/elements/ChartCard';
 import type { DialogIconProps } from '@/components/elements/dialog/types';
 import type { EmptyMediaVariant, EmptyProps, EmptySize } from '@/components/ui/empty';
 import type { ListRowProps } from '@/components/elements/ListRow';
+import type { PageFooterProps } from '@/components/elements/PageFooter';
 import type { PageHeadingProps } from '@/components/elements/PageHeading';
 import type { ProgressBarProps, ProgressBarVariant } from '@/components/elements/ProgressBar';
 import type { SpinnerProps, SpinnerSize } from '@/components/elements/Spinner';
+import type { StatProps, StatVariant } from '@/components/elements/Stat';
 
-/** The colour roles shared by tone variants (Badge, ProgressBar). */
+/** The colour roles shared by tone variants (Badge, ProgressBar, Stat, ListRow's status). */
 export type UiTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'accent';
 type ControlState = { light: boolean; error: boolean };
 /** A primitive whose recipes read no state. */
@@ -33,6 +36,10 @@ export interface UiPrimitives {
         state: { tone: UiTone; size: BadgeSize; variant: BadgeVariant };
         props: BadgeProps;
     };
+    /**
+     * `label` wraps the children in a row with a gap, so an icon beside the text needs no margin.
+     * `Button.Text` is `color: grey` and `Button.Danger` is `color: red`.
+     */
     Button: {
         parts: 'root' | 'spinner' | 'label';
         state: { color: ButtonColor; size: ButtonSize; secondary: boolean; loading: boolean };
@@ -43,6 +50,8 @@ export interface UiPrimitives {
         state: { titled: boolean; actions: boolean; loading: boolean };
         props: CardProps;
     };
+    /** The frame of a chart: `legend` sits at the end of the header, `body` holds the chart. */
+    ChartCard: { parts: 'root' | 'header' | 'title' | 'legend' | 'body'; state: NoState; props: ChartCardProps };
     Checkbox: { parts: 'root' | 'indicator'; state: NoState };
     Code: { parts: 'root'; state: { dark: boolean } };
     /** `target` is added to the clicked child; the other parts are the status toast. */
@@ -83,10 +92,17 @@ export interface UiPrimitives {
     FileInput: { parts: 'root'; state: NoState };
     Input: { parts: 'root'; state: ControlState };
     Label: { parts: 'root'; state: { light: boolean } };
-    ListRow: { parts: 'root'; state: { interactive: boolean }; props: ListRowProps };
+    /** `icon` is `ListRow.Icon`, placed by the row's content; `status` is drawn when the row has a `status`. */
+    ListRow: {
+        parts: 'root' | 'icon' | 'status';
+        state: { interactive: boolean; status?: UiTone };
+        props: ListRowProps;
+    };
     /** `root` is added to the Button it renders, `content` wraps the icon and label. */
     NewButton: { parts: 'root' | 'content' | 'icon'; state: { link: boolean } };
     NumberInput: { parts: 'root' | 'input'; state: ControlState };
+    /** The copyright line below each page; a replacement that renders nothing drops it. */
+    PageFooter: { parts: 'root' | 'text' | 'link'; state: NoState; props: PageFooterProps };
     PageHeading: {
         parts: 'root' | 'text' | 'title' | 'description' | 'actions';
         state: NoState;
@@ -117,12 +133,23 @@ export interface UiPrimitives {
             | 'preview';
         state: { error: boolean; multiple: boolean; selected: boolean; richLabel: boolean; searching: boolean };
     };
+    /**
+     * `root` is the spinning element, an empty `span` with no text or role: the region that loads
+     * announces it. `container` centres it when `centered`. A skin can animate anything, such as the
+     * `content` of `::before`.
+     */
     Spinner: {
         parts: 'root' | 'container';
         state: { size: SpinnerSize; blue: boolean; centered: boolean };
         props: SpinnerProps;
     };
     SpinnerOverlay: { parts: 'root' | 'text'; state: { fixed: boolean } };
+    /** `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. */
+    Stat: {
+        parts: 'root' | 'indicator' | 'icon' | 'glyph' | 'body' | 'label' | 'value' | 'limit';
+        state: { variant: StatVariant; tone: UiTone };
+        props: StatProps;
+    };
     /** `label` is added to the Label it renders. */
     Switch: {
         parts: 'root' | 'control' | 'thumb' | 'text' | 'label' | 'description';
@@ -159,6 +186,7 @@ export const UI_PRIMITIVES = {
     Badge: { parts: ['root'], replaceable: true },
     Button: { parts: ['root', 'spinner', 'label'], replaceable: true },
     Card: { parts: ['root', 'header', 'title', 'icon', 'actions', 'body'], replaceable: true },
+    ChartCard: { parts: ['root', 'header', 'title', 'legend', 'body'], replaceable: true },
     Checkbox: { parts: ['root', 'indicator'], replaceable: false },
     Code: { parts: ['root'], replaceable: false },
     CopyOnClick: { parts: ['root', 'status', 'message', 'target'], replaceable: false },
@@ -190,9 +218,10 @@ export const UI_PRIMITIVES = {
     FileInput: { parts: ['root'], replaceable: false },
     Input: { parts: ['root'], replaceable: false },
     Label: { parts: ['root'], replaceable: false },
-    ListRow: { parts: ['root'], replaceable: true },
+    ListRow: { parts: ['root', 'icon', 'status'], replaceable: true },
     NewButton: { parts: ['root', 'content', 'icon'], replaceable: false },
     NumberInput: { parts: ['root', 'input'], replaceable: false },
+    PageFooter: { parts: ['root', 'text', 'link'], replaceable: true },
     PageHeading: { parts: ['root', 'text', 'title', 'description', 'actions'], replaceable: true },
     Pagination: { parts: ['root', 'page'], replaceable: false },
     ProgressBar: { parts: ['root', 'indicator'], replaceable: true },
@@ -217,6 +246,7 @@ export const UI_PRIMITIVES = {
     },
     Spinner: { parts: ['root', 'container'], replaceable: true },
     SpinnerOverlay: { parts: ['root', 'text'], replaceable: false },
+    Stat: { parts: ['root', 'indicator', 'icon', 'glyph', 'body', 'label', 'value', 'limit'], replaceable: true },
     Switch: { parts: ['root', 'control', 'thumb', 'text', 'label', 'description'], replaceable: false },
     Table: {
         parts: ['root', 'empty', 'scroller', 'table', 'head', 'headerRow', 'headerCell', 'body', 'row', 'cell'],

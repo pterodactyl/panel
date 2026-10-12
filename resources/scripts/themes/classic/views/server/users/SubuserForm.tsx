@@ -264,7 +264,7 @@ function FormContent({
 }
 
 /** Invites a subuser, or edits one in a dialog when the view is given `onClose`. */
-export default function SubuserForm({ model, onClose }: ViewProps<'server.subuserForm'>) {
+export default function SubuserForm({ model, onClose, className }: ViewProps<'server.subuserForm'>) {
     const defaultValues: Values = { email: model.values.email, permissions: [...model.values.permissions] };
     const form = useAppForm({
         defaultValues,
@@ -276,7 +276,11 @@ export default function SubuserForm({ model, onClose }: ViewProps<'server.subuse
     return (
         <form.Subscribe selector={(state) => state.isSubmitting}>
             {(submitting) => {
-                const content = <FormContent form={form} model={model} submitting={submitting} />;
+                const content = (
+                    <div className={className}>
+                        <FormContent form={form} model={model} submitting={submitting} />
+                    </div>
+                );
 
                 if (!onClose) {
                     return content;

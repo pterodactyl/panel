@@ -77,6 +77,7 @@ import {
     Badge,
     Button,
     Card,
+    ChartCard,
     Checkbox,
     Code,
     ContentBox,
@@ -90,12 +91,14 @@ import {
     ListRow,
     NewButton,
     NumberInput,
+    PageFooter,
     PageHeading,
     Pagination,
     ProgressBar,
     Select,
     Spinner,
     SpinnerOverlay,
+    Stat,
     Switch,
     Table,
     TextArea,
@@ -128,7 +131,10 @@ export interface UiPrimitiveComponents {
     Label: typeof Label;
     Card: typeof Card;
     ListRow: typeof ListRow;
+    Stat: typeof Stat;
+    ChartCard: typeof ChartCard;
     PageHeading: typeof PageHeading;
+    PageFooter: typeof PageFooter;
     Badge: typeof Badge;
     Alert: typeof Alert;
     ProgressBar: typeof ProgressBar;
@@ -160,7 +166,10 @@ const uiPrimitives: UiPrimitiveComponents = {
     Label,
     Card,
     ListRow,
+    Stat,
+    ChartCard,
     PageHeading,
+    PageFooter,
     Badge,
     Alert,
     ProgressBar,
@@ -562,6 +571,8 @@ export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions 
     fixture?: string;
     model?: ViewModel<N>;
     input?: ViewInput<N>;
+    /** Passed to the view as `<View className>` would; it lands on the view's root element. */
+    className?: string;
     /** Components to mount in slots, as an extension's `slots.register` would. */
     slots?: TestSlots;
     /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
@@ -667,7 +678,7 @@ export function renderView<N extends ViewName>(name: N, options: RenderViewOptio
 
     return mount(
         <ViewFixtureProvider fixtures={fixtures} models={models}>
-            <LooseView name={name} {...Object(options.input ?? {})} />
+            <LooseView name={name} className={options.className} {...Object(options.input ?? {})} />
         </ViewFixtureProvider>,
         { themes, slots: options.slots, strict: options.strict }
     );

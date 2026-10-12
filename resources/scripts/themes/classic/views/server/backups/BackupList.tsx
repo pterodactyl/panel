@@ -148,14 +148,14 @@ function EmptyBackups({ model }: { model: BackupListModel }) {
     );
 }
 
-export default function BackupList({ model }: ViewProps<'server.backups'>) {
+export default function BackupList({ model, className }: ViewProps<'server.backups'>) {
     const tableColumns = useMemo(() => columns(model), [model]);
     const usage = backupUsage(model);
     const canAdd = canAddBackup(model);
     const { pending } = model;
 
     return (
-        <>
+        <div className={className}>
             {(usage || canAdd) && (
                 <ListToolbar summary={usage}>{canAdd && <CreateBackupButton model={model} />}</ListToolbar>
             )}
@@ -171,6 +171,6 @@ export default function BackupList({ model }: ViewProps<'server.backups'>) {
                     onPageSelect: model.actions.setPage,
                 }}
             />
-        </>
+        </div>
     );
 }

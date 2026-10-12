@@ -11,6 +11,7 @@ import {
     type ScreenOptions,
 } from '@/extensions/registry';
 import { publishAreaNav } from '@/router/nav';
+import { resolvePanelDestination } from '@/sdk/navigation';
 import {
     createExtensionTestHost,
     createTestServer,
@@ -130,11 +131,13 @@ it('lists the server items the subuser may open and whose egg rules match', asyn
         to: '/server/$id/files',
         params: { id: 'abc' },
         hash: '/',
+        destination: { to: '/server/$id/files', params: { id: 'abc' }, hash: '/' },
         icon: null,
         group: null,
         order: 1,
         exact: false,
     });
+    expect(resolvePanelDestination(listed()[1]!.destination)).toEqual({ pathname: '/server/abc/files', hash: '/' });
     expect(listed()[2]).toMatchObject({
         id: 'domains',
         extensionId: 'tabs',
@@ -203,6 +206,7 @@ it('builds admin resource tabs from its own and the extension screens beneath it
             label: 'About',
             to: '/panel/nodes/$id',
             params: { id: '42' },
+            destination: { to: '/panel/nodes/$id', params: { id: '42' } },
             icon: null,
             group: null,
             order: 0,
@@ -213,6 +217,7 @@ it('builds admin resource tabs from its own and the extension screens beneath it
             label: 'Probe',
             to: '/panel/nodes/$id/probe',
             params: { id: '42' },
+            destination: { to: '/panel/nodes/$id/probe', params: { id: '42' } },
             icon: null,
             group: null,
             order: 1,

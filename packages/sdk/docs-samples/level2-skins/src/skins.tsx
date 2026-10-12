@@ -55,9 +55,18 @@ const button = skin('Button', {
 // #endregion function
 
 // #region extend
-/** Builds on the layers below: `below.root(state)` is their classes for the part. */
+/**
+ * Builds on the layers below: `below.root(state)` is their classes for the part, and `below.root(state, extra)`
+ * merges `extra` in, so `rounded-lg` replaces their `rounded-sm` instead of sitting beside it.
+ */
 const card = skin('Card', (below) => ({
-    root: (state) => `${below.root(state)} ring-1 ring-border/60`,
+    root: (state) => below.root(state, 'rounded-lg ring-1 ring-border/60'),
+}));
+
+/** Stat values in tabular figures, and labels in the body face, on top of classic's stats. */
+const stat = skin('Stat', (below) => ({
+    value: (state) => below.value(state, 'tabular-nums'),
+    label: (state) => below.label(state, 'font-sans uppercase tracking-wide'),
 }));
 // #endregion extend
 
@@ -79,6 +88,7 @@ export const skins = {
     Badge: badge,
     Button: button,
     Card: card,
+    Stat: stat,
     Alert: Banner,
 } satisfies ThemeSkins;
 // #endregion skins

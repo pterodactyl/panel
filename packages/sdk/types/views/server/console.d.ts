@@ -2,10 +2,9 @@
 import { type ComponentType } from 'react';
 import type { Server } from "../../api/server/types.js";
 import { type ServerGraphPoint, type ServerNetworkPoint } from "../../components/server/console/chart.js";
+import { type ServerRunState, type ServerStatMetric } from "./state.js";
 import "./features.js";
-export type { ServerGraphPoint, ServerNetworkPoint };
-/** What Wings reports the server doing; null until it has. */
-export type ServerRunState = 'offline' | 'starting' | 'running' | 'stopping';
+export type { ServerGraphPoint, ServerNetworkPoint, ServerRunState, ServerStatMetric };
 export interface ServerConsoleModel {
     readonly name: string;
     readonly description: string | null;
@@ -71,13 +70,6 @@ export interface ServerPowerModel {
     };
     /** The server as the API returns it, which the power slots receive. */
     readonly server: Server;
-}
-/** A usage value against its limit, where a limit of 0 means unlimited. */
-export interface ServerStatMetric {
-    readonly value: number;
-    readonly limit: number;
-    /** Above 80% of the limit warns, above 90% is critical. */
-    readonly alarm: 'warning' | 'critical' | null;
 }
 export interface ServerStatsModel {
     readonly state: ServerRunState | null;

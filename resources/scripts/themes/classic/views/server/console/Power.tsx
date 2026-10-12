@@ -1,14 +1,14 @@
-import { Button, cn, Dialog } from '@/sdk';
+import { Button, Dialog } from '@/sdk';
 import { Slot, type ViewProps } from '@/sdk/theme';
 
 export default function Power({ model, className }: ViewProps<'server.power'>) {
     const { permissions, enabled, actions } = model;
 
     return (
-        <>
+        <div className={className}>
             <Slot name='server.console.power.before' data={model.server} />
             {(permissions.start || permissions.stop || permissions.restart) && (
-                <div className={cn('flex sm:justify-end space-x-2', className)}>
+                <div className='flex sm:justify-end space-x-2'>
                     {permissions.start && (
                         <Button className='flex-1' disabled={!enabled.start} onClick={actions.start}>
                             Start
@@ -51,6 +51,6 @@ export default function Power({ model, className }: ViewProps<'server.power'>) {
                 </div>
             )}
             <Slot name='server.console.power.after' data={model.server} />
-        </>
+        </div>
     );
 }

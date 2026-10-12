@@ -128,9 +128,9 @@ function AdminSidebar({ nav }: { nav: NavigationModel }) {
     );
 }
 
-export default function AdminLayout({ model, children }: ViewProps<'layout.admin'>) {
+export default function AdminLayout({ model, className, children }: ViewProps<'layout.admin'>) {
     return (
-        <div className='mx-auto flex w-full max-w-panel flex-col lg:flex-row'>
+        <div className={cn('mx-auto flex w-full max-w-panel flex-col lg:flex-row', className)}>
             <AdminSidebar nav={model.nav} />
             <div className='min-w-0 flex-1 xl:pl-4'>
                 <Main>{children}</Main>

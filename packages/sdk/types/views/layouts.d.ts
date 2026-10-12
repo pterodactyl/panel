@@ -2,9 +2,8 @@
 import type { Server } from "../api/server/types.js";
 import type { CorePanelDestination } from "../sdk/navigation.js";
 import { type NavigationModel, type NavItem } from "./navigation.js";
-import type { OpaqueModel } from "./pages.js";
-import type { ServerRunState } from "./server/console.js";
-import { type ThemeScheme } from "./theme.js";
+import { type ServerConflict, type ServerRunState } from "./server/state.js";
+import { type ThemeScheme, type ThemeSchemePreference } from "./theme.js";
 export interface LayoutBrand {
     /** The panel's name. */
     readonly name: string;
@@ -35,19 +34,20 @@ export interface AppLayoutModel {
         readonly email: string;
         readonly rootAdmin: boolean;
     };
+    /** The scheme in use. */
     readonly scheme: ThemeScheme;
+    /** What the user chose, `system` included; a scheme switch shows this one as selected. */
+    readonly preference: ThemeSchemePreference;
     /** The schemes the theme offers; the first is its default. */
     readonly schemes: readonly ThemeScheme[];
     /** Switches the scheme without a reload; null unless the theme offers more than one. */
-    readonly setScheme: ((preference: ThemeScheme | 'system') => void) | null;
+    readonly setScheme: ((preference: ThemeSchemePreference) => void) | null;
     readonly signOut: () => void;
     readonly signingOut: boolean;
 }
 export interface AccountLayoutModel {
     readonly nav: NavigationModel;
 }
-/** Why a server's pages show a notice instead of their content. */
-export type ServerConflict = 'installing' | 'suspended' | 'maintenance' | 'transferring' | 'restoring-backup';
 /**
  * The server area's frame. Its `children` already hold the server's console, which stays mounted
  * while another page shows, and swap the pages for the conflict notice when `conflict` is set.
@@ -75,19 +75,27 @@ export interface AdminLayoutModel {
         readonly email: string;
     };
 }
-/**
- * The area `layout.app` renders: the dashboard (and any page outside the areas below), or an area with
- * the model of its own layout, which `layout.app` renders around the area's pages.
- */
-export type AppArea = {
+/** The dashboard, and any page outside the areas below. */
+export interface DashboardArea {
     readonly kind: 'dashboard';
-} | ({
+}
+/** The account area, with the model of `layout.account`. */
+export interface AccountArea extends AccountLayoutModel {
     readonly kind: 'account';
-} & AccountLayoutModel) | ({
+}
+/** A server's area, with the model of `layout.server`. */
+export interface ServerArea extends ServerLayoutModel {
     readonly kind: 'server';
-} & ServerLayoutModel) | ({
+}
+/** The admin area, with the model of `layout.admin`. */
+export interface AdminArea extends AdminLayoutModel {
     readonly kind: 'admin';
-} & AdminLayoutModel);
+}
+/**
+ * The area `layout.app` renders: the dashboard, or an area with the model of its own layout, which
+ * `layout.app` renders around the area's pages.
+ */
+export type AppArea = DashboardArea | AccountArea | ServerArea | AdminArea;
 declare module './registry' {
     interface ViewModels {
         'layout.auth': AuthLayoutModel;
@@ -95,7 +103,5 @@ declare module './registry' {
         'layout.account': AccountLayoutModel;
         'layout.server': ServerLayoutModel;
         'layout.admin': AdminLayoutModel;
-        'app.search': OpaqueModel;
     }
 }
-export declare function serverConflict({ attributes }: Server): ServerConflict | null;

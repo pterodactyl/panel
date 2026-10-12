@@ -174,7 +174,7 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                             onConfirmed={(_event, close) => onDelete(close)}
                             trigger={({ onClick }) => (
                                 <Button type='button' color='red' isSecondary className='mr-2' onClick={onClick}>
-                                    <Icon icon={Trash2} className='mr-2' />
+                                    <Icon icon={Trash2} />
                                     Delete Location
                                 </Button>
                             )}

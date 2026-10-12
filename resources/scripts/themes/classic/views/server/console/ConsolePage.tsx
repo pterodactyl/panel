@@ -7,9 +7,9 @@ const notices = {
     transferring: 'This server is currently being transferred to another node and all actions are unavailable.',
 } satisfies Record<NonNullable<ServerConsoleModel['notice']>, string>;
 
-export default function ConsolePage({ model, active }: ViewProps<'page.server.console'>) {
+export default function ConsolePage({ model, active, className }: ViewProps<'page.server.console'>) {
     return (
-        <ServerContentBlock title={active ? 'Console' : undefined}>
+        <ServerContentBlock title={active ? 'Console' : undefined} className={className}>
             {model.notice && (
                 <Alert type='warning' className='mb-4'>
                     {notices[model.notice]}
@@ -33,9 +33,7 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
                 </div>
                 <View name='server.stats' className='col-span-4 lg:col-span-1 order-last lg:order-0' />
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4'>
-                <View name='server.graphs' />
-            </div>
+            <View name='server.graphs' />
             <Slot name='server.console.after' data={model.server} />
             <View name='server.features' />
         </ServerContentBlock>

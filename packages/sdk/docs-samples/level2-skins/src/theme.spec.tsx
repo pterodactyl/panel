@@ -15,13 +15,23 @@ test('replaces the button root and keeps its state attributes', () => {
     expect(button?.dataset).toMatchObject({ ui: 'button', part: 'root', color: 'red' });
 });
 
-test('adds a ring to the card the layers below draw', () => {
+test('adds a ring to the card the layers below draw, replacing their corners', () => {
     rendered = renderPrimitive('Card', { title: 'Resources', children: 'Usage' }, { theme });
 
     const card = rendered.container.querySelector('[data-ui="card"][data-part="root"]');
 
     expect(card?.className).toContain('ring-1 ring-border/60');
     expect(card?.className).toContain('bg-card');
+    expect(card?.classList.contains('rounded-lg')).toBe(true);
+    expect(card?.classList.contains('rounded-sm')).toBe(false);
+});
+
+test('sets stat values in tabular figures', () => {
+    rendered = renderPrimitive('Stat', { label: 'Memory', value: '1.4 GiB', limit: '/ 2 GiB' }, { theme });
+
+    expect(rendered.container.querySelector('[data-ui="stat"][data-part="value"]')?.className).toContain(
+        'tabular-nums'
+    );
 });
 
 test('draws alerts with the replacement component', () => {

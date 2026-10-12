@@ -380,9 +380,15 @@ it('renders a view measuring itself without stubbing browser APIs', () => {
     unmount();
 });
 
-it('renders nested views from their fixtures', () => {
+it('renders nested views from their fixtures, each from the inputs it is placed with', () => {
     const { container } = renderView('dashboard.serverList', { fixture: 'servers' });
+    const creative = container.querySelector('a[aria-label="Creative"]');
 
-    expect(container.querySelector('a[aria-label="Creative"]')).toHaveAttribute('href', '/server/e5f6a7b8');
-    expect(container.querySelectorAll('.status-bar')).toHaveLength(2);
+    expect(creative).toHaveAttribute('href', '/server/e5f6a7b8');
+    // Each row's card is its own server's, with the state of its row.
+    expect(creative).toHaveTextContent('Creative');
+    expect(creative).toHaveAttribute('data-status', 'danger');
+    expect(container.querySelector('a[aria-label="Survival"]')).toHaveTextContent('Survival');
+    expect(container.querySelector('a[aria-label="Lobby"]')).toHaveTextContent('Suspended');
+    expect(container.querySelectorAll('[data-ui="list-row"][data-part="status"]')).toHaveLength(3);
 });

@@ -1,7 +1,5 @@
 import { Badge, Card, ProgressBar, bytesToString } from '@pterodactyl/sdk';
-import type { ServerStatMetric, UiTone, ViewProps } from '@pterodactyl/sdk/theme';
-
-const tones: Record<NonNullable<ServerStatMetric['alarm']>, UiTone> = { warning: 'warning', critical: 'danger' };
+import type { ServerStatMetric, ViewProps } from '@pterodactyl/sdk/theme';
 
 /** A limit of 0 is unlimited, which has no percentage to show. */
 const percent = ({ value, limit }: ServerStatMetric) => (limit > 0 ? Math.min((value / limit) * 100, 100) : null);
@@ -24,7 +22,7 @@ function Meter({
                     {metric.limit > 0 && <span className='text-muted-foreground'> / {format(metric.limit)}</span>}
                 </span>
             </div>
-            <ProgressBar value={percent(metric)} label={label} tone={metric.alarm ? tones[metric.alarm] : 'accent'} />
+            <ProgressBar value={percent(metric)} label={label} tone={metric.alarm ?? 'accent'} />
         </div>
     );
 }

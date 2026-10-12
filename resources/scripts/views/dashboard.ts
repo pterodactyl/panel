@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useCurrentUser } from '@/api/account/queries';
 import {
@@ -9,40 +9,47 @@ import {
     useServerResourceUsage,
     type ClientStatsAttributes,
 } from '@/api/account/servers/queries';
+import { sendPowerActionInput, useSendPowerAction, type ServerPowerSignal } from '@/api/server/power/queries';
+import { selectServerPermissions } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
 import { httpErrorToHuman } from '@/api/http';
 import { relationshipData } from '@/api/relationships';
 import { ip, mbToBytes } from '@/lib/formatters';
+import { hasPermission } from '@/plugins/usePermissions';
 import { getPageSearch, useDashboardSearch } from '@/router/pageSearch';
 import { createTestServer, createTestServerCard } from './fixtures';
 import { implementViews } from './registry';
+import {
+    runState,
+    serverConflict,
+    statMetric,
+    type ServerConflict,
+    type ServerRunState,
+    type ServerStatMetric,
+} from './server/state';
 
-export type ServerPower = 'offline' | 'stopped' | 'starting' | 'running' | 'stopping';
-export interface ServerCardMetric {
-    readonly value: number;
-    readonly limit: number;
-    readonly alarm: boolean;
-}
+/** Why a server's card shows a notice instead of its usage: a conflict, or Wings cannot be reached. */
+export type ServerUnavailableReason = ServerConflict | 'connection-error' | 'unavailable';
 export type ServerCardState =
     | { readonly kind: 'loading' }
-    | {
-          readonly kind: 'unavailable';
-          readonly reason:
-              | 'suspended'
-              | 'connection-error'
-              | 'maintenance'
-              | 'transferring'
-              | 'installing'
-              | 'restoring-backup'
-              | 'unavailable';
-      }
+    | { readonly kind: 'unavailable'; readonly reason: ServerUnavailableReason }
     | {
           readonly kind: 'ready';
-          readonly power: ServerPower;
-          readonly cpu: ServerCardMetric;
-          readonly memory: ServerCardMetric;
-          readonly disk: ServerCardMetric;
+          readonly power: ServerRunState;
+          /** Percent of one core. */
+          readonly cpu: ServerStatMetric;
+          /** Bytes. */
+          readonly memory: ServerStatMetric;
+          /** Bytes. */
+          readonly disk: ServerStatMetric;
       };
+/** What the user may do with the server, by their subuser permissions. */
+export interface ServerCardPermissions {
+    readonly start: boolean;
+    readonly stop: boolean;
+    readonly restart: boolean;
+    readonly console: boolean;
+}
 export interface ServerCardModel {
     readonly identifier: string;
     readonly uuid: string;
@@ -50,6 +57,11 @@ export interface ServerCardModel {
     readonly description: string | null;
     readonly address: string | null;
     readonly state: ServerCardState;
+    readonly permissions: ServerCardPermissions;
+    /** Send a power signal through the client API, with no console connection; the panel reports a failure. */
+    readonly actions: { readonly start: () => void; readonly stop: () => void; readonly restart: () => void };
+    /** A power signal is on its way. */
+    readonly sending: boolean;
 }
 
 /** Whose servers the dashboard lists; only root admins can list other users' servers. */
@@ -59,10 +71,9 @@ export interface DashboardModel {
     readonly error: string | null;
     readonly retry: () => void;
 }
-export interface ServerListItem {
+/** A server of the list: its card's model, with the server as the API returns it for the row slots and the card. */
+export interface ServerListItem extends ServerCardModel {
     readonly server: Server;
-    /** Null until the server reports its power state, or while it cannot. */
-    readonly power: ServerPower | null;
 }
 export interface ServerListPagination {
     readonly total: number;
@@ -71,8 +82,17 @@ export interface ServerListPagination {
     readonly currentPage: number;
     readonly totalPages: number;
 }
+export interface ServerListTotals {
+    /** Servers on every page, from the pagination; 0 until the first page loads. */
+    readonly servers: number;
+    /** Running servers on the loaded page only. */
+    readonly runningOnPage: number;
+    /** Offline servers on the loaded page only; unavailable and loading servers are neither. */
+    readonly offlineOnPage: number;
+}
 export interface ServerListModel {
     readonly servers: readonly ServerListItem[];
+    readonly totals: ServerListTotals;
     /** The page has not loaded yet. */
     readonly loading: boolean;
     readonly pagination: ServerListPagination | null;
@@ -122,21 +142,124 @@ function useDashboardModel(): DashboardModel {
 const tracksResources = ({ attributes }: Server): boolean =>
     attributes.status !== 'suspended' && !attributes.is_node_under_maintenance && attributes.uuid.length > 0;
 
-const powerStates = (results: { data?: { attributes: ClientStatsAttributes } }[]) =>
-    results.map((result) => result.data?.attributes.current_state ?? null);
+function resolveState(server: Server, stats: ClientStatsAttributes | undefined): ServerCardState {
+    const { attributes } = server;
+
+    if (stats?.is_suspended || attributes.status === 'suspended') {
+        return { kind: 'unavailable', reason: attributes.status === 'suspended' ? 'suspended' : 'connection-error' };
+    }
+
+    if (attributes.is_node_under_maintenance) {
+        return { kind: 'unavailable', reason: 'maintenance' };
+    }
+
+    if (stats) {
+        const { limits } = attributes;
+
+        return {
+            kind: 'ready',
+            power: runState(stats.current_state),
+            cpu: statMetric(stats.resources.cpu_absolute, limits.cpu),
+            memory: statMetric(stats.resources.memory_bytes, mbToBytes(limits.memory)),
+            disk: statMetric(stats.resources.disk_bytes, mbToBytes(limits.disk)),
+        };
+    }
+
+    if (attributes.is_transferring) {
+        return { kind: 'unavailable', reason: 'transferring' };
+    }
+
+    if (attributes.status === 'installing') {
+        return { kind: 'unavailable', reason: 'installing' };
+    }
+
+    if (attributes.status === 'restoring_backup') {
+        return { kind: 'unavailable', reason: 'restoring-backup' };
+    }
+
+    return attributes.status ? { kind: 'unavailable', reason: 'unavailable' } : { kind: 'loading' };
+}
+
+function cardPermissions(server: Server): ServerCardPermissions {
+    const granted = selectServerPermissions(server);
+
+    return {
+        start: hasPermission(granted, 'control.start'),
+        stop: hasPermission(granted, 'control.stop'),
+        restart: hasPermission(granted, 'control.restart'),
+        console: hasPermission(granted, 'control.console'),
+    };
+}
+
+const primaryAddress = ({ attributes }: Server): string | null =>
+    relationshipData(attributes.relationships?.allocations)
+        .filter((allocation) => allocation.attributes.is_default)
+        .map(({ attributes: allocation }) => `${allocation.ip_alias || ip(allocation.ip)}:${allocation.port}`)
+        .join('') || null;
+
+interface PowerSender {
+    send(uuid: string, signal: ServerPowerSignal): void;
+    /** The server a signal is on its way to. */
+    readonly sending: string | null;
+}
+
+/** Sends power signals through the client API and refreshes the server's usage once Wings accepts one. */
+function usePowerSender(): PowerSender {
+    const queryClient = useQueryClient();
+    const { mutate, isPending, variables } = useSendPowerAction();
+
+    return useMemo(
+        () => ({
+            send: (uuid, signal) =>
+                mutate(sendPowerActionInput(uuid, signal), {
+                    onSuccess: () =>
+                        void queryClient.invalidateQueries({
+                            queryKey: serverResourceUsageQueryOptions(uuid).queryKey,
+                        }),
+                }),
+            sending: isPending ? (variables?.path.server_uuid ?? null) : null,
+        }),
+        [mutate, isPending, variables, queryClient]
+    );
+}
+
+function cardModel(server: Server, stats: ClientStatsAttributes | undefined, power: PowerSender): ServerCardModel {
+    const { identifier, uuid, name, description } = server.attributes;
+    const send = (signal: ServerPowerSignal) => () => power.send(uuid, signal);
+
+    return {
+        identifier,
+        uuid,
+        name,
+        description,
+        address: primaryAddress(server),
+        state: resolveState(server, stats),
+        permissions: cardPermissions(server),
+        actions: { start: send('start'), stop: send('stop'), restart: send('restart') },
+        sending: power.sending === uuid,
+    };
+}
+
+const usageOf = (results: { data?: { attributes: ClientStatsAttributes } }[]) =>
+    results.map((result) => result.data?.attributes);
+
+const countPower = (items: readonly ServerListItem[], power: ServerRunState): number =>
+    items.filter(({ state }) => state.kind === 'ready' && state.power === power).length;
 
 function useServerListModel(): ServerListModel {
     const navigate = useNavigate();
     const { query, scope, rootAdmin } = useServerListQuery();
     const servers = query.data;
-    const power = useQueries({
+    const power = usePowerSender();
+    // The same cache entries as the cards' own queries, so a card and its row never poll twice.
+    const usage = useQueries({
         queries: (servers?.data ?? []).map((server) =>
             Object.assign(serverResourceUsageQueryOptions(server.attributes.uuid), {
                 enabled: tracksResources(server),
                 refetchInterval: serverResourceUsageRefetchInterval,
             })
         ),
-        combine: powerStates,
+        combine: usageOf,
     });
     const type = scope === 'others' ? 'admin' : undefined;
 
@@ -148,9 +271,17 @@ function useServerListModel(): ServerListModel {
 
     return useMemo(() => {
         const pagination = servers?.meta.pagination;
+        const items = (servers?.data ?? []).map((server, index) =>
+            Object.assign(cardModel(server, usage[index], power), { server })
+        );
 
         return {
-            servers: (servers?.data ?? []).map((server, index) => ({ server, power: power[index] ?? null })),
+            servers: items,
+            totals: {
+                servers: pagination?.total ?? 0,
+                runningOnPage: countPower(items, 'running'),
+                offlineOnPage: countPower(items, 'offline'),
+            },
             loading: !servers,
             pagination: pagination
                 ? {
@@ -181,97 +312,78 @@ function useServerListModel(): ServerListModel {
                     }),
             },
         };
-    }, [servers, power, scope, rootAdmin, type, navigate]);
-}
-
-const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
-
-type ServerAlarms = { cpu: boolean; memory: boolean; disk: boolean };
-
-const computeAlarms = (
-    stats: ClientStatsAttributes | undefined,
-    limits: Server['attributes']['limits']
-): ServerAlarms => {
-    if (!stats) {
-        return { cpu: false, memory: false, disk: false };
-    }
-
-    return {
-        cpu: limits.cpu === 0 ? false : stats.resources.cpu_absolute >= limits.cpu * 0.9,
-        memory: isAlarmState(stats.resources.memory_bytes, limits.memory),
-        disk: limits.disk === 0 ? false : isAlarmState(stats.resources.disk_bytes, limits.disk),
-    };
-};
-
-function resolveState(
-    attributes: Server['attributes'],
-    stats: ClientStatsAttributes | undefined,
-    suspended: boolean | undefined
-): ServerCardState {
-    if (suspended) {
-        return { kind: 'unavailable', reason: attributes.status === 'suspended' ? 'suspended' : 'connection-error' };
-    }
-
-    if (attributes.is_node_under_maintenance) {
-        return { kind: 'unavailable', reason: 'maintenance' };
-    }
-
-    if (stats) {
-        const alarms = computeAlarms(stats, attributes.limits);
-
-        return {
-            kind: 'ready',
-            power: stats.current_state,
-            cpu: { value: stats.resources.cpu_absolute, limit: attributes.limits.cpu, alarm: alarms.cpu },
-            memory: {
-                value: stats.resources.memory_bytes,
-                limit: mbToBytes(attributes.limits.memory),
-                alarm: alarms.memory,
-            },
-            disk: { value: stats.resources.disk_bytes, limit: mbToBytes(attributes.limits.disk), alarm: alarms.disk },
-        };
-    }
-
-    if (attributes.is_transferring) {
-        return { kind: 'unavailable', reason: 'transferring' };
-    }
-
-    if (attributes.status === 'installing') {
-        return { kind: 'unavailable', reason: 'installing' };
-    }
-
-    if (attributes.status === 'restoring_backup') {
-        return { kind: 'unavailable', reason: 'restoring-backup' };
-    }
-
-    return attributes.status ? { kind: 'unavailable', reason: 'unavailable' } : { kind: 'loading' };
+    }, [servers, usage, power, scope, rootAdmin, type, navigate]);
 }
 
 function useServerCardModel({ server }: { readonly server: Server }): ServerCardModel {
-    const { attributes } = server;
-    const stats = useServerResourceUsage(attributes.uuid, tracksResources(server)).data?.attributes;
-    const suspended = stats?.is_suspended || attributes.status === 'suspended';
+    const stats = useServerResourceUsage(server.attributes.uuid, tracksResources(server)).data?.attributes;
+    const power = usePowerSender();
 
-    return useMemo(
-        () => ({
-            identifier: attributes.identifier,
-            uuid: attributes.uuid,
-            name: attributes.name,
-            description: attributes.description,
-            address:
-                relationshipData(attributes.relationships?.allocations)
-                    .filter((allocation) => allocation.attributes.is_default)
-                    .map(
-                        ({ attributes: allocation }) => `${allocation.ip_alias || ip(allocation.ip)}:${allocation.port}`
-                    )
-                    .join('') || null,
-            state: resolveState(attributes, stats, suspended),
-        }),
-        [attributes, stats, suspended]
-    );
+    return useMemo(() => cardModel(server, stats, power), [server, stats, power]);
+}
+
+/** The cards of the list fixtures' rows, so a card placed in a row shows that row's state. */
+const listedCards = new Map<string, ServerCardModel>();
+
+/** A card for a fixture server: its row's, else its conflict when it has one, else running. */
+function cardFromServer(server: Server): ServerCardModel {
+    const listed = listedCards.get(server.attributes.uuid);
+
+    if (listed) {
+        return listed;
+    }
+
+    const conflict = serverConflict(server);
+    const card = createTestServerCard({
+        identifier: server.attributes.identifier,
+        uuid: server.attributes.uuid,
+        name: server.attributes.name,
+        description: server.attributes.description,
+        permissions: cardPermissions(server),
+    });
+
+    return conflict ? { ...card, state: { kind: 'unavailable', reason: conflict } } : card;
 }
 
 const noop = () => {};
+
+const offline: ServerCardState = {
+    kind: 'ready',
+    power: 'offline',
+    cpu: statMetric(0, 100),
+    memory: statMetric(0, 1024 ** 3),
+    disk: statMetric(800 * 1024 ** 2, 2048 * 1024 ** 2),
+};
+
+const listFixture = (
+    servers: readonly (readonly [Server, ServerCardState?])[],
+    options: Partial<ServerListModel> = {}
+): ServerListModel => {
+    const items = servers.map(([server, state]) => {
+        const derived = cardFromServer(server);
+        const card = state ? { ...derived, state } : derived;
+
+        listedCards.set(server.attributes.uuid, card);
+
+        return { ...card, server };
+    });
+
+    return {
+        servers: items,
+        totals: {
+            servers: items.length,
+            runningOnPage: countPower(items, 'running'),
+            offlineOnPage: countPower(items, 'offline'),
+        },
+        loading: false,
+        pagination: { total: items.length, count: items.length, perPage: 50, currentPage: 1, totalPages: 1 },
+        scope: 'mine',
+        canViewOthers: true,
+        canCreateServers: true,
+        actions: { setPage: noop, setScope: noop },
+        ...options,
+    };
+};
 
 implementViews({
     'page.dashboard': {
@@ -284,36 +396,34 @@ implementViews({
     'dashboard.serverList': {
         use: useServerListModel,
         fixtures: {
-            servers: () => ({
-                servers: [
-                    { server: createTestServer({ identifier: 'a1b2c3d4', name: 'Survival' }), power: 'running' },
-                    { server: createTestServer({ identifier: 'e5f6a7b8', name: 'Creative' }), power: 'offline' },
-                ],
-                loading: false,
-                pagination: { total: 2, count: 2, perPage: 50, currentPage: 1, totalPages: 1 },
-                scope: 'mine',
-                canViewOthers: true,
-                canCreateServers: true,
-                actions: { setPage: noop, setScope: noop },
-            }),
-            empty: () => ({
-                servers: [],
-                loading: false,
-                pagination: { total: 0, count: 0, perPage: 50, currentPage: 1, totalPages: 1 },
-                scope: 'mine',
-                canViewOthers: false,
-                canCreateServers: false,
-                actions: { setPage: noop, setScope: noop },
-            }),
-            loading: () => ({
-                servers: [],
-                loading: true,
-                pagination: null,
-                scope: 'mine',
-                canViewOthers: true,
-                canCreateServers: true,
-                actions: { setPage: noop, setScope: noop },
-            }),
+            servers: () =>
+                listFixture([
+                    [
+                        createTestServer({
+                            identifier: 'a1b2c3d4',
+                            uuid: 'a1b2c3d4-0000-4000-8000-000000000001',
+                            name: 'Survival',
+                        }),
+                    ],
+                    [
+                        createTestServer({
+                            identifier: 'e5f6a7b8',
+                            uuid: 'e5f6a7b8-0000-4000-8000-000000000002',
+                            name: 'Creative',
+                        }),
+                        offline,
+                    ],
+                    [
+                        createTestServer({
+                            identifier: 'c9d0e1f2',
+                            uuid: 'c9d0e1f2-0000-4000-8000-000000000003',
+                            name: 'Lobby',
+                            status: 'suspended',
+                        }),
+                    ],
+                ]),
+            empty: () => listFixture([], { canViewOthers: false, canCreateServers: false }),
+            loading: () => listFixture([], { loading: true, pagination: null }),
         },
     },
     'dashboard.serverCard': {
@@ -321,6 +431,7 @@ implementViews({
         fixtureInput: (card) => ({
             server: createTestServer({ identifier: card.identifier, uuid: card.uuid, name: card.name }),
         }),
+        fixtureFromInput: ({ server }) => cardFromServer(server),
         fixtures: {
             running: () => createTestServerCard(),
             offline: () =>
@@ -328,9 +439,9 @@ implementViews({
                     state: {
                         kind: 'ready',
                         power: 'offline',
-                        cpu: { value: 0, limit: 0, alarm: false },
-                        memory: { value: 0, limit: 0, alarm: false },
-                        disk: { value: 512 * 1024 ** 2, limit: 0, alarm: false },
+                        cpu: statMetric(0, 0),
+                        memory: statMetric(0, 0),
+                        disk: statMetric(512 * 1024 ** 2, 0),
                     },
                 }),
             suspended: () => createTestServerCard({ state: { kind: 'unavailable', reason: 'suspended' } }),

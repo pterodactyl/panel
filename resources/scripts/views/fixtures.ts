@@ -1,5 +1,6 @@
 import type { Server } from '@/api/server/types';
 import type { ServerCardModel } from './dashboard';
+import { statMetric } from './server/state';
 
 export interface TestServerOptions {
     identifier?: string;
@@ -47,6 +48,9 @@ export function createTestServer(options: TestServerOptions = {}): Server {
     };
 }
 
+const noop = () => {};
+
+/** A running server's card, with every permission; `options` replace its fields. */
 export function createTestServerCard(options: Partial<ServerCardModel> = {}): ServerCardModel {
     return {
         identifier: 'test-server',
@@ -57,10 +61,13 @@ export function createTestServerCard(options: Partial<ServerCardModel> = {}): Se
         state: {
             kind: 'ready',
             power: 'running',
-            cpu: { value: 12, limit: 100, alarm: false },
-            memory: { value: 256 * 1024 * 1024, limit: 1024 * 1024 * 1024, alarm: false },
-            disk: { value: 512 * 1024 * 1024, limit: 2048 * 1024 * 1024, alarm: false },
+            cpu: statMetric(12, 100),
+            memory: statMetric(256 * 1024 * 1024, 1024 * 1024 * 1024),
+            disk: statMetric(512 * 1024 * 1024, 2048 * 1024 * 1024),
         },
+        permissions: { start: true, stop: true, restart: true, console: true },
+        actions: { start: noop, stop: noop, restart: noop },
+        sending: false,
         ...options,
     };
 }

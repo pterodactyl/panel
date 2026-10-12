@@ -410,11 +410,11 @@ describe('declared view overrides', () => {
         const views = await import('@/views/registry');
         const loader = await import('./loader');
 
-        views.defineView('app.search', { context: 'app', use: () => ({}) });
+        views.defineView('server.conflict', { context: 'server', use: () => ({ kind: null }) });
         await loader.loadExtensions(async () => ({
             default: {
                 setup(ctx: ExtensionSetupContext) {
-                    ctx.views.define('app.search', { context: 'app', use: () => ({}), Default: Component });
+                    ctx.views.define('server.conflict', { context: 'server', use: () => ({}), Default: Component });
                 },
             },
         }));

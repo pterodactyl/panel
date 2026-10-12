@@ -10,41 +10,40 @@ import {
     PanelLink,
     Spinner,
     Switch,
-    useSendServerPower,
-    type SdkPowerSignal,
 } from '@pterodactyl/sdk';
 import { Slot, View, type ServerListItem, type ServerListModel, type ViewProps } from '@pterodactyl/sdk/theme';
 
 /**
- * Sends a signal through the client API, so it works without a console connection. The panel checks
- * the user's control permissions and shows its own notice when the request fails.
+ * The signals the user may send, through the client API, so they work without a console connection.
+ * The panel shows its own notice when one fails.
  */
 function PowerButtons({ item }: { item: ServerListItem }) {
-    const power = useSendServerPower(item.server.attributes.uuid);
-    const send = (signal: SdkPowerSignal) => () => void power.mutateAsync({ signal }).catch(() => {});
-    const running = item.power !== null && item.power !== 'offline';
+    const { state, permissions, actions, sending } = item;
+
+    if (state.kind !== 'ready') {
+        return null;
+    }
 
     return (
         <div className='flex gap-2'>
-            {running ? (
-                <>
-                    <Button size='xsmall' color='grey' disabled={power.isPending} onClick={send('restart')}>
-                        <RotateCcw className='size-3.5' aria-hidden /> Restart
-                    </Button>
-                    <Button size='xsmall' color='red' disabled={power.isPending} onClick={send('stop')}>
-                        <Square className='size-3.5' aria-hidden /> Stop
-                    </Button>
-                </>
-            ) : (
-                <Button
-                    size='xsmall'
-                    color='green'
-                    disabled={power.isPending || item.power === null}
-                    onClick={send('start')}
-                >
-                    <Play className='size-3.5' aria-hidden /> Start
-                </Button>
-            )}
+            {state.power === 'offline'
+                ? permissions.start && (
+                      <Button size='xsmall' color='green' disabled={sending} onClick={actions.start}>
+                          <Play className='size-3.5' aria-hidden /> Start
+                      </Button>
+                  )
+                : [
+                      permissions.restart && (
+                          <Button key='restart' size='xsmall' color='grey' disabled={sending} onClick={actions.restart}>
+                              <RotateCcw className='size-3.5' aria-hidden /> Restart
+                          </Button>
+                      ),
+                      permissions.stop && (
+                          <Button key='stop' size='xsmall' color='red' disabled={sending} onClick={actions.stop}>
+                              <Square className='size-3.5' aria-hidden /> Stop
+                          </Button>
+                      ),
+                  ]}
         </div>
     );
 }
@@ -56,8 +55,8 @@ function Tile({ item }: { item: ServerListItem }) {
         <li className='glass flex flex-col gap-4 rounded-2xl p-5'>
             <Slot name='dashboard.serverRow.before' data={server} />
             <PanelLink
-                destination={{ to: '/server/$id', params: { id: server.attributes.identifier } }}
-                aria-label={server.attributes.name}
+                destination={{ to: '/server/$id', params: { id: item.identifier } }}
+                aria-label={item.name}
                 className='text-foreground no-underline'
             >
                 <View name='dashboard.serverCard' server={server} />
@@ -133,7 +132,7 @@ export default function ServerGrid({ model }: ViewProps<'dashboard.serverList'>)
             )}
             <ul className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
                 {model.servers.map((item) => (
-                    <Tile key={item.server.attributes.uuid} item={item} />
+                    <Tile key={item.uuid} item={item} />
                 ))}
             </ul>
             <Pager model={model} />

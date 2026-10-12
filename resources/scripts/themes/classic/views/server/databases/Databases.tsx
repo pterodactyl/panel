@@ -331,7 +331,7 @@ const EmptyState = ({ model }: { model: ServerDatabasesModel }) => (
     </Empty>
 );
 
-export default function Databases({ model }: ViewProps<'server.databases'>) {
+export default function Databases({ model, className }: ViewProps<'server.databases'>) {
     const columns = useMemo(() => databaseColumns(model), [model]);
     const count = model.databases.length;
     const usage =
@@ -340,11 +340,15 @@ export default function Databases({ model }: ViewProps<'server.databases'>) {
             : null;
 
     if (model.loading) {
-        return <Spinner size='large' centered />;
+        return (
+            <div className={className}>
+                <Spinner size='large' centered />
+            </div>
+        );
     }
 
     return (
-        <>
+        <div className={className}>
             {(usage || model.canCreate) && (
                 <ListToolbar summary={usage}>{model.canCreate && <CreateDatabaseButton model={model} />}</ListToolbar>
             )}
@@ -354,6 +358,6 @@ export default function Databases({ model }: ViewProps<'server.databases'>) {
                 keyOf={(database) => database.id}
                 emptyState={<EmptyState model={model} />}
             />
-        </>
+        </div>
     );
 }

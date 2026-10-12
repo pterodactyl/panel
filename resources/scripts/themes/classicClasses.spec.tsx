@@ -30,13 +30,19 @@ import ContentBox from '@/components/elements/ContentBox';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import ListRow from '@/components/elements/ListRow';
 import PageHeading from '@/components/elements/PageHeading';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+import Stat from '@/components/elements/Stat';
+import ChartCard from '@/components/elements/ChartCard';
 import { setHttpProgress } from '@/state/httpProgress';
-import { createTestServerCard, renderView } from '@/sdk/testing';
+import { createTestServerCard, renderView, type RenderedView } from '@/sdk/testing';
+import type { ViewName } from '@/views/registry';
 import before from './__fixtures__/classic-classes.json';
 
 /*
  * `before` holds every element's classes for each case below, captured from the primitives as they were
  * before they read classic's skins (commit "classic class capture"). Classic must render the same classes.
+ * Entries changed since record deliberate changes: the Button label's row, ListRow's icon and status parts,
+ * and the Stat, ChartCard and PageFooter primitives that replaced classic's own markup.
  */
 
 // Arbitrary state variants replaced by their plain Tailwind equivalents; each pair compiles to the same selector.
@@ -45,6 +51,8 @@ const plainVariants: [RegExp, string][] = [
     [/^(group-)?data-\[([a-z-]+)\]:/, '$1data-$2:'],
     [/-\[var\((--[a-z-]+)\)\]$/, '-($1)'],
     [/^z-\[(\d+)\]$/, 'z-$1'],
+    // The input border became its own token, `--input-border`, which defaults to `--input`.
+    [/(^|:)border-input$/, '$1border-input-border'],
 ];
 
 const plain = (token: string): string =>
@@ -112,6 +120,7 @@ function paginated(page: number, pages: number) {
 }
 
 type Case = () => ReactElement | Promise<void>;
+let view: RenderedView | undefined;
 const noop = () => {};
 
 const cases: Record<string, Case> = {};
@@ -460,14 +469,14 @@ Object.assign(cases, {
 
 for (const fixture of ['servers', 'empty', 'loading']) {
     cases[`view dashboard.serverList ${fixture}`] = async () => {
-        renderView('dashboard.serverList', { fixture });
+        view = renderView('dashboard.serverList', { fixture });
         await Promise.resolve();
     };
 }
 
 for (const fixture of ['running', 'offline', 'suspended', 'loading']) {
     cases[`view dashboard.serverCard ${fixture}`] = async () => {
-        renderView('dashboard.serverCard', { fixture });
+        view = renderView('dashboard.serverCard', { fixture });
         await Promise.resolve();
     };
 }
@@ -481,16 +490,53 @@ for (const reason of [
     'unavailable',
 ] as const) {
     cases[`view dashboard.serverCard ${reason}`] = async () => {
-        renderView('dashboard.serverCard', { model: createTestServerCard({ state: { kind: 'unavailable', reason } }) });
+        view = renderView('dashboard.serverCard', {
+            model: createTestServerCard({ state: { kind: 'unavailable', reason } }),
+        });
         await Promise.resolve();
     };
 }
 
 for (const fixture of ['user', 'admin']) {
     cases[`view layout.app ${fixture}`] = async () => {
-        renderView('layout.app', { fixture });
+        view = renderView('layout.app', { fixture });
         await Promise.resolve();
     };
+}
+
+// Added with the primitives they introduced, from the classic markup they replaced.
+Object.assign(cases, {
+    'ListRow icon status': () => (
+        <ListRow status='success'>
+            <ListRow.Icon className='mr-4'>i</ListRow.Icon>
+            Row
+        </ListRow>
+    ),
+    'Stat tile': () => <Stat icon={Database} label='Disk' value='1 GiB' limit='/ 2 GiB' tone='warning' />,
+    'Stat inline meter': () => (
+        <Stat variant='inline' icon={Database} label='Disk' value='1 GiB' limit='of 2 GiB' meter={50} tone='danger' />
+    ),
+    ChartCard: () => (
+        <ChartCard title='CPU Load' legend={<span>Legend</span>}>
+            Chart
+        </ChartCard>
+    ),
+    PageContentBlock: () => <PageContentBlock title='Servers'>Body</PageContentBlock>,
+});
+
+const views: [ViewName, string[]][] = [
+    ['server.stats', ['running', 'offline', 'starting', 'alarms', 'unlimited']],
+    ['server.graphs', ['running']],
+    ['app.search', ['closed', 'results', 'none', 'short', 'error']],
+];
+
+for (const [name, fixtures] of views) {
+    for (const fixture of fixtures) {
+        cases[`view ${name} ${fixture}`] = async () => {
+            view = renderView(name, { fixture });
+            await Promise.resolve();
+        };
+    }
 }
 
 afterEach(cleanup);
@@ -511,6 +557,8 @@ it('renders classic primitives with the classes they had before skins', async ()
         // oxlint-disable-next-line no-await-in-loop
         await act(async () => {});
         captured[name] = classes();
+        view?.unmount();
+        view = undefined;
         cleanup();
         document.body.innerHTML = '';
     }

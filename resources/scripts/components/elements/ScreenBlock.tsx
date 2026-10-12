@@ -21,6 +21,7 @@ interface BaseProps {
     title: string;
     image: string;
     message: string;
+    className?: string;
     onRetry?: () => void;
     onBack?: () => void;
 }
@@ -41,8 +42,8 @@ const ActionButton = ({ className, ...props }: React.ComponentProps<typeof Butto
     <Button className={cn('rounded-full w-8 h-8 flex items-center justify-center p-0', className)} {...props} />
 );
 
-const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
-    <PageContentBlock>
+const ScreenBlock = ({ title, image, message, onBack, onRetry, className }: ScreenBlockProps) => (
+    <PageContentBlock className={className}>
         <div className='flex justify-center'>
             <div className='w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-card rounded-lg shadow-lg text-center relative'>
                 {(onBack ?? onRetry) && (
@@ -69,11 +70,11 @@ type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWith
     title?: string;
 };
 
-const ServerError = ({ title = 'Something went wrong', message, onBack, onRetry }: ServerErrorProps) =>
+const ServerError = ({ title = 'Something went wrong', message, onBack, onRetry, className }: ServerErrorProps) =>
     onRetry ? (
-        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onRetry={onRetry} />
+        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onRetry={onRetry} className={className} />
     ) : (
-        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onBack={onBack} />
+        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onBack={onBack} className={className} />
     );
 
 const AccessDenied = ({ message }: Pick<BaseProps, 'message'>) => (

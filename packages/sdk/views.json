@@ -120,7 +120,18 @@
         "kind": "block",
         "context": "app",
         "slots": [],
-        "fixtures": []
+        "fixtures": [
+            "closed",
+            "results",
+            "loading",
+            "none",
+            "short",
+            "error"
+        ],
+        "classic": {
+            "file": "views/layout/Search.tsx",
+            "export": "default"
+        }
     },
     "auth.checkpointForm": {
         "kind": "block",
@@ -253,6 +264,14 @@
             "nav.items.before",
             "nav.items.after"
         ],
+        "areaSlots": [
+            "account.navigation.before",
+            "account.navigation.after",
+            "server.navigation.before",
+            "server.navigation.after",
+            "panel.navigation.before",
+            "panel.navigation.after"
+        ],
         "fixtures": [
             "user",
             "admin",
@@ -303,7 +322,8 @@
     "page.account.activity": {
         "kind": "page",
         "context": "account",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "account.activity.before",
             "account.activity.after"
         ],
@@ -318,7 +338,8 @@
     "page.account.api": {
         "kind": "page",
         "context": "account",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "account.api.before",
             "account.api.after"
         ],
@@ -350,7 +371,8 @@
     "page.account.ssh": {
         "kind": "page",
         "context": "account",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "account.ssh.before",
             "account.ssh.after"
         ],
@@ -366,7 +388,8 @@
     "page.admin.activity": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.activity.before",
             "panel.activity.after"
         ],
@@ -375,7 +398,8 @@
     "page.admin.apiKeys": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.apiKeys.before",
             "panel.apiKeys.after"
         ],
@@ -384,7 +408,8 @@
     "page.admin.databaseHosts": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.databaseHosts.before",
             "panel.databaseHosts.after"
         ],
@@ -393,7 +418,8 @@
     "page.admin.databaseHosts.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.databaseHosts.create.before",
             "panel.databaseHosts.create.after"
         ],
@@ -402,7 +428,8 @@
     "page.admin.databaseHosts.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.databaseHosts.detail.before",
             "panel.databaseHosts.detail.after"
         ],
@@ -411,7 +438,8 @@
     "page.admin.eggs": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.before",
             "panel.eggs.after"
         ],
@@ -426,7 +454,8 @@
     "page.admin.eggs.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.create.before",
             "panel.eggs.create.after"
         ],
@@ -435,7 +464,8 @@
     "page.admin.eggs.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.detail.before",
             "panel.eggs.detail.after"
         ],
@@ -444,7 +474,8 @@
     "page.admin.eggs.detail.configuration": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.detail.configuration.before",
             "panel.eggs.detail.configuration.after"
         ],
@@ -453,7 +484,8 @@
     "page.admin.eggs.detail.script": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.detail.script.before",
             "panel.eggs.detail.script.after"
         ],
@@ -462,7 +494,8 @@
     "page.admin.eggs.detail.tags": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.detail.tags.before",
             "panel.eggs.detail.tags.after"
         ],
@@ -471,7 +504,8 @@
     "page.admin.eggs.detail.variables": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.eggs.detail.variables.before",
             "panel.eggs.detail.variables.after"
         ],
@@ -480,7 +514,8 @@
     "page.admin.extensions": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.extensions.before",
             "panel.extensions.after"
         ],
@@ -489,7 +524,8 @@
     "page.admin.locations": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.locations.before",
             "panel.locations.after"
         ],
@@ -498,7 +534,8 @@
     "page.admin.locations.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.locations.detail.before",
             "panel.locations.detail.after"
         ],
@@ -507,7 +544,8 @@
     "page.admin.mounts": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.mounts.before",
             "panel.mounts.after"
         ],
@@ -516,7 +554,8 @@
     "page.admin.mounts.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.mounts.create.before",
             "panel.mounts.create.after"
         ],
@@ -525,7 +564,8 @@
     "page.admin.mounts.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.mounts.detail.before",
             "panel.mounts.detail.after"
         ],
@@ -534,7 +574,8 @@
     "page.admin.nodes": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.before",
             "panel.nodes.after"
         ],
@@ -543,7 +584,8 @@
     "page.admin.nodes.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.create.before",
             "panel.nodes.create.after"
         ],
@@ -552,7 +594,8 @@
     "page.admin.nodes.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.before",
             "panel.nodes.detail.after"
         ],
@@ -561,7 +604,8 @@
     "page.admin.nodes.detail.about": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.about.before",
             "panel.nodes.detail.about.after"
         ],
@@ -570,7 +614,8 @@
     "page.admin.nodes.detail.allocations": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.allocations.before",
             "panel.nodes.detail.allocations.after"
         ],
@@ -579,7 +624,8 @@
     "page.admin.nodes.detail.configuration": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.configuration.before",
             "panel.nodes.detail.configuration.after"
         ],
@@ -588,7 +634,8 @@
     "page.admin.nodes.detail.servers": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.servers.before",
             "panel.nodes.detail.servers.after"
         ],
@@ -597,7 +644,8 @@
     "page.admin.nodes.detail.settings": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.settings.before",
             "panel.nodes.detail.settings.after"
         ],
@@ -606,7 +654,8 @@
     "page.admin.nodes.detail.tags": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.nodes.detail.tags.before",
             "panel.nodes.detail.tags.after"
         ],
@@ -621,7 +670,8 @@
     "page.admin.servers": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.before",
             "panel.servers.after"
         ],
@@ -630,7 +680,8 @@
     "page.admin.servers.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.create.before",
             "panel.servers.create.after"
         ],
@@ -639,7 +690,8 @@
     "page.admin.servers.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.before",
             "panel.servers.detail.after"
         ],
@@ -648,7 +700,8 @@
     "page.admin.servers.detail.about": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.about.before",
             "panel.servers.detail.about.after"
         ],
@@ -657,7 +710,8 @@
     "page.admin.servers.detail.build": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.build.before",
             "panel.servers.detail.build.after"
         ],
@@ -666,7 +720,8 @@
     "page.admin.servers.detail.databases": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.databases.before",
             "panel.servers.detail.databases.after"
         ],
@@ -675,7 +730,8 @@
     "page.admin.servers.detail.delete": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.delete.before",
             "panel.servers.detail.delete.after"
         ],
@@ -684,7 +740,8 @@
     "page.admin.servers.detail.details": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.details.before",
             "panel.servers.detail.details.after"
         ],
@@ -693,7 +750,8 @@
     "page.admin.servers.detail.manage": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.manage.before",
             "panel.servers.detail.manage.after"
         ],
@@ -702,7 +760,8 @@
     "page.admin.servers.detail.mounts": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.mounts.before",
             "panel.servers.detail.mounts.after"
         ],
@@ -711,7 +770,8 @@
     "page.admin.servers.detail.startup": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.servers.detail.startup.before",
             "panel.servers.detail.startup.after"
         ],
@@ -720,7 +780,8 @@
     "page.admin.settings": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.settings.before",
             "panel.settings.after"
         ],
@@ -729,7 +790,8 @@
     "page.admin.settings.advanced": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.settings.before",
             "panel.settings.after"
         ],
@@ -738,7 +800,8 @@
     "page.admin.settings.mail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.settings.before",
             "panel.settings.after"
         ],
@@ -747,7 +810,8 @@
     "page.admin.tags": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.tags.before",
             "panel.tags.after"
         ],
@@ -756,7 +820,8 @@
     "page.admin.themes": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.themes.before",
             "panel.themes.after"
         ],
@@ -765,7 +830,8 @@
     "page.admin.users": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.users.before",
             "panel.users.after"
         ],
@@ -774,7 +840,8 @@
     "page.admin.users.create": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.users.create.before",
             "panel.users.create.after"
         ],
@@ -783,7 +850,8 @@
     "page.admin.users.detail": {
         "kind": "page",
         "context": "admin",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "panel.users.detail.before",
             "panel.users.detail.after"
         ],
@@ -798,7 +866,8 @@
     "page.auth.checkpoint": {
         "kind": "page",
         "context": "auth",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "auth.checkpoint.before",
             "auth.checkpoint.after"
         ],
@@ -813,7 +882,8 @@
     "page.auth.login": {
         "kind": "page",
         "context": "auth",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "auth.login.before",
             "auth.login.after"
         ],
@@ -828,7 +898,8 @@
     "page.auth.password": {
         "kind": "page",
         "context": "auth",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "auth.password.before",
             "auth.password.after"
         ],
@@ -843,7 +914,8 @@
     "page.auth.passwordReset": {
         "kind": "page",
         "context": "auth",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "auth.passwordReset.before",
             "auth.passwordReset.after"
         ],
@@ -871,7 +943,8 @@
     "page.server.activity": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.activity.before",
             "server.activity.after"
         ],
@@ -886,7 +959,8 @@
     "page.server.backups": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.backups.before",
             "server.backups.after"
         ],
@@ -920,7 +994,8 @@
     "page.server.databases": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.databases.before",
             "server.databases.after"
         ],
@@ -952,7 +1027,8 @@
     "page.server.files.editor": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.files.editor.before",
             "server.files.editor.after"
         ],
@@ -970,7 +1046,8 @@
     "page.server.network": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.network.before",
             "server.network.after"
         ],
@@ -986,7 +1063,8 @@
     "page.server.schedules": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.schedules.before",
             "server.schedules.after"
         ],
@@ -1002,7 +1080,8 @@
     "page.server.schedules.detail": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.schedules.detail.before",
             "server.schedules.detail.after"
         ],
@@ -1019,7 +1098,8 @@
     "page.server.settings": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.settings.before",
             "server.settings.after"
         ],
@@ -1035,9 +1115,11 @@
         "kind": "page",
         "context": "server",
         "slots": [
-            "server.startup.before",
-            "server.startup.after",
             "server.startup.form"
+        ],
+        "engineSlots": [
+            "server.startup.before",
+            "server.startup.after"
         ],
         "fixtures": [
             "default",
@@ -1052,7 +1134,8 @@
     "page.server.users": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.users.before",
             "server.users.after"
         ],
@@ -1069,7 +1152,8 @@
     "page.server.users.create": {
         "kind": "page",
         "context": "server",
-        "slots": [
+        "slots": [],
+        "engineSlots": [
             "server.users.create.before",
             "server.users.create.after"
         ],

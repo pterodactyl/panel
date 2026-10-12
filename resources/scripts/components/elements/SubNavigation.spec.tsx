@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createExtensionTestHost, type ExtensionTestHost } from '@/sdk/testing';
-import type { NavItem } from '@/views/navigation';
+import { navItemDestination, type NavItem } from '@/views/navigation';
 import SubNavigation from './SubNavigation';
 
 interface Layout {
@@ -46,17 +46,22 @@ function fakeRect(this: HTMLElement): DOMRect {
     return rect(left, widthOf(this));
 }
 
-const navItem = ({ label, extension }: Item, order: number): NavItem => ({
-    id: label.toLowerCase(),
-    label,
-    to: `/account/${label.toLowerCase()}`,
-    params: {},
-    icon: null,
-    group: null,
-    order,
-    exact: false,
-    extensionId: extension ? 'tabs' : undefined,
-});
+const navItem = ({ label, extension }: Item, order: number): NavItem => {
+    const to = `/account/${label.toLowerCase()}`;
+
+    return {
+        id: label.toLowerCase(),
+        label,
+        to,
+        params: {},
+        destination: navItemDestination({ to, params: {} }),
+        icon: null,
+        group: null,
+        order,
+        exact: false,
+        extensionId: extension ? 'tabs' : undefined,
+    };
+};
 
 async function renderNavigation(
     items: Item[],

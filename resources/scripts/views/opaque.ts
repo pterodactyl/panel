@@ -7,8 +7,6 @@ const page = lazyRouteComponent;
 
 /** Classic defaults that are still the existing containers, until they become real classic views. */
 export const opaqueViews = {
-    'app.search': lazyRouteComponent(() => import('@/components/dashboard/search/SearchContainer')),
-
     'page.admin.overview': page(() => import('@/components/admin/overview/OverviewContainer')),
     'page.admin.activity': page(() => import('@/components/admin/activity/ActivityContainer')),
     'page.admin.settings': page(() => import('@/components/admin/settings/SettingsContainer')),

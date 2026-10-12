@@ -2,8 +2,9 @@
 import React from 'react';
 interface Props {
     navigation: React.ReactNode;
+    className?: string;
     children?: React.ReactNode;
 }
 /** Stacked by default; a sidebar row when `<html data-sub-navigation="side">` is set. */
-declare const SubNavigationLayout: ({ navigation, children }: Props) => React.JSX.Element;
+declare const SubNavigationLayout: ({ navigation, className, children }: Props) => React.JSX.Element;
 export default SubNavigationLayout;

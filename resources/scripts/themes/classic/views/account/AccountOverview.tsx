@@ -3,9 +3,9 @@ import { Slot, View, type ViewProps } from '@/sdk/theme';
 
 const CARD_WIDTH = 'w-full sm:w-[calc(50%_-_1rem)] md:w-auto md:flex-1';
 
-export default function AccountOverview({ model }: ViewProps<'page.account.overview'>) {
+export default function AccountOverview({ model, className }: ViewProps<'page.account.overview'>) {
     return (
-        <PageContentBlock title='Account Overview'>
+        <PageContentBlock title='Account Overview' className={className}>
             <PageHeading title='Account' description='Manage your profile, credentials, and account security.' />
             {model.twoFactorRequired && (
                 <Alert title='2-Factor Required' type='danger'>

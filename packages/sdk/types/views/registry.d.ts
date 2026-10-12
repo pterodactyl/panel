@@ -59,6 +59,8 @@ export interface ViewImplementation<N extends string> {
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
     /** The inputs a fixture renders with, for views that take inputs. */
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    /** The model of a view placed with inputs from fixtures, such as a card for each server of a list fixture. */
+    fixtureFromInput?(input: ViewInput<N>): ViewModel<N>;
     readonly fixtureScope?: ViewFixtureScope<N>;
 }
 /** What a module passes to `implementViews`, by view name. */
@@ -84,6 +86,7 @@ export interface ViewDefinition<N extends string = string> extends ViewDeclarati
     use?(input: ViewInput<N>): ViewModel<N>;
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
+    fixtureFromInput?(input: ViewInput<N>): ViewModel<N>;
     readonly fixtureScope?: ViewFixtureScope<N>;
     readonly load?: ViewLoader;
     /** The extension that defined the view; core views have none. */

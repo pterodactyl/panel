@@ -1,4 +1,4 @@
-import type { CompleteSkin } from '@/sdk/theme';
+import type { CompleteSkin, UiTone } from '@/sdk/theme';
 
 export const card = {
     root: {
@@ -18,19 +18,35 @@ export const card = {
     body: 'p-3',
 } satisfies CompleteSkin<'Card'>;
 
+const statusFills = {
+    neutral: 'bg-popover',
+    success: 'bg-success',
+    warning: 'bg-warning',
+    danger: 'bg-destructive',
+    info: 'bg-primary',
+    accent: 'bg-accent',
+} satisfies Record<UiTone, string>;
+
 export const listRow = {
     root: {
-        base: [
-            'flex rounded-sm no-underline text-foreground items-center bg-card p-4 border border-transparent overflow-hidden',
-            '[&_.icon]:flex [&_.icon]:w-16 [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:rounded-full [&_.icon]:bg-popover [&_.icon]:p-3',
-        ].join(' '),
+        base: 'group relative flex rounded-sm no-underline text-foreground items-center bg-card p-4 border border-transparent overflow-hidden',
         variants: {
             interactive: {
                 true: 'transition-[background-color,border-color,color,box-shadow] duration-150 hover:bg-popover hover:border-border active:bg-popover/80',
             },
         },
     },
+    icon: 'flex w-16 items-center justify-center rounded-full bg-popover p-3',
+    // A bar down the row's right edge.
+    status: ({ status }) =>
+        `absolute right-0 z-20 m-1 h-[calc(100%-0.5rem)] w-2 rounded-full opacity-50 transition-opacity duration-150 group-hover:opacity-75 ${statusFills[status ?? 'neutral']}`,
 } satisfies CompleteSkin<'ListRow'>;
+
+export const pageFooter = {
+    root: 'page-width mb-4',
+    text: 'text-center text-muted-foreground text-xs',
+    link: 'no-underline text-muted-foreground hover:text-muted-foreground',
+} satisfies CompleteSkin<'PageFooter'>;
 
 export const pageHeading = {
     root: 'mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between',

@@ -124,15 +124,19 @@ function CreateScheduleButton({ model }: { model: ScheduleListModel }) {
     );
 }
 
-export default function ScheduleList({ model }: ViewProps<'server.schedules'>) {
+export default function ScheduleList({ model, className }: ViewProps<'server.schedules'>) {
     const tableColumns = useMemo(() => columns(model), [model]);
 
     if (model.loading) {
-        return <Spinner size='large' centered />;
+        return (
+            <div className={className}>
+                <Spinner size='large' centered />
+            </div>
+        );
     }
 
     return (
-        <>
+        <div className={className}>
             {model.canCreate && (
                 <ListToolbar>
                     <CreateScheduleButton model={model} />
@@ -161,6 +165,6 @@ export default function ScheduleList({ model }: ViewProps<'server.schedules'>) {
                     </Empty>
                 }
             />
-        </>
+        </div>
     );
 }

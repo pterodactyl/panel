@@ -1,198 +1,261 @@
 {
     "Button - - solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - xsmall solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-primary-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-2 py-1 relative rounded-sm text-primary-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - small solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - large solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - xlarge solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button - xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary - solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary xsmall solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-primary-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-2 py-1 relative rounded-sm text-primary-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary small solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary large solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary xlarge solid": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-4 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button primary xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey - solid": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-popover [&:hover:not(:disabled)]:border-popover [&:hover:not(:disabled)]:text-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-popover hover:not-disabled:border-popover hover:not-disabled:text-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey xsmall solid": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-popover [&:hover:not(:disabled)]:border-popover [&:hover:not(:disabled)]:text-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-popover hover:not-disabled:border-popover hover:not-disabled:text-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey small solid": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-popover [&:hover:not(:disabled)]:border-popover [&:hover:not(:disabled)]:text-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-popover hover:not-disabled:border-popover hover:not-disabled:text-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey large solid": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-popover [&:hover:not(:disabled)]:border-popover [&:hover:not(:disabled)]:text-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-popover hover:not-disabled:border-popover hover:not-disabled:text-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey xlarge solid": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button grey xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-popover [&:hover:not(:disabled)]:border-popover [&:hover:not(:disabled)]:text-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-popover hover:not-disabled:border-popover hover:not-disabled:text-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green - solid": [
-        "button: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-success/70 active:not-disabled:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success/80 hover:not-disabled:border-success inline-block p-2 px-4 py-2 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-success [&:hover:not(:disabled)]:border-success [&:hover:not(:disabled)]:text-success-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success hover:not-disabled:border-success hover:not-disabled:text-success-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green xsmall solid": [
-        "button: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-success-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-success/70 active:not-disabled:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success/80 hover:not-disabled:border-success inline-block p-2 px-2 py-1 relative rounded-sm text-success-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-success [&:hover:not(:disabled)]:border-success [&:hover:not(:disabled)]:text-success-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success hover:not-disabled:border-success hover:not-disabled:text-success-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green small solid": [
-        "button: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-success/70 active:not-disabled:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success/80 hover:not-disabled:border-success inline-block p-2 px-4 py-2 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-success [&:hover:not(:disabled)]:border-success [&:hover:not(:disabled)]:text-success-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success hover:not-disabled:border-success hover:not-disabled:text-success-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green large solid": [
-        "button: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-success/70 active:not-disabled:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success/80 hover:not-disabled:border-success inline-block p-4 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-success [&:hover:not(:disabled)]:border-success [&:hover:not(:disabled)]:text-success-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success hover:not-disabled:border-success hover:not-disabled:text-success-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green xlarge solid": [
-        "button: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-success/70 active:not-disabled:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success/80 hover:not-disabled:border-success inline-block p-4 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button green xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-success [&:hover:not(:disabled)]:border-success [&:hover:not(:disabled)]:text-success-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-success hover:not-disabled:border-success hover:not-disabled:text-success-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red - solid": [
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red xsmall solid": [
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-destructive-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-2 px-2 py-1 relative rounded-sm text-destructive-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red small solid": [
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red large solid": [
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-4 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red xlarge solid": [
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-4 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button red xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange - solid": [
-        "button: [&:active:not(:disabled)]:bg-caution/70 [&:active:not(:disabled)]:border-caution [&:hover:not(:disabled)]:bg-caution/80 [&:hover:not(:disabled)]:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-caution/70 active:not-disabled:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution/80 hover:not-disabled:border-caution inline-block p-2 px-4 py-2 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange - secondary": [
-        "button: [&:hover:not(:disabled)]:bg-caution [&:hover:not(:disabled)]:border-caution [&:hover:not(:disabled)]:text-caution-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution hover:not-disabled:border-caution hover:not-disabled:text-caution-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange xsmall solid": [
-        "button: [&:active:not(:disabled)]:bg-caution/70 [&:active:not(:disabled)]:border-caution [&:hover:not(:disabled)]:bg-caution/80 [&:hover:not(:disabled)]:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-caution-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-caution/70 active:not-disabled:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution/80 hover:not-disabled:border-caution inline-block p-2 px-2 py-1 relative rounded-sm text-caution-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange xsmall secondary": [
-        "button: [&:hover:not(:disabled)]:bg-caution [&:hover:not(:disabled)]:border-caution [&:hover:not(:disabled)]:text-caution-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution hover:not-disabled:border-caution hover:not-disabled:text-caution-foreground inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange small solid": [
-        "button: [&:active:not(:disabled)]:bg-caution/70 [&:active:not(:disabled)]:border-caution [&:hover:not(:disabled)]:bg-caution/80 [&:hover:not(:disabled)]:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-caution/70 active:not-disabled:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution/80 hover:not-disabled:border-caution inline-block p-2 px-4 py-2 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange small secondary": [
-        "button: [&:hover:not(:disabled)]:bg-caution [&:hover:not(:disabled)]:border-caution [&:hover:not(:disabled)]:text-caution-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution hover:not-disabled:border-caution hover:not-disabled:text-caution-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange large solid": [
-        "button: [&:active:not(:disabled)]:bg-caution/70 [&:active:not(:disabled)]:border-caution [&:hover:not(:disabled)]:bg-caution/80 [&:hover:not(:disabled)]:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: active:not-disabled:bg-caution/70 active:not-disabled:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution/80 hover:not-disabled:border-caution inline-block p-4 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange large secondary": [
-        "button: [&:hover:not(:disabled)]:bg-caution [&:hover:not(:disabled)]:border-caution [&:hover:not(:disabled)]:text-caution-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution hover:not-disabled:border-caution hover:not-disabled:text-caution-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange xlarge solid": [
-        "button: [&:active:not(:disabled)]:bg-caution/70 [&:active:not(:disabled)]:border-caution [&:hover:not(:disabled)]:bg-caution/80 [&:hover:not(:disabled)]:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-caution/70 active:not-disabled:border-caution bg-caution border border-caution disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution/80 hover:not-disabled:border-caution inline-block p-4 relative rounded-sm text-caution-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button orange xlarge secondary": [
-        "button: [&:hover:not(:disabled)]:bg-caution [&:hover:not(:disabled)]:border-caution [&:hover:not(:disabled)]:text-caution-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-caution hover:not-disabled:border-caution hover:not-disabled:text-caution-foreground inline-block p-4 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button loading": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
         "span: absolute flex h-full items-center justify-center left-0 top-0 w-full",
         "span: animate-[spin_1s_cubic-bezier(0.55,0.25,0.25,0.7)_infinite] block border-2 border-muted border-t-foreground h-4 rounded-full w-4",
-        "span: text-transparent"
+        "span: gap-2 inline-flex items-center text-transparent"
     ],
     "Button disabled className": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block mt-4 p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full"
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block mt-4 p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-full",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button.Text": [
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "Button.Danger secondary": [
-        "button: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase"
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive hover:not-disabled:border-destructive hover:not-disabled:text-destructive-foreground inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center"
     ],
     "LinkButton": [
         "a: [&:active:not(:disabled)]:bg-success/70 [&:active:not(:disabled)]:border-success [&:hover:not(:disabled)]:bg-success/80 [&:hover:not(:disabled)]:border-success bg-success border border-success disabled:cursor-default disabled:opacity-50 duration-150 inline-block ml-2 p-2 px-4 py-2 relative rounded-sm text-sm text-success-foreground tracking-wide transition-colors uppercase"
@@ -207,12 +270,14 @@
         "span: [&:hover:not(:disabled)]:bg-destructive [&:hover:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:text-destructive-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-2 py-1 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase"
     ],
     "NewButton": [
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 font-medium gap-2 h-9 inline-flex items-center justify-center normal-case p-2 px-3 py-2 relative rounded-sm shrink-0 text-primary-foreground text-sm tracking-normal transition-colors",
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 font-medium gap-2 h-9 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-flex items-center justify-center normal-case p-2 px-3 py-2 relative rounded-sm shrink-0 text-primary-foreground text-sm tracking-normal transition-colors",
+        "span: gap-2 inline-flex items-center",
         "span: gap-2 inline-flex items-center",
         "svg: h-4 inline-block lucide lucide-plus w-4"
     ],
     "NewButton icon className": [
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 font-medium gap-2 h-9 inline-flex items-center justify-center normal-case p-2 px-3 py-2 relative rounded-sm shrink-0 text-foreground text-sm tracking-normal transition-colors w-full",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 font-medium gap-2 h-9 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-flex items-center justify-center normal-case p-2 px-3 py-2 relative rounded-sm shrink-0 text-foreground text-sm tracking-normal transition-colors w-full",
+        "span: gap-2 inline-flex items-center",
         "span: gap-2 inline-flex items-center",
         "svg: h-4 inline-block lucide lucide-database w-4"
     ],
@@ -336,10 +401,10 @@
     "Label": ["label: block font-medium mb-1 text-foreground text-sm uppercase"],
     "Label light span": ["span: block font-medium mb-0 text-muted-foreground text-sm uppercase"],
     "Dialog": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
@@ -347,23 +412,26 @@
         "p: leading-relaxed mb-5 text-muted-foreground text-sm",
         "div: h-6 invisible",
         "div: bg-card flex items-center justify-end px-6 py-3 rounded-b-sm space-x-3",
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block p-2 px-4 py-2 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog title only": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog no close icon": [
@@ -377,10 +445,10 @@
         "div: h-6 invisible"
     ],
     "Dialog icon title": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
@@ -389,14 +457,15 @@
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog icon container": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: bg-destructive flex h-10 items-center justify-center mr-4 mt-1 rounded-full text-destructive-foreground w-10",
         "svg: h-6 lucide lucide-shield-alert w-6",
@@ -405,14 +474,15 @@
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog icon success info": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
@@ -421,12 +491,13 @@
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5",
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
@@ -435,42 +506,47 @@
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog.Confirm": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: bg-card flex items-center justify-end px-6 py-3 rounded-b-sm space-x-3",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center",
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center",
         "div: absolute m-4 right-0 top-0",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
         "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ],
     "Dialog.Confirm pending": [
-        "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
         "div: flex items-center justify-center min-h-full p-4 text-center",
-        "div: bg-card data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[starting-style]:opacity-0 data-[starting-style]:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
         "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
         "div: flex-1 min-w-0",
         "div: flex items-center",
         "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
         "div: h-6 invisible",
         "div: bg-card flex items-center justify-end px-6 py-3 rounded-b-sm space-x-3",
-        "button: [&:hover:not(:disabled)]:bg-secondary [&:hover:not(:disabled)]:border-secondary bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
-        "button: [&:active:not(:disabled)]:bg-destructive/70 [&:active:not(:disabled)]:border-destructive [&:hover:not(:disabled)]:bg-destructive/80 [&:hover:not(:disabled)]:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-block p-2 px-4 py-2 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase",
+        "span: gap-2 inline-flex items-center",
+        "button: active:not-disabled:bg-destructive/70 active:not-disabled:border-destructive bg-destructive border border-destructive disabled:cursor-default disabled:opacity-50 duration-150 hover:not-disabled:bg-destructive/80 hover:not-disabled:border-destructive inline-block p-2 px-4 py-2 relative rounded-sm text-destructive-foreground text-sm tracking-wide transition-colors uppercase",
         "span: absolute flex h-full items-center justify-center left-0 top-0 w-full",
         "span: animate-[spin_1s_cubic-bezier(0.55,0.25,0.25,0.7)_infinite] block border-2 border-muted border-t-foreground h-4 rounded-full w-4",
-        "span: text-transparent"
+        "span: gap-2 inline-flex items-center text-transparent"
     ],
     "Alert success": [
         "div: bg-success/15 border border-l-4 border-success flex items-start px-4 py-3 rounded-sm shadow-sm text-foreground",
@@ -576,15 +652,24 @@
     "Pagination": [
         "span: items",
         "div: flex justify-center mt-4",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:active:not(:disabled)]:bg-primary/70 [&:active:not(:disabled)]:border-primary/70 [&:hover:not(:disabled)]:bg-primary/80 [&:hover:not(:disabled)]:border-primary bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
-        "button: [&:hover:not(:disabled)]:bg-primary [&:hover:not(:disabled)]:border-primary [&:hover:not(:disabled)]:text-primary-foreground bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: active:not-disabled:bg-primary/70 active:not-disabled:border-primary/70 bg-primary border border-primary disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary/80 hover:not-disabled:border-primary inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-primary-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
+        "button: bg-transparent border border-border disabled:cursor-default disabled:opacity-50 duration-150 h-10 hover:not-disabled:bg-primary hover:not-disabled:border-primary hover:not-disabled:text-primary-foreground inline-block not-last-of-type:mr-2 p-0 relative rounded-sm text-foreground text-sm tracking-wide transition-colors uppercase w-10",
+        "span: gap-2 inline-flex items-center",
         "svg: inline-block lucide lucide-chevrons-right"
     ],
     "Pagination single": [],
@@ -670,10 +755,10 @@
         "div: p-3"
     ],
     "GreyRowBox": [
-        "div: [&_.icon]:bg-popover [&_.icon]:flex [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:p-3 [&_.icon]:rounded-full [&_.icon]:w-16 active:bg-popover/80 bg-card border border-transparent duration-150 flex hover:bg-popover hover:border-border items-center no-underline overflow-hidden p-4 rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]"
+        "div: active:bg-popover/80 bg-card border border-transparent duration-150 flex group hover:bg-popover hover:border-border items-center no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]"
     ],
     "GreyRowBox static link": [
-        "a: [&_.icon]:bg-popover [&_.icon]:flex [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:p-3 [&_.icon]:rounded-full [&_.icon]:w-16 bg-card border border-transparent flex items-center mt-2 no-underline overflow-hidden p-4 rounded-sm text-foreground"
+        "a: bg-card border border-transparent flex group items-center mt-2 no-underline overflow-hidden p-4 relative rounded-sm text-foreground"
     ],
     "PageHeading": [
         "header: flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between",
@@ -695,13 +780,13 @@
         "div: flex gap-2 items-center",
         "div: flex-1 min-w-0",
         "label: block cursor-pointer font-medium mb-0 text-foreground text-sm uppercase",
-        "span: active:bg-popover bg-input border border-input cursor-pointer data-[checked]:bg-primary data-[checked]:border-primary data-[disabled]:cursor-default data-[disabled]:opacity-60 duration-75 group h-6 hover:border-primary/70 inline-block p-0 relative rounded-full select-none shrink-0 transition-colors w-12",
-        "span: -translate-y-1/2 absolute bg-background block border duration-75 ease-in group-data-[checked]:bg-primary-foreground group-data-[checked]:border-primary-foreground group-data-[checked]:left-[calc(100%_-_1.125rem_-_0.125rem)] left-0.5 rounded-full size-4.5 top-1/2 transition-[left]",
-        "a: [&_.icon]:bg-popover [&_.icon]:flex [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:p-3 [&_.icon]:rounded-full [&_.icon]:w-16 active:bg-popover/80 bg-card border border-transparent duration-150 gap-4 grid grid-cols-12 group hover:bg-popover hover:border-border items-center no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]",
+        "span: active:bg-popover bg-input border border-input-border cursor-pointer data-checked:bg-primary data-checked:border-primary data-disabled:cursor-default data-disabled:opacity-60 duration-75 group h-6 hover:border-primary/70 inline-block p-0 relative rounded-full select-none shrink-0 transition-colors w-12",
+        "span: -translate-y-1/2 absolute bg-background block border duration-75 ease-in group-data-checked:bg-primary-foreground group-data-checked:border-primary-foreground group-data-checked:left-[calc(100%_-_1.125rem_-_0.125rem)] left-0.5 rounded-full size-4.5 top-1/2 transition-[left]",
+        "a: active:bg-popover/80 bg-card border border-transparent duration-150 gap-4 grid grid-cols-12 group hover:bg-popover hover:border-border items-center no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]",
         "div: col-span-12",
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -709,27 +794,36 @@
         "svg: inline-block lucide lucide-ethernet-port shrink-0 text-muted-foreground",
         "p: ml-2 text-muted-foreground text-sm",
         "div: col-span-7 hidden items-baseline justify-center lg:col-span-4 sm:flex",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-cpu shrink-0 text-muted-foreground",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-cpu shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-memory-stick shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-memory-stick shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-hard-drive shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-hard-drive shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: absolute bg-success duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full status-bar transition-opacity w-2 z-20",
-        "a: [&_.icon]:bg-popover [&_.icon]:flex [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:p-3 [&_.icon]:rounded-full [&_.icon]:w-16 active:bg-popover/80 bg-card border border-transparent duration-150 gap-4 grid grid-cols-12 group hover:bg-popover hover:border-border items-center mt-2 no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: absolute bg-success duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full transition-opacity w-2 z-20",
+        "a: active:bg-popover/80 bg-card border border-transparent duration-150 gap-4 grid grid-cols-12 group hover:bg-popover hover:border-border items-center mt-2 no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]",
         "div: col-span-12",
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -737,22 +831,46 @@
         "svg: inline-block lucide lucide-ethernet-port shrink-0 text-muted-foreground",
         "p: ml-2 text-muted-foreground text-sm",
         "div: col-span-7 hidden items-baseline justify-center lg:col-span-4 sm:flex",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-cpu shrink-0 text-muted-foreground",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-cpu shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-memory-stick shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-memory-stick shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-hard-drive shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-hard-drive shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: absolute bg-destructive duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full status-bar transition-opacity w-2 z-20"
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: absolute bg-destructive duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full transition-opacity w-2 z-20",
+        "a: active:bg-popover/80 bg-card border border-transparent duration-150 gap-4 grid grid-cols-12 group hover:bg-popover hover:border-border items-center mt-2 no-underline overflow-hidden p-4 relative rounded-sm text-foreground transition-[background-color,border-color,color,box-shadow]",
+        "div: col-span-12",
+        "div: gap-4 grid grid-cols-12",
+        "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
+        "svg: inline-block lucide lucide-server",
+        "p: text-lg wrap-break-word",
+        "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
+        "div: flex justify-center",
+        "svg: inline-block lucide lucide-ethernet-port shrink-0 text-muted-foreground",
+        "p: ml-2 text-muted-foreground text-sm",
+        "div: col-span-7 hidden items-baseline justify-center lg:col-span-4 sm:flex",
+        "div: flex-1 text-center",
+        "span: bg-destructive px-2 py-1 rounded-sm text-destructive-foreground text-xs",
+        "div: absolute bg-destructive duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full transition-opacity w-2 z-20"
     ],
     "view dashboard.serverList empty": [
         "header: flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between",
@@ -781,7 +899,7 @@
     "view dashboard.serverCard running": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -789,26 +907,35 @@
         "svg: inline-block lucide lucide-ethernet-port shrink-0 text-muted-foreground",
         "p: ml-2 text-muted-foreground text-sm",
         "div: col-span-7 hidden items-baseline justify-center lg:col-span-4 sm:flex",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-cpu shrink-0 text-muted-foreground",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-cpu shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-memory-stick shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-memory-stick shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-hard-drive shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-hard-drive shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs"
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs"
     ],
     "view dashboard.serverCard offline": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -816,26 +943,35 @@
         "svg: inline-block lucide lucide-ethernet-port shrink-0 text-muted-foreground",
         "p: ml-2 text-muted-foreground text-sm",
         "div: col-span-7 hidden items-baseline justify-center lg:col-span-4 sm:flex",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-cpu shrink-0 text-muted-foreground",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-cpu shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-memory-stick shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-memory-stick shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs",
-        "div: flex-1 hidden ml-4 sm:block",
-        "div: flex justify-center",
-        "svg: inline-block lucide lucide-hard-drive shrink-0 text-muted-foreground",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: flex-1 flex-wrap hidden justify-center ml-4 sm:flex",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-hard-drive shrink-0 size-[1em] text-muted-foreground",
+        "div: contents",
+        "p: sr-only",
         "p: ml-2 text-muted-foreground text-sm",
-        "p: mt-1 text-center text-muted-foreground text-xs"
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs"
     ],
     "view dashboard.serverCard suspended": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -849,7 +985,7 @@
     "view dashboard.serverCard loading": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -862,7 +998,7 @@
     "view dashboard.serverCard connection-error": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -876,7 +1012,7 @@
     "view dashboard.serverCard maintenance": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -890,7 +1026,7 @@
     "view dashboard.serverCard transferring": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -904,7 +1040,7 @@
     "view dashboard.serverCard installing": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -918,7 +1054,7 @@
     "view dashboard.serverCard restoring-backup": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -932,7 +1068,7 @@
     "view dashboard.serverCard unavailable": [
         "div: gap-4 grid grid-cols-12",
         "div: col-span-12 flex items-center lg:col-span-6 sm:col-span-5",
-        "div: icon mr-4",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
         "svg: inline-block lucide lucide-server",
         "p: text-lg wrap-break-word",
         "div: flex-1 hidden lg:block lg:col-span-2 ml-4",
@@ -949,6 +1085,8 @@
         "div: flex-1 min-w-0",
         "a: active block duration-150 font-header font-medium hover:text-accent no-underline px-4 sm:text-2xl text-foreground text-xl transition-colors truncate",
         "div: flex h-full items-center justify-center shrink-0",
+        "button: active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center navigation-link no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
+        "svg: inline-block lucide lucide-search",
         "a: active active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
         "svg: inline-block lucide lucide-layers",
         "a: active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
@@ -963,6 +1101,8 @@
         "div: flex-1 min-w-0",
         "a: active block duration-150 font-header font-medium hover:text-accent no-underline px-4 sm:text-2xl text-foreground text-xl transition-colors truncate",
         "div: flex h-full items-center justify-center shrink-0",
+        "button: active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center navigation-link no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
+        "svg: inline-block lucide lucide-search",
         "a: active active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
         "svg: inline-block lucide lucide-layers",
         "a: active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
@@ -972,5 +1112,451 @@
         "button: active:bg-popover/80 active:shadow-navigation-active active:text-foreground cursor-pointer data-[status=active]:shadow-navigation-active duration-150 flex h-full hover:bg-popover hover:border-border hover:shadow-navigation-active hover:text-foreground items-center no-underline px-3 shrink-0 sm:px-6 text-muted-foreground transition-[background-color,border-color,color,box-shadow]",
         "svg: inline-block lucide lucide-log-out",
         "main: outline-none"
+    ],
+    "ListRow icon status": [
+        "div: bg-card border border-transparent flex group items-center no-underline overflow-hidden p-4 relative rounded-sm text-foreground",
+        "div: bg-popover flex items-center justify-center mr-4 p-3 rounded-full w-16",
+        "div: absolute bg-success duration-150 group-hover:opacity-75 h-[calc(100%-0.5rem)] m-1 opacity-50 right-0 rounded-full transition-opacity w-2 z-20"
+    ],
+    "Stat tile": [
+        "div: bg-popover flex items-center lg:p-4 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-warning h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-warning duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-database m-auto size-6 text-warning-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs"
+    ],
+    "Stat inline meter": [
+        "div: flex flex-wrap justify-center",
+        "div: hidden",
+        "div: flex",
+        "svg: lucide lucide-database shrink-0 size-[1em] text-destructive",
+        "div: contents",
+        "p: sr-only",
+        "p: ml-2 text-destructive text-sm",
+        "span: basis-full mt-1 text-center text-muted-foreground text-xs",
+        "div: bg-sunken h-2 overflow-hidden rounded-sm w-full",
+        "div: bg-destructive duration-150 h-2 rounded-sm transition-[width,background-color]"
+    ],
+    "ChartCard": [
+        "div: bg-popover border-b-4 border-border group pt-2 relative rounded-sm shadow-lg",
+        "div: flex items-center justify-between px-4 py-2",
+        "h3: duration-100 font-header font-medium group-hover:text-foreground transition-colors",
+        "div: flex items-center text-sm",
+        "div: ml-2 z-10"
+    ],
+    "PageContentBlock": [
+        "div: my-(--layout-page-spacing) page-width",
+        "div: mb-4 page-width",
+        "p: text-center text-muted-foreground text-xs",
+        "a: hover:text-muted-foreground no-underline text-muted-foreground"
+    ],
+    "view server.stats running": [
+        "div: gap-2 grid grid-cols-6 md:gap-4",
+        "div: bg-popover col-span-3 cursor-pointer flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-wifi m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-clock m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cpu m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-memory-stick m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-hard-drive m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-download m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-upload m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate"
+    ],
+    "view server.stats offline": [
+        "div: gap-2 grid grid-cols-6 md:gap-4",
+        "div: bg-popover col-span-3 cursor-pointer flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-wifi m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-destructive h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-destructive duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-clock m-auto size-6 text-destructive-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cpu m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: text-muted-foreground",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-memory-stick m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: text-muted-foreground",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-hard-drive m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-download m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: text-muted-foreground",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-upload m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: text-muted-foreground"
+    ],
+    "view server.stats starting": [
+        "div: gap-2 grid grid-cols-6 md:gap-4",
+        "div: bg-popover col-span-3 cursor-pointer flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-wifi m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-warning h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-warning duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-clock m-auto size-6 text-warning-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cpu m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-memory-stick m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-hard-drive m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-download m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-upload m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate"
+    ],
+    "view server.stats alarms": [
+        "div: gap-2 grid grid-cols-6 md:gap-4",
+        "div: bg-popover col-span-3 cursor-pointer flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-wifi m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-clock m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-destructive h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-destructive duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cpu m-auto size-6 text-destructive-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-warning h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-warning duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-memory-stick m-auto size-6 text-warning-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-destructive h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-destructive duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-hard-drive m-auto size-6 text-destructive-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-download m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-upload m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate"
+    ],
+    "view server.stats unlimited": [
+        "div: gap-2 grid grid-cols-6 md:gap-4",
+        "div: bg-popover col-span-3 cursor-pointer flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-wifi m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-clock m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cpu m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-memory-stick m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-hard-drive m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "span: ml-1 select-none shrink-0 text-muted-foreground text-xs",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-download m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate",
+        "div: bg-popover col-span-3 flex items-center lg:col-span-6 lg:p-4 md:col-span-2 md:p-3 px-3 py-2 relative rounded-sm shadow-lg",
+        "div: absolute bg-card h-full left-0 rounded-l-sm sm:hidden top-0 w-1",
+        "div: bg-card duration-500 h-12 hidden items-center justify-center rounded-lg shadow-md shrink-0 sm:flex sm:mr-4 transition-colors w-12",
+        "svg: lucide lucide-cloud-upload m-auto size-6 text-foreground",
+        "div: content-center flex flex-wrap items-baseline overflow-hidden w-full",
+        "p: basis-full font-header font-medium leading-tight md:text-sm text-foreground text-xs",
+        "p: font-semibold h-7 leading-7 md:text-xl min-w-0 text-foreground text-lg truncate"
+    ],
+    "view server.graphs running": [
+        "div: gap-2 grid grid-cols-1 md:grid-cols-3 sm:gap-4",
+        "div: bg-popover border-b-4 border-border group pt-2 relative rounded-sm shadow-lg",
+        "div: flex items-center justify-between px-4 py-2",
+        "h3: duration-100 font-header font-medium group-hover:text-foreground transition-colors",
+        "div: ml-2 z-10",
+        "div: relative",
+        "div: bg-popover border-b-4 border-border group pt-2 relative rounded-sm shadow-lg",
+        "div: flex items-center justify-between px-4 py-2",
+        "h3: duration-100 font-header font-medium group-hover:text-foreground transition-colors",
+        "div: ml-2 z-10",
+        "div: relative",
+        "div: bg-popover border-b-4 border-border group pt-2 relative rounded-sm shadow-lg",
+        "div: flex items-center justify-between px-4 py-2",
+        "h3: duration-100 font-header font-medium group-hover:text-foreground transition-colors",
+        "div: flex items-center text-sm",
+        "svg: h-4 lucide lucide-cloud-download mr-2 text-chart-2 w-4",
+        "svg: h-4 lucide lucide-cloud-upload text-chart-1 w-4",
+        "div: ml-2 z-10",
+        "div: relative"
+    ],
+    "view app.search closed": ["button: navigation-link", "svg: inline-block lucide lucide-search"],
+    "view app.search results": [
+        "button: navigation-link",
+        "svg: inline-block lucide lucide-search",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: fixed inset-0 overflow-y-auto z-50",
+        "div: flex items-center justify-center min-h-full p-4 text-center",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
+        "div: flex-1 min-w-0",
+        "div: flex items-center",
+        "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
+        "div: relative",
+        "label: block font-medium mb-1 text-foreground text-sm uppercase",
+        "input: appearance-none bg-input border-2 border-input-border disabled:opacity-75 duration-150 focus:border-primary focus:ring-2 focus:ring-ring/50 focus:shadow-md hover:border-input-border invalid:shadow-none min-w-0 outline-hidden p-3 read-only:bg-muted/40 read-only:cursor-text required:shadow-none resize-none rounded-sm shadow-none text-foreground text-sm transition-[background-color,border-color,color,box-shadow] w-full",
+        "p: input-help",
+        "div: mt-6",
+        "a: bg-muted border-border border-l-4 duration-150 flex hover:border-accent hover:shadow-sm items-center no-underline not-last-of-type:mb-2 p-4 rounded-sm transition-[background-color,border-color,color]",
+        "div: flex-1 mr-4",
+        "p: text-sm",
+        "p: mt-1 text-muted-foreground text-xs",
+        "div: flex-none text-right",
+        "span: bg-accent px-2 py-1 rounded-sm text-accent-foreground text-xs",
+        "a: bg-muted border-border border-l-4 duration-150 flex hover:border-accent hover:shadow-sm items-center no-underline not-last-of-type:mb-2 p-4 rounded-sm transition-[background-color,border-color,color]",
+        "div: flex-1 mr-4",
+        "p: text-sm",
+        "p: mt-1 text-muted-foreground text-xs",
+        "div: flex-none text-right",
+        "span: bg-accent px-2 py-1 rounded-sm text-accent-foreground text-xs",
+        "div: h-6 invisible",
+        "div: absolute m-4 right-0 top-0",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
+        "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
+    ],
+    "view app.search none": [
+        "button: navigation-link",
+        "svg: inline-block lucide lucide-search",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: fixed inset-0 overflow-y-auto z-50",
+        "div: flex items-center justify-center min-h-full p-4 text-center",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
+        "div: flex-1 min-w-0",
+        "div: flex items-center",
+        "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
+        "div: relative",
+        "label: block font-medium mb-1 text-foreground text-sm uppercase",
+        "input: appearance-none bg-input border-2 border-input-border disabled:opacity-75 duration-150 focus:border-primary focus:ring-2 focus:ring-ring/50 focus:shadow-md hover:border-input-border invalid:shadow-none min-w-0 outline-hidden p-3 read-only:bg-muted/40 read-only:cursor-text required:shadow-none resize-none rounded-sm shadow-none text-foreground text-sm transition-[background-color,border-color,color,box-shadow] w-full",
+        "p: input-help",
+        "div: border-dashed flex flex-1 flex-col gap-4 items-center justify-center md:p-8 min-w-0 mt-6 p-6 rounded-sm text-balance text-center",
+        "div: flex flex-col gap-2 items-center max-w-sm text-center",
+        "div: [&_svg:not([class*='size-'])]:size-6 [&_svg]:pointer-events-none [&_svg]:shrink-0 bg-secondary flex items-center justify-center mb-2 rounded-sm shrink-0 size-10 text-secondary-foreground",
+        "svg: lucide lucide-search-x",
+        "div: font-header font-medium text-foreground text-lg tracking-tight",
+        "div: [&>a:hover]:text-accent [&>a]:underline [&>a]:underline-offset-4 text-muted-foreground text-sm/relaxed",
+        "div: h-6 invisible",
+        "div: absolute m-4 right-0 top-0",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
+        "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
+    ],
+    "view app.search short": [
+        "button: navigation-link",
+        "svg: inline-block lucide lucide-search",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: fixed inset-0 overflow-y-auto z-50",
+        "div: flex items-center justify-center min-h-full p-4 text-center",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
+        "div: flex-1 min-w-0",
+        "div: flex items-center",
+        "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
+        "div: relative",
+        "label: block font-medium mb-1 text-foreground text-sm uppercase",
+        "input: appearance-none bg-input border-2 border-destructive disabled:opacity-75 duration-150 focus:border-destructive focus:ring-2 focus:ring-destructive focus:shadow-md hover:border-destructive invalid:shadow-none min-w-0 outline-hidden p-3 read-only:bg-muted/40 read-only:cursor-text required:shadow-none resize-none rounded-sm shadow-none text-destructive text-sm transition-[background-color,border-color,color,box-shadow] w-full",
+        "p: error input-help",
+        "div: h-6 invisible",
+        "div: absolute m-4 right-0 top-0",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
+        "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
+    ],
+    "view app.search error": [
+        "button: navigation-link",
+        "svg: inline-block lucide lucide-search",
+        "div: bg-background/50 data-ending-style:ease-in data-ending-style:opacity-0 data-starting-style:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
+        "div: fixed inset-0 overflow-y-auto z-50",
+        "div: flex items-center justify-center min-h-full p-4 text-center",
+        "div: bg-card data-ending-style:ease-in data-ending-style:opacity-0 data-ending-style:scale-75 data-starting-style:opacity-0 data-starting-style:scale-75 duration-150 ease-out flex flex-col max-h-[calc(100dvh-2rem)] max-w-xl mx-auto overflow-hidden relative ring-4 ring-border/80 rounded-sm shadow-lg text-left transition w-full",
+        "div: flex flex-1 min-h-0 overflow-y-auto p-6 pb-0",
+        "div: flex-1 min-w-0",
+        "div: flex items-center",
+        "h2: font-header font-semibold mb-5 pr-4 text-foreground text-xl tracking-normal",
+        "div: relative",
+        "label: block font-medium mb-1 text-foreground text-sm uppercase",
+        "input: appearance-none bg-input border-2 border-input-border disabled:opacity-75 duration-150 focus:border-primary focus:ring-2 focus:ring-ring/50 focus:shadow-md hover:border-input-border invalid:shadow-none min-w-0 outline-hidden p-3 read-only:bg-muted/40 read-only:cursor-text required:shadow-none resize-none rounded-sm shadow-none text-foreground text-sm transition-[background-color,border-color,color,box-shadow] w-full",
+        "p: input-help",
+        "div: mt-4",
+        "div: bg-destructive/15 border border-destructive border-l-4 flex items-start px-4 py-3 rounded-sm shadow-sm text-foreground",
+        "svg: h-5 lucide lucide-shield-alert mr-3 mt-0.5 shrink-0 text-destructive w-5",
+        "div: flex-1 leading-relaxed min-w-0 text-sm",
+        "div: h-6 invisible",
+        "div: absolute m-4 right-0 top-0",
+        "button: bg-popover border border-border disabled:cursor-default disabled:opacity-50 duration-150 group h-8 hover:not-disabled:bg-secondary hover:not-disabled:border-secondary inline-flex items-center justify-center p-0 relative rounded-sm text-foreground text-xs tracking-wide transition-colors uppercase w-8",
+        "span: gap-2 inline-flex items-center",
+        "svg: duration-100 group-hover:rotate-90 h-5 lucide lucide-x transition-transform w-5"
     ]
 }

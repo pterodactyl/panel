@@ -153,9 +153,9 @@ describe('panel stylesheet in a theme build', () => {
         expect(utilities).not.toContain('.bg-red-500');
     });
 
-    it('lays page content out from the layout tokens, centred from xl', () => {
+    it('lays page content out from the layout tokens, centred and never closer than the gutter', () => {
         expect(utilities).toMatch(
-            /\.page-width \{\s*max-width: var\(--layout-content-width\);\s*margin-inline: var\(--layout-gutter\);\s*@media \(width >= 80rem\) \{\s*margin-inline: auto;/
+            /\.page-width \{\s*max-width: var\(--layout-content-width\);\s*margin-inline: max\(var\(--layout-gutter\), \(100% - var\(--layout-content-width\)\) \/ 2\);\s*\}/
         );
     });
 });

@@ -23,6 +23,7 @@ export const classicViews: ThemeViews = {
     'layout.account': lazyView(() => import('./layout/AccountLayout')),
     'layout.server': lazyView(() => import('./layout/ServerLayout')),
     'layout.admin': lazyView(() => import('./layout/AdminLayout')),
+    'app.search': lazyView(() => import('./layout/Search')),
     'page.dashboard': lazyView(dashboard, 'Dashboard'),
     'dashboard.serverList': lazyView(dashboard, 'ServerList'),
     'dashboard.serverCard': lazyView(dashboard, 'ServerCard'),

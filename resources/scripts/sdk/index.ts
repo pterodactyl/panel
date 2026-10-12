@@ -34,6 +34,9 @@ export { default as NamedIcon, loadIconNames, type NamedIconProps } from '@/comp
 export { default as Can } from '@/components/elements/Can';
 export { default as Card, type CardProps } from '@/components/elements/Card';
 export { default as ListRow, type ListRowProps } from '@/components/elements/ListRow';
+export { default as Stat, type StatProps, type StatVariant } from '@/components/elements/Stat';
+export { default as ChartCard, type ChartCardProps } from '@/components/elements/ChartCard';
+export { default as PageFooter, type PageFooterProps } from '@/components/elements/PageFooter';
 export { default as Badge, type BadgeProps, type BadgeSize, type BadgeVariant } from '@/components/elements/Badge';
 export {
     default as ProgressBar,

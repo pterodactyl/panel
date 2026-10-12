@@ -8,7 +8,7 @@ import { type SlotComponentProps, type SlotData, type SlotName } from "../extens
 import type { ExtensionResourceContext } from "../extensions/resourceContext.js";
 import type { HistoryState } from '@tanstack/react-router';
 import { type PanelDestination, type PanelSearch } from "./navigation.js";
-import { Alert, Avatar, Badge, Button, Card, Checkbox, Code, ContentBox, CopyOnClick, Dialog, DropdownMenu, Empty, FileInput, Input, Label, ListRow, NewButton, NumberInput, PageHeading, Pagination, ProgressBar, Select, Spinner, SpinnerOverlay, Switch, Table, TextArea, TitledGreyBox, Tooltip } from "./index.js";
+import { Alert, Avatar, Badge, Button, Card, ChartCard, Checkbox, Code, ContentBox, CopyOnClick, Dialog, DropdownMenu, Empty, FileInput, Input, Label, ListRow, NewButton, NumberInput, PageFooter, PageHeading, Pagination, ProgressBar, Select, Spinner, SpinnerOverlay, Stat, Switch, Table, TextArea, TitledGreyBox, Tooltip } from "./index.js";
 import type { SdkServer, SdkSiteSettings, SdkUser } from "./index.js";
 import type { ServerWebsocketEvent } from "./index.js";
 export { createTestServer, createTestServerCard, type TestServerOptions } from "../views/fixtures.js";
@@ -28,7 +28,10 @@ export interface UiPrimitiveComponents {
     Label: typeof Label;
     Card: typeof Card;
     ListRow: typeof ListRow;
+    Stat: typeof Stat;
+    ChartCard: typeof ChartCard;
     PageHeading: typeof PageHeading;
+    PageFooter: typeof PageFooter;
     Badge: typeof Badge;
     Alert: typeof Alert;
     ProgressBar: typeof ProgressBar;
@@ -76,19 +79,7 @@ export interface ExtensionTestHost {
 }
 /** Create one host per test; call dispose after unmounting its Wrapper. */
 export declare function createExtensionTestHost(options?: ExtensionTestHostOptions): ExtensionTestHost;
-/** The theme a test renders with, or a chain of them. */
-export interface TestThemeOptions {
-    /** The theme to render with: what its entry exports. */
-    theme?: ThemeDefinition;
-    /**
-     * A chain of themes, oldest first, as the panel stacks them over classic: `[parent, child]`. Each
-     * one's `Default` and `skin(name, (below) => …)` build on the theme before it.
-     */
-    themes?: readonly ThemeDefinition[];
-}
-/** Loads the chunks of a theme's `lazyView` views, or those of a chain of themes, which `renderView` renders synchronously. */
-export declare function preloadTheme(theme: ThemeDefinition | readonly ThemeDefinition[]): Promise<void>;
-export interface ViewTestHostOptions<N extends ViewName> extends TestThemeOptions {
+export interface ViewTestHostOptions<N extends ViewName> {
     /** Defaults to the named fixture, or the view's first. */
     model?: ViewModel<N>;
     fixture?: string;
@@ -110,16 +101,19 @@ export interface ViewTestHost<N extends ViewName> {
     dispose(): void;
 }
 /**
- * Tests a layer against the view's classic layers, or the layers of `themes` over them, without issuing
- * core queries: render it with `props` inside `Wrapper`, and its `Default` renders the layer below with
- * the same model. Nested views read fixtures.
+ * Tests a layer against the view's classic layers without issuing core queries: render it with `props`
+ * inside `Wrapper`, and its `Default` renders classic with the same model. Nested views read fixtures.
  */
 export declare function createViewTestHost<N extends ViewName>(name: N, options?: ViewTestHostOptions<N>): Promise<ViewTestHost<N>>;
-export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions {
+export interface RenderViewOptions<N extends ViewName> {
     /** Defaults to the view's first fixture. */
     fixture?: string;
     model?: ViewModel<N>;
     input?: ViewInput<N>;
+    /** Passed to the view as `<View className>` would; it lands on the view's root element. */
+    className?: string;
+    /** The theme to render the view with: what its entry exports. */
+    theme?: ThemeDefinition;
     /** Components to mount in slots, as an extension's `slots.register` would. */
     slots?: TestSlots;
     /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
@@ -133,16 +127,21 @@ export interface RenderedView {
     /** Throws what failed after the first render, such as a layer failing on a click. */
     unmount(): void;
 }
+/** Loads the chunks of a theme's `lazyView` views, which `renderView` renders synchronously. */
+export declare function preloadTheme(theme: ThemeDefinition): Promise<void>;
 /**
- * Renders a view synchronously from fixtures, with the layers of a theme, or a chain of `themes`, over
- * classic. Each call replaces what was rendered before it; nested views read their fixtures too. Await
- * `preloadTheme(theme)` first when the themes have lazy views. It throws when the view fails to render,
- * and when a theme or extension layer throws unless `strict` is false.
+ * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
+ * replaces what was rendered before it; nested views read their fixtures too. Await `preloadTheme(theme)`
+ * first when the theme has lazy views. It throws when the view fails to render, and when a theme or
+ * extension layer throws unless `strict` is false.
  */
 export declare function renderView<N extends ViewName>(name: N, options?: RenderViewOptions<N>): RenderedView;
-export type RenderPrimitiveOptions = TestThemeOptions;
+export interface RenderPrimitiveOptions {
+    /** The theme to render the primitive with: what its entry exports. */
+    theme?: ThemeDefinition;
+}
 /**
- * Renders a UI kit primitive synchronously with the skins and replacements of a theme, or a chain of
- * `themes`, over classic's. Each call replaces what was rendered before it.
+ * Renders a UI kit primitive synchronously with the theme's skins and replacements over classic's.
+ * Each call replaces what was rendered before it.
  */
 export declare function renderPrimitive<N extends UiPrimitiveName>(name: N, props: UiPrimitiveProps<N>, options?: RenderPrimitiveOptions): RenderedView;

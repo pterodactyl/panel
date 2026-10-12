@@ -15,12 +15,13 @@ function AdminLinkLabel({ placement }: { placement: 'row' | 'menu' }) {
     );
 }
 
-export default function ServerLayout({ model, children }: ViewProps<'layout.server'>) {
+export default function ServerLayout({ model, className, children }: ViewProps<'layout.server'>) {
     const { adminLink } = model;
     const items: readonly NavItem[] = adminLink ? [...model.nav.items, adminLink] : model.nav.items;
 
     return (
         <SubNavigationLayout
+            className={className}
             navigation={
                 <SubNavigation
                     items={items}

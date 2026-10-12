@@ -1,15 +1,15 @@
 import { Badge, ProgressBar, Spinner, bytesToString } from '@pterodactyl/sdk';
-import { Slot, useThemeSettings, type ServerCardMetric, type ViewProps } from '@pterodactyl/sdk/theme';
+import { Slot, useThemeSettings, type ServerStatMetric, type ViewProps } from '@pterodactyl/sdk/theme';
 import type { ThemeSettings } from '../theme-types';
 
 /** A limit of 0 is unlimited, which has no percentage to show. */
-const percent = ({ value, limit }: ServerCardMetric) => (limit > 0 ? Math.min((value / limit) * 100, 100) : null);
+const percent = ({ value, limit }: ServerStatMetric) => (limit > 0 ? Math.min((value / limit) * 100, 100) : null);
 
-function Usage({ label, text, metric }: { label: string; text: string; metric: ServerCardMetric }) {
+function Usage({ label, text, metric }: { label: string; text: string; metric: ServerStatMetric }) {
     return (
         <div className='space-y-1'>
             {text}
-            <ProgressBar value={percent(metric)} label={label} tone={metric.alarm ? 'danger' : 'accent'} />
+            <ProgressBar value={percent(metric)} label={label} tone={metric.alarm ?? 'accent'} />
         </div>
     );
 }

@@ -103,11 +103,11 @@ function Filters({ model, filtered }: { model: ActivityLogModel; filtered: boole
     );
 }
 
-export default function ActivityLog({ model }: ViewProps<'activity.log'>) {
+export default function ActivityLog({ model, className }: ViewProps<'activity.log'>) {
     const filtered = model.event !== null || model.user !== null;
 
     return (
-        <>
+        <div className={className}>
             {model.error !== null && (
                 <div className='mb-4 space-y-3'>
                     <Alert type='danger'>{model.error}</Alert>
@@ -121,6 +121,6 @@ export default function ActivityLog({ model }: ViewProps<'activity.log'>) {
             {model.pagination && (
                 <PaginationFooter pagination={model.pagination} onPageSelect={model.actions.setPage} />
             )}
-        </>
+        </div>
     );
 }
