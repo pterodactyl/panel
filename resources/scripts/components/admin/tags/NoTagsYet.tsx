@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { Tags } from 'lucide-react';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 export default function NoTagsYet() {
     return (
-        <Empty className={emptyCompactClass}>
+        <Empty size='compact'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <Tags />

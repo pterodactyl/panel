@@ -7,7 +7,6 @@ import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Spinner from '@/components/elements/Spinner';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { Dialog } from '@/components/elements/dialog';
 import Code from '@/components/elements/Code';
@@ -62,7 +61,7 @@ export default function AccountApiContainer() {
                         <DataTable
                             table={table}
                             emptyState={
-                                <Empty className={emptyCompactClass}>
+                                <Empty size='compact'>
                                     <EmptyHeader>
                                         <EmptyMedia variant='icon'>
                                             <KeyRound />

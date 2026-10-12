@@ -1,8 +1,8 @@
 import React from 'react';
 import { Combobox } from '@base-ui/react/combobox';
 import { Check, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/cn';
 import { isNumber, isString } from '@/lib/objects';
+import { useSkin, type SkinBinding } from '@/themes/skins';
 
 export type SelectValue = string | number;
 
@@ -57,34 +57,7 @@ type ComboboxGroupItem = {
     items: SelectOption[];
 };
 
-type WithStringClassName<TProps> = Omit<TProps, 'className'> & { className?: string };
-
-const inputGroupClass = [
-    'relative flex items-center w-full rounded-sm border text-sm transition-colors duration-150',
-    'bg-input border-input text-foreground hover:border-input data-[popup-open]:border-input',
-    'focus-within:shadow-md focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/50',
-    'data-[disabled]:opacity-75 data-[disabled]:cursor-default',
-].join(' ');
-const inputErrorClass =
-    'border-destructive text-destructive focus-within:border-destructive focus-within:ring-destructive';
-const inputClass = [
-    'w-full min-w-0 appearance-none border-0 bg-transparent p-3 pr-10 text-sm text-foreground outline-hidden',
-    'placeholder:text-muted-foreground focus:ring-0 focus:outline-hidden disabled:cursor-default',
-].join(' ');
-const triggerClass =
-    'absolute right-0 top-0 flex h-full w-10 items-center justify-center border-0 bg-transparent p-0 text-muted-foreground [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0';
-const positionerClass = 'z-[99999] min-w-[var(--anchor-width)] outline-none';
-const popupClass = [
-    'bg-card border border-border rounded-sm shadow-lg py-1 text-sm text-foreground',
-    'w-[var(--anchor-width)] max-w-[var(--available-width)] max-h-[min(18rem,var(--available-height))]',
-].join(' ');
-const listClass = 'max-h-72 overflow-y-auto overscroll-contain outline-none';
-const itemClass =
-    'flex items-center justify-between px-3 py-2 cursor-pointer select-none outline-hidden data-[highlighted]:bg-popover data-[highlighted]:text-foreground data-[selected]:text-accent data-[disabled]:opacity-50 data-[disabled]:cursor-default';
-const emptyClass = 'px-3 py-2 text-sm text-muted-foreground empty:p-0';
-const groupLabelClass = 'px-3 pt-2 pb-1 text-xs uppercase text-muted-foreground empty:hidden';
-const selectionSummaryClass = 'pointer-events-none whitespace-nowrap px-3 py-3 text-sm text-foreground';
-const selectionPreviewClass = 'pointer-events-none flex min-w-0 flex-1 items-center px-3 py-2 pr-10 text-sm';
+type SelectSkin = SkinBinding<'Select'>;
 
 const optionLabel = (option: SelectOption | null | undefined): string => {
     if (!option) {
@@ -133,118 +106,82 @@ const getGroups = (groups: SelectGroup[] | undefined): ComboboxGroupItem[] | und
         items: group.options,
     }));
 
-const ComboboxInputGroup = ({
-    $hasError,
-    className,
-    ...props
-}: { $hasError?: boolean } & WithStringClassName<React.ComponentProps<typeof Combobox.InputGroup>>) => (
-    <Combobox.InputGroup className={cn(inputGroupClass, $hasError && inputErrorClass, className)} {...props} />
-);
-
-const ComboboxInput = ({ className, ...props }: WithStringClassName<React.ComponentProps<typeof Combobox.Input>>) => (
-    <Combobox.Input className={cn(inputClass, className)} {...props} />
-);
-
-const ComboboxTrigger = ({
-    className,
-    ...props
-}: WithStringClassName<React.ComponentProps<typeof Combobox.Trigger>>) => (
-    <Combobox.Trigger className={cn(triggerClass, className)} {...props} />
-);
-
-const ComboboxPositioner = ({
-    className,
-    ...props
-}: WithStringClassName<React.ComponentProps<typeof Combobox.Positioner>>) => (
-    <Combobox.Positioner className={cn(positionerClass, className)} {...props} />
-);
-
-const ComboboxPopup = ({ className, ...props }: WithStringClassName<React.ComponentProps<typeof Combobox.Popup>>) => (
-    <Combobox.Popup className={cn(popupClass, className)} {...props} />
-);
-
-const ComboboxList = ({ className, ...props }: WithStringClassName<React.ComponentProps<typeof Combobox.List>>) => (
-    <Combobox.List className={cn(listClass, className)} {...props} />
-);
-
-const ComboboxItem = ({ className, ...props }: WithStringClassName<React.ComponentProps<typeof Combobox.Item>>) => (
-    <Combobox.Item className={cn(itemClass, className)} {...props} />
-);
-
-const ComboboxEmpty = ({ className, ...props }: WithStringClassName<React.ComponentProps<typeof Combobox.Empty>>) => (
-    <Combobox.Empty className={cn(emptyClass, className)} {...props} />
-);
-
-const ComboboxGroupLabel = ({
-    className,
-    ...props
-}: WithStringClassName<React.ComponentProps<typeof Combobox.GroupLabel>>) => (
-    <Combobox.GroupLabel className={cn(groupLabelClass, className)} {...props} />
-);
-
-const ComboboxSelectionSummary = ({ className, ...props }: React.ComponentProps<'span'>) => (
-    <span className={cn(selectionSummaryClass, className)} {...props} />
-);
-
 const CheckIcon = () => <Check size={14} strokeWidth={2.5} aria-hidden />;
 
 const ChevronIcon = () => <ChevronDown size={16} aria-hidden />;
 
-const ComboboxOptionItem = ({ option, showIndicator }: { option: SelectOption; showIndicator: boolean }) => (
-    <ComboboxItem value={option} disabled={option.disabled}>
-        <span className='min-w-0'>{option.label}</span>
+const ComboboxOptionItem = ({
+    ui,
+    option,
+    showIndicator,
+}: {
+    ui: SelectSkin;
+    option: SelectOption;
+    showIndicator: boolean;
+}) => (
+    <Combobox.Item {...ui('item')} value={option} disabled={option.disabled}>
+        <span {...ui('itemLabel')}>{option.label}</span>
         {showIndicator && (
-            <Combobox.ItemIndicator>
+            <Combobox.ItemIndicator {...ui('indicator')}>
                 <CheckIcon />
             </Combobox.ItemIndicator>
         )}
-    </ComboboxItem>
+    </Combobox.Item>
 );
 
 const ComboboxOptionsList = ({
+    ui,
     groups,
     showIndicator,
 }: {
+    ui: SelectSkin;
     groups: ComboboxGroupItem[] | undefined;
     showIndicator: boolean;
 }) =>
     groups ? (
-        <ComboboxList>
+        <Combobox.List {...ui('list')}>
             {(group: ComboboxGroupItem) => (
-                <Combobox.Group key={group.value} items={group.items}>
-                    <ComboboxGroupLabel>{group.label}</ComboboxGroupLabel>
+                <Combobox.Group key={group.value} items={group.items} {...ui('group')}>
+                    <Combobox.GroupLabel {...ui('groupLabel')}>{group.label}</Combobox.GroupLabel>
                     <Combobox.Collection>
                         {(option: SelectOption) => (
-                            <ComboboxOptionItem key={optionKey(option)} option={option} showIndicator={showIndicator} />
+                            <ComboboxOptionItem
+                                key={optionKey(option)}
+                                ui={ui}
+                                option={option}
+                                showIndicator={showIndicator}
+                            />
                         )}
                     </Combobox.Collection>
                 </Combobox.Group>
             )}
-        </ComboboxList>
+        </Combobox.List>
     ) : (
-        <ComboboxList>
+        <Combobox.List {...ui('list')}>
             {(option: SelectOption) => (
-                <ComboboxOptionItem key={optionKey(option)} option={option} showIndicator={showIndicator} />
+                <ComboboxOptionItem key={optionKey(option)} ui={ui} option={option} showIndicator={showIndicator} />
             )}
-        </ComboboxList>
+        </Combobox.List>
     );
 
 const ComboboxPopupContent = ({
+    ui,
     groupedItems,
     emptyMessage,
     showIndicator,
 }: {
+    ui: SelectSkin;
     groupedItems: ComboboxGroupItem[] | undefined;
     emptyMessage: string;
     showIndicator: boolean;
 }) => (
     <Combobox.Portal>
-        <ComboboxPositioner sideOffset={4}>
-            <ComboboxPopup>
-                <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
-                <ComboboxOptionsList groups={groupedItems} showIndicator={showIndicator} />
-            </ComboboxPopup>
-        </ComboboxPositioner>
+        <Combobox.Positioner {...ui('positioner')} sideOffset={4}>
+            <Combobox.Popup {...ui('popup')}>
+                <Combobox.Empty {...ui('empty')}>{emptyMessage}</Combobox.Empty>
+                <ComboboxOptionsList ui={ui} groups={groupedItems} showIndicator={showIndicator} />
+            </Combobox.Popup>
+        </Combobox.Positioner>
     </Combobox.Portal>
 );
 
@@ -342,11 +279,11 @@ type SelectSearch = ReturnType<typeof useSelectSearch>;
 type InputAriaProps = Pick<React.ComponentProps<'input'>, 'aria-describedby' | 'aria-invalid'>;
 
 function MultiSelectCombobox({
+    ui,
     id,
     placeholder,
     searchPlaceholder,
     emptyMessage,
-    hasError,
     disabled,
     items,
     groupedItems,
@@ -357,11 +294,11 @@ function MultiSelectCombobox({
     onChange,
     onCreate,
 }: {
+    ui: SelectSkin;
     id: string | undefined;
     placeholder: string | undefined;
     searchPlaceholder: string;
     emptyMessage: string;
-    hasError: boolean | undefined;
     disabled: boolean | undefined;
     items: SelectOption[] | ComboboxGroupItem[];
     groupedItems: ComboboxGroupItem[] | undefined;
@@ -402,17 +339,15 @@ function MultiSelectCombobox({
             isItemEqualToValue={isSameOption}
             autoHighlight
         >
-            <ComboboxInputGroup $hasError={hasError}>
+            <Combobox.InputGroup {...ui('root')}>
                 <Combobox.Value>
                     {(value: SelectOption[]) => (
                         <>
-                            {value.length > 0 && (
-                                <ComboboxSelectionSummary>{`${value.length} selected`}</ComboboxSelectionSummary>
-                            )}
-                            <ComboboxInput
+                            {value.length > 0 && <span {...ui('summary')}>{`${value.length} selected`}</span>}
+                            <Combobox.Input
+                                {...ui('input')}
                                 {...inputAria}
                                 id={id}
-                                className={value.length > 0 ? 'pl-0' : undefined}
                                 placeholder={value.length > 0 ? searchPlaceholder : placeholder}
                                 onFocus={search.handleFocus}
                                 onBlur={search.handleBlur}
@@ -420,43 +355,41 @@ function MultiSelectCombobox({
                         </>
                     )}
                 </Combobox.Value>
-                <ComboboxTrigger aria-label='Open popup'>
+                <Combobox.Trigger {...ui('trigger')} aria-label='Open popup'>
                     <ChevronIcon />
-                </ComboboxTrigger>
-            </ComboboxInputGroup>
-            <ComboboxPopupContent groupedItems={groupedItems} emptyMessage={emptyMessage} showIndicator />
+                </Combobox.Trigger>
+            </Combobox.InputGroup>
+            <ComboboxPopupContent ui={ui} groupedItems={groupedItems} emptyMessage={emptyMessage} showIndicator />
         </Combobox.Root>
     );
 }
 
 function SingleSelectCombobox({
+    ui,
     id,
     placeholder,
     emptyMessage,
-    hasError,
     disabled,
     items,
     groupedItems,
     selectedOption,
     inputValue,
     richSelection,
-    inputFocused,
     inputAria,
     search,
     onChange,
     onSelectLabel,
 }: {
+    ui: SelectSkin;
     id: string | undefined;
     placeholder: string | undefined;
     emptyMessage: string;
-    hasError: boolean | undefined;
     disabled: boolean | undefined;
     items: SelectOption[] | ComboboxGroupItem[];
     groupedItems: ComboboxGroupItem[] | undefined;
     selectedOption: SelectOption | null;
     inputValue: string;
     richSelection: React.ReactNode | null;
-    inputFocused: boolean;
     inputAria: InputAriaProps;
     search: SelectSearch;
     onChange: (value: SelectValue) => void;
@@ -486,26 +419,26 @@ function SingleSelectCombobox({
             isItemEqualToValue={isSameOption}
             autoHighlight
         >
-            <ComboboxInputGroup $hasError={hasError}>
-                {richSelection && (
-                    <span className={cn(selectionPreviewClass, inputFocused && 'invisible')}>{richSelection}</span>
-                )}
-                <ComboboxInput
+            <Combobox.InputGroup {...ui('root')}>
+                {richSelection && <span {...ui('preview')}>{richSelection}</span>}
+                <Combobox.Input
+                    {...ui('input')}
                     {...inputAria}
                     id={id}
-                    className={cn(
-                        richSelection && 'absolute inset-0 h-full',
-                        richSelection && !inputFocused && 'text-transparent'
-                    )}
                     placeholder={placeholder}
                     onFocus={search.handleFocus}
                     onBlur={search.handleBlur}
                 />
-                <ComboboxTrigger aria-label='Open popup'>
+                <Combobox.Trigger {...ui('trigger')} aria-label='Open popup'>
                     <ChevronIcon />
-                </ComboboxTrigger>
-            </ComboboxInputGroup>
-            <ComboboxPopupContent groupedItems={groupedItems} emptyMessage={emptyMessage} showIndicator={false} />
+                </Combobox.Trigger>
+            </Combobox.InputGroup>
+            <ComboboxPopupContent
+                ui={ui}
+                groupedItems={groupedItems}
+                emptyMessage={emptyMessage}
+                showIndicator={false}
+            />
         </Combobox.Root>
     );
 }
@@ -533,6 +466,14 @@ export default function Select(props: SelectProps) {
         'aria-describedby': props['aria-describedby'],
         'aria-invalid': props['aria-invalid'],
     };
+    const richSelection = props.multiple ? null : resolveRichSelection(selectedOptions[0] ?? null);
+    const ui = useSkin('Select', {
+        error: !!hasError,
+        multiple: !!props.multiple,
+        selected: selectedOptions.length > 0,
+        richLabel: !!richSelection,
+        searching: search.inputFocused,
+    });
 
     if (props.multiple) {
         const inputValue = search.inputFocused ? search.searchValue : '';
@@ -540,11 +481,11 @@ export default function Select(props: SelectProps) {
 
         return (
             <MultiSelectCombobox
+                ui={ui}
                 id={id}
                 placeholder={placeholder}
                 searchPlaceholder={searchPlaceholder}
                 emptyMessage={emptyMessage}
-                hasError={hasError}
                 disabled={disabled}
                 items={creatable ? [...flatOptions, creatable] : items}
                 groupedItems={groupedItems}
@@ -560,22 +501,20 @@ export default function Select(props: SelectProps) {
 
     const selectedOption = selectedOptions[0] ?? null;
     const selectedLabel = optionLabel(selectedOption);
-    const richSelection = resolveRichSelection(selectedOption);
     const inputValue = search.inputFocused ? search.searchValue : selectedLabel;
 
     return (
         <SingleSelectCombobox
+            ui={ui}
             id={id}
             placeholder={placeholder}
             emptyMessage={emptyMessage}
-            hasError={hasError}
             disabled={disabled}
             items={items}
             groupedItems={groupedItems}
             selectedOption={selectedOption}
             inputValue={inputValue}
             richSelection={richSelection}
-            inputFocused={search.inputFocused}
             inputAria={inputAria}
             search={search}
             onChange={props.onChange}

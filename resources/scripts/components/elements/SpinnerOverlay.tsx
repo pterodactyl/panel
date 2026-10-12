@@ -1,9 +1,9 @@
 import React from 'react';
 import type { SpinnerSize } from '@/components/elements/Spinner';
 import Spinner from '@/components/elements/Spinner';
-import { cn } from '@/lib/cn';
+import { useSkin } from '@/themes/skins';
 
-interface Props {
+export interface SpinnerOverlayProps {
     visible: boolean;
     fixed?: boolean;
     size?: SpinnerSize;
@@ -12,18 +12,16 @@ interface Props {
     children?: React.ReactNode;
 }
 
-const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: Props) => {
+const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: SpinnerOverlayProps) => {
+    const ui = useSkin('SpinnerOverlay', { fixed: !!fixed });
+
     if (!visible) {
         return null;
     }
 
     return (
         <div
-            className={cn(
-                'top-0 left-0 flex items-center justify-center w-full h-full rounded-sm flex-col z-40',
-                'bg-background/(--spinner-overlay-opacity)',
-                fixed ? 'fixed' : 'absolute'
-            )}
+            {...ui('root')}
             style={
                 backgroundOpacity === undefined
                     ? undefined
@@ -31,7 +29,7 @@ const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: P
             }
         >
             <Spinner size={size} />
-            {children && <p className='mt-4 text-muted-foreground'>{children}</p>}
+            {children && <p {...ui('text')}>{children}</p>}
         </div>
     );
 };

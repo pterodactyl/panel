@@ -5,6 +5,7 @@ import type { ThemeBootstrap } from '@/bootstrap';
 import type * as BootModule from './boot';
 import type * as RegistryModule from './registry';
 import type * as ThemeModule from './theme';
+import type * as SkinsModule from '@/themes/skins';
 import type * as ExtensionRegistry from '@/extensions/registry';
 import type * as Sonner from 'sonner';
 
@@ -19,6 +20,7 @@ let boot: typeof BootModule;
 let views: typeof RegistryModule;
 let theme: typeof ThemeModule;
 let extensions: typeof ExtensionRegistry;
+let skins: typeof SkinsModule;
 
 const Search = () => null;
 
@@ -36,11 +38,12 @@ const chain = [
 
 beforeEach(async () => {
     vi.resetModules();
-    [boot, views, theme, extensions] = await Promise.all([
+    [boot, views, theme, extensions, skins] = await Promise.all([
         import('./boot'),
         import('./registry'),
         import('./theme'),
         import('@/extensions/registry'),
+        import('@/themes/skins'),
     ]);
     vi.spyOn(console, 'error').mockImplementation(() => {});
 });
@@ -69,6 +72,28 @@ describe('bootTheme', () => {
         expect(layerIds('app.search')).toEqual(['classic', 'parent', 'aurora']);
         expect(layerIds('layout.app')).toEqual(['classic']);
         expect(theme.getThemeIcon('layers')).toBe(Search);
+    });
+
+    it('stacks the skins of the chain over classic and drops them when a later boot fails', async () => {
+        const badge = () => skins.getSkin('Badge', { tone: 'neutral', size: 'md', variant: 'solid' }).classes('root');
+        const code = () => skins.getSkin('Code', { dark: false }).classes('root');
+
+        configure({ id: 'aurora', chain });
+        await boot.bootTheme(async (url) => ({
+            default: theme.defineTheme({
+                ui:
+                    url === '/parent.js'
+                        ? { Badge: { root: 'parent' }, Code: { root: 'parent' } }
+                        : { Badge: { root: 'aurora' } },
+            }),
+        }));
+
+        expect([badge(), code()]).toEqual(['aurora', 'parent']);
+
+        await boot.bootTheme(async () => ({ default: { ui: 'not a skin map' } }));
+
+        expect(badge()).toBe('rounded-sm text-xs px-2 py-1 bg-popover text-foreground');
+        expect(extensions.getExtensionStates()[0]).toMatchObject({ id: 'aurora', status: 'failed' });
     });
 
     it('stays on classic without importing anything in safe mode', async () => {

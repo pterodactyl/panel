@@ -12,7 +12,6 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import DataTable from '@/components/elements/table/DataTable';
 import { databaseColumns } from '@/components/server/databases/DatabaseTable';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 
 const databaseUsage = (canCreate: boolean, limit: number, count: number): string | null => {
@@ -24,7 +23,7 @@ const databaseUsage = (canCreate: boolean, limit: number, count: number): string
 };
 
 const DatabasesEmptyState = ({ databaseLimit, canAddDatabase }: { databaseLimit: number; canAddDatabase: boolean }) => (
-    <Empty className={emptyCompactClass}>
+    <Empty size='compact'>
         <EmptyHeader>
             <EmptyMedia variant='icon'>
                 <Database />

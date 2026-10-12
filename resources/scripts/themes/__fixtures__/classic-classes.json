@@ -333,12 +333,8 @@
         "span: active:bg-popover bg-input border border-input cursor-pointer data-[checked]:bg-primary data-[checked]:border-primary data-[disabled]:cursor-default data-[disabled]:opacity-60 duration-75 group h-6 hover:border-primary/70 inline-block p-0 relative rounded-full select-none shrink-0 transition-colors w-12",
         "span: -translate-y-1/2 absolute bg-background block border duration-75 ease-in group-data-[checked]:bg-primary-foreground group-data-[checked]:border-primary-foreground group-data-[checked]:left-[calc(100%_-_1.125rem_-_0.125rem)] left-0.5 rounded-full size-4.5 top-1/2 transition-[left]"
     ],
-    "Label": [
-        "label: block font-medium mb-1 text-foreground text-sm uppercase"
-    ],
-    "Label light span": [
-        "span: block font-medium mb-0 text-muted-foreground text-sm uppercase"
-    ],
+    "Label": ["label: block font-medium mb-1 text-foreground text-sm uppercase"],
+    "Label light span": ["span: block font-medium mb-0 text-muted-foreground text-sm uppercase"],
     "Dialog": [
         "div: bg-background/50 data-[ending-style]:ease-in data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 duration-150 ease-out fixed inset-0 transition-opacity z-40",
         "div: fixed inset-0 overflow-y-auto z-50",
@@ -504,9 +500,7 @@
         "div: bg-popover max-w-[24rem] pointer-events-none px-3 py-2 rounded-sm text-popover-foreground text-sm z-9999",
         "div: absolute bg-popover h-3 left-0 top-[-6px] w-3"
     ],
-    "DropdownMenu closed": [
-        "button: p-2"
-    ],
+    "DropdownMenu closed": ["button: p-2"],
     "DropdownMenu open": [
         "div: outline-hidden z-[9999]",
         "div: bg-popover border border-border data-[ending-style]:opacity-0 data-[ending-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:scale-95 duration-100 min-w-64 origin-[var(--transform-origin)] outline-hidden p-1.5 rounded-sm shadow-xl text-popover-foreground text-sm transition",
@@ -637,18 +631,10 @@
         "div: fixed h-0.5 w-full",
         "div: bg-accent duration-300 ease-in-out h-full shadow-progress transition-[width]"
     ],
-    "ProgressBar idle": [
-        "div: fixed h-0.5 w-full"
-    ],
-    "Code": [
-        "code: bg-sunken font-mono inline-block px-1.5 py-0.5 rounded-sm"
-    ],
-    "Code dark className": [
-        "code: bg-muted font-mono inline-block px-1.5 py-0.5 rounded-sm text-foreground text-xs"
-    ],
-    "CopyOnClick": [
-        "span: cursor-pointer font-mono"
-    ],
+    "ProgressBar idle": ["div: fixed h-0.5 w-full"],
+    "Code": ["code: bg-sunken font-mono inline-block px-1.5 py-0.5 rounded-sm"],
+    "Code dark className": ["code: bg-muted font-mono inline-block px-1.5 py-0.5 rounded-sm text-foreground text-xs"],
+    "CopyOnClick": ["span: cursor-pointer font-mono"],
     "CopyOnClick status": [
         "div: bottom-0 fixed m-4 right-0 z-50",
         "div: bg-popover/95 px-4 py-3 rounded-md shadow-sm text-foreground",

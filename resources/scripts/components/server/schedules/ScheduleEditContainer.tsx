@@ -22,7 +22,6 @@ import DataTable from '@/components/elements/table/DataTable';
 import { scheduleTaskColumns } from '@/components/server/schedules/ScheduleTaskTable';
 import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
@@ -123,7 +122,7 @@ const ScheduleDetails = ({ schedule }: { schedule: Schedule }) => {
                 <DataTable
                     table={table}
                     emptyState={
-                        <Empty className={emptyCompactClass}>
+                        <Empty size='compact'>
                             <EmptyHeader>
                                 <EmptyMedia variant='icon'>
                                     <ListTodo />

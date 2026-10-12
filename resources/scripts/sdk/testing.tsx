@@ -19,7 +19,7 @@ import {
     type ViewProps,
 } from '@/views/registry';
 import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
-import { registerSkins } from '@/themes/skins';
+import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
 import { createViewHarness, LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
 import { act, createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
@@ -413,6 +413,7 @@ let rendered: RenderedView | undefined;
 export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
     rendered?.unmount();
     clearThemeLayers();
+    clearThemeSkins();
     if (options.theme) {
         registerSkins('theme', options.theme.ui ?? {});
         registerViewLayer('theme', 'theme', options.theme.views ?? {});

@@ -1,7 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { readFileSync, writeFileSync } from 'node:fs';
 import type { ReactElement } from 'react';
 import { createMemoryHistory, createRootRoute, createRouter, RouterContextProvider } from '@tanstack/react-router';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
@@ -21,26 +20,24 @@ import DropdownMenu, { ContextDropdownMenu, DropdownMenuItem } from '@/component
 import DataTable from '@/components/elements/table/DataTable';
 import Pagination from '@/components/elements/Pagination';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Avatar from '@/components/Avatar';
-import ProgressBar from '@/components/elements/ProgressBar';
+import { HttpProgressBar } from '@/components/elements/ProgressBar';
 import Code from '@/components/elements/Code';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import ContentBox from '@/components/elements/ContentBox';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import ListRow from '@/components/elements/ListRow';
 import PageHeading from '@/components/elements/PageHeading';
 import { setHttpProgress } from '@/state/httpProgress';
 import { createTestServerCard, renderView } from '@/sdk/testing';
+import before from './__fixtures__/classic-classes.json';
 
 /*
- * Every element's classes for each primitive variant, captured from the components before they read
- * classic's skins. Run with CAPTURE_CLASSIC_CLASSES=1 to record; otherwise the output must match.
+ * `before` holds every element's classes for each case below, captured from the primitives as they were
+ * before they read classic's skins (commit "classic class capture"). Classic must render the same classes.
  */
-const fixture = 'resources/scripts/themes/__fixtures__/classic-classes.json';
-const capture = process.env.CAPTURE_CLASSIC_CLASSES === '1';
 
 // Arbitrary state variants replaced by their plain Tailwind equivalents; each pair compiles to the same selector.
 const plainVariants: [RegExp, string][] = [
@@ -81,6 +78,39 @@ const router = createRouter({
 
 const withRouter = (element: ReactElement) => <RouterContextProvider router={router}>{element}</RouterContextProvider>;
 
+interface Row {
+    id: string;
+    name: string;
+}
+const column = createColumnHelper<Row>();
+const columns = [
+    column.accessor('name', { header: 'Name', meta: { cellClassName: 'font-medium', headerClassName: 'w-1/2' } }),
+    column.display({ id: 'actions', header: () => null, cell: () => <button type='button'>Edit</button> }),
+];
+
+function TableCase({
+    rows,
+    isFetching,
+    className,
+    emptyState = 'No rows',
+}: {
+    rows: Row[];
+    isFetching?: boolean;
+    className?: string;
+    emptyState?: ReactElement | string;
+}) {
+    const table = useReactTable({ data: rows, columns, getRowId: (row) => row.id, getCoreRowModel: getCoreRowModel() });
+
+    return <DataTable table={table} emptyState={emptyState} isFetching={isFetching} className={className} />;
+}
+
+function paginated(page: number, pages: number) {
+    return {
+        data: [1, 2],
+        meta: { pagination: { total: pages * 2, count: 2, per_page: 2, current_page: page, total_pages: pages } },
+    };
+}
+
 type Case = () => ReactElement | Promise<void>;
 const noop = () => {};
 
@@ -100,6 +130,7 @@ for (const color of buttonColors) {
         }
     }
 }
+
 Object.assign(cases, {
     'Button loading': () => <Button isLoading>Save</Button>,
     'Button disabled className': () => (
@@ -109,34 +140,34 @@ Object.assign(cases, {
     ),
     'Button.Text': () => <Button.Text size='xsmall'>Cancel</Button.Text>,
     'Button.Danger secondary': () => <Button.Danger isSecondary>Delete</Button.Danger>,
-    'LinkButton': () => (
+    LinkButton: () => (
         <LinkButton href='/' color='green' className='ml-2'>
             Open
         </LinkButton>
     ),
-    'RouterLinkButton': () => withRouter(<RouterLinkButton to='/'>Home</RouterLinkButton>),
+    RouterLinkButton: () => withRouter(<RouterLinkButton to='/'>Home</RouterLinkButton>),
     'ButtonStyle as span': () => (
         <ButtonStyle as='span' isSecondary size='large'>
             Label
         </ButtonStyle>
     ),
-    'buttonClassName': () => <span className={buttonClassName({ color: 'red', size: 'xsmall', isSecondary: true })} />,
-    'NewButton': () => <NewButton>New node</NewButton>,
+    buttonClassName: () => <span className={buttonClassName({ color: 'red', size: 'xsmall', isSecondary: true })} />,
+    NewButton: () => <NewButton>New node</NewButton>,
     'NewButton icon className': () => (
         <NewButton icon={Database} isSecondary className='w-full'>
             New database
         </NewButton>
     ),
-    'NewLinkButton': () => withRouter(<NewLinkButton to='/'>New server</NewLinkButton>),
-    'Input': () => <TextInput defaultValue='a' />,
+    NewLinkButton: () => withRouter(<NewLinkButton to='/'>New server</NewLinkButton>),
+    Input: () => <TextInput defaultValue='a' />,
     'Input light': () => <TextInput $isLight />,
     'Input error': () => <TextInput $hasError className='pl-8' />,
     'Input light error disabled': () => <TextInput $isLight $hasError disabled />,
-    'TextArea': () => <TextArea rows={3} />,
+    TextArea: () => <TextArea rows={3} />,
     'TextArea error': () => <TextArea $hasError $isLight />,
-    'NumberInput': () => <NumberInput value={5} onValueChange={noop} />,
+    NumberInput: () => <NumberInput value={5} onValueChange={noop} />,
     'NumberInput error': () => <NumberInput value={5} onValueChange={noop} $hasError className='w-24' />,
-    'Select': () => <Select value={1} onChange={noop} options={[{ value: 1, label: 'Alpha' }]} />,
+    Select: () => <Select value={1} onChange={noop} options={[{ value: 1, label: 'Alpha' }]} />,
     'Select error placeholder': () => (
         <Select value={null} onChange={noop} hasError placeholder='Pick' options={[{ value: 1, label: 'Alpha' }]} />
     ),
@@ -183,10 +214,10 @@ Object.assign(cases, {
         await userEvent.click(screen.getByRole('button', { name: 'Open popup' }));
         await screen.findByRole('option', { name: 'Beta' });
     },
-    'Checkbox': () => <Checkbox checked={false} onChange={noop} />,
+    Checkbox: () => <Checkbox checked={false} onChange={noop} />,
     'Checkbox checked': () => <Checkbox checked onChange={noop} className='mr-2' />,
     'Checkbox indeterminate disabled': () => <Checkbox checked={false} indeterminate disabled onChange={noop} />,
-    'Switch': () => <Switch checked={false} onChange={noop} aria-label='Toggle' />,
+    Switch: () => <Switch checked={false} onChange={noop} aria-label='Toggle' />,
     'Switch checked label': () => <Switch checked onChange={noop} label='Enabled' className='mt-2' />,
     'Switch description end disabled': () => (
         <Switch
@@ -198,13 +229,13 @@ Object.assign(cases, {
             disabled
         />
     ),
-    'Label': () => <Label>Name</Label>,
+    Label: () => <Label>Name</Label>,
     'Label light span': () => (
         <Label as='span' isLight className='mb-0'>
             Name
         </Label>
     ),
-    'Dialog': () => (
+    Dialog: () => (
         <Dialog open onClose={noop} title='Delete server' description='This cannot be undone.'>
             <p>Body</p>
             <Dialog.Footer>
@@ -319,7 +350,7 @@ Object.assign(cases, {
     'DataTable fetching': () => <TableCase rows={[{ id: 'a', name: 'Alpha' }]} isFetching className='mt-4' />,
     'DataTable empty string': () => <TableCase rows={[]} />,
     'DataTable empty fetching node': () => <TableCase rows={[]} isFetching emptyState={<p className='p-4'>None</p>} />,
-    'Pagination': () => (
+    Pagination: () => (
         <Pagination data={paginated(3, 10)} onPageSelect={noop}>
             {({ items }) => <span className='items'>{items.length}</span>}
         </Pagination>
@@ -329,7 +360,7 @@ Object.assign(cases, {
             {() => null}
         </Pagination>
     ),
-    'Empty': () => (
+    Empty: () => (
         <Empty className='border bg-card'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
@@ -346,41 +377,41 @@ Object.assign(cases, {
         </Empty>
     ),
     'Empty compact': () => (
-        <Empty className={emptyCompactClass}>
+        <Empty size='compact'>
             <EmptyMedia>
                 <Database />
             </EmptyMedia>
             <EmptyDescription className='mt-2'>None</EmptyDescription>
         </Empty>
     ),
-    'Spinner': () => <Spinner />,
+    Spinner: () => <Spinner />,
     'Spinner small blue': () => <Spinner size='small' isBlue />,
     'Spinner large centered': () => <Spinner size='large' centered />,
     'Spinner centered': () => <Spinner centered />,
-    'SpinnerOverlay': () => <SpinnerOverlay visible />,
+    SpinnerOverlay: () => <SpinnerOverlay visible />,
     'SpinnerOverlay fixed large text': () => (
         <SpinnerOverlay visible fixed size='large' backgroundOpacity={0.5}>
             Loading
         </SpinnerOverlay>
     ),
-    'Avatar': () => <Avatar name='uuid' size={32} />,
-    'ProgressBar': () => {
+    Avatar: () => <Avatar name='uuid' size={32} />,
+    ProgressBar: () => {
         setHttpProgress(40);
 
-        return <ProgressBar />;
+        return <HttpProgressBar />;
     },
     'ProgressBar idle': () => {
         setHttpProgress(undefined);
 
-        return <ProgressBar />;
+        return <HttpProgressBar />;
     },
-    'Code': () => <Code>value</Code>,
+    Code: () => <Code>value</Code>,
     'Code dark className': () => (
         <Code dark className='text-xs'>
             value
         </Code>
     ),
-    'CopyOnClick': () => (
+    CopyOnClick: () => (
         <CopyOnClick text='abc'>
             <span className='font-mono'>abc</span>
         </CopyOnClick>
@@ -395,28 +426,28 @@ Object.assign(cases, {
         fireEvent.click(screen.getByText('abc'));
         await screen.findByRole('status');
     },
-    'ContentBox': () => <ContentBox title='Account'>Body</ContentBox>,
+    ContentBox: () => <ContentBox title='Account'>Body</ContentBox>,
     'ContentBox plain loading': () => (
         <ContentBox className='mt-4' borderColor='border-primary' showLoadingOverlay>
             Body
         </ContentBox>
     ),
-    'TitledGreyBox': () => <TitledGreyBox title='Details'>Body</TitledGreyBox>,
+    TitledGreyBox: () => <TitledGreyBox title='Details'>Body</TitledGreyBox>,
     'TitledGreyBox icon classes': () => (
         <TitledGreyBox title='Details' icon={Database} className='mb-4' contentClassName='p-0'>
             Body
         </TitledGreyBox>
     ),
-    'TitledGreyBox node title': () => (
-        <TitledGreyBox title={<span className='flex'>Custom</span>}>Body</TitledGreyBox>
-    ),
-    'GreyRowBox': () => <GreyRowBox>Row</GreyRowBox>,
-    'GreyRowBox static link': () => (
-        <GreyRowBox as='a' href='/' $hoverable={false} className='mt-2'>
-            Row
-        </GreyRowBox>
-    ),
-    'PageHeading': () => <PageHeading title='Servers' />,
+    'TitledGreyBox node title': () => <TitledGreyBox title={<span className='flex'>Custom</span>}>Body</TitledGreyBox>,
+    // ListRow replaced GreyRowBox, whose look it keeps.
+    GreyRowBox: () => <ListRow interactive>Row</ListRow>,
+    'GreyRowBox static link': () =>
+        withRouter(
+            <ListRow destination={{ to: '/account' }} interactive={false} className='mt-2'>
+                Row
+            </ListRow>
+        ),
+    PageHeading: () => <PageHeading title='Servers' />,
     'PageHeading full': () => (
         <PageHeading
             title='Servers'
@@ -433,12 +464,14 @@ for (const fixture of ['servers', 'empty', 'loading']) {
         await Promise.resolve();
     };
 }
+
 for (const fixture of ['running', 'offline', 'suspended', 'loading']) {
     cases[`view dashboard.serverCard ${fixture}`] = async () => {
         renderView('dashboard.serverCard', { fixture });
         await Promise.resolve();
     };
 }
+
 for (const reason of [
     'connection-error',
     'maintenance',
@@ -452,43 +485,11 @@ for (const reason of [
         await Promise.resolve();
     };
 }
+
 for (const fixture of ['user', 'admin']) {
     cases[`view layout.app ${fixture}`] = async () => {
         renderView('layout.app', { fixture });
         await Promise.resolve();
-    };
-}
-
-interface Row {
-    id: string;
-    name: string;
-}
-const column = createColumnHelper<Row>();
-const columns = [
-    column.accessor('name', { header: 'Name', meta: { cellClassName: 'font-medium', headerClassName: 'w-1/2' } }),
-    column.display({ id: 'actions', header: () => null, cell: () => <button type='button'>Edit</button> }),
-];
-
-function TableCase({
-    rows,
-    isFetching,
-    className,
-    emptyState = 'No rows',
-}: {
-    rows: Row[];
-    isFetching?: boolean;
-    className?: string;
-    emptyState?: ReactElement | string;
-}) {
-    const table = useReactTable({ data: rows, columns, getRowId: (row) => row.id, getCoreRowModel: getCoreRowModel() });
-
-    return <DataTable table={table} emptyState={emptyState} isFetching={isFetching} className={className} />;
-}
-
-function paginated(page: number, pages: number) {
-    return {
-        data: [1, 2],
-        meta: { pagination: { total: pages * 2, count: 2, per_page: 2, current_page: page, total_pages: pages } },
     };
 }
 
@@ -497,7 +498,9 @@ afterEach(cleanup);
 it('renders classic primitives with the classes they had before skins', async () => {
     const captured: Record<string, string[]> = {};
 
+    // The cases share the document, so they render one at a time.
     for (const [name, run] of Object.entries(cases)) {
+        // oxlint-disable-next-line no-await-in-loop
         const element = await run();
 
         if (element) {
@@ -505,17 +508,12 @@ it('renders classic primitives with the classes they had before skins', async ()
         }
 
         // Let effects that place parts (dialog icons, overlays) settle.
+        // oxlint-disable-next-line no-await-in-loop
         await act(async () => {});
         captured[name] = classes();
         cleanup();
         document.body.innerHTML = '';
     }
 
-    if (capture) {
-        writeFileSync(fixture, `${JSON.stringify(captured, null, 4)}\n`);
-
-        return;
-    }
-
-    expect(normalise(captured)).toEqual(normalise(JSON.parse(readFileSync(fixture, 'utf8'))));
+    expect(normalise(captured)).toEqual(normalise(before));
 });

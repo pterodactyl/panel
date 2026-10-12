@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { getBootstrapTheme, getBootstrapUser } from '@/bootstrap';
 import { failExtensionLoad } from '@/extensions/registry';
 import { isObject } from '@/lib/objects';
-import { registerSkins } from '@/themes/skins';
+import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import { registerClassicTheme } from './classic';
 import { opaqueViews } from './opaque';
 import { clearThemeLayers, isViewComponent, registerViewLayer } from './registry';
@@ -36,6 +36,11 @@ function parseTheme({ default: theme }: ThemeModule): ThemeDefinition {
 
     const views = Reflect.get(theme, 'views');
     const icons = Reflect.get(theme, 'icons');
+    const ui = Reflect.get(theme, 'ui');
+
+    if (ui !== undefined && !isObject(ui)) {
+        throw new Error('Theme ui must map primitive names to skins.');
+    }
 
     for (const map of [views, icons]) {
         if (map !== undefined && !(isObject(map) && Object.values(map).every(isViewComponent))) {
@@ -43,7 +48,7 @@ function parseTheme({ default: theme }: ThemeModule): ThemeDefinition {
         }
     }
 
-    return { ui: Reflect.get(theme, 'ui'), views, icons };
+    return { ui, views, icons };
 }
 
 function withTimeout<T>(promise: Promise<T>): Promise<T> {
@@ -83,6 +88,7 @@ export async function bootTheme(importModule: ModuleImporter = nativeImport): Pr
         }
     } catch (cause) {
         clearThemeLayers();
+        clearThemeSkins();
         fallBackToClassic();
         failure = { id: theme.id, message: cause instanceof Error ? cause.message : String(cause) };
         failExtensionLoad(theme.id, 'theme', cause);

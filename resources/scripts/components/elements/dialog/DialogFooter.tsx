@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { use } from 'react';
+import { useSkin } from '@/themes/skins';
+import { DialogContext } from './context';
 
-const DialogFooter = ({ children }: { children: React.ReactNode }) => (
-    <div className='px-6 py-3 bg-card flex items-center justify-end space-x-3 rounded-b-sm'>{children}</div>
-);
+const DialogFooter = ({ children }: { children: React.ReactNode }) => {
+    const ui = useSkin('Dialog', { described: use(DialogContext).described });
+
+    return <div {...ui('footer')}>{children}</div>;
+};
 
 export default DialogFooter;

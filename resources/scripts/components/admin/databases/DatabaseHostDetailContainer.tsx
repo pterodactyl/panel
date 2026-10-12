@@ -31,7 +31,6 @@ import DataTable from '@/components/elements/table/DataTable';
 import DataTablePagination from '@/components/elements/table/DataTablePagination';
 import { Dialog } from '@/components/elements/dialog';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { getPageSearch, usePageSearch } from '@/router/search';
 import { databaseHostDetailRoute } from '@/router/routeTree';
@@ -263,7 +262,7 @@ function DatabaseHostDatabases({ hostId }: { hostId: number }) {
                         table={table}
                         isFetching={isFetching}
                         emptyState={
-                            <Empty className={emptyCompactClass}>
+                            <Empty size='compact'>
                                 <EmptyHeader>
                                     <EmptyMedia variant='icon'>
                                         <Database />

@@ -14,8 +14,6 @@ import { useCurrentUser } from '@/api/account/queries';
 import { useDebouncedValue } from '@/plugins/useDebouncedValue';
 import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
-import { cn } from '@/lib/cn';
 
 type Props = DialogProps;
 
@@ -66,7 +64,7 @@ export default function SearchModal({ ...props }: Props) {
                 </div>
             )}
             {canSearch && servers && !isFetching && !error && serverList.length === 0 && (
-                <Empty className={cn(emptyCompactClass, 'mt-6')}>
+                <Empty size='compact' className='mt-6'>
                     <EmptyHeader>
                         <EmptyMedia variant='icon'>
                             <SearchX />

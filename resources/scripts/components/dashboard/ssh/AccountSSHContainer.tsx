@@ -11,7 +11,6 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import DataTable from '@/components/elements/table/DataTable';
 import { accountSshColumns } from '@/components/dashboard/ssh/AccountSSHTable';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 export default function AccountSSHContainer() {
     const { data, error, refetch } = useSSHKeys();
@@ -39,7 +38,7 @@ export default function AccountSSHContainer() {
                         <DataTable
                             table={table}
                             emptyState={
-                                <Empty className={emptyCompactClass}>
+                                <Empty size='compact'>
                                     <EmptyHeader>
                                         <EmptyMedia variant='icon'>
                                             <KeySquare />

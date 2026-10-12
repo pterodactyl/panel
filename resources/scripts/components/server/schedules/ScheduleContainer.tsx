@@ -14,7 +14,6 @@ import { Dialog } from '@/components/elements/dialog';
 import DataTable from '@/components/elements/table/DataTable';
 import { scheduleColumns } from '@/components/server/schedules/ScheduleTable';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 
 const CreateScheduleButton = () => (
@@ -58,7 +57,7 @@ const ScheduleContainer = () => {
                     <DataTable
                         table={table}
                         emptyState={
-                            <Empty className={emptyCompactClass}>
+                            <Empty size='compact'>
                                 <EmptyHeader>
                                     <EmptyMedia variant='icon'>
                                         <CalendarClock />

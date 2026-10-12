@@ -2,15 +2,28 @@ import { useMemo, type DOMAttributes, type ReactElement, type ReactNode, type Re
 import { getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
 import PanelDataTable from '@/components/elements/table/DataTable';
 import PanelTooltip from '@/components/elements/tooltip/Tooltip';
-import PanelAvatar from '@/components/Avatar';
 
 export {
     default as DropdownMenu,
     DropdownMenuItem,
     ContextDropdownMenu,
+    type ContextDropdownMenuProps,
+    type DropdownMenuItemProps,
+    type DropdownMenuProps,
 } from '@/components/elements/dropdown/DropdownMenu';
-export { default as Pagination } from '@/components/elements/Pagination';
-export { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+export { default as Pagination, type PaginationProps } from '@/components/elements/Pagination';
+export {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    type EmptyMediaVariant,
+    type EmptyProps,
+    type EmptySize,
+} from '@/components/ui/empty';
+export { default as Avatar, type AvatarProps, type AvatarVariant } from '@/components/Avatar';
 
 export interface TableColumn<TRow> {
     id: string;
@@ -51,17 +64,4 @@ export interface TooltipProps {
 }
 export function Tooltip(props: TooltipProps): ReactElement {
     return <PanelTooltip {...props} />;
-}
-
-export interface AvatarProps {
-    /** Seeds the generated pattern; the panel uses a user's UUID. */
-    name: string;
-    size?: number | string;
-    variant?: 'beam' | 'marble' | 'pixel' | 'sunset' | 'ring' | 'bauhaus';
-    square?: boolean;
-    title?: boolean;
-    className?: string;
-}
-export function Avatar(props: AvatarProps): ReactElement {
-    return <PanelAvatar {...props} />;
 }

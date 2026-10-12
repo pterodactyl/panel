@@ -13,8 +13,6 @@ import { useServerStartup, useSetSelectedDockerImage } from '@/api/server/startu
 import Slot from '@/extensions/Slot';
 import { usePermissions } from '@/plugins/usePermissions';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
-import { cn } from '@/lib/cn';
 
 const StartupContainer = () => {
     const server = useCurrentServer()!;
@@ -111,7 +109,7 @@ const StartupContainer = () => {
             </div>
             <h3 className='mt-8 mb-2 text-2xl'>Variables</h3>
             {data.data.length === 0 ? (
-                <Empty className={cn(emptyCompactClass, 'border')}>
+                <Empty size='compact' className='border'>
                     <EmptyHeader>
                         <EmptyMedia variant='icon'>
                             <Variable />

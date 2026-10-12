@@ -13,7 +13,35 @@ export {
     type ThemeSettingValue,
     type ThemeState,
 } from '@/views/theme';
-export { skin, type ThemeSkins } from '@/themes/skins';
+export {
+    skin,
+    useSkin,
+    UI_PRIMITIVES,
+    type CompleteSkin,
+    type CompleteSkins,
+    type NoState,
+    type PrimitiveMeta,
+    type PrimitiveName,
+    type PrimitiveProps,
+    type PrimitiveState,
+    type ReplaceableName,
+    type ResolvedSkin,
+    type Skin,
+    type SkinBinding,
+    type SkinClassName,
+    type SkinCompoundVariant,
+    type SkinDefinition,
+    type SkinExtension,
+    type SkinPart,
+    type SkinPartProps,
+    type SkinRecipe,
+    type SkinRecipeConfig,
+    type SkinStateMap,
+    type SkinStateValue,
+    type ThemeSkins,
+    type UiPrimitives,
+    type UiTone,
+} from '@/themes/skins';
 export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';

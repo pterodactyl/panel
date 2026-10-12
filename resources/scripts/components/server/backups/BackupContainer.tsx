@@ -21,7 +21,6 @@ import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { usePermissions } from '@/plugins/usePermissions';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 const backupUsage = (limit: number, count: number, hasBackups: boolean, canCreate: boolean): string | null => {
     if (limit === 0 && hasBackups) {
@@ -37,7 +36,7 @@ const backupUsage = (limit: number, count: number, hasBackups: boolean, canCreat
 
 function PastEndEmptyState({ onFirstPage }: { onFirstPage: () => void }) {
     return (
-        <Empty className={emptyCompactClass}>
+        <Empty size='compact'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <Archive />
@@ -67,7 +66,7 @@ function BackupsEmptyState({ page, backupLimit, canAddBackup, onFirstPage }: Bac
     }
 
     return (
-        <Empty className={emptyCompactClass}>
+        <Empty size='compact'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <Archive />

@@ -1,7 +1,14 @@
 import { Cpu, EthernetPort, HardDrive, MemoryStick, Server as ServerIcon, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { bytesToString, cn, Spinner } from '@/sdk';
-import { Slot, type ServerCardState, type ViewPartProps, type ViewParts, type ViewProps } from '@/sdk/theme';
+import { Badge, bytesToString, cn, Spinner } from '@/sdk';
+import {
+    Slot,
+    type ServerCardState,
+    type UiTone,
+    type ViewPartProps,
+    type ViewParts,
+    type ViewProps,
+} from '@/sdk/theme';
 
 type PartProps = ViewPartProps<'dashboard.serverCard'>;
 
@@ -43,24 +50,22 @@ const unavailableLabels = {
     unavailable: 'Unavailable',
 } as const;
 
-const unavailableBadgeColors = {
-    suspended: 'bg-destructive text-destructive-foreground',
-    'connection-error': 'bg-destructive text-destructive-foreground',
-    maintenance: 'bg-warning text-warning-foreground',
-    transferring: 'bg-popover text-foreground',
-    installing: 'bg-popover text-foreground',
-    'restoring-backup': 'bg-popover text-foreground',
-    unavailable: 'bg-popover text-foreground',
-} as const;
-
 type UnavailableReason = Extract<ServerCardState, { kind: 'unavailable' }>['reason'];
+
+const unavailableTones = {
+    suspended: 'danger',
+    'connection-error': 'danger',
+    maintenance: 'warning',
+    transferring: 'neutral',
+    installing: 'neutral',
+    'restoring-backup': 'neutral',
+    unavailable: 'neutral',
+} satisfies Record<UnavailableReason, UiTone>;
 
 function UnavailableBadge({ reason }: { reason: UnavailableReason }) {
     return (
         <div className='flex-1 text-center'>
-            <span className={cn('rounded-sm px-2 py-1 text-xs', unavailableBadgeColors[reason])}>
-                {unavailableLabels[reason]}
-            </span>
+            <Badge tone={unavailableTones[reason]}>{unavailableLabels[reason]}</Badge>
         </div>
     );
 }

@@ -6,7 +6,6 @@ import Spinner from '@/components/elements/Spinner';
 import AddSubuserButton from '@/components/server/users/AddSubuserButton';
 import ListToolbar from '@/components/elements/ListToolbar';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useServerSubusers } from '@/api/server/users/queries';
@@ -25,7 +24,7 @@ const hasPermissionGroups = <T extends object>(permissions: T | undefined): bool
 };
 
 const UsersEmptyState = ({ canCreate }: { canCreate: boolean }) => (
-    <Empty className={emptyCompactClass}>
+    <Empty size='compact'>
         <EmptyHeader>
             <EmptyMedia variant='icon'>
                 <Users />

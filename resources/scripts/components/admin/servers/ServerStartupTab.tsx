@@ -23,7 +23,6 @@ import Code from '@/components/elements/Code';
 import { TextInput } from '@/components/form/controls';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 
 interface Props {
@@ -66,7 +65,7 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values, TagCheckMet
     if (variables.length === 0) {
         return (
             <TitledGreyBox title='Service Variables'>
-                <Empty className={emptyCompactClass}>
+                <Empty size='compact'>
                     <EmptyHeader>
                         <EmptyMedia variant='icon'>
                             <Variable />

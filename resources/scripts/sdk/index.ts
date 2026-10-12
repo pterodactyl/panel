@@ -31,28 +31,58 @@ import { SocketEvent } from '@/components/server/events';
 import { hasPermission } from '@/plugins/usePermissions';
 import { cn as mergeClasses } from '@/lib/cn';
 
-export { default as Button } from '@/components/elements/Button';
-export { default as Spinner } from '@/components/elements/Spinner';
+export {
+    default as Button,
+    LinkButton,
+    RouterLinkButton,
+    type ButtonColor,
+    type ButtonProps,
+    type ButtonSize,
+} from '@/components/elements/Button';
+export { default as Spinner, type SpinnerProps, type SpinnerSize } from '@/components/elements/Spinner';
 export { default as Icon } from '@/components/elements/Icon';
 export { default as NamedIcon, loadIconNames, type NamedIconProps } from '@/components/elements/NamedIcon';
 export { default as Can } from '@/components/elements/Can';
+export { default as Card, type CardProps } from '@/components/elements/Card';
+export { default as ListRow, type ListRowProps } from '@/components/elements/ListRow';
+export { default as Badge, type BadgeProps, type BadgeSize, type BadgeVariant } from '@/components/elements/Badge';
+export {
+    default as ProgressBar,
+    type ProgressBarProps,
+    type ProgressBarVariant,
+} from '@/components/elements/ProgressBar';
+export { default as Code, type CodeProps } from '@/components/elements/Code';
 export { default as ContentBox } from '@/components/elements/ContentBox';
 export { default as PageContentBlock } from '@/components/elements/PageContentBlock';
 export { default as ServerContentBlock } from '@/components/elements/ServerContentBlock';
 export { default as TitledGreyBox } from '@/components/elements/TitledGreyBox';
-export { default as CopyOnClick } from '@/components/elements/CopyOnClick';
+export { default as CopyOnClick, type CopyOnClickProps } from '@/components/elements/CopyOnClick';
 export { default as ScreenBlock, ServerError, NotFound } from '@/components/elements/ScreenBlock';
-export { default as Label } from '@/components/elements/Label';
-export { default as PageHeading } from '@/components/elements/PageHeading';
-export { NewButton, NewLinkButton } from '@/components/elements/NewButton';
-export { default as SpinnerOverlay } from '@/components/elements/SpinnerOverlay';
-export { TextInput as Input, TextArea, NumberInput } from '@/components/form/controls';
+export { default as Label, type LabelProps } from '@/components/elements/Label';
+export { default as PageHeading, type PageHeadingProps } from '@/components/elements/PageHeading';
+export {
+    NewButton,
+    NewLinkButton,
+    type NewButtonProps,
+    type NewLinkButtonProps,
+} from '@/components/elements/NewButton';
+export { default as SpinnerOverlay, type SpinnerOverlayProps } from '@/components/elements/SpinnerOverlay';
+export {
+    TextInput as Input,
+    TextArea,
+    NumberInput,
+    FileInput,
+    type TextInputProps as InputProps,
+    type TextAreaProps,
+    type NumberInputProps,
+    type FileInputProps,
+} from '@/components/form/controls';
 export { Form, useAppForm, useFieldContext, useFormContext, type AppForm, type SelectOption } from '@/components/form';
 export { default as Select, type SelectGroup, type SelectProps, type SelectValue } from '@/components/ui/Select';
 export { default as Checkbox, type CheckboxProps } from '@/components/ui/Checkbox';
 export { default as Switch, type SwitchProps } from '@/components/ui/Switch';
-export { Alert } from '@/components/elements/alert';
-export { Dialog } from '@/components/elements/dialog';
+export { Alert, type AlertProps, type AlertType } from '@/components/elements/alert';
+export { Dialog, type DialogIconProps, type RenderDialogProps as DialogProps } from '@/components/elements/dialog';
 export { toast } from 'sonner';
 export * from './ui';
 

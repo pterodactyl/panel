@@ -17,7 +17,6 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import DataTable from '@/components/elements/table/DataTable';
 import { allocationColumns } from '@/components/server/network/AllocationTable';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { usePermissions } from '@/plugins/usePermissions';
 
 const NetworkContainer = () => {
@@ -64,7 +63,7 @@ const NetworkContainer = () => {
                     <DataTable
                         table={table}
                         emptyState={
-                            <Empty className={emptyCompactClass}>
+                            <Empty size='compact'>
                                 <EmptyHeader>
                                     <EmptyMedia variant='icon'>
                                         <Network />

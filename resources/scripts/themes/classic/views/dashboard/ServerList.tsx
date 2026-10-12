@@ -7,21 +7,14 @@ import {
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
+    ListRow,
     NewLinkButton,
     PageHeading,
     Pagination,
-    PanelLink,
     Spinner,
     Switch,
 } from '@/sdk';
 import { Slot, View, type ServerListItem, type ServerListModel, type ViewProps } from '@/sdk/theme';
-
-const rowClass = [
-    'flex rounded-sm no-underline text-foreground items-center bg-card p-4 border border-transparent overflow-hidden',
-    '[&_.icon]:flex [&_.icon]:w-16 [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:rounded-full [&_.icon]:bg-popover [&_.icon]:p-3',
-    'transition-[background-color,border-color,color,box-shadow] duration-150 hover:bg-popover hover:border-border active:bg-popover/80',
-    'group grid grid-cols-12 gap-4 relative',
-];
 
 function statusColor(power: ServerListItem['power']): string {
     if (!power || power === 'offline') {
@@ -35,10 +28,10 @@ function ServerRow({ item, className }: { item: ServerListItem; className?: stri
     const { server } = item;
 
     return (
-        <PanelLink
+        <ListRow
             destination={{ to: '/server/$id', params: { id: server.attributes.identifier } }}
             aria-label={server.attributes.name}
-            className={cn(...rowClass, className)}
+            className={cn('group grid grid-cols-12 gap-4 relative', className)}
         >
             <Slot name='dashboard.serverRow.before' data={server} />
             <div className='col-span-12'>
@@ -53,7 +46,7 @@ function ServerRow({ item, className }: { item: ServerListItem; className?: stri
                     statusColor(item.power)
                 )}
             />
-        </PanelLink>
+        </ListRow>
     );
 }
 

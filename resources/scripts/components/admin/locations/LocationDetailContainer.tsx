@@ -27,7 +27,6 @@ import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
 import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { cardTitleClass } from '@/components/ui/typography';
 
 const locationToValues = (location: AdminLocation): LocationValues => ({
@@ -203,7 +202,7 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                 <DataTable
                     table={nodeTable}
                     emptyState={
-                        <Empty className={emptyCompactClass}>
+                        <Empty size='compact'>
                             <EmptyHeader>
                                 <EmptyMedia variant='icon'>
                                     <HardDrive />

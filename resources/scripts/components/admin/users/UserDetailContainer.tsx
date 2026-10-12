@@ -48,7 +48,6 @@ import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, RowActions } from '@/components/elements/table/RowActions';
 import ServerEditAction from '@/components/admin/servers/ServerEditAction';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 
 type UserForm = AppForm<UserValues>;
@@ -237,7 +236,7 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
             <DataTable
                 table={table}
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Server />
