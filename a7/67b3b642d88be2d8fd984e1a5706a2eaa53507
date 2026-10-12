@@ -1,0 +1,78 @@
+app/Actions/Locations/CreateLocation.php
+  s_4cabae41bceed9::t_af196f7ac3d1b5 38,41-42
+app/Actions/Locations/UpdateLocation.php
+  s_4cabae41bceed9::t_af196f7ac3d1b5 8,23,26-28
+app/Actions/Subusers/UpdateSubuser.php
+  s_4cabae41bceed9::t_6c66ac40b6e6b8 8,10,35-36
+app/Actions/Backups/InitiateBackup.php
+  s_4cabae41bceed9::t_0c4739fa7e4365 92,94,143-146,148
+app/Actions/Api/CreateApiKey.php
+  s_4cabae41bceed9::t_8c353ded9254e0 54,56,62,68-69
+app/Actions/Schedules/CreateSchedule.php
+  s_4cabae41bceed9::t_fbdd7d5dff7f03 43-54,57,62
+  s_4cabae41bceed9::t_6c04f532a8e817 41
+app/Actions/Schedules/UpdateSchedule.php
+  s_4cabae41bceed9::t_f255f290d1eb09 7,12,24,36,38-40
+  s_4cabae41bceed9::t_fbdd7d5dff7f03 23,25-35,37,43-44,47
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_4cabae41bceed9::t_5e6ec187c2ed1f 7,10,31-34,37-40
+app/Http/Requests/Api/Client/Servers/Subusers/UpdateSubuserRequest.php
+  s_4cabae41bceed9::t_f4f81b1c231d54 24
+  s_4cabae41bceed9::t_ef09196727c2aa 8
+app/Actions/Databases/CreateDatabaseHost.php
+  s_4cabae41bceed9::t_5e6ec187c2ed1f 48-51,54,56-58
+app/Actions/Schedules/CreateScheduleTask.php
+  s_4cabae41bceed9::t_9989f987dbf56f 54-64,66,72
+app/Actions/Databases/CreateDatabase.php
+  s_4cabae41bceed9::t_be7cec47ca1a36 103-104,134
+  s_4cabae41bceed9::t_4c04f0b82759cd 81-83,88-89,91,95-98
+  s_4cabae41bceed9::t_d32a495e3ea305 99
+app/Actions/Backups/CompleteBackup.php
+  s_4cabae41bceed9::t_6562aacbd78466 57-58,60-66,68,73,80,86
+  s_4cabae41bceed9::t_0c4739fa7e4365 74
+app/Actions/Subusers/CreateSubuser.php
+  s_4cabae41bceed9::t_6c66ac40b6e6b8 58,60,62,70,76
+app/Actions/Mounts/CreateMount.php
+  s_4cabae41bceed9::t_af196f7ac3d1b5 68-71,74-75
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_c34adc5c159864 35-45
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_4cabae41bceed9::t_f4f81b1c231d54 7,35
+app/Actions/Api/UpdateApiKey.php
+  s_4cabae41bceed9::t_8c353ded9254e0 21,23
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_4cabae41bceed9::t_c34adc5c159864 34-43
+app/Actions/Tags/CreateTag.php
+  s_4cabae41bceed9::t_f4f81b1c231d54 39-43
+app/Actions/Databases/DeployServerDatabase.php
+  s_4cabae41bceed9::t_5e6ec187c2ed1f 54,56,65,67-70
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_f4f81b1c231d54 7,248
+app/Actions/Mounts/UpdateMount.php
+  s_4cabae41bceed9::t_af196f7ac3d1b5 8,23-26,29-31
+app/Models/DatabaseHost.php
+  s_4cabae41bceed9::t_5e6ec187c2ed1f 32
+app/Actions/Api/CreateAccountApiKey.php
+  s_4cabae41bceed9::t_8c353ded9254e0 40-41,43,45,49
+  s_4cabae41bceed9::t_ef09196727c2aa 42
+app/Actions/Tags/UpdateTag.php
+  s_4cabae41bceed9::t_f4f81b1c231d54 7,28-33
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_4cabae41bceed9::t_9989f987dbf56f 8,29-30,32-41,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a767b3b642d88be2d8fd984e1a5706a2eaa53507",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
