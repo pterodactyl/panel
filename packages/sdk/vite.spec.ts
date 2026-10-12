@@ -132,11 +132,11 @@ it("builds a child theme over its parent's stylesheet and classes, which it reco
         const parent = (path: string, contents: string | Buffer) => child.write(`../extensions/parent/${path}`, contents);
         parent('extension.json', JSON.stringify({ id: 'parent', type: 'theme', theme: { stylesheet: 'dist/theme.css' } }));
         parent('dist/theme.json', JSON.stringify({ core: null, build: '0123456789abcdef' }));
-        parent('dist/Brand.woff2', Buffer.alloc(8192, 1));
+        parent('dist/Brand.AbCd1234.woff2', Buffer.alloc(8192, 1));
         parent('dist/classes.txt', 'glow\nsm:rounded-3xl\n');
         parent(
             'dist/theme-source.css',
-            "@font-face { font-family: 'Brand'; src: url('./Brand.woff2'); }\n@utility glow { color: red; }\n.parent-rule { color: blue; }"
+            "@font-face { font-family: 'Brand'; src: url('./Brand.AbCd1234.woff2'); }\n@utility glow { color: red; }\n.parent-rule { color: blue; }"
         );
         child.write('extension.json', JSON.stringify({ id: 'child', type: 'theme', theme: { extends: 'parent' } }));
         child.write('src/theme.css', "@import '@pterodactyl/sdk/theme-entry.css';\n.child-rule { color: green; }");
@@ -147,8 +147,8 @@ it("builds a child theme over its parent's stylesheet and classes, which it reco
         expect(css).toMatch(/\.glow\s*\{/);
         expect(css).toMatch(/\.sm\\:rounded-3xl/);
         expect(css.indexOf('.child-rule')).toBeGreaterThan(css.indexOf('.parent-rule'));
-        // The parent's font is copied from its build, not left pointing beside the child's stylesheet.
-        expect(css).toMatch(/url\(\.\/Brand\.[\w-]+\.woff2\)/);
+        // The parent's font is copied from its build under the name its build hashed, not hashed again.
+        expect(css).toContain('url(./Brand.AbCd1234.woff2)');
         expect(JSON.parse(child.dist('theme.json')).parents).toEqual({ parent: '0123456789abcdef' });
 
         rmSync(resolve(directory, 'extensions/parent/dist/theme-source.css'));

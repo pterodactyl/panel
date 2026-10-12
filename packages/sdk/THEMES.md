@@ -1182,6 +1182,23 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
 Beyond `<Main>`, a view owns its markup's accessibility: label controls, name navigation landmarks
 (`<nav aria-label="…">`), and keep visible focus styles.
 
+### The page around your views
+
+What a theme can rely on when it draws behind or around the panel, such as a background layer:
+
+- `<html>` has the scheme class, `data-theme` and the settings' attributes. `<body>` has the page
+  background (`bg-background`) and `position: relative`, and holds `#app` (after `#modal-portal` once
+  signed in).
+- Your layouts render inside `#app`, which is `isolation: isolate`: a stacking context. A layer in it
+  with a negative `z-index`, such as `fixed inset-0 -z-10 pointer-events-none`, paints behind the
+  panel's content and in front of the body's background.
+- Dialogs, menus, select popups, tooltips and the copy notice render outside `#app`, in `<body>`, so
+  they paint above everything inside it whatever its `z-index`. Toasts are fixed on top of `#app`.
+- `#app` and the engine's wrappers set no `transform`, `filter` or `contain`, so `position: fixed` in a
+  layout is fixed to the window. Nothing sets `overflow` on `html`, `body` or `#app`: the window scrolls,
+  and `position: sticky` works in layouts. Keep it that way; a background image belongs on `body` in the
+  stylesheet, or on a fixed layer in `layout.app`.
+
 ### Fallback and safe mode
 
 - **Boot.** The panel loads the chain's entries in parallel before its first render, for at most 2.5

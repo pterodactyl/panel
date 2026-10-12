@@ -202,7 +202,7 @@ function ownStylesheet(file, { postcss, asset, sources }, seen = new Set()) {
  * replace its own, and what a child theme builds on, dist/theme-source.css and dist/classes.txt.
  * When the theme extends others, their stylesheets and classes come into its own after the SDK's.
  */
-function themeBuild({ entry, stylesheet, extensions }) {
+function themeBuild({ entry, stylesheet, extensions }, inherited) {
     let config;
     let root;
     let sheet;
@@ -340,6 +340,7 @@ function themeBuild({ entry, stylesheet, extensions }) {
             writeFileSync(copy, text);
         }
         for (const file of ['theme.json', 'theme-source.css', 'classes.txt']) context.addWatchFile(dist(file));
+        inherited.add(`${relative(config.root, dist('')).split(sep).join('/')}/`);
 
         return { ...parent, build: info.build, stylesheet: copy, classes: dist('classes.txt') };
     }
@@ -360,8 +361,11 @@ export function defineThemeConfig({ entry, stylesheet, extensions, outDir = 'dis
         );
     }
 
+    // The dist directories of the themes this one extends, relative to the root: their files are named by hash already.
+    const inherited = new Set();
+
     return {
-        plugins: [...plugins, ...themeBuild({ entry, stylesheet, extensions })],
+        plugins: [...plugins, ...themeBuild({ entry, stylesheet, extensions }, inherited)],
         // The import map shares react/jsx-runtime, never the development runtime.
         oxc: { jsx: { runtime: 'automatic', development: false } },
         // The panel serves a build from its own directory, so fonts and images resolve beside the file using them.
@@ -382,8 +386,13 @@ export function defineThemeConfig({ entry, stylesheet, extensions, outDir = 'dis
                     format: 'es',
                     entryFileNames: '[name].js',
                     chunkFileNames: 'chunk.[name].[hash].js',
-                    assetFileNames: ({ names }) =>
-                        names.includes('theme.css') ? 'theme.css' : '[name].[hash][extname]',
+                    assetFileNames: ({ names, originalFileNames }) => {
+                        if (names.includes('theme.css')) return 'theme.css';
+
+                        return originalFileNames.some((file) => [...inherited].some((dist) => file.startsWith(dist)))
+                            ? '[name][extname]'
+                            : '[name].[hash][extname]';
+                    },
                 },
             },
         },
