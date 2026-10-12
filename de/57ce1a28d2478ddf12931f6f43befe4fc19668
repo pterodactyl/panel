@@ -1,0 +1,239 @@
+resources/scripts/themes/primitives.tsx
+  s_4cabae41bceed9::t_543eed61ad4d3d 285
+  s_4cabae41bceed9::t_1dc96522ae662a 31,34
+  s_4cabae41bceed9::t_a106509f41b7c6 38-59,87-279,282-283
+  s_4cabae41bceed9::t_a031379f37f4b3 1-30,32-33,35-36,79-83,280-281,284,286-287
+  s_4cabae41bceed9::t_4d792a16e667f2 37,60-78
+  s_4cabae41bceed9::t_f3661bf485542e 84-86
+packages/sdk/bin/pterodactyl-theme.mjs
+  s_4cabae41bceed9::t_92eccbf7c94a16 255-256
+  s_4cabae41bceed9::t_9807b4c808a18b 113-117
+  s_4cabae41bceed9::t_cedb1f0c83f920 1-2,4-112,118-135,140-149,151-157,160-164,166-167,172-177,196-198,200-201,205-207,216-218,220-227,229-231,233-254,257-264
+  s_4cabae41bceed9::t_6750e566c0d114 3
+  s_4cabae41bceed9::t_22acfa927e8a1d 136-139,150,158-159,165,168-171,178-195,199
+  s_4cabae41bceed9::t_1b9da76f60fcc2 202-204,208-215,219,228,232
+resources/scripts/views/dashboard.ts
+  s_4cabae41bceed9::t_868af2cc3a2d6a 332-334
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_1f10421999276b 1-94,96-192
+  s_4cabae41bceed9::t_629f1f15f43640 95
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_2aa1910ffe4dd2 22,24-34
+  s_4cabae41bceed9::t_1d0cda9a0e6778 377-406,412-413,416-418
+  s_4cabae41bceed9::t_5da88b28383976 73
+  s_4cabae41bceed9::t_1fee8f92a1bbf6 345-346,349-352,359-365
+  s_4cabae41bceed9::t_6293685dcb324c 3-5
+  s_4cabae41bceed9::t_09347a436d8de5 407-411,414-415
+  s_4cabae41bceed9::t_46ae028164f55b 268
+  s_4cabae41bceed9::t_9b5fdfdc855143 283,296-297,307
+resources/scripts/views/inspector/snippets.ts
+  s_4cabae41bceed9::t_744637431caad3 1-14,16
+  s_4cabae41bceed9::t_0352211fccdf55 15
+resources/scripts/components/admin/themes/workbench/ThemeWorkbench.tsx
+  s_4cabae41bceed9::t_63dd7f74192b20 8
+  s_4cabae41bceed9::t_0c85bbc6d4795c 74-75
+  s_4cabae41bceed9::t_9028d010c21b73 1-7,9-70,76-96,98-122,132-139,142-148,152-187
+  s_4cabae41bceed9::t_991ae5d77e7251 140-141
+  s_4cabae41bceed9::t_4f015249e7b586 71-73,97,123-131,149-151
+resources/scripts/components/App.tsx
+  s_4cabae41bceed9::t_4adece47262049 23-25
+  s_4cabae41bceed9::t_5ed23895b369e0 10
+scripts/classic-sources.mjs
+  s_4cabae41bceed9::t_63b7ad95098611 2,7,11,13
+  s_4cabae41bceed9::t_6b2c65f925593a 1,3-6,8-10,12,14-98
+resources/scripts/router/pageSearch.ts
+  s_4cabae41bceed9::t_10d9cbe6db6278 16,18,21,23-24
+resources/scripts/views/inspector/tokens.ts
+  s_4cabae41bceed9::t_d9b241fc8ebe0b 133-139
+  s_4cabae41bceed9::t_a9460522d77f22 24-26
+  s_4cabae41bceed9::t_bdc79afd584c17 41-43
+  s_4cabae41bceed9::t_f24690a13c6190 1-19,23,27,56,59,76-79,81-132,140-148,155,157-169
+  s_4cabae41bceed9::t_2159f00cff3904 46-54,64
+  s_4cabae41bceed9::t_725bc204386093 70-75
+  s_4cabae41bceed9::t_4c9db2e5d3626d 20-22
+  s_4cabae41bceed9::t_9aba83917243e4 34-40,44-45,55,57-58,60-63,65-69,80
+  s_4cabae41bceed9::t_6d117e219a8c59 149-154,156
+  s_4cabae41bceed9::t_0efb91edd935f4 28-33
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_1125a7bc55ec74 341-344,346-354,356-394
+  s_4cabae41bceed9::t_a3a4916087cd5a 345
+  s_4cabae41bceed9::t_463db7f217e7f9 333
+  s_4cabae41bceed9::t_f3661bf485542e 9
+  s_4cabae41bceed9::t_d3a868217ce983 86-96,335,355
+  s_4cabae41bceed9::t_591a6d58382f3f 324-328,330,332,334,336-338
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 3-4,9,18,85,88-96
+resources/scripts/router/search.ts
+  s_4cabae41bceed9::t_fc2d9d10444595 135-175
+resources/scripts/components/admin/themes/workbench/ViewPreview.tsx
+  s_4cabae41bceed9::t_2a3d66672e6982 2-67,69-72,75-94,105-109,114-129,132-190,192-217,227-249,320-329,331-348,350,352-371,373-390,398-400
+  s_4cabae41bceed9::t_4f015249e7b586 95-100,130-131,218-226
+  s_4cabae41bceed9::t_cd162d3541a0e1 101-104,110-113
+  s_4cabae41bceed9::t_de9828dc3109f7 191
+  s_4cabae41bceed9::t_c3c4f56b6f9a30 250-319,330,349,351,372,391-397
+  s_4cabae41bceed9::t_f22a7f8beccf9f 1
+  s_4cabae41bceed9::t_94ac9729b2e07e 68,73-74
+packages/sdk/types/components/server/files/FileManagerView.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 1-25
+resources/scripts/components/admin/themes/workbench/catalog.ts
+  s_4cabae41bceed9::t_e91b5877f5398d 27,33
+  s_4cabae41bceed9::t_fbf1726222598f 1-26,28-32,34-94
+resources/scripts/views/inspector/inspector.spec.tsx
+  s_4cabae41bceed9::t_d9f1e498bbb1f5 1-2,4-11,16-71,76-77,79-82,84-95,97-112,114-139,141-148,150-180,188-223
+  s_4cabae41bceed9::t_61526219d6be95 12-15
+  s_4cabae41bceed9::t_f3661bf485542e 3,72-75,78,83,96,113,149,181-187
+  s_4cabae41bceed9::t_e4d4bd3fd4b5d3 140
+packages/sdk/types/views/View.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 10-15
+resources/scripts/views/inspector/parts.tsx
+  s_4cabae41bceed9::t_61f6ca3c8e21ec 1-54,60-64,66-71,73-123,125-128,130-175,183-192,205-208,210,212-220
+  s_4cabae41bceed9::t_37df3753add148 65,72
+  s_4cabae41bceed9::t_a9f6d2312bbe52 124,129
+  s_4cabae41bceed9::t_4f015249e7b586 55-59
+  s_4cabae41bceed9::t_2e59dff3539cda 176-182
+  s_4cabae41bceed9::t_708aee3c4320e1 193-204,209,211
+resources/scripts/views/opaque.ts
+  s_4cabae41bceed9::t_e43b368c40afe3 89
+packages/sdk/types/views/registry.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 49-53,60-62,73-74,135-136
+resources/scripts/components/admin/themes/workbench/stage.tsx
+  s_4cabae41bceed9::t_d54154a047f9e7 40
+  s_4cabae41bceed9::t_e608b07472c34d 1-4,6-9,17-28,31-39,41-57,63-83
+  s_4cabae41bceed9::t_4f015249e7b586 58-62
+  s_4cabae41bceed9::t_1c497333dc5c7a 29-30
+  s_4cabae41bceed9::t_8a7cb784f88680 5,10-16
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_a4f592a11f5e52 265
+  s_4cabae41bceed9::t_10b1b2ecd5e66d 16
+  s_4cabae41bceed9::t_39a458b53a989a 242-247
+  s_4cabae41bceed9::t_01811a30881dd8 334-337
+  s_4cabae41bceed9::t_511fa855bc9bbb 46-47
+  s_4cabae41bceed9::t_1d8e3d13812eeb 358,364,366-378
+  s_4cabae41bceed9::t_29c46bf3b26675 295,303-315
+  s_4cabae41bceed9::t_9e42fef4b36a84 316
+  s_4cabae41bceed9::t_4f015249e7b586 359-363
+resources/scripts/views/inspect.tsx
+  s_4cabae41bceed9::t_3b9e4a3d3cff2b 1-88,93-105,109-123
+  s_4cabae41bceed9::t_014659a2d2dd37 106-108
+  s_4cabae41bceed9::t_4f015249e7b586 89-92
+resources/scripts/components/server/files/FileDetailsView.tsx
+  s_4cabae41bceed9::t_bce7563a456d73 85
+  s_4cabae41bceed9::t_0438606ee40dda 8
+packages/sdk/types/themes/primitives.d.ts
+  s_4cabae41bceed9::t_e321a13908412c 36,39
+  s_4cabae41bceed9::t_a9aa69659522f6 1-35,37-38,40-42
+resources/scripts/views/inspector/ViewInspector.tsx
+  s_4cabae41bceed9::t_fbda4df5c73b98 1-64
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_1ef9ecb2af9cf4 1010
+  s_4cabae41bceed9::t_24eb5fabc7ac87 1052
+  s_4cabae41bceed9::t_43ccda396a9438 96
+  s_4cabae41bceed9::t_da077d496d1bef 422-436
+  s_4cabae41bceed9::t_2d1357030adf0d 80
+  s_4cabae41bceed9::t_3a028ff8430093 1011
+packages/sdk/package.json
+  s_4cabae41bceed9::t_52c059f3e16170 8-10
+  s_4cabae41bceed9::t_951b40d6da7497 40-41
+resources/scripts/components/admin/themes/workbench/WorkbenchSidebar.tsx
+  s_4cabae41bceed9::t_ffb3ce5b18eb88 1-116,120-129
+  s_4cabae41bceed9::t_4f015249e7b586 117-119
+packages/sdk/views.json
+  s_4cabae41bceed9::t_6a2d97a885bb7e 19-23,39-43,73-77,526-531,608-612
+resources/scripts/views/inspector/InspectorPanel.tsx
+  s_4cabae41bceed9::t_d3865009e22b12 32-38
+  s_4cabae41bceed9::t_509d76fdaa820d 52-53
+  s_4cabae41bceed9::t_3ce8fc8026bfea 141-147
+  s_4cabae41bceed9::t_172ed9ac0f1950 29
+  s_4cabae41bceed9::t_99a30bc7224c9b 1-8,14-28,30-31,39-51,54-140
+  s_4cabae41bceed9::t_7487a2a60d7e01 9-13
+resources/scripts/views/inspector/InspectorOverlay.tsx
+  s_4cabae41bceed9::t_2bd7373c90ce50 1-68,70,75,77-82,84-95,97-108,110-163
+  s_4cabae41bceed9::t_106350125338d7 69,76,83
+  s_4cabae41bceed9::t_99f6a22079a5ab 96
+  s_4cabae41bceed9::t_f1973f2d22b650 109
+  s_4cabae41bceed9::t_3410d6f636cb33 71-74
+resources/scripts/views/fixtures.ts
+  s_4cabae41bceed9::t_e9798c077ce603 74-93
+  s_4cabae41bceed9::t_8e9290a21cf5ce 1
+resources/scripts/views/inspector/frames.ts
+  s_4cabae41bceed9::t_f721473eaadbe9 3,6,24
+  s_4cabae41bceed9::t_cb69e9f27e80f6 1-2,4-5,7-23,25-33
+resources/scripts/views/inspector/geometry.ts
+  s_4cabae41bceed9::t_a813b9ea1a1489 13-18,20
+  s_4cabae41bceed9::t_2a5ee9b25d8248 1-12,19,21-80
+resources/scripts/views/inspector/model.ts
+  s_4cabae41bceed9::t_a9a50a489506eb 23-26,28,32,36,40,44,48,52,54-60,62-63
+  s_4cabae41bceed9::t_b07d858b6c07b9 73-76
+  s_4cabae41bceed9::t_8f7f3adbc5e6f6 1-22,27,29-31,33-35,37-39,41-43,45-47,49-51,53,61,64-66,68-70,72,77-92
+  s_4cabae41bceed9::t_ef797eaf0372eb 67,71
+packages/sdk/prepack.mjs
+  s_4cabae41bceed9::t_15a44fe0760efe 1,4-5,10-14
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_9f30c50ae458f6 53-55,62-64,76-77
+  s_4cabae41bceed9::t_f90a8cc554f1e0 196-200
+  s_4cabae41bceed9::t_4f015249e7b586 193-195
+  s_4cabae41bceed9::t_4cfbec0fb4d04f 138,142
+resources/scripts/components/admin/themes/workbench/FixtureBoundary.tsx
+  s_4cabae41bceed9::t_dc59bfd79e8b36 1-36
+resources/scripts/components/server/files/FileManagerView.tsx
+  s_4cabae41bceed9::t_8dfc3510364cd8 1
+  s_4cabae41bceed9::t_7d2650cdc15514 22-23,25
+  s_4cabae41bceed9::t_10731b07d6a1d8 5-6
+  s_4cabae41bceed9::t_9d576aec3364c2 155-190,194
+packages/sdk/types/components/server/files/FileEditorView.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 1-29
+resources/scripts/components/admin/themes/workbench/workbench.spec.tsx
+  s_4cabae41bceed9::t_bdc79afd584c17 109-113,129-135,149-151,242-244
+  s_4cabae41bceed9::t_38cfc3eb9213f1 1-9,11-16,18-108,114-128,136-148,152-241,245-246,248-249
+  s_4cabae41bceed9::t_f3661bf485542e 10,17
+  s_4cabae41bceed9::t_0bda0bb31587ec 247
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_e34e21a3730133 7
+  s_4cabae41bceed9::t_ffff9c9f07d779 155-174
+packages/sdk/types/views/fixtures.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 2,20-21
+resources/scripts/components/server/files/FileEditorView.tsx
+  s_4cabae41bceed9::t_a24703a6aa5b69 1
+  s_4cabae41bceed9::t_a2de577725f9f0 124-129,133
+packages/sdk/types-drift.spec.ts
+  s_4cabae41bceed9::t_3c4a65d06ac3b6 97-100
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_fd83ce28b1de67 83-99
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_33745a5ff957b0 175
+resources/scripts/components/admin/themes/workbench/PrimitivePreview.tsx
+  s_4cabae41bceed9::t_5f487746cbe0d1 1-3,5-53,56-74
+  s_4cabae41bceed9::t_734a3531e955af 4
+  s_4cabae41bceed9::t_ee214211c05405 54-55
+packages/sdk/types/views/pages.d.ts
+  s_4cabae41bceed9::t_a9aa69659522f6 276-278,298
+.gitignore
+  s_4cabae41bceed9::t_2cc023a4cd9196 51,54
+resources/scripts/components/admin/themes/workbench/PreviewFrame.tsx
+  s_4cabae41bceed9::t_490b9006aff9cc 46
+  s_4cabae41bceed9::t_685e94ac1c32c4 127
+  s_4cabae41bceed9::t_426ae3143387dc 1-22,24-45,47-91,93-104,109-111,113-122,124-126,128-167
+  s_4cabae41bceed9::t_23760c671dfd7a 23
+  s_4cabae41bceed9::t_cca63ac45b2f35 105-108,112
+  s_4cabae41bceed9::t_8b825caf778849 123
+  s_4cabae41bceed9::t_56e6ba69757001 92
+scripts/generate-sdk-views.mjs
+  s_4cabae41bceed9::t_4a7be6151f2fc4 6,8-9,12
+  s_4cabae41bceed9::t_0daed71d200573 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "de57ce1a28d2478ddf12931f6f43befe4fc19668",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
