@@ -1,0 +1,26 @@
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_ba25c078a7498c 82-94,116-118,121,142-145,148,150-151
+packages/sdk/vite.mjs
+  s_4cabae41bceed9::t_027f2bb7d1d11b 205,343,364-366,368,389-395
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_81fe140b2ed5fe 1190-1191
+  s_4cabae41bceed9::t_592d12ced4df15 1185-1189,1192-1201
+packages/sdk/vite.spec.ts
+  s_4cabae41bceed9::t_00ad904669f90c 135,139,150-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ddfb53116509f917fa9dbbab98c23caf08ef8812",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
