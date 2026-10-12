@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { Outlet } from '@tanstack/react-router';
 import Spinner from '@/components/elements/Spinner';
 import PermissionRoute from '@/components/elements/PermissionRoute';
@@ -52,24 +52,25 @@ export function layoutRoute(name: LayoutViewName, area: ViewContext) {
 
 /**
  * The route component of a page: its permission guard, then the page view between the slots the
- * engine renders before and after it, so a theme cannot drop them.
+ * engine renders before and after it, so a theme cannot drop them. `Frame` is engine state the page's
+ * views share, such as an editing session, rendered around the page view whatever the theme draws.
  */
 export function pageRoute(
     name: Exclude<PageViewName, 'page.server.console'>,
-    permission: string | string[] | null = null
+    permission: string | string[] | null = null,
+    Frame?: ComponentType<{ children?: ReactNode }>
 ) {
     const slots = pageSlots(name);
 
     function PageRoute() {
         const data = useRouteSlotData();
+        const page = <View name={name} />;
 
         return (
             <PermissionRoute permission={permission}>
                 <ViewSessionProvider>
                     {slots && <Slot name={slots[0]} data={data} />}
-                    <Spinner.Suspense>
-                        <View name={name} />
-                    </Spinner.Suspense>
+                    <Spinner.Suspense>{Frame ? <Frame>{page}</Frame> : page}</Spinner.Suspense>
                     {slots && <Slot name={slots[1]} data={data} />}
                 </ViewSessionProvider>
             </PermissionRoute>

@@ -13,6 +13,11 @@ export type * from "./models/subusers.js";
 export type * from "./models/backups.js";
 export type * from "./models/settings.js";
 export type * from "./models/conflict.js";
+export type * from "./models/console.js";
+export type * from "./models/files.js";
+export type * from "./models/databases.js";
+export type * from "./models/network.js";
+export type * from "./models/startup.js";
 /**
  * Calls `listener`, at most once a frame, after a stylesheet or an `<html>` attribute changes.
  * It is a hint, not a diff: compare the values you read. Returns the unsubscribe function.

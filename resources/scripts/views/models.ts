@@ -1,4 +1,5 @@
 // The model of every engine view, published with the SDK so `ViewProps<'name'>` resolves for extensions and themes.
+// Areas with many views publish theirs from their own module in sdk/models.
 export type {
     DashboardModel,
     DashboardScope,
@@ -9,14 +10,6 @@ export type {
     ServerListModel,
     ServerPower,
 } from './dashboard';
-export type {
-    FileDetailsModel,
-    FileEditorModel,
-    FileManagerActions,
-    FileManagerEntry,
-    FileManagerModel,
-    FileManagerPermissions,
-} from './files';
 export type {
     AccountLayoutModel,
     AdminLayoutModel,

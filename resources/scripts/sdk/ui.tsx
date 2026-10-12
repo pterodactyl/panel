@@ -3,6 +3,8 @@ import {
     Suspense,
     useCallback,
     useMemo,
+    useRef,
+    useState,
     type ComponentProps,
     type DOMAttributes,
     type ReactElement,
@@ -14,7 +16,9 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     useReactTable,
+    type CellContext,
     type ColumnDef,
+    type HeaderContext,
     type OnChangeFn,
     type PaginationState,
 } from '@tanstack/react-table';
@@ -56,6 +60,7 @@ export {
 } from '@/components/ui/empty';
 export { default as Avatar, type AvatarProps, type AvatarVariant } from '@/components/Avatar';
 export { default as ListToolbar } from '@/components/elements/ListToolbar';
+export { default as SecretInput } from '@/components/elements/SecretInput';
 
 type TableColumnBase<TRow> = {
     id: string;
@@ -95,31 +100,54 @@ export interface TableProps<TRow> {
     pagination?: TablePagination;
 }
 
-function columnDefinition<TRow>(column: TableColumn<TRow>): ColumnDef<TRow> {
+/** Renderers that look their column up as they render, so new column objects update cells instead of remounting them. */
+interface ColumnRenderers<TRow> {
+    cell(context: CellContext<TRow, unknown>): ReactNode;
+    header(context: HeaderContext<TRow, unknown>): ReactNode;
+    sortableHeader(context: HeaderContext<TRow, unknown>): ReactNode;
+}
+
+function columnDefinition<TRow>(column: TableColumn<TRow>, renderers: ColumnRenderers<TRow>): ColumnDef<TRow> {
     const shared = {
         id: column.id,
-        cell: ({ row }: { row: { original: TRow } }) => column.cell(row.original),
+        cell: renderers.cell,
         meta: { headerClassName: column.headerClassName, cellClassName: column.cellClassName },
     };
 
     if (column.sortValue === undefined) {
-        const { label } = column;
-
-        return { ...shared, header: () => label, enableSorting: false };
+        return { ...shared, header: renderers.header, enableSorting: false };
     }
 
-    const { label, sortValue } = column;
+    return { ...shared, accessorFn: column.sortValue, header: renderers.sortableHeader };
+}
 
-    return {
-        ...shared,
-        accessorFn: sortValue,
-        header: ({ column: header }) => <DataTableColumnHeader column={header} title={label} />,
-    };
+function useColumnRenderers<TRow>(columns: readonly TableColumn<TRow>[]): ColumnRenderers<TRow> {
+    const latest = useRef(columns);
+
+    latest.current = columns;
+
+    const [renderers] = useState<ColumnRenderers<TRow>>(() => {
+        const find = (id: string) => latest.current.find((column) => column.id === id);
+
+        return {
+            cell: ({ row, column }) => find(column.id)?.cell(row.original),
+            header: ({ column }) => find(column.id)?.label,
+            sortableHeader: ({ column }) => (
+                <DataTableColumnHeader column={column} title={String(find(column.id)?.label)} />
+            ),
+        };
+    });
+
+    return renderers;
 }
 
 export function Table<TRow>({ rows, columns, keyOf, pagination, ...props }: TableProps<TRow>): ReactElement {
     const data = useMemo(() => [...rows], [rows]);
-    const definitions = useMemo(() => columns.map(columnDefinition), [columns]);
+    const renderers = useColumnRenderers(columns);
+    const definitions = useMemo(
+        () => columns.map((column) => columnDefinition(column, renderers)),
+        [columns, renderers]
+    );
     const page = pagination?.page ?? 1;
     const perPage = pagination?.perPage ?? 1;
     const onPageSelect = pagination?.onPageSelect;
@@ -197,9 +225,13 @@ export function RowActionsMenu(props: { label: string; children: ReactNode }): R
     return <PanelRowActionsMenu {...props} />;
 }
 
-/** The trailing "Actions" column, sized for `actions` icon buttons in a `RowActions`. */
-export function actionsColumn<TRow>(actions: 1 | 2 | 3, cell: (row: TRow) => ReactNode): TableColumn<TRow> {
-    const className = `${actionWidths[actions]} text-right`;
+/** The trailing "Actions" column, sized for `actions` icon buttons in a `RowActions`; `width` overrides the size. */
+export function actionsColumn<TRow>(
+    actions: 1 | 2 | 3,
+    cell: (row: TRow) => ReactNode,
+    width: string = actionWidths[actions]
+): TableColumn<TRow> {
+    const className = `${width} text-right`;
 
     return {
         id: 'actions',
@@ -225,6 +257,7 @@ export interface TooltipProps {
     content: ReactNode;
     children: ReactElement<DOMAttributes<Element> & RefAttributes<Element> & { className?: string }>;
     disabled?: boolean;
+    arrow?: boolean;
     className?: string;
     placement?: 'top' | 'bottom' | 'left' | 'right';
     /** What opens the tooltip; hover and focus by default. */

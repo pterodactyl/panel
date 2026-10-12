@@ -1,8 +1,5 @@
 import { ExtensionContext } from '@/extensions/context';
-import '@/components/server/files/FileDetailsView';
-import '@/components/server/files/FileEditorView';
-import '@/components/server/files/FileManagerView';
-import type { FileManagerModel } from '@/views/files';
+import type { FileManagerModel } from '@/views/server/files';
 import { registerClassicTheme } from '@/views/classic';
 import '@/views/account';
 import '@/views/activity';
@@ -11,8 +8,14 @@ import '@/views/dashboard';
 import '@/views/layouts';
 import '@/views/server/backups';
 import '@/views/server/conflict';
+import '@/views/server/console';
+import '@/views/server/databases';
+import '@/views/server/features';
+import '@/views/server/files';
+import '@/views/server/network';
 import '@/views/server/schedules';
 import '@/views/server/settings';
+import '@/views/server/startup';
 import '@/views/server/users';
 import {
     clearThemeLayers,
@@ -55,6 +58,7 @@ import { queryClient } from '@/api/queryClient';
 import { currentUserQueryKey } from '@/api/account/queries';
 import { siteSettingsQueryKey } from '@/api/settings/queries';
 import { serverQueryOptions } from '@/api/server/queries';
+import StatsListener from '@/components/server/StatsListener';
 import { ServerContext } from '@/state/server/context';
 import { useServerStore } from '@/state/server';
 import { Websocket } from '@/plugins/Websocket';
@@ -180,6 +184,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
         return options.server ? (
             <ServerContext.Provider>
                 <SocketFixture />
+                <StatsListener />
                 {content}
             </ServerContext.Provider>
         ) : (

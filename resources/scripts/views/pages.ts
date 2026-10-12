@@ -25,6 +25,15 @@ export const VIEW_PAGES = {
     'page.account.ssh': { context: 'account', slots: ['account.ssh.before', 'account.ssh.after'] },
     'page.account.activity': { context: 'account', slots: ['account.activity.before', 'account.activity.after'] },
 
+    'page.server.console': { context: 'server' },
+    'page.server.files': { context: 'server' },
+    'page.server.files.editor': {
+        context: 'server',
+        slots: ['server.files.editor.before', 'server.files.editor.after'],
+    },
+    'page.server.databases': { context: 'server', slots: ['server.databases.before', 'server.databases.after'] },
+    'page.server.network': { context: 'server', slots: ['server.network.before', 'server.network.after'] },
+    'page.server.startup': { context: 'server', slots: ['server.startup.before', 'server.startup.after'] },
     'page.server.activity': { context: 'server', slots: ['server.activity.before', 'server.activity.after'] },
     'page.server.schedules': { context: 'server', slots: ['server.schedules.before', 'server.schedules.after'] },
     'page.server.schedules.detail': {
@@ -42,16 +51,6 @@ export const VIEW_PAGES = {
 
 /** Every routed page whose default is still the existing container. */
 export const OPAQUE_PAGES = {
-    'page.server.console': { context: 'server' },
-    'page.server.files': { context: 'server' },
-    'page.server.files.editor': {
-        context: 'server',
-        slots: ['server.files.editor.before', 'server.files.editor.after'],
-    },
-    'page.server.databases': { context: 'server', slots: ['server.databases.before', 'server.databases.after'] },
-    'page.server.network': { context: 'server', slots: ['server.network.before', 'server.network.after'] },
-    'page.server.startup': { context: 'server', slots: ['server.startup.before', 'server.startup.after'] },
-
     'page.admin.overview': { context: 'admin' },
     'page.admin.activity': { context: 'admin', slots: ['panel.activity.before', 'panel.activity.after'] },
     'page.admin.settings': { context: 'admin', slots: ['panel.settings.before', 'panel.settings.after'] },
@@ -190,10 +189,6 @@ const isViewPage = (name: PageViewName): name is ViewPageName => Object.hasOwn(V
 
 declare module './registry' {
     interface ViewModels extends Record<OpaquePageName, OpaqueModel> {}
-    interface ViewInputs {
-        /** The console stays mounted while another server page shows. */
-        'page.server.console': { readonly active: boolean };
-    }
 }
 
 /** The engine-rendered slots of a page, if it has any. */

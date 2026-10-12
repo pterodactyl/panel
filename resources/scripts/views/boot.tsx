@@ -16,8 +16,14 @@ import './layouts';
 import './pages';
 import './server/backups';
 import './server/conflict';
+import './server/console';
+import './server/databases';
+import './server/features';
+import './server/files';
+import './server/network';
 import './server/schedules';
 import './server/settings';
+import './server/startup';
 import './server/users';
 
 export const THEME_BOOT_TIMEOUT_MS = 2500;

@@ -70,6 +70,9 @@ export {
     type NewLinkButtonProps,
 } from '@/components/elements/NewButton';
 export { default as SpinnerOverlay, type SpinnerOverlayProps } from '@/components/elements/SpinnerOverlay';
+export { default as ErrorBoundary } from '@/components/elements/ErrorBoundary';
+export { default as Portal } from '@/components/elements/Portal';
+export { default as InputSpinner } from '@/components/elements/InputSpinner';
 export {
     TextInput as Input,
     TextArea,
@@ -92,7 +95,12 @@ export { default as Select, type SelectGroup, type SelectProps, type SelectValue
 export { default as Checkbox, type CheckboxProps } from '@/components/ui/Checkbox';
 export { default as Switch, type SwitchProps } from '@/components/ui/Switch';
 export { Alert, type AlertProps, type AlertType } from '@/components/elements/alert';
-export { Dialog, type DialogIconProps, type RenderDialogProps as DialogProps } from '@/components/elements/dialog';
+export {
+    Dialog,
+    useDialogState,
+    type DialogIconProps,
+    type RenderDialogProps as DialogProps,
+} from '@/components/elements/dialog';
 export { toast } from 'sonner';
 export * from './ui';
 
@@ -106,6 +114,7 @@ export * from './progress';
 export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
 export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 export { formatDate, fromNow } from '@/lib/dates';
+export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
 /** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
@@ -241,6 +250,11 @@ export * from './models/subusers';
 export * from './models/backups';
 export * from './models/settings';
 export * from './models/conflict';
+export * from './models/console';
+export * from './models/files';
+export * from './models/databases';
+export * from './models/network';
+export * from './models/startup';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;

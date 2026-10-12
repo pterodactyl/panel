@@ -7,6 +7,7 @@ export { default as Pagination, type PaginationProps } from "../components/eleme
 export { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle, type EmptyMediaVariant, type EmptyProps, type EmptySize, } from "../components/ui/empty.js";
 export { default as Avatar, type AvatarProps, type AvatarVariant } from "../components/Avatar.js";
 export { default as ListToolbar } from "../components/elements/ListToolbar.js";
+export { default as SecretInput } from "../components/elements/SecretInput.js";
 type TableColumnBase<TRow> = {
     id: string;
     cell(row: TRow): ReactNode;
@@ -68,8 +69,8 @@ export declare function RowActionsMenu(props: {
     label: string;
     children: ReactNode;
 }): ReactElement;
-/** The trailing "Actions" column, sized for `actions` icon buttons in a `RowActions`. */
-export declare function actionsColumn<TRow>(actions: 1 | 2 | 3, cell: (row: TRow) => ReactNode): TableColumn<TRow>;
+/** The trailing "Actions" column, sized for `actions` icon buttons in a `RowActions`; `width` overrides the size. */
+export declare function actionsColumn<TRow>(actions: 1 | 2 | 3, cell: (row: TRow) => ReactNode, width?: string): TableColumn<TRow>;
 export interface EditLinkActionProps {
     destination: PanelDestination;
     'aria-label': string;
@@ -82,6 +83,7 @@ export interface TooltipProps {
         className?: string;
     }>;
     disabled?: boolean;
+    arrow?: boolean;
     className?: string;
     placement?: 'top' | 'bottom' | 'left' | 'right';
     /** What opens the tooltip; hover and focus by default. */

@@ -2,7 +2,7 @@
 import type { ClientFileObjectResource as FileObject } from "../api/extensionTypes.js";
 import type { Server } from "../api/server/types.js";
 import type { ServerCardModel } from "./dashboard.js";
-import type { FileDetailsModel, FileEditorModel, FileManagerEntry, FileManagerModel } from "./files.js";
+import type { FileDetailsModel, FileEditorModel, FileEditorPageModel, FileManagerEntry, FileManagerModel } from "./server/files.js";
 export interface TestServerOptions {
     identifier?: string;
     uuid?: string;
@@ -20,5 +20,6 @@ export declare function createTestFileDetails(options?: Partial<FileDetailsModel
 /** The file object a file details model was read from. */
 export declare function createTestFileObject(model: FileDetailsModel): FileObject;
 export declare function createTestFileEditor(options?: Partial<FileEditorModel>): FileEditorModel;
+export declare function createTestFileEditorPage(options?: Partial<FileEditorPageModel>): FileEditorPageModel;
 export declare function createTestFileManagerEntry(options?: Partial<FileManagerEntry>): FileManagerEntry;
 export declare function createTestFileManager(options?: Partial<FileManagerModel>): FileManagerModel;

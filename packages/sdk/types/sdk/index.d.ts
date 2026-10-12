@@ -30,6 +30,9 @@ export { default as Label, type LabelProps } from "../components/elements/Label.
 export { default as PageHeading, type PageHeadingProps } from "../components/elements/PageHeading.js";
 export { NewButton, NewLinkButton, type NewButtonProps, type NewLinkButtonProps, } from "../components/elements/NewButton.js";
 export { default as SpinnerOverlay, type SpinnerOverlayProps } from "../components/elements/SpinnerOverlay.js";
+export { default as ErrorBoundary } from "../components/elements/ErrorBoundary.js";
+export { default as Portal } from "../components/elements/Portal.js";
+export { default as InputSpinner } from "../components/elements/InputSpinner.js";
 export { TextInput as Input, TextArea, NumberInput, FileInput, type TextInputProps as InputProps, type TextAreaProps, type NumberInputProps, type FileInputProps, } from "../components/form/controls.js";
 export { default as SubNavigation, type SubNavigationItemState, type SubNavigationProps, } from "../components/elements/SubNavigation.js";
 export { default as SubNavigationLayout } from "../components/elements/SubNavigationLayout.js";
@@ -39,7 +42,7 @@ export { default as Select, type SelectGroup, type SelectProps, type SelectValue
 export { default as Checkbox, type CheckboxProps } from "../components/ui/Checkbox.js";
 export { default as Switch, type SwitchProps } from "../components/ui/Switch.js";
 export { Alert, type AlertProps, type AlertType } from "../components/elements/alert/index.js";
-export { Dialog, type DialogIconProps, type RenderDialogProps as DialogProps } from "../components/elements/dialog/index.js";
+export { Dialog, useDialogState, type DialogIconProps, type RenderDialogProps as DialogProps, } from "../components/elements/dialog/index.js";
 export { toast } from 'sonner';
 export * from "./ui.js";
 export { default as http, httpErrorToHuman } from "../api/http.js";
@@ -52,6 +55,7 @@ export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
 export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
 export { formatDate, fromNow } from "../lib/dates.js";
+export { useDebouncedCallback, type DebouncedCallback } from "../plugins/useDebouncedCallback.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";
 export type { SdkUser, SdkSiteSettings, SdkServer };
 /** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
@@ -123,6 +127,11 @@ export * from "./models/subusers.js";
 export * from "./models/backups.js";
 export * from "./models/settings.js";
 export * from "./models/conflict.js";
+export * from "./models/console.js";
+export * from "./models/files.js";
+export * from "./models/databases.js";
+export * from "./models/network.js";
+export * from "./models/startup.js";
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }

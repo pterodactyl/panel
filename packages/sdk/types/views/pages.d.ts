@@ -37,6 +37,28 @@ export declare const VIEW_PAGES: {
         readonly context: "account";
         readonly slots: readonly ["account.activity.before", "account.activity.after"];
     };
+    readonly 'page.server.console': {
+        readonly context: "server";
+    };
+    readonly 'page.server.files': {
+        readonly context: "server";
+    };
+    readonly 'page.server.files.editor': {
+        readonly context: "server";
+        readonly slots: readonly ["server.files.editor.before", "server.files.editor.after"];
+    };
+    readonly 'page.server.databases': {
+        readonly context: "server";
+        readonly slots: readonly ["server.databases.before", "server.databases.after"];
+    };
+    readonly 'page.server.network': {
+        readonly context: "server";
+        readonly slots: readonly ["server.network.before", "server.network.after"];
+    };
+    readonly 'page.server.startup': {
+        readonly context: "server";
+        readonly slots: readonly ["server.startup.before", "server.startup.after"];
+    };
     readonly 'page.server.activity': {
         readonly context: "server";
         readonly slots: readonly ["server.activity.before", "server.activity.after"];
@@ -68,28 +90,6 @@ export declare const VIEW_PAGES: {
 };
 /** Every routed page whose default is still the existing container. */
 export declare const OPAQUE_PAGES: {
-    readonly 'page.server.console': {
-        readonly context: "server";
-    };
-    readonly 'page.server.files': {
-        readonly context: "server";
-    };
-    readonly 'page.server.files.editor': {
-        readonly context: "server";
-        readonly slots: readonly ["server.files.editor.before", "server.files.editor.after"];
-    };
-    readonly 'page.server.databases': {
-        readonly context: "server";
-        readonly slots: readonly ["server.databases.before", "server.databases.after"];
-    };
-    readonly 'page.server.network': {
-        readonly context: "server";
-        readonly slots: readonly ["server.network.before", "server.network.after"];
-    };
-    readonly 'page.server.startup': {
-        readonly context: "server";
-        readonly slots: readonly ["server.startup.before", "server.startup.after"];
-    };
     readonly 'page.admin.overview': {
         readonly context: "admin";
     };
@@ -293,12 +293,6 @@ export type PageViewName = OpaquePageName | ViewPageName;
 declare module './registry' {
     interface ViewModels extends Record<OpaquePageName, OpaqueModel> {
     }
-    interface ViewInputs {
-        /** The console stays mounted while another server page shows. */
-        'page.server.console': {
-            readonly active: boolean;
-        };
-    }
 }
 /** The engine-rendered slots of a page, if it has any. */
 export declare function pageSlots(name: PageViewName): readonly [RouteSlotName, RouteSlotName] | undefined;
@@ -340,6 +334,28 @@ export declare const viewPage: (name: ViewPageName) => {
 } | {
     placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
     context: "server";
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.files.editor.before", "server.files.editor.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.databases.before", "server.databases.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.network.before", "server.network.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
+    slots: readonly ["server.startup.before", "server.startup.after"];
+} | {
+    placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
+    context: "server";
     slots: readonly ["server.activity.before", "server.activity.after"];
 } | {
     placeholder: import("react").FunctionComponentElement<import("../components/elements/Spinner.js").SpinnerProps>;
@@ -366,4 +382,4 @@ export declare const viewPage: (name: ViewPageName) => {
     context: "server";
     slots: readonly ["server.settings.before", "server.settings.after"];
 };
-export declare const pageViews: import("./registry.js").ViewDefinition<"page.server.console" | "page.server.files" | "page.server.files.editor" | "page.server.databases" | "page.server.network" | "page.server.startup" | "page.admin.overview" | "page.admin.activity" | "page.admin.settings" | "page.admin.settings.mail" | "page.admin.settings.advanced" | "page.admin.users" | "page.admin.users.create" | "page.admin.users.detail" | "page.admin.users.detail.about" | "page.admin.locations" | "page.admin.locations.detail" | "page.admin.nodes" | "page.admin.nodes.create" | "page.admin.nodes.detail" | "page.admin.nodes.detail.about" | "page.admin.nodes.detail.settings" | "page.admin.nodes.detail.configuration" | "page.admin.nodes.detail.allocations" | "page.admin.nodes.detail.tags" | "page.admin.nodes.detail.servers" | "page.admin.servers" | "page.admin.servers.create" | "page.admin.servers.detail" | "page.admin.servers.detail.about" | "page.admin.servers.detail.details" | "page.admin.servers.detail.build" | "page.admin.servers.detail.startup" | "page.admin.servers.detail.databases" | "page.admin.servers.detail.mounts" | "page.admin.servers.detail.manage" | "page.admin.servers.detail.delete" | "page.admin.databaseHosts" | "page.admin.databaseHosts.create" | "page.admin.databaseHosts.detail" | "page.admin.mounts" | "page.admin.mounts.create" | "page.admin.mounts.detail" | "page.admin.eggs" | "page.admin.eggs.create" | "page.admin.eggs.catalog" | "page.admin.eggs.detail" | "page.admin.eggs.detail.configuration" | "page.admin.eggs.detail.tags" | "page.admin.eggs.detail.variables" | "page.admin.eggs.detail.script" | "page.admin.tags" | "page.admin.extensions" | "page.admin.themes" | "page.admin.themeWorkbench" | "page.admin.apiKeys">[];
+export declare const pageViews: import("./registry.js").ViewDefinition<"page.admin.overview" | "page.admin.activity" | "page.admin.settings" | "page.admin.settings.mail" | "page.admin.settings.advanced" | "page.admin.users" | "page.admin.users.create" | "page.admin.users.detail" | "page.admin.users.detail.about" | "page.admin.locations" | "page.admin.locations.detail" | "page.admin.nodes" | "page.admin.nodes.create" | "page.admin.nodes.detail" | "page.admin.nodes.detail.about" | "page.admin.nodes.detail.settings" | "page.admin.nodes.detail.configuration" | "page.admin.nodes.detail.allocations" | "page.admin.nodes.detail.tags" | "page.admin.nodes.detail.servers" | "page.admin.servers" | "page.admin.servers.create" | "page.admin.servers.detail" | "page.admin.servers.detail.about" | "page.admin.servers.detail.details" | "page.admin.servers.detail.build" | "page.admin.servers.detail.startup" | "page.admin.servers.detail.databases" | "page.admin.servers.detail.mounts" | "page.admin.servers.detail.manage" | "page.admin.servers.detail.delete" | "page.admin.databaseHosts" | "page.admin.databaseHosts.create" | "page.admin.databaseHosts.detail" | "page.admin.mounts" | "page.admin.mounts.create" | "page.admin.mounts.detail" | "page.admin.eggs" | "page.admin.eggs.create" | "page.admin.eggs.catalog" | "page.admin.eggs.detail" | "page.admin.eggs.detail.configuration" | "page.admin.eggs.detail.tags" | "page.admin.eggs.detail.variables" | "page.admin.eggs.detail.script" | "page.admin.tags" | "page.admin.extensions" | "page.admin.themes" | "page.admin.themeWorkbench" | "page.admin.apiKeys">[];

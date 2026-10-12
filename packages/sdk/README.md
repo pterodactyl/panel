@@ -785,16 +785,17 @@ installed.
 
 ### File editor
 
-`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, breadcrumbs, loading and error screens, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard. The layer mounts once per opened document, after its content has loaded.
+`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard, whatever the theme draws. `page.server.files.editor` places the breadcrumbs, loading and error screens around it. The layer mounts once per opened document, after its content has loaded.
 
 | Model field | |
 | --- | --- |
 | `path`, `name`, `isNew` | The open file. For a new file `path` is its directory and `name` is empty. |
 | `content` | Text to open: the loaded file, or the restored draft of a new file. It does not change while the document is open. |
-| `language` | Syntax hint as a MIME type (`text/x-yaml`); the classic `language` part changes it. |
+| `Editor` | The panel's code editor, bound to this document and themed with the `--editor-*` tokens. |
+| `language`, `languages`, `setLanguage(mime)` | Syntax hint as a MIME type (`text/x-yaml`), the ones the editor knows, and switching. |
 | `readOnly` | The user lacks `file.update` (or `file.create` for a new file). |
 | `dirty`, `saving` | Derived by the panel from the reported buffer and the running write. |
-| `change(content)` | Report the buffer after every edit. The panel saves exactly this text. |
+| `change(content)`, `read()` | Report the buffer after every edit, and read the last one reported. The panel saves exactly this text. |
 | `save()` | Write the buffer in place; a new file first asks for its name in the panel's dialog. Resolves `false` when read-only, cancelled or failed. |
 | `saveAs(name)` | Write the buffer to a name beside the file, or an absolute path, and open it. Needs `file.create`. |
 
@@ -823,9 +824,9 @@ Because the panel holds the buffer, a replaced `editor` part works with the clas
 
 `server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` view belong to the classic parts and render only where you keep those parts.
 
-`model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt` and `openable`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has.
+`model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt`, `openable`, `extractable`, the `destination` opening it links to, and the API's `file`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has. `breadcrumbs` lead from `container` to the directory, `newFileDestination` opens the editor for a new file, `uploads` lists the uploads in progress, `resolve(name)` shows where a relative name lands, and `slot` is what the file slots receive.
 
-`model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)` and `upload(files)`. They run the panel's own mutations, with its cache updates and notifications. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
+`model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `move(names, directory)`, `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)`, `upload(files)`, `cancelUpload(id)` and `clearUploads()`. They run the panel's own mutations, with its cache updates and notifications; `remove` and `archive` drop their names from the selection, `rename`, `move` and `chmod` clear it. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
 
 ```tsx
 export default function Browser({ model, parts }: ViewProps<'server.files.manager'>) {

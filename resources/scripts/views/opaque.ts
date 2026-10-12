@@ -9,13 +9,6 @@ const page = lazyRouteComponent;
 export const opaqueViews = {
     'app.search': lazyRouteComponent(() => import('@/components/dashboard/search/SearchContainer')),
 
-    'page.server.console': page(() => import('@/components/server/console/ServerConsoleContainer')),
-    'page.server.files': page(() => import('@/components/server/files/FileManagerContainer')),
-    'page.server.files.editor': page(() => import('@/components/server/files/FileEditContainer')),
-    'page.server.databases': page(() => import('@/components/server/databases/DatabasesContainer')),
-    'page.server.network': page(() => import('@/components/server/network/NetworkContainer')),
-    'page.server.startup': page(() => import('@/components/server/startup/StartupContainer')),
-
     'page.admin.overview': page(() => import('@/components/admin/overview/OverviewContainer')),
     'page.admin.activity': page(() => import('@/components/admin/activity/ActivityContainer')),
     'page.admin.settings': page(() => import('@/components/admin/settings/SettingsContainer')),

@@ -8,6 +8,7 @@ import { httpErrorToHuman } from '@/api/http';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import InstallListener from '@/components/server/InstallListener';
+import StatsListener from '@/components/server/StatsListener';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { useIsRenderedRoute } from '@/router/renderedRoute';
@@ -38,6 +39,7 @@ function ServerContent({ id, server }: { id: string; server: Server }) {
             <InstallListener />
             <TransferListener />
             <WebsocketHandler />
+            <StatsListener />
             {inConflictState && (!rootAdmin || !location.pathname.endsWith(`/server/${identifier}`)) ? (
                 <View name='server.conflict' />
             ) : (

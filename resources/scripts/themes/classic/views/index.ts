@@ -10,6 +10,11 @@ const schedules = () => import('./server/schedules');
 const users = () => import('./server/users');
 const backups = () => import('./server/backups');
 const settings = () => import('./server/settings');
+const serverConsole = () => import('./server/console');
+const files = () => import('./server/files');
+const databases = () => import('./server/databases');
+const network = () => import('./server/network');
+const startup = () => import('./server/startup');
 
 /** Classic's own views; the rest still render the existing containers as their default. */
 export const classicViews: ThemeViews = {
@@ -65,4 +70,30 @@ export const classicViews: ThemeViews = {
     'server.debug': lazyView(settings, 'ServerDebug'),
     'server.rename': lazyView(settings, 'ServerRename'),
     'server.reinstall': lazyView(settings, 'ServerReinstall'),
+
+    'page.server.console': lazyView(serverConsole, 'ConsolePage'),
+    'server.terminal': lazyView(serverConsole, 'Terminal'),
+    'server.power': lazyView(serverConsole, 'Power'),
+    'server.stats': lazyView(serverConsole, 'Stats'),
+    'server.graphs': lazyView(serverConsole, 'Graphs'),
+    'server.features': lazyView(serverConsole, 'Features'),
+    'server.feature.eula': lazyView(serverConsole, 'EulaPrompt'),
+    'server.feature.javaVersion': lazyView(serverConsole, 'JavaVersionPrompt'),
+    'server.feature.gslToken': lazyView(serverConsole, 'GslTokenPrompt'),
+    'server.feature.pidLimit': lazyView(serverConsole, 'PidLimitPrompt'),
+    'server.feature.steamDiskSpace': lazyView(serverConsole, 'SteamDiskSpacePrompt'),
+    'server.feature.hytaleOauth': lazyView(serverConsole, 'HytaleOauthPrompt'),
+    'page.server.files': lazyView(files, 'FilesPage'),
+    'server.files.manager': lazyView(files, 'FileManager'),
+    'server.files.details': lazyView(files, 'FileDetails'),
+    'page.server.files.editor': lazyView(files, 'EditorPage'),
+    'server.files.editor': lazyView(files, 'FileEditor'),
+    'page.server.databases': lazyView(databases, 'DatabasesPage'),
+    'server.databases': lazyView(databases, 'Databases'),
+    'page.server.network': lazyView(network, 'NetworkPage'),
+    'server.allocations': lazyView(network, 'Allocations'),
+    'page.server.startup': lazyView(startup, 'StartupPage'),
+    'server.startup.command': lazyView(startup, 'StartupCommand'),
+    'server.startup.image': lazyView(startup, 'StartupImage'),
+    'server.startup.variables': lazyView(startup, 'StartupVariables'),
 };

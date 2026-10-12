@@ -79,6 +79,7 @@ import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
 import { parseRedirectSearch } from '@/router/redirect';
 import { bareAreaPageRoute, layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
 import { preloadView } from '@/views/View';
+import FileEditorFrame from '@/components/server/files/fileEditorSession';
 import {
     parseActivitySearch,
     parseAdminListSearch,
@@ -271,7 +272,7 @@ const serverChildren = [
         getParentRoute: () => serverRoute,
         path: 'files/$action',
         beforeLoad: requireServerPermission('file.*'),
-        component: pageRoute('page.server.files.editor', 'file.*'),
+        component: pageRoute('page.server.files.editor', 'file.*', FileEditorFrame),
     }),
     createRoute({
         getParentRoute: () => serverRoute,

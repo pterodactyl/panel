@@ -84,6 +84,11 @@ export type * from './models/subusers';
 export type * from './models/backups';
 export type * from './models/settings';
 export type * from './models/conflict';
+export type * from './models/console';
+export type * from './models/files';
+export type * from './models/databases';
+export type * from './models/network';
+export type * from './models/startup';
 
 /**
  * Calls `listener`, at most once a frame, after a stylesheet or an `<html>` attribute changes.

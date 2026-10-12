@@ -905,8 +905,19 @@
     "page.server.console": {
         "kind": "page",
         "context": "server",
-        "slots": [],
-        "fixtures": []
+        "slots": [
+            "server.console.before",
+            "server.console.after"
+        ],
+        "fixtures": [
+            "default",
+            "installing",
+            "maintenance"
+        ],
+        "classic": {
+            "file": "views/server/console/ConsolePage.tsx",
+            "export": "default"
+        }
     },
     "page.server.databases": {
         "kind": "page",
@@ -915,13 +926,30 @@
             "server.databases.before",
             "server.databases.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/databases/DatabasesPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.files": {
         "kind": "page",
         "context": "server",
-        "slots": [],
-        "fixtures": []
+        "slots": [
+            "server.files.before",
+            "server.files.after"
+        ],
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/files/FilesPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.files.editor": {
         "kind": "page",
@@ -930,7 +958,16 @@
             "server.files.editor.before",
             "server.files.editor.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "file",
+            "new",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/files/EditorPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.network": {
         "kind": "page",
@@ -939,7 +976,14 @@
             "server.network.before",
             "server.network.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/network/NetworkPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.schedules": {
         "kind": "page",
@@ -994,9 +1038,18 @@
         "context": "server",
         "slots": [
             "server.startup.before",
-            "server.startup.after"
+            "server.startup.after",
+            "server.startup.form"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/server/startup/StartupPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.users": {
         "kind": "page",
@@ -1028,6 +1081,23 @@
         ],
         "classic": {
             "file": "views/server/users/CreateSubuserPage.tsx",
+            "export": "default"
+        }
+    },
+    "server.allocations": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "allocations",
+            "full",
+            "unmanaged",
+            "readOnly",
+            "empty",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/server/network/Allocations.tsx",
             "export": "default"
         }
     },
@@ -1065,6 +1135,23 @@
             "export": "default"
         }
     },
+    "server.databases": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "databases",
+            "full",
+            "empty",
+            "noLimit",
+            "readOnly",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/server/databases/Databases.tsx",
+            "export": "default"
+        }
+    },
     "server.debug": {
         "kind": "block",
         "context": "server",
@@ -1077,6 +1164,102 @@
             "export": "default"
         }
     },
+    "server.feature.eula": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "open",
+            "accepting"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/EulaPrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.feature.gslToken": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "open"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/GslTokenPrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.feature.hytaleOauth": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "open"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/HytaleOauthPrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.feature.javaVersion": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "open",
+            "loading",
+            "noPermission"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/JavaVersionPrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.feature.pidLimit": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "admin",
+            "user"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/PidLimitPrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.feature.steamDiskSpace": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "closed",
+            "admin",
+            "user"
+        ],
+        "classic": {
+            "file": "views/server/console/prompts/SteamDiskSpacePrompt.tsx",
+            "export": "default"
+        }
+    },
+    "server.features": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "minecraft",
+            "none"
+        ],
+        "classic": {
+            "file": "views/server/console/Features.tsx",
+            "export": "default"
+        }
+    },
     "server.files.details": {
         "kind": "block",
         "context": "server",
@@ -1084,7 +1267,11 @@
         "fixtures": [
             "file",
             "directory"
-        ]
+        ],
+        "classic": {
+            "file": "views/server/files/FileDetails.tsx",
+            "export": "default"
+        }
     },
     "server.files.editor": {
         "kind": "block",
@@ -1093,9 +1280,15 @@
         "fixtures": [
             "file",
             "dirty",
+            "saving",
             "readOnly",
+            "pteroignore",
             "new"
-        ]
+        ],
+        "classic": {
+            "file": "views/server/files/FileEditor.tsx",
+            "export": "default"
+        }
     },
     "server.files.manager": {
         "kind": "block",
@@ -1107,9 +1300,49 @@
         ],
         "fixtures": [
             "directory",
+            "selected",
+            "uploading",
+            "readOnly",
             "empty",
             "loading"
-        ]
+        ],
+        "classic": {
+            "file": "views/server/files/FileManager.tsx",
+            "export": "default"
+        }
+    },
+    "server.graphs": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "running",
+            "offline"
+        ],
+        "classic": {
+            "file": "views/server/console/Graphs.tsx",
+            "export": "default"
+        }
+    },
+    "server.power": {
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.console.power.before",
+            "server.console.power.after"
+        ],
+        "fixtures": [
+            "running",
+            "offline",
+            "starting",
+            "stopping",
+            "disconnected",
+            "noPermission"
+        ],
+        "classic": {
+            "file": "views/server/console/Power.tsx",
+            "export": "default"
+        }
     },
     "server.reinstall": {
         "kind": "block",
@@ -1198,6 +1431,63 @@
             "export": "default"
         }
     },
+    "server.startup.command": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/server/startup/StartupCommand.tsx",
+            "export": "default"
+        }
+    },
+    "server.startup.image": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "selectable",
+            "single",
+            "custom",
+            "pending"
+        ],
+        "classic": {
+            "file": "views/server/startup/StartupImage.tsx",
+            "export": "default"
+        }
+    },
+    "server.startup.variables": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "variables",
+            "readOnly",
+            "empty"
+        ],
+        "classic": {
+            "file": "views/server/startup/StartupVariables.tsx",
+            "export": "default"
+        }
+    },
+    "server.stats": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "running",
+            "offline",
+            "starting",
+            "alarms",
+            "unlimited"
+        ],
+        "classic": {
+            "file": "views/server/console/Stats.tsx",
+            "export": "default"
+        }
+    },
     "server.subuserForm": {
         "kind": "block",
         "context": "server",
@@ -1227,6 +1517,22 @@
         ],
         "classic": {
             "file": "views/server/users/SubuserList.tsx",
+            "export": "default"
+        }
+    },
+    "server.terminal": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "running",
+            "connecting",
+            "failed",
+            "scrolledUp",
+            "readOnly"
+        ],
+        "classic": {
+            "file": "views/server/console/Terminal.tsx",
             "export": "default"
         }
     }
