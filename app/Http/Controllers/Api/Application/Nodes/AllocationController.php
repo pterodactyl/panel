@@ -11,7 +11,6 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Allocations\CreatesAllocations;
 use Pterodactyl\Contracts\Allocations\DeletesAllocations;
 use Pterodactyl\Exceptions\DisplayException;
@@ -20,15 +19,15 @@ use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
 use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
 use Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException;
 use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\AllocationResource;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -58,8 +57,6 @@ class AllocationController extends ApplicationApiController
 
     /**
      * Return all the allocations that exist for a given node.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List node allocations', 'Returns a paginated list of allocations belonging to a node.')]
     #[QueryParam('per_page', 'integer', 'Number of allocations to return per page, up to 100.', required: false, example: 50)]
@@ -68,8 +65,8 @@ class AllocationController extends ApplicationApiController
     #[QueryParam('filter[ip_alias]', 'string', 'Filter allocations by IP alias.', required: false, example: 'minecraft.example.com')]
     #[QueryParam('filter[server_id]', 'string', 'Filter allocations by assigned server ID. Empty or non-numeric values return unassigned allocations.', required: false, example: '1')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "node" and "server" when the key can read those resources.', required: false, example: 'server', enum: ['node', 'server', 'node,server'])]
-    #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, collection: true, with: ['node.location'], resourceKey: 'allocation', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetAllocationsRequest $request, Node $node): array
+    #[ResponseFromResource(AllocationResource::class, Allocation::class, collection: true, with: ['node.location'], resourceKey: 'allocation', paginate: 50)]
+    public function index(GetAllocationsRequest $request, Node $node): ApiResourceCollection
     {
         $query = $node->allocations();
 
@@ -99,9 +96,7 @@ class AllocationController extends ApplicationApiController
             ])
             ->paginate($request->perPage());
 
-        return Fractal::collection($allocations)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
-            ->toResponseArray();
+        return AllocationResource::collection($allocations);
     }
 
     /**

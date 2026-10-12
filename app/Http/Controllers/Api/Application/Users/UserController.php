@@ -10,21 +10,20 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Contracts\Users\DeletesUsers;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\UserResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
@@ -36,8 +35,6 @@ class UserController extends ApplicationApiController
      * Handle request to list all users on the panel. Returns a JSON-API representation
      * of a collection of users including any defined relations passed in
      * the request.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List users', 'Returns a paginated list of panel users visible to the application API key.')]
     #[QueryParam('per_page', 'integer', 'Number of users to return per page, up to 100.', required: false, example: 50)]
@@ -47,51 +44,40 @@ class UserController extends ApplicationApiController
     #[QueryParam('filter[external_id]', 'string', 'Filter users by external identifier.', required: false, example: 'billing-system-42')]
     #[QueryParam('sort', 'string', 'Sort users by id or uuid. Prefix with "-" for descending order.', required: false, example: '-id', enum: ['id', '-id', 'uuid', '-uuid'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "servers" when the key can read servers.', required: false, example: 'servers', enum: ['servers'])]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, collection: true, resourceKey: 'user', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetUsersRequest $request): array
+    #[ResponseFromResource(UserResource::class, User::class, collection: true, resourceKey: 'user', paginate: 50)]
+    public function index(GetUsersRequest $request): ApiResourceCollection
     {
         $users = QueryBuilder::for(User::query())
             ->allowedFilters(['email', 'uuid', 'username', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($users)
-            ->transformWith($this->getTransformer(UserTransformer::class))
-            ->toResponseArray();
+        return UserResource::collection($users);
     }
 
     /**
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get user', 'Returns a single panel user by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "servers" when the key can read servers.', required: false, example: 'servers', enum: ['servers'])]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, resourceKey: 'user')]
-    public function view(GetUsersRequest $request, User $user): array
+    #[ResponseFromResource(UserResource::class, User::class, resourceKey: 'user')]
+    public function view(GetUsersRequest $request, User $user): UserResource
     {
-        return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return UserResource::make($user)->withExtensionFields();
     }
 
     /**
-     * @return array<string, mixed>
-     *
      * @throws Throwable
      */
     #[Endpoint('Update user', 'Updates account details for an existing panel user.')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, resourceKey: 'user')]
+    #[ResponseFromResource(UserResource::class, User::class, resourceKey: 'user')]
     #[ExtensionFieldsParam]
-    public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
+    public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): UserResource
     {
         $user = $users->update($user, $request->actionInput());
 
-        $response = Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields());
-
-        return $response->toResponseArray();
+        return UserResource::make($user)->withExtensionFields();
     }
 
     /**
@@ -101,15 +87,15 @@ class UserController extends ApplicationApiController
      * @throws Throwable
      */
     #[Endpoint('Create user', 'Creates a new panel user and returns the created resource.')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.test/api/application/users/1'])]
+    #[ResponseFromResource(UserResource::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.test/api/application/users/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
         $user = $users->create($request->actionInput());
 
-        return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return UserResource::make($user)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.application.users.view', [
                     'user' => $user->id,
                 ]),

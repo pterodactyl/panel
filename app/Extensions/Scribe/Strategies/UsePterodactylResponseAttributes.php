@@ -25,7 +25,6 @@ use Pterodactyl\Http\Resources\Api\ApiResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use ReflectionClass;
 
 class UsePterodactylResponseAttributes extends UseResponseAttributes
@@ -149,12 +148,6 @@ class UsePterodactylResponseAttributes extends UseResponseAttributes
         throw_unless($transformer instanceof TransformerAbstract, InvalidArgumentException::class, "Transformer [$transformerClass] must extend ".TransformerAbstract::class.'.');
 
         if (! $attribute->collection) {
-            // Controllers add extension field values to responses about one resource. The
-            // example shows the attribute without running installed extensions' code.
-            if ($transformer instanceof BaseTransformer) {
-                $transformer->withExtensionFields(read: false);
-            }
-
             $resource = new Item($modelInstantiator(), $transformer, $attribute->resourceKey);
 
             return $fractal->createData($resource)->toJson();

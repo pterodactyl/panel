@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection as ModelCollection;
-use Illuminate\Database\Eloquent\Model;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Scope;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Extensions\League\Fractal\Serializers\PterodactylSerializer;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use Spatie\Fractal\Fractal as SpatieFractal;
 use Spatie\Fractalistic\Exceptions\InvalidTransformation;
 use Spatie\Fractalistic\Exceptions\NoTransformerSpecified;
@@ -62,25 +59,6 @@ class Fractal extends SpatieFractal
             $this->resourceName = $this->transformer->getResourceName();
         }
 
-        $scope = parent::createData();
-        $data = $this->data instanceof LengthAwarePaginator ? $this->data->items() : $this->data;
-        if ($this->transformer instanceof BaseTransformer) {
-            if ($data instanceof Model) {
-                $this->transformer->prepareCollection(new ModelCollection([$data]), $scope);
-            } elseif (is_array($data) || $data instanceof \Illuminate\Support\Collection) {
-                $models = new ModelCollection;
-                foreach ($data as $model) {
-                    if (! $model instanceof Model) {
-                        return $scope;
-                    }
-
-                    $models->push($model);
-                }
-
-                $this->transformer->prepareCollection($models, $scope);
-            }
-        }
-
-        return $scope;
+        return parent::createData();
     }
 }
