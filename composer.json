@@ -120,7 +120,6 @@
         ],
         "docs:openapi": "@php artisan scribe:generate --force --no-upgrade-check",
         "docs:openapi:test": "@php vendor/bin/pest --bootstrap vendor/autoload.php tests/Architecture/OpenApiContractTest.php",
-        "docs:openapi:baseline": "@php vendor/bin/pest --bootstrap vendor/autoload.php tests/Architecture/OpenApiBaselineTest.php",
         "docs:openapi:responses": [
             "@putenv OPENAPI_VALIDATE=1",
             "@php -d memory_limit=2G vendor/bin/pest --testsuite Integration"
