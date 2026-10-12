@@ -10,8 +10,6 @@ use Pterodactyl\Exceptions\Resource\InvalidResourceLevelException;
 use Pterodactyl\Http\Resources\Api\ApiResource;
 
 /**
- * A resource of the admin API behind the admin panel.
- *
  * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
@@ -21,10 +19,6 @@ abstract class AdminResource extends ApiResource
     /** @var string|null */
     public static $wrap;
 
-    /**
-     * The admin API returns every extension's fields; the Application API only those marked
-     * #[ApplicationApi].
-     */
     protected function exposesAllExtensionFields(): bool
     {
         return true;

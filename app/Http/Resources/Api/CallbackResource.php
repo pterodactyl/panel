@@ -13,9 +13,6 @@ use LogicException;
 use Pterodactyl\Data\ServerState;
 
 /**
- * A resource whose attributes come from a closure, as when Fractal transformed with a
- * callable: it has no includes, and it is named only when given a name.
- *
  * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
@@ -32,8 +29,6 @@ final class CallbackResource extends ApiResource
     }
 
     /**
-     * A list of resources rendered by $callback, each named $name.
-     *
      * @template TData of Model|ServerState|array<mixed>
      *
      * @param  array<TData>|Collection<int, TData>|AbstractPaginator<int, TData>  $resource
@@ -53,9 +48,6 @@ final class CallbackResource extends ApiResource
         return new ApiResourceCollection($items, self::class);
     }
 
-    /**
-     * Items of a list need their closure; build the list with list().
-     */
     public static function collection($resource): ApiResourceCollection
     {
         throw new LogicException('Build a list of callback resources with '.self::class.'::list().');
@@ -66,9 +58,6 @@ final class CallbackResource extends ApiResource
         return $this->name;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return ($this->callback)($this->resource);

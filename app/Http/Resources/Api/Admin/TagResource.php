@@ -32,9 +32,7 @@ class TagResource extends AdminResource
     }
 
     /**
-     * The name and colour are the effective ones: a built-in game tag reports the
-     * label and colour owned by the EggSpecificTags enum rather than whatever is
-     * stored, so a client never has to know that distinction to render a tag.
+     * Built-in game tags report the name and colour that the Panel assigns them.
      */
     public function toArray(Request $request): array
     {

@@ -8,10 +8,6 @@ use Illuminate\Http\Request;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeScope;
 
-/**
- * An include the requester may not see, or that has nothing to embed:
- * `{"object": "null_resource", "attributes": null}`.
- */
 final class NullResource implements IncludedResource
 {
     public function resolveIncluded(IncludeScope $scope, Request $request): static

@@ -8,10 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 
-/**
- * What a controller sets on the resource it returns: includes it always returns, top-level
- * meta, the name of the rendered objects, and the status of the response.
- */
 trait BuildsResponse
 {
     /** @var list<string> */
@@ -25,8 +21,7 @@ trait BuildsResponse
     private bool $hasResourceKey = false;
 
     /**
-     * Returns these includes whatever the request asked for, as Fractal's parseIncludes()
-     * did when a controller called it.
+     * Returns these includes whatever the request asked for.
      */
     public function withIncludes(string ...$includes): static
     {
@@ -36,7 +31,7 @@ trait BuildsResponse
     }
 
     /**
-     * Adds top-level meta. A key that is already set keeps its value, as with Fractal's addMeta().
+     * A key that is already set keeps its value.
      *
      * @param  array<string, mixed>  $meta
      */
@@ -48,8 +43,8 @@ trait BuildsResponse
     }
 
     /**
-     * Names the rendered objects; null renders `"object": null`. Without it a response names
-     * them after resourceName(), and an include names them null.
+     * Null renders `"object": null`. Without a key a response names the objects after
+     * resourceName(), and an include names them null.
      */
     public function withResourceKey(?string $resourceKey): static
     {
@@ -59,17 +54,13 @@ trait BuildsResponse
         return $this;
     }
 
-    /**
-     * The response with the given status, as Fractal's respond() built it.
-     */
     public function respond(int $status = 200): JsonResponse
     {
         return new JsonResponse($this->resolve($this->resolveRequestFromContainer()), $status);
     }
 
     /**
-     * A resource returned from a controller answers 200; Laravel would answer 201 for a model
-     * created during the request, which Fractal never did.
+     * Always 200: Laravel would answer 201 for a model created during the request.
      *
      * @param  Request  $request
      */
@@ -78,9 +69,6 @@ trait BuildsResponse
         return new JsonResponse($this->resolve($request));
     }
 
-    /**
-     * The includes the request asked for, with the ones the controller always returns.
-     */
     private function includeSet(Request $request): IncludeSet
     {
         return IncludeSet::fromRequest($request, $this->forcedIncludes);

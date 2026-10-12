@@ -18,9 +18,8 @@ use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Support\JsonEmptyObject;
 
 /**
- * A list of API objects, `{"object": "list", "data": [...]}`, as Fractal's collection
- * resource rendered it. Keys are dropped. At the root of a response a length-aware
- * paginator adds Fractal's `pagination` meta after any other meta.
+ * Keys are dropped. At the root of a response a length-aware paginator adds `pagination`
+ * meta after any other meta.
  */
 class ApiResourceCollection extends AnonymousResourceCollection implements IncludedResource
 {
@@ -32,18 +31,10 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     /** @var class-string<ApiResource<*>> */
     public $collects;
 
-    /**
-     * Every item mapped into $collects, keyed as given.
-     *
-     * @var Collection<array-key, ApiResource<*>>
-     */
+    /** @var Collection<array-key, ApiResource<*>> */
     public $collection;
 
-    /**
-     * The paginator given, now holding the mapped items, or the mapped items themselves.
-     *
-     * @var Collection<array-key, ApiResource<*>>|AbstractPaginator<array-key, ApiResource<*>>
-     */
+    /** @var Collection<array-key, ApiResource<*>>|AbstractPaginator<array-key, ApiResource<*>> */
     public $resource;
 
     /** @var array<string, mixed>|null */
@@ -58,9 +49,6 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * Renders the list as the root of a response: the eager loads of its items and of the
-     * requested includes are batched first when every item is a model.
-     *
      * @param  Request|null  $request
      * @return array<string, mixed>
      */
@@ -75,9 +63,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * Renders the list as the root of a response for $includes, without the eager loading
-     * resolve() batches first. Documentation examples render this way, as they did with
-     * Fractal.
+     * Without the eager loading resolve() batches first, as documentation examples render.
      *
      * @return array<string, mixed>
      */
@@ -109,8 +95,6 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
     }
 
     /**
-     * Fractal's pagination meta. The links are an empty object on a single page.
-     *
      * @param  LengthAwarePaginator<array-key, ApiResource<*>>  $paginator
      * @return array<string, mixed>
      */
@@ -128,8 +112,7 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
             $links['next'] = $paginator->url($currentPage + 1);
         }
 
-        // Fractal's paginator adapter returned these through int return types, so a total
-        // given as a string still rendered as a number.
+        // A total given as a string still renders as a number.
         return [
             'total' => (int) $paginator->total(),
             'count' => count($paginator->items()),
@@ -140,10 +123,6 @@ class ApiResourceCollection extends AnonymousResourceCollection implements Inclu
         ];
     }
 
-    /**
-     * Batches the eager loads of every item through the first one, as Fractal prepared a
-     * collection only when all of its items were models.
-     */
     private function prepare(IncludeScope $scope, Request $request): void
     {
         $models = new ModelCollection;

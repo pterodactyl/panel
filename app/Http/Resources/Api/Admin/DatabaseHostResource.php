@@ -37,9 +37,6 @@ class DatabaseHostResource extends AdminResource
         return DatabaseHost::RESOURCE_NAME;
     }
 
-    /**
-     * The host password is never exposed through the API surface.
-     */
     public function toArray(Request $request): array
     {
         $host = $this->resource;

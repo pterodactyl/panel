@@ -24,14 +24,9 @@ use Pterodactyl\Support\JsonEmptyObject;
 use UnexpectedValueException;
 
 /**
- * One API object, `{"object": name, "attributes": {...}}`, the shape Fractal rendered with
- * the PterodactylSerializer. A resource replaces a Fractal transformer: toArray() returns
- * what transform() returned, and includes, eager loading and extension fields behave as
- * they did, so every response stays byte for byte the same.
- *
- * The envelope is built here rather than by Laravel: resolve() never filters missing
- * values (which would turn arrays with numeric keys into lists), never wraps the response
- * in `data`, and the response is always 200 unless respond() asks for another status.
+ * The envelope is built here rather than by Laravel: resolve() never filters missing values
+ * (which would turn arrays with numeric keys into lists) and never wraps the response in
+ * `data`.
  *
  * @template TResource of Model|ServerState|array<mixed>
  */
@@ -48,17 +43,13 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     public $resource;
 
     /**
-     * Includes returned whether or not the request asked for them, at every depth.
+     * Returned whether or not the request asked for them, at every depth.
      *
      * @var list<string>
      */
     protected array $defaultIncludes = [];
 
-    /**
-     * Includes returned when the request asks for them.
-     *
-     * @var list<string>
-     */
+    /** @var list<string> */
     protected array $availableIncludes = [];
 
     /** @var list<string> */
@@ -90,22 +81,15 @@ abstract class ApiResource extends JsonResource implements IncludedResource
         parent::__construct($resource);
     }
 
-    /**
-     * The name of the object at the root of a response, unless the controller names it.
-     */
     abstract public function resourceName(): ?string;
 
-    /**
-     * A list of these resources, `{"object": "list", "data": [...]}`.
-     */
     public static function collection($resource): ApiResourceCollection
     {
         return new ApiResourceCollection($resource, static::class);
     }
 
     /**
-     * The attributes of the resource; what a Fractal transformer's transform() returned. The
-     * includes go in `relationships`: emitting it empty keeps its place, otherwise it is
+     * Includes go in `relationships`: emitting it empty keeps its place, otherwise it is
      * appended last when something is included.
      *
      * @return array<string, mixed>
@@ -116,10 +100,9 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Adds the values of extension fields to the resource as its `extensions` attribute.
-     * Controllers ask for them on responses about one model, so a list never runs every
-     * extension for every row. With `$read` false the attribute is present but empty and no
-     * extension code runs, as in documentation examples.
+     * Controllers ask for extension fields only on responses about one model, so a list never
+     * runs every extension for every row. With `$read` false the attribute is present but
+     * empty and no extension code runs.
      */
     public function withExtensionFields(bool $read = true): static
     {
@@ -130,9 +113,6 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Renders the resource as the root of a response: its eager loads and those of the
-     * requested includes are batched first, then the object is built with its includes.
-     *
      * @param  Request|null  $request
      * @return array<string, mixed>
      */
@@ -150,9 +130,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Renders the resource as the root of a response for $includes, without the eager
-     * loading resolve() batches first. Documentation examples render this way, as they did
-     * with Fractal.
+     * Without the eager loading resolve() batches first, as documentation examples render.
      *
      * @return array<string, mixed>
      */
@@ -177,10 +155,6 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Batches what the resources of $models read before any of them renders: the declared
-     * eager loads, counts and sums, and the relations of the includes this request returns,
-     * through every level of includes. Includes still authorize when they render.
-     *
      * @param  ModelCollection<int, Model>  $models
      */
     public function prepare(ModelCollection $models, IncludeScope $scope, Request $request): void
@@ -229,9 +203,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * What $include embeds: a resource from item() or items(), null() for the null resource,
-     * or null to leave the include out. A resource with includes matches each name to the
-     * method that builds it.
+     * Returning null leaves the include out; null() embeds the null resource.
      */
     protected function resolveInclude(string $include): ?IncludedResource
     {
@@ -239,8 +211,7 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Embeds one resource: $resource is a resource class, or a closure that returns the
-     * attributes. Without a key the embedded object is named null, as with Fractal's item().
+     * Without a key the embedded object is named null.
      *
      * @template TData of Model|ServerState|array<mixed>
      *
@@ -256,8 +227,6 @@ abstract class ApiResource extends JsonResource implements IncludedResource
     }
 
     /**
-     * Embeds a list of resources, as with Fractal's collection().
-     *
      * @template TData of Model|ServerState|array<mixed>
      *
      * @param  array<TData>|Collection<int, TData>  $data
@@ -273,17 +242,12 @@ abstract class ApiResource extends JsonResource implements IncludedResource
         return (new ApiResourceCollection($items, $resource instanceof Closure ? CallbackResource::class : $resource))->withResourceKey($resourceKey);
     }
 
-    /**
-     * Embeds `{"object": "null_resource", "attributes": null}`.
-     */
     protected function null(): NullResource
     {
         return new NullResource;
     }
 
     /**
-     * Builds a nested resource. Each API's base resource only nests resources of its own API.
-     *
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource
@@ -295,26 +259,17 @@ abstract class ApiResource extends JsonResource implements IncludedResource
         return new $resource($data);
     }
 
-    /**
-     * Whether the requester may read what an include gated by $ability returns.
-     */
     protected function authorize(string $ability): bool
     {
         throw new LogicException(sprintf('[%s] does not gate includes by ability.', static::class));
     }
 
-    /**
-     * The request this resource renders for.
-     */
     protected function request(): Request
     {
         return $this->request ??= $this->resolveRequestFromContainer();
     }
 
     /**
-     * The `extensions` attribute of a model, keyed by extension id, when the controller asked
-     * for extension fields; empty otherwise, so the attribute is left out.
-     *
      * @return array{extensions?: array<string, ExtensionFieldValues|JsonEmptyObject>|JsonEmptyObject}
      */
     protected function extensionFields(Model $model): array
@@ -335,18 +290,11 @@ abstract class ApiResource extends JsonResource implements IncludedResource
         return ['extensions' => $values === [] ? new JsonEmptyObject : $values];
     }
 
-    /**
-     * Whether this API returns the values of every extension's fields, rather than only
-     * those marked #[ApplicationApi].
-     */
     protected function exposesAllExtensionFields(): bool
     {
         return false;
     }
 
-    /**
-     * Return an ISO-8601 formatted timestamp to use in the API response.
-     */
     protected function formatTimestamp(CarbonInterface|string|null $timestamp): string
     {
         throw_if($timestamp === null, UnexpectedValueException::class, 'Cannot format a missing model timestamp.');
@@ -360,18 +308,12 @@ abstract class ApiResource extends JsonResource implements IncludedResource
         return $value->setTimezone(self::RESPONSE_TIMEZONE)->toAtomString();
     }
 
-    /**
-     * The model this resource renders, when it renders one.
-     */
     private function model(): ?Model
     {
         return $this->resource instanceof Model ? $this->resource : null;
     }
 
     /**
-     * The object for this resource under $scope: its attributes with the includes the
-     * request asked for merged into `relationships`, then any meta.
-     *
      * @return array<string, mixed>
      */
     private function render(IncludeScope $scope, Request $request, ?string $resourceKey): array
@@ -382,23 +324,20 @@ abstract class ApiResource extends JsonResource implements IncludedResource
 
         $included = $this->includes($scope, $request);
         if ($included !== []) {
-            // Fractal merged the includes into the `relationships` a transformer emitted, which
-            // was always empty: assigning keeps its place, or appends it when it was not emitted.
             throw_unless(($attributes['relationships'] ?? []) === [], LogicException::class, sprintf('[%s] may only emit an empty `relationships`; its includes fill it.', static::class));
 
             $attributes['relationships'] = $included;
         }
 
-        // Fractal names an object only after a non-empty key, so "" and "0" render null.
+        // A falsy key ("" or "0") renders as null.
         $item = ['object' => $resourceKey === '' || $resourceKey === '0' ? null : $resourceKey, 'attributes' => $attributes];
 
         return $this->meta === [] ? $item : $item + ['meta' => $this->meta];
     }
 
     /**
-     * The default includes in their declared order, then the requested ones in the order
-     * they are declared, each resolved under its own scope. An include that returns null is
-     * left out.
+     * Default includes first, then the requested ones, both in declared order rather than
+     * request order.
      *
      * @return array<string, IncludedResource>
      */

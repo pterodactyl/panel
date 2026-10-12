@@ -14,8 +14,6 @@ use Pterodactyl\Models\User;
 use UnexpectedValueException;
 
 /**
- * A resource of the Client API, rendered for the signed-in user.
- *
  * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
@@ -25,18 +23,12 @@ abstract class ClientResource extends ApiResource
     /** @var string|null */
     public static $wrap;
 
-    /**
-     * The user the resource renders for.
-     */
     public function getUser(): User
     {
         return $this->request()->user() ?? throw new UnexpectedValueException('Client API resources require an authenticated user.');
     }
 
     /**
-     * Determine if the user may perform $ability on $server, which gates the includes that
-     * embed what the ability protects.
-     *
      * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     protected function authorize(string $ability, ?Server $server = null): bool
@@ -47,8 +39,6 @@ abstract class ClientResource extends ApiResource
     }
 
     /**
-     * The Client API only nests its own resources.
-     *
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource

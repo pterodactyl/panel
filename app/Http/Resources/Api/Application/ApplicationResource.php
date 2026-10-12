@@ -12,8 +12,6 @@ use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 /**
- * A resource of the Application API, which an application API key reads.
- *
  * @template TResource of Model|ServerState|array<mixed>
  *
  * @extends ApiResource<TResource>
@@ -23,10 +21,6 @@ abstract class ApplicationResource extends ApiResource
     /** @var string|null */
     public static $wrap;
 
-    /**
-     * Determine if the API key behind the request may read another resource, which gates
-     * the includes that embed it.
-     */
     protected function authorize(string $ability): bool
     {
         $allowed = [ApiKey::TYPE_ACCOUNT, ApiKey::TYPE_APPLICATION];
@@ -47,8 +41,6 @@ abstract class ApplicationResource extends ApiResource
     }
 
     /**
-     * The Application API only nests its own resources.
-     *
      * @template TNested of ApiResource<*>
      *
      * @param  class-string<TNested>  $resource

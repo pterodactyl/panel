@@ -7,12 +7,6 @@ namespace Pterodactyl\Http\Resources\Api\Includes;
 use Illuminate\Http\Request;
 use UnexpectedValueException;
 
-/**
- * The includes a request asked for, parsed as league/fractal's Manager parses them, so API
- * resources embed the same relationships Fractal transformers did. Names are compared
- * strictly where Fractal compared them loosely; that only differs for numeric names such
- * as "1" and "01", and no include has one.
- */
 final readonly class IncludeSet
 {
     /**
@@ -22,10 +16,6 @@ final readonly class IncludeSet
     private function __construct(private array $requested, private array $includes) {}
 
     /**
-     * Reads `include` from the query string and the body: every value is split on commas
-     * and trimmed, and empty names are dropped. Includes the controller always returns are
-     * appended before parsing, and paths are cut to $limit segments.
-     *
      * @param  list<string>  $forced
      */
     public static function fromRequest(Request $request, array $forced = [], int $limit = 2): self
@@ -42,9 +32,8 @@ final readonly class IncludeSet
     }
 
     /**
-     * Fractal's Manager::parseIncludes(): `name:modifiers` keeps only the name, while
-     * `name:modifiers.relation` also requests `name.relation`; every path is cut to
-     * $limit segments and the parents of a nested path are requested with it.
+     * `name:modifiers` keeps only the name, while `name:modifiers.relation` also requests
+     * `name.relation`.
      *
      * @param  list<string>  $includes
      */
@@ -71,8 +60,6 @@ final readonly class IncludeSet
     }
 
     /**
-     * The include names given to the parser: the request's, then any forced ones.
-     *
      * @return list<string>
      */
     public function requestedNames(): array
@@ -81,8 +68,6 @@ final readonly class IncludeSet
     }
 
     /**
-     * Every requested include path, as Fractal's Manager::getRequestedIncludes() returns it.
-     *
      * @return list<string>
      */
     public function includes(): array
@@ -90,9 +75,6 @@ final readonly class IncludeSet
         return $this->includes;
     }
 
-    /**
-     * Whether the full dotted path from the root was requested.
-     */
     public function contains(string $path): bool
     {
         return in_array($path, $this->includes, true);
@@ -109,8 +91,6 @@ final readonly class IncludeSet
     }
 
     /**
-     * Turns [foo, bar.baz] into [foo, bar, bar.baz].
-     *
      * @param  list<string>  $includes
      * @return list<string>
      */

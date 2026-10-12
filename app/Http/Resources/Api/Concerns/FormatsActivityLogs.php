@@ -52,7 +52,6 @@ trait FormatsActivityLogs
                     return [$key => $value, "{$key}_count" => count($value)];
                 }
 
-                // Perform some directory normalization at this point.
                 if ($key === 'directory' && is_string($value)) {
                     $value = str_replace('//', '/', '/'.mb_trim($value, '/').'/');
                 }
