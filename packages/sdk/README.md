@@ -994,8 +994,9 @@ Instead of activating, an administrator can choose **Preview for me** on **Admin
 the theme in their own session only. `/panel/theme-workbench` renders every view and primitive
 from fixtures under the active or previewed theme.
 
-The [Aurora sample](#recipes) used throughout this chapter lives in `docs-samples/aurora` of this
-package. The SDK's own checks compile it, run its tests and build it.
+The Aurora theme used throughout this chapter, and in the [recipes](#recipes), lives in
+`packages/sdk/docs-samples/aurora` of the panel repository. The panel's checks compile it against
+this package's types, run its tests and build it, so the samples here stay correct.
 
 ### The theme manifest
 
@@ -1769,6 +1770,8 @@ export function AccountShortcuts() {
 <!-- /sample -->
 
 `PanelLink` links to any panel route with typed parameters, and also carries `data-status="active"`.
+Classic's tab bar, which folds items that do not fit into a menu, is `SubNavigation` with
+`SubNavigationLayout` from `@pterodactyl/sdk`; it takes the same items.
 
 #### Schemes, settings and icons
 
