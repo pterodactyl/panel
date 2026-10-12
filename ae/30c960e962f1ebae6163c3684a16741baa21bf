@@ -1,0 +1,35 @@
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_2da95e13ce6a23 174
+packages/sdk/types/extensions/registry.d.ts
+  s_4cabae41bceed9::t_ac80b2a7913acd 14
+packages/sdk/views.json
+  s_4cabae41bceed9::t_ac80b2a7913acd 505-513
+packages/sdk/types/bootstrap.d.ts
+  s_4cabae41bceed9::t_ac80b2a7913acd 4,16,32-33
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_449d57a42c6306 931
+packages/sdk/types/extensions/development.d.ts
+  s_4cabae41bceed9::t_ac80b2a7913acd 1-16
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_be262b3650a469 198-199
+packages/sdk/types/views/pages.d.ts
+  s_4cabae41bceed9::t_ac80b2a7913acd 272-275,295
+resources/scripts/views/opaque.ts
+  s_4cabae41bceed9::t_a957bdc7877d5a 88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ae30c960e962f1ebae6163c3684a16741baa21bf",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
