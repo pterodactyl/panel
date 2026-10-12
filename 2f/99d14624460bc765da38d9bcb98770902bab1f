@@ -1,0 +1,328 @@
+resources/scripts/themes/classic/views/server/startup/StartupVariables.tsx
+  s_4cabae41bceed9::t_29949c3c876c62 1-114
+packages/sdk/types/components/elements/ErrorBoundary.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-21
+resources/scripts/components/server/files/FileNameModal.tsx
+  s_4cabae41bceed9::t_b43b0f064931c4 7-8,12-13
+resources/scripts/components/server/console/useTerminal.ts
+  s_4cabae41bceed9::t_282a26e42594cd 3,172,174-177,215,217,250-252,258,292
+  s_4cabae41bceed9::t_595dd0edd6fd91 2,173,178
+packages/sdk/types/views/server/page.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-10
+resources/scripts/themes/classic/views/server/console/prompts/EulaPrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-40
+resources/scripts/sdk/models/console.ts
+  s_4cabae41bceed9::t_7c5c89f8ac614c 1-27
+packages/sdk/types/components/server/console/AreaChart.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-18
+packages/sdk/types/plugins/useDebouncedCallback.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-7
+resources/scripts/themes/classic/views/server/console/Graphs.tsx
+  s_4cabae41bceed9::t_c47de4a80740e5 1-77
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 33-35,45,58
+packages/sdk/types/views/server/network.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-45
+resources/scripts/state/server/stats.ts
+  s_4cabae41bceed9::t_cbd72801efa362 1
+  s_4cabae41bceed9::t_6503e12d2a0d2f 2-13,16-17,20-26,28-47,58-63
+  s_4cabae41bceed9::t_4a3fba01d05550 14-15,18-19,27,48-57
+resources/scripts/sdk/models/files.ts
+  s_4cabae41bceed9::t_b2fa8029e284cc 14
+  s_4cabae41bceed9::t_a2102c0e877d61 1-13
+resources/scripts/components/server/console/AreaChart.tsx
+  s_4cabae41bceed9::t_16688d8e723012 18-22,24,26,35-36,68,99,139,201-210
+resources/scripts/themes/classic/views/server/databases/Databases.tsx
+  s_4cabae41bceed9::t_77987d991d75f9 1-65,70-359
+  s_4cabae41bceed9::t_036171881207a9 66-69
+resources/scripts/themes/classic/views/server/network/Allocations.tsx
+  s_4cabae41bceed9::t_036171881207a9 38,61-64
+  s_4cabae41bceed9::t_fcd4a1f770fa66 1-37,39-60,65-173
+resources/scripts/components/server/console/chart.ts
+  s_4cabae41bceed9::t_4a3fba01d05550 22-23,25,30
+  s_4cabae41bceed9::t_036171881207a9 26-29
+  s_4cabae41bceed9::t_cbd72801efa362 10-20
+  s_4cabae41bceed9::t_5c209a48004043 1,31,33-35,37
+resources/scripts/views/server/console.spec.tsx
+  s_4cabae41bceed9::t_fcb0e32f642939 15,192
+  s_4cabae41bceed9::t_31d512a4b1a98a 5,7-8,49-57,66
+  s_4cabae41bceed9::t_00cec40d538729 1-4,6,9-14,16-48,58-65,67-191,193-252
+resources/scripts/views/catalog.ts
+  s_4cabae41bceed9::t_70b14f986bafe0 13
+  s_4cabae41bceed9::t_416608e9636c53 10
+  s_4cabae41bceed9::t_a73e25a262f75a 11,14,17
+packages/sdk/types/components/elements/SecretInput.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-8
+resources/scripts/api/server/network/queries.ts
+  s_4cabae41bceed9::t_8179c7f74d20eb 58
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_74c5d3c9fdb6a8 87
+  s_4cabae41bceed9::t_01d6e864fd283b 88
+  s_4cabae41bceed9::t_c69fe5283527d4 89-91
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_15b43af2624360 74-85
+  s_4cabae41bceed9::t_7bc34b063a72be 13
+packages/sdk/types/components/elements/InputSpinner.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-7
+packages/sdk/views.json
+  s_4cabae41bceed9::t_a634c39a562a8d 1050-1051,1177-1178,1190-1191,1203-1204,1218-1219,1232-1233,1246-1247,1260,1442-1443,1457-1458,1471-1472
+  s_4cabae41bceed9::t_eb219620c5d538 908-920,929-936,941-952,961-970,979-986,1041-1042,1044-1049,1052,1087-1103,1138-1154,1167-1176,1179-1189,1192-1202,1205-1217,1220-1231,1234-1245,1248-1259,1261-1262,1270-1274,1283,1285,1287-1291,1303-1305,1308-1346,1434-1441,1444-1456,1459-1470,1473-1490,1523-1537
+resources/scripts/themes/classic/views/server/console/prompts/HytaleOauthPrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-22
+packages/sdk/types/sdk/models/network.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-2
+resources/scripts/themes/classic/views/server/files/FileDetails.tsx
+  s_4cabae41bceed9::t_b4fd98353ccb66 1,3-33,35-38,45-57
+  s_4cabae41bceed9::t_036171881207a9 39-44
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_416608e9636c53 198
+resources/scripts/views/server/databases.ts
+  s_4cabae41bceed9::t_b2fa8029e284cc 19,69,126,146,149,169,180-193,226
+  s_4cabae41bceed9::t_1fbf951bd6a4d1 2-14,15-16,18,20-68,70-125,127-145,147-148,150-168,170-179,194-223,225,227-245
+resources/scripts/themes/classic/views/server/console/Power.tsx
+  s_4cabae41bceed9::t_a91ae388780862 1-56
+resources/scripts/views/server/features.ts
+  s_4cabae41bceed9::t_036171881207a9 85-87,118-120
+  s_4cabae41bceed9::t_c6ad896d4c7332 92,94
+  s_4cabae41bceed9::t_01adb20d50b10f 1-84,88-91,93,95-117,121-181
+resources/scripts/views/models.ts
+  s_4cabae41bceed9::t_2cdedb2ee3e906 2
+resources/scripts/themes/classic/views/server/files/FileManager.tsx
+  s_4cabae41bceed9::t_2a4e3418e681e2 1-19,21-110,112-115,117-185
+  s_4cabae41bceed9::t_22003115626efd 20,111,116
+resources/scripts/components/server/StatsListener.tsx
+  s_4cabae41bceed9::t_2aeef2d3a2cd45 1-36
+resources/scripts/views/server/network.ts
+  s_4cabae41bceed9::t_f53ed07233c76a 2-15,16-17,19-126,140-171,173,174-193
+  s_4cabae41bceed9::t_036171881207a9 127-139
+packages/sdk/types/components/server/console/chart.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-31
+resources/scripts/themes/classic/views/server/databases/index.ts
+  s_4cabae41bceed9::t_030bf5e7f30589 1-2
+resources/scripts/components/elements/table/RowActions.tsx
+  s_4cabae41bceed9::t_3773c85c197f54 15,17
+resources/scripts/themes/classic/views/server/console/ConsolePage.tsx
+  s_4cabae41bceed9::t_1ed31e1806ce1c 1-43
+resources/scripts/views/server/page.ts
+  s_4cabae41bceed9::t_49c242786be63f 1-12
+packages/sdk/types/views/server/files.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-178
+packages/sdk/types/sdk/ui.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 2-3,9-10,49-59,61,65-66,68-71,86
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 9,10,12-13,16
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 16-20
+resources/scripts/components/server/console/types.ts
+  s_4cabae41bceed9::t_16688d8e723012 4,6
+packages/sdk/types/sdk/models/console.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-6
+resources/scripts/components/server/files/breadcrumbs.ts
+  s_4cabae41bceed9::t_100fe6bf597dc1 16-25
+  s_4cabae41bceed9::t_ffd560ba7eb7d7 1-15,26-27
+resources/scripts/themes/classic/views/server/console/index.ts
+  s_4cabae41bceed9::t_150ec651e6684e 7-12
+  s_4cabae41bceed9::t_862dcac75bdce8 1-5
+  s_4cabae41bceed9::t_eab46746b26086 6
+resources/scripts/themes/classic/views/server/files/Uploads.tsx
+  s_4cabae41bceed9::t_65a79de1ab9a21 1-20,22-177
+  s_4cabae41bceed9::t_c6ad896d4c7332 21
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_a73e25a262f75a 20,23,26
+  s_4cabae41bceed9::t_70b14f986bafe0 22
+  s_4cabae41bceed9::t_416608e9636c53 19
+packages/sdk/types/views/server/databases.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-57
+resources/scripts/themes/classic/views/server/startup/StartupPage.tsx
+  s_4cabae41bceed9::t_fdcbc2c0006bdd 1-23
+resources/scripts/state/server/index.tsx
+  s_4cabae41bceed9::t_7ab50d7af576eb 8,33,41,68-73,118-119
+resources/scripts/themes/classic/views/server/console/Terminal.tsx
+  s_4cabae41bceed9::t_5ac1e8d9994f70 1-90
+resources/scripts/themes/classic/views/server/console/prompts/parts.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-18
+resources/scripts/themes/classic/views/server/files/index.ts
+  s_4cabae41bceed9::t_4bf64cd4313621 1-5
+resources/scripts/themes/classic/views/server/network/index.ts
+  s_4cabae41bceed9::t_1f3f00ca6efa83 1-2
+resources/scripts/components/server/console/useServerTerminal.tsx
+  s_4cabae41bceed9::t_b4536a6f8576b3 1-115
+resources/scripts/views/fixtures.ts
+  s_4cabae41bceed9::t_f413ab1d6abfe3 3-4,6-12,102-103,105-106,111,113,117-118,120,127-137,140-148,151-155,162,168-174,176-178,182,189-199,215-217
+  s_4cabae41bceed9::t_036171881207a9 184-188
+  s_4cabae41bceed9::t_6d33dad151e190 157
+  s_4cabae41bceed9::t_689d4d1ffdd4b5 158-161
+resources/scripts/views/server/fileEditor.spec.tsx
+  s_4cabae41bceed9::t_499f54ea87404e 1-322
+  s_4cabae41bceed9::t_1f52c8aa7d4c66 339
+  s_4cabae41bceed9::t_55b2807b0c85a6 323-338,340-344
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_4cabae41bceed9::t_7c94597799aba8 11,42
+resources/scripts/themes/classic/views/server/databases/DatabasesPage.tsx
+  s_4cabae41bceed9::t_7576e7ac52218c 1-14
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_01d6e864fd283b 73-74,98-103,117
+  s_4cabae41bceed9::t_74c5d3c9fdb6a8 75
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_a73e25a262f75a 12,15,18
+  s_4cabae41bceed9::t_70b14f986bafe0 2,11,14
+packages/sdk/types/views/server/console.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-135
+resources/scripts/views/server/fileManager.spec.tsx
+  s_4cabae41bceed9::t_217ba561a48a13 136,319-320,323-325,327
+  s_4cabae41bceed9::t_74233d66db6990 10-130,140-318,321,326,328-329
+  s_4cabae41bceed9::t_1f52c8aa7d4c66 322
+  s_4cabae41bceed9::t_5964577eaa1d3f 135,137
+resources/scripts/themes/classic/views/server/files/FilesPage.tsx
+  s_4cabae41bceed9::t_6e8d7759784edb 1-16
+resources/scripts/themes/classic/views/server/startup/index.ts
+  s_4cabae41bceed9::t_a634c39a562a8d 1-4
+packages/sdk/types/views/fixtures.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 5,23
+resources/scripts/themes/classic/views/server/files/EditorPage.tsx
+  s_4cabae41bceed9::t_953c5ae540a034 1-20
+resources/scripts/themes/classic/views/server/console/prompts/GslTokenPrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-49
+packages/sdk/types/sdk/models/databases.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-2
+resources/scripts/themes/classic/views/server/console/prompts/JavaVersionPrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-44
+resources/scripts/themes/classic/views/server/startup/StartupCommand.tsx
+  s_4cabae41bceed9::t_f34bc60229b46e 1-12
+packages/sdk/types/components/elements/Portal.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-5
+resources/scripts/views/server/fixtures.spec.tsx
+  s_4cabae41bceed9::t_003b17cc28ba04 3,32,34,36
+  s_4cabae41bceed9::t_57922633b708d3 67
+  s_4cabae41bceed9::t_5b646097804ec8 1,30-31,37-38,39,43-44,48,55,59-61,64,68,70-71,76,80-81,84,87-88
+resources/scripts/views/server/startup.spec.tsx
+  s_4cabae41bceed9::t_1f52c8aa7d4c66 60
+  s_4cabae41bceed9::t_148b9eeaa17c6e 5-59,62-83,87-201,204,206-226
+  s_4cabae41bceed9::t_57922633b708d3 61,84-86
+  s_4cabae41bceed9::t_7153a5a50f3410 202-203,205
+resources/scripts/views/server/console.ts
+  s_4cabae41bceed9::t_c6ad896d4c7332 254
+  s_4cabae41bceed9::t_a1208c617bab2f 324
+  s_4cabae41bceed9::t_cbd72801efa362 4
+  s_4cabae41bceed9::t_036171881207a9 74-79,333-337,349-354,360-365,374-375,395
+  s_4cabae41bceed9::t_a49b86991dd79e 2-3,5-7,8-17,19,21-73,80-142,143-155,157-169,171-216,218-236,238-253,255-323,325-332,338-343,345-346,347-348,355-359,366-373,376-394,396-425
+resources/scripts/themes/classic/views/server/files/FileRows.tsx
+  s_4cabae41bceed9::t_036171881207a9 140-144,147-151,189-193
+  s_4cabae41bceed9::t_100fe6bf597dc1 230
+  s_4cabae41bceed9::t_22003115626efd 26,61,77,85,126
+  s_4cabae41bceed9::t_6d33dad151e190 1,65-67
+  s_4cabae41bceed9::t_11728101424d9b 2-25,27-60,62-64,68-76,78-84,86-125,127-139,145-146,152-188,194-229,231-267
+packages/sdk/types/views/server/features.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-67
+resources/scripts/themes/classic/views/server/startup/StartupImage.tsx
+  s_4cabae41bceed9::t_dc02333a75c496 1-35
+resources/scripts/themes/classic/views/server/console/Features.tsx
+  s_4cabae41bceed9::t_9a84b2c47b94d8 1-2,4-5
+  s_4cabae41bceed9::t_eab46746b26086 3
+packages/sdk/types/sdk/models/startup.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-2
+resources/scripts/themes/classic/views/server/files/FileDialogs.tsx
+  s_4cabae41bceed9::t_0ba931aadd21c2 26-29,66-68
+  s_4cabae41bceed9::t_44358a16def0f3 1-14,19,21-23,25,69-82,106-137,141-166
+  s_4cabae41bceed9::t_a79635b399b1fa 15-18,20,24,30-65,83-105,138-140
+packages/sdk/types/sdk/models/files.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-3
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_4496db3498c3a8 1,55-56,60-61,67,73
+resources/scripts/themes/classic/views/server/console/prompts/SteamDiskSpacePrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-29
+resources/scripts/views/server/startup.ts
+  s_4cabae41bceed9::t_1615bdd1473663 2-10,11-13,15-79,83-86,90-155,161-203,205-258,260-261,268-270,272,274-280,282-288,295-321
+  s_4cabae41bceed9::t_c6ad896d4c7332 204
+  s_4cabae41bceed9::t_036171881207a9 80-82,87-89,156-160,289-294
+  s_4cabae41bceed9::t_982e7bea1d1785 259,262-267,273,281
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_4496db3498c3a8 82,275
+resources/scripts/themes/classic/views/server/usePending.ts
+  s_4cabae41bceed9::t_89355ae2c9072b 1-12
+resources/scripts/themes/classic/views/server/network/NetworkPage.tsx
+  s_4cabae41bceed9::t_c2a435f1a63138 1-14
+packages/sdk/types/components/server/console/types.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-8
+resources/scripts/components/server/files/useFileManagerModel.ts
+  s_4cabae41bceed9::t_0cd1310aa9f765 1,23,26,29-33,38-39,67,71,73-94,100-101,106-127,139,149,151,154-167,170-173,182-186,188-198,233,238,247,263,273-274,289,299-300,302-303,306,308,313-319,321,323
+  s_4cabae41bceed9::t_036171881207a9 234
+  s_4cabae41bceed9::t_6d33dad151e190 12,168
+  s_4cabae41bceed9::t_0c8a652cd873a5 28,57-66,68-70,72,95-99,102-105,169
+  s_4cabae41bceed9::t_c6ad896d4c7332 187
+resources/scripts/themes/classic/views/server/console/Stats.tsx
+  s_4cabae41bceed9::t_036171881207a9 2
+  s_4cabae41bceed9::t_8d7a6609f7f7f7 1,3-144
+resources/scripts/components/server/features/prompts.ts
+  s_4cabae41bceed9::t_036171881207a9 147-149
+  s_4cabae41bceed9::t_41f211150b2f33 1-146,150-171
+resources/scripts/api/server/startup/queries.ts
+  s_4cabae41bceed9::t_b162c26e6d3c0e 1,11,19,57-66
+  s_4cabae41bceed9::t_944786f8d5da1f 67
+resources/scripts/themes/classic/views/server/files/Breadcrumbs.tsx
+  s_4cabae41bceed9::t_5c66356c070770 1-18,20,22-27,29-36
+  s_4cabae41bceed9::t_100fe6bf597dc1 19,21,28
+resources/scripts/sdk/ui.tsx
+  s_4cabae41bceed9::t_fe8fb358eadab9 6-7,15-21,24,103-110,122,125-139,147-149
+  s_4cabae41bceed9::t_3773c85c197f54 27,62-63,68-69,101-102,116,119-120,165-170,177
+  s_4cabae41bceed9::t_53cb9bf36caf1f 1,5,8-14,29-32,34-37,64
+  s_4cabae41bceed9::t_c6ad896d4c7332 123
+  s_4cabae41bceed9::t_74c5d3c9fdb6a8 260
+packages/sdk/types/components/elements/ListToolbar.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-12
+resources/scripts/views/server/files.ts
+  s_4cabae41bceed9::t_100fe6bf597dc1 37-38
+  s_4cabae41bceed9::t_6d33dad151e190 101-102
+  s_4cabae41bceed9::t_809edf8b355f9d 1-6,12-22,24,26-36,39-100,103-176,178-192,194-195,200-217,219-220,222-254,256,257-266,268-273,276-279
+  s_4cabae41bceed9::t_036171881207a9 196-199,274-275
+  s_4cabae41bceed9::t_4d5084571a8b05 7-11,267
+  s_4cabae41bceed9::t_b2fa8029e284cc 25,177,193,221
+resources/scripts/components/server/files/fileEditorSession.tsx
+  s_4cabae41bceed9::t_036171881207a9 290-297
+  s_4cabae41bceed9::t_7fb3f04e3f11db 1-289,298-305
+resources/scripts/themes/classic/views/server/files/FileEditor.tsx
+  s_4cabae41bceed9::t_6d04e5f63a031a 1-14,17-77
+  s_4cabae41bceed9::t_036171881207a9 15-16
+resources/scripts/views/server/network.spec.tsx
+  s_4cabae41bceed9::t_205906fbdd7588 74
+  s_4cabae41bceed9::t_752cbe18067928 3-16,19-31,48,52-73,75-110,112-113,115-121,125,135-142
+  s_4cabae41bceed9::t_4e37b35d9b8336 18,33-39
+  s_4cabae41bceed9::t_948ed23b04ccab 111,114,122-124,126-134
+  s_4cabae41bceed9::t_57922633b708d3 40-46
+  s_4cabae41bceed9::t_2ee7551ac75632 32
+resources/scripts/components/elements/ServerContentBlock.tsx
+  s_4cabae41bceed9::t_163ca0eb53e967 11
+packages/sdk/types/views/server/startup.d.ts
+  s_4cabae41bceed9::t_517a04252f3f26 1-67
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_939e6c8bdea422 34-38
+  s_4cabae41bceed9::t_a634c39a562a8d 39
+resources/scripts/views/server/databases.spec.tsx
+  s_4cabae41bceed9::t_a68ed5c18f8b95 38
+  s_4cabae41bceed9::t_57922633b708d3 83-85,97-99,102
+  s_4cabae41bceed9::t_1f59f2d0e8dad9 1-37,39-82,86-96,100-101,103-136
+resources/scripts/themes/classic/views/server/console/prompts/PidLimitPrompt.tsx
+  s_4cabae41bceed9::t_150ec651e6684e 1-41
+resources/scripts/sdk/models/databases.ts
+  s_4cabae41bceed9::t_f6b8a9917fd47b 1-2
+resources/scripts/sdk/models/network.ts
+  s_4cabae41bceed9::t_c5000abcc252c9 1-2
+resources/scripts/sdk/models/startup.ts
+  s_4cabae41bceed9::t_3e79616de843fc 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2f99d14624460bc765da38d9bcb98770902bab1f",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
