@@ -57,62 +57,6 @@ final readonly class CreateUser implements CreatesUsers
     }
 
     /**
-     * Validates user input and returns the model attributes it describes. Given the user
-     * being updated, only the fields in the input are validated and returned, so the rest
-     * keep their stored values. A blank password is left out.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{email?: string, username?: string, name_first?: string, name_last?: string, external_id?: string|null, password?: string, root_admin?: bool, language?: string}
-     */
-    public static function attributes(array $input, ?User $user = null): array
-    {
-        $rules = self::rules($user);
-        if ($user instanceof User) {
-            foreach ($rules as $field => $fieldRules) {
-                $rules[$field] = ['sometimes', ...$fieldRules];
-            }
-        }
-
-        $input = Validator::make($input, $rules)->safe();
-
-        $attributes = [];
-        if ($input->has('email')) {
-            $attributes['email'] = $input->string('email')->toString();
-        }
-
-        if ($input->has('username')) {
-            $attributes['username'] = $input->string('username')->toString();
-        }
-
-        if ($input->has('name_first')) {
-            $attributes['name_first'] = $input->string('name_first')->toString();
-        }
-
-        if ($input->has('name_last')) {
-            $attributes['name_last'] = $input->string('name_last')->toString();
-        }
-
-        if ($input->has('external_id')) {
-            $attributes['external_id'] = $input->filled('external_id') ? $input->string('external_id')->toString() : null;
-        }
-
-        // A blank password, spaces included, is no password at all.
-        if ($input->filled('password')) {
-            $attributes['password'] = $input->string('password')->toString();
-        }
-
-        if ($input->has('root_admin')) {
-            $attributes['root_admin'] = $input->boolean('root_admin');
-        }
-
-        if ($input->filled('language')) {
-            $attributes['language'] = $input->string('language')->toString();
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Create a new user on the system. When no password is provided a random one is
      * set and a password reset token is generated for the account welcome email.
      *
@@ -125,9 +69,11 @@ final readonly class CreateUser implements CreatesUsers
      */
     public function create(array $input): User
     {
-        $attributes = self::attributes($input);
+        $attributes = Validator::validate($input, self::rules());
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
+        // Blank fields take their defaults, so a blank password, spaces included, is no password at all.
+        $attributes = array_filter($attributes, filled(...));
         $generateResetToken = ! isset($attributes['password']);
         $attributes['password'] ??= Str::random(30);
 

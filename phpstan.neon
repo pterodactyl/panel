@@ -10,6 +10,7 @@ parameters:
     parseModelCastsMethod: true
     stubFiles:
         - tools/phpstan/stubs/EloquentHasAttributes.stub
+        - tools/phpstan/stubs/ValidatorFacade.stub
     typeAliases:
         ValidationRule: 'string|\Stringable|\Closure|\Illuminate\Contracts\Validation\Rule|\Illuminate\Contracts\Validation\ValidationRule'
         ValidationRuleSet: 'array<int, ValidationRule>'

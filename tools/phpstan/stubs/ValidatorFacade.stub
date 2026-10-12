@@ -1,0 +1,8 @@
+<?php
+
+namespace Illuminate\Support\Facades;
+
+/**
+ * @method static array<string, mixed> validate(array<mixed> $data, array<mixed> $rules, array<mixed> $messages = [], array<mixed> $attributes = [])
+ */
+class Validator extends Facade {}

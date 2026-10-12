@@ -52,23 +52,6 @@ final readonly class CreateSshKey implements CreatesSshKeys
     }
 
     /**
-     * Validates SSH key input and returns the key it describes.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, public_key: string, fingerprint: string}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        return [
-            'name' => $input->string('name')->toString(),
-            'public_key' => $input->string('public_key')->toString(),
-            'fingerprint' => $input->string('fingerprint')->toString(),
-        ];
-    }
-
-    /**
      * Whether a value is a supported public key format that is safe to parse: not empty,
      * no longer than the limit, without NUL bytes, and starting with a known key prefix.
      * Certificates are not public keys and are rejected.
@@ -93,7 +76,8 @@ final readonly class CreateSshKey implements CreatesSshKeys
     /** @throws ValidationException */
     public function create(User $user, string $name, string $publicKey, string $fingerprint): UserSSHKey
     {
-        $key = $user->sshKeys()->create(self::attributes(['name' => $name, 'public_key' => $publicKey, 'fingerprint' => $fingerprint]));
+        $attributes = Validator::validate(['name' => $name, 'public_key' => $publicKey, 'fingerprint' => $fingerprint], self::rules());
+        $key = $user->sshKeys()->create($attributes);
 
         Activity::event('user:ssh-key.create')->subject($user, $key)->property('fingerprint', $key->fingerprint)->log();
 
