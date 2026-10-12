@@ -74,6 +74,8 @@ resources/scripts/sdk/ui.tsx
   s_4cabae41bceed9::t_88cc5c822f911b 168-189,191-199,201
   s_4cabae41bceed9::t_956f3053ad813d 27-28,30-32
   s_4cabae41bceed9::t_874548a61f7dce 25-26,29,33
+  s_4cabae41bceed9::t_c62f931ba376ce 86,165,220,222-223
+  s_4cabae41bceed9::t_fcc2ea5b3664c6 73
 resources/scripts/themes/classic/views/server/backups/index.ts
   s_4cabae41bceed9::t_3a0d678bc7a29b 1-2
 resources/scripts/themes/classic/views/server/settings/SettingsPage.tsx
@@ -137,6 +139,7 @@ resources/scripts/themes/classic/views/index.ts
   s_4cabae41bceed9::t_b1b52ec58b8797 10-11
   s_4cabae41bceed9::t_563931ef293634 3,9,12,50-56,63-67
   s_4cabae41bceed9::t_bb1006a8848e73 57-62
+  s_4cabae41bceed9::t_63378ec87994d0 49
 packages/sdk/types/views/pages.d.ts
   s_4cabae41bceed9::t_eb05952f8e1daf 291
 resources/scripts/views/server/users.spec.tsx
@@ -194,6 +197,7 @@ resources/scripts/views/pages.ts
   s_4cabae41bceed9::t_936fb7f21cf814 201
   s_4cabae41bceed9::t_044087d99c44cf 203
   s_4cabae41bceed9::t_b2dc365e3a002b 210
+  s_4cabae41bceed9::t_8986ec7be5587d 40
 resources/scripts/themes/classic/views/server/users/SubuserList.tsx
   s_4cabae41bceed9::t_186216701c5ff9 41-43
   s_4cabae41bceed9::t_09fa4838f6decb 1-40,44-146
