@@ -240,11 +240,14 @@ shows while the extension is disabled, and `p:extension:pack` adds it to the arc
 
 ## Author tooling and configuration
 
-Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
+`p:extension:make <id>` scaffolds a package in `extensions/<id>`; `--out=<dir>` creates it in
+`<dir>/<id>` and `--path=<dir>` in exactly `<dir>`. Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
 `p:extension:pack <path>` for preflight checks, successful-build publishing with browser reload in debug mode, and
-runtime-only archives. Scaffolds include tests, CI, OpenAPI generation, and styling.
+runtime-only archives; pack leaves `*.map` files out unless given `--sourcemaps`, since a map can embed
+your sources. Scaffolds include tests, CI, OpenAPI generation, and styling.
 `@pterodactyl/sdk/testing` supplies `createExtensionTestHost` and `createTestServer`;
-`@pterodactyl/sdk/vitest` supplies aliases and setup for the real runtime. Unmount the
+`@pterodactyl/sdk/vitest` supplies aliases and setup for the real runtime, including the
+`ResizeObserver`, `IntersectionObserver` and `matchMedia` jsdom lacks. Unmount the
 wrapper and dispose the host after each test. The test host shares the real cache;
 create one host at a time within a test environment.
 
@@ -924,9 +927,9 @@ export default function Browser({ model, parts }: ViewProps<'server.files.manage
 
 ### Loading and failure
 
-While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering is reported against its package and replaced by the layer below. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
+While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
 
-The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting.
+The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix?, strict? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting. The render fails with a `ViewLayerError` when your layer or a nested view's layer throws; `strict: false` lets it fall back as in the panel. `renderView` and its `slots` option, which mounts test components in slots, are described under [Testing](THEMES.md#testing).
 
 ## UI kit
 

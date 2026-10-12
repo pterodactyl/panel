@@ -35,8 +35,8 @@ Extension SDK `2.0.0-beta.5`.
 * Adds the `server.files.editor` and `server.files.manager` views, `useNavigationBlocker`, `serverResourcesQueryOptions`, `useServerResources`, `useSendServerPower` and `useSendServerCommand` to the SDK.
 * Adds themes: extensions with `"type": "theme"` that rebuild the panel stylesheet, skin the UI kit and override views through `defineTheme` (`@pterodactyl/sdk/theme`), with typed settings written as tokens and `<html>` attributes, dark and light schemes with a user switch, and child themes through `theme.extends`.
 * Adds the admin Themes page (activate, preview for me, reset, settings with a live preview), `p:theme:activate`, `p:theme:reset`, `p:theme:list`, safe mode (`?safe_mode=1`), and a fallback to classic when a theme fails to load.
-* Adds the theme workbench (`/panel/theme-workbench`), which renders every view and UI primitive from fixtures, and the view inspector (`Alt+Shift+I`, `?inspect=1`).
-* Adds the theme toolchain: `p:extension:make --theme`, `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderPrimitive` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
+* Adds the theme toolchain: `p:extension:make --theme` (`--css-only` for a theme without JavaScript), `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderPrimitive` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
+* `renderView` and `createViewTestHost` throw a `ViewLayerError` when a theme or extension layer fails, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
 * Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.
 * Scaffolded extensions set `preserveSymlinks` so a linked SDK resolves its peer types from the extension.
 

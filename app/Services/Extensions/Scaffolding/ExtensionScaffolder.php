@@ -41,6 +41,7 @@ class ExtensionScaffolder
         ?string $prefix = null,
         bool $theme = false,
         ?string $path = null,
+        bool $cssOnly = false,
     ): string {
         $this->files = [];
 
@@ -49,6 +50,8 @@ class ExtensionScaffolder
         throw_if(in_array($id, ExtensionManifest::RESERVED_IDS, true), InvalidExtensionException::class, "Extension id \"{$id}\" is reserved.");
 
         throw_if($path !== null && $outDir !== null, InvalidExtensionException::class, 'Pass --path (the package directory) or --out (the directory it is created in), not both.');
+
+        throw_if($cssOnly && ! $theme, InvalidExtensionException::class, '--css-only scaffolds a theme: pass it with --theme.');
 
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
@@ -74,7 +77,7 @@ class ExtensionScaffolder
         ];
 
         if ($theme) {
-            $this->scaffoldTheme($target, $id, $replacements);
+            $this->scaffoldTheme($target, $id, $replacements, $cssOnly);
             $this->validator->fromDirectory($target);
 
             return $target;
@@ -148,12 +151,12 @@ class ExtensionScaffolder
 
     /**
      * A theme with a stylesheet for both schemes, a skin, a layout override, four settings and a
-     * test, laid out as the SDK's THEMES.md describes. It needs no PHP; a provider can be
-     * added like an extension's.
+     * test, laid out as the SDK's THEMES.md describes; with `cssOnly`, the stylesheet and settings
+     * alone, with no `ui` entry. It needs no PHP; a provider can be added like an extension's.
      *
      * @param  array<string, string>  $replacements  stub placeholder => literal substitution
      */
-    private function scaffoldTheme(string $target, string $id, array $replacements): void
+    private function scaffoldTheme(string $target, string $id, array $replacements, bool $cssOnly): void
     {
         $manifest = array_filter([
             '$schema' => './node_modules/@pterodactyl/sdk/manifest.schema.json',
@@ -165,7 +168,7 @@ class ExtensionScaffolder
             'description' => $replacements['{{description}}'] ?: null,
             'author' => $replacements['{{author}}'] ?: null,
             'icon' => 'palette',
-            'ui' => ['entry' => ExtensionManifest::UI_ENTRY],
+            'ui' => $cssOnly ? null : ['entry' => ExtensionManifest::UI_ENTRY],
             'theme' => [
                 'extends' => ThemeRepository::CLASSIC,
                 'stylesheet' => ThemeDefinition::STYLESHEET,
@@ -183,7 +186,14 @@ class ExtensionScaffolder
         $this->files[] = ExtensionManifest::FILENAME;
 
         $replacements['{{artisan}}'] = $this->artisanPath($target);
-        foreach ([
+        $stubs = $cssOnly ? [
+            'theme-css-package.stub' => 'package.json',
+            'theme-css-vite.config.stub' => 'vite.config.mjs',
+            'postcss.config.stub' => 'postcss.config.mjs',
+            'theme-css.stub' => 'src/theme.css',
+            'gitignore.stub' => '.gitignore',
+            'theme-css-readme.stub' => 'README.md',
+        ] : [
             'theme-package.stub' => 'package.json',
             'theme-vite.config.stub' => 'vite.config.mjs',
             'postcss.config.stub' => 'postcss.config.mjs',
@@ -196,7 +206,8 @@ class ExtensionScaffolder
             'theme-test.stub' => 'src/theme.spec.tsx',
             'gitignore.stub' => '.gitignore',
             'theme-readme.stub' => 'README.md',
-        ] as $stub => $relative) {
+        ];
+        foreach ($stubs as $stub => $relative) {
             $this->stub($target, $stub, $relative, $replacements);
         }
     }

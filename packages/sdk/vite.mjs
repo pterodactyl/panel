@@ -165,7 +165,8 @@ export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins 
             modulePreload: false,
             rollupOptions: {
                 input: { ...(entry ? { client: entry } : {}), ...(stylesheet ? { theme: stylesheet } : {}) },
-                external: SHARED_RUNTIME_MODULES,
+                // The panel serves /assets/ itself, such as the font panel.css links, so the build leaves those URLs alone.
+                external: [...SHARED_RUNTIME_MODULES, /^\/assets\//],
                 preserveEntrySignatures: 'strict',
                 output: {
                     format: 'es',

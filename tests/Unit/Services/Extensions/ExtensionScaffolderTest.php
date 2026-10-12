@@ -54,6 +54,37 @@ test('scaffolds a theme with a stylesheet, a layout override, a skin, settings a
     expect($target.'/composer.json')->not->toBeFile();
 });
 
+test('scaffolds a theme of css alone, with no javascript entry', function (): void {
+    $target = $this->scaffolder->scaffold(id: 'sunrise', outDir: $this->directory, theme: true, cssOnly: true);
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($target);
+
+    expect($manifest->isTheme())->toBeTrue()
+        ->and($manifest->hasUi())->toBeFalse()
+        ->and(File::json($target.'/extension.json'))->not->toHaveKey('ui')
+        ->and($manifest->theme->stylesheet)->toBe('dist/theme.css')
+        ->and(array_keys($manifest->theme->settings))->toBe(['accent', 'radius', 'compact', 'logo']);
+    expect($this->scaffolder->files())->toBe(['extension.json', 'package.json', 'vite.config.mjs', 'postcss.config.mjs', 'src/theme.css', '.gitignore', 'README.md']);
+    expect(File::get($target.'/vite.config.mjs'))->toContain("defineThemeConfig({ stylesheet: 'src/theme.css' })")->not->toContain('entry:');
+    expect(File::get($target.'/src/theme.css'))->toContain("@import '@pterodactyl/sdk/theme-entry.css';", 'var(--sunrise-accent');
+    expect(File::get($target.'/README.md'))->toContain('--css-only', 'Level 1', 'p:extension:dev . --watch')->not->toContain('{{', 'src/theme.tsx');
+
+    $package = File::json($target.'/package.json');
+    expect(array_keys($package['scripts']))->toBe(['build', 'dev', 'doctor', 'pack'])
+        ->and($package['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'vite', 'tailwindcss', '@tailwindcss/forms', '@tailwindcss/postcss'])
+        ->and($package['devDependencies'])->not->toHaveKey('react');
+});
+
+test('takes --css-only from the command, and only with --theme', function (): void {
+    $this->artisan('p:extension:make', ['id' => 'sunrise', '--theme' => true, '--css-only' => true, '--out' => $this->directory])->assertSuccessful();
+    expect($this->directory.'/sunrise/src/theme.css')->toBeFile()
+        ->and($this->directory.'/sunrise/src/theme.tsx')->not->toBeFile();
+
+    $this->artisan('p:extension:make', ['id' => 'plain', '--css-only' => true, '--out' => $this->directory])
+        ->expectsOutputToContain('pass it with --theme')
+        ->assertFailed();
+    expect($this->directory.'/plain')->not->toBeDirectory();
+});
+
 test('scaffolds an installable package', function (): void {
     $target = $this->scaffolder->scaffold(id: 'my-widget', description: 'A test widget.', author: 'Tester', outDir: $this->directory);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($target);

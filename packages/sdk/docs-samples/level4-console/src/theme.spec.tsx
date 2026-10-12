@@ -1,4 +1,4 @@
-import { afterEach, beforeAll, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, expect, test } from 'vitest';
 import { screen } from '@testing-library/react';
 import { preloadTheme, renderView, type RenderedView } from '@pterodactyl/sdk/testing';
 import theme from './theme';
@@ -6,18 +6,8 @@ import theme from './theme';
 // #region tests
 let rendered: RenderedView | undefined;
 
-beforeAll(async () => {
-    // jsdom has no ResizeObserver; classic's server navigation, which `Default` renders, measures itself.
-    vi.stubGlobal(
-        'ResizeObserver',
-        class {
-            observe() {}
-            disconnect() {}
-        }
-    );
-    // The views are lazy; loading their chunks first lets renderView render them synchronously.
-    await preloadTheme(theme);
-});
+// The views are lazy; loading their chunks first lets renderView render them synchronously.
+beforeAll(() => preloadTheme(theme));
 afterEach(() => rendered?.unmount());
 
 test('puts the power controls in the server header', () => {

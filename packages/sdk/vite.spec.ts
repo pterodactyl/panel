@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { build } from 'vite';
+import { build, createLogger } from 'vite';
 import { expect, it } from 'vitest';
 import { defineExtensionConfig, defineThemeConfig } from './vite.mjs';
 
@@ -109,6 +109,30 @@ it('ships fonts beside the theme stylesheet, linked relative to it', async () =>
         );
 
         expect(dist('theme.css')).toMatch(/url\(\.\/Brand\.[\w-]+\.woff2\)/);
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+});
+
+it("leaves the panel's own /assets/ URLs for the panel to serve, without a warning", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
+    const warnings: string[] = [];
+    const logger = createLogger('warn');
+    logger.warn = logger.warnOnce = (message) => void warnings.push(message);
+    try {
+        writeFileSync(
+            resolve(directory, 'theme.css'),
+            "@font-face { font-family: 'Panel'; src: url('/assets/fonts/panel.woff2') format('woff2'); }"
+        );
+        await build({
+            ...defineThemeConfig({ stylesheet: resolve(directory, 'theme.css'), outDir: resolve(directory, 'dist') }),
+            configFile: false,
+            logLevel: 'warn',
+            customLogger: logger,
+        });
+
+        expect(readFileSync(resolve(directory, 'dist/theme.css'), 'utf8')).toContain('url(/assets/fonts/panel.woff2)');
+        expect(warnings).toEqual([]);
     } finally {
         rmSync(directory, { recursive: true, force: true });
     }

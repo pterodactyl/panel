@@ -1,43 +1,62 @@
-import { LayoutGrid, LogOut, Moon, Shield, Sun, UserRound, type LucideIcon } from 'lucide-react';
-import { Avatar, PanelLink, SpinnerOverlay } from '@pterodactyl/sdk';
-import { Main, Slot, View, type AppLayoutLink, type ViewProps } from '@pterodactyl/sdk/theme';
-
-const icons: Record<AppLayoutLink['id'], LucideIcon> = { dashboard: LayoutGrid, admin: Shield, account: UserRound };
+import { useEffect, useState } from 'react';
+import { LogOut, Menu, Moon, Sun } from 'lucide-react';
+import { Avatar, NamedIcon, PanelLink, SpinnerOverlay, cn, usePanelLocation } from '@pterodactyl/sdk';
+import { Main, Slot, View, type ViewProps } from '@pterodactyl/sdk/theme';
+import AreaNav from './AreaNav';
 
 const item = [
     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground no-underline',
     'hover:bg-popover hover:text-foreground data-[status=active]:bg-primary/15 data-[status=active]:text-foreground',
 ].join(' ');
 
-/** A sidebar on large screens and a top bar below them, with the page beside it. */
+/** A sidebar beside the page on large screens, and a drawer behind a menu button below them. */
 export default function Shell({ model, children }: ViewProps<'layout.app'>) {
     const { brand, user, scheme, setScheme } = model;
+    const SchemeIcon = scheme === 'dark' ? Sun : Moon;
+    const [open, setOpen] = useState(false);
+    const { pathname } = usePanelLocation();
+
+    // Close the drawer when one of its links navigates.
+    useEffect(() => setOpen(false), [pathname]);
 
     return (
-        <div className='flex min-h-dvh flex-col lg:flex-row'>
+        <div className='min-h-dvh lg:flex'>
             <SpinnerOverlay visible={model.signingOut} fixed />
-            <aside className='flex shrink-0 items-center gap-2 bg-sidebar p-3 lg:sticky lg:top-0 lg:h-dvh lg:w-sidebar lg:flex-col lg:items-stretch lg:p-4'>
+            <button
+                type='button'
+                aria-expanded={open}
+                aria-controls='sidebar'
+                onClick={() => setOpen(!open)}
+                className={cn(item, 'm-2 lg:hidden')}
+            >
+                <Menu className='size-4' aria-hidden />
+                Menu
+            </button>
+            <aside
+                id='sidebar'
+                className={cn(
+                    'flex-col gap-4 bg-sidebar p-4 lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-sidebar lg:shrink-0 lg:overflow-y-auto',
+                    open ? 'flex' : 'hidden'
+                )}
+            >
                 <PanelLink destination={{ to: '/' }} className='flex h-10 items-center px-3 font-semibold no-underline'>
                     {brand.logoUrl ? <img src={brand.logoUrl} alt={brand.name} className='h-8 w-auto' /> : brand.name}
                 </PanelLink>
-                <nav aria-label='Main' className='flex flex-1 gap-1 lg:flex-col'>
+                <nav aria-label='Main' className='flex flex-col gap-1'>
                     <Slot name='nav.items.before' />
-                    {model.links.map((link) => {
-                        const Glyph = icons[link.id];
-
-                        return (
-                            <PanelLink key={link.id} destination={link.destination} exact={link.exact} className={item}>
-                                <Glyph className='size-4' aria-hidden />
-                                <span className='max-lg:sr-only'>{link.label}</span>
-                            </PanelLink>
-                        );
-                    })}
+                    {model.links.map((link) => (
+                        <PanelLink key={link.id} destination={link.destination} exact={link.exact} className={item}>
+                            <NamedIcon name={link.icon} size={16} aria-hidden />
+                            {link.label}
+                        </PanelLink>
+                    ))}
                     <Slot name='nav.items.after' />
                 </nav>
+                <AreaNav area={model.area} />
                 <View name='app.search' className={item} />
-                <div className='flex items-center gap-2'>
+                <div className='mt-auto flex items-center gap-2'>
                     <Avatar name={user.uuid} size={28} />
-                    <span className='min-w-0 flex-1 truncate text-sm max-lg:sr-only'>{user.username}</span>
+                    <span className='min-w-0 flex-1 truncate text-sm'>{user.username}</span>
                     {/* setScheme is null unless the theme offers both schemes. */}
                     {setScheme && (
                         <button
@@ -46,11 +65,7 @@ export default function Shell({ model, children }: ViewProps<'layout.app'>) {
                             onClick={() => setScheme(scheme === 'dark' ? 'light' : 'dark')}
                             className={item}
                         >
-                            {scheme === 'dark' ? (
-                                <Sun className='size-4' aria-hidden />
-                            ) : (
-                                <Moon className='size-4' aria-hidden />
-                            )}
+                            <SchemeIcon className='size-4' aria-hidden />
                         </button>
                     )}
                     <button type='button' aria-label='Sign out' onClick={model.signOut} className={item}>
