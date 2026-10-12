@@ -1,0 +1,34 @@
+app/Services/Eggs/EggImportData.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 7,10,43-56,62-85
+  s_4cabae41bceed9::t_f5f55a5511ae9c 86
+app/Actions/Eggs/Sharing/ImportEgg.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 19,29
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 43
+app/Services/Eggs/EggConfigurationService.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 21,29
+app/Actions/Eggs/Sharing/UpdateEggFromImport.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 12,19,22
+tests/Unit/Services/Eggs/EggImportDataTest.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 1-73
+app/Http/Resources/Wings/ServerConfigurationCollection.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 37
+tests/Unit/EggConfigurationServiceTest.php
+  s_4cabae41bceed9::t_46f736e42bdbbd 21,26,32,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9047c9eda4a40e98ce0e1b2fb17173e9871ed6f6",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
