@@ -45,7 +45,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Client\FileObjectResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Nodes\NodeJWTService;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -158,18 +157,16 @@ class FileController extends ClientApiController
     #[QueryParam('file', 'string', 'Path to the file to download.', required: true, example: '/server.properties')]
     #[ScribeResponse(self::SIGNED_URL_EXAMPLE, description: 'Signed download URL returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the download URL.')]
-    public function download(GetFileContentsRequest $request, NodeJWTService $jwtService, Server $server): array
+    public function download(GetFileContentsRequest $request, Server $server): array
     {
         $file = $request->string('file')->toString();
-        $token = $jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-            ->setUser($request->user())
-            ->setClaims([
-                'file_path' => rawurldecode($file),
-                'server_uuid' => $server->uuid,
-            ])
-            ->setScopes(JwtScope::FileDownload)
-            ->handle($server->node, $request->user()->id.$server->uuid);
+        $token = $server->node->createJwt(
+            JwtScope::FileDownload,
+            identifiedBy: $request->user()->id.$server->uuid,
+            expiresAt: CarbonImmutable::now()->addMinutes(15),
+            user: $request->user(),
+            claims: ['file_path' => rawurldecode($file), 'server_uuid' => $server->uuid],
+        );
 
         Activity::event('server:file.download')->property('file', $file)->log();
 

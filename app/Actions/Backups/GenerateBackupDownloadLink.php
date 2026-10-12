@@ -12,12 +12,11 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Nodes\NodeJWTService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownloadLinks
 {
-    public function __construct(private BackupManager $backupManager, private NodeJWTService $jwtService) {}
+    public function __construct(private BackupManager $backupManager) {}
 
     public function generate(Backup $backup, User $user): string
     {
@@ -27,15 +26,13 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
             return $this->getS3BackupUrl($backup);
         }
 
-        $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-            ->setUser($user)
-            ->setClaims([
-                'backup_uuid' => $backup->uuid,
-                'server_uuid' => $backup->server->uuid,
-            ])
-            ->setScopes(JwtScope::BackupDownload)
-            ->handle($backup->server->node, $user->id.$backup->server->uuid);
+        $token = $backup->server->node->createJwt(
+            JwtScope::BackupDownload,
+            identifiedBy: $user->id.$backup->server->uuid,
+            expiresAt: CarbonImmutable::now()->addMinutes(15),
+            user: $user,
+            claims: ['backup_uuid' => $backup->uuid, 'server_uuid' => $backup->server->uuid],
+        );
 
         return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
     }

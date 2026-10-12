@@ -19,7 +19,6 @@ use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerTransfer;
-use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Validation\Concerns\ValidatesArrayExistence;
 use Throwable;
 
@@ -27,10 +26,7 @@ final readonly class InitiateTransfer implements InitiatesTransfers
 {
     use ValidatesArrayExistence;
 
-    public function __construct(
-        private NodeJWTService $nodeJWTService,
-        private FailsTransfers $failTransfer,
-    ) {}
+    public function __construct(private FailsTransfers $failTransfer) {}
 
     /**
      * Once these pass, validateAllocations() checks the allocations are free and on the node.
@@ -115,11 +111,12 @@ final readonly class InitiateTransfer implements InitiatesTransfers
         });
 
         try {
-            $token = $this->nodeJWTService
-                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-                ->setSubject($server->uuid)
-                ->setScopes(JwtScope::ServerTransfer)
-                ->handle($node, $server->uuid);
+            $token = $node->createJwt(
+                JwtScope::ServerTransfer,
+                identifiedBy: $server->uuid,
+                expiresAt: CarbonImmutable::now()->addMinutes(15),
+                subject: $server->uuid,
+            );
 
             Daemon::server($server)->transfer($node, $token);
         } catch (Throwable $throwable) {
