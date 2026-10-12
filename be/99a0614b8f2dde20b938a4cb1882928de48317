@@ -2,6 +2,7 @@ tests/Fixtures/assets/core-classes.json
   s_4cabae41bceed9::t_41a0efaf443a6e 1
 packages/sdk/README.md
   s_4cabae41bceed9::t_2236dc7bb38c0a 560-561
+  s_4cabae41bceed9::t_f1fadd9ba3c282 742-743
 tests/Integration/Api/Admin/Themes/ThemeControllerTest.php
   s_4cabae41bceed9::t_454e7e6502a2c4 1-102,106-187
   s_4cabae41bceed9::t_1d741d585131b8 104
