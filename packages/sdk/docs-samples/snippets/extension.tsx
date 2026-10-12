@@ -13,8 +13,8 @@ import { View } from '@pterodactyl/sdk/theme';
 function ServerCard({ Default, model }: ViewProps<'dashboard.serverCard'>) {
     return (
         <>
-            <Default className='hw:gap-3' />
-            {model.state.kind === 'unavailable' && <p className='hw:text-xs'>Ask support about {model.name}.</p>}
+            <Default className='bl:gap-3' />
+            {model.state.kind === 'unavailable' && <p className='bl:text-xs'>Ask support about {model.name}.</p>}
         </>
     );
 }

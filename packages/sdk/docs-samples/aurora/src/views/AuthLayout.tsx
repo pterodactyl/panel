@@ -1,5 +1,7 @@
+// #region settings
 import { Main, useThemeSettings, type ViewProps } from '@pterodactyl/sdk/theme';
 import type { ThemeSettings } from '../theme-types';
+// #endregion settings
 import SchemeSwitch from '../SchemeSwitch';
 
 /**
@@ -7,7 +9,9 @@ import SchemeSwitch from '../SchemeSwitch';
  * `@pterodactyl/sdk`, so the sign-in screen renders without loading the full SDK first.
  */
 export default function AuthLayout({ model, children }: ViewProps<'layout.auth'>) {
+    // #region settings
     const { tagline } = useThemeSettings<ThemeSettings>();
+    // #endregion settings
 
     return (
         <div className='grid min-h-dvh lg:grid-cols-2'>

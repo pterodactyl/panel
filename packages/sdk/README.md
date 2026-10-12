@@ -752,9 +752,21 @@ enabled extensions and the active theme may override the same view, and each lay
 renders the one below. `p:extension:doctor` reports a name under a core namespace that the
 panel does not have.
 
+<!-- sample: extension/extension.json -->
 ```json
-{ "ui": { "entry": "dist/client.js", "prefix": "hw", "views": ["dashboard.serverCard", "server.files.details"] } }
+{
+    "id": "billing",
+    "name": "Billing",
+    "version": "1.0.0",
+    "requires": { "panel": "^2.0.0-dev", "sdk": ">=2.0.0-beta.5 <3.0" },
+    "ui": {
+        "entry": "dist/client.js",
+        "prefix": "bl",
+        "views": ["dashboard.serverCard", "server.files.details"]
+    }
+}
 ```
+<!-- /sample -->
 
 <!-- sample: snippets/extension.tsx#override -->
 ```tsx
@@ -762,8 +774,8 @@ panel does not have.
 function ServerCard({ Default, model }: ViewProps<'dashboard.serverCard'>) {
     return (
         <>
-            <Default className='hw:gap-3' />
-            {model.state.kind === 'unavailable' && <p className='hw:text-xs'>Ask support about {model.name}.</p>}
+            <Default className='bl:gap-3' />
+            {model.state.kind === 'unavailable' && <p className='bl:text-xs'>Ask support about {model.name}.</p>}
         </>
     );
 }
@@ -1111,9 +1123,14 @@ export interface ThemeSettings {
 ```
 <!-- /sample -->
 
+<!-- sample: aurora/src/views/AuthLayout.tsx#settings -->
 ```tsx
+import { Main, useThemeSettings, type ViewProps } from '@pterodactyl/sdk/theme';
+import type { ThemeSettings } from '../theme-types';
+
 const { tagline } = useThemeSettings<ThemeSettings>();
 ```
+<!-- /sample -->
 
 Some settings are best read by CSS alone. An image setting writing `--brand-logo` becomes the
 `brand.logoUrl` of the layout models. An attribute switches layouts without JavaScript: classic's

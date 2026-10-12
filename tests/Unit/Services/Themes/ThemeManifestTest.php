@@ -170,13 +170,14 @@ test('settings render tokens and attributes as values that cannot break out', fu
         ->and($setting('text')->attributeValue(null))->toBeNull();
 });
 
-test('the themes the SDK readme documents are valid manifests', function (string $sample, string $id): void {
+test('the manifests the SDK readme documents are valid', function (string $sample, string $id, bool $theme): void {
     $manifest = (new ExtensionManifestValidator)->fromDirectory(base_path('packages/sdk/docs-samples/'.$sample));
 
-    expect($manifest->id)->toBe($id)->and($manifest->isTheme())->toBeTrue();
+    expect($manifest->id)->toBe($id)->and($manifest->isTheme())->toBe($theme);
 })->with([
-    'the sample theme' => ['aurora', 'aurora'],
-    'a child of it' => ['child-theme', 'aurora-sunset'],
+    'the sample theme' => ['aurora', 'aurora', true],
+    'a child of it' => ['child-theme', 'aurora-sunset', true],
+    'an extension overriding views' => ['extension', 'billing', false],
 ]);
 
 test('stored values that no longer fit the setting read as its default', function (): void {

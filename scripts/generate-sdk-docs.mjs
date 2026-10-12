@@ -355,26 +355,32 @@ function tokenReference() {
 
 const languages = { '.tsx': 'tsx', '.ts': 'ts', '.css': 'css', '.json': 'json', '.mjs': 'js', '.js': 'js' };
 
-/** A sample file, or the lines between `#region name` and `#endregion` markers in it, without the markers. */
+const marker = /^\s*(?:\/\/|\/\*|\{\/\*)\s*#(?:end)?region\b.*$/;
+
+/** The lines of each `#region name` … `#endregion` block in a file, dedented and joined by a blank line. */
+function regions(path, lines, name) {
+    const blocks = [];
+
+    lines.forEach((line, start) => {
+        if (!new RegExp(`#region ${name}\\b`).test(line)) return;
+
+        const end = lines.findIndex((candidate, index) => index > start && /#endregion/.test(candidate));
+        const block = lines.slice(start + 1, end);
+        const indent = Math.min(...block.filter((entry) => entry.trim()).map((entry) => /^\s*/.exec(entry)[0].length));
+
+        blocks.push(block.map((entry) => entry.slice(indent)).join('\n'));
+    });
+
+    if (!blocks.length) throw new Error(`docs-samples/${path} has no region "${name}".`);
+
+    return blocks.join('\n\n').split('\n');
+}
+
+/** A sample file, or its regions of one name, without the region markers. */
 function sample(reference) {
     const [path, region] = reference.split('#');
-    const source = read(`docs-samples/${path}`);
-    const marker = /^\s*(?:\/\/|\/\*)\s*#(?:end)?region\b.*$/;
-    let lines = source.split('\n');
-
-    if (region) {
-        const start = lines.findIndex((line) => new RegExp(`#region ${region}\\b`).test(line));
-        const end = lines.findIndex((line, index) => index > start && /#endregion/.test(line));
-
-        if (start === -1 || end === -1) throw new Error(`docs-samples/${path} has no region "${region}".`);
-
-        lines = lines.slice(start + 1, end);
-        const indent = Math.min(...lines.filter((line) => line.trim()).map((line) => /^\s*/.exec(line)[0].length));
-
-        lines = lines.map((line) => line.slice(indent));
-    }
-
-    const body = lines
+    const lines = read(`docs-samples/${path}`).split('\n');
+    const body = (region ? regions(path, lines, region) : lines)
         .filter((line) => !marker.test(line))
         .join('\n')
         .trim();
