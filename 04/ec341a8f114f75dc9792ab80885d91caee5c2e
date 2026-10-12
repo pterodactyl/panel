@@ -1,0 +1,32 @@
+tests/Integration/Api/Client/Server/GetServerTest.php
+  s_4cabae41bceed9::t_304a49fdfc8433 18,21-22
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_8334984cb58cc6 50
+  s_4cabae41bceed9::t_9edcd7331e5144 45
+tests/Integration/Api/Application/Tags/TagControllerTest.php
+  s_4cabae41bceed9::t_8bb5209da313bf 45,47,49
+tests/Integration/Actions/Tags/UpdateTagTest.php
+  s_4cabae41bceed9::t_464f56ef5151ed 60,64
+tests/Integration/Database/EggSeederTest.php
+  s_4cabae41bceed9::t_6a6e1a3d3d9b29 1-61
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_4cabae41bceed9::t_3352ca11675f8d 28,34
+database/Seeders/EggSeeder.php
+  s_4cabae41bceed9::t_07e7ca4c7c2fd5 8,11,14,16,21-23,25,28-40,53-54,63-67,69,81,84-88,90-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "04ec341a8f114f75dc9792ab80885d91caee5c2e",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
