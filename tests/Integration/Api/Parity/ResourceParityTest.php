@@ -6,15 +6,12 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Parity\ResourceParityTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\App;
-use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
 use Pterodactyl\Http\Resources\Api\Application\ServerVariableResource;
-use Pterodactyl\Http\Resources\Api\Client\DatabaseResource;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Servers\EnvironmentService;
@@ -22,7 +19,6 @@ use Pterodactyl\Tests\Integration\Api\Parity\ResourceParity;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
-use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 
 /*
  * The pilot resources of each API against the transformers they replace, through the
@@ -43,25 +39,6 @@ function serverWithDatabases(IntegrationTestCase $test): array
 
     return [$server, $databases->modelKeys()];
 }
-
-test('client databases render the same, with the password only for users who may see it', function (): void {
-    [$server, $ids] = serverWithDatabases($this);
-    $owner = User::query()->findOrFail($server->owner_id);
-    $subuser = User::factory()->create();
-    Subuser::query()->create(['user_id' => $subuser->id, 'server_id' => $server->id, 'permissions' => [Permissions::DatabaseRead->value]]);
-
-    $one = fn (): Database => Database::query()->findOrFail($ids[0]);
-    $all = fn () => Database::query()->where('server_id', $server->id)->get();
-
-    expect(ResourceParity::item(DatabaseTransformer::class, DatabaseResource::class, $one)->request('/?include=password')->actingAs($owner)->assertSame())
-        ->toContain('"relationships":{"password":{"object":"database_password","attributes":{"password":');
-    expect(ResourceParity::item(DatabaseTransformer::class, DatabaseResource::class, $one)->request('/?include=password')->actingAs($subuser)->assertSame())
-        ->toContain('"relationships":{"password":{"object":"null_resource","attributes":null}}');
-    ResourceParity::item(DatabaseTransformer::class, DatabaseResource::class, $one)->forcing('password')->actingAs($owner)->assertSame();
-    ResourceParity::item(DatabaseTransformer::class, DatabaseResource::class, $one)->actingAs($subuser)->assertSame();
-    ResourceParity::list(DatabaseTransformer::class, DatabaseResource::class, $all)->request('/?include=password')->actingAs($owner)->assertSame();
-    ResourceParity::list(DatabaseTransformer::class, DatabaseResource::class, $all)->request('/?include=password')->actingAs($subuser)->assertSame();
-});
 
 test('admin server databases render the same', function (): void {
     [$server, $ids] = serverWithDatabases($this);

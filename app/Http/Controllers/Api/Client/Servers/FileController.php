@@ -30,7 +30,6 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ChmodFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest;
@@ -43,9 +42,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\FileObjectResource;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Transformers\Api\Client\FileObjectTransformer;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -112,23 +112,18 @@ class FileController extends ClientApiController
     /**
      * Returns a listing of files in a given directory.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws DaemonConnectionException
      */
     #[Endpoint('List files', 'Returns files and folders in a server directory.')]
     #[QueryParam('directory', 'string', 'Directory to list. Defaults to the server root.', required: false, example: '/config', nullable: true)]
     #[ScribeResponse(self::FILE_LIST_EXAMPLE, description: 'Directory contents returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not list the directory.')]
-    public function directory(ListFilesRequest $request, ListsDirectories $operation, Server $server): array
+    public function directory(ListFilesRequest $request, ListsDirectories $operation, Server $server): ApiResourceCollection
     {
         $directory = $this->path($request, 'directory') ?? '/';
         $contents = $operation->list($server, $directory);
 
-        return Fractal::collection($contents)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
-            ->toResponseArray();
+        return FileObjectResource::collection($contents);
     }
 
     /**
@@ -256,20 +251,16 @@ class FileController extends ClientApiController
     }
 
     /**
-     * @return array<string, mixed>
-     *
      * @throws DaemonConnectionException
      */
     #[Endpoint('Compress files', 'Creates an archive from one or more files or folders in a server directory.')]
     #[ScribeResponse(self::ARCHIVE_OBJECT_EXAMPLE, description: 'Archive created.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the archive.')]
-    public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): array
+    public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): FileObjectResource
     {
         $file = $operation->compress($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
-        return Fractal::item($file)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
-            ->toResponseArray();
+        return FileObjectResource::make($file);
     }
 
     /**

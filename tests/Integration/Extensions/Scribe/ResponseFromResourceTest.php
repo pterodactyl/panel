@@ -12,14 +12,12 @@ use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Extensions\Scribe\Strategies\UsePterodactylResponseAttributes;
 use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
 use Pterodactyl\Http\Resources\Api\Application\ServerVariableResource;
-use Pterodactyl\Http\Resources\Api\Client\DatabaseResource;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
-use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 
 /*
  * #[ResponseFromResource] must document a resource exactly as #[ResponseFromTransformer]
@@ -64,8 +62,8 @@ test('resources are documented as their transformers were', function (ResponseFr
         '"meta":{"pagination":{"total":1,"count":1,"per_page":50,"current_page":1,"total_pages":1,"links":[]},"note":"example"}',
     ],
     'an item without a resource key' => [
-        new ResponseFromTransformer(DatabaseTransformer::class, Database::class, include: ['password']),
-        new ResponseFromResource(DatabaseResource::class, Database::class, include: ['password']),
+        new ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, include: ['password']),
+        new ResponseFromResource(ServerDatabaseResource::class, Database::class, include: ['password']),
         '{"object":null,"attributes":',
     ],
     'a list with counts loaded after the model and a gated include' => [

@@ -22,9 +22,6 @@ class DatabaseResource extends ClientResource
 {
     protected array $eagerLoads = ['host', 'server.subusers'];
 
-    /**
-     * @var list<string>
-     */
     protected array $availableIncludes = ['password'];
 
     public function resourceName(): string
@@ -32,9 +29,6 @@ class DatabaseResource extends ClientResource
         return Database::RESOURCE_NAME;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         $this->resource->loadMissing('host');
@@ -62,8 +56,6 @@ class DatabaseResource extends ClientResource
     }
 
     /**
-     * Include the database password in the request.
-     *
      * @return ApiResource<Database>|NullResource
      */
     private function includePassword(): ApiResource|NullResource

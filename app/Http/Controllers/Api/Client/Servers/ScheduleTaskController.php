@@ -14,15 +14,14 @@ use Pterodactyl\Contracts\Schedules\CreatesScheduleTasks;
 use Pterodactyl\Contracts\Schedules\DeletesScheduleTasks;
 use Pterodactyl\Contracts\Schedules\UpdatesScheduleTasks;
 use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteTaskRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
+use Pterodactyl\Http\Resources\Api\Client\TaskResource;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Task;
-use Pterodactyl\Transformers\Api\Client\TaskTransformer;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Schedules', 'Create, update, execute, delete, and manage scheduled server tasks.')]
@@ -41,38 +40,28 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws ServiceLimitExceededException
      */
     #[Endpoint('Create schedule task', 'Creates a task in a server schedule.')]
-    #[ResponseFromTransformer(TaskTransformer::class, Task::class, description: 'Schedule task created.', resourceKey: 'schedule_task')]
+    #[ResponseFromResource(TaskResource::class, Task::class, description: 'Schedule task created.', resourceKey: 'schedule_task')]
     #[ScribeResponse(self::LIMIT_ERROR, status: 400, description: 'The schedule has reached its configured task limit.')]
-    public function store(StoreTaskRequest $request, CreatesScheduleTasks $tasks, Server $server, Schedule $schedule): array
+    public function store(StoreTaskRequest $request, CreatesScheduleTasks $tasks, Server $server, Schedule $schedule): TaskResource
     {
         $task = $tasks->create($schedule, $request->actionInput());
 
-        return Fractal::item($task)
-            ->transformWith($this->getTransformer(TaskTransformer::class))
-            ->toResponseArray();
+        return TaskResource::make($task);
     }
 
     /**
      * Updates a given task for a server.
-     *
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update schedule task', 'Updates a task in a server schedule, including its sequence position.')]
-    #[ResponseFromTransformer(TaskTransformer::class, Task::class, description: 'Schedule task updated.', resourceKey: 'schedule_task')]
-    public function update(StoreTaskRequest $request, UpdatesScheduleTasks $tasks, Server $server, Schedule $schedule, Task $task): array
+    #[ResponseFromResource(TaskResource::class, Task::class, description: 'Schedule task updated.', resourceKey: 'schedule_task')]
+    public function update(StoreTaskRequest $request, UpdatesScheduleTasks $tasks, Server $server, Schedule $schedule, Task $task): TaskResource
     {
         $task = $tasks->update($schedule, $task, $request->actionInput());
 
-        return Fractal::item($task)
-            ->transformWith($this->getTransformer(TaskTransformer::class))
-            ->toResponseArray();
+        return TaskResource::make($task);
     }
 
     /**

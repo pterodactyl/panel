@@ -15,16 +15,16 @@ use Pterodactyl\Contracts\Databases\DeploysServerDatabases;
 use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
 use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\DatabaseResource;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -43,24 +43,17 @@ class DatabaseController extends ClientApiController
 
     /**
      * Return all the databases that belong to the given server.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List server databases', 'Returns databases attached to a server visible to the authenticated user.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
-    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Server databases returned.', collection: true, resourceKey: 'server_database')]
-    public function index(GetDatabasesRequest $request, Server $server): array
+    #[ResponseFromResource(DatabaseResource::class, Database::class, description: 'Server databases returned.', collection: true, resourceKey: 'server_database')]
+    public function index(GetDatabasesRequest $request, Server $server): ApiResourceCollection
     {
-        return Fractal::collection($server->databases)
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toResponseArray();
+        return DatabaseResource::collection($server->databases);
     }
 
     /**
      * Create a new database for the given server and return it.
-     *
-     *
-     * @return array<string, mixed>
      *
      * @throws Throwable
      * @throws TooManyDatabasesException
@@ -68,38 +61,29 @@ class DatabaseController extends ClientApiController
      */
     #[Endpoint('Create server database', 'Creates a database for a server on an automatically selected database host.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
-    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database created.', resourceKey: 'server_database', include: ['password'])]
+    #[ResponseFromResource(DatabaseResource::class, Database::class, description: 'Database created.', resourceKey: 'server_database', include: ['password'])]
     #[ScribeResponse(self::DATABASE_LIMIT_ERROR, status: 400, description: 'The server has reached its configured database limit or client database creation is disabled.')]
-    public function store(StoreDatabaseRequest $request, DeploysServerDatabases $deployDatabase, Server $server): array
+    public function store(StoreDatabaseRequest $request, DeploysServerDatabases $deployDatabase, Server $server): DatabaseResource
     {
         $database = $deployDatabase->deploy($server, $request->actionInput());
 
-        return Fractal::item($database)
-            ->parseIncludes(['password'])
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toResponseArray();
+        return DatabaseResource::make($database)->withIncludes('password');
     }
 
     /**
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws Throwable
      */
     #[Endpoint('Rotate server database password', 'Rotates the password for a database attached to a server and returns the updated database.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
-    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]
-    public function rotatePassword(RotatePasswordRequest $request, RotatesDatabasePasswords $passwordService, Server $server, Database $database): array
+    #[ResponseFromResource(DatabaseResource::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]
+    public function rotatePassword(RotatePasswordRequest $request, RotatesDatabasePasswords $passwordService, Server $server, Database $database): DatabaseResource
     {
         $passwordService->rotate($database);
 
-        return Fractal::item($database->refresh())
-            ->parseIncludes(['password'])
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toResponseArray();
+        return DatabaseResource::make($database->refresh())->withIncludes('password');
     }
 
     /**
