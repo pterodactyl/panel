@@ -7,14 +7,14 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 use Pterodactyl\Actions\Tags\SyncTags;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Services\Tags\TagResolutionService;
+use Pterodactyl\Models\Tag;
 
 /**
  * Replace the full set of tags on an egg or a node.
  *
  * Each value is either an existing tag id or a new tag name to create on the fly,
  * so a client can offer a combined "pick or type" field
- * ({@see TagResolutionService}).
+ * ({@see Tag::resolveIds()}).
  */
 class SyncTagsRequest extends AdminApiRequest
 {
@@ -38,7 +38,7 @@ class SyncTagsRequest extends AdminApiRequest
     }
 
     /**
-     * The validated values, as strings for the resolver.
+     * The validated values, as strings for Tag::resolveIds().
      *
      * @return list<string>
      */

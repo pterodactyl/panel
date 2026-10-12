@@ -13,7 +13,6 @@ use Pterodactyl\Contracts\Tags\SyncsTags;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Tag;
-use Pterodactyl\Services\Tags\TagResolutionService;
 
 final readonly class SyncTags implements SyncsTags
 {
@@ -24,8 +23,6 @@ final readonly class SyncTags implements SyncsTags
      * @var list<string>
      */
     public const array TEXT = ['string', 'max:191'];
-
-    public function __construct(private TagResolutionService $resolver) {}
 
     /** @return NormalizedValidationRules */
     public static function rules(): array
@@ -83,7 +80,7 @@ final readonly class SyncTags implements SyncsTags
     {
         DB::transaction(function () use ($parent, $tags, $values, $otherKind): void {
             $parent->newQuery()->lockForUpdate()->findOrFail($parent->id);
-            $ids = $this->resolver->resolve($values);
+            $ids = Tag::resolveIds($values);
 
             $taken = $otherKind?->whereKey($ids)->pluck('tags.name')->implode(', ') ?? '';
             if ($taken !== '') {
