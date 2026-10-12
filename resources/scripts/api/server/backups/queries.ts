@@ -74,8 +74,16 @@ export const backupDownloadUrlInput = (
 export const serverBackupsQueryOptions = (uuid: string, page = 1) =>
     clientListServerBackupsOptions(serverBackupsInput(uuid, page));
 
+export const serverBackupsRefetchInterval = (query: {
+    state: { data?: ClientListServerBackupsResponse };
+}): number | false => (query.state.data?.data?.some((b) => b.attributes.completed_at === null) ? 2500 : false);
+
 export const useServerBackups = (uuid: string, page: number) =>
-    useQuery({ ...serverBackupsQueryOptions(uuid, page), enabled: uuid.length > 0 });
+    useQuery({
+        ...serverBackupsQueryOptions(uuid, page),
+        enabled: uuid.length > 0,
+        refetchInterval: serverBackupsRefetchInterval,
+    });
 
 export const updateServerBackup = (
     queryClient: QueryClient,
