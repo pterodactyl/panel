@@ -1,0 +1,44 @@
+packages/sdk/vite.spec.ts
+  s_4cabae41bceed9::t_b056774e31efa0 76-95
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_ef47a6a5fa49d0 76,78
+  s_4cabae41bceed9::t_83ba739ebf917c 77
+  s_4cabae41bceed9::t_6d5297ab56bcac 12,16
+  s_4cabae41bceed9::t_f9f996d9bc2133 17
+resources/scripts/components/admin/themes/workbench/ViewPreview.tsx
+  s_4cabae41bceed9::t_f8e1a766af05a0 80
+  s_4cabae41bceed9::t_9c5c61ed496dbd 24-26
+  s_4cabae41bceed9::t_dee4e032ad3441 13,15
+  s_4cabae41bceed9::t_748914628ad5fd 111-117
+packages/sdk/vite.mjs
+  s_4cabae41bceed9::t_59e9a00b04ff1f 188-189
+  s_4cabae41bceed9::t_3de7d557d41a67 156-157
+resources/scripts/views/slotCheck.spec.tsx
+  s_4cabae41bceed9::t_49d3de8cd9b479 1-95
+resources/scripts/extensions/Slot.tsx
+  s_4cabae41bceed9::t_0c2e60e61fde18 33-34
+  s_4cabae41bceed9::t_4d66a39a5125e5 3
+resources/scripts/views/slotCheck.tsx
+  s_4cabae41bceed9::t_8e931af3d0232d 1-58
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_5f055d7c134dfe 297-304
+  s_4cabae41bceed9::t_bb250714376f35 34
+packages/sdk/docs-samples/tsconfig.json
+  s_4cabae41bceed9::t_e479dac6bf4ce4 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a704e7e3e70750d8b0d404b9e440287310b7f66",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
