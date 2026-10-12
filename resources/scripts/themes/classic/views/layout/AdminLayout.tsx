@@ -5,6 +5,7 @@ import {
     Database,
     Egg,
     FolderTree,
+    History,
     KeyRound,
     LayoutDashboard,
     MapPin,
@@ -33,6 +34,7 @@ import {
 // The panel's own items render these directly, so they never wait for the icon catalog.
 const icons = new Map<string, LucideIcon>([
     ['layout-dashboard', LayoutDashboard],
+    ['history', History],
     ['settings', Settings],
     ['users', Users],
     ['map-pin', MapPin],

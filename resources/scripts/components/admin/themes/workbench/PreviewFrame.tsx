@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { PortalContainerContext } from '@/components/elements/Portal';
 import { onThemeChange } from '@/lib/theme';
+import { MainRoot } from '@/views/a11y';
 import type { ThemeScheme } from '@/views/theme';
 import { registerInspectableFrame } from '@/views/inspector/frames';
 import { isElement } from '@/views/inspector/geometry';
@@ -177,7 +178,9 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
             />
             {root &&
                 createPortal(
-                    <PortalContainerContext.Provider value={overlays}>{children}</PortalContainerContext.Provider>,
+                    <PortalContainerContext.Provider value={overlays}>
+                        <MainRoot>{children}</MainRoot>
+                    </PortalContainerContext.Provider>,
                     root
                 )}
         </div>

@@ -89,10 +89,14 @@ export function usePanelNavigate(): (destination: PanelDestination) => Promise<v
     );
 }
 
+/**
+ * The current path, params and search. A view rendered from fixtures, in tests and the workbench, sits
+ * outside any route and sees empty params and search.
+ */
 export function usePanelLocation(): RouteSlotData {
     const { pathname } = useLocation();
-    const params = useParams({ strict: false });
-    const search = useSearch({ strict: false });
+    const params = useParams({ strict: false, shouldThrow: false }) ?? {};
+    const search = useSearch({ strict: false, shouldThrow: false }) ?? {};
 
     return { pathname, params: routeParamStrings(params), search };
 }

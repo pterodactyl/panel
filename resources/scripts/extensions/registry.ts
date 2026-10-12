@@ -910,6 +910,43 @@ export function getSlotComponents(name: SlotName): readonly SlotRegistration[] {
     return slots.get(name) ?? emptySlots;
 }
 
+/** Mounts components in slots without an extension batch, as the SDK's `renderView` does; returns their removal. */
+export function mountSlotComponents(
+    extensionId: string,
+    components: Readonly<Partial<Record<SlotName, ComponentType<SlotComponentProps>>>>
+): () => void {
+    const added: BatchedSlotRegistration[] = [];
+
+    for (const [name, component] of Object.entries(components)) {
+        const slot = SLOT_NAMES.find((candidate) => candidate === name);
+
+        if (!slot) {
+            throw new Error(`Unknown slot "${name}"`);
+        }
+
+        if (component) {
+            added.push(Object.freeze({ id: nextSlotRegistrationId++, extensionId, name: slot, component }));
+        }
+    }
+
+    for (const registration of added) {
+        slots.set(registration.name, Object.freeze([...getSlotComponents(registration.name), registration]));
+    }
+
+    publish();
+
+    return () => {
+        for (const registration of added) {
+            slots.set(
+                registration.name,
+                Object.freeze(getSlotComponents(registration.name).filter((existing) => existing !== registration))
+            );
+        }
+
+        publish();
+    };
+}
+
 export function registerExtensionTableColumn(
     column: ExtensionTableColumnRegistration,
     batch: ExtensionRegistryBatch

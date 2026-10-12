@@ -9,7 +9,7 @@ const focusMain = (options?: FocusOptions) => document.getElementById('main')?.f
 
 /**
  * The routed content of a layout and the target of the skip link. Layouts nest, so only the
- * outermost renders the `<main>` element.
+ * outermost renders the `<main>` element; a nested one with a `className` renders a `<div>` with it.
  */
 export function Main({ className, children }: { className?: string; children?: ReactNode }) {
     const nested = useContext(InsideMain);
@@ -18,7 +18,7 @@ export function Main({ className, children }: { className?: string; children?: R
     useEffect(() => probe?.(), [probe]);
 
     if (nested) {
-        return children;
+        return className ? <div className={className}>{children}</div> : children;
     }
 
     return (
@@ -28,6 +28,11 @@ export function Main({ className, children }: { className?: string; children?: R
             </main>
         </InsideMain.Provider>
     );
+}
+
+/** Content rendered into another document, as a workbench preview is, places its own `<main>`. */
+export function MainRoot({ children }: { children?: ReactNode }) {
+    return <InsideMain.Provider value={false}>{children}</InsideMain.Provider>;
 }
 
 /** In development, warns when the layout view below never places its content in `<Main>`. */

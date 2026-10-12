@@ -18,7 +18,8 @@ export default defineConfig({
             'packages/sdk/docs-samples/vitest.config.ts',
         ],
         environment: 'node',
-        setupFiles: ['./resources/scripts/setup-tests.ts'],
+        // The SDK's setup gives the panel's tests the browser APIs a theme's tests get.
+        setupFiles: ['./packages/sdk/vitest-setup.mjs', './resources/scripts/setup-tests.ts'],
         include: [
             'resources/scripts/**/*.spec.{ts,tsx}',
             'examples/*/build-contract.spec.ts',

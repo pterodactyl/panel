@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
-import { act, cleanup, render, screen } from '@testing-library/react';
-import { Suspense, useState, type ComponentType, type ReactNode } from 'react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Suspense, useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type * as RegistryModule from './registry';
 import type * as ViewModule from './View';
@@ -155,6 +155,92 @@ describe('<View>', () => {
                 error: expect.stringContaining('theme exploded'),
             }),
         ]);
+    });
+
+    it('falls back once when the layer below fails too, and shows the error notice instead of looping', () => {
+        define('test.chain');
+        let theme = 0;
+        let classic = 0;
+
+        function FailingClassic() {
+            // A chart measuring itself in an effect, as server.graphs does; capped so a regression fails, not hangs.
+            useEffect(() => {
+                classic += 1;
+                if (classic < 20) {
+                    throw new Error('ResizeObserver is not defined');
+                }
+            });
+
+            return <p>classic</p>;
+        }
+
+        views.registerViewLayer('classic', 'classic', { 'test.chain': FailingClassic });
+        views.registerViewLayer('aurora', 'theme', {
+            'test.chain': () => {
+                theme += 1;
+                throw new Error('theme exploded');
+            },
+        });
+
+        render(<engine.View name='test.chain' />);
+
+        expect(screen.getByRole('alert')).toHaveTextContent('An error was encountered');
+        expect(classic).toBe(1);
+
+        const before = theme;
+
+        fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+        expect(theme).toBeGreaterThan(before);
+        expect(classic).toBe(2);
+        expect(screen.getByRole('alert')).toBeVisible();
+    });
+
+    it('falls back once when a layer renders a Default that fails in an effect', () => {
+        define('test.default-chain');
+        let classic = 0;
+
+        function FailingClassic() {
+            useEffect(() => {
+                classic += 1;
+                if (classic < 20) {
+                    throw new Error('classic exploded');
+                }
+            });
+
+            return <p>classic</p>;
+        }
+
+        views.registerViewLayer('classic', 'classic', { 'test.default-chain': FailingClassic });
+        views.registerViewLayer('aurora', 'theme', { 'test.default-chain': layer('aurora') });
+
+        render(<engine.View name='test.default-chain' />);
+
+        expect(screen.getByRole('alert')).toHaveTextContent('An error was encountered');
+        expect(classic).toBe(2);
+    });
+
+    it('reports a failed layer once, naming the view and the layer', () => {
+        define('test.report');
+        const failures: ViewModule.ViewLayerError[] = [];
+        const stop = engine.onViewLayerFailure((failure) => failures.push(failure));
+
+        views.registerViewLayer('classic', 'classic', { 'test.report': Classic });
+        views.registerViewLayer('aurora', 'theme', {
+            'test.report': () => {
+                throw new Error('theme exploded');
+            },
+        });
+
+        render(<engine.View name='test.report' />);
+        stop();
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toMatchObject({ view: 'test.report', layer: 'aurora' });
+        expect(failures[0].message).toBe('The "aurora" layer of view "test.report" failed: theme exploded');
+        expect(console.error).toHaveBeenCalledWith(
+            '[extensions] "aurora" failed in view "test.report":',
+            expect.objectContaining({ message: 'theme exploded' })
+        );
     });
 
     it('swaps parts through Default and gives the layer above the parts of the layer below', () => {

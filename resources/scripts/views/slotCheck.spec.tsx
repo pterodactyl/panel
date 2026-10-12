@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, render } from '@testing-library/react';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import Slot from '@/extensions/Slot';
 import type { SlotName } from '@/extensions/registry';
@@ -82,6 +82,29 @@ describe('slot check', () => {
 
     it('leaves out the slots the engine renders around a page', async () => {
         await renderWith(() => <p>aurora</p>, [before, after]);
+
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('counts the slots a view it renders inside renders, as an app shell does for a thin layout', async () => {
+        registerViewDefinition({ name: 'test.shell', kind: 'layout', context: 'app', use: () => ({}) });
+        registerViewLayer('aurora', 'theme', {
+            'test.shell': ({ children }: { children?: ReactNode }) => (
+                <>
+                    <Slot name={before} />
+                    {children}
+                </>
+            ),
+            'test.slotted': () => <p>thin</p>,
+        });
+        render(
+            <View name='test.shell'>
+                <View name='test.slotted' />
+            </View>
+        );
+        await act(async () => {
+            vi.advanceTimersByTime(SLOT_CHECK_DELAY_MS);
+        });
 
         expect(warn).not.toHaveBeenCalled();
     });

@@ -1,6 +1,7 @@
 import { ExternalLink } from 'lucide-react';
-import { Icon, NavigationLabel, SubNavigation, SubNavigationLayout } from '@/sdk';
+import { Icon, SubNavigation, SubNavigationLayout } from '@/sdk';
 import { Main, Slot, type NavItem, type ViewProps } from '@/sdk/theme';
+import { tabLabel } from './tabLabel';
 
 /** An icon in the row; it is named once the navigation collapses or moves it into the menu. */
 function AdminLinkLabel({ placement }: { placement: 'row' | 'menu' }) {
@@ -25,16 +26,7 @@ export default function ServerLayout({ model, children }: ViewProps<'layout.serv
                     items={items}
                     canOverflow={(item) => item.extensionId !== undefined || item === adminLink}
                     renderItem={(item, state) =>
-                        item === adminLink ? (
-                            <AdminLinkLabel placement={state.placement} />
-                        ) : (
-                            <NavigationLabel
-                                label={item.label}
-                                group={item.group}
-                                icon={item.icon}
-                                badge={state.badge}
-                            />
-                        )
+                        item === adminLink ? <AdminLinkLabel placement={state.placement} /> : tabLabel(item, state)
                     }
                     before={<Slot name='server.navigation.before' data={model.server} />}
                     after={<Slot name='server.navigation.after' data={model.server} />}

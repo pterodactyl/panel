@@ -1,10 +1,15 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { createExtensionTestHost, type ExtensionTestHost } from '@/sdk/testing';
+import { serverResourceUsageQueryOptions, type ServerPowerState } from '@/api/account/servers/queries';
+import type { ClientGetServerResourcesResponse } from '@/api/generated';
+import { publishAreaNav } from '@/router/nav';
+import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
+import { Main } from './a11y';
 import { cssUrl } from './brand';
 import { registerClassicTheme } from './classic';
-import { getViewDefinition, registerViewLayer, type ViewModels } from './registry';
+import { Navigation, NavigationLink } from './navigation';
+import { clearThemeLayers, getViewDefinition, registerViewLayer, type ViewModels, type ViewProps } from './registry';
 import { ViewFixtureProvider, View, ViewArea, type ViewFixtureSelection } from './View';
 import type { LayoutViewName } from '@/router/viewRoutes';
 import type { AppLayoutModel } from './layouts';
@@ -149,6 +154,94 @@ describe('layout.app', () => {
         expect(document.documentElement).toHaveClass('light');
         expect(document.documentElement).not.toHaveClass('dark');
         expect(document.cookie).toContain('pterodactyl_scheme=light');
+    });
+});
+
+describe('the area layout.app renders', () => {
+    const server = createTestServer({ identifier: 'a1b2c3d4', name: 'Survival', owner: false, permissions: ['file.read'] });
+
+    function AreaProbe({ model, children }: ViewProps<'layout.app'>) {
+        const { area } = model;
+
+        return (
+            <>
+                <p data-testid='area'>{area.kind === 'server' ? `${area.kind} ${area.name} ${area.state}` : area.kind}</p>
+                {'nav' in area && (
+                    <nav aria-label='Area'>
+                        <Navigation items={area.nav.items}>
+                            {(item) => (
+                                <NavigationLink item={item}>
+                                    {item.icon} {item.label}
+                                </NavigationLink>
+                            )}
+                        </Navigation>
+                    </nav>
+                )}
+                <Main>{children}</Main>
+            </>
+        );
+    }
+
+    async function renderArea(path: string, power: ServerPowerState = 'running') {
+        registerViewLayer('aurora', 'theme', { 'layout.app': AreaProbe });
+        host = createExtensionTestHost({ path, server });
+        host.queryClient.setQueryData(serverResourceUsageQueryOptions(server.attributes.uuid).queryKey, {
+            object: 'stats',
+            attributes: { current_state: power },
+        } as ClientGetServerResourcesResponse);
+
+        await act(async () => {
+            render(
+                <ViewArea area='app'>
+                    <View name='layout.app'>
+                        <p>Routed page</p>
+                    </View>
+                </ViewArea>,
+                { wrapper: host!.Wrapper }
+            );
+        });
+
+        return screen.findByTestId('area');
+    }
+
+    beforeAll(() => {
+        publishAreaNav('account', [
+            { segment: '', label: 'Account', exact: true, icon: 'user-round' },
+            { segment: 'api', label: 'API Credentials', icon: 'key-round' },
+        ]);
+        publishAreaNav('server', [
+            { segment: '', label: 'Console', exact: true, icon: 'square-terminal' },
+            { segment: 'files', label: 'Files', permission: 'file.*', icon: 'folder' },
+            { segment: 'databases', label: 'Databases', permission: 'database.*', icon: 'database' },
+        ]);
+        publishAreaNav('admin', [{ segment: 'users', label: 'Users', icon: 'users' }]);
+    });
+
+    afterEach(() => clearThemeLayers());
+
+    it('is the dashboard outside the areas', async () => {
+        expect(await renderArea('/')).toHaveTextContent('dashboard');
+        expect(screen.queryByRole('navigation', { name: 'Area' })).not.toBeInTheDocument();
+    });
+
+    it('carries the navigation of the account and admin areas, with their icons', async () => {
+        expect(await renderArea('/account/api')).toHaveTextContent('account');
+        expect(screen.getByRole('link', { name: 'key-round API Credentials' })).toHaveAttribute('data-status', 'active');
+        cleanup();
+        host?.dispose();
+
+        expect(await renderArea('/panel/users')).toHaveTextContent('admin');
+        expect(screen.getByRole('link', { name: 'users Users' })).toHaveAttribute('href', '/panel/users');
+    });
+
+    it('carries the server, its power state and the pages its subuser may open', async () => {
+        expect(await renderArea('/server/a1b2c3d4/files', 'stopped')).toHaveTextContent('server Survival offline');
+        expect(
+            within(screen.getByRole('navigation', { name: 'Area' }))
+                .getAllByRole('link')
+                .map((link) => link.textContent)
+        ).toEqual(['square-terminal Console', 'folder Files']);
+        expect(screen.getByRole('main')).toHaveTextContent('Routed page');
     });
 });
 

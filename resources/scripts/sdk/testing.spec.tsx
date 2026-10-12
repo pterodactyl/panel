@@ -1,9 +1,12 @@
 /** @vitest-environment jsdom */
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, expect, it, vi } from 'vitest';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Main } from '@/views/a11y';
 import { lazyView } from '@/views/lazy';
+import { Navigation, NavigationLink } from '@/views/navigation';
 import type { ViewPartProps, ViewProps } from '@/views/registry';
 import { defineTheme } from '@/views/theme';
+import { usePanelLocation } from './navigation';
 import {
     preloadTheme,
     renderPrimitive,
@@ -192,6 +195,142 @@ it('renders a fixture of a view that takes inputs with the inputs it declares', 
 
     expect(container).toHaveTextContent('Test server');
     expect(container).toHaveTextContent('Suspended');
+    unmount();
+});
+
+describe('failing layers', () => {
+    const failing = defineTheme({
+        views: {
+            'server.graphs': () => {
+                throw new Error('theme exploded');
+            },
+        },
+    });
+
+    beforeEach(() => {
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it('fails the render naming the view and the layer', () => {
+        expect(() => renderView('server.graphs', { theme: failing })).toThrow(
+            'The "theme" layer of view "server.graphs" failed: theme exploded'
+        );
+        expect(document.body.children).toHaveLength(0);
+    });
+
+    it('fails on a layer of a nested view too', () => {
+        const nested = defineTheme({
+            views: {
+                'dashboard.serverCard': () => {
+                    throw new Error('card exploded');
+                },
+            },
+        });
+
+        expect(() => renderView('dashboard.serverList', { theme: nested, fixture: 'servers' })).toThrow(
+            'The "theme" layer of view "dashboard.serverCard" failed: card exploded'
+        );
+    });
+
+    it('falls back to classic, once, when not strict', () => {
+        const { container, unmount } = renderView('server.graphs', { theme: failing, strict: false });
+
+        expect(container).toHaveTextContent('CPU Load');
+        unmount();
+    });
+
+    it('fails a view test host when the layer under test throws', async () => {
+        const mounted = await createViewTestHost('server.graphs');
+
+        host = mounted;
+        function Graphs(): never {
+            throw new Error('graphs exploded');
+        }
+
+        await expect(
+            act(async () => {
+                render(<Graphs />, { wrapper: mounted.Wrapper });
+            })
+        ).rejects.toThrow('The "test-extension" layer of view "server.graphs" failed: graphs exploded');
+    });
+});
+
+it('mounts slot components given to renderView, and removes them afterwards', () => {
+    const first = renderView('layout.app', {
+        fixture: 'user',
+        slots: { 'nav.items.before': () => <span>slot probe</span> },
+    });
+
+    expect(first.container).toHaveTextContent('slot probe');
+    first.unmount();
+
+    const second = renderView('layout.app', { fixture: 'user' });
+
+    expect(second.container).not.toHaveTextContent('slot probe');
+    second.unmount();
+});
+
+it('renders a layer reading the panel location from fixtures, outside any route', () => {
+    function Shell({ Default }: ViewProps<'layout.app'>) {
+        const { pathname, params, search } = usePanelLocation();
+
+        return (
+            <>
+                <p>{`at ${pathname} with ${Object.keys({ ...params, ...search }).length} params`}</p>
+                <Default />
+            </>
+        );
+    }
+
+    const { container, unmount } = renderView('layout.app', { theme: defineTheme({ views: { 'layout.app': Shell } }) });
+
+    expect(container).toHaveTextContent('at / with 0 params');
+    unmount();
+});
+
+it('gives the app layout the area it renders, from a fixture of each area', () => {
+    function Shell({ model, children }: ViewProps<'layout.app'>) {
+        const { area } = model;
+
+        return (
+            <>
+                <p>{area.kind === 'server' ? `${area.name} is ${area.state}` : area.kind}</p>
+                {'nav' in area && (
+                    <Navigation items={area.nav.items}>
+                        {(item) => <NavigationLink item={item}>{`${item.icon}:${item.label}`}</NavigationLink>}
+                    </Navigation>
+                )}
+                <Main>{children}</Main>
+            </>
+        );
+    }
+
+    const theme = defineTheme({ views: { 'layout.app': Shell } });
+    const kinds = ['user', 'accountArea', 'serverArea', 'adminArea'].map((fixture) => {
+        const { container, unmount } = renderView('layout.app', { theme, fixture });
+        const text = `${container.querySelector('p')?.textContent} ${container.querySelector('a')?.textContent}`;
+
+        unmount();
+
+        return text;
+    });
+
+    expect(kinds).toEqual([
+        'dashboard undefined',
+        'account user-round:Account',
+        'Survival is running square-terminal:Console',
+        'admin layout-dashboard:Overview',
+    ]);
+});
+
+it('renders a view measuring itself without stubbing browser APIs', () => {
+    const { container, unmount } = renderView('server.graphs');
+
+    expect(container).toHaveTextContent('Memory');
     unmount();
 });
 

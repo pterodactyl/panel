@@ -10,6 +10,7 @@ import {
     type ComponentType,
     type ReactNode,
 } from 'react';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { reportExtensionError } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
@@ -159,33 +160,94 @@ function SuspendedLayer({ onSuspend }: { onSuspend: () => void }) {
     return null;
 }
 
+/** A theme or extension layer of a view that failed, so the layer below rendered in its place. */
+export class ViewLayerError extends Error {
+    constructor(
+        readonly view: string,
+        readonly layer: string,
+        cause: unknown
+    ) {
+        super(`The "${layer}" layer of view "${view}" failed: ${cause instanceof Error ? cause.message : String(cause)}`, {
+            cause,
+        });
+        this.name = 'ViewLayerError';
+    }
+}
+
+const layerFailureListeners = new Set<(failure: ViewLayerError) => void>();
+
+/** Calls `listener` for each layer that fails; the SDK's test renderers fail the test on it. */
+export function onViewLayerFailure(listener: (failure: ViewLayerError) => void): () => void {
+    layerFailureListeners.add(listener);
+
+    return () => {
+        layerFailureListeners.delete(listener);
+    };
+}
+
+export function reportViewLayerFailure(failure: ViewLayerError): void {
+    for (const listener of layerFailureListeners) {
+        listener(failure);
+    }
+}
+
+/**
+ * Renders the layers below a failed one. Their own failures stop at the panel's error notice, whose
+ * Retry tries the failed layer again, so a failing chain falls back once instead of re-rendering.
+ */
+function LayerFallback({
+    name,
+    layer,
+    error,
+    retry,
+    children,
+}: {
+    name: string;
+    layer: ViewLayer;
+    error: Error;
+    retry: () => void;
+    children: ReactNode;
+}) {
+    useLayoutEffect(() => reportViewLayerFailure(new ViewLayerError(name, layer.id, error)), [name, layer.id, error]);
+
+    return (
+        <>
+            <FailedLayerMark layerId={layer.id} />
+            <ErrorBoundary onReset={retry}>{children}</ErrorBoundary>
+        </>
+    );
+}
+
 /** A failing layer is reported against its package and replaced by the layer below. */
 function LayerBoundary({
     name,
     layer,
     placeholder,
-    fallback,
+    below,
     children,
 }: {
     name: string;
     layer: ViewLayer;
     placeholder: ReactNode;
-    fallback: ReactNode;
+    below: ReactNode;
     children: ReactNode;
 }) {
-    const [suspended, setSuspended] = useState(false);
+    const [suspension, setSuspension] = useState<Error | null>(null);
     const context = `view "${name}"`;
     const onSuspend = useCallback(() => {
-        reportExtensionError(
-            layer.id,
-            context,
-            new Error('View layer suspended outside a local Suspense boundary; using the layer below.')
-        );
-        setSuspended(true);
-    }, [layer.id, context]);
+        const error = new Error('View layer suspended outside a local Suspense boundary; using the layer below.');
 
-    if (suspended) {
-        return fallback;
+        reportExtensionError(layer.id, context, error);
+        setSuspension(error);
+    }, [layer.id, context]);
+    const fallback = (error: Error, retry: () => void) => (
+        <LayerFallback name={name} layer={layer} error={error} retry={retry}>
+            {below}
+        </LayerFallback>
+    );
+
+    if (suspension) {
+        return fallback(suspension, () => setSuspension(null));
     }
 
     return (
@@ -242,12 +304,7 @@ function ViewChain({
                     name={name}
                     layer={top}
                     placeholder={placeholder}
-                    fallback={
-                        <>
-                            <FailedLayerMark layerId={top.id} />
-                            <ViewChain name={name} layers={below} frame={frame} placeholder={placeholder} />
-                        </>
-                    }
+                    below={<ViewChain name={name} layers={below} frame={frame} placeholder={placeholder} />}
                 >
                     {element}
                 </LayerBoundary>

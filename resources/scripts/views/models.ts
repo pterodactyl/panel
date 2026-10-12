@@ -13,6 +13,7 @@ export type {
 export type {
     AccountLayoutModel,
     AdminLayoutModel,
+    AppArea,
     AppLayoutLink,
     AppLayoutModel,
     AuthLayoutModel,

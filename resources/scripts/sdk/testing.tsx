@@ -17,7 +17,15 @@ import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
 import { uiPrimitives, type UiPrimitiveName, type UiPrimitiveProps } from '@/themes/gallery';
 import { isPendingLazyView } from '@/views/lazy';
-import { createViewHarness, LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
+import {
+    createViewHarness,
+    LooseView,
+    onViewLayerFailure,
+    preloadView,
+    reportViewLayerFailure,
+    ViewFixtureProvider,
+    ViewLayerError,
+} from '@/views/View';
 import {
     act,
     createContext,
@@ -25,6 +33,7 @@ import {
     useContext,
     useLayoutEffect,
     useMemo,
+    useSyncExternalStore,
     type ComponentType,
     type JSXElementConstructor,
     type ReactNode,
@@ -51,7 +60,13 @@ import { Websocket } from '@/plugins/Websocket';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { registerClassPrefixes } from '@/lib/cn';
 import { ExtensionResourceProvider } from '@/extensions/resourceContext';
-import { SCREEN_ROOTS } from '@/extensions/registry';
+import {
+    mountSlotComponents,
+    SCREEN_ROOTS,
+    type SlotComponentProps,
+    type SlotData,
+    type SlotName,
+} from '@/extensions/registry';
 import type { ExtensionResourceContext } from '@/extensions/resourceContext';
 import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
@@ -67,6 +82,7 @@ export {
     createTestFileManagerEntry,
 } from '@/views/server/fileFixtures';
 export type { UiPrimitiveName, UiPrimitiveProps };
+export { ViewLayerError };
 
 registerClassicTheme();
 // Views' hooks and fixtures and classic's own views are lazy; loading them here lets a test render them synchronously.
@@ -99,6 +115,18 @@ export interface ExtensionTestHost {
 
 /** Create one host per test; call dispose after unmounting its Wrapper. */
 export function createExtensionTestHost(options: ExtensionTestHostOptions = {}): ExtensionTestHost {
+    return createHost(options);
+}
+
+/** Reports what the host's mount caught, which a strict view test host fails on. */
+function ReportLayerFailure({ view, layer, error }: { view: string; layer: string; error: Error }) {
+    useLayoutEffect(() => reportViewLayerFailure(new ViewLayerError(view, layer, error)), [view, layer, error]);
+
+    return null;
+}
+
+/** `failing` names the view a strict view test host renders, whose failures it reports instead of showing a notice. */
+function createHost(options: ExtensionTestHostOptions, failing?: string): ExtensionTestHost {
     registerClassPrefixes([options.prefix]);
     queryClient.clear();
     queryClient.setQueryData(
@@ -156,9 +184,15 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
         return useContext(Content);
     }
 
+    const extensionId = options.extensionId ?? 'test-extension';
+    const failure =
+        failing === undefined
+            ? undefined
+            : (error: Error) => <ReportLayerFailure view={failing} layer={extensionId} error={error} />;
+
     function Root() {
         const content = (
-            <ExtensionMount extensionId={options.extensionId ?? 'test-extension'} context='test host' resetKey='test'>
+            <ExtensionMount extensionId={extensionId} context='test host' resetKey='test' failure={failure}>
                 <ExtensionResourceProvider.Provider value={options.resource ?? null}>
                     <Outlet />
                 </ExtensionResourceProvider.Provider>
@@ -242,6 +276,8 @@ export interface ViewTestHostOptions<N extends ViewName> {
     extensionId?: string;
     /** The extension's `ui.prefix`, so its prefixed classes merge with the view's as they do in the panel. */
     prefix?: string;
+    /** Fail when the layer or a theme or extension layer of a nested view throws (the default); false lets them fall back. */
+    strict?: boolean;
 }
 export interface ViewTestHost<N extends ViewName> {
     Wrapper: ComponentType<{ children?: ReactNode }>;
@@ -264,6 +300,47 @@ function fixtureModel(name: ViewName, fixture: string | undefined) {
 
 const NoSession = ({ children }: { model: unknown; children?: ReactNode }) => children;
 
+interface LayerFailures {
+    current(): ViewLayerError | null;
+    subscribe(listener: () => void): () => void;
+    stop(): void;
+}
+
+/** Keeps the first layer failure from now on, for the strict test renderers. */
+function collectLayerFailures(): LayerFailures {
+    let first: ViewLayerError | null = null;
+    const listeners = new Set<() => void>();
+    const stop = onViewLayerFailure((failure) => {
+        first ??= failure;
+        for (const listener of listeners) {
+            listener();
+        }
+    });
+
+    return {
+        current: () => first,
+        subscribe(listener) {
+            listeners.add(listener);
+
+            return () => {
+                listeners.delete(listener);
+            };
+        },
+        stop,
+    };
+}
+
+/** Throws the first failure, outside every boundary below it, so the render fails instead of falling back. */
+function FailOnLayerError({ failures, children }: { failures: LayerFailures; children?: ReactNode }) {
+    const failure = useSyncExternalStore(failures.subscribe, failures.current);
+
+    if (failure) {
+        throw failure;
+    }
+
+    return children;
+}
+
 /**
  * Tests a layer against the view's classic layers without issuing core queries: render it with `props`
  * inside `Wrapper`, and its `Default` renders classic with the same model. Nested views read fixtures.
@@ -281,11 +358,15 @@ export async function createViewTestHost<N extends ViewName>(
     const extensionId = options.extensionId ?? 'test-extension';
     const model = options.model ?? fixtureModel(view, options.fixture);
     const manager = view === 'server.files.manager' ? (model as FileManagerModel) : undefined;
-    const host = createExtensionTestHost({
-        extensionId,
-        server: createTestServer(),
-        path: manager ? `/server/test-server/files#${manager.directory}` : undefined,
-    });
+    const failures = options.strict === false ? null : collectLayerFailures();
+    const host = createHost(
+        {
+            extensionId,
+            server: createTestServer(),
+            path: manager ? `/server/test-server/files#${manager.directory}` : undefined,
+        },
+        failures ? name : undefined
+    );
     const portal =
         manager && !document.getElementById('modal-portal')
             ? document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }))
@@ -296,8 +377,7 @@ export async function createViewTestHost<N extends ViewName>(
 
     function Wrapper({ children }: { children?: ReactNode }) {
         const context = useMemo(() => ({ extensionId, context: `view "${name}" test host` }), []);
-
-        return (
+        const content = (
             <host.Wrapper>
                 <ExtensionContext.Provider value={context}>
                     <ViewFixtureProvider>
@@ -308,12 +388,15 @@ export async function createViewTestHost<N extends ViewName>(
                 </ExtensionContext.Provider>
             </host.Wrapper>
         );
+
+        return failures ? <FailOnLayerError failures={failures}>{content}</FailOnLayerError> : content;
     }
 
     return {
         Wrapper,
         props: harness.props,
         dispose: () => {
+            failures?.stop();
             portal?.remove();
             host.dispose();
         },
@@ -327,10 +410,22 @@ export interface RenderViewOptions<N extends ViewName> {
     input?: ViewInput<N>;
     /** The theme to render the view with: what its entry exports. */
     theme?: ThemeDefinition;
+    /** Components to mount in slots, as an extension's `slots.register` would. */
+    slots?: TestSlots;
+    /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
+    strict?: boolean;
 }
+export type TestSlots = { readonly [N in SlotName]?: ComponentType<SlotComponentProps<SlotData<N>>> };
 export interface RenderedView {
     container: HTMLElement;
+    /** Throws what failed after the first render, such as a layer failing on a click. */
     unmount(): void;
+}
+
+interface MountOptions {
+    theme?: ThemeDefinition;
+    slots?: TestSlots;
+    strict?: boolean;
 }
 
 const viewRouter = createRouter({
@@ -339,8 +434,11 @@ const viewRouter = createRouter({
 });
 let rendered: RenderedView | undefined;
 
-/** Replaces whatever was rendered before with `content`, under a theme's skins, views and icons. */
-function mount(content: ReactNode, theme: ThemeDefinition | undefined): RenderedView {
+/**
+ * Replaces whatever was rendered before with `content`, under a theme's skins, views and icons, and
+ * throws when it fails to render (and, unless `strict` is false, when one of its layers falls back).
+ */
+function mount(content: ReactNode, { theme, slots = {}, strict = true }: MountOptions): RenderedView {
     rendered?.unmount();
     clearThemeLayers();
     clearThemeSkins();
@@ -350,9 +448,35 @@ function mount(content: ReactNode, theme: ThemeDefinition | undefined): Rendered
         registerThemeIcons(theme.icons ?? {});
     }
 
+    // Each slot's props are typed by its name where they are given.
+    const removeSlots = mountSlotComponents('test-slots', slots as Parameters<typeof mountSlotComponents>[1]);
+    const failures = strict ? collectLayerFailures() : null;
+    const crashes: unknown[] = [];
     const container = document.body.appendChild(document.createElement('div'));
-    const root = createRoot(container);
+    const root = createRoot(container, { onUncaughtError: (error) => crashes.push(error) });
+    const failure = (): unknown => failures?.current() ?? crashes.at(0);
+    const current: RenderedView = {
+        container,
+        unmount: () => {
+            if (rendered !== current) {
+                return;
+            }
 
+            rendered = undefined;
+            act(() => root.unmount());
+            container.remove();
+            removeSlots();
+            failures?.stop();
+
+            const error = failure();
+
+            if (error !== undefined) {
+                throw error;
+            }
+        },
+    };
+
+    rendered = current;
     Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', true);
     act(() =>
         root.render(
@@ -361,16 +485,12 @@ function mount(content: ReactNode, theme: ThemeDefinition | undefined): Rendered
             </QueryClientProvider>
         )
     );
-    rendered = {
-        container,
-        unmount: () => {
-            act(() => root.unmount());
-            container.remove();
-            rendered = undefined;
-        },
-    };
 
-    return rendered;
+    if (failure() !== undefined) {
+        current.unmount();
+    }
+
+    return current;
 }
 
 const pendingViews = (theme: ThemeDefinition | undefined): string[] =>
@@ -386,7 +506,8 @@ export async function preloadTheme(theme: ThemeDefinition): Promise<void> {
 /**
  * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
  * replaces what was rendered before it; nested views read their fixtures too. Await `preloadTheme(theme)`
- * first when the theme has lazy views.
+ * first when the theme has lazy views. It throws when the view fails to render, and when a theme or
+ * extension layer throws unless `strict` is false.
  */
 export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
     const pending = pendingViews(options.theme);
@@ -406,7 +527,7 @@ export function renderView<N extends ViewName>(name: N, options: RenderViewOptio
         <ViewFixtureProvider fixtures={fixtures} models={models}>
             <LooseView name={name} {...Object(options.input ?? {})} />
         </ViewFixtureProvider>,
-        options.theme
+        options
     );
 }
 
@@ -432,5 +553,5 @@ export function renderPrimitive(
     // The overload ties the props to the named primitive.
     const primitive = uiPrimitives[name].component as JSXElementConstructor<UiPrimitiveProps<UiPrimitiveName>>;
 
-    return mount(createElement(primitive, props), options.theme);
+    return mount(createElement(primitive, props), { theme: options.theme });
 }

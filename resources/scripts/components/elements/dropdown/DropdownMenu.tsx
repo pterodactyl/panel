@@ -4,6 +4,7 @@ import { ContextMenu } from '@base-ui/react/context-menu';
 import type { LucideIcon } from 'lucide-react';
 import Icon from '@/components/elements/Icon';
 import { usePortalContainer } from '@/components/elements/Portal';
+import { PanelLink, type PanelDestination } from '@/sdk/navigation';
 import { useSkin } from '@/themes/skins';
 
 type MenuItemComponent = React.ComponentType<React.ComponentProps<typeof Menu.Item>>;
@@ -76,15 +77,24 @@ export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof 
     icon?: LucideIcon;
     danger?: boolean;
     description?: React.ReactNode;
+    /** Makes the item a link to a panel page; following it closes the menu. */
+    destination?: PanelDestination;
 }
 
 /** An item for either DropdownMenu or ContextDropdownMenu. */
-export function DropdownMenuItem({ icon, danger, description, className, children, ...props }: DropdownMenuItemProps) {
+export function DropdownMenuItem({
+    icon,
+    danger,
+    description,
+    destination,
+    className,
+    children,
+    ...props
+}: DropdownMenuItemProps) {
     const Item = use(MenuItemContext);
     const ui = useSkin('DropdownMenuItem', { danger: !!danger, described: !!description });
-
-    return (
-        <Item {...ui('root', className)} {...props}>
+    const content = (
+        <>
             {icon && (
                 <span {...ui('icon')}>
                     <Icon icon={icon} {...ui('glyph')} />
@@ -94,6 +104,26 @@ export function DropdownMenuItem({ icon, danger, description, className, childre
                 <span {...ui('label')}>{children}</span>
                 {description && <span {...ui('description')}>{description}</span>}
             </span>
+        </>
+    );
+
+    if (destination) {
+        return (
+            <Menu.LinkItem
+                {...ui('root', className)}
+                id={props.id}
+                label={props.label}
+                closeOnClick
+                render={<PanelLink destination={destination} />}
+            >
+                {content}
+            </Menu.LinkItem>
+        );
+    }
+
+    return (
+        <Item {...ui('root', className)} {...props}>
+            {content}
         </Item>
     );
 }
