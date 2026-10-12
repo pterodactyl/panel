@@ -1,3 +1,0 @@
-PATCH /api/application/users/2
-200 application/json
-{"object":"user","attributes":{"id":2,"external_id":"ext-owner","uuid":"00000000-0000-4000-8000-000000000002","username":"owner","email":"owner@example.test","first_name":"Olivia","last_name":"Owner","language":"en","root_admin":false,"2fa":false,"relationships":[],"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-03-04T05:06:07+00:00","extensions":{}}}

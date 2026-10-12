@@ -1,7 +1,0 @@
-GET /api/client/account
-200 application/json
-{"object":"user","attributes":{"id":2,"admin":false,"username":"owner","email":"owner@example.test","first_name":"Olive","last_name":"Owner","language":"en"}}
-
-GET /api/client/account?include=does-not-exist
-200 application/json
-{"object":"user","attributes":{"id":2,"admin":false,"username":"owner","email":"owner@example.test","first_name":"Olive","last_name":"Owner","language":"en"}}

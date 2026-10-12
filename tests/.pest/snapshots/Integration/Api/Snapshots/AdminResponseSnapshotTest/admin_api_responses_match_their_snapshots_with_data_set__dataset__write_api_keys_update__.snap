@@ -1,3 +1,0 @@
-PUT /api/admin/api-keys/ptla_snapshot002
-200 application/json
-{"object":"api_key","attributes":{"identifier":"ptla_snapshot002","memo":"Updated memo","created_by":{"id":1,"username":"admin","email":"admin@example.test"},"last_used_at":"2026-02-03T06:05:06+00:00","created_at":"2026-01-02T03:04:05+00:00","relationships":[],"r_servers":3,"r_nodes":0,"r_allocations":0,"r_users":1,"r_locations":0,"r_eggs":0,"r_database_hosts":0,"r_server_databases":0}}

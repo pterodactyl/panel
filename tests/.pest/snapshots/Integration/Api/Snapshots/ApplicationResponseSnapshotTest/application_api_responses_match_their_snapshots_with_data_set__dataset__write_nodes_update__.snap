@@ -1,3 +1,0 @@
-PATCH /api/application/nodes/1
-200 application/json
-{"object":"node","attributes":{"id":1,"uuid":"d0de0001-0000-4000-8000-000000000001","public":true,"name":"node-alpha-renamed","description":"Created through the API","location_id":1,"fqdn":"alpha.example.test","scheme":"https","behind_proxy":false,"maintenance_mode":false,"memory":16384,"memory_overallocate":0,"disk":20480,"disk_overallocate":0,"upload_size":100,"daemon_listen":8080,"daemon_sftp":2022,"daemon_base":"\/var\/lib\/pterodactyl\/volumes","created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-03-04T05:06:07+00:00","allocated_resources":{"memory":3072,"disk":15360},"relationships":[],"extensions":{}}}

@@ -1,7 +1,0 @@
-POST /api/admin/servers
-422 application/json
-{"errors":[{"code":"ValidationException","status":"422","detail":"node-alpha only accepts eggs tagged Minecraft.","meta":{"source_field":"primary_allocation_id","rule":""}}]}
-
-POST /api/admin/servers
-201 application/json
-{"object":"server","attributes":{"id":1001,"external_id":"ext-admin-created","uuid":"e45a916b-7b34-4394-9e17-48fad8d0185e","identifier":"e45a916b","name":"Admin Created","description":"Created by an admin.","status":"installing","suspended":false,"limits":{"memory":512,"swap":0,"disk":1024,"io":500,"cpu":0,"threads":null,"oom_disabled":true},"feature_limits":{"databases":0,"allocations":0,"backups":0},"user":2,"node":1,"allocation":4,"egg":3,"container":{"startup_command":"java -jar {{SERVER_JARFILE}}","image":"ghcr.io\/pterodactyl\/yolks:java_21","skip_scripts":false,"installed":0,"environment":{"STARTUP":"java -jar {{SERVER_JARFILE}}","P_SERVER_LOCATION":"us-east","P_SERVER_UUID":"e45a916b-7b34-4394-9e17-48fad8d0185e","P_SERVER_ALLOCATION_LIMIT":0}},"relationships":[],"updated_at":"2026-03-04T05:06:07+00:00","created_at":"2026-03-04T05:06:07+00:00","extensions":{}},"meta":{"resource":"https:\/\/panel.example.test\/api\/admin\/servers\/1001"}}

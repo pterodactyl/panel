@@ -1,3 +1,0 @@
-POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/backups/bacc0002-0000-4000-8000-000000000002/lock
-200 application/json
-{"object":"backup","attributes":{"uuid":"bacc0002-0000-4000-8000-000000000002","is_successful":false,"is_locked":true,"name":"Failed attempt","ignored_files":[],"checksum":null,"bytes":0,"created_at":"2026-01-02T03:04:05+00:00","completed_at":"2026-01-02T03:14:05+00:00"}}

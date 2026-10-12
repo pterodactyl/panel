@@ -1,3 +1,0 @@
-POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/users/00000000-0000-4000-8000-000000000003
-200 application/json
-{"object":"server_subuser","attributes":{"uuid":"00000000-0000-4000-8000-000000000003","identifier":"user_aaaaaaaaabaabaaaaaaaaaaaam","username":"helper","email":"helper@example.test","image":"https:\/\/gravatar.com\/avatar\/db133fd5a01229dc12009a42eaa2e3c3","2fa_enabled":false,"created_at":"2026-01-02T03:04:05+00:00","permissions":["control.console","control.start","control.stop","websocket.connect"]}}

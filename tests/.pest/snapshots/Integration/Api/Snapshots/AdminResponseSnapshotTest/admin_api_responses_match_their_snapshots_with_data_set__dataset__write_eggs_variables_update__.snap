@@ -1,3 +1,0 @@
-PUT /api/admin/eggs/1/variables/1
-200 application/json
-{"object":"egg_variable","attributes":{"id":1,"egg_id":1,"name":"Server Jar","description":"Renamed.","env_variable":"SERVER_JARFILE","default_value":"server.jar","user_viewable":true,"user_editable":false,"rules":"required|string","sort_order":1,"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-03-04T05:06:07+00:00"}}

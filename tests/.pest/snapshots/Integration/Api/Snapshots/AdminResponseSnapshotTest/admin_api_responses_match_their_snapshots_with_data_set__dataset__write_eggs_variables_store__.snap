@@ -1,3 +1,0 @@
-POST /api/admin/eggs/1/variables
-201 application/json
-{"object":"egg_variable","attributes":{"id":1001,"egg_id":1,"name":"Max Players","description":"How many may join.","env_variable":"MAX_PLAYERS","default_value":"20","user_viewable":true,"user_editable":true,"rules":"required|integer|between:1,100","sort_order":null,"created_at":"2026-03-04T05:06:07+00:00","updated_at":"2026-03-04T05:06:07+00:00"}}

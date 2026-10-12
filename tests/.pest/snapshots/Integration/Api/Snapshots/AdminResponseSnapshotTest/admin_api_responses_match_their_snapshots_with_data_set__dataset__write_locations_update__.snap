@@ -1,3 +1,0 @@
-PUT /api/admin/locations/1
-200 application/json
-{"object":"location","attributes":{"id":1,"short":"us-east-1","long":"US East 1","nodes_count":1,"servers_count":2,"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-03-04T05:06:07+00:00","extensions":{}}}

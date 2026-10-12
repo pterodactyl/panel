@@ -1,3 +1,0 @@
-PUT /api/admin/nodes/1/deployment-tags
-200 application/json
-{"object":"list","data":[{"object":"tag","attributes":{"id":3,"name":"Reserved","slug":"reserved","color":null,"is_predefined":false,"legacy_nest_id":null,"eggs_count":0,"nodes_count":2,"created_at":"2026-01-02T03:04:05+00:00","updated_at":"2026-02-03T04:05:06+00:00"}}]}
