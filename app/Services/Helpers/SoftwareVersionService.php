@@ -9,7 +9,6 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
-use Pterodactyl\Support\JsonValueGuard;
 
 class SoftwareVersionService
 {
@@ -93,7 +92,9 @@ class SoftwareVersionService
                 $response = $this->client->request('GET', config()->string('pterodactyl.cdn.url'), ['timeout' => 5, 'connect_timeout' => 2]);
 
                 if ($response->getStatusCode() === 200) {
-                    return JsonValueGuard::decodeArray8($response->getBody()->__toString());
+                    $data = json_decode($response->getBody()->__toString(), true, flags: JSON_THROW_ON_ERROR);
+
+                    return is_array($data) ? $data : [];
                 }
 
                 throw new CdnVersionFetchingException;

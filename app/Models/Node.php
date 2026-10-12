@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
@@ -339,9 +338,9 @@ class Node extends Model implements Identifiable
     {
         if (array_key_exists('sum_memory', $this->getAttributes()) && array_key_exists('sum_disk', $this->getAttributes())) {
             // The SUM aliases come back from the database as numeric strings, or null for no servers.
-            $sums = Fluent::make($this->getAttributes());
-            $memory = $sums->integer('sum_memory');
-            $disk = $sums->integer('sum_disk');
+            $sums = $this->getAttributes();
+            $memory = is_numeric($sums['sum_memory']) ? (int) $sums['sum_memory'] : 0;
+            $disk = is_numeric($sums['sum_disk']) ? (int) $sums['sum_disk'] : 0;
         } else {
             $resources = $this->servers()->toBase()
                 ->selectRaw('COALESCE(SUM(memory), 0) AS memory, COALESCE(SUM(disk), 0) AS disk')
@@ -349,9 +348,7 @@ class Node extends Model implements Identifiable
 
             throw_if($resources === null || ! is_numeric($resources->memory) || ! is_numeric($resources->disk), UnexpectedValueException::class, 'The node resource aggregate query returned malformed values.');
 
-            // SAFETY: the aggregate values were validated as numeric immediately above.
             $memory = (int) $resources->memory;
-            // SAFETY: the aggregate values were validated as numeric immediately above.
             $disk = (int) $resources->disk;
         }
 

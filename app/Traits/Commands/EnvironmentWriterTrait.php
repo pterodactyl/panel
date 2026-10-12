@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Traits\Commands;
 
 use Closure;
-use Illuminate\Support\Fluent;
 use Pterodactyl\Exceptions\PterodactylException;
 
 trait EnvironmentWriterTrait
@@ -45,7 +44,6 @@ trait EnvironmentWriterTrait
 
         collect($values)->each(function ($value, $key) use (&$saveContents): void {
             $key = mb_strtoupper($key);
-            // SAFETY: EnvironmentValue is restricted to JSON scalars, which have deterministic string representations for .env persistence.
             $saveValue = sprintf('%s=%s', $key, $this->escapeEnvironmentValue($value === null ? null : (string) $value));
 
             if (preg_match_all('/^'.$key.'=(.*)$/m', $saveContents) < 1) {
@@ -66,9 +64,9 @@ trait EnvironmentWriterTrait
      */
     protected function answer(Closure $prompt): ?string
     {
-        $answer = Fluent::make(['value' => $prompt()]);
+        $answer = $prompt();
 
-        return $answer->get('value') === null ? null : $answer->string('value')->toString();
+        return is_scalar($answer) ? (string) $answer : null;
     }
 
     /**

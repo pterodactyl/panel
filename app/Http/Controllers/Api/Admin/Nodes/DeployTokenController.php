@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Controllers\Api\Admin\Nodes;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -18,6 +17,7 @@ use Pterodactyl\Http\Requests\Api\Admin\Nodes\DeployTokenRequest;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use UnexpectedValueException;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Nodes', 'Create, update, retrieve, and delete Wings nodes.')]
@@ -61,9 +61,12 @@ class DeployTokenController extends AdminApiController
             ->property('name', $node->name)
             ->log();
 
+        $token = Crypt::decrypt($key->token);
+        throw_unless(is_string($token), UnexpectedValueException::class, 'The decrypted API key must be a string.');
+
         return new JsonResponse([
             'node' => $node->id,
-            'token' => $key->identifier.Arr::string(['token' => Crypt::decrypt($key->token)], 'token'),
+            'token' => $key->identifier.$token,
             'panel_url' => config('app.url'),
             'allow_insecure' => config('app.debug'),
         ]);

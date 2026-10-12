@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Includes;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 /**
  * The includes a request asked for, parsed as league/fractal's Manager parses them, so API
@@ -30,9 +30,8 @@ final readonly class IncludeSet
      */
     public static function fromRequest(Request $request, array $forced = [], int $limit = 2): self
     {
-        $requested = JsonValueGuard::stringList(array_values($request->collect('include')->all()));
-
-        $names = collect($requested)
+        $names = $request->collect('include')
+            ->map(fn (mixed $value): string => is_string($value) ? $value : throw new UnexpectedValueException('The requested includes must be strings.'))
             ->flatMap(fn (string $value): array => explode(',', $value))
             ->map(fn (string $value): string => mb_trim($value))
             ->filter()

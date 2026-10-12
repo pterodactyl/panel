@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Data\Extensions;
 
-use UnexpectedValueException;
-
 final readonly class ExtensionJobSnapshot
 {
     /** @param 'running'|'completed'|'failed' $status */
@@ -21,12 +19,6 @@ final readonly class ExtensionJobSnapshot
         public int $sequence,
         public string $updatedAt,
     ) {}
-
-    /** @phpstan-assert self|null $value */
-    public static function assertCacheValue(mixed $value): void
-    {
-        throw_if($value !== null && ! $value instanceof self, UnexpectedValueException::class, 'Invalid cached extension progress snapshot.');
-    }
 
     /** @return array{id: string, extension: string, status: 'running'|'completed'|'failed', percent: int, message: string, sequence: int, updated_at: string} */
     public function payload(): array

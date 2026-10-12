@@ -7,7 +7,6 @@ namespace Pterodactyl\Console\Commands\User;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Users\DeletesUsers;
 use Pterodactyl\Models\User;
@@ -19,11 +18,9 @@ class DeleteUserCommand extends Command
     public function handle(DeletesUsers $users): int
     {
         $search = $this->option('user') ?? $this->ask(trans('command/messages.user.search_users'));
-        if (empty($search)) {
+        if (! is_string($search) || empty($search)) {
             throw new InvalidArgumentException(sprintf('Search term should be an email address, got: %s.', get_debug_type($search)));
         }
-
-        $search = Arr::string(['search' => $search], 'search');
 
         $results = User::query()
             ->where('id', 'LIKE', "$search%")

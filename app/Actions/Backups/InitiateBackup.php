@@ -132,7 +132,6 @@ final class InitiateBackup implements InitiatesBackups
                         ->orderByDesc('created_at')
                         ->first() ?? throw new UnexpectedValueException('The backup throttle query returned an empty result set.');
 
-                    // SAFETY: HTTP Retry-After uses whole seconds, so truncating Carbon's fractional difference is intentional.
                     throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($latest->created_at->addSeconds($period)), $message);
                 }
             }

@@ -98,7 +98,6 @@ trait FiltersDeployTags
             if (is_string($tag) && mb_trim($tag) !== '') {
                 $tags[] = mb_trim($tag);
             } elseif (is_int($tag)) {
-                // SAFETY: integer tag IDs have an exact decimal string representation.
                 $tags[] = (string) $tag;
             }
         }

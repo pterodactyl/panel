@@ -8,11 +8,11 @@ use Closure;
 use Illuminate\Auth\Events\PasswordResetLinkSent;
 use Illuminate\Auth\Passwords\PasswordBroker as IlluminatePasswordBroker;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use SensitiveParameter;
+use UnexpectedValueException;
 
 class PasswordBroker extends IlluminatePasswordBroker
 {
@@ -41,7 +41,10 @@ class PasswordBroker extends IlluminatePasswordBroker
             $token = $this->tokens->create($user);
 
             if ($callback instanceof Closure) {
-                return Arr::string(['status' => $callback($user, $token) ?? static::RESET_LINK_SENT], 'status');
+                $status = $callback($user, $token) ?? static::RESET_LINK_SENT;
+                throw_unless(is_string($status), UnexpectedValueException::class, 'The password reset callback must return a status string.');
+
+                return $status;
             }
 
             $user->sendPasswordResetNotification($token);

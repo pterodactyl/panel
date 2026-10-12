@@ -139,7 +139,6 @@ class Tag extends Model
     #[Scope]
     protected function whereKeyOrSlug(Builder $query, string|array $identifier): void
     {
-        // SAFETY: the declared union is either one string or a list of strings; array casting only wraps the scalar case.
         $identifiers = array_values((array) $identifier);
 
         self::filterKeysOrSlugs($query, $identifiers);

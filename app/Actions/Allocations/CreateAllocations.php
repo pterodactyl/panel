@@ -126,15 +126,12 @@ final readonly class CreateAllocations implements CreatesAllocations
                     throw_if(! $isPort && ! $isRange, InvalidPortMappingException::class, $port);
 
                     if ($isRange) {
-                        // SAFETY: PORT_RANGE_REGEX captures two decimal integer strings.
                         $start = (int) $matches[1];
-                        // SAFETY: PORT_RANGE_REGEX captures two decimal integer strings.
                         $end = (int) $matches[2];
                         $block = range($start, $end);
                         throw_if(count($block) > self::PORT_RANGE_LIMIT, TooManyPortsInRangeException::class);
                         throw_if($start <= self::PORT_FLOOR || $end > self::PORT_CEIL, PortOutOfRangeException::class);
                     } else {
-                        // SAFETY: ctype_digit() above proves a decimal port string in the non-range branch.
                         $portNumber = (int) $port;
                         throw_if($portNumber <= self::PORT_FLOOR || $portNumber > self::PORT_CEIL, PortOutOfRangeException::class);
                         $block = [$portNumber];

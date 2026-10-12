@@ -150,7 +150,6 @@ class StoreServerRequest extends ApplicationApiRequest
         return Server::class;
     }
 
-    /** @phpstan-assert int|string $value */
     private function validateDeployTagReference(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_int($value) && ! is_string($value)) {

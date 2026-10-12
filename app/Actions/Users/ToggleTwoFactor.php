@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Users;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +18,7 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\RecoveryToken;
 use Pterodactyl\Models\User;
 use Throwable;
+use UnexpectedValueException;
 
 final readonly class ToggleTwoFactor implements TogglesTwoFactor
 {
@@ -41,7 +41,8 @@ final readonly class ToggleTwoFactor implements TogglesTwoFactor
         $encryptedSecret = $user->totp_secret;
         throw_if($encryptedSecret === null, TwoFactorAuthenticationTokenInvalid::class);
 
-        $secret = Arr::string(['secret' => Crypt::decrypt($encryptedSecret)], 'secret');
+        $secret = Crypt::decrypt($encryptedSecret);
+        throw_unless(is_string($secret), UnexpectedValueException::class, 'The decrypted two-factor secret must be a string.');
 
         $isValidToken = $this->google2FA->verifyKey($secret, $token, config('pterodactyl.auth.2fa.window'));
 

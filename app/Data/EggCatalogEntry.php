@@ -7,9 +7,7 @@ namespace Pterodactyl\Data;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
 use JsonException;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use UnexpectedValueException;
 
 final readonly class EggCatalogEntry
 {
@@ -25,12 +23,12 @@ final readonly class EggCatalogEntry
     public static function listFromJson(string $contents): array
     {
         try {
-            $data = JsonValueGuard::decodeArray8($contents);
-        } catch (JsonException|UnexpectedValueException $exception) {
-            throw new HttpException(502, 'Pterodactyl returned an invalid egg catalog. Please try again later.', $exception);
+            $data = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $jsonException) {
+            throw new HttpException(502, 'Pterodactyl returned an invalid egg catalog. Please try again later.', $jsonException);
         }
 
-        throw_unless(array_is_list($data), HttpException::class, 502, 'Pterodactyl returned an invalid egg catalog. Please try again later.');
+        throw_unless(is_array($data) && array_is_list($data), HttpException::class, 502, 'Pterodactyl returned an invalid egg catalog. Please try again later.');
 
         $entries = [];
         foreach ($data as $value) {

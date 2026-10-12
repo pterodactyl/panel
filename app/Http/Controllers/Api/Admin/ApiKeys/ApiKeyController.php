@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\ApiKeys;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -28,6 +27,7 @@ use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\UpdateApiKeyRequest;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Transformers\Api\Admin\ApiKeyTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
+use UnexpectedValueException;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('API Keys', 'Create and manage application API keys.')]
@@ -72,10 +72,13 @@ class ApiKeyController extends AdminApiController
             ->property('identifier', $key->identifier)
             ->log();
 
+        $token = Crypt::decrypt($key->token);
+        throw_unless(is_string($token), UnexpectedValueException::class, 'The decrypted API key must be a string.');
+
         return Fractal::item($key)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta([
-                'secret_token' => $key->identifier.Arr::string(['token' => Crypt::decrypt($key->token)], 'token'),
+                'secret_token' => $key->identifier.$token,
             ])
             ->respond(Response::HTTP_CREATED);
     }

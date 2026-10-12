@@ -45,7 +45,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Transformers\Api\Client\FileObjectTransformer;
 use Throwable;
 
@@ -236,7 +235,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not rename the files.')]
     public function rename(RenameFileRequest $request, RenamesFiles $operation, Server $server): JsonResponse
     {
-        $operation->rename($server, $this->path($request, 'root'), JsonValueGuard::jsonArray($request->validated('files')));
+        $operation->rename($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -266,7 +265,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the archive.')]
     public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): array
     {
-        $file = $operation->compress($server, $this->path($request, 'root'), JsonValueGuard::jsonArray($request->validated('files')));
+        $file = $operation->compress($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return Fractal::item($file)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -296,7 +295,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not delete the files.')]
     public function delete(DeleteFileRequest $request, DeletesFiles $operation, Server $server): JsonResponse
     {
-        $operation->delete($server, $this->path($request, 'root'), JsonValueGuard::jsonArray($request->validated('files')));
+        $operation->delete($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -311,7 +310,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not update file permissions.')]
     public function chmod(ChmodFilesRequest $request, ChangesFilePermissions $operation, Server $server): JsonResponse
     {
-        $operation->change($server, $this->path($request, 'root'), JsonValueGuard::jsonArray($request->validated('files')));
+        $operation->change($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

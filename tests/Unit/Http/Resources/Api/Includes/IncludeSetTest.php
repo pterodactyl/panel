@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Tests\TestCase;
 use Random\Engine\Mt19937;
 use Random\Randomizer;
+use UnexpectedValueException;
 
 uses(TestCase::class);
 
@@ -59,9 +59,8 @@ function managerIncludes(string|array $includes, int $limit): array
  */
 function bindingNames(Request $request): array
 {
-    $requested = JsonValueGuard::stringList(array_values($request->collect('include')->all()));
-
-    return collect($requested)
+    return $request->collect('include')
+        ->map(fn (mixed $value): string => is_string($value) ? $value : throw new UnexpectedValueException('The requested includes must be strings.'))
         ->flatMap(fn (string $value): array => explode(',', $value))
         ->map(fn (string $value): string => mb_trim($value))
         ->filter()

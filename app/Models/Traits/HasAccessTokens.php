@@ -46,7 +46,6 @@ trait HasAccessTokens
      */
     public function createToken(?string $memo, ?array $ips): NewAccessToken
     {
-        // SAFETY: Sanctum is configured globally to persist personal access tokens with the ApiKey model.
         /** @var ApiKey $token */
         $token = $this->tokens()->forceCreate([
             'user_id' => $this->id,

@@ -13,7 +13,6 @@ use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Tag;
 use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[ResponseField('description', nullable: true)]
 #[ResponseField('features', nullable: true)]
@@ -125,7 +124,7 @@ class EggTransformer extends BaseAdminTransformer
             return null;
         }
 
-        $value = JsonValueGuard::decode($encoded);
+        $value = json_decode($encoded, true, flags: JSON_THROW_ON_ERROR);
 
         // Decoding to arrays reads "{}" as an empty list, which would reach the editor as "[]".
         return $value === [] && str_starts_with(mb_ltrim($encoded), '{') ? new JsonEmptyObject : $value;

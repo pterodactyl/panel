@@ -14,7 +14,6 @@ use Illuminate\Validation\ValidationException;
 use JsonException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 /** @phpstan-type RequestOptions array{json?: array<string, mixed>, query?: array<string, int|string>, body?: string, timeout?: int} */
@@ -57,11 +56,9 @@ final readonly class DaemonConnection
     public function decode(Response $response, array $rules = [], bool $expectsList = false): array
     {
         try {
-            $data = JsonValueGuard::jsonArray(json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR));
-
-            if (! $expectsList) {
-                JsonValueGuard::assertPayload($data);
-            }
+            $data = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
+            throw_unless(is_array($data), UnexpectedValueException::class, 'Wings did not return a JSON object or list.');
+            throw_if(! $expectsList && array_any(array_keys($data), fn (int|string $key): bool => is_int($key)), UnexpectedValueException::class, 'Wings returned a list where a JSON object was expected.');
 
             Validator::make(['data' => $data], $rules)->validate();
 

@@ -15,8 +15,8 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
+use UnexpectedValueException;
 
 /**
  * @phpstan-type StartupAttributes array{environment: array<string, bool|float|int|string|null>, egg_id?: int, startup?: string, docker_image?: string, skip_scripts?: bool}
@@ -74,8 +74,11 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
 
         // Laravel's typed accessors would turn every value into one type, but the egg's
         // variable rules have to see each value as it was sent.
-        $environment = $input->array('environment');
-        JsonValueGuard::assertScalarPayload($environment);
+        $environment = [];
+        foreach ($input->array('environment') as $key => $value) {
+            throw_unless(is_string($key) && ($value === null || is_scalar($value)), UnexpectedValueException::class, 'Server environment variables must map names to scalar values.');
+            $environment[$key] = $value;
+        }
 
         $attributes = ['environment' => $environment];
         if ($userLevel !== User::USER_LEVEL_ADMIN) {
@@ -124,7 +127,6 @@ final readonly class UpdateServerStartup implements UpdatesServerStartup
 
                 $results = $this->validatorService->setUserLevel($userLevel)->handle($egg, $attributes['environment']);
                 foreach ($results as $result) {
-                    // SAFETY: validated variable values are JSON scalars, which all have a string form.
                     $this->variables->update($server, $result->id, $result->value === null ? '' : (string) $result->value);
                 }
             }

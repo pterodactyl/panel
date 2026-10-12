@@ -7,7 +7,6 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +25,7 @@ use Pterodactyl\Data\LoginCheckpoint;
 use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Pterodactyl\Models\User;
+use UnexpectedValueException;
 
 #[Group('Authentication', 'Browser session authentication endpoints used by the panel frontend.', authenticated: false)]
 class LoginCheckpointController extends AbstractLoginController
@@ -114,8 +114,8 @@ class LoginCheckpointController extends AbstractLoginController
                 $this->sendFailedLoginResponse($request, $user, self::TOKEN_EXPIRED_MESSAGE);
             }
 
-            $decrypted = Arr::string(['secret' => Crypt::decrypt($totpSecret)], 'secret');
-            // SAFETY: TOTP counters are discrete intervals, so flooring and converting the quotient to an integer is required.
+            $decrypted = Crypt::decrypt($totpSecret);
+            throw_unless(is_string($decrypted), UnexpectedValueException::class, 'The decrypted two-factor secret must be a string.');
             $oldTimestamp = $user->totp_authenticated_at
                 ? (int) floor($user->totp_authenticated_at->unix() / $google2FA->getKeyRegeneration())
                 : null;

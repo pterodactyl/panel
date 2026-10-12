@@ -50,7 +50,6 @@ class FindViableNodesService
         foreach ($locations as $location) {
             throw_if(is_string($location) && preg_match('/^-?\d+$/', $location) !== 1, InvalidArgumentException::class, 'An array of location IDs should be provided when calling setLocations.');
 
-            // SAFETY: integers pass directly and strings are accepted only after the anchored integer check above.
             $parsed[] = (int) $location;
         }
 

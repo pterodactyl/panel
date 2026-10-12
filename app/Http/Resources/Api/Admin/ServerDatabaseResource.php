@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Facades\Hashids;
@@ -69,7 +68,7 @@ class ServerDatabaseResource extends AdminResource
     private function includePassword(): ApiResource
     {
         return $this->item($this->resource, fn (Database $model): array => [
-            'password' => Arr::string(['password' => Crypt::decrypt($model->password)], 'password'),
+            'password' => Crypt::decrypt($model->password),
         ], 'database_password');
     }
 }

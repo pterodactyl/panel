@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Acl\Api;
 
-use Illuminate\Support\Fluent;
 use Pterodactyl\Models\ApiKey;
 use ReflectionClass;
 use ReflectionException;
@@ -62,7 +61,9 @@ class AdminAcl
      */
     public static function check(ApiKey $key, string $resource, int $action = self::READ): bool
     {
-        return self::can(Fluent::make($key->getAttributes())->integer(self::COLUMN_IDENTIFIER.$resource, self::NONE), $action);
+        $permission = $key->getAttributes()[self::COLUMN_IDENTIFIER.$resource] ?? self::NONE;
+
+        return self::can(is_numeric($permission) ? (int) $permission : self::NONE, $action);
     }
 
     /**

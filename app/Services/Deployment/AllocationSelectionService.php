@@ -71,20 +71,16 @@ class AllocationSelectionService
         $stored = [];
         $ranges = [];
         foreach ($ports as $port) {
-            // SAFETY: deployment ports are JSON scalars; string conversion is used only to test decimal port syntax.
             if (! is_bool($port) && ctype_digit((string) $port)) {
-                // SAFETY: ctype_digit() above proves the scalar is a decimal integer before normalization.
                 $stored[] = (int) $port;
             }
 
             // Ranges are stored as a [start, end] pair for the onPorts() scope.
-            // SAFETY: deployment ports are JSON scalars; string conversion is used only to match the anchored range grammar.
             if (preg_match(CreateAllocations::PORT_RANGE_REGEX, (string) $port, $matches)) {
                 if (abs($matches[2] - $matches[1]) > CreateAllocations::PORT_RANGE_LIMIT) {
                     throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
                 }
 
-                // SAFETY: PORT_RANGE_REGEX captures two decimal integer strings.
                 $ranges[] = [(int) $matches[1], (int) $matches[2]];
             }
         }

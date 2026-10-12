@@ -7,7 +7,6 @@ namespace Pterodactyl\Console\Commands\Location;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Fluent;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 
@@ -22,16 +21,13 @@ class MakeLocationCommand extends Command
      */
     public function handle(CreatesLocations $locations): int
     {
-        $input = Fluent::make([
+        $input = [
             'short' => $this->option('short') ?? $this->ask(trans('command/messages.location.ask_short')),
             'long' => $this->option('long') ?? $this->ask(trans('command/messages.location.ask_long')),
-        ]);
+        ];
 
         try {
-            $location = $locations->create([
-                'short' => $input->get('short') === null ? null : $input->string('short')->toString(),
-                'long' => $input->get('long') === null ? null : $input->string('long')->toString(),
-            ]);
+            $location = $locations->create($input);
         } catch (ValidationException $validationException) {
             foreach ($validationException->validator->errors()->all() as $error) {
                 $this->error($error);

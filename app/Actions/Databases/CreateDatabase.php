@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -104,24 +103,26 @@ final class CreateDatabase implements CreatesDatabases
             throw_if(($server->database_limit) !== null && $server->databases()->count() >= $server->database_limit, TooManyDatabasesException::class);
         }
 
+        $username = sprintf('u%d_%s', $server->id, Str::random(10));
+        $password = Utilities::randomStringWithSpecialCharacters(24);
         $data = [
             ...self::attributes($input),
             'server_id' => $server->id,
-            'username' => sprintf('u%d_%s', $server->id, Str::random(10)),
-            'password' => Crypt::encrypt(Utilities::randomStringWithSpecialCharacters(24)),
+            'username' => $username,
+            'password' => Crypt::encrypt($password),
         ];
 
         $database = null;
 
         try {
-            $database = DB::transaction(function () use ($data, &$database): Database {
+            $database = DB::transaction(function () use ($data, $password, &$database): Database {
                 $this->dynamic->set('dynamic', $data['database_host_id']);
                 $database = $this->createModel($data);
                 $this->gateway->createDatabase($database->database);
                 $this->gateway->createUser(
                     $database->username,
                     $database->remote,
-                    Arr::string(['password' => Crypt::decrypt($database->password)], 'password'),
+                    $password,
                     $database->max_connections
                 );
                 $this->gateway->assignUserToDatabase($database->database, $database->username, $database->remote);

@@ -9,7 +9,6 @@ use Pterodactyl\Actions\Eggs\CreateEgg;
 use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Support\ValidationRuleSubset;
 
 final readonly class EggImportData
@@ -41,7 +40,7 @@ final readonly class EggImportData
 
     public static function fromJson(string $contents): self
     {
-        return self::fromValue(JsonValueGuard::decodeArray8($contents));
+        return self::fromValue(json_decode($contents, true, flags: JSON_THROW_ON_ERROR));
     }
 
     private static function fromValue(mixed $value): self

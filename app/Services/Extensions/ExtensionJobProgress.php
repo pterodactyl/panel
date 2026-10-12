@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Pterodactyl\Data\Extensions\ExtensionJobSnapshot;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use UnexpectedValueException;
 
 /** Shared snapshots survive reconnects and worker boundaries for the configured retention period. */
 final class ExtensionJobProgress
@@ -48,8 +49,7 @@ final class ExtensionJobProgress
     public function find(string $extension, string $id): ?ExtensionJobSnapshot
     {
         $snapshot = Cache::get($this->key($extension, $id));
-
-        ExtensionJobSnapshot::assertCacheValue($snapshot);
+        throw_if($snapshot !== null && ! $snapshot instanceof ExtensionJobSnapshot, UnexpectedValueException::class, 'Invalid cached extension progress snapshot.');
 
         return $snapshot;
     }

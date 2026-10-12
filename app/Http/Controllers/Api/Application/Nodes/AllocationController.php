@@ -90,7 +90,6 @@ class AllocationController extends ApplicationApiController
                         return $builder->whereNull('server_id');
                     }
 
-                    // SAFETY: the boundary checks above limit the filter to an integer or string before decimal validation.
                     if (! ctype_digit((string) $value)) {
                         return $builder->whereNull('server_id');
                     }

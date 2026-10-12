@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,14 +21,12 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Laravel\Sanctum\TransientToken;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 /**
@@ -50,19 +49,19 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
  * @property bool $gravatar
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $apiKeys
+ * @property Collection|ApiKey[] $apiKeys
  * @property int|null $api_keys_count
  * @property string $name
  * @property DatabaseNotificationCollection<int, DatabaseNotification>|DatabaseNotification[] $notifications
  * @property int|null $notifications_count
- * @property \Illuminate\Database\Eloquent\Collection|RecoveryToken[] $recoveryTokens
+ * @property Collection|RecoveryToken[] $recoveryTokens
  * @property int|null $recovery_tokens_count
- * @property \Illuminate\Database\Eloquent\Collection|Server[] $servers
+ * @property Collection|Server[] $servers
  * @property int|null $servers_count
  * @property int|null $subuser_of_count
- * @property \Illuminate\Database\Eloquent\Collection|UserSSHKey[] $sshKeys
+ * @property Collection|UserSSHKey[] $sshKeys
  * @property int|null $ssh_keys_count
- * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $tokens
+ * @property Collection|ApiKey[] $tokens
  * @property int|null $tokens_count
  *
  * @method static UserFactory factory(...$parameters)
@@ -166,16 +165,14 @@ class User extends Authenticatable implements Identifiable
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<mixed>
      */
     public function toVueObject(): array
     {
-        $payload = Collection::make($this->toArray())->except(['id', 'external_id'])
-            ->merge(['identifier' => $this->identifier])
-            ->toArray();
-        JsonValueGuard::assertPayload($payload);
+        $attributes = $this->toArray();
+        unset($attributes['id'], $attributes['external_id']);
 
-        return $payload;
+        return [...$attributes, 'identifier' => $this->identifier];
     }
 
     /**

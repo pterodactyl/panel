@@ -59,7 +59,6 @@ class SyncTagsRequest extends AdminApiRequest
 
         foreach ($tags as $key => $tag) {
             if (is_int($tag)) {
-                // SAFETY: integer tag IDs have an exact decimal string representation.
                 $tags[$key] = (string) $tag;
             }
         }

@@ -235,7 +235,6 @@ class Server extends Model implements Identifiable
             return null;
         }
 
-        // SAFETY: the type check above limits route binding values to integers and strings.
         $routeValue = (string) $value;
         if (ctype_digit($routeValue)) {
             $server = self::query()->whereKey($routeValue)->first();

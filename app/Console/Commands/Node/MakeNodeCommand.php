@@ -9,7 +9,6 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Nodes\CreatesNodes;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Description('Creates a new node on the system via the CLI.')]
 #[Signature('p:node:make
@@ -58,7 +57,6 @@ class MakeNodeCommand extends Command
             'daemon_sftp' => $this->option('daemonSFTPPort') ?? $this->ask('Enter the wings SFTP listening port', '2022'),
             'daemon_base' => $this->option('daemonBase') ?? $this->ask('Enter the base folder', '/var/lib/pterodactyl/volumes'),
         ];
-        JsonValueGuard::assertScalarPayload($input);
 
         try {
             $node = $nodes->create($input);

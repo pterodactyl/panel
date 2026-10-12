@@ -18,10 +18,9 @@ use Pterodactyl\Models\ActivityLogSubject;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
- * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<string, mixed>, ip: string|null, timestamp: string}
+ * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<mixed>, ip: string|null, timestamp: string}
  */
 final class IngestActivityLogs implements IngestsActivityLogs
 {
@@ -63,16 +62,11 @@ final class IngestActivityLogs implements IngestsActivityLogs
         foreach (array_keys($input->array('data')) as $key) {
             $event = 'data.'.$key.'.';
 
-            // Metadata is whatever Wings recorded for the event, so Laravel's typed accessors
-            // have no type to give it; it is checked as the JSON object it was sent as.
-            $metadata = $input->array($event.'metadata');
-            JsonValueGuard::assertPayload9($metadata);
-
             $events[] = [
                 'user' => $input->filled($event.'user') ? $input->string($event.'user')->toString() : null,
                 'server' => $input->string($event.'server')->toString(),
                 'event' => $input->string($event.'event')->toString(),
-                'metadata' => $metadata,
+                'metadata' => $input->array($event.'metadata'),
                 'ip' => $input->filled($event.'ip') ? $input->string($event.'ip')->toString() : null,
                 'timestamp' => $input->string($event.'timestamp')->toString(),
             ];

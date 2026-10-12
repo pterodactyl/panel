@@ -31,9 +31,9 @@ use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 use Throwable;
+use UnexpectedValueException;
 
 /**
  * @phpstan-type CreationAttributes array{external_id: string|null, name: string, description: string, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, bool|float|int|string|null>, skip_scripts: bool, oom_disabled: bool, memory: int, swap: int, disk: int, io: int, threads: string|null, cpu: int, database_limit: int, allocation_limit: int, backup_limit: int, allocation_id: int|null, allocation_additional: list<int>, start_on_completion: bool}
@@ -108,8 +108,11 @@ final readonly class CreateServer implements CreatesServers
 
         // Laravel's typed accessors would turn every value into one type, but the egg's
         // variable rules have to see each value as it was sent.
-        $environment = $input->array('environment');
-        JsonValueGuard::assertScalarPayload($environment);
+        $environment = [];
+        foreach ($input->array('environment') as $key => $value) {
+            throw_unless(is_string($key) && ($value === null || is_scalar($value)), UnexpectedValueException::class, 'Server environment variables must map names to scalar values.');
+            $environment[$key] = $value;
+        }
 
         return [
             'external_id' => $input->filled('external_id') ? $input->string('external_id')->toString() : null,

@@ -6,7 +6,6 @@ namespace Pterodactyl\Services\Daemon;
 
 use Illuminate\Http\Client\Response;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class NodeClient
 {
@@ -17,16 +16,14 @@ final readonly class NodeClient
         return new self(DaemonConnection::forNode($node));
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<mixed> */
     public function systemInformation(?int $version = null): array
     {
         $response = $this->connection->request('GET', '/api/system', [
             'query' => $version === null ? [] : ['v' => $version],
         ]);
-        $data = $this->connection->decode($response);
-        JsonValueGuard::assertPayload($data);
 
-        return $data;
+        return $this->connection->decode($response);
     }
 
     public function update(Node $node): Response

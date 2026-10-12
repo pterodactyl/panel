@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Client;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
@@ -74,7 +73,7 @@ class DatabaseResource extends ClientResource
         }
 
         return $this->item($this->resource, fn (Database $model): array => [
-            'password' => Arr::string(['password' => Crypt::decrypt($model->password)], 'password'),
+            'password' => Crypt::decrypt($model->password),
         ], 'database_password');
     }
 }

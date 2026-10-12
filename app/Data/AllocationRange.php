@@ -32,7 +32,6 @@ final readonly class AllocationRange
         }
 
         if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
-            // SAFETY: the anchored decimal-integer pattern proves the string has an integer representation.
             return (int) $value;
         }
 
