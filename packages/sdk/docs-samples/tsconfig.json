@@ -1,6 +1,6 @@
 {
-    // The README's code samples. `npm run sdk:check` compiles them against the SDK's published types,
-    // which "@pterodactyl/sdk" resolves to from inside this package.
+    // The code samples of README.md and THEMES.md. `npm run sdk:check` compiles them against the SDK's
+    // published types, which "@pterodactyl/sdk" resolves to from inside this package.
     "compilerOptions": {
         "target": "ES2022",
         "module": "ESNext",

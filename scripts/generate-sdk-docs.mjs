@@ -3,12 +3,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Fills the generated parts of packages/sdk/README.md: the view catalogue (views.json and the published
-// view models), the UI primitive reference, the token reference, and every code sample, which is read
-// from packages/sdk/docs-samples where `npm run sdk:check` compiles it. `--check` fails on a stale README.
+// Fills the generated parts of the SDK docs: the view catalogue (views.json and the published view models),
+// the UI primitive reference and the token reference in THEMES.md, and every code sample in either file,
+// read from packages/sdk/docs-samples where `npm run sdk:check` compiles it. `--check` fails on stale docs.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const sdk = resolve(root, 'packages/sdk');
-const readmePath = resolve(sdk, 'README.md');
+const documents = ['README.md', 'THEMES.md'];
 const read = (path) => readFileSync(resolve(sdk, path), 'utf8');
 
 const program = ts.createProgram(
@@ -92,6 +92,32 @@ function literals(property) {
     return null;
 }
 
+/** The slots the engine renders before and after each page (`VIEW_PAGES` and `OPAQUE_PAGES`), by page. */
+function engineSlots() {
+    const source = program.getSourceFile(resolve(sdk, 'types/views/pages.d.ts'));
+    const exports = checker.getExportsOfModule(checker.getSymbolAtLocation(source));
+    const slots = new Map();
+
+    for (const table of ['VIEW_PAGES', 'OPAQUE_PAGES']) {
+        const symbol = exports.find((entry) => entry.name === table);
+
+        if (!symbol) throw new Error(`types/views/pages.d.ts does not export ${table}.`);
+
+        for (const page of checker.getPropertiesOfType(checker.getTypeOfSymbol(symbol))) {
+            const tuple = checker.getTypeOfSymbol(page).getProperty('slots');
+
+            if (tuple) {
+                slots.set(
+                    page.name,
+                    checker.getTypeArguments(checker.getTypeOfSymbol(tuple)).map((slot) => slot.value)
+                );
+            }
+        }
+    }
+
+    return slots;
+}
+
 function viewCatalogue() {
     const views = JSON.parse(read('views.json'));
     const models = properties(declared('types/views/registry.d.ts', 'ViewModels'));
@@ -104,7 +130,8 @@ function viewCatalogue() {
 
         return typeText(property);
     };
-    const row = ([name, view]) => {
+    const engine = engineSlots();
+    const row = (withEngine) => ([name, view]) => {
         const input = inputs.get(name);
         const inputText = input
             ? [...properties(checker.getTypeOfSymbol(input)).values()]
@@ -112,23 +139,28 @@ function viewCatalogue() {
                   .join(', ')
             : '';
         const partNames = parts.get(name) ? literals(parts.get(name)) : null;
+        const around = engine.get(name) ?? [];
 
         return [
             code(name),
             view.context,
             code(model(name)),
             [inputText, partNames ? `parts: ${partNames.map(code).join(', ')}` : ''].filter(Boolean).join('<br>'),
-            view.slots.map(code).join(' '),
+            view.slots
+                .filter((slot) => !around.includes(slot))
+                .map(code)
+                .join(' '),
+            ...(withEngine ? [around.map(code).join(' ')] : []),
             view.fixtures.join(', '),
         ];
     };
-    const table = (title, entries) =>
+    const table = (title, entries, withEngine = false) =>
         [
             `#### ${title}`,
             '',
-            '| View | Context | Model | Inputs and parts | Slots | Fixtures |',
-            '| --- | --- | --- | --- | --- | --- |',
-            ...entries.map(row).map((cells) => `| ${cells.join(' | ')} |`),
+            `| View | Context | Model | Inputs and parts | Slots |${withEngine ? ' Engine slots |' : ''} Fixtures |`,
+            `| --- | --- | --- | --- | --- |${withEngine ? ' --- |' : ''} --- |`,
+            ...entries.map(row(withEngine)).map((cells) => `| ${cells.join(' | ')} |`),
         ].join('\n');
     const all = Object.entries(views);
     const opaquePages = all.filter(([name, view]) => view.kind === 'page' && model(name) === 'OpaqueModel');
@@ -140,7 +172,8 @@ function viewCatalogue() {
         ),
         table(
             'Pages',
-            all.filter(([name, view]) => view.kind === 'page' && model(name) !== 'OpaqueModel')
+            all.filter(([name, view]) => view.kind === 'page' && model(name) !== 'OpaqueModel'),
+            true
         ),
         table(
             'Blocks',
@@ -401,16 +434,21 @@ function fill(readme) {
     );
 }
 
-const readme = readFileSync(readmePath, 'utf8');
-const output = fill(readme);
+const stale = documents.filter((document) => {
+    const path = resolve(sdk, document);
+    const text = readFileSync(path, 'utf8');
+    const output = fill(text);
 
-if (process.argv.includes('--check')) {
-    if (output !== readme) {
-        console.error('packages/sdk/README.md is stale. Run npm run sdk:generate.');
-        process.exit(1);
+    if (output !== text && !process.argv.includes('--check')) {
+        writeFileSync(path, output);
     }
-} else {
-    writeFileSync(readmePath, output);
+
+    return output !== text;
+});
+
+if (stale.length && process.argv.includes('--check')) {
+    console.error(`${stale.map((document) => `packages/sdk/${document}`).join(' and ')} stale. Run npm run sdk:generate.`);
+    process.exit(1);
 }
 
-console.log(`SDK: README samples and references ${output === readme ? 'current' : 'regenerated'}`);
+console.log(`SDK: docs samples and references ${stale.length ? `regenerated in ${stale.join(', ')}` : 'current'}`);

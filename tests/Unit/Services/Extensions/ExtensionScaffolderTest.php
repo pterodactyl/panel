@@ -39,7 +39,7 @@ test('scaffolds a theme with a stylesheet, a layout override, a skin, settings a
     expect(File::get($target.'/src/skins.ts'))->toContain("skin('Button'", "skin('Card', (classic)");
     expect(File::get($target.'/src/views/AppLayout.tsx'))->toContain("data-aurora-layout=''", '<Default />');
     expect(File::get($target.'/src/theme.spec.tsx'))->toContain('preloadTheme(theme)', "renderView('layout.app', { theme, fixture: 'admin' })", '[data-aurora-layout] main');
-    expect(File::get($target.'/README.md'))->toContain('"Themes" chapter', 'p:extension:dev . --watch')->not->toContain('{{');
+    expect(File::get($target.'/README.md'))->toContain('@pterodactyl/sdk/THEMES.md', 'Level 1', 'p:extension:dev . --watch')->not->toContain('{{');
 
     $package = File::json($target.'/package.json');
     expect($package['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'tailwindcss', '@tailwindcss/forms'])

@@ -1,23 +1,26 @@
 # {{name}}
 
-A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`. The "Themes" chapter of the
-SDK README (`node_modules/@pterodactyl/sdk/README.md`) documents everything used here: the
-manifest, the stylesheet and tokens, skins, views, the workbench, the CLI and the test helpers.
+A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`. The themes guide,
+`node_modules/@pterodactyl/sdk/THEMES.md`, goes one level at a time; stop at the level you need.
+
+| To | Edit | Guide |
+| --- | --- | --- |
+| Change colours, fonts, radius and spacing, for dark and light | `src/theme.css` | Level 1 |
+| Restyle buttons, cards, dialogs and the rest of the UI kit | `src/skins.ts` | Level 2 |
+| Change the layout, such as a sidebar | `src/views/AppLayout.tsx` | Level 3 |
+| Rearrange or rebuild pages | `src/views/`, registered in `src/theme.tsx` | Level 4 |
+| Add settings administrators change on the Themes page | `extension.json` | Settings, schemes and branding |
 
 ## Files
 
 | File | |
 | --- | --- |
-| `extension.json` | The manifest. `"type": "theme"` and its `theme` section declare the stylesheet, the colour schemes and the settings administrators change on the Themes page. |
-| `src/theme.css` | The panel stylesheet with this theme's tokens and classes. It starts with `@import '@pterodactyl/sdk/theme-entry.css';` and replaces the panel's stylesheet. Plain Tailwind, no prefix. |
+| `extension.json` | The manifest. `"type": "theme"` and its `theme` section declare the stylesheet, the colour schemes and the settings. |
+| `src/theme.css` | The panel stylesheet with this theme's tokens and classes. Plain Tailwind, no prefix. |
 | `src/theme.tsx` | `defineTheme`: skins for the UI kit and views by name. |
 | `src/skins.ts` | Class recipes for UI primitives such as `Button` and `Card`. |
 | `src/views/AppLayout.tsx` | A layer over classic's app layout. |
 | `src/theme.spec.tsx` | Renders views and primitives with the theme through `@pterodactyl/sdk/testing`. |
-
-Each setting writes a CSS token (`token`), an `<html>` attribute (`attribute`), or both, before the
-page renders. `npm run types` writes `src/theme-types.ts`, whose `ThemeSettings` types
-`useThemeSettings<ThemeSettings>()`.
 
 ## Scripts
 
@@ -42,4 +45,5 @@ php {{artisan}} p:extension:dev . --watch
 
 The first command builds, installs and enables the theme. While the last one runs on a panel with
 `APP_DEBUG=true`, a change to `src/theme.css` swaps into open pages without a reload, and any other
-change reloads them. `/panel/theme-workbench` renders every view and primitive from fixtures.
+change reloads them. `npx pterodactyl-theme list` lists every view, and `npx pterodactyl-theme eject <view>`
+copies classic's source for one into `src/views`.

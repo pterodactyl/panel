@@ -1,7 +1,7 @@
 /*
  * The panel stylesheet with every class the panel uses, then this theme's own. Write plain
- * Tailwind: there is no prefix, and anything here can retune the panel's tokens. The SDK
- * README lists every token under "Tokens".
+ * Tailwind: there is no prefix, and anything here can retune the panel's tokens. Level 1 of
+ * the SDK's THEMES.md covers this file, and its reference lists every token.
  */
 @import '@pterodactyl/sdk/theme-entry.css';
 

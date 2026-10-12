@@ -7,18 +7,32 @@ import { build } from 'vite';
 import { expect, it } from 'vitest';
 import { defineThemeConfig } from './vite.mjs';
 
-// The README's sample theme: its types are checked by `npm run sdk:check` and its tests run with the suite.
-const aurora = resolve(__dirname, 'docs-samples/aurora');
+// The docs' sample themes: their types are checked by `npm run sdk:check` and their tests run with the suite.
+const samples = resolve(__dirname, 'docs-samples');
+const aurora = resolve(samples, 'aurora');
+
+async function compile(path: string): Promise<string> {
+    const from = resolve(samples, path);
+    const { css } = await postcss([tailwind()]).process(readFileSync(from, 'utf8'), { from });
+
+    expect(Buffer.byteLength(css)).toBeLessThan(250 * 1024);
+
+    return css;
+}
 
 it('compiles the sample theme stylesheet within the stylesheet budget', async () => {
-    const from = resolve(aurora, 'src/theme.css');
-    const { css } = await postcss([tailwind()]).process(readFileSync(from, 'utf8'), { from });
+    const css = await compile('aurora/src/theme.css');
 
     expect(css).toContain("font-family: 'Aurora Sans'");
     expect(css).toMatch(/\.glass \{/);
     expect(css).toContain("[data-aurora-sidebar='right']");
-    expect(Buffer.byteLength(css)).toBeLessThan(250 * 1024);
 }, 60_000);
+
+it('compiles the stylesheets of the level samples', async () => {
+    expect(await compile('level1-css/src/theme.css')).toContain("font-family: 'Sunrise Sans'");
+    expect(await compile('level2-skins/src/theme.css')).toContain("[data-ui='button'][data-color='red']");
+    expect(await compile('settings/src/theme.css')).toContain("[data-sunrise-density='compact']");
+}, 120_000);
 
 it('builds the sample theme entry and records the views it overrides', async () => {
     const outDir = mkdtempSync(resolve(tmpdir(), 'aurora-build-'));

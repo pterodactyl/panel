@@ -1,0 +1,48 @@
+/* The panel stylesheet with every class the panel uses. Everything after it is this theme's. */
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* A font shipped with the theme: the build copies the file beside dist/theme.css. */
+@font-face {
+    font-family: 'Sunrise Sans';
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('./fonts/sunrise-sans.woff2') format('woff2');
+}
+
+@theme {
+    --font-sans: 'Sunrise Sans', system-ui, sans-serif;
+    --font-header: 'Sunrise Sans', system-ui, sans-serif;
+}
+
+/* Both schemes. Every p-*, m-*, gap-* and w-* class multiplies --spacing (Tailwind's is 0.25rem). */
+:root {
+    --radius: 0.75rem;
+    --spacing: 0.225rem;
+    --layout-content-width: 80rem;
+}
+
+.dark {
+    --background: oklch(0.19 0.02 45);
+    --foreground: oklch(0.94 0.01 70);
+    --card: oklch(0.24 0.025 45);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.28 0.03 45);
+    --popover-foreground: var(--foreground);
+    --muted-foreground: oklch(0.72 0.02 60);
+    --border: oklch(0.34 0.03 45);
+    --primary: oklch(0.74 0.16 55);
+    --primary-foreground: oklch(0.2 0.03 45);
+}
+
+.light {
+    --background: oklch(0.98 0.01 80);
+    --foreground: oklch(0.24 0.03 45);
+    --card: oklch(1 0 0);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.96 0.015 80);
+    --popover-foreground: var(--foreground);
+    --muted-foreground: oklch(0.5 0.02 60);
+    --border: oklch(0.9 0.015 80);
+    --primary: oklch(0.62 0.17 50);
+    --primary-foreground: oklch(0.99 0 0);
+}

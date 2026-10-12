@@ -143,7 +143,7 @@ class ExtensionScaffolder
 
     /**
      * A theme with a stylesheet for both schemes, a skin, a layout override, four settings and a
-     * test, laid out as the SDK README's theme chapter describes. It needs no PHP; a provider can be
+     * test, laid out as the SDK's THEMES.md describes. It needs no PHP; a provider can be
      * added like an extension's.
      *
      * @param  array<string, string>  $replacements  stub placeholder => literal substitution

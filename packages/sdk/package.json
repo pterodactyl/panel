@@ -45,6 +45,7 @@
         "theme-runtime-stub.mjs",
         "vite.mjs",
         "README.md",
+        "THEMES.md",
         "testing-runtime",
         "vitest.mjs",
         "vitest-setup.mjs",
