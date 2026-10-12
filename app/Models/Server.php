@@ -358,6 +358,33 @@ class Server extends Model implements Identifiable
     }
 
     /**
+     * The server's activity without disabled events. With activity.hide_admin_activity set,
+     * entries by root admins who are neither the owner nor a subuser are left out.
+     *
+     * @return Builder<ActivityLog>
+     */
+    public function visibleActivity(): Builder
+    {
+        $query = $this->activity()->getQuery()->select('activity_logs.*')
+            ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS);
+
+        if (config('activity.hide_admin_activity')) {
+            $subusers = $this->subusers()->pluck('user_id')->merge([$this->owner_id]);
+
+            $query->leftJoin('users', function (JoinClause $join): void {
+                $join->on('users.id', 'activity_logs.actor_id')
+                    ->where('activity_logs.actor_type', (new User)->getMorphClass());
+            })->where(function (Builder $builder) use ($subusers): void {
+                $builder->whereNull('users.id')
+                    ->orWhere('users.root_admin', 0)
+                    ->orWhereIn('users.id', $subusers);
+            });
+        }
+
+        return $query;
+    }
+
+    /**
      * Checks if the server is currently in a user-accessible state. If not, an
      * exception is raised. This should be called whenever something needs to make
      * sure the server is not in a weird state that should block user access.

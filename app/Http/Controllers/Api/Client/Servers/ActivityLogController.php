@@ -16,7 +16,6 @@ use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Client\ActivityLogResource;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Activity\ActivityLogQueryService;
 use Pterodactyl\Support\ActivityLogFilters;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -38,11 +37,11 @@ class ActivityLogController extends ClientApiController
     #[QueryParam('sort', 'string', 'Sort activity by timestamp. Prefix with "-" for descending order.', required: false, example: '-timestamp', enum: ['timestamp', '-timestamp'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports actor.', required: false, example: 'actor')]
     #[ResponseFromResource(ActivityLogResource::class, ActivityLog::class, description: 'Server activity logs returned.', collection: true, factoryStates: ['withActor'], resourceKey: 'activity_log', paginate: 25, include: ['actor'])]
-    public function __invoke(GetActivityLogsRequest $request, ActivityLogQueryService $logs, Server $server): ApiResourceCollection
+    public function __invoke(GetActivityLogsRequest $request, Server $server): ApiResourceCollection
     {
         $this->authorize(Permissions::ActivityRead->value, $server);
 
-        $query = QueryBuilder::for($logs->forServer($server))
+        $query = QueryBuilder::for($server->visibleActivity())
             ->allowedSorts(['timestamp'])
             ->allowedFilters([AllowedFilter::partial('event'), ActivityLogFilters::actor($request->string('filter.user')->toString()), ActivityLogFilters::actorId($request->integer('filter.user_id')), AllowedFilter::exact('event_name', 'event')]);
 

@@ -61,6 +61,43 @@ class ActivityLog extends Model implements Identifiable
     }
 
     /**
+     * The distinct events and acting users in a log, so a client can offer filter options
+     * that match something.
+     *
+     * @param  Builder<self>  $query
+     * @return array{events: list<string>, users: list<array{id: int, username: string, email: string}>}
+     */
+    public static function facets(Builder $query): array
+    {
+        $query = (clone $query)->whereNotIn('activity_logs.event', self::DISABLED_EVENTS);
+        $events = (clone $query)->select('activity_logs.event')
+            ->distinct()->orderBy('activity_logs.event')->withoutEagerLoads()->get()
+            ->map(fn (self $log): string => $log->event)
+            ->all();
+
+        $actorIds = (clone $query)
+            ->where('activity_logs.actor_type', (new User)->getMorphClass())
+            ->whereNotNull('activity_logs.actor_id')
+            ->select('activity_logs.actor_id')
+            ->distinct()
+            ->pluck('actor_id')
+            ->all();
+
+        $users = User::query()
+            ->whereIn('id', $actorIds)
+            ->orderBy('username')
+            ->get(['id', 'username', 'email'])
+            ->map(fn (User $user): array => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+            ])
+            ->all();
+
+        return ['events' => array_values($events), 'users' => array_values($users)];
+    }
+
+    /**
      * @return MorphTo<IlluminateModel, $this>
      */
     public function actor(): MorphTo
