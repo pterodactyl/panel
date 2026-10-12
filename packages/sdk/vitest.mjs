@@ -15,6 +15,7 @@ export function pterodactylTestAliases({ root = process.cwd() } = {}) {
     return [
         {find: /^@pterodactyl\/sdk\/testing$/, replacement: fileURLToPath(new URL('./testing-runtime/testing.js', import.meta.url))},
         {find: /^@pterodactyl\/sdk\/api$/, replacement: fileURLToPath(new URL('./testing-runtime/api.js', import.meta.url))},
+        {find: /^@pterodactyl\/sdk\/theme$/, replacement: fileURLToPath(new URL('./testing-runtime/theme.js', import.meta.url))},
         {find: /^@pterodactyl\/sdk$/, replacement: fileURLToPath(new URL('./testing-runtime/sdk.js', import.meta.url))},
         // Resolve peers from the consumer even when a local SDK dependency is symlinked.
         ...shared.map(id => ({ find: new RegExp(`^${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), replacement: require.resolve(id) })),

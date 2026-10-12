@@ -1,47 +1,5 @@
-import { isObject } from '@/lib/objects';
-import type { ComponentType } from 'react';
+import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
 
-export const COMPONENT_NAMES = [
-    'dashboard.serverCard',
-    'server.files.details',
-    'server.files.editor',
-    'server.files.manager',
-] as const;
-export type ComponentName = (typeof COMPONENT_NAMES)[number];
-
-export interface ServerCardMetric {
-    readonly value: number;
-    readonly limit: number;
-    readonly alarm: boolean;
-}
-export type ServerCardState =
-    | { readonly kind: 'loading' }
-    | {
-          readonly kind: 'unavailable';
-          readonly reason:
-              | 'suspended'
-              | 'connection-error'
-              | 'maintenance'
-              | 'transferring'
-              | 'installing'
-              | 'restoring-backup'
-              | 'unavailable';
-      }
-    | {
-          readonly kind: 'ready';
-          readonly power: 'offline' | 'stopped' | 'starting' | 'running' | 'stopping';
-          readonly cpu: ServerCardMetric;
-          readonly memory: ServerCardMetric;
-          readonly disk: ServerCardMetric;
-      };
-export interface ServerCardModel {
-    readonly identifier: string;
-    readonly uuid: string;
-    readonly name: string;
-    readonly description: string | null;
-    readonly address: string | null;
-    readonly state: ServerCardState;
-}
 export interface FileDetailsModel {
     readonly name: string;
     readonly kind: 'file' | 'directory' | 'archive' | 'symlink';
@@ -126,46 +84,19 @@ export interface FileManagerModel {
     readonly permissions: FileManagerPermissions;
     readonly actions: FileManagerActions;
 }
-export interface ComponentModels {
-    'dashboard.serverCard': ServerCardModel;
-    'server.files.details': FileDetailsModel;
-    'server.files.editor': FileEditorModel;
-    'server.files.manager': FileManagerModel;
-}
-export interface ComponentPartNames {
-    'dashboard.serverCard': 'identity' | 'address' | 'metrics';
-    'server.files.details': 'icon' | 'name' | 'size' | 'modified';
-    'server.files.editor': 'notice' | 'editor' | 'language' | 'actions';
-    'server.files.manager': 'toolbar' | 'list' | 'selection';
-}
-export type ComponentPartProps<TName extends ComponentName> = { readonly model: ComponentModels[TName] };
-export type ComponentParts<TName extends ComponentName> = {
-    readonly [TPart in ComponentPartNames[TName]]: ComponentType<ComponentPartProps<TName>>;
-};
-export interface DefaultComponentProps<TName extends ComponentName> {
-    className?: string;
-    parts?: Partial<ComponentParts<TName>>;
-}
-export interface ReplacementProps<TName extends ComponentName> extends ComponentPartProps<TName> {
-    readonly Default: ComponentType<DefaultComponentProps<TName>>;
-    readonly parts: ComponentParts<TName>;
-}
-export type ReplacementImporter<TName extends ComponentName> = () => Promise<{
-    default: ComponentType<ReplacementProps<TName>>;
-}>;
-export type ComponentReplacement<TName extends ComponentName> = TName extends ComponentName
-    ? ComponentType<ReplacementProps<TName>> | { load: ReplacementImporter<TName> }
-    : never;
 
-export function isComponentName(name: string): name is ComponentName {
-    return (COMPONENT_NAMES as readonly string[]).includes(name);
-}
-
-export function isReplacementComponent<T>(value: T): value is T & ComponentType<never> {
-    return (
-        value instanceof Function ||
-        (isObject(value) &&
-            '$$typeof' in value &&
-            (value.$$typeof === Symbol.for('react.memo') || value.$$typeof === Symbol.for('react.forward_ref')))
-    );
+declare module './registry' {
+    interface ViewModels {
+        'server.files.details': FileDetailsModel;
+        'server.files.editor': FileEditorModel;
+        'server.files.manager': FileManagerModel;
+    }
+    interface ViewInputs {
+        'server.files.details': { readonly file: FileObject };
+    }
+    interface ViewPartNames {
+        'server.files.details': 'icon' | 'name' | 'size' | 'modified';
+        'server.files.editor': 'notice' | 'editor' | 'language' | 'actions';
+        'server.files.manager': 'toolbar' | 'list' | 'selection';
+    }
 }

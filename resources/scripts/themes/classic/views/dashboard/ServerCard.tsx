@@ -1,25 +1,11 @@
-import { createContext, useContext } from 'react';
-import { Cpu, EthernetPort, HardDrive, MemoryStick, Server as ServerIcon } from 'lucide-react';
-import Spinner from '@/components/elements/Spinner';
-import { ServerRowMetricDescription, ServerRowMetricIcon } from './ServerRowMetrics';
-import { bytesToString } from '@/lib/formatters';
-import { cn } from '@/lib/cn';
-import Slot from '@/extensions/Slot';
-import type { AccountServer } from '@/api/account/servers/queries';
-import type {
-    ComponentPartProps,
-    ComponentParts,
-    DefaultComponentProps,
-    ServerCardModel,
-    ServerCardState,
-} from '@/extensions/componentTypes';
+import { Cpu, EthernetPort, HardDrive, MemoryStick, Server as ServerIcon, type LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { bytesToString, cn, Spinner } from '@/sdk';
+import { Slot, type ServerCardState, type ViewPartProps, type ViewParts, type ViewProps } from '@/sdk/theme';
 
-export const ServerCardContext = createContext<{ model: ServerCardModel; server: AccountServer } | null>(null);
-type PartProps = ComponentPartProps<'dashboard.serverCard'>;
+type PartProps = ViewPartProps<'dashboard.serverCard'>;
 
-function Identity({ model }: PartProps) {
-    const context = useContext(ServerCardContext)!;
-
+function Identity({ model, server }: PartProps) {
     return (
         <div className='flex items-center col-span-12 sm:col-span-5 lg:col-span-6'>
             <div className='icon mr-4'>
@@ -31,7 +17,7 @@ function Identity({ model }: PartProps) {
                     <p className='text-sm text-muted-foreground wrap-break-word line-clamp-2'>{model.description}</p>
                 )}
             </div>
-            <Slot name='dashboard.serverRow.name.after' data={context.server} />
+            <Slot name='dashboard.serverRow.name.after' data={server} />
         </div>
     );
 }
@@ -79,6 +65,17 @@ function UnavailableBadge({ reason }: { reason: UnavailableReason }) {
     );
 }
 
+const MetricIcon = ({ alarm, icon: IconComponent }: { alarm: boolean; icon: LucideIcon }) => (
+    <IconComponent
+        size='1em'
+        className={cn('inline-block shrink-0', alarm ? 'text-destructive' : 'text-muted-foreground')}
+    />
+);
+
+const MetricDescription = ({ alarm, children }: { alarm: boolean; children: ReactNode }) => (
+    <p className={cn('text-sm ml-2', alarm ? 'text-destructive' : 'text-muted-foreground')}>{children}</p>
+);
+
 function MetricsContent({ state }: { state: ServerCardState }) {
     if (state.kind === 'loading') {
         return <Spinner size='small' />;
@@ -115,8 +112,8 @@ function MetricsContent({ state }: { state: ServerCardState }) {
             ].map(({ id, icon, metric, value, limit }) => (
                 <div className='flex-1 ml-4 sm:block hidden' key={id}>
                     <div className='flex justify-center'>
-                        <ServerRowMetricIcon icon={icon} $alarm={metric.alarm} />
-                        <ServerRowMetricDescription $alarm={metric.alarm}>{value}</ServerRowMetricDescription>
+                        <MetricIcon icon={icon} alarm={metric.alarm} />
+                        <MetricDescription alarm={metric.alarm}>{value}</MetricDescription>
                     </div>
                     <p className='text-xs text-muted-foreground text-center mt-1'>of {limit}</p>
                 </div>
@@ -133,23 +130,16 @@ function Metrics({ model }: PartProps) {
     );
 }
 
-export const serverCardParts: ComponentParts<'dashboard.serverCard'> = {
-    identity: Identity,
-    address: Address,
-    metrics: Metrics,
-};
+const serverCardParts: ViewParts<'dashboard.serverCard'> = { identity: Identity, address: Address, metrics: Metrics };
 
-export function DefaultServerCard({ className, parts }: DefaultComponentProps<'dashboard.serverCard'>) {
-    const { model } = useContext(ServerCardContext)!;
-    const IdentityPart = parts?.identity ?? Identity;
-    const AddressPart = parts?.address ?? Address;
-    const MetricsPart = parts?.metrics ?? Metrics;
-
+export default function ServerCard({ model, server, parts, className }: ViewProps<'dashboard.serverCard'>) {
     return (
         <div className={cn('grid grid-cols-12 gap-4', className)}>
-            <IdentityPart model={model} />
-            <AddressPart model={model} />
-            <MetricsPart model={model} />
+            <parts.identity model={model} server={server} />
+            <parts.address model={model} server={server} />
+            <parts.metrics model={model} server={server} />
         </div>
     );
 }
+
+ServerCard.parts = serverCardParts;

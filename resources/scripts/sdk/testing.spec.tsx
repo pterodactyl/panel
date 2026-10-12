@@ -1,16 +1,16 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
-import type { ComponentPartProps, ReplacementProps } from '@/extensions/componentTypes';
+import type { ViewPartProps, ViewProps } from '@/views/registry';
 import {
-    createComponentTestHost,
     createTestFileEditor,
     createTestFileManager,
     createTestFileManagerEntry,
-    type ComponentTestHost,
+    createTestServerCard,
+    createViewTestHost,
 } from './testing';
 
-let host: ComponentTestHost<'server.files.editor'> | ComponentTestHost<'server.files.manager'> | undefined;
+let host: { dispose(): void } | undefined;
 
 afterEach(() => {
     cleanup();
@@ -18,11 +18,11 @@ afterEach(() => {
     host = undefined;
 });
 
-it('renders an editor replacement around native parts with a fixture model', () => {
+it('renders an editor layer around native parts with a fixture model', async () => {
     const save = vi.fn(async () => true);
     const change = vi.fn();
 
-    function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
+    function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
         return (
             <textarea
                 aria-label={model.name}
@@ -32,18 +32,18 @@ it('renders an editor replacement around native parts with a fixture model', () 
         );
     }
 
-    function Editor({ Default }: ReplacementProps<'server.files.editor'>) {
+    function Editor({ Default }: ViewProps<'server.files.editor'>) {
         return <Default className='custom-editor' parts={{ editor: Buffer }} />;
     }
 
-    const mounted = createComponentTestHost('server.files.editor', {
+    const mounted = await createViewTestHost('server.files.editor', {
         model: createTestFileEditor({ name: '.pteroignore', content: 'logs/*', save, change }),
     });
 
     host = mounted;
     render(<Editor {...mounted.props} />, { wrapper: mounted.Wrapper });
 
-    expect(screen.getByLabelText('.pteroignore')).toHaveValue('logs/*');
+    expect(await screen.findByLabelText('.pteroignore')).toHaveValue('logs/*');
     expect(screen.getByText(/excluded from backups/)).toBeVisible();
     fireEvent.change(screen.getByLabelText('.pteroignore'), { target: { value: 'cache/*' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save Content' }));
@@ -52,16 +52,21 @@ it('renders an editor replacement around native parts with a fixture model', () 
     expect(save).toHaveBeenCalledTimes(1);
 });
 
-it('hides the native save action from a read-only editor fixture', () => {
-    const mounted = createComponentTestHost('server.files.editor', {
-        model: createTestFileEditor({ readOnly: true }),
-    });
+it('hides the native save action from a read-only editor fixture', async () => {
+    const mounted = await createViewTestHost('server.files.editor', { fixture: 'readOnly' });
 
     host = mounted;
     const { actions: Actions } = mounted.props.parts;
 
-    render(<Actions model={mounted.props.model} />, { wrapper: mounted.Wrapper });
+    render(
+        <>
+            <Actions model={mounted.props.model} />
+            <span>rendered</span>
+        </>,
+        { wrapper: mounted.Wrapper }
+    );
 
+    await screen.findByText('rendered');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
 });
 
@@ -75,12 +80,12 @@ it('renders the native file browser from a fixture model without issuing core qu
         ],
         selection: ['app.yml'],
     });
-    const mounted = createComponentTestHost('server.files.manager', {
+    const mounted = await createViewTestHost('server.files.manager', {
         model: { ...model, actions: { ...model.actions, select } },
     });
 
     host = mounted;
-    function Browser({ Default }: ReplacementProps<'server.files.manager'>) {
+    function Browser({ Default }: ViewProps<'server.files.manager'>) {
         return <Default />;
     }
 
@@ -99,4 +104,27 @@ it('renders the native file browser from a fixture model without issuing core qu
 
     fireEvent.click(screen.getAllByRole('checkbox')[0]);
     expect(select).toHaveBeenCalledWith(['plugins', 'app.yml']);
+});
+
+it('gives a server card layer the classic parts and the server it was rendered for', async () => {
+    const mounted = await createViewTestHost('dashboard.serverCard', {
+        model: createTestServerCard({ name: 'Survival', identifier: 'abc' }),
+    });
+
+    host = mounted;
+    function Card({ Default, parts, model, server }: ViewProps<'dashboard.serverCard'>) {
+        return (
+            <>
+                <span>{server.attributes.identifier}</span>
+                <Default parts={{ metrics: () => <span>{`metrics of ${model.name}`}</span> }} />
+                <parts.address model={model} server={server} />
+            </>
+        );
+    }
+
+    render(<Card {...mounted.props} />, { wrapper: mounted.Wrapper });
+
+    expect(await screen.findByText('metrics of Survival')).toBeVisible();
+    expect(screen.getByText('abc')).toBeVisible();
+    expect(screen.getAllByText('127.0.0.1:25565')).toHaveLength(2);
 });

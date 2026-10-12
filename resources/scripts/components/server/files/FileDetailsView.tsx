@@ -1,18 +1,15 @@
-import { createContext, useContext } from 'react';
+import { createElement, useMemo } from 'react';
 import { FileText, FileArchive, FileInput, Folder } from 'lucide-react';
 import Icon from '@/components/elements/Icon';
 import dayjs from '@/lib/dayjs';
 import { bytesToString } from '@/lib/formatters';
 import { cn } from '@/lib/cn';
-import type {
-    ComponentPartProps,
-    ComponentParts,
-    DefaultComponentProps,
-    FileDetailsModel,
-} from '@/extensions/componentTypes';
+import { fileObjectKind, type FileObject } from '@/api/server/files/queries';
+import { createTestFileDetails } from '@/views/fixtures';
+import type { FileDetailsModel } from '@/views/files';
+import { defineView, registerBaseView, type ViewPartProps, type ViewParts, type ViewProps } from '@/views/registry';
 
-export const FileDetailsContext = createContext<FileDetailsModel | null>(null);
-type PartProps = ComponentPartProps<'server.files.details'>;
+type PartProps = ViewPartProps<'server.files.details'>;
 function FileIcon({ model }: PartProps) {
     const icons = { file: FileText, directory: Folder, archive: FileArchive, symlink: FileInput };
 
@@ -43,25 +40,47 @@ function Modified({ model }: PartProps) {
     );
 }
 
-export const fileDetailsParts: ComponentParts<'server.files.details'> = {
+export const fileDetailsParts: ViewParts<'server.files.details'> = {
     icon: FileIcon,
     name: Name,
     size: Size,
     modified: Modified,
 };
-export function DefaultFileDetails({ className, parts }: DefaultComponentProps<'server.files.details'>) {
-    const model = useContext(FileDetailsContext)!;
-    const IconPart = parts?.icon ?? FileIcon;
-    const NamePart = parts?.name ?? Name;
-    const SizePart = parts?.size ?? Size;
-    const ModifiedPart = parts?.modified ?? Modified;
-
+export function DefaultFileDetails({ className, parts, model, file }: ViewProps<'server.files.details'>) {
     return (
         <div className={cn('flex flex-1 items-center min-w-0', className)}>
-            <IconPart model={model} />
-            <NamePart model={model} />
-            <SizePart model={model} />
-            <ModifiedPart model={model} />
+            <parts.icon model={model} file={file} />
+            <parts.name model={model} file={file} />
+            <parts.size model={model} file={file} />
+            <parts.modified model={model} file={file} />
         </div>
     );
 }
+
+DefaultFileDetails.parts = fileDetailsParts;
+
+function useFileDetailsModel({ file }: { readonly file: FileObject }): FileDetailsModel {
+    return useMemo(
+        () => ({
+            name: file.attributes.name,
+            kind: fileObjectKind(file),
+            size: file.attributes.size ?? 0,
+            modifiedAt: file.attributes.modified_at,
+        }),
+        [file]
+    );
+}
+
+export const fileDetailsView = defineView('server.files.details', {
+    context: 'server',
+    use: useFileDetailsModel,
+    placeholder: createElement('div', {
+        className: 'h-5 w-full animate-pulse rounded-sm bg-muted',
+        'aria-label': 'Loading file details',
+    }),
+    fixtures: {
+        file: () => createTestFileDetails(),
+        directory: () => createTestFileDetails({ name: 'plugins', kind: 'directory', size: 0 }),
+    },
+});
+registerBaseView('classic', 'classic', 'server.files.details', DefaultFileDetails);

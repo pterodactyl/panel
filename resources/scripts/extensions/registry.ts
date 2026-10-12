@@ -1,4 +1,10 @@
-import { lazy, useSyncExternalStore, type ComponentType, type LazyExoticComponent } from 'react';
+import {
+    lazy,
+    useSyncExternalStore,
+    type ComponentType,
+    type JSXElementConstructor,
+    type LazyExoticComponent,
+} from 'react';
 import type { Server } from '@/api/server/types';
 import type { ExtensionConfig } from '@/sdk';
 import type { AppForm } from '@/components/form';
@@ -12,13 +18,15 @@ import type { ExtensionResourceContext } from './resourceContext';
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from './tableTypes';
 import { EXTENSION_FORM_NAMES, type ExtensionFormName, type FormExtensionRegistration } from './formTypes';
 import {
-    isComponentName,
-    isReplacementComponent,
-    type ComponentName,
-    type ComponentReplacement,
-} from './componentTypes';
+    getViewDefinition,
+    isViewComponent,
+    isViewContext,
+    registerBaseView,
+    registerViewDefinition,
+    type ExtensionViewDefinition,
+} from '@/views/registry';
 
-// Only type imports from application modules.
+// Only type imports from application modules, apart from the view registry.
 
 /** Every anchor a core <Slot/> renders; registering an unknown name fails at load time. */
 export const SLOT_NAMES = [
@@ -371,20 +379,25 @@ export interface SiteExtensionEntry {
     translations?: string | null;
     config?: ExtensionConfig;
     screens?: ExtensionScreenDefinition[];
-    components?: ComponentName[];
+    /** Views the extension overrides (`ui.views`); each shows its placeholder while the bundle loads. */
+    views?: string[];
     development?: { url: string; version: string } | null;
 }
 interface StagedScreen {
     importer: ScreenImporter;
     options: Readonly<ScreenOptions>;
 }
+export type ExtensionViewOverride =
+    | JSXElementConstructor<never>
+    | { readonly load: () => Promise<{ default: JSXElementConstructor<never> }> };
 export interface ExtensionRegistryBatch {
     closed: boolean;
     slots: BatchedSlotRegistration[];
     screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
     forms: FormExtensionRegistration[];
-    components: Map<ComponentName, ComponentReplacement<ComponentName>>;
+    views: Map<string, ExtensionViewOverride>;
+    definitions: Map<string, ExtensionViewDefinition>;
 }
 export interface ExtensionRuntimeState {
     id: string;
@@ -406,7 +419,8 @@ const screenImplementations = new Map<
     { component: LazyExoticComponent<ComponentType<ScreenComponentProps>>; options: Readonly<ScreenOptions> }
 >();
 const emptyConfig: ExtensionConfig = Object.freeze({});
-const componentReplacements = new Map<ComponentName, ComponentReplacement<ComponentName>>();
+/** Committed view overrides, keyed by extension id and view name. */
+const viewOverrides = new Map<string, ExtensionViewOverride>();
 const loadStates = new Map<string, ExtensionRuntimeState>();
 
 /** Failures of mounted extension code, by extension and then by context, the latest last. */
@@ -469,12 +483,13 @@ export function getLoadableExtensions(): readonly SiteExtensionEntry[] | undefin
     return entries;
 }
 
-export function getComponentOwner(name: ComponentName): string | undefined {
-    return entries?.find((entry) => entry.components?.includes(name))?.id;
+/** Extensions that declare an override of the view, in the configured order. */
+export function getViewOwners(name: string): readonly string[] {
+    return (entries ?? []).filter((entry) => entry.views?.includes(name)).map((entry) => entry.id);
 }
 
-export function getComponentReplacement(name: ComponentName): ComponentReplacement<ComponentName> | undefined {
-    return componentReplacements.get(name);
+export function getViewOverride(extensionId: string, name: string): ExtensionViewOverride | undefined {
+    return viewOverrides.get(`${extensionId}:${name}`);
 }
 
 export function getExtensionStates(): readonly ExtensionRuntimeState[] {
@@ -579,37 +594,14 @@ type ScreenRules = {
     claimed: Map<string, string>;
 };
 
-/** Every extension that declares each component replacement, so a contested name fails all its claimants. */
-function collectComponentClaims(advertised: readonly SiteExtensionEntry[]): Map<string, Set<string>> {
-    const componentClaims = new Map<string, Set<string>>();
+const VIEW_NAME = /^[a-z][a-zA-Z0-9]*(?:\.[a-z][a-zA-Z0-9]*)+$/;
 
-    for (const entry of advertised) {
-        for (const name of entry.components ?? []) {
-            const owners = componentClaims.get(name) ?? new Set<string>();
+/** Several extensions may override one view; they stack in the configured order. */
+function assertViewNames(entry: SiteExtensionEntry): void {
+    const names = entry.views ?? [];
 
-            owners.add(entry.id);
-            componentClaims.set(name, owners);
-        }
-    }
-
-    return componentClaims;
-}
-
-function assertComponentClaims(entry: SiteExtensionEntry, componentClaims: Map<string, Set<string>>): void {
-    const names = entry.components ?? [];
-
-    if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
-        throw new Error('Invalid or duplicate component replacement name.');
-    }
-
-    for (const name of names) {
-        const owners = componentClaims.get(name)!;
-
-        if (owners.size > 1) {
-            throw new Error(
-                `Component "${name}" is declared by competing extensions: ${[...owners].sort().join(', ')}.`
-            );
-        }
+    if (new Set(names).size !== names.length || names.some((name) => !VIEW_NAME.test(name))) {
+        throw new Error('Invalid or duplicate view name.');
     }
 }
 
@@ -687,12 +679,8 @@ function prepareScreen(
 }
 
 /** Validates an entry's metadata and registers its screens; throws without registering anything when invalid. */
-function registerEntryScreens(
-    entry: SiteExtensionEntry,
-    componentClaims: Map<string, Set<string>>,
-    rules: ScreenRules
-): void {
-    assertComponentClaims(entry, componentClaims);
+function registerEntryScreens(entry: SiteExtensionEntry, rules: ScreenRules): void {
+    assertViewNames(entry);
 
     const ids = new Set<string>();
     const paths = new Map<string, string>();
@@ -716,7 +704,6 @@ export function prepareExtensions(
 
     const accepted: SiteExtensionEntry[] = [];
     const seenIds = new Set<string>();
-    const componentClaims = collectComponentClaims(advertised);
     const rules: ScreenRules = { corePaths, resourcePaths, claimed: new Map() };
 
     for (const entry of advertised) {
@@ -726,7 +713,7 @@ export function prepareExtensions(
 
         seenIds.add(entry.id);
         try {
-            registerEntryScreens(entry, componentClaims, rules);
+            registerEntryScreens(entry, rules);
             accepted.push(entry);
             setExtensionState({ id: entry.id, status: 'loading' });
         } catch (error) {
@@ -746,7 +733,15 @@ function assertBatchOpen(batch: ExtensionRegistryBatch): void {
 }
 
 export function createExtensionRegistryBatch(): ExtensionRegistryBatch {
-    return { closed: false, slots: [], screens: new Map(), columns: [], forms: [], components: new Map() };
+    return {
+        closed: false,
+        slots: [],
+        screens: new Map(),
+        columns: [],
+        forms: [],
+        views: new Map(),
+        definitions: new Map(),
+    };
 }
 
 /** Keeps registrations in the order the panel advertises their extensions; the sort is stable. */
@@ -763,7 +758,7 @@ function mergeByEntryOrder<TKey, TItem extends { extensionId: string }>(
     );
 }
 
-/** Every declared screen and component must have an implementation before a batch commits. */
+/** Every declared screen and view must have an implementation before a batch commits. */
 function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch): void {
     for (const screen of screens.filter((screen) => screen.extensionId === extensionId)) {
         const staged = batch.screens.get(screen.id);
@@ -777,9 +772,15 @@ function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch)
         }
     }
 
-    for (const name of entries?.find((entry) => entry.id === extensionId)?.components ?? []) {
-        if (!batch.components.has(name)) {
-            throw new Error(`Missing implementation for component "${name}"`);
+    for (const name of entries?.find((entry) => entry.id === extensionId)?.views ?? []) {
+        if (!batch.views.has(name)) {
+            throw new Error(`Missing implementation for view "${name}"`);
+        }
+    }
+
+    for (const name of batch.definitions.keys()) {
+        if (getViewDefinition(name)) {
+            throw new Error(`View "${name}" is already defined.`);
         }
     }
 }
@@ -823,37 +824,65 @@ export function commitExtensionRegistryBatch(extensionId: string, batch: Extensi
         });
     }
 
-    for (const [name, replacement] of batch.components) {
-        componentReplacements.set(name, replacement);
+    for (const [name, override] of batch.views) {
+        viewOverrides.set(`${extensionId}:${name}`, override);
+    }
+
+    for (const [name, { Default, ...definition }] of batch.definitions) {
+        registerViewDefinition({ ...definition, name, kind: 'block', extensionId });
+        registerBaseView(extensionId, 'extension', name, Default);
     }
 
     loadStates.set(extensionId, Object.freeze({ id: extensionId, status: 'loaded' }));
     publish();
 }
 
-export function registerComponentReplacement<TName extends ComponentName>(
+export function registerViewOverride(
     extensionId: string,
-    name: TName,
-    replacement: ComponentReplacement<TName>,
+    name: string,
+    override: ExtensionViewOverride,
     batch: ExtensionRegistryBatch
 ): void {
     assertBatchOpen(batch);
-    if (!isComponentName(name) || getComponentOwner(name) !== extensionId) {
-        throw new Error(`Component "${name}" must be declared in this extension's ui.components.`);
+    if (!entries?.find((entry) => entry.id === extensionId)?.views?.includes(name)) {
+        throw new Error(`View "${name}" must be declared in this extension's ui.views.`);
     }
 
-    if (batch.components.has(name)) {
-        throw new Error(`Duplicate implementation for component "${name}".`);
+    if (batch.views.has(name)) {
+        throw new Error(`Duplicate implementation for view "${name}".`);
     }
 
-    if (
-        !isReplacementComponent(replacement) &&
-        !(replacement !== null && 'load' in replacement && replacement.load instanceof Function)
-    ) {
-        throw new Error(`Invalid implementation for component "${name}". Use a component or a lazy importer.`);
+    if (!isViewComponent(override) && !('load' in override && override.load instanceof Function)) {
+        throw new Error(`Invalid implementation for view "${name}". Use a component or a lazy importer.`);
     }
 
-    batch.components.set(name, replacement);
+    batch.views.set(name, override);
+}
+
+export function registerExtensionView(
+    extensionId: string,
+    name: string,
+    definition: ExtensionViewDefinition,
+    batch: ExtensionRegistryBatch
+): void {
+    assertBatchOpen(batch);
+    if (!VIEW_NAME.test(name) || name.startsWith('layout.') || name.startsWith('page.')) {
+        throw new Error(`Invalid view name "${name}".`);
+    }
+
+    if (batch.definitions.has(name)) {
+        throw new Error(`Duplicate definition for view "${name}".`);
+    }
+
+    if (!isViewContext(definition.context) || !(definition.use instanceof Function)) {
+        throw new Error(`View "${name}" needs a context and a use() hook.`);
+    }
+
+    if (!isViewComponent(definition.Default)) {
+        throw new Error(`View "${name}" needs a Default component.`);
+    }
+
+    batch.definitions.set(name, definition);
 }
 
 export function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void {
@@ -909,7 +938,7 @@ export function registerFormExtension(registration: FormExtensionRegistration, b
         throw new Error(`Unknown form "${registration.form}".`);
     }
 
-    if (!(registration.component instanceof Function) && !isReplacementComponent(registration.component)) {
+    if (!isViewComponent(registration.component)) {
         throw new Error(`The "${registration.form}" form needs a component.`);
     }
 

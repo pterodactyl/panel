@@ -2,7 +2,7 @@ import ServerCard from './ServerCard';
 import FileDetails from './FileDetails';
 import FileEditor from './FileEditor';
 import {
-    createComponentTestHost,
+    createViewTestHost,
     createTestServerCard,
     createTestFileDetails,
     createTestFileEditor,
@@ -20,6 +20,7 @@ import { createExtensionTestHost, createTestServer, type ExtensionTestHost } fro
 import { SocketEvent, toast, type SdkServer } from '@pterodactyl/sdk';
 
 let host: ExtensionTestHost | undefined;
+let viewHost: { dispose(): void } | undefined;
 
 beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
@@ -28,6 +29,8 @@ afterEach(() => {
     cleanup();
     host?.dispose();
     host = undefined;
+    viewHost?.dispose();
+    viewHost = undefined;
     vi.restoreAllMocks();
 });
 function renderInHost(children: ReactNode, server?: SdkServer) {
@@ -43,7 +46,7 @@ it('registers a console slot, a permissions form slot, and a lazy server page', 
         slots: { register: vi.fn() },
         screens: { register: vi.fn() },
         columns: { register: vi.fn() },
-        components: { replace: vi.fn() },
+        views: { override: vi.fn(), define: vi.fn() },
         forms: { extend: vi.fn() },
     };
 
@@ -54,6 +57,7 @@ it('registers a console slot, a permissions form slot, and a lazy server page', 
     expect(context.screens.register).toHaveBeenCalledWith('hello-world', expect.any(Function), {
         badge: expect.any(Function),
     });
+    expect(context.views.override).toHaveBeenCalledWith('dashboard.serverCard', { load: expect.any(Function) });
 });
 
 it('shows the current user and updates local state and websocket feedback', async () => {
@@ -173,14 +177,15 @@ it('disables every shortcut while the host form is read-only or saving', async (
     expect(setPermissions).not.toHaveBeenCalled();
 });
 
-it('composes the native server card using the real SDK fixture', () => {
-    const host = createComponentTestHost('dashboard.serverCard', {
+it('composes the native server card using the real SDK fixture', async () => {
+    const cardHost = await createViewTestHost('dashboard.serverCard', {
         model: createTestServerCard({ name: 'Survival' }),
         prefix: 'hw',
     });
 
-    render(<ServerCard {...host.props} />, { wrapper: host.Wrapper });
-    expect(screen.getByText('Survival')).toBeTruthy();
+    viewHost = cardHost;
+    render(<ServerCard {...cardHost.props} />, { wrapper: cardHost.Wrapper });
+    expect(await screen.findByText('Survival')).toBeTruthy();
     expect(screen.getByText('12.00 %')).toBeTruthy();
     // The prefixed utility replaces the native card's own gap instead of sitting beside it.
     const card = screen.getByText('Survival').closest('.grid');
@@ -189,23 +194,25 @@ it('composes the native server card using the real SDK fixture', () => {
     expect(card?.classList.contains('gap-4')).toBe(false);
 });
 
-it('customizes only the file name while native size and timestamp remain available', () => {
-    const host = createComponentTestHost('server.files.details', {
+it('customizes only the file name while native size and timestamp remain available', async () => {
+    const details = await createViewTestHost('server.files.details', {
         model: createTestFileDetails({ name: 'server.properties' }),
     });
 
-    render(<FileDetails {...host.props} />, { wrapper: host.Wrapper });
-    expect(screen.getByText('server.properties').classList.contains('hw:font-medium')).toBe(true);
+    viewHost = details;
+    render(<FileDetails {...details.props} />, { wrapper: details.Wrapper });
+    expect((await screen.findByText('server.properties')).classList.contains('hw:font-medium')).toBe(true);
     expect(screen.getByText('1 KiB')).toBeTruthy();
     expect(screen.getByTitle('2026-01-01T12:00:00Z')).toBeTruthy();
 });
 
-it('reports unsaved changes above the native file editor', () => {
-    const host = createComponentTestHost('server.files.editor', {
+it('reports unsaved changes above the native file editor', async () => {
+    const editor = await createViewTestHost('server.files.editor', {
         model: createTestFileEditor({ name: 'server.properties', dirty: true }),
     });
 
-    render(<FileEditor {...host.props} />, { wrapper: host.Wrapper });
-    expect(screen.getByRole('status').textContent).toBe('server.properties has unsaved changes.');
+    viewHost = editor;
+    render(<FileEditor {...editor.props} />, { wrapper: editor.Wrapper });
+    expect((await screen.findByRole('status')).textContent).toBe('server.properties has unsaved changes.');
     expect(screen.getByRole('button', { name: 'Save Content' })).toBeTruthy();
 });

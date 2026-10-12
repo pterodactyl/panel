@@ -107,8 +107,8 @@
         "build:production": "npm run build --",
         "build:vite": "npm run build && npm --prefix packages/hello-world run build",
         "serve": "vite",
-        "sdk:generate": "node scripts/generate-sdk-types.mjs && node scripts/generate-sdk-icons.mjs",
-        "sdk:check": "node scripts/generate-sdk-types.mjs --check && node scripts/generate-sdk-icons.mjs --check && npm run sdk:testing && vitest run packages/sdk/types-drift.spec.ts",
+        "sdk:generate": "node scripts/generate-sdk-types.mjs && node scripts/generate-sdk-icons.mjs && node scripts/generate-sdk-views.mjs",
+        "sdk:check": "node scripts/generate-sdk-types.mjs --check && node scripts/generate-sdk-icons.mjs --check && node scripts/generate-sdk-views.mjs --check && npm run sdk:testing && vitest run packages/sdk/types-drift.spec.ts",
         "sdk:testing": "node scripts/build-sdk-testing.mjs",
         "pretest": "npm run sdk:testing"
     },

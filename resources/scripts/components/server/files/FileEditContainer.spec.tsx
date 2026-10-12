@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { AxiosAdapter } from 'axios';
-import type { ComponentPartProps, ComponentReplacement, ReplacementProps } from '@/extensions/componentTypes';
+import type { ViewOverride, ViewPartProps, ViewProps } from '@/views/registry';
 import type * as Registry from '@/extensions/registry';
 import type * as Testing from '@/sdk/testing';
 import type * as QueryClientModule from '@/api/queryClient';
@@ -88,17 +88,17 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-function replace(replacement: ComponentReplacement<'server.files.editor'>) {
+function replace(replacement: ViewOverride<'server.files.editor'>) {
     const { registry } = loaded;
 
-    registry.prepareExtensions([{ id: 'editor', entry: '/editor.js', components: ['server.files.editor'] }]);
+    registry.prepareExtensions([{ id: 'editor', entry: '/editor.js', views: ['server.files.editor'] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerComponentReplacement('editor', 'server.files.editor', replacement, batch);
+    registry.registerViewOverride('editor', 'server.files.editor', replacement, batch);
     registry.commitExtensionRegistryBatch('editor', batch);
 }
 
-function Custom({ model }: ReplacementProps<'server.files.editor'>) {
+function Custom({ model }: ViewProps<'server.files.editor'>) {
     const [result, setResult] = useState('');
     const { path, name, isNew, language, readOnly, dirty } = model;
 
@@ -279,7 +279,7 @@ it('keeps an unsaved new file draft typed just before leaving', async () => {
 });
 
 it('saves a replaced editor part with the native action', async () => {
-    function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
+    function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
         return <textarea aria-label='Part buffer' onChange={(event) => model.change(event.target.value)} />;
     }
 
@@ -293,7 +293,7 @@ it('saves a replaced editor part with the native action', async () => {
 });
 
 it('keeps the page and the buffer when the replacement fails to render', async () => {
-    function Unstable(props: ReplacementProps<'server.files.editor'>) {
+    function Unstable(props: ViewProps<'server.files.editor'>) {
         if (props.model.dirty) {
             throw new Error('editor crashed');
         }

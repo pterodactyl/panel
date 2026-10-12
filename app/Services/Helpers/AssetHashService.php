@@ -29,6 +29,7 @@ class AssetHashService
         '@tanstack/react-query' => 'resources/scripts/ext-runtime/tanstack-react-query.ts',
         '@pterodactyl/sdk' => 'resources/scripts/sdk/index.ts',
         '@pterodactyl/sdk/api' => 'resources/scripts/sdk/api.ts',
+        '@pterodactyl/sdk/theme' => 'resources/scripts/sdk/theme.ts',
     ];
 
     /** @var ViteManifest|null */

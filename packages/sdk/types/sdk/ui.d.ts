@@ -28,3 +28,13 @@ export interface TooltipProps {
     placement?: 'top' | 'bottom' | 'left' | 'right';
 }
 export declare function Tooltip(props: TooltipProps): ReactElement;
+export interface AvatarProps {
+    /** Seeds the generated pattern; the panel uses a user's UUID. */
+    name: string;
+    size?: number | string;
+    variant?: 'beam' | 'marble' | 'pixel' | 'sunset' | 'ring' | 'bauhaus';
+    square?: boolean;
+    title?: boolean;
+    className?: string;
+}
+export declare function Avatar(props: AvatarProps): ReactElement;

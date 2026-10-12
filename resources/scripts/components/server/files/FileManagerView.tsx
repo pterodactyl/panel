@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, createElement, useContext } from 'react';
 import { Link } from '@tanstack/react-router';
 import { FolderOpen } from 'lucide-react';
 import { useCurrentServerIdentifier } from '@/api/server/queries';
@@ -18,12 +18,9 @@ import { FileRowActionsProvider } from '@/components/server/files/useFileActions
 import Slot from '@/extensions/Slot';
 import { encodePathSegments } from '@/helpers';
 import { cn } from '@/lib/cn';
-import type {
-    ComponentPartProps,
-    ComponentParts,
-    DefaultComponentProps,
-    FileManagerModel,
-} from '@/extensions/componentTypes';
+import { createTestFileManager } from '@/views/fixtures';
+import type { FileManagerModel } from '@/views/files';
+import { defineView, registerBaseView, type ViewPartProps, type ViewParts, type ViewProps } from '@/views/registry';
 import useFileManagerExtensionData from './useFileManagerExtensionData';
 
 export interface FileManagerSession {
@@ -38,7 +35,7 @@ const managerActionsClass = [
     '[&_button]:w-full [&_button:first-child]:col-span-2 sm:[&_button:first-child]:col-span-1 md:[&_button]:w-auto',
 ].join(' ');
 
-type PartProps = ComponentPartProps<'server.files.manager'>;
+type PartProps = ViewPartProps<'server.files.manager'>;
 function Toolbar({ model }: PartProps) {
     const id = useCurrentServerIdentifier()!;
     const extensionData = useFileManagerExtensionData();
@@ -124,22 +121,43 @@ function Selection({ model }: PartProps) {
     return model.entries.length > 0 ? <MassActionsBar selectedFiles={model.selection} /> : null;
 }
 
-export const fileManagerParts: ComponentParts<'server.files.manager'> = {
+export const fileManagerParts: ViewParts<'server.files.manager'> = {
     toolbar: Toolbar,
     list: List,
     selection: Selection,
 };
-export function DefaultFileManager({ className, parts }: DefaultComponentProps<'server.files.manager'>) {
-    const { model } = useContext(FileManagerContext)!;
-    const ToolbarPart = parts?.toolbar ?? Toolbar;
-    const ListPart = parts?.list ?? List;
-    const SelectionPart = parts?.selection ?? Selection;
-
+export function DefaultFileManager({ className, parts, model }: ViewProps<'server.files.manager'>) {
     return (
         <div className={cn('min-w-0', className)}>
-            <ToolbarPart model={model} />
-            <ListPart model={model} />
-            <SelectionPart model={model} />
+            <parts.toolbar model={model} />
+            <parts.list model={model} />
+            <parts.selection model={model} />
         </div>
     );
 }
+
+DefaultFileManager.parts = fileManagerParts;
+
+/** The browsing session's model; the file manager page holds the query, selection and mutations. */
+function useFileBrowserModel(): FileManagerModel {
+    const session = useContext(FileManagerContext);
+
+    if (!session) {
+        throw new Error('The file browser renders inside the file manager page.');
+    }
+
+    return session.model;
+}
+
+export const fileManagerView = defineView('server.files.manager', {
+    context: 'server',
+    use: useFileBrowserModel,
+    slots: ['server.files.toolbar', 'server.files.rowActions', 'server.files.selectionActions'],
+    placeholder: createElement(Spinner, { size: 'large', centered: true }),
+    fixtures: {
+        directory: () => createTestFileManager(),
+        empty: () => createTestFileManager({ entries: [] }),
+        loading: () => createTestFileManager({ entries: [], loading: true }),
+    },
+});
+registerBaseView('classic', 'classic', 'server.files.manager', DefaultFileManager);

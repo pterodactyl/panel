@@ -1,6 +1,6 @@
 // Every export here is public, semver-governed "@pterodactyl/sdk" API.
-import type { ComponentName, ComponentReplacement } from '@/extensions/componentTypes';
 import type { ComponentType } from 'react';
+import type { ExtensionViewOptions, ViewName, ViewOverride } from '@/views/registry';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
 import {
@@ -29,6 +29,7 @@ import { useExtensionCallback } from '@/extensions/context';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { SocketEvent } from '@/components/server/events';
 import { hasPermission } from '@/plugins/usePermissions';
+import { cn as mergeClasses } from '@/lib/cn';
 
 export { default as Button } from '@/components/elements/Button';
 export { default as Spinner } from '@/components/elements/Spinner';
@@ -42,6 +43,9 @@ export { default as TitledGreyBox } from '@/components/elements/TitledGreyBox';
 export { default as CopyOnClick } from '@/components/elements/CopyOnClick';
 export { default as ScreenBlock, ServerError, NotFound } from '@/components/elements/ScreenBlock';
 export { default as Label } from '@/components/elements/Label';
+export { default as PageHeading } from '@/components/elements/PageHeading';
+export { NewButton, NewLinkButton } from '@/components/elements/NewButton';
+export { default as SpinnerOverlay } from '@/components/elements/SpinnerOverlay';
 export { TextInput as Input, TextArea, NumberInput } from '@/components/form/controls';
 export { Form, useAppForm, useFieldContext, useFormContext, type AppForm, type SelectOption } from '@/components/form';
 export { default as Select, type SelectGroup, type SelectProps, type SelectValue } from '@/components/ui/Select';
@@ -59,9 +63,15 @@ export * from './mutations';
 export * from './navigation';
 export * from './localization';
 export * from './progress';
-export * from './theme';
+export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
+export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
+/** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
+export function cn(...classes: (string | false | null | undefined)[]): string {
+    return mergeClasses(...classes);
+}
+
 export function useCurrentUser(): SdkUser {
     return usePanelUser();
 }
@@ -130,8 +140,11 @@ export interface ExtensionSetupContext {
     meta: ExtensionMeta;
     /** Per-install extension settings. */
     config: ExtensionConfig;
-    components: {
-        replace<TName extends ComponentName>(name: TName, replacement: ComponentReplacement<TName>): void;
+    views: {
+        /** Stacks a layer on a view declared in the manifest's `ui.views`; its `Default` renders the layer below. */
+        override<TName extends ViewName>(name: TName, view: ViewOverride<TName>): void;
+        /** Adds a view of the extension's own, which themes and other extensions can restyle or place. */
+        define<TModel>(name: string, view: ExtensionViewOptions<TModel>): void;
     };
     slots: {
         /** Mount a component at a named anchor point; see SlotName for the catalog. */
@@ -163,26 +176,21 @@ export interface ExtensionSetupContext {
     };
 }
 
-export { COMPONENT_NAMES } from '@/extensions/componentTypes';
 export type {
-    ComponentName,
-    ComponentModels,
-    ComponentParts,
-    ComponentPartProps,
-    DefaultComponentProps,
-    ReplacementProps,
-    ReplacementImporter,
-    ComponentReplacement,
-    ServerCardModel,
-    ServerCardState,
-    ServerCardMetric,
-    FileDetailsModel,
-    FileEditorModel,
-    FileManagerModel,
-    FileManagerEntry,
-    FileManagerPermissions,
-    FileManagerActions,
-} from '@/extensions/componentTypes';
+    DefaultViewProps,
+    ExtensionViewOptions,
+    ExtensionViewProps,
+    ViewComponent,
+    ViewContext,
+    ViewImporter,
+    ViewModel,
+    ViewName,
+    ViewOverride,
+    ViewPartProps,
+    ViewParts,
+    ViewProps,
+} from '@/views/registry';
+export type * from '@/views/models';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;

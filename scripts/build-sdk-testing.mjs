@@ -13,7 +13,7 @@ await build({
     resolve: {alias: {'@': resolve(root, 'resources/scripts'), '@feature': resolve(root, 'resources/scripts/components/server/features')}},
     build: {
         target: 'esnext', minify: false, sourcemap: true, outDir: resolve(root, 'packages/sdk/testing-runtime'), emptyOutDir: true,
-        lib: {entry: {sdk: resolve(root, 'resources/scripts/sdk/index.ts'), api: resolve(root, 'resources/scripts/sdk/api.ts'), testing: resolve(root, 'resources/scripts/sdk/testing.tsx')}, formats: ['es']},
+        lib: {entry: {sdk: resolve(root, 'resources/scripts/sdk/index.ts'), api: resolve(root, 'resources/scripts/sdk/api.ts'), theme: resolve(root, 'resources/scripts/sdk/theme.ts'), testing: resolve(root, 'resources/scripts/sdk/testing.tsx')}, formats: ['es']},
         rolldownOptions: {
             plugins: [esmExternalRequirePlugin({external: peers.map(peer => new RegExp(`^${peer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:/|$)`))})],
             output: {entryFileNames: '[name].js', chunkFileNames: '[name]-[hash].js'},

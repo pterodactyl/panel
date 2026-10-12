@@ -24,7 +24,7 @@ import {
 import { encodePathSegments } from '@/helpers';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useServerStore } from '@/state/server';
-import type { FileManagerEntry, FileManagerModel } from '@/extensions/componentTypes';
+import type { FileManagerEntry, FileManagerModel } from '@/views/files';
 import type { FileManagerSlotData } from '@/extensions/registry';
 import type { FileManagerSession } from './FileManagerView';
 import useFileUploader from './useFileUploader';

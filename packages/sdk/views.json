@@ -1,0 +1,809 @@
+[
+    {
+        "name": "app.search",
+        "kind": "block",
+        "context": "app",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "dashboard.serverCard",
+        "kind": "block",
+        "context": "app",
+        "slots": [
+            "dashboard.serverRow.name.after"
+        ],
+        "fixtures": [
+            "running",
+            "offline",
+            "suspended",
+            "loading"
+        ]
+    },
+    {
+        "name": "dashboard.serverList",
+        "kind": "block",
+        "context": "app",
+        "slots": [
+            "dashboard.before",
+            "dashboard.after",
+            "dashboard.serverRow.before",
+            "dashboard.serverRow.metrics.after",
+            "dashboard.serverRow.after"
+        ],
+        "fixtures": [
+            "servers",
+            "empty",
+            "loading"
+        ]
+    },
+    {
+        "name": "layout.account",
+        "kind": "layout",
+        "context": "account",
+        "slots": [
+            "account.navigation.before",
+            "account.navigation.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "layout.admin",
+        "kind": "layout",
+        "context": "admin",
+        "slots": [
+            "panel.navigation.before",
+            "panel.navigation.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "layout.app",
+        "kind": "layout",
+        "context": "app",
+        "slots": [
+            "nav.items.before",
+            "nav.items.after"
+        ],
+        "fixtures": [
+            "user",
+            "admin"
+        ]
+    },
+    {
+        "name": "layout.auth",
+        "kind": "layout",
+        "context": "auth",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "layout.server",
+        "kind": "layout",
+        "context": "server",
+        "slots": [
+            "server.navigation.before",
+            "server.navigation.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.account.activity",
+        "kind": "page",
+        "context": "account",
+        "slots": [
+            "account.activity.before",
+            "account.activity.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.account.api",
+        "kind": "page",
+        "context": "account",
+        "slots": [
+            "account.api.before",
+            "account.api.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.account.overview",
+        "kind": "page",
+        "context": "account",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.account.ssh",
+        "kind": "page",
+        "context": "account",
+        "slots": [
+            "account.ssh.before",
+            "account.ssh.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.activity",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.activity.before",
+            "panel.activity.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.apiKeys",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.apiKeys.before",
+            "panel.apiKeys.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.databaseHosts",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.databaseHosts.before",
+            "panel.databaseHosts.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.databaseHosts.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.databaseHosts.create.before",
+            "panel.databaseHosts.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.databaseHosts.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.databaseHosts.detail.before",
+            "panel.databaseHosts.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.before",
+            "panel.eggs.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.catalog",
+        "kind": "page",
+        "context": "admin",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.create.before",
+            "panel.eggs.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.detail.before",
+            "panel.eggs.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.detail.configuration",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.detail.configuration.before",
+            "panel.eggs.detail.configuration.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.detail.script",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.detail.script.before",
+            "panel.eggs.detail.script.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.detail.tags",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.detail.tags.before",
+            "panel.eggs.detail.tags.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.eggs.detail.variables",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.eggs.detail.variables.before",
+            "panel.eggs.detail.variables.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.extensions",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.extensions.before",
+            "panel.extensions.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.locations",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.locations.before",
+            "panel.locations.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.locations.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.locations.detail.before",
+            "panel.locations.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.mounts",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.mounts.before",
+            "panel.mounts.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.mounts.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.mounts.create.before",
+            "panel.mounts.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.mounts.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.mounts.detail.before",
+            "panel.mounts.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.before",
+            "panel.nodes.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.create.before",
+            "panel.nodes.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.before",
+            "panel.nodes.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.about",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.about.before",
+            "panel.nodes.detail.about.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.allocations",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.allocations.before",
+            "panel.nodes.detail.allocations.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.configuration",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.configuration.before",
+            "panel.nodes.detail.configuration.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.servers",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.servers.before",
+            "panel.nodes.detail.servers.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.settings",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.settings.before",
+            "panel.nodes.detail.settings.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.nodes.detail.tags",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.nodes.detail.tags.before",
+            "panel.nodes.detail.tags.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.overview",
+        "kind": "page",
+        "context": "admin",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.before",
+            "panel.servers.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.create.before",
+            "panel.servers.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.before",
+            "panel.servers.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.about",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.about.before",
+            "panel.servers.detail.about.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.build",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.build.before",
+            "panel.servers.detail.build.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.databases",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.databases.before",
+            "panel.servers.detail.databases.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.delete",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.delete.before",
+            "panel.servers.detail.delete.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.details",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.details.before",
+            "panel.servers.detail.details.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.manage",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.manage.before",
+            "panel.servers.detail.manage.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.mounts",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.mounts.before",
+            "panel.servers.detail.mounts.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.servers.detail.startup",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.servers.detail.startup.before",
+            "panel.servers.detail.startup.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.settings",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.settings.before",
+            "panel.settings.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.settings.advanced",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.settings.before",
+            "panel.settings.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.settings.mail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.settings.before",
+            "panel.settings.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.tags",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.tags.before",
+            "panel.tags.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.users",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.users.before",
+            "panel.users.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.users.create",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.users.create.before",
+            "panel.users.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.users.detail",
+        "kind": "page",
+        "context": "admin",
+        "slots": [
+            "panel.users.detail.before",
+            "panel.users.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.admin.users.detail.about",
+        "kind": "page",
+        "context": "admin",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.auth.checkpoint",
+        "kind": "page",
+        "context": "auth",
+        "slots": [
+            "auth.checkpoint.before",
+            "auth.checkpoint.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.auth.login",
+        "kind": "page",
+        "context": "auth",
+        "slots": [
+            "auth.login.before",
+            "auth.login.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.auth.password",
+        "kind": "page",
+        "context": "auth",
+        "slots": [
+            "auth.password.before",
+            "auth.password.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.auth.passwordReset",
+        "kind": "page",
+        "context": "auth",
+        "slots": [
+            "auth.passwordReset.before",
+            "auth.passwordReset.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.dashboard",
+        "kind": "page",
+        "context": "app",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "error"
+        ]
+    },
+    {
+        "name": "page.server.activity",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.activity.before",
+            "server.activity.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.backups",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.backups.before",
+            "server.backups.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.console",
+        "kind": "page",
+        "context": "server",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.databases",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.databases.before",
+            "server.databases.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.files",
+        "kind": "page",
+        "context": "server",
+        "slots": [],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.files.editor",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.files.editor.before",
+            "server.files.editor.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.network",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.network.before",
+            "server.network.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.schedules",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.schedules.before",
+            "server.schedules.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.schedules.detail",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.schedules.detail.before",
+            "server.schedules.detail.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.settings",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.settings.before",
+            "server.settings.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.startup",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.startup.before",
+            "server.startup.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.users",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.users.before",
+            "server.users.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "page.server.users.create",
+        "kind": "page",
+        "context": "server",
+        "slots": [
+            "server.users.create.before",
+            "server.users.create.after"
+        ],
+        "fixtures": []
+    },
+    {
+        "name": "server.files.details",
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "file",
+            "directory"
+        ]
+    },
+    {
+        "name": "server.files.editor",
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [
+            "file",
+            "dirty",
+            "readOnly",
+            "new"
+        ]
+    },
+    {
+        "name": "server.files.manager",
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.files.toolbar",
+            "server.files.rowActions",
+            "server.files.selectionActions"
+        ],
+        "fixtures": [
+            "directory",
+            "empty",
+            "loading"
+        ]
+    }
+]

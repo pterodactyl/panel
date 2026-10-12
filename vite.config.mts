@@ -109,6 +109,7 @@ export default defineConfig(({ mode }) => {
                     ),
                     sdk: fileURLToPath(new URL('./resources/scripts/sdk/index.ts', import.meta.url)),
                     'sdk-api': fileURLToPath(new URL('./resources/scripts/sdk/api.ts', import.meta.url)),
+                    'sdk-theme': fileURLToPath(new URL('./resources/scripts/sdk/theme.ts', import.meta.url)),
                 },
                 // Keep every entry's export signature intact — the runtime entries are
                 // consumed as libraries by extension bundles via the import map.

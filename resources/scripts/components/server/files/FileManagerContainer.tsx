@@ -1,17 +1,16 @@
-import { ComponentReplacementSession } from '@/extensions/componentSession';
 import { useCallback, useMemo } from 'react';
 import { useCurrentServer } from '@/api/server/queries';
 import { httpErrorToHuman } from '@/api/http';
-import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { useSelectedFiles, useServerDirectory, useServerStore } from '@/state/server';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import Slot from '@/extensions/Slot';
-import ComponentView from '@/extensions/ComponentView';
+import { View } from '@/views/View';
+import { ViewSessionProvider } from '@/views/session';
 import { useServerFiles } from '@/api/server/files/queries';
 import { FileManagerExtensionContext } from './useFileManagerExtensionData';
 import useFileManagerModel, { FILE_LIST_LIMIT } from './useFileManagerModel';
-import { DefaultFileManager, FileManagerContext, fileManagerParts } from './FileManagerView';
+import { FileManagerContext } from './FileManagerView';
 import type { FileManagerSlotData } from '@/extensions/registry';
 
 const noFiles: FileManagerSlotData['files'] = [];
@@ -68,12 +67,7 @@ function FileManagerContainerContent() {
             <ServerContentBlock title='File Manager'>
                 <Slot name='server.files.before' />
                 <FileManagerContext.Provider value={session}>
-                    <ComponentView
-                        name='server.files.manager'
-                        resetKey={server.attributes.uuid}
-                        props={{ model: session.model, Default: DefaultFileManager, parts: fileManagerParts }}
-                        loading={<Spinner size='large' centered />}
-                    />
+                    <View name='server.files.manager' />
                 </FileManagerContext.Provider>
                 <Slot name='server.files.after' />
             </ServerContentBlock>
@@ -83,8 +77,8 @@ function FileManagerContainerContent() {
 
 export default function FileManagerContainer() {
     return (
-        <ComponentReplacementSession>
+        <ViewSessionProvider>
             <FileManagerContainerContent />
-        </ComponentReplacementSession>
+        </ViewSessionProvider>
     );
 }

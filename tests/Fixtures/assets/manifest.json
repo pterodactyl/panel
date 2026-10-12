@@ -58,5 +58,12 @@
     "src": "resources/scripts/sdk/api.ts",
     "isEntry": true,
     "integrity": "sha384-test-sdk-api"
+  },
+  "resources/scripts/sdk/theme.ts": {
+    "file": "ext-runtime.sdk-theme.test.js",
+    "name": "sdk-theme",
+    "src": "resources/scripts/sdk/theme.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-sdk-theme"
   }
 }

@@ -1,16 +1,14 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, createElement, useContext, useState } from 'react';
 import Button from '@/components/elements/Button';
 import CodemirrorEditor from '@/components/elements/LazyCodemirrorEditor';
+import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Select from '@/components/ui/Select';
 import modes from '@/modes';
 import { cn } from '@/lib/cn';
-import type {
-    ComponentPartProps,
-    ComponentParts,
-    DefaultComponentProps,
-    FileEditorModel,
-} from '@/extensions/componentTypes';
+import { createTestFileEditor } from '@/views/fixtures';
+import type { FileEditorModel } from '@/views/files';
+import { defineView, registerBaseView, type ViewPartProps, type ViewParts, type ViewProps } from '@/views/registry';
 
 export interface FileEditorSession {
     model: FileEditorModel;
@@ -29,7 +27,7 @@ const findModeByFilename = (filename: string) => {
 
 export const modeForFile = (filename: string) => findModeByFilename(filename)?.mime || 'text/plain';
 
-type PartProps = ComponentPartProps<'server.files.editor'>;
+type PartProps = ViewPartProps<'server.files.editor'>;
 function Notice({ model }: PartProps) {
     return model.name.endsWith('.pteroignore') ? (
         <div className='mb-4 p-4 border-l-4 bg-muted rounded-sm border-accent'>
@@ -91,27 +89,47 @@ function Actions({ model }: PartProps) {
     );
 }
 
-export const fileEditorParts: ComponentParts<'server.files.editor'> = {
+export const fileEditorParts: ViewParts<'server.files.editor'> = {
     notice: Notice,
     editor: Editor,
     language: Language,
     actions: Actions,
 };
-export function DefaultFileEditor({ className, parts }: DefaultComponentProps<'server.files.editor'>) {
-    const { model } = useContext(FileEditorContext)!;
-    const NoticePart = parts?.notice ?? Notice;
-    const EditorPart = parts?.editor ?? Editor;
-    const LanguagePart = parts?.language ?? Language;
-    const ActionsPart = parts?.actions ?? Actions;
-
+export function DefaultFileEditor({ className, parts, model }: ViewProps<'server.files.editor'>) {
     return (
         <div className={cn('min-w-0', className)}>
-            <NoticePart model={model} />
-            <EditorPart model={model} />
+            <parts.notice model={model} />
+            <parts.editor model={model} />
             <div className='mt-4 flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-end'>
-                <LanguagePart model={model} />
-                <ActionsPart model={model} />
+                <parts.language model={model} />
+                <parts.actions model={model} />
             </div>
         </div>
     );
 }
+
+DefaultFileEditor.parts = fileEditorParts;
+
+/** The editing session's model; the file edit page holds the buffer and the write. */
+function useFileEditorModel(): FileEditorModel {
+    const session = useContext(FileEditorContext);
+
+    if (!session) {
+        throw new Error('The file editor renders inside an open file editing session.');
+    }
+
+    return session.model;
+}
+
+export const fileEditorView = defineView('server.files.editor', {
+    context: 'server',
+    use: useFileEditorModel,
+    placeholder: createElement(Spinner, { size: 'large', centered: true }),
+    fixtures: {
+        file: () => createTestFileEditor(),
+        dirty: () => createTestFileEditor({ dirty: true }),
+        readOnly: () => createTestFileEditor({ readOnly: true }),
+        new: () => createTestFileEditor({ path: '/config', name: '', isNew: true, content: '' }),
+    },
+});
+registerBaseView('classic', 'classic', 'server.files.editor', DefaultFileEditor);

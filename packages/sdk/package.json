@@ -14,6 +14,10 @@
             "types": "./types/api.d.ts",
             "default": "./api-runtime-stub.mjs"
         },
+        "./theme": {
+            "types": "./types/theme.d.ts",
+            "default": "./theme-runtime-stub.mjs"
+        },
         "./vite": "./vite.mjs",
         "./testing": {
             "types": "./types/testing.d.ts",
@@ -23,12 +27,14 @@
         "./openapi": "./openapi.mjs",
         "./theme.css": "./theme.css",
         "./icons.json": "./icons.json",
+        "./views.json": "./views.json",
         "./manifest.schema.json": "./manifest.schema.json"
     },
     "files": [
         "types",
         "api-runtime-stub.mjs",
         "runtime-stub.mjs",
+        "theme-runtime-stub.mjs",
         "vite.mjs",
         "README.md",
         "testing-runtime",
@@ -39,6 +45,7 @@
         "theme.css",
         "theme-tokens.css",
         "icons.json",
+        "views.json",
         "manifest.schema.json"
     ],
     "peerDependencies": {

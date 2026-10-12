@@ -1,12 +1,11 @@
-import ComponentView from '@/extensions/ComponentView';
-import type { FileDetailsModel } from '@/extensions/componentTypes';
-import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from './FileDetailsView';
+import { View } from '@/views/View';
+import './FileDetailsView';
 import { MoreHorizontal } from 'lucide-react';
 import Icon from '@/components/elements/Icon';
 import { encodePathSegments } from '@/helpers';
-import React, { memo, useMemo } from 'react';
-import { fileObjectKind, isFileObjectEditable, type FileObject } from '@/api/server/files/queries';
-import { useCurrentServerIdentifier, useCurrentServerUuid } from '@/api/server/queries';
+import React, { memo } from 'react';
+import { isFileObjectEditable, type FileObject } from '@/api/server/files/queries';
+import { useCurrentServerIdentifier } from '@/api/server/queries';
 import DropdownMenu, { ContextDropdownMenu } from '@/components/elements/dropdown/DropdownMenu';
 import useFileActions from '@/components/server/files/useFileActions';
 import { useServerDirectory } from '@/state/server';
@@ -73,17 +72,6 @@ const RowActionsSlot = ({ file }: { file: FileObject }) => {
 const FileObjectRow = ({ file }: { file: FileObject }) => {
     const { items } = useFileActions(file);
     const { attributes } = file;
-    const uuid = useCurrentServerUuid();
-    const directory = useServerDirectory();
-    const model = useMemo<FileDetailsModel>(
-        () => ({
-            name: attributes.name,
-            kind: fileObjectKind(file),
-            size: attributes.size ?? 0,
-            modifiedAt: attributes.modified_at,
-        }),
-        [attributes, file]
-    );
     const actionItems = (
         <>
             {items}
@@ -95,19 +83,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
         <ContextDropdownMenu className={fileRowClass} menuClassName='w-64' items={actionItems}>
             <SelectFileCheckbox name={attributes.name} />
             <Clickable file={file}>
-                <FileDetailsContext.Provider value={model}>
-                    <ComponentView
-                        name='server.files.details'
-                        resetKey={`${uuid ?? ''}:${directory}:${attributes.name}`}
-                        props={{ model, Default: DefaultFileDetails, parts: fileDetailsParts }}
-                        loading={
-                            <div
-                                className='h-5 w-full animate-pulse rounded-sm bg-muted'
-                                aria-label='Loading file details'
-                            />
-                        }
-                    />
-                </FileDetailsContext.Provider>
+                <View name='server.files.details' file={file} />
             </Clickable>
             <DropdownMenu
                 className='w-64'

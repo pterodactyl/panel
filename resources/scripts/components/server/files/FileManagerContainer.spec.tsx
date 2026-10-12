@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { useState } from 'react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { AxiosAdapter } from 'axios';
-import type { ComponentReplacement, ReplacementProps } from '@/extensions/componentTypes';
+import type { ViewOverride, ViewProps } from '@/views/registry';
 import type * as Registry from '@/extensions/registry';
 import type * as Testing from '@/sdk/testing';
 import type * as Http from '@/api/http';
@@ -101,15 +101,15 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-function replace(replacement: ComponentReplacement<'server.files.manager'>) {
-    registry.prepareExtensions([{ id: 'browser', entry: '/browser.js', components: ['server.files.manager'] }]);
+function replace(replacement: ViewOverride<'server.files.manager'>) {
+    registry.prepareExtensions([{ id: 'browser', entry: '/browser.js', views: ['server.files.manager'] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerComponentReplacement('browser', 'server.files.manager', replacement, batch);
+    registry.registerViewOverride('browser', 'server.files.manager', replacement, batch);
     registry.commitExtensionRegistryBatch('browser', batch);
 }
 
-function Custom({ model }: ReplacementProps<'server.files.manager'>) {
+function Custom({ model }: ViewProps<'server.files.manager'>) {
     const [error, setError] = useState('');
     const run = (action: Promise<void>) => void action.catch((cause: Error) => setError(cause.message));
     const { directory, loading, selection, permissions, actions } = model;

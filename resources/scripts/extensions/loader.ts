@@ -9,7 +9,8 @@ import {
     registerSlotComponent,
     registerExtensionTableColumn,
     registerFormExtension,
-    registerComponentReplacement,
+    registerViewOverride,
+    registerExtensionView,
     failExtensionLoad,
     clearExtensionError,
     setExtensionState,
@@ -45,18 +46,19 @@ const withTimeout = async <T>(promise: Promise<T>): Promise<T> => {
 };
 
 /**
- * Guests are sent no screens or component claims, since neither renders on the sign-in pages, so
+ * Guests are sent no screens or view overrides, since neither renders on the sign-in pages, so
  * the same setup() skips those registrations there instead of failing on undeclared names.
  */
 const createContext = (entry: SiteExtensionEntry, batch: ExtensionRegistryBatch): ExtensionSetupContext => ({
     meta: { id: entry.id, version: entry.version },
     config: entry.config ?? {},
-    components: {
-        replace: (name, replacement) => {
-            if (entry.components) {
-                registerComponentReplacement(entry.id, name, replacement, batch);
+    views: {
+        override: (name, view) => {
+            if (entry.views) {
+                registerViewOverride(entry.id, name, view, batch);
             }
         },
+        define: (name, view) => registerExtensionView(entry.id, name, view, batch),
     },
     slots: {
         register: (name, component) =>

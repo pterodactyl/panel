@@ -1,18 +1,14 @@
 import { ExtensionContext } from '@/extensions/context';
-import { DefaultServerCard, ServerCardContext, serverCardParts } from '@/components/dashboard/ServerCardView';
-import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from '@/components/server/files/FileDetailsView';
-import { DefaultFileEditor, FileEditorContext, fileEditorParts } from '@/components/server/files/FileEditorView';
-import { DefaultFileManager, FileManagerContext, fileManagerParts } from '@/components/server/files/FileManagerView';
-import type {
-    ComponentModels,
-    ComponentName,
-    ReplacementProps,
-    ServerCardModel,
-    FileDetailsModel,
-    FileEditorModel,
-    FileManagerEntry,
-    FileManagerModel,
-} from '@/extensions/componentTypes';
+import '@/components/server/files/FileDetailsView';
+import { FileEditorContext } from '@/components/server/files/FileEditorView';
+import { FileManagerContext } from '@/components/server/files/FileManagerView';
+import type { FileObject } from '@/api/server/files/queries';
+import type { FileDetailsModel, FileEditorModel, FileManagerModel } from '@/views/files';
+import type { ServerCardModel } from '@/views/dashboard';
+import { registerClassicTheme } from '@/views/classic';
+import '@/views/dashboard';
+import { getViewDefinition, type ViewInput, type ViewModel, type ViewName, type ViewProps } from '@/views/registry';
+import { createViewHarness, preloadView, ViewFixtureProvider } from '@/views/View';
 import { createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query';
 import {
@@ -37,8 +33,19 @@ import { SCREEN_ROOTS } from '@/extensions/registry';
 import type { ExtensionResourceContext } from '@/extensions/resourceContext';
 import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
+import { createTestServer } from '@/views/fixtures';
 import type { SdkServer, SdkSiteSettings, SdkUser } from './index';
 import type { ServerWebsocketEvent } from './index';
+
+export {
+    createTestFileDetails,
+    createTestFileEditor,
+    createTestFileManager,
+    createTestFileManagerEntry,
+    createTestServer,
+    createTestServerCard,
+    type TestServerOptions,
+} from '@/views/fixtures';
 
 export interface ExtensionTestHostOptions {
     extensionId?: string;
@@ -63,51 +70,6 @@ export interface ExtensionTestHost {
     emitWebsocket(event: ServerWebsocketEvent, data: string): void;
     setConnected(connected: boolean): void;
     dispose(): void;
-}
-
-export function createTestServer(
-    options: {
-        identifier?: string;
-        uuid?: string;
-        name?: string;
-        owner?: boolean;
-        permissions?: string[];
-        status?: SdkServer['attributes']['status'];
-        eggFeatures?: string[];
-        eggTags?: string[];
-    } = {}
-): SdkServer {
-    const identifier = options.identifier ?? 'test-server';
-    const owner = options.owner ?? true;
-
-    return {
-        object: 'server',
-        attributes: {
-            identifier,
-            uuid: options.uuid ?? '11111111-1111-4111-8111-111111111111',
-            __deprecated_uuid_short: identifier,
-            server_identifier: identifier,
-            internal_id: 1,
-            server_owner: owner,
-            name: options.name ?? 'Test server',
-            node: 'Test node',
-            is_node_under_maintenance: false,
-            sftp_details: { ip: '127.0.0.1', port: 2022 },
-            description: null,
-            limits: { memory: 1024, swap: 0, disk: 1024, io: 500, cpu: 100, threads: null, oom_disabled: true },
-            invocation: 'run',
-            docker_image: 'test/image',
-            egg_features: options.eggFeatures ?? [],
-            egg_tags: options.eggTags ?? [],
-            feature_limits: { databases: 1, allocations: 1, backups: 1 },
-            status: options.status ?? null,
-            is_suspended: options.status === 'suspended',
-            is_installing: options.status === 'installing',
-            is_transferring: false,
-            skip_scripts: false,
-        },
-        meta: { is_server_owner: owner, user_permissions: options.permissions ?? [] },
-    };
 }
 
 /** Create one host per test; call dispose after unmounting its Wrapper. */
@@ -245,225 +207,163 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
     };
 }
 
-export function createTestServerCard(options: Partial<ServerCardModel> = {}): ServerCardModel {
-    return {
-        identifier: 'test-server',
-        uuid: '11111111-1111-4111-8111-111111111111',
-        name: 'Test server',
-        description: null,
-        address: '127.0.0.1:25565',
-        state: {
-            kind: 'ready',
-            power: 'running',
-            cpu: { value: 12, limit: 100, alarm: false },
-            memory: { value: 256 * 1024 * 1024, limit: 1024 * 1024 * 1024, alarm: false },
-            disk: { value: 512 * 1024 * 1024, limit: 2048 * 1024 * 1024, alarm: false },
-        },
-        ...options,
-    };
+export interface ViewTestHostOptions<N extends ViewName> {
+    /** Defaults to the named fixture, or the view's first. */
+    model?: ViewModel<N>;
+    fixture?: string;
+    /** Defaults to inputs matching the model where the view takes any. */
+    input?: ViewInput<N>;
+    extensionId?: string;
+    /** The extension's `ui.prefix`, so its prefixed classes merge with the view's as they do in the panel. */
+    prefix?: string;
 }
-
-export function createTestFileDetails(options: Partial<FileDetailsModel> = {}): FileDetailsModel {
-    return { name: 'config.json', kind: 'file', size: 1024, modifiedAt: '2026-01-01T12:00:00Z', ...options };
-}
-
-export function createTestFileEditor(options: Partial<FileEditorModel> = {}): FileEditorModel {
-    return {
-        path: '/config/server.properties',
-        name: 'server.properties',
-        isNew: false,
-        content: 'motd=Hello\n',
-        language: 'text/x-properties',
-        readOnly: false,
-        dirty: false,
-        saving: false,
-        change: () => {},
-        save: async () => true,
-        saveAs: async () => true,
-        ...options,
-    };
-}
-
-export function createTestFileManagerEntry(options: Partial<FileManagerEntry> = {}): FileManagerEntry {
-    const name = options.name ?? 'config.json';
-
-    return {
-        name,
-        path: `/${name}`,
-        kind: 'file',
-        size: 1024,
-        mimetype: 'application/json',
-        mode: '-rw-r--r--',
-        modeBits: '0644',
-        modifiedAt: '2026-01-01T12:00:00Z',
-        openable: true,
-        ...options,
-    };
-}
-
-export function createTestFileManager(options: Partial<FileManagerModel> = {}): FileManagerModel {
-    return {
-        directory: '/',
-        entries: [
-            createTestFileManagerEntry({ name: 'plugins', kind: 'directory', mimetype: 'inode/directory', size: 0 }),
-            createTestFileManagerEntry(),
-        ],
-        truncated: false,
-        loading: false,
-        refreshing: false,
-        selection: [],
-        permissions: { create: true, update: true, delete: true, archive: true },
-        actions: {
-            open: async () => {},
-            navigate: async () => {},
-            newFile: async () => {},
-            select: () => {},
-            refresh: async () => {},
-            createDirectory: async () => {},
-            rename: async () => {},
-            remove: async () => {},
-            copy: async () => {},
-            archive: async () => {},
-            extract: async () => {},
-            chmod: async () => {},
-            download: async () => {},
-            upload: async () => {},
-        },
-        ...options,
-    };
-}
-
-export interface ComponentTestHost<TName extends ComponentName> {
+export interface ViewTestHost<N extends ViewName> {
     Wrapper: ComponentType<{ children?: ReactNode }>;
-    props: ReplacementProps<TName>;
+    /** What a layer above classic receives, `Default` included. */
+    props: ViewProps<N>;
     /** Call after unmounting the Wrapper. */
     dispose(): void;
 }
-const noDispose = () => {};
 
-/** Test presentation against the native default and parts without issuing core queries. */
-export function createComponentTestHost<TName extends ComponentName>(
-    name: TName,
-    options: { model: ComponentModels[TName]; extensionId?: string; prefix?: string }
-): ComponentTestHost<TName>;
-export function createComponentTestHost(
-    name: ComponentName,
-    options: { model: ComponentModels[ComponentName]; extensionId?: string; prefix?: string }
-): { [TName in ComponentName]: ComponentTestHost<TName> }[ComponentName] {
-    const extensionId = options.extensionId ?? 'test-extension';
+function fixtureModel(name: ViewName, fixture: string | undefined) {
+    const fixtures = new Map(Object.entries(getViewDefinition(name)?.fixtures ?? {}));
+    const factory = fixture === undefined ? [...fixtures.values()][0] : fixtures.get(fixture);
 
+    if (!factory) {
+        throw new Error(`View "${name}" has no fixture${fixture === undefined ? 's' : ` "${fixture}"`}.`);
+    }
+
+    return factory();
+}
+
+function fileObject(model: FileDetailsModel): FileObject {
+    const directory = model.kind === 'directory';
+
+    return {
+        object: 'file_object',
+        attributes: {
+            name: model.name,
+            mode: directory ? 'drwxr-xr-x' : '-rw-r--r--',
+            mode_bits: directory ? '0755' : '0644',
+            size: model.size,
+            is_file: !directory,
+            is_symlink: model.kind === 'symlink',
+            mimetype: directory ? 'inode/directory' : 'text/plain',
+            created_at: model.modifiedAt,
+            modified_at: model.modifiedAt,
+        },
+    };
+}
+
+type Session = ComponentType<{ children?: ReactNode }>;
+const NoSession: Session = ({ children }) => children;
+
+function editorSession(model: FileEditorModel): Session {
+    return function EditorSession({ children }) {
+        const value = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), []);
+
+        return <FileEditorContext.Provider value={value}>{children}</FileEditorContext.Provider>;
+    };
+}
+
+function managerSession(model: FileManagerModel): Session {
+    const files = model.entries.map((entry) => ({
+        object: 'file_object',
+        attributes: {
+            name: entry.name,
+            mode: entry.mode,
+            mode_bits: entry.modeBits,
+            size: entry.size,
+            is_file: entry.kind !== 'directory',
+            is_symlink: entry.kind === 'symlink',
+            mimetype: entry.mimetype,
+            created_at: entry.modifiedAt,
+            modified_at: entry.modifiedAt,
+        },
+    }));
+
+    return function ManagerSession({ children }) {
+        const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
+        const value = useMemo(() => ({ model, files }), []);
+
+        useLayoutEffect(() => {
+            setSelectedFiles({ directory: model.directory, files: [...model.selection] });
+        }, [setSelectedFiles]);
+
+        return <FileManagerContext.Provider value={value}>{children}</FileManagerContext.Provider>;
+    };
+}
+
+/**
+ * Tests a layer against the view's classic layers without issuing core queries: render it with `props`
+ * inside `Wrapper`, and its `Default` renders classic with the same model. Nested views read fixtures.
+ */
+export async function createViewTestHost<N extends ViewName>(
+    name: N,
+    options: ViewTestHostOptions<N> = {}
+): Promise<ViewTestHost<N>> {
     registerClassPrefixes([options.prefix]);
-    function Context({ children }: { children?: ReactNode }) {
-        const context = useMemo(() => ({ extensionId, context: `component "${name}" test host` }), []);
+    registerClassicTheme();
+    await preloadView(name);
 
-        return <ExtensionContext.Provider value={context}>{children}</ExtensionContext.Provider>;
-    }
+    const view: ViewName = name;
+    const extensionId = options.extensionId ?? 'test-extension';
+    const model = options.model ?? fixtureModel(view, options.fixture);
+    const manager = view === 'server.files.manager' ? (model as FileManagerModel) : undefined;
+    const host = createExtensionTestHost({
+        extensionId,
+        server: createTestServer(),
+        path: manager ? `/server/test-server/files#${manager.directory}` : undefined,
+    });
+    const portal =
+        manager && !document.getElementById('modal-portal')
+            ? document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }))
+            : null;
+    const derivedInput = () => {
+        if (view === 'dashboard.serverCard') {
+            const card = model as ServerCardModel;
 
-    if (name === 'dashboard.serverCard') {
-        const model = options.model as ServerCardModel;
-
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const context = useMemo(
-                () => ({
-                    model,
-                    server: createTestServer({ identifier: model.identifier, uuid: model.uuid, name: model.name }),
-                }),
-                []
-            );
-
-            return (
-                <Context>
-                    <ServerCardContext.Provider value={context}>{children}</ServerCardContext.Provider>
-                </Context>
-            );
+            return { server: createTestServer({ identifier: card.identifier, uuid: card.uuid, name: card.name }) };
         }
 
-        return { Wrapper, props: { model, Default: DefaultServerCard, parts: serverCardParts }, dispose: noDispose };
-    }
+        return view === 'server.files.details' ? { file: fileObject(model as FileDetailsModel) } : {};
+    };
 
-    if (name === 'server.files.editor') {
-        const model = options.model as FileEditorModel;
-
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const session = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), []);
-
-            return (
-                <Context>
-                    <FileEditorContext.Provider value={session}>{children}</FileEditorContext.Provider>
-                </Context>
-            );
+    const session = (): Session => {
+        if (view === 'server.files.editor') {
+            return editorSession(model as FileEditorModel);
         }
 
-        return { Wrapper, props: { model, Default: DefaultFileEditor, parts: fileEditorParts }, dispose: noDispose };
-    }
+        return manager ? managerSession(manager) : NoSession;
+    };
 
-    if (name === 'server.files.manager') {
-        const model = options.model as FileManagerModel;
-        const host = createExtensionTestHost({
-            extensionId,
-            server: createTestServer(),
-            path: `/server/test-server/files#${model.directory}`,
-        });
-        const files = model.entries.map((entry) => ({
-            object: 'file_object',
-            attributes: {
-                name: entry.name,
-                mode: entry.mode,
-                mode_bits: entry.modeBits,
-                size: entry.size,
-                is_file: entry.kind !== 'directory',
-                is_symlink: entry.kind === 'symlink',
-                mimetype: entry.mimetype,
-                created_at: entry.modifiedAt,
-                modified_at: entry.modifiedAt,
-            },
-        }));
-        const portal = document.getElementById('modal-portal')
-            ? null
-            : document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }));
+    const input = options.input === undefined ? derivedInput() : Object(options.input);
+    const Session = session();
 
-        function Selection() {
-            const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
-
-            useLayoutEffect(() => {
-                setSelectedFiles({ directory: model.directory, files: [...model.selection] });
-            }, [setSelectedFiles]);
-
-            return null;
-        }
-
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const session = useMemo(() => ({ model, files }), []);
-
-            return (
-                <host.Wrapper>
-                    <Context>
-                        <Selection />
-                        <FileManagerContext.Provider value={session}>{children}</FileManagerContext.Provider>
-                    </Context>
-                </host.Wrapper>
-            );
-        }
-
-        return {
-            Wrapper,
-            props: { model, Default: DefaultFileManager, parts: fileManagerParts },
-            dispose: () => {
-                portal?.remove();
-                host.dispose();
-            },
-        };
-    }
-
-    const model = options.model as FileDetailsModel;
+    const harness = createViewHarness(name, { model, inputs: input });
 
     function Wrapper({ children }: { children?: ReactNode }) {
+        const context = useMemo(() => ({ extensionId, context: `view "${name}" test host` }), []);
+
         return (
-            <Context>
-                <FileDetailsContext.Provider value={model}>{children}</FileDetailsContext.Provider>
-            </Context>
+            <host.Wrapper>
+                <ExtensionContext.Provider value={context}>
+                    <ViewFixtureProvider>
+                        <Session>
+                            <harness.Scope>{children}</harness.Scope>
+                        </Session>
+                    </ViewFixtureProvider>
+                </ExtensionContext.Provider>
+            </host.Wrapper>
         );
     }
 
-    return { Wrapper, props: { model, Default: DefaultFileDetails, parts: fileDetailsParts }, dispose: noDispose };
+    return {
+        Wrapper,
+        props: harness.props,
+        dispose: () => {
+            portal?.remove();
+            host.dispose();
+        },
+    };
 }

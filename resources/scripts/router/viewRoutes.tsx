@@ -1,0 +1,82 @@
+import type { ReactNode } from 'react';
+import { Outlet } from '@tanstack/react-router';
+import Spinner from '@/components/elements/Spinner';
+import PermissionRoute from '@/components/elements/PermissionRoute';
+import Slot from '@/extensions/Slot';
+import { hasPermission } from '@/plugins/usePermissions';
+import { RouteAccessDenied } from '@/router/RouteError';
+import { useRouteSlotData } from '@/router/routeSlots';
+import { LayoutMainCheck } from '@/views/a11y';
+import { pageSlots, type PageViewName } from '@/views/pages';
+import { ViewSessionProvider } from '@/views/session';
+import { preloadView, View, ViewArea } from '@/views/View';
+import type { ViewContext } from '@/views/registry';
+
+export type LayoutViewName = 'layout.auth' | 'layout.app' | 'layout.account' | 'layout.server' | 'layout.admin';
+
+/** A server tab `beforeLoad` matching PermissionRoute's any-of check. */
+export const requireServerPermission =
+    (permission: string | string[]) =>
+    ({ context }: { context: { serverPermissions: readonly string[] } }): void => {
+        const required = Array.isArray(permission) ? permission : [permission];
+
+        if (!required.some((name) => hasPermission(context.serverPermissions, name))) {
+            throw new RouteAccessDenied();
+        }
+    };
+
+/** Renders a layout view in its area with the routed content as its children. */
+export function LayoutView({ name, area, children }: { name: LayoutViewName; area: ViewContext; children: ReactNode }) {
+    return (
+        <ViewArea area={area}>
+            <LayoutMainCheck name={name}>
+                <View name={name}>{children}</View>
+            </LayoutMainCheck>
+        </ViewArea>
+    );
+}
+
+export function layoutRoute(name: LayoutViewName, area: ViewContext) {
+    function LayoutRoute() {
+        return (
+            <LayoutView name={name} area={area}>
+                <Outlet />
+            </LayoutView>
+        );
+    }
+
+    LayoutRoute.preload = () => preloadView(name);
+
+    return LayoutRoute;
+}
+
+/**
+ * The route component of a page: its permission guard, then the page view between the slots the
+ * engine renders before and after it, so a theme cannot drop them.
+ */
+export function pageRoute(
+    name: Exclude<PageViewName, 'page.server.console'>,
+    permission: string | string[] | null = null
+) {
+    const slots = pageSlots(name);
+
+    function PageRoute() {
+        const data = useRouteSlotData();
+
+        return (
+            <PermissionRoute permission={permission}>
+                <ViewSessionProvider>
+                    {slots && <Slot name={slots[0]} data={data} />}
+                    <Spinner.Suspense>
+                        <View name={name} />
+                    </Spinner.Suspense>
+                    {slots && <Slot name={slots[1]} data={data} />}
+                </ViewSessionProvider>
+            </PermissionRoute>
+        );
+    }
+
+    PageRoute.preload = () => preloadView(name);
+
+    return PageRoute;
+}

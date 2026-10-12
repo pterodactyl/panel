@@ -63,15 +63,10 @@ function renderRow(owner = true) {
 }
 
 it('preserves the core file link checkbox and menu when details are replaced', async () => {
-    registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
+    registry.prepareExtensions([{ id: 'details', entry: '/details.js', views: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerComponentReplacement(
-        'details',
-        'server.files.details',
-        () => <span>Custom presentation</span>,
-        batch
-    );
+    registry.registerViewOverride('details', 'server.files.details', () => <span>Custom presentation</span>, batch);
     registry.commitExtensionRegistryBatch('details', batch);
     renderRow();
     await screen.findByText('Custom presentation');
@@ -84,25 +79,20 @@ it('preserves the core file link checkbox and menu when details are replaced', a
     expect(screen.getByRole('button', { name: 'Open file options' })).toBeVisible();
 });
 it('does not expose a core edit link without file-content permission', async () => {
-    registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
+    registry.prepareExtensions([{ id: 'details', entry: '/details.js', views: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerComponentReplacement(
-        'details',
-        'server.files.details',
-        () => <span>Custom presentation</span>,
-        batch
-    );
+    registry.registerViewOverride('details', 'server.files.details', () => <span>Custom presentation</span>, batch);
     registry.commitExtensionRegistryBatch('details', batch);
     renderRow(false);
     await screen.findByText('Custom presentation');
     expect(screen.queryByRole('link', { name: 'config.json' })).not.toBeInTheDocument();
 });
 it('restores native details after a renderer failure with core controls intact', async () => {
-    registry.prepareExtensions([{ id: 'details', entry: '/details.js', components: ['server.files.details'] }]);
+    registry.prepareExtensions([{ id: 'details', entry: '/details.js', views: ['server.files.details'] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerComponentReplacement(
+    registry.registerViewOverride(
         'details',
         'server.files.details',
         () => {

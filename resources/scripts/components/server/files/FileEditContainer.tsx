@@ -16,9 +16,9 @@ import { clearNewFileDraft, readNewFileDraft, writeNewFileDraft } from '@/lib/fi
 import { useDebouncedCallback } from '@/plugins/useDebouncedCallback';
 import { useNavigationBlocker } from '@/plugins/useNavigationBlocker';
 import { usePermissions } from '@/plugins/usePermissions';
-import ComponentView from '@/extensions/ComponentView';
-import type { FileEditorModel } from '@/extensions/componentTypes';
-import { DefaultFileEditor, FileEditorContext, fileEditorParts, modeForFile } from './FileEditorView';
+import { View } from '@/views/View';
+import type { FileEditorModel } from '@/views/files';
+import { FileEditorContext, modeForFile } from './FileEditorView';
 
 interface FileEditSessionProps {
     id: string;
@@ -160,12 +160,7 @@ function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProp
                 }}
             />
             <FileEditorContext.Provider value={session}>
-                <ComponentView
-                    name='server.files.editor'
-                    resetKey={`${uuid}:${file}`}
-                    props={{ model, Default: DefaultFileEditor, parts: fileEditorParts }}
-                    loading={<Spinner size='large' centered />}
-                />
+                <View name='server.files.editor' />
             </FileEditorContext.Provider>
         </>
     );

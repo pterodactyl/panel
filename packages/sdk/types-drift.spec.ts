@@ -11,8 +11,10 @@ const options = ts.parseJsonConfigFileContent(config.config, ts.sys, root).optio
 const entries = [
     'resources/scripts/sdk/index.ts',
     'resources/scripts/sdk/api.ts',
+    'resources/scripts/sdk/theme.ts',
     'packages/sdk/types/index.d.ts',
     'packages/sdk/types/api.d.ts',
+    'packages/sdk/types/theme.d.ts',
 ];
 
 it('publishes the same value exports as the runtime entry points', () => {
@@ -33,42 +35,64 @@ it('publishes the same value exports as the runtime entry points', () => {
             .map((symbol) => symbol.name)
             .sort();
     };
-    expect(values(entries[2])).toEqual(values(entries[0]));
-    expect(values(entries[3])).toEqual(values(entries[1]));
+    expect(values(entries[3])).toEqual(values(entries[0]));
+    expect(values(entries[4])).toEqual(values(entries[1]));
+    expect(values(entries[5])).toEqual(values(entries[2]));
     expect(values(entries[0]).length).toBeGreaterThan(20);
 }, 30_000);
 
 const consumer = `
 import { createExtensionTestHost } from '@pterodactyl/sdk/testing';
-import { createComponentTestHost, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
-import type { ReplacementProps, ComponentPartProps } from '@pterodactyl/sdk';
+import { createViewTestHost, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
+import type { ViewProps, ViewPartProps } from '@pterodactyl/sdk';
 import { createTestFileEditor, createTestFileManager } from '@pterodactyl/sdk/testing';
-const editorHost = createComponentTestHost('server.files.editor', {model: createTestFileEditor({readOnly: true})});
-const managerHost = createComponentTestHost('server.files.manager', {model: createTestFileManager()});
+import { defineTheme, lazyView, Main, Slot, View, useTheme, useThemeSettings, type ThemeViews } from '@pterodactyl/sdk/theme';
+const editorHost = createViewTestHost('server.files.editor', {model: createTestFileEditor({readOnly: true})});
+const managerHost = createViewTestHost('server.files.manager', {model: createTestFileManager()});
 // @ts-expect-error An editor model is not a file browser model.
-createComponentTestHost('server.files.manager', {model: createTestFileEditor()});
-function Editor({model, Default}: ReplacementProps<'server.files.editor'>) {
+void createViewTestHost('server.files.manager', {model: createTestFileEditor()});
+function Editor({model, Default}: ViewProps<'server.files.editor'>) {
   const saved: Promise<boolean> = model.saveAs('copy.txt');
   // @ts-expect-error The model is read-only; report edits through change().
   model.content = '';
   return <Default parts={{editor: ({model}) => <textarea defaultValue={model.content} readOnly={model.readOnly} onChange={event => model.change(event.target.value)} />}} />;
 }
-function Browser({model, parts}: ReplacementProps<'server.files.manager'>) {
+function Browser({model, parts}: ViewProps<'server.files.manager'>) {
   const removed: Promise<void> = model.actions.remove(model.selection);
   // @ts-expect-error Entries have a closed set of kinds.
   const isSocket = model.entries[0]?.kind === 'socket';
   return <ul><parts.toolbar model={model} />{model.entries.map(entry => <li key={entry.path} onClick={() => void model.actions.open(entry.name)}>{entry.name}</li>)}</ul>;
 }
-const cardHost = createComponentTestHost('dashboard.serverCard', {model: createTestServerCard()});
-const fileHost = createComponentTestHost('server.files.details', {model: createTestFileDetails()});
+const cardHost = await createViewTestHost('dashboard.serverCard', {model: createTestServerCard()});
+const fileHost = await createViewTestHost('server.files.details', {model: createTestFileDetails()});
 const nativeCard = <cardHost.props.Default />;
-// @ts-expect-error Component models remain distinct.
-createComponentTestHost('dashboard.serverCard', {model: createTestFileDetails()});
-function Metrics({model}: ComponentPartProps<'dashboard.serverCard'>) {return <span>{model.name}</span>;}
-function Card({Default, model, parts}: ReplacementProps<'dashboard.serverCard'>) {
-  const identity = <parts.identity model={model} />;
-  return <Default parts={{metrics: Metrics}} />;
+// @ts-expect-error View models remain distinct.
+void createViewTestHost('dashboard.serverCard', {model: createTestFileDetails()});
+function Metrics({model}: ViewPartProps<'dashboard.serverCard'>) {return <span>{model.name}</span>;}
+function Card({Default, model, parts, server}: ViewProps<'dashboard.serverCard'>) {
+  const identity = <parts.identity model={model} server={server} />;
+  // @ts-expect-error Parts receive the view's inputs too.
+  const bare = <parts.identity model={model} />;
+  return <Default parts={{metrics: Metrics}} className="hw:gap-3" />;
 }
+function Shell({model, children}: ViewProps<'layout.app'>) {
+  const {scheme, setScheme} = useTheme();
+  const accent = useThemeSettings().accent;
+  return <><span>{model.brand.name}{scheme}{String(accent)}</span><Slot name="nav.items.before" /><View name="app.search" /><Main>{children}</Main><button onClick={() => setScheme('light')} /></>;
+}
+const themeViews: ThemeViews = {
+  'layout.app': Shell,
+  'dashboard.serverCard': Card,
+  'page.dashboard': lazyView(async () => ({default: ({model}: ViewProps<'page.dashboard'>) => <span>{model.error}</span>})),
+  'billing.balance': ({model}: ViewProps<'billing.balance'>) => <span>{String(model)}</span>,
+};
+// @ts-expect-error A view receives the model of its own name.
+const wrongModel: ThemeViews = {'dashboard.serverList': Card};
+const theme = defineTheme({views: themeViews, icons: {layers: () => null}});
+const optional = <View name="billing.balance" optional />;
+// @ts-expect-error The card needs the server it shows.
+const missingInput = <View name="dashboard.serverCard" />;
+const cardView = <View name="dashboard.serverCard" server={cardHost.props.server} />;
 const host = createExtensionTestHost({path: '/account'});
 host.emitWebsocket('status', 'running');
 // @ts-expect-error The test host only emits known socket events.
@@ -124,17 +148,20 @@ form.setFieldValue('missing', 'value');
 const fields = <Form form={form}><form.AppField name="name">{field => <field.TextField label="Name" />}</form.AppField></Form>;
 // @ts-expect-error Form requires its form instance.
 const invalidForm = <Form />;
-definePterodactylExtension({ setup({ slots, screens, columns, components }) {
-  components.replace('dashboard.serverCard', Card);
-  components.replace('dashboard.serverCard', {load: async () => ({default: Card})});
-  components.replace('server.files.editor', Editor);
-  components.replace('server.files.manager', {load: async () => ({default: Browser})});
+definePterodactylExtension({ setup({ slots, screens, columns, views }) {
+  views.override('dashboard.serverCard', Card);
+  views.override('dashboard.serverCard', {load: async () => ({default: Card})});
+  views.override('server.files.editor', Editor);
+  views.override('server.files.manager', {load: async () => ({default: Browser})});
   // @ts-expect-error A file browser cannot replace the editor.
-  components.replace('server.files.editor', Browser);
+  views.override('server.files.editor', Browser);
   // @ts-expect-error Names are stable catalog identifiers.
-  components.replace('components/dashboard/ServerRow', Card);
+  views.override('components/dashboard/ServerRow', Card);
   // @ts-expect-error A file view cannot replace a server card.
-  components.replace('server.files.details', Card);
+  views.override('server.files.details', Card);
+  views.define('billing.balance', {context: 'app', use: () => ({amount: 5}), Default: ({model}) => <span>{model.amount}</span>, fixtures: {empty: () => ({amount: 0})}});
+  // @ts-expect-error Fixtures match the model.
+  views.define('billing.other', {context: 'app', use: () => ({amount: 5}), Default: () => null, fixtures: {empty: () => ({total: 0})}});
   // @ts-expect-error Parts must be named by this contract.
   const unknownPart = <cardHost.props.Default parts={{unknown: Metrics}} />;
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="username">{field => <field.TextField label="Custom username" />}</data.form.AppField>);
@@ -303,10 +330,4 @@ export const useContent = (uuid: string, file: string): string | undefined =>
             rmSync(directory, { recursive: true, force: true });
         }
     }, 120_000);
-});
-
-it('publishes the same component catalog as the manifest schema', async () => {
-    const { COMPONENT_NAMES } = await import('../../resources/scripts/extensions/componentTypes');
-    const schema = JSON.parse(readFileSync(resolve(root, 'packages/sdk/manifest.schema.json'), 'utf8'));
-    expect(schema.properties.ui.properties.components.items.enum).toEqual([...COMPONENT_NAMES]);
 });

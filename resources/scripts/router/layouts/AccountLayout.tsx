@@ -1,4 +1,4 @@
-import { Outlet } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
 import SubNavigation from '@/components/elements/SubNavigation';
 import SubNavigationLayout from '@/components/elements/SubNavigationLayout';
 import NavLink from '@/router/NavLink';
@@ -6,8 +6,9 @@ import { getAreaNav } from '@/router/nav';
 import Slot from '@/extensions/Slot';
 import NavigationLabel from '@/extensions/NavigationLabel';
 import { ScreenGate } from '@/extensions/screenNavigation';
+import { Main } from '@/views/a11y';
 
-export default function AccountLayout() {
+export default function AccountLayout({ children }: { children?: ReactNode }) {
     return (
         <SubNavigationLayout
             navigation={
@@ -28,7 +29,7 @@ export default function AccountLayout() {
                 </SubNavigation>
             }
         >
-            <Outlet />
+            <Main>{children}</Main>
         </SubNavigationLayout>
     );
 }
