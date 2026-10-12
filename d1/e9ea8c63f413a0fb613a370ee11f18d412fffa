@@ -1,0 +1,172 @@
+resources/scripts/views/server/network.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 18,169-170,173-174,189-190
+resources/scripts/views/server/users.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 20,443-444,451-452,459-460,466-467,492-493
+resources/scripts/views/server/backups.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 25,299-300,307-308,338-339
+packages/sdk/types/views/layouts.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 5
+resources/scripts/views/server/startup.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 14,268-269,293-294,297-298,306-307,314-315
+resources/scripts/views/auth/password.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 6,148,151,157-158,161-162
+  s_4cabae41bceed9::t_9a1bf59be99683 8
+  s_4cabae41bceed9::t_d000b7c2ef742c 149-150
+packages/sdk/types/views/pages.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 3-6
+scripts/measure-entry.mjs
+  s_4cabae41bceed9::t_9b8a5a13c52276 1-65
+resources/scripts/views/models.ts
+  s_4cabae41bceed9::t_5ac0c11f4abe03 23
+packages/sdk/types/views/server/console.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 5
+resources/scripts/views/auth/page.ts
+  s_4cabae41bceed9::t_50a912470a45e5 1-6
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_5ddedb21ac55f3 397-410,416,418-441,443-448,450-464,468-501,512-517,519-521
+  s_4cabae41bceed9::t_cca49517fa88eb 502-506,508-511,518
+  s_4cabae41bceed9::t_687217f3f3d45d 465-467
+  s_4cabae41bceed9::t_ffb97289791e10 442,449
+  s_4cabae41bceed9::t_30074847e741c4 3
+  s_4cabae41bceed9::t_2bfa8e8efdd8e9 411,413-415,417
+  s_4cabae41bceed9::t_29679a848ba3cd 412
+  s_4cabae41bceed9::t_93dea90b41d16a 507
+packages/sdk/types/views/lazy.d.ts
+  s_4cabae41bceed9::t_a060b72e178453 3-8,13
+packages/sdk/types/views/models.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 3-4
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_424f421d86394b 324-325,328-329,337-338,341-342,351-352,358-359
+  s_4cabae41bceed9::t_5e0b24ea5a422d 13-14
+resources/scripts/views/server/databases.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 17,221-222,225-226,241-242
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_0eec8f24498b41 61
+  s_4cabae41bceed9::t_6f2e73ae8e1e86 80-82
+resources/scripts/views/lazy.ts
+  s_4cabae41bceed9::t_b7a0f72f032900 21,24
+  s_4cabae41bceed9::t_7a92b70fd75dc1 86
+  s_4cabae41bceed9::t_92c6aee62ca3f0 13-15,18-19,22-23,25
+  s_4cabae41bceed9::t_531d19d80bd0e2 12,16-17,20,26-30,36-45,61-64,68
+resources/scripts/views/account/keys.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 12,203-204,207-208,211-212,220-221,244-245,252-253,272-273
+resources/scripts/views/definitions.spec.ts
+  s_4cabae41bceed9::t_df2a3768865d9f 1-41,46,49-72,79-82,84-99,101-114
+  s_4cabae41bceed9::t_fc6e5c2f689a6e 75-78
+  s_4cabae41bceed9::t_5958cfd50d5806 42-45,47-48
+  s_4cabae41bceed9::t_dc862c17dedb03 100
+  s_4cabae41bceed9::t_0bbcada73f55b2 73
+  s_4cabae41bceed9::t_006417f8dcc2e3 74
+  s_4cabae41bceed9::t_2355fc150bc6dd 83
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_8fbd8aa3b4e2b4 4
+  s_4cabae41bceed9::t_fd43333f31d14e 61,67
+  s_4cabae41bceed9::t_31b112d97fb179 71-72
+scripts/generate-sdk-views.mjs
+  s_4cabae41bceed9::t_81286dcdc76952 25,27
+vite.config.mts
+  s_4cabae41bceed9::t_ad7417053d7f3e 1
+  s_4cabae41bceed9::t_3611a1822ae383 83
+  s_4cabae41bceed9::t_e6c2e959b62058 49-80
+  s_4cabae41bceed9::t_057cb38bbe33d7 109,114
+resources/scripts/views/activity/index.ts
+  s_4cabae41bceed9::t_1ddb4a611cbf7e 315-316
+  s_4cabae41bceed9::t_d74559c8d6a313 15,283-284,314,317
+resources/scripts/views/auth/login.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 10,164,167,185-186,189-190
+  s_4cabae41bceed9::t_4b640072c0bef5 165-166
+  s_4cabae41bceed9::t_fb318076ad9824 12
+resources/scripts/views/server/schedules.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 29,527-528,534-535,543-544,551-552,564-565,573-574
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_cb2e5e0d545c48 252-259,262
+  s_4cabae41bceed9::t_fd010c6f2a1b51 448-451
+resources/scripts/views/server/settings.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 6,131-132,135-136,143-144,147-148,155-156,163-164
+packages/sdk/types/views/registry.d.ts
+  s_4cabae41bceed9::t_a060b72e178453 146-149
+  s_4cabae41bceed9::t_7777ee3a3bace6 54-55,63-71,76-80,83-84,88,144-145,150
+resources/scripts/views/server/conflict.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 3,23-24,33-34
+resources/scripts/views/definitions.ts
+  s_4cabae41bceed9::t_0cfcdffeaeb877 63-66
+  s_4cabae41bceed9::t_2005e74dc20a25 1-62,67-133,138-176
+  s_4cabae41bceed9::t_b96e32139b0d09 134-137
+resources/scripts/views/server/fileFixtures.ts
+  s_4cabae41bceed9::t_90212130ce10c6 1-156
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_c84cc2933da67d 21
+  s_4cabae41bceed9::t_45dcd7caa3324c 376-380
+  s_4cabae41bceed9::t_cef415508a68fa 37
+  s_4cabae41bceed9::t_047bd299c20962 325-341
+  s_4cabae41bceed9::t_b4e67d49e60b64 321
+  s_4cabae41bceed9::t_0d150807680e51 17
+  s_4cabae41bceed9::t_07ab1744c2c2fc 292
+  s_4cabae41bceed9::t_7bcf67c0c8e207 373-375,381-387,392
+resources/scripts/views/account/overview.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 12,270-271,277-278,284-285,288-289,314-315
+resources/scripts/index.tsx
+  s_4cabae41bceed9::t_820d65ac494ff2 18-24
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_03892c70e2d773 54-55
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_4557e3d95b9801 7-10
+  s_488821bd68e9e0::t_0a566f715e0ae9 11
+resources/scripts/views/server/files.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 212-213,216-217,231-232,239-240,248-249,261-262
+  s_4cabae41bceed9::t_ae966cc62685e4 1
+  s_4cabae41bceed9::t_29d47f1342b5d5 15,22
+packages/sdk/types/views/server/fileFixtures.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 1-10
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_90c99a55bc161a 11
+resources/scripts/views/server/console.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 18,343-344,367-368,378-379,393-394,414-415,418-419
+  s_4cabae41bceed9::t_f346c215f4404b 20-21
+resources/scripts/views/server/features.ts
+  s_4cabae41bceed9::t_d74559c8d6a313 11,113-114,122-123,130-131,139-140,146-147,154-155,162-163,173-174
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_188bb4c4c5cdd7 169,198,203-218,233-235,237-242,245-247,249-250,257
+  s_4cabae41bceed9::t_775db33e33d131 57-58,66-73,79-82,85-86,90
+  s_4cabae41bceed9::t_c32532355f346c 4
+  s_4cabae41bceed9::t_babda095740daa 195-197
+  s_4cabae41bceed9::t_39441617d1cd47 229-232,236,243-244,248
+  s_4cabae41bceed9::t_3140d94740fc6f 145-147,154,160-167
+  s_4cabae41bceed9::t_6293f773d8263a 168
+  s_4cabae41bceed9::t_a37c3dc691e315 219-228
+  s_488821bd68e9e0::t_dbfd37e9250c4b 170
+resources/scripts/views/catalog.ts
+  s_4cabae41bceed9::t_f5995f5f2293fe 1-2,6-11
+  s_4cabae41bceed9::t_b0bae765b20d7c 3
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 12-13
+packages/sdk/types/views/View.d.ts
+  s_4cabae41bceed9::t_7777ee3a3bace6 23-24
+resources/scripts/views/dashboard.ts
+  s_4cabae41bceed9::t_e4ec3173fc5a67 1
+  s_4cabae41bceed9::t_d74559c8d6a313 18,276-277,283-284,318-319,339-340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1e9ea8c63f413a0fb613a370ee11f18d412fffa",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
