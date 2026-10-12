@@ -1,0 +1,46 @@
+resources/scripts/components/admin/tags/helpers.spec.ts
+  s_4cabae41bceed9::t_597c2fe1fbd724 1-38
+resources/scripts/components/admin/tags/TagBadge.tsx
+  s_4cabae41bceed9::t_0c6fd23a124797 3,6-7,13
+packages/sdk/types/components/ui/Select.d.ts
+  s_4cabae41bceed9::t_c8c44f56dadf3c 39-40
+resources/scripts/components/admin/tags/NoTagsYet.tsx
+  s_4cabae41bceed9::t_f39fb7c18f9e84 1-20
+resources/scripts/components/ui/Select.spec.tsx
+  s_4cabae41bceed9::t_7a2e22d9be83d4 47-63
+  s_4cabae41bceed9::t_479be650a19fbe 4
+resources/scripts/components/admin/nodes/NodeTagsTab.tsx
+  s_4cabae41bceed9::t_2e8ee5004f2730 14,75-89,91-102,104-110
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_4cabae41bceed9::t_e5c4508a991030 4,24-26,56-73
+resources/scripts/components/ui/Select.tsx
+  s_4cabae41bceed9::t_bba900bee7a956 48-49
+  s_4cabae41bceed9::t_bce04c2e01e96c 107-118
+  s_4cabae41bceed9::t_9948c0f55f0a09 539,549,556
+  s_4cabae41bceed9::t_6d8e7ce631ce96 358,373,388-395
+resources/scripts/components/admin/tags/helpers.ts
+  s_4cabae41bceed9::t_a759d84b66e071 1-19
+resources/scripts/components/form/fields.tsx
+  s_4cabae41bceed9::t_176dbd2e2b7d39 237,249
+  s_4cabae41bceed9::t_c720bb4208de65 267
+packages/sdk/types/components/form/fields.d.ts
+  s_4cabae41bceed9::t_c8c44f56dadf3c 41,43
+resources/scripts/components/admin/tags/TagsField.tsx
+  s_4cabae41bceed9::t_6683cb08f32479 1,4,17,20,22-35,42-53,56,58-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4e7ca0115408161c7ca83692962fc1c4770b272e",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
