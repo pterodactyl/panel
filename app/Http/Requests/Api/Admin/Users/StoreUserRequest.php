@@ -10,7 +10,6 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\ValidationRuleSubset;
 
 class StoreUserRequest extends AdminApiRequest
 {
@@ -33,20 +32,17 @@ class StoreUserRequest extends AdminApiRequest
     {
         $rules ??= CreateUser::rules();
 
-        $response = ValidationRuleSubset::select($rules, [
-            'external_id',
-            'email',
-            'username',
-            'password',
-            'root_admin',
-            'name_first',
-            'name_last',
-        ]);
-
-        // Nested on input; actionInput() hands it to the action as `language`.
-        $response['preferences.language'] = $rules['language'];
-
-        return $response;
+        return [
+            'external_id' => $rules['external_id'],
+            'email' => $rules['email'],
+            'username' => $rules['username'],
+            'password' => $rules['password'],
+            'root_admin' => $rules['root_admin'],
+            'name_first' => $rules['name_first'],
+            'name_last' => $rules['name_last'],
+            // Nested on input; actionInput() hands it to the action as `language`.
+            'preferences.language' => $rules['language'],
+        ];
     }
 
     /**

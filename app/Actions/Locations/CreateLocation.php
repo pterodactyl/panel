@@ -31,31 +31,15 @@ final readonly class CreateLocation implements CreatesLocations
     }
 
     /**
-     * Validates location input and returns the model attributes it describes.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{short: string, long: string|null}
-     */
-    public static function attributes(array $input, ?Location $location = null): array
-    {
-        $input = Validator::make($input, self::rules($location))->safe();
-
-        return [
-            'short' => $input->string('short')->toString(),
-            'long' => $input->filled('long') ? $input->string('long')->toString() : null,
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      */
     public function create(array $input): Location
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::validate($input, self::rules());
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        return DB::transaction(function () use ($attributes, $extensions): Location {
-            $location = Location::query()->create($attributes);
+        return DB::transaction(function () use ($validated, $extensions): Location {
+            $location = Location::query()->create([...$validated, 'long' => filled($validated['long'] ?? null) ? $validated['long'] : null]);
             $this->extensions->save($location, $extensions);
 
             return $location;

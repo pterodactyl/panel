@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Subusers;
 
 use Illuminate\Foundation\Bus\PendingDispatch;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Subusers\UpdatesSubusers;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
@@ -30,7 +32,8 @@ final readonly class UpdateSubuser implements UpdatesSubusers
     {
         // A permission the subuser already holds stays grantable even once nothing defines
         // it, such as one of a disabled extension, so a caller can hand it back unchanged.
-        $permissions = CreateSubuser::permissions($permissions, [...$this->catalog->keys(), ...$subuser->permissions]);
+        $rules = CreateSubuser::rules([...$this->catalog->keys(), ...$subuser->permissions]);
+        Validator::validate(['permissions' => $permissions], Arr::only($rules, ['permissions', 'permissions.*']));
 
         $current = $subuser->permissions;
         $requested = $permissions;

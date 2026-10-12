@@ -59,50 +59,20 @@ final readonly class CreateMount implements CreatesMounts
     }
 
     /**
-     * Validates mount input and returns the model attributes it describes. The paths are
-     * stored as given. The description and flags are left out when they are not given, so an
-     * updated mount keeps its stored values; a blank description is cleared.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, source: string, target: string, description?: string|null, read_only?: bool, user_mountable?: bool}
-     */
-    public static function attributes(array $input, ?Mount $mount = null): array
-    {
-        $input = Validator::make($input, self::rules($mount))->safe();
-
-        $attributes = [
-            'name' => $input->string('name')->toString(),
-            'source' => $input->string('source')->toString(),
-            'target' => $input->string('target')->toString(),
-        ];
-
-        if ($input->has('description')) {
-            $attributes['description'] = $input->filled('description') ? $input->string('description')->toString() : null;
-        }
-
-        if ($input->has('read_only')) {
-            $attributes['read_only'] = $input->boolean('read_only');
-        }
-
-        if ($input->has('user_mountable')) {
-            $attributes['user_mountable'] = $input->boolean('user_mountable');
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Create a new mount, assigning it a fresh UUID.
      *
      * @param  array<string, mixed>  $input
      */
     public function create(array $input): Mount
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        return DB::transaction(function () use ($attributes, $extensions): Mount {
-            $mount = (new Mount)->fill($attributes);
+        return DB::transaction(function () use ($validated, $extensions): Mount {
+            $mount = (new Mount)->fill($validated);
             $mount->forceFill(['uuid' => Uuid::uuid4()->toString()]);
             $mount->saveOrFail();
 

@@ -18,9 +18,6 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Backup;
 use Throwable;
 
-/**
- * @phpstan-type CompletionAttributes array{successful: bool, checksum: string|null, checksum_type: string|null, size: int, parts: list<MultipartUploadPart>|null}
- */
 final readonly class CompleteBackup implements CompletesBackups
 {
     public function __construct(private BackupManager $backupManager) {}
@@ -46,31 +43,6 @@ final readonly class CompleteBackup implements CompletesBackups
     }
 
     /**
-     * Validates a reported outcome and returns the outcome it describes. A size left out is
-     * 0, and parts left out or null are null, so the upload's parts are listed from S3.
-     *
-     * @param  array<string, mixed>  $input
-     * @return CompletionAttributes
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        return [
-            'successful' => $input->boolean('successful'),
-            'checksum' => $input->filled('checksum') ? $input->string('checksum')->toString() : null,
-            'checksum_type' => $input->filled('checksum_type') ? $input->string('checksum_type')->toString() : null,
-            'size' => $input->integer('size'),
-            'parts' => $input->filled('parts')
-                ? array_map(fn (int|string $key): array => [
-                    'etag' => $input->string('parts.'.$key.'.etag')->toString(),
-                    'part_number' => $input->integer('parts.'.$key.'.part_number'),
-                ], array_keys($input->array('parts')))
-                : null,
-        ];
-    }
-
-    /**
      * Records the outcome Wings reported for a backup and, for S3 storage, closes the
      * multipart upload it belongs to.
      *
@@ -82,29 +54,36 @@ final readonly class CompleteBackup implements CompletesBackups
      */
     public function complete(Backup $backup, array $input): void
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::make($input, self::rules())->safe();
+        $successful = $validated->boolean('successful');
 
-        DB::transaction(function () use ($backup, $attributes): void {
-            $successful = $attributes['successful'];
+        // Parts left out or null are listed from S3 instead.
+        $parts = $validated->filled('parts')
+            ? array_map(fn (int|string $key): array => [
+                'etag' => $validated->string('parts.'.$key.'.etag')->toString(),
+                'part_number' => $validated->integer('parts.'.$key.'.part_number'),
+            ], array_keys($validated->array('parts')))
+            : null;
 
+        DB::transaction(function () use ($backup, $validated, $successful, $parts): void {
             $backup->fill([
                 'is_successful' => $successful,
                 // A failed backup is unlocked so it can be deleted easily.
                 'is_locked' => $successful && $backup->is_locked,
-                'checksum' => $successful ? ($attributes['checksum_type'].':'.$attributes['checksum']) : null,
-                'bytes' => $successful ? $attributes['size'] : 0,
+                'checksum' => $successful ? $validated->string('checksum_type').':'.$validated->string('checksum') : null,
+                'bytes' => $successful ? ($validated['size'] ?? 0) : 0,
                 'completed_at' => CarbonImmutable::now(),
             ])->save();
 
             $adapter = $this->backupManager->adapter();
             if ($adapter instanceof S3Filesystem) {
-                $this->completeMultipartUpload($backup, $adapter, $successful, $attributes['parts']);
+                $this->completeMultipartUpload($backup, $adapter, $successful, $parts);
             }
 
             Event::dispatch(new OperationCompleted($backup->server->uuid, 'backup', $successful, $backup->uuid));
         });
 
-        Activity::event($attributes['successful'] ? 'server:backup.complete' : 'server:backup.fail')
+        Activity::event($successful ? 'server:backup.complete' : 'server:backup.fail')
             ->subject($backup->server, $backup)
             ->property('name', $backup->name)
             ->log();

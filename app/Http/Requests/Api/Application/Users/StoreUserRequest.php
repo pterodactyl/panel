@@ -10,7 +10,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\ValidationRuleSubset;
 
 class StoreUserRequest extends ApplicationApiRequest
 {
@@ -32,19 +31,16 @@ class StoreUserRequest extends ApplicationApiRequest
     {
         $rules ??= CreateUser::rules();
 
-        $response = ValidationRuleSubset::select($rules, [
-            'external_id',
-            'email',
-            'username',
-            'password',
-            'language',
-            'root_admin',
-        ]);
-
-        $response['first_name'] = $rules['name_first'];
-        $response['last_name'] = $rules['name_last'];
-
-        return $response;
+        return [
+            'external_id' => $rules['external_id'],
+            'email' => $rules['email'],
+            'username' => $rules['username'],
+            'password' => $rules['password'],
+            'language' => $rules['language'],
+            'root_admin' => $rules['root_admin'],
+            'first_name' => $rules['name_first'],
+            'last_name' => $rules['name_last'],
+        ];
     }
 
     /**

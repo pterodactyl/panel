@@ -40,31 +40,6 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
     }
 
     /**
-     * Validates task input for a schedule and returns the model attributes it describes.
-     * A backup task is refused while the server cannot hold any backups.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{action: string, payload: string, time_offset: int, continue_on_failure: bool, sequence_id: int|null}
-     *
-     * @throws HttpForbiddenException
-     */
-    public static function attributes(Schedule $schedule, array $input): array
-    {
-        $input = Validator::make($input, self::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();
-        $action = $input->string('action')->toString();
-
-        throw_if($action === Task::ACTION_BACKUP && $schedule->server->backup_limit === 0, HttpForbiddenException::class, "A backup task cannot be created when the server's backup limit is set to 0.");
-
-        return [
-            'action' => $action,
-            'payload' => $input->string('payload')->toString(),
-            'time_offset' => $input->integer('time_offset'),
-            'continue_on_failure' => $input->boolean('continue_on_failure'),
-            'sequence_id' => $input->filled('sequence_id') ? $input->integer('sequence_id') : null,
-        ];
-    }
-
-    /**
      * Appends a task to the schedule, or slots it into the requested position by
      * shifting the tasks that follow it.
      *
@@ -76,15 +51,25 @@ final readonly class CreateScheduleTask implements CreatesScheduleTasks
      */
     public function create(Schedule $schedule, array $input): Task
     {
-        $attributes = self::attributes($schedule, $input);
+        $validated = Validator::make($input, self::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();
+        throw_if($validated['action'] === Task::ACTION_BACKUP && $schedule->server->backup_limit === 0, HttpForbiddenException::class, "A backup task cannot be created when the server's backup limit is set to 0.");
 
-        $task = DB::transaction(function () use ($schedule, $attributes): Task {
+        $attributes = [
+            'action' => $validated['action'],
+            'payload' => $validated['payload'] ?? '',
+            'time_offset' => $validated['time_offset'],
+            'continue_on_failure' => $validated['continue_on_failure'] ?? false,
+        ];
+
+        $requested = $validated->filled('sequence_id') ? $validated->integer('sequence_id') : null;
+
+        $task = DB::transaction(function () use ($schedule, $attributes, $requested): Task {
             $schedule = $schedule->newQuery()->whereKey($schedule->getKey())->lockForUpdate()->firstOrFail();
             $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit');
             throw_if($schedule->tasks()->count() >= $limit, ServiceLimitExceededException::class, "Schedules may not have more than $limit tasks associated with them. Creating this task would put this schedule over the limit.");
 
             $next = ($schedule->tasks()->orderByDesc('sequence_id')->first()->sequence_id ?? 0) + 1;
-            $requested = $attributes['sequence_id'] ?? $next;
+            $requested ??= $next;
 
             $sequenceId = $next;
             if ($requested < $next) {

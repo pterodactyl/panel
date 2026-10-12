@@ -51,28 +51,6 @@ final class InitiateBackup implements InitiatesBackups
     }
 
     /**
-     * Validates backup input and returns the backup it describes. A name left out or blank
-     * is null, and empty entries are dropped from the ignored files.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string|null, is_locked: bool, ignored_files: list<string>}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        // Don't use the PHP empty function here in case anything that is "empty" by default
-        // (0, false, etc.) was passed as a file or folder name.
-        $ignored = array_map(fn (int|string $key): string => $input->string('ignored_files.'.$key)->toString(), array_keys($input->array('ignored_files')));
-
-        return [
-            'name' => $input->filled('name') ? $input->string('name')->toString() : null,
-            'is_locked' => $input->boolean('is_locked'),
-            'ignored_files' => array_values(array_filter($ignored, fn (string $file): bool => $file !== '')),
-        ];
-    }
-
-    /**
      * Set if the backup should be locked once it is created which will prevent
      * its deletion by users or automated system processes.
      */
@@ -111,9 +89,9 @@ final class InitiateBackup implements InitiatesBackups
      */
     public function initiate(Server $server, ?string $name = null, bool $override = false): Backup
     {
-        $attributes = self::attributes(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles]);
+        Validator::validate(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles], self::rules());
 
-        [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $attributes, $override): array {
+        [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $name, $override): array {
             $limit = config('backups.throttles.limit');
             $period = config('backups.throttles.period');
             if ($period > 0) {
@@ -162,10 +140,12 @@ final class InitiateBackup implements InitiatesBackups
 
             $backup = $server->backups()->create([
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => mb_trim($attributes['name'] ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => $attributes['ignored_files'],
+                'name' => mb_trim($name ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
+                // Don't use the PHP empty function here in case anything that is "empty" by default
+                // (0, false, etc.) was passed as a file or folder name.
+                'ignored_files' => array_values(array_filter($this->ignoredFiles, fn (string $file): bool => $file !== '')),
                 'disk' => $this->backupManager->getDefaultAdapter(),
-                'is_locked' => $attributes['is_locked'],
+                'is_locked' => $this->isLocked,
             ]);
 
             return [$backup, $rotated];

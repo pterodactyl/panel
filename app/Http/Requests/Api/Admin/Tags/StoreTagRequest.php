@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Actions\Tags\CreateTag;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Support\ValidationRuleSubset;
 
 class StoreTagRequest extends AdminApiRequest
 {
@@ -32,6 +32,6 @@ class StoreTagRequest extends AdminApiRequest
      */
     protected function writable(array $rules): array
     {
-        return ValidationRuleSubset::select($rules, ['name', 'slug', 'color']);
+        return Arr::only($rules, ['name', 'slug', 'color']);
     }
 }

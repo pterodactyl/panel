@@ -41,25 +41,6 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
     }
 
     /**
-     * Validates deployment input and returns the database it describes, its name not yet
-     * prefixed. A database given no connection limit gets none.
-     *
-     * @param  array<string, mixed>  $input
-     * @return DatabaseDeploymentData
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        return [
-            'database' => $input->string('database')->toString(),
-            'remote' => $input->string('remote')->toString(),
-            'database_host_id' => $input->filled('database_host_id') ? $input->integer('database_host_id') : null,
-            'max_connections' => $input->filled('max_connections') ? $input->integer('max_connections') : null,
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      *
      * @throws Throwable
@@ -70,9 +51,9 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
      */
     public function deploy(Server $server, array $input): Database
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::make($input, self::rules())->safe();
 
-        return DB::transaction(function () use ($server, $attributes): Database {
+        return DB::transaction(function () use ($server, $validated): Database {
             throw_if($server->databases()->lockForUpdate()->count() >= $server->database_limit, DisplayException::class, 'Cannot create additional databases on this server: limit has been reached.');
 
             $hosts = DatabaseHost::query()->get()->toBase();
@@ -81,11 +62,12 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
             $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
             throw_if($nodeHosts->isEmpty() && ! config('pterodactyl.client_features.databases.allow_random'), NoSuitableDatabaseHostException::class);
 
+            // A database given no connection limit gets none.
             return $this->createDatabase->create($server, [
-                'database_host_id' => $attributes['database_host_id'] ?? ($nodeHosts->isEmpty() ? $hosts->random()->id : $nodeHosts->random()->id),
-                'database' => DatabaseName::generateUnique($attributes['database'], $server->id),
-                'remote' => $attributes['remote'],
-                'max_connections' => $attributes['max_connections'] ?? null,
+                'database_host_id' => $validated->filled('database_host_id') ? $validated['database_host_id'] : ($nodeHosts->isEmpty() ? $hosts->random()->id : $nodeHosts->random()->id),
+                'database' => DatabaseName::generateUnique($validated->string('database')->toString(), $server->id),
+                'remote' => $validated['remote'],
+                'max_connections' => $validated->filled('max_connections') ? $validated['max_connections'] : null,
             ]);
         });
     }

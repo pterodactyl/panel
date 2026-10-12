@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Eggs;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Actions\Eggs\CreateEgg;
 use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Support\ValidationRuleSubset;
 
 final readonly class EggImportData
 {
@@ -245,7 +245,7 @@ final readonly class EggImportData
             'variables' => ['array'],
         ];
 
-        $variable = ValidationRuleSubset::select(CreateEggVariable::rules(), ['name', 'description', 'env_variable', 'rules', 'default_value']);
+        $variable = Arr::only(CreateEggVariable::rules(), ['name', 'description', 'env_variable', 'rules', 'default_value']);
         foreach ($variable as $field => $fieldRules) {
             $rules["variables.*.{$field}"] = $fieldRules;
         }

@@ -18,9 +18,9 @@ final readonly class UpdateApiKey implements UpdatesApiKeys
      */
     public function update(ApiKey $key, array $input, array $permissions = []): ApiKey
     {
-        $attributes = $this->attributes($input);
+        $attributes = Validator::validate($input, ['memo' => ['sometimes', ...CreateApiKey::rules()['memo']]]);
 
-        $columns = CreateApiKey::permissions($permissions);
+        $columns = Validator::validate($permissions, CreateApiKey::permissionRules());
         if ($key->key_type === ApiKey::TYPE_APPLICATION) {
             $attributes = [...$attributes, ...$columns];
         }
@@ -28,19 +28,5 @@ final readonly class UpdateApiKey implements UpdatesApiKeys
         $key->forceFill($attributes)->saveOrFail();
 
         return $key;
-    }
-
-    /**
-     * Validates update input and returns the attributes it changes: the memo, when it is
-     * given. A key's owner and allowed IPs are set when it is created.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{memo?: string}
-     */
-    private function attributes(array $input): array
-    {
-        $input = Validator::make($input, ['memo' => ['sometimes', ...CreateApiKey::rules()['memo']]])->safe();
-
-        return $input->has('memo') ? ['memo' => $input->string('memo')->toString()] : [];
     }
 }

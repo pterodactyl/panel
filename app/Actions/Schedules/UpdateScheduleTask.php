@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Schedules;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Schedules\UpdatesScheduleTasks;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Facades\Activity;
@@ -25,13 +26,23 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
      */
     public function update(Schedule $schedule, Task $task, array $input): Task
     {
-        $attributes = CreateScheduleTask::attributes($schedule, $input);
+        $validated = Validator::make($input, CreateScheduleTask::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();
+        throw_if($validated['action'] === Task::ACTION_BACKUP && $schedule->server->backup_limit === 0, HttpForbiddenException::class, "A backup task cannot be created when the server's backup limit is set to 0.");
 
-        $task = DB::transaction(function () use ($schedule, $task, $attributes): Task {
+        $attributes = [
+            'action' => $validated['action'],
+            'payload' => $validated['payload'] ?? '',
+            'time_offset' => $validated['time_offset'],
+            'continue_on_failure' => $validated['continue_on_failure'] ?? false,
+        ];
+
+        $requested = $validated->filled('sequence_id') ? $validated->integer('sequence_id') : null;
+
+        $task = DB::transaction(function () use ($schedule, $task, $attributes, $requested): Task {
             $schedule = $schedule->newQuery()->whereKey($schedule->getKey())->lockForUpdate()->firstOrFail();
             $task = $schedule->tasks()->whereKey($task->getKey())->firstOrFail();
 
-            $sequenceId = $attributes['sequence_id'] ?? $task->sequence_id;
+            $sequenceId = $requested ?? $task->sequence_id;
 
             if ($sequenceId < $task->sequence_id) {
                 $schedule->tasks()

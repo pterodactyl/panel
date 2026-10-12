@@ -56,31 +56,6 @@ final class CreateDatabase implements CreatesDatabases
         ];
     }
 
-    /**
-     * Validates database input and returns the model attributes it describes. The connection
-     * limit is left out when it is not given, so the database takes the column default; a
-     * blank one is stored as null. Null and 0 both leave the user's connections unlimited.
-     *
-     * @param  array<string, mixed>  $input
-     * @return DatabaseCreationData
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        $attributes = [
-            'database' => $input->string('database')->toString(),
-            'remote' => $input->string('remote')->toString(),
-            'database_host_id' => $input->integer('database_host_id'),
-        ];
-
-        if ($input->has('max_connections')) {
-            $attributes['max_connections'] = $input->filled('max_connections') ? $input->integer('max_connections') : null;
-        }
-
-        return $attributes;
-    }
-
     public function setValidateDatabaseLimit(bool $validate): CreatesDatabases
     {
         $this->validateDatabaseLimit = $validate;
@@ -103,20 +78,30 @@ final class CreateDatabase implements CreatesDatabases
             throw_if(($server->database_limit) !== null && $server->databases()->count() >= $server->database_limit, TooManyDatabasesException::class);
         }
 
+        $validated = Validator::make($input, self::rules())->safe();
+        $hostId = $validated->integer('database_host_id');
+
         $username = sprintf('u%d_%s', $server->id, Str::random(10));
         $password = Utilities::randomStringWithSpecialCharacters(24);
         $data = [
-            ...self::attributes($input),
             'server_id' => $server->id,
+            'database_host_id' => $hostId,
+            'database' => $validated['database'],
             'username' => $username,
+            'remote' => $validated['remote'],
             'password' => Crypt::encrypt($password),
         ];
+
+        // A database given no connection limit takes the column default; a blank one is null.
+        if ($validated->has('max_connections')) {
+            $data['max_connections'] = $validated->filled('max_connections') ? $validated['max_connections'] : null;
+        }
 
         $database = null;
 
         try {
-            $database = DB::transaction(function () use ($data, $password, &$database): Database {
-                $this->dynamic->set('dynamic', $data['database_host_id']);
+            $database = DB::transaction(function () use ($data, $hostId, $password, &$database): Database {
+                $this->dynamic->set('dynamic', $hostId);
                 $database = $this->createModel($data);
                 $this->gateway->createDatabase($database->database);
                 $this->gateway->createUser(
@@ -146,7 +131,7 @@ final class CreateDatabase implements CreatesDatabases
         return $database;
     }
 
-    /** @param DatabaseModelCreationData $data */
+    /** @param array<string, mixed> $data */
     private function createModel(array $data): Database
     {
         $exists = Database::query()->where('server_id', $data['server_id'])

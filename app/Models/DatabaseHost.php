@@ -29,6 +29,7 @@ class DatabaseHost extends Model
     {
         return [
             'id' => 'integer',
+            'port' => 'integer',
             'max_databases' => 'integer',
             'node_id' => 'integer',
         ];

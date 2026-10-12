@@ -18,7 +18,6 @@ use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Rules\UserEmail;
 use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
-use Pterodactyl\Support\ValidationRuleSubset;
 use Throwable;
 
 final readonly class CreateSubuser implements CreatesSubusers
@@ -43,40 +42,6 @@ final readonly class CreateSubuser implements CreatesSubusers
     }
 
     /**
-     * Validates subuser input and returns the email address and the permissions it
-     * describes, each permission one of the grantable keys.
-     *
-     * @param  array<string, mixed>  $input
-     * @param  list<string>  $grantable
-     * @return array{email: string, permissions: list<string>}
-     */
-    public static function attributes(array $input, array $grantable): array
-    {
-        $input = Validator::make($input, self::rules($grantable))->safe();
-
-        return [
-            'email' => $input->string('email')->toString(),
-            'permissions' => array_map(fn (int|string $key): string => $input->string('permissions.'.$key)->toString(), array_keys($input->array('permissions'))),
-        ];
-    }
-
-    /**
-     * Validates permission keys under `permissions` and returns them, each one of the
-     * grantable keys.
-     *
-     * @param  list<string>  $permissions
-     * @param  list<string>  $grantable
-     * @return list<string>
-     */
-    public static function permissions(array $permissions, array $grantable): array
-    {
-        $rules = ValidationRuleSubset::select(self::rules($grantable), ['permissions', 'permissions.*']);
-        $input = Validator::make(['permissions' => $permissions], $rules)->safe();
-
-        return array_map(fn (int|string $key): string => $input->string('permissions.'.$key)->toString(), array_keys($input->array('permissions')));
-    }
-
-    /**
      * Creates a new user on the system and assigns them access to the provided server.
      * If the email address already belongs to a user on the system a new user will not
      * be created. The returned subuser's user reports wasRecentlyCreated when one was.
@@ -90,11 +55,11 @@ final readonly class CreateSubuser implements CreatesSubusers
      */
     public function create(Server $server, string $email, array $permissions): Subuser
     {
-        $attributes = self::attributes(['email' => $email, 'permissions' => $permissions], $this->catalog->keys());
+        Validator::validate(['email' => $email, 'permissions' => $permissions], self::rules($this->catalog->keys()));
 
-        $subuser = DB::transaction(function () use ($server, $attributes): Subuser {
+        $subuser = DB::transaction(function () use ($server, $email, $permissions): Subuser {
             $server = $server->newQuery()->whereKey($server->getKey())->lockForUpdate()->firstOrFail();
-            $user = User::query()->where('email', $attributes['email'])->first() ?? $this->createUser($attributes['email']);
+            $user = User::query()->where('email', $email)->first() ?? $this->createUser($email);
 
             throw_if($server->owner_id === $user->id, UserIsServerOwnerException::class, trans('exceptions.subusers.user_is_owner'));
             throw_if($server->subusers()->where('user_id', $user->id)->exists(), ServerSubuserExistsException::class, trans('exceptions.subusers.subuser_exists'));
@@ -102,13 +67,13 @@ final readonly class CreateSubuser implements CreatesSubusers
             return Subuser::query()->create([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
-                'permissions' => array_values(array_unique($attributes['permissions'])),
+                'permissions' => array_values(array_unique($permissions)),
             ])->setRelation('user', $user);
         });
 
         Activity::event('server:subuser.create')
             ->subject($server, $subuser->user)
-            ->property(['email' => $attributes['email'], 'permissions' => $attributes['permissions']])
+            ->property(['email' => $email, 'permissions' => $permissions])
             ->log();
 
         return $subuser;

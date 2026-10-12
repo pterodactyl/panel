@@ -36,9 +36,6 @@ parameters:
         EggConfigurationOutputs: 'list<EggConfigurationOutput>'
         DaemonFileObject: 'array{name?: string, mode?: string, mode_bits?: string, size?: int, file?: bool, symlink?: bool, mime?: string, created?: string, modified?: string}'
         DaemonStats: 'array{state?: string, is_suspended?: bool, utilization?: array{memory_bytes?: int, cpu_absolute?: float|int, disk_bytes?: int, network?: array{rx_bytes?: int, tx_bytes?: int}, uptime?: int}}'
-        DatabaseCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null}'
-        DatabaseDeploymentData: 'array{database: string, remote: string, database_host_id?: int|null, max_connections?: int|null}'
-        DatabaseModelCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null, server_id: int, username: string, password: string}'
         MultipartUploadPart: 'array{etag: string, part_number: int}'
         BackupUploadParts: 'array{parts: list<string>, part_size: int}'
         GeneralSettingsData: "array{'app:name': string, 'pterodactyl:auth:2fa_required': int, 'app:locale': string}"

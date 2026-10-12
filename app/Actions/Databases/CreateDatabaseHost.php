@@ -37,33 +37,6 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
     }
 
     /**
-     * Validates database host input and returns the model attributes it describes. The
-     * password comes back in plain text, for the action to encrypt, and is left out when it
-     * is blank so an updated host keeps its stored one. A host given no node is global.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, host: string, port: int, username: string, node_id: int|null, password?: string}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        $attributes = [
-            'name' => $input->string('name')->toString(),
-            'host' => $input->string('host')->toString(),
-            'port' => $input->integer('port'),
-            'username' => $input->string('username')->toString(),
-            'node_id' => $input->filled('node_id') ? $input->integer('node_id') : null,
-        ];
-
-        if ($input->filled('password')) {
-            $attributes['password'] = $input->string('password')->toString();
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Create a new database host on the Panel once it accepts the given credentials.
      *
      * @param  array<string, mixed>  $input
@@ -72,12 +45,17 @@ final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
      */
     public function create(array $input): DatabaseHost
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
+        // A host given no node is global.
         $host = DatabaseHost::query()->make([
-            ...$attributes,
-            'password' => Crypt::encrypt($attributes['password'] ?? null),
+            ...$validated,
+            'node_id' => $validated['node_id'] ?? null,
+            'password' => Crypt::encrypt($validated['password'] ?? null),
             'max_databases' => null,
         ]);
 

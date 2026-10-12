@@ -32,38 +32,14 @@ final readonly class CreateTag implements CreatesTags
     }
 
     /**
-     * Validates tag input and returns the model attributes it describes. The colour and legacy
-     * nest id are left out when they are not given, so an edited tag keeps its stored values;
-     * a blank colour is cleared.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, slug: string, color?: string|null, legacy_nest_id?: int|null}
-     */
-    public static function attributes(array $input, ?Tag $tag = null): array
-    {
-        $input = Validator::make($input, self::rules($tag))->safe();
-
-        $attributes = [
-            'name' => $input->string('name')->toString(),
-            'slug' => $input->string('slug')->toString(),
-        ];
-
-        if ($input->has('color')) {
-            $attributes['color'] = $input->filled('color') ? $input->string('color')->toString() : null;
-        }
-
-        if ($input->has('legacy_nest_id')) {
-            $attributes['legacy_nest_id'] = $input->filled('legacy_nest_id') ? $input->integer('legacy_nest_id') : null;
-        }
-
-        return $attributes;
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      */
     public function create(array $input): Tag
     {
-        return Tag::query()->create(self::attributes($input));
+        $validated = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
+        return Tag::query()->create($validated);
     }
 }

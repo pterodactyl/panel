@@ -34,38 +34,19 @@ final readonly class CreateAccountApiKey implements CreatesAccountApiKeys
         ];
     }
 
-    /**
-     * Validates account API key input and returns the description and the allowed IPs, or
-     * null when none were given.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{description: string, allowed_ips: list<string>|null}
-     */
-    public static function attributes(array $input): array
-    {
-        $validator = Validator::make($input, self::rules());
-        $validator->after(fn () => self::validateAllowedIps($validator));
-
-        $input = $validator->safe();
-
-        return [
-            'description' => $input->string('description')->toString(),
-            'allowed_ips' => $input->filled('allowed_ips')
-                ? array_map(fn (int|string $key): string => $input->string('allowed_ips.'.$key)->toString(), array_keys($input->array('allowed_ips')))
-                : null,
-        ];
-    }
-
     /** @param list<string>|null $allowedIps */
     public function create(User $user, ?string $description, ?array $allowedIps): NewAccessToken
     {
-        $attributes = self::attributes(['description' => $description, 'allowed_ips' => $allowedIps]);
+        $validator = Validator::make(['description' => $description, 'allowed_ips' => $allowedIps], self::rules());
+        $validator->after(fn () => self::validateAllowedIps($validator));
 
-        $token = DB::transaction(function () use ($user, $attributes): NewAccessToken {
+        $description = $validator->safe()->string('description')->toString();
+
+        $token = DB::transaction(function () use ($user, $description, $allowedIps): NewAccessToken {
             $user = User::query()->lockForUpdate()->findOrFail($user->id);
             throw_if($user->apiKeys()->count() >= 25, DisplayException::class, 'You have reached the account limit for number of API keys.');
 
-            return $user->createToken($attributes['description'], $attributes['allowed_ips']);
+            return $user->createToken($description, $allowedIps);
         });
 
         Activity::event('user:api-key.create')

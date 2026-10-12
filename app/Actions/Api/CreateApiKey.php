@@ -50,67 +50,23 @@ final readonly class CreateApiKey implements CreatesApiKeys
     }
 
     /**
-     * Validates API key input and returns the model attributes it describes. A key given
-     * no allowed IPs, or null, can be used from any address.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{memo: string, user_id: int, allowed_ips?: list<string>}
-     */
-    public static function attributes(array $input): array
-    {
-        $validator = Validator::make($input, self::rules());
-        $validator->after(fn () => self::validateAllowedIps($validator));
-
-        $input = $validator->safe();
-
-        $attributes = [
-            'memo' => $input->string('memo')->toString(),
-            'user_id' => $input->integer('user_id'),
-        ];
-
-        if ($input->filled('allowed_ips')) {
-            $attributes['allowed_ips'] = array_map(fn (int|string $key): string => $input->string('allowed_ips.'.$key)->toString(), array_keys($input->array('allowed_ips')));
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Validates resource permissions and returns them as integers, keyed by column. Only
-     * the permissions given are returned, so the rest keep their stored values, or the
-     * column default of AdminAcl::NONE on a new key.
-     *
-     * @param  array<string, mixed>  $permissions
-     * @return array<string, int>
-     */
-    public static function permissions(array $permissions): array
-    {
-        $input = Validator::make($permissions, self::permissionRules())->safe();
-
-        $columns = [];
-        foreach (array_keys(self::permissionRules()) as $column) {
-            if ($input->has($column)) {
-                $columns[$column] = $input->integer($column);
-            }
-        }
-
-        return $columns;
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      * @param  array<string, mixed>  $permissions
      */
     public function create(int $keyType, array $input, array $permissions = []): ApiKey
     {
+        $validator = Validator::make($input, self::rules());
+        $validator->after(fn () => self::validateAllowedIps($validator));
+
         $attributes = [
-            ...self::attributes($input),
+            ...$validator->safe(['memo', 'user_id', 'allowed_ips']),
             'key_type' => $keyType,
             'identifier' => ApiKey::generateTokenIdentifier($keyType),
             'token' => Crypt::encrypt(Str::random(ApiKey::KEY_LENGTH)),
         ];
 
-        $columns = self::permissions($permissions);
+        // A resource left out keeps the column default of AdminAcl::NONE.
+        $columns = Validator::validate($permissions, self::permissionRules());
         if ($keyType === ApiKey::TYPE_APPLICATION) {
             $attributes = [...$attributes, ...$columns];
         }
