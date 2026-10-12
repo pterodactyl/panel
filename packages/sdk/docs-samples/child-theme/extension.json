@@ -1,4 +1,5 @@
 {
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
     "id": "aurora-sunset",
     "type": "theme",
     "name": "Aurora Sunset",
@@ -7,8 +8,10 @@
     "ui": { "entry": "dist/client.js" },
     "theme": {
         "extends": "aurora",
+        "stylesheet": "dist/theme.css",
         "settings": {
-            "accent": { "type": "color", "label": "Accent", "default": "#f97316", "token": "--aurora-accent" }
+            "accent": { "default": "#f97316" },
+            "glow": { "type": "toggle", "label": "Sunset glow", "default": true, "attribute": "data-sunset-glow" }
         }
     }
 }

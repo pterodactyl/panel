@@ -864,19 +864,107 @@ offers both; the [sidebar shell](#a-sidebar-shell) uses it for its switch.
 ### Building on another theme
 
 `theme.extends` names an installed theme to build on; it is `classic` when left out. The chain runs
-classic, the parent and its parents, then the child:
+classic, the parent and its parents, then the child. `p:extension:make sunset --theme --extends=aurora`
+scaffolds a child: a manifest naming the parent, a stylesheet of one import, an empty `defineTheme` and a
+test of the chain.
 
-- **Views and skins** stack in that order, so the child's `Default` renders the parent's layer.
-- **Settings** are the union of the chain's. A child's setting of the same name replaces the parent's,
-  which is how a child changes a default.
+- **Views and skins** stack in that order, so the child's `Default` renders the parent's layer, and
+  `skin(name, (below) => …)` builds on the parent's skin.
+- **Settings** are the union of the chain's. A child's setting of the same name changes the parent's: give
+  only the fields that change, such as `"accent": { "default": "#f97316" }`, and the rest are the parent's.
 - **Schemes** are the child's when it declares them, else the nearest parent's.
-- **Stylesheet.** The panel links the nearest stylesheet in the chain. A child with its own replaces
-  the parent's whole, so import the parent's source CSS into yours to build on it.
 - The parent has to be installed and enabled first, and cannot be disabled while the child is. A
   missing parent or a cycle stops the child from activating. Pin its version with `requires.extensions`.
 
-[`docs-samples/child-theme`](docs-samples/child-theme) in the panel repository extends Aurora, the full
-example.
+<!-- sample: child-theme/extension.json -->
+```json
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "aurora-sunset",
+    "type": "theme",
+    "name": "Aurora Sunset",
+    "version": "1.0.0",
+    "requires": { "panel": "^2.0.0-dev", "sdk": ">=2.0.0-beta.5 <3.0", "extensions": { "aurora": "^1.0" } },
+    "ui": { "entry": "dist/client.js" },
+    "theme": {
+        "extends": "aurora",
+        "stylesheet": "dist/theme.css",
+        "settings": {
+            "accent": { "default": "#f97316" },
+            "glow": { "type": "toggle", "label": "Sunset glow", "default": true, "attribute": "data-sunset-glow" }
+        }
+    }
+}
+```
+<!-- /sample -->
+
+The panel links one stylesheet, the nearest in the chain, so a child's stylesheet carries its parents'.
+The build does that: every theme build also writes `dist/theme-source.css`, its own CSS with its imports
+inlined and its fonts beside it, and `dist/classes.txt`, the classes its source files use. A child's build
+reads `theme.extends`, finds each parent, and brings in their stylesheets and classes, oldest first, right
+after the SDK's import. The child's `src/theme.css` stays one import and its own rules, and can use the
+parents' utilities, variants and fonts:
+
+<!-- sample: child-theme/src/theme.css -->
+```css
+/* The panel stylesheet. The build brings in Aurora's after it, so this file only retunes Aurora. */
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* Aurora's tokens, warmer. Its glass, sidebar and skins read them. */
+:root {
+    --radius: 1rem;
+    --glass-border: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+.dark {
+    --background: oklch(0.18 0.03 40);
+    --card: oklch(0.24 0.035 40);
+}
+
+/* The "glow" setting writes data-sunset-glow on <html>; `glass` is Aurora's utility. */
+[data-sunset-glow='true'] .glass {
+    box-shadow: 0 0 2rem -1rem var(--primary);
+}
+```
+<!-- /sample -->
+
+The build looks for each parent first in `<extensions>/<id>`, where `extensions` is the panel's extensions
+directory passed to `defineThemeConfig` (the scaffold writes it), then in `node_modules/<id>`, for a parent
+installed as a dependency. It records the build of each parent in `dist/theme.json`. Doctor, pack and enable
+refuse a child built without its parents, and doctor warns when a parent was rebuilt since; rebuild the
+child then. A parent's `@plugin` is loaded from the child's packages, so install the same plugins.
+
+The child's tests render the chain with `themes`, importing each parent's built entry, which
+`pterodactylTestAliases({ extensions })` finds where the build does and the SDK types:
+
+<!-- sample: child-theme/src/theme.spec.tsx#tests -->
+```tsx
+// The chain the panel stacks over classic: Aurora, then this theme.
+const themes = [aurora, theme];
+let rendered: RenderedView | undefined;
+
+beforeAll(() => preloadTheme(themes));
+afterEach(() => rendered?.unmount());
+
+test("frames Aurora's server card", () => {
+    rendered = renderView('dashboard.serverCard', { themes, fixture: 'running' });
+
+    // `Default` is Aurora's card, not classic's.
+    expect(rendered.container.querySelector('.border-l-2 > .space-y-3 .font-mono')).not.toBeNull();
+});
+
+test("adds a shadow to Aurora's pill buttons", () => {
+    rendered = renderPrimitive('Button', { children: 'Save' }, { themes });
+
+    expect(rendered.container.querySelector('button')?.className).toContain('rounded-full');
+    expect(rendered.container.querySelector('button')?.className).toContain('shadow-primary/20');
+});
+```
+<!-- /sample -->
+
+`import aurora from 'aurora/dist/client.js'` brings in the parent. `npm run types` types `useThemeSettings()`
+with the settings of the whole chain. [`docs-samples/child-theme`](docs-samples/child-theme) in the panel
+repository extends the Aurora sample.
 
 ## Tools
 
@@ -924,14 +1012,15 @@ one that a test drives. `@pterodactyl/sdk/testing` renders with your theme:
 - `renderView(name, { theme, fixture, model, input, slots })` renders a view synchronously with the
   theme's layers over classic, from the named fixture, the first fixture, or `model`. Nested views read
   their first fixture, and `usePanelLocation()` returns the path with empty `params` and `search`. It
-  returns `{ container, unmount }`; each call replaces the previous render.
+  returns `{ container, unmount }`; each call replaces the previous render. A child theme passes its
+  chain, oldest first, as `themes: [parent, theme]` ([Building on another theme](#building-on-another-theme)).
 - `slots` mounts components in slots, typed per slot, as an extension's `slots.register` would. Use it
   to test that a layer renders the slots of the view it replaces.
 - `renderPrimitive(name, props, { theme })` renders a primitive under the theme's skins.
-- `preloadTheme(theme)` loads the theme's `lazyView` chunks. Await it in `beforeAll`: `renderView`
-  throws until it has.
-- `createViewTestHost(name, { model })` renders one layer by hand with typed `props`, for asserting on
-  actions with `vi.fn()`.
+- `preloadTheme(theme)` loads the theme's `lazyView` chunks, or a chain's. Await it in `beforeAll`:
+  `renderView` throws until it has.
+- `createViewTestHost(name, { model, themes })` renders one layer by hand with typed `props`, for
+  asserting on actions with `vi.fn()`. Its `Default` renders the top layer of `themes`, else classic.
 
 `renderView` and `createViewTestHost` are strict: a theme or extension layer that throws, in the view or
 a nested one, fails the render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`,
@@ -972,8 +1061,8 @@ rendered = renderView('layout.app', {
 ### Doctor and pack
 
 `npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, the
-[budgets](#budgets), remote URLs, view names, and whether the stylesheet was built against this panel's
-classes.
+[budgets](#budgets), remote URLs, view names, whether the stylesheet was built against this panel's
+classes, and for a child theme, over the current builds of its parents.
 
 `npm run pack` writes a `.pteroext` archive to install on another panel, replacing an earlier one;
 `.gitignore` leaves archives out of the repository. The build writes no source maps, which would embed

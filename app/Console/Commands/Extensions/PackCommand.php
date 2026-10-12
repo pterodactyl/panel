@@ -29,8 +29,8 @@ class PackCommand extends Command
     {
         try {
             $manifest = $validator->fromDirectory($this->argument('path'));
-            throw_if($reason = $assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
-            foreach (array_filter([...$composer->warnings($manifest), $manifest->isTheme() ? $themes->coreMismatch($manifest) : null]) as $warning) {
+            throw_if($reason = $assets->unusableBuildReason($manifest) ?? ($manifest->isTheme() ? $themes->parentBuildProblem($manifest) : null), InvalidExtensionException::class, $reason);
+            foreach (array_filter([...$composer->warnings($manifest), ...$manifest->isTheme() ? [$themes->coreMismatch($manifest), ...$themes->staleParents($manifest)] : []]) as $warning) {
                 $this->components->warn($warning);
             }
 

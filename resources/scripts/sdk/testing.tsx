@@ -365,7 +365,59 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
     return createHost(options);
 }
 
-export interface ViewTestHostOptions<N extends ViewName> {
+/** The theme a test renders with, or a chain of them. */
+export interface TestThemeOptions {
+    /** The theme to render with: what its entry exports. */
+    theme?: ThemeDefinition;
+    /**
+     * A chain of themes, oldest first, as the panel stacks them over classic: `[parent, child]`. Each
+     * one's `Default` and `skin(name, (below) => …)` build on the theme before it.
+     */
+    themes?: readonly ThemeDefinition[];
+}
+
+function chainOf({ theme, themes }: TestThemeOptions): readonly ThemeDefinition[] {
+    if (theme && themes) {
+        throw new Error('Pass `theme` or `themes`, not both.');
+    }
+
+    return themes ?? (theme ? [theme] : []);
+}
+
+/** How layer failures name a theme of the chain: "theme" for the last, its parents "parent", "parent 2" and so on. */
+function layerId(distance: number): string {
+    if (distance === 0) {
+        return 'theme';
+    }
+
+    return distance === 1 ? 'parent' : `parent ${distance}`;
+}
+
+/** Replaces the registered theme layers with the chain's skins, views and icons, parent first. */
+function registerThemes(themes: readonly ThemeDefinition[]): void {
+    clearThemeLayers();
+    clearThemeSkins();
+    for (const [index, theme] of themes.entries()) {
+        const id = layerId(themes.length - 1 - index);
+
+        registerSkins(id, theme.ui ?? {});
+        registerViewLayer(id, 'theme', theme.views ?? {});
+        registerThemeIcons(theme.icons ?? {});
+    }
+}
+
+/** Loads the chunks of a theme's `lazyView` views, or those of a chain of themes, which `renderView` renders synchronously. */
+export async function preloadTheme(theme: ThemeDefinition | readonly ThemeDefinition[]): Promise<void> {
+    const themes: readonly ThemeDefinition[] = 'length' in theme ? theme : [theme];
+
+    await Promise.all(
+        themes.flatMap((each) =>
+            Object.values(each.views ?? {}).map((view) => (view && isPendingLazyView(view) ? view.preload() : null))
+        )
+    );
+}
+
+export interface ViewTestHostOptions<N extends ViewName> extends TestThemeOptions {
     /** Defaults to the named fixture, or the view's first. */
     model?: ViewModel<N>;
     fixture?: string;
@@ -442,8 +494,9 @@ function FailOnLayerError({ failures, children }: { failures: LayerFailures; chi
 }
 
 /**
- * Tests a layer against the view's classic layers without issuing core queries: render it with `props`
- * inside `Wrapper`, and its `Default` renders classic with the same model. Nested views read fixtures.
+ * Tests a layer against the view's classic layers, or the layers of `themes` over them, without issuing
+ * core queries: render it with `props` inside `Wrapper`, and its `Default` renders the layer below with
+ * the same model. Nested views read fixtures.
  */
 export async function createViewTestHost<N extends ViewName>(
     name: N,
@@ -451,7 +504,11 @@ export async function createViewTestHost<N extends ViewName>(
 ): Promise<ViewTestHost<N>> {
     registerClassPrefixes([options.prefix]);
     registerClassicTheme();
-    await preloadView(name);
+
+    const themes = chainOf(options);
+
+    await Promise.all([preloadView(name), preloadTheme(themes)]);
+    registerThemes(themes);
 
     const view: ViewName = name;
     const definition = getViewDefinition(view);
@@ -500,13 +557,11 @@ export async function createViewTestHost<N extends ViewName>(
     };
 }
 
-export interface RenderViewOptions<N extends ViewName> {
+export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions {
     /** Defaults to the view's first fixture. */
     fixture?: string;
     model?: ViewModel<N>;
     input?: ViewInput<N>;
-    /** The theme to render the view with: what its entry exports. */
-    theme?: ThemeDefinition;
     /** Components to mount in slots, as an extension's `slots.register` would. */
     slots?: TestSlots;
     /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
@@ -520,7 +575,7 @@ export interface RenderedView {
 }
 
 interface MountOptions {
-    theme?: ThemeDefinition;
+    themes: readonly ThemeDefinition[];
     slots?: TestSlots;
     strict?: boolean;
 }
@@ -532,18 +587,12 @@ const viewRouter = createRouter({
 let rendered: RenderedView | undefined;
 
 /**
- * Replaces whatever was rendered before with `content`, under a theme's skins, views and icons, and
+ * Replaces whatever was rendered before with `content`, under the themes' skins, views and icons, and
  * throws when it fails to render (and, unless `strict` is false, when one of its layers falls back).
  */
-function mount(content: ReactNode, { theme, slots = {}, strict = true }: MountOptions): RenderedView {
+function mount(content: ReactNode, { themes, slots = {}, strict = true }: MountOptions): RenderedView {
     rendered?.unmount();
-    clearThemeLayers();
-    clearThemeSkins();
-    if (theme) {
-        registerSkins('theme', theme.ui ?? {});
-        registerViewLayer('theme', 'theme', theme.views ?? {});
-        registerThemeIcons(theme.icons ?? {});
-    }
+    registerThemes(themes);
 
     // Each slot's props are typed by its name where they are given.
     const removeSlots = mountSlotComponents('test-slots', slots as Parameters<typeof mountSlotComponents>[1]);
@@ -590,24 +639,20 @@ function mount(content: ReactNode, { theme, slots = {}, strict = true }: MountOp
     return current;
 }
 
-const pendingViews = (theme: ThemeDefinition | undefined): string[] =>
-    Object.entries(theme?.views ?? {}).flatMap(([name, view]) => (view && isPendingLazyView(view) ? [name] : []));
-
-/** Loads the chunks of a theme's `lazyView` views, which `renderView` renders synchronously. */
-export async function preloadTheme(theme: ThemeDefinition): Promise<void> {
-    await Promise.all(
-        Object.values(theme.views ?? {}).map((view) => (view && isPendingLazyView(view) ? view.preload() : null))
+const pendingViews = (themes: readonly ThemeDefinition[]): string[] =>
+    themes.flatMap((theme) =>
+        Object.entries(theme.views ?? {}).flatMap(([name, view]) => (view && isPendingLazyView(view) ? [name] : []))
     );
-}
 
 /**
- * Renders a view synchronously from fixtures, with a theme's layers over classic when given. Each call
- * replaces what was rendered before it; nested views read their fixtures too. Await `preloadTheme(theme)`
- * first when the theme has lazy views. It throws when the view fails to render, and when a theme or
- * extension layer throws unless `strict` is false.
+ * Renders a view synchronously from fixtures, with the layers of a theme, or a chain of `themes`, over
+ * classic. Each call replaces what was rendered before it; nested views read their fixtures too. Await
+ * `preloadTheme(theme)` first when the themes have lazy views. It throws when the view fails to render,
+ * and when a theme or extension layer throws unless `strict` is false.
  */
 export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
-    const pending = pendingViews(options.theme);
+    const themes = chainOf(options);
+    const pending = pendingViews(themes);
 
     if (pending.length) {
         throw new Error(
@@ -624,18 +669,15 @@ export function renderView<N extends ViewName>(name: N, options: RenderViewOptio
         <ViewFixtureProvider fixtures={fixtures} models={models}>
             <LooseView name={name} {...Object(options.input ?? {})} />
         </ViewFixtureProvider>,
-        options
+        { themes, slots: options.slots, strict: options.strict }
     );
 }
 
-export interface RenderPrimitiveOptions {
-    /** The theme to render the primitive with: what its entry exports. */
-    theme?: ThemeDefinition;
-}
+export type RenderPrimitiveOptions = TestThemeOptions;
 
 /**
- * Renders a UI kit primitive synchronously with the theme's skins and replacements over classic's.
- * Each call replaces what was rendered before it.
+ * Renders a UI kit primitive synchronously with the skins and replacements of a theme, or a chain of
+ * `themes`, over classic's. Each call replaces what was rendered before it.
  */
 export function renderPrimitive<N extends UiPrimitiveName>(
     name: N,
@@ -650,5 +692,5 @@ export function renderPrimitive(
     // The overload ties the props to the named primitive.
     const primitive = uiPrimitives[name] as JSXElementConstructor<UiPrimitiveProps<UiPrimitiveName>>;
 
-    return mount(createElement(primitive, props), { theme: options.theme });
+    return mount(createElement(primitive, props), { themes: chainOf(options) });
 }

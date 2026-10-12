@@ -34,6 +34,10 @@ class DoctorCommand extends Command
 
             $unknown = $views->unknown($manifest->views);
             throw_if($unknown !== [], InvalidExtensionException::class, 'Manifest "ui.views" names views the panel does not have: '.implode(', ', $unknown).'.');
+            if ($manifest->isTheme()) {
+                throw_if($problem = $themes->parentBuildProblem($manifest), InvalidExtensionException::class, $problem);
+                $themes->declarations($manifest);
+            }
         } catch (InvalidExtensionException $invalidExtensionException) {
             $this->components->error($invalidExtensionException->getMessage());
 
@@ -48,8 +52,8 @@ class DoctorCommand extends Command
             $this->components->warn($problem.' The extension list shows its initials instead.');
         }
 
-        if ($manifest->isTheme() && ($mismatch = $themes->coreMismatch($manifest)) !== null) {
-            $this->components->warn($mismatch);
+        foreach ($manifest->isTheme() ? array_filter([$themes->coreMismatch($manifest), ...$themes->staleParents($manifest)]) : [] as $warning) {
+            $this->components->warn($warning);
         }
 
         foreach ($composer->warnings($manifest) as $warning) {

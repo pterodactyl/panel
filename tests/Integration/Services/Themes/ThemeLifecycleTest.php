@@ -96,7 +96,7 @@ test('the active theme cannot be disabled or removed', function (): void {
 test('a child theme needs its parent enabled, and the chain resolves parent first', function (): void {
     $installer = app(InstallsExtensions::class);
     $installer->install(themePackage('base'));
-    $installer->install(themePackage('child', ['extends' => 'base', 'schemes' => ['light']]));
+    $installer->install(themePackage('child', ['extends' => 'base', 'schemes' => ['light']], ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":null}}']));
 
     expect(fn () => app(SetsExtensionEnabled::class)->setEnabled('child', true))->toThrow(InvalidExtensionException::class, 'Theme "child" extends "base", which is not an enabled theme.');
 
@@ -110,6 +110,57 @@ test('a child theme needs its parent enabled, and the chain resolves parent firs
     expect($themes->schemes($themes->chain('base')))->toBe(['dark']);
     expect(fn () => app(SetsExtensionEnabled::class)->setEnabled('base', false))->toThrow(InvalidExtensionException::class, 'Disable dependent extension "child" before "base".');
     expect($themes->activationProblem('base'))->toBeNull();
+});
+
+test('a child stylesheet must be built over the stylesheets of the themes it extends', function (): void {
+    $installer = app(InstallsExtensions::class);
+    $installer->install(themePackage('base', files: ['theme.json' => '{"core":"f1x7ure0c0re0000","build":"0000000000base02"}']), enable: true);
+    $unbuilt = themePackage('child', ['extends' => 'base']);
+
+    $this->artisan('p:extension:doctor', ['path' => $unbuilt])->expectsOutputToContain('was not built over the stylesheet of "base"')->assertFailed();
+    expect(fn () => $installer->install($unbuilt, enable: true))->toThrow(InvalidExtensionException::class, 'Theme "child" extends "base", but its stylesheet was not built over the stylesheet of "base".');
+
+    // Built over an earlier build of the parent, it still works, and doctor says to rebuild.
+    $stale = themePackage('child', ['extends' => 'base'], ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":"0000000000base01"}}']);
+    $this->artisan('p:extension:doctor', ['path' => $stale])
+        ->expectsOutputToContain('was built over build 0000000000base01 of "base", which is now build 0000000000base02')
+        ->assertSuccessful();
+    $installer->install($stale, enable: true);
+    expect(app(ThemeRepository::class)->activationProblem('child'))->toBeNull();
+});
+
+test('a child theme changes a setting of its parent by giving only the fields it changes', function (): void {
+    $installer = app(InstallsExtensions::class);
+    $built = ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":null}}'];
+    $installer->install(themePackage('base', ['settings' => [
+        'accent' => ['type' => 'color', 'label' => 'Accent', 'help' => 'Buttons and links.', 'default' => '#111111', 'token' => '--base-accent'],
+        'density' => ['type' => 'select', 'label' => 'Density', 'options' => ['cosy' => 'Cosy', 'compact' => 'Compact'], 'default' => 'cosy', 'attribute' => 'data-density'],
+    ]]), enable: true);
+    $child = themePackage('child', ['extends' => 'base', 'settings' => [
+        'accent' => ['default' => '#ff4fd8'],
+        'stars' => ['type' => 'toggle', 'label' => 'Stars', 'default' => true],
+    ]], $built);
+    $installer->install($child, enable: true);
+    app(ActivatesThemes::class)->activate('child');
+
+    $accent = app(ThemeRepository::class)->declarations(app(ExtensionRepository::class)->discovered()->get('child'))['accent'];
+    expect([$accent->type, $accent->label, $accent->help, $accent->token, $accent->default])->toBe(['color', 'Accent', 'Buttons and links.', '--base-accent', '#ff4fd8']);
+    $this->get('/auth/login')->assertOk()->assertSee('--base-accent:#ff4fd8', false)->assertSee('data-density="cosy"', false);
+
+    $this->artisan('p:extension:types', ['path' => $child])->assertSuccessful();
+    expect(File::get($child.'/src/theme-types.ts'))->toContain(<<<'TS'
+        export interface ThemeSettings {
+            readonly "accent": string;
+            readonly "density": "cosy" | "compact";
+            readonly "stars": boolean;
+        }
+        TS);
+
+    // An override needs a declaration to change, and must make a valid one.
+    foreach ([[['nothing' => ['default' => 'x']], 'overrides setting "nothing", which no theme it extends declares'], [['accent' => ['default' => 'red']], 'A color setting defaults to']] as [$settings, $message]) {
+        $broken = themePackage('broken', ['extends' => 'base', 'settings' => $settings], $built);
+        $this->artisan('p:extension:doctor', ['path' => $broken])->expectsOutputToContain($message)->assertFailed();
+    }
 });
 
 test('an incompatible active theme is reported and renders as classic', function (): void {

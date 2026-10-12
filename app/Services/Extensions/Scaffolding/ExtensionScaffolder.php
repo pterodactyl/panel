@@ -23,7 +23,7 @@ class ExtensionScaffolder
     /** @var string[] package-relative paths written by the last scaffold() call */
     private array $files = [];
 
-    public function __construct(private readonly ExtensionManifestValidator $validator) {}
+    public function __construct(private readonly ExtensionManifestValidator $validator, private readonly ThemeRepository $themes) {}
 
     /**
      * Scaffolds <outDir>/<id>/, or exactly `path` when given, and returns the created
@@ -42,6 +42,7 @@ class ExtensionScaffolder
         bool $theme = false,
         ?string $path = null,
         bool $cssOnly = false,
+        ?string $extends = null,
     ): string {
         $this->files = [];
 
@@ -52,6 +53,10 @@ class ExtensionScaffolder
         throw_if($path !== null && $outDir !== null, InvalidExtensionException::class, 'Pass --path (the package directory) or --out (the directory it is created in), not both.');
 
         throw_if($cssOnly && ! $theme, InvalidExtensionException::class, '--css-only scaffolds a theme: pass it with --theme.');
+
+        throw_if($extends !== null && ! $theme, InvalidExtensionException::class, '--extends scaffolds a theme: pass it with --theme.');
+
+        throw_if($extends !== null && (preg_match(ExtensionManifest::ID_REGEX, $extends) !== 1 || $extends === $id), InvalidExtensionException::class, "--extends names the theme to build on, such as \"aurora\": \"{$extends}\" is not one.");
 
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
@@ -77,7 +82,12 @@ class ExtensionScaffolder
         ];
 
         if ($theme) {
-            $this->scaffoldTheme($target, $id, $replacements, $cssOnly);
+            if ($extends === null || $extends === ThemeRepository::CLASSIC) {
+                $this->scaffoldTheme($target, $id, $replacements, $cssOnly);
+            } else {
+                $this->scaffoldChildTheme($target, $id, $extends, $replacements, $cssOnly);
+            }
+
             $this->validator->fromDirectory($target);
 
             return $target;
@@ -206,6 +216,63 @@ class ExtensionScaffolder
             'theme-test.stub' => 'src/theme.spec.tsx',
             'gitignore.stub' => '.gitignore',
             'theme-readme.stub' => 'README.md',
+        ];
+        foreach ($stubs as $stub => $relative) {
+            $this->stub($target, $stub, $relative, $replacements);
+        }
+    }
+
+    /**
+     * A theme that extends another and so starts from it: a manifest that names the parent, a stylesheet
+     * of the one import the build adds the parent's stylesheets to, an empty `defineTheme` and a test of
+     * the chain. Its settings, schemes, views and skins are the parent's until it overrides them.
+     *
+     * @param  array<string, string>  $replacements  stub placeholder => literal substitution
+     */
+    private function scaffoldChildTheme(string $target, string $id, string $parent, array $replacements, bool $cssOnly): void
+    {
+        $installed = $this->themes->installed()->get($parent);
+        $chain = $installed === null ? [$parent] : [...array_map(fn (ExtensionManifest $ancestor): string => $ancestor->id, $this->themes->ancestors($installed)), $parent];
+        $manifest = array_filter([
+            '$schema' => './node_modules/@pterodactyl/sdk/manifest.schema.json',
+            'id' => $id,
+            'type' => 'theme',
+            'name' => $replacements['{{name}}'],
+            'version' => '1.0.0',
+            'requires' => ['panel' => '^2.0.0-dev', 'sdk' => $this->sdkConstraint(), 'extensions' => [$parent => $installed === null ? '*' : '^'.$installed->version]],
+            'description' => $replacements['{{description}}'] ?: null,
+            'author' => $replacements['{{author}}'] ?: null,
+            'icon' => 'palette',
+            'ui' => $cssOnly ? null : ['entry' => ExtensionManifest::UI_ENTRY],
+            'theme' => ['extends' => $parent, 'stylesheet' => ThemeDefinition::STYLESHEET],
+        ], fn (array|string|null $value): bool => $value !== null);
+
+        File::put($target.DIRECTORY_SEPARATOR.ExtensionManifest::FILENAME, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+        $this->files[] = ExtensionManifest::FILENAME;
+
+        $extensions = config()->string('extensions.directory');
+        $name = $installed->name ?? $parent;
+        $names = array_map(fn (string $ancestor): string => in_array(Str::camel($ancestor), ['theme', 'themes'], true) ? Str::camel($ancestor).'Parent' : Str::camel($ancestor), $chain);
+        $replacements += [
+            '{{artisan}}' => $this->artisanPath($target),
+            '{{parent}}' => $parent,
+            '{{parentName}}' => $name,
+            '{{extensions}}' => mb_rtrim($this->relativePath($target, $extensions) ?? str_replace('\\', '/', $extensions), '/'),
+            '{{entry}}' => $cssOnly ? '' : "entry: 'src/theme.tsx', ",
+            '{{parentImports}}' => implode("\n", array_map(fn (string $variable, string $ancestor): string => "import {$variable} from '{$ancestor}/dist/client.js';", $names, $chain)),
+            '{{parentNames}}' => implode(', ', $names),
+            '{{viewsRow}}' => $cssOnly ? '' : "| Replace or wrap one of its views; `Default` renders {$name}'s layer | `src/theme.tsx` |\n",
+            '{{testsNote}}' => $cssOnly ? '' : "\n`npm test` renders views with `themes: [".implode(', ', $names).", theme]`, the chain the panel stacks, so\n`Default` in this theme's views renders {$name}'s layer. `npm run types` types `useThemeSettings()` with the\nsettings of the whole chain.\n",
+        ];
+        $stubs = [
+            $cssOnly ? 'theme-css-package.stub' : 'theme-package.stub' => 'package.json',
+            'theme-child-vite.config.stub' => 'vite.config.mjs',
+            'postcss.config.stub' => 'postcss.config.mjs',
+            ...$cssOnly ? [] : ['theme-tsconfig.stub' => 'tsconfig.json', 'theme-child-vitest.config.stub' => 'vitest.config.mjs'],
+            'theme-child-css.stub' => 'src/theme.css',
+            ...$cssOnly ? [] : ['theme-child-tsx.stub' => 'src/theme.tsx', 'theme-child-test.stub' => 'src/theme.spec.tsx'],
+            'gitignore.stub' => '.gitignore',
+            'theme-child-readme.stub' => 'README.md',
         ];
         foreach ($stubs as $stub => $relative) {
             $this->stub($target, $stub, $relative, $replacements);

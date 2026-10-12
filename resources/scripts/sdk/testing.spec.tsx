@@ -6,6 +6,7 @@ import { lazyView } from '@/views/lazy';
 import { Navigation, NavigationLink } from '@/views/navigation';
 import type { ViewPartProps, ViewProps } from '@/views/registry';
 import { defineTheme } from '@/views/theme';
+import { skin } from '@/themes/skins';
 import { usePanelLocation } from './navigation';
 import {
     preloadTheme,
@@ -176,6 +177,51 @@ it('renders the lazy views of a theme once they are preloaded', async () => {
 
     expect(container).toHaveTextContent('lazy dashboard Request failed with status code 500.');
     unmount();
+});
+
+it('stacks a chain of themes, so a child builds on its parent rather than classic', async () => {
+    function ParentLayout({ Default }: ViewProps<'layout.app'>) {
+        return (
+            <div data-parent-layout=''>
+                <Default />
+            </div>
+        );
+    }
+
+    function ChildLayout({ Default }: ViewProps<'layout.app'>) {
+        return (
+            <div data-child-layout=''>
+                <Default />
+            </div>
+        );
+    }
+
+    const parent = defineTheme({
+        views: { 'layout.app': lazyView(async () => ({ default: ParentLayout })) },
+        ui: { Button: skin('Button', { root: 'parent-pill' }) },
+    });
+    const child = defineTheme({
+        views: { 'layout.app': ChildLayout },
+        ui: { Button: skin('Button', (below) => ({ root: (state) => `${below.root(state)} child-shadow` })) },
+    });
+    const themes = [parent, child];
+
+    await preloadTheme(themes);
+
+    const view = renderView('layout.app', { themes, fixture: 'admin' });
+
+    expect(view.container.querySelector('[data-child-layout] > [data-parent-layout] main')).not.toBeNull();
+    expect(renderPrimitive('Button', { children: 'Save' }, { themes }).container.querySelector('button')).toHaveClass(
+        'parent-pill',
+        'child-shadow'
+    );
+    expect(() => renderView('layout.app', { theme: child, themes })).toThrow('Pass `theme` or `themes`, not both.');
+
+    const mounted = await createViewTestHost('layout.app', { themes: [parent], fixture: 'admin' });
+
+    host = mounted;
+    render(<ChildLayout {...mounted.props} />, { wrapper: mounted.Wrapper });
+    await vi.waitFor(() => expect(document.querySelector('[data-child-layout] > [data-parent-layout]')).not.toBeNull());
 });
 
 it('renders a UI kit primitive under a theme, replacing what was rendered before', () => {

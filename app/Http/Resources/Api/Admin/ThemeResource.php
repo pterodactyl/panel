@@ -40,7 +40,7 @@ class ThemeResource extends AdminResource
             'schemes' => $this->resource['schemes'],
             'has_stylesheet' => $theme?->theme?->stylesheet !== null,
             'has_entry' => $theme?->hasUi() ?? false,
-            'settings_count' => count($theme?->theme->settings ?? []),
+            'settings_count' => count($theme?->theme->settings ?? []) + count($theme?->theme->overrides ?? []),
             'problem' => $this->resource['problem'],
         ];
     }

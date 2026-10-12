@@ -1,7 +1,8 @@
 # {{name}}
 
 A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`. The themes guide,
-`node_modules/@pterodactyl/sdk/THEMES.md`, goes one level at a time; stop at the level you need.
+`node_modules/@pterodactyl/sdk/THEMES.md`, goes one level at a time; stop at the level you need. To start
+from another theme instead, scaffold with `--extends=<theme>`.
 
 | To | Edit | Guide |
 | --- | --- | --- |

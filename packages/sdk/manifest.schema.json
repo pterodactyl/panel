@@ -584,10 +584,11 @@
                     "additionalProperties": {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": [
-                            "type",
-                            "label"
-                        ],
+                        "dependentRequired": {
+                            "type": [
+                                "label"
+                            ]
+                        },
                         "properties": {
                             "type": {
                                 "enum": [
@@ -677,6 +678,9 @@
                         "allOf": [
                             {
                                 "if": {
+                                    "required": [
+                                        "type"
+                                    ],
                                     "properties": {
                                         "type": {
                                             "const": "select"
@@ -687,8 +691,22 @@
                                     "required": [
                                         "options"
                                     ]
+                                }
+                            },
+                            {
+                                "if": {
+                                    "required": [
+                                        "type"
+                                    ],
+                                    "properties": {
+                                        "type": {
+                                            "not": {
+                                                "const": "select"
+                                            }
+                                        }
+                                    }
                                 },
-                                "else": {
+                                "then": {
                                     "not": {
                                         "required": [
                                             "options"
@@ -698,6 +716,9 @@
                             },
                             {
                                 "if": {
+                                    "required": [
+                                        "type"
+                                    ],
                                     "properties": {
                                         "type": {
                                             "not": {
@@ -717,6 +738,9 @@
                             },
                             {
                                 "if": {
+                                    "required": [
+                                        "type"
+                                    ],
                                     "properties": {
                                         "type": {
                                             "not": {
@@ -731,9 +755,10 @@
                                     }
                                 }
                             }
-                        ]
+                        ],
+                        "description": "A setting declares a \"type\" and a \"label\". A setting of the same name as one of the theme it extends may give only the fields it changes, such as its \"default\"."
                     },
-                    "description": "Settings administrators change on the Themes page. Each writes a token, an <html> attribute or both before the page renders; useThemeSettings() reads them all."
+                    "description": "Settings administrators change on the Themes page. Each writes a token, an <html> attribute or both before the page renders; useThemeSettings() reads them all. A child theme changes a setting of its parent by giving only the fields it changes."
                 }
             },
             "description": "Only for \"type\": \"theme\"."

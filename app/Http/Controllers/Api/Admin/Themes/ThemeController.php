@@ -197,7 +197,7 @@ class ThemeController extends AdminApiController
     private function replaceImage(ReplacesExtensionSettingFiles $files, ThemeRepository $themes, string $theme, string $setting, ?UploadedFile $upload): ApiResourceCollection
     {
         $manifest = $this->theme($themes, $theme);
-        abort_unless($manifest instanceof ExtensionManifest && ($manifest->theme?->settings[$setting]->type ?? null) === 'image', Response::HTTP_NOT_FOUND, "Setting \"{$setting}\" is not an image setting.");
+        abort_unless($manifest instanceof ExtensionManifest && ($themes->declared($manifest)[$setting]->type ?? null) === 'image', Response::HTTP_NOT_FOUND, "Setting \"{$setting}\" is not an image setting.");
 
         $files->replace($themes->settings($manifest), $setting, $upload);
         Activity::event($upload instanceof UploadedFile ? 'admin:theme.image' : 'admin:theme.image-clear')->property(['theme' => $theme, 'setting' => $setting])->log();
@@ -224,7 +224,7 @@ class ThemeController extends AdminApiController
         $items = array_map(fn (ThemeSetting $setting): array => [
             'setting' => $setting,
             'value' => $setting->value($stored?->get(ThemeSetting::KEY_PREFIX.$setting->key)),
-        ], array_values($theme?->theme->settings ?? []));
+        ], array_values($theme instanceof ExtensionManifest ? $themes->declared($theme) : []));
 
         return ThemeSettingResource::collection($items);
     }

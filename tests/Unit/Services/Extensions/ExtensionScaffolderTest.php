@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\File;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\Scaffolding\ExtensionScaffolder;
 use Pterodactyl\Tests\TestCase;
 
 uses(TestCase::class);
 beforeEach(function (): void {
     $this->directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'ptero-scaffolder-'.uniqid();
-    $this->scaffolder = new ExtensionScaffolder(new ExtensionManifestValidator);
+    $this->scaffolder = app(ExtensionScaffolder::class);
     File::ensureDirectoryExists($this->directory);
 });
 afterEach(function (): void {
@@ -72,6 +73,43 @@ test('scaffolds a theme of css alone, with no javascript entry', function (): vo
     expect(array_keys($package['scripts']))->toBe(['build', 'dev', 'doctor', 'pack'])
         ->and($package['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'vite', 'tailwindcss', '@tailwindcss/forms', '@tailwindcss/postcss'])
         ->and($package['devDependencies'])->not->toHaveKey('react');
+});
+
+test('scaffolds a child theme that starts as the theme it extends', function (): void {
+    config(['extensions.directory' => $this->directory.'/installed']);
+    foreach (['nebula' => 'classic', 'aurora' => 'nebula'] as $id => $parent) {
+        File::ensureDirectoryExists($this->directory.'/installed/'.$id);
+        File::put($this->directory.'/installed/'.$id.'/extension.json', json_encode(['id' => $id, 'type' => 'theme', 'name' => ucfirst($id), 'version' => '1.2.0', 'theme' => ['extends' => $parent]], JSON_THROW_ON_ERROR));
+    }
+
+    app(ExtensionRepository::class)->flushDiscovery();
+
+    $this->artisan('p:extension:make', ['id' => 'midnight', '--theme' => true, '--extends' => 'aurora'])->assertSuccessful();
+    $target = $this->directory.'/installed/midnight';
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($target);
+
+    expect($manifest->theme->extends)->toBe('aurora')
+        ->and($manifest->theme->settings)->toBe([])
+        ->and($manifest->theme->schemes)->toBeNull()
+        ->and($manifest->requiredExtensions)->toBe(['aurora' => '^1.2.0']);
+    expect(File::allFiles($target, hidden: true))->toHaveCount(11)
+        ->and($target.'/src/skins.ts')->not->toBeFile()
+        ->and($target.'/src/views')->not->toBeDirectory();
+    expect(File::get($target.'/src/theme.css'))->toContain("@import '@pterodactyl/sdk/theme-entry.css';")->not->toContain('{');
+    expect(File::get($target.'/src/theme.tsx'))->toContain('export default defineTheme({});');
+    // Its tests stack the whole chain, which the test aliases find where the build does.
+    expect(File::get($target.'/src/theme.spec.tsx'))->toContain("import nebula from 'nebula/dist/client.js';\nimport aurora from 'aurora/dist/client.js';", 'const themes = [nebula, aurora, theme];', "renderView('dashboard.serverCard', { themes");
+    expect(File::get($target.'/vite.config.mjs'))->toContain("defineThemeConfig({ entry: 'src/theme.tsx', stylesheet: 'src/theme.css', extensions: '..' })");
+    expect(File::get($target.'/vitest.config.mjs'))->toContain("pterodactylTestAliases({ extensions: '..' })");
+    expect(File::get($target.'/README.md'))->toContain('extends Aurora', '--extends=aurora', 'themes: [nebula, aurora, theme]')->not->toContain('{{');
+
+    $this->artisan('p:extension:make', ['id' => 'pale', '--theme' => true, '--css-only' => true, '--extends' => 'aurora', '--out' => $this->directory])->assertSuccessful();
+    expect(File::get($this->directory.'/pale/vite.config.mjs'))->toContain("defineThemeConfig({ stylesheet: 'src/theme.css', extensions: '../installed' })")
+        ->and($this->directory.'/pale/src/theme.spec.tsx')->not->toBeFile()
+        ->and(File::get($this->directory.'/pale/README.md'))->not->toContain('src/theme.tsx', '{{');
+
+    $this->artisan('p:extension:make', ['id' => 'plain', '--extends' => 'aurora', '--out' => $this->directory])->expectsOutputToContain('pass it with --theme')->assertFailed();
+    $this->artisan('p:extension:make', ['id' => 'loop', '--theme' => true, '--extends' => 'loop', '--out' => $this->directory])->expectsOutputToContain('names the theme to build on')->assertFailed();
 });
 
 test('takes --css-only from the command, and only with --theme', function (): void {

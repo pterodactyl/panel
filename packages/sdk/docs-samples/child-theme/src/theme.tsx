@@ -1,4 +1,4 @@
-import { defineTheme, type ViewProps } from '@pterodactyl/sdk/theme';
+import { defineTheme, skin, type ViewProps } from '@pterodactyl/sdk/theme';
 
 /** Aurora's server card is the layer below, so `Default` renders it. */
 function SunsetCard({ Default }: ViewProps<'dashboard.serverCard'>) {
@@ -9,4 +9,9 @@ function SunsetCard({ Default }: ViewProps<'dashboard.serverCard'>) {
     );
 }
 
-export default defineTheme({ views: { 'dashboard.serverCard': SunsetCard } });
+/** `below` is Aurora's skin: its pill buttons, with a warm shadow. */
+const button = skin('Button', (below) => ({
+    root: (state) => `${below.root(state)} shadow-lg shadow-primary/20`,
+}));
+
+export default defineTheme({ ui: { Button: button }, views: { 'dashboard.serverCard': SunsetCard } });

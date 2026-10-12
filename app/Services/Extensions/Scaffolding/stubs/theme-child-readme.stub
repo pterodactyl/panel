@@ -1,0 +1,25 @@
+# {{name}}
+
+A Pterodactyl panel theme that extends {{parentName}}, scaffolded by `p:extension:make --theme --extends={{parent}}`.
+Everything this theme leaves out is {{parentName}}'s: its views, skins, stylesheet and settings. The themes guide,
+`node_modules/@pterodactyl/sdk/THEMES.md`, covers each layer under "Building on another theme".
+
+| To | Edit |
+| --- | --- |
+| Retune {{parentName}}'s colours, fonts, radius or spacing | `src/theme.css`, after the import |
+{{viewsRow}}| Change the default of one of its settings | `extension.json`: `"settings": { "accent": { "default": "#ff4fd8" } }` |
+| Add settings of this theme's own | `extension.json`, with a `type` and a `label` |
+
+The build finds {{parentName}} in the panel's extensions directory (`extensions` in `vite.config.mjs`), else in
+`node_modules`, and builds its stylesheet and classes in after the panel's, so `src/theme.css` stays one import
+plus your own rules. Rebuild after {{parentName}} changes; `npm run doctor` says when it has.
+
+## Develop
+
+```sh
+npm install
+php {{artisan}} p:extension:dev . --enable
+php {{artisan}} p:theme:activate {{id}}
+php {{artisan}} p:extension:dev . --watch
+```
+{{testsNote}}

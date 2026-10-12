@@ -1,0 +1,18 @@
+/* The panel stylesheet. The build brings in Aurora's after it, so this file only retunes Aurora. */
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* Aurora's tokens, warmer. Its glass, sidebar and skins read them. */
+:root {
+    --radius: 1rem;
+    --glass-border: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+.dark {
+    --background: oklch(0.18 0.03 40);
+    --card: oklch(0.24 0.035 40);
+}
+
+/* The "glow" setting writes data-sunset-glow on <html>; `glass` is Aurora's utility. */
+[data-sunset-glow='true'] .glass {
+    box-shadow: 0 0 2rem -1rem var(--primary);
+}

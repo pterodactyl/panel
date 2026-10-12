@@ -136,6 +136,25 @@ test('saves settings that pass their type and restores defaults from null', func
     expect($reset['accent']['value'])->toBe('#8b5cf6')->and($reset['navigation']['value'])->toBe('side')->and($reset['radius']['value'])->toBe(1.25);
 });
 
+test('a child theme that overrides a setting lists and saves it with the declaration it changes', function (): void {
+    File::ensureDirectoryExists($this->baseDirectory.'/extensions/midnight');
+    File::put($this->baseDirectory.'/extensions/midnight/extension.json', json_encode([
+        'id' => 'midnight', 'type' => 'theme', 'name' => 'Midnight', 'version' => '1.0.0',
+        'theme' => ['extends' => 'aurora', 'settings' => ['accent' => ['default' => '#ff4fd8']]],
+    ], JSON_THROW_ON_ERROR));
+    Extension::query()->create(['identifier' => 'midnight', 'version' => '1.0.0', 'enabled' => true]);
+    app(ExtensionRepository::class)->flushDiscovery();
+    $route = route('api.admin.themes.settings.update', ['theme' => 'midnight']);
+
+    $settings = settingsOf($this->getJson(route('api.admin.themes.settings', ['theme' => 'midnight']))->assertOk()->json());
+    expect(array_keys($settings))->toBe(['accent'])
+        ->and($settings['accent'])->toMatchArray(['type' => 'color', 'label' => 'Accent', 'default' => '#ff4fd8', 'value' => '#ff4fd8', 'token' => '--accent']);
+
+    $this->patchJson($route, ['settings' => ['accent' => 'red']])->assertUnprocessable();
+    expect(settingsOf($this->patchJson($route, ['settings' => ['accent' => '#00ff00']])->assertOk()->json())['accent']['value'])->toBe('#00ff00');
+    $this->assertDatabaseHas('extension_settings', ['extension' => 'midnight', 'key' => 'theme.accent', 'value' => '"#00ff00"']);
+});
+
 test('rejects setting values that do not fit their type', function (array $settings, string $field): void {
     $this->patchJson(route('api.admin.themes.settings.update', ['theme' => 'aurora']), ['settings' => $settings])
         ->assertUnprocessable()

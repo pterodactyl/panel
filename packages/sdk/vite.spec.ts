@@ -1,8 +1,9 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import tailwind from '@tailwindcss/postcss';
 import { build, createLogger } from 'vite';
 import { expect, it } from 'vitest';
 import { defineExtensionConfig, defineThemeConfig } from './vite.mjs';
@@ -49,11 +50,115 @@ it('builds a theme entry without a style loader, its stylesheet and its build in
             core: info.core,
             sdk: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version,
             views: ['layout.app', 'page', 'server.power'],
+            build: info.build,
         });
+        expect(info.build).toMatch(/^[a-f0-9]{16}$/);
     } finally {
         rmSync(directory, { recursive: true, force: true });
     }
 });
+
+/** A theme package in `directory`, with the SDK linked as a theme installs it, built with Tailwind. */
+const themePackage = (directory: string) => {
+    const write = (path: string, contents: string | Buffer) => {
+        mkdirSync(dirname(resolve(directory, path)), { recursive: true });
+        writeFileSync(resolve(directory, path), contents);
+    };
+    const build_ = (options: Parameters<typeof defineThemeConfig>[0]) =>
+        build({
+            ...defineThemeConfig({ ...options, outDir: resolve(directory, 'dist') }),
+            css: { postcss: { plugins: [tailwind()] } },
+            cacheDir: resolve(directory, 'node_modules/.vite'),
+            configFile: false,
+            logLevel: 'silent',
+        });
+    for (const [name, target] of [
+        ['@pterodactyl/sdk', '.'],
+        ['@tailwindcss/forms', '../../node_modules/@tailwindcss/forms'],
+    ]) {
+        mkdirSync(dirname(resolve(directory, 'node_modules', name)), { recursive: true });
+        symlinkSync(fileURLToPath(new URL(target, import.meta.url)), resolve(directory, 'node_modules', name));
+    }
+
+    return { write, build: build_, dist: (file: string) => readFileSync(resolve(directory, 'dist', file), 'utf8') };
+};
+
+it('ships its own stylesheet and class candidates for the themes that extend it', async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
+    try {
+        const theme = themePackage(directory);
+        theme.write('extension.json', JSON.stringify({ id: 'parent', type: 'theme' }));
+        // Over Vite's inline limit, so the font is emitted as a file rather than a data URL.
+        theme.write('src/fonts/Brand.woff2', Buffer.alloc(8192, 1));
+        theme.write('src/glow.css', '@utility glow { box-shadow: 0 0 1rem var(--primary); }');
+        theme.write('src/frame.css', '.frame { padding: 1rem; }');
+        theme.write('src/Card.jsx', 'export const Card = () => <div className="glow sm:rounded-3xl" />;');
+        theme.write(
+            'src/theme.jsx',
+            "import { defineTheme } from '@pterodactyl/sdk/theme'; import { Card } from './Card.jsx'; export default defineTheme({ views: { 'dashboard.serverCard': Card } });"
+        );
+        theme.write(
+            'src/theme.css',
+            [
+                "@import '@pterodactyl/sdk/theme-entry.css';",
+                "@import './glow.css';",
+                "@import './frame.css' layer(components);",
+                "@source inline('underline');",
+                "@font-face { font-family: 'Brand'; src: url('./fonts/Brand.woff2') format('woff2'); }",
+            ].join('\n')
+        );
+        await theme.build({ entry: resolve(directory, 'src/theme.jsx'), stylesheet: resolve(directory, 'src/theme.css') });
+        const source = theme.dist('theme-source.css');
+
+        expect(source).not.toContain('@pterodactyl/sdk');
+        expect(source).toContain('@utility glow');
+        expect(source).toMatch(/@layer components\s*\{\s*\.frame/);
+        expect(source).toContain("@source inline('underline')");
+        // The font is the file theme.css links, beside both in dist/.
+        const font = source.match(/url\("\.\/(Brand\.[\w-]+\.woff2)"\)/)?.[1];
+        expect(font).toBeDefined();
+        expect(theme.dist('theme.css')).toContain(`url(./${font})`);
+        expect(theme.dist('classes.txt').split('\n')).toEqual(expect.arrayContaining(['glow', 'sm:rounded-3xl']));
+        expect(JSON.parse(theme.dist('theme.json'))).not.toHaveProperty('parents');
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+}, 60_000);
+
+it("builds a child theme over its parent's stylesheet and classes, which it records", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'theme-chain-'));
+    try {
+        const child = themePackage(resolve(directory, 'child'));
+        const parent = (path: string, contents: string | Buffer) => child.write(`../extensions/parent/${path}`, contents);
+        parent('extension.json', JSON.stringify({ id: 'parent', type: 'theme', theme: { stylesheet: 'dist/theme.css' } }));
+        parent('dist/theme.json', JSON.stringify({ core: null, build: '0123456789abcdef' }));
+        parent('dist/Brand.woff2', Buffer.alloc(8192, 1));
+        parent('dist/classes.txt', 'glow\nsm:rounded-3xl\n');
+        parent(
+            'dist/theme-source.css',
+            "@font-face { font-family: 'Brand'; src: url('./Brand.woff2'); }\n@utility glow { color: red; }\n.parent-rule { color: blue; }"
+        );
+        child.write('extension.json', JSON.stringify({ id: 'child', type: 'theme', theme: { extends: 'parent' } }));
+        child.write('src/theme.css', "@import '@pterodactyl/sdk/theme-entry.css';\n.child-rule { color: green; }");
+        const options = { stylesheet: resolve(directory, 'child/src/theme.css'), extensions: '../extensions' };
+        await child.build(options);
+        const css = child.dist('theme.css');
+
+        expect(css).toMatch(/\.glow\s*\{/);
+        expect(css).toMatch(/\.sm\\:rounded-3xl/);
+        expect(css.indexOf('.child-rule')).toBeGreaterThan(css.indexOf('.parent-rule'));
+        // The parent's font is copied from its build, not left pointing beside the child's stylesheet.
+        expect(css).toMatch(/url\(\.\/Brand\.[\w-]+\.woff2\)/);
+        expect(JSON.parse(child.dist('theme.json')).parents).toEqual({ parent: '0123456789abcdef' });
+
+        rmSync(resolve(directory, 'extensions/parent/dist/theme-source.css'));
+        await expect(child.build(options)).rejects.toThrow('Theme "parent" in');
+        rmSync(resolve(directory, 'extensions/parent'), { recursive: true });
+        await expect(child.build(options)).rejects.toThrow('Theme "child" extends "parent", which is not in');
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+}, 60_000);
 
 it('ships no source map, which would embed the theme sources, unless asked to', async () => {
     const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));

@@ -103,7 +103,7 @@ class ThemeResolver
 
     /**
      * The chain's setting values, and what they write as tokens and attributes. A child's
-     * setting of the same name replaces its parent's.
+     * setting of the same name replaces its parent's, and its value is the child's.
      *
      * @param  list<ExtensionManifest>  $chain
      * @return array{0: array<string, string|int|float|bool|null>, 1: array<string, string>, 2: array<string, string>}
@@ -116,7 +116,7 @@ class ThemeResolver
         $attributes = [];
         foreach ($chain as $theme) {
             $stored = $this->themes->settings($theme);
-            foreach ($theme->theme->settings ?? [] as $key => $setting) {
+            foreach ($this->themes->declared($theme) as $key => $setting) {
                 $value = $setting->value(rescue(fn (): mixed => $stored->get(ThemeSetting::KEY_PREFIX.$key), report: false));
                 $values[$key] = $value;
                 if ($setting->token !== null && ($token = $setting->tokenValue($value)) !== null) {
