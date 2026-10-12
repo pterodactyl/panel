@@ -1,0 +1,56 @@
+packages/sdk/README.md
+  s_4cabae41bceed9::t_c029fedf263282 760-770,774-780,785-788,818-838,929-966,968,970-971,980-1373,1375-1411,1415-2187,2194-2229,2236-2301,2303-2304,2314-2336,2340-2432,2439-2471,2481-2489,2491-2497,2502-2659,2661-2944
+  s_4cabae41bceed9::t_b5132db52602e8 781-784,1412-1414,2188-2193,2230-2235,2433-2438,2472-2480,2490,2498-2501
+  s_4cabae41bceed9::t_9ff78126b1d8c6 967,969,972-979
+  s_4cabae41bceed9::t_f40939f9ef947a 1374,2660
+  s_4cabae41bceed9::t_8223fc925e7cbc 2302,2305-2313,2337-2339
+packages/sdk/docs-samples/aurora/src/skins.ts
+  s_4cabae41bceed9::t_b5132db52602e8 26-28
+  s_4cabae41bceed9::t_e65b0f826419e7 38
+resources/scripts/views/slotCheck.spec.tsx
+  s_4cabae41bceed9::t_43437833d15a5a 11-12
+  s_4cabae41bceed9::t_8c46a2ffb5e8af 13
+CHANGELOG.md
+  s_4cabae41bceed9::t_d576ae9005d59b 7
+  s_4cabae41bceed9::t_9015cfde5c852e 22-26
+  s_4cabae41bceed9::t_afb2bfba4f98d7 35-39
+resources/scripts/views/slotCheck.tsx
+  s_4cabae41bceed9::t_6fc747b06a62a5 5
+packages/sdk/docs-samples/aurora/src/views/ServerCard.tsx
+  s_4cabae41bceed9::t_f884dcb6e594e8 5,8-16,40-42
+resources/scripts/components/admin/themes/workbench/PreviewFrame.tsx
+  s_4cabae41bceed9::t_b23978e2a17603 117
+package.json
+  s_4cabae41bceed9::t_134c4cdaf23953 110-111
+  s_4cabae41bceed9::t_3a91b29ff7a29c 96
+packages/sdk/docs-samples/aurora/src/views/ServerGrid.tsx
+  s_4cabae41bceed9::t_b5132db52602e8 39-44,81-86
+packages/sdk/docs-samples/snippets/extension.tsx
+  s_4cabae41bceed9::t_b5132db52602e8 54-57
+packages/sdk/docs-samples/snippets/skins.tsx
+  s_4cabae41bceed9::t_b758c6e54ec17c 11
+resources/scripts/components/admin/themes/workbench/ViewPreview.tsx
+  s_4cabae41bceed9::t_0c384b7187fc83 80-83
+packages/sdk/docs-samples/aurora/src/views/Stats.tsx
+  s_4cabae41bceed9::t_b5132db52602e8 9-17,27,35-38
+packages/sdk/docs-samples/aurora/src/views/Terminal.tsx
+  s_4cabae41bceed9::t_b5132db52602e8 38-43
+resources/scripts/themes/gallery.tsx
+  s_4cabae41bceed9::t_64c0ccb1de95d1 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "acf10403227bdb98f03943f7d0a55d64550184e8",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
