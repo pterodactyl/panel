@@ -35,16 +35,10 @@ class SyncTagsRequest extends AdminApiRequest
         ];
     }
 
-    /**
-     * The validated values, as strings for SyncTags.
-     *
-     * @return list<string>
-     */
+    /** @return list<mixed> */
     public function tagValues(): array
     {
-        $validated = $this->safe();
-
-        return array_map(fn (int|string $key): string => $validated->string('tags.'.$key)->toString(), array_keys($validated->array('tags')));
+        return array_values($this->safe()->array('tags'));
     }
 
     /** Tag ids sent as JSON integers are read the same as the numeric strings the panel sends. */

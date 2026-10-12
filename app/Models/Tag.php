@@ -48,7 +48,7 @@ class Tag extends Model
     }
 
     /**
-     * @param  list<string>  $identifiers
+     * @param  array<string>  $identifiers
      * @return Collection<int, self>
      */
     public static function matchingKeysOrSlugs(array $identifiers): Collection
@@ -60,26 +60,24 @@ class Tag extends Model
     }
 
     /**
-     * The tags with these slugs, creating each one that does not exist yet. A built-in slug
-     * is created under its friendly name. A purely numeric value is never a slug (see
-     * TagSlug), so it is skipped rather than created.
+     * The tags with these slugs, creating the missing ones; a built-in slug gets its friendly
+     * name. Numbers are never slugs (see TagSlug), so they are skipped.
      *
-     * @param  list<string>  $slugs
+     * @param  array<string>  $slugs
      * @return Collection<int, self>
      */
     public static function findOrCreateFromSlugs(array $slugs): Collection
     {
-        $slugs = array_values(array_filter($slugs, fn (string $slug): bool => ! TagSlug::isReserved($slug)));
-        if ($slugs === []) {
+        $slugs = collect($slugs)->reject(TagSlug::isReserved(...))->unique();
+        if ($slugs->isEmpty()) {
             return new Collection;
         }
 
-        $existing = self::query()->whereIn('slug', $slugs)->get()->keyBy('slug');
+        $existing = self::query()->whereIn('slug', $slugs)->get();
 
-        return (new Collection(array_map(
-            fn (string $slug): self => $existing->get($slug) ?? self::query()->firstOrCreate(['slug' => $slug], ['name' => EggSpecificTags::tryFrom($slug)?->friendlyName() ?? $slug]),
-            $slugs,
-        )))->unique();
+        return $existing->merge($slugs->diff($existing->map(fn (self $tag): string => $tag->slug))->map(
+            fn (string $slug): self => self::query()->firstOrCreate(['slug' => $slug], ['name' => EggSpecificTags::tryFrom($slug)?->friendlyName() ?? $slug]),
+        ));
     }
 
     /**
@@ -147,19 +145,15 @@ class Tag extends Model
 
     /**
      * @param  Builder<self>  $query
-     * @param  list<string>  $identifiers
+     * @param  array<string>  $identifiers
      */
     private static function filterKeysOrSlugs(Builder $query, array $identifiers): void
     {
-        $keys = array_values(array_filter($identifiers, fn (string $value): bool => preg_match('/^\d+$/', $value) === 1));
+        $keys = array_values(array_filter($identifiers, TagSlug::isReserved(...)));
         $slugColumn = $query->getModel()->qualifyColumn('slug');
 
-        $query->where(function (Builder $inner) use ($identifiers, $keys, $slugColumn): void {
-            if ($keys !== []) {
-                $inner->whereKey($keys);
-            }
-
-            $inner->orWhereIn($slugColumn, $identifiers);
-        });
+        $query->where(fn (Builder $inner) => $inner
+            ->when($keys !== [], fn (Builder $byKey) => $byKey->whereKey($keys))
+            ->orWhereIn($slugColumn, $identifiers));
     }
 }
