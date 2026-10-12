@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const read = (path: string) => readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8');
 
-const panelCss = read('../../resources/scripts/assets/tailwind.css');
+const panelCss = read('./panel.css');
 const sdkCss = read('./theme-tokens.css');
 const extensionCss = read('./theme.css');
 const terminal = read('../../resources/scripts/components/server/console/useTerminal.ts');
@@ -16,7 +16,7 @@ const referenced = (source: string) => unique([...source.matchAll(/var\((--[\w-]
 // Tokens a theme may define but the panel leaves unset.
 const optional = ['--selection', '--selection-foreground'];
 
-// Owned by Tailwind's own theme rather than declared in tailwind.css.
+// Owned by Tailwind's own theme rather than declared in panel.css.
 const tailwindOwned = ['--spacing', '--font-sans', '--font-header', '--font-mono'];
 
 const panelTokens = declared(panelCss);

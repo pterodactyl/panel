@@ -166,3 +166,24 @@ test('lists a handful of the offending names', function (): void {
 test('an extension without a frontend has no stylesheets to inspect', function (): void {
     expect(conflictReason('@layer utilities{.flex{display:flex}}', null, 'dist/index.css', ui: false))->toBeNull();
 });
+
+test('finds the urls a stylesheet would fetch from another origin', function (): void {
+    $css = <<<'CSS'
+        @import "https://fonts.example.com/a.css";
+        @import url('//cdn.example.com/b.css');
+        /* url(https://in.a.comment/c.png) */
+        .a{background:url(HTTP://upper.example/d.png)}
+        .b{background:image-set("https://set.example/e.png" 1x)}
+        .c{background:url("h\74 tp://escaped.example/f.png")}
+        .d{background:url(/assets/fonts/inter.woff2),url(./local.png),url(data:image/png;base64,AAAA)}
+        .e::before{content:"see https://example.com"}
+        CSS;
+
+    expect((new ExtensionStylesheetInspector)->remoteReferences($css))->toBe([
+        'https://fonts.example.com/a.css',
+        '//cdn.example.com/b.css',
+        'HTTP://upper.example/d.png',
+        'https://set.example/e.png',
+        'http://escaped.example/f.png',
+    ]);
+});

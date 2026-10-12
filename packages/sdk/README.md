@@ -557,8 +557,8 @@ untouched. A reported exception raised from the extension's package is recorded 
 the extension. The decorator is skipped while the extension is disabled or failed to boot;
 one that throws or returns another type is recorded and skipped, so the core action always
 resolves. Extensions wrap in load order, the last one outermost. The actions that install,
-enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and apply themes
-(`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
+enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and activate or
+reset themes (`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
 
 Core controllers resolve these contracts, not the classes behind them. Renaming a server from the client API calls
 `UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
@@ -739,7 +739,9 @@ the layer below. The catalog of names, with each view's kind, context, slots and
 ships as `@pterodactyl/sdk/views.json`.
 
 Declare the views an extension overrides in `extension.json` under `ui.views`, with a
-`requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Several extensions may override one view.
+`requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Overrides are not exclusive: several enabled
+extensions and the active theme may override the same view, and `p:extension:doctor` reports a
+name under a core namespace that the panel does not have.
 
 ```tsx
 import { definePterodactylExtension, type ViewProps } from '@pterodactyl/sdk';

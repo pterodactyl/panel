@@ -11,6 +11,7 @@ use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettings;
+use WeakMap;
 
 /**
  * Decides which theme a request renders with: classic in safe mode, the previewed theme for
@@ -31,18 +32,21 @@ class ThemeResolver
     /** `dark`, `light` or `system`, written by the SPA. */
     public const string SCHEME_COOKIE = 'pterodactyl_scheme';
 
-    private ?ThemeDocument $document = null;
+    /** @var WeakMap<Request, ThemeDocument> every view of a request renders the same theme */
+    private WeakMap $documents;
 
     public function __construct(
         private readonly ThemeRepository $themes,
         private readonly ExtensionRepository $extensions,
         private readonly ExtensionAssetPublisher $assets,
-    ) {}
+    ) {
+        $this->documents = new WeakMap;
+    }
 
     /** Never throws: whatever breaks renders the classic theme. */
     public function document(Request $request): ThemeDocument
     {
-        return $this->document ??= rescue(fn (): ThemeDocument => $this->resolve($request), fn (): ThemeDocument => new ThemeDocument);
+        return $this->documents[$request] ??= rescue(fn (): ThemeDocument => $this->resolve($request), fn (): ThemeDocument => new ThemeDocument);
     }
 
     private function resolve(Request $request): ThemeDocument

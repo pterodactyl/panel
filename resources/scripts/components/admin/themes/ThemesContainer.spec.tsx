@@ -5,6 +5,12 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import userEvent from '@testing-library/user-event';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type {
+    AdminTheme,
+    AdminThemeSetting,
+    AdminThemeSettingsResponse,
+    AdminThemesResponse,
+} from '@/api/admin/themes/queries';
 import http from '@/api/http';
 import ThemesContainer from '@/components/admin/themes/ThemesContainer';
 
@@ -13,7 +19,9 @@ const mocks = vi.hoisted(() => ({ notifyError: vi.fn(), toastSuccess: vi.fn() })
 vi.mock('sonner', () => ({ toast: { success: mocks.toastSuccess } }));
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: mocks.notifyError }));
 
-const theme = (attributes: Record<string, unknown>) => ({
+const theme = (
+    attributes: Pick<AdminTheme, 'id' | 'name'> & Partial<AdminTheme>
+): AdminThemesResponse['data'][number] => ({
     object: 'theme',
     attributes: {
         version: '1.0.0',
@@ -35,17 +43,27 @@ const theme = (attributes: Record<string, unknown>) => ({
     },
 });
 
-const themes = {
+const themes: AdminThemesResponse = {
     object: 'list',
     data: [
-        theme({ id: 'classic', name: 'Classic', version: null, builtin: true, active: true, extends: null, settings_count: 0 }),
+        theme({
+            id: 'classic',
+            name: 'Classic',
+            version: null,
+            builtin: true,
+            active: true,
+            extends: null,
+            settings_count: 0,
+        }),
         theme({ id: 'aurora', name: 'Aurora' }),
         theme({ id: 'broken', name: 'Broken', problem: 'Theme "broken" is not enabled or failed to load.' }),
     ],
     meta: { active: 'classic', preview: null, safe_mode: false },
 };
 
-const setting = (attributes: Record<string, unknown>) => ({
+const setting = (
+    attributes: Pick<AdminThemeSetting, 'key' | 'type' | 'label' | 'default' | 'value'> & Partial<AdminThemeSetting>
+): AdminThemeSettingsResponse['data'][number] => ({
     object: 'theme_setting',
     attributes: {
         help: null,
@@ -63,10 +81,17 @@ const setting = (attributes: Record<string, unknown>) => ({
     },
 });
 
-const settings = {
+const settings: AdminThemeSettingsResponse = {
     object: 'list',
     data: [
-        setting({ key: 'accent', type: 'color', label: 'Accent', default: '#8b5cf6', value: '#8b5cf6', token: '--accent' }),
+        setting({
+            key: 'accent',
+            type: 'color',
+            label: 'Accent',
+            default: '#8b5cf6',
+            value: '#8b5cf6',
+            token: '--accent',
+        }),
         setting({
             key: 'compact',
             type: 'toggle',
@@ -81,7 +106,10 @@ const settings = {
 const originalAdapter = http.defaults.adapter;
 const requests = vi.fn<(config: InternalAxiosRequestConfig) => unknown>();
 
-const respond = (config: InternalAxiosRequestConfig, data: unknown): AxiosResponse => ({
+const respond = (
+    config: InternalAxiosRequestConfig,
+    data: AdminThemesResponse | AdminThemesResponse['data'][number] | AdminThemeSettingsResponse
+): AxiosResponse => ({
     data,
     status: 200,
     statusText: 'OK',

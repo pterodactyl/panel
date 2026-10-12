@@ -10,6 +10,13 @@
       "main.test.css": "sha384-test-main-css"
     }
   },
+  "resources/scripts/assets/tailwind.css": {
+    "file": "stylesheet.test.css",
+    "name": "stylesheet",
+    "src": "resources/scripts/assets/tailwind.css",
+    "isEntry": true,
+    "integrity": "sha384-test-stylesheet"
+  },
   "resources/scripts/ext-runtime/react.ts": {
     "file": "ext-runtime.react.test.js",
     "name": "react",

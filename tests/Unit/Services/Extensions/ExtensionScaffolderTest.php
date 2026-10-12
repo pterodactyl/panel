@@ -20,6 +20,24 @@ beforeEach(function (): void {
 afterEach(function (): void {
     File::deleteDirectory($this->directory);
 });
+test('scaffolds a theme with a stylesheet, a layout override, a skin, settings and a test', function (): void {
+    $target = $this->scaffolder->scaffold(id: 'aurora', outDir: $this->directory, theme: true);
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($target);
+
+    expect($manifest->isTheme())->toBeTrue()
+        ->and($manifest->uiPrefix)->toBeNull()
+        ->and($manifest->provider)->toBeNull()
+        ->and($manifest->theme->stylesheet)->toBe('dist/theme.css')
+        ->and(array_keys($manifest->theme->settings))->toBe(['accent', 'radius', 'compact']);
+    expect($this->scaffolder->files())->toBe(['extension.json', 'package.json', 'vite.config.mjs', 'postcss.config.mjs', 'tsconfig.json', 'vitest.config.mjs', 'src/theme.css', 'src/theme.tsx', 'src/theme.spec.tsx', '.gitignore', 'README.md']);
+    expect(File::get($target.'/vite.config.mjs'))->toContain("defineThemeConfig({ entry: 'src/theme.tsx', stylesheet: 'src/theme.css' })");
+    expect(File::get($target.'/src/theme.css'))->toStartWith('/*')->toContain("@import '@pterodactyl/sdk/theme-entry.css';", "[data-aurora-compact='true']");
+    expect(File::get($target.'/src/theme.tsx'))->toContain("'layout.app': AppLayout", "skin('Button'");
+    expect(File::get($target.'/src/theme.spec.tsx'))->toContain("renderView('layout.app', { theme })");
+    expect(File::json($target.'/package.json')['devDependencies'])->toHaveKeys(['@pterodactyl/sdk', 'tailwindcss', '@tailwindcss/forms']);
+    expect($target.'/composer.json')->not->toBeFile();
+});
+
 test('scaffolds an installable package', function (): void {
     $target = $this->scaffolder->scaffold(id: 'my-widget', description: 'A test widget.', author: 'Tester', outDir: $this->directory);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($target);

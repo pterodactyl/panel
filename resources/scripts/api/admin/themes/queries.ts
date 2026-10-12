@@ -26,6 +26,8 @@ import type {
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
 
+export type AdminThemesResponse = AdminListThemesResponse;
+export type AdminThemeSettingsResponse = AdminGetThemeSettingsResponse;
 export type AdminTheme = AdminListThemesResponse['data'][number]['attributes'];
 export type AdminThemesMeta = NonNullable<AdminListThemesResponse['meta']>;
 export type AdminThemeSetting = AdminGetThemeSettingsResponse['data'][number]['attributes'];

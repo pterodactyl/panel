@@ -74,16 +74,24 @@ const extensionStyles = () => ({
  */
 function definedViews(program) {
     const found = [];
+    const key = (property) =>
+        property.type === 'Property' && !property.computed ? String(property.key.name ?? property.key.value) : null;
+    const read = (theme) => {
+        if (theme?.type !== 'ObjectExpression' || theme.properties.some((property) => key(property) === null)) {
+            return null;
+        }
+        const views = theme.properties.find((property) => key(property) === 'views');
+        if (views === undefined) return [];
+        const keys = views.value.type === 'ObjectExpression' ? views.value.properties.map(key) : [null];
+
+        return keys.includes(null) ? null : keys;
+    };
     const visit = (node) => {
         if (Array.isArray(node)) return node.forEach(visit);
         if (!node || typeof node.type !== 'string') return;
         const callee = node.type === 'CallExpression' ? node.callee : null;
         if ((callee?.type === 'Identifier' ? callee.name : callee?.property?.name) === 'defineTheme') {
-            const [theme] = node.arguments;
-            const views = theme?.type === 'ObjectExpression' ? theme.properties.find((property) => property.type === 'Property' && !property.computed && (property.key.name ?? property.key.value) === 'views') : undefined;
-            const keys = views?.value.type === 'ObjectExpression' ? views.value.properties.map((property) => (property.type === 'Property' && !property.computed ? (property.key.name ?? property.key.value) : null)) : null;
-            const plain = theme?.type === 'ObjectExpression' && !theme.properties.some((property) => property.type === 'SpreadElement');
-            found.push(!plain ? null : views === undefined ? [] : keys && !keys.includes(null) ? keys.map(String) : null);
+            found.push(read(node.arguments[0]));
         }
         for (const value of Object.values(node)) if (value && typeof value === 'object') visit(value);
     };
@@ -101,18 +109,27 @@ const themeBuildInfo = () => {
             views = [];
         },
         transform(code, id) {
-            if (!id.includes('/node_modules/') && /\bdefineTheme\b/.test(code)) views.push(...definedViews(parseAst(code)));
+            if (!id.includes('/node_modules/') && /\bdefineTheme\b/.test(code))
+                views.push(...definedViews(parseAst(code)));
             return null;
         },
         generateBundle(_options, bundle) {
             for (const chunk of Object.values(bundle)) {
-                if (chunk.type === 'chunk' && !chunk.facadeModuleId?.endsWith('.css') && chunk.viteMetadata?.importedCss.size) {
-                    this.error('Theme styles belong in the theme stylesheet: dist/client.js does not load CSS its modules import.');
+                if (
+                    chunk.type === 'chunk' &&
+                    !chunk.facadeModuleId?.endsWith('.css') &&
+                    chunk.viteMetadata?.importedCss.size
+                ) {
+                    this.error(
+                        'Theme styles belong in the theme stylesheet: dist/client.js does not load CSS its modules import.'
+                    );
                 }
             }
             const manifest = new URL('./core-classes.txt', import.meta.url);
             const info = {
-                core: existsSync(manifest) ? createHash('sha256').update(readFileSync(manifest)).digest('hex').slice(0, 16) : null,
+                core: existsSync(manifest)
+                    ? createHash('sha256').update(readFileSync(manifest)).digest('hex').slice(0, 16)
+                    : null,
                 sdk: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version,
                 ...(views.length === 1 && views[0] !== null ? { views: views[0] } : {}),
             };
@@ -127,11 +144,15 @@ const themeBuildInfo = () => {
  */
 export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins = [] } = {}) {
     if (!stylesheet && !entry) {
-        throw new Error('defineThemeConfig requires a { stylesheet } path such as "src/theme.css", an { entry } such as "src/theme.tsx", or both.');
+        throw new Error(
+            'defineThemeConfig requires a { stylesheet } path such as "src/theme.css", an { entry } such as "src/theme.tsx", or both.'
+        );
     }
 
     return {
         plugins: [...plugins, themeBuildInfo()],
+        // The import map shares react/jsx-runtime, never the development runtime.
+        oxc: { jsx: { runtime: 'automatic', development: false } },
         publicDir: false,
         build: {
             outDir,
@@ -147,7 +168,8 @@ export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins 
                     format: 'es',
                     entryFileNames: '[name].js',
                     chunkFileNames: 'chunk.[name].[hash].js',
-                    assetFileNames: ({ names }) => (names.includes('theme.css') ? 'theme.css' : '[name].[hash][extname]'),
+                    assetFileNames: ({ names }) =>
+                        names.includes('theme.css') ? 'theme.css' : '[name].[hash][extname]',
                 },
             },
         },
