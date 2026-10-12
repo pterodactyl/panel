@@ -1,0 +1,33 @@
+app/Http/Resources/Api/ApiResource.php
+  s_4cabae41bceed9::t_3e286526d51217 36,82,137,157,172,245,261,290,375
+  s_4cabae41bceed9::t_f622553325d3d3 263
+app/Http/Resources/Api/ApiResourceCollection.php
+  s_4cabae41bceed9::t_3e286526d51217 49,65,82,104,115,162
+app/Http/Resources/Api/Client/ClientResource.php
+  s_4cabae41bceed9::t_3e286526d51217 19,55
+app/Http/Resources/Api/Concerns/BuildsResponse.php
+  s_4cabae41bceed9::t_3e286526d51217 20,41
+app/Http/Resources/Api/Application/ApplicationResource.php
+  s_4cabae41bceed9::t_3e286526d51217 17,55
+app/Http/Resources/Api/CallbackResource.php
+  s_4cabae41bceed9::t_3e286526d51217 19,37
+  s_4cabae41bceed9::t_f622553325d3d3 39
+app/Http/Resources/Api/Admin/AdminResource.php
+  s_4cabae41bceed9::t_3e286526d51217 15,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6e5fff18ebab8a0a733d20658ae4732ad8707e2d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
