@@ -1,0 +1,456 @@
+[
+    {
+        "request": "GET /api/admin/locations",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 1,
+                        "short": "us-east",
+                        "long": "US East / Virginia",
+                        "nodes_count": 1,
+                        "servers_count": 2,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 2,
+                        "short": "eu-west",
+                        "long": "EU West",
+                        "nodes_count": 1,
+                        "servers_count": 1,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 3,
+                        "short": "ap-empty",
+                        "long": null,
+                        "nodes_count": 0,
+                        "servers_count": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/locations?include=nodes,servers",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 1,
+                        "short": "us-east",
+                        "long": "US East / Virginia",
+                        "nodes_count": 1,
+                        "servers_count": 2,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "nodes": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "node",
+                                        "attributes": {
+                                            "id": 1,
+                                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                            "public": true,
+                                            "name": "node-alpha",
+                                            "description": "Primary \"alpha\" node",
+                                            "location_id": 1,
+                                            "fqdn": "alpha.example.test",
+                                            "scheme": "https",
+                                            "behind_proxy": false,
+                                            "maintenance_mode": false,
+                                            "memory": 8192,
+                                            "memory_overallocate": 0,
+                                            "disk": 102400,
+                                            "disk_overallocate": -1,
+                                            "upload_size": 100,
+                                            "daemon_listen": 8080,
+                                            "daemon_sftp": 2022,
+                                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "allocated_resources": {
+                                                "memory": 3072,
+                                                "disk": 15360
+                                            },
+                                            "relationships": []
+                                        }
+                                    }
+                                ]
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 1,
+                                            "external_id": "ext-survival",
+                                            "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                            "identifier": "5e7f0001",
+                                            "name": "Survival",
+                                            "description": "Main survival world",
+                                            "status": null,
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 2048,
+                                                "swap": 512,
+                                                "disk": 10240,
+                                                "io": 500,
+                                                "cpu": 200,
+                                                "threads": "0-3",
+                                                "oom_disabled": true
+                                            },
+                                            "feature_limits": {
+                                                "databases": 5,
+                                                "allocations": 5,
+                                                "backups": 5
+                                            },
+                                            "user": 2,
+                                            "node": 1,
+                                            "allocation": 1,
+                                            "egg": 1,
+                                            "container": {
+                                                "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "skip_scripts": false,
+                                                "installed": 1,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "paper.jar",
+                                                    "BUILD_NUMBER": "latest",
+                                                    "HIDDEN_TOKEN": "hidden-value",
+                                                    "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "us-east",
+                                                    "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                                    "P_SERVER_ALLOCATION_LIMIT": 5
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 2,
+                                            "external_id": null,
+                                            "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                            "identifier": "5e7f0002",
+                                            "name": "Creative",
+                                            "description": "",
+                                            "status": "installing",
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 1024,
+                                                "swap": 0,
+                                                "disk": 5120,
+                                                "io": 500,
+                                                "cpu": 0,
+                                                "threads": null,
+                                                "oom_disabled": false
+                                            },
+                                            "feature_limits": {
+                                                "databases": 0,
+                                                "allocations": null,
+                                                "backups": 0
+                                            },
+                                            "user": 2,
+                                            "node": 1,
+                                            "allocation": 3,
+                                            "egg": 2,
+                                            "container": {
+                                                "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                                "skip_scripts": true,
+                                                "installed": 0,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "child.jar",
+                                                    "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "us-east",
+                                                    "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                                    "P_SERVER_ALLOCATION_LIMIT": null
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 2,
+                        "short": "eu-west",
+                        "long": "EU West",
+                        "nodes_count": 1,
+                        "servers_count": 1,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "nodes": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "node",
+                                        "attributes": {
+                                            "id": 2,
+                                            "uuid": "d0de0002-0000-4000-8000-000000000002",
+                                            "public": false,
+                                            "name": "node-beta",
+                                            "description": null,
+                                            "location_id": 2,
+                                            "fqdn": "beta.example.test",
+                                            "scheme": "http",
+                                            "behind_proxy": true,
+                                            "maintenance_mode": true,
+                                            "memory": 4096,
+                                            "memory_overallocate": 10,
+                                            "disk": 51200,
+                                            "disk_overallocate": 0,
+                                            "upload_size": 256,
+                                            "daemon_listen": 8443,
+                                            "daemon_sftp": 2222,
+                                            "daemon_base": "/srv/daemon-data",
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "allocated_resources": {
+                                                "memory": 512,
+                                                "disk": 1024
+                                            },
+                                            "relationships": []
+                                        }
+                                    }
+                                ]
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 3,
+                                            "external_id": "ext-lab",
+                                            "uuid": "5e7f0003-0000-4000-8000-000000000003",
+                                            "identifier": "5e7f0003",
+                                            "name": "Admin Lab",
+                                            "description": "Testing ground",
+                                            "status": null,
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 512,
+                                                "swap": -1,
+                                                "disk": 1024,
+                                                "io": 10,
+                                                "cpu": 50,
+                                                "threads": null,
+                                                "oom_disabled": true
+                                            },
+                                            "feature_limits": {
+                                                "databases": 1,
+                                                "allocations": 1,
+                                                "backups": 1
+                                            },
+                                            "user": 1,
+                                            "node": 2,
+                                            "allocation": 8,
+                                            "egg": 1,
+                                            "container": {
+                                                "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "skip_scripts": false,
+                                                "installed": 1,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "server.jar",
+                                                    "BUILD_NUMBER": "latest",
+                                                    "HIDDEN_TOKEN": "secret",
+                                                    "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "eu-west",
+                                                    "P_SERVER_UUID": "5e7f0003-0000-4000-8000-000000000003",
+                                                    "P_SERVER_ALLOCATION_LIMIT": 1
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 3,
+                        "short": "ap-empty",
+                        "long": null,
+                        "nodes_count": 0,
+                        "servers_count": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "nodes": {
+                                "object": "list",
+                                "data": []
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": []
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/locations?filter[short]=none",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/locations?per_page=1",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 1,
+                        "short": "us-east",
+                        "long": "US East / Virginia",
+                        "nodes_count": 1,
+                        "servers_count": 2,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 1,
+                    "total_pages": 3,
+                    "links": {
+                        "next": "https://panel.example.test/api/admin/locations?page=2"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/locations?per_page=1&page=2",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "location",
+                    "attributes": {
+                        "id": 2,
+                        "short": "eu-west",
+                        "long": "EU West",
+                        "nodes_count": 1,
+                        "servers_count": 1,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 2,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/admin/locations?page=1",
+                        "next": "https://panel.example.test/api/admin/locations?page=3"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/locations?per_page=1&page=99",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 0,
+                    "per_page": 1,
+                    "current_page": 99,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/admin/locations?page=98"
+                    }
+                }
+            }
+        }
+    }
+]

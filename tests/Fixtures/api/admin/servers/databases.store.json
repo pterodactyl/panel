@@ -1,0 +1,31 @@
+[
+    {
+        "request": "POST /api/admin/servers/1/databases",
+        "status": 201,
+        "body": {
+            "object": "server_database",
+            "attributes": {
+                "id": "eV8yJRLg",
+                "host": {
+                    "address": "10.0.0.5",
+                    "port": 3306
+                },
+                "name": "s1_admindb",
+                "username": "u1_509b0530b2",
+                "connections_from": "%",
+                "max_connections": 25,
+                "relationships": {
+                    "password": {
+                        "object": "database_password",
+                        "attributes": {
+                            "password": "<generated-password-1001>"
+                        }
+                    }
+                }
+            },
+            "meta": {
+                "resource": "https://panel.example.test/api/admin/servers/1/databases/1001"
+            }
+        }
+    }
+]

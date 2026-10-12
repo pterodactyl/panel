@@ -1,0 +1,26 @@
+[
+    {
+        "request": "POST /api/admin/mounts",
+        "status": 201,
+        "body": {
+            "object": "mount",
+            "attributes": {
+                "id": 1001,
+                "uuid": "e45a916b-7b34-4394-9e17-48fad8d0185e",
+                "name": "Created Mount",
+                "description": "Created by an admin.",
+                "source": "/mnt/created",
+                "target": "/mnt/created-target",
+                "read_only": true,
+                "user_mountable": false,
+                "eggs_count": 0,
+                "nodes_count": 0,
+                "servers_count": 0,
+                "extensions": {}
+            },
+            "meta": {
+                "resource": "https://panel.example.test/api/admin/mounts/1001"
+            }
+        }
+    }
+]
