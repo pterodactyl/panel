@@ -31,6 +31,7 @@ import {
     type ViewProps,
 } from './registry';
 import { useViewDecision } from './session';
+import { SlotCheck } from './slotCheck';
 
 const ViewAreaContext = createContext<readonly ViewContext[]>([]);
 
@@ -293,12 +294,14 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     }
 
     const chain = (
-        <ViewChain
-            name={definition.name}
-            layers={layers}
-            placeholder={placeholder}
-            frame={{ model, inputs, className, children }}
-        />
+        <SlotCheck definition={definition} layer={layers.at(-1)}>
+            <ViewChain
+                name={definition.name}
+                layers={layers}
+                placeholder={placeholder}
+                frame={{ model, inputs, className, children }}
+            />
+        </SlotCheck>
     );
 
     return inspection ? (

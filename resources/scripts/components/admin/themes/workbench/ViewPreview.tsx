@@ -10,7 +10,9 @@ import { ViewInspectionContext, type ViewInspection, type ViewProbe } from '@/vi
 import { modelJson } from '@/views/inspector/model';
 import { CopyButton, LayerStack, ModelTree, OverrideHelp, Section, SlotList } from '@/views/inspector/parts';
 import { renderingLayer } from '@/views/inspector/snippets';
+import { OPAQUE_PAGES, pageSlots, VIEW_PAGES, type PageViewName } from '@/views/pages';
 import { getViewChain, getViewDefinition, useViewDefinitions, type ViewDefinition } from '@/views/registry';
+import { EngineSlots } from '@/views/slotCheck';
 import type { ThemeScheme } from '@/views/theme';
 import { LooseView, ViewFixtureProvider } from '@/views/View';
 import FixtureBoundary from './FixtureBoundary';
@@ -18,6 +20,9 @@ import PreviewFrame from './PreviewFrame';
 import { frameSize, useWidth } from './stage';
 
 export const ALL_FIXTURES = '*';
+
+const isPageViewName = (name: string): name is PageViewName =>
+    Object.hasOwn(VIEW_PAGES, name) || Object.hasOwn(OPAQUE_PAGES, name);
 
 type NestedFixtures = Readonly<Record<string, string>>;
 
@@ -72,6 +77,7 @@ function FixtureFrame({
     );
     // Pages and layouts bring their own spacing; a block sits in some, as it would on a page.
     const view = definition.kind === 'block' ? <div className='p-4'>{rendered}</div> : rendered;
+    const engineSlots = isPageViewName(definition.name) ? (pageSlots(definition.name) ?? []) : [];
 
     return (
         <figure className='min-w-0'>
@@ -102,11 +108,13 @@ function FixtureFrame({
                         <ViewFixtureProvider fixtures={fixtures}>
                             <Suspense fallback={<Spinner size='large' centered />}>
                                 <FixtureBoundary key={`${definition.name}:${fixture}:${content}`}>
-                                    {definition.context === 'server' ? (
-                                        <ServerContext.Provider>{view}</ServerContext.Provider>
-                                    ) : (
-                                        view
-                                    )}
+                                    <EngineSlots.Provider value={engineSlots}>
+                                        {definition.context === 'server' ? (
+                                            <ServerContext.Provider>{view}</ServerContext.Provider>
+                                        ) : (
+                                            view
+                                        )}
+                                    </EngineSlots.Provider>
                                 </FixtureBoundary>
                             </Suspense>
                         </ViewFixtureProvider>

@@ -153,6 +153,8 @@ export function defineThemeConfig({ entry, stylesheet, outDir = 'dist', plugins 
         plugins: [...plugins, themeBuildInfo()],
         // The import map shares react/jsx-runtime, never the development runtime.
         oxc: { jsx: { runtime: 'automatic', development: false } },
+        // The panel serves a build from its own directory, so fonts and images resolve beside the file using them.
+        base: './',
         publicDir: false,
         build: {
             outDir,
@@ -183,6 +185,8 @@ export function defineExtensionConfig({ entry, outDir = 'dist', plugins = [] } =
 
     return {
         plugins: [...plugins, extensionStyles()],
+        // The panel serves a build from its own directory, so fonts and images resolve beside the file using them.
+        base: './',
         publicDir: false,
         build: {
             outDir,

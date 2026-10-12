@@ -9,8 +9,11 @@ import { useRouteSlotData } from '@/router/routeSlots';
 import { LayoutMainCheck } from '@/views/a11y';
 import { pageSlots, type PageViewName } from '@/views/pages';
 import { ViewSessionProvider } from '@/views/session';
+import { EngineSlots } from '@/views/slotCheck';
 import { preloadView, View, ViewArea } from '@/views/View';
 import type { ViewContext } from '@/views/registry';
+
+const noSlots: readonly string[] = [];
 
 export type LayoutViewName = 'layout.auth' | 'layout.app' | 'layout.account' | 'layout.server' | 'layout.admin';
 
@@ -70,7 +73,9 @@ export function pageRoute(
             <PermissionRoute permission={permission}>
                 <ViewSessionProvider>
                     {slots && <Slot name={slots[0]} data={data} />}
-                    <Spinner.Suspense>{Frame ? <Frame>{page}</Frame> : page}</Spinner.Suspense>
+                    <EngineSlots.Provider value={slots ?? noSlots}>
+                        <Spinner.Suspense>{Frame ? <Frame>{page}</Frame> : page}</Spinner.Suspense>
+                    </EngineSlots.Provider>
                     {slots && <Slot name={slots[1]} data={data} />}
                 </ViewSessionProvider>
             </PermissionRoute>

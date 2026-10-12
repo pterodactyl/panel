@@ -73,6 +73,26 @@ it('leaves out views it cannot read without running the theme, and builds a styl
     }
 });
 
+it('ships fonts beside the theme stylesheet, linked relative to it', async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
+    try {
+        // Over Vite's inline limit, so the font is emitted as a file rather than a data URL.
+        writeFileSync(resolve(directory, 'Brand.woff2'), Buffer.alloc(8192, 1));
+        const dist = await buildTheme(
+            directory,
+            {
+                'theme.css':
+                    "@font-face { font-family: 'Brand'; src: url('./Brand.woff2') format('woff2'); }\n.a { font-family: Brand; }",
+            },
+            false
+        );
+
+        expect(dist('theme.css')).toMatch(/url\(\.\/Brand\.[\w-]+\.woff2\)/);
+    } finally {
+        rmSync(directory, { recursive: true, force: true });
+    }
+});
+
 it('refuses theme JavaScript that imports styles the panel would never load', async () => {
     const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
     try {
