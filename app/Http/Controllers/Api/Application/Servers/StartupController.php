@@ -11,13 +11,12 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest;
+use Pterodactyl\Http\Resources\Api\Application\ServerResource;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
 #[Subgroup('Servers', 'Create, update, retrieve, manage, and delete servers.')]
@@ -36,21 +35,16 @@ class StartupController extends ApplicationApiController
     /**
      * Update the startup and environment settings for a specific server.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws ValidationException
      * @throws DaemonConnectionException
      */
     #[Endpoint('Update server startup', 'Updates startup command, image, egg, and environment variables for a server.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ResponseFromResource(ServerResource::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while syncing startup changes.')]
-    public function index(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): array
+    public function index(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): ServerResource
     {
         $server = $modification->update($server, $request->actionInput(), User::USER_LEVEL_ADMIN);
 
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toResponseArray();
+        return ServerResource::make($server);
     }
 }

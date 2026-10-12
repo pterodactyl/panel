@@ -17,11 +17,6 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
  */
 class ServerVariableResource extends ApplicationResource
 {
-    /**
-     * List of resources that can be included.
-     *
-     * @var list<string>
-     */
     protected array $availableIncludes = ['parent'];
 
     public function resourceName(): string
@@ -29,11 +24,6 @@ class ServerVariableResource extends ApplicationResource
         return ServerVariable::RESOURCE_NAME;
     }
 
-    /**
-     * Return a generic transformed server variable array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return $this->resource->attributesToArray();
@@ -48,8 +38,6 @@ class ServerVariableResource extends ApplicationResource
     }
 
     /**
-     * Return the parent service variable data.
-     *
      * @return ApiResource<EggVariable>|NullResource
      */
     private function includeParent(): ApiResource|NullResource

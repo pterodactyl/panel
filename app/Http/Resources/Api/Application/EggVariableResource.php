@@ -18,9 +18,6 @@ class EggVariableResource extends ApplicationResource
         return Egg::RESOURCE_NAME;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return $this->resource->attributesToArray();
