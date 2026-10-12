@@ -6,6 +6,8 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\ApiKeyAccessTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Tag;
 use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
@@ -52,6 +54,16 @@ test('a root administrator account key cannot install extensions', function (): 
         ->assertForbidden()
         ->assertJsonPath('errors.0.code', 'AccessDeniedHttpException')
         ->assertJsonPath('errors.0.detail', 'This action can only be performed from an authenticated panel session, not with an API key.');
+});
+test('a root administrator account key cannot read node secrets', function (): void {
+    $admin = User::factory()->create(['root_admin' => true]);
+    $node = Node::factory()->for(Location::factory())->create();
+    withKey(ApiKey::factory()->create(['user_id' => $admin->id, 'key_type' => ApiKey::TYPE_ACCOUNT]));
+
+    $this->getJson("/api/admin/nodes/{$node->id}/configuration")->assertForbidden();
+    $this->postJson("/api/admin/nodes/{$node->id}/deploy-token")->assertForbidden();
+    $this->getJson("/api/application/nodes/{$node->id}/configuration")->assertForbidden();
+    expect(ApiKey::query()->where('key_type', ApiKey::TYPE_APPLICATION)->exists())->toBeFalse();
 });
 test('a root administrator session can still reach the extension install endpoint', function (): void {
     $this->actingAs(User::factory()->create(['root_admin' => true]));

@@ -21,6 +21,11 @@ class StoreUserRequest extends ApplicationApiRequest
 
     protected int $permission = AdminAcl::WRITE;
 
+    public function authorize(): bool
+    {
+        return parent::authorize() && (! $this->boolean('root_admin') || $this->canManageAdministrators());
+    }
+
     /**
      * Return the validation rules for this request.
      *

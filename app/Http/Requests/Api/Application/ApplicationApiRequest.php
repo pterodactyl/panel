@@ -48,4 +48,24 @@ abstract class ApplicationApiRequest extends ApiRequest
 
         return AdminAcl::check($token, $this->resource, $this->permission);
     }
+
+    /**
+     * Whether the request may act on root administrators. Sessions and account keys already
+     * require one; application keys need write access to every resource.
+     */
+    protected function canManageAdministrators(): bool
+    {
+        $token = $this->user()?->currentAccessToken();
+        if (! $token instanceof ApiKey || $token->key_type !== ApiKey::TYPE_APPLICATION) {
+            return true;
+        }
+
+        foreach (AdminAcl::getResourceList() as $resource) {
+            if (! AdminAcl::check($token, $resource, AdminAcl::WRITE)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
