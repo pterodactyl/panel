@@ -11,21 +11,20 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\DeleteServerRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ServerResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Filters\AdminServerFilter;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -35,8 +34,6 @@ class ServerController extends AdminApiController
 {
     /**
      * List servers.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List servers', 'Returns a paginated list of servers.')]
     #[QueryParam('filter[*]', 'string', 'Search servers by UUID, name, owner, node, allocation, or external identifier.', required: false, example: 'Survival')]
@@ -51,8 +48,8 @@ class ServerController extends AdminApiController
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports allocation, allocations, user, subusers, egg, variables, location, node, and databases.', required: false, example: 'user,node,allocation')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Servers returned.', collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetServersRequest $request): array
+    #[ResponseFromResource(ServerResource::class, Server::class, description: 'Servers returned.', collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: 50)]
+    public function index(GetServersRequest $request): ApiResourceCollection
     {
         $servers = QueryBuilder::for(Server::query()->with('allocation', 'node', 'user'))
             ->allowedFilters([
@@ -68,31 +65,25 @@ class ServerController extends AdminApiController
             ->allowedSorts(['id', 'uuid', 'name', 'created_at'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($servers)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toResponseArray();
+        return ServerResource::collection($servers);
     }
 
     /**
      * Show server.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get server', 'Returns a single server by admin identifier.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports allocation, allocations, user, subusers, egg, variables, location, node, and databases.', required: false, example: 'allocations,user,node,egg,variables')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server returned.', factoryStates: ['withRelationships'], resourceKey: 'server', include: ['allocation', 'allocations', 'egg', 'node', 'user', 'variables'])]
-    public function show(GetServerRequest $request, Server $server): array
+    #[ResponseFromResource(ServerResource::class, Server::class, description: 'Server returned.', factoryStates: ['withRelationships'], resourceKey: 'server', include: ['allocation', 'allocations', 'egg', 'node', 'user', 'variables'])]
+    public function show(GetServerRequest $request, Server $server): ServerResource
     {
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return ServerResource::make($server)->withExtensionFields();
     }
 
     /**
      * Create server.
      */
     #[Endpoint('Create server', 'Creates a server using explicit allocations or automatic deployment constraints.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
+    #[ResponseFromResource(ServerResource::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
@@ -103,9 +94,9 @@ class ServerController extends AdminApiController
             ->property('name', $server->name)
             ->log();
 
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return ServerResource::make($server)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.admin.servers.view', [
                     'server' => $server->id,
                 ]),

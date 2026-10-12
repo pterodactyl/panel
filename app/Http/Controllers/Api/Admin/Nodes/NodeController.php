@@ -12,22 +12,21 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Nodes\CreatesNodes;
 use Pterodactyl\Contracts\Nodes\DeletesNodes;
 use Pterodactyl\Contracts\Nodes\UpdatesNodes;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\DeleteNodeRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\GetNodeRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\StoreNodeRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\UpdateNodeRequest;
+use Pterodactyl\Http\Resources\Api\Admin\NodeResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Transformers\Api\Admin\NodeTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -46,8 +45,6 @@ class NodeController extends AdminApiController
 
     /**
      * List nodes.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List nodes', 'Returns a paginated list of Wings nodes.')]
     #[QueryParam('filter[uuid]', 'string', 'Filter nodes by UUID.', required: false, example: '1b19cf3f-2f89-4f88-a81e-321e7fe326bc')]
@@ -57,41 +54,35 @@ class NodeController extends AdminApiController
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers'])]
-    #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node', paginate: [IlluminatePaginatorAdapter::class, 50], withCount: ['servers'])]
-    public function index(GetNodesRequest $request): array
+    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node', paginate: 50, withCount: ['servers'])]
+    public function index(GetNodesRequest $request): ApiResourceCollection
     {
         $nodes = QueryBuilder::for(Node::query()->with('location')->withCount('servers'))
             ->allowedFilters(['uuid', 'name', 'fqdn'])
             ->allowedSorts(['id', 'uuid', 'name', 'memory', 'disk', 'created_at'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($nodes)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
-            ->toResponseArray();
+        return NodeResource::collection($nodes);
     }
 
     /**
      * Show node.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get node', 'Returns a single Wings node by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "location", and "servers".', required: false, example: 'location', enum: ['allocations', 'location', 'servers', 'allocations,location', 'location,servers'])]
-    #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Node returned.', factoryStates: ['withLocation'], resourceKey: 'node', include: ['location'], withCount: ['servers'])]
-    public function show(GetNodeRequest $request, Node $node): array
+    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Node returned.', factoryStates: ['withLocation'], resourceKey: 'node', include: ['location'], withCount: ['servers'])]
+    public function show(GetNodeRequest $request, Node $node): NodeResource
     {
         $node->loadCount('servers');
 
-        return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return NodeResource::make($node)->withExtensionFields();
     }
 
     /**
      * Create node.
      */
     #[Endpoint('Create node', 'Creates a Wings node. HTTPS nodes must use a valid FQDN rather than a raw IP address.')]
-    #[ResponseFromTransformer(NodeTransformer::class, Node::class, status: 201, description: 'Node created.', factoryStates: ['withLocation'], resourceKey: 'node', meta: ['resource' => 'https://panel.example.com/api/admin/nodes/1'], withCount: ['servers'])]
+    #[ResponseFromResource(NodeResource::class, Node::class, status: 201, description: 'Node created.', factoryStates: ['withLocation'], resourceKey: 'node', meta: ['resource' => 'https://panel.example.com/api/admin/nodes/1'], withCount: ['servers'])]
     #[ExtensionFieldsParam]
     public function store(StoreNodeRequest $request, CreatesNodes $nodes): JsonResponse
     {
@@ -102,9 +93,9 @@ class NodeController extends AdminApiController
             ->property('name', $node->name)
             ->log();
 
-        return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return NodeResource::make($node)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.admin.nodes.view', [
                     'node' => $node->id,
                 ]),
@@ -114,14 +105,12 @@ class NodeController extends AdminApiController
 
     /**
      * Update node.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update node', 'Updates a Wings node and optionally rotates its daemon secret.')]
     #[BodyParam('reset_secret', 'boolean', 'Whether to rotate the daemon secret.', required: false, example: false)]
-    #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Node updated.', factoryStates: ['withLocation'], resourceKey: 'node', withCount: ['servers'])]
+    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Node updated.', factoryStates: ['withLocation'], resourceKey: 'node', withCount: ['servers'])]
     #[ExtensionFieldsParam]
-    public function update(UpdateNodeRequest $request, UpdatesNodes $nodes, Node $node): array
+    public function update(UpdateNodeRequest $request, UpdatesNodes $nodes, Node $node): NodeResource
     {
         $node = $nodes->update(
             $node,
@@ -134,9 +123,7 @@ class NodeController extends AdminApiController
             ->property('name', $node->name)
             ->log();
 
-        return Fractal::item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return NodeResource::make($node)->withExtensionFields();
     }
 
     /**

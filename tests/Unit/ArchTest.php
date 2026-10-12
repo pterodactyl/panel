@@ -35,6 +35,7 @@ use PhpParser\ParserFactory;
 use Pterodactyl\Exceptions\ApiErrorResponse;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
+use Pterodactyl\Http\Resources\Api\Admin\UserResource as AdminUserResource;
 use Pterodactyl\Http\Resources\Api\Client\UserResource as ClientUserResource;
 use Pterodactyl\Http\Resources\Api\Concerns\FormatsActivityLogs;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
@@ -49,6 +50,7 @@ arch()->preset()->php()->ignoring('Rules');
 // md5 is Gravatar's address scheme; sha1 is the
 // activity log's public identifier. None of them protect anything.
 arch()->preset()->security()->ignoring([
+    AdminUserResource::class,
     AdminUserTransformer::class,
     ClientUserResource::class,
     FormatsActivityLogs::class,

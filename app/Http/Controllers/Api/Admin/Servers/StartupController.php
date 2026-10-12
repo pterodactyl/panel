@@ -8,14 +8,13 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\UpdateServerStartupRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ServerResource;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Servers', 'Create, update, retrieve, and operate servers.')]
@@ -23,12 +22,10 @@ class StartupController extends AdminApiController
 {
     /**
      * Update server startup configuration.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update server startup', 'Updates the egg, Docker image, startup command, environment, and install-script behavior.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server startup updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
-    public function __invoke(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): array
+    #[ResponseFromResource(ServerResource::class, Server::class, description: 'Server startup updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
+    public function __invoke(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): ServerResource
     {
         $server = $modification->update($server, $request->actionInput(), User::USER_LEVEL_ADMIN);
 
@@ -37,8 +34,6 @@ class StartupController extends AdminApiController
             ->property('name', $server->name)
             ->log();
 
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toResponseArray();
+        return ServerResource::make($server);
     }
 }

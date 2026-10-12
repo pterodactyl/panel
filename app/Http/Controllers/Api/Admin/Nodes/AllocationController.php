@@ -12,21 +12,20 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Allocations\CreatesAllocations;
 use Pterodactyl\Contracts\Allocations\DeletesAllocations;
 use Pterodactyl\Contracts\Allocations\UpdatesAllocations;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\DeleteAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\GetAllocationsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\StoreAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\UpdateAllocationRequest;
+use Pterodactyl\Http\Resources\Api\Admin\AllocationResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Transformers\Api\Admin\AllocationTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -46,8 +45,6 @@ class AllocationController extends AdminApiController
 
     /**
      * List allocations.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List node allocations', 'Returns a paginated list of allocations for a node.')]
     #[QueryParam('filter[ip]', 'string', 'Filter allocations by exact IP address.', required: false, example: '192.168.1.1')]
@@ -57,8 +54,8 @@ class AllocationController extends AdminApiController
     #[QueryParam('sort', 'string', 'Sort allocations by id, ip, or port. Prefix with a hyphen for descending order.', required: false, example: 'port')]
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
-    #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocations returned.', collection: true, resourceKey: 'allocation', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetAllocationsRequest $request, Node $node): array
+    #[ResponseFromResource(AllocationResource::class, Allocation::class, description: 'Allocations returned.', collection: true, resourceKey: 'allocation', paginate: 50)]
+    public function index(GetAllocationsRequest $request, Node $node): ApiResourceCollection
     {
         // Eager-load the owning server so the transformer avoids an N+1 on server name.
         $query = $node->allocations()->with('server');
@@ -90,9 +87,7 @@ class AllocationController extends AdminApiController
             ->allowedSorts(['id', 'ip', 'port'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($allocations)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
-            ->toResponseArray();
+        return AllocationResource::collection($allocations);
     }
 
     /**
@@ -121,12 +116,10 @@ class AllocationController extends AdminApiController
 
     /**
      * Update allocation.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update node allocation', 'Updates the alias for a single allocation on a node.')]
-    #[ResponseFromTransformer(AllocationTransformer::class, Allocation::class, description: 'Allocation updated.', resourceKey: 'allocation')]
-    public function update(UpdateAllocationRequest $request, UpdatesAllocations $allocations, Node $node, Allocation $allocation): array
+    #[ResponseFromResource(AllocationResource::class, Allocation::class, description: 'Allocation updated.', resourceKey: 'allocation')]
+    public function update(UpdateAllocationRequest $request, UpdatesAllocations $allocations, Node $node, Allocation $allocation): AllocationResource
     {
         $this->assertAllocationBelongsToNode($node, $allocation);
 
@@ -137,9 +130,7 @@ class AllocationController extends AdminApiController
             ->property('alias', $allocation->ip_alias)
             ->log();
 
-        return Fractal::item($allocation)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
-            ->toResponseArray();
+        return AllocationResource::make($allocation);
     }
 
     /**

@@ -9,14 +9,13 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Eggs\UpdatesEggInstallScripts;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\GetEggScriptRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\UpdateEggScriptRequest;
+use Pterodactyl\Http\Resources\Api\Admin\EggResource;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Transformers\Api\Admin\EggTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Egg Scripts', 'Inspect and update egg install scripts.')]
@@ -34,28 +33,22 @@ class EggScriptController extends AdminApiController
 
     /**
      * Show egg install script.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get egg install script', 'Returns an egg with its install script block.')]
-    #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg install script returned.', resourceKey: 'egg')]
-    public function show(GetEggScriptRequest $request, Egg $egg): array
+    #[ResponseFromResource(EggResource::class, Egg::class, description: 'Egg install script returned.', resourceKey: 'egg')]
+    public function show(GetEggScriptRequest $request, Egg $egg): EggResource
     {
 
-        return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
-            ->toResponseArray();
+        return EggResource::make($egg);
     }
 
     /**
      * Update egg install script.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update egg install script', 'Updates the install script configuration for an egg.')]
-    #[ResponseFromTransformer(EggTransformer::class, Egg::class, description: 'Egg install script updated.', resourceKey: 'egg')]
+    #[ResponseFromResource(EggResource::class, Egg::class, description: 'Egg install script updated.', resourceKey: 'egg')]
     #[ScribeResponse(self::INVALID_COPY_FROM_ERROR, status: 400, description: 'The selected copy source is invalid.')]
-    public function update(UpdateEggScriptRequest $request, UpdatesEggInstallScripts $scripts, Egg $egg): array
+    public function update(UpdateEggScriptRequest $request, UpdatesEggInstallScripts $scripts, Egg $egg): EggResource
     {
         $egg = $scripts->update($egg, $request->actionInput());
 
@@ -64,8 +57,6 @@ class EggScriptController extends AdminApiController
             ->property('name', $egg->name)
             ->log();
 
-        return Fractal::item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
-            ->toResponseArray();
+        return EggResource::make($egg);
     }
 }

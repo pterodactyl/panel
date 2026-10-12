@@ -20,9 +20,6 @@ class ServerDatabaseResource extends AdminResource
 {
     protected array $eagerLoads = ['host'];
 
-    /**
-     * @var list<string>
-     */
     protected array $availableIncludes = ['password'];
 
     public function resourceName(): string
@@ -30,9 +27,6 @@ class ServerDatabaseResource extends AdminResource
         return Database::RESOURCE_NAME;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         $this->resource->loadMissing('host');

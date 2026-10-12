@@ -8,13 +8,12 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Requests\Api\Admin\Activity\GetActivityLogsRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ActivityLogResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Support\ActivityLogFilters;
-use Pterodactyl\Transformers\Api\Admin\ActivityLogTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -30,8 +29,6 @@ class ActivityController extends AdminApiController
 
     /**
      * List activity.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List activity', 'Returns a paginated list of administrative activity. Only events in the "admin" namespace are returned; customer activity against a server or account is excluded.')]
     #[QueryParam('filter[event]', 'string', 'Filter activity by event name.', required: false, example: 'admin:server.build')]
@@ -43,8 +40,8 @@ class ActivityController extends AdminApiController
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page. The maximum is 100.', required: false, example: 25)]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports actor.', required: false, example: 'actor')]
-    #[ResponseFromTransformer(ActivityLogTransformer::class, ActivityLog::class, description: 'Activity logs returned.', collection: true, factoryStates: ['withActor'], resourceKey: 'activity_log', paginate: [IlluminatePaginatorAdapter::class, 25], include: ['actor'])]
-    public function __invoke(GetActivityLogsRequest $request): array
+    #[ResponseFromResource(ActivityLogResource::class, ActivityLog::class, description: 'Activity logs returned.', collection: true, factoryStates: ['withActor'], resourceKey: 'activity_log', paginate: 25, include: ['actor'])]
+    public function __invoke(GetActivityLogsRequest $request): ApiResourceCollection
     {
         $activity = QueryBuilder::for(ActivityLog::query()->where('event', 'like', self::ADMIN_EVENT_PREFIX.'%'))
             ->allowedFilters([AllowedFilter::partial('event'), AllowedFilter::partial('ip'), ActivityLogFilters::actor($request->string('filter.user')->toString()), ActivityLogFilters::actorId($request->integer('filter.user_id')), AllowedFilter::exact('event_name', 'event')])
@@ -55,8 +52,6 @@ class ActivityController extends AdminApiController
             ->paginate($request->perPage(25))
             ->appends($request->query());
 
-        return Fractal::collection($activity)
-            ->transformWith($this->getTransformer(ActivityLogTransformer::class))
-            ->toResponseArray();
+        return ActivityLogResource::collection($activity);
     }
 }

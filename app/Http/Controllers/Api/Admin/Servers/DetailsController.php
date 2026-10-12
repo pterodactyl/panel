@@ -9,13 +9,12 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\UpdateServerDetailsRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ServerResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Servers', 'Create, update, retrieve, and operate servers.')]
@@ -23,13 +22,11 @@ class DetailsController extends AdminApiController
 {
     /**
      * Update server details.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update server details', 'Updates a server name, owner, description, and external identifier.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ResponseFromResource(ServerResource::class, Server::class, description: 'Server updated.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ExtensionFieldsParam]
-    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
+    public function __invoke(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): ServerResource
     {
         $updated = $details->update(
             $server,
@@ -41,8 +38,6 @@ class DetailsController extends AdminApiController
             ->property('name', $updated->name)
             ->log();
 
-        return Fractal::item($updated)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return ServerResource::make($updated)->withExtensionFields();
     }
 }

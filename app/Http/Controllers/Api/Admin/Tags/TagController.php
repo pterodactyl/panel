@@ -11,15 +11,13 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Tags\CreatesTags;
 use Pterodactyl\Contracts\Tags\DeletesTags;
 use Pterodactyl\Contracts\Tags\SyncsTags;
 use Pterodactyl\Contracts\Tags\UpdatesTags;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Tags\DeleteTagRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Tags\GetTagRequest;
@@ -27,10 +25,11 @@ use Pterodactyl\Http\Requests\Api\Admin\Tags\GetTagsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Tags\StoreTagRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Tags\SyncTagsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Tags\UpdateTagRequest;
+use Pterodactyl\Http\Resources\Api\Admin\TagResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Tag;
-use Pterodactyl\Transformers\Api\Admin\TagTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -49,8 +48,6 @@ class TagController extends AdminApiController
 
     /**
      * List tags.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List tags', 'Returns a paginated list of tags.')]
     #[QueryParam('filter[name]', 'string', 'Filter tags by name.', required: false, example: 'Minecraft')]
@@ -59,41 +56,35 @@ class TagController extends AdminApiController
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs" and "nodes".', required: false, example: 'eggs', enum: ['eggs', 'nodes', 'eggs,nodes'])]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tags returned.', collection: true, resourceKey: 'tag', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetTagsRequest $request): array
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Tags returned.', collection: true, resourceKey: 'tag', paginate: 50)]
+    public function index(GetTagsRequest $request): ApiResourceCollection
     {
         $tags = QueryBuilder::for(Tag::query()->withCount('eggs', 'nodes'))
             ->allowedFilters(['name', 'slug'])
             ->allowedSorts(['id', 'name', 'slug'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($tags)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::collection($tags);
     }
 
     /**
      * Show tag.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get tag', 'Returns a single tag by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs" and "nodes".', required: false, example: 'eggs', enum: ['eggs', 'nodes', 'eggs,nodes'])]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tag returned.', resourceKey: 'tag')]
-    public function show(GetTagRequest $request, Tag $tag): array
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Tag returned.', resourceKey: 'tag')]
+    public function show(GetTagRequest $request, Tag $tag): TagResource
     {
         $tag->loadCount('eggs', 'nodes');
 
-        return Fractal::item($tag)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::make($tag);
     }
 
     /**
      * Create tag.
      */
     #[Endpoint('Create tag', 'Creates a tag.')]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, status: 201, description: 'Tag created.', resourceKey: 'tag', meta: ['resource' => 'https://panel.example.com/api/admin/tags/1'])]
+    #[ResponseFromResource(TagResource::class, Tag::class, status: 201, description: 'Tag created.', resourceKey: 'tag', meta: ['resource' => 'https://panel.example.com/api/admin/tags/1'])]
     public function store(StoreTagRequest $request, CreatesTags $tags): JsonResponse
     {
         $tag = $tags->create($request->actionInput());
@@ -103,9 +94,8 @@ class TagController extends AdminApiController
             ->property('slug', $tag->slug)
             ->log();
 
-        return Fractal::item($tag)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->addMeta([
+        return TagResource::make($tag)
+            ->withMeta([
                 'resource' => route('api.admin.tags.view', [
                     'tag' => $tag->id,
                 ]),
@@ -116,15 +106,12 @@ class TagController extends AdminApiController
     /**
      * Update tag.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws DisplayException
      */
     #[Endpoint('Update tag', 'Updates an existing tag. Built-in game tags cannot be edited.')]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tag updated.', resourceKey: 'tag')]
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Tag updated.', resourceKey: 'tag')]
     #[ScribeResponse(self::BUILT_IN_ERROR, status: 400, description: 'The tag is a built-in game tag.')]
-    public function update(UpdateTagRequest $request, UpdatesTags $tags, Tag $tag): array
+    public function update(UpdateTagRequest $request, UpdatesTags $tags, Tag $tag): TagResource
     {
         $tag = $tags->update($tag, $request->actionInput());
 
@@ -133,9 +120,7 @@ class TagController extends AdminApiController
             ->property('slug', $tag->slug)
             ->log();
 
-        return Fractal::item($tag)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::make($tag);
     }
 
     /**
@@ -164,12 +149,10 @@ class TagController extends AdminApiController
 
     /**
      * Replace the full set of tags on an egg.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Sync egg tags', 'Replaces the tags applied to an egg. Values may be tag IDs or new tag names.')]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Tags applied to the egg.', collection: true, resourceKey: 'tag')]
-    public function syncEgg(SyncTagsRequest $request, SyncsTags $sync, Egg $egg): array
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Tags applied to the egg.', collection: true, resourceKey: 'tag')]
+    public function syncEgg(SyncTagsRequest $request, SyncsTags $sync, Egg $egg): ApiResourceCollection
     {
         $sync->syncEgg($egg, $request->tagValues());
         $tags = $egg->tags()->get();
@@ -179,21 +162,17 @@ class TagController extends AdminApiController
             ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($tags)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::collection($tags);
     }
 
     /**
      * Replace the games a node accepts (the 'egg'-kind attachments). A node's
      * reservations are managed separately by syncNodeDeploymentTags(), and syncing
      * one kind never disturbs the other.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Sync node game tags', 'Replaces the games a node accepts. A node with no game tags accepts any egg.')]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Games the node accepts.', collection: true, resourceKey: 'tag')]
-    public function syncNode(SyncTagsRequest $request, SyncsTags $sync, Node $node): array
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Games the node accepts.', collection: true, resourceKey: 'tag')]
+    public function syncNode(SyncTagsRequest $request, SyncsTags $sync, Node $node): ApiResourceCollection
     {
         $sync->syncNodeGames($node, $request->tagValues());
         $tags = $node->eggTags()->get();
@@ -203,20 +182,16 @@ class TagController extends AdminApiController
             ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($tags)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::collection($tags);
     }
 
     /**
      * Replace the reservations on a node (the 'deployment'-kind attachments). A
      * deploy only lands on this node when it declares exactly these tags.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Sync node deployment tags', 'Replaces the reservations on a node. A deploy must declare exactly these tags to land here.')]
-    #[ResponseFromTransformer(TagTransformer::class, Tag::class, description: 'Reservations on the node.', collection: true, resourceKey: 'tag')]
-    public function syncNodeDeploymentTags(SyncTagsRequest $request, SyncsTags $sync, Node $node): array
+    #[ResponseFromResource(TagResource::class, Tag::class, description: 'Reservations on the node.', collection: true, resourceKey: 'tag')]
+    public function syncNodeDeploymentTags(SyncTagsRequest $request, SyncsTags $sync, Node $node): ApiResourceCollection
     {
         $sync->syncNodeDeployments($node, $request->tagValues());
         $tags = $node->deploymentTags()->get();
@@ -226,8 +201,6 @@ class TagController extends AdminApiController
             ->property('tags', $tags->map(fn (Tag $tag): string => $tag->slug)->all())
             ->log();
 
-        return Fractal::collection($tags)
-            ->transformWith($this->getTransformer(TagTransformer::class))
-            ->toResponseArray();
+        return TagResource::collection($tags);
     }
 }
