@@ -1,0 +1,32 @@
+app/Actions/Servers/CreateServer.php
+  s_4cabae41bceed9::t_1094b230c6383d 19
+  s_4cabae41bceed9::t_8df2aa933cc54e 146-147,151
+  s_4cabae41bceed9::t_937a629e451ab7 158-184
+  s_488821bd68e9e0::t_c8e50644dc51d3 157
+app/Models/Allocation.php
+  s_4cabae41bceed9::t_56b0c0575f5a5c 105-106,109-110,113,115,119-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9d62b1982c077264ebc64ee1f6ad1de9c345af54",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
