@@ -16,6 +16,7 @@ use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Data\ValidatedEggVariable;
 use Pterodactyl\Events\Server\OperationCompleted;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
@@ -142,13 +143,43 @@ final readonly class CreateServer implements CreatesServers
 
         throw_if($nodes === [], NoViableNodeException::class, trans('exceptions.deployment.no_viable_nodes'));
 
+        [$ports, $ranges] = $this->parsePorts($deployment->getPorts());
+
         return Allocation::query()
             ->unassigned()
             ->onNodes($nodes)
-            ->onPorts($deployment->getPorts())
+            ->onPorts($ports, $ranges)
             ->when($deployment->isDedicated(), fn (Builder $query) => $query->onDedicatedIp($nodes))
             ->inRandomOrder()
             ->first() ?? throw new NoViableAllocationException(trans('exceptions.deployment.no_viable_allocations'));
+    }
+
+    /**
+     * Splits deployment ports into single ports and [start, end] ranges. Entries that are
+     * neither are ignored.
+     *
+     * @param  list<int|string>  $ports
+     * @return array{list<int>, list<array{int, int}>}
+     *
+     * @throws DisplayException
+     */
+    private function parsePorts(array $ports): array
+    {
+        $single = [];
+        $ranges = [];
+        foreach ($ports as $port) {
+            if (ctype_digit((string) $port)) {
+                $single[] = (int) $port;
+            }
+
+            if (preg_match(CreateAllocations::PORT_RANGE_REGEX, (string) $port, $matches)) {
+                throw_if(abs($matches[2] - $matches[1]) > CreateAllocations::PORT_RANGE_LIMIT, DisplayException::class, trans('exceptions.allocations.too_many_ports'));
+
+                $ranges[] = [(int) $matches[1], (int) $matches[2]];
+            }
+        }
+
+        return [$single, $ranges];
     }
 
     /**

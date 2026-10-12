@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Pterodactyl\Actions\Allocations\CreateAllocations;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Traits\HasHashid;
 
 /**
@@ -104,38 +102,23 @@ class Allocation extends Model
     }
 
     /**
-     * Allocations on any of the given ports or "start-end" port ranges. Entries that are
-     * neither are ignored, and with none left the query is unrestricted.
+     * Allocations whose port is one of the given ports or falls inside one of the
+     * given [start, end] ranges; with neither given the query is unrestricted.
      *
      * @param  Builder<self>  $query
-     * @param  list<int|string>  $ports
-     *
-     * @throws DisplayException
+     * @param  list<int>  $ports
+     * @param  list<array{int, int}>  $ranges
      */
     #[Scope]
-    protected function onPorts(Builder $query, array $ports): void
+    protected function onPorts(Builder $query, array $ports, array $ranges = []): void
     {
-        $single = [];
-        $ranges = [];
-        foreach ($ports as $port) {
-            if (ctype_digit((string) $port)) {
-                $single[] = (int) $port;
-            }
-
-            if (preg_match(CreateAllocations::PORT_RANGE_REGEX, (string) $port, $matches)) {
-                throw_if(abs($matches[2] - $matches[1]) > CreateAllocations::PORT_RANGE_LIMIT, DisplayException::class, trans('exceptions.allocations.too_many_ports'));
-
-                $ranges[] = [(int) $matches[1], (int) $matches[2]];
-            }
-        }
-
-        if ($single === [] && $ranges === []) {
+        if ($ports === [] && $ranges === []) {
             return;
         }
 
-        $query->where(function (Builder $inner) use ($single, $ranges): void {
-            if ($single !== []) {
-                $inner->orWhereIn('port', $single);
+        $query->where(function (Builder $inner) use ($ports, $ranges): void {
+            if ($ports !== []) {
+                $inner->orWhereIn('port', $ports);
             }
 
             foreach ($ranges as $range) {
