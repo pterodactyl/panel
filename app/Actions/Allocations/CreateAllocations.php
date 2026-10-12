@@ -68,29 +68,6 @@ final readonly class CreateAllocations implements CreatesAllocations
     }
 
     /**
-     * Validates allocation input and returns the address, ports and alias it describes. Each
-     * port comes back as written, for create() to read as a single port or a range.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{ip: string, ports: list<string>, ip_alias: string|null}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        $ports = [];
-        foreach (array_keys($input->array('allocation_ports')) as $key) {
-            $ports[] = $input->string('allocation_ports.'.$key)->toString();
-        }
-
-        return [
-            'ip' => $input->string('allocation_ip')->toString(),
-            'ports' => $ports,
-            'ip_alias' => $input->filled('allocation_alias') ? $input->string('allocation_alias')->toString() : null,
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $input
      *
      * @throws DisplayException
@@ -101,16 +78,21 @@ final readonly class CreateAllocations implements CreatesAllocations
      */
     public function create(Node $node, array $input): void
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::make($input, self::rules())->safe();
+        $ip = $validated->string('allocation_ip')->toString();
+        $alias = $validated->filled('allocation_alias') ? $validated['allocation_alias'] : null;
 
-        $segments = explode('/', $attributes['ip'], 2);
+        // A port given as a number is read like one given as text: a single port or a range.
+        $ports = array_map(fn (int|string $key): string => $validated->string('allocation_ports.'.$key)->toString(), array_keys($validated->array('allocation_ports')));
+
+        $segments = explode('/', $ip, 2);
         if (isset($segments[1])) {
             throw_if(! ctype_digit($segments[1]) || ($segments[1] > self::CIDR_MIN_BITS || $segments[1] < self::CIDR_MAX_BITS), CidrOutOfRangeException::class);
         }
 
-        $underlying = $attributes['ip'];
+        $underlying = $ip;
         try {
-            $underlying = gethostbyname($attributes['ip']);
+            $underlying = gethostbyname($ip);
             $parsed = Network::parse($underlying);
         } catch (Exception $exception) {
             report($exception);
@@ -118,9 +100,9 @@ final readonly class CreateAllocations implements CreatesAllocations
             throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
         }
 
-        DB::transaction(function () use ($node, $attributes, $parsed): void {
+        DB::transaction(function () use ($node, $ports, $alias, $parsed): void {
             foreach ($parsed as $ip) {
-                foreach ($attributes['ports'] as $port) {
+                foreach ($ports as $port) {
                     $isPort = ctype_digit($port);
                     $isRange = preg_match(self::PORT_RANGE_REGEX, $port, $matches) === 1;
                     throw_if(! $isPort && ! $isRange, InvalidPortMappingException::class, $port);
@@ -143,7 +125,7 @@ final readonly class CreateAllocations implements CreatesAllocations
                             'node_id' => $node->id,
                             'ip' => $ip->__toString(),
                             'port' => $unit,
-                            'ip_alias' => $attributes['ip_alias'],
+                            'ip_alias' => $alias,
                             'server_id' => null,
                         ];
                     }

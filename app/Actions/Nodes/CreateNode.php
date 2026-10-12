@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Nodes;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,7 @@ final readonly class CreateNode implements CreatesNodes
 
     /**
      * A node's fields, for creating one and for updating one. The daemon fields go by their
-     * API names; attributes() maps them onto the daemonListen, daemonSFTP and daemonBase columns.
+     * API names, which map onto the daemonListen, daemonSFTP and daemonBase columns.
      *
      * @return NormalizedValidationRules
      */
@@ -46,68 +47,25 @@ final readonly class CreateNode implements CreatesNodes
     }
 
     /**
-     * Validates node input and returns the model attributes it describes. A node given no
-     * daemon base keeps its files in /var/lib/pterodactyl/volumes. The description, flags and
-     * upload size are left out when they are not given, so a new node takes the column defaults
-     * and an updated one keeps its stored values; a blank description is cleared.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, location_id: int, fqdn: string, scheme: string, memory: int, memory_overallocate: int, disk: int, disk_overallocate: int, daemonListen: int, daemonSFTP: int, daemonBase: string, description?: string|null, public?: bool, behind_proxy?: bool, maintenance_mode?: bool, upload_size?: int}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        $attributes = [
-            'name' => $input->string('name')->toString(),
-            'location_id' => $input->integer('location_id'),
-            'fqdn' => $input->string('fqdn')->toString(),
-            'scheme' => $input->string('scheme')->toString(),
-            'memory' => $input->integer('memory'),
-            'memory_overallocate' => $input->integer('memory_overallocate'),
-            'disk' => $input->integer('disk'),
-            'disk_overallocate' => $input->integer('disk_overallocate'),
-            'daemonListen' => $input->integer('daemon_listen'),
-            'daemonSFTP' => $input->integer('daemon_sftp'),
-            'daemonBase' => $input->filled('daemon_base') ? $input->string('daemon_base')->toString() : '/var/lib/pterodactyl/volumes',
-        ];
-
-        if ($input->has('description')) {
-            $attributes['description'] = $input->filled('description') ? $input->string('description')->toString() : null;
-        }
-
-        if ($input->has('public')) {
-            $attributes['public'] = $input->boolean('public');
-        }
-
-        if ($input->has('behind_proxy')) {
-            $attributes['behind_proxy'] = $input->boolean('behind_proxy');
-        }
-
-        if ($input->has('maintenance_mode')) {
-            $attributes['maintenance_mode'] = $input->boolean('maintenance_mode');
-        }
-
-        if ($input->filled('upload_size')) {
-            $attributes['upload_size'] = $input->integer('upload_size');
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Create a node and mint its daemon token pair.
      *
      * @param  array<string, mixed>  $input
      */
     public function create(array $input): Node
     {
-        $attributes = self::attributes($input);
+        $validated = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        return DB::transaction(function () use ($attributes, $extensions): Node {
+        return DB::transaction(function () use ($validated, $extensions): Node {
             $node = Node::query()->forceCreate([
-                ...$attributes,
+                ...Arr::except($validated, ['daemon_listen', 'daemon_sftp', 'daemon_base']),
+                'daemonListen' => $validated['daemon_listen'],
+                'daemonSFTP' => $validated['daemon_sftp'],
+                // A node given no daemon base keeps its files in /var/lib/pterodactyl/volumes.
+                'daemonBase' => $validated['daemon_base'] ?? '/var/lib/pterodactyl/volumes',
                 'daemon_token' => Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH)),
                 'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
             ]);

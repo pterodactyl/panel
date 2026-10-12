@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Nodes;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Nodes\UpdatesNodes;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -30,8 +32,20 @@ final readonly class UpdateNode implements UpdatesNodes
      */
     public function update(Node $node, array $input, bool $resetToken = false): Node
     {
-        $attributes = CreateNode::attributes($input);
+        $validated = Validator::validate($input, CreateNode::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+
+        // The description, flags and upload size it is not given keep their stored values.
+        $attributes = [
+            ...Arr::except($validated, ['daemon_listen', 'daemon_sftp', 'daemon_base']),
+            'daemonListen' => $validated['daemon_listen'],
+            'daemonSFTP' => $validated['daemon_sftp'],
+            // A node given no daemon base keeps its files in /var/lib/pterodactyl/volumes.
+            'daemonBase' => $validated['daemon_base'] ?? '/var/lib/pterodactyl/volumes',
+        ];
 
         if ($resetToken) {
             $attributes['daemon_token'] = Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));

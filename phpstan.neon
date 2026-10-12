@@ -9,6 +9,7 @@ parameters:
     generalizeEnvReturnType: true
     parseModelCastsMethod: true
     stubFiles:
+        - tools/phpstan/stubs/Arr.stub
         - tools/phpstan/stubs/EloquentHasAttributes.stub
         - tools/phpstan/stubs/ValidatorFacade.stub
     typeAliases:

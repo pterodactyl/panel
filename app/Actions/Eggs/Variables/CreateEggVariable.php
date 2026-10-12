@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Eggs\Variables;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Contracts\Eggs\CreatesEggVariables;
@@ -41,38 +42,23 @@ final class CreateEggVariable implements CreatesEggVariables
     }
 
     /**
-     * Validates variable input for the egg and returns the model attributes it describes.
-     * The options become the user_viewable and user_editable flags, each set only when it is
-     * listed; any other option is ignored. A variable given no description gets a blank one.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}
-     */
-    public static function attributes(array $input, Egg $egg, ?EggVariable $ignore = null): array
-    {
-        $input = Validator::make($input, self::rules($egg, $ignore))->safe();
-
-        $options = array_map(fn (int|string $key): string => $input->string('options.'.$key)->toString(), array_keys($input->array('options')));
-
-        return [
-            'name' => $input->string('name')->toString(),
-            'description' => $input->string('description')->toString(),
-            'env_variable' => $input->string('env_variable')->toString(),
-            'default_value' => $input->string('default_value')->toString(),
-            'user_viewable' => in_array('user_viewable', $options, true),
-            'user_editable' => in_array('user_editable', $options, true),
-            'rules' => $input->string('rules')->toString(),
-        ];
-    }
-
-    /**
      * Create a new variable for a given Egg.
      *
      * @param  array<string, mixed>  $input
      */
     public function create(Egg $egg, array $input): EggVariable
     {
-        $variable = $egg->variables()->create(self::attributes($input, $egg));
+        $validated = Validator::validate($input, self::rules($egg));
+        $options = Arr::array($validated, 'options', []);
+
+        // A variable given no description gets a blank one, and the options set whether users
+        // can see and edit it; any other option is ignored.
+        $variable = $egg->variables()->create([
+            ...Arr::except($validated, 'options'),
+            'description' => $validated['description'] ?? '',
+            'user_viewable' => in_array('user_viewable', $options, true),
+            'user_editable' => in_array('user_editable', $options, true),
+        ]);
 
         return $variable->refresh();
     }

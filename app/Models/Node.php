@@ -72,6 +72,8 @@ class Node extends Model implements Identifiable
     protected function casts(): array
     {
         return [
+            'name' => 'string',
+            'scheme' => 'string',
             'location_id' => 'integer',
             'memory' => 'integer',
             'memory_overallocate' => 'integer',

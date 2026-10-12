@@ -36,6 +36,7 @@ class EggVariable extends Model
     {
         return [
             'egg_id' => 'integer',
+            'env_variable' => 'string',
             'user_viewable' => 'bool',
             'user_editable' => 'bool',
             'sort_order' => 'integer',

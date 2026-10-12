@@ -30,41 +30,6 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
     }
 
     /**
-     * Validates install script input and returns the attributes it changes: only the fields
-     * given, so the rest keep their stored values. A blank script or copy source is cleared.
-     *
-     * @param  array<string, mixed>  $input
-     * @return array{script_install?: string|null, script_is_privileged?: bool, script_entry?: string, script_container?: string, copy_script_from?: int|null}
-     */
-    public static function attributes(array $input): array
-    {
-        $input = Validator::make($input, self::rules())->safe();
-
-        $attributes = [];
-        if ($input->has('script_install')) {
-            $attributes['script_install'] = $input->filled('script_install') ? $input->string('script_install')->toString() : null;
-        }
-
-        if ($input->has('script_is_privileged')) {
-            $attributes['script_is_privileged'] = $input->boolean('script_is_privileged');
-        }
-
-        if ($input->has('script_entry')) {
-            $attributes['script_entry'] = $input->string('script_entry')->toString();
-        }
-
-        if ($input->has('script_container')) {
-            $attributes['script_container'] = $input->string('script_container')->toString();
-        }
-
-        if ($input->has('copy_script_from')) {
-            $attributes['copy_script_from'] = $input->filled('copy_script_from') ? $input->integer('copy_script_from') : null;
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Modify the install script for a given Egg.
      *
      * @param  array<string, mixed>  $input
@@ -73,7 +38,9 @@ final class UpdateInstallScript implements UpdatesEggInstallScripts
      */
     public function update(Egg $egg, array $input): Egg
     {
-        $attributes = self::attributes($input);
+        $attributes = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request, so a blank script or copy source is cleared.
+        $attributes = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $attributes);
 
         $copyFrom = $attributes['copy_script_from'] ?? null;
         if ($copyFrom !== null && ! Egg::query()->scriptSources()->whereKey($copyFrom)->exists()) {

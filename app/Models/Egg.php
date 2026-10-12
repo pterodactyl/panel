@@ -78,6 +78,9 @@ class Egg extends Model implements Identifiable
     {
         return [
             'config_from' => 'integer',
+            'config_startup' => 'string',
+            'config_logs' => 'string',
+            'config_files' => 'string',
             'script_is_privileged' => 'boolean',
             'force_outgoing_ip' => 'boolean',
             'copy_script_from' => 'integer',
