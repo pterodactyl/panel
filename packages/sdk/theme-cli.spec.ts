@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 // @ts-expect-error The bin is plain JavaScript without declarations.
-import { classicSkins, ejectView, rewriteImports, run } from './bin/pterodactyl-theme.mjs';
+import { classicSkins, ejectView, run } from './bin/pterodactyl-theme.mjs';
 
 const root = resolve(__dirname, '../..');
 const bin = resolve(__dirname, 'bin/pterodactyl-theme.mjs');
@@ -163,22 +163,72 @@ export default defineTheme({
 });
 
 describe('skins', () => {
-    it('lists classic skins and prints one with SDK imports', () => {
-        write('classic/skins/Button.ts', "import { skin } from '@/sdk/theme';\nexport default skin('Button', {});\n");
-        write('classic/skins/index.ts', 'export {};\n');
+    it('lists the primitives classic skins and prints one with the constants it reads', () => {
+        write(
+            'classic/skins/forms.ts',
+            [
+                "import type { CompleteSkin } from '@/sdk/theme';",
+                '',
+                "// Shared by the inputs; a ; in a comment does not end it.",
+                "const control = { base: 'p-3 border', variants: { error: { true: 'border-destructive' } } };",
+                "const unused = 'x';",
+                "export const input = { root: control } satisfies CompleteSkin<'Input'>;",
+                "export const label = { root: 'block; text-sm' } satisfies CompleteSkin<'Label'>;",
+                '',
+            ].join('\n')
+        );
+        write(
+            'classic/skins/index.ts',
+            "import type { CompleteSkins } from '@/sdk/theme';\nimport { input, label as fieldLabel } from './forms';\n\nexport const classicSkins = {\n    Input: input,\n    Label: fieldLabel,\n} satisfies CompleteSkins;\n"
+        );
 
         const skins: Map<string, () => string> = classicSkins(resolve(directory, 'classic'));
+        const input = skins.get('Input')!();
 
-        expect([...skins.keys()]).toEqual(['Button']);
-        expect(rewriteImports(skins.get('Button')!())).toContain("from '@pterodactyl/sdk/theme'");
+        expect([...skins.keys()]).toEqual(['Input', 'Label']);
+        expect(input).toContain("import type { CompleteSkin } from '@pterodactyl/sdk/theme';");
+        expect(input).toContain("// Shared by the inputs; a ; in a comment does not end it.\nconst control = {");
+        expect(input).toContain("export const input = { root: control } satisfies CompleteSkin<'Input'>;");
+        expect(input).not.toContain('unused');
+        expect(input).not.toContain('export const label');
+        expect(skins.get('Label')!()).toContain("export const label = { root: 'block; text-sm' }");
     });
 
-    it('explains when classic skins nothing yet', () => {
-        const result = cli('skins');
+    it('prints classic skin of every primitive as code that typechecks against the SDK types', () => {
+        const listed = cli('skins');
+        const primitives = listed.stdout.trim().split('\n');
 
-        expect(result.status).toBe(0);
-        expect(result.stdout.trim()).toMatch(/^(Classic defines no skins yet\.|\w+(\n\w+)*)$/);
-    });
+        expect(listed.status).toBe(0);
+        expect(primitives).toEqual(expect.arrayContaining(['Button', 'Card', 'Dialog', 'Select']));
+        for (const primitive of primitives) {
+            write(`skins/${primitive}.ts`, cli('skins', primitive.toLowerCase()).stdout);
+        }
+
+        expect(cli('skins', 'Buton').stderr).toContain('Classic has no skin for "Buton". It skins Alert, Avatar');
+
+        const program = ts.createProgram(
+            primitives.map((primitive) => resolve(directory, `skins/${primitive}.ts`)),
+            {
+                strict: true,
+                noEmit: true,
+                skipLibCheck: true,
+                target: ts.ScriptTarget.ES2022,
+                module: ts.ModuleKind.ESNext,
+                moduleResolution: ts.ModuleResolutionKind.Bundler,
+                types: [],
+                typeRoots: [resolve(root, 'node_modules/@types')],
+                paths: { '@pterodactyl/sdk/theme': [resolve(__dirname, 'types/theme.d.ts')] },
+            }
+        );
+
+        expect(
+            ts.formatDiagnostics(ts.getPreEmitDiagnostics(program), {
+                getCanonicalFileName: (file) => file,
+                getCurrentDirectory: () => directory,
+                getNewLine: () => '\n',
+            })
+        ).toBe('');
+    }, 60_000);
 });
 
 it('ships the bin and classic sources in the package', () => {

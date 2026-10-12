@@ -11,8 +11,33 @@ const inspection: ViewInspection = { wrap: true };
 export const isInspectorShortcut = (event: KeyboardEvent): boolean =>
     event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.code === 'KeyI';
 
+/** Keeps the inspector on across reloads of this tab, such as the reloads `p:extension:dev --watch` triggers. */
+export const INSPECTOR_STORAGE_KEY = 'pterodactyl:inspector';
+
+function storedInspector(): boolean {
+    try {
+        return sessionStorage.getItem(INSPECTOR_STORAGE_KEY) === 'on';
+    } catch {
+        return false;
+    }
+}
+
+function storeInspector(on: boolean): void {
+    try {
+        if (on) {
+            sessionStorage.setItem(INSPECTOR_STORAGE_KEY, 'on');
+        } else {
+            sessionStorage.removeItem(INSPECTOR_STORAGE_KEY);
+        }
+    } catch {
+        // Storage can be unavailable; the inspector then starts off on the next load.
+    }
+}
+
 function InspectorRoot({ children }: { children?: ReactNode }) {
-    const [on, setOn] = useState(false);
+    const [on, setOn] = useState(storedInspector);
+
+    useEffect(() => storeInspector(on), [on]);
 
     useEffect(() => {
         const onKey = (event: KeyboardEvent) => {

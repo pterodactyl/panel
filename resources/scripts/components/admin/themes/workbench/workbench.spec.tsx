@@ -2,6 +2,9 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+import { PortalContainerContext } from '@/components/elements/Portal';
+import { Dialog } from '@/components/elements/dialog';
 import { parseWorkbenchSearch } from '@/router/search';
 import { createExtensionTestHost, type ExtensionTestHost } from '@/sdk/testing';
 import '@/views/catalog';
@@ -175,6 +178,30 @@ describe('preview frames', () => {
         expect(target.head.querySelector('link')).toBeNull();
         expect(target.documentElement.className).toBe('dark');
         settings.remove();
+    });
+
+    it('portal dialogs into the frame and title the frame instead of the workbench', async () => {
+        const frame = document.implementation.createHTMLDocument('frame');
+        const overlays = frame.body.appendChild(frame.createElement('div'));
+
+        document.title = 'Admin · Theme workbench';
+        await act(async () => {
+            render(
+                <PortalContainerContext.Provider value={overlays}>
+                    <PageContentBlock title='Servers'>
+                        <Dialog open onClose={() => {}} title='Rename server'>
+                            Choose a name.
+                        </Dialog>
+                    </PageContentBlock>
+                </PortalContainerContext.Provider>
+            );
+        });
+
+        // A document without a window, which the DOM matchers cannot read.
+        expect(overlays.querySelector('[role="dialog"]')?.textContent).toContain('Choose a name.');
+        expect(screen.queryByRole('dialog')).toBeNull();
+        expect(frame.title).toBe('Servers');
+        expect(document.title).toBe('Admin · Theme workbench');
     });
 });
 

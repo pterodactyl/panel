@@ -37,7 +37,7 @@ afterEach(function (): void {
  * @param  array<string, mixed>  $theme
  * @param  array<string, mixed>  $build
  */
-function installTheme(string $id, array $theme = [], array $build = ['core' => CORE, 'sdk' => '2.0.0-beta.4']): void
+function installTheme(string $id, array $theme = [], array $build = ['core' => CORE, 'sdk' => '2.0.0-beta.5']): void
 {
     (function () use ($id, $theme, $build): void {
         $directory = $this->baseDirectory.'/extensions/'.$id;
@@ -136,7 +136,7 @@ test('a theme stylesheet built against other core classes is laid over the panel
     expect(mb_strpos($html, 'stylesheet.test.css'))->toBeLessThan(mb_strpos($html, '/assets/extensions/aurora/theme.css'));
     expect(themePayload($this->get('/auth/login'))['stylesheetFallback'])->toBeTrue();
 })->with([
-    'another hash' => [['core' => 'another0000hash0', 'sdk' => '2.0.0-beta.4']],
+    'another hash' => [['core' => 'another0000hash0', 'sdk' => '2.0.0-beta.5']],
     'no build info' => [[]],
 ]);
 

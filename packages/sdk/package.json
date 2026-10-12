@@ -1,6 +1,6 @@
 {
     "name": "@pterodactyl/sdk",
-    "version": "2.0.0-beta.4",
+    "version": "2.0.0-beta.5",
     "description": "SDK for building Pterodactyl panel extensions: types for the runtime API and the Vite build preset.",
     "license": "MIT",
     "type": "module",

@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { PortalContainerContext } from '@/components/elements/Portal';
 import { onThemeChange } from '@/lib/theme';
 import type { ThemeScheme } from '@/views/theme';
 import { registerInspectableFrame } from '@/views/inspector/frames';
 import { isElement } from '@/views/inspector/geometry';
 
 const FRAME_DOCUMENT =
-    '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}#root{display:flow-root}</style></head><body><div id="root"></div></body></html>';
+    '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}#root{display:flow-root}</style></head><body><div id="root"></div><div id="overlays"></div></body></html>';
 const MAX_HEIGHT = 4000;
+/** The least height of a frame while a dialog is open in it, so the dialog is not cut off. */
+const DIALOG_HEIGHT = 640;
 
 const isStylesheet = (node: Element): node is HTMLLinkElement | HTMLStyleElement =>
     node instanceof HTMLStyleElement || (node instanceof HTMLLinkElement && node.relList.contains('stylesheet'));
@@ -75,11 +78,13 @@ export interface PreviewFrameProps {
 
 /**
  * Renders its children in a same-origin frame, so media queries see the preset viewport width and the
- * scheme applies to the preview alone. The children stay in this React tree and keep its context.
+ * scheme applies to the preview alone. The children stay in this React tree and keep its context, and
+ * their dialogs, menus and tooltips portal into the frame too.
  */
 export default function PreviewFrame({ label, width, scale, scheme, children }: PreviewFrameProps) {
     const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
     const [root, setRoot] = useState<HTMLElement | null>(null);
+    const [overlays, setOverlays] = useState<HTMLElement | null>(null);
     const [height, setHeight] = useState(0);
     const schemeRef = useRef(scheme);
 
@@ -93,8 +98,9 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
         const ready = () => {
             const target = frame.contentDocument;
             const mount = target?.getElementById('root');
+            const layer = target?.getElementById('overlays');
 
-            if (!target || !mount) {
+            if (!target || !mount || !layer) {
                 return;
             }
 
@@ -102,7 +108,12 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
 
             const clones = new Map<Element, Element>();
             const sync = () => mirrorDocument(target, schemeRef.current, clones);
-            const measure = () => setHeight(Math.min(Math.ceil(mount.getBoundingClientRect().height), MAX_HEIGHT));
+            const measure = () => {
+                const content = Math.ceil(mount.getBoundingClientRect().height);
+                const dialog = layer.querySelector('[role="dialog"], [role="alertdialog"]') !== null;
+
+                setHeight(Math.min(dialog ? Math.max(content, DIALOG_HEIGHT) : content, MAX_HEIGHT));
+            };
             const observer = new ResizeObserver(measure);
             // Resize observations wait for rendering, which a hidden tab skips; mutations do not.
             const mutations = new MutationObserver(measure);
@@ -110,6 +121,7 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
             sync();
             observer.observe(mount);
             mutations.observe(mount, { childList: true, subtree: true, attributes: true, characterData: true });
+            mutations.observe(layer, { childList: true, subtree: true });
             target.addEventListener('click', holdNavigation, true);
             target.addEventListener('submit', holdNavigation, true);
 
@@ -126,6 +138,7 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
             };
 
             setRoot(mount);
+            setOverlays(layer);
         };
 
         frame.addEventListener('load', ready);
@@ -161,7 +174,11 @@ export default function PreviewFrame({ label, width, scale, scheme, children }: 
                     transformOrigin: '0 0',
                 }}
             />
-            {root && createPortal(children, root)}
+            {root &&
+                createPortal(
+                    <PortalContainerContext.Provider value={overlays}>{children}</PortalContainerContext.Provider>,
+                    root
+                )}
         </div>
     );
 }

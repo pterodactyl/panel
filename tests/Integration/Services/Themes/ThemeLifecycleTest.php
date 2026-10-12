@@ -56,7 +56,7 @@ function themePackage(string $id, array $theme = [], array $files = [], array $m
             'theme' => ['stylesheet' => 'dist/theme.css', ...$theme],
             ...$manifest,
         ], JSON_THROW_ON_ERROR));
-        foreach (['theme.css' => ':root{--accent:red}', 'theme.json' => '{"core":"f1x7ure0c0re0000","sdk":"2.0.0-beta.4"}', ...$files] as $name => $contents) {
+        foreach (['theme.css' => ':root{--accent:red}', 'theme.json' => '{"core":"f1x7ure0c0re0000","sdk":"2.0.0-beta.5"}', ...$files] as $name => $contents) {
             File::put($path.'/dist/'.$name, $contents);
         }
 
@@ -152,7 +152,7 @@ test('doctor and enable refuse theme builds that load remote files, outgrow thei
 ]);
 
 test('doctor warns when a theme stylesheet was built against other core classes', function (): void {
-    $path = themePackage('aurora', files: ['theme.json' => '{"core":"0ther0000000hash","sdk":"2.0.0-beta.4"}']);
+    $path = themePackage('aurora', files: ['theme.json' => '{"core":"0ther0000000hash","sdk":"2.0.0-beta.5"}']);
 
     $this->artisan('p:extension:doctor', ['path' => $path])
         ->expectsOutputToContain('built against core classes "0ther0000000hash", but this panel has "f1x7ure0c0re0000"')

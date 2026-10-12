@@ -17,6 +17,7 @@ import {
     useMergeRefs,
     useTransitionStyles,
 } from '@floating-ui/react';
+import { usePortalContainer } from '@/components/elements/Portal';
 import { useSkin, type SkinBinding } from '@/themes/skins';
 
 type Interaction = 'hover' | 'click' | 'focus';
@@ -107,12 +108,13 @@ export default function Tooltip({ children, ...props }: TooltipProps) {
 
     const referenceRef = useMergeRefs([refs.setReference, children.props.ref]);
     const ui = useSkin('Tooltip', { side: placement.split('-')[0] as Side, arrow: !!props.arrow });
+    const container = usePortalContainer();
 
     return (
         <>
             {cloneElement(children, getReferenceProps({ ...children.props, ref: referenceRef }))}
             {isMounted && (
-                <FloatingPortal>
+                <FloatingPortal root={container}>
                     <div
                         {...getFloatingProps({
                             ref: refs.setFloating,

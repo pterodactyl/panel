@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Theme author tooling: list the panel's views, eject classic's source for one, print a classic skin.
-import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, extname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -199,15 +199,97 @@ function eject(positional, flags, out) {
     out(`\nAdd it to your theme entry:\n\n  ${importLine}\n\n  ${viewsLine}`);
 }
 
-/** Classic's skins, one file per primitive under `skins/`, by primitive name. */
+/** The top-level statements of a module: split on `;` outside brackets, strings and comments. */
+function statements(source) {
+    const found = [];
+    let depth = 0;
+    let start = 0;
+
+    for (let index = 0; index < source.length; index++) {
+        const char = source[index];
+
+        if (char === '/' && source[index + 1] === '/') {
+            index = source.indexOf('\n', index);
+            if (index === -1) break;
+        } else if (char === '/' && source[index + 1] === '*') {
+            index = source.indexOf('*/', index + 2) + 1;
+            if (index === 0) break;
+        } else if (char === "'" || char === '"' || char === '`') {
+            for (index++; index < source.length && source[index] !== char; index++) {
+                if (source[index] === '\\') index++;
+            }
+        } else if ('([{'.includes(char)) depth++;
+        else if (')]}'.includes(char)) depth--;
+        else if (char === ';' && depth === 0) {
+            found.push(source.slice(start, index + 1).trim());
+            start = index + 1;
+        }
+    }
+
+    return found;
+}
+
+/** The constant a statement declares, past any comments before it. */
+const declared = (statement) =>
+    /^(?:export\s+)?const\s+(\w+)\s*=/.exec(statement.replace(/^(?:\/\/[^\n]*\n\s*|\/\*[\s\S]*?\*\/\s*)*/, ''))?.[1];
+
+/** A skin's declaration in a classic skins file, after the constants of that file it reads. */
+function skinSource(file, exportName, primitive) {
+    const all = statements(readFileSync(file, 'utf8'));
+    const byName = new Map(all.flatMap((statement) => (declared(statement) ? [[declared(statement), statement]] : [])));
+    const needed = new Set([exportName]);
+    const queue = [exportName];
+
+    while (queue.length) {
+        const statement = byName.get(queue.shift()) ?? '';
+
+        for (const name of byName.keys()) {
+            if (!needed.has(name) && new RegExp(`\\b${name}\\b`).test(statement.slice(statement.indexOf('=')))) {
+                needed.add(name);
+                queue.push(name);
+            }
+        }
+    }
+
+    if (!byName.has(exportName)) {
+        throw new CliError(`Classic's skins/${basename(file)} does not declare ${exportName}.`);
+    }
+
+    return [
+        `// Classic's ${primitive} skin (skins/${basename(file)}) from @pterodactyl/sdk ${version}.`,
+        `// Add it to defineTheme({ ui: { ${primitive}: ${exportName} } }) and edit it. Typed as Skin<'${primitive}'>`,
+        "// instead of CompleteSkin, it may leave parts out; those keep classic's recipe.",
+        "import type { CompleteSkin } from '@pterodactyl/sdk/theme';",
+        '',
+        ...all.filter((statement) => needed.has(declared(statement))).map((statement) => `${statement}\n`),
+    ].join('\n');
+}
+
+/** Classic's skin of each primitive, by primitive name, as `skins/index.ts` maps them. */
 export function classicSkins(root = classicRoot) {
-    const directory = resolve(root, 'skins');
-    const files = existsSync(directory)
-        ? readdirSync(directory).filter((file) => /\.tsx?$/.test(file) && !/^index\.|\.spec\./.test(file))
-        : [];
+    const index = resolve(root, 'skins/index.ts');
+
+    if (!existsSync(index)) return new Map();
+
+    const source = readFileSync(index, 'utf8');
+    const imports = new Map();
+
+    for (const [, names, specifier] of source.matchAll(/import\s*\{([^}]*)\}\s*from\s*'(\.{1,2}\/[^']+)'/g)) {
+        for (const binding of names.split(',').map((name) => name.trim()).filter(Boolean)) {
+            const [imported, local = imported] = binding.split(/\s+as\s+/);
+
+            imports.set(local, { file: resolveModule(index, specifier), exportName: imported });
+        }
+    }
 
     return new Map(
-        files.sort().map((file) => [basename(file, extname(file)), () => readFileSync(resolve(directory, file), 'utf8')])
+        [...source.matchAll(/^\s*([A-Z]\w*):\s*(\w+),?\s*$/gm)]
+            .filter(([, , local]) => imports.has(local))
+            .map(([, primitive, local]) => {
+                const { file, exportName } = imports.get(local);
+
+                return [primitive, () => skinSource(file, exportName, primitive)];
+            })
     );
 }
 

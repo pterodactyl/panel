@@ -65,6 +65,7 @@ afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
     open.mockReset();
+    sessionStorage.clear();
     Object.assign(window, { SiteConfiguration: undefined });
 });
 
@@ -106,6 +107,24 @@ describe('ViewInspector', () => {
         expect(button).toHaveAttribute('aria-pressed', 'false');
         expect(container.querySelector('[data-view]')).toBeNull();
         expect(screen.queryByText(/Inspecting views/)).not.toBeInTheDocument();
+    });
+
+    it('stays on across reloads of the tab until turned off', async () => {
+        page();
+        await toggle();
+        await screen.findByText(/Inspecting views/);
+        cleanup();
+
+        const { container } = page();
+
+        expect(await screen.findByText(/Inspecting views/)).toBeInTheDocument();
+        expect(container.querySelector('[data-view]')).not.toBeNull();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Inspect views' }));
+        cleanup();
+        page();
+
+        expect(screen.getByRole('button', { name: 'Inspect views' })).toHaveAttribute('aria-pressed', 'false');
     });
 
     it('outlines the view under the pointer and pins it on click instead of clicking the page', async () => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Combobox } from '@base-ui/react/combobox';
 import { Check, ChevronDown } from 'lucide-react';
+import { usePortalContainer } from '@/components/elements/Portal';
 import { isNumber, isString } from '@/lib/objects';
 import { useSkin, type SkinBinding } from '@/themes/skins';
 
@@ -174,16 +175,20 @@ const ComboboxPopupContent = ({
     groupedItems: ComboboxGroupItem[] | undefined;
     emptyMessage: string;
     showIndicator: boolean;
-}) => (
-    <Combobox.Portal>
-        <Combobox.Positioner {...ui('positioner')} sideOffset={4}>
-            <Combobox.Popup {...ui('popup')}>
-                <Combobox.Empty {...ui('empty')}>{emptyMessage}</Combobox.Empty>
-                <ComboboxOptionsList ui={ui} groups={groupedItems} showIndicator={showIndicator} />
-            </Combobox.Popup>
-        </Combobox.Positioner>
-    </Combobox.Portal>
-);
+}) => {
+    const container = usePortalContainer();
+
+    return (
+        <Combobox.Portal container={container}>
+            <Combobox.Positioner {...ui('positioner')} sideOffset={4}>
+                <Combobox.Popup {...ui('popup')}>
+                    <Combobox.Empty {...ui('empty')}>{emptyMessage}</Combobox.Empty>
+                    <ComboboxOptionsList ui={ui} groups={groupedItems} showIndicator={showIndicator} />
+                </Combobox.Popup>
+            </Combobox.Positioner>
+        </Combobox.Portal>
+    );
+};
 
 const singleSelectedValues = (value: SelectValue | null | undefined): SelectValue[] =>
     value === null || value === undefined ? [] : [value];
