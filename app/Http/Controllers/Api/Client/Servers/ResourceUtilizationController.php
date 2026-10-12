@@ -11,11 +11,10 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\ReadsServerState;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
+use Pterodactyl\Http\Resources\Api\Client\StatsResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Client\StatsTransformer;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Overview', 'Inspect and control an accessible server.')]
@@ -52,19 +51,14 @@ class ResourceUtilizationController extends ClientApiController
      * 20 seconds at a time to ensure that repeated requests to this endpoint do not cause
      * a flood of unnecessary API calls.
      *
-     *
-     * @return array<string, mixed>
-     *
      * @throws DaemonConnectionException
      */
     #[Endpoint('Get server resources', 'Returns the latest cached resource utilization reported by Wings for the server.')]
     #[ScribeResponse(self::STATS_EXAMPLE, description: 'Resource utilization returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not be reached for resource utilization.')]
     #[ResponseField('attributes.current_state', 'string', example: 'running', enum: ['offline', 'stopped', 'starting', 'running', 'stopping'])]
-    public function __invoke(GetServerRequest $request, ReadsServerState $state, Server $server): array
+    public function __invoke(GetServerRequest $request, ReadsServerState $state, Server $server): StatsResource
     {
-        return Fractal::item($state->read($server))
-            ->transformWith($this->getTransformer(StatsTransformer::class))
-            ->toResponseArray();
+        return StatsResource::make($state->read($server));
     }
 }

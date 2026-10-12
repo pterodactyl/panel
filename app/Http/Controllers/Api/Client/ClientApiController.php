@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Pterodactyl\Http\Concerns\ResolvesRequestContext;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Resources\Api\Includes\IncludeSet;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiController extends ApplicationApiController
@@ -28,31 +25,5 @@ abstract class ClientApiController extends ApplicationApiController
     public function getTransformer(string $abstract): BaseClientTransformer
     {
         return $this->makeTransformer($abstract, BaseClientTransformer::class);
-    }
-
-    /**
-     * Returns only the includes which are valid for the given transformer.
-     *
-     * @param  list<string>  $merge
-     * @return list<string>
-     */
-    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = []): array
-    {
-        $filtered = array_filter(
-            $this->parseIncludes(),
-            fn (string $datum): bool => in_array($datum, $transformer->getAvailableIncludes(), true),
-        );
-
-        return array_merge($filtered, $merge);
-    }
-
-    /**
-     * Returns the parsed includes for this request.
-     *
-     * @return list<string>
-     */
-    protected function parseIncludes(): array
-    {
-        return IncludeSet::fromRequest(App::make(Request::class))->requestedNames();
     }
 }

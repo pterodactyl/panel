@@ -40,7 +40,6 @@ use Pterodactyl\Http\Resources\Api\Concerns\FormatsActivityLogs;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Tags\TagBackfiller;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer as AdminUserTransformer;
-use Pterodactyl\Transformers\Api\Client\UserTransformer as ClientUserTransformer;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -51,7 +50,6 @@ arch()->preset()->php()->ignoring('Rules');
 // activity log's public identifier. None of them protect anything.
 arch()->preset()->security()->ignoring([
     AdminUserTransformer::class,
-    ClientUserTransformer::class,
     ClientUserResource::class,
     FormatsActivityLogs::class,
     'Rules',

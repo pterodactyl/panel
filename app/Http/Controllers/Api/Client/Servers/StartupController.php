@@ -9,15 +9,15 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\EggVariableResource;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use UnexpectedValueException;
 
@@ -37,37 +37,28 @@ class StartupController extends ClientApiController
 
     /**
      * Returns the startup information for the server including all the variables.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get startup configuration', 'Returns the rendered startup command, available Docker images, raw startup command, and user-visible variables for the server.')]
-    #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Startup configuration returned.', collection: true, factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'docker_images' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23'], 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
-    public function index(GetStartupRequest $request, StartupCommandService $startupCommand, Server $server): array
+    #[ResponseFromResource(EggVariableResource::class, EggVariable::class, description: 'Startup configuration returned.', collection: true, factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'docker_images' => ['Java 23' => 'ghcr.io/pterodactyl/yolks:java_23'], 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
+    public function index(GetStartupRequest $request, StartupCommandService $startupCommand, Server $server): ApiResourceCollection
     {
         $startup = $startupCommand->handle($server);
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
 
-        return Fractal::collection(
-            $server->variables()->where('user_viewable', true)->get()
-        )
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
-            ->addMeta([
-                'startup_command' => $startup,
-                'docker_images' => $egg->docker_images,
-                'raw_startup_command' => $server->startup,
-            ])
-            ->toResponseArray();
+        return EggVariableResource::collection($server->variables()->where('user_viewable', true)->get())->withMeta([
+            'startup_command' => $startup,
+            'docker_images' => $egg->docker_images,
+            'raw_startup_command' => $server->startup,
+        ]);
     }
 
     /**
      * Updates a single variable for a server.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update startup variable', 'Updates one editable startup variable for the server and returns the updated rendered startup command.')]
-    #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Startup variable updated.', factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
+    #[ResponseFromResource(EggVariableResource::class, EggVariable::class, description: 'Startup variable updated.', factoryStates: ['viewable', 'editable'], resourceKey: 'egg_variable', meta: ['startup_command' => 'java -Xms128M -Xmx1024M -jar paper.jar', 'raw_startup_command' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'])]
     #[ScribeResponse(self::BAD_REQUEST_ERROR, status: 400, description: 'The variable does not exist, is hidden, or is read-only.')]
-    public function update(UpdateStartupVariableRequest $request, UpdatesServerVariable $variables, StartupCommandService $startupCommand, Server $server): array
+    public function update(UpdateStartupVariableRequest $request, UpdatesServerVariable $variables, StartupCommandService $startupCommand, Server $server): EggVariableResource
     {
         $variable = $request->variable();
         throw_if(! $variable instanceof EggVariable || ! $variable->user_viewable, BadRequestHttpException::class, 'The environment variable you are trying to edit does not exist.');
@@ -82,12 +73,9 @@ class StartupController extends ClientApiController
 
         $startup = $startupCommand->handle($server);
 
-        return Fractal::item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
-            ->addMeta([
-                'startup_command' => $startup,
-                'raw_startup_command' => $server->startup,
-            ])
-            ->toResponseArray();
+        return EggVariableResource::make($variable)->withMeta([
+            'startup_command' => $startup,
+            'raw_startup_command' => $server->startup,
+        ]);
     }
 }

@@ -9,14 +9,13 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\ServerResource;
 use Pterodactyl\Models\Filters\MultiFieldServerFilter;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
-use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -50,8 +49,6 @@ class ClientController extends ClientApiController
     /**
      * Return all the servers available to the client making the API
      * request, including servers the user has access to as a subuser.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List client servers', 'Returns a paginated list of servers the authenticated user can access as an owner, subuser, or administrator.')]
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
@@ -62,16 +59,12 @@ class ClientController extends ClientApiController
     #[QueryParam('filter[description]', 'string', 'Filter servers by description.', required: false, example: 'Production')]
     #[QueryParam('filter[external_id]', 'string', 'Filter servers by external identifier.', required: false, example: 'billing-server-42')]
     #[QueryParam('filter[*]', 'string', 'Search across server name, UUID, short UUID, external identifier, or allocation address and port.', required: false, example: '192.0.2.10:25565')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, description: 'Accessible servers returned.', collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetServersRequest $request): array
+    #[ResponseFromResource(ServerResource::class, Server::class, description: 'Accessible servers returned.', collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: 50)]
+    public function index(GetServersRequest $request): ApiResourceCollection
     {
         $user = $request->user();
-        $transformer = $this->getTransformer(ServerTransformer::class);
 
-        // Start the query builder and ensure we eager load any requested relationships from the request.
-        $builder = QueryBuilder::for(
-            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
-        )->allowedFilters([
+        $builder = QueryBuilder::for(Server::query())->allowedFilters([
             'uuid',
             'name',
             'description',
@@ -102,7 +95,7 @@ class ClientController extends ClientApiController
 
         $servers = $builder->paginate(min($request->integer('per_page', 50), 100))->appends($request->query());
 
-        return Fractal::transformWith($transformer)->collection($servers)->toResponseArray();
+        return ServerResource::collection($servers);
     }
 
     /**

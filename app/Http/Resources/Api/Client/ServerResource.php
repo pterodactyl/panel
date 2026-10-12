@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Pterodactyl\Http\Resources\Api\Client;
 
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\NullResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Pterodactyl\Enum\Permissions;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Http\Resources\Api\ApiResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
+use Pterodactyl\Http\Resources\Api\NullResource;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
@@ -19,6 +21,9 @@ use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Services\Servers\StartupCommandService;
 use UnexpectedValueException;
 
+/**
+ * @extends ClientResource<Server>
+ */
 #[ResponseField('server_identifier', schema: ['type' => 'string', 'pattern' => '^serv_[a-zA-Z0-9]+$', 'example' => 'serv_1a2b3c4d'])]
 #[ResponseField('description', example: 'Survival world', nullable: true)]
 #[ResponseField('status', schema: ['type' => 'string', 'nullable' => true, 'enum' => ['installing', 'install_failed', 'reinstall_failed', 'suspended', 'restoring_backup', null], 'example' => null])]
@@ -28,47 +33,32 @@ use UnexpectedValueException;
 #[ResponseField('feature_limits.backups', 'integer', example: 5, nullable: true)]
 #[ResponseField('egg_features', schema: ['type' => 'array', 'nullable' => true, 'items' => ['type' => 'string'], 'example' => ['eula']])]
 #[ResponseField('egg_tags', schema: ['type' => 'array', 'items' => ['type' => 'string'], 'example' => ['minecraft']])]
-class ServerTransformer extends BaseClientTransformer
+class ServerResource extends ClientResource
 {
     protected array $eagerLoads = ['egg.variables', 'egg.configFrom', 'egg.tags', 'serverVariables', 'node', 'transfer', 'subusers', 'allocation'];
 
     protected array $includeRelations = [
-        'allocations' => ['relation' => 'allocations', 'transformer' => AllocationTransformer::class],
-        'egg' => ['relation' => 'egg', 'transformer' => EggTransformer::class],
-        'subusers' => ['relation' => 'subusers', 'transformer' => SubuserTransformer::class],
+        'allocations' => ['relation' => 'allocations', 'resource' => AllocationResource::class],
+        'egg' => ['relation' => 'egg', 'resource' => EggResource::class],
+        'subusers' => ['relation' => 'subusers', 'resource' => SubuserResource::class],
     ];
 
-    /**
-     * @var list<string>
-     */
     protected array $defaultIncludes = ['allocations', 'variables'];
 
-    /**
-     * @var list<string>
-     */
     protected array $availableIncludes = ['egg', 'subusers'];
 
-    public function __construct(
-        private readonly EnvironmentService $environmentService,
-        private readonly StartupCommandService $startupCommandService,
-    ) {}
-
-    public function getResourceName(): string
+    public function resourceName(): string
     {
         return Server::RESOURCE_NAME;
     }
 
-    /**
-     * Transform a server model into a representation that can be returned
-     * to a client.
-     *
-     * @return array<string, mixed>
-     */
-    public function transform(Server $server): array
+    public function toArray(Request $request): array
     {
         $user = $this->getUser();
+        $server = $this->resource;
 
         $server->loadMissing(['egg.tags', 'node', 'transfer']);
+
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
 
         return [
@@ -97,7 +87,7 @@ class ServerTransformer extends BaseClientTransformer
                 'threads' => $server->threads,
                 'oom_disabled' => $server->oom_disabled,
             ],
-            'invocation' => $this->startupCommandService->handle($server, ! $user->can(Permissions::StartupRead->value, $server)),
+            'invocation' => App::make(StartupCommandService::class)->handle($server, ! $user->can(Permissions::StartupRead->value, $server)),
             'docker_image' => $server->image,
             'egg_features' => $egg->inherit_features,
             'egg_tags' => $egg->tagSlugs(),
@@ -116,16 +106,19 @@ class ServerTransformer extends BaseClientTransformer
         ];
     }
 
-    /**
-     * Returns the allocations associated with this server.
-     *
-     * @throws InvalidTransformerLevelException
-     */
-    public function includeAllocations(Server $server): Collection
+    protected function resolveInclude(string $include): ?IncludedResource
     {
-        $transformer = $this->makeTransformer(AllocationTransformer::class);
+        return match ($include) {
+            'allocations' => $this->includeAllocations(),
+            'variables' => $this->includeVariables(),
+            'egg' => $this->includeEgg(),
+            'subusers' => $this->includeSubusers(),
+            default => parent::resolveInclude($include),
+        };
+    }
 
-        $user = $this->getUser();
+    private function includeAllocations(): ApiResourceCollection
+    {
         // While we include this permission, we do need to actually handle it slightly different here
         // for the purpose of keeping things functionally working. If the user doesn't have read permissions
         // for the allocations we'll only return the primary server allocation, and any notes associated
@@ -133,55 +126,45 @@ class ServerTransformer extends BaseClientTransformer
         //
         // This allows us to avoid too much permission regression, without also hiding information that
         // is generally needed for the frontend to make sense when browsing or searching results.
-        if (! $user->can(Permissions::AllocationRead->value, $server)) {
-            $primary = clone ($server->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.'));
+        if (! $this->getUser()->can(Permissions::AllocationRead->value, $this->resource)) {
+            $primary = clone ($this->resource->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.'));
             $primary->notes = null;
 
-            return $this->collection([$primary], $transformer, Allocation::RESOURCE_NAME);
+            return $this->items([$primary], AllocationResource::class, Allocation::RESOURCE_NAME);
         }
 
-        return $this->collection($server->loadMissing('allocations')->allocations, $transformer, Allocation::RESOURCE_NAME);
+        return $this->items($this->resource->loadMissing('allocations')->allocations, AllocationResource::class, Allocation::RESOURCE_NAME);
     }
 
-    /**
-     * @throws InvalidTransformerLevelException
-     */
-    public function includeVariables(Server $server): Collection|NullResource
+    private function includeVariables(): ApiResourceCollection|NullResource
     {
-        if (! $this->getUser()->can(Permissions::StartupRead->value, $server)) {
+        if (! $this->getUser()->can(Permissions::StartupRead->value, $this->resource)) {
             return $this->null();
         }
 
-        return $this->collection(
-            $this->environmentService->variables($server)->where('user_viewable', true)->values(),
-            $this->makeTransformer(EggVariableTransformer::class),
+        return $this->items(
+            App::make(EnvironmentService::class)->variables($this->resource)->where('user_viewable', true)->values(),
+            EggVariableResource::class,
             EggVariable::RESOURCE_NAME
         );
     }
 
     /**
-     * Returns the egg associated with this server.
-     *
-     * @throws InvalidTransformerLevelException
+     * @return ApiResource<Egg>
      */
-    public function includeEgg(Server $server): Item
+    private function includeEgg(): ApiResource
     {
-        $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
+        $egg = $this->resource->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
 
-        return $this->item($egg, $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
+        return $this->item($egg, EggResource::class, Egg::RESOURCE_NAME);
     }
 
-    /**
-     * Returns the subusers associated with this server.
-     *
-     * @throws InvalidTransformerLevelException
-     */
-    public function includeSubusers(Server $server): Collection|NullResource
+    private function includeSubusers(): ApiResourceCollection|NullResource
     {
-        if (! $this->getUser()->can(Permissions::UserRead->value, $server)) {
+        if (! $this->getUser()->can(Permissions::UserRead->value, $this->resource)) {
             return $this->null();
         }
 
-        return $this->collection($server->subusers, $this->makeTransformer(SubuserTransformer::class), Subuser::RESOURCE_NAME);
+        return $this->items($this->resource->subusers, SubuserResource::class, Subuser::RESOURCE_NAME);
     }
 }
