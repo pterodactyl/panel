@@ -1,0 +1,75 @@
+tests/Fixtures/assets/core-classes.json
+  s_4cabae41bceed9::t_41a0efaf443a6e 1
+packages/sdk/README.md
+  s_4cabae41bceed9::t_41aac70889ff9b 734
+  s_4cabae41bceed9::t_2236dc7bb38c0a 560-561
+tests/Integration/Api/Admin/Themes/ThemeControllerTest.php
+  s_4cabae41bceed9::t_454e7e6502a2c4 1-102,106-187
+  s_4cabae41bceed9::t_1d741d585131b8 104
+  s_4cabae41bceed9::t_d923d09587ea44 103,105
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_46975d20e074b6 145
+  s_4cabae41bceed9::t_65ffc28d825178 146
+  s_4cabae41bceed9::t_cd2198779d99e8 1-144,147-202
+tests/Unit/Services/Extensions/ExtensionStylesheetInspectorTest.php
+  s_4cabae41bceed9::t_9ac47a11d96d9f 169-189
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_7dd8e9c0d10205 670-736,1504-1517,3833-3837,5213-5498
+resources/scripts/api/admin/themes/queries.ts
+  s_4cabae41bceed9::t_03a8d7cc533c08 29-30
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_4cabae41bceed9::t_ce30929f7eb4fb 540,544,546,548,551
+  s_4cabae41bceed9::t_8fab2c77d86c11 506-507,510
+resources/scripts/components/admin/themes/ThemesContainer.spec.tsx
+  s_4cabae41bceed9::t_b2c63cb7c463d4 8,22
+  s_4cabae41bceed9::t_1f1f3b67b1ce08 23,46,84
+  s_4cabae41bceed9::t_7d24eda37a61a5 109-110,112
+  s_4cabae41bceed9::t_28103378819270 9-13
+  s_4cabae41bceed9::t_4ea569795eaa8e 49-57,87-94
+  s_4cabae41bceed9::t_d058c2bc7f0f8e 64
+  s_4cabae41bceed9::t_3abf36bd423da2 24,65-66,111
+packages/sdk/prefix.spec.ts
+  s_4cabae41bceed9::t_7ff6f3d800dbd6 16
+  s_4cabae41bceed9::t_ba57e4b6b40783 17-21
+packages/sdk/vite.spec.ts
+  s_4cabae41bceed9::t_e00643f640f997 8-42,49-61,64-82,85-90
+  s_4cabae41bceed9::t_bdb743d34fe5a3 43-48
+  s_4cabae41bceed9::t_ba57e4b6b40783 62-63,83-84,146-153
+tests/Integration/Http/ThemeDocumentTest.php
+  s_4cabae41bceed9::t_b702e9e5408dec 1-116,119-123,125-194,196-222
+  s_4cabae41bceed9::t_266fb8932a2544 195
+  s_4cabae41bceed9::t_6a9b029609df9b 117-118,124
+packages/sdk/vite.mjs
+  s_4cabae41bceed9::t_7e6bd507033e47 154-155
+  s_4cabae41bceed9::t_df1a020f258d5b 77-88,94
+  s_4cabae41bceed9::t_ba57e4b6b40783 112-113,118-125,130-132,147-149,171-172
+packages/sdk/theme-tokens.spec.ts
+  s_4cabae41bceed9::t_bf9004253c4e6a 19
+  s_4cabae41bceed9::t_80d375394b57af 7
+tests/Unit/Services/Themes/ThemeManifestTest.php
+  s_4cabae41bceed9::t_5022300c79b054 85
+  s_4cabae41bceed9::t_44b06840f02617 1-84,86-181
+app/Services/Themes/ThemeResolver.php
+  s_4cabae41bceed9::t_4ec916f6981ada 14
+  s_4cabae41bceed9::t_ca4f6369e625ad 35-36,42-44,49
+tests/Fixtures/assets/manifest.json
+  s_4cabae41bceed9::t_c890a21f0ee90c 13-19
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_4cabae41bceed9::t_002b371eaaa00b 23-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "65c0227f717f5a16a9486a90ba685d07099952c2",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
