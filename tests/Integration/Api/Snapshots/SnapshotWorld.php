@@ -282,9 +282,9 @@ final class SnapshotWorld
             $content = self::redactGeneratedPasswords($content);
         }
 
-        // Schedule::getNextRunDate() and Utilities::getScheduleNextRunDate() ask the cron
-        // library for the next run after the system clock, which Carbon's test clock does not
-        // reach, so a schedule write returns a value that moves with the wall clock.
+        // Schedule::getNextRunDate() asks the cron library for the next run after the system
+        // clock, which Carbon's test clock does not reach, so a schedule write returns a value
+        // that moves with the wall clock.
         if (in_array('next_run_at', $redact, true)) {
             $content = (string) preg_replace('/"next_run_at":"[^"]*"/', '"next_run_at":"<wall-clock>"', $content);
         }
