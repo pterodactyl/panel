@@ -8,7 +8,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Transformers\Api\Admin\BaseAdminTransformer;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use UnexpectedValueException;
 
@@ -26,10 +25,6 @@ abstract class ApplicationApiController extends Controller
      */
     public function getTransformer(string $abstract): BaseTransformer
     {
-        // Admin transformers return every extension's fields; this API may only return
-        // those marked #[ApplicationApi], so they do not belong here.
-        throw_if(is_subclass_of($abstract, BaseAdminTransformer::class), InvalidArgumentException::class, "Transformer [$abstract] does not belong to the Application API.");
-
         return $this->makeTransformer($abstract, BaseTransformer::class);
     }
 

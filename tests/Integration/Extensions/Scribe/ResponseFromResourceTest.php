@@ -10,13 +10,9 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Extensions\Scribe\Strategies\UsePterodactylResponseAttributes;
-use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
 use Pterodactyl\Http\Resources\Api\Application\ServerVariableResource;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
 
 /*
@@ -28,9 +24,7 @@ use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
 uses(IntegrationTestCase::class, DatabaseTransactions::class);
 
 beforeEach(function (): void {
-    $server = $this->createServerModel();
-    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
-    Database::factory()->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
+    $this->createServerModel();
 
     $config = config('scribe');
     $config['examples']['models_source'] = ['databaseFirst'];
@@ -52,18 +46,18 @@ test('resources are documented as their transformers were', function (ResponseFr
         ->and($documented['content'])->toContain($expected);
 })->with([
     'an item with an include, a status and meta' => [
-        new ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, status: 201, description: 'Database created.', resourceKey: 'database', meta: ['resource' => 'https://panel.example.test/api/admin/servers/1/databases/1'], include: ['password']),
-        new ResponseFromResource(ServerDatabaseResource::class, Database::class, status: 201, description: 'Database created.', resourceKey: 'database', meta: ['resource' => 'https://panel.example.test/api/admin/servers/1/databases/1'], include: ['password']),
-        '"relationships":{"password":{"object":"database_password"',
+        new ResponseFromTransformer(ServerVariableTransformer::class, EggVariable::class, status: 201, description: 'Variable created.', resourceKey: 'server_variable', meta: ['resource' => 'https://panel.example.test/api/application/servers/1'], include: ['parent']),
+        new ResponseFromResource(ServerVariableResource::class, EggVariable::class, status: 201, description: 'Variable created.', resourceKey: 'server_variable', meta: ['resource' => 'https://panel.example.test/api/application/servers/1'], include: ['parent']),
+        '"attributes":null}}},"meta":{"resource":"https:\/\/panel.example.test\/api\/application\/servers\/1"}}',
     ],
     'a paginated list with meta after the pagination' => [
-        new ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, collection: true, resourceKey: 'database', paginate: [IlluminatePaginatorAdapter::class, 50], meta: ['note' => 'example']),
-        new ResponseFromResource(ServerDatabaseResource::class, Database::class, collection: true, resourceKey: 'database', paginate: 50, meta: ['note' => 'example']),
+        new ResponseFromTransformer(ServerVariableTransformer::class, EggVariable::class, collection: true, resourceKey: 'server_variable', paginate: [IlluminatePaginatorAdapter::class, 50], meta: ['note' => 'example']),
+        new ResponseFromResource(ServerVariableResource::class, EggVariable::class, collection: true, resourceKey: 'server_variable', paginate: 50, meta: ['note' => 'example']),
         '"meta":{"pagination":{"total":1,"count":1,"per_page":50,"current_page":1,"total_pages":1,"links":[]},"note":"example"}',
     ],
     'an item without a resource key' => [
-        new ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, include: ['password']),
-        new ResponseFromResource(ServerDatabaseResource::class, Database::class, include: ['password']),
+        new ResponseFromTransformer(ServerVariableTransformer::class, EggVariable::class, include: ['parent']),
+        new ResponseFromResource(ServerVariableResource::class, EggVariable::class, include: ['parent']),
         '{"object":null,"attributes":',
     ],
     'a list with counts loaded after the model and a gated include' => [

@@ -12,7 +12,6 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use PDOException;
 use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Contracts\Databases\DeletesDatabaseHosts;
@@ -20,19 +19,20 @@ use Pterodactyl\Contracts\Databases\UpdatesDatabaseHosts;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\DeleteDatabaseHostRequest;
 use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\GetDatabaseHostRequest;
 use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\GetDatabaseHostsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\StoreDatabaseHostRequest;
 use Pterodactyl\Http\Requests\Api\Admin\DatabaseHosts\UpdateDatabaseHostRequest;
+use Pterodactyl\Http\Resources\Api\Admin\DatabaseHostResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\CallbackResource;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Admin\DatabaseHostTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 use UnexpectedValueException;
@@ -84,8 +84,6 @@ class DatabaseHostController extends AdminApiController
 
     /**
      * List database hosts.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List database hosts', 'Returns a paginated list of database hosts.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -94,8 +92,8 @@ class DatabaseHostController extends AdminApiController
     #[QueryParam('filter[host]', 'string', 'Filter hosts by address or hostname.', required: false, example: '127.0.0.1')]
     #[QueryParam('sort', 'string', 'Sort hosts by ID, name, or creation date. Prefix with a hyphen for descending order.', required: false, example: '-created_at')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports node and databases.', required: false, example: 'node')]
-    #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database hosts returned.', collection: true, resourceKey: 'database_host', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetDatabaseHostsRequest $request): array
+    #[ResponseFromResource(DatabaseHostResource::class, DatabaseHost::class, description: 'Database hosts returned.', collection: true, resourceKey: 'database_host', paginate: 50)]
+    public function index(GetDatabaseHostsRequest $request): ApiResourceCollection
     {
         $query = QueryBuilder::for(DatabaseHost::query())
             ->allowedFilters(['name', 'host'])
@@ -106,69 +104,59 @@ class DatabaseHostController extends AdminApiController
             ->withCount('databases')
             ->paginate($request->perPage());
 
-        return Fractal::collection($hosts)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
-            ->toResponseArray();
+        return DatabaseHostResource::collection($hosts);
     }
 
     /**
      * Show database host.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Get database host', 'Returns a single database host by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports node and databases.', required: false, example: 'node')]
-    #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host returned.', resourceKey: 'database_host', include: ['node', 'databases'])]
-    public function show(GetDatabaseHostRequest $request, DatabaseHost $databaseHost): array
+    #[ResponseFromResource(DatabaseHostResource::class, DatabaseHost::class, description: 'Database host returned.', resourceKey: 'database_host', include: ['node', 'databases'])]
+    public function show(GetDatabaseHostRequest $request, DatabaseHost $databaseHost): DatabaseHostResource
     {
         $databaseHost->loadCount('databases');
         $databaseHost->load('node');
 
-        return Fractal::item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return DatabaseHostResource::make($databaseHost)->withExtensionFields();
     }
 
     /**
      * List databases associated with a database host.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('List database host databases', 'Returns a paginated list of server databases assigned to a database host.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
     #[ScribeResponse(self::DATABASE_LIST_EXAMPLE, description: 'Databases returned.')]
     #[ResponseField('attributes.max_connections', 'integer', example: 0, nullable: true)]
-    public function databases(GetDatabaseHostRequest $request, DatabaseHost $databaseHost): array
+    public function databases(GetDatabaseHostRequest $request, DatabaseHost $databaseHost): ApiResourceCollection
     {
         $databases = $databaseHost->databases()
             ->with('server')
             ->paginate($request->perPage());
 
-        return Fractal::collection($databases, resourceName: 'database')
-            ->transformWith(function (Database $database): array {
-                $server = $database->getRelation('server');
-                throw_unless($server instanceof Server, UnexpectedValueException::class, 'A database response requires its server relation.');
+        return CallbackResource::list($databases, function (Database $database): array {
+            $server = $database->getRelation('server');
+            throw_unless($server instanceof Server, UnexpectedValueException::class, 'A database response requires its server relation.');
 
-                return [
-                    'server' => [
-                        'id' => $server->id,
-                        'name' => $server->name,
-                    ],
-                    'name' => $database->database,
-                    'username' => $database->username,
-                    'connections_from' => $database->remote,
-                    'max_connections' => $database->max_connections,
-                ];
-            })
-            ->toResponseArray();
+            return [
+                'server' => [
+                    'id' => $server->id,
+                    'name' => $server->name,
+                ],
+                'name' => $database->database,
+                'username' => $database->username,
+                'connections_from' => $database->remote,
+                'max_connections' => $database->max_connections,
+            ];
+        }, 'database');
     }
 
     /**
      * Create database host.
      */
     #[Endpoint('Create database host', 'Creates a database host after validating that the panel can connect to it.')]
-    #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, status: 201, description: 'Database host created.', resourceKey: 'database_host', meta: ['resource' => 'https://panel.example.com/api/admin/database-hosts/1'])]
+    #[ResponseFromResource(DatabaseHostResource::class, DatabaseHost::class, status: 201, description: 'Database host created.', resourceKey: 'database_host', meta: ['resource' => 'https://panel.example.com/api/admin/database-hosts/1'])]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
     #[ExtensionFieldsParam]
     public function store(StoreDatabaseHostRequest $request, CreatesDatabaseHosts $createHost): JsonResponse
@@ -186,9 +174,9 @@ class DatabaseHostController extends AdminApiController
             ->property('name', $host->name)
             ->log();
 
-        return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return DatabaseHostResource::make($host)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.admin.database-hosts.view', [
                     'databaseHost' => $host->id,
                 ]),
@@ -198,14 +186,12 @@ class DatabaseHostController extends AdminApiController
 
     /**
      * Update database host.
-     *
-     * @return array<string, mixed>
      */
     #[Endpoint('Update database host', 'Updates a database host after validating that the panel can connect to the supplied host details.')]
-    #[ResponseFromTransformer(DatabaseHostTransformer::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]
+    #[ResponseFromResource(DatabaseHostResource::class, DatabaseHost::class, description: 'Database host updated.', resourceKey: 'database_host')]
     #[ScribeResponse(self::CONNECTION_ERROR, status: 400, description: 'The panel could not connect to the database host.')]
     #[ExtensionFieldsParam]
-    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): array
+    public function update(UpdateDatabaseHostRequest $request, UpdatesDatabaseHosts $updateHost, DatabaseHost $databaseHost): DatabaseHostResource
     {
         try {
             $host = $updateHost->update($databaseHost, $request->actionInput());
@@ -220,9 +206,7 @@ class DatabaseHostController extends AdminApiController
             ->property('name', $host->name)
             ->log();
 
-        return Fractal::item($host)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return DatabaseHostResource::make($host)->withExtensionFields();
     }
 
     /**

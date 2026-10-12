@@ -6,18 +6,15 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Parity\ResourceParityTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\App;
-use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
 use Pterodactyl\Http\Resources\Api\Application\ServerVariableResource;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Tests\Integration\Api\Parity\ResourceParity;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
 
 /*
@@ -28,37 +25,22 @@ use Pterodactyl\Transformers\Api\Application\ServerVariableTransformer;
 
 uses(IntegrationTestCase::class, DatabaseTransactions::class);
 
-/**
- * @return array{0: Server, 1: list<int>}
- */
-function serverWithDatabases(IntegrationTestCase $test): array
-{
-    $server = (fn (): Server => $this->createServerModel())->call($test);
-    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
-    $databases = Database::factory()->count(2)->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
-
-    return [$server, $databases->modelKeys()];
-}
-
-test('admin server databases render the same', function (): void {
-    [$server, $ids] = serverWithDatabases($this);
+test('application server variables render the same with forced includes, meta, a status and pages', function (): void {
+    $server = $this->createServerModel();
     $admin = User::factory()->create(['root_admin' => true]);
+    $key = ApiKey::factory()->create(['user_id' => $admin->id, 'key_type' => ApiKey::TYPE_ACCOUNT]);
 
-    $one = fn (): Database => Database::query()->findOrFail($ids[0]);
-    $all = fn () => Database::query()->where('server_id', $server->id)->get();
-    $page = fn () => Database::query()->where('server_id', $server->id)->paginate(1);
+    $one = fn () => App::make(EnvironmentService::class)->variables(Server::query()->findOrFail($server->id))->firstOrFail();
+    $page = fn () => EggVariable::query()->where('egg_id', $server->egg_id)->paginate(1);
 
-    expect(ResourceParity::item(ServerDatabaseTransformer::class, ServerDatabaseResource::class, $one)->actingAs($admin)->assertSame())
-        ->toEndWith('"relationships":[]}}');
-    ResourceParity::item(ServerDatabaseTransformer::class, ServerDatabaseResource::class, $one)->request('/?include=password')->actingAs($admin)->assertSame();
-    expect(ResourceParity::item(ServerDatabaseTransformer::class, ServerDatabaseResource::class, $one)
-        ->forcing('password')
-        ->withMeta(['resource' => 'https://panel.example.test/api/admin/servers/1/databases/1'])
+    expect(ResourceParity::item(ServerVariableTransformer::class, ServerVariableResource::class, $one)
+        ->forcing('parent')
+        ->withMeta(['resource' => 'https://panel.example.test/api/application/servers/1'])
         ->respond(201)
-        ->actingAs($admin)
-        ->assertSame())->toEndWith('"meta":{"resource":"https:\/\/panel.example.test\/api\/admin\/servers\/1\/databases\/1"}}');
-    ResourceParity::list(ServerDatabaseTransformer::class, ServerDatabaseResource::class, $all)->actingAs($admin)->assertSame();
-    ResourceParity::list(ServerDatabaseTransformer::class, ServerDatabaseResource::class, $page)->request('/api/admin/servers/1/databases?include=password')->actingAs($admin)->assertSame();
+        ->actingAs($admin, $key)
+        ->assertSame())->toEndWith('"meta":{"resource":"https:\/\/panel.example.test\/api\/application\/servers\/1"}}');
+    expect(ResourceParity::list(ServerVariableTransformer::class, ServerVariableResource::class, $page)->request('/api/application/servers/1/variables?include=parent&page=2')->actingAs($admin, $key)->assertSame())
+        ->toContain('"links":{"previous":');
 });
 
 test('application server variables render the same for keys with and without egg access', function (int $type, int $eggs, string $parent): void {

@@ -17,9 +17,9 @@ use Pterodactyl\Http\Controllers\Api\Admin\Mounts\MountController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\DeleteServerMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\GetServerMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\StoreServerMountRequest;
+use Pterodactyl\Http\Resources\Api\Admin\MountResource;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Admin\MountTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -67,9 +67,7 @@ class ServerMountController extends AdminApiController
 
         $mountedIds = $server->mounts->pluck('id')->all();
 
-        $transformer = $this->getTransformer(MountTransformer::class);
-
-        $data = array_values($mounts->map(fn (Mount $mount): array => array_merge($transformer->transform($mount), [
+        $data = array_values($mounts->map(fn (Mount $mount): array => array_merge(MountResource::make($mount)->toArray($request), [
             'mounted' => in_array($mount->id, $mountedIds, true),
         ]))->all());
 
