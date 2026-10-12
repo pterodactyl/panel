@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { classicSdkImports } from './scripts/classic-sdk-imports.mjs';
 
 // A single build hash exposed to the app the same way the old webpack EnvironmentPlugin did.
 const buildHash = process.env.PTERODACTYL_BUILD_HASH ?? Date.now().toString(16);
@@ -107,6 +108,7 @@ export default defineConfig(({ mode }) => {
             react(),
             manifestIntegrity(),
             mainChunks.plugin,
+            classicSdkImports(fileURLToPath(new URL('./resources/scripts/', import.meta.url))),
         ],
         build: {
             outDir: 'public/assets',

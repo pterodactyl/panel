@@ -3,33 +3,21 @@ import type { ComponentType } from 'react';
 import type { ExtensionViewOptions, ViewName, ViewOverride } from '@/views/registry';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
-import {
-    SLOT_NAMES,
-    type SlotComponentProps,
-    type SlotData,
-    type ScreenImporter,
-    type ScreenComponentProps,
-    type ScreenOptions,
-    type ExtensionScreenDefinition,
-    type RouteSlotData,
-    type SlotName,
-    type SubuserPermissionsSlotData,
+import type {
+    SlotComponentProps,
+    SlotData,
+    ScreenImporter,
+    ScreenComponentProps,
+    ScreenOptions,
+    ExtensionScreenDefinition,
+    RouteSlotData,
+    SlotName,
+    SubuserPermissionsSlotData,
 } from '@/extensions/registry';
-import {
-    useCurrentServer as usePanelServer,
-    useCurrentServerPermissions as usePanelPermissions,
-    useCurrentServerUuid as usePanelServerUuid,
-} from '@/api/server/queries';
-import { useCurrentUser as usePanelUser } from '@/api/account/queries';
-import { useSiteSettings as usePanelSettings } from '@/api/settings/queries';
 import type { UserData as SdkUser } from '@/api/account/types';
 import type { SiteSettings as SdkSiteSettings } from '@/api/settings/types';
 import type { Server as SdkServer } from '@/api/server/types';
-import { useExtensionCallback } from '@/extensions/context';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { SocketEvent } from '@/components/server/events';
-import { hasPermission } from '@/plugins/usePermissions';
-import { cn as mergeClasses } from '@/lib/cn';
+import type { SocketEvent } from '@/components/server/events';
 
 export {
     default as Button,
@@ -117,31 +105,23 @@ export { formatDate, fromNow } from '@/lib/dates';
 export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
-/** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
-export function cn(...classes: (string | false | null | undefined)[]): string {
-    return mergeClasses(...classes);
-}
-
-export function useCurrentUser(): SdkUser {
-    return usePanelUser();
-}
-
-export function useSiteSettings(): SdkSiteSettings {
-    return usePanelSettings();
-}
-
-export function useCurrentServer<TData = SdkServer>(select?: (server: SdkServer) => TData): TData | undefined {
-    return usePanelServer(select);
-}
-
-export function useCurrentServerPermissions(): string[] {
-    return usePanelPermissions();
-}
-
+export {
+    cn,
+    defineConfiguredExtension,
+    definePterodactylExtension,
+    useCurrentServer,
+    useCurrentServerPermissions,
+    useCurrentServerRequired,
+    useCurrentServerUuid,
+    useCurrentUser,
+    useServerPermission,
+    useServerWebsocketEvent,
+    useSiteSettings,
+} from './core';
 export { usePermissions } from '@/plugins/usePermissions';
 export { useExtensionCallback as useExtensionAction } from '@/extensions/context';
 
-export { SLOT_NAMES };
+export { SLOT_NAMES } from '@/extensions/registry';
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
 export type {
     AdminUserFormSlotData,
@@ -260,11 +240,6 @@ export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }
 
-/** Identity helper giving extension entrypoints full typing: `export default definePterodactylExtension({...})`. */
-export function definePterodactylExtension(definition: ExtensionDefinition): ExtensionDefinition {
-    return definition;
-}
-
 export type ConfiguredExtensionContext<TConfig extends ExtensionConfig, TScreenId extends string> = Omit<
     ExtensionSetupContext,
     'config' | 'screens'
@@ -273,48 +248,7 @@ export type ConfiguredExtensionContext<TConfig extends ExtensionConfig, TScreenI
     screens: { register(id: TScreenId, component: ScreenImporter, options?: ScreenOptions): void };
 };
 
-/** Like definePterodactylExtension, with `config` decoded by `parseConfig` and typed screen ids. */
-export function defineConfiguredExtension<TConfig extends ExtensionConfig, TScreenId extends string = string>(
-    parseConfig: (config: ExtensionConfig) => TConfig,
-    definition: { setup(context: ConfiguredExtensionContext<TConfig, TScreenId>): void }
-): ExtensionDefinition {
-    return { setup: (context) => definition.setup({ ...context, config: parseConfig(context.config) }) };
-}
-
-export { SocketEvent };
+export { SocketEvent } from '@/components/server/events';
 export type ServerWebsocketEvent = SocketEvent | `${SocketEvent}`;
-
-/**
- * Subscribes to a server websocket event while mounted under /server/$id.
- * Only call from server screens, server slots, or components rendered under them.
- */
-export function useServerWebsocketEvent(
-    event: ServerWebsocketEvent,
-    callback: (data: string) => void | Promise<void>
-): void {
-    useWebsocketEvent(event as SocketEvent, useExtensionCallback(event, callback));
-}
-
-export function useCurrentServerUuid(): string | undefined {
-    return usePanelServerUuid();
-}
-
-export function useCurrentServerRequired(message = 'This extension screen requires a server context.'): SdkServer {
-    const server = useCurrentServer();
-
-    if (!server) {
-        throw new Error(message);
-    }
-
-    return server;
-}
-
-export function useServerPermission(permission: string | string[], matchAny = false): boolean {
-    const permissions = useCurrentServerPermissions();
-    const required = Array.isArray(permission) ? permission : [permission];
-    const matches = required.map((item) => hasPermission(permissions, item));
-
-    return matchAny ? matches.some(Boolean) : matches.every(Boolean);
-}
 
 export type { UserValues as AdminUserFormValues } from '@/api/admin/users/types';

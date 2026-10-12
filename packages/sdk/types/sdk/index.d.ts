@@ -3,11 +3,11 @@ import type { ComponentType } from 'react';
 import type { ExtensionViewOptions, ViewName, ViewOverride } from "../views/registry.js";
 import type { ExtensionTableName, ExtensionTableColumn } from "../extensions/tableTypes.js";
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from "../extensions/formTypes.js";
-import { SLOT_NAMES, type SlotComponentProps, type SlotData, type ScreenImporter, type ScreenComponentProps, type ScreenOptions, type ExtensionScreenDefinition, type RouteSlotData, type SlotName, type SubuserPermissionsSlotData } from "../extensions/registry.js";
+import type { SlotComponentProps, SlotData, ScreenImporter, ScreenComponentProps, ScreenOptions, ExtensionScreenDefinition, RouteSlotData, SlotName, SubuserPermissionsSlotData } from "../extensions/registry.js";
 import type { UserData as SdkUser } from "../api/account/types.js";
 import type { SiteSettings as SdkSiteSettings } from "../api/settings/types.js";
 import type { Server as SdkServer } from "../api/server/types.js";
-import { SocketEvent } from "../components/server/events.js";
+import type { SocketEvent } from "../components/server/events.js";
 export { default as Button, ButtonStyle, LinkButton, RouterLinkButton, type ButtonColor, type ButtonProps, type ButtonSize, } from "../components/elements/Button.js";
 export { default as Spinner, type SpinnerProps, type SpinnerSize } from "../components/elements/Spinner.js";
 export { default as Icon } from "../components/elements/Icon.js";
@@ -58,15 +58,10 @@ export { formatDate, fromNow } from "../lib/dates.js";
 export { useDebouncedCallback, type DebouncedCallback } from "../plugins/useDebouncedCallback.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";
 export type { SdkUser, SdkSiteSettings, SdkServer };
-/** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
-export declare function cn(...classes: (string | false | null | undefined)[]): string;
-export declare function useCurrentUser(): SdkUser;
-export declare function useSiteSettings(): SdkSiteSettings;
-export declare function useCurrentServer<TData = SdkServer>(select?: (server: SdkServer) => TData): TData | undefined;
-export declare function useCurrentServerPermissions(): string[];
+export { cn, defineConfiguredExtension, definePterodactylExtension, useCurrentServer, useCurrentServerPermissions, useCurrentServerRequired, useCurrentServerUuid, useCurrentUser, useServerPermission, useServerWebsocketEvent, useSiteSettings, } from "./core.js";
 export { usePermissions } from "../plugins/usePermissions.js";
 export { useExtensionCallback as useExtensionAction } from "../extensions/context.js";
-export { SLOT_NAMES };
+export { SLOT_NAMES } from "../extensions/registry.js";
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
 export type { AdminUserFormSlotData, FileManagerSlotData, FileRowSlotData, StartupFormSlotData, ScreenParent, ScreenBadgeValue, ScreenCondition, ScreenContext, ScreenMatcher, ScreenOptions, } from "../extensions/registry.js";
 export type { ExtensionTableColumn, ExtensionTableName, ExtensionTableRows } from "../extensions/tableTypes.js";
@@ -135,26 +130,12 @@ export * from "./models/startup.js";
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }
-/** Identity helper giving extension entrypoints full typing: `export default definePterodactylExtension({...})`. */
-export declare function definePterodactylExtension(definition: ExtensionDefinition): ExtensionDefinition;
 export type ConfiguredExtensionContext<TConfig extends ExtensionConfig, TScreenId extends string> = Omit<ExtensionSetupContext, 'config' | 'screens'> & {
     config: TConfig;
     screens: {
         register(id: TScreenId, component: ScreenImporter, options?: ScreenOptions): void;
     };
 };
-/** Like definePterodactylExtension, with `config` decoded by `parseConfig` and typed screen ids. */
-export declare function defineConfiguredExtension<TConfig extends ExtensionConfig, TScreenId extends string = string>(parseConfig: (config: ExtensionConfig) => TConfig, definition: {
-    setup(context: ConfiguredExtensionContext<TConfig, TScreenId>): void;
-}): ExtensionDefinition;
-export { SocketEvent };
+export { SocketEvent } from "../components/server/events.js";
 export type ServerWebsocketEvent = SocketEvent | `${SocketEvent}`;
-/**
- * Subscribes to a server websocket event while mounted under /server/$id.
- * Only call from server screens, server slots, or components rendered under them.
- */
-export declare function useServerWebsocketEvent(event: ServerWebsocketEvent, callback: (data: string) => void | Promise<void>): void;
-export declare function useCurrentServerUuid(): string | undefined;
-export declare function useCurrentServerRequired(message?: string): SdkServer;
-export declare function useServerPermission(permission: string | string[], matchAny?: boolean): boolean;
 export type { UserValues as AdminUserFormValues } from "../api/admin/users/types.js";
