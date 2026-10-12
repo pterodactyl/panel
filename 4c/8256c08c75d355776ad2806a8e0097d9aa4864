@@ -1,0 +1,144 @@
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_4cabae41bceed9::t_4c24a6d705844a 80-81,85-93,96-97,107-126
+  s_4cabae41bceed9::t_7a46fad753b64a 7
+resources/scripts/themes/classic/views/layout/ServerLayout.tsx
+  s_4cabae41bceed9::t_585671d585a5c4 2,4
+  s_4cabae41bceed9::t_fb1c0a757f799a 29
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_10d30cd43b491d 48
+resources/scripts/views/layouts.spec.tsx
+  s_4cabae41bceed9::t_2304028608cbb0 4-8,11-12
+  s_4cabae41bceed9::t_a2279bd6f7d144 160-247
+resources/scripts/components/elements/Portal.tsx
+  s_4cabae41bceed9::t_acdc14fe8dcf4e 1,17-32,36
+resources/scripts/components/admin/themes/workbench/PreviewFrame.tsx
+  s_4cabae41bceed9::t_3babf5e8be4308 5
+  s_4cabae41bceed9::t_e0d7f97b0199a9 181-183
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_f09051f060175d 424-426
+  s_4cabae41bceed9::t_4ea05f95dccf3a 76,79-80
+  s_4cabae41bceed9::t_15e7150f083a04 439-441
+  s_4cabae41bceed9::t_34c374ad4179e8 132-157,160-162,164-165,168-171,173-181,183-184,191-193
+  s_4cabae41bceed9::t_08524bd6a0693c 315,318,321,326
+  s_4cabae41bceed9::t_086b8d2450d4a8 18
+  s_4cabae41bceed9::t_2bd93c134b78c9 38-39,45-46
+  s_4cabae41bceed9::t_ed3a28626bfb22 297-301,303-304
+  s_4cabae41bceed9::t_0156b37e461c29 98-107
+  s_4cabae41bceed9::t_39f5db4e640d90 346-350,354-363,367-372,381,383
+  s_4cabae41bceed9::t_de25a9bb6c33c6 2-3,5
+  s_4cabae41bceed9::t_33e46fd3c3aec4 233-248,252-254,259,264,266,272-276
+  s_4cabae41bceed9::t_04a0ebffad5c8c 393-407
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_790b6ebb8680ea 193,199,208,217,268,274,287,300,335,351,366,379,392,399,741
+resources/scripts/components/elements/dropdown/DropdownMenu.spec.tsx
+  s_4cabae41bceed9::t_21d2d0e2fa3895 1-36
+resources/scripts/themes/classic/views/layout/tabLabel.tsx
+  s_4cabae41bceed9::t_087948384fa396 1-12
+resources/scripts/views/a11y.spec.tsx
+  s_4cabae41bceed9::t_a386120c9bb91b 36-49,52-67
+  s_4cabae41bceed9::t_7d9c78ffe3d59d 13
+  s_4cabae41bceed9::t_af30649dcef114 50-51
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_353147f4a8cde3 307
+  s_4cabae41bceed9::t_c0250be19eedf9 13
+  s_4cabae41bceed9::t_30b4e6ee0780d7 163-220,226,232,235,238-241,243-247,249-250
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_92754b21655de7 913-917,921-926,944-949
+  s_4cabae41bceed9::t_ce2ee4aabb1679 918-920,927-943
+packages/sdk/vitest-setup.mjs
+  s_4cabae41bceed9::t_03f0ff165ba580 1-4,6-7,11-46
+resources/scripts/views/models.ts
+  s_4cabae41bceed9::t_ada879a6bda763 16
+resources/scripts/extensions/ExtensionMount.tsx
+  s_4cabae41bceed9::t_2f8e17a963adef 149-150,163-168,176-177
+resources/scripts/views/a11y.tsx
+  s_4cabae41bceed9::t_0e7fabf1b74d0d 12,21,33-35
+  s_488821bd68e9e0::t_3b24e612acd1a4 36-37
+resources/scripts/components/elements/Portal.spec.tsx
+  s_4cabae41bceed9::t_ad0a2f011c5dbd 1,3-44,46,49,51
+  s_4cabae41bceed9::t_f63e94e81ac54c 2
+  s_4cabae41bceed9::t_7e321f26c845d8 45,47-48,50
+vitest.config.ts
+  s_4cabae41bceed9::t_f677b8b76df3d1 21-22
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_0e8ab8cf07a0ad 254-258
+  s_4cabae41bceed9::t_266ebf88f359c0 4,6,9
+  s_4cabae41bceed9::t_c535b5f43d407d 2
+  s_4cabae41bceed9::t_a3db54266ad1d4 3
+  s_4cabae41bceed9::t_3d1ca857ee669f 201-253,259-276,330-336
+  s_4cabae41bceed9::t_18ad85af8d4af5 277-329
+resources/scripts/sdk/navigation.tsx
+  s_4cabae41bceed9::t_2769f1619e66ee 92-95,98-99
+resources/scripts/themes/classic/views/server/files/Uploads.tsx
+  s_4cabae41bceed9::t_ce1a3e12b15176 4
+  s_4cabae41bceed9::t_6ab8ffe06d2946 12-13,26-28,31-33,35
+resources/scripts/components/server/WebsocketHandler.spec.tsx
+  s_4cabae41bceed9::t_81b280c831bd19 18,24,26
+  s_4cabae41bceed9::t_5aeb27b168da9b 4-5
+  s_4cabae41bceed9::t_f091ecf3fad774 72-86
+resources/scripts/views/slotCheck.tsx
+  s_4cabae41bceed9::t_e65e8d83f0ab37 1,4-10,17,20-21,27-30,45-46,58,67,69
+  s_4cabae41bceed9::t_a91a99ae12a7ff 19
+  s_4cabae41bceed9::t_948b948b2d2b7c 26
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_9e6a9575794174 85
+  s_4cabae41bceed9::t_76257be3e96b8a 303-343
+  s_4cabae41bceed9::t_63557fe6bc3ec9 413-416,418,421,425-430,437-441,451-454,456,458-463,465-469,476-479,493
+  s_4cabae41bceed9::t_946d931352799e 380,391-392,399
+  s_4cabae41bceed9::t_80cbb9fcea25e4 20,63-69
+  s_4cabae41bceed9::t_a9f7aeb871d3cf 118-129
+  s_4cabae41bceed9::t_751af88dcd2bef 279-280
+  s_4cabae41bceed9::t_1427ec239afd20 457,470-475,489-491
+  s_4cabae41bceed9::t_bf95efe1391da2 509-510
+  s_4cabae41bceed9::t_7a1c0c585a57f2 361-369
+  s_4cabae41bceed9::t_893a265e3c3f27 530
+  s_4cabae41bceed9::t_b90e815f41c055 556
+  s_4cabae41bceed9::t_7abddcde0162a6 21-28,36
+  s_4cabae41bceed9::t_fd17ef90bdb2c2 187-192,195
+  s_488821bd68e9e0::t_3f2df8bd245b33 492
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_c8b620d100f05a 2-3
+  s_4cabae41bceed9::t_dff5315e700744 160-167,169-203,205-245
+  s_4cabae41bceed9::t_a38f068c87eeb6 168,204
+resources/scripts/themes/classic/views/layout/AdminLayout.tsx
+  s_4cabae41bceed9::t_edb47109869527 37
+  s_4cabae41bceed9::t_6cbdb6229f0220 8
+resources/scripts/themes/classic/views/layout/AccountLayout.tsx
+  s_4cabae41bceed9::t_49c2b8fcd14f0a 3,11
+resources/scripts/components/elements/ErrorBoundary.tsx
+  s_4cabae41bceed9::t_3a9136f44795bc 49-53
+  s_4cabae41bceed9::t_80653a3bbe00a0 62
+  s_4cabae41bceed9::t_1adc9f3e47ed9e 15-16
+resources/scripts/views/slotCheck.spec.tsx
+  s_4cabae41bceed9::t_3892514fcccd22 89-111
+  s_4cabae41bceed9::t_3b0de0b52e3868 3
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_4cabae41bceed9::t_e455e0bb2bb44b 133
+  s_4cabae41bceed9::t_e3f73d4ca7e0e3 40
+  s_4cabae41bceed9::t_57c3f5e4e345b3 2-3
+  s_4cabae41bceed9::t_ad7b09332fb2fe 98-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4c8256c08c75d355776ad2806a8e0097d9aa4864",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
