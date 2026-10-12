@@ -1,9 +1,181 @@
 {
+    "account.apiKeys.create": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "invalid",
+            "created"
+        ],
+        "classic": {
+            "file": "views/account/ApiKeyCreate.tsx",
+            "export": "default"
+        }
+    },
+    "account.apiKeys.list": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "keys",
+            "empty",
+            "loading",
+            "deleting"
+        ],
+        "classic": {
+            "file": "views/account/ApiKeyList.tsx",
+            "export": "default"
+        }
+    },
+    "account.email": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "submitting"
+        ],
+        "classic": {
+            "file": "views/account/EmailCard.tsx",
+            "export": "default"
+        }
+    },
+    "account.password": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "invalid"
+        ],
+        "classic": {
+            "file": "views/account/PasswordCard.tsx",
+            "export": "default"
+        }
+    },
+    "account.sshKeys.create": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "submitting"
+        ],
+        "classic": {
+            "file": "views/account/SshKeyCreate.tsx",
+            "export": "default"
+        }
+    },
+    "account.sshKeys.list": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "keys",
+            "empty",
+            "loading"
+        ],
+        "classic": {
+            "file": "views/account/SshKeyList.tsx",
+            "export": "default"
+        }
+    },
+    "account.twoFactor": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "disabled",
+            "enabled",
+            "setup",
+            "setupLoading",
+            "disabling",
+            "recoveryTokens"
+        ],
+        "classic": {
+            "file": "views/account/TwoFactorCard.tsx",
+            "export": "default"
+        }
+    },
+    "activity.log": {
+        "kind": "block",
+        "context": "app",
+        "slots": [],
+        "fixtures": [
+            "account",
+            "server",
+            "filtered",
+            "empty",
+            "paged",
+            "loading",
+            "error"
+        ],
+        "classic": {
+            "file": "views/activity/ActivityLog.tsx",
+            "export": "default"
+        }
+    },
     "app.search": {
         "kind": "block",
         "context": "app",
         "slots": [],
         "fixtures": []
+    },
+    "auth.checkpointForm": {
+        "kind": "block",
+        "context": "auth",
+        "slots": [],
+        "fixtures": [
+            "code",
+            "recovery"
+        ],
+        "classic": {
+            "file": "views/auth/CheckpointForm.tsx",
+            "export": "default"
+        }
+    },
+    "auth.forgotPasswordForm": {
+        "kind": "block",
+        "context": "auth",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "invalid"
+        ],
+        "classic": {
+            "file": "views/auth/ForgotPasswordForm.tsx",
+            "export": "default"
+        }
+    },
+    "auth.loginForm": {
+        "kind": "block",
+        "context": "auth",
+        "slots": [
+            "auth.login.form.after"
+        ],
+        "fixtures": [
+            "default",
+            "invalid",
+            "submitting"
+        ],
+        "classic": {
+            "file": "views/auth/LoginForm.tsx",
+            "export": "default"
+        }
+    },
+    "auth.resetPasswordForm": {
+        "kind": "block",
+        "context": "auth",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "mismatch"
+        ],
+        "classic": {
+            "file": "views/auth/ResetPasswordForm.tsx",
+            "export": "default"
+        }
     },
     "dashboard.serverCard": {
         "kind": "block",
@@ -131,7 +303,13 @@
             "account.activity.before",
             "account.activity.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/activity/AccountActivityPage.tsx",
+            "export": "default"
+        }
     },
     "page.account.api": {
         "kind": "page",
@@ -140,13 +318,30 @@
             "account.api.before",
             "account.api.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/account/ApiKeysPage.tsx",
+            "export": "default"
+        }
     },
     "page.account.overview": {
         "kind": "page",
         "context": "account",
-        "slots": [],
-        "fixtures": []
+        "slots": [
+            "account.overview.before",
+            "account.overview.after"
+        ],
+        "fixtures": [
+            "default",
+            "twoFactorRequired"
+        ],
+        "classic": {
+            "file": "views/account/AccountOverview.tsx",
+            "export": "default"
+        }
     },
     "page.account.ssh": {
         "kind": "page",
@@ -155,7 +350,14 @@
             "account.ssh.before",
             "account.ssh.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default",
+            "error"
+        ],
+        "classic": {
+            "file": "views/account/SshKeysPage.tsx",
+            "export": "default"
+        }
     },
     "page.admin.activity": {
         "kind": "page",
@@ -602,7 +804,13 @@
             "auth.checkpoint.before",
             "auth.checkpoint.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/auth/CheckpointPage.tsx",
+            "export": "default"
+        }
     },
     "page.auth.login": {
         "kind": "page",
@@ -611,7 +819,13 @@
             "auth.login.before",
             "auth.login.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/auth/LoginPage.tsx",
+            "export": "default"
+        }
     },
     "page.auth.password": {
         "kind": "page",
@@ -620,7 +834,13 @@
             "auth.password.before",
             "auth.password.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/auth/ForgotPasswordPage.tsx",
+            "export": "default"
+        }
     },
     "page.auth.passwordReset": {
         "kind": "page",
@@ -629,7 +849,13 @@
             "auth.passwordReset.before",
             "auth.passwordReset.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/auth/ResetPasswordPage.tsx",
+            "export": "default"
+        }
     },
     "page.dashboard": {
         "kind": "page",
@@ -651,7 +877,13 @@
             "server.activity.before",
             "server.activity.after"
         ],
-        "fixtures": []
+        "fixtures": [
+            "default"
+        ],
+        "classic": {
+            "file": "views/activity/ServerActivityPage.tsx",
+            "export": "default"
+        }
     },
     "page.server.backups": {
         "kind": "page",

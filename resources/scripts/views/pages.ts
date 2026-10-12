@@ -11,8 +11,10 @@ interface PageSpec {
     readonly slots?: readonly [RouteSlotName, RouteSlotName];
 }
 
-/** Every routed page whose default is still the existing container; `page.dashboard` is a real view. */
-export const OPAQUE_PAGES = {
+/** Routed pages that are real views, defined beside their blocks. */
+export const VIEW_PAGES = {
+    'page.dashboard': { context: 'app' },
+
     'page.auth.login': { context: 'auth', slots: ['auth.login.before', 'auth.login.after'] },
     'page.auth.checkpoint': { context: 'auth', slots: ['auth.checkpoint.before', 'auth.checkpoint.after'] },
     'page.auth.password': { context: 'auth', slots: ['auth.password.before', 'auth.password.after'] },
@@ -23,6 +25,11 @@ export const OPAQUE_PAGES = {
     'page.account.ssh': { context: 'account', slots: ['account.ssh.before', 'account.ssh.after'] },
     'page.account.activity': { context: 'account', slots: ['account.activity.before', 'account.activity.after'] },
 
+    'page.server.activity': { context: 'server', slots: ['server.activity.before', 'server.activity.after'] },
+} as const satisfies Record<`page.${string}`, PageSpec>;
+
+/** Every routed page whose default is still the existing container. */
+export const OPAQUE_PAGES = {
     'page.server.console': { context: 'server' },
     'page.server.files': { context: 'server' },
     'page.server.files.editor': {
@@ -44,7 +51,6 @@ export const OPAQUE_PAGES = {
     'page.server.network': { context: 'server', slots: ['server.network.before', 'server.network.after'] },
     'page.server.startup': { context: 'server', slots: ['server.startup.before', 'server.startup.after'] },
     'page.server.settings': { context: 'server', slots: ['server.settings.before', 'server.settings.after'] },
-    'page.server.activity': { context: 'server', slots: ['server.activity.before', 'server.activity.after'] },
 
     'page.admin.overview': { context: 'admin' },
     'page.admin.activity': { context: 'admin', slots: ['panel.activity.before', 'panel.activity.after'] },
@@ -177,7 +183,10 @@ export const OPAQUE_PAGES = {
 } as const satisfies Record<`page.${string}`, PageSpec>;
 
 export type OpaquePageName = keyof typeof OPAQUE_PAGES;
-export type PageViewName = OpaquePageName | 'page.dashboard';
+export type ViewPageName = keyof typeof VIEW_PAGES;
+export type PageViewName = OpaquePageName | ViewPageName;
+
+const isViewPage = (name: PageViewName): name is ViewPageName => Object.hasOwn(VIEW_PAGES, name);
 
 declare module './registry' {
     interface ViewModels extends Record<OpaquePageName, OpaqueModel> {}
@@ -189,9 +198,9 @@ declare module './registry' {
 
 /** The engine-rendered slots of a page, if it has any. */
 export function pageSlots(name: PageViewName): readonly [RouteSlotName, RouteSlotName] | undefined {
-    const spec: PageSpec | undefined = name === 'page.dashboard' ? undefined : OPAQUE_PAGES[name];
+    const spec: PageSpec = isViewPage(name) ? VIEW_PAGES[name] : OPAQUE_PAGES[name];
 
-    return spec?.slots;
+    return spec.slots;
 }
 
 const placeholder = createElement(Spinner, { centered: true });

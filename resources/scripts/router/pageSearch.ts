@@ -58,3 +58,36 @@ export const useDashboardSearch = () => {
 
     return { page, type };
 };
+
+export type ActivitySearch = PageSearch & {
+    event?: string;
+    user?: string;
+};
+
+export const parseActivitySearch = (search: RawSearch): ActivitySearch => {
+    const result: ActivitySearch = { ...parsePageSearch(search) };
+    const event = searchText(search.event);
+    const user = searchText(search.user);
+
+    if (event) {
+        result.event = event;
+    }
+
+    if (user) {
+        result.user = user;
+    }
+
+    return result;
+};
+
+export const useActivitySearch = () => {
+    const { page = 1, event, user } = parseActivitySearch(useSearch({ strict: false }));
+
+    return { page, event, user };
+};
+
+export const parseEmailSearch = (search: RawSearch): { email?: string } => {
+    const email = searchText(search.email);
+
+    return email ? { email } : {};
+};

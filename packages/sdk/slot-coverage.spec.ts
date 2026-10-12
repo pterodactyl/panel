@@ -21,7 +21,7 @@ const legacySlotNames = [
 ] as const;
 
 const anchorFiles = [
-    '../../resources/scripts/components/auth/LoginContainer.tsx',
+    '../../resources/scripts/themes/classic/views/auth/LoginForm.tsx',
     '../../resources/scripts/components/server/users/EditSubuserModal.tsx',
     '../../resources/scripts/views/pages.ts',
     '../../resources/scripts/themes/classic/views/layout/AccountLayout.tsx',
@@ -29,7 +29,7 @@ const anchorFiles = [
     '../../resources/scripts/themes/classic/views/layout/ServerLayout.tsx',
     '../../resources/scripts/themes/classic/views/layout/AppLayout.tsx',
     '../../resources/scripts/themes/classic/views/dashboard/ServerList.tsx',
-    '../../resources/scripts/components/dashboard/AccountOverviewContainer.tsx',
+    '../../resources/scripts/themes/classic/views/account/AccountOverview.tsx',
     '../../resources/scripts/themes/classic/views/dashboard/ServerCard.tsx',
     '../../resources/scripts/components/server/console/ServerConsoleContainer.tsx',
     '../../resources/scripts/components/server/files/FileManagerContainer.tsx',

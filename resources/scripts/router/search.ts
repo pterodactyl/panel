@@ -12,10 +12,14 @@ import { parsePageSearch, searchText, type PageSearch, type RawSearch } from '@/
 
 export {
     getPageSearch,
+    parseActivitySearch,
     parseDashboardSearch,
+    parseEmailSearch,
     parsePageSearch,
+    useActivitySearch,
     useDashboardSearch,
     usePageSearch,
+    type ActivitySearch,
     type DashboardSearch,
     type PageSearch,
     type RawSearch,
@@ -49,11 +53,6 @@ type AdminListSort =
     | AdminMountListSort
     | AdminTagListSort
     | ApiKeyListSort;
-
-export type ActivitySearch = PageSearch & {
-    event?: string;
-    user?: string;
-};
 
 export const parseAdminListSearch = (search: RawSearch): AdminListSearch => {
     const result: AdminListSearch = { ...parsePageSearch(search) };
@@ -116,22 +115,6 @@ export const parseApiKeyListSearch = (search: RawSearch): ApiKeyListSearch =>
 export const parseTagListSearch = (search: RawSearch): TagListSearch =>
     parseSortableAdminListSearch(search, ['name', '-name', 'slug', '-slug']);
 
-export const parseActivitySearch = (search: RawSearch): ActivitySearch => {
-    const result: ActivitySearch = { ...parsePageSearch(search) };
-    const event = searchText(search.event);
-    const user = searchText(search.user);
-
-    if (event) {
-        result.event = event;
-    }
-
-    if (user) {
-        result.user = user;
-    }
-
-    return result;
-};
-
 export const WORKBENCH_WIDTHS = ['phone', 'tablet', 'desktop', 'full'] as const;
 export type WorkbenchWidth = (typeof WORKBENCH_WIDTHS)[number];
 export type WorkbenchSearch = {
@@ -171,18 +154,6 @@ export const parseWorkbenchSearch = (search: RawSearch): WorkbenchSearch => {
     }
 
     return result;
-};
-
-export const parseEmailSearch = (search: RawSearch): { email?: string } => {
-    const email = searchText(search.email);
-
-    return email ? { email } : {};
-};
-
-export const useActivitySearch = () => {
-    const { page = 1, event, user } = parseActivitySearch(useSearch({ strict: false }));
-
-    return { page, event, user };
 };
 
 interface SortableAdminListSearchUpdate<TSort extends string> {

@@ -6,6 +6,7 @@ export type {
     AdminServerResource,
     AdminEggResource,
     AdminUserResource,
+    ClientActivityLogAttributes,
     ClientGetStartupConfigurationResponse,
     ClientFileObjectResource,
     ClientGetServerResponse,

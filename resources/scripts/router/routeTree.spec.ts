@@ -232,3 +232,22 @@ it('parses numeric route ids and treats anything else as not found', { timeout: 
         '/panel/nodes/42/settings'
     );
 });
+
+it('sends the checkpoint back to sign in without the token the login hands over', { timeout: 20_000 }, async () => {
+    (window as BootstrapWindow).SiteConfiguration = { name: 'Panel', locale: 'en', recaptcha: { enabled: false } };
+    const { buildRouteTree } = await import('@/router/routeTree');
+    const router = createRouter({
+        routeTree: buildRouteTree([]),
+        context: { queryClient: new QueryClient() },
+        history: createMemoryHistory({ initialEntries: ['/auth/login/checkpoint?redirect=%2Fpanel'] }),
+    });
+
+    await router.load();
+
+    expect(router.state.location.pathname).toBe('/auth/login');
+    expect(router.state.location.search).toEqual({ redirect: '/panel' });
+
+    await router.navigate({ to: '/auth/login/checkpoint', state: { token: 'confirm-token' } });
+
+    expect(router.state.location.pathname).toBe('/auth/login/checkpoint');
+});

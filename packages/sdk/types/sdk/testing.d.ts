@@ -2,6 +2,9 @@
 import "../components/server/files/FileDetailsView.js";
 import "../components/server/files/FileEditorView.js";
 import "../components/server/files/FileManagerView.js";
+import "../views/account/index.js";
+import "../views/activity/index.js";
+import "../views/auth/index.js";
 import "../views/dashboard.js";
 import "../views/layouts.js";
 import { type ViewInput, type ViewModel, type ViewName, type ViewProps } from "../views/registry.js";

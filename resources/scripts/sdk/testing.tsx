@@ -4,6 +4,9 @@ import '@/components/server/files/FileEditorView';
 import '@/components/server/files/FileManagerView';
 import type { FileManagerModel } from '@/views/files';
 import { registerClassicTheme } from '@/views/classic';
+import '@/views/account';
+import '@/views/activity';
+import '@/views/auth';
 import '@/views/dashboard';
 import '@/views/layouts';
 import {

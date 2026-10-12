@@ -126,6 +126,12 @@ const authChildren = [
         path: 'login/checkpoint',
         component: pageRoute('page.auth.checkpoint'),
         validateSearch: parseRedirectSearch,
+        // The login screen hands over the confirmation token in history state.
+        beforeLoad: ({ location, search }) => {
+            if (!location.state.token) {
+                throw redirect({ to: '/auth/login', search: { redirect: search.redirect }, replace: true });
+            }
+        },
     }),
     createRoute({
         getParentRoute: () => authRoute,

@@ -8,7 +8,7 @@ import type { UserData as SdkUser } from "../api/account/types.js";
 import type { SiteSettings as SdkSiteSettings } from "../api/settings/types.js";
 import type { Server as SdkServer } from "../api/server/types.js";
 import { SocketEvent } from "../components/server/events.js";
-export { default as Button, LinkButton, RouterLinkButton, type ButtonColor, type ButtonProps, type ButtonSize, } from "../components/elements/Button.js";
+export { default as Button, ButtonStyle, LinkButton, RouterLinkButton, type ButtonColor, type ButtonProps, type ButtonSize, } from "../components/elements/Button.js";
 export { default as Spinner, type SpinnerProps, type SpinnerSize } from "../components/elements/Spinner.js";
 export { default as Icon } from "../components/elements/Icon.js";
 export { default as NamedIcon, loadIconNames, type NamedIconProps } from "../components/elements/NamedIcon.js";
@@ -24,6 +24,8 @@ export { default as ServerContentBlock } from "../components/elements/ServerCont
 export { default as TitledGreyBox } from "../components/elements/TitledGreyBox.js";
 export { default as CopyOnClick, type CopyOnClickProps } from "../components/elements/CopyOnClick.js";
 export { default as ScreenBlock, ServerError, NotFound } from "../components/elements/ScreenBlock.js";
+export { default as PaginationFooter } from "../components/elements/table/PaginationFooter.js";
+export { default as Translate, type TranslationValue, type TranslationValues } from "../components/elements/Translate.js";
 export { default as Label, type LabelProps } from "../components/elements/Label.js";
 export { default as PageHeading, type PageHeadingProps } from "../components/elements/PageHeading.js";
 export { NewButton, NewLinkButton, type NewButtonProps, type NewLinkButtonProps, } from "../components/elements/NewButton.js";
@@ -49,6 +51,7 @@ export * from "./localization.js";
 export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
 export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
+export { formatDate, fromNow } from "./dates.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";
 export type { SdkUser, SdkSiteSettings, SdkServer };
 /** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
@@ -111,6 +114,10 @@ export interface ExtensionSetupContext {
 }
 export type { DefaultViewProps, ExtensionViewOptions, ExtensionViewProps, ViewComponent, ViewContext, ViewImporter, ViewModel, ViewName, ViewOverride, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
 export type * from "../views/models.js";
+export type * from "./models/forms.js";
+export type * from "./models/auth.js";
+export type * from "./models/account.js";
+export type * from "./models/activity.js";
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }

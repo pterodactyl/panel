@@ -3,7 +3,7 @@ import { type ComponentProps, type ReactElement } from 'react';
 import { type RouteSlotData } from "../extensions/registry.js";
 import type { ExtensionConfigValue } from "./index.js";
 export { useNavigationBlocker, type NavigationBlockerLocation, type NavigationBlockerOptions, type NavigationTransition, } from "../plugins/useNavigationBlocker.js";
-export type CorePanelPath = '/' | `/account${'' | '/api' | '/ssh' | '/activity'}` | `/server/$id${'' | '/files' | '/databases' | '/schedules' | '/users' | '/users/new' | '/backups' | '/network' | '/startup' | '/settings' | '/activity'}` | '/server/$id/files/$action' | '/server/$id/schedules/$scheduleId' | `/panel${'' | '/users' | '/locations' | '/nodes' | '/servers' | '/databases' | '/mounts' | '/eggs' | '/tags' | '/extensions' | '/api' | '/activity' | '/settings' | '/settings/mail' | '/settings/advanced'}` | `/panel/${'users' | 'locations' | 'nodes' | 'servers' | 'databases' | 'mounts'}/$id` | `/panel/${'users' | 'nodes' | 'servers' | 'databases' | 'mounts' | 'eggs'}/new` | `/panel/nodes/$id/${'settings' | 'configuration' | 'allocation' | 'servers'}` | `/panel/servers/$id/${'details' | 'build' | 'startup' | 'database' | 'mounts' | 'manage' | 'delete'}` | `/panel/eggs/$eggId${'' | '/tags' | '/variables' | '/script'}` | '/panel/eggs/catalog';
+export type CorePanelPath = '/' | '/auth/login' | '/auth/password' | `/account${'' | '/api' | '/ssh' | '/activity'}` | `/server/$id${'' | '/files' | '/databases' | '/schedules' | '/users' | '/users/new' | '/backups' | '/network' | '/startup' | '/settings' | '/activity'}` | '/server/$id/files/$action' | '/server/$id/schedules/$scheduleId' | `/panel${'' | '/users' | '/locations' | '/nodes' | '/servers' | '/databases' | '/mounts' | '/eggs' | '/tags' | '/extensions' | '/api' | '/activity' | '/settings' | '/settings/mail' | '/settings/advanced'}` | `/panel/${'users' | 'locations' | 'nodes' | 'servers' | 'databases' | 'mounts'}/$id` | `/panel/${'users' | 'nodes' | 'servers' | 'databases' | 'mounts' | 'eggs'}/new` | `/panel/nodes/$id/${'settings' | 'configuration' | 'allocation' | 'servers'}` | `/panel/servers/$id/${'details' | 'build' | 'startup' | 'database' | 'mounts' | 'manage' | 'delete'}` | `/panel/eggs/$eggId${'' | '/tags' | '/variables' | '/script'}` | '/panel/eggs/catalog';
 type PathParameters<TPath extends string> = TPath extends `${string}$${infer TParameter}/${infer TRest}` ? TParameter | PathParameters<TRest> : TPath extends `${string}$${infer TParameter}` ? TParameter : never;
 export type PanelSearch = Record<string, ExtensionConfigValue | undefined>;
 export type CorePanelDestination = {
@@ -41,6 +41,8 @@ export declare function usePanelLocation(): RouteSlotData;
 export interface PanelLinkProps extends Omit<ComponentProps<'a'>, 'href'> {
     destination: PanelDestination;
     exact?: boolean;
+    /** Active only while the current search includes the destination's. */
+    includeSearch?: boolean;
 }
-export declare function PanelLink({ destination, exact, ...props }: PanelLinkProps): ReactElement;
+export declare function PanelLink({ destination, exact, includeSearch, ...props }: PanelLinkProps): ReactElement;
 export declare function useOpenLoginCheckpoint(): (confirmationToken: string) => Promise<void>;

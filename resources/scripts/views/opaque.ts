@@ -9,16 +9,6 @@ const page = lazyRouteComponent;
 export const opaqueViews = {
     'app.search': lazyRouteComponent(() => import('@/components/dashboard/search/SearchContainer')),
 
-    'page.auth.login': page(() => import('@/components/auth/LoginContainer')),
-    'page.auth.checkpoint': page(() => import('@/components/auth/LoginCheckpointContainer')),
-    'page.auth.password': page(() => import('@/components/auth/ForgotPasswordContainer')),
-    'page.auth.passwordReset': page(() => import('@/components/auth/ResetPasswordContainer')),
-
-    'page.account.overview': page(() => import('@/components/dashboard/AccountOverviewContainer')),
-    'page.account.api': page(() => import('@/components/dashboard/AccountApiContainer')),
-    'page.account.ssh': page(() => import('@/components/dashboard/ssh/AccountSSHContainer')),
-    'page.account.activity': page(() => import('@/components/dashboard/activity/ActivityLogContainer')),
-
     'page.server.console': page(() => import('@/components/server/console/ServerConsoleContainer')),
     'page.server.files': page(() => import('@/components/server/files/FileManagerContainer')),
     'page.server.files.editor': page(() => import('@/components/server/files/FileEditContainer')),
@@ -31,7 +21,6 @@ export const opaqueViews = {
     'page.server.network': page(() => import('@/components/server/network/NetworkContainer')),
     'page.server.startup': page(() => import('@/components/server/startup/StartupContainer')),
     'page.server.settings': page(() => import('@/components/server/settings/SettingsContainer')),
-    'page.server.activity': page(() => import('@/components/server/ServerActivityLogContainer')),
 
     'page.admin.overview': page(() => import('@/components/admin/overview/OverviewContainer')),
     'page.admin.activity': page(() => import('@/components/admin/activity/ActivityContainer')),

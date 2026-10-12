@@ -33,6 +33,7 @@ import { cn as mergeClasses } from '@/lib/cn';
 
 export {
     default as Button,
+    ButtonStyle,
     LinkButton,
     RouterLinkButton,
     type ButtonColor,
@@ -58,6 +59,8 @@ export { default as ServerContentBlock } from '@/components/elements/ServerConte
 export { default as TitledGreyBox } from '@/components/elements/TitledGreyBox';
 export { default as CopyOnClick, type CopyOnClickProps } from '@/components/elements/CopyOnClick';
 export { default as ScreenBlock, ServerError, NotFound } from '@/components/elements/ScreenBlock';
+export { default as PaginationFooter } from '@/components/elements/table/PaginationFooter';
+export { default as Translate, type TranslationValue, type TranslationValues } from '@/components/elements/Translate';
 export { default as Label, type LabelProps } from '@/components/elements/Label';
 export { default as PageHeading, type PageHeadingProps } from '@/components/elements/PageHeading';
 export {
@@ -102,6 +105,7 @@ export * from './localization';
 export * from './progress';
 export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
 export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+export { formatDate, fromNow } from './dates';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
 /** Joins class names; a later Tailwind utility replaces an earlier one of the same kind, prefixes included. */
@@ -228,6 +232,10 @@ export type {
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
+export type * from './models/forms';
+export type * from './models/auth';
+export type * from './models/account';
+export type * from './models/activity';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
