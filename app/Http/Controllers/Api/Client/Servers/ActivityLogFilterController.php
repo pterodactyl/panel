@@ -13,7 +13,6 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Controllers\Api\Admin\ActivityFilterController;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Server;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -29,6 +28,6 @@ class ActivityLogFilterController extends ClientApiController
     {
         $this->authorize(Permissions::ActivityRead->value, $server);
 
-        return new JsonResponse(['data' => ActivityLog::facets($server->visibleActivity())]);
+        return new JsonResponse(['data' => $server->visibleActivity()->facets()]);
     }
 }

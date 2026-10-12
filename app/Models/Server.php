@@ -361,12 +361,11 @@ class Server extends Model implements Identifiable
      * The server's activity without disabled events. With activity.hide_admin_activity set,
      * entries by root admins who are neither the owner nor a subuser are left out.
      *
-     * @return Builder<ActivityLog>
+     * @return MorphToMany<ActivityLog, $this>
      */
-    public function visibleActivity(): Builder
+    public function visibleActivity(): MorphToMany
     {
-        $query = $this->activity()->getQuery()->select('activity_logs.*')
-            ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS);
+        $query = $this->activity()->select('activity_logs.*')->withoutDisabledEvents();
 
         if (config('activity.hide_admin_activity')) {
             $subusers = $this->subusers()->pluck('user_id')->merge([$this->owner_id]);

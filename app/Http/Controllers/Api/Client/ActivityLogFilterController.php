@@ -11,7 +11,6 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Http\Controllers\Api\Admin\ActivityFilterController;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Models\ActivityLog;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Account', 'Manage the authenticated user account.')]
@@ -25,7 +24,7 @@ class ActivityLogFilterController extends ClientApiController
     public function __invoke(ClientApiRequest $request): JsonResponse
     {
         return new JsonResponse([
-            'data' => ActivityLog::facets($this->authenticatedUser($request)->activity()->getQuery()),
+            'data' => $this->authenticatedUser($request)->activity()->facets(),
         ]);
     }
 }

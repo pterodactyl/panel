@@ -33,7 +33,7 @@ class ActivityFilterController extends AdminApiController
     public function __invoke(GetActivityLogsRequest $request): JsonResponse
     {
         return new JsonResponse([
-            'data' => ActivityLog::facets(ActivityLog::query()->where('event', 'like', ActivityController::ADMIN_EVENT_PREFIX.'%')),
+            'data' => ActivityLog::query()->where('event', 'like', ActivityController::ADMIN_EVENT_PREFIX.'%')->facets(),
         ]);
     }
 }

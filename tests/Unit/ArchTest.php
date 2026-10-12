@@ -134,6 +134,7 @@ arch('models')
     ->toExtend(Model::class)
     ->ignoring([
         'Pterodactyl\Models\Attributes',
+        'Pterodactyl\Models\Builders',
         'Pterodactyl\Models\Filters',
         'Pterodactyl\Models\Objects',
         'Pterodactyl\Models\Traits',
