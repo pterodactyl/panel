@@ -1,0 +1,92 @@
+[
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/databases",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "eV8y0jg6",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_main",
+                        "username": "u1_mainuser",
+                        "connections_from": "%",
+                        "max_connections": 10
+                    }
+                },
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "kEjgP8V2",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_logs",
+                        "username": "u1_logsuser",
+                        "connections_from": "10.0.0.%",
+                        "max_connections": 0
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/databases?include=password",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "eV8y0jg6",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_main",
+                        "username": "u1_mainuser",
+                        "connections_from": "%",
+                        "max_connections": 10,
+                        "relationships": {
+                            "password": {
+                                "object": "database_password",
+                                "attributes": {
+                                    "password": "Main-Pa$$word/1"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "kEjgP8V2",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_logs",
+                        "username": "u1_logsuser",
+                        "connections_from": "10.0.0.%",
+                        "max_connections": 0,
+                        "relationships": {
+                            "password": {
+                                "object": "database_password",
+                                "attributes": {
+                                    "password": "Logs-Pa$$word\\2"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+]
