@@ -1,0 +1,91 @@
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_4cabae41bceed9::t_947ee8442b00bd 20
+  s_4cabae41bceed9::t_bc894b6a8959af 117
+  s_4cabae41bceed9::t_29d242bd0e8145 111
+packages/sdk/bin/pterodactyl-theme.mjs
+  s_4cabae41bceed9::t_75ec274468effd 202-231,235-259,262-268,270-283,286-292
+  s_4cabae41bceed9::t_b8f430f94ee4a3 232-234
+  s_4cabae41bceed9::t_4b599a779ec1b2 3
+  s_4cabae41bceed9::t_8fc4be205c75fa 260-261
+resources/scripts/components/admin/themes/workbench/PreviewFrame.tsx
+  s_4cabae41bceed9::t_6ff9e2ba01308c 3,10,12-13
+  s_4cabae41bceed9::t_979abc3cc3b68e 81-82,87,101,103,111-116,124
+  s_4cabae41bceed9::t_53eadf4280120f 141
+  s_4cabae41bceed9::t_858a94b2be6379 177-181
+resources/scripts/views/inspector/ViewInspector.tsx
+  s_4cabae41bceed9::t_c0df527046cbcf 14-36,38-40
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_354106baad01a2 59
+  s_4cabae41bceed9::t_43ec977b85054f 155
+packages/sdk/package.json
+  s_4cabae41bceed9::t_0b5a83aa6479e1 3
+resources/scripts/views/inspector/inspector.spec.tsx
+  s_4cabae41bceed9::t_0d9209db77ae56 68
+  s_4cabae41bceed9::t_c3747cdaa0ce78 112-129
+resources/scripts/themes/gallery.tsx
+  s_4cabae41bceed9::t_7f142ae1b1870e 177-178,435-452,461-472,480-488
+  s_4cabae41bceed9::t_4f483758d25f94 384-396
+  s_4cabae41bceed9::t_12314175ed622d 50,54,59-62,64-65,72,74-75,82-123
+  s_4cabae41bceed9::t_1ad2ddeb86e170 243-325,336-359
+  s_4cabae41bceed9::t_bfd148d2d57127 184
+  s_4cabae41bceed9::t_7d764ef27fc088 155-156,158-167,172-176
+  s_4cabae41bceed9::t_d1e5904ca2a3cb 203-209
+  s_4cabae41bceed9::t_4bdfe2d09f4250 1-2,6,8,10,13,17,22,25-26,30,33
+  s_488821bd68e9e0::t_f84daa3b7a231b 124
+packages/hello-world/extension.json
+  s_4cabae41bceed9::t_c83a2e2621b00b 24
+resources/scripts/components/admin/themes/workbench/workbench.spec.tsx
+  s_4cabae41bceed9::t_105c2ced1bb291 200-201
+  s_4cabae41bceed9::t_783de0c320f14b 5-7
+  s_4cabae41bceed9::t_84fb21c96a8d9e 182-199,202-205
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_7761a08ec45a97 8
+  s_4cabae41bceed9::t_e95686c45d76ad 166-183,186-194,197-199,201-231
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_4cabae41bceed9::t_811ae306f8feb0 35
+  s_4cabae41bceed9::t_ca3c9a430830c0 63
+  s_4cabae41bceed9::t_ec44649ab701d0 58
+  s_4cabae41bceed9::t_5c2afc3de9586e 6
+  s_4cabae41bceed9::t_5241aa2e98024b 24
+tests/Integration/Http/ThemeDocumentTest.php
+  s_4cabae41bceed9::t_ec36c0139e02ef 40
+  s_4cabae41bceed9::t_54dabddb1f642f 139
+resources/scripts/components/elements/PageContentBlock.tsx
+  s_4cabae41bceed9::t_4a1aaba363a955 3
+  s_4cabae41bceed9::t_da6990caaea2cb 13-15,17-18
+resources/scripts/components/ui/Select.tsx
+  s_4cabae41bceed9::t_fdde3daef31f40 178-191
+  s_4cabae41bceed9::t_e788ff3e9cc039 4
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_4cabae41bceed9::t_faf9f7d18a93e2 45
+  s_4cabae41bceed9::t_fce39fba267ffc 78
+  s_4cabae41bceed9::t_5c94146f614a63 4
+config/extensions.php
+  s_4cabae41bceed9::t_270e54156a7506 21
+resources/scripts/components/elements/Portal.tsx
+  s_4cabae41bceed9::t_9538d89eba0405 1,4-16,18-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3f1f83e987114babb99355bdae2e5d1420af82fa",
+  "prompts": {},
+  "sessions": {
+    "s_488821bd68e9e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1291b-0691-7713-b2fe-d62aefcbc650",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
