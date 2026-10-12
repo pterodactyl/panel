@@ -16,7 +16,6 @@ use Pterodactyl\Http\Requests\Api\Application\Nodes\GetDeployableNodesRequest;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Application\NodeResource;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
 #[Subgroup('Nodes', 'Create, update, retrieve, and delete Wings nodes and their allocations.')]
@@ -47,15 +46,21 @@ class NodeDeploymentController extends ApplicationApiController
     #[QueryParam('per_page', 'integer', 'Number of nodes to return per page when page is supplied, up to 100.', required: false, example: 50)]
     #[ResponseFromResource(NodeResource::class, Node::class, description: 'Deployable nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node')]
     #[ScribeResponse(self::NO_VIABLE_NODE_ERROR, status: 400, description: 'No nodes can satisfy the requested deployment constraints.')]
-    public function __invoke(GetDeployableNodesRequest $request, FindViableNodesService $viableNodesService): ApiResourceCollection
+    public function __invoke(GetDeployableNodesRequest $request): ApiResourceCollection
     {
         $payload = $request->payload();
 
-        $nodes = $viableNodesService
-            ->setLocations($payload['location_ids'])
-            ->setMemory($payload['memory'])
-            ->setDisk($payload['disk'])
-            ->handle($payload['per_page'], $payload['page']);
+        // No deploy tags are given here, so nodes reserved for any tag are left out.
+        $query = Node::query()
+            ->viableFor($payload['memory'], $payload['disk'])
+            ->inLocations($payload['location_ids'])
+            ->forDeployTags([]);
+
+        $nodes = $payload['page'] === null
+            ? $query->get()
+            : $query->paginate($payload['per_page'] ?? 50, ['*'], 'page', $payload['page']);
+
+        throw_if($nodes->isEmpty(), NoViableNodeException::class, trans('exceptions.deployment.no_viable_nodes'));
 
         return NodeResource::collection($nodes);
     }

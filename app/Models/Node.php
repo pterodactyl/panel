@@ -7,6 +7,8 @@ namespace Pterodactyl\Models;
 use Database\Factories\NodeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -226,7 +228,7 @@ class Node extends Model implements Identifiable
 
     /**
      * The reservations on this node: a deploy lands here only when its own deploy
-     * tags match these exactly (see NodeTagGate).
+     * tags match these exactly (see forDeployTags()).
      *
      * @return MorphToMany<Tag, $this>
      */
@@ -234,22 +236,6 @@ class Node extends Model implements Identifiable
     {
         return $this->morphToMany(Tag::class, 'taggable', 'taggables', 'taggable_id', 'tag_id')
             ->withPivotValue('kind', 'deployment');
-    }
-
-    /**
-     * @return string[]
-     */
-    public function eggTagSlugs(): array
-    {
-        return $this->eggTags->map(fn (Tag $tag): string => $tag->slug)->all();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function deploymentTagSlugs(): array
-    {
-        return $this->deploymentTags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
@@ -301,6 +287,75 @@ class Node extends Model implements Identifiable
         }
 
         return ['memory' => $memory, 'disk' => $disk];
+    }
+
+    /**
+     * Public nodes with room for another server of this size, counting their overallocation.
+     * Selects the sum_memory and sum_disk that allocatedResources() reads.
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function viableFor(Builder $query, int $memory, int $disk): void
+    {
+        $query->select('nodes.*')
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory')
+            ->selectRaw('IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('nodes.public', 1)
+            ->groupBy('nodes.id')
+            ->havingRaw('(IFNULL(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100)))', [$memory])
+            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$disk]);
+    }
+
+    /**
+     * Nodes in any of the given locations; an empty list leaves the query unrestricted.
+     *
+     * @param  Builder<self>  $query
+     * @param  list<int>  $locations
+     */
+    #[Scope]
+    protected function inLocations(Builder $query, array $locations): void
+    {
+        $query->when($locations !== [], fn (Builder $q) => $q->whereIn('nodes.location_id', $locations));
+    }
+
+    /**
+     * Nodes that accept an egg with these tags: a node without egg tags accepts any egg,
+     * any other needs at least one tag in common with it.
+     *
+     * @param  Builder<self>  $query
+     * @param  array<string>  $eggTags
+     */
+    #[Scope]
+    protected function forEggTags(Builder $query, array $eggTags): void
+    {
+        $query->where(function (Builder $outer) use ($eggTags): void {
+            $outer->whereDoesntHave('eggTags');
+
+            if ($eggTags !== []) {
+                $outer->orWhereHas('eggTags', fn (Builder $relation) => $relation->whereIn('tags.slug', $eggTags));
+            }
+        });
+    }
+
+    /**
+     * Nodes whose deployment tags are exactly the deploy tags: a node reserved for a tag the
+     * deploy did not declare is left out, and every declared tag must be on the node. This
+     * is matched apart from the egg tags so that their OR never gets a deploy past a
+     * reservation.
+     *
+     * @param  Builder<self>  $query
+     * @param  array<string>  $deployTags
+     */
+    #[Scope]
+    protected function forDeployTags(Builder $query, array $deployTags): void
+    {
+        $query->whereDoesntHave('deploymentTags', fn (Builder $relation) => $relation->whereNotIn('tags.slug', $deployTags));
+
+        foreach ($deployTags as $slug) {
+            $query->whereHas('deploymentTags', fn (Builder $relation) => $relation->where('tags.slug', $slug));
+        }
     }
 
     /** @return array{value: string, max: string, percent: float|int, css: string} */

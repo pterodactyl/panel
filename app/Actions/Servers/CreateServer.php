@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Servers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -16,15 +17,16 @@ use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Data\ValidatedEggVariable;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Deployment\AllocationSelectionService;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
 use Pterodactyl\Services\Servers\VariableValidatorService;
@@ -34,8 +36,6 @@ use UnexpectedValueException;
 final readonly class CreateServer implements CreatesServers
 {
     public function __construct(
-        private AllocationSelectionService $allocationSelectionService,
-        private FindViableNodesService $findViableNodesService,
         private DeletesServers $deleteServer,
         private VariableValidatorService $validatorService,
         private ExtensionFields $extensions,
@@ -133,23 +133,24 @@ final readonly class CreateServer implements CreatesServers
 
     private function configureDeployment(ValidatedInput $validated, DeploymentObject $deployment, Egg $egg): Allocation
     {
-        // Egg tags are matched against accepted game tags on viable nodes.
-        $nodes = $this->findViableNodesService->setLocations($deployment->getLocations())
-            ->setDisk($validated->integer('disk'))
-            ->setMemory($validated->integer('memory'))
-            ->setEggTags($egg->tagSlugs())
-            ->setDeployTags($deployment->getTags())
-            ->handle();
+        $nodes = Node::query()
+            ->viableFor($validated->integer('memory'), $validated->integer('disk'))
+            ->inLocations($deployment->getLocations())
+            ->forEggTags($egg->tagSlugs())
+            ->forDeployTags($deployment->getTags())
+            ->get()
+            ->map(fn (Node $node): int => $node->id)
+            ->all();
 
-        $nodeIds = [];
-        foreach ($nodes as $node) {
-            $nodeIds[] = $node->id;
-        }
+        throw_if($nodes === [], NoViableNodeException::class, trans('exceptions.deployment.no_viable_nodes'));
 
-        return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
-            ->setNodes($nodeIds)
-            ->setPorts($deployment->getPorts())
-            ->handle();
+        return Allocation::query()
+            ->unassigned()
+            ->onNodes($nodes)
+            ->onPorts($deployment->getPorts())
+            ->when($deployment->isDedicated(), fn (Builder $query) => $query->onDedicatedIp($nodes))
+            ->inRandomOrder()
+            ->first() ?? throw new NoViableAllocationException(trans('exceptions.deployment.no_viable_allocations'));
     }
 
     /**
