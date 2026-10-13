@@ -77,7 +77,7 @@ import RootNotFound from '@/router/RootNotFound';
 import { RouteAccessDenied } from '@/router/RouteError';
 import { eggIdParam, idParam, scheduleIdParam } from '@/router/params';
 import { parseRedirectSearch } from '@/router/redirect';
-import { layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
+import { componentRoute, layoutRoute, pageRoute, requireServerPermission } from '@/router/viewRoutes';
 import { preloadView } from '@/views/View';
 import {
     parseActivitySearch,
@@ -441,13 +441,19 @@ export const nodeDetailRoute = createRoute({
             ...adminNodeQueryOptions(params.id),
             revalidateIfStale: true,
         }),
-    component: pageRoute('page.admin.nodes.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/nodes/NodeDetailContainer'),
+        ['panel.nodes.detail.before', 'panel.nodes.detail.after']
+    ),
 });
 const nodeDetailChildren = [
     createRoute({
         getParentRoute: () => nodeDetailRoute,
         path: '/',
-        component: pageRoute('page.admin.nodes.detail.about'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeAboutTab'),
+            ['panel.nodes.detail.about.before', 'panel.nodes.detail.about.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => nodeDetailRoute,
@@ -458,7 +464,10 @@ const nodeDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes.detail.settings'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeSettingsTab'),
+            ['panel.nodes.detail.settings.before', 'panel.nodes.detail.settings.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => nodeDetailRoute,
@@ -469,7 +478,10 @@ const nodeDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes.detail.configuration'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeConfigurationTab'),
+            ['panel.nodes.detail.configuration.before', 'panel.nodes.detail.configuration.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => nodeDetailRoute,
@@ -482,7 +494,10 @@ const nodeDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes.detail.allocations'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeAllocationTab'),
+            ['panel.nodes.detail.allocations.before', 'panel.nodes.detail.allocations.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => nodeDetailRoute,
@@ -493,7 +508,10 @@ const nodeDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes.detail.tags'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeTagsTab'),
+            ['panel.nodes.detail.tags.before', 'panel.nodes.detail.tags.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => nodeDetailRoute,
@@ -506,7 +524,10 @@ const nodeDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes.detail.servers'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodeServersTab'),
+            ['panel.nodes.detail.servers.before', 'panel.nodes.detail.servers.after']
+        ),
     }),
 ];
 
@@ -519,28 +540,43 @@ export const serverDetailRoute = createRoute({
             ...adminServerQueryOptions(params.id),
             revalidateIfStale: true,
         }),
-    component: pageRoute('page.admin.servers.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/servers/ServerDetailContainer'),
+        ['panel.servers.detail.before', 'panel.servers.detail.after']
+    ),
 });
 const serverDetailChildren = [
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: '/',
-        component: pageRoute('page.admin.servers.detail.about'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerAboutTab'),
+            ['panel.servers.detail.about.before', 'panel.servers.detail.about.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: 'details',
-        component: pageRoute('page.admin.servers.detail.details'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerDetailsTab'),
+            ['panel.servers.detail.details.before', 'panel.servers.detail.details.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: 'build',
-        component: pageRoute('page.admin.servers.detail.build'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerBuildTab'),
+            ['panel.servers.detail.build.before', 'panel.servers.detail.build.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: 'startup',
-        component: pageRoute('page.admin.servers.detail.startup'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerStartupTab'),
+            ['panel.servers.detail.startup.before', 'panel.servers.detail.startup.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
@@ -558,7 +594,10 @@ const serverDetailChildren = [
                 });
             }
         },
-        component: pageRoute('page.admin.servers.detail.databases'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerDatabaseTab'),
+            ['panel.servers.detail.databases.before', 'panel.servers.detail.databases.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
@@ -576,17 +615,26 @@ const serverDetailChildren = [
                 });
             }
         },
-        component: pageRoute('page.admin.servers.detail.mounts'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerMountsTab'),
+            ['panel.servers.detail.mounts.before', 'panel.servers.detail.mounts.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: 'manage',
-        component: pageRoute('page.admin.servers.detail.manage'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerManageTab'),
+            ['panel.servers.detail.manage.before', 'panel.servers.detail.manage.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => serverDetailRoute,
         path: 'delete',
-        component: pageRoute('page.admin.servers.detail.delete'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServerDeleteTab'),
+            ['panel.servers.detail.delete.before', 'panel.servers.detail.delete.after']
+        ),
     }),
 ];
 
@@ -596,7 +644,10 @@ export const eggDetailRoute = createRoute({
     params: eggIdParam,
     loader: async ({ context, params }) =>
         context.queryClient.ensureQueryData({ ...adminEggQueryOptions(params.eggId), revalidateIfStale: true }),
-    component: pageRoute('page.admin.eggs.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/eggs/EggDetailContainer'),
+        ['panel.eggs.detail.before', 'panel.eggs.detail.after']
+    ),
 });
 const eggDetailChildren = [
     createRoute({
@@ -605,12 +656,18 @@ const eggDetailChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.eggs.detail.configuration'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/EggConfigurationTab'),
+            ['panel.eggs.detail.configuration.before', 'panel.eggs.detail.configuration.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => eggDetailRoute,
         path: 'tags',
-        component: pageRoute('page.admin.eggs.detail.tags'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/EggTagsTab'),
+            ['panel.eggs.detail.tags.before', 'panel.eggs.detail.tags.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => eggDetailRoute,
@@ -621,7 +678,10 @@ const eggDetailChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.eggs.detail.variables'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/EggVariablesTab'),
+            ['panel.eggs.detail.variables.before', 'panel.eggs.detail.variables.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => eggDetailRoute,
@@ -629,7 +689,10 @@ const eggDetailChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.eggs.detail.script'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/EggScriptTab'),
+            ['panel.eggs.detail.script.before', 'panel.eggs.detail.script.after']
+        ),
     }),
 ];
 
@@ -642,7 +705,10 @@ export const mountDetailRoute = createRoute({
             ...adminMountQueryOptions(params.id),
             revalidateIfStale: true,
         }),
-    component: pageRoute('page.admin.mounts.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/mounts/MountDetailContainer'),
+        ['panel.mounts.detail.before', 'panel.mounts.detail.after']
+    ),
 });
 
 export const userDetailRoute = createRoute({
@@ -654,14 +720,17 @@ export const userDetailRoute = createRoute({
             ...adminUserWithServersQueryOptions(params.id),
             revalidateIfStale: true,
         }),
-    component: pageRoute('page.admin.users.detail'),
+    component: componentRoute(
+        async () => ({ default: (await import('@/components/admin/users/UserDetailContainer')).UserDetailLayout }),
+        ['panel.users.detail.before', 'panel.users.detail.after']
+    ),
 });
 
 const userDetailChildren = [
     createRoute({
         getParentRoute: () => userDetailRoute,
         path: '/',
-        component: pageRoute('page.admin.users.detail.about'),
+        component: componentRoute(() => import('@/components/admin/users/UserDetailContainer')),
     }),
 ];
 
@@ -674,7 +743,10 @@ export const locationDetailRoute = createRoute({
             ...adminLocationQueryOptions(params.id),
             revalidateIfStale: true,
         }),
-    component: pageRoute('page.admin.locations.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/locations/LocationDetailContainer'),
+        ['panel.locations.detail.before', 'panel.locations.detail.after']
+    ),
 });
 
 export const databaseHostDetailRoute = createRoute({
@@ -702,7 +774,10 @@ export const databaseHostDetailRoute = createRoute({
 
         return host;
     },
-    component: pageRoute('page.admin.databaseHosts.detail'),
+    component: componentRoute(
+        () => import('@/components/admin/databases/DatabaseHostDetailContainer'),
+        ['panel.databaseHosts.detail.before', 'panel.databaseHosts.detail.after']
+    ),
 });
 
 const panelChildren = [
@@ -713,7 +788,7 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminVersionQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.overview'),
+        component: componentRoute(() => import('@/components/admin/overview/OverviewContainer')),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -734,7 +809,10 @@ const panelChildren = [
                 context.queryClient.ensureQueryData({ ...adminActivityFacetsQueryOptions(), revalidateIfStale: true }),
             ]);
         },
-        component: pageRoute('page.admin.activity'),
+        component: componentRoute(
+            () => import('@/components/admin/activity/ActivityContainer'),
+            ['panel.activity.before', 'panel.activity.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -743,7 +821,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.settings'),
+        component: componentRoute(
+            () => import('@/components/admin/settings/SettingsContainer'),
+            ['panel.settings.before', 'panel.settings.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -751,7 +832,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.settings.mail'),
+        component: componentRoute(
+            () => import('@/components/admin/settings/SettingsContainer'),
+            ['panel.settings.before', 'panel.settings.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -759,7 +843,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.settings.advanced'),
+        component: componentRoute(
+            () => import('@/components/admin/settings/SettingsContainer'),
+            ['panel.settings.before', 'panel.settings.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -773,12 +860,18 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.users'),
+        component: componentRoute(
+            () => import('@/components/admin/users/UsersContainer'),
+            ['panel.users.before', 'panel.users.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'users/new',
-        component: pageRoute('page.admin.users.create'),
+        component: componentRoute(
+            () => import('@/components/admin/users/CreateUserForm'),
+            ['panel.users.create.before', 'panel.users.create.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -792,7 +885,10 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.locations'),
+        component: componentRoute(
+            () => import('@/components/admin/locations/LocationsContainer'),
+            ['panel.locations.before', 'panel.locations.after']
+        ),
     }),
     locationDetailRoute,
     createRoute({
@@ -807,12 +903,18 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.nodes'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/NodesContainer'),
+            ['panel.nodes.before', 'panel.nodes.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'nodes/new',
-        component: pageRoute('page.admin.nodes.create'),
+        component: componentRoute(
+            () => import('@/components/admin/nodes/CreateNodeForm'),
+            ['panel.nodes.create.before', 'panel.nodes.create.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -826,7 +928,10 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.servers'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/ServersContainer'),
+            ['panel.servers.before', 'panel.servers.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -848,7 +953,10 @@ const panelChildren = [
                 context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true }),
             ]);
         },
-        component: pageRoute('page.admin.servers.create'),
+        component: componentRoute(
+            () => import('@/components/admin/servers/CreateServerForm'),
+            ['panel.servers.create.before', 'panel.servers.create.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -862,12 +970,18 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.databaseHosts'),
+        component: componentRoute(
+            () => import('@/components/admin/databases/DatabaseHostsContainer'),
+            ['panel.databaseHosts.before', 'panel.databaseHosts.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'databases/new',
-        component: pageRoute('page.admin.databaseHosts.create'),
+        component: componentRoute(
+            () => import('@/components/admin/databases/CreateDatabaseHostForm'),
+            ['panel.databaseHosts.create.before', 'panel.databaseHosts.create.after']
+        ),
     }),
     databaseHostDetailRoute,
     createRoute({
@@ -882,12 +996,18 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.mounts'),
+        component: componentRoute(
+            () => import('@/components/admin/mounts/MountsContainer'),
+            ['panel.mounts.before', 'panel.mounts.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'mounts/new',
-        component: pageRoute('page.admin.mounts.create'),
+        component: componentRoute(
+            () => import('@/components/admin/mounts/CreateMountForm'),
+            ['panel.mounts.create.before', 'panel.mounts.create.after']
+        ),
     }),
     mountDetailRoute,
     createRoute({
@@ -897,7 +1017,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.eggs'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/EggsContainer'),
+            ['panel.eggs.before', 'panel.eggs.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -905,12 +1028,15 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.eggs.create'),
+        component: componentRoute(
+            () => import('@/components/admin/eggs/CreateEggForm'),
+            ['panel.eggs.create.before', 'panel.eggs.create.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'eggs/catalog',
-        component: pageRoute('page.admin.eggs.catalog'),
+        component: componentRoute(() => import('@/components/admin/eggs/EggCatalogContainer')),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -924,7 +1050,10 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.tags'),
+        component: componentRoute(
+            () => import('@/components/admin/tags/TagsContainer'),
+            ['panel.tags.before', 'panel.tags.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -933,7 +1062,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminExtensionsQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.extensions'),
+        component: componentRoute(
+            () => import('@/components/admin/extensions/ExtensionsContainer'),
+            ['panel.extensions.before', 'panel.extensions.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -942,7 +1074,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminThemesQueryOptions(), revalidateIfStale: true });
         },
-        component: pageRoute('page.admin.themes'),
+        component: componentRoute(
+            () => import('@/components/admin/themes/ThemesContainer'),
+            ['panel.themes.before', 'panel.themes.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
@@ -956,7 +1091,10 @@ const panelChildren = [
                 revalidateIfStale: true,
             });
         },
-        component: pageRoute('page.admin.apiKeys'),
+        component: componentRoute(
+            () => import('@/components/admin/api/ApiKeysContainer'),
+            ['panel.apiKeys.before', 'panel.apiKeys.after']
+        ),
     }),
 ];
 

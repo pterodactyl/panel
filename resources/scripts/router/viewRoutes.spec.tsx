@@ -69,6 +69,24 @@ it('keeps the permission guard in front of the page and its slots', async () => 
     expect(screen.queryByText('before slot')).not.toBeInTheDocument();
 });
 
+it('renders the slots around a page that is a plain component', async () => {
+    const Page = routes.componentRoute(
+        async () => ({ default: () => <p>admin page</p> }),
+        ['server.backups.before', 'server.backups.after']
+    );
+    const mounted = testing.createExtensionTestHost({ path: '/panel' });
+
+    host = mounted;
+    await Page.preload?.();
+    render(<Page />, { wrapper: mounted.Wrapper });
+
+    expect(await screen.findByText('admin page')).toBeVisible();
+    expect(screen.getByText('before slot').compareDocumentPosition(screen.getByText('admin page'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(screen.getByText('after slot')).toBeVisible();
+});
+
 it('preloads the chunks of the page view for the router', async () => {
     const preload = vi.fn(async () => {});
 

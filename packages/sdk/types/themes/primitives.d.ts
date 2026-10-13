@@ -24,27 +24,23 @@ export type NoState = {
     readonly [key: string]: never;
 };
 /**
- * Every UI primitive: the parts a skin styles, the state its recipes read (rendered as `data-*` on
- * the root, or on a part given its own state), and for presentational primitives the props a
- * replacement component receives.
+ * Every UI primitive: the state its recipes read (rendered as `data-*` on the root, or on a part
+ * given its own state), and for presentational primitives the props a replacement component receives.
  */
 export interface UiPrimitives {
     Alert: {
-        parts: 'root' | 'icon' | 'body' | 'title' | 'content';
         state: {
             type: AlertType;
         };
         props: AlertProps;
     };
     Avatar: {
-        parts: 'root';
         state: {
             variant: AvatarVariant;
         };
         props: AvatarProps;
     };
     Badge: {
-        parts: 'root';
         state: {
             tone: UiTone;
             size: BadgeSize;
@@ -57,7 +53,6 @@ export interface UiPrimitives {
      * `Button.Text` is `color: grey` and `Button.Danger` is `color: red`.
      */
     Button: {
-        parts: 'root' | 'spinner' | 'label';
         state: {
             color: ButtonColor;
             size: ButtonSize;
@@ -67,7 +62,6 @@ export interface UiPrimitives {
         props: ButtonProps;
     };
     Card: {
-        parts: 'root' | 'header' | 'title' | 'icon' | 'actions' | 'body';
         state: {
             titled: boolean;
             actions: boolean;
@@ -77,29 +71,24 @@ export interface UiPrimitives {
     };
     /** The frame of a chart: `legend` sits at the end of the header, `body` holds the chart. */
     ChartCard: {
-        parts: 'root' | 'header' | 'title' | 'legend' | 'body';
         state: NoState;
         props: ChartCardProps;
     };
     Checkbox: {
-        parts: 'root' | 'indicator';
         state: NoState;
     };
     Code: {
-        parts: 'root';
         state: {
             dark: boolean;
         };
     };
     /** `target` is added to the clicked child; the other parts are the status toast. */
     CopyOnClick: {
-        parts: 'root' | 'status' | 'message' | 'target';
         state: {
             status?: 'copied' | 'failed';
         };
     };
     Dialog: {
-        parts: 'backdrop' | 'viewport' | 'container' | 'root' | 'body' | 'content' | 'header' | 'heading' | 'title' | 'description' | 'spacer' | 'footer' | 'close' | 'closeButton' | 'closeIcon' | 'icon' | 'iconGlyph';
         /** `type` is the state of the `icon` part. */
         state: {
             described: boolean;
@@ -107,14 +96,12 @@ export interface UiPrimitives {
         };
     };
     DropdownMenu: {
-        parts: 'trigger' | 'positioner' | 'root';
         state: {
             context: boolean;
         };
     };
     /** `checked` is set on an item given `checked`, such as the scheme in use. */
     DropdownMenuItem: {
-        parts: 'root' | 'icon' | 'glyph' | 'text' | 'label' | 'description';
         state: {
             danger: boolean;
             described: boolean;
@@ -122,7 +109,6 @@ export interface UiPrimitives {
         };
     };
     Empty: {
-        parts: 'root' | 'header' | 'media' | 'title' | 'description' | 'content';
         /** `variant` is the state of the `media` part. */
         state: {
             size: EmptySize;
@@ -131,15 +117,12 @@ export interface UiPrimitives {
         props: EmptyProps;
     };
     FileInput: {
-        parts: 'root';
         state: NoState;
     };
     Input: {
-        parts: 'root';
         state: ControlState;
     };
     Label: {
-        parts: 'root';
         state: {
             light: boolean;
         };
@@ -149,7 +132,6 @@ export interface UiPrimitives {
      * placed by the row's content; `status` is drawn when the row has a `status`.
      */
     ListRow: {
-        parts: 'root' | 'icon' | 'title' | 'description' | 'status';
         state: {
             interactive: boolean;
             status?: UiTone;
@@ -158,35 +140,29 @@ export interface UiPrimitives {
     };
     /** `root` is added to the Button it renders, `content` wraps the icon and label. */
     NewButton: {
-        parts: 'root' | 'content' | 'icon';
         state: {
             link: boolean;
         };
     };
     NumberInput: {
-        parts: 'root' | 'input';
         state: ControlState;
     };
     /** The copyright line below each page; a replacement that renders nothing drops it. */
     PageFooter: {
-        parts: 'root' | 'text' | 'link';
         state: NoState;
         props: PageFooterProps;
     };
     PageHeading: {
-        parts: 'root' | 'text' | 'title' | 'description' | 'actions';
         state: NoState;
         props: PageHeadingProps;
     };
     /** `page` is added to each page Button. */
     Pagination: {
-        parts: 'root' | 'page';
         state: {
             current?: boolean;
         };
     };
     ProgressBar: {
-        parts: 'root' | 'indicator';
         state: {
             variant: ProgressBarVariant;
             tone: UiTone;
@@ -194,7 +170,6 @@ export interface UiPrimitives {
         props: ProgressBarProps;
     };
     Select: {
-        parts: 'root' | 'input' | 'trigger' | 'positioner' | 'popup' | 'list' | 'item' | 'itemLabel' | 'indicator' | 'empty' | 'group' | 'groupLabel' | 'summary' | 'preview';
         state: {
             error: boolean;
             multiple: boolean;
@@ -209,7 +184,6 @@ export interface UiPrimitives {
      * `content` of `::before`.
      */
     Spinner: {
-        parts: 'root' | 'container';
         state: {
             size: SpinnerSize;
             blue: boolean;
@@ -218,7 +192,6 @@ export interface UiPrimitives {
         props: SpinnerProps;
     };
     SpinnerOverlay: {
-        parts: 'root' | 'text';
         state: {
             fixed: boolean;
         };
@@ -228,7 +201,6 @@ export interface UiPrimitives {
      * `unavailable` means the value says why there is no reading, such as "Offline".
      */
     Stat: {
-        parts: 'root' | 'indicator' | 'icon' | 'glyph' | 'body' | 'label' | 'value' | 'limit';
         state: {
             variant: StatVariant;
             tone: UiTone;
@@ -238,32 +210,62 @@ export interface UiPrimitives {
     };
     /** `label` is added to the Label it renders. */
     Switch: {
-        parts: 'root' | 'control' | 'thumb' | 'text' | 'label' | 'description';
         state: {
             described: boolean;
             position: 'start' | 'end';
         };
     };
     Table: {
-        parts: 'root' | 'empty' | 'scroller' | 'table' | 'head' | 'headerRow' | 'headerCell' | 'body' | 'row' | 'cell';
         state: {
             fetching: boolean;
         };
     };
     TextArea: {
-        parts: 'root';
         state: ControlState;
     };
     Tooltip: {
-        parts: 'root' | 'arrow';
         state: {
             side: 'top' | 'right' | 'bottom' | 'left';
             arrow: boolean;
         };
     };
 }
+/** The parts each UI primitive's skin styles, in the order they render. */
+export declare const UI_PRIMITIVE_PARTS: {
+    readonly Alert: readonly ["root", "icon", "body", "title", "content"];
+    readonly Avatar: readonly ["root"];
+    readonly Badge: readonly ["root"];
+    readonly Button: readonly ["root", "spinner", "label"];
+    readonly Card: readonly ["root", "header", "title", "icon", "actions", "body"];
+    readonly ChartCard: readonly ["root", "header", "title", "legend", "body"];
+    readonly Checkbox: readonly ["root", "indicator"];
+    readonly Code: readonly ["root"];
+    readonly CopyOnClick: readonly ["root", "status", "message", "target"];
+    readonly Dialog: readonly ["backdrop", "viewport", "container", "root", "body", "content", "header", "heading", "title", "description", "spacer", "footer", "close", "closeButton", "closeIcon", "icon", "iconGlyph"];
+    readonly DropdownMenu: readonly ["trigger", "positioner", "root"];
+    readonly DropdownMenuItem: readonly ["root", "icon", "glyph", "text", "label", "description"];
+    readonly Empty: readonly ["root", "header", "media", "title", "description", "content"];
+    readonly FileInput: readonly ["root"];
+    readonly Input: readonly ["root"];
+    readonly Label: readonly ["root"];
+    readonly ListRow: readonly ["root", "icon", "title", "description", "status"];
+    readonly NewButton: readonly ["root", "content", "icon"];
+    readonly NumberInput: readonly ["root", "input"];
+    readonly PageFooter: readonly ["root", "text", "link"];
+    readonly PageHeading: readonly ["root", "text", "title", "description", "actions"];
+    readonly Pagination: readonly ["root", "page"];
+    readonly ProgressBar: readonly ["root", "indicator"];
+    readonly Select: readonly ["root", "input", "trigger", "positioner", "popup", "list", "item", "itemLabel", "indicator", "empty", "group", "groupLabel", "summary", "preview"];
+    readonly Spinner: readonly ["root", "container"];
+    readonly SpinnerOverlay: readonly ["root", "text"];
+    readonly Stat: readonly ["root", "indicator", "icon", "glyph", "body", "label", "value", "limit"];
+    readonly Switch: readonly ["root", "control", "thumb", "text", "label", "description"];
+    readonly Table: readonly ["root", "empty", "scroller", "table", "head", "headerRow", "headerCell", "body", "row", "cell"];
+    readonly TextArea: readonly ["root"];
+    readonly Tooltip: readonly ["root", "arrow"];
+};
 export type PrimitiveName = keyof UiPrimitives;
-export type SkinPart<N extends PrimitiveName> = UiPrimitives[N]['parts'];
+export type SkinPart<N extends PrimitiveName> = (typeof UI_PRIMITIVE_PARTS)[N][number];
 export type PrimitiveState<N extends PrimitiveName> = UiPrimitives[N]['state'];
 /** Presentational primitives, which a theme can also replace with a component. */
 export type ReplaceableName = {
@@ -272,138 +274,6 @@ export type ReplaceableName = {
 export type PrimitiveProps<N extends ReplaceableName> = UiPrimitives[N] extends {
     props: infer P extends object;
 } ? P : never;
-export interface PrimitiveMeta<N extends PrimitiveName> {
-    readonly parts: readonly SkinPart<N>[];
-    readonly replaceable: N extends ReplaceableName ? true : false;
-}
-/** The primitives and their parts at runtime, for the registry, the tests and the docs. */
-export declare const UI_PRIMITIVES: {
-    Alert: {
-        parts: ("content" | "title" | "icon" | "root" | "body")[];
-        replaceable: true;
-    };
-    Avatar: {
-        parts: "root"[];
-        replaceable: true;
-    };
-    Badge: {
-        parts: "root"[];
-        replaceable: true;
-    };
-    Button: {
-        parts: ("root" | "label" | "spinner")[];
-        replaceable: true;
-    };
-    Card: {
-        parts: ("title" | "icon" | "root" | "body" | "header" | "actions")[];
-        replaceable: true;
-    };
-    ChartCard: {
-        parts: ("title" | "root" | "body" | "header" | "legend")[];
-        replaceable: true;
-    };
-    Checkbox: {
-        parts: ("root" | "indicator")[];
-        replaceable: false;
-    };
-    Code: {
-        parts: "root"[];
-        replaceable: false;
-    };
-    CopyOnClick: {
-        parts: ("target" | "status" | "root" | "message")[];
-        replaceable: false;
-    };
-    Dialog: {
-        parts: ("container" | "content" | "title" | "icon" | "heading" | "root" | "body" | "footer" | "header" | "spacer" | "close" | "closeButton" | "description" | "viewport" | "backdrop" | "closeIcon" | "iconGlyph")[];
-        replaceable: false;
-    };
-    DropdownMenu: {
-        parts: ("root" | "trigger" | "positioner")[];
-        replaceable: false;
-    };
-    DropdownMenuItem: {
-        parts: ("text" | "icon" | "root" | "label" | "description" | "glyph")[];
-        replaceable: false;
-    };
-    Empty: {
-        parts: ("content" | "media" | "title" | "root" | "header" | "description")[];
-        replaceable: true;
-    };
-    FileInput: {
-        parts: "root"[];
-        replaceable: false;
-    };
-    Input: {
-        parts: "root"[];
-        replaceable: false;
-    };
-    Label: {
-        parts: "root"[];
-        replaceable: false;
-    };
-    ListRow: {
-        parts: ("title" | "icon" | "status" | "root" | "description")[];
-        replaceable: true;
-    };
-    NewButton: {
-        parts: ("content" | "icon" | "root")[];
-        replaceable: false;
-    };
-    NumberInput: {
-        parts: ("root" | "input")[];
-        replaceable: false;
-    };
-    PageFooter: {
-        parts: ("text" | "link" | "root")[];
-        replaceable: true;
-    };
-    PageHeading: {
-        parts: ("text" | "title" | "root" | "description" | "actions")[];
-        replaceable: true;
-    };
-    Pagination: {
-        parts: ("page" | "root")[];
-        replaceable: false;
-    };
-    ProgressBar: {
-        parts: ("root" | "indicator")[];
-        replaceable: true;
-    };
-    Select: {
-        parts: ("list" | "group" | "root" | "input" | "summary" | "preview" | "popup" | "indicator" | "trigger" | "positioner" | "item" | "itemLabel" | "empty" | "groupLabel")[];
-        replaceable: false;
-    };
-    Spinner: {
-        parts: ("container" | "root")[];
-        replaceable: true;
-    };
-    SpinnerOverlay: {
-        parts: ("text" | "root")[];
-        replaceable: false;
-    };
-    Stat: {
-        parts: ("icon" | "root" | "body" | "label" | "value" | "indicator" | "limit" | "glyph")[];
-        replaceable: true;
-    };
-    Switch: {
-        parts: ("text" | "root" | "label" | "description" | "control" | "thumb")[];
-        replaceable: false;
-    };
-    Table: {
-        parts: ("cell" | "row" | "table" | "root" | "body" | "head" | "empty" | "scroller" | "headerRow" | "headerCell")[];
-        replaceable: false;
-    };
-    TextArea: {
-        parts: "root"[];
-        replaceable: false;
-    };
-    Tooltip: {
-        parts: ("root" | "arrow")[];
-        replaceable: false;
-    };
-};
-export declare function isPrimitiveName(name: string): name is PrimitiveName;
 /** `data-ui` of a primitive: `DropdownMenuItem` → `dropdown-menu-item`. */
 export declare function primitiveAttribute(name: PrimitiveName): string;
 export {};

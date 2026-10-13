@@ -1,19 +1,15 @@
-import type { ComponentType, ReactNode } from 'react';
-import { Outlet } from '@tanstack/react-router';
+import type { ComponentType, FunctionComponent, ReactNode } from 'react';
+import { lazyRouteComponent, Outlet } from '@tanstack/react-router';
 import Spinner from '@/components/elements/Spinner';
 import PermissionRoute from '@/components/elements/PermissionRoute';
 import Slot from '@/extensions/Slot';
 import { hasPermission } from '@/plugins/usePermissions';
 import { RouteAccessDenied } from '@/router/RouteError';
 import { useRouteSlotData } from '@/router/routeSlots';
-import { LayoutMainCheck } from '@/views/a11y';
-import { pageSlots, type PageViewName } from '@/views/pages';
+import { pageSlots, type PageSlots, type ViewPageName } from '@/views/pages';
 import { ViewSessionProvider } from '@/views/session';
-import { EngineSlots } from '@/views/slotCheck';
 import { preloadView, View, ViewArea } from '@/views/View';
 import type { ViewContext } from '@/views/registry';
-
-const noSlots: readonly string[] = [];
 
 export type LayoutViewName = 'layout.auth' | 'layout.app' | 'layout.account' | 'layout.server' | 'layout.admin';
 
@@ -32,9 +28,7 @@ export const requireServerPermission =
 export function LayoutView({ name, area, children }: { name: LayoutViewName; area: ViewContext; children: ReactNode }) {
     return (
         <ViewArea area={area}>
-            <LayoutMainCheck name={name}>
-                <View name={name}>{children}</View>
-            </LayoutMainCheck>
+            <View name={name}>{children}</View>
         </ViewArea>
     );
 }
@@ -53,32 +47,48 @@ export function layoutRoute(name: LayoutViewName, area: ViewContext) {
     return LayoutRoute;
 }
 
+/** A page's permission guard, then the page between the slots rendered before and after it. */
+function PageFrame({
+    permission,
+    slots,
+    children,
+}: {
+    permission: string | string[] | null;
+    slots: PageSlots | undefined;
+    children: ReactNode;
+}) {
+    const data = useRouteSlotData();
+
+    return (
+        <PermissionRoute permission={permission}>
+            <ViewSessionProvider>
+                {slots && <Slot name={slots[0]} data={data} />}
+                <Spinner.Suspense>{children}</Spinner.Suspense>
+                {slots && <Slot name={slots[1]} data={data} />}
+            </ViewSessionProvider>
+        </PermissionRoute>
+    );
+}
+
 /**
- * The route component of a page: its permission guard, then the page view between the slots the
- * engine renders before and after it, so a theme cannot drop them. `Frame` is engine state the page's
- * views share, such as an editing session, rendered around the page view whatever the theme draws.
+ * The route component of a page view, between the slots the engine renders around it, so a theme
+ * cannot drop them. `Frame` is engine state the page's views share, such as an editing session,
+ * rendered around the page view whatever the theme draws.
  */
 export function pageRoute(
-    name: Exclude<PageViewName, 'page.server.console'>,
+    name: Exclude<ViewPageName, 'page.server.console'>,
     permission: string | string[] | null = null,
     Frame?: ComponentType<{ children?: ReactNode }> & { preload?: () => Promise<unknown> }
 ) {
     const slots = pageSlots(name);
 
     function PageRoute() {
-        const data = useRouteSlotData();
         const page = <View name={name} />;
 
         return (
-            <PermissionRoute permission={permission}>
-                <ViewSessionProvider>
-                    {slots && <Slot name={slots[0]} data={data} />}
-                    <EngineSlots.Provider value={slots ?? noSlots}>
-                        <Spinner.Suspense>{Frame ? <Frame>{page}</Frame> : page}</Spinner.Suspense>
-                    </EngineSlots.Provider>
-                    {slots && <Slot name={slots[1]} data={data} />}
-                </ViewSessionProvider>
-            </PermissionRoute>
+            <PageFrame permission={permission} slots={slots}>
+                {Frame ? <Frame>{page}</Frame> : page}
+            </PageFrame>
         );
     }
 
@@ -87,4 +97,21 @@ export function pageRoute(
     };
 
     return PageRoute;
+}
+
+/** The route component of a page that is a plain component, such as an admin page, between its slots. */
+export function componentRoute(importer: () => Promise<{ default: FunctionComponent }>, slots?: PageSlots) {
+    const Page = lazyRouteComponent(importer);
+
+    function ComponentRoute() {
+        return (
+            <PageFrame permission={null} slots={slots}>
+                <Page />
+            </PageFrame>
+        );
+    }
+
+    ComponentRoute.preload = Page.preload;
+
+    return ComponentRoute;
 }

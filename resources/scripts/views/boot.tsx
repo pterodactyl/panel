@@ -5,11 +5,9 @@ import { failExtensionLoad } from '@/extensions/registry';
 import { isObject } from '@/lib/objects';
 import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import { registerClassicTheme } from './classic';
-import { opaqueViews } from './opaque';
 import { clearThemeLayers, isViewComponent, registerViewLayer } from './registry';
 import { fallBackToClassic, registerThemeIcons, type ThemeDefinition } from './theme';
 import './definitions';
-import './pages';
 
 export const THEME_BOOT_TIMEOUT_MS = 2500;
 
@@ -69,7 +67,6 @@ function withTimeout<T>(promise: Promise<T>): Promise<T> {
  * Any failure or a slow chain leaves this browser on classic and reports it.
  */
 export async function bootTheme(importModule: ModuleImporter = nativeImport): Promise<void> {
-    registerViewLayer('classic', 'classic', opaqueViews);
     registerClassicTheme();
 
     const theme = getBootstrapTheme();

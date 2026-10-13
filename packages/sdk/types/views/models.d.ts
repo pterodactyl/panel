@@ -3,4 +3,3 @@ export type { DashboardModel, DashboardScope, ServerCardModel, ServerCardPermiss
 export type { AccountArea, AccountLayoutModel, AdminArea, AdminLayoutModel, AppArea, AppLayoutLink, AppLayoutModel, AuthLayoutModel, DashboardArea, LayoutBrand, ServerArea, ServerLayoutModel, } from "./layouts.js";
 export type { ServerConflict } from "./server/state.js";
 export type { AppSearchModel, AppSearchResult } from "./search.js";
-export type { OpaqueModel, OpaquePageName, PageViewName } from "./pages.js";

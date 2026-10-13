@@ -28,4 +28,3 @@ export type {
 } from './layouts';
 export type { ServerConflict } from './server/state';
 export type { AppSearchModel, AppSearchResult } from './search';
-export type { OpaqueModel, OpaquePageName, PageViewName } from './pages';

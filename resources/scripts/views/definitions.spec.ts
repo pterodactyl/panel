@@ -39,10 +39,7 @@ const loadRoutes = (ids: readonly string[]) =>
 
 describe('view implementations', () => {
     it('declares every view up front and loads none of their hooks or fixtures at boot', () => {
-        // Only the opaque views, whose model is empty, are implemented where they are declared.
-        const real = views
-            .getViewDefinitions()
-            .filter(({ name }) => !name.startsWith('page.admin.') && name !== 'app.search');
+        const real = views.getViewDefinitions();
 
         expect(real.length).toBeGreaterThan(60);
         expect(real.filter((definition) => !definition.load || definition.use || definition.fixtures)).toEqual([]);

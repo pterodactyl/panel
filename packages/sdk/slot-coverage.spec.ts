@@ -24,6 +24,7 @@ const anchorFiles = [
     '../../resources/scripts/themes/classic/views/auth/LoginForm.tsx',
     '../../resources/scripts/themes/classic/views/server/users/SubuserForm.tsx',
     '../../resources/scripts/views/pages.ts',
+    '../../resources/scripts/router/routeTree.ts',
     '../../resources/scripts/themes/classic/views/layout/AccountLayout.tsx',
     '../../resources/scripts/themes/classic/views/layout/AdminLayout.tsx',
     '../../resources/scripts/themes/classic/views/layout/ServerLayout.tsx',

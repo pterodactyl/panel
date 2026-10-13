@@ -78,14 +78,11 @@ describe('eject', () => {
         expect(readFileSync(resolve(directory, 'src/views/dashboard/Dashboard.tsx'), 'utf8')).not.toBe('edited');
     });
 
-    it('suggests views for an unknown name and explains views classic has no source for', () => {
+    it('suggests views for an unknown name', () => {
         const unknown = cli('eject', 'server.card');
-        const opaque = cli('eject', 'page.admin.nodes');
 
         expect(unknown.status).toBe(1);
         expect(unknown.stderr).toContain('There is no view named "server.card". Did you mean dashboard.serverCard');
-        expect(opaque.status).toBe(1);
-        expect(opaque.stderr).toContain("'page.admin.nodes': ({ model, Default }) => <Default />");
     });
 
     it('follows relative imports within classic, keeping files an earlier eject copied', () => {

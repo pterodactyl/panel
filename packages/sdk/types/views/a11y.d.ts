@@ -8,11 +8,6 @@ export declare function Main({ className, children }: {
     className?: string;
     children?: ReactNode;
 }): string | number | bigint | boolean | Iterable<ReactNode> | Promise<string | number | bigint | boolean | import("react").ReactPortal | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | import("react").JSX.Element | null | undefined;
-/** In development, warns when the layout view below never places its content in `<Main>`. */
-export declare function LayoutMainCheck({ name, children }: {
-    name: string;
-    children?: ReactNode;
-}): import("react").JSX.Element;
 export declare function SkipLink(): import("react").JSX.Element;
 /** Moves focus to `<Main>` after each navigation to another path and announces the new title. */
 export declare function RouteAnnouncer(): import("react").JSX.Element;

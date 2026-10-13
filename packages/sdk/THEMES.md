@@ -404,8 +404,7 @@ returns the props to spread, and `.classes('root')` only the class string.
 | `Tooltip` | Tooltips | `root`, `arrow` | no |
 | `Stat` | A labelled value, such as a server's memory: console tiles and dashboard metrics | `root`, `icon`, `glyph`, `label`, `value`, `limit` and 2 more | yes |
 
-[Primitives](#primitives) lists all 31 with their state. In development, skinning a primitive or part
-that does not exist logs a warning, and a recipe that throws renders no classes.
+[Primitives](#primitives) lists all 31 with their state. A recipe that throws renders no classes.
 
 ## Level 3: change the layout
 
@@ -452,8 +451,7 @@ export default defineTheme({
 A layout places `children` inside `<Main>`, which renders `<main id="main" tabIndex={-1}>`: the target of
 the skip link, which the engine focuses after each navigation while it announces the new page title.
 Layouts nest, and only the outermost `<Main>` renders the element; a nested one renders its children in
-place, in a `<div>` when it has a `className`. In development, a layout that never renders `<Main>` logs
-a warning.
+place, in a `<div>` when it has a `className`.
 
 ### Navigation and the brand
 
@@ -512,8 +510,7 @@ else (`AreaLayout` above).
 A layer that replaces a view renders the view's slots, listed in the [catalogue](#view-catalogue), or
 the extensions mounted there disappear. The area layouts' slots sit in their navigation, so the shell
 renders them where it draws that navigation (`AreaSlot` below); the catalogue lists them with
-`layout.app`. In development, a layer that renders none of its view's slots logs a warning after three
-seconds; slots an enclosing view renders count, so the thin layouts do not warn.
+`layout.app`.
 
 <!-- sample: level3-sidebar/src/views/AreaNav.tsx -->
 ```tsx
@@ -887,7 +884,9 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
 ```
 <!-- /sample -->
 
-The admin pages are [opaque](#opaque-pages): wrap them with `Default`, or place blocks around them.
+The admin pages are not views. `layout.admin` wraps them, and each renders the `panel.*` slots before and
+after it, so a theme restyles them through the layout and the [skins](#level-2-restyle-components), and
+extensions place blocks in those slots.
 
 ## Settings, schemes and branding
 
@@ -1543,63 +1542,6 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.subuserForm` | server | `SubuserFormModel` | `subuser?: SubuserSummary`, `onClose?: () => void` | `server.users.permissions.before` | create, edit, restricted, viewOnly, loading |
 | `server.subusers` | server | `SubuserListModel` |  |  | subusers, empty, readOnly |
 | `server.terminal` | server | `ServerTerminalModel` |  |  | running, connecting, failed, scrolledUp, readOnly |
-
-#### Opaque pages
-
-These pages still render the panel's own containers: their model is `OpaqueModel` (empty), they have no
-fixtures, and `Default` renders the container. Wrap them, or place blocks around them.
-
-| View | Slots the engine renders around it |
-| --- | --- |
-| `page.admin.activity` | `panel.activity.before` `panel.activity.after` |
-| `page.admin.apiKeys` | `panel.apiKeys.before` `panel.apiKeys.after` |
-| `page.admin.databaseHosts` | `panel.databaseHosts.before` `panel.databaseHosts.after` |
-| `page.admin.databaseHosts.create` | `panel.databaseHosts.create.before` `panel.databaseHosts.create.after` |
-| `page.admin.databaseHosts.detail` | `panel.databaseHosts.detail.before` `panel.databaseHosts.detail.after` |
-| `page.admin.eggs` | `panel.eggs.before` `panel.eggs.after` |
-| `page.admin.eggs.catalog` |  |
-| `page.admin.eggs.create` | `panel.eggs.create.before` `panel.eggs.create.after` |
-| `page.admin.eggs.detail` | `panel.eggs.detail.before` `panel.eggs.detail.after` |
-| `page.admin.eggs.detail.configuration` | `panel.eggs.detail.configuration.before` `panel.eggs.detail.configuration.after` |
-| `page.admin.eggs.detail.script` | `panel.eggs.detail.script.before` `panel.eggs.detail.script.after` |
-| `page.admin.eggs.detail.tags` | `panel.eggs.detail.tags.before` `panel.eggs.detail.tags.after` |
-| `page.admin.eggs.detail.variables` | `panel.eggs.detail.variables.before` `panel.eggs.detail.variables.after` |
-| `page.admin.extensions` | `panel.extensions.before` `panel.extensions.after` |
-| `page.admin.locations` | `panel.locations.before` `panel.locations.after` |
-| `page.admin.locations.detail` | `panel.locations.detail.before` `panel.locations.detail.after` |
-| `page.admin.mounts` | `panel.mounts.before` `panel.mounts.after` |
-| `page.admin.mounts.create` | `panel.mounts.create.before` `panel.mounts.create.after` |
-| `page.admin.mounts.detail` | `panel.mounts.detail.before` `panel.mounts.detail.after` |
-| `page.admin.nodes` | `panel.nodes.before` `panel.nodes.after` |
-| `page.admin.nodes.create` | `panel.nodes.create.before` `panel.nodes.create.after` |
-| `page.admin.nodes.detail` | `panel.nodes.detail.before` `panel.nodes.detail.after` |
-| `page.admin.nodes.detail.about` | `panel.nodes.detail.about.before` `panel.nodes.detail.about.after` |
-| `page.admin.nodes.detail.allocations` | `panel.nodes.detail.allocations.before` `panel.nodes.detail.allocations.after` |
-| `page.admin.nodes.detail.configuration` | `panel.nodes.detail.configuration.before` `panel.nodes.detail.configuration.after` |
-| `page.admin.nodes.detail.servers` | `panel.nodes.detail.servers.before` `panel.nodes.detail.servers.after` |
-| `page.admin.nodes.detail.settings` | `panel.nodes.detail.settings.before` `panel.nodes.detail.settings.after` |
-| `page.admin.nodes.detail.tags` | `panel.nodes.detail.tags.before` `panel.nodes.detail.tags.after` |
-| `page.admin.overview` |  |
-| `page.admin.servers` | `panel.servers.before` `panel.servers.after` |
-| `page.admin.servers.create` | `panel.servers.create.before` `panel.servers.create.after` |
-| `page.admin.servers.detail` | `panel.servers.detail.before` `panel.servers.detail.after` |
-| `page.admin.servers.detail.about` | `panel.servers.detail.about.before` `panel.servers.detail.about.after` |
-| `page.admin.servers.detail.build` | `panel.servers.detail.build.before` `panel.servers.detail.build.after` |
-| `page.admin.servers.detail.databases` | `panel.servers.detail.databases.before` `panel.servers.detail.databases.after` |
-| `page.admin.servers.detail.delete` | `panel.servers.detail.delete.before` `panel.servers.detail.delete.after` |
-| `page.admin.servers.detail.details` | `panel.servers.detail.details.before` `panel.servers.detail.details.after` |
-| `page.admin.servers.detail.manage` | `panel.servers.detail.manage.before` `panel.servers.detail.manage.after` |
-| `page.admin.servers.detail.mounts` | `panel.servers.detail.mounts.before` `panel.servers.detail.mounts.after` |
-| `page.admin.servers.detail.startup` | `panel.servers.detail.startup.before` `panel.servers.detail.startup.after` |
-| `page.admin.settings` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.settings.advanced` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.settings.mail` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.tags` | `panel.tags.before` `panel.tags.after` |
-| `page.admin.themes` | `panel.themes.before` `panel.themes.after` |
-| `page.admin.users` | `panel.users.before` `panel.users.after` |
-| `page.admin.users.create` | `panel.users.create.before` `panel.users.create.after` |
-| `page.admin.users.detail` | `panel.users.detail.before` `panel.users.detail.after` |
-| `page.admin.users.detail.about` |  |
 <!-- /generated:views -->
 
 ### The full example

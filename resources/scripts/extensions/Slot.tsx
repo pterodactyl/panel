@@ -1,6 +1,5 @@
 import { getSlotComponents, useExtensionRegistry, type SlotProps } from '@/extensions/registry';
 import ExtensionMount from '@/extensions/ExtensionMount';
-import { useRenderedSlot } from '@/views/slotCheck';
 
 function slotResetKey(name: SlotProps['name'], data: SlotProps['data']): string {
     if (!data) {
@@ -29,8 +28,6 @@ function slotResetKey(name: SlotProps['name'], data: SlotProps['data']): string 
 export default function Slot({ name, data }: SlotProps) {
     const registrations = useExtensionRegistry(() => getSlotComponents(name));
     const resetKey = slotResetKey(name, data);
-
-    useRenderedSlot(name);
 
     return (
         <>

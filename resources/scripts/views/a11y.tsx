@@ -1,9 +1,8 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { cn } from '@/lib/cn';
 
 const InsideMain = createContext(false);
-const LayoutProbe = createContext<(() => void) | null>(null);
 
 const focusMain = (options?: FocusOptions) => document.getElementById('main')?.focus(options);
 
@@ -13,9 +12,6 @@ const focusMain = (options?: FocusOptions) => document.getElementById('main')?.f
  */
 export function Main({ className, children }: { className?: string; children?: ReactNode }) {
     const nested = useContext(InsideMain);
-    const probe = useContext(LayoutProbe);
-
-    useEffect(() => probe?.(), [probe]);
 
     if (nested) {
         return className ? <div className={className}>{children}</div> : children;
@@ -28,31 +24,6 @@ export function Main({ className, children }: { className?: string; children?: R
             </main>
         </InsideMain.Provider>
     );
-}
-
-/** In development, warns when the layout view below never places its content in `<Main>`. */
-export function LayoutMainCheck({ name, children }: { name: string; children?: ReactNode }) {
-    const found = useRef(false);
-    const [probe] = useState(() => () => {
-        found.current = true;
-    });
-
-    useEffect(() => {
-        if (!import.meta.env.DEV) {
-            return;
-        }
-
-        // Lazy layers render later than this effect.
-        const timer = setTimeout(() => {
-            if (!found.current) {
-                console.warn(`[views] The "${name}" layout never rendered <Main>; place its children inside <Main>.`);
-            }
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [name]);
-
-    return <LayoutProbe.Provider value={probe}>{children}</LayoutProbe.Provider>;
 }
 
 export function SkipLink() {

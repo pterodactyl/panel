@@ -27,19 +27,19 @@ const program = ts.createProgram(
 );
 const checker = program.getTypeChecker();
 
-/** An interface the SDK declares, with every module augmentation merged in. */
-function declared(file, name) {
+function exported(file, name) {
     const source = program.getSourceFile(resolve(sdk, file));
     const symbol = checker.getExportsOfModule(checker.getSymbolAtLocation(source)).find((entry) => entry.name === name);
 
     if (!symbol) throw new Error(`${file} does not export ${name}.`);
 
-    return checker.getDeclaredTypeOfSymbol(symbol);
+    return symbol;
 }
 
-const properties = (type) => new Map(checker.getPropertiesOfType(type).map((property) => [property.name, property]));
+/** An interface the SDK declares, with every module augmentation merged in. */
+const declared = (file, name) => checker.getDeclaredTypeOfSymbol(exported(file, name));
 
-const opaque = declared('types/views/pages.d.ts', 'OpaqueModel');
+const properties = (type) => new Map(checker.getPropertiesOfType(type).map((property) => [property.name, property]));
 
 /** The type a property is declared with, as written, or as the checker prints it. */
 function typeText(property) {
@@ -49,10 +49,7 @@ function typeText(property) {
         return declaration.type.getText().replace(/\s+/g, ' ');
     }
 
-    // Pages mapped from `Record<OpaquePageName, OpaqueModel>` lose the alias.
-    return checker.getTypeOfSymbol(property) === opaque
-        ? 'OpaqueModel'
-        : checker.typeToString(checker.getTypeOfSymbol(property));
+    return checker.typeToString(checker.getTypeOfSymbol(property));
 }
 
 /** The union a type node spells out, following type aliases, so its members keep their written order. */
@@ -134,7 +131,6 @@ function viewCatalogue() {
             ...entries.map(row(withEngine)).map((cells) => `| ${cells.join(' | ')} |`),
         ].join('\n');
     const all = Object.entries(views);
-    const opaquePages = all.filter(([name, view]) => view.kind === 'page' && model(name) === 'OpaqueModel');
 
     return [
         table(
@@ -143,23 +139,13 @@ function viewCatalogue() {
         ),
         table(
             'Pages',
-            all.filter(([name, view]) => view.kind === 'page' && model(name) !== 'OpaqueModel'),
+            all.filter(([, view]) => view.kind === 'page'),
             true
         ),
         table(
             'Blocks',
             all.filter(([, view]) => view.kind === 'block')
         ),
-        [
-            '#### Opaque pages',
-            '',
-            "These pages still render the panel's own containers: their model is `OpaqueModel` (empty), they have no",
-            'fixtures, and `Default` renders the container. Wrap them, or place blocks around them.',
-            '',
-            '| View | Slots the engine renders around it |',
-            '| --- | --- |',
-            ...opaquePages.map(([name, view]) => `| ${code(name)} | ${(view.engineSlots ?? []).map(code).join(' ')} |`),
-        ].join('\n'),
     ].join('\n\n');
 }
 
@@ -167,9 +153,12 @@ const kebab = (name) => name.replaceAll(/[A-Z]/g, (letter) => `-${letter.toLower
 
 function primitiveReference() {
     const primitives = properties(declared('types/themes/primitives.d.ts', 'UiPrimitives'));
+    const partLists = properties(checker.getTypeOfSymbol(exported('types/themes/primitives.d.ts', 'UI_PRIMITIVE_PARTS')));
     const rows = [...primitives.values()].map((primitive) => {
         const shape = properties(checker.getTypeOfSymbol(primitive));
-        const parts = literals(shape.get('parts'));
+        const parts = checker
+            .getTypeArguments(checker.getTypeOfSymbol(partLists.get(primitive.name)))
+            .map((part) => part.value);
         const state = [...properties(checker.getTypeOfSymbol(shape.get('state'))).values()].map((property) => {
             const values = literals(property);
             const attribute = code(`data-${kebab(property.name)}`);

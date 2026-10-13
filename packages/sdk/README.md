@@ -862,9 +862,8 @@ function Balance({ model, className }: ExtensionViewProps<BalanceModel>) {
 
 A view renders the slots listed for it in the catalogue, and a layer that replaces it has to
 render them too, or the extensions mounted there disappear. Rendering `Default` renders the
-slots of the layers below. In development, a layer that renders none of its view's slots logs
-a warning naming them after three seconds. The catalogue's engine slots of a page are rendered by
-the engine around the page view, so no layer renders or drops them.
+slots of the layers below. The catalogue's engine slots of a page are rendered by the engine
+around the page view, so no layer renders or drops them.
 
 ### File editor
 

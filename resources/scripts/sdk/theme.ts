@@ -18,11 +18,10 @@ export {
 export {
     skin,
     useSkin,
-    UI_PRIMITIVES,
+    UI_PRIMITIVE_PARTS,
     type CompleteSkin,
     type CompleteSkins,
     type NoState,
-    type PrimitiveMeta,
     type PrimitiveName,
     type PrimitiveProps,
     type PrimitiveState,

@@ -7,7 +7,7 @@ import Card from '@/components/elements/Card';
 import Checkbox from '@/components/ui/Checkbox';
 import { Empty, EmptyMedia } from '@/components/ui/empty';
 import { classicSkins } from '@/themes/classic/skins';
-import { clearThemeSkins, getSkin, registerSkins, skin, UI_PRIMITIVES, type ThemeSkins } from './skins';
+import { clearThemeSkins, getSkin, registerSkins, skin, UI_PRIMITIVE_PARTS, type ThemeSkins } from './skins';
 
 afterEach(() => {
     cleanup();
@@ -114,7 +114,6 @@ describe('skin layers', () => {
 
     it('ignores a failing recipe and a part the primitive does not have', () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
         registerSkins('aurora', {
             Badge: {
@@ -129,7 +128,6 @@ describe('skin layers', () => {
 
         expect(screen.getByText('New')).not.toHaveAttribute('class');
         expect(error).toHaveBeenCalledWith('[skins] The "aurora" recipe of Badge failed.', expect.any(Error));
-        expect(warn).toHaveBeenCalledWith('[skins] Badge has no "icon" part; the "aurora" recipe for it is ignored.');
     });
 });
 
@@ -233,8 +231,7 @@ describe('replacement components', () => {
         expect(screen.getByRole('button', { name: 'Go' })).toHaveClass('pill');
     });
 
-    it('keeps Base UI primitives in core and warns about a replacement', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    it('keeps Base UI primitives in core', () => {
         const Replacement = () => <span>replaced</span>;
 
         // @ts-expect-error -- a Base UI primitive takes a skin, not a component.
@@ -245,27 +242,15 @@ describe('replacement components', () => {
 
         expect(screen.getByRole('checkbox', { name: 'Agree' })).toHaveAttribute('data-ui', 'checkbox');
         expect(screen.queryByText('replaced')).not.toBeInTheDocument();
-        expect(warn).toHaveBeenCalledWith(
-            '[skins] Checkbox keeps its behaviour in core and can only be skinned; the "aurora" component is ignored.'
-        );
-    });
-
-    it('warns about a name that is not a primitive', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-        // @ts-expect-error -- not a primitive.
-        registerSkins('aurora', { Butt: { root: 'x' } });
-
-        expect(warn).toHaveBeenCalledWith('[skins] The "aurora" layer skins "Butt", which is not a UI primitive.');
     });
 });
 
 describe('classic', () => {
     it('has a recipe for every part of every primitive', () => {
-        for (const [name, { parts }] of Object.entries(UI_PRIMITIVES)) {
+        for (const [name, parts] of Object.entries(UI_PRIMITIVE_PARTS)) {
             expect(Object.keys(Reflect.get(classicSkins, name)).sort(), name).toEqual([...parts].sort());
         }
 
-        expect(Object.keys(classicSkins).sort()).toEqual(Object.keys(UI_PRIMITIVES).sort());
+        expect(Object.keys(classicSkins).sort()).toEqual(Object.keys(UI_PRIMITIVE_PARTS).sort());
     });
 });
