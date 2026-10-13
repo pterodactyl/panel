@@ -1,0 +1,31 @@
+resources/scripts/views/layouts.spec.tsx
+  s_4cabae41bceed9::t_f97f22fece5c00 81-82
+resources/scripts/views/server/settings.spec.tsx
+  s_4cabae41bceed9::t_f97f22fece5c00 50-53,55-57
+  s_4cabae41bceed9::t_6ae4d8680fccc4 54
+resources/scripts/views/server/console.spec.tsx
+  s_4cabae41bceed9::t_f97f22fece5c00 250-255
+resources/scripts/views/pageStatus.spec.ts
+  s_4cabae41bceed9::t_f964840cc1bf7f 4-6,8-10,12-13,17,19,24,28
+  s_4cabae41bceed9::t_2256b8852e875e 1-3,7,11,14-16,18,20-23,25-27,29
+resources/scripts/views/className.spec.tsx
+  s_4cabae41bceed9::t_cc582978ac3ef7 2-3,7-8,11-27,36,41,45-48
+resources/scripts/themes/classic/views/server/startup/StartupPage.tsx
+  s_4cabae41bceed9::t_b8256dc08270c3 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c51d6d57197882769608b8e2d34c83e219c8baf8",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
