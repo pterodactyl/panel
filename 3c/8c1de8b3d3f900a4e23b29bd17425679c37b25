@@ -1,0 +1,21 @@
+app/Services/Extensions/Scaffolding/stubs/theme-readme.stub
+  s_4cabae41bceed9::t_2bc06281ed4af6 34
+app/Services/Extensions/Scaffolding/stubs/theme-skins.stub
+  s_4cabae41bceed9::t_90312c705efca5 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3c8c1de8b3d3f900a4e23b29bd17425679c37b25",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
