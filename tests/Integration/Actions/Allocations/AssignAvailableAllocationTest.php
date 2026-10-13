@@ -33,6 +33,7 @@ test('existing allocation is preferred', function () {
     expect($response->node_id)->toBe($server->node_id);
     expect($response->server_id)->toBe($server->id);
     $this->assertNotSame($server->allocation_id, $response->id);
+    $this->assertActivityOn('server:allocation.create', $server, $response);
 });
 test('new allocation is created if one is not found', function () {
     $server = $this->createServerModel();

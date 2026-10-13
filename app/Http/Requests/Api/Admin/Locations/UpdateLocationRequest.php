@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Locations;
 
+use Pterodactyl\Actions\Locations\CreateLocation;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Validation\LocationRules;
 
 class UpdateLocationRequest extends StoreLocationRequest
 {
@@ -22,7 +22,7 @@ class UpdateLocationRequest extends StoreLocationRequest
      */
     public function rules(): array
     {
-        return LocationRules::rules($this->parameter('location', Location::class));
+        return CreateLocation::rules($this->parameter('location', Location::class));
     }
 
     /**

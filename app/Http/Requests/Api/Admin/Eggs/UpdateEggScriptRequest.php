@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs;
 
+use Pterodactyl\Actions\Eggs\Scripts\UpdateInstallScript;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 
@@ -21,12 +22,6 @@ class UpdateEggScriptRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'script_install' => ['sometimes', 'nullable', 'string'],
-            'script_is_privileged' => ['sometimes', 'required', 'boolean'],
-            'script_entry' => ['sometimes', 'required', 'string'],
-            'script_container' => ['sometimes', 'required', 'string'],
-            'copy_script_from' => ['sometimes', 'nullable', 'numeric'],
-        ];
+        return UpdateInstallScript::rules();
     }
 }

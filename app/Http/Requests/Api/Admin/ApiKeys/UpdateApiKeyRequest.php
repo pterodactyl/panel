@@ -13,5 +13,5 @@ class UpdateApiKeyRequest extends StoreApiKeyRequest
         return [Permissions::AdminApiKeysUpdate];
     }
 
-    // Same payload as creation; rules and getKeyPermissions() are inherited.
+    // Same input as creation; rules, actionInput() and getKeyPermissions() are inherited.
 }

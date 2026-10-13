@@ -44,18 +44,30 @@ const withTimeout = async <T>(promise: Promise<T>): Promise<T> => {
     }
 };
 
+/**
+ * Guests are sent no screens or component claims, since neither renders on the sign-in pages, so
+ * the same setup() skips those registrations there instead of failing on undeclared names.
+ */
 const createContext = (entry: SiteExtensionEntry, batch: ExtensionRegistryBatch): ExtensionSetupContext => ({
     meta: { id: entry.id, version: entry.version },
     config: entry.config ?? {},
     components: {
-        replace: (name, replacement) => registerComponentReplacement(entry.id, name, replacement, batch),
+        replace: (name, replacement) => {
+            if (entry.components) {
+                registerComponentReplacement(entry.id, name, replacement, batch);
+            }
+        },
     },
     slots: {
         register: (name, component) =>
             registerSlotComponent(entry.id, name, component as Parameters<typeof registerSlotComponent>[2], batch),
     },
     screens: {
-        register: (id, component, options) => registerScreen(entry.id, id, component, batch, options),
+        register: (id, component, options) => {
+            if (entry.screens) {
+                registerScreen(entry.id, id, component, batch, options);
+            }
+        },
     },
     columns: {
         register: (name, column) =>

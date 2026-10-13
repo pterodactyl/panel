@@ -97,7 +97,7 @@ export const createAdminMountInput = (values: MountValues): Options<AdminCreateM
 });
 
 export const updateAdminMountInput = (id: number, values: MountValues): Options<AdminUpdateMountData> => ({
-    path: { id },
+    path: { mount_id: id },
     body: toMountBody(values),
 });
 
@@ -186,7 +186,7 @@ export const useUpdateAdminMount = () => {
         onSuccess: async (mount, variables) => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListMounts']),
-                queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.id) }),
+                queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.mount_id) }),
             ]);
             const messages = resourceMutationMessages('mount', 'update', mount.attributes.name);
 

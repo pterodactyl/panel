@@ -13,7 +13,7 @@ uses(TestCase::class);
  * Provide valid and invalid permissions combos for testing.
  */
 dataset('permissionsDataProvider', function () {
-    return [[AdminAcl::READ, AdminAcl::READ, true], [AdminAcl::READ | AdminAcl::WRITE, AdminAcl::READ, true], [AdminAcl::READ | AdminAcl::WRITE, AdminAcl::WRITE, true], [AdminAcl::WRITE, AdminAcl::WRITE, true], [AdminAcl::READ, AdminAcl::WRITE, false], [AdminAcl::NONE, AdminAcl::READ, false], [AdminAcl::NONE, AdminAcl::WRITE, false]];
+    return [[AdminAcl::READ, AdminAcl::READ, true], [AdminAcl::READ | AdminAcl::WRITE, AdminAcl::READ, true], [AdminAcl::READ | AdminAcl::WRITE, AdminAcl::WRITE, true], [AdminAcl::WRITE, AdminAcl::WRITE, true], [AdminAcl::READ, AdminAcl::WRITE, false], [AdminAcl::NONE, AdminAcl::READ, false], [AdminAcl::NONE, AdminAcl::WRITE, false], [AdminAcl::NONE, AdminAcl::NONE, false], [AdminAcl::READ | AdminAcl::WRITE, AdminAcl::NONE, false]];
 });
 test('permissions', function (int $permission, int $check, bool $outcome) {
     expect(AdminAcl::can($permission, $check))->toBe($outcome);

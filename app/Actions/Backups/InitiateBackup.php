@@ -7,14 +7,15 @@ namespace Pterodactyl\Actions\Backups;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Backups\DeletesBackups;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Throwable;
@@ -22,7 +23,7 @@ use UnexpectedValueException;
 
 final class InitiateBackup implements InitiatesBackups
 {
-    /** @var array<int, string> */
+    /** @var list<string> */
     private array $ignoredFiles = [];
 
     private bool $isLocked = false;
@@ -32,10 +33,17 @@ final class InitiateBackup implements InitiatesBackups
         private readonly BackupManager $backupManager,
     ) {}
 
-    /**
-     * Set if the backup should be locked once it is created which will prevent
-     * its deletion by users or automated system processes.
-     */
+    /** @return NormalizedValidationRules */
+    public static function rules(): array
+    {
+        return [
+            'name' => ['nullable', 'string', 'max:191'],
+            'is_locked' => ['nullable', 'boolean'],
+            'ignored_files' => ['nullable', 'array', 'list'],
+            'ignored_files.*' => ['string'],
+        ];
+    }
+
     public function setIsLocked(bool $isLocked): InitiatesBackups
     {
         $this->isLocked = $isLocked;
@@ -43,38 +51,20 @@ final class InitiateBackup implements InitiatesBackups
         return $this;
     }
 
-    /**
-     * Sets the files to be ignored by this backup.
-     *
-     * @param  list<string>|null  $ignored
-     */
     public function setIgnoredFiles(?array $ignored): InitiatesBackups
     {
-        // Set the ignored files to be any values that are not empty in the array. Don't use
-        // the PHP empty function here incase anything that is "empty" by default (0, false, etc.)
-        // were passed as a file or folder name.
-        $this->ignoredFiles = ($ignored) === null ? [] : array_filter($ignored, fn (string $value): bool => $value !== '');
+        $this->ignoredFiles = $ignored ?? [];
 
         return $this;
     }
 
-    /**
-     * Initiates the backup process for a server on Wings.
-     *
-     * The rows are written in a transaction, but Wings is only asked to start the backup
-     * once that transaction commits, and backups rotated out to make room are deleted only
-     * after Wings accepted the new one. A rejected backup is marked failed and nothing is
-     * rotated out, so the oldest backup survives a failed attempt.
-     *
-     * @throws Throwable
-     * @throws TooManyBackupsException
-     * @throws TooManyRequestsHttpException
-     */
     public function initiate(Server $server, ?string $name = null, bool $override = false): Backup
     {
+        Validator::validate(['name' => $name, 'is_locked' => $this->isLocked, 'ignored_files' => $this->ignoredFiles], self::rules());
+
         [$backup, $rotated] = DB::transaction(/** @return array{Backup, Collection<int, Backup>} */ function () use ($server, $name, $override): array {
-            $limit = JsonValueGuard::integer(config('backups.throttles.limit'));
-            $period = JsonValueGuard::integer(config('backups.throttles.period'));
+            $limit = config('backups.throttles.limit');
+            $period = config('backups.throttles.period');
             if ($period > 0) {
                 $previousCount = $server->backups()
                     ->withTrashed()
@@ -91,8 +81,7 @@ final class InitiateBackup implements InitiatesBackups
                         ->orderByDesc('created_at')
                         ->first() ?? throw new UnexpectedValueException('The backup throttle query returned an empty result set.');
 
-                    // SAFETY: HTTP Retry-After uses whole seconds, so truncating Carbon's fractional difference is intentional.
-                    throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($latest->created_at->addSeconds($period)), $message);
+                    throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($latest->created_at?->addSeconds($period)), $message);
                 }
             }
 
@@ -123,7 +112,9 @@ final class InitiateBackup implements InitiatesBackups
             $backup = $server->backups()->create([
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => mb_trim($name ?? '') ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => array_values($this->ignoredFiles),
+                // Don't use the PHP empty function here in case anything that is "empty" by default
+                // (0, false, etc.) was passed as a file or folder name.
+                'ignored_files' => array_values(array_filter($this->ignoredFiles, fn (string $file): bool => $file !== '')),
                 'disk' => $this->backupManager->getDefaultAdapter(),
                 'is_locked' => $this->isLocked,
             ]);
@@ -131,6 +122,8 @@ final class InitiateBackup implements InitiatesBackups
             return [$backup, $rotated];
         });
 
+        // Wings is only asked once the rows are committed, and backups rotated out to make room
+        // are deleted only after it accepts the new one.
         try {
             Daemon::server($server)->backups()->create($backup);
         } catch (Throwable $throwable) {
@@ -143,6 +136,11 @@ final class InitiateBackup implements InitiatesBackups
 
             throw $throwable;
         }
+
+        Activity::event('server:backup.start')
+            ->subject($server, $backup)
+            ->property(['name' => $backup->name, 'locked' => $backup->is_locked])
+            ->log();
 
         foreach ($rotated as $old) {
             // Re-read the row: it may have been deleted or locked since it was picked.

@@ -140,6 +140,8 @@
     --editor-search-match-selected: #755f24;
     --editor-tooltip: #252b38;
     --editor-tooltip-border: #3d4657;
+    --editor-panel-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --editor-dialog-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5);
     --editor-selected-foreground: #ffffff;
     --editor-syntax-keyword: #ffad66;
     --editor-syntax-name: #f28779;

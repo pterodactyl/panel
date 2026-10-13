@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
-use Illuminate\Support\Arr;
-use Pterodactyl\Support\JsonValueGuard;
-use UnexpectedValueException;
+use Closure;
+use Illuminate\Validation\Validator;
+use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
 
 class GetDeployableNodesRequest extends GetNodesRequest
 {
+    use FiltersDeployTags;
+
     /**
      * @return ValidationRules
      */
@@ -22,30 +24,43 @@ class GetDeployableNodesRequest extends GetNodesRequest
             'disk' => ['required', 'integer', 'min:0'],
             'location_ids' => ['sometimes', 'array'],
             'location_ids.*' => ['integer'],
+            'tags' => ['sometimes', 'array', 'list'],
+            'tags.*' => ['string'],
+            'egg' => ['sometimes', 'integer', 'exists:eggs,id'],
         ];
     }
 
     /**
-     * @return array{memory: int, disk: int, location_ids: list<int>, per_page: int|null, page: int|null}
+     * @return list<Closure(Validator): void>
+     */
+    public function after(): array
+    {
+        return [$this->validateDeployTagsExist(...)];
+    }
+
+    /**
+     * The deployment criteria, read with Laravel's typed accessors. Without a page, every
+     * viable node is listed.
+     *
+     * @return array{memory: int, disk: int, location_ids: list<int>, tags: string[], egg: int|null, per_page: int|null, page: int|null}
      */
     public function payload(): array
     {
-        $validated = parent::validated();
-
-        $rawLocationIds = Arr::get($validated, 'location_ids', []);
-        throw_unless(is_array($rawLocationIds), UnexpectedValueException::class, 'The validated [location_ids] field must be an array.');
-
-        $locationIds = [];
-        foreach ($rawLocationIds as $rawLocationId) {
-            $locationIds[] = JsonValueGuard::integer($rawLocationId);
-        }
+        $validated = $this->safe();
 
         return [
-            'memory' => JsonValueGuard::integer($validated['memory']),
-            'disk' => JsonValueGuard::integer($validated['disk']),
-            'location_ids' => $locationIds,
-            'per_page' => isset($validated['per_page']) ? JsonValueGuard::integer($validated['per_page']) : null,
-            'page' => isset($validated['page']) ? JsonValueGuard::integer($validated['page']) : null,
+            'memory' => $validated->integer('memory'),
+            'disk' => $validated->integer('disk'),
+            'location_ids' => array_map(fn (int|string $key): int => $validated->integer('location_ids.'.$key), array_keys($validated->array('location_ids'))),
+            'tags' => $this->resolveDeployTagSlugs(),
+            'egg' => $validated->filled('egg') ? $validated->integer('egg') : null,
+            'per_page' => $validated->filled('per_page') ? $validated->integer('per_page') : null,
+            'page' => $validated->filled('page') ? $validated->integer('page') : null,
         ];
+    }
+
+    protected function deployTagsField(): string
+    {
+        return 'tags';
     }
 }

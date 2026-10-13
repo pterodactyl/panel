@@ -16,7 +16,6 @@ final readonly class ApplyTheme implements AppliesThemes
 {
     public function __construct(private ThemeService $themes, private FilesystemChanges $files) {}
 
-    /** Publish a theme's tokens.css (and optional assets/ directory). */
     public function apply(string $id): void
     {
         $theme = $this->themes->discovered()[$id] ?? null;

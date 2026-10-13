@@ -42,13 +42,44 @@ test('single tag can be viewed', function () {
 });
 test('built in tags cannot be updated', function () {
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
+    $tag = Tag::factory()->predefined()->create();
     $this->putJson(route('api.admin.tags.update', ['tag' => $tag->id]), ['name' => 'Changed', 'slug' => 'changed'])->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException');
+});
+test('a custom tag cannot be renamed onto a built in slug', function () {
+    $tag = Tag::factory()->create(['slug' => 'custom']);
+    $this->putJson(route('api.admin.tags.update', ['tag' => $tag->id]), ['name' => 'FiveM', 'slug' => 'fivem'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'slug')
+        ->assertJsonPath('errors.0.meta.rule', 'not_in')
+        ->assertJsonPath('errors.0.detail', 'The slug fivem belongs to a built-in game tag.');
+    $this->assertDatabaseHas('tags', ['id' => $tag->id, 'slug' => 'custom']);
 });
 test('built in tags cannot be deleted', function () {
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
-    $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException');
+    $tag = Tag::factory()->predefined()->create();
+    $this->delete(route('api.admin.tags.delete', ['tag' => $tag->id]))->assertStatus(Response::HTTP_BAD_REQUEST)->assertJsonPath('errors.0.code', 'DisplayException')->assertJsonPath('errors.0.detail', 'Built-in game tags cannot be deleted.');
+});
+test('deleting an egg or node removes its tag attachments', function () {
+    $tag = Tag::factory()->create(['slug' => 'attached']);
+    $reservation = Tag::factory()->create(['slug' => 'reserved']);
+    $egg = Egg::factory()->create();
+    $node = Node::factory()->withLocation()->create();
+    $egg->tags()->attach($tag->id);
+    $node->eggTags()->attach($tag->id);
+    $node->deploymentTags()->attach($reservation->id);
+
+    $this->delete(route('api.admin.eggs.delete', ['egg' => $egg->id]))->assertNoContent();
+    $this->delete(route('api.admin.nodes.delete', ['node' => $node->id]))->assertNoContent();
+
+    expect(DB::table('taggables')->whereIn('tag_id', [$tag->id, $reservation->id])->count())->toBe(0);
+});
+test('tags sync accepts integer ids', function () {
+    $tag = Tag::factory()->create(['slug' => 'integer-id']);
+    $node = Node::factory()->withLocation()->create();
+
+    $this->putJson(route('api.admin.nodes.tags.sync', ['node' => $node->id]), ['tags' => [$tag->id]])->assertOk();
+
+    expect($node->eggTags()->pluck('tags.id')->all())->toBe([$tag->id]);
 });
 test('tags sync independently to eggs and node kinds', function () {
     /** @var Tag $game */
@@ -67,6 +98,19 @@ test('tags sync independently to eggs and node kinds', function () {
     expect($node->deploymentTags()->pluck('tags.id')->all())->toBe([$reservation->id]);
 });
 
+test('a node cannot hold the same tag as a game and as a reservation', function () {
+    $tag = Tag::factory()->create(['slug' => 'both-kinds', 'name' => 'Both Kinds']);
+    $node = Node::factory()->withLocation()->create();
+    $this->putJson(route('api.admin.nodes.tags.sync', ['node' => $node->id]), ['tags' => [(string) $tag->id]])->assertOk();
+
+    $this->putJson(route('api.admin.nodes.deployment-tags.sync', ['node' => $node->id]), ['tags' => [(string) $tag->id]])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'tags')
+        ->assertJsonPath('errors.0.detail', 'These tags are already on the node as the other kind: Both Kinds.');
+
+    expect($node->eggTags()->pluck('tags.id')->all())->toBe([$tag->id])
+        ->and($node->deploymentTags()->pluck('tags.id')->all())->toBe([]);
+});
 test('syncing existing tags resolves ids and slugs in a single read', function () {
     $node = Node::factory()->withLocation()->create();
     $tags = Tag::factory()->count(10)->create();

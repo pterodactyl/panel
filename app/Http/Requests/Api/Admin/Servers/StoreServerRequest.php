@@ -6,24 +6,26 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use Pterodactyl\Data\ServerCreationData;
+use Pterodactyl\Actions\Servers\CreateServer;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\FiltersDeployTags;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Http\Requests\Concerns\ValidatesNodeAcceptsEgg;
+use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\AllocationRules;
-use Pterodactyl\Validation\ServerRules;
 
 class StoreServerRequest extends AdminApiRequest
 {
     use FiltersDeployTags;
-    use ValidatesExtensionFields;
+    use ValidatesExtensionFields {
+        actionInput as private inputWithExtensions;
+    }
+    use ValidatesNodeAcceptsEgg;
 
     public function permissions(): array
     {
@@ -31,24 +33,27 @@ class StoreServerRequest extends AdminApiRequest
     }
 
     /**
-     * Validation rules for creating a server.
+     * Validation rules for creating a server, under the admin API's field names. The fields
+     * it checks differently from the action keep their own rules: it requires the environment
+     * and the database and backup limits, refuses a null OOM flag, and checks only that the
+     * egg exists, so a missing egg reports one error.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules();
+        $rules = CreateServer::rules();
 
         return [
             'external_id' => $rules['external_id'],
             'name' => $rules['name'],
-            'description' => array_merge(['nullable'], $rules['description']),
+            'description' => $rules['description'],
             'owner_id' => $rules['owner_id'],
-            'egg_id' => $rules['egg_id'],
+            'egg_id' => ['required', 'exists:eggs,id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
             'environment' => ['present', 'array'],
-            'skip_scripts' => ['sometimes', 'boolean'],
+            'skip_scripts' => $rules['skip_scripts'],
             'oom_disabled' => ['sometimes', 'boolean'],
 
             'memory' => $rules['memory'],
@@ -58,13 +63,13 @@ class StoreServerRequest extends AdminApiRequest
             'threads' => $rules['threads'],
             'cpu' => $rules['cpu'],
 
-            'database_limit' => $rules['database_limit'],
+            'database_limit' => ['present', 'nullable', 'integer', 'min:0'],
             'allocation_limit' => $rules['allocation_limit'],
-            'backup_limit' => $rules['backup_limit'],
+            'backup_limit' => ['present', 'nullable', 'integer', 'min:0'],
 
             // Allocations are chosen by hand unless a deployment object picks them.
-            'primary_allocation_id' => ['exclude_with:deploy', 'required', 'integer', 'bail', AllocationRules::unassigned()],
-            'secondary_allocations_ids.*' => ['exclude_with:deploy', 'integer', AllocationRules::unassigned()],
+            'primary_allocation_id' => ['exclude_with:deploy', ...$rules['allocation_id']],
+            'secondary_allocations_ids.*' => ['exclude_with:deploy', ...$rules['allocation_additional.*']],
 
             'deploy' => ['sometimes', 'required', 'array'],
             'deploy.locations' => ['present_with:deploy', 'array', 'list'],
@@ -78,46 +83,27 @@ class StoreServerRequest extends AdminApiRequest
             'deploy.tags' => ['array'],
             'deploy.tags.*' => ['string'],
 
-            'start_on_completion' => ['sometimes', 'boolean'],
+            'start_on_completion' => $rules['start_on_completion'],
+            'ignore_tags' => ['sometimes', 'boolean'],
         ];
     }
 
     /**
-     * Normalize the validated data for the server creation service.
+     * The validated input under the action's field names: docker_image is its image, and
+     * primary_allocation_id and secondary_allocations_ids its allocation_id and
+     * allocation_additional. The deployment goes to the action as getDeploymentObject().
      *
-     * @return ServerCreationAttributes
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $data = parent::validated();
+        $input = $this->inputWithExtensions();
+        $input['image'] = $input['docker_image'] ?? null;
+        $input['allocation_id'] = $input['primary_allocation_id'] ?? null;
+        $input['allocation_additional'] = $input['secondary_allocations_ids'] ?? null;
+        unset($input['docker_image'], $input['primary_allocation_id'], $input['secondary_allocations_ids'], $input['deploy'], $input['ignore_tags']);
 
-        $payload = [
-            'external_id' => Arr::get($data, 'external_id'),
-            'name' => Arr::get($data, 'name'),
-            'description' => Arr::get($data, 'description'),
-            'owner_id' => Arr::get($data, 'owner_id'),
-            'egg_id' => Arr::get($data, 'egg_id'),
-            'image' => Arr::get($data, 'docker_image'),
-            'startup' => Arr::get($data, 'startup'),
-            'environment' => Arr::get($data, 'environment'),
-            'memory' => Arr::get($data, 'memory'),
-            'swap' => Arr::get($data, 'swap'),
-            'disk' => Arr::get($data, 'disk'),
-            'io' => Arr::get($data, 'io'),
-            'cpu' => Arr::get($data, 'cpu'),
-            'threads' => Arr::get($data, 'threads'),
-            'skip_scripts' => Arr::get($data, 'skip_scripts', false),
-            'allocation_id' => Arr::get($data, 'primary_allocation_id'),
-            'allocation_additional' => Arr::get($data, 'secondary_allocations_ids'),
-            'start_on_completion' => Arr::get($data, 'start_on_completion', false),
-            'database_limit' => Arr::get($data, 'database_limit'),
-            'allocation_limit' => Arr::get($data, 'allocation_limit'),
-            'backup_limit' => Arr::get($data, 'backup_limit'),
-            'oom_disabled' => Arr::get($data, 'oom_disabled'),
-        ];
-        JsonValueGuard::assertPayload9($payload);
-
-        return [...ServerCreationData::parse($payload), 'extensions' => $this->extensionValues()];
+        return $input;
     }
 
     /**
@@ -125,7 +111,7 @@ class StoreServerRequest extends AdminApiRequest
      */
     public function after(): array
     {
-        return [$this->validateDeployTagsExist(...)];
+        return [$this->validateDeployTagsExist(...), $this->validateAllocationAcceptsEgg(...)];
     }
 
     /** Build a deployment object from the deploy payload, or null when absent. */
@@ -137,8 +123,8 @@ class StoreServerRequest extends AdminApiRequest
 
         $object = new DeploymentObject;
         $object->setDedicated($this->boolean('deploy.dedicated_ip'));
-        $object->setLocations(JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->input('deploy.locations', []))));
-        $object->setPorts(JsonValueGuard::stringList($this->input('deploy.port_range', [])));
+        $object->setLocations(array_map(fn (int|string $index): int => $this->integer("deploy.locations.{$index}"), array_keys($this->array('deploy.locations'))));
+        $object->setPorts(array_map(fn (int|string $index): string => $this->string("deploy.port_range.{$index}")->toString(), array_keys($this->array('deploy.port_range'))));
         $object->setTags($this->resolveDeployTagSlugs());
 
         return $object;
@@ -150,5 +136,21 @@ class StoreServerRequest extends AdminApiRequest
     protected function extensionFieldsModel(): Model|string
     {
         return Server::class;
+    }
+
+    /**
+     * A deployment picks a node that accepts the egg itself, so only a chosen allocation is
+     * checked.
+     */
+    private function validateAllocationAcceptsEgg(Validator $validator): void
+    {
+        if ($validator->errors()->isNotEmpty() || $this->has('deploy')) {
+            return;
+        }
+
+        $validated = $validator->safe();
+        $node = Allocation::query()->findOrFail($validated->integer('primary_allocation_id'))->node;
+
+        $this->validateNodeAcceptsEgg($validator, 'primary_allocation_id', $node, Egg::query()->findOrFail($validated->integer('egg_id')));
     }
 }

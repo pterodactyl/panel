@@ -25,7 +25,7 @@ use Pterodactyl\Data\LoginCheckpoint;
 use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 #[Group('Authentication', 'Browser session authentication endpoints used by the panel frontend.', authenticated: false)]
 class LoginCheckpointController extends AbstractLoginController
@@ -91,7 +91,7 @@ class LoginCheckpointController extends AbstractLoginController
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
         }
 
-        if (! $checkpoint->matches(JsonValueGuard::nullableString($request->validated('confirmation_token')) ?? '')) {
+        if (! $checkpoint->matches($request->string('confirmation_token')->toString())) {
             $this->sendFailedLoginResponse($request);
         }
 
@@ -103,7 +103,7 @@ class LoginCheckpointController extends AbstractLoginController
 
         // Recovery tokens go through a slightly different pathway for usage.
         if (($recoveryToken = $request->validated('recovery_token')) !== null) {
-            if ($this->isValidRecoveryToken($user, JsonValueGuard::string($recoveryToken))) {
+            if ($this->isValidRecoveryToken($user, $request->string('recovery_token')->toString())) {
                 Event::dispatch(new ProvidedAuthenticationToken($user, true));
 
                 return $this->sendLoginResponse($logins->establish($user), $request);
@@ -114,17 +114,17 @@ class LoginCheckpointController extends AbstractLoginController
                 $this->sendFailedLoginResponse($request, $user, self::TOKEN_EXPIRED_MESSAGE);
             }
 
-            $decrypted = JsonValueGuard::string(Crypt::decrypt($totpSecret));
-            // SAFETY: TOTP counters are discrete intervals, so flooring and converting the quotient to an integer is required.
+            $decrypted = Crypt::decrypt($totpSecret);
+            throw_unless(is_string($decrypted), UnexpectedValueException::class, 'The decrypted two-factor secret must be a string.');
             $oldTimestamp = $user->totp_authenticated_at
                 ? (int) floor($user->totp_authenticated_at->unix() / $google2FA->getKeyRegeneration())
                 : null;
 
             $verified = $google2FA->verifyKeyNewer(
                 $decrypted,
-                JsonValueGuard::nullableString($request->validated('authentication_code')) ?? '',
+                $request->string('authentication_code')->toString(),
                 $oldTimestamp,
-                JsonValueGuard::integer(config('pterodactyl.auth.2fa.window', 1))
+                config('pterodactyl.auth.2fa.window')
             );
 
             if ($verified !== false) {

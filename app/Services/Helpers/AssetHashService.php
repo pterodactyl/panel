@@ -7,7 +7,7 @@ namespace Pterodactyl\Services\Helpers;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Pterodactyl\Exceptions\ManifestDoesNotExistException;
-use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 class AssetHashService
 {
@@ -206,7 +206,9 @@ class AssetHashService
     /** @return ViteManifest */
     private function parseManifest(string $contents): array
     {
-        $decoded = JsonValueGuard::decodeArray8($contents);
+        $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
+        throw_unless(is_array($decoded), UnexpectedValueException::class, 'The asset manifest must be a JSON object.');
+
         $manifest = [];
 
         foreach ($decoded as $source => $value) {

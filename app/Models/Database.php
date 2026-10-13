@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\Carbon;
 use Database\Factories\DatabaseFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -13,18 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Pterodactyl\Facades\Hashids;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property int $database_host_id
- * @property string $database
- * @property string $username
- * @property string $remote
- * @property string $password
- * @property int $max_connections
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Server $server
- * @property DatabaseHost $host
+ * @property-read DatabaseHost $host
  */
 #[Fillable([
     'server_id', 'database_host_id', 'database', 'username', 'password', 'remote', 'max_connections',
@@ -35,10 +23,6 @@ class Database extends Model
     /** @use HasFactory<DatabaseFactory> */
     use HasFactory;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'server_database';
 
     /**
@@ -76,8 +60,6 @@ class Database extends Model
     }
 
     /**
-     * Gets the host database server associated with a database.
-     *
      * @return BelongsTo<DatabaseHost, $this>
      */
     public function host(): BelongsTo
@@ -86,8 +68,6 @@ class Database extends Model
     }
 
     /**
-     * Gets the server associated with a database.
-     *
      * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo

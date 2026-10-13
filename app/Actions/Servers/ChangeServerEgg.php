@@ -12,13 +12,9 @@ use Pterodactyl\Contracts\Servers\ChangesServerEgg;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerVariable;
-use Throwable;
 
 final readonly class ChangeServerEgg implements ChangesServerEgg
 {
-    /**
-     * @throws Throwable
-     */
     public function change(Server $server, Egg $egg, bool $keepVariables = false): Server
     {
         return DB::transaction(function () use ($server, $egg, $keepVariables): Server {

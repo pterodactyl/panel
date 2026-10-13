@@ -10,11 +10,6 @@ use Pterodactyl\Models\Allocation;
 
 final class DeleteAllocation implements DeletesAllocations
 {
-    /**
-     * Delete an allocation, provided no server is attached to it.
-     *
-     * @throws ServerUsingAllocationException
-     */
     public function delete(Allocation $allocation): void
     {
         if ($allocation->server_id !== null) {

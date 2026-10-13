@@ -18,7 +18,6 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Setting;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 use Ramsey\Uuid\Uuid;
 
 class TelemetryCollectionService
@@ -26,7 +25,7 @@ class TelemetryCollectionService
     /**
      * Collects telemetry data and returns it as an array.
      *
-     * @return ApiPayload
+     * @return array<string, mixed>
      */
     public function collect(): array
     {
@@ -83,7 +82,7 @@ class TelemetryCollectionService
             ];
         })->filter(fn (?array $node): bool => $node !== null)->all();
 
-        $payload = [
+        return [
             'id' => $uuid,
 
             'panel' => [
@@ -152,8 +151,5 @@ class TelemetryCollectionService
 
             'nodes' => $nodes,
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Actions\Mounts;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Mounts\UpdatesMounts;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Services\Extensions\ExtensionFields;
@@ -14,18 +15,17 @@ final readonly class UpdateMount implements UpdatesMounts
 {
     public function __construct(private ExtensionFields $extensions) {}
 
-    /**
-     * Update an existing mount from validated attributes.
-     *
-     * @param  MountData  $data
-     */
-    public function update(Mount $mount, array $data): Mount
+    public function update(Mount $mount, array $input): Mount
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $validated = Validator::validate($input, CreateMount::rules($mount));
+        // Blank strings are null, as they are in a request, so a blank description is cleared.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
 
-        DB::transaction(function () use ($mount, $data, $extensions): void {
-            $mount->forceFill($data)->save();
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+
+        // The description and flags it is not given keep their stored values.
+        DB::transaction(function () use ($mount, $validated, $extensions): void {
+            $mount->forceFill($validated)->save();
             $this->extensions->save($mount, $extensions);
         });
 

@@ -11,7 +11,7 @@ use Throwable;
 interface DeletesSubusers
 {
     /**
-     * Removes the subuser from the server and revokes their outstanding SFTP sessions on Wings.
+     * The subuser's outstanding SFTP sessions on Wings are revoked.
      *
      * @throws Throwable
      */

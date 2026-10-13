@@ -15,7 +15,7 @@ return [
     | down.
     |
     */
-    'enabled' => env('PTERODACTYL_EXTENSIONS_ENABLED', true),
+    'enabled' => (bool) env('PTERODACTYL_EXTENSIONS_ENABLED', true),
 
     'panel_version' => config('app.version') === 'canary' ? '2.0.0-dev' : config('app.version'),
     'sdk_version' => '2.0.0-beta.4',
@@ -34,7 +34,7 @@ return [
     'assets_directory' => public_path('assets/extensions'),
 
     'signed_urls' => [
-        'enabled' => env('PTERODACTYL_EXTENSIONS_URL_INSTALLS_ENABLED', true),
+        'enabled' => (bool) env('PTERODACTYL_EXTENSIONS_URL_INSTALLS_ENABLED', true),
         'public_key' => 'eMHrvRiVVicU1SwUF8yeV3KXkQq6qAOZpmpilO0dg/o=',
         'issuer' => 'Infraly, LLC',
         'audience' => 'pterodactyl-panel',

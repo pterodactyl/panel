@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Integration\Services\BackendWriteConsistencyTest;
 
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -48,14 +49,22 @@ beforeEach(function (): void {
     });
 });
 
-test('a transfer rejects an allocation claimed after request validation without reserving the rest', function (bool $claimPrimary): void {
+test('a transfer rejects an allocation claimed after validation without reserving the rest', function (bool $claimPrimary): void {
     $server = $this->createServerModel();
     $other = $this->createServerModel();
     $node = Node::factory()->create(['location_id' => $server->node->location_id, 'memory' => 102400, 'disk' => 102400]);
     $primary = Allocation::factory()->for($node)->create(['server_id' => null]);
     $additional = Allocation::factory()->for($node)->create(['server_id' => null]);
-    ($claimPrimary ? $primary : $additional)->update(['server_id' => $other->id]);
     $fake = new FakeDaemonTransfer;
+    // The action checks the allocations are free before its transaction opens, so another
+    // server claims one right after that check.
+    $claimed = false;
+    DB::listen(function (QueryExecuted $query) use (&$claimed, $claimPrimary, $primary, $additional, $other): void {
+        if (! $claimed && str_contains($query->sql, 'from `allocations`') && str_contains($query->sql, '`server_id` is null')) {
+            $claimed = true;
+            ($claimPrimary ? $primary : $additional)->update(['server_id' => $other->id]);
+        }
+    });
     expect(fn () => $this->app->make(InitiatesTransfers::class)->initiate($server, $node, $primary->id, [$additional->id]))
         ->toThrow(DisplayException::class, 'The selected allocations are no longer available on the target node.');
     $this->assertDatabaseMissing('server_transfers', ['server_id' => $server->id]);

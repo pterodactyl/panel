@@ -17,6 +17,7 @@ use InvalidArgumentException;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Extensions\Fields;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
+use Pterodactyl\Http\Resources\Api\Admin\UserResource;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Extension;
 use Pterodactyl\Models\ExtensionSetting;
@@ -29,7 +30,6 @@ use Pterodactyl\Services\Extensions\ExtensionRegistration;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Support\JsonEmptyObject;
 use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
-use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use RuntimeException;
 
 use function pterodactylTestCase;
@@ -632,9 +632,9 @@ test('documentation examples carry the extensions attribute without running exte
     install('broken', User::class, BrokenFields::class);
     $user = User::factory()->create();
 
-    $transformer = $this->app->make(UserTransformer::class)->withExtensionFields(read: false);
+    $resource = UserResource::make($user)->withExtensionFields(read: false);
 
-    expect($transformer->transform($user)['extensions'])->toBeInstanceOf(JsonEmptyObject::class);
+    expect($resource->toArray(request())['extensions'])->toBeInstanceOf(JsonEmptyObject::class);
     expect(Extension::query()->where('identifier', 'broken')->value('error'))->toBeNull();
 });
 

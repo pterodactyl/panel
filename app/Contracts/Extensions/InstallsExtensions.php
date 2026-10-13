@@ -10,8 +10,7 @@ use Pterodactyl\Services\Extensions\ExtensionManifest;
 interface InstallsExtensions
 {
     /**
-     * Install a package. One whose id is already installed replaces that extension only
-     * when $replace is set.
+     * A package whose id is already installed replaces that extension only when $replace is set.
      *
      * @throws ExtensionAlreadyInstalledException
      */

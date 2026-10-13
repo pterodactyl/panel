@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Controllers\Api\Admin\Nodes;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
@@ -13,6 +15,7 @@ use Pterodactyl\Contracts\Allocations\DeletesAllocations;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\BulkDeleteAllocationRequest;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -27,13 +30,20 @@ class BulkDeleteAllocationsController extends AdminApiController
     #[ScribeResponse(AllocationController::SERVER_USING_ALLOCATION_ERROR, status: 400, description: 'One of the allocations is currently assigned to a server.')]
     public function __invoke(BulkDeleteAllocationRequest $request, DeletesAllocations $deletions, Node $node): Response
     {
-        $allocations = $node->allocations()
-            ->whereIn('id', $request->validated('ids', []))
-            ->get();
+        // All or nothing: one allocation a server holds rejects the whole selection, rather
+        // than leaving the ones before it deleted.
+        $allocations = DB::transaction(function () use ($request, $deletions, $node): Collection {
+            $allocations = $node->allocations()
+                ->whereIn('id', $request->validated('ids', []))
+                ->lockForUpdate()
+                ->get();
+
+            $allocations->each(fn (Allocation $allocation) => $deletions->delete($allocation));
+
+            return $allocations;
+        });
 
         foreach ($allocations as $allocation) {
-            $deletions->delete($allocation);
-
             Activity::event('admin:node-allocation.delete')
                 ->subject($allocation)
                 ->property('address', $allocation->ip)

@@ -276,7 +276,7 @@ const adminServerInput = (id: number): Options<AdminGetServerData> => ({
 
 const adminEggForServerInput = (eggId: number): Options<AdminGetEggData> => ({
     path: { egg_id: eggId },
-    query: { include: 'variables' },
+    query: { include: 'variables,tags' },
 });
 
 const adminServerMountsInput = (id: number): Parameters<typeof adminListServerMountsOptions>[0] => ({

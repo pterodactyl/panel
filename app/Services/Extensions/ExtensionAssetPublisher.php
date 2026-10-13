@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -196,7 +195,7 @@ class ExtensionAssetPublisher
 
     public function publishedPath(string $identifier): string
     {
-        return mb_rtrim(JsonValueGuard::string(config('extensions.assets_directory')), '/\\').DIRECTORY_SEPARATOR.$identifier;
+        return mb_rtrim(config()->string('extensions.assets_directory'), '/\\').DIRECTORY_SEPARATOR.$identifier;
     }
 
     public function watchDevelopment(string $identifier): void

@@ -7,7 +7,6 @@ namespace Pterodactyl\Services\Extensions;
 use Composer\Semver\Semver;
 use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final class ExtensionCompatibility
 {
@@ -60,9 +59,13 @@ final class ExtensionCompatibility
     /** @param Collection<string, ExtensionManifest> $enabled */
     public function assertCompatible(ExtensionManifest $manifest, Collection $enabled): void
     {
-        $errors = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
-        // A claim both sides make is reported from the side of the extension being checked.
-        $reason = $errors[$manifest->id] ?? reset($errors);
+        $before = $this->resolve($enabled)['errors'];
+        $after = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
+        // An extension that was already failing does not hold this one back: only a failure
+        // of its own, or one it causes in another extension, does. A claim both sides make
+        // is reported from the side of the extension being checked.
+        $caused = array_diff_key($after, $before);
+        $reason = $after[$manifest->id] ?? reset($caused);
         throw_if($reason !== false, InvalidExtensionException::class, $reason);
         $this->assertDistinctAutoloader($manifest, $enabled);
     }
@@ -191,8 +194,8 @@ final class ExtensionCompatibility
     private function runtimeFailureReason(ExtensionManifest $manifest): ?string
     {
         $versions = [
-            'panel' => JsonValueGuard::string(config('extensions.panel_version')),
-            'sdk' => JsonValueGuard::string(config('extensions.sdk_version')),
+            'panel' => config()->string('extensions.panel_version'),
+            'sdk' => config()->string('extensions.sdk_version'),
             'php' => PHP_VERSION,
         ];
         foreach ($manifest->requirements as $runtime => $constraint) {

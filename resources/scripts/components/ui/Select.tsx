@@ -45,6 +45,8 @@ interface MultiSelectProps extends BaseSelectProps {
     multiple: true;
     value: SelectValue[];
     onChange: (value: SelectValue[]) => void;
+    /** Offers typed text that matches no option label, and receives it when picked. */
+    onCreate?: (text: string) => void;
 }
 
 export type SelectProps = SingleSelectProps | MultiSelectProps;
@@ -101,6 +103,18 @@ const optionLabel = (option: SelectOption | null | undefined): string => {
 };
 
 const isTextLabel = (label: React.ReactNode): boolean => isString(label) || isNumber(label);
+
+const createValue = '\u0000create';
+
+const createOption = (text: string, options: SelectOption[]): SelectOption | null => {
+    const query = text.trim();
+
+    if (query === '' || options.some((option) => optionLabel(option).toLowerCase() === query.toLowerCase())) {
+        return null;
+    }
+
+    return { value: createValue, label: `Create "${query}"`, textLabel: query };
+};
 
 const sameValue = (left: SelectValue, right: SelectValue): boolean => Object.is(left, right);
 
@@ -341,6 +355,7 @@ function MultiSelectCombobox({
     inputAria,
     search,
     onChange,
+    onCreate,
 }: {
     id: string | undefined;
     placeholder: string | undefined;
@@ -355,6 +370,7 @@ function MultiSelectCombobox({
     inputAria: InputAriaProps;
     search: SelectSearch;
     onChange: (value: SelectValue[]) => void;
+    onCreate: ((text: string) => void) | undefined;
 }) {
     return (
         <Combobox.Root<SelectOption, true>
@@ -369,7 +385,14 @@ function MultiSelectCombobox({
                 }
             }}
             onValueChange={(value) => {
-                onChange(value.map((option) => option.value));
+                const created = value.find((option) => option.value === createValue);
+
+                if (created && onCreate) {
+                    onCreate(optionLabel(created));
+                } else {
+                    onChange(value.map((option) => option.value));
+                }
+
                 search.resetInputValue();
             }}
             filter={search.externalFilter}
@@ -513,6 +536,7 @@ export default function Select(props: SelectProps) {
 
     if (props.multiple) {
         const inputValue = search.inputFocused ? search.searchValue : '';
+        const creatable = props.onCreate && !groupedItems ? createOption(inputValue, flatOptions) : null;
 
         return (
             <MultiSelectCombobox
@@ -522,13 +546,14 @@ export default function Select(props: SelectProps) {
                 emptyMessage={emptyMessage}
                 hasError={hasError}
                 disabled={disabled}
-                items={items}
+                items={creatable ? [...flatOptions, creatable] : items}
                 groupedItems={groupedItems}
                 selectedOptions={selectedOptions}
                 inputValue={inputValue}
                 inputAria={inputAria}
                 search={search}
                 onChange={props.onChange}
+                onCreate={props.onCreate}
             />
         );
     }

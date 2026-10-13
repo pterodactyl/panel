@@ -32,4 +32,4 @@ export type { SelectOption } from "./fields.js";
 type SyncValidator<TFormData> = FormValidateOrFn<TFormData> | undefined;
 type AsyncValidator<TFormData> = FormAsyncValidateOrFn<TFormData> | undefined;
 /** Types a `form` prop for a sub-component that renders `<form.AppField>` of its parent's form. */
-export type AppForm<TFormData> = AppFieldExtendedReactFormApi<TFormData, SyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, AsyncValidator<TFormData>, unknown, typeof fieldComponents, typeof formComponents>;
+export type AppForm<TFormData, TSubmitMeta = unknown> = AppFieldExtendedReactFormApi<TFormData, SyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, SyncValidator<TFormData>, AsyncValidator<TFormData>, AsyncValidator<TFormData>, TSubmitMeta, typeof fieldComponents, typeof formComponents>;

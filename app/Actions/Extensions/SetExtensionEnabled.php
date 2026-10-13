@@ -84,7 +84,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
     {
         Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
-            ['version' => $manifest->version, 'enabled' => $enabled, 'error' => null],
+            ['version' => $manifest->version, 'enabled' => $enabled, ...Extension::NO_ERROR],
         );
     }
 

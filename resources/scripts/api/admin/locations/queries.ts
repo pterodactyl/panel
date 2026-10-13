@@ -44,7 +44,7 @@ export const createAdminLocationInput = (values: LocationValues): Options<AdminC
 });
 
 export const updateAdminLocationInput = (id: number, values: LocationValues): Options<AdminUpdateLocationData> => ({
-    path: { id },
+    path: { location_id: id },
     body: values,
 });
 
@@ -127,7 +127,7 @@ export const useUpdateAdminLocation = () => {
         onSuccess: async (location, variables) => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListLocations']),
-                queryClient.invalidateQueries({ queryKey: adminLocationDetailKey(variables.path.id) }),
+                queryClient.invalidateQueries({ queryKey: adminLocationDetailKey(variables.path.location_id) }),
             ]);
             const messages = resourceMutationMessages('location', 'update', location.attributes.short);
 

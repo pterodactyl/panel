@@ -9,8 +9,14 @@ use Throwable;
 
 interface CreatesDatabaseHosts
 {
-    /** @param DatabaseHostUpdateData $data
+    /**
+     * The host is saved once the Panel has connected to it with the given credentials. The input
+     * is validated here and the password is stored encrypted; a host given no node_id is global.
+     * Extension field values go under `extensions` as ValidatedExtensionValues.
+     *
+     * @param  array<string, mixed>  $input  name, host, port and username, and optionally password and node_id
+     *
      * @throws Throwable
      */
-    public function create(array $data): DatabaseHost;
+    public function create(array $input): DatabaseHost;
 }

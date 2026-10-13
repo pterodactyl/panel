@@ -13,22 +13,21 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\ServerResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
@@ -48,8 +47,6 @@ class ServerController extends ApplicationApiController
 
     /**
      * Return all the servers that currently exist on the Panel.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List servers', 'Returns a paginated list of servers visible to the application API key.')]
     #[QueryParam('per_page', 'integer', 'Number of servers to return per page, up to 100.', required: false, example: 50)]
@@ -62,8 +59,8 @@ class ServerController extends ApplicationApiController
     #[QueryParam('search', 'string', 'Search term accepted by the list request. Must not exceed 100 characters.', required: false, example: 'minecraft')]
     #[QueryParam('sort', 'string', 'Sort servers by id or uuid. Prefix with "-" for descending order.', required: false, example: '-id', enum: ['id', '-id', 'uuid', '-uuid'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "user", "subusers", "egg", "variables", "location", "node", "databases", and "transfer" when the key can read those resources.', required: false, example: 'user,node,allocations')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetServersRequest $request): array
+    #[ResponseFromResource(ServerResource::class, Server::class, collection: true, factoryStates: ['withRelationships'], resourceKey: 'server', paginate: 50)]
+    public function index(GetServersRequest $request): ApiResourceCollection
     {
         $query = Server::query()->with(['egg.variables', 'serverVariables', 'location']);
         $search = $request->validated('search');
@@ -83,9 +80,7 @@ class ServerController extends ApplicationApiController
             ->allowedSorts(['id', 'uuid'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($servers)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toResponseArray();
+        return ServerResource::collection($servers);
     }
 
     /**
@@ -98,31 +93,27 @@ class ServerController extends ApplicationApiController
      * @throws NoViableNodeException
      */
     #[Endpoint('Create server', 'Creates a new server using either explicit allocations or automatic deployment constraints.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ResponseFromResource(ServerResource::class, Server::class, status: 201, description: 'Server created.', factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ScribeResponse(self::DEPLOYMENT_ERROR, status: 400, description: 'Automatic deployment could not find a viable node or allocation.')]
     #[ExtensionFieldsParam]
     public function store(StoreServerRequest $request, CreatesServers $creation): JsonResponse
     {
-        $server = $creation->create($request->payload(), $request->getDeploymentObject());
+        $server = $creation->create($request->actionInput(), $request->getDeploymentObject());
 
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
+        return ServerResource::make($server)
+            ->withExtensionFields()
             ->respond(201);
     }
 
     /**
      * Show a single server transformed for the application API.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get server', 'Returns a single server by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "allocations", "user", "subusers", "egg", "variables", "location", "node", "databases", and "transfer" when the key can read those resources.', required: false, example: 'user,node,allocations')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
-    public function view(GetServerRequest $request, Server $server): array
+    #[ResponseFromResource(ServerResource::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    public function view(GetServerRequest $request, Server $server): ServerResource
     {
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return ServerResource::make($server)->withExtensionFields();
     }
 
     /**

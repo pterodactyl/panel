@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 use Pterodactyl\Contracts\Servers\CreatesServers;
 use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -20,8 +21,10 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Support\JsonEmptyObject;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Tests\Support\Fakes\FakeDaemonServer;
+use UnexpectedValueException;
 
 use function pterodactylTestCase;
 
@@ -35,6 +38,8 @@ beforeEach(function () {
     Event::fake([OperationCompleted::class]);
     $this->bungeecord = Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail();
     $this->daemonServerRepository = new FakeDaemonServer;
+    $this->owner = User::factory()->create();
+    $this->allocation = Allocation::factory()->for(Node::factory()->for(Location::factory()))->create();
 });
 test('server is created with deployment object', function () {
     /** @var User $user */
@@ -107,6 +112,183 @@ test('error encountered by wings causes server to be deleted', function () {
     Event::assertDispatched(OperationCompleted::class, fn (OperationCompleted $event): bool => $event->operation === 'delete' && $event->successful);
     $this->assertDatabaseMissing('servers', ['owner_id' => $user->id]);
 });
+test('servers created without the http api meet the same rules', function (array $input, string $field) {
+    try {
+        getService()->create(directInput($this, $input));
+        $this->fail('The server was created.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe([$field]);
+    }
+
+    $this->assertDatabaseMissing('servers', ['name' => 'Direct Server']);
+    expect($this->daemonServerRepository->callsFor('create'))->toBe([]);
+})->with([
+    'a missing name' => [['name' => null], 'name'],
+    'a name that is too long' => [['name' => str_repeat('a', 192)], 'name'],
+    'an owner id that is not an integer' => [['owner_id' => '10.5'], 'owner_id'],
+    'an owner that does not exist' => [['owner_id' => 0], 'owner_id'],
+    'an egg id that is not an integer' => [['egg_id' => '1.0'], 'egg_id'],
+    'an egg that does not exist' => [['egg_id' => 0], 'egg_id'],
+    'an image with shell characters' => [['image' => 'java;rm -rf /'], 'image'],
+    'a missing startup command' => [['startup' => ''], 'startup'],
+    'an environment that is not an object' => [['environment' => 'BUNGEE_VERSION=123'], 'environment'],
+    'memory below zero' => [['memory' => -1], 'memory'],
+    'swap below unlimited' => [['swap' => -2], 'swap'],
+    'a fractional disk size' => [['disk' => 1024.5], 'disk'],
+    'io outside its range' => [['io' => 5], 'io'],
+    'cpu threads that are not a pattern' => [['threads' => '0-3;'], 'threads'],
+    'an oom flag that is not a boolean' => [['oom_disabled' => 'yes'], 'oom_disabled'],
+    'a skip scripts flag that is not a boolean' => [['skip_scripts' => 'yes'], 'skip_scripts'],
+    'a negative database limit' => [['database_limit' => -1], 'database_limit'],
+    'a missing allocation without a deployment' => [['allocation_id' => null], 'allocation_id'],
+    'an allocation that does not exist' => [['allocation_id' => 0], 'allocation_id'],
+    'additional allocations that are not a list' => [['allocation_additional' => 'all'], 'allocation_additional'],
+    'a start flag that is not a boolean' => [['start_on_completion' => 'yes'], 'start_on_completion'],
+]);
+test('servers created without the http api only take allocations no server holds', function () {
+    $held = $this->createServerModel()->allocation_id;
+    $spare = Allocation::factory()->create(['node_id' => $this->allocation->node_id]);
+
+    foreach ([
+        'allocation_id' => ['allocation_id' => $held],
+        'allocation_additional.1' => ['allocation_additional' => [$spare->id, $held]],
+        'allocation_additional' => ['allocation_additional' => ['first' => $spare->id]],
+    ] as $field => $input) {
+        try {
+            getService()->create(directInput($this, $input));
+            $this->fail('The server was created.');
+        } catch (ValidationException $validationException) {
+            expect(array_keys($validationException->errors()))->toBe([$field]);
+        }
+    }
+
+    expect($spare->refresh()->server_id)->toBeNull()
+        ->and($this->daemonServerRepository->callsFor('create'))->toBe([]);
+});
+test('values are coerced the way laravel validates them', function (int|string $flag, bool $expected) {
+    $spare = Allocation::factory()->create(['node_id' => $this->allocation->node_id]);
+
+    $server = getService()->create(directInput($this, [
+        'owner_id' => (string) $this->owner->id,
+        'egg_id' => (string) $this->bungeecord->id,
+        'memory' => '512',
+        'swap' => '-1',
+        'disk' => '1024',
+        'io' => '500',
+        'cpu' => '100',
+        'skip_scripts' => $flag,
+        'oom_disabled' => $flag,
+        'start_on_completion' => $flag,
+        'database_limit' => '1',
+        'allocation_limit' => 2,
+        'backup_limit' => '3',
+        'allocation_id' => (string) $this->allocation->id,
+        'allocation_additional' => [(string) $spare->id],
+    ]));
+
+    expect($server->owner_id)->toBe($this->owner->id)
+        ->and($server->egg_id)->toBe($this->bungeecord->id)
+        ->and($server->memory)->toBe(512)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->disk)->toBe(1024)
+        ->and($server->io)->toBe(500)
+        ->and($server->cpu)->toBe(100)
+        ->and($server->skip_scripts)->toBe($expected)
+        ->and($server->oom_disabled)->toBe($expected)
+        ->and($server->database_limit)->toBe(1)
+        ->and($server->allocation_limit)->toBe(2)
+        ->and($server->backup_limit)->toBe(3)
+        ->and($server->allocation_id)->toBe($this->allocation->id)
+        ->and($spare->refresh()->server_id)->toBe($server->id);
+    $this->daemonServerRepository->assertCreatedWith($expected);
+})->with([[1, true], ['1', true], [0, false], ['0', false]]);
+test('a server given only the required fields takes the defaults', function () {
+    $server = getService()->create(directInput($this, ['memory' => 0, 'disk' => 0, 'cpu' => 0, 'swap' => -1]));
+
+    expect($server->external_id)->toBeNull()
+        ->and($server->description)->toBe('')
+        ->and($server->memory)->toBe(0)
+        ->and($server->disk)->toBe(0)
+        ->and($server->cpu)->toBe(0)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->threads)->toBeNull()
+        ->and($server->skip_scripts)->toBeFalse()
+        ->and($server->oom_disabled)->toBeTrue()
+        ->and($server->database_limit)->toBe(0)
+        ->and($server->allocation_limit)->toBe(0)
+        ->and($server->backup_limit)->toBe(0)
+        ->and($server->node_id)->toBe($this->allocation->node_id)
+        ->and($server->allocations->pluck('id')->all())->toBe([$this->allocation->id]);
+    $this->daemonServerRepository->assertCreatedWith(false);
+    Event::assertDispatched(OperationCompleted::class, fn (OperationCompleted $event): bool => $event->serverUuid === $server->uuid && $event->operation === 'provision');
+});
+test('null limits and a null oom flag take the defaults', function () {
+    $server = getService()->create(directInput($this, ['oom_disabled' => null, 'database_limit' => null, 'allocation_limit' => null, 'backup_limit' => null, 'threads' => null]));
+
+    expect($server->oom_disabled)->toBeTrue()
+        ->and($server->database_limit)->toBe(0)
+        ->and($server->allocation_limit)->toBe(0)
+        ->and($server->backup_limit)->toBe(0)
+        ->and($server->threads)->toBeNull();
+});
+test('cpu threads are a pattern that a bare number also matches', function (int|string $threads, string $expected) {
+    expect(getService()->create(directInput($this, ['threads' => $threads]))->threads)->toBe($expected);
+})->with([[0, '0'], [3, '3'], ['0-3', '0-3'], ['0,2,4-5', '0,2,4-5']]);
+test('environment values reach the egg variable rules as they were sent', function () {
+    $egg = $this->cloneEggAndVariables($this->bungeecord);
+    $egg->variables()->where('env_variable', 'SERVER_JARFILE')->update(['rules' => 'required|string']);
+
+    try {
+        getService()->create(directInput($this, ['egg_id' => $egg->id, 'environment' => ['BUNGEE_VERSION' => 123, 'SERVER_JARFILE' => 25565]]));
+        $this->fail('The server was created.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe(['environment.SERVER_JARFILE']);
+    }
+
+    $server = getService()->create(directInput($this, ['egg_id' => $egg->id, 'environment' => ['BUNGEE_VERSION' => 123, 'SERVER_JARFILE' => 'server.jar']]));
+
+    expect($server->variables->pluck('server_value', 'env_variable')->all())->toBe(['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'server.jar']);
+});
+test('environment values must be scalars', function (array $environment) {
+    expect(fn () => getService()->create(directInput($this, ['environment' => $environment])))->toThrow(UnexpectedValueException::class);
+
+    $this->assertDatabaseMissing('servers', ['name' => 'Direct Server']);
+})->with([
+    'a nested value' => [['BUNGEE_VERSION' => ['nested'], 'SERVER_JARFILE' => 'server.jar']],
+    'an empty object' => [['BUNGEE_VERSION' => new JsonEmptyObject, 'SERVER_JARFILE' => 'server.jar']],
+]);
+test('extension values must come from a request that validated them', function () {
+    expect(fn () => getService()->create(directInput($this, ['extensions' => ['billing' => ['plan' => 'pro']]])))
+        ->toThrow(InvalidArgumentException::class, 'must come from a request that validated them');
+
+    $this->assertDatabaseMissing('servers', ['name' => 'Direct Server']);
+});
+test('a deployment picks the allocation, so none is needed', function () {
+    $deployment = (new DeploymentObject())->setDedicated(false)->setLocations([$this->allocation->node->location_id])->setPorts([]);
+
+    $server = getService()->create(directInput($this, ['allocation_id' => null]), $deployment);
+
+    expect($server->allocation_id)->toBe($this->allocation->id)
+        ->and($server->node_id)->toBe($this->allocation->node_id);
+});
+/** @return array<string, mixed> */
+function directInput(IntegrationTestCase $test, array $overrides = []): array
+{
+    return [...[
+        'name' => 'Direct Server',
+        'owner_id' => $test->owner->id,
+        'egg_id' => $test->bungeecord->id,
+        'image' => 'ghcr.io/pterodactyl/yolks:java_21',
+        'startup' => 'java -jar server.jar',
+        'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'server.jar'],
+        'memory' => 256,
+        'swap' => 0,
+        'disk' => 100,
+        'io' => 500,
+        'cpu' => 0,
+        'allocation_id' => $test->allocation->id,
+    ], ...$overrides];
+}
 function getService(): CreatesServers
 {
     return (function () {

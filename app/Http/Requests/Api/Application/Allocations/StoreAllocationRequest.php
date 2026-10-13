@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Requests\Api\Application\Allocations;
 
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use UnexpectedValueException;
 
 class StoreAllocationRequest extends ApplicationApiRequest
 {
@@ -28,30 +27,19 @@ class StoreAllocationRequest extends ApplicationApiRequest
     }
 
     /**
-     * @return AllocationAssignmentData
+     * The validated input under the action's field names: ip, ports and alias are its
+     * allocation_ip, allocation_ports and allocation_alias.
+     *
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $data = parent::validated();
-        $ip = $data['ip'] ?? null;
-        $ports = $data['ports'] ?? null;
-        $alias = $data['alias'] ?? null;
-
-        throw_if(! is_string($ip) || ! is_array($ports) || ! array_is_list($ports), UnexpectedValueException::class, 'Validated allocation data has an invalid structure.');
-
-        $normalizedPorts = [];
-        foreach ($ports as $port) {
-            throw_unless(is_string($port), UnexpectedValueException::class, 'Validated allocation ports must be strings.');
-
-            $normalizedPorts[] = $port;
-        }
-
-        throw_if($alias !== null && ! is_string($alias), UnexpectedValueException::class, 'Validated allocation aliases must be strings or null.');
+        $input = parent::actionInput();
 
         return [
-            'allocation_ip' => $ip,
-            'allocation_ports' => $normalizedPorts,
-            'allocation_alias' => $alias,
+            'allocation_ip' => $input['ip'] ?? null,
+            'allocation_ports' => $input['ports'] ?? null,
+            'allocation_alias' => $input['alias'] ?? null,
         ];
     }
 }

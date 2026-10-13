@@ -102,8 +102,6 @@ class RunTaskJob implements ShouldQueue
      */
     private function queueNextTask(): void
     {
-        // SAFETY: this query is rooted in the Task model and first() therefore returns Task|null.
-        /** @var Task|null $nextTask */
         $nextTask = Task::query()->where('schedule_id', $this->task->schedule_id)
             ->orderBy('sequence_id', 'asc')
             ->where('sequence_id', '>', $this->task->sequence_id)

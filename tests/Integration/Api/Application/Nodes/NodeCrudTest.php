@@ -71,6 +71,11 @@ test('allocations can be created for a node', function () {
         $this->assertDatabaseHas('allocations', ['node_id' => $node->id, 'ip' => '10.0.0.10', 'port' => $port]);
     }
 });
+test('allocations can be created with an alias', function () {
+    $node = Node::factory()->for(Location::factory())->create();
+    $this->postJson("/api/application/nodes/{$node->id}/allocations", ['ip' => '10.0.0.11', 'ports' => ['25565'], 'alias' => 'play.example.com'])->assertStatus(Response::HTTP_NO_CONTENT);
+    $this->assertDatabaseHas('allocations', ['node_id' => $node->id, 'ip' => '10.0.0.11', 'port' => 25565, 'ip_alias' => 'play.example.com']);
+});
 test('unassigned allocation can be deleted', function () {
     $node = Node::factory()->for(Location::factory())->create();
     $allocation = Allocation::factory()->create(['node_id' => $node->id]);

@@ -1,0 +1,759 @@
+[
+    {
+        "request": "GET /api/client",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server",
+                    "attributes": {
+                        "server_owner": false,
+                        "identifier": "5e7f0001",
+                        "__deprecated_uuid_short": "5e7f0001",
+                        "server_identifier": "serv_lz7qaaiaabaabaaaaaaaaaaaae",
+                        "internal_id": 1,
+                        "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                        "name": "Survival",
+                        "node": "node-alpha",
+                        "is_node_under_maintenance": false,
+                        "sftp_details": {
+                            "ip": "alpha.example.test",
+                            "port": 2022
+                        },
+                        "description": "Main survival world",
+                        "limits": {
+                            "memory": 2048,
+                            "swap": 512,
+                            "disk": 10240,
+                            "io": 500,
+                            "cpu": 200,
+                            "threads": "0-3",
+                            "oom_disabled": true
+                        },
+                        "invocation": "java -Xms128M -Xmx2048M -jar [hidden]",
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "egg_features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "egg_tags": [
+                            "minecraft",
+                            "premium"
+                        ],
+                        "feature_limits": {
+                            "databases": 5,
+                            "allocations": 5,
+                            "backups": 5
+                        },
+                        "status": null,
+                        "is_suspended": false,
+                        "is_installing": false,
+                        "is_transferring": false,
+                        "skip_scripts": false,
+                        "relationships": {
+                            "allocations": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "allocation",
+                                        "attributes": {
+                                            "id": 1,
+                                            "ip": "192.0.2.10",
+                                            "ip_alias": "play.example.test",
+                                            "port": 25565,
+                                            "notes": null,
+                                            "is_default": true
+                                        }
+                                    }
+                                ]
+                            },
+                            "variables": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 1,
+                    "count": 1,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client?include=egg,subusers",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server",
+                    "attributes": {
+                        "server_owner": false,
+                        "identifier": "5e7f0001",
+                        "__deprecated_uuid_short": "5e7f0001",
+                        "server_identifier": "serv_lz7qaaiaabaabaaaaaaaaaaaae",
+                        "internal_id": 1,
+                        "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                        "name": "Survival",
+                        "node": "node-alpha",
+                        "is_node_under_maintenance": false,
+                        "sftp_details": {
+                            "ip": "alpha.example.test",
+                            "port": 2022
+                        },
+                        "description": "Main survival world",
+                        "limits": {
+                            "memory": 2048,
+                            "swap": 512,
+                            "disk": 10240,
+                            "io": 500,
+                            "cpu": 200,
+                            "threads": "0-3",
+                            "oom_disabled": true
+                        },
+                        "invocation": "java -Xms128M -Xmx2048M -jar [hidden]",
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "egg_features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "egg_tags": [
+                            "minecraft",
+                            "premium"
+                        ],
+                        "feature_limits": {
+                            "databases": 5,
+                            "allocations": 5,
+                            "backups": 5
+                        },
+                        "status": null,
+                        "is_suspended": false,
+                        "is_installing": false,
+                        "is_transferring": false,
+                        "skip_scripts": false,
+                        "relationships": {
+                            "allocations": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "allocation",
+                                        "attributes": {
+                                            "id": 1,
+                                            "ip": "192.0.2.10",
+                                            "ip_alias": "play.example.test",
+                                            "port": 25565,
+                                            "notes": null,
+                                            "is_default": true
+                                        }
+                                    }
+                                ]
+                            },
+                            "variables": {
+                                "object": "null_resource",
+                                "attributes": null
+                            },
+                            "egg": {
+                                "object": "egg",
+                                "attributes": {
+                                    "uuid": "e9900001-0000-4000-8000-000000000001",
+                                    "name": "Paper"
+                                }
+                            },
+                            "subusers": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 1,
+                    "count": 1,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "server_owner": false,
+                "identifier": "5e7f0001",
+                "__deprecated_uuid_short": "5e7f0001",
+                "server_identifier": "serv_lz7qaaiaabaabaaaaaaaaaaaae",
+                "internal_id": 1,
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "name": "Survival",
+                "node": "node-alpha",
+                "is_node_under_maintenance": false,
+                "sftp_details": {
+                    "ip": "alpha.example.test",
+                    "port": 2022
+                },
+                "description": "Main survival world",
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "invocation": "java -Xms128M -Xmx2048M -jar [hidden]",
+                "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                "egg_features": [
+                    "eula",
+                    "java_version"
+                ],
+                "egg_tags": [
+                    "minecraft",
+                    "premium"
+                ],
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "status": null,
+                "is_suspended": false,
+                "is_installing": false,
+                "is_transferring": false,
+                "skip_scripts": false,
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "ip_alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": null,
+                                    "is_default": true
+                                }
+                            }
+                        ]
+                    },
+                    "variables": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                }
+            },
+            "meta": {
+                "is_server_owner": false,
+                "user_permissions": [
+                    "websocket.connect",
+                    "control.console",
+                    "database.read",
+                    "database.create",
+                    "database.update",
+                    "backup.read",
+                    "schedule.read",
+                    "activity.read",
+                    "file.read"
+                ]
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001?include=egg,subusers",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "server_owner": false,
+                "identifier": "5e7f0001",
+                "__deprecated_uuid_short": "5e7f0001",
+                "server_identifier": "serv_lz7qaaiaabaabaaaaaaaaaaaae",
+                "internal_id": 1,
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "name": "Survival",
+                "node": "node-alpha",
+                "is_node_under_maintenance": false,
+                "sftp_details": {
+                    "ip": "alpha.example.test",
+                    "port": 2022
+                },
+                "description": "Main survival world",
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "invocation": "java -Xms128M -Xmx2048M -jar [hidden]",
+                "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                "egg_features": [
+                    "eula",
+                    "java_version"
+                ],
+                "egg_tags": [
+                    "minecraft",
+                    "premium"
+                ],
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "status": null,
+                "is_suspended": false,
+                "is_installing": false,
+                "is_transferring": false,
+                "skip_scripts": false,
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "ip_alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": null,
+                                    "is_default": true
+                                }
+                            }
+                        ]
+                    },
+                    "variables": {
+                        "object": "null_resource",
+                        "attributes": null
+                    },
+                    "egg": {
+                        "object": "egg",
+                        "attributes": {
+                            "uuid": "e9900001-0000-4000-8000-000000000001",
+                            "name": "Paper"
+                        }
+                    },
+                    "subusers": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                }
+            },
+            "meta": {
+                "is_server_owner": false,
+                "user_permissions": [
+                    "websocket.connect",
+                    "control.console",
+                    "database.read",
+                    "database.create",
+                    "database.update",
+                    "backup.read",
+                    "schedule.read",
+                    "activity.read",
+                    "file.read"
+                ]
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/databases?include=password",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "eV8y0jg6",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_main",
+                        "username": "u1_mainuser",
+                        "connections_from": "%",
+                        "max_connections": 10,
+                        "relationships": {
+                            "password": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": "kEjgP8V2",
+                        "host": {
+                            "address": "10.0.0.5",
+                            "port": 3306
+                        },
+                        "name": "s1_logs",
+                        "username": "u1_logsuser",
+                        "connections_from": "10.0.0.%",
+                        "max_connections": 0,
+                        "relationships": {
+                            "password": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/activity?include=actor",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "356a192b7913b04c54574d18c28d46e6395428ab",
+                        "batch": null,
+                        "event": "admin:server.build",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "name": "Survival"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:05:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000001",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaae",
+                                    "username": "admin",
+                                    "email": "admin@example.test",
+                                    "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4",
+                        "batch": null,
+                        "event": "server:power.start",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {},
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:09:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000003",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaam",
+                                    "username": "helper",
+                                    "email": "helper@example.test",
+                                    "image": "https://gravatar.com/avatar/db133fd5a01229dc12009a42eaa2e3c3",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "c1dfd96eea8cc2b62785275bca38ac261256e278",
+                        "batch": null,
+                        "event": "server:file.delete",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "directory": "/plugins/old/",
+                            "files": [
+                                "old.jar",
+                                "older.jar"
+                            ],
+                            "count": 2
+                        },
+                        "has_additional_metadata": true,
+                        "timestamp": "2026-01-02T03:10:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000002",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaai",
+                                    "username": "owner",
+                                    "email": "owner@example.test",
+                                    "image": "https://gravatar.com/avatar/f17712239715b86f1dfd9ba550b7f607",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "0ade7c2cf97f75d009975f4d720d1fa6c19f4897",
+                        "batch": "ba7c0009-0000-4000-8000-000000000009",
+                        "event": "server:backup.start",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "name": "Nightly",
+                            "locked": true
+                        },
+                        "has_additional_metadata": true,
+                        "timestamp": "2026-01-02T03:13:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000001",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaae",
+                                    "username": "admin",
+                                    "email": "admin@example.test",
+                                    "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "b1d5781111d84f7b3fe45a0852e59758cd7a87e5",
+                        "batch": null,
+                        "event": "server:console.command",
+                        "is_api": false,
+                        "ip": "198.51.100.9",
+                        "description": null,
+                        "properties": {
+                            "command": "say <hi> & \"bye\""
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:14:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000004",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaaq",
+                                    "username": "limited",
+                                    "email": "limited@example.test",
+                                    "image": "https://gravatar.com/avatar/6a005a5825ef8aa17b476a64d40e7aab",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 5,
+                    "count": 5,
+                    "per_page": 25,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/backups",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "backup",
+                    "attributes": {
+                        "uuid": "bacc0001-0000-4000-8000-000000000001",
+                        "is_successful": true,
+                        "is_locked": true,
+                        "name": "Nightly",
+                        "ignored_files": [
+                            "*.log",
+                            "cache/"
+                        ],
+                        "checksum": "sha1:0123456789abcdef",
+                        "bytes": 1048576,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "completed_at": "2026-01-02T04:04:05+00:00"
+                    }
+                },
+                {
+                    "object": "backup",
+                    "attributes": {
+                        "uuid": "bacc0002-0000-4000-8000-000000000002",
+                        "is_successful": false,
+                        "is_locked": false,
+                        "name": "Failed attempt",
+                        "ignored_files": [],
+                        "checksum": null,
+                        "bytes": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "completed_at": "2026-01-02T03:14:05+00:00"
+                    }
+                },
+                {
+                    "object": "backup",
+                    "attributes": {
+                        "uuid": "bacc0003-0000-4000-8000-000000000003",
+                        "is_successful": false,
+                        "is_locked": false,
+                        "name": "In progress",
+                        "ignored_files": [
+                            "world/"
+                        ],
+                        "checksum": null,
+                        "bytes": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "completed_at": null
+                    }
+                }
+            ],
+            "meta": {
+                "backup_count": 2,
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 20,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/servers/5e7f0001-0000-4000-8000-000000000001/schedules",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_schedule",
+                    "attributes": {
+                        "id": 1,
+                        "name": "Nightly restart",
+                        "cron": {
+                            "day_of_week": "*",
+                            "day_of_month": "*",
+                            "month": "*",
+                            "hour": "3",
+                            "minute": "0"
+                        },
+                        "is_active": true,
+                        "is_processing": false,
+                        "only_when_online": true,
+                        "last_run_at": "2026-01-02T03:04:05+00:00",
+                        "next_run_at": "2026-03-05T03:00:00+00:00",
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-03-04T05:06:07+00:00",
+                        "relationships": {
+                            "tasks": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "schedule_task",
+                                        "attributes": {
+                                            "id": 1,
+                                            "sequence_id": 1,
+                                            "action": "command",
+                                            "payload": "say \"Restarting\" in 60s",
+                                            "time_offset": 0,
+                                            "is_queued": false,
+                                            "continue_on_failure": true,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "schedule_task",
+                                        "attributes": {
+                                            "id": 2,
+                                            "sequence_id": 2,
+                                            "action": "power",
+                                            "payload": "restart",
+                                            "time_offset": 60,
+                                            "is_queued": true,
+                                            "continue_on_failure": false,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "server_schedule",
+                    "attributes": {
+                        "id": 2,
+                        "name": "Disabled cleanup",
+                        "cron": {
+                            "day_of_week": "1-5",
+                            "day_of_month": "*",
+                            "month": "*",
+                            "hour": "*",
+                            "minute": "*/15"
+                        },
+                        "is_active": false,
+                        "is_processing": false,
+                        "only_when_online": false,
+                        "last_run_at": null,
+                        "next_run_at": null,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "tasks": {
+                                "object": "list",
+                                "data": []
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+]

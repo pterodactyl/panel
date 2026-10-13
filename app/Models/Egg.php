@@ -9,57 +9,17 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 use RuntimeException;
 
 /**
- * @property int $id
- * @property string $uuid
- * @property string $author
- * @property string $name
- * @property string|null $description
- * @property list<string>|null $features
- * @property string $docker_image -- deprecated, use $docker_images
  * @property array<string, string> $docker_images
- * @property string $update_url
- * @property bool $force_outgoing_ip
- * @property list<string>|null $file_denylist
- * @property string|null $config_files
- * @property string|null $config_startup
- * @property string|null $config_logs
- * @property string|null $config_stop
- * @property int|null $config_from
- * @property string|null $startup
- * @property bool $script_is_privileged
- * @property string|null $script_install
- * @property string $script_entry
- * @property string $script_container
- * @property int|null $copy_script_from
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property string|null $copy_script_install
- * @property string $copy_script_entry
- * @property string $copy_script_container
- * @property string|null $inherit_config_files
- * @property string|null $inherit_config_startup
- * @property string|null $inherit_config_logs
- * @property string|null $inherit_config_stop
- * @property list<string>|null $inherit_file_denylist
- * @property list<string>|null $inherit_features
- * @property Collection|Server[] $servers
- * @property Collection|EggVariable[] $variables
- * @property Collection|Egg[] $configuredChildren
- * @property Egg|null $scriptFrom
- * @property Egg|null $configFrom
  */
 #[Attributes\Identifiable('eegg')]
 #[Fillable([
@@ -89,15 +49,8 @@ class Egg extends Model implements Identifiable
     use HasRealtimeIdentifier;
     use HasVersion4Uuids;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'egg';
 
-    /**
-     * Defines the current egg export version.
-     */
     public const string EXPORT_VERSION = 'PTDL_v2';
 
     /**
@@ -125,6 +78,9 @@ class Egg extends Model implements Identifiable
     {
         return [
             'config_from' => 'integer',
+            'config_startup' => 'string',
+            'config_logs' => 'string',
+            'config_files' => 'string',
             'script_is_privileged' => 'boolean',
             'force_outgoing_ip' => 'boolean',
             'copy_script_from' => 'integer',
@@ -161,12 +117,10 @@ class Egg extends Model implements Identifiable
      */
     public function tagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->tags->pluck('slug')->all());
+        return $this->tags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
-     * Gets all servers associated with this egg.
-     *
      * @return HasMany<Server, $this>
      */
     public function servers(): HasMany
@@ -175,8 +129,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Gets all variables associated with this egg.
-     *
      * @return HasMany<EggVariable, $this>
      */
     public function variables(): HasMany
@@ -195,8 +147,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Get the parent egg from which to copy scripts.
-     *
      * @return BelongsTo<self, $this>
      */
     public function scriptFrom(): BelongsTo
@@ -205,8 +155,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Get the parent egg from which to copy configuration settings.
-     *
      * @return BelongsTo<self, $this>
      */
     public function configFrom(): BelongsTo
@@ -266,8 +214,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Return the file configuration for an egg.
-     *
      * @return Attribute<string|null, never>
      */
     protected function inheritConfigFiles(): Attribute
@@ -282,8 +228,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Return the startup configuration for an egg.
-     *
      * @return Attribute<string|null, never>
      */
     protected function inheritConfigStartup(): Attribute
@@ -298,8 +242,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Return the log reading configuration for an egg.
-     *
      * @return Attribute<string|null, never>
      */
     protected function inheritConfigLogs(): Attribute
@@ -314,8 +256,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Return the stop command configuration for an egg.
-     *
      * @return Attribute<string|null, never>
      */
     protected function inheritConfigStop(): Attribute
@@ -347,9 +287,6 @@ class Egg extends Model implements Identifiable
     }
 
     /**
-     * Returns the features available to this egg from the parent configuration if there are
-     * no features defined for this egg specifically and there is a parent egg configured.
-     *
      * @return Attribute<list<string>|null, never>
      */
     protected function inheritFileDenylist(): Attribute

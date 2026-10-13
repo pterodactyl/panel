@@ -10,13 +10,13 @@ use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetDeployableNodesRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\NodeResource;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
 #[Subgroup('Nodes', 'Create, update, retrieve, and delete Wings nodes and their allocations.')]
@@ -37,31 +37,37 @@ class NodeDeploymentController extends ApplicationApiController
      * similarly to the server creation process, but allows you to pass the deployment object
      * to this endpoint and get back a list of all Nodes satisfying the requirements.
      *
-     *
-     * @return ApiPayload
-     *
      * @throws NoViableNodeException
      */
     #[Endpoint('List deployable nodes', 'Returns nodes that can satisfy the requested memory, disk, and optional location deployment constraints.')]
     #[QueryParam('memory', 'integer', 'Memory required for the deployment, in megabytes.', required: true, example: 1024)]
     #[QueryParam('disk', 'integer', 'Disk required for the deployment, in megabytes.', required: true, example: 10240)]
     #[QueryParam('location_ids', 'integer[]', 'Restrict results to these location IDs.', required: false, example: [1, 2])]
+    #[QueryParam('tags', 'string[]', "Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned.", required: false, example: ['premium'])]
+    #[QueryParam('egg', 'integer', "Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg.", required: false, example: 1)]
     #[QueryParam('page', 'integer', 'Page number to return. When omitted, all viable nodes are returned without pagination metadata.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Number of nodes to return per page when page is supplied, up to 100.', required: false, example: 50)]
-    #[ResponseFromTransformer(NodeTransformer::class, Node::class, description: 'Deployable nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node')]
+    #[ResponseFromResource(NodeResource::class, Node::class, description: 'Deployable nodes returned.', collection: true, factoryStates: ['withLocation'], resourceKey: 'node')]
     #[ScribeResponse(self::NO_VIABLE_NODE_ERROR, status: 400, description: 'No nodes can satisfy the requested deployment constraints.')]
-    public function __invoke(GetDeployableNodesRequest $request, FindViableNodesService $viableNodesService): array
+    public function __invoke(GetDeployableNodesRequest $request): ApiResourceCollection
     {
         $payload = $request->payload();
 
-        $nodes = $viableNodesService
-            ->setLocations($payload['location_ids'])
-            ->setMemory($payload['memory'])
-            ->setDisk($payload['disk'])
-            ->handle($payload['per_page'], $payload['page']);
+        $query = Node::query()
+            ->viableFor($payload['memory'], $payload['disk'])
+            ->inLocations($payload['location_ids'])
+            ->forDeployTags($payload['tags']);
 
-        return Fractal::collection($nodes)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
-            ->toResponseArray();
+        if ($payload['egg'] !== null) {
+            $query->forEggTags(Egg::query()->findOrFail($payload['egg'])->tagSlugs());
+        }
+
+        $nodes = $payload['page'] === null
+            ? $query->get()
+            : $query->paginate($payload['per_page'] ?? 50, ['*'], 'page', $payload['page']);
+
+        throw_if($nodes->isEmpty(), NoViableNodeException::class, trans('exceptions.deployment.no_viable_nodes'));
+
+        return NodeResource::collection($nodes);
     }
 }

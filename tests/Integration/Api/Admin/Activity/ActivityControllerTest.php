@@ -181,6 +181,16 @@ test('malformed activity user filters return 422', function () {
         ->assertUnprocessable()->assertJsonPath('errors.0.meta.source_field', 'filter.user');
 });
 
+test('activity filters and pagination are validated in field order', function () {
+    $this->getJson(route('api.admin.activity', ['filter' => ['user_id' => 0, 'event' => ['admin'], 'ip' => ['127.0.0.1']], 'page' => 0]))
+        ->assertUnprocessable()
+        ->assertJsonCount(4, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'filter.user_id')
+        ->assertJsonPath('errors.1.meta.source_field', 'filter.event')
+        ->assertJsonPath('errors.2.meta.source_field', 'filter.ip')
+        ->assertJsonPath('errors.3.meta.source_field', 'page');
+});
+
 test('actor filters retain commas in email addresses', function () {
     $actor = User::factory()->create(['email' => 'comma,actor@example.com']);
     Activity::event('admin:user.create')->actor($actor)->subject($actor)->property('username', $actor->username)->log();

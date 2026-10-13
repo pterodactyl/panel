@@ -10,11 +10,6 @@ use Pterodactyl\Models\Location;
 
 final class DeleteLocation implements DeletesLocations
 {
-    /**
-     * Delete a location, provided no nodes are assigned to it.
-     *
-     * @throws HasActiveNodesException
-     */
     public function delete(Location $location): void
     {
         if ($location->nodes()->exists()) {

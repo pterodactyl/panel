@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Tests\Pest\Unit\Exceptions\Http\Connection\DaemonConnectionExceptionTest;
 
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Monolog\Handler\TestHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Tests\TestCase;
 
@@ -37,4 +39,10 @@ test('reports error for server errors', function () {
     expect($records)->toHaveCount(1);
     expect($records[0]->message)->toBe($previous->getMessage());
     expect($records[0]->context['exception'])->toBe($previous);
+});
+test('is reported by the exception handler unlike other http exceptions', function () {
+    $handler = app(ExceptionHandler::class);
+
+    expect($handler->shouldReport(new DaemonConnectionException(Http::failedRequest([], 502))))->toBeTrue()
+        ->and($handler->shouldReport(new DisplayException('Shown to the caller.')))->toBeFalse();
 });

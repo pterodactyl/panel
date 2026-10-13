@@ -1,4 +1,4 @@
-// Fractal returns a NullResource for any include the viewer lacks permission for.
+// The API returns a NullResource for any include the viewer lacks permission for.
 
 interface NullResourceLike {
     object: 'null_resource';

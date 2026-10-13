@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Pterodactyl\Http\Resources\Api\Admin;
+
+use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Data\ServerState;
+use Pterodactyl\Exceptions\Resource\InvalidResourceLevelException;
+use Pterodactyl\Http\Resources\Api\ApiResource;
+
+/**
+ * @template TResource of Model|ServerState|array<mixed>
+ *
+ * @extends ApiResource<TResource>
+ */
+abstract class AdminResource extends ApiResource
+{
+    /** @var string|null */
+    public static $wrap;
+
+    protected function exposesAllExtensionFields(): bool
+    {
+        return true;
+    }
+
+    /**
+     * The admin API only nests its own resources, so it never leaks Application or Client ones.
+     *
+     * @template TNested of ApiResource<*>
+     *
+     * @param  class-string<TNested>  $resource
+     * @param  Model|ServerState|array<mixed>  $data
+     * @return TNested
+     *
+     * @throws InvalidResourceLevelException
+     */
+    protected function makeResource(string $resource, Model|ServerState|array $data): ApiResource
+    {
+        throw_unless(is_subclass_of($resource, self::class), InvalidResourceLevelException::class, "Resource [$resource] must extend ".self::class.'.');
+
+        return parent::makeResource($resource, $data);
+    }
+}

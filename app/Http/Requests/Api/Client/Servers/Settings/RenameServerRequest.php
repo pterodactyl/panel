@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Settings;
 
+use Pterodactyl\Actions\Servers\UpdateServerDetails;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Validation\ServerRules;
-use UnexpectedValueException;
 
 class RenameServerRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
@@ -29,17 +28,11 @@ class RenameServerRequest extends ClientApiRequest implements ClientPermissionsR
      */
     public function rules(): array
     {
+        $rules = UpdateServerDetails::rules();
+
         return [
-            'name' => ServerRules::rules()['name'],
-            'description' => ['string', 'nullable'],
+            'name' => $rules['name'],
+            'description' => $rules['description'],
         ];
-    }
-
-    public function description(): ?string
-    {
-        $description = $this->input('description');
-        throw_if($description !== null && ! is_string($description), UnexpectedValueException::class, 'The validated server description must be a string or null.');
-
-        return $description;
     }
 }

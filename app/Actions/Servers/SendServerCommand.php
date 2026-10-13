@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Servers;
 use Illuminate\Http\Response;
 use Pterodactyl\Contracts\Servers\SendsServerCommands;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -22,5 +23,7 @@ final readonly class SendServerCommand implements SendsServerCommands
 
             throw $daemonConnectionException;
         }
+
+        Activity::event('server:console.command')->subject($server)->property('command', $command)->log();
     }
 }

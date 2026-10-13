@@ -14,14 +14,11 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -48,16 +45,11 @@ class AccountController extends ClientApiController
         ],
     ];
 
-    /**
-     * @return ApiPayload
-     */
     #[Endpoint('Get account', 'Returns profile details for the authenticated user.')]
-    #[ResponseFromTransformer(AccountTransformer::class, User::class, resourceKey: 'user')]
-    public function index(Request $request): array
+    #[ResponseFromResource(AccountResource::class, User::class, resourceKey: 'user')]
+    public function index(Request $request): AccountResource
     {
-        return Fractal::item($request->user())
-            ->transformWith($this->getTransformer(AccountTransformer::class))
-            ->toResponseArray();
+        return AccountResource::make($request->user());
     }
 
     /**
@@ -70,15 +62,7 @@ class AccountController extends ClientApiController
     #[ScribeResponse(self::THROTTLED_ERROR, status: 429, description: 'The account has changed email too many times in the current throttle window.')]
     public function updateEmail(UpdateEmailRequest $request, UpdatesUserEmails $emails): JsonResponse
     {
-        $email = JsonValueGuard::string($request->validated('email'));
-
-        $result = $emails->update($request->user(), $email);
-
-        if ($result['changed']) {
-            Activity::event('user:account.email-changed')
-                ->property(['old' => $result['original'], 'new' => $result['email']])
-                ->log();
-        }
+        $emails->update($request->user(), $request->string('email')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -96,11 +80,7 @@ class AccountController extends ClientApiController
     #[ScribeResponse(self::INVALID_PASSWORD_ERROR, status: 400, description: 'The current password is invalid.')]
     public function updatePassword(UpdatePasswordRequest $request, UpdatesUserPasswords $passwords): JsonResponse
     {
-        $password = JsonValueGuard::string($request->validated('password'));
-
-        $user = $passwords->update($request->user(), $password);
-
-        Activity::event('user:account.password-changed')->subject($user)->log();
+        $passwords->update($request->user(), $request->string('password')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

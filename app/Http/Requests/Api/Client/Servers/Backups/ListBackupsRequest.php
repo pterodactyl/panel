@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Backups;
 
-use Illuminate\Support\Arr;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ListBackupsRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
@@ -28,16 +26,10 @@ class ListBackupsRequest extends ClientApiRequest implements ClientPermissionsRe
     }
 
     /**
-     * @return array{per_page: int}
+     * The number of backups to list per page: 20 unless one is given, and at most 50.
      */
-    public function payload(): array
+    public function perPage(int $default = 20): int
     {
-        $data = parent::validated();
-
-        $perPage = Arr::get($data, 'per_page', 20);
-
-        return [
-            'per_page' => min(JsonValueGuard::integer($perPage), 50),
-        ];
+        return min($this->safe()->integer('per_page', $default), 50);
     }
 }

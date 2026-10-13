@@ -8,17 +8,15 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Enum\Permissions;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\GetActivityLogsRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\ActivityLogResource;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Activity\ActivityLogQueryService;
 use Pterodactyl\Support\ActivityLogFilters;
-use Pterodactyl\Transformers\Api\Client\ActivityLogTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -28,8 +26,6 @@ class ActivityLogController extends ClientApiController
 {
     /**
      * Returns the activity logs for a server.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List server activity', 'Returns a paginated list of activity log entries for the server.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -40,12 +36,12 @@ class ActivityLogController extends ClientApiController
     #[QueryParam('filter[event_name]', 'string', 'Filter activity to one exact event name. Preferred over filter[event], which matches substrings.', required: false, example: 'admin:server.build')]
     #[QueryParam('sort', 'string', 'Sort activity by timestamp. Prefix with "-" for descending order.', required: false, example: '-timestamp', enum: ['timestamp', '-timestamp'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports actor.', required: false, example: 'actor')]
-    #[ResponseFromTransformer(ActivityLogTransformer::class, ActivityLog::class, description: 'Server activity logs returned.', collection: true, factoryStates: ['withActor'], resourceKey: 'activity_log', paginate: [IlluminatePaginatorAdapter::class, 25], include: ['actor'])]
-    public function __invoke(GetActivityLogsRequest $request, ActivityLogQueryService $logs, Server $server): array
+    #[ResponseFromResource(ActivityLogResource::class, ActivityLog::class, description: 'Server activity logs returned.', collection: true, factoryStates: ['withActor'], resourceKey: 'activity_log', paginate: 25, include: ['actor'])]
+    public function __invoke(GetActivityLogsRequest $request, Server $server): ApiResourceCollection
     {
         $this->authorize(Permissions::ActivityRead->value, $server);
 
-        $query = QueryBuilder::for($logs->forServer($server))
+        $query = QueryBuilder::for($server->visibleActivity())
             ->allowedSorts(['timestamp'])
             ->allowedFilters([AllowedFilter::partial('event'), ActivityLogFilters::actor($request->string('filter.user')->toString()), ActivityLogFilters::actorId($request->integer('filter.user_id')), AllowedFilter::exact('event_name', 'event')]);
 
@@ -58,8 +54,6 @@ class ActivityLogController extends ClientApiController
             ->paginate(min($request->integer('per_page', 25), 100))
             ->appends($request->query());
 
-        return Fractal::collection($activity)
-            ->transformWith($this->getTransformer(ActivityLogTransformer::class))
-            ->toResponseArray();
+        return ActivityLogResource::collection($activity);
     }
 }

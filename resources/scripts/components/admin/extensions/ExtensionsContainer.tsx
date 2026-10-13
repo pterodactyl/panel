@@ -58,12 +58,18 @@ type ActionButtonProps = {
     onClick: () => void;
 };
 
-const stateBadge = (state: ExtensionState = '') => {
+// A failure in any other phase happened while the extension was running, not while it loaded.
+const LOAD_PHASES = new Set(['register', 'boot', 'compatibility']);
+
+const stateBadge = (state: ExtensionState = '', errorPhase?: string | null) => {
     switch (state) {
         case 'not_registered':
             return { label: 'Not set up', className: 'bg-accent/10 text-accent' };
         case 'error':
-            return { label: 'Failed to load', className: 'bg-destructive/15 text-destructive' };
+            return {
+                label: !errorPhase || LOAD_PHASES.has(errorPhase) ? 'Failed to load' : 'Runtime error',
+                className: 'bg-destructive/15 text-destructive',
+            };
         case 'invalid':
             return { label: 'Invalid package', className: 'bg-destructive/15 text-destructive' };
         default:
@@ -534,7 +540,7 @@ const extensionSubtitle = (extension: AdminExtension): string =>
 
 function ExtensionCardHeader({ extension, name, id }: { extension: AdminExtension; name: string; id: string }) {
     const subtitle = extensionSubtitle(extension);
-    const badge = stateBadge(extension.state as ExtensionState | undefined);
+    const badge = stateBadge(extension.state as ExtensionState | undefined, extension.error_phase);
 
     return (
         <div className='flex min-w-0 items-start gap-3'>
@@ -578,6 +584,12 @@ function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
             {extension.error && (
                 <div className='mt-3 rounded-sm border border-destructive/30 bg-destructive/10 p-3'>
                     <p className='break-words text-sm text-destructive'>{extension.error}</p>
+                    {extension.errored_at && (
+                        <p className='mt-1 text-xs text-destructive/80'>
+                            {extension.error_phase && <>In {extension.error_phase}, </>}
+                            {new Date(extension.errored_at).toLocaleString()}
+                        </p>
+                    )}
                 </div>
             )}
         </>

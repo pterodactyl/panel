@@ -90,7 +90,7 @@ const ConfigureTwoFactorForm = ({
                 type='text'
                 inputMode='numeric'
                 autoComplete='one-time-code'
-                pattern='\\d{6}'
+                pattern='[0-9]{6}'
             />
             <label htmlFor='totp-password' className='block mt-3'>
                 Account Password

@@ -1,0 +1,23 @@
+[
+    {
+        "request": "POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/backups",
+        "status": 200,
+        "body": {
+            "object": "backup",
+            "attributes": {
+                "uuid": "e45a916b-7b34-4394-9e17-48fad8d0185e",
+                "is_successful": false,
+                "is_locked": true,
+                "name": "Manual backup",
+                "ignored_files": [
+                    "logs/",
+                    "cache/"
+                ],
+                "checksum": null,
+                "bytes": 0,
+                "created_at": "2026-03-04T05:06:07+00:00",
+                "completed_at": null
+            }
+        }
+    }
+]

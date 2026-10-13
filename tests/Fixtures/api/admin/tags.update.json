@@ -1,0 +1,21 @@
+[
+    {
+        "request": "PUT /api/admin/tags/2",
+        "status": 200,
+        "body": {
+            "object": "tag",
+            "attributes": {
+                "id": 2,
+                "name": "Premium Plus",
+                "slug": "premium-plus",
+                "color": "#654321",
+                "is_predefined": false,
+                "legacy_nest_id": null,
+                "eggs_count": 0,
+                "nodes_count": 0,
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-03-04T05:06:07+00:00"
+            }
+        }
+    }
+]

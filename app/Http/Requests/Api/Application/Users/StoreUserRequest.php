@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Application\Users;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
+use Pterodactyl\Actions\Users\CreateUser;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Support\ValidationRuleSubset;
-use Pterodactyl\Validation\UserRules;
 
 class StoreUserRequest extends ApplicationApiRequest
 {
-    use ValidatesExtensionFields;
+    use ValidatesExtensionFields {
+        actionInput as private inputWithExtensions;
+    }
 
     protected ?string $resource = AdminAcl::RESOURCE_USERS;
 
     protected int $permission = AdminAcl::WRITE;
+
+    public function authorize(): bool
+    {
+        return parent::authorize() && (! $this->boolean('root_admin') || $this->canManageAdministrators());
+    }
 
     /**
      * Return the validation rules for this request.
@@ -30,56 +34,34 @@ class StoreUserRequest extends ApplicationApiRequest
      */
     public function rules(?array $rules = null): array
     {
-        $rules ??= UserRules::rules();
+        $rules ??= CreateUser::rules();
 
-        $response = ValidationRuleSubset::select($rules, [
-            'external_id',
-            'email',
-            'username',
-            'password',
-            'language',
-            'root_admin',
-        ]);
-
-        $response['first_name'] = $rules['name_first'];
-        $response['last_name'] = $rules['name_last'];
-
-        return $response;
+        return [
+            'external_id' => $rules['external_id'],
+            'email' => $rules['email'],
+            'username' => $rules['username'],
+            'password' => $rules['password'],
+            'language' => $rules['language'],
+            'root_admin' => $rules['root_admin'],
+            'first_name' => $rules['name_first'],
+            'last_name' => $rules['name_last'],
+        ];
     }
 
     /**
-     * @return UserCreationData
+     * The validated input under the action's field names: first_name and last_name are
+     * its name_first and name_last.
+     *
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $validated = parent::validated();
+        $input = $this->inputWithExtensions();
+        $input['name_first'] = $input['first_name'] ?? null;
+        $input['name_last'] = $input['last_name'] ?? null;
+        unset($input['first_name'], $input['last_name']);
 
-        $data = [
-            'email' => JsonValueGuard::string(Arr::get($validated, 'email')),
-            'username' => JsonValueGuard::string(Arr::get($validated, 'username')),
-            'name_first' => JsonValueGuard::string(Arr::get($validated, 'first_name')),
-            'name_last' => JsonValueGuard::string(Arr::get($validated, 'last_name')),
-        ];
-
-        foreach (['external_id', 'password'] as $nullable) {
-            if (array_key_exists($nullable, $validated)) {
-                $value = Arr::get($validated, $nullable);
-                $data[$nullable] = $value !== null && $value !== '' ? JsonValueGuard::string($value) : null;
-            }
-        }
-
-        if (array_key_exists('root_admin', $validated)) {
-            $data['root_admin'] = JsonValueGuard::boolean(Arr::get($validated, 'root_admin'));
-        }
-
-        $language = Arr::get($validated, 'language');
-        if ($language !== null && $language !== '') {
-            $data['language'] = JsonValueGuard::string($language);
-        }
-
-        $data['extensions'] = $this->extensionValues();
-
-        return $data;
+        return $input;
     }
 
     /**

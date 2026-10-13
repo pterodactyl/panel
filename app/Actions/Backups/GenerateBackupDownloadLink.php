@@ -12,17 +12,13 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Services\Nodes\NodeJwt;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownloadLinks
 {
-    public function __construct(private BackupManager $backupManager, private NodeJWTService $jwtService) {}
+    public function __construct(private BackupManager $backupManager, private NodeJwt $jwt) {}
 
-    /**
-     * Returns the URL that allows for a backup to be downloaded by an individual
-     * user, or by the Wings control software.
-     */
     public function generate(Backup $backup, User $user): string
     {
         throw_if($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS, BadRequestHttpException::class, 'The backup requested references an unknown disk driver type and cannot be downloaded.');
@@ -31,23 +27,18 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
             return $this->getS3BackupUrl($backup);
         }
 
-        $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-            ->setUser($user)
-            ->setClaims([
-                'backup_uuid' => $backup->uuid,
-                'server_uuid' => $backup->server->uuid,
-            ])
-            ->setScopes(JwtScope::BackupDownload)
-            ->handle($backup->server->node, $user->id.$backup->server->uuid);
+        $token = $this->jwt->issue(
+            $backup->server->node,
+            JwtScope::BackupDownload,
+            identifiedBy: $user->id.$backup->server->uuid,
+            expiresAt: CarbonImmutable::now()->addMinutes(15),
+            user: $user,
+            claims: ['backup_uuid' => $backup->uuid, 'server_uuid' => $backup->server->uuid],
+        );
 
         return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
     }
 
-    /**
-     * Returns a signed URL that allows us to download a file directly out of a non-public
-     * S3 bucket by using a signed URL.
-     */
     private function getS3BackupUrl(Backup $backup): string
     {
         $adapter = $this->backupManager->adapter(Backup::ADAPTER_AWS_S3);

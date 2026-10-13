@@ -8,25 +8,19 @@ class DeploymentObject
 {
     private bool $dedicated = false;
 
-    /**
-     * Location IDs exactly as they arrived from the request; FindViableNodesService
-     * is what rejects anything that is not an integer or an integer-like string.
-     *
-     * @var list<int|string>
-     */
+    /** @var list<int> */
     private array $locations = [];
 
     /**
-     * Individual ports and port ranges exactly as they arrived from the request;
-     * AllocationSelectionService discards the entries it cannot use.
+     * Individual ports and "start-end" port ranges; entries that are neither are ignored.
      *
-     * @var list<ApiScalar>
+     * @var list<int|string>
      */
     private array $ports = [];
 
     /**
-     * The deploy tags (D) this deployment declares. A node's reservations are
-     * matched against these exactly - see NodeTagGate.
+     * The deploy tags this deployment declares. A node's reservations are matched
+     * against these exactly (see NodeBuilder::forDeployTags()).
      *
      * @var array<string>
      */
@@ -45,7 +39,7 @@ class DeploymentObject
     }
 
     /**
-     * @return list<int|string>
+     * @return list<int>
      */
     public function getLocations(): array
     {
@@ -53,7 +47,7 @@ class DeploymentObject
     }
 
     /**
-     * @param  list<int|string>  $locations
+     * @param  list<int>  $locations
      */
     public function setLocations(array $locations): self
     {
@@ -63,7 +57,7 @@ class DeploymentObject
     }
 
     /**
-     * @return list<ApiScalar>
+     * @return list<int|string>
      */
     public function getPorts(): array
     {
@@ -71,7 +65,7 @@ class DeploymentObject
     }
 
     /**
-     * @param  list<ApiScalar>  $ports
+     * @param  list<int|string>  $ports
      */
     public function setPorts(array $ports): self
     {

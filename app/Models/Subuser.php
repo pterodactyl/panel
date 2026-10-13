@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\Carbon;
 use Database\Factories\SubuserFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,14 +13,9 @@ use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\HasHashid;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property int $server_id
  * @property list<string> $permissions
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property User $user
- * @property Server $server
+ * @property-read User $user
+ * @property-read Server $server
  */
 #[Guarded(['id', 'created_at', 'updated_at'])]
 class Subuser extends Model
@@ -32,10 +26,6 @@ class Subuser extends Model
     use HasHashid;
     use Notifiable;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'server_subuser';
 
     /**
@@ -51,8 +41,6 @@ class Subuser extends Model
     }
 
     /**
-     * Gets the server associated with a subuser.
-     *
      * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
@@ -61,8 +49,6 @@ class Subuser extends Model
     }
 
     /**
-     * Gets the user associated with a subuser.
-     *
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
@@ -71,8 +57,6 @@ class Subuser extends Model
     }
 
     /**
-     * Gets the permissions associated with a subuser.
-     *
      * @return HasMany<Permission, $this>
      */
     public function permissions(): HasMany

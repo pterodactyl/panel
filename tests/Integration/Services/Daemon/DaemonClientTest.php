@@ -102,7 +102,7 @@ test('node configuration updates use selected credentials and the new configurat
 
 test('transport applies configured timeouts and the existing TLS policy', function (string $environment, bool $verify): void {
     $this->app->detectEnvironment(fn (): string => $environment);
-    config()->set(['pterodactyl.guzzle.timeout' => '17', 'pterodactyl.guzzle.connect_timeout' => '4']);
+    config()->set(['pterodactyl.guzzle.timeout' => 17, 'pterodactyl.guzzle.connect_timeout' => 4]);
     $options = [];
     Http::fake(['https://wings.example.test:8080/api/servers/server-one/sync' => function (Request $request, array $requestOptions) use (&$options) {
         $options = $requestOptions;

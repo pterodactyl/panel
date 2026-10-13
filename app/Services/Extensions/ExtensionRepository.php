@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Schema;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
@@ -44,7 +43,7 @@ class ExtensionRepository
 
     public function directory(): string
     {
-        return mb_rtrim(JsonValueGuard::string(config('extensions.directory')), '/\\');
+        return mb_rtrim(config()->string('extensions.directory'), '/\\');
     }
 
     /**
@@ -155,7 +154,12 @@ class ExtensionRepository
      * The enabled frontend extensions for the SPA to load. Signed-in users receive
      * each extension's frontend settings; everyone else only those marked ->public().
      *
-     * @return array<int, array{id: string, version: string, entry: string, prefix: string|null, translations: string|null, config: object, screens: list<ExtensionScreenDefinition>, components: list<string>, development: array{url: string, version: string}|null}>
+     * Guests only need what renders on the sign-in pages: the bundle, its styles and
+     * translations, and public settings. Versions, screens and component claims are
+     * left out so the login page does not describe the panel's extensions, and the
+     * SPA skips screen and component registrations for an entry that has none.
+     *
+     * @return array<int, array{id: string, version?: string, entry: string, prefix: string|null, translations: string|null, config: object, screens?: list<ExtensionScreenDefinition>, components?: list<string>, development: array{url: string, version: string}|null}>
      */
     public function frontendPayload(bool $authenticated): array
     {
@@ -165,17 +169,24 @@ class ExtensionRepository
             rescue(fn () => ExtensionSettings::preload(array_values($configured->map(fn (ExtensionManifest $manifest): ExtensionSettings => $this->settings($manifest->id))->all())), report: false);
         }
 
-        return $enabled->map(fn (ExtensionManifest $manifest): array => [
-            'id' => $manifest->id,
-            'version' => $manifest->version,
-            'entry' => $this->assets->entryUrl($manifest),
-            'prefix' => $manifest->uiPrefix,
-            'translations' => $this->translationsRevision($manifest),
-            'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
-            'screens' => $manifest->screens,
-            'components' => $manifest->components,
-            'development' => $this->assets->developmentPayload($manifest->id),
-        ])
+        return $enabled->map(function (ExtensionManifest $manifest) use ($authenticated): array {
+            $entry = [
+                'id' => $manifest->id,
+                'entry' => $this->assets->entryUrl($manifest),
+                'prefix' => $manifest->uiPrefix,
+                'translations' => $this->translationsRevision($manifest),
+                'config' => (object) $this->frontendConfig($manifest->id, ! $authenticated),
+                'development' => $this->assets->developmentPayload($manifest->id),
+            ];
+
+            if ($authenticated) {
+                $entry['version'] = $manifest->version;
+                $entry['screens'] = $manifest->screens;
+                $entry['components'] = $manifest->components;
+            }
+
+            return $entry;
+        })
             ->values()
             ->all();
     }
@@ -191,7 +202,7 @@ class ExtensionRepository
         rescue(fn (): int => Extension::query()
             ->where('identifier', $identifier)
             ->where(fn (Builder $query): Builder => $query->whereNull('error')->orWhere('error', '<>', $reason))
-            ->update(['error' => $reason]), report: false);
+            ->update(['error' => $reason, 'error_phase' => $phase, 'errored_at' => now()]), report: false);
 
         $context = array_filter(['exception' => $exception]);
         $exception instanceof Throwable
@@ -201,7 +212,12 @@ class ExtensionRepository
         rescue(fn () => $this->events->dispatch(new ExtensionLoadFailed($identifier, $phase, $reason, $exception)));
     }
 
-    /** @param list<string> $identifiers */
+    /**
+     * Clears the load failures of extensions that have just loaded cleanly. Failures
+     * at runtime are kept, so they are still there for an administrator to read.
+     *
+     * @param  list<string>  $identifiers
+     */
     public function clearErrors(array $identifiers): void
     {
         if ($identifiers === []) {
@@ -217,7 +233,17 @@ class ExtensionRepository
             $this->enabled = null;
         }
 
-        rescue(fn (): int => Extension::query()->whereIn('identifier', $identifiers)->whereNotNull('error')->update(['error' => null]), report: false);
+        // Runs on every boot, so it only writes when there is a load failure to clear.
+        rescue(function () use ($identifiers): void {
+            $loadFailures = Extension::query()
+                ->whereIn('identifier', $identifiers)
+                ->whereNotNull('error')
+                ->where(fn (Builder $query): Builder => $query->whereNull('error_phase')->orWhereIn('error_phase', Extension::LOAD_PHASES));
+
+            if ($loadFailures->exists()) {
+                $loadFailures->update(Extension::NO_ERROR);
+            }
+        }, report: false);
     }
 
     public function settings(string $identifier): ExtensionSettings
@@ -262,7 +288,7 @@ class ExtensionRepository
      * as ctx.config; with $publicOnly just the ->public() ones, for guests.
      * Never allowed to break page rendering.
      *
-     * @return ExtensionSettingValues
+     * @return array<string, mixed>
      */
     private function frontendConfig(string $identifier, bool $publicOnly): array
     {

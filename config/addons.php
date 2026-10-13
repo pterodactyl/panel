@@ -15,5 +15,5 @@ return [
     | only enable this if you trust every installed addon.
     |
     */
-    'hooks_enabled' => env('ADDONS_HOOKS_ENABLED', false),
+    'hooks_enabled' => (bool) env('ADDONS_HOOKS_ENABLED', false),
 ];

@@ -10,7 +10,7 @@ use Throwable;
 interface ProcessesSchedules
 {
     /**
-     * Process a schedule and push the first task onto the queue worker.
+     * Push the schedule's first task onto the queue worker.
      *
      * @throws Throwable
      */

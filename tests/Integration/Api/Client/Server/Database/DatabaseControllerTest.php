@@ -33,6 +33,7 @@ test('database can be created', function () {
     expect($database->database)->toBe("s{$server->id}_testdb2");
     $gateway->assertCreated("s{$server->id}_testdb2");
     $gateway->assertFlushed(1);
+    $this->assertActivityFor('server:database.create', $user, $server, $database);
 });
 test('database cannot be created past the server limit', function () {
     $user = User::factory()->create();

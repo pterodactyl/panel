@@ -74,6 +74,24 @@ test('subuser cannot strip permissions from a subuser that they do not hold them
         Permissions::WebsocketConnect->value,
     ]);
 });
+test('a permission nothing defines any more is kept when the editor does not hold it', function () {
+    Bus::fake([RevokeSftpAccessJob::class]);
+    [$user, $server] = $this->generateTestAccount([Permissions::UserUpdate->value, Permissions::ControlStart->value]);
+    /** @var Subuser $subuser */
+    $subuser = Subuser::factory()->for(User::factory()->create())->for($server)->create(['permissions' => [
+        Permissions::ControlStart->value,
+        'ext.disabled.view',
+    ]]);
+
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => ['power.fake']])->assertForbidden();
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => []])->assertUnprocessable();
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/users/{$subuser->user->uuid}", ['permissions' => ['ext.disabled.view']])->assertOk();
+
+    expect($subuser->refresh()->permissions)->toEqualCanonicalizing([
+        'ext.disabled.view',
+        Permissions::WebsocketConnect->value,
+    ]);
+});
 test('subuser can change the permissions they hold while preserving the ones they do not', function () {
     Bus::fake([RevokeSftpAccessJob::class]);
     [$user, $server] = $this->generateTestAccount([Permissions::UserUpdate->value, Permissions::ControlStart->value, Permissions::ControlStop->value]);

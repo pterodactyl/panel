@@ -62,6 +62,23 @@ describe('extensions/loader', () => {
         expect(registry.getExtensionStates()).toEqual([{ id: 'demo', status: 'loaded' }]);
     });
 
+    it('runs the same setup on the sign-in pages, where guests are sent no screens or components', async () => {
+        stubExtensions([{ id: 'demo', entry: '/assets/extensions/demo/client.js' }]);
+
+        const setup = vi.fn((ctx: ExtensionSetupContext) => {
+            ctx.slots.register('auth.login.after', Component);
+            ctx.screens.register('votes', async () => ({ default: Component }));
+            ctx.components.replace('dashboard.serverCard', Component);
+        });
+
+        await loader.loadExtensions(vi.fn(async () => ({ default: { setup } })));
+
+        expect(registry.getSlotComponents('auth.login.after')).toHaveLength(1);
+        expect(registry.getExtensionScreens('server')).toHaveLength(0);
+        expect(registry.getComponentReplacement('dashboard.serverCard')).toBeUndefined();
+        expect(registry.getExtensionStates()).toEqual([{ id: 'demo', status: 'loaded' }]);
+    });
+
     it('records a failing extension and keeps loading the rest', async () => {
         stubExtensions([
             { id: 'broken', entry: '/assets/extensions/broken/client.js' },

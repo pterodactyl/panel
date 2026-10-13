@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Users;
 
+use Pterodactyl\Actions\Users\CreateUser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Validation\UserRules;
 
 class UpdateUserRequest extends StoreUserRequest
 {
+    public function authorize(): bool
+    {
+        return parent::authorize() && (! $this->parameter('user', User::class)->root_admin || $this->canManageAdministrators());
+    }
+
     /**
      * Return the validation rules for this request.
      *
@@ -17,7 +22,7 @@ class UpdateUserRequest extends StoreUserRequest
      */
     public function rules(?array $rules = null): array
     {
-        return parent::rules(UserRules::rules($this->parameter('user', User::class)));
+        return parent::rules(CreateUser::rules($this->parameter('user', User::class)));
     }
 
     /**

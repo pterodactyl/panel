@@ -10,9 +10,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
 use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 
 #[Description('Configure basic environment settings for the Panel.')]
@@ -76,9 +74,9 @@ class AppSettingsCommand extends Command
         }
 
         $this->output->comment('Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.');
-        $this->variables['APP_SERVICE_AUTHOR'] = JsonValueGuard::string($this->option('author') ?? $this->ask(
+        $this->variables['APP_SERVICE_AUTHOR'] = $this->answer(fn () => $this->option('author') ?? $this->ask(
             'Egg Author Email',
-            JsonValueGuard::nullableString(config('pterodactyl.service.author', 'unknown@unknown.com'))
+            $this->configured('pterodactyl.service.author', 'unknown@unknown.com')
         ));
 
         if (! filter_var($this->variables['APP_SERVICE_AUTHOR'], FILTER_VALIDATE_EMAIL)) {
@@ -88,44 +86,39 @@ class AppSettingsCommand extends Command
         }
 
         $this->output->comment('The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.');
-        $this->variables['APP_URL'] = JsonValueGuard::string($this->option('url') ?? $this->ask(
+        $url = $this->answer(fn () => $this->option('url') ?? $this->ask(
             'Application URL',
-            JsonValueGuard::nullableString(config('app.url', 'https://example.com'))
+            $this->configured('app.url', 'https://example.com')
         ));
+        $this->variables['APP_URL'] = $url;
 
         $this->output->comment("The timezone should match one of PHP's supported timezones. If you are unsure, please reference https://php.net/manual/en/timezones.php.");
-        $this->variables['APP_TIMEZONE'] = JsonValueGuard::string($this->option('timezone') ?? $this->anticipate(
+        $this->variables['APP_TIMEZONE'] = $this->answer(fn () => $this->option('timezone') ?? $this->anticipate(
             'Application Timezone',
             DateTimeZone::listIdentifiers(),
-            JsonValueGuard::nullableString(config('app.timezone'))
+            $this->configured('app.timezone')
         ));
 
-        $selected = JsonValueGuard::string(config('cache.default', 'redis'));
-        $cacheDriver = $this->option('cache') ?? $this->choice(
+        $selected = config()->string('cache.default', 'redis');
+        $this->variables['CACHE_DRIVER'] = $this->answer(fn () => $this->option('cache') ?? $this->choice(
             'Cache Driver',
             self::CACHE_DRIVERS,
             array_key_exists($selected, self::CACHE_DRIVERS) ? $selected : null
-        );
-        JsonValueGuard::assertScalar($cacheDriver);
-        $this->variables['CACHE_DRIVER'] = $this->stringValue($cacheDriver);
+        ));
 
-        $selected = JsonValueGuard::string(config('session.driver', 'redis'));
-        $sessionDriver = $this->option('session') ?? $this->choice(
+        $selected = config()->string('session.driver', 'redis');
+        $this->variables['SESSION_DRIVER'] = $this->answer(fn () => $this->option('session') ?? $this->choice(
             'Session Driver',
             self::SESSION_DRIVERS,
             array_key_exists($selected, self::SESSION_DRIVERS) ? $selected : null
-        );
-        JsonValueGuard::assertScalar($sessionDriver);
-        $this->variables['SESSION_DRIVER'] = $this->stringValue($sessionDriver);
+        ));
 
-        $selected = JsonValueGuard::string(config('queue.default', 'redis'));
-        $queueDriver = $this->option('queue') ?? $this->choice(
+        $selected = config()->string('queue.default', 'redis');
+        $this->variables['QUEUE_CONNECTION'] = $this->answer(fn () => $this->option('queue') ?? $this->choice(
             'Queue Driver',
             self::QUEUE_DRIVERS,
             array_key_exists($selected, self::QUEUE_DRIVERS) ? $selected : null
-        );
-        JsonValueGuard::assertScalar($queueDriver);
-        $this->variables['QUEUE_CONNECTION'] = $this->stringValue($queueDriver);
+        ));
 
         if (($this->option('settings-ui')) !== null) {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') === 'true' ? 'false' : 'true';
@@ -139,12 +132,12 @@ class AppSettingsCommand extends Command
         } else {
             $this->variables['PTERODACTYL_TELEMETRY_ENABLED'] = $this->confirm(
                 'Enable sending anonymous telemetry data?',
-                JsonValueGuard::boolean(config('pterodactyl.telemetry.enabled', true))
+                config()->boolean('pterodactyl.telemetry.enabled', true)
             ) ? 'true' : 'false';
         }
 
         // Make sure session cookies are set as "secure" when using HTTPS
-        if (str_starts_with($this->variables['APP_URL'], 'https://')) {
+        if ($url !== null && str_starts_with($url, 'https://')) {
             $this->variables['SESSION_SECURE_COOKIE'] = 'true';
         }
 
@@ -169,20 +162,20 @@ class AppSettingsCommand extends Command
         }
 
         $this->output->note("You've selected the Redis driver for one or more options, please provide valid connection information below. In most cases you can use the defaults provided unless you have modified your setup.");
-        $this->variables['REDIS_HOST'] = JsonValueGuard::string($this->option('redis-host') ?? $this->ask(
+        $this->variables['REDIS_HOST'] = $this->answer(fn () => $this->option('redis-host') ?? $this->ask(
             'Redis Host',
-            JsonValueGuard::nullableScalarString(config('database.redis.default.host'))
+            $this->configured('database.redis.default.host')
         ));
 
         $askForRedisPassword = true;
         if (! empty(config('database.redis.default.password'))) {
-            $this->variables['REDIS_PASSWORD'] = JsonValueGuard::scalar(config('database.redis.default.password'));
+            $this->variables['REDIS_PASSWORD'] = $this->configured('database.redis.default.password');
             $askForRedisPassword = $this->confirm('It seems a password is already defined for Redis, would you like to change it?');
         }
 
         if ($askForRedisPassword) {
             $this->output->comment('By default a Redis server instance has no password as it is running locally and inaccessible to the outside world. If this is the case, simply hit enter without entering a value.');
-            $this->variables['REDIS_PASSWORD'] = JsonValueGuard::scalar($this->option('redis-pass') ?? $this->output->askHidden(
+            $this->variables['REDIS_PASSWORD'] = $this->answer(fn () => $this->option('redis-pass') ?? $this->output->askHidden(
                 'Redis Password'
             ));
         }
@@ -191,17 +184,9 @@ class AppSettingsCommand extends Command
             $this->variables['REDIS_PASSWORD'] = 'null';
         }
 
-        $this->variables['REDIS_PORT'] = JsonValueGuard::scalar($this->option('redis-port') ?? $this->ask(
+        $this->variables['REDIS_PORT'] = $this->answer(fn () => $this->option('redis-port') ?? $this->ask(
             'Redis Port',
-            JsonValueGuard::nullableScalarString(config('database.redis.default.port'))
+            $this->configured('database.redis.default.port')
         ));
-    }
-
-    /** @param ApiScalar $value */
-    private function stringValue(bool|float|int|string|null $value): string
-    {
-        throw_unless(is_string($value), InvalidArgumentException::class, 'Expected a single environment option value.');
-
-        return $value;
     }
 }

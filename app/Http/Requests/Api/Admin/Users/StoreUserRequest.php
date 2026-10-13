@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Requests\Api\Admin\Users;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
+use Pterodactyl\Actions\Users\CreateUser;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Support\ValidationRuleSubset;
-use Pterodactyl\Validation\UserRules;
 
 class StoreUserRequest extends AdminApiRequest
 {
-    use ValidatesExtensionFields;
+    use ValidatesExtensionFields {
+        actionInput as private inputWithExtensions;
+    }
 
     public function permissions(): array
     {
@@ -31,57 +30,38 @@ class StoreUserRequest extends AdminApiRequest
      */
     public function rules(?array $rules = null): array
     {
-        $rules ??= UserRules::rules();
+        $rules ??= CreateUser::rules();
 
-        $response = ValidationRuleSubset::select($rules, [
-            'external_id',
-            'email',
-            'username',
-            'password',
-            'root_admin',
-            'name_first',
-            'name_last',
-        ]);
-
-        // Nested on input; remapped onto the flat `language` column in validated().
-        $response['preferences.language'] = $rules['language'];
-
-        return $response;
+        return [
+            'external_id' => $rules['external_id'],
+            'email' => $rules['email'],
+            'username' => $rules['username'],
+            'password' => $rules['password'],
+            'root_admin' => $rules['root_admin'],
+            'name_first' => $rules['name_first'],
+            'name_last' => $rules['name_last'],
+            // Nested on input; actionInput() hands it to the action as `language`.
+            'preferences.language' => $rules['language'],
+        ];
     }
 
     /**
-     * @return UserCreationData
+     * The validated input, with the language sent under `preferences` moved to the
+     * action's `language` key.
+     *
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $validated = parent::validated();
+        $input = $this->inputWithExtensions();
+        unset($input['preferences']);
 
-        $data = [
-            'email' => JsonValueGuard::string(Arr::get($validated, 'email')),
-            'username' => JsonValueGuard::string(Arr::get($validated, 'username')),
-            'name_first' => JsonValueGuard::string(Arr::get($validated, 'name_first')),
-            'name_last' => JsonValueGuard::string(Arr::get($validated, 'name_last')),
-        ];
-
-        foreach (['external_id', 'password'] as $nullable) {
-            if (array_key_exists($nullable, $validated)) {
-                $value = Arr::get($validated, $nullable);
-                $data[$nullable] = $value !== null && $value !== '' ? JsonValueGuard::string($value) : null;
-            }
+        $validated = $this->safe();
+        if ($validated->has('preferences.language')) {
+            $input['language'] = $validated->string('preferences.language')->toString();
         }
 
-        if (array_key_exists('root_admin', $validated)) {
-            $data['root_admin'] = JsonValueGuard::boolean(Arr::get($validated, 'root_admin'));
-        }
-
-        $language = Arr::get($validated, 'preferences.language');
-        if ($language !== null && $language !== '') {
-            $data['language'] = JsonValueGuard::string($language);
-        }
-
-        $data['extensions'] = $this->extensionValues();
-
-        return $data;
+        return $input;
     }
 
     /** Rename fields to be more clear in error messages. */

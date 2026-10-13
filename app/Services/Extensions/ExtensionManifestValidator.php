@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use JsonException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionClass;
 use UnexpectedValueException;
 
@@ -234,7 +233,7 @@ class ExtensionManifestValidator
      * The PSR-4 map of the package's composer.json, which Composer and editors read. It is
      * used when extension.json declares no `autoload` of its own.
      *
-     * @return array<array-key, JsonInputValue>
+     * @return array<mixed>
      */
     private function composerAutoload(string $directory): array
     {
@@ -244,19 +243,21 @@ class ExtensionManifestValidator
         }
 
         try {
-            $composer = JsonValueGuard::decodeArray8(File::get($path));
-        } catch (JsonException|UnexpectedValueException) {
+            $composer = json_decode(File::get($path), true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
             throw new InvalidExtensionException("{$path} is not valid JSON.");
         }
 
-        $psr4 = is_array($composer['autoload'] ?? null) ? $composer['autoload']['psr-4'] ?? [] : [];
+        throw_unless(is_array($composer), InvalidExtensionException::class, "{$path} is not valid JSON.");
+
+        $psr4 = data_get($composer, 'autoload.psr-4', []);
         throw_unless(is_array($psr4), InvalidExtensionException::class, 'composer.json "autoload.psr-4" must map "Vendor\\\\Prefix\\\\" to a source directory.');
 
         return $psr4;
     }
 
     /**
-     * @param  array<array-key, JsonInputValue>  $autoload
+     * @param  array<mixed>  $autoload
      * @return array<string, string>
      */
     private function normalizeAutoload(array $autoload, string $field): array

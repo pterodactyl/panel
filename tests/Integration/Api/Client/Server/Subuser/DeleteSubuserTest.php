@@ -28,6 +28,7 @@ test('correct subuser is deleted from server', function (?string $prefix) {
     Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($subuser, $server) {
         return $job->user === $subuser->uuid && $job->target->is($server);
     });
+    $this->assertActivityFor('server:subuser.delete', $user, $server, $subuser);
 })->with([
     'without a numeric prefix' => [null],
     'with a numeric prefix' => ['18180000'],

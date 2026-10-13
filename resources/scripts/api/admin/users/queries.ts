@@ -80,7 +80,7 @@ export const createAdminUserInput = (values: UserValues): Options<AdminCreateUse
 });
 
 export const updateAdminUserInput = (id: number, values: UserValues): Options<AdminUpdateUserData> => ({
-    path: { id },
+    path: { user_id: id },
     body: userValuesToBody(values),
 });
 
@@ -151,7 +151,7 @@ export const useUpdateAdminUser = () => {
 
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
-                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.id) }),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
             const messages = resourceMutationMessages('user', 'update', user.attributes.email);
 

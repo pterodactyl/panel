@@ -72,6 +72,7 @@ test('two factor can be enabled on account', function () {
         }
         throw new ExpectationFailedException(sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw));
     }
+    $this->assertActivityFor('user:two-factor.create', $user, $user);
 });
 test('two factor can be disabled on account', function () {
     Carbon::setTestNow(Carbon::now());
@@ -87,6 +88,7 @@ test('two factor can be disabled on account', function () {
     expect($user->use_totp)->toBeFalse();
     expect($user->totp_secret)->toBeNull();
     expect($user->totp_authenticated_at)->toBeNull();
+    $this->assertActivityFor('user:two-factor.delete', $user, $user);
 });
 test('no error is returned if two factor is not enabled', function () {
     Carbon::setTestNow(Carbon::now());

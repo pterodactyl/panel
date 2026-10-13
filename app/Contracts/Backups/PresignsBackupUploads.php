@@ -9,7 +9,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface PresignsBackupUploads
 {
-    /** @return BackupUploadParts
+    /**
+     * Open a multipart upload for the backup in S3 and return one presigned URL per part Wings
+     * needs to upload an archive of the given size.
+     *
+     * @return BackupUploadParts
+     *
      * @throws BadRequestHttpException
      */
     public function presign(Backup $backup, int $size): array;

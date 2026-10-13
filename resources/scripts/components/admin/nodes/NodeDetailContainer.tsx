@@ -68,6 +68,9 @@ export default function NodeDetailContainer() {
                     <Link data-core to='/panel/nodes/$id/allocation' params={params}>
                         Allocation
                     </Link>
+                    <Link data-core to='/panel/nodes/$id/tags' params={params}>
+                        Tags
+                    </Link>
                     <Link data-core to='/panel/nodes/$id/servers' params={params}>
                         Servers
                     </Link>

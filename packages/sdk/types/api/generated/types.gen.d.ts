@@ -10,7 +10,7 @@ export type AdminActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | boolean | Array<string> | {
+        [key: string]: string | number | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -98,7 +98,7 @@ export type AdminBackupAttributes = {
     is_successful: boolean;
     is_locked: boolean;
     created_at: string;
-    completed_at: string;
+    completed_at: string | null;
 };
 export type AdminBackupPaginatedResponse = {
     object: string;
@@ -328,7 +328,7 @@ export type AdminMountAttributes = {
     id: number;
     uuid: string;
     name: string;
-    description: string;
+    description: string | null;
     source: string;
     target: string;
     read_only: boolean;
@@ -397,6 +397,8 @@ export type AdminNodeAttributes = {
     extensions?: ExtensionFields;
     relationships?: {
         location?: AdminLocationResource | NullResource;
+        tags?: AdminTagListResponse | NullResource;
+        deployment_tags?: AdminTagListResponse | NullResource;
     };
 };
 export type AdminNodeConfigurationResponse = {
@@ -741,11 +743,11 @@ export type ApplicationEggAttributes = {
         files: AdminEggConfigurationFiles;
         startup: {
             [key: string]: string | Array<string>;
-        };
-        stop: string;
+        } | null;
+        stop: string | null;
         logs: {
             [key: string]: string | number | boolean;
-        };
+        } | null;
         file_denylist: Array<string> | null;
         extends: number | null;
     };
@@ -1005,7 +1007,7 @@ export type ClientActivityLogAttributes = {
     ip: string | null;
     description: string | null;
     properties: {
-        [key: string]: string | number | boolean | Array<string> | {
+        [key: string]: string | number | number | boolean | Array<string> | {
             [key: string]: string;
         };
     };
@@ -1398,8 +1400,9 @@ export type ValidationErrorEnvelope = {
         code: string;
         status: string;
         detail: string;
-        source?: {
-            field: string;
+        meta?: {
+            source_field?: string;
+            rule?: string;
         };
     }>;
 };
@@ -1607,12 +1610,19 @@ export type AdminCreateServerRequest = {
          */
         dedicated_ip?: boolean;
         port_range?: Array<string>;
+        /**
+         * Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.
+         */
         tags?: Array<string>;
     };
     /**
      * Whether the server should start when the operation completes.
      */
     start_on_completion?: boolean;
+    /**
+     * Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.
+     */
+    ignore_tags?: boolean;
     secondary_allocations_ids?: Array<number>;
     extensions?: ExtensionFields;
 };
@@ -1645,29 +1655,29 @@ export type AdminUpdateServerBuildRequest = {
      */
     oom_disabled?: boolean;
     /**
-     * The memory limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The memory limit in megabytes. Must be at least 0.
      */
-    memory?: number;
+    memory: number;
     /**
-     * The swap limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least -1.
+     * The swap limit in megabytes. Must be at least -1.
      */
-    swap?: number;
+    swap: number;
     /**
-     * The block IO weight. This field is required when <code>limits</code> is not present. Must be between 10 and 1000.
+     * The block IO weight. Must be between 10 and 1000.
      */
-    io?: number;
+    io: number;
     /**
-     * The CPU limit percentage. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The CPU limit percentage. Must be at least 0.
      */
-    cpu?: number;
+    cpu: number;
     /**
      * CPU threads available to the server. Must match the regex /^[0-9-,]+$/.
      */
     threads?: string | null;
     /**
-     * The disk limit in megabytes. This field is required when <code>limits</code> is not present. Must be at least 0.
+     * The disk limit in megabytes. Must be at least 0.
      */
-    disk?: number;
+    disk: number;
     add_allocation_ids?: Array<number>;
     remove_allocation_ids?: Array<number>;
     /**
@@ -1706,6 +1716,10 @@ export type AdminUpdateServerStartupRequest = {
      * Whether install scripts should be skipped.
      */
     skip_scripts?: boolean;
+    /**
+     * Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.
+     */
+    ignore_tags?: boolean;
 };
 export type AdminUpdateServerSuspensionRequest = {
     /**
@@ -1726,6 +1740,10 @@ export type AdminTransferServerRequest = {
      * Additional allocation IDs on the destination node.
      */
     allocation_additional?: Array<number>;
+    /**
+     * Whether to move the server to a node whose egg tags its egg does not share.
+     */
+    ignore_tags?: boolean;
 };
 export type AdminCreateServerDatabaseRequest = {
     /**
@@ -2016,10 +2034,9 @@ export type AdminCreateEggVariableRequest = {
      */
     description?: string | null;
     /**
-     * The environment variable name. Must match the regex /^[\w]{1,191}$/. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, or <code>UUID</code>.
+     * The environment variable name. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, <code>UUID</code>, in any letter case. Must match the regex /^[\w]{1,191}$/.
      */
     env_variable: string;
-    options?: Array<string>;
     /**
      * Laravel validation rules applied to user-submitted values.
      */
@@ -2028,6 +2045,7 @@ export type AdminCreateEggVariableRequest = {
      * The default value.
      */
     default_value?: string;
+    options?: Array<string>;
 };
 export type AdminReorderEggVariablesRequest = {
     order: Array<number>;
@@ -2042,10 +2060,9 @@ export type AdminUpdateEggVariableRequest = {
      */
     description?: string | null;
     /**
-     * The environment variable name. Must match the regex /^[\w]{1,191}$/. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, or <code>UUID</code>.
+     * The environment variable name. Must not be one of <code>SERVER_MEMORY</code>, <code>SERVER_IP</code>, <code>SERVER_PORT</code>, <code>ENV</code>, <code>HOME</code>, <code>USER</code>, <code>STARTUP</code>, <code>SERVER_UUID</code>, <code>UUID</code>, in any letter case. Must match the regex /^[\w]{1,191}$/.
      */
     env_variable: string;
-    options?: Array<string>;
     /**
      * Laravel validation rules applied to user-submitted values.
      */
@@ -2054,6 +2071,7 @@ export type AdminUpdateEggVariableRequest = {
      * The default value.
      */
     default_value?: string;
+    options?: Array<string>;
 };
 export type AdminUpdateEggInstallScriptRequest = {
     /**
@@ -2105,7 +2123,7 @@ export type AdminCreateEggRequest = {
      */
     description?: string | null;
     /**
-     * Docker images available to this resource. Must match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/im.
+     * Docker images available to this resource. One image per line, optionally prefixed with a display name and a pipe (<code>Java 21|ghcr.io/pterodactyl/yolks:java_21</code>). Each must be at most 191 characters and match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/.
      */
     docker_images: string;
     /**
@@ -2156,7 +2174,7 @@ export type AdminUpdateEggRequest = {
      */
     description?: string | null;
     /**
-     * Docker images available to this resource. Must match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/im.
+     * Docker images available to this resource. One image per line, optionally prefixed with a display name and a pipe (<code>Java 21|ghcr.io/pterodactyl/yolks:java_21</code>). Each must be at most 191 characters and match the regex /^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/.
      */
     docker_images: string;
     /**
@@ -2790,7 +2808,7 @@ export type ApplicationCreateServerRequest = {
         dedicated_ip?: boolean;
         port_range?: Array<string>;
         /**
-         * The deploy tags.
+         * Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.
          */
         tags?: Array<number | string>;
     };
@@ -3399,6 +3417,14 @@ export type AdminListExtensionsResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     }>;
     meta?: {
         enabled?: boolean;
@@ -3423,9 +3449,23 @@ export type AdminInstallExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminGetExtensionSettingsResponseBody = {
+    data: {
+        registered: boolean;
+        schema: Array<AdminExtensionSettingField>;
+    };
+};
+export type AdminUpdateExtensionSettingsResponseBody = {
     data: {
         registered: boolean;
         schema: Array<AdminExtensionSettingField>;
@@ -3443,12 +3483,6 @@ export type AdminGetExtensionIcon200ImageJpegResponseBody = Blob | File;
  * Icon image bytes.
  */
 export type AdminGetExtensionIcon200ImageWebpResponseBody = Blob | File;
-export type AdminUpdateExtensionSettingsResponseBody = {
-    data: {
-        registered: boolean;
-        schema: Array<AdminExtensionSettingField>;
-    };
-};
 export type AdminUploadExtensionSettingFileResponseBody = {
     data: {
         registered: boolean;
@@ -3479,6 +3513,14 @@ export type AdminEnableExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminDisableExtensionResponseBody = {
@@ -3499,6 +3541,14 @@ export type AdminDisableExtensionResponseBody = {
         enabled?: boolean;
         state?: string;
         error?: string | null;
+        /**
+         * Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.
+         */
+        error_phase: string | null;
+        /**
+         * When the last failure was recorded.
+         */
+        errored_at: string | null;
     };
 };
 export type AdminListNodeAllocationIpsResponseBody = {
@@ -3694,7 +3744,6 @@ export type AdminListActivityPerPageQueryParameter = number;
 export type AdminListActivityIncludeQueryParameter = string;
 export type AdminGetExtensionSettingsExtensionPathParameter = string;
 export type AdminGetExtensionIconExtensionPathParameter = string;
-export type AdminUpdateExtensionSettingsExtensionIdPathParameter = string;
 export type AdminUploadExtensionSettingFileExtensionPathParameter = string;
 export type AdminUploadExtensionSettingFileInputPathParameter = string;
 export type AdminEnableExtensionExtensionPathParameter = string;
@@ -3739,7 +3788,6 @@ export type AdminGetUserByExternalIdExternalIdPathParameter = string;
 export type AdminGetUserIncludeQueryParameter = string;
 export type AdminGetUserUserIdPathParameter = number;
 export type AdminDisableUserTwoFactorAuthenticationUserIdPathParameter = number;
-export type AdminUpdateUserIdPathParameter = number;
 export type AdminGetNodeSystemInformationNodeIdPathParameter = number;
 export type AdminCreateNodeDeployTokenNodeIdPathParameter = number;
 export type AdminGetNodeUtilizationNodeIdPathParameter = number;
@@ -3841,7 +3889,7 @@ export type AdminListServerBackupsSortQueryParameter = string;
 export type AdminListServerBackupsPerPageQueryParameter = number;
 export type AdminListServerBackupsServerAdminIdentifierPathParameter = string;
 export type AdminToggleServerBackupLockServerAdminIdentifierPathParameter = string;
-export type AdminToggleServerBackupLockBackupIdPathParameter = string;
+export type AdminToggleServerBackupLockBackupUuidPathParameter = string;
 /**
  * Filter nodes by UUID.
  */
@@ -3867,16 +3915,15 @@ export type AdminListNodesPageQueryParameter = number;
  */
 export type AdminListNodesPerPageQueryParameter = number;
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
  */
-export type AdminListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers';
+export type AdminListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
  */
-export type AdminGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers';
+export type AdminGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'allocations,location' | 'location,servers' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 export type AdminGetNodeNodeIdPathParameter = number;
 export type AdminGetNodeConfigurationNodeIdPathParameter = number;
-export type AdminUpdateNodeIdPathParameter = number;
 export type AdminSyncNodeGameTagsNodeIdPathParameter = number;
 export type AdminSyncNodeDeploymentTagsNodeIdPathParameter = number;
 /**
@@ -3932,9 +3979,7 @@ export type AdminListAvailableNodeAllocationsPerPageQueryParameter = number;
 export type AdminListAvailableNodeAllocationsNodeIdPathParameter = number;
 export type AdminDeleteNodeAllocationIpBlockNodeIdPathParameter = number;
 export type AdminUpdateNodeAllocationNodeIdPathParameter = number;
-export type AdminUpdateNodeAllocationIdPathParameter = number;
-export type AdminDeleteNodeAllocationNodeIdPathParameter = number;
-export type AdminDeleteNodeAllocationAllocationIdPathParameter = number;
+export type AdminUpdateNodeAllocationAllocationIdPathParameter = number;
 /**
  * Filter locations by short identifier.
  */
@@ -3961,7 +4006,6 @@ export type AdminListLocationsPerPageQueryParameter = number;
 export type AdminGetLocationIncludeQueryParameter = 'nodes' | 'servers' | 'nodes,servers';
 export type AdminGetLocationLocationIdPathParameter = number;
 export type AdminListEligibleLocationNodesLocationIdPathParameter = number;
-export type AdminUpdateLocationIdPathParameter = number;
 /**
  * Filter mounts by name.
  */
@@ -3987,7 +4031,6 @@ export type AdminListMountsIncludeQueryParameter = 'eggs' | 'nodes' | 'servers' 
  */
 export type AdminGetMountIncludeQueryParameter = 'eggs' | 'nodes' | 'servers' | 'eggs,nodes' | 'eggs,nodes,servers';
 export type AdminGetMountMountIdPathParameter = number;
-export type AdminUpdateMountIdPathParameter = number;
 /**
  * Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".
  */
@@ -4009,9 +4052,7 @@ export type AdminListEggVariablesIncludeQueryParameter = string;
 export type AdminListEggVariablesEggIdPathParameter = number;
 export type AdminReorderEggVariablesEggIdPathParameter = number;
 export type AdminUpdateEggVariableEggIdPathParameter = number;
-export type AdminUpdateEggVariableIdPathParameter = number;
-export type AdminDeleteEggVariableEggIdPathParameter = number;
-export type AdminDeleteEggVariableVariableIdPathParameter = number;
+export type AdminUpdateEggVariableVariableIdPathParameter = number;
 export type AdminGetEggInstallScriptEggIdPathParameter = number;
 export type AdminExportEggEggIdPathParameter = number;
 export type AdminUpdateEggFromImportEggIdPathParameter = number;
@@ -4020,6 +4061,10 @@ export type AdminSyncEggTagsEggIdPathParameter = number;
  * Filter eggs by name.
  */
 export type AdminListEggsFilterNameQueryParameter = string;
+/**
+ * Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.
+ */
+export type AdminListEggsFilterTagQueryParameter = string;
 /**
  * Sort eggs by id or name. Prefix with a hyphen for descending order.
  */
@@ -4041,7 +4086,6 @@ export type AdminListEggsIncludeQueryParameter = 'variables' | 'tags' | 'servers
  */
 export type AdminGetEggIncludeQueryParameter = 'variables' | 'tags' | 'servers' | 'variables,tags' | 'variables,servers' | 'tags,servers' | 'variables,tags,servers';
 export type AdminGetEggEggIdPathParameter = number;
-export type AdminUpdateEggIdPathParameter = number;
 /**
  * Filter tags by name.
  */
@@ -4071,7 +4115,6 @@ export type AdminListTagsIncludeQueryParameter = 'eggs' | 'nodes' | 'eggs,nodes'
  */
 export type AdminGetTagIncludeQueryParameter = 'eggs' | 'nodes' | 'eggs,nodes';
 export type AdminGetTagTagIdPathParameter = number;
-export type AdminUpdateTagIdPathParameter = number;
 /**
  * Page number to retrieve.
  */
@@ -4190,9 +4233,9 @@ export type ApplicationListNodesFilterDaemonTokenIdQueryParameter = string;
  */
 export type ApplicationListNodesSortQueryParameter = 'id' | '-id' | 'uuid' | '-uuid' | 'memory' | '-memory' | 'disk' | '-disk';
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
  */
-export type ApplicationListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations';
+export type ApplicationListNodesIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 /**
  * Memory required for the deployment, in megabytes.
  */
@@ -4206,6 +4249,14 @@ export type ApplicationListDeployableNodesDiskQueryParameter = number;
  */
 export type ApplicationListDeployableNodesLocationIdsQueryParameter = Array<number>;
 /**
+ * Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned.
+ */
+export type ApplicationListDeployableNodesTagsQueryParameter = Array<string>;
+/**
+ * Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg.
+ */
+export type ApplicationListDeployableNodesEggQueryParameter = number;
+/**
  * Page number to return. When omitted, all viable nodes are returned without pagination metadata.
  */
 export type ApplicationListDeployableNodesPageQueryParameter = number;
@@ -4214,12 +4265,11 @@ export type ApplicationListDeployableNodesPageQueryParameter = number;
  */
 export type ApplicationListDeployableNodesPerPageQueryParameter = number;
 /**
- * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+ * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
  */
-export type ApplicationGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations';
+export type ApplicationGetNodeIncludeQueryParameter = 'allocations' | 'location' | 'servers' | 'location,allocations' | 'tags' | 'deployment_tags' | 'tags,deployment_tags';
 export type ApplicationGetNodeNodeIdPathParameter = number;
 export type ApplicationGetNodeConfigurationNodeIdPathParameter = number;
-export type ApplicationUpdateNodeIdPathParameter = number;
 /**
  * Number of allocations to return per page, up to 100.
  */
@@ -4309,6 +4359,10 @@ export type ApplicationListTagsFilterNameQueryParameter = string;
  * Filter tags by slug.
  */
 export type ApplicationListTagsFilterSlugQueryParameter = string;
+/**
+ * Filter tags by the ID of the nest they were created from.
+ */
+export type ApplicationListTagsFilterLegacyNestIdQueryParameter = number;
 /**
  * Sort tags by id, name, or slug. Prefix with "-" for descending order.
  */
@@ -4573,10 +4627,8 @@ export type ClientUpdateAllocationNotesAllocationIdPathParameter = number;
 export type ClientSetPrimaryAllocationServerUuidPathParameter = string;
 export type ClientSetPrimaryAllocationAllocationIdPathParameter = number;
 export type ClientListServerSubusersServerUuidPathParameter = string;
-export type ClientGetServerSubuserServerPathParameter = string;
+export type ClientGetServerSubuserServerUuidPathParameter = string;
 export type ClientGetServerSubuserUserPathParameter = string;
-export type ClientUpdateServerSubuserServerUuidPathParameter = string;
-export type ClientUpdateServerSubuserUserPathParameter = string;
 /**
  * The page number to return.
  */
@@ -4825,6 +4877,43 @@ export type AdminGetExtensionSettingsResponses = {
     200: AdminGetExtensionSettingsResponseBody;
 };
 export type AdminGetExtensionSettingsResponse = AdminGetExtensionSettingsResponses[keyof AdminGetExtensionSettingsResponses];
+export type AdminUpdateExtensionSettingsData = {
+    body: AdminUpdateExtensionSettingsRequest;
+    path: {
+        /**
+         * The extension identifier.
+         */
+        extension: AdminGetExtensionSettingsExtensionPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/extensions/{extension}/settings';
+};
+export type AdminUpdateExtensionSettingsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateExtensionSettingsError = AdminUpdateExtensionSettingsErrors[keyof AdminUpdateExtensionSettingsErrors];
+export type AdminUpdateExtensionSettingsResponses = {
+    /**
+     * Settings updated; fresh schema returned.
+     */
+    200: AdminUpdateExtensionSettingsResponseBody;
+};
+export type AdminUpdateExtensionSettingsResponse = AdminUpdateExtensionSettingsResponses[keyof AdminUpdateExtensionSettingsResponses];
 export type AdminGetExtensionIconData = {
     body?: never;
     path: {
@@ -4858,43 +4947,6 @@ export type AdminGetExtensionIconResponses = {
     200: AdminGetExtensionIcon200ImagePngResponseBody;
 };
 export type AdminGetExtensionIconResponse = AdminGetExtensionIconResponses[keyof AdminGetExtensionIconResponses];
-export type AdminUpdateExtensionSettingsData = {
-    body: AdminUpdateExtensionSettingsRequest;
-    path: {
-        /**
-         * The ID of the extension.
-         */
-        extension_id: AdminUpdateExtensionSettingsExtensionIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/extensions/{extension_id}/settings';
-};
-export type AdminUpdateExtensionSettingsErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type AdminUpdateExtensionSettingsError = AdminUpdateExtensionSettingsErrors[keyof AdminUpdateExtensionSettingsErrors];
-export type AdminUpdateExtensionSettingsResponses = {
-    /**
-     * Settings updated; fresh schema returned.
-     */
-    200: AdminUpdateExtensionSettingsResponseBody;
-};
-export type AdminUpdateExtensionSettingsResponse = AdminUpdateExtensionSettingsResponses[keyof AdminUpdateExtensionSettingsResponses];
 export type AdminClearExtensionSettingFileData = {
     body?: never;
     path: {
@@ -5265,6 +5317,43 @@ export type AdminGetUserResponses = {
     200: AdminUserResource;
 };
 export type AdminGetUserResponse = AdminGetUserResponses[keyof AdminGetUserResponses];
+export type AdminUpdateUserData = {
+    body: AdminUpdateUserRequest;
+    path: {
+        /**
+         * The user ID.
+         */
+        user_id: AdminGetUserUserIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}';
+};
+export type AdminUpdateUserErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
+export type AdminUpdateUserResponses = {
+    /**
+     * User updated.
+     */
+    200: AdminUserResource;
+};
+export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
 export type AdminDisableUserTwoFactorAuthenticationData = {
     body?: never;
     path: {
@@ -5298,43 +5387,6 @@ export type AdminDisableUserTwoFactorAuthenticationResponses = {
     204: void;
 };
 export type AdminDisableUserTwoFactorAuthenticationResponse = AdminDisableUserTwoFactorAuthenticationResponses[keyof AdminDisableUserTwoFactorAuthenticationResponses];
-export type AdminUpdateUserData = {
-    body: AdminUpdateUserRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateUserIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/users/{id}';
-};
-export type AdminUpdateUserErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
-export type AdminUpdateUserResponses = {
-    /**
-     * User updated.
-     */
-    200: AdminUserResource;
-};
-export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
 export type AdminGetNodeSystemInformationData = {
     body?: never;
     path: {
@@ -6360,12 +6412,12 @@ export type AdminToggleServerBackupLockData = {
          */
         server_admin_identifier: AdminToggleServerBackupLockServerAdminIdentifierPathParameter;
         /**
-         * The ID of the backup.
+         * The backup UUID.
          */
-        backup_id: AdminToggleServerBackupLockBackupIdPathParameter;
+        backup_uuid: AdminToggleServerBackupLockBackupUuidPathParameter;
     };
     query?: never;
-    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_id}/toggle';
+    url: '/api/admin/servers/{server_admin_identifier}/backups/{backup_uuid}/toggle';
 };
 export type AdminToggleServerBackupLockErrors = {
     /**
@@ -6418,7 +6470,7 @@ export type AdminListNodesData = {
          */
         per_page?: AdminListNodesPerPageQueryParameter;
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
          */
         include?: AdminListNodesIncludeQueryParameter;
     };
@@ -6517,7 +6569,7 @@ export type AdminGetNodeData = {
     };
     query?: {
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers".
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations).
          */
         include?: AdminGetNodeIncludeQueryParameter;
     };
@@ -6545,6 +6597,43 @@ export type AdminGetNodeResponses = {
     200: AdminNodeResource;
 };
 export type AdminGetNodeResponse = AdminGetNodeResponses[keyof AdminGetNodeResponses];
+export type AdminUpdateNodeData = {
+    body: AdminUpdateNodeRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: AdminGetNodeNodeIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/nodes/{node_id}';
+};
+export type AdminUpdateNodeErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateNodeError = AdminUpdateNodeErrors[keyof AdminUpdateNodeErrors];
+export type AdminUpdateNodeResponses = {
+    /**
+     * Node updated.
+     */
+    200: AdminNodeResource;
+};
+export type AdminUpdateNodeResponse = AdminUpdateNodeResponses[keyof AdminUpdateNodeResponses];
 export type AdminGetNodeConfigurationData = {
     body?: never;
     path: {
@@ -6578,43 +6667,6 @@ export type AdminGetNodeConfigurationResponses = {
     200: AdminNodeConfigurationResponse;
 };
 export type AdminGetNodeConfigurationResponse = AdminGetNodeConfigurationResponses[keyof AdminGetNodeConfigurationResponses];
-export type AdminUpdateNodeData = {
-    body: AdminUpdateNodeRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateNodeIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/nodes/{id}';
-};
-export type AdminUpdateNodeErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type AdminUpdateNodeError = AdminUpdateNodeErrors[keyof AdminUpdateNodeErrors];
-export type AdminUpdateNodeResponses = {
-    /**
-     * Node updated.
-     */
-    200: AdminNodeResource;
-};
-export type AdminUpdateNodeResponse = AdminUpdateNodeResponses[keyof AdminUpdateNodeResponses];
 export type AdminSyncNodeGameTagsData = {
     body?: AdminSyncNodeGameTagsRequest;
     path: {
@@ -6953,58 +7005,17 @@ export type AdminDeleteNodeAllocationIpBlockResponses = {
     204: void;
 };
 export type AdminDeleteNodeAllocationIpBlockResponse = AdminDeleteNodeAllocationIpBlockResponses[keyof AdminDeleteNodeAllocationIpBlockResponses];
-export type AdminUpdateNodeAllocationData = {
-    body?: AdminUpdateNodeAllocationRequest;
-    path: {
-        /**
-         * The node ID.
-         */
-        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateNodeAllocationIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/nodes/{node_id}/allocations/{id}';
-};
-export type AdminUpdateNodeAllocationErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type AdminUpdateNodeAllocationError = AdminUpdateNodeAllocationErrors[keyof AdminUpdateNodeAllocationErrors];
-export type AdminUpdateNodeAllocationResponses = {
-    /**
-     * Allocation updated.
-     */
-    200: AdminAllocationResource;
-};
-export type AdminUpdateNodeAllocationResponse = AdminUpdateNodeAllocationResponses[keyof AdminUpdateNodeAllocationResponses];
 export type AdminDeleteNodeAllocationData = {
     body?: never;
     path: {
         /**
          * The node ID.
          */
-        node_id: AdminDeleteNodeAllocationNodeIdPathParameter;
+        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
         /**
          * The ID of the allocation.
          */
-        allocation_id: AdminDeleteNodeAllocationAllocationIdPathParameter;
+        allocation_id: AdminUpdateNodeAllocationAllocationIdPathParameter;
     };
     query?: never;
     url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}';
@@ -7035,6 +7046,47 @@ export type AdminDeleteNodeAllocationResponses = {
     204: void;
 };
 export type AdminDeleteNodeAllocationResponse = AdminDeleteNodeAllocationResponses[keyof AdminDeleteNodeAllocationResponses];
+export type AdminUpdateNodeAllocationData = {
+    body?: AdminUpdateNodeAllocationRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: AdminUpdateNodeAllocationNodeIdPathParameter;
+        /**
+         * The ID of the allocation.
+         */
+        allocation_id: AdminUpdateNodeAllocationAllocationIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/nodes/{node_id}/allocations/{allocation_id}';
+};
+export type AdminUpdateNodeAllocationErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateNodeAllocationError = AdminUpdateNodeAllocationErrors[keyof AdminUpdateNodeAllocationErrors];
+export type AdminUpdateNodeAllocationResponses = {
+    /**
+     * Allocation updated.
+     */
+    200: AdminAllocationResource;
+};
+export type AdminUpdateNodeAllocationResponse = AdminUpdateNodeAllocationResponses[keyof AdminUpdateNodeAllocationResponses];
 export type AdminListLocationsData = {
     body?: never;
     path?: never;
@@ -7179,6 +7231,43 @@ export type AdminGetLocationResponses = {
     200: AdminLocationResource;
 };
 export type AdminGetLocationResponse = AdminGetLocationResponses[keyof AdminGetLocationResponses];
+export type AdminUpdateLocationData = {
+    body: AdminUpdateLocationRequest;
+    path: {
+        /**
+         * The location ID.
+         */
+        location_id: AdminGetLocationLocationIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/locations/{location_id}';
+};
+export type AdminUpdateLocationErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateLocationError = AdminUpdateLocationErrors[keyof AdminUpdateLocationErrors];
+export type AdminUpdateLocationResponses = {
+    /**
+     * Location updated.
+     */
+    200: AdminLocationResource;
+};
+export type AdminUpdateLocationResponse = AdminUpdateLocationResponses[keyof AdminUpdateLocationResponses];
 export type AdminListEligibleLocationNodesData = {
     body?: never;
     path: {
@@ -7212,43 +7301,6 @@ export type AdminListEligibleLocationNodesResponses = {
     200: AdminNodeListResponse;
 };
 export type AdminListEligibleLocationNodesResponse = AdminListEligibleLocationNodesResponses[keyof AdminListEligibleLocationNodesResponses];
-export type AdminUpdateLocationData = {
-    body: AdminUpdateLocationRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: AdminUpdateLocationIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/locations/{id}';
-};
-export type AdminUpdateLocationErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type AdminUpdateLocationError = AdminUpdateLocationErrors[keyof AdminUpdateLocationErrors];
-export type AdminUpdateLocationResponses = {
-    /**
-     * Location updated.
-     */
-    200: AdminLocationResource;
-};
-export type AdminUpdateLocationResponse = AdminUpdateLocationResponses[keyof AdminUpdateLocationResponses];
 export type AdminListMountsData = {
     body?: never;
     path?: never;
@@ -7397,12 +7449,12 @@ export type AdminUpdateMountData = {
     body: AdminUpdateMountRequest;
     path: {
         /**
-         * The resource ID.
+         * The mount ID.
          */
-        id: AdminUpdateMountIdPathParameter;
+        mount_id: AdminGetMountMountIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/mounts/{id}';
+    url: '/api/admin/mounts/{mount_id}';
 };
 export type AdminUpdateMountErrors = {
     /**
@@ -7788,6 +7840,43 @@ export type AdminReorderEggVariablesResponses = {
     200: AdminEggVariableListResponse;
 };
 export type AdminReorderEggVariablesResponse = AdminReorderEggVariablesResponses[keyof AdminReorderEggVariablesResponses];
+export type AdminDeleteEggVariableData = {
+    body?: never;
+    path: {
+        /**
+         * The egg ID.
+         */
+        egg_id: AdminUpdateEggVariableEggIdPathParameter;
+        /**
+         * The variable ID.
+         */
+        variable_id: AdminUpdateEggVariableVariableIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
+};
+export type AdminDeleteEggVariableErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+export type AdminDeleteEggVariableError = AdminDeleteEggVariableErrors[keyof AdminDeleteEggVariableErrors];
+export type AdminDeleteEggVariableResponses = {
+    /**
+     * Egg variable deleted.
+     */
+    204: void;
+};
+export type AdminDeleteEggVariableResponse = AdminDeleteEggVariableResponses[keyof AdminDeleteEggVariableResponses];
 export type AdminUpdateEggVariableData = {
     body: AdminUpdateEggVariableRequest;
     path: {
@@ -7796,12 +7885,12 @@ export type AdminUpdateEggVariableData = {
          */
         egg_id: AdminUpdateEggVariableEggIdPathParameter;
         /**
-         * The resource ID.
+         * The variable ID.
          */
-        id: AdminUpdateEggVariableIdPathParameter;
+        variable_id: AdminUpdateEggVariableVariableIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/eggs/{egg_id}/variables/{id}';
+    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
 };
 export type AdminUpdateEggVariableErrors = {
     /**
@@ -7829,43 +7918,6 @@ export type AdminUpdateEggVariableResponses = {
     200: AdminEggVariableResource;
 };
 export type AdminUpdateEggVariableResponse = AdminUpdateEggVariableResponses[keyof AdminUpdateEggVariableResponses];
-export type AdminDeleteEggVariableData = {
-    body?: never;
-    path: {
-        /**
-         * The egg ID.
-         */
-        egg_id: AdminDeleteEggVariableEggIdPathParameter;
-        /**
-         * The variable ID.
-         */
-        variable_id: AdminDeleteEggVariableVariableIdPathParameter;
-    };
-    query?: never;
-    url: '/api/admin/eggs/{egg_id}/variables/{variable_id}';
-};
-export type AdminDeleteEggVariableErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-};
-export type AdminDeleteEggVariableError = AdminDeleteEggVariableErrors[keyof AdminDeleteEggVariableErrors];
-export type AdminDeleteEggVariableResponses = {
-    /**
-     * Egg variable deleted.
-     */
-    204: void;
-};
-export type AdminDeleteEggVariableResponse = AdminDeleteEggVariableResponses[keyof AdminDeleteEggVariableResponses];
 export type AdminGetEggInstallScriptData = {
     body?: never;
     path: {
@@ -8084,6 +8136,10 @@ export type AdminListEggsData = {
          */
         'filter[name]'?: AdminListEggsFilterNameQueryParameter;
         /**
+         * Filter eggs by tag slug. Separate several slugs with commas to return eggs that carry any of them.
+         */
+        'filter[tag]'?: AdminListEggsFilterTagQueryParameter;
+        /**
          * Sort eggs by id or name. Prefix with a hyphen for descending order.
          */
         sort?: AdminListEggsSortQueryParameter;
@@ -8227,12 +8283,12 @@ export type AdminUpdateEggData = {
     body: AdminUpdateEggRequest;
     path: {
         /**
-         * The resource ID.
+         * The egg ID.
          */
-        id: AdminUpdateEggIdPathParameter;
+        egg_id: AdminGetEggEggIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/eggs/{id}';
+    url: '/api/admin/eggs/{egg_id}';
 };
 export type AdminUpdateEggErrors = {
     /**
@@ -8416,12 +8472,12 @@ export type AdminUpdateTagData = {
     body: AdminUpdateTagRequest;
     path: {
         /**
-         * The resource ID.
+         * The ID of the tag.
          */
-        id: AdminUpdateTagIdPathParameter;
+        tag_id: AdminGetTagTagIdPathParameter;
     };
     query?: never;
-    url: '/api/admin/tags/{id}';
+    url: '/api/admin/tags/{tag_id}';
 };
 export type AdminUpdateTagErrors = {
     /**
@@ -9267,7 +9323,7 @@ export type ApplicationListNodesData = {
          */
         sort?: ApplicationListNodesSortQueryParameter;
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
          */
         include?: ApplicationListNodesIncludeQueryParameter;
     };
@@ -9332,6 +9388,14 @@ export type ApplicationListDeployableNodesData = {
          * Restrict results to these location IDs.
          */
         location_ids?: ApplicationListDeployableNodesLocationIdsQueryParameter;
+        /**
+         * Deploy tags (IDs or slugs) the deployment declares. They must match a node's deployment tags exactly: a node reserved for a tag missing here is left out, and every tag listed must be reserved on the node. Without tags, only nodes with no reservations are returned.
+         */
+        tags?: ApplicationListDeployableNodesTagsQueryParameter;
+        /**
+         * Only return nodes that accept this egg. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg.
+         */
+        egg?: ApplicationListDeployableNodesEggQueryParameter;
         /**
          * Page number to return. When omitted, all viable nodes are returned without pagination metadata.
          */
@@ -9416,7 +9480,7 @@ export type ApplicationGetNodeData = {
     };
     query?: {
         /**
-         * Comma-separated relationships to include. Supports "allocations", "location", and "servers" when the key can read those resources.
+         * Comma-separated relationships to include. Supports "allocations", "location", "servers", "tags" (the games the node accepts), and "deployment_tags" (its reservations) when the key can read those resources. The tags need read access to eggs.
          */
         include?: ApplicationGetNodeIncludeQueryParameter;
     };
@@ -9441,6 +9505,44 @@ export type ApplicationGetNodeResponses = {
     200: ApplicationNodeResource;
 };
 export type ApplicationGetNodeResponse = ApplicationGetNodeResponses[keyof ApplicationGetNodeResponses];
+export type ApplicationUpdateNodeData = {
+    body: ApplicationUpdateNodeRequest;
+    path: {
+        /**
+         * The node ID.
+         */
+        node_id: ApplicationGetNodeNodeIdPathParameter;
+    };
+    query?: never;
+    url: '/api/application/nodes/{node_id}';
+};
+export type ApplicationUpdateNodeErrors = {
+    /**
+     * The panel saved the node changes but could not persist the configuration to Wings.
+     */
+    400: ErrorEnvelope;
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type ApplicationUpdateNodeError = ApplicationUpdateNodeErrors[keyof ApplicationUpdateNodeErrors];
+export type ApplicationUpdateNodeResponses = {
+    200: ApplicationNodeResource;
+};
+export type ApplicationUpdateNodeResponse = ApplicationUpdateNodeResponses[keyof ApplicationUpdateNodeResponses];
 export type ApplicationGetNodeConfigurationData = {
     body?: never;
     path: {
@@ -9474,44 +9576,6 @@ export type ApplicationGetNodeConfigurationResponses = {
     200: ApplicationGetNodeConfigurationResponseBody;
 };
 export type ApplicationGetNodeConfigurationResponse = ApplicationGetNodeConfigurationResponses[keyof ApplicationGetNodeConfigurationResponses];
-export type ApplicationUpdateNodeData = {
-    body: ApplicationUpdateNodeRequest;
-    path: {
-        /**
-         * The resource ID.
-         */
-        id: ApplicationUpdateNodeIdPathParameter;
-    };
-    query?: never;
-    url: '/api/application/nodes/{id}';
-};
-export type ApplicationUpdateNodeErrors = {
-    /**
-     * The panel saved the node changes but could not persist the configuration to Wings.
-     */
-    400: ErrorEnvelope;
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-    /**
-     * The submitted data is invalid.
-     */
-    422: ValidationErrorEnvelope;
-};
-export type ApplicationUpdateNodeError = ApplicationUpdateNodeErrors[keyof ApplicationUpdateNodeErrors];
-export type ApplicationUpdateNodeResponses = {
-    200: ApplicationNodeResource;
-};
-export type ApplicationUpdateNodeResponse = ApplicationUpdateNodeResponses[keyof ApplicationUpdateNodeResponses];
 export type ApplicationListNodeAllocationsData = {
     body?: never;
     path: {
@@ -9918,6 +9982,10 @@ export type ApplicationListTagsData = {
          * Filter tags by slug.
          */
         'filter[slug]'?: ApplicationListTagsFilterSlugQueryParameter;
+        /**
+         * Filter tags by the ID of the nest they were created from.
+         */
+        'filter[legacy_nest_id]'?: ApplicationListTagsFilterLegacyNestIdQueryParameter;
         /**
          * Sort tags by id, name, or slug. Prefix with "-" for descending order.
          */
@@ -13007,54 +13075,17 @@ export type ClientCreateServerSubuserResponses = {
     200: ClientServerSubuserResource;
 };
 export type ClientCreateServerSubuserResponse = ClientCreateServerSubuserResponses[keyof ClientCreateServerSubuserResponses];
-export type ClientGetServerSubuserData = {
-    body?: never;
-    path: {
-        /**
-         * The server UUID.
-         */
-        server: ClientGetServerSubuserServerPathParameter;
-        /**
-         * The user UUID.
-         */
-        user: ClientGetServerSubuserUserPathParameter;
-    };
-    query?: never;
-    url: '/api/client/servers/{server}/users/{user}';
-};
-export type ClientGetServerSubuserErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-    /**
-     * The requested resource could not be found.
-     */
-    404: ErrorEnvelope;
-};
-export type ClientGetServerSubuserError = ClientGetServerSubuserErrors[keyof ClientGetServerSubuserErrors];
-export type ClientGetServerSubuserResponses = {
-    /**
-     * Server subuser returned.
-     */
-    200: ClientServerSubuserResource;
-};
-export type ClientGetServerSubuserResponse = ClientGetServerSubuserResponses[keyof ClientGetServerSubuserResponses];
 export type ClientDeleteServerSubuserData = {
     body?: never;
     path: {
         /**
          * The server UUID.
          */
-        server_uuid: ClientUpdateServerSubuserServerUuidPathParameter;
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
         /**
          * The user UUID.
          */
-        user: ClientUpdateServerSubuserUserPathParameter;
+        user: ClientGetServerSubuserUserPathParameter;
     };
     query?: never;
     url: '/api/client/servers/{server_uuid}/users/{user}';
@@ -13081,17 +13112,54 @@ export type ClientDeleteServerSubuserResponses = {
     204: void;
 };
 export type ClientDeleteServerSubuserResponse = ClientDeleteServerSubuserResponses[keyof ClientDeleteServerSubuserResponses];
+export type ClientGetServerSubuserData = {
+    body?: never;
+    path: {
+        /**
+         * The server UUID.
+         */
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
+        /**
+         * The user UUID.
+         */
+        user: ClientGetServerSubuserUserPathParameter;
+    };
+    query?: never;
+    url: '/api/client/servers/{server_uuid}/users/{user}';
+};
+export type ClientGetServerSubuserErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+export type ClientGetServerSubuserError = ClientGetServerSubuserErrors[keyof ClientGetServerSubuserErrors];
+export type ClientGetServerSubuserResponses = {
+    /**
+     * Server subuser returned.
+     */
+    200: ClientServerSubuserResource;
+};
+export type ClientGetServerSubuserResponse = ClientGetServerSubuserResponses[keyof ClientGetServerSubuserResponses];
 export type ClientUpdateServerSubuserData = {
     body?: ClientUpdateServerSubuserRequest;
     path: {
         /**
          * The server UUID.
          */
-        server_uuid: ClientUpdateServerSubuserServerUuidPathParameter;
+        server_uuid: ClientGetServerSubuserServerUuidPathParameter;
         /**
          * The user UUID.
          */
-        user: ClientUpdateServerSubuserUserPathParameter;
+        user: ClientGetServerSubuserUserPathParameter;
     };
     query?: never;
     url: '/api/client/servers/{server_uuid}/users/{user}';

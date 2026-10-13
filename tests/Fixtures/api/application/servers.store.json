@@ -1,0 +1,56 @@
+[
+    {
+        "request": "POST /api/application/servers",
+        "status": 201,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "id": 1001,
+                "external_id": "ext-created",
+                "uuid": "e45a916b-7b34-4394-9e17-48fad8d0185e",
+                "identifier": "e45a916b",
+                "name": "Created Server",
+                "description": "Created through the API",
+                "status": "installing",
+                "suspended": false,
+                "limits": {
+                    "memory": 512,
+                    "swap": 0,
+                    "disk": 1024,
+                    "io": 500,
+                    "cpu": 100,
+                    "threads": null,
+                    "oom_disabled": true
+                },
+                "feature_limits": {
+                    "databases": 1,
+                    "allocations": 2,
+                    "backups": 3
+                },
+                "user": 2,
+                "node": 1,
+                "allocation": 4,
+                "egg": 1,
+                "container": {
+                    "startup_command": "java -jar {{SERVER_JARFILE}}",
+                    "image": "ghcr.io/pterodactyl/yolks:java_21",
+                    "installed": 0,
+                    "environment": {
+                        "SERVER_JARFILE": "server.jar",
+                        "BUILD_NUMBER": "42",
+                        "HIDDEN_TOKEN": "abc",
+                        "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                        "P_SERVER_LOCATION": "us-east",
+                        "P_SERVER_UUID": "e45a916b-7b34-4394-9e17-48fad8d0185e",
+                        "P_SERVER_ALLOCATION_LIMIT": 2
+                    },
+                    "skip_scripts": false
+                },
+                "relationships": [],
+                "updated_at": "2026-03-04T05:06:07+00:00",
+                "created_at": "2026-03-04T05:06:07+00:00",
+                "extensions": {}
+            }
+        }
+    }
+]

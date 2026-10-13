@@ -11,7 +11,7 @@ use Throwable;
 interface DeletesScheduleTasks
 {
     /**
-     * Deletes the task and closes the gap it leaves in the schedule's sequence.
+     * The gap the task leaves in the schedule's sequence is closed.
      *
      * @throws Throwable
      */

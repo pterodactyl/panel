@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Pterodactyl\Actions\Servers\UpdateServerBuild;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Validation\ServerRules;
-use UnexpectedValueException;
 
 class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 {
     /**
-     * Return the rules to validate this request against.
+     * Return the rules to validate this request against. The Application API keeps its own
+     * field names and rules; actionInput() hands the values to the action under its names.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules($this->parameter('server', Server::class));
+        $rules = UpdateServerBuild::rules($this->parameter('server', Server::class));
 
         return [
             'allocation' => $rules['allocation_id'],
@@ -42,10 +42,10 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'threads' => $this->requiredToOptional('threads', $rules['threads']),
             'disk' => $this->requiredToOptional('disk', $rules['disk']),
 
-            'add_allocations' => ['bail', 'array'],
-            'add_allocations.*' => ['integer'],
-            'remove_allocations' => ['bail', 'array'],
-            'remove_allocations.*' => ['integer'],
+            'add_allocations' => $rules['add_allocations'],
+            'add_allocations.*' => $rules['add_allocations.*'],
+            'remove_allocations' => $rules['remove_allocations'],
+            'remove_allocations.*' => $rules['remove_allocations.*'],
 
             'feature_limits' => ['required', 'array'],
             'feature_limits.databases' => $rules['database_limit'],
@@ -55,46 +55,50 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
     }
 
     /**
-     * Convert the allocation field into the expected format for the service handler.
+     * The validated input under the action's field names: allocation is its allocation_id,
+     * and the feature limits move to its top level. A limit sent both under limits and flat
+     * is taken from limits, read with Laravel's typed accessors.
      *
-     * @return ServerBuildModificationData
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $data = [
-            'database_limit' => $this->filled('feature_limits.databases') ? $this->integer('feature_limits.databases') : null,
-            'allocation_limit' => $this->filled('feature_limits.allocations') ? $this->integer('feature_limits.allocations') : null,
-            'backup_limit' => $this->filled('feature_limits.backups') ? $this->integer('feature_limits.backups') : null,
+        $validated = $this->safe();
+
+        $input = [
+            'database_limit' => $validated->filled('feature_limits.databases') ? $validated->integer('feature_limits.databases') : null,
+            'allocation_limit' => $validated->filled('feature_limits.allocations') ? $validated->integer('feature_limits.allocations') : null,
+            'backup_limit' => $validated->filled('feature_limits.backups') ? $validated->integer('feature_limits.backups') : null,
         ];
 
-        if ($this->filled('allocation')) {
-            $data['allocation_id'] = $this->integer('allocation');
+        if ($validated->filled('allocation')) {
+            $input['allocation_id'] = $validated->integer('allocation');
         }
 
-        if ($this->has('oom_disabled')) {
-            $data['oom_disabled'] = $this->boolean('oom_disabled');
+        if ($validated->has('oom_disabled')) {
+            $input['oom_disabled'] = $validated->boolean('oom_disabled');
         }
 
-        foreach (['memory', 'swap', 'io', 'cpu', 'disk'] as $field) {
-            if ($this->filled("limits.{$field}")) {
-                $data[$field] = $this->integer("limits.{$field}");
-            } elseif ($this->filled($field)) {
-                $data[$field] = $this->integer($field);
+        foreach (['memory', 'swap', 'io', 'cpu', 'disk'] as $limit) {
+            if ($validated->filled('limits.'.$limit)) {
+                $input[$limit] = $validated->integer('limits.'.$limit);
+            } elseif ($validated->filled($limit)) {
+                $input[$limit] = $validated->integer($limit);
             }
         }
 
-        if ($this->has('limits.threads') || $this->has('threads')) {
-            $field = $this->has('limits.threads') ? 'limits.threads' : 'threads';
-            $data['threads'] = $this->filled($field) ? $this->string($field)->toString() : null;
+        if ($validated->has('limits.threads') || $validated->has('threads')) {
+            $field = $validated->has('limits.threads') ? 'limits.threads' : 'threads';
+            $input['threads'] = $validated->filled($field) ? $validated->string($field)->toString() : null;
         }
 
-        foreach (['add_allocations', 'remove_allocations'] as $field) {
-            if ($this->has($field)) {
-                $data[$field] = $this->integerList($field);
+        foreach (['add_allocations', 'remove_allocations'] as $list) {
+            if ($validated->has($list)) {
+                $input[$list] = array_map(fn (int|string $key): int => $validated->integer($list.'.'.$key), array_keys($validated->array($list)));
             }
         }
 
-        return $data;
+        return $input;
     }
 
     /**
@@ -137,21 +141,5 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
         }
 
         return $optional;
-    }
-
-    /** @return list<int> */
-    private function integerList(string $field): array
-    {
-        $values = $this->input($field, []);
-        throw_if(! is_array($values) || ! array_is_list($values), UnexpectedValueException::class, "The validated [{$field}] field must be a list.");
-
-        $integers = [];
-        foreach ($values as $value) {
-            throw_unless(is_int($value), UnexpectedValueException::class, "The validated [{$field}] field must contain integers.");
-
-            $integers[] = $value;
-        }
-
-        return $integers;
     }
 }

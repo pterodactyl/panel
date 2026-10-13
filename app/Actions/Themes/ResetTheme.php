@@ -12,7 +12,6 @@ final readonly class ResetTheme implements ResetsThemes
 {
     public function __construct(private ThemeService $themes, private FilesystemChanges $files) {}
 
-    /** Remove the published theme, restoring the stock look. */
     public function reset(): void
     {
         $this->files->run([

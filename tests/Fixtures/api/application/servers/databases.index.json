@@ -1,0 +1,126 @@
+[
+    {
+        "request": "GET /api/application/servers/1/databases",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": 1,
+                        "server": 1,
+                        "host": 1,
+                        "database": "s1_main",
+                        "username": "u1_mainuser",
+                        "remote": "%",
+                        "max_connections": 10,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": 2,
+                        "server": 1,
+                        "host": 1,
+                        "database": "s1_logs",
+                        "username": "u1_logsuser",
+                        "remote": "10.0.0.%",
+                        "max_connections": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "request": "GET /api/application/servers/1/databases?include=password,host",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": 1,
+                        "server": 1,
+                        "host": 1,
+                        "database": "s1_main",
+                        "username": "u1_mainuser",
+                        "remote": "%",
+                        "max_connections": 10,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "password": {
+                                "object": "database_password",
+                                "attributes": {
+                                    "password": "Main-Pa$$word/1"
+                                }
+                            },
+                            "host": {
+                                "object": "database_host",
+                                "attributes": {
+                                    "id": 1,
+                                    "name": "primary-db",
+                                    "host": "10.0.0.5",
+                                    "port": 3306,
+                                    "username": "pterodactyl",
+                                    "node": 1,
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "server_database",
+                    "attributes": {
+                        "id": 2,
+                        "server": 1,
+                        "host": 1,
+                        "database": "s1_logs",
+                        "username": "u1_logsuser",
+                        "remote": "10.0.0.%",
+                        "max_connections": 0,
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00",
+                        "relationships": {
+                            "password": {
+                                "object": "database_password",
+                                "attributes": {
+                                    "password": "Logs-Pa$$word\\2"
+                                }
+                            },
+                            "host": {
+                                "object": "database_host",
+                                "attributes": {
+                                    "id": 1,
+                                    "name": "primary-db",
+                                    "host": "10.0.0.5",
+                                    "port": 3306,
+                                    "username": "pterodactyl",
+                                    "node": 1,
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "request": "GET /api/application/servers/2/databases",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": []
+        }
+    }
+]

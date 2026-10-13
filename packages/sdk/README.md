@@ -547,7 +547,8 @@ run outside their transactions:
   failed drop is reported and the rest are dropped.
 - `InitiatesTransfers` calls Wings after the transfer records commit. A transfer Wings
   rejects is marked failed through `FailsTransfers`.
-- `RotatesDatabasePasswords` finishes before the controller writes the activity log entry.
+- `RotatesDatabasePasswords` logs the rotation after its transaction around the remote user
+  change commits.
 
 The wrapper owns the call: it decides whether and when to invoke the inner action and
 must forward fluent options such as `withForce()` itself, returning itself. Whatever it
@@ -563,17 +564,36 @@ Core controllers resolve these contracts, not the classes behind them. Renaming 
 `UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
 Deleting an allocation block calls `DeletesAllocations` once per allocation. Disabling
 two-factor, by an admin or by the user, calls `DisablesTwoFactor`, which clears the TOTP
-secret. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
-endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image.
+secret. Changing a password, from the account page or with a reset link, calls
+`UpdatesUserPasswords`. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
+endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image. Changing a
+startup variable calls `UpdatesServerVariable`, once from the client endpoint and once per
+variable in a startup update.
 `UpdatesEggs`, `UpdatesEggInstallScripts` and `UpdatesEggVariables` return the updated model.
 Mounts (`CreatesMounts`, `UpdatesMounts`, `DeletesMounts`, `AttachesEggsToMounts`,
 `AttachesNodesToMounts`, `DetachesEggsFromMounts`, `DetachesNodesFromMounts`), tags
-(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, `DeletesApiKeys`),
+(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, and `DeletesApiKeys` for
+application and account keys alike), account SSH keys (`CreatesSshKeys`, `DeletesSshKeys`),
 egg variable deletion (`DeletesEggVariables`) and the server install-status toggle
 (`TogglesServerInstallStatus`) have contracts of their own as well.
 
 Resolve the same contracts from the container to call core behaviour instead of
-reimplementing it. Beside the mutating actions, these read or complete on your behalf:
+reimplementing it. An action that takes an input array validates it with the same rules
+as the API, whoever calls it, and throws a `ValidationException` naming the field that
+failed; values arrive as Laravel's rules accept them, so `"1"` is a boolean and `"25"` an
+integer. Pass the field names the Admin API uses. Extension form field values for a model
+go under `extensions` and are only accepted from a request that validated them.
+
+An action that changes a server or an account writes the `server:*` or `user:*` activity
+entry for that change itself, so it shows on the server's or user's activity feed whoever
+calls it. A call from an extension, a console command or the Application API is logged the
+same way as one from the client API, with the signed-in user, if there is one, as the
+actor. The admin API also writes its own `admin:*` entry to the admin activity log. A
+wrapper that does not call the inner action leaves no entry. Reading a file and downloading
+a file or a backup are logged by the endpoint the user called, not by `ReadsFileContents`
+or `GeneratesBackupDownloadLinks`.
+
+Beside the mutating actions, these read or complete on your behalf:
 
 | Contract | Call |
 | --- | --- |

@@ -37,16 +37,22 @@ test('filter tags by slug', function (): void {
     $response = $this->getJson('/api/application/tags?filter[slug]=filter-me')->assertOk();
     expect($response->json('data.*.attributes.id'))->toBe([$tag->id]);
 });
+test('filter tags by legacy nest id', function (): void {
+    $tag = Tag::factory()->create(['legacy_nest_id' => 4242]);
+    Tag::factory()->create(['legacy_nest_id' => 42421]);
+    $response = $this->getJson('/api/application/tags?filter[legacy_nest_id]=4242')->assertOk();
+    expect($response->json('data.*.attributes.id'))->toBe([$tag->id]);
+});
 test('return single tag', function (): void {
     $tag = Tag::factory()->create(['legacy_nest_id' => 42]);
     $this->getJson('/api/application/tags/'.$tag->id)->assertOk()->assertJson(['object' => 'tag', 'attributes' => ['id' => $tag->id, 'name' => $tag->name, 'slug' => $tag->slug, 'color' => $tag->color, 'is_predefined' => false, 'legacy_nest_id' => 42, 'relationships' => [], 'created_at' => $tag->created_at->toAtomString(), 'updated_at' => $tag->updated_at->toAtomString()]], true);
 });
 test('built in tag reports its built in name and color', function (): void {
-    $tag = Tag::factory()->predefined('minecraft')->create(['name' => 'Something Else']);
+    $tag = Tag::factory()->predefined('fivem')->create(['name' => 'Something Else']);
     $this->getJson('/api/application/tags/'.$tag->id)->assertOk()
-        ->assertJsonPath('attributes.name', 'Minecraft')
+        ->assertJsonPath('attributes.name', 'FiveM')
         ->assertJsonPath('attributes.is_predefined', true)
-        ->assertJsonPath('attributes.color', '#5B8731');
+        ->assertJsonPath('attributes.color', '#F40552');
 });
 test('return single tag with relationships', function (): void {
     $tag = Tag::factory()->create();
