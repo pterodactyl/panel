@@ -2,6 +2,7 @@ import { createContext, use, useMemo, useState, type ReactNode } from 'react';
 import { join } from 'pathe';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
+import ImagePreviewModal from '@/components/server/files/ImagePreviewModal';
 import { useServerDirectory, useServerStore } from '@/state/server';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import type { FileObject } from '@/api/server/files/queries';
@@ -20,10 +21,11 @@ import {
     useFileDownloadUrl,
 } from '@/api/server/files/queries';
 
-type ModalType = 'rename' | 'move' | 'chmod' | 'delete';
+type ModalType = 'rename' | 'move' | 'chmod' | 'delete' | 'image';
 
 interface FileRowActions {
     open: (modal: ModalType, file: FileObject) => void;
+    openImage: (file: FileObject) => void;
     copy: (file: FileObject) => void;
     download: (file: FileObject) => void;
     archive: (file: FileObject) => void;
@@ -36,6 +38,7 @@ const FileRowActionsContext = createContext<FileRowActions | null>(null);
 export function FileRowActionsProvider({ children }: { children: ReactNode }) {
     const [modal, setModal] = useState<ModalType | null>(null);
     const [target, setTarget] = useState<FileObject | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const uuid = useCurrentServerUuid()!;
     const directory = useServerDirectory();
@@ -55,6 +58,14 @@ export function FileRowActionsProvider({ children }: { children: ReactNode }) {
             open: (next, file) => {
                 setTarget(file);
                 setModal(next);
+            },
+            openImage: (file) => {
+                setTarget(file);
+                setImageUrl(null);
+                setModal('image');
+                download({ uuid, file: join(directory, file.attributes.name) })
+                    .then(setImageUrl)
+                    .catch(() => setModal(null));
             },
             copy: ({ attributes }) => {
                 copy(copyFileInput(uuid, join(directory, attributes.name))).catch(() => {});
@@ -76,7 +87,10 @@ export function FileRowActionsProvider({ children }: { children: ReactNode }) {
         [uuid, directory, copy, download, compress, decompress]
     );
 
-    const close = () => setModal(null);
+    const close = () => {
+        setModal(null);
+        setImageUrl(null);
+    };
     const name = target?.attributes.name ?? '';
 
     const doDeletion = () => {
@@ -121,6 +135,12 @@ export function FileRowActionsProvider({ children }: { children: ReactNode }) {
                     onClose={close}
                 />
             )}
+            <ImagePreviewModal
+                open={modal === 'image'}
+                name={target?.attributes.name ?? ''}
+                src={imageUrl}
+                onClose={close}
+            />
             <SpinnerOverlay visible={showSpinner} fixed size='large' />
         </FileRowActionsContext.Provider>
     );
@@ -142,6 +162,7 @@ export default function useFileActions(file: FileObject) {
             onCopy={() => actions.copy(file)}
             onUnarchive={() => actions.unarchive(file)}
             onArchive={() => actions.archive(file)}
+            onOpenImage={() => actions.openImage(file)}
             onDownload={() => actions.download(file)}
             onDelete={() => actions.open('delete', file)}
         />

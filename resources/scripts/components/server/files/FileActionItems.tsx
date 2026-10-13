@@ -1,7 +1,7 @@
-import { PackageOpen, Copy, FileArchive, FileCode, FileDown, CornerLeftUp, Pencil, Trash2 } from 'lucide-react';
+import { PackageOpen, Copy, FileArchive, FileCode, FileDown, CornerLeftUp, ImageIcon, Pencil, Trash2 } from 'lucide-react';
 import Can from '@/components/elements/Can';
 import { DropdownMenuItem } from '@/components/elements/dropdown/DropdownMenu';
-import { isFileObjectArchiveType, type FileObject } from '@/api/server/files/queries';
+import { isFileObjectArchiveType, isFileObjectImageType, type FileObject } from '@/api/server/files/queries';
 
 interface Props {
     file: FileObject;
@@ -11,6 +11,7 @@ interface Props {
     onCopy: () => void;
     onUnarchive: () => void;
     onArchive: () => void;
+    onOpenImage: () => void;
     onDownload: () => void;
     onDelete: () => void;
 }
@@ -23,6 +24,7 @@ export default function FileActionItems({
     onCopy,
     onUnarchive,
     onArchive,
+    onOpenImage,
     onDownload,
     onDelete,
 }: Props) {
@@ -30,6 +32,11 @@ export default function FileActionItems({
 
     return (
         <>
+            {isFileObjectImageType(file) && (
+                <DropdownMenuItem onClick={onOpenImage} icon={ImageIcon} description='Preview image'>
+                    Open Image
+                </DropdownMenuItem>
+            )}
             <Can action='file.update'>
                 <DropdownMenuItem onClick={onRename} icon={Pencil} description='Change item name'>
                     Rename

@@ -202,6 +202,10 @@ export const isFileObjectArchiveType = ({ attributes }: FileObject) =>
         'application/x-7z-compressed', // .7z
     ].includes(attributes.mimetype);
 
+/** Browser-previewable image files reported by Wings. */
+export const isFileObjectImageType = ({ attributes }: FileObject) =>
+    attributes.is_file && /^image\//i.test(attributes.mimetype);
+
 export const fileObjectKind = (file: FileObject): 'file' | 'directory' | 'archive' | 'symlink' => {
     if (!file.attributes.is_file) {
         return 'directory';
