@@ -68,4 +68,13 @@ describe('theme token contract', () => {
         expect(panelCss).toMatch(/@container style\(--selection\) \{\s*::selection \{/);
         expect(panelTokens).not.toContain('--selection');
     });
+
+    it('lists every token panel.css declares in the THEMES.md reference', () => {
+        const reference = read('./THEMES.md').split('\n### Tokens\n')[1].split('\n### Primitives\n')[0];
+        const listed = [...reference.matchAll(/^\| `(--[\w*-]+)` \|/gm)].map((match) => match[1]);
+        const documented = (token: string) =>
+            listed.some((entry) => (entry.endsWith('*') ? token.startsWith(entry.slice(0, -1)) : entry === token));
+
+        expect(panelTokens.filter((token) => !documented(token))).toEqual([]);
+    });
 });
