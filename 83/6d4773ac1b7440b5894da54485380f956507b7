@@ -1,0 +1,46 @@
+phpstan.neon
+  s_4cabae41bceed9::t_70aa1efe6e4002 52
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_4cabae41bceed9::t_952b85e1b2d529 710
+app/Http/Controllers/Api/Admin/Themes/ThemeController.php
+  s_4cabae41bceed9::t_70aa1efe6e4002 78
+resources/scripts/api/generated/types.gen.ts
+  s_4cabae41bceed9::t_952b85e1b2d529 782
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_70aa1efe6e4002 604,625
+resources/scripts/components/admin/themes/ThemesContainer.spec.tsx
+  s_4cabae41bceed9::t_6a5bd27c9e2dd4 67,192-229
+  s_4cabae41bceed9::t_bfba8ffe012f0a 230
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_4cabae41bceed9::t_70aa1efe6e4002 168,172
+app/Http/Resources/Api/Admin/ThemeSettingResource.php
+  s_4cabae41bceed9::t_70aa1efe6e4002 33
+packages/sdk/manifest.schema.json
+  s_4cabae41bceed9::t_70aa1efe6e4002 605-611
+tests/Integration/Api/Admin/Themes/ThemeControllerTest.php
+  s_4cabae41bceed9::t_acc580101c7fd9 31,121
+app/Services/Themes/ThemeSetting.php
+  s_4cabae41bceed9::t_70aa1efe6e4002 48,68,106-107
+  s_4cabae41bceed9::t_acc0b7329ea6e9 108-109
+resources/scripts/components/admin/themes/ThemeSettingsDialog.tsx
+  s_4cabae41bceed9::t_952b85e1b2d529 131-134
+  s_4cabae41bceed9::t_70aa1efe6e4002 17,32,103-118,130,135-137
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_952b85e1b2d529 899-900
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "836d4773ac1b7440b5894da54485380f956507b7",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
