@@ -60,7 +60,7 @@
     --color-scheme: light;
     --theme-color: #0e4688;
 
-    /* LIGHT scaffold - provisional; dark is forced for now, this gets its own audit later. */
+    /* Light tokens. They are unaudited, so classic offers only its dark scheme; a theme that declares `light` uses them. */
     --background: oklch(0.975 0.005 258.3);
     --foreground: oklch(0.275 0.023 248.7);
     --card: oklch(0.975 0.005 258.3);

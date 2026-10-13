@@ -20,10 +20,9 @@ Extension SDK `2.0.0-beta.5`.
 * `@pterodactyl/sdk/theme.css` points prefixed extension builds at the panel's live `--spacing` and font tokens; the panel imports the shared mapping from `packages/sdk/theme-tokens.css`.
 * Class names passed to core components resolve the prefixed utilities of every enabled extension against the panel utility they replace; `createExtensionTestHost` and `renderView` take the `prefix` to do the same.
 * The stock UI is the built-in `classic` theme, written on the public theme API. Every layout, page and block outside the admin area is a named view with an engine model, rendered through a chain of layers (classic, the active theme and its parents, then extension overrides) in which each layer can render the one below and a failing layer falls back to it.
-* Extensions override views with `views.override` and the manifest's `ui.views`, replacing `components.replace` and `ui.components`.
+* Extensions override views with `views.override`, declaring each in the manifest's `ui.views`.
 * Core components take their classes from UI kit skins and mark their parts with `data-ui`, `data-part` and their state.
 * The extension and theme Vite presets emit fonts and images with URLs relative to the file that uses them, so they load from the published build.
-* Removed the `themes/` directory, `ThemeService` and the old `p:theme:apply` behaviour.
 
 ### Added
 * Adds `ReadsFileContents`, `ListsDirectories`, `ReadsServerLogs`, `ReadsServerState`, `ChangesServerEgg` and `CompletesLogins` action contracts.
@@ -34,7 +33,7 @@ Extension SDK `2.0.0-beta.5`.
 * Adds conditional extension screens (`ui.screens[].when` and a runtime `visible` predicate), live navigation badges, `NamedIcon` and `@pterodactyl/sdk/icons.json`.
 * Adds the `server.files.editor` and `server.files.manager` views, `useNavigationBlocker`, `serverResourcesQueryOptions`, `useServerResources`, `useSendServerPower` and `useSendServerCommand` to the SDK.
 * Adds themes: extensions with `"type": "theme"` that rebuild the panel stylesheet, skin the UI kit and override views through `defineTheme` (`@pterodactyl/sdk/theme`), with typed settings written as tokens and `<html>` attributes, dark and light schemes with a user switch, and child themes through `theme.extends`.
-* Adds the admin Themes page (activate, preview for me, reset, settings with a live preview), `p:theme:activate`, `p:theme:reset`, `p:theme:list`, safe mode (`?safe_mode=1`), and a fallback to classic when a theme fails to load.
+* Adds the admin Themes page (activate, preview for me, settings), `p:theme:activate`, `p:theme:reset`, `p:theme:list`, safe mode (`?safe_mode=1`), and a fallback to classic when a theme fails to load.
 * Adds the theme toolchain: `p:extension:make --theme` (`--css-only` for a theme without JavaScript), `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderWithTheme` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
 * `renderView` throws a `ViewLayerError` when a theme or extension layer fails, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
 * Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.

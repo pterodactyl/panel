@@ -96,7 +96,7 @@ test('guests get the classic theme with the panel stylesheet and a zoomable view
         'preview' => false,
     ]);
 
-    // The import map moved into <head>, ahead of the theme entries it serves.
+    // The import map sits in <head>, ahead of the theme entries it serves.
     $html = (string) $response->getContent();
     expect(mb_strpos($html, '<script type="importmap">'))->toBeLessThan(mb_strpos($html, '</head>'));
 });
