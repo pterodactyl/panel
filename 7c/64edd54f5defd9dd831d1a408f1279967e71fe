@@ -1,0 +1,25 @@
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_2e0164cac4966b 1283-1297,1301-1318,1322-1331,1335-1346,1350-1354,1358-1367,1371-1378,1382-1398
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_c9c6e40b4ceb2e 2,6-8
+  s_4cabae41bceed9::t_e085726ae958f6 232
+packages/sdk/theme-tokens.spec.ts
+  s_4cabae41bceed9::t_42dfb1b8a305d8 71-72,74-79
+  s_4cabae41bceed9::t_bf5ab14755aecc 73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7c64edd54f5defd9dd831d1a408f1279967e71fe",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
