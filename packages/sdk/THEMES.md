@@ -890,6 +890,23 @@ The admin pages are not views. `layout.admin` wraps them, and each renders the `
 after it, so a theme restyles them through the layout and the [skins](#level-2-restyle-components), and
 extensions place blocks in those slots.
 
+### Slots, screens and setup
+
+A theme's entry can do what an extension's does in `setup`: put components in slots, register the
+screens its manifest declares under `ui.screens`, and add table columns and form fields. Pass `setup` to
+`defineTheme`. It receives the same context as an extension's and runs while the theme, or a theme
+extending it, is active, so nothing it registers shows under another theme. Views stay in `views`.
+
+```tsx
+export default defineTheme({
+    views: { 'layout.app': AppLayout },
+    setup({ slots, screens }) {
+        slots.register('server.console.before', UptimeBanner);
+        screens.register('status', () => import('./StatusPage'));
+    },
+});
+```
+
 ## Settings, schemes and branding
 
 ### Settings

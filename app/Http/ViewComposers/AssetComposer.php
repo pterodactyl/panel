@@ -45,26 +45,28 @@ class AssetComposer
                 'siteKey' => config('recaptcha.website_key', ''),
             ],
             // Safe mode loads no extension bundles at all.
-            'extensions' => $theme->safeMode ? [] : $this->extensionPayload(),
+            'extensions' => $theme->safeMode ? [] : $this->extensionPayload(array_column($theme->chain, 'id')),
             'theme' => $theme->bootstrap(),
         ]);
     }
 
     /**
      * The enabled frontend extensions the SPA boot loader should import, with their
-     * frontend settings for signed-in users and only the public ones for guests.
-     * Never allowed to break page rendering - worst case the SPA sees no extensions.
+     * frontend settings for signed-in users and only the public ones for guests, and
+     * the themes of the chain the page renders with. Never allowed to break page
+     * rendering - worst case the SPA sees no extensions.
      *
+     * @param  list<string>  $themes
      * @return array<int, array{id: string, version?: string, entry: string}>
      */
-    private function extensionPayload(): array
+    private function extensionPayload(array $themes): array
     {
         if (! config('extensions.enabled')) {
             return [];
         }
 
         try {
-            return $this->extensions->frontendPayload(authenticated: Auth::check());
+            return $this->extensions->frontendPayload(authenticated: Auth::check(), themes: $themes);
         } catch (Throwable) {
             return [];
         }

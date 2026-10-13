@@ -189,3 +189,15 @@ test('an active theme that cannot be used renders as classic', function (): void
 
     $this->get('/auth/login')->assertOk()->assertSee('data-theme="classic"', false)->assertSee('stylesheet.test.css', false);
 });
+
+test('the extension payload carries the themes of the active chain, whose setup runs while they are active', function (): void {
+    installTheme('aurora');
+    installTheme('nebula');
+    app(ThemeRepository::class)->setActive('aurora');
+
+    $response = $this->actingAs(User::factory()->create())->get('/')->assertOk();
+    preg_match('/window\.SiteConfiguration = (.+?);\s*<\/script>/s', (string) $response->getContent(), $matches);
+    $extensions = json_decode($matches[1] ?? 'null', true, flags: JSON_THROW_ON_ERROR)['extensions'];
+
+    expect(array_column($extensions, 'theme', 'id'))->toBe(['aurora' => true]);
+});

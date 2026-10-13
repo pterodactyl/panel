@@ -905,7 +905,8 @@ panel keeps the data, permissions, routing, requests and accessibility. It works
 panel stylesheet and its tokens, skins for the UI kit, views, and the slots those views keep. Only one
 theme is active at a time, and the stock look, classic, is itself a theme. A theme can do everything an
 extension can (a provider, screens, slots, PHP settings) except declare `ui.prefix` or `ui.views`: it
-builds the panel stylesheet itself and overrides views through `defineTheme`.
+builds the panel stylesheet itself and overrides views through `defineTheme`, whose `setup` registers
+slots, screens, columns and form fields as an extension's does, while the theme is active.
 
 The themes guide, [THEMES.md](THEMES.md), ships in this package. It starts with a theme of colours and
 fonts in five commands, goes level by level as far as rebuilding pages, and ends with the reference:

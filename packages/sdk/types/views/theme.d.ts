@@ -3,6 +3,7 @@ import { type ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { type ThemeBootstrap, type ThemeScheme, type ThemeSettingValue } from "../bootstrap.js";
 import type { ThemeSkins } from "../themes/skins.js";
+import type { ExtensionSetupContext } from "../sdk/index.js";
 import { type ThemeViews } from "./registry.js";
 export type { ThemeScheme, ThemeSettingValue };
 /** A scheme the user chose, or `system` to follow the device. */
@@ -14,8 +15,13 @@ export interface ThemeDefinition {
     readonly views?: ThemeViews;
     /** Icons by lucide name; `<NamedIcon>` resolves these before the panel's own set. */
     readonly icons?: ThemeIcons;
+    /**
+     * What an extension's entry does in `setup`, with the same context: slots, screens, table columns
+     * and form fields. It runs while the theme, or a theme extending it, is active.
+     */
+    setup?(context: ExtensionSetupContext): void;
 }
-/** Identity helper typing a theme entry: `export default defineTheme({ ui, views, icons })`. */
+/** Identity helper typing a theme entry: `export default defineTheme({ ui, views, icons, setup })`. */
 export declare function defineTheme(definition: ThemeDefinition): ThemeDefinition;
 /** Setting values of the active theme; `p:extension:types` adds the keys a theme declares. */
 export interface ThemeSettings {

@@ -152,6 +152,35 @@ describe('extensions/loader', () => {
         ]);
     });
 
+    it("runs the setup of the active theme chain's entries, and loads a theme without one", async () => {
+        stubExtensions([
+            {
+                id: 'aurora',
+                entry: '/assets/extensions/aurora/client.js',
+                theme: true,
+                screens: [{ id: 'status', area: 'server', path: 'status', nav: { label: 'Status' } }],
+            },
+            { id: 'paper', entry: '/assets/extensions/paper/client.js', theme: true },
+        ]);
+
+        const setup = vi.fn((ctx: ExtensionSetupContext) => {
+            ctx.slots.register('nav.items.after', Component);
+            ctx.screens.register('status', async () => ({ default: Component }));
+        });
+
+        await loader.loadExtensions(
+            vi.fn(async (url: string) => ({ default: url.includes('aurora') ? { views: {}, setup } : { views: {} } }))
+        );
+
+        expect(setup).toHaveBeenCalledTimes(1);
+        expect(registry.getSlotComponents('nav.items.after')).toHaveLength(1);
+        expect(registry.getExtensionScreens('server')).toHaveLength(1);
+        expect(registry.getExtensionStates()).toEqual([
+            { id: 'aurora', status: 'loaded' },
+            { id: 'paper', status: 'loaded' },
+        ]);
+    });
+
     it('rejects async setup and does not commit staged registrations', async () => {
         stubExtensions([{ id: 'async', entry: '/assets/extensions/async/client.js' }]);
 

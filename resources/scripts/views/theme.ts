@@ -2,6 +2,7 @@ import { useSyncExternalStore, type ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { getBootstrapTheme, type ThemeBootstrap, type ThemeScheme, type ThemeSettingValue } from '@/bootstrap';
 import type { ThemeSkins } from '@/themes/skins';
+import type { ExtensionSetupContext } from '@/sdk';
 import { isViewComponent, type ThemeViews } from './registry';
 
 export type { ThemeScheme, ThemeSettingValue };
@@ -15,9 +16,14 @@ export interface ThemeDefinition {
     readonly views?: ThemeViews;
     /** Icons by lucide name; `<NamedIcon>` resolves these before the panel's own set. */
     readonly icons?: ThemeIcons;
+    /**
+     * What an extension's entry does in `setup`, with the same context: slots, screens, table columns
+     * and form fields. It runs while the theme, or a theme extending it, is active.
+     */
+    setup?(context: ExtensionSetupContext): void;
 }
 
-/** Identity helper typing a theme entry: `export default defineTheme({ ui, views, icons })`. */
+/** Identity helper typing a theme entry: `export default defineTheme({ ui, views, icons, setup })`. */
 export function defineTheme(definition: ThemeDefinition): ThemeDefinition {
     return definition;
 }

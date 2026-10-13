@@ -171,6 +171,8 @@ export interface SiteExtensionEntry {
     screens?: ExtensionScreenDefinition[];
     /** Views the extension overrides (`ui.views`); each shows its placeholder while the bundle loads. */
     views?: string[];
+    /** A theme of the chain the page renders with: its entry is `defineTheme`, whose `setup` is optional. */
+    theme?: boolean;
     development?: {
         url: string;
         version: string;

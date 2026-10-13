@@ -108,16 +108,19 @@ const describeBootError = (cause: unknown): Error => {
     );
 };
 
-const parseExtensionDefinition = <T extends object>(module: T): ExtensionDefinition => {
-    if (!('default' in module) || !isObject(module.default) || !('setup' in module.default)) {
+/** The bundle's definition; null for a theme without `setup`, which has nothing to register. */
+const parseExtensionDefinition = <T extends object>(module: T, theme: boolean): ExtensionDefinition | null => {
+    const definition = 'default' in module && isObject(module.default) ? module.default : undefined;
+
+    if (theme && definition && !('setup' in definition)) {
+        return null;
+    }
+
+    if (!definition || !('setup' in definition) || !(definition.setup instanceof Function)) {
         throw new Error('bundle has no default export with a setup() function');
     }
 
-    if (!(module.default.setup instanceof Function)) {
-        throw new Error('bundle has no default export with a setup() function');
-    }
-
-    return module.default as ExtensionDefinition;
+    return definition as ExtensionDefinition;
 };
 
 let loading: Promise<void> | undefined;
@@ -139,8 +142,8 @@ async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     const batch = createExtensionRegistryBatch();
 
     try {
-        const definition = parseExtensionDefinition(module);
-        const setupResult = definition.setup(createContext(entry, batch));
+        const definition = parseExtensionDefinition(module, entry.theme === true);
+        const setupResult = definition?.setup(createContext(entry, batch));
 
         if (isThenable(setupResult)) {
             void Promise.resolve(setupResult).catch(() => {});
@@ -166,7 +169,10 @@ export function loadExtensions(importModule: ModuleImporter = nativeImport): Pro
     importBundle = importModule;
     const entries = prepareExtensions(getBootstrapExtensions());
 
-    startExtensionDevelopmentReload([...entries, ...getBootstrapThemeChain()]);
+    // A theme with JavaScript is an entry too; one poller per package.
+    const ids = new Set(entries.map(({ id }) => id));
+
+    startExtensionDevelopmentReload([...entries, ...getBootstrapThemeChain().filter(({ id }) => !ids.has(id))]);
     loading = Promise.all(entries.map(bootExtension)).then(() => {});
 
     return loading;

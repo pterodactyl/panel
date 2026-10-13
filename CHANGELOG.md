@@ -37,6 +37,8 @@ Extension SDK `2.0.0-beta.6`.
 * Adds the theme toolchain: `p:extension:make --theme` (`--css-only` for a theme without JavaScript), `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderWithTheme` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
 * `renderView` throws a `ViewLayerError` when a theme or extension layer fails or leaves out a slot classic renders for the same fixture, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
 * A theme or extension layer that leaves out a slot with components logs a browser console warning naming the layer, the slot and the extensions it hides.
+* `defineTheme` takes `setup`, run with an extension's context while the theme or a theme extending it is active, so a theme registers slots, screens, table columns and form fields as an extension does.
+* Theme settings take a `tab`, which splits the settings dialog on the Themes page into sections.
 * `<Slot compact />` tells the components mounted in a slot that the theme placed it somewhere narrow, such as an icon rail, through their `compact` prop.
 * Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.
 * Scaffolded extensions set `preserveSymlinks` so a linked SDK resolves its peer types from the extension.

@@ -219,6 +219,7 @@ describe('themes page', () => {
 
             return respond(config, config.method === 'get' ? themes : themes.data[1]);
         };
+
         const user = setup();
         const card = (await screen.findByRole('heading', { name: 'Aurora' })).closest('article')!;
 

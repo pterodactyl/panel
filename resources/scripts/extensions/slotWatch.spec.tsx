@@ -68,6 +68,7 @@ it('stays quiet when the slot renders, or has nothing registered', () => {
 
 it('waits for a layer that is still loading before it checks', async () => {
     let finish: () => void = () => {};
+
     const ready = new Promise<void>((resolve) => {
         finish = resolve;
     });

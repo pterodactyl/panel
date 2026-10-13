@@ -157,14 +157,16 @@ class ExtensionRepository
      * Guests only need what renders on the sign-in pages: the bundle, its styles and
      * translations, and public settings. Versions, screens and view overrides are
      * left out so the login page does not describe the panel's extensions, and the
-     * SPA skips screen and view registrations for an entry that has none. Themes are
-     * loaded through the theme chain instead.
+     * SPA skips screen and view registrations for an entry that has none. Of the
+     * themes, only those of the chain the page renders with come along, marked
+     * `theme`, so their setup runs while they are active.
      *
-     * @return array<int, array{id: string, version?: string, entry: string, prefix: string|null, translations: string|null, config: object, screens?: list<ExtensionScreenDefinition>, views?: list<string>, development: array{url: string, version: string, scripts: string}|null}>
+     * @param  list<string>  $themes  the ids of the theme chain the page renders with
+     * @return array<int, array{id: string, version?: string, entry: string, prefix: string|null, translations: string|null, config: object, screens?: list<ExtensionScreenDefinition>, views?: list<string>, theme?: bool, development: array{url: string, version: string, scripts: string}|null}>
      */
-    public function frontendPayload(bool $authenticated): array
+    public function frontendPayload(bool $authenticated, array $themes = []): array
     {
-        $enabled = $this->enabled()->filter(fn (ExtensionManifest $manifest): bool => $manifest->hasUi() && ! $manifest->isTheme());
+        $enabled = $this->enabled()->filter(fn (ExtensionManifest $manifest): bool => $manifest->hasUi() && (! $manifest->isTheme() || in_array($manifest->id, $themes, true)));
         $configured = $authenticated ? $enabled : $enabled->filter(fn (ExtensionManifest $manifest): bool => ($this->settingsRegistry->get($manifest->id)?->publicConfigKeys() ?? []) !== []);
         if ($configured->isNotEmpty()) {
             rescue(fn () => ExtensionSettings::preload(array_values($configured->map(fn (ExtensionManifest $manifest): ExtensionSettings => $this->settings($manifest->id))->all())), report: false);
@@ -184,6 +186,10 @@ class ExtensionRepository
                 $entry['version'] = $manifest->version;
                 $entry['screens'] = $manifest->screens;
                 $entry['views'] = $manifest->views;
+            }
+
+            if ($manifest->isTheme()) {
+                $entry['theme'] = true;
             }
 
             return $entry;
