@@ -12,10 +12,7 @@ export interface LazyViewStatics {
 }
 export declare function isLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics;
 export declare function isPendingLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics;
-/**
- * A lazily loaded view. Views exported by one chunk share its load, the router preloads it, and the
- * engine loads every lazy layer of a view before rendering so their parts are known.
- */
+/** A lazily loaded view. Views exported by one chunk share its load, and the router preloads it. */
 export declare function lazyView<M extends {
     default: unknown;
 }>(importer: () => Promise<M>): M['default'] & LazyViewStatics;

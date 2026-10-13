@@ -15,7 +15,7 @@ const databases = () => import('./server/databases');
 const network = () => import('./server/network');
 const startup = () => import('./server/startup');
 
-/** Classic's own views; the rest still render the existing containers as their default. */
+/** Classic's views. */
 export const classicViews: ThemeViews = {
     // The sign-in screen renders without waiting for a chunk.
     'layout.auth': AuthLayout,
@@ -27,6 +27,9 @@ export const classicViews: ThemeViews = {
     'page.dashboard': lazyView(dashboard, 'Dashboard'),
     'dashboard.serverList': lazyView(dashboard, 'ServerList'),
     'dashboard.serverCard': lazyView(dashboard, 'ServerCard'),
+    'dashboard.serverCard.identity': lazyView(dashboard, 'ServerCardIdentity'),
+    'dashboard.serverCard.address': lazyView(dashboard, 'ServerCardAddress'),
+    'dashboard.serverCard.metrics': lazyView(dashboard, 'ServerCardMetrics'),
 
     'page.auth.login': lazyView(auth, 'LoginPage'),
     'page.auth.checkpoint': lazyView(auth, 'CheckpointPage'),
@@ -85,9 +88,16 @@ export const classicViews: ThemeViews = {
     'server.feature.hytaleOauth': lazyView(serverConsole, 'HytaleOauthPrompt'),
     'page.server.files': lazyView(files, 'FilesPage'),
     'server.files.manager': lazyView(files, 'FileManager'),
+    'server.files.manager.toolbar': lazyView(files, 'FileManagerToolbar'),
+    'server.files.manager.list': lazyView(files, 'FileManagerList'),
+    'server.files.manager.selection': lazyView(files, 'FileManagerSelection'),
     'server.files.details': lazyView(files, 'FileDetails'),
     'page.server.files.editor': lazyView(files, 'EditorPage'),
     'server.files.editor': lazyView(files, 'FileEditor'),
+    'server.files.editor.notice': lazyView(files, 'FileEditorNotice'),
+    'server.files.editor.canvas': lazyView(files, 'FileEditorCanvas'),
+    'server.files.editor.language': lazyView(files, 'FileEditorLanguage'),
+    'server.files.editor.actions': lazyView(files, 'FileEditorActions'),
     'page.server.databases': lazyView(databases, 'DatabasesPage'),
     'server.databases': lazyView(databases, 'Databases'),
     'page.server.network': lazyView(network, 'NetworkPage'),

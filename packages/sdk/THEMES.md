@@ -721,8 +721,8 @@ Give them a sized box and colour them with the [`--terminal-*` and `--editor-*` 
 ### `Default`
 
 `<Default />` with no props renders the layer below as it would have rendered, so wrapping it adds a
-frame. It also takes `model`, `className`, `children` and `parts`: `className` is merged with the
-layer's own, and the others replace what the layer below receives.
+frame. It also takes `model`, `className` and `children`: `className` is merged with the layer's own,
+and the others replace what the layer below receives.
 
 <!-- sample: snippets/views.tsx#transform -->
 ```tsx
@@ -733,19 +733,18 @@ function LoudCard({ model, Default }: ViewProps<'dashboard.serverCard'>) {
 ```
 <!-- /sample -->
 
-Four views publish **parts** that `Default` swaps one at a time: `dashboard.serverCard`,
-`server.files.details`, `server.files.editor` and `server.files.manager`. A part receives the model and
-inputs, typed by `ViewPartProps<'name'>`. Define parts outside the layer's render function.
+Three views place smaller views for their pieces: `dashboard.serverCard` places
+`dashboard.serverCard.identity`, `.address` and `.metrics`; `server.files.editor` places `.notice`,
+`.canvas`, `.language` and `.actions`; and `server.files.manager` places `.toolbar`, `.list` and
+`.selection`. Each piece takes the model of its view as its `model` input, so a theme overrides one piece
+and keeps the others. A layer that draws the whole view places the pieces it keeps itself:
+`<View name="dashboard.serverCard.metrics" model={model} server={server} />`.
 
-<!-- sample: snippets/views.tsx#parts -->
+<!-- sample: snippets/views.tsx#nested -->
 ```tsx
-/** Replaces one part of classic's card and keeps the others. */
-function Uptime({ model }: ViewPartProps<'dashboard.serverCard'>) {
-    return <span>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
-}
-
-function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
-    return <Default parts={{ metrics: Uptime }} />;
+/** Replaces the metrics of every server card; the card keeps its identity and address. */
+function Uptime({ model, className }: ViewProps<'dashboard.serverCard.metrics'>) {
+    return <span className={className}>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
 }
 ```
 <!-- /sample -->
@@ -1103,7 +1102,7 @@ repository extends the Aurora sample.
    are named after their area and what they draw, such as `server.power`, and the layouts after their
    area.
 2. **Look it up.** The [view catalogue](#view-catalogue), or `npx pterodactyl-theme list`, gives its
-   model type, inputs, parts, slots and fixtures.
+   model type, inputs, slots and fixtures.
 3. **Read classic's source.** `npx pterodactyl-theme eject page.server.console` copies it into
    `src/views`. A page's source shows the blocks it places with `<View name="…" />` and the slots it
    renders, which leads you to the block you are after.
@@ -1264,7 +1263,7 @@ disabled or removed.
 ### Versions
 
 Declare `requires.panel` and `requires.sdk` (`>=2.0.0-beta.5 <3.0`). During the 2.0 betas, view names,
-models, parts and fixtures, and the primitives' parts and state, can change in any beta. Build against
+models and fixtures, and the primitives' parts and state, can change in any beta. Build against
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
 and `npm run doctor` an overridden view that no longer exists; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
@@ -1285,19 +1284,19 @@ included: the engine converts the terminal's colours to the hex and `rgba()` its
 
 | Token | Role | Utilities | Classic reads it in |
 | --- | --- | --- | --- |
-| `--background` | Page background. | `*-background` | Dialog, DropdownMenuItem, Input, NumberInput, SpinnerOverlay, Switch and 7 more |
-| `--foreground` | Body text. | `*-foreground` | Alert, Badge, Button, Card, ChartCard, Code and 34 more |
-| `--card` | Cards, rows and raised panels. | `*-card` | Card, Dialog, FileInput, ListRow, Select, Stat and 15 more |
+| `--background` | Page background. | `*-background` | Dialog, DropdownMenuItem, Input, NumberInput, SpinnerOverlay, Switch and 8 more |
+| `--foreground` | Body text. | `*-foreground` | Alert, Badge, Button, Card, ChartCard, Code and 36 more |
+| `--card` | Cards, rows and raised panels. | `*-card` | Card, Dialog, FileInput, ListRow, Select, Stat and 16 more |
 | `--card-foreground` | Text on cards. | `*-card-foreground` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm`, `server.schedule`, `server.schedules` |
 | `--popover` | Raised fills: menus, tooltips, hover fills, stat tiles and chart cards. | `*-popover` | Badge, Button, ChartCard, CopyOnClick, DropdownMenu, FileInput and 13 more |
 | `--popover-foreground` | Text on popovers. | `*-popover-foreground` | DropdownMenu, Tooltip |
-| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 12 more |
-| `--muted-foreground` | Secondary text, icons and placeholders. | `*-muted-foreground` | Badge, Card, Dialog, DropdownMenuItem, Empty, Label and 31 more |
+| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 14 more |
+| `--muted-foreground` | Secondary text, icons and placeholders. | `*-muted-foreground` | Badge, Card, Dialog, DropdownMenuItem, Empty, Label and 33 more |
 | `--sunken` | A recessed surface on a card: meter tracks, code chips. | `*-sunken` | Code, ProgressBar |
 | `--border` | Borders and dividers. | `*-border` | Badge, Button, Card, ChartCard, Dialog, DropdownMenu and 18 more |
 | `--input` | Input fills. | `*-input` | Checkbox, Input, NumberInput, Select, Switch, TextArea and 1 more |
 | `--input-border` | Input borders; defaults to `--input`. | `*-input-border` | Checkbox, Input, NumberInput, Select, Switch, TextArea and 1 more |
-| `--ring` | Focus rings and outlines. | `*-ring` | FileInput, Input, NumberInput, Select, Spinner, TextArea and 1 more |
+| `--ring` | Focus rings and outlines. | `*-ring` | FileInput, Input, NumberInput, Select, Spinner, TextArea and 2 more |
 
 #### Actions and states
 
@@ -1307,14 +1306,14 @@ included: the engine converts the terminal's colours to the hex and `rgba()` its
 | `--primary-foreground` | Text on primary. | `*-primary-foreground` | Badge, Button, Checkbox, Dialog, Stat, Switch |
 | `--secondary` | Secondary fills and hover states. | `*-secondary` | Button, Empty, FileInput |
 | `--secondary-foreground` | Text on secondary. | `*-secondary-foreground` | Empty |
-| `--accent` | Highlights: the active navigation underline, info alerts, the page progress bar. | `*-accent` | Alert, Badge, Empty, ListRow, ProgressBar, Select and 11 more |
+| `--accent` | Highlights: the active navigation underline, info alerts, the page progress bar. | `*-accent` | Alert, Badge, Empty, ListRow, ProgressBar, Select and 13 more |
 | `--accent-foreground` | Text on accent. | `*-accent-foreground` | Badge, Stat, `app.search` |
 | `--destructive` | Danger buttons, errors, offline status. | `*-destructive` | Alert, Badge, Button, Dialog, DropdownMenuItem, Input and 10 more |
 | `--destructive-foreground` | Text on destructive. | `*-destructive-foreground` | Badge, Button, Dialog, Stat, `server.backups` |
 | `--success` | Success states and running servers. | `*-success` | Alert, Badge, Button, Dialog, ListRow, ProgressBar and 4 more |
 | `--success-foreground` | Text on success. | `*-success-foreground` | Badge, Button, Dialog, Stat |
 | `--warning` | Warnings and starting servers. | `*-warning` | Alert, Badge, Dialog, ListRow, ProgressBar, Stat and 6 more |
-| `--warning-foreground` | Text on warning. | `*-warning-foreground` | Badge, Dialog, Stat, `server.files.manager` |
+| `--warning-foreground` | Text on warning. | `*-warning-foreground` | Badge, Dialog, Stat, `server.files.manager.list` |
 | `--caution` | The orange button colour. | `*-caution` | Button |
 | `--caution-foreground` | Text on caution. | `*-caution-foreground` | Button |
 | `--state-foreground` | The text colour the success and warning foregrounds default to. |  |  |
@@ -1450,14 +1449,14 @@ render links with the `Button` skin, as they are.
 
 ### View catalogue
 
-Every view with its context, model type, inputs and parts, slots and fixtures. **Slots** are rendered by
+Every view with its context, model type, inputs, slots and fixtures. **Slots** are rendered by
 the view's layers; a page's **engine slots** are rendered around it by the engine.
 `npx pterodactyl-theme list` prints the same from `@pterodactyl/sdk/views.json`.
 
 <!-- generated:views -->
 #### Layouts
 
-| View | Context | Model | Inputs and parts | Slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Fixtures |
 | --- | --- | --- | --- | --- | --- |
 | `layout.account` | account | `AccountLayoutModel` |  | `account.navigation.before` `account.navigation.after` | default, extension |
 | `layout.admin` | admin | `AdminLayoutModel` |  | `panel.navigation.before` `panel.navigation.after` | default, extension |
@@ -1467,7 +1466,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 
 #### Pages
 
-| View | Context | Model | Inputs and parts | Slots | Engine slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Engine slots | Fixtures |
 | --- | --- | --- | --- | --- | --- | --- |
 | `page.account.activity` | account | `ActivityPageModel` |  |  | `account.activity.before` `account.activity.after` | default |
 | `page.account.api` | account | `AccountListPageModel` |  |  | `account.api.before` `account.api.after` | default, error |
@@ -1494,7 +1493,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 
 #### Blocks
 
-| View | Context | Model | Inputs and parts | Slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Fixtures |
 | --- | --- | --- | --- | --- | --- |
 | `account.apiKeys.create` | account | `ApiKeyCreateModel` |  |  | default, invalid, created |
 | `account.apiKeys.list` | account | `ApiKeyListModel` |  |  | keys, empty, loading, deleting |
@@ -1509,7 +1508,10 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `auth.forgotPasswordForm` | auth | `ForgotPasswordFormModel` |  |  | default, invalid |
 | `auth.loginForm` | auth | `LoginFormModel` |  | `auth.login.form.after` | default, invalid, submitting |
 | `auth.resetPasswordForm` | auth | `ResetPasswordFormModel` |  |  | default, mismatch |
-| `dashboard.serverCard` | app | `ServerCardModel` | `server: Server`<br>parts: `identity`, `address`, `metrics` | `dashboard.serverRow.name.after` | running, offline, suspended, loading |
+| `dashboard.serverCard` | app | `ServerCardModel` | `server: Server` |  | running, offline, suspended, loading |
+| `dashboard.serverCard.address` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` |  |  |
+| `dashboard.serverCard.identity` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` | `dashboard.serverRow.name.after` |  |
+| `dashboard.serverCard.metrics` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` |  |  |
 | `dashboard.serverList` | app | `ServerListModel` |  | `dashboard.before` `dashboard.after` `dashboard.serverRow.before` `dashboard.serverRow.metrics.after` `dashboard.serverRow.after` | servers, empty, loading |
 | `server.allocations` | server | `ServerAllocationsModel` |  |  | allocations, full, unmanaged, readOnly, empty, loading |
 | `server.backups` | server | `BackupListModel` |  |  | backups, empty, full, noLimit, paged, pastEnd, readOnly |
@@ -1523,9 +1525,16 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | closed, admin, user |
 | `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | closed, admin, user |
 | `server.features` | server | `ServerFeaturesModel` |  |  | minecraft, none |
-| `server.files.details` | server | `FileDetailsModel` | `file: FileObject`<br>parts: `icon`, `name`, `size`, `modified` |  | file, directory |
-| `server.files.editor` | server | `FileEditorModel` | parts: `notice`, `editor`, `language`, `actions` |  | file, dirty, saving, readOnly, pteroignore, new |
-| `server.files.manager` | server | `FileManagerModel` | parts: `toolbar`, `list`, `selection` | `server.files.toolbar` `server.files.rowActions` `server.files.selectionActions` | directory, selected, uploading, readOnly, empty, loading |
+| `server.files.details` | server | `FileDetailsModel` | `file: FileObject` |  | file, directory |
+| `server.files.editor` | server | `FileEditorModel` |  |  | file, dirty, saving, readOnly, pteroignore, new |
+| `server.files.editor.actions` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.canvas` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.language` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.notice` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.manager` | server | `FileManagerModel` |  |  | directory, selected, uploading, readOnly, empty, loading |
+| `server.files.manager.list` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.rowActions` |  |
+| `server.files.manager.selection` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.selectionActions` |  |
+| `server.files.manager.toolbar` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.toolbar` |  |
 | `server.graphs` | server | `ServerGraphsModel` |  |  | running, offline |
 | `server.power` | server | `ServerPowerModel` |  | `server.console.power.before` `server.console.power.after` | running, offline, starting, stopping, disconnected, noPermission |
 | `server.reinstall` | server | `ServerReinstallModel` |  |  | default, skipped, denied |
@@ -1563,7 +1572,7 @@ package's types, run its tests and build it.
 - **Layout**: a view that frames an area's pages and places them in `<Main>`, such as `layout.app`.
 - **Model**: the data and actions the engine produces for a view, and the view's only data source.
 - **Page**: a view that renders one route, such as `page.server.console`, composed of blocks.
-- **Part**: a named element of a primitive (`root`, `title`), or of one of the views that publish parts.
+- **Part**: a named element of a primitive (`root`, `title`).
 - **Primitive**: a component of the UI kit, such as `Button` or `Dialog`, styled by skins.
 - **Skin**: the recipes, by part, of one primitive.
 - **Slot**: a named place where extensions mount content.

@@ -94,7 +94,6 @@ function viewCatalogue() {
     const views = JSON.parse(read('views.json'));
     const models = properties(declared('types/views/registry.d.ts', 'ViewModels'));
     const inputs = properties(declared('types/views/registry.d.ts', 'ViewInputs'));
-    const parts = properties(declared('types/views/registry.d.ts', 'ViewPartNames'));
     const model = (name) => {
         const property = models.get(name);
 
@@ -109,14 +108,13 @@ function viewCatalogue() {
                   .map((property) => code(`${property.name}${optional(property)}: ${typeText(property)}`))
                   .join(', ')
             : '';
-        const partNames = parts.get(name) ? literals(parts.get(name)) : null;
         const area = view.areaSlots ? `<br>where it draws an area's navigation: ${view.areaSlots.map(code).join(' ')}` : '';
 
         return [
             code(name),
             view.context,
             code(model(name)),
-            [inputText, partNames ? `parts: ${partNames.map(code).join(', ')}` : ''].filter(Boolean).join('<br>'),
+            inputText,
             view.slots.map(code).join(' ') + area,
             ...(withEngine ? [(view.engineSlots ?? []).map(code).join(' ')] : []),
             view.fixtures.join(', '),
@@ -126,7 +124,7 @@ function viewCatalogue() {
         [
             `#### ${title}`,
             '',
-            `| View | Context | Model | Inputs and parts | Slots |${withEngine ? ' Engine slots |' : ''} Fixtures |`,
+            `| View | Context | Model | Inputs | Slots |${withEngine ? ' Engine slots |' : ''} Fixtures |`,
             `| --- | --- | --- | --- | --- |${withEngine ? ' --- |' : ''} --- |`,
             ...entries.map(row(withEngine)).map((cells) => `| ${cells.join(' | ')} |`),
         ].join('\n');

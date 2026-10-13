@@ -746,7 +746,7 @@ model, and a stack of layers that render it. Classic, the stock UI, is the botto
 active theme and its parents stack above it, then extension overrides in the configured order.
 Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders the layer
 below. Themes and extensions write layers the same way: [Level 4](THEMES.md#level-4-rebuild-pages)
-of the themes guide covers models, `Default`, parts and placing views, and the
+of the themes guide covers models, `Default` and placing views, and the
 [view catalogue](THEMES.md#view-catalogue) lists every view with its model, inputs, slots and
 fixtures. The catalogue also ships as `@pterodactyl/sdk/views.json`.
 
@@ -805,7 +805,7 @@ An extension's own UI goes in slots with `slots.register`; themes restyle it thr
 
 The server card and file details render inside core links. Keep interactive controls in action
 slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
-menus. The classic server-card identity part includes the `dashboard.serverRow.name.after` slot.
+menus. `dashboard.serverCard.identity`, a piece of the card, renders the `dashboard.serverRow.name.after` slot.
 
 ### Slots inside views
 
@@ -830,10 +830,12 @@ around the page view, so no layer renders or drops them.
 | `save()` | Write the buffer in place; a new file first asks for its name in the panel's dialog. Resolves `false` when read-only, cancelled or failed. |
 | `saveAs(name)` | Write the buffer to a name beside the file, or an absolute path, and open it. Needs `file.create`. |
 
-```tsx
-import { useExtensionAction, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk';
+The view places its pieces as views of their own, each given the editor's model: `server.files.editor.notice`, `server.files.editor.canvas` (the code editor), `server.files.editor.language` and `server.files.editor.actions` (the Save button). Override one to replace that piece; declare it in `ui.views` like any view.
 
-function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
+```tsx
+import { useExtensionAction, type ViewProps } from '@pterodactyl/sdk';
+
+export default function Buffer({ model }: ViewProps<'server.files.editor.canvas'>) {
     const save = useExtensionAction('save', async () => void (await model.save()));
     return (
         <textarea
@@ -844,27 +846,24 @@ function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
         />
     );
 }
-export default function Editor({ Default }: ViewProps<'server.files.editor'>) {
-    return <Default parts={{ editor: Buffer }} />;
-}
 ```
 
-Because the panel holds the buffer, a replaced `editor` part works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
+Because the panel holds the buffer, a replaced canvas works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
 
 ### File browser
 
-`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` view belong to the classic parts and render only where you keep those parts.
+`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view. It places `server.files.manager.toolbar`, `server.files.manager.list` and `server.files.manager.selection`, each given its model; they render the `server.files.toolbar`, `server.files.rowActions` and `server.files.selectionActions` slots and, in the list, the `server.files.details` view of each row. A layer that draws the browser itself places the ones it keeps with `<View name="server.files.manager.toolbar" model={model} />`.
 
 `model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt`, `openable`, `extractable`, the `destination` opening it links to, and the API's `file`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has. `breadcrumbs` lead from `container` to the directory, `newFileDestination` opens the editor for a new file, `uploads` lists the uploads in progress, `resolve(name)` shows where a relative name lands, and `slot` is what the file slots receive.
 
 `model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `move(names, directory)`, `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)`, `upload(files)`, `cancelUpload(id)` and `clearUploads()`. They run the panel's own mutations, with its cache updates and notifications; `remove` and `archive` drop their names from the selection, `rename`, `move` and `chmod` clear it. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
 
 ```tsx
-export default function Browser({ model, parts }: ViewProps<'server.files.manager'>) {
+export default function Browser({ model }: ViewProps<'server.files.manager'>) {
     const open = useExtensionAction('open', (name: string) => model.actions.open(name));
     return (
         <>
-            <parts.toolbar model={model} />
+            <View name='server.files.manager.toolbar' model={model} />
             <ul aria-busy={model.loading}>
                 {model.entries.map((entry) => (
                     <li key={entry.path}>

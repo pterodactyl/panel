@@ -68,10 +68,7 @@ export function isPendingLazyView<T extends JSXElementConstructor<never>>(
     return isLazyView(component) && component.loaded === false;
 }
 
-/**
- * A lazily loaded view. Views exported by one chunk share its load, the router preloads it, and the
- * engine loads every lazy layer of a view before rendering so their parts are known.
- */
+/** A lazily loaded view. Views exported by one chunk share its load, and the router preloads it. */
 export function lazyView<M extends { default: unknown }>(importer: () => Promise<M>): M['default'] & LazyViewStatics;
 export function lazyView<M extends object, K extends keyof M & string>(
     importer: () => Promise<M>,
@@ -91,6 +88,5 @@ export function lazyView(importer: () => Promise<object>, exportName = 'default'
     return Object.defineProperties(LazyView, {
         preload: { value: () => loadModule(importer).ready },
         loaded: { get: () => loaded() !== undefined },
-        parts: { get: () => Reflect.get(Reflect.get(loaded() ?? {}, exportName) ?? {}, 'parts') },
     });
 }

@@ -113,7 +113,7 @@ export interface ExtensionSetupContext {
         extend<TName extends ExtensionFormName, TValues extends ExtensionFieldValues>(form: TName, component: FormExtension<TValues, TName>): void;
     };
 }
-export type { DefaultViewProps, ViewComponent, ViewContext, ViewImporter, ViewModel, ViewName, ViewOverride, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
+export type { DefaultViewProps, ViewComponent, ViewContext, ViewImporter, ViewModel, ViewName, ViewOverride, ViewProps, } from "../views/registry.js";
 export type * from "../views/models.js";
 export { setPermissionsSelected } from "../views/server/permissionSelection.js";
 export { default as AreaChart, type AreaChartProps } from "../components/server/console/AreaChart.js";

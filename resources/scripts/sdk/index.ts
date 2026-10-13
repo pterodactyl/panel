@@ -216,8 +216,6 @@ export type {
     ViewModel,
     ViewName,
     ViewOverride,
-    ViewPartProps,
-    ViewParts,
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';

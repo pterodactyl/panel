@@ -71,9 +71,6 @@ export type {
     ViewModels,
     ViewName,
     ViewOverride,
-    ViewPartNames,
-    ViewPartProps,
-    ViewParts,
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';

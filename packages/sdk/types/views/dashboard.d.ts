@@ -87,13 +87,25 @@ declare module './registry' {
         'page.dashboard': DashboardModel;
         'dashboard.serverList': ServerListModel;
         'dashboard.serverCard': ServerCardModel;
+        'dashboard.serverCard.identity': ServerCardModel;
+        'dashboard.serverCard.address': ServerCardModel;
+        'dashboard.serverCard.metrics': ServerCardModel;
     }
     interface ViewInputs {
         'dashboard.serverCard': {
             readonly server: Server;
         };
-    }
-    interface ViewPartNames {
-        'dashboard.serverCard': 'identity' | 'address' | 'metrics';
+        'dashboard.serverCard.identity': {
+            readonly model: ServerCardModel;
+            readonly server: Server;
+        };
+        'dashboard.serverCard.address': {
+            readonly model: ServerCardModel;
+            readonly server: Server;
+        };
+        'dashboard.serverCard.metrics': {
+            readonly model: ServerCardModel;
+            readonly server: Server;
+        };
     }
 }

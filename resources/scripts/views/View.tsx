@@ -11,9 +11,7 @@ import {
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { cn } from '@/lib/cn';
-import { isLazyView } from './lazy';
 import {
-    declaredParts,
     getViewChain,
     loadViewImplementation,
     useViewChain,
@@ -24,7 +22,6 @@ import {
     type ViewLayer,
     type ViewModels,
     type ViewName,
-    type ViewPartComponents,
 } from './registry';
 import { useViewDecision } from './session';
 
@@ -83,8 +80,6 @@ interface LayerFrame {
     readonly inputs: LooseViewInput;
     readonly className?: string;
     readonly children?: ReactNode;
-    /** Part overrides passed down through `Default`. */
-    readonly parts?: ViewPartComponents;
 }
 interface LevelValue {
     readonly name: string;
@@ -96,25 +91,13 @@ interface LayerOverrides {
     readonly model?: unknown;
     readonly className?: string;
     readonly children?: ReactNode;
-    readonly parts?: ViewPartComponents;
 }
 type LayerProps = LooseViewInput & {
     readonly model: unknown;
     readonly Default: ComponentType<LayerOverrides>;
     readonly className?: string;
     readonly children?: ReactNode;
-    readonly parts?: ViewPartComponents;
 };
-
-/** The parts the top layer renders: those of the nearest layer that declares them, with overrides applied. */
-function resolveParts(layers: readonly ViewLayer[], overrides: ViewPartComponents | undefined) {
-    const declared = [...layers]
-        .reverse()
-        .map((layer) => declaredParts(layer.component))
-        .find(Boolean);
-
-    return declared || overrides ? { ...declared, ...overrides } : undefined;
-}
 
 /**
  * Each level owns a context, so its `Default` keeps one identity across renders and finds this level
@@ -123,7 +106,7 @@ function resolveParts(layers: readonly ViewLayer[], overrides: ViewPartComponent
 function createLevel() {
     const Context = createContext<LevelValue | null>(null);
 
-    function Default({ model, className, children, parts }: LayerOverrides) {
+    function Default({ model, className, children }: LayerOverrides) {
         const level = useContext(Context);
 
         if (!level) {
@@ -143,7 +126,6 @@ function createLevel() {
                     inputs: frame.inputs,
                     className: cn(frame.className, className) || undefined,
                     children: children ?? frame.children,
-                    parts: parts ? { ...frame.parts, ...parts } : frame.parts,
                 }}
             />
         );
@@ -207,7 +189,6 @@ function ViewChain({
         model: frame.model,
         className: frame.className,
         children: frame.children,
-        parts: resolveParts(layers, frame.parts),
         Default: level.Default,
     };
     // Each layer is typed by its own view name where it is registered.
@@ -253,14 +234,6 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
 
     if (!layers.length) {
         throw new Error(`View "${definition.name}" has no implementation.`);
-    }
-
-    // Classic's lazy layers load up front, so their parts are known and layers above do not wait in turn.
-    // Theme and extension layers load inside their own boundary, which falls back when they fail.
-    for (const { source, component } of layers) {
-        if (source === 'classic' && isLazyView(component)) {
-            use(component.preload());
-        }
     }
 
     return (

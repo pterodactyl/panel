@@ -144,17 +144,15 @@ function useAccountLayoutModel(): AccountLayoutModel {
     return useMemo(() => ({ nav }), [nav]);
 }
 
-const adminLink = (internalId: number, order: number): NavItem => {
-    return {
-        id: 'admin',
-        label: 'Open Admin Area',
-        destination: { to: '/panel/servers/$id', params: { id: String(internalId) } },
-        icon: 'external-link',
-        group: null,
-        order,
-        exact: false,
-    };
-};
+const adminLink = (internalId: number, order: number): NavItem => ({
+    id: 'admin',
+    label: 'Open Admin Area',
+    destination: { to: '/panel/servers/$id', params: { id: String(internalId) } },
+    icon: 'external-link',
+    group: null,
+    order,
+    exact: false,
+});
 
 /** What Wings last reported: the resources query, fetched once and kept current by the server's websocket. */
 function useServerRunState(uuid: string): ServerRunState | null {

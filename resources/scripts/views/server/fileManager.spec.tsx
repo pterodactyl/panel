@@ -177,14 +177,27 @@ it('refuses a mutation the user has no permission for before any request is sent
     expect(deletes()).toEqual([]);
 });
 
-it('composes native parts and keeps the native browser when the replacement fails', async () => {
-    override('server.files.manager', ({ Default, model }) => {
+it('replaces one nested view and keeps the native browser when a replacement fails', async () => {
+    function Selection({ model }: ViewProps<'server.files.manager.selection'>) {
+        return <p>{`${model.selection.length} selected`}</p>;
+    }
+
+    function Browser({ Default, model }: ViewProps<'server.files.manager'>) {
         if (model.selection.length) {
             throw new Error('browser crashed');
         }
 
-        return <Default parts={{ selection: () => <p>Custom selection</p> }} />;
-    });
+        return <Default />;
+    }
+
+    registry.prepareExtensions([
+        { id: 'browser', entry: '/browser.js', views: ['server.files.manager', 'server.files.manager.selection'] },
+    ]);
+    const batch = registry.createExtensionRegistryBatch();
+
+    registry.registerViewOverride('browser', 'server.files.manager.selection', Selection, batch);
+    registry.registerViewOverride('browser', 'server.files.manager', Browser, batch);
+    registry.commitExtensionRegistryBatch('browser', batch);
     open();
 
     expect(await screen.findByRole('link', { name: 'b.txt' })).toHaveAttribute(
@@ -192,12 +205,12 @@ it('composes native parts and keeps the native browser when the replacement fail
         '/server/test-server/files/edit#/config/b.txt'
     );
     expect(screen.getByRole('button', { name: 'New file' })).toBeVisible();
-    expect(screen.getByText('Custom selection')).toBeVisible();
+    expect(screen.getByText('0 selected')).toBeVisible();
 
     fireEvent.click(screen.getAllByRole('checkbox')[0]);
 
-    expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
-    expect(screen.queryByText('Custom selection')).not.toBeInTheDocument();
+    expect(await screen.findByText(/^[1-9]\d* selected$/)).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Archive' })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'plugins' })).toBeVisible();
     expect(registry.getExtensionStates()[0].error).toContain('browser crashed');
 });

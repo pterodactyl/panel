@@ -162,16 +162,39 @@ declare module '../registry' {
         'page.server.files.editor': FileEditorPageModel;
         'server.files.details': FileDetailsModel;
         'server.files.editor': FileEditorModel;
+        'server.files.editor.notice': FileEditorModel;
+        'server.files.editor.canvas': FileEditorModel;
+        'server.files.editor.language': FileEditorModel;
+        'server.files.editor.actions': FileEditorModel;
         'server.files.manager': FileManagerModel;
+        'server.files.manager.toolbar': FileManagerModel;
+        'server.files.manager.list': FileManagerModel;
+        'server.files.manager.selection': FileManagerModel;
     }
     interface ViewInputs {
         'server.files.details': {
             readonly file: FileObject;
         };
-    }
-    interface ViewPartNames {
-        'server.files.details': 'icon' | 'name' | 'size' | 'modified';
-        'server.files.editor': 'notice' | 'editor' | 'language' | 'actions';
-        'server.files.manager': 'toolbar' | 'list' | 'selection';
+        'server.files.editor.notice': {
+            readonly model: FileEditorModel;
+        };
+        'server.files.editor.canvas': {
+            readonly model: FileEditorModel;
+        };
+        'server.files.editor.language': {
+            readonly model: FileEditorModel;
+        };
+        'server.files.editor.actions': {
+            readonly model: FileEditorModel;
+        };
+        'server.files.manager.toolbar': {
+            readonly model: FileManagerModel;
+        };
+        'server.files.manager.list': {
+            readonly model: FileManagerModel;
+        };
+        'server.files.manager.selection': {
+            readonly model: FileManagerModel;
+        };
     }
 }

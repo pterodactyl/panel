@@ -191,9 +191,7 @@
     "dashboard.serverCard": {
         "kind": "block",
         "context": "app",
-        "slots": [
-            "dashboard.serverRow.name.after"
-        ],
+        "slots": [],
         "fixtures": [
             "running",
             "offline",
@@ -202,6 +200,38 @@
         ],
         "classic": {
             "file": "views/dashboard/ServerCard.tsx",
+            "export": "default"
+        }
+    },
+    "dashboard.serverCard.address": {
+        "kind": "block",
+        "context": "app",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/dashboard/ServerCardAddress.tsx",
+            "export": "default"
+        }
+    },
+    "dashboard.serverCard.identity": {
+        "kind": "block",
+        "context": "app",
+        "slots": [
+            "dashboard.serverRow.name.after"
+        ],
+        "fixtures": [],
+        "classic": {
+            "file": "views/dashboard/ServerCardIdentity.tsx",
+            "export": "default"
+        }
+    },
+    "dashboard.serverCard.metrics": {
+        "kind": "block",
+        "context": "app",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/dashboard/ServerCardMetrics.tsx",
             "export": "default"
         }
     },
@@ -894,14 +924,50 @@
             "export": "default"
         }
     },
+    "server.files.editor.actions": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileEditorActions.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.editor.canvas": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileEditorCanvas.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.editor.language": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileEditorLanguage.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.editor.notice": {
+        "kind": "block",
+        "context": "server",
+        "slots": [],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileEditorNotice.tsx",
+            "export": "default"
+        }
+    },
     "server.files.manager": {
         "kind": "block",
         "context": "server",
-        "slots": [
-            "server.files.toolbar",
-            "server.files.rowActions",
-            "server.files.selectionActions"
-        ],
+        "slots": [],
         "fixtures": [
             "directory",
             "selected",
@@ -912,6 +978,42 @@
         ],
         "classic": {
             "file": "views/server/files/FileManager.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.manager.list": {
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.files.rowActions"
+        ],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileManagerList.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.manager.selection": {
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.files.selectionActions"
+        ],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileManagerSelection.tsx",
+            "export": "default"
+        }
+    },
+    "server.files.manager.toolbar": {
+        "kind": "block",
+        "context": "server",
+        "slots": [
+            "server.files.toolbar"
+        ],
+        "fixtures": [],
+        "classic": {
+            "file": "views/server/files/FileManagerToolbar.tsx",
             "export": "default"
         }
     },

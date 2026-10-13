@@ -203,13 +203,14 @@ it('composes the native server card using the real SDK fixture', () => {
     expect(card?.classList.contains('gap-4')).toBe(false);
 });
 
-it('customizes only the file name while native size and timestamp remain available', () => {
+it('dims hidden files while the native name, size and timestamp remain', () => {
     rendered = renderView('server.files.details', {
         themes: [overrides],
-        model: createTestFileDetails({ name: 'server.properties' }),
+        model: createTestFileDetails({ name: '.env' }),
+        prefix: 'hw',
     });
 
-    expect(screen.getByText('server.properties').classList.contains('hw:font-medium')).toBe(true);
+    expect(screen.getByText('.env').parentElement?.classList.contains('hw:opacity-60')).toBe(true);
     expect(screen.getByText('1 KiB')).toBeTruthy();
     expect(screen.getByTitle('2026-01-01T12:00:00Z')).toBeTruthy();
 });

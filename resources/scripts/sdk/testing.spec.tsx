@@ -7,7 +7,8 @@ import Button from '@/components/elements/Button';
 import { Main } from '@/views/a11y';
 import { lazyView } from '@/views/lazy';
 import { Navigation, NavigationLink } from '@/views/navigation';
-import type { ViewPartProps, ViewProps } from '@/views/registry';
+import { View } from '@/views/View';
+import type { ViewProps } from '@/views/registry';
 import { defineTheme } from '@/views/theme';
 import { skin } from '@/themes/skins';
 import { usePanelLocation } from './navigation';
@@ -30,11 +31,11 @@ afterEach(() => {
     rendered = undefined;
 });
 
-it('renders an editor layer around native parts with a fixture model', () => {
+it('renders a themed editor canvas between the native notice and actions with a fixture model', () => {
     const save = vi.fn(async () => true);
     const change = vi.fn();
 
-    function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
+    function Buffer({ model }: ViewProps<'server.files.editor.canvas'>) {
         return (
             <textarea
                 aria-label={model.name}
@@ -44,12 +45,8 @@ it('renders an editor layer around native parts with a fixture model', () => {
         );
     }
 
-    function Editor({ Default }: ViewProps<'server.files.editor'>) {
-        return <Default className='custom-editor' parts={{ editor: Buffer }} />;
-    }
-
     rendered = renderView('server.files.editor', {
-        themes: [defineTheme({ views: { 'server.files.editor': Editor } })],
+        themes: [defineTheme({ views: { 'server.files.editor.canvas': Buffer } })],
         model: createTestFileEditor({ name: '.pteroignore', content: 'logs/*', save, change }),
     });
 
@@ -96,19 +93,23 @@ it('renders the native file browser from a fixture model without issuing core qu
     expect(select).toHaveBeenCalledWith(['plugins', 'app.yml']);
 });
 
-it('gives a server card layer the classic parts and the server it was rendered for', () => {
-    function Card({ Default, parts, model, server }: ViewProps<'dashboard.serverCard'>) {
+it('gives a server card layer the server it was rendered for, and replaces one of its nested views', () => {
+    function Card({ Default, model, server }: ViewProps<'dashboard.serverCard'>) {
         return (
             <>
                 <span>{server.attributes.identifier}</span>
-                <Default parts={{ metrics: () => <span>{`metrics of ${model.name}`}</span> }} />
-                <parts.address model={model} server={server} />
+                <Default />
+                <View name='dashboard.serverCard.address' model={model} server={server} />
             </>
         );
     }
 
+    function Metrics({ model }: ViewProps<'dashboard.serverCard.metrics'>) {
+        return <span>{`metrics of ${model.name}`}</span>;
+    }
+
     rendered = renderView('dashboard.serverCard', {
-        themes: [defineTheme({ views: { 'dashboard.serverCard': Card } })],
+        themes: [defineTheme({ views: { 'dashboard.serverCard': Card, 'dashboard.serverCard.metrics': Metrics } })],
         model: createTestServerCard({ name: 'Survival', identifier: 'abc' }),
     });
 

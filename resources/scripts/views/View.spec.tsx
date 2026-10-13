@@ -13,10 +13,9 @@ interface ProbeModel {
 }
 interface ProbeProps {
     model: ProbeModel;
-    Default: ComponentType<{ model?: ProbeModel; className?: string; parts?: Record<string, ComponentType<never>> }>;
+    Default: ComponentType<{ model?: ProbeModel; className?: string }>;
     className?: string;
     children?: ReactNode;
-    parts?: Record<string, ComponentType<{ model: ProbeModel }>>;
 }
 
 let views: typeof RegistryModule;
@@ -229,51 +228,16 @@ describe('<View>', () => {
         );
     });
 
-    it('swaps parts through Default and gives the layer above the parts of the layer below', () => {
-        define('test.parts');
-        function Name({ model }: { model: ProbeModel }) {
-            return <b>{model.name}</b>;
-        }
-
-        function Card({ model, parts }: ProbeProps) {
-            const Part = parts!.name;
-
-            return <Part model={model} />;
-        }
-
-        views.registerViewLayer('classic', 'classic', { 'test.parts': Object.assign(Card, { parts: { name: Name } }) });
-        views.registerViewLayer('theme', 'theme', {
-            'test.parts': ({ Default, parts, model }: ProbeProps) => (
-                <>
-                    <i>{parts && 'name' in parts ? 'has parts' : 'no parts'}</i>
-                    <Default parts={{ name: () => <u>{`custom ${model.name}`}</u> }} />
-                </>
-            ),
-        });
-
-        render(<engine.View name='test.parts' />);
-
-        expect(screen.getByText('has parts')).toBeVisible();
-        expect(screen.getByText('custom live')).toBeVisible();
-    });
-
-    it('loads a lazy classic layer before rendering, so its parts reach the layers above', async () => {
+    it('renders a lazy classic layer below a theme layer once its chunk loads', async () => {
         define('test.lazy');
         function Card({ model }: ProbeProps) {
             return <p>{`lazy:${model.name}`}</p>;
         }
 
-        const module = { default: Object.assign(Card, { parts: { name: Card } }) };
-
-        views.registerViewLayer('classic', 'classic', { 'test.lazy': lazy.lazyView(async () => module) });
-        views.registerViewLayer('theme', 'theme', {
-            'test.lazy': ({ Default, parts }: ProbeProps) => (
-                <>
-                    <i>{parts ? 'parts known' : 'parts missing'}</i>
-                    <Default />
-                </>
-            ),
+        views.registerViewLayer('classic', 'classic', {
+            'test.lazy': lazy.lazyView(async () => ({ default: Card })),
         });
+        views.registerViewLayer('theme', 'theme', { 'test.lazy': layer('theme') });
 
         await act(async () => {
             render(
@@ -283,8 +247,8 @@ describe('<View>', () => {
             );
         });
 
+        expect(screen.getByText('theme:live')).toBeVisible();
         expect(screen.getByText('lazy:live')).toBeVisible();
-        expect(screen.getByText('parts known')).toBeVisible();
     });
 
     it('throws for a view no package defines', () => {

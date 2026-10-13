@@ -8,7 +8,7 @@ import useFileManagerModel from '@/components/server/files/useFileManagerModel';
 import type { FileManagerSlotData } from '@/extensions/registry';
 import type { CorePanelDestination } from '@/sdk/navigation';
 import { useServerDirectory } from '@/state/server';
-import { implementViews } from '../registry';
+import { implementViews, modelFromInput } from '../registry';
 import {
     createTestFileDetails,
     createTestFileEditor,
@@ -172,15 +172,24 @@ declare module '../registry' {
         'page.server.files.editor': FileEditorPageModel;
         'server.files.details': FileDetailsModel;
         'server.files.editor': FileEditorModel;
+        'server.files.editor.notice': FileEditorModel;
+        'server.files.editor.canvas': FileEditorModel;
+        'server.files.editor.language': FileEditorModel;
+        'server.files.editor.actions': FileEditorModel;
         'server.files.manager': FileManagerModel;
+        'server.files.manager.toolbar': FileManagerModel;
+        'server.files.manager.list': FileManagerModel;
+        'server.files.manager.selection': FileManagerModel;
     }
     interface ViewInputs {
         'server.files.details': { readonly file: FileObject };
-    }
-    interface ViewPartNames {
-        'server.files.details': 'icon' | 'name' | 'size' | 'modified';
-        'server.files.editor': 'notice' | 'editor' | 'language' | 'actions';
-        'server.files.manager': 'toolbar' | 'list' | 'selection';
+        'server.files.editor.notice': { readonly model: FileEditorModel };
+        'server.files.editor.canvas': { readonly model: FileEditorModel };
+        'server.files.editor.language': { readonly model: FileEditorModel };
+        'server.files.editor.actions': { readonly model: FileEditorModel };
+        'server.files.manager.toolbar': { readonly model: FileManagerModel };
+        'server.files.manager.list': { readonly model: FileManagerModel };
+        'server.files.manager.selection': { readonly model: FileManagerModel };
     }
 }
 
@@ -254,4 +263,11 @@ implementViews({
             new: () => createTestFileEditor({ path: '/config', name: '', isNew: true, content: '' }),
         },
     },
+    'server.files.editor.notice': { use: modelFromInput },
+    'server.files.editor.canvas': { use: modelFromInput },
+    'server.files.editor.language': { use: modelFromInput },
+    'server.files.editor.actions': { use: modelFromInput },
+    'server.files.manager.toolbar': { use: modelFromInput },
+    'server.files.manager.list': { use: modelFromInput },
+    'server.files.manager.selection': { use: modelFromInput },
 });

@@ -11,41 +11,28 @@ export interface ViewModels {
 /** Props a view takes besides its model, such as the server of a card. */
 export interface ViewInputs {
 }
-/** Named parts of the views that publish them, which `Default` can swap individually. */
-export interface ViewPartNames {
-}
 export type ViewName = Extract<keyof ViewModels, string>;
 export type ViewModel<N> = N extends keyof ViewModels ? ViewModels[N] : unknown;
 export type LooseViewInput = Readonly<Record<string, unknown>>;
 export type ViewInput<N> = N extends keyof ViewInputs ? ViewInputs[N] : N extends keyof ViewModels ? unknown : LooseViewInput;
-export type ViewPartProps<N> = {
-    readonly model: ViewModel<N>;
-} & ViewInput<N>;
-export type ViewParts<N> = N extends keyof ViewPartNames ? {
-    readonly [P in ViewPartNames[N] & string]: ComponentType<ViewPartProps<N>>;
-} : never;
-type PartsProp<N> = N extends keyof ViewPartNames ? {
-    readonly parts: ViewParts<N>;
-} : unknown;
-type PartsOverride<N> = N extends keyof ViewPartNames ? {
-    readonly parts?: Partial<ViewParts<N>>;
-} : unknown;
 /** `Default` renders the layer below; every prop is optional and replaces what this layer received. */
-export type DefaultViewProps<N> = {
+export interface DefaultViewProps<N> {
     readonly model?: ViewModel<N>;
     readonly className?: string;
     readonly children?: ReactNode;
-} & PartsOverride<N>;
+}
 export type ViewProps<N> = {
     readonly model: ViewModel<N>;
     readonly Default: ComponentType<DefaultViewProps<N>>;
     readonly className?: string;
     readonly children?: ReactNode;
-} & PartsProp<N> & ViewInput<N>;
-/** A layer of a view; `parts` declares the parts it renders for the layers above it. */
-export type ViewComponent<N> = ComponentType<ViewProps<N>> & {
-    readonly parts?: ViewParts<N>;
-};
+} & ViewInput<N>;
+/** A layer of a view. */
+export type ViewComponent<N> = ComponentType<ViewProps<N>>;
+/** The hook of a view its parent places with the parent's model, such as a piece of a card. */
+export declare const modelFromInput: <M>({ model }: {
+    readonly model: M;
+}) => M;
 /** The engine side of a view: the hook producing its model, and the fixtures standing in for it. */
 export interface ViewImplementation<N extends string> {
     /** The engine hook producing the model; the only data source of the view. */
@@ -84,7 +71,6 @@ export interface ViewDefinition<N extends string = string> extends ViewDeclarati
     readonly load?: ViewLoader;
 }
 export type ViewLayerSource = 'classic' | 'theme' | 'extension';
-export type ViewPartComponents = Readonly<Partial<Record<string, JSXElementConstructor<never>>>>;
 export interface ViewLayer {
     /** The package the layer belongs to, which its failures are attributed to. */
     readonly id: string;
@@ -121,8 +107,6 @@ export declare function getViewDefinitions(): readonly ViewDefinition[];
 export declare function useViewDefinition(name: string): ViewDefinition | undefined;
 /** A function component, or a memo, forwardRef or lazy wrapper of one. */
 export declare function isViewComponent<T>(value: T): value is T & JSXElementConstructor<never>;
-/** The parts a layer renders, read when needed since a lazy layer only knows them once loaded. */
-export declare function declaredParts(component: JSXElementConstructor<never>): ViewPartComponents | undefined;
 /** Classic is registered once at boot; theme layers stack in chain order, parent first. */
 export declare function registerViewLayer(id: string, source: 'classic' | 'theme', views: ThemeViews): void;
 /** Drops every theme layer, leaving classic; used when a theme fails to boot. */

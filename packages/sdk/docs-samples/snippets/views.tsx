@@ -1,5 +1,5 @@
 import { PanelLink, usePanelNavigate, useShortcut } from '@pterodactyl/sdk';
-import { defineTheme, type AppLayoutLink, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk/theme';
+import { defineTheme, type AppLayoutLink, type ViewProps } from '@pterodactyl/sdk/theme';
 
 // #region shortcut
 /** A link of `layout.app` that a key opens, such as D for the dashboard. */
@@ -31,21 +31,18 @@ function LoudCard({ model, Default }: ViewProps<'dashboard.serverCard'>) {
 }
 // #endregion transform
 
-// #region parts
-/** Replaces one part of classic's card and keeps the others. */
-function Uptime({ model }: ViewPartProps<'dashboard.serverCard'>) {
-    return <span>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
+// #region nested
+/** Replaces the metrics of every server card; the card keeps its identity and address. */
+function Uptime({ model, className }: ViewProps<'dashboard.serverCard.metrics'>) {
+    return <span className={className}>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
 }
-
-function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
-    return <Default parts={{ metrics: Uptime }} />;
-}
-// #endregion parts
+// #endregion nested
 
 export default defineTheme({
     views: {
         'dashboard.serverCard': FramedCard,
+        'dashboard.serverCard.metrics': Uptime,
     },
 });
 
-export { CardWithUptime, LoudCard, ShortcutLink };
+export { LoudCard, ShortcutLink };
