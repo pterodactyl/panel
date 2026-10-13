@@ -1,0 +1,48 @@
+resources/scripts/views/theme.ts
+  s_4cabae41bceed9::t_b29eae86a95ef1 5,19-23,26
+resources/scripts/extensions/loader.ts
+  s_4cabae41bceed9::t_b29eae86a95ef1 111-116,119,123,145-146,172-173,175
+  s_4cabae41bceed9::t_4ea1261a2d9ee5 174
+tests/Integration/Http/ThemeDocumentTest.php
+  s_4cabae41bceed9::t_1825a6e5600c20 192-203
+resources/scripts/extensions/slotWatch.spec.tsx
+  s_4cabae41bceed9::t_4ea1261a2d9ee5 71
+app/Http/ViewComposers/AssetComposer.php
+  s_4cabae41bceed9::t_9363abf5d32aee 48,55-57,59,62,69
+app/Services/Extensions/ExtensionRepository.php
+  s_4cabae41bceed9::t_9363abf5d32aee 160-162,164,167,169,191-192
+  s_4cabae41bceed9::t_b4c9b2618fb79e 165
+  s_4cabae41bceed9::t_d41d0f4b98fa05 193-194
+packages/sdk/types/views/theme.d.ts
+  s_4cabae41bceed9::t_9c10e495ec7099 6,18-22,24
+resources/scripts/extensions/loader.spec.ts
+  s_4cabae41bceed9::t_b43e75701c71e9 155-183
+CHANGELOG.md
+  s_4cabae41bceed9::t_9c10e495ec7099 40-41
+packages/sdk/types/extensions/registry.d.ts
+  s_4cabae41bceed9::t_9c10e495ec7099 174-175
+packages/sdk/README.md
+  s_4cabae41bceed9::t_9c10e495ec7099 908-909
+resources/scripts/components/admin/themes/ThemesContainer.spec.tsx
+  s_4cabae41bceed9::t_9173e04cebae69 222
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_9c10e495ec7099 893-909
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_b29eae86a95ef1 389-390
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a9eccc5477585bf7b757721c213c028a89c59a1c",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
