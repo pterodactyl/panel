@@ -92,10 +92,8 @@ export type ViewImporter<N> = () => Promise<{ default: ViewComponent<N> }>;
 /** An extension layer: a component, or an importer loaded while the view shows its placeholder. */
 export type ViewOverride<N> = ViewComponent<N> | { readonly load: ViewImporter<N> };
 
-/** Views a theme or extension provides, keyed by name; unknown names are typed loosely. */
-export type ThemeViews = { readonly [N in ViewName]?: ViewComponent<N> } & {
-    readonly [name: string]: JSXElementConstructor<never> | undefined;
-};
+/** Views a theme or extension provides, keyed by name. */
+export type ThemeViews = { readonly [N in ViewName]?: ViewComponent<N> };
 
 interface LayerSet {
     base?: ViewLayer;

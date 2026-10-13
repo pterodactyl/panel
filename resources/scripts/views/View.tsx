@@ -272,7 +272,7 @@ type ViewElementBase = {
     readonly className?: string;
     readonly children?: ReactNode;
 };
-export type ViewElementProps<N extends string> = ViewElementBase & { readonly name: N } & ViewInput<N>;
+export type ViewElementProps<N extends ViewName> = ViewElementBase & { readonly name: N } & ViewInput<N>;
 
 function RenderView({ name, className, children, ...inputs }: ViewElementBase & LooseViewInput) {
     const definition = useViewDefinition(name);
@@ -326,4 +326,4 @@ export { RenderView as LooseView };
  * Renders a view: runs its hook once (or reads a fixture), resolves classic, the theme chain and
  * extension overrides, and renders the top layer with `{ model, Default, ...inputs, children }`.
  */
-export const View = RenderView as <N extends string>(props: ViewElementProps<N>) => ReactNode;
+export const View = RenderView as <N extends ViewName>(props: ViewElementProps<N>) => ReactNode;

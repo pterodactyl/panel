@@ -58,6 +58,10 @@ function define(name: string, options: Partial<RegistryModule.ViewDefinition> = 
     );
 }
 
+/** Test views have made-up names, which the typed registry and `View` refuse. */
+const registerLayer = (id: string, source: 'classic' | 'theme', layers: Record<string, ComponentType<never>>) =>
+    views.registerViewLayer(id, source, layers as RegistryModule.ThemeViews);
+
 /** A layer that names itself, then renders the layer below. */
 const layer = (id: string) =>
     function Layer({ model, Default }: ProbeProps) {
@@ -86,9 +90,9 @@ function commitOverrides(entries: { id: string; component: ComponentType<never> 
 describe('<View>', () => {
     it('stacks classic, the theme chain parent first, then extensions in configured order', async () => {
         define('test.order');
-        views.registerViewLayer('classic', 'classic', { 'test.order': Classic });
-        views.registerViewLayer('parent', 'theme', { 'test.order': layer('parent') });
-        views.registerViewLayer('child', 'theme', { 'test.order': layer('child') });
+        registerLayer('classic', 'classic', { 'test.order': Classic });
+        registerLayer('parent', 'theme', { 'test.order': layer('parent') });
+        registerLayer('child', 'theme', { 'test.order': layer('child') });
         commitOverrides(
             [
                 { id: 'first', component: layer('first') },
@@ -97,7 +101,7 @@ describe('<View>', () => {
             'test.order'
         );
 
-        const { container } = render(<engine.View name='test.order' />);
+        const { container } = render(<engine.LooseView name='test.order' />);
 
         await screen.findByText('classic:live');
         expect([...container.querySelectorAll('span, p')].map((node) => node.textContent)).toEqual([
@@ -112,14 +116,14 @@ describe('<View>', () => {
 
     it('lets Default transform the model and merge classes for the layer below', () => {
         define('test.default');
-        views.registerViewLayer('classic', 'classic', { 'test.default': Classic });
-        views.registerViewLayer('theme', 'theme', {
+        registerLayer('classic', 'classic', { 'test.default': Classic });
+        registerLayer('theme', 'theme', {
             'test.default': ({ model, Default }: ProbeProps) => (
                 <Default model={{ ...model, name: model.name.toUpperCase() }} className='mt-2' />
             ),
         });
 
-        render(<engine.View name='test.default' className='mt-4 text-sm' />);
+        render(<engine.LooseView name='test.default' className='mt-4 text-sm' />);
 
         expect(screen.getByText('classic:LIVE')).toHaveClass('mt-2', 'text-sm');
         expect(screen.getByText('classic:LIVE')).not.toHaveClass('mt-4');
@@ -127,14 +131,14 @@ describe('<View>', () => {
 
     it('falls back to the layer below a theme layer that throws, and reports it', () => {
         define('test.fallback');
-        views.registerViewLayer('classic', 'classic', { 'test.fallback': Classic });
-        views.registerViewLayer('aurora', 'theme', {
+        registerLayer('classic', 'classic', { 'test.fallback': Classic });
+        registerLayer('aurora', 'theme', {
             'test.fallback': () => {
                 throw new Error('theme exploded');
             },
         });
 
-        render(<engine.View name='test.fallback' />);
+        render(<engine.LooseView name='test.fallback' />);
 
         expect(screen.getByText('classic:live')).toBeVisible();
         expect(extensions.getExtensionStates()).toEqual([
@@ -163,15 +167,15 @@ describe('<View>', () => {
             return <p>classic</p>;
         }
 
-        views.registerViewLayer('classic', 'classic', { 'test.chain': FailingClassic });
-        views.registerViewLayer('aurora', 'theme', {
+        registerLayer('classic', 'classic', { 'test.chain': FailingClassic });
+        registerLayer('aurora', 'theme', {
             'test.chain': () => {
                 theme += 1;
                 throw new Error('theme exploded');
             },
         });
 
-        render(<engine.View name='test.chain' />);
+        render(<engine.LooseView name='test.chain' />);
 
         expect(screen.getByRole('alert')).toHaveTextContent('An error was encountered');
         expect(classic).toBe(1);
@@ -199,10 +203,10 @@ describe('<View>', () => {
             return <p>classic</p>;
         }
 
-        views.registerViewLayer('classic', 'classic', { 'test.default-chain': FailingClassic });
-        views.registerViewLayer('aurora', 'theme', { 'test.default-chain': layer('aurora') });
+        registerLayer('classic', 'classic', { 'test.default-chain': FailingClassic });
+        registerLayer('aurora', 'theme', { 'test.default-chain': layer('aurora') });
 
-        render(<engine.View name='test.default-chain' />);
+        render(<engine.LooseView name='test.default-chain' />);
 
         expect(screen.getByRole('alert')).toHaveTextContent('An error was encountered');
         expect(classic).toBe(2);
@@ -210,14 +214,14 @@ describe('<View>', () => {
 
     it('reports a failed layer once, naming the view and the layer', () => {
         define('test.report');
-        views.registerViewLayer('classic', 'classic', { 'test.report': Classic });
-        views.registerViewLayer('aurora', 'theme', {
+        registerLayer('classic', 'classic', { 'test.report': Classic });
+        registerLayer('aurora', 'theme', {
             'test.report': () => {
                 throw new Error('theme exploded');
             },
         });
 
-        render(<engine.View name='test.report' />);
+        render(<engine.LooseView name='test.report' />);
 
         expect(extensions.getExtensionErrors()).toEqual([
             { extensionId: 'aurora', context: 'view "test.report"', message: 'theme exploded' },
@@ -234,15 +238,15 @@ describe('<View>', () => {
             return <p>{`lazy:${model.name}`}</p>;
         }
 
-        views.registerViewLayer('classic', 'classic', {
+        registerLayer('classic', 'classic', {
             'test.lazy': lazy.lazyView(async () => ({ default: Card })),
         });
-        views.registerViewLayer('theme', 'theme', { 'test.lazy': layer('theme') });
+        registerLayer('theme', 'theme', { 'test.lazy': layer('theme') });
 
         await act(async () => {
             render(
                 <Suspense fallback={<span>suspended</span>}>
-                    <engine.View name='test.lazy' />
+                    <engine.LooseView name='test.lazy' />
                 </Suspense>
             );
         });
@@ -252,24 +256,26 @@ describe('<View>', () => {
     });
 
     it('throws for a view no package defines', () => {
-        expect(() => render(<engine.View name='billing.balance' />)).toThrow('View "billing.balance" is not defined.');
+        expect(() => render(<engine.LooseView name='billing.balance' />)).toThrow(
+            'View "billing.balance" is not defined.'
+        );
     });
 
     it('reads fixtures instead of running the hook below a fixture provider', () => {
         define('test.fixture');
-        views.registerViewLayer('classic', 'classic', { 'test.fixture': Classic });
+        registerLayer('classic', 'classic', { 'test.fixture': Classic });
         use.mockClear();
 
         const { rerender } = render(
             <engine.ViewFixtureProvider>
-                <engine.View name='test.fixture' />
+                <engine.LooseView name='test.fixture' />
             </engine.ViewFixtureProvider>
         );
 
         expect(screen.getByText('classic:first fixture')).toBeVisible();
         rerender(
             <engine.ViewFixtureProvider fixtures={{ 'test.fixture': 'second' } as never}>
-                <engine.View name='test.fixture' />
+                <engine.LooseView name='test.fixture' />
             </engine.ViewFixtureProvider>
         );
         expect(screen.getByText('classic:second fixture')).toBeVisible();
@@ -277,7 +283,7 @@ describe('<View>', () => {
         expect(() =>
             render(
                 <engine.ViewFixtureProvider fixtures={{ 'test.fixture': 'missing' } as never}>
-                    <engine.View name='test.fixture' />
+                    <engine.LooseView name='test.fixture' />
                 </engine.ViewFixtureProvider>
             )
         ).toThrow('has no fixture "missing"');
@@ -286,10 +292,10 @@ describe('<View>', () => {
     it('shows the placeholder while a declared extension loads, then keeps classic after the timeout', async () => {
         vi.useFakeTimers();
         define('test.slow');
-        views.registerViewLayer('classic', 'classic', { 'test.slow': Classic });
+        registerLayer('classic', 'classic', { 'test.slow': Classic });
         extensions.prepareExtensions([{ id: 'slow', entry: '/slow.js', views: ['test.slow'] }]);
 
-        render(<engine.View name='test.slow' />);
+        render(<engine.LooseView name='test.slow' />);
 
         expect(screen.getByText('placeholder')).toBeVisible();
         await act(async () => {
@@ -308,14 +314,14 @@ describe('<View>', () => {
 
     it('renders an extension layer that loads in time, importing a lazy override once', async () => {
         define('test.ext');
-        views.registerViewLayer('classic', 'classic', { 'test.ext': Classic });
+        registerLayer('classic', 'classic', { 'test.ext': Classic });
         extensions.prepareExtensions([{ id: 'ext', entry: '/ext.js', views: ['test.ext'] }]);
         const load = vi.fn(async () => ({ default: layer('ext') }));
 
         render(
             <session.ViewSessionProvider>
-                <engine.View name='test.ext' />
-                <engine.View name='test.ext' />
+                <engine.LooseView name='test.ext' />
+                <engine.LooseView name='test.ext' />
             </session.ViewSessionProvider>
         );
         expect(screen.getAllByText('placeholder')).toHaveLength(2);
@@ -332,7 +338,7 @@ describe('<View>', () => {
 
     it('shows the placeholder while an extension layer suspends, then renders it', async () => {
         define('test.suspending');
-        views.registerViewLayer('classic', 'classic', { 'test.suspending': Classic });
+        registerLayer('classic', 'classic', { 'test.suspending': Classic });
 
         let arrive = () => {};
 
@@ -348,7 +354,7 @@ describe('<View>', () => {
 
         commitOverrides([{ id: 'ext', component: Suspending }], 'test.suspending');
         await act(async () => {
-            render(<engine.View name='test.suspending' />);
+            render(<engine.LooseView name='test.suspending' />);
         });
 
         expect(screen.getByText('placeholder')).toBeVisible();
@@ -367,11 +373,11 @@ describe('<View>', () => {
         define('test.inputs', {
             fixtureInput: (model) => ({ server: `${Reflect.get(Object(model), 'name')} host` }),
         });
-        views.registerViewLayer('classic', 'classic', { 'test.inputs': Card });
+        registerLayer('classic', 'classic', { 'test.inputs': Card });
 
         render(
             <engine.ViewFixtureProvider>
-                <engine.View name='test.inputs' />
+                <engine.LooseView name='test.inputs' />
             </engine.ViewFixtureProvider>
         );
 
@@ -417,7 +423,7 @@ describe('views implemented by their area module', () => {
 
     const suspended = (name: 'server.conflict' | 'page.server.settings') => (
         <Suspense fallback={<span>loading area</span>}>
-            <engine.View name={name} />
+            <engine.LooseView name={name} />
         </Suspense>
     );
 
@@ -435,7 +441,7 @@ describe('views implemented by their area module', () => {
         const before = renders.mock.calls.length;
 
         rerender(suspended('server.conflict'));
-        render(<engine.View name='page.server.settings' />);
+        render(<engine.LooseView name='page.server.settings' />);
 
         expect(screen.getByText('conflict:installing')).toBeVisible();
         expect(screen.getByText('settings')).toBeVisible();
@@ -450,7 +456,7 @@ describe('views implemented by their area module', () => {
             default: ({ model }: { model: { kind: string | null } }) => <p>{model.kind}</p>,
         }));
 
-        views.registerViewLayer('classic', 'classic', { 'server.conflict': lazy.lazyView(importClassic) });
+        registerLayer('classic', 'classic', { 'server.conflict': lazy.lazyView(importClassic) });
 
         const preloading = engine.preloadView('server.conflict');
 
@@ -459,7 +465,7 @@ describe('views implemented by their area module', () => {
 
         arrive();
         await preloading;
-        render(<engine.View name='server.conflict' />);
+        render(<engine.LooseView name='server.conflict' />);
 
         expect(screen.getByText('installing')).toBeVisible();
     });
@@ -472,7 +478,7 @@ describe('views implemented by their area module', () => {
             render(
                 <engine.ViewFixtureProvider>
                     <Suspense fallback={<span>loading area</span>}>
-                        <engine.View name='server.conflict' />
+                        <engine.LooseView name='server.conflict' />
                     </Suspense>
                 </engine.ViewFixtureProvider>
             );

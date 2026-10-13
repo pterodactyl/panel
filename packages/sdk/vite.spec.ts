@@ -115,6 +115,27 @@ it('ships its own stylesheet and class candidates for the themes that extend it'
     }
 }, 60_000);
 
+it("leaves the package's dependencies out of its classes inside a directory the panel's repository ignores", async () => {
+    const repository = mkdtempSync(resolve(tmpdir(), 'theme-panel-'));
+    try {
+        spawnSync('git', ['init', '-q', repository]);
+        writeFileSync(resolve(repository, '.gitignore'), '/extensions/\n');
+        const directory = resolve(repository, 'extensions/sunrise');
+        mkdirSync(directory, { recursive: true });
+        const theme = themePackage(directory);
+        theme.write('extension.json', JSON.stringify({ id: 'sunrise', type: 'theme' }));
+        theme.write('.gitignore', '/node_modules/\n/dist/\n');
+        theme.write('node_modules/some-dependency/index.js', 'export const docs = "mt-[13.37px]";');
+        theme.write('src/theme.css', "@import '@pterodactyl/sdk/theme-entry.css';");
+        await theme.build({ stylesheet: resolve(directory, 'src/theme.css') });
+
+        expect(theme.dist('theme.css')).not.toContain('13.37px');
+        expect(theme.dist('classes.txt')).not.toContain('13.37px');
+    } finally {
+        rmSync(repository, { recursive: true, force: true });
+    }
+}, 60_000);
+
 it("builds a child theme over its parent's stylesheet and classes, which it records", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), 'theme-chain-'));
     try {

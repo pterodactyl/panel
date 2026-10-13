@@ -84,11 +84,9 @@ export type ViewImporter<N> = () => Promise<{
 export type ViewOverride<N> = ViewComponent<N> | {
     readonly load: ViewImporter<N>;
 };
-/** Views a theme or extension provides, keyed by name; unknown names are typed loosely. */
+/** Views a theme or extension provides, keyed by name. */
 export type ThemeViews = {
     readonly [N in ViewName]?: ViewComponent<N>;
-} & {
-    readonly [name: string]: JSXElementConstructor<never> | undefined;
 };
 export declare function subscribeViews(listener: () => void): () => void;
 export declare function viewKind(name: string): ViewKind;

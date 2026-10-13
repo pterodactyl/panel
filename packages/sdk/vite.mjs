@@ -194,20 +194,34 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
                     : [];
             },
             transform(code, id) {
-                if (id.split('?')[0] !== sheet || !parents.length) return null;
+                if (id.split('?')[0] !== sheet) return null;
 
                 const postcss = dependency(root, 'postcss');
                 const css = postcss.parse(code, { from: sheet });
-                const imports = parents.map(
-                    (parent) =>
-                        `@import ${quote(cssPath(dirname(sheet), parent.stylesheet))};\n` +
-                        `@source ${quote(cssPath(dirname(sheet), parent.classes))};`
-                );
-                const inherited = postcss.parse(`/* The themes this one extends, oldest first. */\n${imports.join('\n')}`).nodes;
                 const sdk = css.nodes.find(
                     (node) => node.type === 'atrule' && node.name === 'import' && /^\s*(?:url\(\s*)?['"]?@pterodactyl\/sdk\//.test(node.params)
                 );
-                sdk ? sdk.after(inherited) : css.prepend(inherited);
+                if (!sdk && !parents.length) return null;
+
+                const imports = parents.map((parent) => `@import ${quote(cssPath(dirname(sheet), parent.stylesheet))};`);
+                // Tailwind skips what the package's .gitignore lists, except inside a directory the panel's git
+                // repository ignores, such as its extensions directory, so the build skips the dependencies, the
+                // SDK (linked from the panel, it is scanned at its own path) and its output itself. A later @source
+                // wins over an earlier `not`: the panel's classes and the parents' come after.
+                const sources = [
+                    ...[resolve(root, 'node_modules'), sdkDirectory, resolve(config.root, config.build.outDir)].map(
+                        (path) => `@source not ${quote(cssPath(dirname(sheet), path))};`
+                    ),
+                    ...[...(sdk ? [resolve(sdkDirectory, 'core-classes.txt')] : []), ...parents.map((parent) => parent.classes)].map(
+                        (path) => `@source ${quote(cssPath(dirname(sheet), path))};`
+                    ),
+                ];
+                if (imports.length) {
+                    const inherited = postcss.parse(['/* The themes this one extends, oldest first. */', ...imports].join('\n')).nodes;
+                    sdk ? sdk.after(inherited) : css.prepend(inherited);
+                }
+                // At the end, after every @import of the stylesheet, which no other rule may precede.
+                css.append(postcss.parse(sources.join('\n')).nodes);
 
                 return { code: css.toString(), map: null };
             },
@@ -251,6 +265,7 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
                     sources: [
                         { base: root, pattern: '**/*', negated: false },
                         ...sources,
+                        { base: resolve(root, 'node_modules'), pattern: '**/*', negated: true },
                         { base: resolve(config.root, config.build.outDir), pattern: '**/*', negated: true },
                     ],
                 });
