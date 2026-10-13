@@ -19,6 +19,8 @@ export interface StatProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'c
     /** The colour of the value's state, such as an alarm's (`danger` above 90% of a limit). */
     tone?: UiTone;
     variant?: StatVariant;
+    /** The value says why there is no reading, such as "Offline". */
+    unavailable?: boolean;
 }
 
 /** A labelled value with an optional icon, limit and meter, such as a server's memory use. */
@@ -30,10 +32,11 @@ function CoreStat({
     meter,
     tone = 'neutral',
     variant = 'tile',
+    unavailable = false,
     className,
     ...props
 }: StatProps) {
-    const ui = useSkin('Stat', { variant, tone });
+    const ui = useSkin('Stat', { variant, tone, unavailable });
 
     return (
         <div {...ui('root', className)} {...props}>

@@ -27,7 +27,7 @@ from another theme instead, scaffold with `--extends=<theme>`.
 
 | Script | |
 | --- | --- |
-| `npm run build` | `dist/client.js`, `dist/theme.css` and `dist/theme.json`. |
+| `npm run build` | Writes `dist/`: the files listed under "What the build writes" in Level 1. |
 | `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
 | `npm run typecheck` | Checks the theme against the SDK's types. |
 | `npm test` | Runs the tests. |

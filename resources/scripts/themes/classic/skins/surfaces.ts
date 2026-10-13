@@ -37,6 +37,8 @@ export const listRow = {
         },
     },
     icon: 'flex w-16 items-center justify-center rounded-full bg-popover p-3',
+    title: 'text-lg wrap-break-word',
+    description: 'text-sm text-muted-foreground wrap-break-word line-clamp-2',
     // A bar down the row's right edge.
     status: ({ status }) =>
         `absolute right-0 z-20 m-1 h-[calc(100%-0.5rem)] w-2 rounded-full opacity-50 transition-opacity duration-150 group-hover:opacity-75 ${statusFills[status ?? 'neutral']}`,

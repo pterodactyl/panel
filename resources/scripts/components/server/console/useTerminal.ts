@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type * as GhosttyWeb from 'ghostty-web';
 import type { ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
+import { toRgbColor } from '@/lib/color';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
 import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
@@ -39,22 +40,12 @@ const buildTerminalStyle = (): Pick<ITerminalOptions, 'fontFamily' | 'fontSize' 
     probe.style.fontFamily = 'var(--font-mono)';
     probe.style.fontSize = 'var(--text-xs)';
     document.body.appendChild(probe);
-    // Ghostty only parses hex/rgb(a); a canvas fillStyle converts oklch and other colours.
-    const ctx = document.createElement('canvas').getContext('2d');
     const theme: ITheme = {};
 
     for (const slot of getObjectKeys(TERMINAL_COLOR_VARS)) {
-        const cssVar = TERMINAL_COLOR_VARS[slot];
-
-        probe.style.color = `var(${cssVar})`;
-        const resolved = getComputedStyle(probe).color;
-
-        if (ctx) {
-            ctx.fillStyle = resolved;
-            theme[slot] = ctx.fillStyle;
-        } else {
-            theme[slot] = resolved;
-        }
+        probe.style.color = `var(${TERMINAL_COLOR_VARS[slot]})`;
+        // Ghostty parses only hex and rgb(a), so a token in oklch() or any other syntax is converted.
+        theme[slot] = toRgbColor(getComputedStyle(probe).color);
     }
 
     const computedStyle = getComputedStyle(probe);

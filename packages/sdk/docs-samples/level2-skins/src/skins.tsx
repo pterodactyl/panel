@@ -55,16 +55,18 @@ const button = skin('Button', {
 // #endregion function
 
 // #region extend
-/** Builds on the layers below: `below.root(state, extra)` is their classes for the part with `extra` merged in. */
-const card = skin('Card', (below) => ({
-    root: (state) => below.root(state, 'rounded-lg ring-1 ring-border/60'),
-}));
+const card = skin('Card', {
+    // Replaces the title recipe below.
+    title: 'text-base font-semibold text-foreground',
+    // Builds on the root recipe below: its classes, with `rounded-lg` in place of their `rounded-sm`.
+    root: (state, below) => below('rounded-lg ring-1 ring-border/60'),
+});
 
 /** Stat values in tabular figures, and labels in the body face, on top of classic's stats. */
-const stat = skin('Stat', (below) => ({
-    value: (state) => below.value(state, 'tabular-nums'),
-    label: (state) => below.label(state, 'font-sans uppercase tracking-wide'),
-}));
+const stat = skin('Stat', {
+    value: (state, below) => below('tabular-nums'),
+    label: (state, below) => below('font-sans uppercase tracking-wide'),
+});
 // #endregion extend
 
 // #region component

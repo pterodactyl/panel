@@ -24,6 +24,9 @@ test('adds a ring to the card the layers below draw, replacing their corners', (
     expect(card?.className).toContain('bg-card');
     expect(card?.classList.contains('rounded-lg')).toBe(true);
     expect(card?.classList.contains('rounded-sm')).toBe(false);
+    expect(rendered.container.querySelector('[data-ui="card"][data-part="title"]')?.className).toBe(
+        'text-base font-semibold text-foreground'
+    );
 });
 
 test('sets stat values in tabular figures', () => {

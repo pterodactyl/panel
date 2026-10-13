@@ -48,36 +48,29 @@ export type SkinCompoundVariant<S> = { readonly [K in StateKey<S>]?: S[K] | read
     readonly class?: string;
     readonly className?: string;
 };
-/** A part's classes: a string, a cva recipe, or a function of the primitive's state. */
-export type SkinRecipe<S> = string | SkinRecipeConfig<S> | ((state: S) => string);
+/**
+ * The classes the layers below give a part in the current state. `below(extra)` merges `extra` in: a
+ * class of it replaces the one below it conflicts with, as `cn` does.
+ */
+export type SkinBelow = (extra?: SkinClassName) => string;
+/**
+ * A part's classes. A string or a cva recipe replaces the recipe below; a function of the state
+ * replaces it too, unless it builds on `below`.
+ */
+export type SkinRecipe<S> = string | SkinRecipeConfig<S> | ((state: S, below: SkinBelow) => string);
 
-/** Recipes by part. A part a skin names replaces the recipe below it wholesale; the others keep theirs. */
+/** Recipes by part. The parts a skin leaves out keep the recipes below. */
 export type Skin<N extends PrimitiveName> = { readonly [P in SkinPart<N>]?: SkinRecipe<PrimitiveState<N>> };
 /** A skin with a recipe for every part, as classic's are. */
 export type CompleteSkin<N extends PrimitiveName> = { readonly [P in SkinPart<N>]: SkinRecipe<PrimitiveState<N>> };
 export type CompleteSkins = { readonly [N in PrimitiveName]: CompleteSkin<N> };
-/**
- * Each part's classes as resolved from the layers below, which an extending skin builds on. `extra`
- * merges in: a class of it replaces the class below it conflicts with, as `cn` does.
- */
-export type ResolvedSkin<N extends PrimitiveName> = {
-    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>, extra?: SkinClassName) => string;
-};
-/** `skin(name, (parent) => ({ ... }))`: a skin computed from the layers below it. */
-export interface SkinExtension<N extends PrimitiveName> {
-    (parent: ResolvedSkin<N>): Skin<N>;
-    readonly skinExtension: N;
-}
-export type SkinDefinition<N extends PrimitiveName> = Skin<N> | SkinExtension<N>;
 
 /**
  * A theme's `ui`: a skin per primitive. A presentational primitive can instead be replaced by a
  * component, which receives the props the primitive does.
  */
 export type ThemeSkins = {
-    readonly [N in PrimitiveName]?: N extends ReplaceableName
-        ? SkinDefinition<N> | ComponentType<PrimitiveProps<N>>
-        : SkinDefinition<N>;
+    readonly [N in PrimitiveName]?: N extends ReplaceableName ? Skin<N> | ComponentType<PrimitiveProps<N>> : Skin<N>;
 };
 
 /** What a part spreads onto its element. */
@@ -98,19 +91,9 @@ export interface SkinBinding<N extends PrimitiveName> {
     classes(part: SkinPart<N>, className?: SkinClassName, state?: Partial<PrimitiveState<N>>): string;
 }
 
-/** Types a skin, or with a function `(parent) => skin` extends the skin of the layers below. */
-export function skin<N extends PrimitiveName>(
-    name: N,
-    definition: (parent: ResolvedSkin<N>) => Skin<N>
-): SkinExtension<N>;
-export function skin<N extends PrimitiveName>(name: N, definition: Skin<N>): Skin<N>;
-export function skin<N extends PrimitiveName>(
-    name: N,
-    definition: Skin<N> | ((parent: ResolvedSkin<N>) => Skin<N>)
-): SkinDefinition<N> {
-    return definition instanceof Function
-        ? Object.assign((parent: ResolvedSkin<N>) => definition(parent), { skinExtension: name })
-        : definition;
+/** Types a skin by the parts and state of the primitive `name`. */
+export function skin<N extends PrimitiveName>(_name: N, definition: Skin<N>): Skin<N> {
+    return definition;
 }
 
 interface SkinLayer {
@@ -121,15 +104,12 @@ interface SkinLayer {
 // Resolution reads every primitive's recipes alike: state as a map, parts by name.
 type Resolver = (state: SkinStateMap) => string;
 type ErasedSkin = { readonly [part: string]: SkinRecipe<SkinStateMap> | undefined };
-type ErasedParent = { readonly [part: string]: (state: SkinStateMap, extra?: SkinClassName) => string };
-type ErasedExtension = ((parent: ErasedParent) => ErasedSkin) & { readonly skinExtension: string };
 type LayerEntry =
     | { readonly kind: 'skin'; readonly skin: ErasedSkin }
-    | { readonly kind: 'extension'; readonly extend: ErasedExtension }
     | { readonly kind: 'component'; readonly component: ComponentType<never> };
 
 interface Resolution {
-    readonly skin: ErasedParent;
+    readonly skin: { readonly [part: string]: Resolver };
     readonly component: ComponentType<never> | undefined;
 }
 
@@ -162,14 +142,12 @@ function subscribe(listener: () => void): () => void {
 const isExoticComponent = (value: ErasedSkin | ComponentType<never>): value is ComponentType<never> =>
     '$$typeof' in value;
 
-/** A layer's entry for a primitive: a skin, a branded extending function, or a component (memo, forwardRef, lazy). */
+/** A layer's entry for a primitive: a skin, or a component (a function, memo, forwardRef or lazy). */
 function layerEntry(layer: SkinLayer, name: PrimitiveName): LayerEntry | undefined {
-    const entry = layer.skins[name] as ErasedSkin | ErasedExtension | ComponentType<never> | undefined;
+    const entry = layer.skins[name] as ErasedSkin | ComponentType<never> | undefined;
 
     if (entry instanceof Function) {
-        return 'skinExtension' in entry
-            ? { kind: 'extension', extend: entry }
-            : { kind: 'component', component: entry };
+        return { kind: 'component', component: entry };
     }
 
     if (!isObject(entry)) {
@@ -211,7 +189,8 @@ function recipeClasses(recipe: SkinRecipeConfig<SkinStateMap>, state: SkinStateM
     return clsx(recipe.base, variants, compounds);
 }
 
-function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>): Resolver {
+/** A recipe as a resolver; a function recipe reads `below`, the resolver of the layers under it. */
+function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>, below: Resolver): Resolver {
     if (isString(recipe)) {
         return () => recipe;
     }
@@ -219,7 +198,7 @@ function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>):
     if (recipe instanceof Function) {
         return (state) => {
             try {
-                const classes = recipe(state);
+                const classes = recipe(state, (extra) => cn(below(state), extra));
 
                 return isString(classes) ? classes : '';
             } catch (error) {
@@ -237,14 +216,6 @@ function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>):
 function resolve(name: PrimitiveName): Resolution {
     const parts: readonly string[] = UI_PRIMITIVES[name].parts;
     const resolvers = new Map<string, Resolver>();
-    const complete = (): ErasedParent =>
-        Object.fromEntries(
-            parts.map((part) => {
-                const resolver = resolvers.get(part) ?? noClasses;
-
-                return [part, (state: SkinStateMap, extra?: SkinClassName) => cn(resolver(state), extra)];
-            })
-        );
     let component: ComponentType<never> | undefined;
 
     for (const layer of layers) {
@@ -256,24 +227,16 @@ function resolve(name: PrimitiveName): Resolution {
             continue;
         }
 
-        let definition: ErasedSkin | undefined;
-
-        try {
-            definition = entry?.kind === 'extension' ? entry.extend(complete()) : entry?.skin;
-        } catch (error) {
-            console.error(`[skins] The "${layer.id}" skin of ${name} failed to extend the layers below.`, error);
-        }
-
-        for (const [part, recipe] of Object.entries(definition ?? {})) {
+        for (const [part, recipe] of Object.entries(entry?.skin ?? {})) {
             if (!parts.includes(part)) {
                 warn(`${name} has no "${part}" part; the "${layer.id}" recipe for it is ignored.`);
             } else if (isString(recipe) || recipe instanceof Function || isObject(recipe)) {
-                resolvers.set(part, compile(layer.id, name, recipe));
+                resolvers.set(part, compile(layer.id, name, recipe, resolvers.get(part) ?? noClasses));
             }
         }
     }
 
-    return { skin: complete(), component };
+    return { skin: Object.fromEntries(parts.map((part) => [part, resolvers.get(part) ?? noClasses])), component };
 }
 
 function resolution(name: PrimitiveName): Resolution {

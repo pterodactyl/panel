@@ -27,9 +27,11 @@ export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof 
     description?: React.ReactNode;
     /** Makes the item a link to a panel page; following it closes the menu. */
     destination?: PanelDestination;
+    /** Makes the item a choice that is on or off, such as the scheme in use: a `menuitemcheckbox`. */
+    checked?: boolean;
 }
 /** An item for either DropdownMenu or ContextDropdownMenu. */
-export declare function DropdownMenuItem({ icon, danger, description, destination, className, children, ...props }: DropdownMenuItemProps): React.JSX.Element;
+export declare function DropdownMenuItem({ icon, danger, description, destination, checked, className, children, ...props }: DropdownMenuItemProps): React.JSX.Element;
 declare const DropdownMenuWithItems: typeof DropdownMenu & {
     Item: typeof DropdownMenuItem;
 };

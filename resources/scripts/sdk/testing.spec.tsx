@@ -202,7 +202,7 @@ it('stacks a chain of themes, so a child builds on its parent rather than classi
     });
     const child = defineTheme({
         views: { 'layout.app': ChildLayout },
-        ui: { Button: skin('Button', (below) => ({ root: (state) => `${below.root(state)} child-shadow` })) },
+        ui: { Button: skin('Button', { root: (state, below) => below('child-shadow') }) },
     });
     const themes = [parent, child];
 

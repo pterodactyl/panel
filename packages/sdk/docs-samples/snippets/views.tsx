@@ -1,4 +1,19 @@
-import { defineTheme, View, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk/theme';
+import { PanelLink, usePanelNavigate, useShortcut } from '@pterodactyl/sdk';
+import { defineTheme, View, type AppLayoutLink, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk/theme';
+
+// #region shortcut
+/** A link of `layout.app` that a key opens, such as D for the dashboard. */
+function ShortcutLink({ link, keys }: { link: AppLayoutLink; keys: string }) {
+    const navigate = usePanelNavigate();
+    const shortcut = useShortcut(keys, () => void navigate(link.destination));
+
+    return (
+        <PanelLink destination={link.destination} aria-keyshortcuts={shortcut.aria}>
+            {link.label} <kbd>{shortcut.label}</kbd>
+        </PanelLink>
+    );
+}
+// #endregion shortcut
 
 /** Keeps the layer below and frames it. */
 function FramedCard({ Default }: ViewProps<'dashboard.serverCard'>) {
@@ -48,4 +63,4 @@ export default defineTheme({
     },
 });
 
-export { CardWithUptime, LoudCard, SidebarFooter };
+export { CardWithUptime, LoudCard, ShortcutLink, SidebarFooter };

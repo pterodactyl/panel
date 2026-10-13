@@ -61,10 +61,10 @@ const glass = {
 
 // #region extend
 /** Builds on the recipes below this layer by adding classes they do not set. */
-const dialog = skin('Dialog', (below) => ({
-    backdrop: (state) => `${below.backdrop(state)} backdrop-blur-sm`,
-    description: (state) => `${below.description(state)} text-balance`,
-}));
+const dialog = skin('Dialog', {
+    backdrop: (state, below) => below('backdrop-blur-sm'),
+    description: (state, below) => below('text-balance'),
+});
 // #endregion extend
 
 export const auroraSkins: ThemeSkins = { Button: button, Dialog: dialog, ...glass };

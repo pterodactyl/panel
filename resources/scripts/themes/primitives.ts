@@ -79,9 +79,10 @@ export interface UiPrimitives {
         state: { described: boolean; type?: DialogIconProps['type'] };
     };
     DropdownMenu: { parts: 'trigger' | 'positioner' | 'root'; state: { context: boolean } };
+    /** `checked` is set on an item given `checked`, such as the scheme in use. */
     DropdownMenuItem: {
         parts: 'root' | 'icon' | 'glyph' | 'text' | 'label' | 'description';
-        state: { danger: boolean; described: boolean };
+        state: { danger: boolean; described: boolean; checked: boolean };
     };
     Empty: {
         parts: 'root' | 'header' | 'media' | 'title' | 'description' | 'content';
@@ -92,9 +93,12 @@ export interface UiPrimitives {
     FileInput: { parts: 'root'; state: NoState };
     Input: { parts: 'root'; state: ControlState };
     Label: { parts: 'root'; state: { light: boolean } };
-    /** `icon` is `ListRow.Icon`, placed by the row's content; `status` is drawn when the row has a `status`. */
+    /**
+     * `icon`, `title` and `description` are `ListRow.Icon`, `ListRow.Title` and `ListRow.Description`,
+     * placed by the row's content; `status` is drawn when the row has a `status`.
+     */
     ListRow: {
-        parts: 'root' | 'icon' | 'status';
+        parts: 'root' | 'icon' | 'title' | 'description' | 'status';
         state: { interactive: boolean; status?: UiTone };
         props: ListRowProps;
     };
@@ -144,10 +148,13 @@ export interface UiPrimitives {
         props: SpinnerProps;
     };
     SpinnerOverlay: { parts: 'root' | 'text'; state: { fixed: boolean } };
-    /** `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. */
+    /**
+     * `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`.
+     * `unavailable` means the value says why there is no reading, such as "Offline".
+     */
     Stat: {
         parts: 'root' | 'indicator' | 'icon' | 'glyph' | 'body' | 'label' | 'value' | 'limit';
-        state: { variant: StatVariant; tone: UiTone };
+        state: { variant: StatVariant; tone: UiTone; unavailable: boolean };
         props: StatProps;
     };
     /** `label` is added to the Label it renders. */
@@ -218,7 +225,7 @@ export const UI_PRIMITIVES = {
     FileInput: { parts: ['root'], replaceable: false },
     Input: { parts: ['root'], replaceable: false },
     Label: { parts: ['root'], replaceable: false },
-    ListRow: { parts: ['root', 'icon', 'status'], replaceable: true },
+    ListRow: { parts: ['root', 'icon', 'title', 'description', 'status'], replaceable: true },
     NewButton: { parts: ['root', 'content', 'icon'], replaceable: false },
     NumberInput: { parts: ['root', 'input'], replaceable: false },
     PageFooter: { parts: ['root', 'text', 'link'], replaceable: true },

@@ -1,5 +1,5 @@
 import { Layers, LogOut, Moon, Sun, UserCog } from 'lucide-react';
-import { Avatar, DropdownMenu, Icon, PanelLink, SpinnerOverlay, Tooltip, cn } from '@/sdk';
+import { Avatar, DropdownMenu, Icon, PanelLink, SpinnerOverlay, Tooltip } from '@/sdk';
 import { Main, Slot, View, type AppLayoutLink, type AppLayoutModel, type ViewProps } from '@/sdk/theme';
 
 const navItemClass = [
@@ -43,18 +43,11 @@ function SchemeMenu({
             }
         >
             {model.schemes.map((scheme) => (
-                <DropdownMenu.Item
-                    key={scheme}
-                    className={cn(scheme === model.preference && 'bg-muted')}
-                    onClick={() => setScheme(scheme)}
-                >
+                <DropdownMenu.Item key={scheme} checked={scheme === model.preference} onClick={() => setScheme(scheme)}>
                     {schemeLabels[scheme]}
                 </DropdownMenu.Item>
             ))}
-            <DropdownMenu.Item
-                className={cn(model.preference === 'system' && 'bg-muted')}
-                onClick={() => setScheme('system')}
-            >
+            <DropdownMenu.Item checked={model.preference === 'system'} onClick={() => setScheme('system')}>
                 System
             </DropdownMenu.Item>
         </DropdownMenu>

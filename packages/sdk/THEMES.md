@@ -80,11 +80,21 @@ without a reload, and any other change reloads them. To try a theme without swit
 skip `p:theme:activate` and choose **Preview for me** on **Admin > Themes**.
 
 At this level you edit only `src/theme.css`. It starts with `@import '@pterodactyl/sdk/theme-entry.css';`,
-which is the panel's whole stylesheet: Tailwind, the tokens, and every class the panel uses. The build
-replaces the panel's stylesheet, and your rules come after the panel's, so they win. Write plain
-Tailwind with no prefix.
+the panel's whole stylesheet: Tailwind, the tokens, and every class the panel uses. Your rules come after
+it, so they win. Write plain Tailwind with no prefix.
 
-### Tokens
+### What the build writes
+
+`npm run build` writes these files to `dist/`:
+
+| File | What it is |
+| --- | --- |
+| `theme.css` | The stylesheet the panel links in place of its own. |
+| `theme.json` | What the build was made from: the panel's classes and SDK, the views the theme overrides, and its parents' builds. Doctor and the panel check it. |
+| `theme-source.css` and `classes.txt` | The theme's own CSS and the classes its files use, which the build of a [child theme](#building-on-another-theme) brings in. |
+| `client.js` | From level 2 on, the theme's JavaScript. |
+
+### Tokens and colour roles
 
 A **token** is a CSS custom property the panel's classes read. Set one and everything that reads it
 changes: `--primary` colours primary buttons and selected items, `--radius` sets every rounded corner,
@@ -113,8 +123,7 @@ another origin, such as a CDN, are refused.
 The build compiles the whole panel stylesheet with your `@theme`, so Tailwind's own theme variables are
 tokens too. Classic lifts cards, stat tiles, chart cards and dialogs with the shadow scale (`shadow-sm`
 to `shadow-lg`); set `--shadow-sm` and the rest to change every one, as the sample below does to draw
-hairlines instead. `--shadow-navigation-active` is the underline of the active navigation item and
-`--shadow-progress` the glow under the page progress bar.
+hairlines instead.
 
 ### A complete level 1 theme
 
@@ -193,7 +202,7 @@ hairlines instead. `--shadow-navigation-active` is the underline of the active n
 ```
 <!-- /sample -->
 
-The manifest has no `ui` and `vite.config.mjs` no `entry`, so the build writes only the stylesheet;
+The manifest has no `ui` and `vite.config.mjs` no `entry`, so the build writes no `client.js`;
 `--css-only` scaffolds a theme this way. [`docs-samples/level1-css`](docs-samples/level1-css) in the panel
 repository holds the files.
 
@@ -210,8 +219,8 @@ Extensions use them too, so restyling a primitive restyles it everywhere.
 
 Each primitive has named **parts** (a `Card` has `root`, `header`, `title`, `icon`, `actions` and
 `body`) and **state** (a `Button` has `color`, `size`, `secondary` and `loading`). A **skin** gives
-parts a **recipe**: the classes the part gets in a given state. `src/theme.tsx` maps primitives to skins
-with `defineTheme({ ui: skins })`:
+parts a **recipe**: the classes the part gets in a given state. `skin(name, { part: recipe })` types a
+skin by its primitive, and `src/theme.tsx` maps primitives to skins with `defineTheme({ ui: skins })`:
 
 <!-- sample: level2-skins/src/skins.tsx#skins -->
 ```tsx
@@ -300,32 +309,34 @@ const button = skin('Button', {
 
 ### Replace or extend
 
-A recipe **replaces** the recipe below it for its part, whole. Classes are never merged, so keep the
-classes a part needs to work, such as `z-9999` on a tooltip. Parts a skin leaves out keep the recipe
-below.
+A recipe **replaces** the recipe below it for its part, whole: classes are never merged, so keep the
+ones a part needs to work, such as `z-9999` on a tooltip. Parts a skin leaves out keep the recipes below.
 
-To **extend** instead, pass `skin()` a function of the layers below. `below.root(state, extra)` merges
-`extra` into their classes: a class of it replaces the one below it conflicts with, so `rounded-lg`
-replaces `rounded-sm` rather than sitting beside it. `cn` from `@pterodactyl/sdk/theme` merges the same
-way anywhere else.
+A function recipe also receives `below`, the classes the layers below give the part in that state.
+Return `below(extra)` to **extend** them instead: a class of `extra` replaces the one below it conflicts
+with, so `rounded-lg` replaces `rounded-sm` rather than sitting beside it. One skin can do both, part by
+part:
 
 <!-- sample: level2-skins/src/skins.tsx#extend -->
 ```tsx
-/** Builds on the layers below: `below.root(state, extra)` is their classes for the part with `extra` merged in. */
-const card = skin('Card', (below) => ({
-    root: (state) => below.root(state, 'rounded-lg ring-1 ring-border/60'),
-}));
+const card = skin('Card', {
+    // Replaces the title recipe below.
+    title: 'text-base font-semibold text-foreground',
+    // Builds on the root recipe below: its classes, with `rounded-lg` in place of their `rounded-sm`.
+    root: (state, below) => below('rounded-lg ring-1 ring-border/60'),
+});
 
 /** Stat values in tabular figures, and labels in the body face, on top of classic's stats. */
-const stat = skin('Stat', (below) => ({
-    value: (state) => below.value(state, 'tabular-nums'),
-    label: (state) => below.label(state, 'font-sans uppercase tracking-wide'),
-}));
+const stat = skin('Stat', {
+    value: (state, below) => below('tabular-nums'),
+    label: (state, below) => below('font-sans uppercase tracking-wide'),
+});
 ```
 <!-- /sample -->
 
-A `className` passed where a primitive is used comes after the recipe and wins any conflict:
-`<Button className="mt-4">` replaces the recipe's own `mt-*` class.
+`cn` from `@pterodactyl/sdk/theme` merges classes the same way anywhere else. A `className` passed where a
+primitive is used is merged last, so it wins: `<Button className="mt-4">` replaces the recipe's own `mt-*`
+class.
 
 ### Plain CSS with `data-ui`
 
@@ -431,7 +442,6 @@ export default defineTheme({
 <!-- /sample -->
 
 `lazyView` loads a view's code the first time it renders (see [Level 4](#loading-with-lazyview)).
-[The shell knows the area](#the-shell-knows-the-area) explains `AreaLayout`.
 
 ### `<Main>`
 
@@ -449,16 +459,42 @@ a warning.
 The other layouts each frame an **area**, a part of the panel with navigation of its own: the account, a
 server, or the admin area. They have `model.nav.items`: the area's `NavItem`s, filtered by subuser
 permissions and egg rules, extension screens included. Links and items have an `icon`, a lucide name for
-`<NamedIcon>`.
-Each has a `destination` for `PanelLink` and `usePanelNavigate()`, so a keyboard shortcut can open it.
-`<Navigation>` calls its child with each item and `{ active, badge }`, and keeps an extension screen
-hidden until its runtime condition allows it. `NavigationLink` links to an item and carries
-`data-status="active"` while the item is active. [`AreaNav`](#the-shell-knows-the-area) below uses both.
+`<NamedIcon>`, and a `destination` for `PanelLink` and `usePanelNavigate()`. `<Navigation>` calls its
+child with each item and `{ active, badge }`, and keeps an extension screen hidden until its runtime
+condition allows it. `NavigationLink` links to an item and carries `data-status="active"` while the item
+is active. [`AreaNav`](#the-shell-knows-the-area) below uses both.
 
 `useNavigation('account' | 'server' | 'admin')` returns an area's items outside its layout. Classic's tab
 bar, which folds items that do not fit into a menu, is `SubNavigation` with `SubNavigationLayout` from
 `@pterodactyl/sdk`. In a menu of your own, `<DropdownMenu.Item destination={{ to: '/account' }}>` is a
-link that navigates and closes the menu.
+link that navigates and closes the menu, and `<DropdownMenu.Item checked={…}>` a choice such as the
+scheme in use, announced as checked and skinned through the item's `checked` state.
+
+### Keyboard shortcuts
+
+`useShortcut(keys, handler, { when })` from `@pterodactyl/sdk` calls `handler` when `keys` is pressed: a
+key as `KeyboardEvent.key` names it, such as `d` or `/`, after `mod+` for Cmd on Apple devices and Ctrl
+elsewhere. Keys typed in a field, a dialog or a menu are theirs, a key another handler took first is
+skipped, and `when: false` turns it off. It returns the shortcut's `aria` name for `aria-keyshortcuts`
+and a `label` to show, such as `⌘/` or `Ctrl+/`:
+
+<!-- sample: snippets/views.tsx#shortcut -->
+```tsx
+/** A link of `layout.app` that a key opens, such as D for the dashboard. */
+function ShortcutLink({ link, keys }: { link: AppLayoutLink; keys: string }) {
+    const navigate = usePanelNavigate();
+    const shortcut = useShortcut(keys, () => void navigate(link.destination));
+
+    return (
+        <PanelLink destination={link.destination} aria-keyshortcuts={shortcut.aria}>
+            {link.label} <kbd>{shortcut.label}</kbd>
+        </PanelLink>
+    );
+}
+```
+<!-- /sample -->
+
+The panel's own shortcut is `mod+/`, which opens search; `model.shortcut` of `app.search` names it.
 
 ### The shell knows the area
 
@@ -542,8 +578,12 @@ The fixtures `accountArea`, `serverArea` and `adminArea` of `layout.app` render 
 
 What an extension puts in a slot is its own markup, at its own width. Contain it where you place it:
 `min-w-0` and `overflow-hidden` on the element around the slot, `truncate` for a line of text, and grid
-tracks of `minmax(0, 1fr)` (`grid-cols-1`) so one wide item cannot widen a column. A rail of icons is too
-narrow for most slot content; render its slots in a wider panel beside it, or below its items.
+tracks of `minmax(0, 1fr)` (`grid-cols-1`) so one wide item cannot widen a column.
+
+A rail of icons is too narrow for most slot content. Render its slots in a wider panel beside it, below
+its items, or in a top bar: a shell that is only a rail gives `nav.items.before` and `.after` a top bar.
+When such a shell reorders its regions on phones, make the rail, the bar, the area's navigation and the
+page children of one grid, so each breakpoint places them with `grid-template-areas`.
 
 ### A sidebar shell
 
@@ -667,15 +707,15 @@ is why a server's pages are unavailable.
 
 Each server of `dashboard.serverList` is the model of its `dashboard.serverCard`, with the `server` the
 row slots receive: its state and usage, its `permissions` (`start`, `stop`, `restart`, `console`) and
-`actions` that send power signals through the API. `totals` has the number of servers on every page,
-and how many of the loaded page run and are offline.
+`actions` that send power signals through the API. `totals.servers` counts the servers on every page;
+`totals.runningOnPage` and `totals.offlineOnPage` count only the page loaded.
 
 Some views also take **inputs**: props passed by whatever renders the view, which its layers receive
 beside `model`, such as the `server` of `dashboard.serverCard`.
 
 A few models hold an engine component: `model.Terminal` of `server.terminal` draws the console on a
 canvas, `model.Editor` of `server.files.editor` is the code editor, and the auth forms carry `Captcha`.
-Give them a sized box and colour them with the `--terminal-*` and `--editor-*` tokens.
+Give them a sized box and colour them with the [`--terminal-*` and `--editor-*` tokens](#console).
 
 ### `Default`
 
@@ -721,7 +761,8 @@ for blocks that extensions define. A layer for such a view is typed loosely: its
 
 `className` lands on the outermost element a view renders, in every classic view, so
 `<View name="server.sftp" className="h-full" />` stretches the card itself. Keep the rule in your own
-layers: a page's blocks are placed by the classes they are given.
+layers: a page's blocks are placed by the classes they are given. A layer with no single outer element,
+such as a server card drawn as the cells of a table row, gives `className` to each cell or ignores it.
 
 ### Slots in your views
 
@@ -760,13 +801,17 @@ y-axis maximum that grows with the data, `tickFormatter` formats the axis, and `
 
 ### A full-bleed page
 
-`PageContentBlock` and `ServerContentBlock`, which title a page and frame it, read the layout tokens,
-and the tokens cascade. A page sets them on its block to change its own geometry: edge to edge is
-`--layout-content-width: 100%` with `--layout-gutter: 0px` and `--layout-page-spacing: 0px`, written as
-`className='[--layout-content-width:100%] [--layout-gutter:0px] [--layout-page-spacing:0px]'`. A
-section inside it that keeps the usual width sets the tokens back on itself, with `page-width`. The
-copyright line below every page is the `PageFooter` primitive: skin it, or replace it with a component
-that renders nothing to drop it and draw your own in the shell.
+`PageContentBlock` and `ServerContentBlock` title a page and frame its content with the
+[page geometry](#lining-up-with-the-page). Anything outside them spans the region the layout gives the
+page.
+
+- **Part of a page edge to edge**, such as a console above sections of the usual width: render that part
+  beside the block, not in it. A page view can return `<><Screen /><ServerContentBlock>…</ServerContentBlock></>`.
+- **A whole page edge to edge**: set the geometry tokens on its block, where they cascade to everything in
+  it: `className='[--layout-content-width:100%] [--layout-gutter:0px] [--layout-page-spacing:0px]'`.
+
+The copyright line below every page is the `PageFooter` primitive: skin it, or replace it with a
+component that renders nothing to drop it and draw your own in the shell.
 
 ### A console with power controls in the header
 
@@ -838,10 +883,7 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
 ```
 <!-- /sample -->
 
-### Opaque views
-
-The admin pages still render the panel's own containers. Their model is `OpaqueModel` (empty) and they
-have no fixtures. Wrap them with `Default`, or place blocks around them.
+The admin pages are [opaque](#opaque-pages): wrap them with `Default`, or place blocks around them.
 
 ## Settings, schemes and branding
 
@@ -929,7 +971,8 @@ const { tagline } = useThemeSettings<ThemeSettings>();
 ### Schemes
 
 `useTheme()` returns `{ id, chain, scheme, preference, schemes, setScheme }`. `scheme` is the scheme in
-use and `preference` what the user chose, `system` included, for a switch to show as selected.
+use and `preference` what the user chose, `system` included, for a switch or a `checked` menu item to
+show as selected.
 `setScheme('dark' | 'light' | 'system')` stores the choice in the `pterodactyl_scheme` cookie and swaps
 the class on `<html>` without a reload. `system` follows the device as it changes, and a choice the
 theme does not offer falls back to its first scheme. The `layout.app` model carries the same `scheme`,
@@ -954,8 +997,8 @@ classic, the parent and its parents, then the child. `p:extension:make sunset --
 scaffolds a child: a manifest naming the parent, a stylesheet of one import, an empty `defineTheme` and a
 test of the chain.
 
-- **Views and skins** stack in that order, so the child's `Default` renders the parent's layer, and
-  `skin(name, (below) => …)` builds on the parent's skin.
+- **Views and skins** stack in that order, so the child's `Default` renders the parent's layer, and a
+  recipe's `below` is the parent's classes.
 - **Settings** are the union of the chain's. A child's setting of the same name changes the parent's: give
   only the fields that change, such as `"accent": { "default": "#f97316" }`, and the rest are the parent's.
 - **Schemes** are the child's when it declares them, else the nearest parent's.
@@ -985,11 +1028,10 @@ test of the chain.
 <!-- /sample -->
 
 The panel links one stylesheet, the nearest in the chain, so a child's stylesheet carries its parents'.
-The build does that: every theme build also writes `dist/theme-source.css`, its own CSS with its imports
-inlined and its fonts beside it, and `dist/classes.txt`, the classes its source files use. A child's build
-reads `theme.extends`, finds each parent, and brings in their stylesheets and classes, oldest first, right
-after the SDK's import. The child's `src/theme.css` stays one import and its own rules, and can use the
-parents' utilities, variants and fonts:
+A child's build reads `theme.extends`, finds each parent's build, and brings in its `theme-source.css` and
+`classes.txt` ([what the build writes](#what-the-build-writes)), oldest first, right after the SDK's
+import. The child's `src/theme.css` stays one import and its own rules, and can use the parents'
+utilities, variants and fonts:
 
 <!-- sample: child-theme/src/theme.css -->
 ```css
@@ -1246,7 +1288,8 @@ Every custom property of the panel stylesheet, with what classic uses it for. Th
 the Tailwind classes that read it, such as `bg-card` and `text-card` for `*-card`. The declarations, with
 classic's values for both schemes, are in `@pterodactyl/sdk/panel.css` and
 `@pterodactyl/sdk/theme-tokens.css`. The terminal and the editor re-read their tokens whenever a
-stylesheet or an attribute of `<html>` changes.
+stylesheet or an attribute of `<html>` changes. Any colour syntax works, `oklch()` and `color-mix()`
+included: the engine converts the terminal's colours to the hex and `rgba()` its canvas reads.
 
 <!-- generated:tokens -->
 #### Surfaces and text
@@ -1259,7 +1302,7 @@ stylesheet or an attribute of `<html>` changes.
 | `--card-foreground` | Text on cards. | `*-card-foreground` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm`, `server.schedule`, `server.schedules` |
 | `--popover` | Raised fills: menus, tooltips, hover fills, stat tiles and chart cards. | `*-popover` | Badge, Button, ChartCard, CopyOnClick, DropdownMenu, FileInput and 13 more |
 | `--popover-foreground` | Text on popovers. | `*-popover-foreground` | DropdownMenu, Tooltip |
-| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 13 more |
+| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 12 more |
 | `--muted-foreground` | Secondary text, icons and placeholders. | `*-muted-foreground` | Badge, Card, Dialog, DropdownMenuItem, Empty, Label and 31 more |
 | `--sunken` | A recessed surface on a card: meter tracks, code chips. | `*-sunken` | Code, ProgressBar |
 | `--border` | Borders and dividers. | `*-border` | Badge, Button, Card, ChartCard, Dialog, DropdownMenu and 18 more |
@@ -1385,12 +1428,12 @@ stylesheet or an attribute of `<html>` changes.
 | CopyOnClick | `root`, `status`, `message`, `target` | `data-status`: copied, failed | no | `target` is added to the clicked child; the other parts are the status toast. |
 | Dialog | `backdrop`, `viewport`, `container`, `root`, `body`, `content`, `header`, `heading`, `title`, `description`, `spacer`, `footer`, `close`, `closeButton`, `closeIcon`, `icon`, `iconGlyph` | `data-described`; `data-type`: danger, info, success, warning | no | `type` is the state of the `icon` part. |
 | DropdownMenu | `trigger`, `positioner`, `root` | `data-context` | no |  |
-| DropdownMenuItem | `root`, `icon`, `glyph`, `text`, `label`, `description` | `data-danger`; `data-described` | no |  |
+| DropdownMenuItem | `root`, `icon`, `glyph`, `text`, `label`, `description` | `data-danger`; `data-described`; `data-checked` | no | `checked` is set on an item given `checked`, such as the scheme in use. |
 | Empty | `root`, `header`, `media`, `title`, `description`, `content` | `data-size`: default, compact; `data-variant`: default, icon | yes | `variant` is the state of the `media` part. |
 | FileInput | `root` | none | no |  |
 | Input | `root` | `data-light`; `data-error` | no |  |
 | Label | `root` | `data-light` | no |  |
-| ListRow | `root`, `icon`, `status` | `data-interactive`; `data-status`: neutral, success, warning, danger, info, accent | yes | `icon` is `ListRow.Icon`, placed by the row's content; `status` is drawn when the row has a `status`. |
+| ListRow | `root`, `icon`, `title`, `description`, `status` | `data-interactive`; `data-status`: neutral, success, warning, danger, info, accent | yes | `icon`, `title` and `description` are `ListRow.Icon`, `ListRow.Title` and `ListRow.Description`, placed by the row's content; `status` is drawn when the row has a `status`. |
 | NewButton | `root`, `content`, `icon` | `data-link` | no | `root` is added to the Button it renders, `content` wraps the icon and label. |
 | NumberInput | `root`, `input` | `data-light`; `data-error` | no |  |
 | PageFooter | `root`, `text`, `link` | none | yes | The copyright line below each page; a replacement that renders nothing drops it. |
@@ -1400,7 +1443,7 @@ stylesheet or an attribute of `<html>` changes.
 | Select | `root`, `input`, `trigger`, `positioner`, `popup`, `list`, `item`, `itemLabel`, `indicator`, `empty`, `group`, `groupLabel`, `summary`, `preview` | `data-error`; `data-multiple`; `data-selected`; `data-rich-label`; `data-searching` | no |  |
 | Spinner | `root`, `container` | `data-size`: small, base, large; `data-blue`; `data-centered` | yes | `root` is the spinning element, an empty `span` with no text or role: the region that loads announces it. `container` centres it when `centered`. A skin can animate anything, such as the `content` of `::before`. |
 | SpinnerOverlay | `root`, `text` | `data-fixed` | no |  |
-| Stat | `root`, `indicator`, `icon`, `glyph`, `body`, `label`, `value`, `limit` | `data-variant`: tile, inline; `data-tone`: neutral, success, warning, danger, info, accent | yes | `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. |
+| Stat | `root`, `indicator`, `icon`, `glyph`, `body`, `label`, `value`, `limit` | `data-variant`: tile, inline; `data-tone`: neutral, success, warning, danger, info, accent; `data-unavailable` | yes | `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. `unavailable` means the value says why there is no reading, such as "Offline". |
 | Switch | `root`, `control`, `thumb`, `text`, `label`, `description` | `data-described`; `data-position`: start, end | no | `label` is added to the Label it renders. |
 | Table | `root`, `empty`, `scroller`, `table`, `head`, `headerRow`, `headerCell`, `body`, `row`, `cell` | `data-fetching` | no |  |
 | TextArea | `root` | `data-light`; `data-error` | no |  |

@@ -26,20 +26,41 @@ describe('skin layers', () => {
         expect(button.querySelector('[data-part="spinner"]')).toHaveClass('absolute', 'justify-center');
     });
 
-    it('extends the parts resolved from the layers below', () => {
-        registerSkins('parent', { Button: { root: 'rounded-full' } });
+    it('lets a function recipe build on the layers below, beside plain recipes of the same skin', () => {
+        registerSkins('parent', { Button: { root: ({ color }) => `rounded-full bg-${color}` } });
         registerSkins('aurora', {
-            Button: skin('Button', (parent) => ({
-                root: (state) => `${parent.root(state)} shadow-xl`,
-                label: (state) => parent.label(state, 'gap-1 tracking-tight'),
-            })),
+            Button: skin('Button', {
+                root: (state, below) => below('shadow-xl'),
+                // `extra` merges: its gap replaces classic's.
+                label: (state, below) => below('gap-1 tracking-tight'),
+                spinner: 'absolute inset-0',
+            }),
         });
 
-        render(<Button>Save</Button>);
+        render(
+            <Button color='green' isLoading>
+                Save
+            </Button>
+        );
 
-        expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute('class', 'rounded-full shadow-xl');
-        // `extra` merges: its gap replaces classic's.
-        expect(screen.getByText('Save')).toHaveAttribute('class', 'inline-flex items-center gap-1 tracking-tight');
+        const button = screen.getByRole('button', { name: 'Save' });
+
+        expect(button).toHaveAttribute('class', 'rounded-full bg-green shadow-xl');
+        // `below` reads the state: classic hides a loading label.
+        expect(screen.getByText('Save')).toHaveAttribute(
+            'class',
+            'inline-flex items-center text-transparent gap-1 tracking-tight'
+        );
+        expect(button.querySelector('[data-part="spinner"]')).toHaveAttribute('class', 'absolute inset-0');
+    });
+
+    it('stacks the extensions of every layer, in order', () => {
+        registerSkins('parent', { Card: { root: (state, below) => below('rounded-lg') } });
+        registerSkins('aurora', { Card: { root: (state, below) => below('ring-1') } });
+
+        expect(getSkin('Card', { titled: true, actions: false, loading: false }).classes('root')).toBe(
+            'bg-card shadow-md rounded-lg ring-1'
+        );
     });
 
     it('stacks classic first, then the chain parent first, and moves a re-registered layer up', () => {
@@ -60,23 +81,12 @@ describe('skin layers', () => {
         );
     });
 
-    it('resolves a primitive once per layer stack', () => {
-        const extend = vi.fn(() => ({ root: 'rounded-full' }));
+    it('re-renders primitives when the layers change', () => {
+        render(<Button>Save</Button>);
 
-        registerSkins('aurora', { Button: skin('Button', extend) });
-        render(
-            <>
-                <Button>One</Button>
-                <Button>Two</Button>
-            </>
-        );
+        act(() => registerSkins('aurora', { Button: { root: 'rounded-full' } }));
 
-        expect(extend).toHaveBeenCalledOnce();
-
-        act(() => registerSkins('other', { Badge: { root: 'x' } }));
-
-        expect(extend).toHaveBeenCalledTimes(2);
-        expect(screen.getByRole('button', { name: 'Two' })).toHaveAttribute('class', 'rounded-full');
+        expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute('class', 'rounded-full');
     });
 
     it('resolves cva recipes with defaults, compound arrays and class or className', () => {
@@ -163,7 +173,7 @@ describe('primitive attributes', () => {
             'data-titled',
             ''
         );
-        expect(getSkin('DropdownMenuItem', { danger: true, described: false })('root')).toMatchObject({
+        expect(getSkin('DropdownMenuItem', { danger: true, described: false, checked: false })('root')).toMatchObject({
             'data-ui': 'dropdown-menu-item',
             'data-danger': '',
         });

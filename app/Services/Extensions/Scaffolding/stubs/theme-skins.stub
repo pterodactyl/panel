@@ -27,8 +27,8 @@ export const skins: ThemeSkins = {
                 .filter(Boolean)
                 .join(' '),
     }),
-    // Builds on classic's card by adding classes it does not set.
-    Card: skin('Card', (classic) => ({
-        root: (state) => `${classic.root(state)} ring-1 ring-border/60`,
-    })),
+    // Builds on classic's card: `below(extra)` is its classes with `extra` merged in.
+    Card: skin('Card', {
+        root: (state, below) => below('ring-1 ring-border/60'),
+    }),
 };

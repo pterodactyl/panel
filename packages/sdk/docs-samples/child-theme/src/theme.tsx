@@ -9,9 +9,9 @@ function SunsetCard({ Default }: ViewProps<'dashboard.serverCard'>) {
     );
 }
 
-/** `below` is Aurora's skin: its pill buttons, with a warm shadow. */
-const button = skin('Button', (below) => ({
-    root: (state) => `${below.root(state)} shadow-lg shadow-primary/20`,
-}));
+/** `below` is Aurora's recipe: its pill buttons, with a warm shadow. */
+const button = skin('Button', {
+    root: (state, below) => below('shadow-lg shadow-primary/20'),
+});
 
 export default defineTheme({ ui: { Button: button }, views: { 'dashboard.serverCard': SunsetCard } });

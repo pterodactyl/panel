@@ -106,6 +106,7 @@ export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
 export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 export { formatDate, fromNow } from '@/lib/dates';
 export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
+export { useShortcut, type Shortcut } from '@/plugins/useShortcut';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
 export {

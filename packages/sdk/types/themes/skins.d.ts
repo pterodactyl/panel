@@ -30,9 +30,17 @@ export type SkinCompoundVariant<S> = {
     readonly class?: string;
     readonly className?: string;
 };
-/** A part's classes: a string, a cva recipe, or a function of the primitive's state. */
-export type SkinRecipe<S> = string | SkinRecipeConfig<S> | ((state: S) => string);
-/** Recipes by part. A part a skin names replaces the recipe below it wholesale; the others keep theirs. */
+/**
+ * The classes the layers below give a part in the current state. `below(extra)` merges `extra` in: a
+ * class of it replaces the one below it conflicts with, as `cn` does.
+ */
+export type SkinBelow = (extra?: SkinClassName) => string;
+/**
+ * A part's classes. A string or a cva recipe replaces the recipe below; a function of the state
+ * replaces it too, unless it builds on `below`.
+ */
+export type SkinRecipe<S> = string | SkinRecipeConfig<S> | ((state: S, below: SkinBelow) => string);
+/** Recipes by part. The parts a skin leaves out keep the recipes below. */
 export type Skin<N extends PrimitiveName> = {
     readonly [P in SkinPart<N>]?: SkinRecipe<PrimitiveState<N>>;
 };
@@ -44,24 +52,11 @@ export type CompleteSkins = {
     readonly [N in PrimitiveName]: CompleteSkin<N>;
 };
 /**
- * Each part's classes as resolved from the layers below, which an extending skin builds on. `extra`
- * merges in: a class of it replaces the class below it conflicts with, as `cn` does.
- */
-export type ResolvedSkin<N extends PrimitiveName> = {
-    readonly [P in SkinPart<N>]: (state: PrimitiveState<N>, extra?: SkinClassName) => string;
-};
-/** `skin(name, (parent) => ({ ... }))`: a skin computed from the layers below it. */
-export interface SkinExtension<N extends PrimitiveName> {
-    (parent: ResolvedSkin<N>): Skin<N>;
-    readonly skinExtension: N;
-}
-export type SkinDefinition<N extends PrimitiveName> = Skin<N> | SkinExtension<N>;
-/**
  * A theme's `ui`: a skin per primitive. A presentational primitive can instead be replaced by a
  * component, which receives the props the primitive does.
  */
 export type ThemeSkins = {
-    readonly [N in PrimitiveName]?: N extends ReplaceableName ? SkinDefinition<N> | ComponentType<PrimitiveProps<N>> : SkinDefinition<N>;
+    readonly [N in PrimitiveName]?: N extends ReplaceableName ? Skin<N> | ComponentType<PrimitiveProps<N>> : Skin<N>;
 };
 /** What a part spreads onto its element. */
 export interface SkinPartProps {
@@ -79,9 +74,8 @@ export interface SkinBinding<N extends PrimitiveName> {
     /** Only the classes, for a part that is another primitive or a library's className option. */
     classes(part: SkinPart<N>, className?: SkinClassName, state?: Partial<PrimitiveState<N>>): string;
 }
-/** Types a skin, or with a function `(parent) => skin` extends the skin of the layers below. */
-export declare function skin<N extends PrimitiveName>(name: N, definition: (parent: ResolvedSkin<N>) => Skin<N>): SkinExtension<N>;
-export declare function skin<N extends PrimitiveName>(name: N, definition: Skin<N>): Skin<N>;
+/** Types a skin by the parts and state of the primitive `name`. */
+export declare function skin<N extends PrimitiveName>(_name: N, definition: Skin<N>): Skin<N>;
 /**
  * Adds a skin layer. Classic is registered first, then each theme of the chain parent first; a layer
  * registered again keeps classic first and moves to the top otherwise.

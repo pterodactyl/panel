@@ -46,8 +46,6 @@ function Uptime({ state, uptime }: { state: ServerRunState | null; uptime: numbe
     return state.charAt(0).toUpperCase() + state.slice(1);
 }
 
-const Offline = () => <span className='text-muted-foreground'>Offline</span>;
-
 const limitText = (limit: string | null) => <>/ {limit || <>&infin;</>}</>;
 
 const bytesLimit = (limit: number) => (limit ? bytesToString(limit) : null);
@@ -74,17 +72,19 @@ export default function Stats({ model, className }: ViewProps<'server.stats'>) {
             <Stat
                 icon={Cpu}
                 label='CPU Load'
-                value={offline ? <Offline /> : `${cpu.value.toFixed(2)}%`}
+                value={offline ? 'Offline' : `${cpu.value.toFixed(2)}%`}
                 limit={offline ? undefined : limitText(cpu.limit ? `${cpu.limit}%` : null)}
                 tone={tone(cpu)}
+                unavailable={offline}
                 className={tile}
             />
             <Stat
                 icon={MemoryStick}
                 label='Memory'
-                value={offline ? <Offline /> : bytesToString(memory.value)}
+                value={offline ? 'Offline' : bytesToString(memory.value)}
                 limit={offline ? undefined : limitText(bytesLimit(memory.limit))}
                 tone={tone(memory)}
+                unavailable={offline}
                 className={tile}
             />
             <Stat
@@ -98,13 +98,15 @@ export default function Stats({ model, className }: ViewProps<'server.stats'>) {
             <Stat
                 icon={CloudDownload}
                 label='Network (Inbound)'
-                value={offline ? <Offline /> : bytesToString(model.network.rx)}
+                value={offline ? 'Offline' : bytesToString(model.network.rx)}
+                unavailable={offline}
                 className={tile}
             />
             <Stat
                 icon={CloudUpload}
                 label='Network (Outbound)'
-                value={offline ? <Offline /> : bytesToString(model.network.tx)}
+                value={offline ? 'Offline' : bytesToString(model.network.tx)}
+                unavailable={offline}
                 className={tile}
             />
         </div>

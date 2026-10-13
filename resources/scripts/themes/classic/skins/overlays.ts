@@ -76,6 +76,7 @@ export const dropdownMenuItem = {
         variants: {
             described: { true: 'items-start', false: 'items-center' },
             danger: { true: 'text-destructive data-highlighted:bg-destructive/10 data-highlighted:text-destructive' },
+            checked: { true: 'bg-muted' },
         },
     },
     icon: {

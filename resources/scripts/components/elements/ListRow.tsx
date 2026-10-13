@@ -51,13 +51,28 @@ function CoreListRow({
     );
 }
 
-/** The `icon` part of the row around it, for an icon its content places. */
-function ListRowIcon({ className, children }: { className?: string; children?: React.ReactNode }) {
-    const ui = useSkin('ListRow', useContext(RowState));
-
-    return <div {...ui('icon', className)}>{children}</div>;
+interface ListRowPartProps {
+    className?: string;
+    children?: React.ReactNode;
 }
 
-const ListRow = Object.assign(replaceable('ListRow', CoreListRow), { Icon: ListRowIcon });
+/** A part of the row around it, for the row's content to place. */
+function rowPart(part: 'icon' | 'title' | 'description', Element: 'div' | 'p') {
+    function ListRowPart({ className, children }: ListRowPartProps) {
+        const ui = useSkin('ListRow', useContext(RowState));
+
+        return <Element {...ui(part, className)}>{children}</Element>;
+    }
+
+    ListRowPart.displayName = `ListRow.${part.charAt(0).toUpperCase()}${part.slice(1)}`;
+
+    return ListRowPart;
+}
+
+const ListRow = Object.assign(replaceable('ListRow', CoreListRow), {
+    Icon: rowPart('icon', 'div'),
+    Title: rowPart('title', 'p'),
+    Description: rowPart('description', 'p'),
+});
 
 export default ListRow;

@@ -112,11 +112,13 @@ export interface UiPrimitives {
             context: boolean;
         };
     };
+    /** `checked` is set on an item given `checked`, such as the scheme in use. */
     DropdownMenuItem: {
         parts: 'root' | 'icon' | 'glyph' | 'text' | 'label' | 'description';
         state: {
             danger: boolean;
             described: boolean;
+            checked: boolean;
         };
     };
     Empty: {
@@ -142,9 +144,12 @@ export interface UiPrimitives {
             light: boolean;
         };
     };
-    /** `icon` is `ListRow.Icon`, placed by the row's content; `status` is drawn when the row has a `status`. */
+    /**
+     * `icon`, `title` and `description` are `ListRow.Icon`, `ListRow.Title` and `ListRow.Description`,
+     * placed by the row's content; `status` is drawn when the row has a `status`.
+     */
     ListRow: {
-        parts: 'root' | 'icon' | 'status';
+        parts: 'root' | 'icon' | 'title' | 'description' | 'status';
         state: {
             interactive: boolean;
             status?: UiTone;
@@ -218,12 +223,16 @@ export interface UiPrimitives {
             fixed: boolean;
         };
     };
-    /** `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`. */
+    /**
+     * `glyph` is the icon inside `icon`; `indicator` is a bar for the tone, and `limit` follows `value`.
+     * `unavailable` means the value says why there is no reading, such as "Offline".
+     */
     Stat: {
         parts: 'root' | 'indicator' | 'icon' | 'glyph' | 'body' | 'label' | 'value' | 'limit';
         state: {
             variant: StatVariant;
             tone: UiTone;
+            unavailable: boolean;
         };
         props: StatProps;
     };
@@ -334,7 +343,7 @@ export declare const UI_PRIMITIVES: {
         replaceable: false;
     };
     ListRow: {
-        parts: ("icon" | "status" | "root")[];
+        parts: ("title" | "icon" | "status" | "root" | "description")[];
         replaceable: true;
     };
     NewButton: {

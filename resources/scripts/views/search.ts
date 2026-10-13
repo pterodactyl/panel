@@ -5,8 +5,8 @@ import { httpErrorToHuman } from '@/api/http';
 import { relationshipData } from '@/api/relationships';
 import type { Server } from '@/api/server/types';
 import { ip } from '@/lib/formatters';
-import useEventListener from '@/plugins/useEventListener';
 import { useDebouncedValue } from '@/plugins/useDebouncedValue';
+import { describeShortcut, useShortcut, type Shortcut } from '@/plugins/useShortcut';
 import type { CorePanelDestination } from '@/sdk/navigation';
 import { createTestServer } from './fixtures';
 import { fixtureField, stateField, type FieldModel } from './forms';
@@ -30,6 +30,8 @@ export interface AppSearchModel {
     readonly open: boolean;
     readonly show: () => void;
     readonly close: () => void;
+    /** The shortcut that opens the search, as this device names it, for `aria-keyshortcuts` and a hint. */
+    readonly shortcut: Shortcut;
     /** The search term for an input; its error asks for three characters. */
     readonly field: FieldModel;
     /** Replaces the term, for a search drawn without an input of its own. */
@@ -61,8 +63,7 @@ const searchResult = ({ attributes }: Server): AppSearchResult => ({
     destination: { to: '/server/$id', params: { id: attributes.identifier } },
 });
 
-const isTyping = (target: EventTarget | null) =>
-    target instanceof HTMLElement && (['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable);
+const shortcut = describeShortcut('mod+/');
 
 function useAppSearchModel(): AppSearchModel {
     const { rootAdmin } = useCurrentUser();
@@ -75,11 +76,7 @@ function useAppSearchModel(): AppSearchModel {
         enabled
     );
 
-    useEventListener('keydown', (event: KeyboardEvent) => {
-        if (!open && event.metaKey && event.key === '/' && !isTyping(event.target)) {
-            setOpen(true);
-        }
-    });
+    useShortcut('mod+/', () => setOpen(true), { when: !open });
 
     return useMemo(() => {
         const field = stateField('term', term, setTerm);
@@ -91,6 +88,7 @@ function useAppSearchModel(): AppSearchModel {
                 setOpen(false);
                 setTerm('');
             },
+            shortcut,
             field: { ...field, error: term.length > 0 && term.length < 3 ? SHORT : null },
             setQuery: setTerm,
             results: enabled ? (data?.data.slice(0, 5) ?? []).map(searchResult) : [],
@@ -112,6 +110,7 @@ const searchFixture = (options: Partial<AppSearchModel> = {}): AppSearchModel =>
     open: true,
     show: noop,
     close: noop,
+    shortcut,
     field: fixtureField('term', {}, 'surv'),
     setQuery: noop,
     results,

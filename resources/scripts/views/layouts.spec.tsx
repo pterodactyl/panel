@@ -136,7 +136,7 @@ describe('layout.app', () => {
             models: { 'layout.app': appModel({ schemes: ['dark', 'light'], setScheme }) },
         });
         fireEvent.click(screen.getByRole('button', { name: 'Color scheme' }));
-        fireEvent.click(await screen.findByRole('menuitem', { name: 'Light' }));
+        fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Light' }));
 
         expect(setScheme).toHaveBeenCalledWith('light');
     });
@@ -149,7 +149,7 @@ describe('layout.app', () => {
 
         await renderLayout('layout.app', null);
         fireEvent.click(await screen.findByRole('button', { name: 'Color scheme' }));
-        fireEvent.click(await screen.findByRole('menuitem', { name: 'Light' }));
+        fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Light' }));
 
         expect(document.documentElement).toHaveClass('light');
         expect(document.documentElement).not.toHaveClass('dark');

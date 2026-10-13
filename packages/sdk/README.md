@@ -158,6 +158,10 @@ gives canvas or chart code the same signal, `readThemeToken('--name')` reads a v
 `notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own `theme-color`
 tag follows the token; one registered with `registerHeadTags` is left as rendered.
 
+`useShortcut('g', handler)` binds a key, or `mod+` and a key for Cmd (Ctrl off Apple devices), while
+focus is outside fields, dialogs and menus, and returns its names for `aria-keyshortcuts` and a hint
+(see [Keyboard shortcuts](THEMES.md#keyboard-shortcuts)).
+
 ## Conditional screens, badges, and icons
 
 A screen's `when` states where it exists. A screen whose conditions fail is absent from

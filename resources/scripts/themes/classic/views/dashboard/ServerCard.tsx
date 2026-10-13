@@ -20,10 +20,8 @@ function Identity({ model, server }: PartProps) {
                 <ServerIcon size='1em' className='inline-block' />
             </ListRow.Icon>
             <div>
-                <p className='text-lg wrap-break-word'>{model.name}</p>
-                {!!model.description && (
-                    <p className='text-sm text-muted-foreground wrap-break-word line-clamp-2'>{model.description}</p>
-                )}
+                <ListRow.Title>{model.name}</ListRow.Title>
+                {!!model.description && <ListRow.Description>{model.description}</ListRow.Description>}
             </div>
             <Slot name='dashboard.serverRow.name.after' data={server} />
         </div>

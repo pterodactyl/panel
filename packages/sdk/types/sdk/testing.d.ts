@@ -85,7 +85,7 @@ export interface TestThemeOptions {
     theme?: ThemeDefinition;
     /**
      * A chain of themes, oldest first, as the panel stacks them over classic: `[parent, child]`. Each
-     * one's `Default` and `skin(name, (below) => …)` build on the theme before it.
+     * one's `Default` and the `below` of its recipes build on the theme before it.
      */
     themes?: readonly ThemeDefinition[];
 }

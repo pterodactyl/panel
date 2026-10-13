@@ -15,7 +15,7 @@ spacing, for dark and light. Skins and views (levels 2 to 4) need a theme scaffo
 
 | Script | |
 | --- | --- |
-| `npm run build` | `dist/theme.css` and `dist/theme.json`. |
+| `npm run build` | Writes `dist/`: the files listed under "What the build writes" in Level 1. |
 | `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
 | `npm run doctor` | The panel's checks: manifest, build, budgets and remote URLs. |
 | `npm run pack` | Packs a `.pteroext` archive to install on another panel. |

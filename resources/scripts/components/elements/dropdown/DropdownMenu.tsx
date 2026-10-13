@@ -76,6 +76,8 @@ export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof 
     description?: React.ReactNode;
     /** Makes the item a link to a panel page; following it closes the menu. */
     destination?: PanelDestination;
+    /** Makes the item a choice that is on or off, such as the scheme in use: a `menuitemcheckbox`. */
+    checked?: boolean;
 }
 
 /** An item for either DropdownMenu or ContextDropdownMenu. */
@@ -84,12 +86,13 @@ export function DropdownMenuItem({
     danger,
     description,
     destination,
+    checked,
     className,
     children,
     ...props
 }: DropdownMenuItemProps) {
     const Item = use(MenuItemContext);
-    const ui = useSkin('DropdownMenuItem', { danger: !!danger, described: !!description });
+    const ui = useSkin('DropdownMenuItem', { danger: !!danger, described: !!description, checked: !!checked });
     const content = (
         <>
             {icon && (
@@ -115,6 +118,14 @@ export function DropdownMenuItem({
             >
                 {content}
             </Menu.LinkItem>
+        );
+    }
+
+    if (checked !== undefined) {
+        return (
+            <Menu.CheckboxItem closeOnClick {...ui('root', className)} {...props} checked={checked}>
+                {content}
+            </Menu.CheckboxItem>
         );
     }
 

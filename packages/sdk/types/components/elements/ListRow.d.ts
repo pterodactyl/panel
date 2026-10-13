@@ -12,12 +12,22 @@ export interface ListRowProps extends React.HTMLAttributes<HTMLElement> {
     /** Draws the `status` part in this tone, such as a server's power state. */
     status?: UiTone;
 }
-/** The `icon` part of the row around it, for an icon its content places. */
-declare function ListRowIcon({ className, children }: {
+interface ListRowPartProps {
     className?: string;
     children?: React.ReactNode;
-}): React.JSX.Element;
+}
 declare const ListRow: ((props: ListRowProps) => React.ReactElement) & {
-    Icon: typeof ListRowIcon;
+    Icon: {
+        ({ className, children }: ListRowPartProps): React.JSX.Element;
+        displayName: string;
+    };
+    Title: {
+        ({ className, children }: ListRowPartProps): React.JSX.Element;
+        displayName: string;
+    };
+    Description: {
+        ({ className, children }: ListRowPartProps): React.JSX.Element;
+        displayName: string;
+    };
 };
 export default ListRow;

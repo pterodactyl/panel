@@ -98,10 +98,10 @@ export const stat = {
             },
         },
     },
-    value: ({ variant, tone }) =>
+    value: ({ variant, tone, unavailable }) =>
         variant === 'tile'
-            ? 'h-7 min-w-0 truncate text-lg font-semibold leading-7 text-foreground md:text-xl'
-            : `ml-2 text-sm ${inlineInk[tone]}`,
+            ? `h-7 min-w-0 truncate text-lg font-semibold leading-7 md:text-xl ${unavailable ? 'text-muted-foreground' : 'text-foreground'}`
+            : `ml-2 text-sm ${unavailable ? 'text-muted-foreground' : inlineInk[tone]}`,
     limit: {
         variants: {
             variant: {

@@ -17,6 +17,8 @@ export interface StatProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'c
     /** The colour of the value's state, such as an alarm's (`danger` above 90% of a limit). */
     tone?: UiTone;
     variant?: StatVariant;
+    /** The value says why there is no reading, such as "Offline". */
+    unavailable?: boolean;
 }
 declare const Stat: (props: StatProps) => React.ReactElement;
 export default Stat;

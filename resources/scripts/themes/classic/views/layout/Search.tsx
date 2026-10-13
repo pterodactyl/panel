@@ -95,6 +95,7 @@ export default function Search({ model, className }: ViewProps<'app.search'>) {
                 <button
                     type='button'
                     aria-label='Search'
+                    aria-keyshortcuts={model.shortcut.aria}
                     className={cn('navigation-link', className)}
                     onClick={model.show}
                 >
