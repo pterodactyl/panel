@@ -1,0 +1,41 @@
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_8d73f46348d16c 151,311-314,317-323,333
+  s_4cabae41bceed9::t_20f3f02104537b 307,310,315-316
+resources/scripts/views/navigation.tsx
+  s_4cabae41bceed9::t_a65c6a5fd2a7c6 1-2,18-24,33,61-72,74-81,132-150,170,178-179,184,197-200,205,207-208,211,217
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_518e98d3fda541 44
+resources/scripts/components/elements/SubNavigation.spec.tsx
+  s_4cabae41bceed9::t_6ae743d4392c5c 49-58
+resources/scripts/views/navigation.spec.tsx
+  s_4cabae41bceed9::t_6ae743d4392c5c 159-160,162,169,171-175
+  s_4cabae41bceed9::t_30ebe5a74c633f 176
+resources/scripts/components/elements/SubNavigation.tsx
+  s_4cabae41bceed9::t_384958da8d949b 286,290
+  s_4cabae41bceed9::t_7bf64225b786c2 2
+resources/scripts/views/layouts.spec.tsx
+  s_4cabae41bceed9::t_20f3f02104537b 287
+  s_4cabae41bceed9::t_eacfcfa62ab3c0 288-293
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_95c62bbdf39e50 464-465
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_71e129581aa9f2 4
+packages/sdk/types/views/navigation.d.ts
+  s_4cabae41bceed9::t_317fd0edc57377 2,4,11,34-35,54-55,57-58,61,63-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a512e9ddcea16bc1255f97626ef5445484e3ce0d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
