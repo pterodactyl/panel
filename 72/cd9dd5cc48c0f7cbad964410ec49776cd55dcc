@@ -1,0 +1,104 @@
+packages/sdk/README.md
+  s_4cabae41bceed9::t_4ca14eade7bec9 248
+app/Services/Extensions/Scaffolding/stubs/theme-child-readme.stub
+  s_4cabae41bceed9::t_ad6d48c4524679 10,15
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_4cabae41bceed9::t_c34400600d3013 23
+app/Http/Resources/Api/Admin/ThemeResource.php
+  s_4cabae41bceed9::t_0942752fe23ec5 14,40
+resources/scripts/components/admin/themes/ThemeSettingsDialog.tsx
+  s_4cabae41bceed9::t_a50942723a9855 1,69-71,98
+app/Services/Themes/ThemeBuild.php
+  s_4cabae41bceed9::t_9527655240a169 16,19,33
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_4ca14eade7bec9 76
+  s_4cabae41bceed9::t_fd408488803d54 1026
+  s_4cabae41bceed9::t_366e3da1af4d3d 1006-1007
+tests/Unit/Services/Themes/ThemeManifestTest.php
+  s_4cabae41bceed9::t_9388b979146606 130-131
+resources/scripts/api/generated/index.ts
+  s_4cabae41bceed9::t_3e5ffeacecc177 4-5
+app/Services/Themes/ThemeDefinition.php
+  s_4cabae41bceed9::t_53e44daa73eef0 21
+  s_4cabae41bceed9::t_57ab5bc0a610a5 35
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_4cabae41bceed9::t_6e372a98d62732 613,624
+app/Console/Commands/Extensions/TypesCommand.php
+  s_4cabae41bceed9::t_54c614c9299846 75-77,79-80
+resources/scripts/components/admin/themes/ThemesContainer.tsx
+  s_4cabae41bceed9::t_a50942723a9855 2,146,197
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_4cabae41bceed9::t_4ca14eade7bec9 240
+resources/scripts/api/generated/sdk.gen.ts
+  s_4cabae41bceed9::t_3e5ffeacecc177 6,246
+resources/scripts/api/admin/themes/queries.ts
+  s_4cabae41bceed9::t_a50942723a9855 146,159,172
+app/Services/Themes/ThemeRepository.php
+  s_4cabae41bceed9::t_df811f8d5ebdd3 35,86,180
+  s_4cabae41bceed9::t_9527655240a169 133
+packages/sdk/docs-samples/child-theme/extension.json
+  s_4cabae41bceed9::t_366e3da1af4d3d 13
+app/Services/Themes/ThemeDocument.php
+  s_4cabae41bceed9::t_16d9f0fbe27a49 9
+app/Services/Themes/ThemeSetting.php
+  s_4cabae41bceed9::t_92097453334731 107
+app/Http/Resources/Api/Admin/ThemeSettingResource.php
+  s_4cabae41bceed9::t_671ca9b70e0d70 12
+  s_4cabae41bceed9::t_675a54b1621888 42
+  s_4cabae41bceed9::t_dff2161410509e 8
+app/Services/Helpers/AssetHashService.php
+  s_4cabae41bceed9::t_16d9f0fbe27a49 18
+app/Http/Controllers/Api/Admin/Themes/ThemeController.php
+  s_4cabae41bceed9::t_0942752fe23ec5 183,210,216,228
+  s_4cabae41bceed9::t_671ca9b70e0d70 142
+app/Console/Commands/Extensions/PackCommand.php
+  s_4cabae41bceed9::t_6b251821b90201 33
+resources/scripts/components/admin/themes/ThemesContainer.spec.tsx
+  s_4cabae41bceed9::t_02786091a446ec 168,189
+tests/Integration/Http/ThemeDocumentTest.php
+  s_4cabae41bceed9::t_eae5d4986bda65 37,39,112-113,115-116
+phpstan.neon
+  s_4cabae41bceed9::t_8516a2717be26a 53
+tests/Unit/Services/Extensions/ExtensionDistFilesTest.php
+  s_4cabae41bceed9::t_24e77441c7dd4d 68
+app/Console/Commands/Themes/ResetCommand.php
+  s_4cabae41bceed9::t_0942752fe23ec5 10,16,18
+tests/Integration/Api/Admin/Themes/ThemeControllerTest.php
+  s_4cabae41bceed9::t_24e77441c7dd4d 81,85,97,122,138,142
+  s_4cabae41bceed9::t_671ca9b70e0d70 115,118,150
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_4cabae41bceed9::t_3e5ffeacecc177 8-9,453
+app/Services/Themes/ThemeResolver.php
+  s_4cabae41bceed9::t_16d9f0fbe27a49 117
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_4cabae41bceed9::t_7d19131acb6202 137-138,173-186,259,264,270
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_bdc671060cf00f 58,98,116,122-124,128,131,135,137
+resources/views/templates/wrapper.blade.php
+  s_4cabae41bceed9::t_16d9f0fbe27a49 75
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_4cabae41bceed9::t_fc3dc3ee91fdfc 29,61
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_4cabae41bceed9::t_c34400600d3013 21,194-195,205
+app/Http/Middleware/RememberThemeFlags.php
+  s_4cabae41bceed9::t_fa6fb998d95755 23-28
+packages/sdk/manifest.schema.json
+  s_4cabae41bceed9::t_3c3eb32ebe03f1 597,641,662,746,752
+  s_4cabae41bceed9::t_8baacf62b6f1e6 603,747-750
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "72cd9dd5cc48c0f7cbad964410ec49776cd55dcc",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
