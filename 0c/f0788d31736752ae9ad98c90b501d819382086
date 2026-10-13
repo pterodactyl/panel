@@ -1,0 +1,21 @@
+resources/scripts/views/server/fileManager.spec.tsx
+  s_4cabae41bceed9::t_6fb82ad4193b52 135,235,237,240-241,246-247,250-251,260,273-275
+resources/scripts/views/server/console.spec.tsx
+  s_4cabae41bceed9::t_6fb82ad4193b52 16,152-160,162-165,167-172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0cf0788d31736752ae9ad98c90b501d819382086",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
