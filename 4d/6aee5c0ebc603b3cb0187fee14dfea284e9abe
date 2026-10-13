@@ -1,0 +1,56 @@
+packages/sdk/views.json
+  s_4cabae41bceed9::t_ccbc555a4189e9 822-823,833-835,841-843,859-860,876-877
+resources/scripts/themes/classic/views/auth/LoginPage.tsx
+  s_4cabae41bceed9::t_6ba3626bc7ac18 1-4,6-28
+packages/sdk/docs-samples/aurora/src/views/LoginPage.tsx
+  s_4cabae41bceed9::t_5763c0294a43d7 1-58
+packages/sdk/docs-samples.spec.ts
+  s_4cabae41bceed9::t_5763c0294a43d7 48
+resources/scripts/views/auth/types.ts
+  s_4cabae41bceed9::t_6ba3626bc7ac18 41-44
+  s_4cabae41bceed9::t_4ffe31aed4c33a 7-9
+resources/scripts/themes/classic/views/auth/ForgotPasswordPage.tsx
+  s_4cabae41bceed9::t_6ba3626bc7ac18 1-4,6-29
+packages/sdk/docs-samples/aurora/src/theme.tsx
+  s_4cabae41bceed9::t_5763c0294a43d7 11
+resources/scripts/views/definitions.spec.ts
+  s_4cabae41bceed9::t_6ba3626bc7ac18 55
+resources/scripts/views/definitions.ts
+  s_4cabae41bceed9::t_6ba3626bc7ac18 71-75
+resources/scripts/themes/classic/views/auth/ResetPasswordPage.tsx
+  s_4cabae41bceed9::t_6ba3626bc7ac18 1-4,6-38
+resources/scripts/views/auth/auth.spec.tsx
+  s_4cabae41bceed9::t_12886a7cce78ca 106-114
+  s_4cabae41bceed9::t_50455232b2817e 44-47,94,100,117,189
+packages/sdk/docs-samples/aurora/src/theme.spec.tsx
+  s_4cabae41bceed9::t_5763c0294a43d7 35
+resources/scripts/views/auth/password.ts
+  s_4cabae41bceed9::t_6ba3626bc7ac18 148,155
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_5763c0294a43d7 1221
+  s_4cabae41bceed9::t_ccbc555a4189e9 1293,1349,1480-1483
+packages/sdk/types/views/auth/types.d.ts
+  s_4cabae41bceed9::t_ccbc555a4189e9 7-9,36-39
+packages/sdk/types/sdk/models/auth.d.ts
+  s_4cabae41bceed9::t_ccbc555a4189e9 2
+resources/scripts/themes/classic/views/auth/CheckpointPage.tsx
+  s_4cabae41bceed9::t_6ba3626bc7ac18 1-4,6-44
+resources/scripts/views/auth/login.ts
+  s_4cabae41bceed9::t_6ba3626bc7ac18 164,183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4d6aee5c0ebc603b3cb0187fee14dfea284e9abe",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
