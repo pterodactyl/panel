@@ -1,0 +1,75 @@
+resources/scripts/components/elements/LazyCodemirrorEditor.tsx
+  s_4cabae41bceed9::t_62fb503f541af2 1,13,15-18,20-37
+  s_4cabae41bceed9::t_93c208632e3318 3,10
+  s_4cabae41bceed9::t_4b881c8d749d37 11-12,14,19
+packages/sdk/README.md
+  s_4cabae41bceed9::t_3608d8a2e51092 82,746,760-762,806-807,818-820,888
+CHANGELOG.md
+  s_4cabae41bceed9::t_e624cd47c35cc4 7,38-40
+resources/scripts/views/server/fileEditor.spec.tsx
+  s_4cabae41bceed9::t_3dc888c1332e83 36
+packages/sdk/types/extensions/Slot.d.ts
+  s_4cabae41bceed9::t_275b06b81296e5 3
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_275b06b81296e5 68-71
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_92b55501f6da9b 5,16,410,448-450,454,456,458-460
+  s_4cabae41bceed9::t_4b881c8d749d37 455
+  s_4cabae41bceed9::t_65376d07b36fcf 409,457
+  s_4cabae41bceed9::t_e19296e5fc14f2 17,86-88
+  s_4cabae41bceed9::t_d44d9e51c4c398 306-309,436,439,441-447,451-453,461-474
+resources/scripts/extensions/slotWatch.spec.tsx
+  s_4cabae41bceed9::t_9c9bfb582f94ee 1-40,42-44,47,49-54,56-62
+  s_4cabae41bceed9::t_40c29d9ceb3f09 41,45-46,48,55
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_559784203f16a4 237-240
+  s_4cabae41bceed9::t_61b868462be320 5,232-233,235-236,241-242
+  s_4cabae41bceed9::t_92b55501f6da9b 14,234
+packages/sdk/types/extensions/registry.d.ts
+  s_4cabae41bceed9::t_275b06b81296e5 57-62,66,75,82,212
+config/extensions.php
+  s_4cabae41bceed9::t_e624cd47c35cc4 21
+packages/sdk/package.json
+  s_4cabae41bceed9::t_e624cd47c35cc4 3
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_61b868462be320 255-259,263,296,298-300,490,617
+  s_4cabae41bceed9::t_559784203f16a4 260-262
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_3608d8a2e51092 91
+packages/hello-world/src/client/ConsoleGreeting.tsx
+  s_4cabae41bceed9::t_275b06b81296e5 1-11
+packages/hello-world/src/client/index.tsx
+  s_4cabae41bceed9::t_275b06b81296e5 2-3
+packages/hello-world/src/client/examples.spec.tsx
+  s_4cabae41bceed9::t_43ace77e73c745 16,66,74-75,77
+  s_4cabae41bceed9::t_548cc404f59a60 76
+  s_4cabae41bceed9::t_73a91ccd883bbd 78-79
+resources/scripts/extensions/slotWatch.ts
+  s_4cabae41bceed9::t_4036bd01335b01 1-9,13-35,39,41-50,61,65-66,68,71-72,77-99
+  s_4cabae41bceed9::t_d194cf121b75ae 10-12,36-38,40,51-60,62-64
+  s_4cabae41bceed9::t_92b55501f6da9b 67,69-70,73-76
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_045e91dcf882bd 7,334-335
+  s_4cabae41bceed9::t_9c9bfb582f94ee 383-428
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_8c89ca13c56045 587-588
+  s_4cabae41bceed9::t_2ef8aa0e448955 1170-1173,1222-1223
+resources/scripts/extensions/Slot.tsx
+  s_4cabae41bceed9::t_61b868462be320 1,4,30,34-35,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f48fdb7d0132f617caf8f0407002b370d478c3c0",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
