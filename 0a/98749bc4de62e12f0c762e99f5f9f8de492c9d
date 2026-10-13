@@ -1,0 +1,20 @@
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_b61b34a9494043 1269
+  s_4cabae41bceed9::t_b597a1b7812afa 1068-1069
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a98749bc4de62e12f0c762e99f5f9f8de492c9d",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
