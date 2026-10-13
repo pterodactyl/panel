@@ -122,7 +122,7 @@ describe('extension install dialog', () => {
         expect(mocks.toastSuccess).toHaveBeenCalledWith('Extension installed', expect.anything());
     });
 
-    it('asks again when a different package is chosen', async () => {
+    it('adds packages picked one at a time and drops the prompt when its package is removed', async () => {
         const user = setup();
 
         upload.mockImplementation(async (config) => {
@@ -139,7 +139,14 @@ describe('extension install dialog', () => {
 
         await user.upload(input, new File(['zip'], 'other.pteroext'));
 
+        expect(within(dialog).getByText('votes.pteroext')).toBeInTheDocument();
+        expect(within(dialog).getByText('other.pteroext')).toBeInTheDocument();
+        expect(within(dialog).getByRole('button', { name: 'Replace votes' })).toBeEnabled();
+
+        await user.click(within(dialog).getByRole('button', { name: 'Remove votes.pteroext' }));
+
         expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
+        expect(within(dialog).queryByText('votes.pteroext')).not.toBeInTheDocument();
         expect(within(dialog).getByRole('button', { name: 'Install' })).toBeEnabled();
     });
 
@@ -163,11 +170,10 @@ describe('extension install dialog', () => {
         await user.click(screen.getAllByRole('button', { name: 'Install' })[0]!);
         const dialog = await screen.findByRole('dialog', { name: 'Install extension' });
 
-        await user.upload(within(dialog).getByLabelText('Extension package'), [
-            new File(['zip'], 'first.pteroext'),
-            new File(['zip'], 'votes.pteroext'),
-            new File(['zip'], 'last.pteroext'),
-        ]);
+        const input = within(dialog).getByLabelText('Extension package');
+
+        await user.upload(input, [new File(['zip'], 'first.pteroext'), new File(['zip'], 'votes.pteroext')]);
+        await user.upload(input, new File(['zip'], 'last.pteroext'));
         await user.click(within(dialog).getByRole('button', { name: 'Install 3' }));
         await user.click(await within(dialog).findByRole('button', { name: 'Replace votes' }));
 

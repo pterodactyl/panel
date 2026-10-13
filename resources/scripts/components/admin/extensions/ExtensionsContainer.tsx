@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, FileArchive, RefreshCw, Settings2, Trash2, UploadCloud } from 'lucide-react';
+import { AlertCircle, FileArchive, RefreshCw, Settings2, Trash2, UploadCloud, X } from 'lucide-react';
 import { getExtensionStates, useExtensionRegistry } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
 import { httpErrorToHuman } from '@/api/http';
@@ -161,6 +161,8 @@ function ReplacementNotice({ replacement }: { replacement: AdminExtensionReplace
     );
 }
 
+const packageKey = (file: File): string => `${file.name}-${file.size}-${file.lastModified}`;
+
 function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
     const [files, setFiles] = useState<File[]>([]);
     const [installed, setInstalled] = useState(0);
@@ -219,22 +221,37 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                         multiple
                         disabled={submitting}
                         onChange={(event) => {
-                            setFiles([...(event.currentTarget.files ?? [])]);
-                            setInstalled(0);
-                            setReplacement(null);
+                            const picked = [...(event.currentTarget.files ?? [])];
+                            const known = new Set(files.map(packageKey));
+
+                            setFiles([...files, ...picked.filter((file) => !known.has(packageKey(file)))]);
+                            event.currentTarget.value = '';
                         }}
                     />
-                    {files.length > 1 && (
+                    {files.length > 0 && (
                         <ul className='mt-3 space-y-1 text-sm'>
                             {files.map((file, index) => (
-                                <li
-                                    key={`${file.name}-${file.size}-${file.lastModified}`}
-                                    className='flex justify-between gap-3'
-                                >
+                                <li key={packageKey(file)} className='flex items-center justify-between gap-3'>
                                     <span className='truncate font-mono'>{file.name}</span>
-                                    <span className={index < installed ? 'text-success' : 'text-muted-foreground'}>
-                                        {index < installed ? 'Installed' : 'Waiting'}
-                                    </span>
+                                    {index < installed ? (
+                                        <span className='text-success'>Installed</span>
+                                    ) : (
+                                        <button
+                                            type='button'
+                                            aria-label={`Remove ${file.name}`}
+                                            disabled={submitting}
+                                            className='text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50'
+                                            onClick={() => {
+                                                setFiles(files.filter((_, other) => other !== index));
+
+                                                if (index === installed) {
+                                                    setReplacement(null);
+                                                }
+                                            }}
+                                        >
+                                            <X className='h-4 w-4' />
+                                        </button>
+                                    )}
                                 </li>
                             ))}
                         </ul>
