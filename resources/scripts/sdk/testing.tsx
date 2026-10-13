@@ -2,6 +2,7 @@ import { registerClassicTheme } from '@/views/classic';
 import { loadViewCatalog } from '@/views/catalog';
 import {
     clearThemeLayers,
+    getViewDefinition,
     registerViewLayer,
     type ViewInput,
     type ViewModel,
@@ -12,6 +13,8 @@ import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
 import { clearThemeSkins, registerSkins } from '@/themes/skins';
 import classic from '@/themes/classic';
 import { isPendingLazyView } from '@/views/lazy';
+import { mountedSlots, mountedViews } from '@/extensions/slotWatch';
+import { loadCodemirrorEditor } from '@/components/elements/LazyCodemirrorEditor';
 import { LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
 import {
     act,
@@ -80,8 +83,9 @@ export class ViewLayerError extends Error {
 }
 
 registerClassicTheme();
-// Views' hooks and fixtures and classic's own views are lazy; loading them here lets a test render them synchronously.
-await Promise.all([loadViewCatalog(), ...Object.keys(classic.views ?? {}).map(preloadView)]);
+// Views' hooks and fixtures, classic's own views and the code editor are lazy; loading them here lets a test
+// render them synchronously.
+await Promise.all([loadViewCatalog(), ...Object.keys(classic.views ?? {}).map(preloadView), loadCodemirrorEditor()]);
 
 export interface ExtensionTestHostOptions {
     extensionId?: string;
@@ -299,7 +303,10 @@ export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions 
     slots?: TestSlots;
     /** An extension's `ui.prefix`, so its prefixed classes merge with the view's as they do in the panel. */
     prefix?: string;
-    /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
+    /**
+     * Fail when a theme or extension layer throws, or when the themes leave out a slot classic renders for
+     * the same fixture (the default); false lets a layer fall back and slots go missing.
+     */
     strict?: boolean;
 }
 export type TestSlots = { readonly [N in SlotName]?: ComponentType<SlotComponentProps<SlotData<N>>> };
@@ -399,6 +406,8 @@ function mount(content: ReactNode, { themes = [], slots = {}, prefix, strict = t
     return current;
 }
 
+const AREA_LAYOUTS = new Set(['layout.account', 'layout.server', 'layout.admin']);
+
 const pendingViews = (themes: readonly ThemeDefinition[]): string[] =>
     themes.flatMap((theme) =>
         Object.entries(theme.views ?? {}).flatMap(([name, view]) => (view && isPendingLazyView(view) ? [name] : []))
@@ -424,13 +433,45 @@ export function renderView<N extends ViewName>(name: N, options: RenderViewOptio
     // The model is the one of the view being rendered.
     const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
     const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };
-
-    return mount(
+    const content = (
         <ViewFixtureProvider fixtures={fixtures} models={models}>
             <LooseView name={name} className={options.className} {...Object(options.input ?? {})} />
-        </ViewFixtureProvider>,
-        { themes, slots: options.slots, prefix: options.prefix, strict: options.strict }
+        </ViewFixtureProvider>
     );
+    const strict = options.strict ?? true;
+    const mountOptions = { slots: options.slots, prefix: options.prefix, strict };
+
+    if (!strict || !themes.length) {
+        return mount(content, { ...mountOptions, themes });
+    }
+
+    // The slots classic renders here, which extensions may mount in, must survive the themes. A slot counts
+    // only while a view that renders it is on the page: a theme can move a view, and its slots go with it. A
+    // theme's app layout draws the area layouts' navigation, so their slots are its to render.
+    mount(content, { ...mountOptions, themes: [] });
+    const expected = mountedSlots();
+    const view = mount(content, { ...mountOptions, themes });
+    const shell = themes.some((theme) => theme.views?.['layout.app']);
+    const owned = new Set<string>(
+        [...mountedViews()]
+            .filter((viewName) => !(shell && AREA_LAYOUTS.has(viewName)))
+            .flatMap((viewName) => getViewDefinition(viewName)?.slots ?? [])
+    );
+    const missing = [...expected].filter((slot) => owned.has(slot) && !mountedSlots().has(slot));
+
+    if (missing.length) {
+        view.unmount();
+        throw new ViewLayerError(
+            name,
+            layerId(0),
+            new Error(
+                `The themes leave out the ${missing.map((slot) => `"${slot}"`).join(', ')} slot${missing.length > 1 ? 's' : ''} ` +
+                    'that classic renders here, so extensions mounted there disappear. Render <Slot name="…" /> or <Default />.'
+            )
+        );
+    }
+
+    return view;
 }
 
 /**

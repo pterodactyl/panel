@@ -65,7 +65,10 @@ export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions 
     slots?: TestSlots;
     /** An extension's `ui.prefix`, so its prefixed classes merge with the view's as they do in the panel. */
     prefix?: string;
-    /** Fail when a theme or extension layer throws (the default); false lets it fall back to the layer below. */
+    /**
+     * Fail when a theme or extension layer throws, or when the themes leave out a slot classic renders for
+     * the same fixture (the default); false lets a layer fall back and slots go missing.
+     */
     strict?: boolean;
 }
 export type TestSlots = {

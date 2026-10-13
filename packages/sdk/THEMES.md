@@ -584,6 +584,8 @@ tracks of `minmax(0, 1fr)` (`grid-cols-1`) so one wide item cannot widen a colum
 
 A rail of icons is too narrow for most slot content. Render its slots in a wider panel beside it, below
 its items, or in a top bar: a shell that is only a rail gives `nav.items.before` and `.after` a top bar.
+Where a slot does sit somewhere narrow, say so with `compact`: `<Slot name='nav.items.after' compact />`
+passes `compact` to the components mounted there, which render a smaller version.
 When such a shell reorders its regions on phones, make the rail, the bar, the area's navigation and the
 page children of one grid, so each breakpoint places them with `grid-template-areas`.
 
@@ -1165,7 +1167,10 @@ types. When Vitest runs under an AI agent it hides what passing tests log; `npx 
 `renderView` is strict: a theme or extension layer that throws, in the view or a nested one, fails the
 render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`, such as
 `The "theme" layer of view "server.graphs" failed: …`. A failure after the first render, such
-as on a click, is thrown by `unmount()`. `{ strict: false }` lets layers fall back as in the panel.
+as on a click, is thrown by `unmount()`. It also fails when the theme leaves out a slot that classic
+renders for the same fixture, while the view that owns the slot is on the page: a view the theme moves
+elsewhere takes its slots along, and a theme's `layout.app` renders the area layouts' slots for them.
+`{ strict: false }` lets layers fall back and slots go missing as in the panel.
 
 <!-- sample: level4-console/src/theme.spec.tsx#tests -->
 ```tsx
@@ -1214,7 +1219,8 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
 ### What a theme must not do
 
 - **Drop slots.** A layer that replaces a view renders its slots, or the extensions mounted there
-  disappear ([level 3](#the-shell-knows-the-area)).
+  disappear ([level 3](#the-shell-knows-the-area)). `renderView` fails on a dropped slot, and the
+  browser console names the layer, the slot and the extensions it hides.
 - **Replace interactive primitives.** Only presentational primitives take a component. Any other is a
   type error, and the panel keeps its own.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.

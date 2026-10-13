@@ -2,6 +2,7 @@ import {
     createContext,
     createElement,
     useContext,
+    useEffect,
     useMemo,
     use,
     useState,
@@ -10,6 +11,7 @@ import {
 } from 'react';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExtensionMount from '@/extensions/ExtensionMount';
+import { viewMounted, watchViewSlots } from '@/extensions/slotWatch';
 import { cn } from '@/lib/cn';
 import {
     getViewChain,
@@ -227,6 +229,17 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
         [base, decision]
     );
     const placeholder = definition.placeholder ?? null;
+    const owners = layers.flatMap(({ id, source }) => (source === 'classic' ? [] : [id])).join(',');
+
+    useEffect(() => viewMounted(definition.name), [definition.name]);
+    // Classic renders every slot of a view; layers above it decide for themselves.
+    useEffect(
+        () =>
+            owners && definition.slots?.length
+                ? watchViewSlots(definition.name, owners.split(','), definition.slots)
+                : undefined,
+        [owners, definition]
+    );
 
     if (decision.status === 'loading') {
         return placeholder;

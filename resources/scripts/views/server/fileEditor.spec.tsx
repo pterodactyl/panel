@@ -33,6 +33,7 @@ vi.mock('@/components/elements/LazyCodemirrorEditor', () => ({
             onChange={(event) => props.onContentChanged?.(event.target.value)}
         />
     ),
+    loadCodemirrorEditor: async () => ({}),
 }));
 
 interface Loaded {

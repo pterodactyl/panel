@@ -13,6 +13,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ExtensionSetupContext, SubuserPermissionsSlotData } from '@pterodactyl/sdk';
+import ConsoleGreeting from './ConsoleGreeting';
 import HelloWorldCard from './HelloWorldCard';
 import SubuserPresets from './SubuserPresets';
 import extension from './index';
@@ -62,12 +63,18 @@ it('registers a console slot, a permissions form slot, and a lazy server page', 
 
     extension.setup(context);
 
-    expect(context.slots.register).toHaveBeenCalledWith('server.console.before', expect.any(Function));
+    expect(context.slots.register).toHaveBeenCalledWith('server.console.before', ConsoleGreeting);
     expect(context.slots.register).toHaveBeenCalledWith('server.users.permissions.before', SubuserPresets);
     expect(context.screens.register).toHaveBeenCalledWith('hello-world', expect.any(Function), {
         badge: expect.any(Function),
     });
     expect(context.views.override).toHaveBeenCalledWith('dashboard.serverCard', { load: expect.any(Function) });
+});
+
+it('shrinks the console greeting to a line where a theme places the slot somewhere narrow', () => {
+    render(<ConsoleGreeting data={createTestServer({ name: 'Example server' })} compact />);
+
+    expect(screen.getByText('Hello, Example server')).toBeTruthy();
 });
 
 it('shows the current user and updates local state and websocket feedback', async () => {

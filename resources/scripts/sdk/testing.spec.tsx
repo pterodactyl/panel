@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Alert from '@/components/elements/alert/Alert';
 import Button from '@/components/elements/Button';
+import Slot from '@/extensions/Slot';
 import { Main } from '@/views/a11y';
 import { lazyView } from '@/views/lazy';
 import { Navigation, NavigationLink } from '@/views/navigation';
@@ -330,6 +331,8 @@ it('gives the app layout the area it renders, from a fixture of each area', () =
         return (
             <>
                 <p>{area.kind === 'server' ? `${area.name} is ${area.state}` : area.kind}</p>
+                <Slot name='nav.items.before' />
+                <Slot name='nav.items.after' />
                 {'nav' in area && (
                     <Navigation items={area.nav.items}>
                         {(item) => <NavigationLink item={item}>{`${item.icon}:${item.label}`}</NavigationLink>}
@@ -376,4 +379,50 @@ it('renders nested views from their fixtures, each from the inputs it is placed 
     expect(container.querySelector('a[aria-label="Survival"]')).toHaveTextContent('Survival');
     expect(container.querySelector('a[aria-label="Lobby"]')).toHaveTextContent('Suspended');
     expect(container.querySelectorAll('[data-ui="list-row"][data-part="status"]')).toHaveLength(3);
+});
+
+describe('slots', () => {
+    const LeftOut = () => <p>console</p>;
+
+    it('fails when the themes leave out a slot classic renders for the fixture', () => {
+        const theme = defineTheme({ views: { 'page.server.console': LeftOut } });
+
+        expect(() => renderView('page.server.console', { themes: [theme] })).toThrow(
+            /leave out the "server\.console\.before", "server\.console\.after" slots/
+        );
+        rendered = renderView('page.server.console', { themes: [theme], strict: false });
+        expect(screen.getByText('console')).toBeVisible();
+    });
+
+    it("leaves the area layouts' slots to a theme's app layout, which draws their navigation", () => {
+        const theme = defineTheme({
+            views: {
+                'layout.app': ({ Default }) => <Default />,
+                'layout.server': ({ children }) => <Main>{children}</Main>,
+            },
+        });
+
+        rendered = renderView('layout.server', { themes: [theme], fixture: 'owner' });
+        expect(screen.getByRole('main')).toBeInTheDocument();
+    });
+
+    it('tells slot components that the theme placed the slot somewhere narrow', () => {
+        const Rail = () => (
+            <>
+                <Slot name='nav.items.before' />
+                <Slot name='nav.items.after' compact />
+            </>
+        );
+
+        rendered = renderView('layout.app', {
+            themes: [defineTheme({ views: { 'layout.app': Rail } })],
+            slots: {
+                'nav.items.before': ({ compact }) => <span>{`before ${compact ? 'compact' : 'full'}`}</span>,
+                'nav.items.after': ({ compact }) => <span>{`after ${compact ? 'compact' : 'full'}`}</span>,
+            },
+        });
+
+        expect(screen.getByText('before full')).toBeVisible();
+        expect(screen.getByText('after compact')).toBeVisible();
+    });
 });

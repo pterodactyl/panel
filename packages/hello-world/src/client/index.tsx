@@ -1,11 +1,7 @@
 import './styles.css';
-import { definePterodactylExtension, type SdkServer } from '@pterodactyl/sdk';
-import HelloWorldCard from './HelloWorldCard';
+import { definePterodactylExtension } from '@pterodactyl/sdk';
+import ConsoleGreeting from './ConsoleGreeting';
 import SubuserPresets from './SubuserPresets';
-
-function ConsoleGreeting({ data }: { data: SdkServer }) {
-    return <HelloWorldCard key={data.attributes.uuid} serverName={data.attributes.name} />;
-}
 
 export default definePterodactylExtension({
     setup({ slots, screens, views }) {

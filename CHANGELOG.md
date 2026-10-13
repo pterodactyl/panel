@@ -4,7 +4,7 @@ This file is a running track of new features and fixes to each version of the pa
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v2.0.0 (unreleased)
-Extension SDK `2.0.0-beta.5`.
+Extension SDK `2.0.0-beta.6`.
 
 ### Fixed
 * Extension web routes under `/extensions/<id>` are now matched before the SPA catch-all route, which previously answered them.
@@ -35,7 +35,9 @@ Extension SDK `2.0.0-beta.5`.
 * Adds themes: extensions with `"type": "theme"` that rebuild the panel stylesheet, skin the UI kit and override views through `defineTheme` (`@pterodactyl/sdk/theme`), with typed settings written as tokens and `<html>` attributes, dark and light schemes with a user switch, and child themes through `theme.extends`.
 * Adds the admin Themes page (activate, preview for me, settings), `p:theme:activate`, `p:theme:reset`, `p:theme:list`, safe mode (`?safe_mode=1`), and a fallback to classic when a theme fails to load.
 * Adds the theme toolchain: `p:extension:make --theme` (`--css-only` for a theme without JavaScript), `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderWithTheme` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
-* `renderView` throws a `ViewLayerError` when a theme or extension layer fails, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
+* `renderView` throws a `ViewLayerError` when a theme or extension layer fails or leaves out a slot classic renders for the same fixture, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
+* A theme or extension layer that leaves out a slot with components logs a browser console warning naming the layer, the slot and the extensions it hides.
+* `<Slot compact />` tells the components mounted in a slot that the theme placed it somewhere narrow, such as an icon rail, through their `compact` prop.
 * Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.
 * Scaffolded extensions set `preserveSymlinks` so a linked SDK resolves its peer types from the extension.
 

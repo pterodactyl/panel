@@ -88,7 +88,7 @@ function commitOverrides(entries: { id: string; component: ComponentType<never> 
 }
 
 describe('<View>', () => {
-    it('stacks classic, the theme chain parent first, then extensions in configured order', async () => {
+    it('stacks classic, the theme chain parent first, then extensions in load order', async () => {
         define('test.order');
         registerLayer('classic', 'classic', { 'test.order': Classic });
         registerLayer('parent', 'theme', { 'test.order': layer('parent') });

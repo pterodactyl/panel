@@ -79,7 +79,7 @@ minor versions, removals are majors.
 
 Screen IDs, paths, navigation, and permissions live in `ui.screens` in the manifest. A screen's `permission` list names the subuser permissions needed to open it and is only accepted on `server` screens; account and admin screens are open to every signed-in user and every root admin respectively. Register each declared screen with `screens.register(id, importer)` during synchronous `setup`. Paths use a static first segment and may include named parameters such as `votes/$tab` (the panel reserves `$id`); duplicate paths, duplicate parameter patterns, and core route collisions reject the offending extension. Screen components receive a `data` prop (`ScreenComponentProps`) with the current `pathname`, `search`, and `params`, so `votes/$tab` reads its value from `data.params.tab`.
 
-The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the configured extension order. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
+The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the load order: an extension after the ones it requires, then alphabetical by id. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
 
 Recoverable render/query failures offer Retry. Failed screen chunks offer an explicit page reload because resetting an error boundary cannot evict a rejected browser module. Enabling, disabling, updating, or changing frontend configuration takes effect on the next full page load; reload after management changes. Already evaluated JavaScript is not unloaded dynamically.
 
@@ -743,7 +743,7 @@ build with either layer and no `ui.prefix` is rejected with the line to add.
 
 Every layout, page and block of the panel is a named view: an engine hook that produces its
 model, and a stack of layers that render it. Classic, the stock UI, is the bottom layer; the
-active theme and its parents stack above it, then extension overrides in the configured order.
+active theme and its parents stack above it, then extension overrides in load order.
 Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders the layer
 below. Themes and extensions write layers the same way: [Level 4](THEMES.md#level-4-rebuild-pages)
 of the themes guide covers models, `Default` and placing views, and the
@@ -757,7 +757,9 @@ Declare the views an extension overrides in `extension.json` under `ui.views`, w
 `views.override(name, layer)` during `setup`. A layer is a component, or `{ load }` with an
 importer the panel calls when the view first renders. Overrides are not exclusive: several
 enabled extensions and the active theme may override the same view, and each layer's `Default`
-renders the one below.
+renders the one below. Extension layers stack in load order, each above the extensions it requires
+and otherwise alphabetical by id, so the last one is outermost and decides whether to render
+`<Default />`. To sit above a given extension, list it in `requires.extensions`.
 
 <!-- sample: extension/extension.json -->
 ```json
@@ -801,6 +803,8 @@ a test. Classes passed to `Default` merge with the layer below's under the exten
 [Styling](#styling)).
 
 An extension's own UI goes in slots with `slots.register`; themes restyle it through the UI kit's skins.
+A slot component receives `data` and `compact`, which is true where the theme places the slot
+somewhere narrow, such as an icon rail; render a smaller version there.
 
 The server card and file details render inside core links. Keep interactive controls in action
 slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
@@ -811,7 +815,9 @@ menus. `dashboard.serverCard.identity`, a piece of the card, renders the `dashbo
 A view renders the slots listed for it in the catalogue, and a layer that replaces it has to
 render them too, or the extensions mounted there disappear. Rendering `Default` renders the
 slots of the layers below. The catalogue's engine slots of a page are rendered by the engine
-around the page view, so no layer renders or drops them.
+around the page view, so no layer renders or drops them. When a layer leaves out a slot that has
+components, the browser console names it:
+`[views] The "<layer>" layer of "<view>" does not render the "<slot>" slot, so "<extension>" does not show there.`
 
 ### File editor
 
@@ -879,7 +885,7 @@ export default function Browser({ model }: ViewProps<'server.files.manager'>) {
 
 While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. A layer that suspends shows the view's placeholder until it renders, as a theme's lazy view does. Core state remains outside the layer. Use `useExtensionAction` for callbacks.
 
-Test a layer with `renderView(name, { themes, model?, fixture?, input?, prefix?, slots?, strict? })` from the testing entry, described under [Testing](THEMES.md#testing). It renders the view synchronously over classic without issuing core queries; nested views read their fixtures. Pass the extension's layers as the views of a theme, `themes: [{ views: { 'dashboard.serverCard': ServerCard } }]`, and its `ui.prefix` as `prefix`. The model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry` build models to pass as `model`, with `vi.fn()` callbacks to assert on `save`, `change` or an action. The render fails with a `ViewLayerError` when a layer throws; `strict: false` lets it fall back as in the panel.
+Test a layer with `renderView(name, { themes, model?, fixture?, input?, prefix?, slots?, strict? })` from the testing entry, described under [Testing](THEMES.md#testing). It renders the view synchronously over classic without issuing core queries; nested views read their fixtures. Pass the extension's layers as the views of a theme, `themes: [{ views: { 'dashboard.serverCard': ServerCard } }]`, and its `ui.prefix` as `prefix`. The model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry` build models to pass as `model`, with `vi.fn()` callbacks to assert on `save`, `change` or an action. The render fails with a `ViewLayerError` when a layer throws, or when the layers leave out a slot classic renders for the same fixture; `strict: false` lets them fall back and drop slots as in the panel.
 
 ## UI kit
 

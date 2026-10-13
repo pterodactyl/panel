@@ -252,7 +252,15 @@ type ResourceActionSlotData<TName extends ResourceActionSlotName> = Extract<
     }
 >;
 
-export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? { data?: undefined } : { data: TData };
+/** How a theme places a slot. */
+export interface SlotPlacement {
+    /** The slot sits somewhere narrow, such as an icon rail, so its components render a smaller version. */
+    readonly compact?: boolean;
+}
+export type SlotComponentProps<TData = unknown> = ([TData] extends [undefined]
+    ? { data?: undefined }
+    : { data: TData }) &
+    SlotPlacement;
 type ServerSlotName =
     | `dashboard.serverRow.${string}`
     | `server.navigation.${'before' | 'after'}`
@@ -285,9 +293,11 @@ export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail
 export type RouteSlotName = { [TName in SlotName]: SlotData<TName> extends RouteSlotData ? TName : never }[SlotName];
 type DataSlotName = Exclude<SlotName, RouteSlotName>;
 /** Route slots share one member, so a component can pass any route slot name it holds. */
-export type SlotProps =
+export type SlotProps = (
     | { name: RouteSlotName; data: RouteSlotData }
-    | { [TName in DataSlotName]: { name: TName } & SlotComponentProps<SlotData<TName>> }[DataSlotName];
+    | { [TName in DataSlotName]: { name: TName } & SlotComponentProps<SlotData<TName>> }[DataSlotName]
+) &
+    SlotPlacement;
 
 export interface SlotRegistration {
     id: number;
@@ -477,7 +487,7 @@ export function getLoadableExtensions(): readonly SiteExtensionEntry[] | undefin
     return entries;
 }
 
-/** Extensions that declare an override of the view, in the configured order. */
+/** Extensions that declare an override of the view, in load order. */
 export function getViewOwners(name: string): readonly string[] {
     return (entries ?? []).filter((entry) => entry.views?.includes(name)).map((entry) => entry.id);
 }
@@ -604,7 +614,7 @@ type ScreenRules = {
 
 const VIEW_NAME = /^[a-z][a-zA-Z0-9]*(?:\.[a-z][a-zA-Z0-9]*)+$/;
 
-/** Several extensions may override one view; they stack in the configured order. */
+/** Several extensions may override one view; they stack in load order. */
 function assertViewNames(entry: SiteExtensionEntry): void {
     const names = entry.views ?? [];
 

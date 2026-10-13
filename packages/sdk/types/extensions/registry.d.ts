@@ -54,11 +54,16 @@ type ResourceActionSlotName = 'panel.nodes.detail.actions' | 'panel.servers.deta
 type ResourceActionSlotData<TName extends ResourceActionSlotName> = Extract<ExtensionResourceContext, {
     kind: TName extends 'panel.nodes.detail.actions' ? 'admin.node' : TName extends 'panel.servers.detail.actions' ? 'admin.server' : TName extends 'panel.eggs.detail.actions' ? 'admin.egg' : 'admin.user';
 }>;
-export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? {
+/** How a theme places a slot. */
+export interface SlotPlacement {
+    /** The slot sits somewhere narrow, such as an icon rail, so its components render a smaller version. */
+    readonly compact?: boolean;
+}
+export type SlotComponentProps<TData = unknown> = ([TData] extends [undefined] ? {
     data?: undefined;
 } : {
     data: TData;
-};
+}) & SlotPlacement;
 type ServerSlotName = `dashboard.serverRow.${string}` | `server.navigation.${'before' | 'after'}` | `server.console.${string}`;
 type DataLessSlotName = `nav.items.${'before' | 'after'}` | `dashboard.${'before' | 'after'}` | `account.navigation.${'before' | 'after'}` | `account.overview.${'before' | 'after'}` | `server.files.${'before' | 'after'}` | `panel.navigation.${'before' | 'after'}` | `panel.overview.${'before' | 'after'}`;
 export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail.form' ? AdminUserFormSlotData : TName extends 'server.users.permissions.before' ? SubuserPermissionsSlotData : TName extends 'server.startup.form' ? StartupFormSlotData : TName extends FileManagerSlotName ? FileManagerSlotData : TName extends 'server.files.rowActions' ? FileRowSlotData : TName extends ResourceActionSlotName ? ResourceActionSlotData<TName> : TName extends ServerSlotName ? Server : TName extends DataLessSlotName ? undefined : RouteSlotData;
@@ -67,14 +72,14 @@ export type RouteSlotName = {
 }[SlotName];
 type DataSlotName = Exclude<SlotName, RouteSlotName>;
 /** Route slots share one member, so a component can pass any route slot name it holds. */
-export type SlotProps = {
+export type SlotProps = ({
     name: RouteSlotName;
     data: RouteSlotData;
 } | {
     [TName in DataSlotName]: {
         name: TName;
     } & SlotComponentProps<SlotData<TName>>;
-}[DataSlotName];
+}[DataSlotName]) & SlotPlacement;
 export interface SlotRegistration {
     id: number;
     extensionId: string;
@@ -204,7 +209,7 @@ export declare function getScreenComponent(extensionId: string, screenId: string
 export declare function getScreenOptions(extensionId: string, screenId: string): Readonly<ScreenOptions> | undefined;
 export declare function getExtensionConfig(extensionId: string): ExtensionConfig;
 export declare function getLoadableExtensions(): readonly SiteExtensionEntry[] | undefined;
-/** Extensions that declare an override of the view, in the configured order. */
+/** Extensions that declare an override of the view, in load order. */
 export declare function getViewOwners(name: string): readonly string[];
 export declare function getViewOverride(extensionId: string, name: string): ExtensionViewOverride | undefined;
 export declare function getExtensionStates(): readonly ExtensionRuntimeState[];
