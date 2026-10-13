@@ -12,7 +12,7 @@ const fills: Record<ButtonState['color'], string> = {
 
 /**
  * Class recipes by primitive and part; a part left out keeps classic's recipe. `npx pterodactyl-theme
- * skins Button` prints classic's skin of a primitive to start from.
+ * skins Button` copies classic's skins of a primitive into src/skins to start from.
  */
 export const skins: ThemeSkins = {
     // Replaces the root recipe; the spinner and label keep classic's.
