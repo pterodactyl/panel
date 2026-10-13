@@ -9,7 +9,6 @@ import { useOpenLoginCheckpoint } from '@/sdk/navigation';
 import { boundField, fixtureField } from '../forms';
 import { implementViews } from '../registry';
 import { useCaptcha } from './captcha';
-import { authPage } from './page';
 import type { CheckpointFormModel, LoginFormModel } from './types';
 
 const required = (message: string) => ({
@@ -162,9 +161,7 @@ const checkpointFixture = (recovery: boolean): CheckpointFormModel => ({
 });
 
 implementViews({
-    'page.auth.login': authPage,
-    'page.auth.checkpoint': authPage,
-    'auth.loginForm': {
+    'page.auth.login': {
         use: useLoginFormModel,
         fixtures: {
             default: () => loginFixture(),
@@ -183,7 +180,7 @@ implementViews({
             submitting: () => loginFixture({ username: 'alex', password: 'correct horse' }, { submitting: true }),
         },
     },
-    'auth.checkpointForm': {
+    'page.auth.checkpoint': {
         use: useCheckpointFormModel,
         fixtures: { code: () => checkpointFixture(false), recovery: () => checkpointFixture(true) },
     },

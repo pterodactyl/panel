@@ -68,14 +68,14 @@ defineView('dashboard.serverCard', {
     ...dashboard,
 });
 
-defineView('page.auth.login', { ...VIEW_PAGES['page.auth.login'], ...login });
+defineView('page.auth.login', {
+    ...VIEW_PAGES['page.auth.login'],
+    slots: ['auth.login.before', 'auth.login.after', 'auth.login.form.after'],
+    ...login,
+});
 defineView('page.auth.checkpoint', { ...VIEW_PAGES['page.auth.checkpoint'], ...login });
-defineView('auth.loginForm', { context: 'auth', slots: ['auth.login.form.after'], ...login });
-defineView('auth.checkpointForm', { context: 'auth', ...login });
 defineView('page.auth.password', { ...VIEW_PAGES['page.auth.password'], ...password });
 defineView('page.auth.passwordReset', { ...VIEW_PAGES['page.auth.passwordReset'], ...password });
-defineView('auth.forgotPasswordForm', { context: 'auth', ...password });
-defineView('auth.resetPasswordForm', { context: 'auth', ...password });
 
 defineView('page.account.overview', {
     ...VIEW_PAGES['page.account.overview'],

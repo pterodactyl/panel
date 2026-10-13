@@ -8,7 +8,7 @@ export default defineTheme({
     views: {
         // The sign-in screen renders without waiting for a chunk.
         'layout.auth': AuthLayout,
-        'auth.loginForm': lazyView(() => import('./views/LoginForm')),
+        'page.auth.login': lazyView(() => import('./views/LoginPage')),
         'layout.app': lazyView(() => import('./views/AppShell')),
         'layout.server': lazyView(() => import('./views/ServerLayout')),
         'server.power': lazyView(() => import('./views/Power')),

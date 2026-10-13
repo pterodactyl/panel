@@ -1218,7 +1218,7 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
   type error, and is ignored with a warning at runtime.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.
 - **Bypass the engine on forms.** A layer over a form spreads each field's `fieldProps` (name, type,
-  autocomplete, value and handlers) onto an input. A layer over `auth.loginForm` also submits through
+  autocomplete, value and handlers) onto an input. A layer over `page.auth.login` also submits through
   `model.submit`, renders `Captcha` when the panel requires one, and keeps the `auth.login.form.after`
   slot.
 
@@ -1290,7 +1290,7 @@ included: the engine converts the terminal's colours to the hex and `rgba()` its
 | `--background` | Page background. | `*-background` | Dialog, DropdownMenuItem, Input, NumberInput, SpinnerOverlay, Switch and 7 more |
 | `--foreground` | Body text. | `*-foreground` | Alert, Badge, Button, Card, ChartCard, Code and 34 more |
 | `--card` | Cards, rows and raised panels. | `*-card` | Card, Dialog, FileInput, ListRow, Select, Stat and 15 more |
-| `--card-foreground` | Text on cards. | `*-card-foreground` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm`, `server.schedule`, `server.schedules` |
+| `--card-foreground` | Text on cards. | `*-card-foreground` | `page.auth.checkpoint`, `page.auth.login`, `page.auth.password`, `page.auth.passwordReset`, `server.schedule`, `server.schedules` |
 | `--popover` | Raised fills: menus, tooltips, hover fills, stat tiles and chart cards. | `*-popover` | Badge, Button, ChartCard, CopyOnClick, DropdownMenu, FileInput and 13 more |
 | `--popover-foreground` | Text on popovers. | `*-popover-foreground` | DropdownMenu, Tooltip |
 | `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 12 more |
@@ -1346,7 +1346,7 @@ included: the engine converts the terminal's colours to the hex and `rgba()` its
 | `--layout-content-width` | Width of page content (`max-w-panel`). | `*-panel` | PageFooter, `layout.admin`, `layout.app` |
 | `--layout-gutter` | The least space beside page content, which centres when wider; `page-width` applies both. |  | PageFooter |
 | `--layout-page-spacing` | Space above and below a page's content (`1rem`, `1.5rem` from `sm`). |  |  |
-| `--layout-auth-width` | Width of the sign-in card (`max-w-auth`). | `*-auth` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm` |
+| `--layout-auth-width` | Width of the sign-in card (`max-w-auth`). | `*-auth` | `page.auth.checkpoint`, `page.auth.login`, `page.auth.password`, `page.auth.passwordReset` |
 | `--layout-sidebar-width` | Width of sidebars (`w-sidebar`). | `*-sidebar` | `layout.admin` |
 | `--spinner-overlay-opacity` | Opacity of the background behind a loading overlay. |  | SpinnerOverlay |
 
@@ -1477,10 +1477,10 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `page.account.api` | account | `PageStatusModel` |  |  | `account.api.before` `account.api.after` | default, loading, error |
 | `page.account.overview` | account | `AccountOverviewModel` |  | `account.overview.before` `account.overview.after` |  | default, twoFactorRequired |
 | `page.account.ssh` | account | `PageStatusModel` |  |  | `account.ssh.before` `account.ssh.after` | default, loading, error |
-| `page.auth.checkpoint` | auth | `AuthPageModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | default |
-| `page.auth.login` | auth | `AuthPageModel` |  |  | `auth.login.before` `auth.login.after` | default |
-| `page.auth.password` | auth | `AuthPageModel` |  |  | `auth.password.before` `auth.password.after` | default |
-| `page.auth.passwordReset` | auth | `AuthPageModel` |  |  | `auth.passwordReset.before` `auth.passwordReset.after` | default |
+| `page.auth.checkpoint` | auth | `CheckpointFormModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | code, recovery |
+| `page.auth.login` | auth | `LoginFormModel` |  | `auth.login.form.after` | `auth.login.before` `auth.login.after` | default, invalid, submitting |
+| `page.auth.password` | auth | `ForgotPasswordFormModel` |  |  | `auth.password.before` `auth.password.after` | default, invalid |
+| `page.auth.passwordReset` | auth | `ResetPasswordFormModel` |  |  | `auth.passwordReset.before` `auth.passwordReset.after` | default, mismatch |
 | `page.dashboard` | app | `PageStatusModel` |  |  |  | default, loading, error |
 | `page.server.activity` | server | `ActivityPageModel` |  |  | `server.activity.before` `server.activity.after` | default |
 | `page.server.backups` | server | `PageStatusModel` |  |  | `server.backups.before` `server.backups.after` | default, loading, error |
@@ -1509,10 +1509,6 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `account.twoFactor` | account | `AccountTwoFactorModel` |  |  | disabled, enabled, setup, setupLoading, disabling, recoveryTokens |
 | `activity.log` | app | `ActivityLogModel` | `scope: ActivityScope` |  | account, server, filtered, empty, paged, loading, error |
 | `app.search` | app | `AppSearchModel` |  |  | closed, results, loading, none, short, error |
-| `auth.checkpointForm` | auth | `CheckpointFormModel` |  |  | code, recovery |
-| `auth.forgotPasswordForm` | auth | `ForgotPasswordFormModel` |  |  | default, invalid |
-| `auth.loginForm` | auth | `LoginFormModel` |  | `auth.login.form.after` | default, invalid, submitting |
-| `auth.resetPasswordForm` | auth | `ResetPasswordFormModel` |  |  | default, mismatch |
 | `dashboard.serverCard` | app | `ServerCardModel` | `server: Server`<br>parts: `identity`, `address`, `metrics` | `dashboard.serverRow.name.after` | running, offline, suspended, loading |
 | `dashboard.serverList` | app | `ServerListModel` |  | `dashboard.before` `dashboard.after` `dashboard.serverRow.before` `dashboard.serverRow.metrics.after` `dashboard.serverRow.after` | servers, empty, loading |
 | `server.allocations` | server | `ServerAllocationsModel` |  |  | allocations, full, unmanaged, readOnly, empty, loading |

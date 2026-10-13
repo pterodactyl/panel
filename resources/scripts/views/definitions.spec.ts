@@ -52,7 +52,7 @@ describe('view implementations', () => {
     it('loads each page with its route, so a sign-in through to a server backup never waits on another chunk', async () => {
         // The views each page places, as classic composes it.
         const journey = [
-            { routes: ['/auth', '/auth/login'], views: ['layout.auth', 'page.auth.login', 'auth.loginForm'] },
+            { routes: ['/auth', '/auth/login'], views: ['layout.auth', 'page.auth.login'] },
             {
                 routes: ['/authenticated', '/authenticated/'],
                 views: ['layout.app', 'page.dashboard', 'dashboard.serverList', 'dashboard.serverCard'],

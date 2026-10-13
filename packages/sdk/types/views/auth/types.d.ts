@@ -3,11 +3,10 @@ import type { ComponentType } from 'react';
 import type { RouteSlotData } from "../../extensions/registry.js";
 import type { CorePanelDestination } from "../../sdk/navigation.js";
 import type { FormModel } from "../forms.js";
-/** The sign-in pages are compositions of their form; they hold nothing of their own. */
-export type AuthPageModel = Readonly<Record<never, never>>;
 /**
- * Every auth form: the engine fetches the CSRF cookie, runs the reCAPTCHA, maps errors to toasts and
- * redirects. Place `Captcha` inside the form when it is set, or a captcha-protected panel cannot sign in.
+ * Every sign-in page is a form: the engine fetches the CSRF cookie, runs the reCAPTCHA, maps errors to
+ * toasts and redirects. Place `Captcha` inside the form when it is set, or a captcha-protected panel cannot
+ * sign in.
  */
 interface AuthFormModel<F extends string> extends FormModel<F> {
     readonly Captcha: ComponentType | null;
@@ -34,14 +33,10 @@ export interface ResetPasswordFormModel extends AuthFormModel<'password' | 'pass
 }
 declare module '../registry' {
     interface ViewModels {
-        'page.auth.login': AuthPageModel;
-        'page.auth.checkpoint': AuthPageModel;
-        'page.auth.password': AuthPageModel;
-        'page.auth.passwordReset': AuthPageModel;
-        'auth.loginForm': LoginFormModel;
-        'auth.checkpointForm': CheckpointFormModel;
-        'auth.forgotPasswordForm': ForgotPasswordFormModel;
-        'auth.resetPasswordForm': ResetPasswordFormModel;
+        'page.auth.login': LoginFormModel;
+        'page.auth.checkpoint': CheckpointFormModel;
+        'page.auth.password': ForgotPasswordFormModel;
+        'page.auth.passwordReset': ResetPasswordFormModel;
     }
 }
 export {};

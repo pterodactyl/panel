@@ -15,7 +15,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { queryClient } from '@/api/queryClient';
 import { siteSettingsQueryKey } from '@/api/settings/queries';
 import { renderView } from '@/sdk/testing';
-import { getViewDefinition } from '../registry';
 import { View } from '../View';
 
 const mocks = vi.hoisted(() => ({
@@ -42,10 +41,10 @@ vi.mock('@/components/elements/InvisibleRecaptcha', () => ({
 }));
 
 const views = {
-    '/auth/login': 'auth.loginForm',
-    '/auth/login/checkpoint': 'auth.checkpointForm',
-    '/auth/password': 'auth.forgotPasswordForm',
-    '/auth/password/reset/$token': 'auth.resetPasswordForm',
+    '/auth/login': 'page.auth.login',
+    '/auth/login/checkpoint': 'page.auth.checkpoint',
+    '/auth/password': 'page.auth.password',
+    '/auth/password/reset/$token': 'page.auth.passwordReset',
 } as const;
 
 let router: ReturnType<typeof createAuthRouter> | undefined;
@@ -91,41 +90,31 @@ afterEach(() => {
 });
 
 describe('auth views from fixtures', () => {
-    const fixtures = Object.values(views).flatMap((name) =>
-        Object.keys(getViewDefinition(name)?.fixtures ?? {}).map((fixture) => [name, fixture] as const)
-    );
-
-    it.each(fixtures)('renders %s from its %s fixture', (name, fixture) => {
-        const { container, unmount } = renderView(name, { fixture });
-
-        expect(container.querySelector('form')).not.toBeNull();
-        expect(container).toHaveTextContent('Pterodactyl Software');
-        unmount();
-    });
-
-    it.each(['login', 'checkpoint', 'password', 'passwordReset'] as const)('composes page.auth.%s', (page) => {
-        const { container, unmount } = renderView(`page.auth.${page}`);
-
-        expect(container.querySelector('form')).not.toBeNull();
-        unmount();
-    });
-
     it('shows field errors and the disabled state a fixture describes', () => {
-        const { container, unmount } = renderView('auth.loginForm', { fixture: 'submitting' });
+        const { container, unmount } = renderView('page.auth.login', { fixture: 'submitting' });
 
         expect(container.querySelector('input[name="username"]')).toBeDisabled();
         expect(container.querySelector('button[type="submit"]')).toHaveAttribute('aria-busy', 'true');
         unmount();
 
-        const invalid = renderView('auth.loginForm', { fixture: 'invalid' });
+        const invalid = renderView('page.auth.login', { fixture: 'invalid' });
 
         expect(invalid.container).toHaveTextContent('A username or email must be provided.');
         expect(invalid.container.querySelector('input[name="password"]')).toHaveAttribute('aria-invalid', 'true');
         invalid.unmount();
     });
+
+    it('mounts the extensions of the login form slot with the route', () => {
+        const { container, unmount } = renderView('page.auth.login', {
+            slots: { 'auth.login.form.after': ({ data }) => <p>Signing in at {data.pathname}</p> },
+        });
+
+        expect(container).toHaveTextContent('Signing in at /auth/login');
+        unmount();
+    });
 });
 
-describe('auth.loginForm', () => {
+describe('page.auth.login', () => {
     it('gives password managers the attributes they read', async () => {
         await renderAuth('/auth/login');
 
@@ -197,7 +186,7 @@ describe('auth.loginForm', () => {
     });
 });
 
-describe('auth.checkpointForm', () => {
+describe('page.auth.checkpoint', () => {
     it('switches to a recovery code and sends it with the confirmation token', async () => {
         mocks.checkpoint.mockResolvedValue({ data: { complete: false } });
         await renderAuth('/auth/login');

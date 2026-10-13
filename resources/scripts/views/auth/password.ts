@@ -5,7 +5,6 @@ import { parseEmailSearch } from '@/router/pageSearch';
 import { boundField, fixtureField } from '../forms';
 import { implementViews } from '../registry';
 import { useCaptcha } from './captcha';
-import { authPage } from './page';
 import type { ForgotPasswordFormModel, ResetPasswordFormModel } from './types';
 
 const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -146,16 +145,14 @@ const resetFixture = (mismatch: boolean): ResetPasswordFormModel => ({
 });
 
 implementViews({
-    'page.auth.password': authPage,
-    'page.auth.passwordReset': authPage,
-    'auth.forgotPasswordForm': {
+    'page.auth.password': {
         use: useForgotPasswordFormModel,
         fixtures: {
             default: () => forgotFixture(),
             invalid: () => forgotFixture('A valid email address must be provided to continue.'),
         },
     },
-    'auth.resetPasswordForm': {
+    'page.auth.passwordReset': {
         use: useResetPasswordFormModel,
         fixtures: { default: () => resetFixture(false), mismatch: () => resetFixture(true) },
     },

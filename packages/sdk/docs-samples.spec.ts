@@ -45,7 +45,7 @@ it('builds the sample theme entry and records the views it overrides', async () 
 
         expect(info.views).toEqual([
             'layout.auth',
-            'auth.loginForm',
+            'page.auth.login',
             'layout.app',
             'layout.server',
             'server.power',
