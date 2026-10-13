@@ -60,7 +60,16 @@ export default function ImagePreviewModal({ open, name, src, onClose }: Props) {
     }, [name, src]);
 
     return (
-        <Dialog open={open} title={name} onClose={onClose}>
+        <Dialog
+            open={open}
+            title='Image Preview'
+            description={
+                <>
+                    You are currently previewing <code className='font-mono'>{name}</code>.
+                </>
+            }
+            onClose={onClose}
+        >
             <div className='flex min-h-48 items-center justify-center rounded-sm bg-background p-4'>
                 {previewSrc ? (
                     <img src={previewSrc} alt={name} className='max-h-[70vh] max-w-full object-contain' />
