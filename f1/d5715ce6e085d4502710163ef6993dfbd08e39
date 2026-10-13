@@ -1,0 +1,47 @@
+resources/scripts/views/definitions.spec.ts
+  s_4cabae41bceed9::t_e0a598c31793cd 45-47
+  s_4cabae41bceed9::t_20f2f1351581d4 42,44
+app/Services/Themes/ThemeRepository.php
+  s_4cabae41bceed9::t_63ede337a21de1 123-124
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_4cabae41bceed9::t_fb43e657250640 207-209
+scripts/generate-sdk-views.mjs
+  s_4cabae41bceed9::t_63ede337a21de1 8-9
+  s_4cabae41bceed9::t_20f2f1351581d4 31-33,49
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_fb43e657250640 45,47,57
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_63ede337a21de1 17,23
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_a51a0c0ad30743 6-7,10
+app/Services/Themes/ThemeDefinition.php
+  s_4cabae41bceed9::t_63ede337a21de1 14
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_fb43e657250640 35,47,58
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_63ede337a21de1 719,895,954-955,1109-1110,1455
+resources/scripts/views/navigation.tsx
+  s_4cabae41bceed9::t_1837f04ec9c794 198-208
+packages/sdk/README.md
+  s_4cabae41bceed9::t_63ede337a21de1 570-571,751,760
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_04e4e494603f50 115
+resources/scripts/views/lazy.ts
+  s_4cabae41bceed9::t_1837f04ec9c794 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f1d5715ce6e085d4502710163ef6993dfbd08e39",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
