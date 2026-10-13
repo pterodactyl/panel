@@ -64,6 +64,7 @@ const setting = (
     object: 'theme_setting',
     attributes: {
         help: null,
+        tab: null,
         options: [],
         min: null,
         max: null,
@@ -187,5 +188,44 @@ describe('themes page', () => {
         expect(JSON.parse(String(patch.data))).toEqual({ settings: { accent: '#445566', compact: false } });
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(mocks.toastSuccess).toHaveBeenCalledWith('Theme settings saved', expect.anything());
+    });
+
+    it('splits settings that name a tab into sections', async () => {
+        http.defaults.adapter = async (config) => {
+            requests(config);
+
+            if (config.url?.endsWith('/settings')) {
+                return respond(config, {
+                    object: 'list',
+                    data: [
+                        setting({
+                            key: 'accent',
+                            type: 'color',
+                            label: 'Accent',
+                            default: '#8b5cf6',
+                            value: '#8b5cf6',
+                            tab: 'Colours',
+                        }),
+                        setting({
+                            key: 'compact',
+                            type: 'toggle',
+                            label: 'Compact spacing',
+                            default: false,
+                            value: false,
+                        }),
+                    ],
+                });
+            }
+
+            return respond(config, config.method === 'get' ? themes : themes.data[1]);
+        };
+        const user = setup();
+        const card = (await screen.findByRole('heading', { name: 'Aurora' })).closest('article')!;
+
+        await user.click(within(card).getByRole('button', { name: 'Settings' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Aurora settings' });
+
+        expect(await within(dialog).findByText('Section')).toBeInTheDocument();
+        expect(within(dialog).getByText('Compact spacing')).toBeInTheDocument();
     });
 });

@@ -30,6 +30,7 @@ class ThemeSettingResource extends AdminResource
             'type' => $setting->type,
             'label' => $setting->label,
             'help' => $setting->help,
+            'tab' => $setting->tab,
             'default' => $setting->default,
             'value' => $this->resource['value'],
             'options' => array_map(fn (string $value, string $label): array => ['value' => $value, 'label' => $label], array_keys($setting->options), $setting->options),

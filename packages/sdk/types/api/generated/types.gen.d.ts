@@ -707,6 +707,7 @@ export type AdminThemeSettingAttributes = {
     type: 'color' | 'select' | 'toggle' | 'number' | 'text' | 'image';
     label: string;
     help: string | null;
+    tab: string | null;
     default: string | number | boolean | null;
     value: string | number | boolean | null;
     options: Array<{

@@ -602,6 +602,13 @@
                                     "null"
                                 ]
                             },
+                            "tab": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "The section of the settings dialog the setting sits in; settings without one go under General."
+                            },
                             "default": {
                                 "type": [
                                     "string",

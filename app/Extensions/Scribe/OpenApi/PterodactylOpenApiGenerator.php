@@ -601,6 +601,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'type' => 'select',
             'label' => 'Navigation',
             'help' => 'Where the main navigation sits.',
+            'tab' => 'Layout',
             'default' => 'side',
             'value' => 'side',
             'options' => [['value' => 'side', 'label' => 'Sidebar']],
@@ -621,7 +622,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             Arr::set($schema, "properties.{$limit}", ['type' => 'number', 'nullable' => true, 'example' => null]);
         }
 
-        foreach (['help', 'unit', 'max_length', 'max_kilobytes'] as $field) {
+        foreach (['help', 'tab', 'unit', 'max_length', 'max_kilobytes'] as $field) {
             Arr::set($schema, "properties.{$field}.nullable", true);
         }
 

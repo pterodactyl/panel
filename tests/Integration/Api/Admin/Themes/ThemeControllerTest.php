@@ -28,7 +28,7 @@ beforeEach(function (): void {
     writeTheme('aurora', [
         'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#8b5cf6', 'token' => '--accent'],
         'radius' => ['type' => 'number', 'label' => 'Radius', 'default' => 0.5, 'min' => 0, 'max' => 2, 'step' => 0.25, 'unit' => 'rem', 'token' => '--radius'],
-        'navigation' => ['type' => 'select', 'label' => 'Navigation', 'options' => ['side' => 'Sidebar', 'top' => 'Top bar'], 'default' => 'side', 'attribute' => 'data-aurora-nav'],
+        'navigation' => ['type' => 'select', 'label' => 'Navigation', 'tab' => 'Layout', 'options' => ['side' => 'Sidebar', 'top' => 'Top bar'], 'default' => 'side', 'attribute' => 'data-aurora-nav'],
         'compact' => ['type' => 'toggle', 'label' => 'Compact', 'default' => false, 'attribute' => 'data-density'],
         'tagline' => ['type' => 'text', 'label' => 'Tagline', 'maxLength' => 10],
         'logo' => ['type' => 'image', 'label' => 'Logo', 'token' => '--brand-logo'],
@@ -118,6 +118,7 @@ test('returns each setting with its value', function (): void {
     expect($settings['accent'])->toMatchArray(['type' => 'color', 'default' => '#8b5cf6', 'value' => '#8b5cf6']);
     expect($settings['radius'])->toMatchArray(['min' => 0, 'max' => 2, 'step' => 0.25, 'unit' => 'rem']);
     expect($settings['navigation']['options'])->toBe([['value' => 'side', 'label' => 'Sidebar'], ['value' => 'top', 'label' => 'Top bar']]);
+    expect($settings['navigation']['tab'])->toBe('Layout')->and($settings['accent']['tab'])->toBeNull();
     expect($settings['tagline']['max_length'])->toBe(10);
     expect($settings['logo'])->toMatchArray(['value' => null, 'max_kilobytes' => 10240])->and($settings['logo']['accept'])->toContain('image/svg+xml');
     $this->getJson(route('api.admin.themes.settings', ['theme' => 'classic']))->assertOk()->assertJsonPath('data', []);

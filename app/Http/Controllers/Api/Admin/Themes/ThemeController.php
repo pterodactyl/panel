@@ -75,6 +75,7 @@ class ThemeController extends AdminApiController
                 'type' => 'color',
                 'label' => 'Accent',
                 'help' => null,
+                'tab' => null,
                 'default' => '#8b5cf6',
                 'value' => '#8b5cf6',
                 'options' => [],

@@ -45,6 +45,7 @@ final readonly class ThemeSetting
         public string $label,
         public string|int|float|bool|null $default = null,
         public ?string $help = null,
+        public ?string $tab = null,
         public ?string $token = null,
         public ?string $attribute = null,
         public array $options = [],
@@ -64,6 +65,7 @@ final readonly class ThemeSetting
             label: $data['label'],
             default: $data['default'] ?? null,
             help: $data['help'] ?? null,
+            tab: $data['tab'] ?? null,
             token: $data['token'] ?? null,
             attribute: $data['attribute'] ?? null,
             options: $data['options'] ?? [],
@@ -99,6 +101,10 @@ final readonly class ThemeSetting
             ->normalizeUsing(fn (mixed $value): mixed => $value ?? $this->default);
         if ($this->help !== null) {
             $definition->help($this->help);
+        }
+
+        if ($this->tab !== null) {
+            $definition->tab($this->tab);
         }
 
         return match ($this->type) {

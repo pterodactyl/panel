@@ -14,6 +14,7 @@ import {
 } from '@/api/admin/themes/queries';
 import { httpErrorToHuman } from '@/api/http';
 import SettingField from '@/components/admin/extensions/SettingField';
+import SettingsSections from '@/components/admin/extensions/SettingsSections';
 import Button from '@/components/elements/Button';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -28,7 +29,7 @@ export const settingField = (setting: AdminThemeSetting): AdminExtensionSettingF
         [setting.help, setting.type === 'number' && setting.unit ? `In ${setting.unit}.` : null]
             .filter(Boolean)
             .join(' ') || null,
-    tab: null,
+    tab: setting.tab,
     field: setting.type === 'image' ? 'file' : setting.type,
     options: setting.options,
     value: setting.value,
@@ -99,6 +100,22 @@ export default function ThemeSettingsDialog({
         onClear: () => clear.mutate(clearAdminThemeImageInput(theme.id, setting.key)),
     });
 
+    const renderSetting = (key: string) => {
+        const setting = settings.find((candidate) => candidate.key === key);
+
+        return (
+            setting && (
+                <SettingField
+                    key={setting.key}
+                    field={settingField(setting)}
+                    value={setting.key in values ? values[setting.key] : setting.value}
+                    onChange={change(setting)}
+                    file={setting.type === 'image' ? fileActions(setting) : undefined}
+                />
+            )
+        );
+    };
+
     return (
         <Dialog
             open={open}
@@ -110,18 +127,14 @@ export default function ThemeSettingsDialog({
             <SpinnerOverlay visible={update.isPending} />
             {error && <Alert type='danger'>{httpErrorToHuman(error)}</Alert>}
             {!error && !data && isFetching && <Spinner size='large' centered />}
-            {!error && data && (
-                <div className='space-y-5'>
-                    {settings.map((setting) => (
-                        <SettingField
-                            key={setting.key}
-                            field={settingField(setting)}
-                            value={setting.key in values ? values[setting.key] : setting.value}
-                            onChange={change(setting)}
-                            file={setting.type === 'image' ? fileActions(setting) : undefined}
-                        />
-                    ))}
-                </div>
+            {!error && data && settings.some((setting) => setting.tab) && (
+                <SettingsSections
+                    schema={settings.map(settingField)}
+                    renderField={(field) => renderSetting(field.input)}
+                />
+            )}
+            {!error && data && !settings.some((setting) => setting.tab) && (
+                <div className='space-y-5'>{settings.map((setting) => renderSetting(setting.key))}</div>
             )}
             <div className='mt-6 flex flex-wrap justify-end'>
                 <Button

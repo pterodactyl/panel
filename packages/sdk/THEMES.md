@@ -896,7 +896,8 @@ extensions place blocks in those slots.
 
 `theme.settings` in the manifest declares values that administrators change on
 **Admin > Themes**. Each setting has a `type`, a `label`, an optional `help` and `default`, and writes
-its value to a token (`token`), an attribute on `<html>` (`attribute`), both, or neither.
+its value to a token (`token`), an attribute on `<html>` (`attribute`), both, or neither. A `tab` puts
+it in a section of the settings dialog, picked from a list; settings without one go under General.
 
 <!-- sample: settings/extension.json -->
 ```json
