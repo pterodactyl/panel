@@ -57,29 +57,6 @@ final class ExtensionStylesheetInspector
     }
 
     /**
-     * The URLs a stylesheet would fetch from another origin: `url()` arguments and strings
-     * (which `@import` and `image-set()` take as well) that start with a scheme other than
-     * `data:` or with `//`. CSS escapes are decoded first, so `ht\74 tp:` is found too.
-     *
-     * @return list<string>
-     */
-    public function remoteReferences(string $css): array
-    {
-        $css = preg_replace('~/\*.*?(?:\*/|$)~s', '', $css) ?? $css;
-        preg_match_all('~url\(\s*([^\'")\s][^)\s]*)\s*\)|"((?:[^"\\\\]|\\\\.)*)"|\'((?:[^\'\\\\]|\\\\.)*)\'~s', $css, $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL);
-
-        $remote = [];
-        foreach ($matches as $match) {
-            $reference = mb_trim($this->unescape($match[3] ?? $match[2] ?? $match[1] ?? ''));
-            if (preg_match('~^(?://|(?!data:)[a-z][a-z0-9+.-]*:)~i', $reference) === 1) {
-                $remote[] = $reference;
-            }
-        }
-
-        return array_values(array_unique($remote));
-    }
-
-    /**
      * The selectors in `@layer utilities` that are not built on a utility class with the
      * given prefix and the custom properties declared in `@layer theme` without it. With no
      * prefix every rule and property in those layers is reported.
@@ -144,11 +121,6 @@ final class ExtensionStylesheetInspector
         }
 
         return ['utilities' => array_values(array_unique($utilities)), 'theme' => array_values(array_unique($theme))];
-    }
-
-    private function unescape(string $value): string
-    {
-        return preg_replace_callback('/\\\\(?:([0-9a-f]{1,6})\s?|(.))/is', fn (array $match): string => $match[2] ?? (mb_chr((int) hexdec($match[1] ?? '')) ?: ''), $value, flags: PREG_UNMATCHED_AS_NULL) ?? $value;
     }
 
     /**

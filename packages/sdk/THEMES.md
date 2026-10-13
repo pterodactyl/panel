@@ -115,8 +115,12 @@ light sets its own light colours.
 ### Fonts
 
 Ship font files with the theme and reference them relative to the stylesheet; the build copies them
-beside `dist/theme.css`. Set `--font-sans` (body) and `--font-header` (headings) in `@theme`. Fonts from
-another origin, such as a CDN, are refused.
+beside `dist/theme.css`. Set `--font-sans` (body) and `--font-header` (headings) in `@theme`.
+
+Fonts and images from another origin work too: `@import url('https://fonts.googleapis.com/css2?…');`
+after the entry import (the build moves it to the top of `dist/theme.css`, where CSS requires it), or a
+`url(https://…)` in `@font-face`. The panel does not block them. Every visitor's browser then requests
+that host, and the theme looks broken while it is down, so bundling is the safer default.
 
 ### Shadows
 
@@ -1196,7 +1200,7 @@ rendered = renderView('layout.app', {
 ### Doctor and pack
 
 `npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, the
-[budgets](#budgets), remote URLs, view names, whether the stylesheet was built against this panel's
+[budgets](#budgets), view names, whether the stylesheet was built against this panel's
 classes, and for a child theme, over the current builds of its parents.
 
 `npm run pack` writes a `.pteroext` archive to install on another panel, replacing an earlier one;
@@ -1208,9 +1212,6 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
 
 ### What a theme must not do
 
-- **Load from another origin.** Doctor, pack, install and enable refuse CSS that loads anything from
-  another origin: `@import url(https://…)`, a font on a CDN, any `http:` or `//` URL. Data URLs are
-  allowed.
 - **Drop slots.** A layer that replaces a view renders its slots, or the extensions mounted there
   disappear ([level 3](#the-shell-knows-the-area)).
 - **Replace interactive primitives.** Only presentational primitives take a component. Any other is a

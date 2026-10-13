@@ -194,13 +194,23 @@ test('doctor and enable refuse theme builds that load remote files, outgrow thei
     $this->artisan('p:extension:doctor', ['path' => $path])->expectsOutputToContain($message)->assertFailed();
     expect(fn () => app(InstallsExtensions::class)->install($path, enable: true))->toThrow(InvalidExtensionException::class, $message);
 })->with([
-    'a remote import' => [['theme.css' => '@import url("https://fonts.example.com/inter.css");'], 'loads "https://fonts.example.com/inter.css" from another origin'],
-    'a protocol-relative font' => [['theme.css' => '@font-face{src:url(//cdn.example.com/a.woff2)}'], 'loads "//cdn.example.com/a.woff2"'],
-    'an escaped scheme' => [['theme.css' => 'a{background:url("h\\74 tp://x.example/a.png")}'], 'loads "http://x.example/a.png"'],
     'an oversized stylesheet' => [['theme.css' => str_repeat('a', 251 * 1024)], 'ships dist/theme.css at 251 KB'],
     'an oversized entry' => [['client.js' => str_repeat('a', 201 * 1024)], 'ships dist/client.js at 201 KB'],
     'an unknown core view' => [['theme.json' => '{"core":"f1x7ure0c0re0000","views":["server.powr","billing.balance","layout.app"]}'], 'overrides views the panel does not have: server.powr.'],
 ]);
+
+test('a theme may load fonts and images from other origins', function (): void {
+    $path = themePackage('aurora', files: [
+        'theme.css' => '@import url("https://fonts.example.com/inter.css");@font-face{src:url(//cdn.example.com/a.woff2)}',
+    ]);
+
+    $this->artisan('p:extension:doctor', ['path' => $path])->assertSuccessful();
+    app(InstallsExtensions::class)->install($path, enable: true);
+
+    app(ExtensionRepository::class)->flushDiscovery();
+
+    expect(app(ExtensionRepository::class)->enabled()->has('aurora'))->toBeTrue();
+});
 
 test('doctor warns when a theme stylesheet was built against other core classes', function (): void {
     $path = themePackage('aurora', files: ['theme.json' => '{"core":"0ther0000000hash","sdk":"2.0.0-beta.5"}']);

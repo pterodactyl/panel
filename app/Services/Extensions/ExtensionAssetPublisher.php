@@ -243,13 +243,6 @@ class ExtensionAssetPublisher
 
     private function themeBuildReason(ExtensionManifest $manifest): ?string
     {
-        foreach (ExtensionDistFiles::list($manifest->path('dist')) as $relative => $path) {
-            $remote = pathinfo($path, PATHINFO_EXTENSION) === 'css' ? $this->stylesheets->remoteReferences(File::get($path)) : [];
-            if ($remote !== []) {
-                return "Theme \"{$manifest->id}\" loads \"{$remote[0]}\" from another origin in dist/{$relative}; bundle fonts and images into the build instead.";
-            }
-        }
-
         // Both files exist by now: missingBuildReason() checked them.
         foreach ([[$manifest->theme?->stylesheet, ThemeBuild::STYLESHEET_BUDGET], [$manifest->uiEntry, ThemeBuild::ENTRY_BUDGET]] as [$file, $budget]) {
             $size = $file === null ? 0 : File::size($manifest->path(...explode('/', $file)));
