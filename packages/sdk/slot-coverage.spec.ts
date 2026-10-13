@@ -21,7 +21,7 @@ const legacySlotNames = [
 ] as const;
 
 const anchorFiles = [
-    '../../resources/scripts/themes/classic/views/auth/LoginForm.tsx',
+    '../../resources/scripts/themes/classic/views/auth/LoginPage.tsx',
     '../../resources/scripts/themes/classic/views/server/users/SubuserForm.tsx',
     '../../resources/scripts/views/pages.ts',
     '../../resources/scripts/themes/classic/views/layout/AccountLayout.tsx',
