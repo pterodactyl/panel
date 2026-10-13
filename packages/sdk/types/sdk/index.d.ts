@@ -115,20 +115,10 @@ export interface ExtensionSetupContext {
 }
 export type { DefaultViewProps, ViewComponent, ViewContext, ViewImporter, ViewModel, ViewName, ViewOverride, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
 export type * from "../views/models.js";
-export type * from "./models/forms.js";
-export type * from "./models/auth.js";
-export type * from "./models/account.js";
-export type * from "./models/activity.js";
-export * from "./models/schedules.js";
-export * from "./models/subusers.js";
-export * from "./models/backups.js";
-export * from "./models/settings.js";
-export * from "./models/conflict.js";
-export * from "./models/console.js";
-export * from "./models/files.js";
-export * from "./models/databases.js";
-export * from "./models/network.js";
-export * from "./models/startup.js";
+export { setPermissionsSelected } from "../views/server/permissionSelection.js";
+export { default as AreaChart, type AreaChartProps } from "../components/server/console/AreaChart.js";
+export type { ChartPoint } from "../components/server/console/chart.js";
+export type { ChartSeries } from "../components/server/console/types.js";
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
 }

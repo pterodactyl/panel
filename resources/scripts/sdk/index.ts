@@ -221,20 +221,10 @@ export type {
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
-export type * from './models/forms';
-export type * from './models/auth';
-export type * from './models/account';
-export type * from './models/activity';
-export * from './models/schedules';
-export * from './models/subusers';
-export * from './models/backups';
-export * from './models/settings';
-export * from './models/conflict';
-export * from './models/console';
-export * from './models/files';
-export * from './models/databases';
-export * from './models/network';
-export * from './models/startup';
+export { setPermissionsSelected } from '@/views/server/permissionSelection';
+export { default as AreaChart, type AreaChartProps } from '@/components/server/console/AreaChart';
+export type { ChartPoint } from '@/components/server/console/chart';
+export type { ChartSeries } from '@/components/server/console/types';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;

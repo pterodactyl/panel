@@ -1,30 +1,21 @@
-// The model of every engine view, published with the SDK so `ViewProps<'name'>` resolves for extensions and themes.
-// Areas with many views publish theirs from their own module in sdk/models.
-export type {
-    DashboardModel,
-    DashboardScope,
-    ServerCardModel,
-    ServerCardPermissions,
-    ServerCardState,
-    ServerListItem,
-    ServerListModel,
-    ServerListPagination,
-    ServerListTotals,
-    ServerUnavailableReason,
-} from './dashboard';
-export type {
-    AccountArea,
-    AccountLayoutModel,
-    AdminArea,
-    AdminLayoutModel,
-    AppArea,
-    AppLayoutLink,
-    AppLayoutModel,
-    AuthLayoutModel,
-    DashboardArea,
-    LayoutBrand,
-    ServerArea,
-    ServerLayoutModel,
-} from './layouts';
-export type { ServerConflict } from './server/state';
-export type { AppSearchModel, AppSearchResult } from './search';
+// The models of every view by area, published with the SDK so `ViewProps<'name'>` resolves for extensions and themes.
+export type * from './account/types';
+export type * from './activity/types';
+export type * from './auth/types';
+export type * from './dashboard';
+export type * from './forms';
+export type * from './layouts';
+export type * from './search';
+export type * from './server/backups';
+export type * from './server/conflict';
+export type * from './server/console';
+export type * from './server/databases';
+export type * from './server/features';
+export type * from './server/files';
+export type * from './server/network';
+export type * from './server/page';
+export type * from './server/schedules';
+export type * from './server/settings';
+export type * from './server/startup';
+export type * from './server/state';
+export type * from './server/users';
