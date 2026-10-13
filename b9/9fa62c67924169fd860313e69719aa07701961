@@ -1,0 +1,130 @@
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_4d5234b55a5d24 34,172,174-178,304,338-345,349
+resources/scripts/views/layouts.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 13
+  s_4cabae41bceed9::t_d0c55faeff4549 58-60,200-202
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_9a9242454e6137 3,380
+  s_4cabae41bceed9::t_d0c55faeff4549 50-59
+  s_4cabae41bceed9::t_a2805d06815896 374
+  s_4cabae41bceed9::t_b62913d6a53bb2 49,223-225,290,301,369-373,375-379,381-382,385-398,414
+resources/scripts/views/server/backups.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 13,73
+  s_4cabae41bceed9::t_d0c55faeff4549 162-164
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_927fb1e02989c7 113,161,186,432
+packages/sdk/docs-samples/child-theme/src/theme.spec.tsx
+  s_4cabae41bceed9::t_e7f1387d8fb565 2-3,23
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_71306b8ba461f9 2-3,5-6,17,22,25,29-30,33,51-52,56,65-66,68,71,82,84,93,99,110-113,115,130,149,155,193,199-200,204,237,252,258,264-279,282-286,317-319,344
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_4cabae41bceed9::t_927fb1e02989c7 71,73
+resources/scripts/components/server/files/fileEditorSession.tsx
+  s_4cabae41bceed9::t_b3dc53c5c1ea85 1,55-63
+resources/scripts/views/server/network.spec.tsx
+  s_4cabae41bceed9::t_d0c55faeff4549 67
+  s_4cabae41bceed9::t_4df0313729644a 9
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 3,116
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_9ac6dc35e172dc 1129,1140-1147,1150-1152,1160-1162,1215,1244-1247
+  s_4cabae41bceed9::t_c7f1a3601d8a72 1085,1167,1171,1175,1190
+  s_4cabae41bceed9::t_43bb0e4eabfbd4 756-758
+resources/scripts/sdk/index.ts
+  s_4cabae41bceed9::t_69c4b642cb7d9f 3
+resources/scripts/extensions/loader.ts
+  s_4cabae41bceed9::t_cc360b0b7eef8d 30-31,131
+packages/sdk/docs-samples/level4-console/src/theme.spec.tsx
+  s_4cabae41bceed9::t_e7f1387d8fb565 7,11,15,24,30
+packages/sdk/types/sdk/testing.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 2,4,14-18,48,51-52,67-68,81-84,88-90,92
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 10
+resources/scripts/views/server/users.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 20,92
+packages/sdk/README.md
+  s_4cabae41bceed9::t_64b1e335104b44 804
+  s_4cabae41bceed9::t_f4c3eba0d5f7e2 805
+  s_4cabae41bceed9::t_5dda4438db3b82 735,884
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_3876b2d692b8a3 297
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_4df0313729644a 11,26,29,31
+packages/sdk/types/extensions/registry.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 212-219
+packages/sdk/types/views/registry.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 130
+resources/scripts/views/server/pageFixtures.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 7
+  s_4cabae41bceed9::t_d0c55faeff4549 58-60
+packages/sdk/types/views/View.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 2-3,5,28-29
+CHANGELOG.md
+  s_4cabae41bceed9::t_39e83efbe795bf 21-23,38-39
+resources/scripts/views/server/files.ts
+  s_4cabae41bceed9::t_b3dc53c5c1ea85 6
+packages/sdk/docs-samples/level2-skins/src/theme.spec.tsx
+  s_4cabae41bceed9::t_e7f1387d8fb565 2-3,6,12,21,35,43-48
+resources/scripts/views/boot.spec.tsx
+  s_4cabae41bceed9::t_d90b2cf3cf2830 11,94-96,117,122,131-132,135-138,141-152
+packages/sdk/types/views/server/fileFixtures.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 7
+packages/sdk/types/views/theme.d.ts
+  s_4cabae41bceed9::t_c7f1a3601d8a72 6,35
+packages/sdk/types-drift.spec.ts
+  s_4cabae41bceed9::t_bc57a4ccb8c0b6 45-46,50-51,53,66-67,69,75-76,92-94,97,102,169-170
+resources/scripts/views/theme.ts
+  s_4cabae41bceed9::t_d90b2cf3cf2830 5
+  s_4cabae41bceed9::t_2f37903a371e10 49,52-54
+packages/sdk/docs-samples/aurora/src/theme.spec.tsx
+  s_4cabae41bceed9::t_e7f1387d8fb565 3-4,7,11,16,26,32,37,47
+packages/sdk/docs-samples/snippets/extension.tsx
+  s_4cabae41bceed9::t_7321af099e8d5f 1,16
+resources/scripts/views/server/databases.spec.tsx
+  s_4cabae41bceed9::t_d0c55faeff4549 61
+  s_4cabae41bceed9::t_4df0313729644a 9
+resources/scripts/sdk/testing.tsx
+  s_4cabae41bceed9::t_34c88056ae52ba 15,22,48-49,70-82,113-114,176,251,254-255,302-303,315,317,327-350,355,357,359,366,410-413,416,434,439-441,443-444
+resources/scripts/views/server/settings.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 11,43
+resources/scripts/views/server/schedules.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 15,94
+resources/scripts/views/server/startup.spec.tsx
+  s_4cabae41bceed9::t_d0c55faeff4549 93
+  s_4cabae41bceed9::t_4df0313729644a 18
+packages/sdk/docs-samples/level3-sidebar/src/theme.spec.tsx
+  s_4cabae41bceed9::t_e7f1387d8fb565 6,9,13,23,32,35,42,60,69,77
+packages/hello-world/src/client/examples.spec.tsx
+  s_4cabae41bceed9::t_1fad5cf1593e30 5,9,24-26,42-43,59,190-192,197,206-208,212,217-219,223
+  s_4cabae41bceed9::t_d0c55faeff4549 27-33
+resources/scripts/views/dashboard.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 8,35
+resources/scripts/views/server/fileFixtures.ts
+  s_4cabae41bceed9::t_b3dc53c5c1ea85 3,39,42,52,60-61
+resources/scripts/views/server/console.spec.tsx
+  s_4cabae41bceed9::t_4df0313729644a 15,64,67
+packages/sdk/docs-samples/snippets/views.tsx
+  s_4cabae41bceed9::t_7321af099e8d5f 2,51
+resources/scripts/extensions/registry.ts
+  s_4cabae41bceed9::t_7b196c8435f0ca 20
+  s_4cabae41bceed9::t_bd46f3cca95fba 515-528
+resources/scripts/views/boot.tsx
+  s_4cabae41bceed9::t_2f37903a371e10 44
+  s_4cabae41bceed9::t_cc360b0b7eef8d 4,8,13,20,28-29,42,45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b99fa62c67924169fd860313e69719aa07701961",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
