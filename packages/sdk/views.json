@@ -1210,7 +1210,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open",
             "accepting"
         ],
@@ -1224,7 +1223,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open"
         ],
         "classic": {
@@ -1237,7 +1235,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open"
         ],
         "classic": {
@@ -1250,7 +1247,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open",
             "loading",
             "noPermission"
@@ -1265,7 +1261,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "admin",
             "user"
         ],
@@ -1279,25 +1274,11 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "admin",
             "user"
         ],
         "classic": {
             "file": "views/server/console/prompts/SteamDiskSpacePrompt.tsx",
-            "export": "default"
-        }
-    },
-    "server.features": {
-        "kind": "block",
-        "context": "server",
-        "slots": [],
-        "fixtures": [
-            "minecraft",
-            "none"
-        ],
-        "classic": {
-            "file": "views/server/console/Features.tsx",
             "export": "default"
         }
     },

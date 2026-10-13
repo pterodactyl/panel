@@ -72,7 +72,6 @@ export const classicViews: ThemeViews = {
     'server.power': lazyView(serverConsole, 'Power'),
     'server.stats': lazyView(serverConsole, 'Stats'),
     'server.graphs': lazyView(serverConsole, 'Graphs'),
-    'server.features': lazyView(serverConsole, 'Features'),
     'server.feature.eula': lazyView(serverConsole, 'EulaPrompt'),
     'server.feature.javaVersion': lazyView(serverConsole, 'JavaVersionPrompt'),
     'server.feature.gslToken': lazyView(serverConsole, 'GslTokenPrompt'),

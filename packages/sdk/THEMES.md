@@ -846,9 +846,10 @@ export default function ServerLayout({ model, Default }: ViewProps<'layout.serve
 <!-- /sample -->
 
 `page.server.console` composes the console without `server.power`. This page has no engine slots, so it
-renders `server.console.before` and `server.console.after` itself. It stays mounted while another server
-page shows, and `active` says whether it is the page on show. The theme registers both with `lazyView`,
-as in [level 3](#level-3-change-the-layout).
+renders `server.console.before` and `server.console.after` itself. It places the prompt views that
+`model.features` names, each of which opens itself when the server's output asks for it. It stays mounted
+while another server page shows, and `active` says whether it is the page on show. The theme registers
+both with `lazyView`, as in [level 3](#level-3-change-the-layout).
 
 <!-- sample: level4-console/src/views/ConsolePage.tsx -->
 ```tsx
@@ -880,7 +881,9 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
             </div>
             <View name='server.graphs' className='mt-4 gap-4' />
             <Slot name='server.console.after' data={model.server} />
-            <View name='server.features' />
+            {model.features.map((name) => (
+                <View key={name} name={name} />
+            ))}
         </ServerContentBlock>
     );
 }
@@ -1516,13 +1519,12 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.conflict` | server | `ServerConflictModel` |  |  | installing, suspended, maintenance, transferring, restoring |
 | `server.databases` | server | `ServerDatabasesModel` |  |  | databases, full, empty, noLimit, readOnly, loading |
 | `server.debug` | server | `ServerDebugModel` |  |  | default |
-| `server.feature.eula` | server | `EulaPromptModel` |  |  | closed, open, accepting |
-| `server.feature.gslToken` | server | `GslTokenPromptModel` |  |  | closed, open |
-| `server.feature.hytaleOauth` | server | `HytaleOauthPromptModel` |  |  | closed, open |
-| `server.feature.javaVersion` | server | `JavaVersionPromptModel` |  |  | closed, open, loading, noPermission |
-| `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | closed, admin, user |
-| `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | closed, admin, user |
-| `server.features` | server | `ServerFeaturesModel` |  |  | minecraft, none |
+| `server.feature.eula` | server | `EulaPromptModel` |  |  | open, accepting |
+| `server.feature.gslToken` | server | `GslTokenPromptModel` |  |  | open |
+| `server.feature.hytaleOauth` | server | `HytaleOauthPromptModel` |  |  | open |
+| `server.feature.javaVersion` | server | `JavaVersionPromptModel` |  |  | open, loading, noPermission |
+| `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | admin, user |
+| `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | admin, user |
 | `server.files.details` | server | `FileDetailsModel` | `file: FileObject`<br>parts: `icon`, `name`, `size`, `modified` |  | file, directory |
 | `server.files.editor` | server | `FileEditorModel` | parts: `notice`, `editor`, `language`, `actions` |  | file, dirty, saving, readOnly, pteroignore, new |
 | `server.files.manager` | server | `FileManagerModel` | parts: `toolbar`, `list`, `selection` | `server.files.toolbar` `server.files.rowActions` `server.files.selectionActions` | directory, selected, uploading, readOnly, empty, loading |

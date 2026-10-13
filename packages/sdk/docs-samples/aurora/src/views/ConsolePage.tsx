@@ -26,7 +26,9 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
             </div>
             <View name='server.graphs' className='mt-4 gap-4' />
             <Slot name='server.console.after' data={model.server} />
-            <View name='server.features' />
+            {model.features.map((name) => (
+                <View key={name} name={name} />
+            ))}
         </ServerContentBlock>
     );
 }

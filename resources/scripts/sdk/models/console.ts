@@ -18,7 +18,6 @@ export type {
     HytaleOauthPromptModel,
     JavaVersionPromptModel,
     LimitPromptModel,
-    ServerFeaturesModel,
     ServerFeatureView,
     ServerPromptModel,
 } from '@/views/server/features';

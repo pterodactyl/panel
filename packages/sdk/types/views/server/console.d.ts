@@ -3,7 +3,7 @@ import { type ComponentType } from 'react';
 import type { Server } from "../../api/server/types.js";
 import { type ServerGraphPoint, type ServerNetworkPoint } from "../../components/server/console/chart.js";
 import { type ServerRunState, type ServerStatMetric } from "./state.js";
-import "./features.js";
+import { type ServerFeatureView } from "./features.js";
 export type { ServerGraphPoint, ServerNetworkPoint, ServerRunState, ServerStatMetric };
 export interface ServerConsoleModel {
     readonly name: string;
@@ -12,6 +12,8 @@ export interface ServerConsoleModel {
     readonly notice: 'maintenance' | 'installing' | 'transferring' | null;
     /** The server as the API returns it, which the console slots receive. */
     readonly server: Server;
+    /** The prompt views of the features the server's egg enables; each opens itself when the output asks. */
+    readonly features: readonly ServerFeatureView[];
 }
 export interface TerminalCanvasProps {
     readonly className?: string;

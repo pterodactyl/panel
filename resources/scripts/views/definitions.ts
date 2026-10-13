@@ -111,7 +111,6 @@ defineView('server.power', {
 });
 defineView('server.stats', { context: 'server', ...serverConsole });
 defineView('server.graphs', { context: 'server', ...serverConsole });
-defineView('server.features', { context: 'server', ...features });
 defineView('server.feature.eula', { context: 'server', ...features });
 defineView('server.feature.javaVersion', { context: 'server', ...features });
 defineView('server.feature.gslToken', { context: 'server', ...features });

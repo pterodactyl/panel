@@ -86,7 +86,6 @@ describe('view implementations', () => {
             'server.power',
             'server.stats',
             'server.graphs',
-            'server.features',
             'server.feature.eula',
             'server.feature.javaVersion',
             'server.feature.gslToken',
