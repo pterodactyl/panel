@@ -202,7 +202,10 @@ export const isFileObjectArchiveType = ({ attributes }: FileObject) =>
         'application/x-7z-compressed', // .7z
     ].includes(attributes.mimetype);
 
-/** Browser-previewable image files reported by Wings. */
+/**
+ * Allows files reported by Wings as images to be opened in the browser preview.
+ * The browser can display these files directly from their image MIME type.
+ */
 export const isFileObjectImageType = ({ attributes }: FileObject) =>
     attributes.is_file && /^image\//i.test(attributes.mimetype);
 
