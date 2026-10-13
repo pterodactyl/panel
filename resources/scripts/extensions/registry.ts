@@ -17,14 +17,7 @@ import type {
 import type { ExtensionResourceContext } from './resourceContext';
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from './tableTypes';
 import { EXTENSION_FORM_NAMES, type ExtensionFormName, type FormExtensionRegistration } from './formTypes';
-import {
-    getViewDefinition,
-    isViewComponent,
-    isViewContext,
-    registerBaseView,
-    registerViewDefinition,
-    type ExtensionViewDefinition,
-} from '@/views/registry';
+import { isViewComponent } from '@/views/registry';
 
 // Only type imports from application modules, apart from the view registry.
 
@@ -399,7 +392,6 @@ export interface ExtensionRegistryBatch {
     columns: ExtensionTableColumnRegistration[];
     forms: FormExtensionRegistration[];
     views: Map<string, ExtensionViewOverride>;
-    definitions: Map<string, ExtensionViewDefinition>;
 }
 export interface ExtensionRuntimeState {
     id: string;
@@ -518,6 +510,20 @@ function recordError(extensionId: string, context: string, cause: unknown): stri
     mountErrors.set(extensionId, errors);
 
     return message;
+}
+
+export interface ExtensionError {
+    readonly extensionId: string;
+    /** Where it failed, such as `view "server.graphs"`. */
+    readonly context: string;
+    readonly message: string;
+}
+
+/** Every failure of mounted code still recorded, oldest first for each extension. */
+export function getExtensionErrors(): readonly ExtensionError[] {
+    return [...mountErrors].flatMap(([extensionId, errors]) =>
+        [...errors].map(([context, message]) => ({ extensionId, context, message }))
+    );
 }
 
 /** Repeat reports of the same failure in a context are ignored. */
@@ -742,7 +748,6 @@ export function createExtensionRegistryBatch(): ExtensionRegistryBatch {
         columns: [],
         forms: [],
         views: new Map(),
-        definitions: new Map(),
     };
 }
 
@@ -777,12 +782,6 @@ function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch)
     for (const name of entries?.find((entry) => entry.id === extensionId)?.views ?? []) {
         if (!batch.views.has(name)) {
             throw new Error(`Missing implementation for view "${name}"`);
-        }
-    }
-
-    for (const name of batch.definitions.keys()) {
-        if (getViewDefinition(name)) {
-            throw new Error(`View "${name}" is already defined.`);
         }
     }
 }
@@ -830,11 +829,6 @@ export function commitExtensionRegistryBatch(extensionId: string, batch: Extensi
         viewOverrides.set(`${extensionId}:${name}`, override);
     }
 
-    for (const [name, { Default, ...definition }] of batch.definitions) {
-        registerViewDefinition({ ...definition, name, kind: 'block', extensionId });
-        registerBaseView(extensionId, 'extension', name, Default);
-    }
-
     loadStates.set(extensionId, Object.freeze({ id: extensionId, status: 'loaded' }));
     publish();
 }
@@ -859,32 +853,6 @@ export function registerViewOverride(
     }
 
     batch.views.set(name, override);
-}
-
-export function registerExtensionView(
-    extensionId: string,
-    name: string,
-    definition: ExtensionViewDefinition,
-    batch: ExtensionRegistryBatch
-): void {
-    assertBatchOpen(batch);
-    if (!VIEW_NAME.test(name) || name.startsWith('layout.') || name.startsWith('page.')) {
-        throw new Error(`Invalid view name "${name}".`);
-    }
-
-    if (batch.definitions.has(name)) {
-        throw new Error(`Duplicate definition for view "${name}".`);
-    }
-
-    if (!isViewContext(definition.context) || !(definition.use instanceof Function)) {
-        throw new Error(`View "${name}" needs a context and a use() hook.`);
-    }
-
-    if (!isViewComponent(definition.Default)) {
-        throw new Error(`View "${name}" needs a Default component.`);
-    }
-
-    batch.definitions.set(name, definition);
 }
 
 export function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void {

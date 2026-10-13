@@ -10,7 +10,6 @@ import {
     registerExtensionTableColumn,
     registerFormExtension,
     registerViewOverride,
-    registerExtensionView,
     failExtensionLoad,
     clearExtensionError,
     setExtensionState,
@@ -28,7 +27,8 @@ export const EXTENSION_IMPORT_TIMEOUT_MS = 15_000;
 const isThenable = <T>(value: T): value is T & PromiseLike<void> =>
     isObject(value) && 'then' in value && value.then instanceof Function;
 
-const withTimeout = async <T>(promise: Promise<T>): Promise<T> => {
+/** Rejects when the import takes longer than an extension bundle may; the theme chain is held to the same limit. */
+export const withImportTimeout = async <T>(promise: Promise<T>): Promise<T> => {
     let timeout: ReturnType<typeof setTimeout> | undefined;
     const timer = new Promise<never>((_, reject) => {
         timeout = setTimeout(() => {
@@ -58,7 +58,6 @@ const createContext = (entry: SiteExtensionEntry, batch: ExtensionRegistryBatch)
                 registerViewOverride(entry.id, name, view, batch);
             }
         },
-        define: (name, view) => registerExtensionView(entry.id, name, view, batch),
     },
     slots: {
         register: (name, component) =>
@@ -129,7 +128,7 @@ async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     let module: ExtensionModule;
 
     try {
-        module = await withTimeout(importBundle(entry.entry));
+        module = await withImportTimeout(importBundle(entry.entry));
     } catch (cause) {
         failedImports.add(entry.id);
         failExtensionLoad(entry.id, 'boot', describeBootError(cause));

@@ -3,7 +3,7 @@ import { type ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { type ThemeBootstrap, type ThemeScheme, type ThemeSettingValue } from "../bootstrap.js";
 import type { ThemeSkins } from "../themes/skins.js";
-import type { ThemeViews } from "./registry.js";
+import { type ThemeViews } from "./registry.js";
 export type { ThemeScheme, ThemeSettingValue };
 /** A scheme the user chose, or `system` to follow the device. */
 export type ThemeSchemePreference = ThemeScheme | 'system';
@@ -32,6 +32,7 @@ export interface ThemeState {
     /** Stores the preference in the `pterodactyl_scheme` cookie and swaps the `<html>` class. */
     setScheme(preference: ThemeSchemePreference): void;
 }
+/** Adds a theme's icons; an entry that is not a component is skipped, as no view boundary would catch it. */
 export declare function registerThemeIcons(map: ThemeIcons): void;
 export declare function getThemeIcon(name: string): ThemeIcon | undefined;
 /** The browser shows classic after the active theme failed to boot. */

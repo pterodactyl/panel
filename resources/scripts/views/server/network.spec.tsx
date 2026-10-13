@@ -6,7 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import http from '@/api/http';
 import { serverAllocationsQueryOptions, type ServerAllocation } from '@/api/server/network/queries';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
-import { View, ViewArea } from '../View';
+import { View } from '../View';
 
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: vi.fn() }));
 
@@ -64,12 +64,7 @@ async function renderAllocations(allocations: ServerAllocation[], limit = 3) {
         data: allocations,
     });
 
-    const view = render(
-        <ViewArea area='server'>
-            <View name='page.server.network' />
-        </ViewArea>,
-        { wrapper: host.Wrapper }
-    );
+    const view = render(<View name='page.server.network' />, { wrapper: host.Wrapper });
 
     await screen.findAllByText('10.0.0.1', { selector: 'code' });
 

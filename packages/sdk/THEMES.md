@@ -753,12 +753,9 @@ function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
 ### Placing views
 
 `<View name="…" />` renders a view: it runs the view's hook where it is placed, resolves its layers and
-renders the top one. Each view has a **context**: `app` (every signed-in page), `server`, `account`,
-`admin` or `auth`. A view renders anywhere its context exists and throws outside it, such as a server
-view on the dashboard. Pass inputs as props: `<View name="dashboard.serverCard" server={server} />`.
-
-`<View name="billing.balance" optional />` renders nothing when no installed package defines the view,
-for blocks that extensions define. A layer for such a view is typed loosely: its `model` is `unknown`.
+renders the top one. Each view has a **context**, where its hook has the data it reads: `app` (every
+signed-in page), `server`, `account`, `admin` or `auth`. A server view needs a server page around it,
+for example. Pass inputs as props: `<View name="dashboard.serverCard" server={server} />`.
 
 `className` lands on the outermost element a view renders, in every classic view, so
 `<View name="server.sftp" className="h-full" />` stretches the card itself. Keep the rule in your own
@@ -1085,7 +1082,7 @@ test("frames Aurora's server card", () => {
 });
 
 test("adds a shadow to Aurora's pill buttons", () => {
-    rendered = renderPrimitive('Button', { children: 'Save' }, { themes });
+    rendered = renderWithTheme(<Button>Save</Button>, { themes });
 
     expect(rendered.container.querySelector('button')?.className).toContain('rounded-full');
     expect(rendered.container.querySelector('button')?.className).toContain('shadow-primary/20');
@@ -1129,7 +1126,7 @@ npx pterodactyl-theme skins [primitive]
 - `eject` copies classic's source for a view, with the classic files it imports, into `src/views`,
   rewrites its imports to `@pterodactyl/sdk`, and prints the import and `views` entry to add. The copy
   compiles as it is. It overwrites the view's file only with `--force`, and keeps shared files an
-  earlier eject copied. Opaque views have no source; wrap them with `Default`.
+  earlier eject copied.
 - `skins` lists the primitives, or prints classic's skin of one with the constants it reads.
 
 ### Testing
@@ -1140,41 +1137,42 @@ at its real runtime and adds what jsdom lacks: an inert `ResizeObserver` and `In
 a `matchMedia` that matches nothing. Tests need no stubs of their own; `vi.stubGlobal` still replaces
 one that a test drives. `@pterodactyl/sdk/testing` renders with your theme:
 
-- `renderView(name, { theme, fixture, model, input, className, slots })` renders a view synchronously
-  with the theme's layers over classic, from the named fixture, the first fixture, or `model`. A nested
-  view placed with inputs reads the model they give, so each row of a list shows its own server, and
-  any other nested view reads its first fixture; `usePanelLocation()` returns the path with empty
-  `params` and `search`. It returns `{ container, unmount }`; each call replaces the previous render. A
-  child theme passes its chain, oldest first, as `themes: [parent, theme]`
-  ([Building on another theme](#building-on-another-theme)).
+- `renderView(name, { themes, fixture, model, input, className, slots, prefix })` renders a view
+  synchronously with the layers of `themes` over classic, from the named fixture, the first fixture, or
+  `model`. A theme passes `themes: [theme]`; a child theme passes its chain, oldest first, as
+  `themes: [parent, theme]` ([Building on another theme](#building-on-another-theme)). A nested view
+  placed with inputs reads the model they give, so each row of a list shows its own server, and any
+  other nested view reads its first fixture; `usePanelLocation()` returns the path with empty `params`
+  and `search`. It returns `{ container, unmount }`; each call replaces the previous render. Pass
+  `vi.fn()` callbacks in `model` to assert on actions.
 - `slots` mounts components in slots, typed per slot, as an extension's `slots.register` would. Use it
   to test that a layer renders the slots of the view it replaces.
-- `renderPrimitive(name, props, { theme })` renders a primitive under the theme's skins.
-- `preloadTheme(theme)` loads the theme's `lazyView` chunks, or a chain's. Await it in `beforeAll`:
+- `renderWithTheme(element, { themes })` renders any element under the themes' skins, such as
+  `<Button>Save</Button>`.
+- `preloadTheme(themes)` loads the `lazyView` chunks of the themes. Await it in `beforeAll`:
   `renderView` throws until it has.
-- `createViewTestHost(name, { model, themes })` renders one layer by hand with typed `props`, for
-  asserting on actions with `vi.fn()`. Its `Default` renders the top layer of `themes`, else classic.
 
 To test the stylesheet, build it and read `dist/theme.css` with `readFileSync('dist/theme.css', 'utf8')`
 from `node:fs`: Vitest runs in the theme's directory, and the scaffold's `tsconfig.json` has Node's
 types. When Vitest runs under an AI agent it hides what passing tests log; `npx vitest run
 --reporter=default` shows it.
 
-`renderView` and `createViewTestHost` are strict: a theme or extension layer that throws, in the view or
-a nested one, fails the render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`,
-such as `The "sunrise" layer of view "server.graphs" failed: …`. A failure after the first render, such
+`renderView` is strict: a theme or extension layer that throws, in the view or a nested one, fails the
+render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`, such as
+`The "theme" layer of view "server.graphs" failed: …`. A failure after the first render, such
 as on a click, is thrown by `unmount()`. `{ strict: false }` lets layers fall back as in the panel.
 
 <!-- sample: level4-console/src/theme.spec.tsx#tests -->
 ```tsx
+const themes = [theme];
 let rendered: RenderedView | undefined;
 
 // The views are lazy; loading their chunks first lets renderView render them synchronously.
-beforeAll(() => preloadTheme(theme));
+beforeAll(() => preloadTheme(themes));
 afterEach(() => rendered?.unmount());
 
 test('puts the power controls in the server header', () => {
-    rendered = renderView('layout.server', { theme, fixture: 'owner' });
+    rendered = renderView('layout.server', { themes, fixture: 'owner' });
 
     const header = screen.getByRole('heading', { name: 'Survival' }).closest('header');
 
@@ -1189,7 +1187,7 @@ then check that the shell renders it:
 <!-- sample: level3-sidebar/src/theme.spec.tsx#slots -->
 ```tsx
 rendered = renderView('layout.app', {
-    theme,
+    themes,
     fixture: 'serverArea',
     slots: { 'server.navigation.after': ({ data }) => <span>Mods for {data.attributes.name}</span> },
 });
@@ -1214,7 +1212,7 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
 - **Drop slots.** A layer that replaces a view renders its slots, or the extensions mounted there
   disappear ([level 3](#the-shell-knows-the-area)).
 - **Replace interactive primitives.** Only presentational primitives take a component. Any other is a
-  type error, and is ignored with a warning at runtime.
+  type error, and the panel keeps its own.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.
 - **Bypass the engine on forms.** A layer over a form spreads each field's `fieldProps` (name, type,
   autocomplete, value and handlers) onto an input. A layer over `auth.loginForm` also submits through
@@ -1243,9 +1241,10 @@ What a theme can rely on when it draws behind or around the panel, such as a bac
 
 ### Fallback and safe mode
 
-- **Boot.** The panel loads the chain's entries in parallel before its first render, for at most 2.5
-  seconds. When an entry fails, does not export a `defineTheme` result, or is too slow, that browser
-  shows classic, logs the error, and shows root admins a notice.
+- **Boot.** The panel loads the chain's entries in parallel before its first render, for at most 15
+  seconds, as long as an extension bundle may take. When an entry fails to load or is too slow, that
+  browser shows classic, logs the error, and shows root admins a notice. A view of an entry that is not
+  a component falls back like a layer that throws, and an icon that is not one is skipped.
 - **Layers.** A layer that throws falls back to the layer below it, once. If that one throws too,
   classic included, the view shows the panel's error notice, whose Retry tries the failed layer again.
   Each failure logs one line in the browser console:

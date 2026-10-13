@@ -61,8 +61,6 @@ export {
 export { default as Slot } from '@/extensions/Slot';
 export type {
     DefaultViewProps,
-    ExtensionViewOptions,
-    ExtensionViewProps,
     ThemeViews,
     ViewComponent,
     ViewContext,

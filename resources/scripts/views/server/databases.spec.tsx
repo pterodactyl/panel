@@ -6,7 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import http from '@/api/http';
 import { serverDatabasesQueryOptions, type ServerDatabase } from '@/api/server/databases/queries';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
-import { View, ViewArea } from '../View';
+import { View } from '../View';
 
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: vi.fn() }));
 
@@ -58,12 +58,7 @@ async function renderDatabases(databases: ServerDatabase[], options: { limit?: n
         object: 'list',
         data: databases,
     });
-    render(
-        <ViewArea area='server'>
-            <View name='page.server.databases' />
-        </ViewArea>,
-        { wrapper: host.Wrapper }
-    );
+    render(<View name='page.server.databases' />, { wrapper: host.Wrapper });
     await screen.findByText(databases.length ? databases[0].attributes.name : 'No databases');
 }
 

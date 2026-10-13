@@ -8,8 +8,7 @@ import { RouteAccessDenied } from '@/router/RouteError';
 import { useRouteSlotData } from '@/router/routeSlots';
 import { pageSlots, type PageSlots, type ViewPageName } from '@/views/pages';
 import { ViewSessionProvider } from '@/views/session';
-import { preloadView, View, ViewArea } from '@/views/View';
-import type { ViewContext } from '@/views/registry';
+import { preloadView, View } from '@/views/View';
 
 export type LayoutViewName = 'layout.auth' | 'layout.app' | 'layout.account' | 'layout.server' | 'layout.admin';
 
@@ -24,21 +23,12 @@ export const requireServerPermission =
         }
     };
 
-/** Renders a layout view in its area with the routed content as its children. */
-export function LayoutView({ name, area, children }: { name: LayoutViewName; area: ViewContext; children: ReactNode }) {
-    return (
-        <ViewArea area={area}>
-            <View name={name}>{children}</View>
-        </ViewArea>
-    );
-}
-
-export function layoutRoute(name: LayoutViewName, area: ViewContext) {
+export function layoutRoute(name: LayoutViewName) {
     function LayoutRoute() {
         return (
-            <LayoutView name={name} area={area}>
+            <View name={name}>
                 <Outlet />
-            </LayoutView>
+            </View>
         );
     }
 

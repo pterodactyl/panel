@@ -10,7 +10,7 @@ import { serverQueryOptions } from '@/api/server/queries';
 import { SocketEvent } from '@/components/server/events';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { getViewDefinition, type ViewModels } from '@/views/registry';
-import { View, ViewArea, ViewFixtureProvider } from '@/views/View';
+import { View, ViewFixtureProvider } from '@/views/View';
 
 const base = createTestServer({ identifier: 'a1b2c3d4' });
 const server = {
@@ -70,7 +70,7 @@ async function renderBackups(children: ReactNode, backups: ServerBackup[]) {
     });
 
     await act(async () => {
-        render(<ViewArea area='server'>{children}</ViewArea>, { wrapper: host!.Wrapper });
+        render(children, { wrapper: host!.Wrapper });
     });
 }
 
@@ -159,11 +159,9 @@ describe('classic server.backups', () => {
 
         await act(async () => {
             render(
-                <ViewArea area='server'>
-                    <ViewFixtureProvider models={{ 'server.backups': value }}>
-                        <View name='server.backups' />
-                    </ViewFixtureProvider>
-                </ViewArea>,
+                <ViewFixtureProvider models={{ 'server.backups': value }}>
+                    <View name='server.backups' />
+                </ViewFixtureProvider>,
                 { wrapper: host!.Wrapper }
             );
         });

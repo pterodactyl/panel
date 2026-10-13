@@ -4,7 +4,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest
 import http from '@/api/http';
 import { createExtensionTestHost, type ExtensionTestHost } from '@/sdk/testing';
 import { getViewDefinition, getViewDefinitions } from '../registry';
-import { ViewArea, ViewFixtureProvider, View } from '../View';
+import { ViewFixtureProvider, View } from '../View';
 
 vi.mock('ghostty-web', () => ({ Ghostty: { load: () => new Promise(() => {}) } }));
 
@@ -55,11 +55,9 @@ async function renderFixture(name: string, fixture: string) {
 
     await act(async () => {
         render(
-            <ViewArea area='server'>
-                <ViewFixtureProvider fixtures={{ [name]: fixture }}>
-                    <View name={name} />
-                </ViewFixtureProvider>
-            </ViewArea>,
+            <ViewFixtureProvider fixtures={{ [name]: fixture }}>
+                <View name={name} />
+            </ViewFixtureProvider>,
             { wrapper: host!.Wrapper }
         );
     });

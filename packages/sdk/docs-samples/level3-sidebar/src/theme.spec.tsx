@@ -3,13 +3,14 @@ import { fireEvent, screen } from '@testing-library/react';
 import { preloadTheme, renderView, type RenderedView } from '@pterodactyl/sdk/testing';
 import theme from './theme';
 
+const themes = [theme];
 let rendered: RenderedView | undefined;
 
-beforeAll(() => preloadTheme(theme));
+beforeAll(() => preloadTheme(themes));
 afterEach(() => rendered?.unmount());
 
 test('puts the links in a sidebar beside the page', () => {
-    rendered = renderView('layout.app', { theme, fixture: 'admin' });
+    rendered = renderView('layout.app', { themes, fixture: 'admin' });
 
     const nav = screen.getByRole('navigation', { name: 'Main' });
 
@@ -19,7 +20,7 @@ test('puts the links in a sidebar beside the page', () => {
 });
 
 test('opens the sidebar as a drawer from the menu button', () => {
-    rendered = renderView('layout.app', { theme, fixture: 'user' });
+    rendered = renderView('layout.app', { themes, fixture: 'user' });
 
     const menu = screen.getByRole('button', { name: 'Menu' });
     fireEvent.click(menu);
@@ -28,17 +29,17 @@ test('opens the sidebar as a drawer from the menu button', () => {
 });
 
 test('offers the scheme switch only when the theme has both schemes', () => {
-    rendered = renderView('layout.app', { theme, fixture: 'user' });
+    rendered = renderView('layout.app', { themes, fixture: 'user' });
     expect(screen.queryByRole('button', { name: 'Use the light scheme' })).toBeNull();
 
-    rendered = renderView('layout.app', { theme, fixture: 'schemes' });
+    rendered = renderView('layout.app', { themes, fixture: 'schemes' });
     expect(screen.getByRole('button', { name: 'Use the light scheme' })).not.toBeNull();
 });
 
 test('draws the server navigation, with its state and its slots, in the sidebar', () => {
     // #region slots
     rendered = renderView('layout.app', {
-        theme,
+        themes,
         fixture: 'serverArea',
         slots: { 'server.navigation.after': ({ data }) => <span>Mods for {data.attributes.name}</span> },
     });
@@ -56,7 +57,7 @@ test('draws the account and admin navigation with their slots', () => {
     const probe = () => <span>probe</span>;
 
     rendered = renderView('layout.app', {
-        theme,
+        themes,
         fixture: 'accountArea',
         slots: { 'account.navigation.before': probe },
     });
@@ -65,7 +66,7 @@ test('draws the account and admin navigation with their slots', () => {
     expect(account).toContain('SSH Keys');
     expect(account).toContain('probe');
 
-    rendered = renderView('layout.app', { theme, fixture: 'adminArea', slots: { 'panel.navigation.after': probe } });
+    rendered = renderView('layout.app', { themes, fixture: 'adminArea', slots: { 'panel.navigation.after': probe } });
     const admin = screen.getByRole('navigation', { name: 'Administration' }).textContent;
 
     expect(admin).toContain('Themes');
@@ -73,7 +74,7 @@ test('draws the account and admin navigation with their slots', () => {
 });
 
 test('leaves only the page to the area layouts', () => {
-    rendered = renderView('layout.server', { theme, fixture: 'owner' });
+    rendered = renderView('layout.server', { themes, fixture: 'owner' });
 
     expect(screen.queryByRole('navigation')).toBeNull();
     expect(rendered.container.querySelector('main#main')).not.toBeNull();

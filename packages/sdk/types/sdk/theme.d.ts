@@ -7,7 +7,7 @@ export { Main } from "../views/a11y.js";
 export { usePageTitle } from "../views/pageTitle.js";
 export { Navigation, NavigationLink, useActiveNavItem, useNavigation, type NavArea, type NavigationLinkProps, type NavigationModel, type NavigationProps, type NavigationRenderer, type NavItem, type NavItemState, } from "../views/navigation.js";
 export { default as Slot } from "../extensions/Slot.js";
-export type { DefaultViewProps, ExtensionViewOptions, ExtensionViewProps, ThemeViews, ViewComponent, ViewContext, ViewImporter, ViewInput, ViewInputs, ViewModel, ViewModels, ViewName, ViewOverride, ViewPartNames, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
+export type { DefaultViewProps, ThemeViews, ViewComponent, ViewContext, ViewImporter, ViewInput, ViewInputs, ViewModel, ViewModels, ViewName, ViewOverride, ViewPartNames, ViewPartProps, ViewParts, ViewProps, } from "../views/registry.js";
 export type * from "../views/models.js";
 export type * from "./models/forms.js";
 export type * from "./models/schedules.js";

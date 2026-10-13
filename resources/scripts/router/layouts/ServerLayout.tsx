@@ -13,7 +13,6 @@ import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { useIsRenderedRoute } from '@/router/renderedRoute';
 import { useCurrentUser } from '@/api/account/queries';
-import { LayoutView } from '@/router/viewRoutes';
 import { View } from '@/views/View';
 
 /**
@@ -69,9 +68,9 @@ function ServerArea() {
     }
 
     return (
-        <LayoutView name='layout.server' area='server'>
+        <View name='layout.server'>
             <ServerContent id={id} server={server} />
-        </LayoutView>
+        </View>
     );
 }
 

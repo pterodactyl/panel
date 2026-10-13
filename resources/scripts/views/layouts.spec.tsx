@@ -10,7 +10,7 @@ import { cssUrl } from './brand';
 import { registerClassicTheme } from './classic';
 import { Navigation, NavigationLink } from './navigation';
 import { clearThemeLayers, getViewDefinition, registerViewLayer, type ViewModels, type ViewProps } from './registry';
-import { ViewFixtureProvider, View, ViewArea, type ViewFixtureSelection } from './View';
+import { ViewFixtureProvider, View, type ViewFixtureSelection } from './View';
 import type { LayoutViewName } from '@/router/viewRoutes';
 import type { AppLayoutModel } from './layouts';
 import './layouts';
@@ -55,11 +55,9 @@ async function renderLayout(name: LayoutViewName, selection: ViewFixtureSelectio
     host = createExtensionTestHost({ path });
 
     const layout = (
-        <ViewArea area={contexts[name]}>
-            <View name={name}>
-                <p>Routed page</p>
-            </View>
-        </ViewArea>
+        <View name={name}>
+            <p>Routed page</p>
+        </View>
     );
 
     await act(async () => {
@@ -199,11 +197,9 @@ describe('the area layout.app renders', () => {
 
         await act(async () => {
             render(
-                <ViewArea area='app'>
-                    <View name='layout.app'>
-                        <p>Routed page</p>
-                    </View>
-                </ViewArea>,
+                <View name='layout.app'>
+                    <p>Routed page</p>
+                </View>,
                 { wrapper: host!.Wrapper }
             );
         });

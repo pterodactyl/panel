@@ -1,13 +1,15 @@
 import { afterEach, expect, test } from 'vitest';
-import { renderPrimitive, type RenderedView } from '@pterodactyl/sdk/testing';
+import { Alert, Button, Card, Stat } from '@pterodactyl/sdk';
+import { renderWithTheme, type RenderedView } from '@pterodactyl/sdk/testing';
 import theme from './theme';
 
+const themes = [theme];
 let rendered: RenderedView | undefined;
 
 afterEach(() => rendered?.unmount());
 
 test('replaces the button root and keeps its state attributes', () => {
-    rendered = renderPrimitive('Button', { children: 'Delete', color: 'red' }, { theme });
+    rendered = renderWithTheme(<Button color='red'>Delete</Button>, { themes });
 
     const button = rendered.container.querySelector('button');
 
@@ -16,7 +18,7 @@ test('replaces the button root and keeps its state attributes', () => {
 });
 
 test('adds a ring to the card the layers below draw, replacing their corners', () => {
-    rendered = renderPrimitive('Card', { title: 'Resources', children: 'Usage' }, { theme });
+    rendered = renderWithTheme(<Card title='Resources'>Usage</Card>, { themes });
 
     const card = rendered.container.querySelector('[data-ui="card"][data-part="root"]');
 
@@ -30,7 +32,7 @@ test('adds a ring to the card the layers below draw, replacing their corners', (
 });
 
 test('sets stat values in tabular figures', () => {
-    rendered = renderPrimitive('Stat', { label: 'Memory', value: '1.4 GiB', limit: '/ 2 GiB' }, { theme });
+    rendered = renderWithTheme(<Stat label='Memory' value='1.4 GiB' limit='/ 2 GiB' />, { themes });
 
     expect(rendered.container.querySelector('[data-ui="stat"][data-part="value"]')?.className).toContain(
         'tabular-nums'
@@ -38,7 +40,12 @@ test('sets stat values in tabular figures', () => {
 });
 
 test('draws alerts with the replacement component', () => {
-    rendered = renderPrimitive('Alert', { type: 'warning', title: 'Heads up', children: 'Maintenance' }, { theme });
+    rendered = renderWithTheme(
+        <Alert type='warning' title='Heads up'>
+            Maintenance
+        </Alert>,
+        { themes }
+    );
 
     expect(rendered.container.querySelector('[role="alert"]')?.className).toContain('border-l-4');
 });

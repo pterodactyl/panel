@@ -110,7 +110,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
 const authRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: 'auth',
-    component: layoutRoute('layout.auth', 'auth'),
+    component: layoutRoute('layout.auth'),
 });
 
 const authChildren = [
@@ -158,7 +158,7 @@ const authenticatedRoute = createRoute({
     },
     // Layouts behind the session are lazy so the login screen does not ship the navigation
     // bar, admin sidebar, or server console in the entry chunk.
-    component: layoutRoute('layout.app', 'app'),
+    component: layoutRoute('layout.app'),
 });
 
 const dashboardRoute = createRoute({
@@ -183,7 +183,7 @@ const dashboardRoute = createRoute({
 const accountRoute = createRoute({
     getParentRoute: () => authenticatedRoute,
     path: 'account',
-    component: layoutRoute('layout.account', 'account'),
+    component: layoutRoute('layout.account'),
 });
 const accountChildren = [
     createRoute({
@@ -429,7 +429,7 @@ const panelRoute = createRoute({
             throw new RouteAccessDenied('You do not have permission to access the administrative area.');
         }
     },
-    component: layoutRoute('layout.admin', 'admin'),
+    component: layoutRoute('layout.admin'),
 });
 
 export const nodeDetailRoute = createRoute({

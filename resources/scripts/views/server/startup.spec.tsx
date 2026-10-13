@@ -15,7 +15,7 @@ import {
     type StartupFormSlotData,
 } from '@/extensions/registry';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
-import { View, ViewArea } from '../View';
+import { View } from '../View';
 
 const mocks = vi.hoisted(() => ({ error: vi.fn() }));
 
@@ -90,12 +90,7 @@ function renderStartup(variables: ServerStartupVariable[] = [variable('original'
         meta: { startup_command: 'start original', raw_startup_command: 'start {{PORT}}', docker_images: images },
     });
 
-    return render(
-        <ViewArea area='server'>
-            <View name='page.server.startup' />
-        </ViewArea>,
-        { wrapper: host.Wrapper }
-    );
+    return render(<View name='page.server.startup' />, { wrapper: host.Wrapper });
 }
 
 const advance = (ms = 1) =>

@@ -732,7 +732,7 @@ Classes passed to SDK components and to a view's `Default` are merged with the c
 own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
 drops the button's `mt-*` default, per variant, exactly as a panel class would
 (`hw:hover:bg-accent` replaces `hover:bg-primary/90`; `hw:bg-accent` alone does not). In tests
-pass the prefix to the host: `createViewTestHost(name, { model, prefix: 'hw' })`.
+pass the prefix to `renderView(name, { model, prefix: 'hw' })`.
 
 `p:extension:doctor`, `p:extension:pack`, install and enable all reject a build whose CSS has
 a rule in `@layer utilities` that is not built on a `.hw\:` class, or a custom property in
@@ -794,17 +794,6 @@ function ServerCard({ Default, model }: ViewProps<'dashboard.serverCard'>) {
 ```tsx
 views.override('dashboard.serverCard', ServerCard);
 views.override('server.files.details', { load: () => import('./FileDetails') });
-views.define<BalanceModel>('billing.balance', {
-    context: 'app',
-    use: useBalance,
-    Default: Balance,
-    fixtures: {
-        funded: () => ({ credits: 120, topUp: () => {} }),
-        empty: () => ({ credits: 0, topUp: () => {} }),
-    },
-});
-// Wherever classic has no place for it yet, a slot places the view.
-slots.register('dashboard.after', () => <View name='billing.balance' />);
 ```
 <!-- /sample -->
 
@@ -812,51 +801,11 @@ slots.register('dashboard.after', () => <View name='billing.balance' />);
 a test. Classes passed to `Default` merge with the layer below's under the extension's prefix (see
 [Styling](#styling)).
 
+An extension's own UI goes in slots with `slots.register`; themes restyle it through the UI kit's skins.
+
 The server card and file details render inside core links. Keep interactive controls in action
 slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
 menus. The classic server-card identity part includes the `dashboard.serverRow.name.after` slot.
-
-### Defining a view
-
-`views.define(name, { context, use, Default, fixtures, placeholder })` adds a view of the
-extension's own, so themes and other extensions can restyle or place it:
-
-| Option | |
-| --- | --- |
-| `context` | Where it can render: `app` (every signed-in page), `server`, `account`, `admin` or `auth`. |
-| `use(inputs)` | The hook that produces the model. It is the view's only data source. |
-| `Default` | The bottom layer, typed by `ExtensionViewProps<Model>`. Build it from the [UI kit](#ui-kit) and it takes the active theme's skins. |
-| `fixtures` | Models by name, which tests render the view from without a backend. The first is the default. |
-| `placeholder` | Shown while a layer above it loads. |
-
-Use a namespace of your own, such as your extension id: `layout.` and `page.` names are refused,
-and so is a second definition of a name. The view renders wherever a layer or a slot places it
-with `<View name="billing.balance" />`; a theme that may run without the extension places it
-with `optional`, which renders nothing while no installed package defines it.
-
-<!-- sample: snippets/extension.tsx#define -->
-```tsx
-interface BalanceModel {
-    readonly credits: number;
-    readonly topUp: () => void;
-}
-
-function useBalance(): BalanceModel {
-    return { credits: 120, topUp: () => window.open('/billing', '_self') };
-}
-
-/** The bottom layer of the extension's own view; themes restyle or move it. Built from the UI kit, it takes their skins. */
-function Balance({ model, className }: ExtensionViewProps<BalanceModel>) {
-    return (
-        <Card title='Balance' className={className} actions={<Badge tone='success'>{model.credits} credits</Badge>}>
-            <Button size='xsmall' onClick={model.topUp}>
-                Top up
-            </Button>
-        </Card>
-    );
-}
-```
-<!-- /sample -->
 
 ### Slots inside views
 
@@ -932,7 +881,7 @@ export default function Browser({ model, parts }: ViewProps<'server.files.manage
 
 While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
 
-The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix?, strict?, theme?, themes? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting. The render fails with a `ViewLayerError` when your layer or a nested view's layer throws; `strict: false` lets it fall back as in the panel. `renderView` and its `slots` option, which mounts test components in slots, are described under [Testing](THEMES.md#testing).
+Test a layer with `renderView(name, { themes, model?, fixture?, input?, prefix?, slots?, strict? })` from the testing entry, described under [Testing](THEMES.md#testing). It renders the view synchronously over classic without issuing core queries; nested views read their fixtures. Pass the extension's layers as the views of a theme, `themes: [{ views: { 'dashboard.serverCard': ServerCard } }]`, and its `ui.prefix` as `prefix`. The model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry` build models to pass as `model`, with `vi.fn()` callbacks to assert on `save`, `change` or an action. The render fails with a `ViewLayerError` when a layer throws; `strict: false` lets it fall back as in the panel.
 
 ## UI kit
 

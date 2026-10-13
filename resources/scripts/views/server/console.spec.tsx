@@ -12,7 +12,7 @@ import {
     type TestServerOptions,
 } from '@/sdk/testing';
 import { clearThemeLayers, getViewDefinition, registerViewLayer } from '../registry';
-import { View, ViewArea } from '../View';
+import { View } from '../View';
 import type { ServerGraphsModel } from './console';
 
 vi.mock('ghostty-web', () => ({ Ghostty: { load: () => new Promise(() => {}) } }));
@@ -61,10 +61,10 @@ async function renderServer(children: React.ReactNode, options: TestServerOption
 
     await act(async () => {
         render(
-            <ViewArea area='server'>
+            <>
                 <StatusListener />
                 {children}
-            </ViewArea>,
+            </>,
             { wrapper: host!.Wrapper }
         );
     });

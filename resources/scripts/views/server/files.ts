@@ -3,11 +3,7 @@ import type { ClientFileObjectResource as FileObject } from '@/api/extensionType
 import { httpErrorToHuman } from '@/api/http';
 import { fileObjectKind, useServerFiles } from '@/api/server/files/queries';
 import { useCurrentServerUuid } from '@/api/server/queries';
-import {
-    FileEditorFixtureScope,
-    useFileEditorPage,
-    useFileEditorSession,
-} from '@/components/server/files/fileEditorSession';
+import { useFileEditorPage, useFileEditorSession } from '@/components/server/files/fileEditorSession';
 import useFileManagerModel from '@/components/server/files/useFileManagerModel';
 import type { FileManagerSlotData } from '@/extensions/registry';
 import type { CorePanelDestination } from '@/sdk/navigation';
@@ -248,7 +244,6 @@ implementViews({
     },
     'server.files.editor': {
         use: useFileEditorSession,
-        fixtureScope: FileEditorFixtureScope,
         fixtures: {
             file: () => createTestFileEditor(),
             dirty: () => createTestFileEditor({ dirty: true }),

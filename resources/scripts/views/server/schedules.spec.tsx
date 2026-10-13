@@ -12,7 +12,7 @@ import {
     type Task,
 } from '@/api/server/schedules/queries';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
-import { View, ViewArea, ViewFixtureProvider } from '@/views/View';
+import { View, ViewFixtureProvider } from '@/views/View';
 import { scheduleTaskForm } from './schedules';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
@@ -91,7 +91,7 @@ async function renderInServer(children: ReactNode, seed: (host: ExtensionTestHos
     seed(host);
 
     await act(async () => {
-        render(<ViewArea area='server'>{children}</ViewArea>, { wrapper: host!.Wrapper });
+        render(children, { wrapper: host!.Wrapper });
     });
 }
 

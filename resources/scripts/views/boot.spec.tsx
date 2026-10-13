@@ -8,6 +8,7 @@ import type * as ThemeModule from './theme';
 import type * as SkinsModule from '@/themes/skins';
 import type * as ExtensionRegistry from '@/extensions/registry';
 import type * as Sonner from 'sonner';
+import { EXTENSION_IMPORT_TIMEOUT_MS } from '@/extensions/loader';
 
 const toastError = vi.hoisted(() => vi.fn());
 
@@ -90,7 +91,9 @@ describe('bootTheme', () => {
 
         expect([badge(), code()]).toEqual(['aurora', 'parent']);
 
-        await boot.bootTheme(async () => ({ default: { ui: 'not a skin map' } }));
+        await boot.bootTheme(async () => {
+            throw new Error('chunk failed');
+        });
 
         expect(badge()).toBe('rounded-sm text-xs px-2 py-1 bg-popover text-foreground');
         expect(extensions.getExtensionStates()[0]).toMatchObject({ id: 'aurora', status: 'failed' });
@@ -111,12 +114,12 @@ describe('bootTheme', () => {
         configure({ id: 'aurora', chain });
         const booting = boot.bootTheme(() => new Promise(() => {}));
 
-        await vi.advanceTimersByTimeAsync(boot.THEME_BOOT_TIMEOUT_MS);
+        await vi.advanceTimersByTimeAsync(EXTENSION_IMPORT_TIMEOUT_MS);
         await booting;
 
         expect(layerIds('app.search')).toEqual(['classic']);
         expect(extensions.getExtensionStates()).toEqual([
-            { id: 'aurora', status: 'failed', error: expect.stringContaining('exceeded 2500ms') },
+            { id: 'aurora', status: 'failed', error: expect.stringContaining('exceeded 15000ms') },
         ]);
         render(<boot.ThemeFailureNotice />);
         expect(toastError).toHaveBeenCalledWith(
@@ -125,14 +128,28 @@ describe('bootTheme', () => {
         );
     });
 
-    it('registers nothing of a chain when one entry is invalid, and tells only admins', async () => {
-        configure({ id: 'aurora', chain }, false);
+    it('registers the rest of a chain when one entry is invalid, skipping icons that are not components', async () => {
+        configure({ id: 'aurora', chain });
 
         await boot.bootTheme(async (url) => ({
-            default: url === '/aurora.js' ? { views: { 'app.search': 'not a component' } } : { views: {} },
+            default:
+                url === '/aurora.js'
+                    ? ({ views: { 'app.search': 'not a component' }, icons: { layers: 'not an icon' } } as never)
+                    : theme.defineTheme({ views: { 'app.search': Search } }),
         }));
 
-        expect(layerIds('app.search')).toEqual(['classic']);
+        expect(layerIds('app.search')).toEqual(['classic', 'parent', 'aurora']);
+        expect(theme.getThemeIcon('layers')).toBeUndefined();
+        expect(extensions.getExtensionStates()).toEqual([]);
+    });
+
+    it('tells only admins that the theme failed', async () => {
+        configure({ id: 'aurora', chain }, false);
+
+        await boot.bootTheme(async () => {
+            throw new Error('chunk failed');
+        });
+
         expect(extensions.getExtensionStates()[0]).toMatchObject({ id: 'aurora', status: 'failed' });
         render(<boot.ThemeFailureNotice />);
         expect(toastError).not.toHaveBeenCalled();

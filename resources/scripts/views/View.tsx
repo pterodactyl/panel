@@ -1,9 +1,7 @@
 import {
     createContext,
     createElement,
-    useCallback,
     useContext,
-    useLayoutEffect,
     useMemo,
     use,
     useState,
@@ -12,7 +10,6 @@ import {
 } from 'react';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExtensionMount from '@/extensions/ExtensionMount';
-import { reportExtensionError } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
 import { isLazyView } from './lazy';
 import {
@@ -22,30 +19,19 @@ import {
     useViewChain,
     useViewDefinition,
     type LooseViewInput,
-    type ViewContext,
     type ViewDefinition,
     type ViewInput,
     type ViewLayer,
     type ViewModels,
     type ViewName,
     type ViewPartComponents,
-    type ViewProps,
 } from './registry';
 import { useViewDecision } from './session';
 
-const ViewAreaContext = createContext<readonly ViewContext[]>([]);
 const noop = () => {};
 
-/** Marks the contexts the views below can use; nested areas add to their parent's. */
-export function ViewArea({ area, children }: { area: ViewContext; children?: ReactNode }) {
-    const parent = useContext(ViewAreaContext);
-    const value = useMemo(() => [...parent, area], [parent, area]);
-
-    return <ViewAreaContext.Provider value={value}>{children}</ViewAreaContext.Provider>;
-}
-
 export interface ViewFixtureSelection {
-    /** The fixture each view renders, extension-defined views included; views not listed render their first. */
+    /** The fixture each view renders; views not listed render their first. */
     readonly fixtures?: { readonly [N in ViewName]?: string } & { readonly [name: string]: string | undefined };
     /** Explicit models, used before any fixture. */
     readonly models?: Readonly<Partial<ViewModels>>;
@@ -166,65 +152,6 @@ function createLevel() {
     return { Context, Default };
 }
 
-function SuspendedLayer({ onSuspend }: { onSuspend: () => void }) {
-    useLayoutEffect(onSuspend, [onSuspend]);
-
-    return null;
-}
-
-const causeMessage = (cause: unknown): string => (cause instanceof Error ? cause.message : String(cause));
-
-/** A theme or extension layer of a view that failed, so the layer below rendered in its place. */
-export class ViewLayerError extends Error {
-    constructor(
-        readonly view: string,
-        readonly layer: string,
-        cause: unknown
-    ) {
-        super(`The "${layer}" layer of view "${view}" failed: ${causeMessage(cause)}`, { cause });
-        this.name = 'ViewLayerError';
-    }
-}
-
-const layerFailureListeners = new Set<(failure: ViewLayerError) => void>();
-
-/** Calls `listener` for each layer that fails; the SDK's test renderers fail the test on it. */
-export function onViewLayerFailure(listener: (failure: ViewLayerError) => void): () => void {
-    layerFailureListeners.add(listener);
-
-    return () => {
-        layerFailureListeners.delete(listener);
-    };
-}
-
-export function reportViewLayerFailure(failure: ViewLayerError): void {
-    for (const listener of layerFailureListeners) {
-        listener(failure);
-    }
-}
-
-/**
- * Renders the layers below a failed one. Their own failures stop at the panel's error notice, whose
- * Retry tries the failed layer again, so a failing chain falls back once instead of re-rendering.
- */
-function LayerFallback({
-    name,
-    layer,
-    error,
-    retry,
-    children,
-}: {
-    name: string;
-    layer: ViewLayer;
-    error: Error;
-    retry: () => void;
-    children: ReactNode;
-}) {
-    useLayoutEffect(() => reportViewLayerFailure(new ViewLayerError(name, layer.id, error)), [name, layer.id, error]);
-
-    return <ErrorBoundary onReset={retry}>{children}</ErrorBoundary>;
-}
-
 /** A failing layer is reported against its package and replaced by the layer below. */
 function LayerBoundary({
     name,
@@ -239,32 +166,16 @@ function LayerBoundary({
     below: ReactNode;
     children: ReactNode;
 }) {
-    const [suspension, setSuspension] = useState<Error | null>(null);
-    const context = `view "${name}"`;
-    const onSuspend = useCallback(() => {
-        const error = new Error('View layer suspended outside a local Suspense boundary; using the layer below.');
-
-        reportExtensionError(layer.id, context, error);
-        setSuspension(error);
-    }, [layer.id, context]);
-    const fallback = (error: Error, retry: () => void) => (
-        <LayerFallback name={name} layer={layer} error={error} retry={retry}>
-            {below}
-        </LayerFallback>
-    );
-
-    if (suspension) {
-        return fallback(suspension, () => setSuspension(null));
-    }
-
     return (
         <ExtensionMount
             extensionId={layer.id}
-            context={context}
+            context={`view "${name}"`}
             resetKey={name}
-            // Theme views may be lazy; an extension's suspension falls back like its failures do.
-            loading={layer.source === 'theme' ? placeholder : <SuspendedLayer onSuspend={onSuspend} />}
-            failure={fallback}
+            // A lazy or suspending layer shows the view's placeholder while it loads.
+            loading={placeholder}
+            // The layers below render in its place. Their own failures stop at the panel's error notice, whose
+            // Retry tries the failed layer again, so a failing chain falls back once instead of re-rendering.
+            failure={(_error, retry) => <ErrorBoundary onReset={retry}>{below}</ErrorBoundary>}
         >
             {children}
         </ExtensionMount>
@@ -328,7 +239,6 @@ interface BodyProps {
 }
 
 function ViewBody({ definition, model, inputs, className, children }: BodyProps & { model: unknown }) {
-    const fixtures = useContext(FixtureContext);
     const base = useViewChain(definition.name);
     const decision = useViewDecision(definition.name);
     const layers = useMemo(
@@ -342,11 +252,6 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     }
 
     if (!layers.length) {
-        // Engine-only views, such as the search, need the live panel; from fixtures they render nothing.
-        if (fixtures) {
-            return null;
-        }
-
         throw new Error(`View "${definition.name}" has no implementation.`);
     }
 
@@ -391,33 +296,17 @@ export async function preloadView(name: string): Promise<void> {
 
 type ViewElementBase = {
     readonly name: string;
-    /** Renders nothing when no installed package defines the view. */
-    readonly optional?: boolean;
     readonly className?: string;
     readonly children?: ReactNode;
 };
 export type ViewElementProps<N extends string> = ViewElementBase & { readonly name: N } & ViewInput<N>;
 
-function FixtureScope({ children }: { children?: ReactNode }) {
-    return children;
-}
-
-function RenderView({ name, optional = false, className, children, ...inputs }: ViewElementBase & LooseViewInput) {
+function RenderView({ name, className, children, ...inputs }: ViewElementBase & LooseViewInput) {
     const definition = useViewDefinition(name);
     const selection = useContext(FixtureContext);
-    const areas = useContext(ViewAreaContext);
 
     if (!definition) {
-        if (optional) {
-            return null;
-        }
-
         throw new Error(`View "${name}" is not defined.`);
-    }
-
-    // Outside every area (a component test) there is nothing to check against.
-    if (!selection && areas.length && !areas.includes(definition.context)) {
-        throw new Error(`View "${name}" renders in the "${definition.context}" context and was rendered outside it.`);
     }
 
     const loading = loadViewImplementation(name);
@@ -445,23 +334,19 @@ function RenderView({ name, optional = false, className, children, ...inputs }: 
         );
     }
 
-    const Scope = definition.fixtureScope ?? FixtureScope;
-
     return (
-        <Scope model={fixture.model}>
-            <ViewBody
-                definition={definition}
-                inputs={{ ...definition.fixtureInput?.(fixture.model), ...inputs }}
-                className={className}
-                model={fixture.model}
-            >
-                {children}
-            </ViewBody>
-        </Scope>
+        <ViewBody
+            definition={definition}
+            inputs={{ ...definition.fixtureInput?.(fixture.model), ...inputs }}
+            className={className}
+            model={fixture.model}
+        >
+            {children}
+        </ViewBody>
     );
 }
 
-/** `View` without the per-name typing, for the SDK test host. */
+/** `View` without the per-name typing, for `renderView`. */
 export { RenderView as LooseView };
 
 /**
@@ -469,33 +354,3 @@ export { RenderView as LooseView };
  * extension overrides, and renders the top layer with `{ model, Default, ...inputs, children }`.
  */
 export const View = RenderView as <N extends string>(props: ViewElementProps<N>) => ReactNode;
-
-/**
- * Binds a `Default` to a view's registered layers and builds the props a layer above them receives,
- * so a single layer can be rendered by hand inside `Scope` (the SDK's view test host).
- */
-export function createViewHarness<N extends string>(
-    name: N,
-    frame: { model: unknown; inputs: object }
-): { Scope: ComponentType<{ children?: ReactNode }>; props: ViewProps<N> };
-export function createViewHarness(name: string, { model, inputs }: { model: unknown; inputs: object }) {
-    const level = createLevel();
-    const frame: LayerFrame = { model, inputs: Object.fromEntries(Object.entries(inputs)) };
-
-    function Scope({ children }: { children?: ReactNode }) {
-        const below = useViewChain(name);
-        const value = useMemo(() => ({ name, below, frame, placeholder: null }), [below]);
-
-        return <level.Context.Provider value={value}>{children}</level.Context.Provider>;
-    }
-
-    const props: LayerProps = {
-        ...frame.inputs,
-        model: frame.model,
-        className: frame.className,
-        parts: resolveParts(getViewChain(name), frame.parts),
-        Default: level.Default,
-    };
-
-    return { Scope, props };
-}

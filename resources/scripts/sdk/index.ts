@@ -1,6 +1,6 @@
 // Every export here is public, semver-governed "@pterodactyl/sdk" API.
 import type { ComponentType } from 'react';
-import type { ExtensionViewOptions, ViewName, ViewOverride } from '@/views/registry';
+import type { ViewName, ViewOverride } from '@/views/registry';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
 import type {
@@ -177,8 +177,6 @@ export interface ExtensionSetupContext {
     views: {
         /** Stacks a layer on a view declared in the manifest's `ui.views`; its `Default` renders the layer below. */
         override<TName extends ViewName>(name: TName, view: ViewOverride<TName>): void;
-        /** Adds a view of the extension's own, which themes and other extensions can restyle or place. */
-        define<TModel>(name: string, view: ExtensionViewOptions<TModel>): void;
     };
     slots: {
         /** Mount a component at a named anchor point; see SlotName for the catalog. */
@@ -212,8 +210,6 @@ export interface ExtensionSetupContext {
 
 export type {
     DefaultViewProps,
-    ExtensionViewOptions,
-    ExtensionViewProps,
     ViewComponent,
     ViewContext,
     ViewImporter,

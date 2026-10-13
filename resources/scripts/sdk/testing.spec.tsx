@@ -1,6 +1,9 @@
 /** @vitest-environment jsdom */
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import Alert from '@/components/elements/alert/Alert';
+import Button from '@/components/elements/Button';
 import { Main } from '@/views/a11y';
 import { lazyView } from '@/views/lazy';
 import { Navigation, NavigationLink } from '@/views/navigation';
@@ -10,24 +13,24 @@ import { skin } from '@/themes/skins';
 import { usePanelLocation } from './navigation';
 import {
     preloadTheme,
-    renderPrimitive,
     renderView,
+    renderWithTheme,
     createTestFileEditor,
     createTestFileManager,
     createTestFileManagerEntry,
     createTestServerCard,
-    createViewTestHost,
+    type RenderedView,
 } from './testing';
 
-let host: { dispose(): void } | undefined;
+let rendered: RenderedView | undefined;
 
 afterEach(() => {
     cleanup();
-    host?.dispose();
-    host = undefined;
+    rendered?.unmount();
+    rendered = undefined;
 });
 
-it('renders an editor layer around native parts with a fixture model', async () => {
+it('renders an editor layer around native parts with a fixture model', () => {
     const save = vi.fn(async () => true);
     const change = vi.fn();
 
@@ -45,14 +48,12 @@ it('renders an editor layer around native parts with a fixture model', async () 
         return <Default className='custom-editor' parts={{ editor: Buffer }} />;
     }
 
-    const mounted = await createViewTestHost('server.files.editor', {
+    rendered = renderView('server.files.editor', {
+        themes: [defineTheme({ views: { 'server.files.editor': Editor } })],
         model: createTestFileEditor({ name: '.pteroignore', content: 'logs/*', save, change }),
     });
 
-    host = mounted;
-    render(<Editor {...mounted.props} />, { wrapper: mounted.Wrapper });
-
-    expect(await screen.findByLabelText('.pteroignore')).toHaveValue('logs/*');
+    expect(screen.getByLabelText('.pteroignore')).toHaveValue('logs/*');
     expect(screen.getByText(/excluded from backups/)).toBeVisible();
     fireEvent.change(screen.getByLabelText('.pteroignore'), { target: { value: 'cache/*' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save Content' }));
@@ -61,25 +62,13 @@ it('renders an editor layer around native parts with a fixture model', async () 
     expect(save).toHaveBeenCalledTimes(1);
 });
 
-it('hides the native save action from a read-only editor fixture', async () => {
-    const mounted = await createViewTestHost('server.files.editor', { fixture: 'readOnly' });
+it('hides the native save action from a read-only editor fixture', () => {
+    rendered = renderView('server.files.editor', { fixture: 'readOnly' });
 
-    host = mounted;
-    const { actions: Actions } = mounted.props.parts;
-
-    render(
-        <>
-            <Actions model={mounted.props.model} />
-            <span>rendered</span>
-        </>,
-        { wrapper: mounted.Wrapper }
-    );
-
-    await screen.findByText('rendered');
-    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Save Content' })).not.toBeInTheDocument();
 });
 
-it('renders the native file browser from a fixture model without issuing core queries', async () => {
+it('renders the native file browser from a fixture model without issuing core queries', () => {
     const select = vi.fn();
     const model = createTestFileManager({
         directory: '/config',
@@ -89,18 +78,10 @@ it('renders the native file browser from a fixture model without issuing core qu
         ],
         selection: ['app.yml'],
     });
-    const mounted = await createViewTestHost('server.files.manager', {
-        model: { ...model, actions: { ...model.actions, select } },
-    });
 
-    host = mounted;
-    function Browser({ Default }: ViewProps<'server.files.manager'>) {
-        return <Default />;
-    }
+    rendered = renderView('server.files.manager', { model: { ...model, actions: { ...model.actions, select } } });
 
-    render(<Browser {...mounted.props} />, { wrapper: mounted.Wrapper });
-
-    expect(await screen.findByRole('link', { name: 'app.yml' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'app.yml' })).toHaveAttribute(
         'href',
         '/server/test-server/files/edit#/config/app.yml'
     );
@@ -109,18 +90,13 @@ it('renders the native file browser from a fixture model without issuing core qu
         '/server/test-server/files#/config/plugins'
     );
     expect(screen.getByRole('button', { name: 'New file' })).toBeVisible();
-    expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Archive' })).toBeVisible();
 
     fireEvent.click(screen.getAllByRole('checkbox')[0]);
     expect(select).toHaveBeenCalledWith(['plugins', 'app.yml']);
 });
 
-it('gives a server card layer the classic parts and the server it was rendered for', async () => {
-    const mounted = await createViewTestHost('dashboard.serverCard', {
-        model: createTestServerCard({ name: 'Survival', identifier: 'abc' }),
-    });
-
-    host = mounted;
+it('gives a server card layer the classic parts and the server it was rendered for', () => {
     function Card({ Default, parts, model, server }: ViewProps<'dashboard.serverCard'>) {
         return (
             <>
@@ -131,9 +107,12 @@ it('gives a server card layer the classic parts and the server it was rendered f
         );
     }
 
-    render(<Card {...mounted.props} />, { wrapper: mounted.Wrapper });
+    rendered = renderView('dashboard.serverCard', {
+        themes: [defineTheme({ views: { 'dashboard.serverCard': Card } })],
+        model: createTestServerCard({ name: 'Survival', identifier: 'abc' }),
+    });
 
-    expect(await screen.findByText('metrics of Survival')).toBeVisible();
+    expect(screen.getByText('metrics of Survival')).toBeVisible();
     expect(screen.getByText('abc')).toBeVisible();
     expect(screen.getAllByText('127.0.0.1:25565')).toHaveLength(2);
 });
@@ -148,7 +127,7 @@ it('renders a view synchronously from fixtures with a theme layered over classic
     }
 
     const { container, unmount } = renderView('layout.app', {
-        theme: defineTheme({ views: { 'layout.app': AppLayout } }),
+        themes: [defineTheme({ views: { 'layout.app': AppLayout } })],
         fixture: 'admin',
     });
 
@@ -167,13 +146,13 @@ it('renders the lazy views of a theme once they are preloaded', async () => {
         },
     });
 
-    expect(() => renderView('page.dashboard', { theme })).toThrow(
+    expect(() => renderView('page.dashboard', { themes: [theme] })).toThrow(
         "The theme's views page.dashboard are lazy and not loaded yet."
     );
 
     await preloadTheme(theme);
 
-    const { container, unmount } = renderView('page.dashboard', { theme, fixture: 'error' });
+    const { container, unmount } = renderView('page.dashboard', { themes: [theme], fixture: 'error' });
 
     expect(container).toHaveTextContent('lazy dashboard Request failed with status code 500.');
     unmount();
@@ -211,25 +190,18 @@ it('stacks a chain of themes, so a child builds on its parent rather than classi
     const view = renderView('layout.app', { themes, fixture: 'admin' });
 
     expect(view.container.querySelector('[data-child-layout] > [data-parent-layout] main')).not.toBeNull();
-    expect(renderPrimitive('Button', { children: 'Save' }, { themes }).container.querySelector('button')).toHaveClass(
+    expect(renderWithTheme(<Button>Save</Button>, { themes }).container.querySelector('button')).toHaveClass(
         'parent-pill',
         'child-shadow'
     );
-    expect(() => renderView('layout.app', { theme: child, themes })).toThrow('Pass `theme` or `themes`, not both.');
-
-    const mounted = await createViewTestHost('layout.app', { themes: [parent], fixture: 'admin' });
-
-    host = mounted;
-    render(<ChildLayout {...mounted.props} />, { wrapper: mounted.Wrapper });
-    await vi.waitFor(() => expect(document.querySelector('[data-child-layout] > [data-parent-layout]')).not.toBeNull());
 });
 
-it('renders a UI kit primitive under a theme, replacing what was rendered before', () => {
-    const first = renderPrimitive('Button', { children: 'Save changes', color: 'red' }, { theme: defineTheme({}) });
+it('renders an element under a theme, replacing what was rendered before', () => {
+    const first = renderWithTheme(<Button color='red'>Save changes</Button>, { themes: [defineTheme({})] });
 
     expect(first.container.querySelector('button')).toHaveTextContent('Save changes');
 
-    const second = renderPrimitive('Alert', { type: 'warning', children: 'Disk is nearly full.' });
+    const second = renderWithTheme(<Alert type='warning'>Disk is nearly full.</Alert>);
 
     expect(first.container.isConnected).toBe(false);
     expect(second.container.querySelector('[role="alert"]')).toHaveTextContent('Disk is nearly full.');
@@ -262,7 +234,7 @@ describe('failing layers', () => {
     });
 
     it('fails the render naming the view and the layer', () => {
-        expect(() => renderView('server.graphs', { theme: failing })).toThrow(
+        expect(() => renderView('server.graphs', { themes: [failing] })).toThrow(
             'The "theme" layer of view "server.graphs" failed: theme exploded'
         );
         expect(document.body.children).toHaveLength(0);
@@ -277,31 +249,41 @@ describe('failing layers', () => {
             },
         });
 
-        expect(() => renderView('dashboard.serverList', { theme: nested, fixture: 'servers' })).toThrow(
+        expect(() => renderView('dashboard.serverList', { themes: [nested], fixture: 'servers' })).toThrow(
             'The "theme" layer of view "dashboard.serverCard" failed: card exploded'
         );
     });
 
     it('falls back to classic, once, when not strict', () => {
-        const { container, unmount } = renderView('server.graphs', { theme: failing, strict: false });
+        const { container, unmount } = renderView('server.graphs', { themes: [failing], strict: false });
 
         expect(container).toHaveTextContent('CPU Load');
         unmount();
     });
 
-    it('fails a view test host when the layer under test throws', async () => {
-        const mounted = await createViewTestHost('server.graphs');
+    it('throws a layer failure after the first render from unmount', () => {
+        function Graphs({ Default }: ViewProps<'server.graphs'>) {
+            const [broken, setBroken] = useState(false);
 
-        host = mounted;
-        function Graphs(): never {
-            throw new Error('graphs exploded');
+            if (broken) {
+                throw new Error('graphs exploded');
+            }
+
+            return (
+                <>
+                    <button type='button' onClick={() => setBroken(true)}>
+                        Break
+                    </button>
+                    <Default />
+                </>
+            );
         }
 
-        await expect(
-            act(async () => {
-                render(<Graphs />, { wrapper: mounted.Wrapper });
-            })
-        ).rejects.toThrow('The "test-extension" layer of view "server.graphs" failed: graphs exploded');
+        const view = renderView('server.graphs', { themes: [defineTheme({ views: { 'server.graphs': Graphs } })] });
+
+        fireEvent.click(screen.getByRole('button', { name: 'Break' }));
+
+        expect(() => view.unmount()).toThrow('The "theme" layer of view "server.graphs" failed: graphs exploded');
     });
 });
 
@@ -332,7 +314,9 @@ it('renders a layer reading the panel location from fixtures, outside any route'
         );
     }
 
-    const { container, unmount } = renderView('layout.app', { theme: defineTheme({ views: { 'layout.app': Shell } }) });
+    const { container, unmount } = renderView('layout.app', {
+        themes: [defineTheme({ views: { 'layout.app': Shell } })],
+    });
 
     expect(container).toHaveTextContent('at / with 0 params and {}');
     unmount();
@@ -357,7 +341,7 @@ it('gives the app layout the area it renders, from a fixture of each area', () =
 
     const theme = defineTheme({ views: { 'layout.app': Shell } });
     const kinds = ['user', 'accountArea', 'serverArea', 'adminArea'].map((fixture) => {
-        const { container, unmount } = renderView('layout.app', { theme, fixture });
+        const { container, unmount } = renderView('layout.app', { themes: [theme], fixture });
         const text = `${container.querySelector('p')?.textContent} ${container.querySelector('a')?.textContent}`;
 
         unmount();
