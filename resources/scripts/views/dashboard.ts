@@ -180,8 +180,10 @@ function resolveState(server: Server, stats: ClientStatsAttributes | undefined):
     return attributes.status ? { kind: 'unavailable', reason: 'unavailable' } : { kind: 'loading' };
 }
 
-function cardPermissions(server: Server): ServerCardPermissions {
-    const granted = selectServerPermissions(server);
+function cardPermissions(server: Server, rootAdmin = false): ServerCardPermissions {
+    // List responses carry no per-server meta; owners and root admins may use every power action.
+    const granted =
+        server.meta || !(server.attributes.server_owner || rootAdmin) ? selectServerPermissions(server) : ['*'];
 
     return {
         start: hasPermission(granted, 'control.start'),
@@ -223,7 +225,12 @@ function usePowerSender(): PowerSender {
     );
 }
 
-function cardModel(server: Server, stats: ClientStatsAttributes | undefined, power: PowerSender): ServerCardModel {
+function cardModel(
+    server: Server,
+    stats: ClientStatsAttributes | undefined,
+    power: PowerSender,
+    rootAdmin: boolean
+): ServerCardModel {
     const { identifier, uuid, name, description } = server.attributes;
     const send = (signal: ServerPowerSignal) => () => power.send(uuid, signal);
 
@@ -234,7 +241,7 @@ function cardModel(server: Server, stats: ClientStatsAttributes | undefined, pow
         description,
         address: primaryAddress(server),
         state: resolveState(server, stats),
-        permissions: cardPermissions(server),
+        permissions: cardPermissions(server, rootAdmin),
         actions: { start: send('start'), stop: send('stop'), restart: send('restart') },
         sending: power.sending === uuid,
     };
@@ -272,7 +279,7 @@ function useServerListModel(): ServerListModel {
     return useMemo(() => {
         const pagination = servers?.meta.pagination;
         const items = (servers?.data ?? []).map((server, index) =>
-            Object.assign(cardModel(server, usage[index], power), { server })
+            Object.assign(cardModel(server, usage[index], power, rootAdmin), { server })
         );
 
         return {
@@ -318,8 +325,9 @@ function useServerListModel(): ServerListModel {
 function useServerCardModel({ server }: { readonly server: Server }): ServerCardModel {
     const stats = useServerResourceUsage(server.attributes.uuid, tracksResources(server)).data?.attributes;
     const power = usePowerSender();
+    const rootAdmin = useCurrentUser().rootAdmin;
 
-    return useMemo(() => cardModel(server, stats, power), [server, stats, power]);
+    return useMemo(() => cardModel(server, stats, power, rootAdmin), [server, stats, power, rootAdmin]);
 }
 
 /** The cards of the list fixtures' rows, so a card placed in a row shows that row's state. */

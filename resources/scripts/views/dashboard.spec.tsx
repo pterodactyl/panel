@@ -6,6 +6,7 @@ import type * as ServerQueries from '@/api/account/servers/queries';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { registerClassicTheme } from './classic';
 import { ViewFixtureProvider, View, ViewArea } from './View';
+import { clearThemeLayers, registerViewLayer, type ViewProps } from './registry';
 import './dashboard';
 
 const useServerResourceUsage = vi.hoisted(() => vi.fn((_uuid: string, _enabled?: boolean) => ({ data: undefined })));
@@ -57,6 +58,28 @@ it('loads stats for a server on an available node', async () => {
     expect(await screen.findByText('Survival')).toBeVisible();
     expect(screen.queryByText('Under Maintenance')).not.toBeInTheDocument();
     expect(useServerResourceUsage).toHaveBeenCalledWith(server.attributes.uuid, true);
+});
+
+it('gives owners power actions from list data, which carries no per-server meta', async () => {
+    registerViewLayer('theme', 'theme', {
+        'dashboard.serverCard': ({ model }: ViewProps<'dashboard.serverCard'>) => (
+            <span>start: {String(model.permissions.start)}</span>
+        ),
+    });
+    const server = createTestServer({ name: 'Survival' });
+
+    try {
+        await renderInApp(
+            <View
+                name='dashboard.serverCard'
+                server={{ ...server, meta: undefined, attributes: { ...server.attributes, server_owner: true } }}
+            />
+        );
+
+        expect(await screen.findByText('start: true')).toBeVisible();
+    } finally {
+        clearThemeLayers();
+    }
 });
 
 it('renders the classic server list from a fixture, with a link and power state per row', async () => {
