@@ -1,0 +1,31 @@
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_ef94aae9aa8ea7 166,171,173-178,181,183,186,188-196,199-204
+  s_4cabae41bceed9::t_e21a739a360288 207
+  s_4cabae41bceed9::t_e0c976f750b6f0 205
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_477dcff0fa9d9d 243-244
+  s_4cabae41bceed9::t_298f5a6bfcce37 1127
+  s_4cabae41bceed9::t_9a3e369ad2b2bd 1135-1136
+packages/sdk/bin/pterodactyl-theme.mjs
+  s_4cabae41bceed9::t_4e97b6941fa1d5 283
+  s_4cabae41bceed9::t_347d4434c54ad5 2
+  s_4cabae41bceed9::t_c789f5d0c2929b 116,118,159,188
+  s_4cabae41bceed9::t_e4a60403620ee3 114-115,119,132,158,160-186,190,209,229,233,236,239-245,258-270
+  s_4cabae41bceed9::t_638a445a20c9c9 20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e09e0b2f8156155a4cf2f074ed7aa0397bfee3dc",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
