@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Theme author tooling: list the panel's views, eject classic's source for one, print a classic skin.
+// Theme author tooling: list the panel's views, eject classic's source for one or for a primitive's skin.
 import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, extname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,8 +17,8 @@ const usage = `Usage: pterodactyl-theme <command>
       Every view with its kind, context and fixtures; "eject" marks views classic has source for.
   eject <view> [--out src/views] [--entry src] [--force]
       Copies classic's source for a view into your theme and prints the line to add to "views".
-  skins [primitive]
-      Lists the primitives classic skins, or prints classic's skin for one to start from.`;
+  skins [primitive] [--out src/skins] [--entry src] [--force]
+      Lists each primitive with classic's file that skins it, or copies that file into your theme.`;
 
 class CliError extends Error {}
 
@@ -111,30 +111,12 @@ function identifier(file, exportName) {
 }
 
 /**
- * Copies classic's source for a view, with the files it imports from classic, into `outDir` and
- * returns what was written and the lines to add to the theme entry in `entryDir`.
+ * Copies `main`, a classic file, with the classic files it imports, into `outDir` at their paths under
+ * `base` of classic. A file an earlier copy wrote is kept; `main` is replaced only with `force`.
+ * Returns the files written and the line that imports `binding` from `main` in `entryDir`.
  */
-export function ejectView(name, { views = catalog(), root = classicRoot, outDir, entryDir, force = false }) {
-    const view = views[name];
-
-    if (!view) {
-        const close = suggest(name, Object.keys(views));
-
-        throw new CliError(
-            `There is no view named "${name}".${close.length ? ` Did you mean ${close.join(', ')}?` : ''}\n` +
-                'Run pterodactyl-theme list to see every view.'
-        );
-    }
-
-    if (!view.classic) {
-        throw new CliError(
-            `Classic has no source for "${name}" yet; it renders the panel's own component.\n` +
-                `Wrap it instead: '${name}': ({ model, Default }) => <Default />`
-        );
-    }
-
-    const target = (file) => resolve(outDir, relative(resolve(root, 'views'), file));
-    const main = resolve(root, view.classic.file);
+function copyClassic(main, { root, base, outDir, entryDir, force, binding }) {
+    const target = (file) => resolve(outDir, relative(resolve(root, base), file));
 
     if (existsSync(target(main)) && !force) {
         throw new CliError(`${relative(process.cwd(), target(main))} already exists. Pass --force to replace it.`);
@@ -147,7 +129,7 @@ export function ejectView(name, { views = catalog(), root = classicRoot, outDir,
         const file = queue.shift();
         const destination = target(file);
 
-        // A file an earlier eject copied may have been edited since; keep it.
+        // A file an earlier copy wrote may have been edited since; keep it.
         if (written.includes(destination) || (file !== main && existsSync(destination))) continue;
 
         const source = readFileSync(file, 'utf8');
@@ -172,15 +154,40 @@ export function ejectView(name, { views = catalog(), root = classicRoot, outDir,
         written.push(destination);
     }
 
-    const local = identifier(main, view.classic.export);
     const path = relative(entryDir, target(main)).split(sep).join('/').replace(/\.tsx?$/, '');
-    const binding = view.classic.export === 'default' ? local : `{ ${local} }`;
 
-    return {
-        written,
-        importLine: `import ${binding} from '${path.startsWith('.') ? path : `./${path}`}';`,
-        viewsLine: `views: { '${name}': ${local} },`,
-    };
+    return { written, importLine: `import ${binding} from '${path.startsWith('.') ? path : `./${path}`}';` };
+}
+
+/**
+ * Copies classic's source for a view, with the files it imports from classic, into `outDir` and
+ * returns what was written and the lines to add to the theme entry in `entryDir`.
+ */
+export function ejectView(name, { views = catalog(), root = classicRoot, outDir, entryDir, force = false }) {
+    const view = views[name];
+
+    if (!view) {
+        const close = suggest(name, Object.keys(views));
+
+        throw new CliError(
+            `There is no view named "${name}".${close.length ? ` Did you mean ${close.join(', ')}?` : ''}\n` +
+                'Run pterodactyl-theme list to see every view.'
+        );
+    }
+
+    if (!view.classic) {
+        throw new CliError(
+            `Classic has no source for "${name}" yet; it renders the panel's own component.\n` +
+                `Wrap it instead: '${name}': ({ model, Default }) => <Default />`
+        );
+    }
+
+    const main = resolve(root, view.classic.file);
+    const local = identifier(main, view.classic.export);
+    const binding = view.classic.export === 'default' ? local : `{ ${local} }`;
+    const copied = copyClassic(main, { root, base: 'views', outDir, entryDir, force, binding });
+
+    return { ...copied, viewsLine: `views: { '${name}': ${local} },` };
 }
 
 function eject(positional, flags, out) {
@@ -199,124 +206,7 @@ function eject(positional, flags, out) {
     out(`\nAdd it to your theme entry:\n\n  ${importLine}\n\n  ${viewsLine}`);
 }
 
-/** The top-level statements of a module: split on `;` outside brackets, strings and comments. */
-function statements(source) {
-    const found = [];
-    let depth = 0;
-    let start = 0;
-
-    for (let index = 0; index < source.length; index++) {
-        const char = source[index];
-
-        if (char === '/' && source[index + 1] === '/') {
-            index = source.indexOf('\n', index);
-            if (index === -1) break;
-        } else if (char === '/' && source[index + 1] === '*') {
-            index = source.indexOf('*/', index + 2) + 1;
-            if (index === 0) break;
-        } else if (char === "'" || char === '"' || char === '`') {
-            for (index++; index < source.length && source[index] !== char; index++) {
-                if (source[index] === '\\') index++;
-            }
-        } else if ('([{'.includes(char)) depth++;
-        else if (')]}'.includes(char)) depth--;
-        else if (char === ';' && depth === 0) {
-            found.push(source.slice(start, index + 1).trim());
-            start = index + 1;
-        }
-    }
-
-    return found;
-}
-
-/** A statement's code without its comments and the text of its strings, so a name inside a class list is not a reference. */
-function codeOf(source) {
-    let code = '';
-
-    for (let index = 0; index < source.length; index++) {
-        const char = source[index];
-
-        if (char === '/' && source[index + 1] === '/') {
-            index = source.indexOf('\n', index);
-            if (index === -1) break;
-        } else if (char === '/' && source[index + 1] === '*') {
-            index = source.indexOf('*/', index + 2) + 1;
-            if (index === 0) break;
-        } else if (char === "'" || char === '"') {
-            for (index++; index < source.length && source[index] !== char; index++) {
-                if (source[index] === '\\') index++;
-            }
-        } else if (char === '`') {
-            // A template's text is skipped and its `${…}` expressions kept.
-            for (index++; index < source.length && source[index] !== '`'; index++) {
-                if (source[index] === '\\') {
-                    index++;
-                } else if (source[index] === '$' && source[index + 1] === '{') {
-                    const start = index + 2;
-                    let depth = 1;
-
-                    for (index = start; index < source.length && depth; index++) {
-                        if (source[index] === '{') depth++;
-                        else if (source[index] === '}') depth--;
-                    }
-
-                    code += ` ${source.slice(start, index - 1)} `;
-                    index--;
-                }
-            }
-        } else {
-            code += char;
-        }
-    }
-
-    return code;
-}
-
-/** The constant a statement declares, past any comments before it. */
-const declared = (statement) =>
-    /^(?:export\s+)?const\s+(\w+)\s*(?::[^=]+)?=/.exec(statement.replace(/^(?:\/\/[^\n]*\n\s*|\/\*[\s\S]*?\*\/\s*)*/, ''))?.[1];
-
-/** A skin's declaration in a classic skins file, after the constants of that file it reads. */
-/** Whether code reads a name: not as a property key or member, and not inside a string. */
-const reads = (code, name) => new RegExp(`(?<![.\\w$])${name}\\b(?!\\s*:)`).test(code);
-
-function skinSource(file, exportName, primitive) {
-    const source = readFileSync(file, 'utf8');
-    const all = statements(source);
-    const byName = new Map(all.flatMap((statement) => (declared(statement) ? [[declared(statement), statement]] : [])));
-    const needed = new Set([exportName]);
-    const queue = [exportName];
-
-    while (queue.length) {
-        const statement = byName.get(queue.shift()) ?? '';
-
-        for (const name of byName.keys()) {
-            if (!needed.has(name) && reads(codeOf(statement.slice(statement.indexOf('='))), name)) {
-                needed.add(name);
-                queue.push(name);
-            }
-        }
-    }
-
-    if (!byName.has(exportName)) {
-        throw new CliError(`Classic's skins/${basename(file)} does not declare ${exportName}.`);
-    }
-
-    const printed = all.filter((statement) => needed.has(declared(statement)));
-    const types = /import type \{([^}]*)\} from '@\/sdk\/theme'/.exec(source)?.[1].split(',').map((name) => name.trim()) ?? [];
-    const imported = types.filter((name) => name === 'CompleteSkin' || printed.some((statement) => reads(codeOf(statement), name)));
-
-    return [
-        `// Classic's ${primitive} skin (skins/${basename(file)}) from @pterodactyl/sdk ${version}.`,
-        `// Add it to defineTheme({ ui: { ${primitive}: ${exportName} } }) and edit it. Typed as Skin<'${primitive}'>`,
-        "// instead of CompleteSkin, it may leave parts out; those keep classic's recipe.",
-        `import type { ${imported.join(', ')} } from '@pterodactyl/sdk/theme';`,
-        '',
-        ...printed.map((statement) => `${statement}\n`),
-    ].join('\n');
-}
-
-/** Classic's skin of each primitive, by primitive name, as `skins/index.ts` maps them. */
+/** The file and export of classic's skin of each primitive, by primitive name, as `skins/index.ts` maps them. */
 export function classicSkins(root = classicRoot) {
     const index = resolve(root, 'skins/index.ts');
 
@@ -336,20 +226,23 @@ export function classicSkins(root = classicRoot) {
     return new Map(
         [...source.matchAll(/^\s*([A-Z]\w*):\s*(\w+),?\s*$/gm)]
             .filter(([, , local]) => imports.has(local))
-            .map(([, primitive, local]) => {
-                const { file, exportName } = imports.get(local);
-
-                return [primitive, () => skinSource(file, exportName, primitive)];
-            })
+            .map(([, primitive, local]) => [primitive, imports.get(local)])
     );
 }
 
-function skins(positional, out) {
+function skins(positional, flags, out) {
     const primitives = classicSkins();
     const [name] = positional;
+    const shown = (file) => relative(classicRoot, file).split(sep).join('/');
 
     if (!name) {
-        out(primitives.size ? [...primitives.keys()].join('\n') : 'Classic defines no skins yet.');
+        const width = Math.max(0, ...[...primitives.keys()].map((primitive) => primitive.length));
+
+        out(
+            primitives.size
+                ? [...primitives].map(([primitive, { file }]) => `${primitive.padEnd(width)}  ${shown(file)}`).join('\n')
+                : 'Classic defines no skins yet.'
+        );
 
         return;
     }
@@ -362,7 +255,19 @@ function skins(positional, out) {
         );
     }
 
-    out(rewriteImports(primitives.get(match)()).trimEnd());
+    const { file, exportName } = primitives.get(match);
+    const { written, importLine } = copyClassic(file, {
+        root: classicRoot,
+        base: 'skins',
+        outDir: resolve(String(flags.out ?? 'src/skins')),
+        entryDir: resolve(String(flags.entry ?? 'src')),
+        force: !!flags.force,
+        binding: `{ ${exportName} }`,
+    });
+
+    out(`Copied ${shown(file)}, which skins ${match}:`);
+    for (const copied of written) out(`  ${relative(process.cwd(), copied)}`);
+    out(`\nAdd it to your theme entry:\n\n  ${importLine}\n\n  ui: { ${match}: ${exportName} },`);
 }
 
 export function run(argv, out = console.log) {
@@ -375,7 +280,7 @@ export function run(argv, out = console.log) {
         case 'eject':
             return eject(positional, flags, out);
         case 'skins':
-            return skins(positional, out);
+            return skins(positional, flags, out);
         case undefined:
         case 'help':
         case '--help':

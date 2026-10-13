@@ -1,7 +1,7 @@
 /*
  * The panel stylesheet: tokens, base styles, custom variants and utilities, and component CSS.
- * The panel builds it from resources/scripts/assets/tailwind.css; a theme builds it from
- * theme-entry.css with its own classes added, and that build replaces the panel's.
+ * The panel builds it from resources/scripts/assets/tailwind.css; a theme that uses Tailwind builds
+ * it from theme-entry.css with its own classes added, and the panel links that build after its own.
  */
 @import 'tailwindcss';
 @import './theme-tokens.css';

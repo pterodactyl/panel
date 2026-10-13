@@ -79,9 +79,11 @@ While the last command runs on a panel with `APP_DEBUG=true`, a stylesheet chang
 without a reload, and any other change reloads them. To try a theme without switching everyone to it,
 skip `p:theme:activate` and choose **Preview for me** on **Admin > Themes**.
 
-At this level you edit only `src/theme.css`. It starts with `@import '@pterodactyl/sdk/theme-entry.css';`,
-the panel's whole stylesheet: Tailwind, the tokens, and every class the panel uses. Your rules come after
-it, so they win. Write plain Tailwind with no prefix.
+At this level you edit only `src/theme.css`. The panel links its own stylesheet, then the theme's, so your
+rules win. A stylesheet of plain CSS, such as tokens and `[data-ui]` selectors, needs nothing else. The
+scaffold's starts with `@import '@pterodactyl/sdk/theme-entry.css';`, which a theme that uses Tailwind
+classes or `@theme` keeps: it builds the panel's stylesheet with the theme's classes added, so its
+utilities are ordered with the panel's. Write plain Tailwind with no prefix.
 
 ### What the build writes
 
@@ -89,8 +91,8 @@ it, so they win. Write plain Tailwind with no prefix.
 
 | File | What it is |
 | --- | --- |
-| `theme.css` | The stylesheet the panel links in place of its own. |
-| `theme.json` | What the build was made from: the panel's classes and SDK, the views the theme overrides, and its parents' builds. Doctor and the panel check it. |
+| `theme.css` | The stylesheet the panel links after its own. |
+| `theme.json` | The parent themes the stylesheet was built over. Doctor and the panel check it. |
 | `theme-source.css` and `classes.txt` | The theme's own CSS and the classes its files use, which the build of a [child theme](#building-on-another-theme) brings in. |
 | `client.js` | From level 2 on, the theme's JavaScript. |
 
@@ -98,8 +100,7 @@ it, so they win. Write plain Tailwind with no prefix.
 
 A **token** is a CSS custom property the panel's classes read. Set one and everything that reads it
 changes: `--primary` colours primary buttons and selected items, `--radius` sets every rounded corner,
-and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all, each with the
-primitives and views classic reads it in, so you can tell what a change reaches before you make it.
+and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all with their roles.
 
 The colour classes are roles such as `bg-card` and `text-muted-foreground`. Of Tailwind's palette only
 `white` and `black` remain (`text-white`, `bg-black/15`). Add a colour of your own in `@theme`:
@@ -239,8 +240,8 @@ export const skins = {
 ```
 <!-- /sample -->
 
-`npx pterodactyl-theme skins Button` prints classic's skin of a primitive, with only the constants it
-reads, ready to paste and edit.
+`npx pterodactyl-theme skins Button` copies classic's file that skins `Button`, `skins/buttons.ts`, into
+`src/skins` to start from.
 
 ### Recipes
 
@@ -1031,7 +1032,8 @@ test of the chain.
 ```
 <!-- /sample -->
 
-The panel links one stylesheet, the nearest in the chain, so a child's stylesheet carries its parents'.
+The panel links its own stylesheet, then the nearest theme stylesheet in the chain, so a child's stylesheet
+carries its parents'.
 A child's build reads `theme.extends`, finds each parent's build, and brings in its `theme-source.css` and
 `classes.txt` ([what the build writes](#what-the-build-writes)), oldest first, right after the SDK's
 import. The child's `src/theme.css` stays one import and its own rules, and can use the parents'
@@ -1062,9 +1064,9 @@ utilities, variants and fonts:
 
 The build looks for each parent first in `<extensions>/<id>`, where `extensions` is the panel's extensions
 directory passed to `defineThemeConfig` (the scaffold writes it), then in `node_modules/<id>`, for a parent
-installed as a dependency. It records the build of each parent in `dist/theme.json`. Doctor, pack and enable
-refuse a child built without its parents, and doctor warns when a parent was rebuilt since; rebuild the
-child then. A parent's `@plugin` is loaded from the child's packages, so install the same plugins.
+installed as a dependency. It lists the parents it built over in `dist/theme.json`, and doctor, pack and
+enable refuse a child built without them. Rebuild the child when a parent changes. A parent's `@plugin`
+is loaded from the child's packages, so install the same plugins.
 
 The child's tests render the chain with `themes`, importing each parent's built entry, which
 `pterodactylTestAliases({ extensions })` finds where the build does and the SDK types:
@@ -1123,7 +1125,7 @@ The SDK installs a `pterodactyl-theme` binary:
 ```sh
 npx pterodactyl-theme list [--kind layout|page|block] [--json]
 npx pterodactyl-theme eject <view> [--out src/views] [--entry src] [--force]
-npx pterodactyl-theme skins [primitive]
+npx pterodactyl-theme skins [primitive] [--out src/skins] [--entry src] [--force]
 ```
 
 - `list` prints every view with its kind, context and fixtures, marking those classic has source for.
@@ -1131,7 +1133,8 @@ npx pterodactyl-theme skins [primitive]
   rewrites its imports to `@pterodactyl/sdk`, and prints the import and `views` entry to add. The copy
   compiles as it is. It overwrites the view's file only with `--force`, and keeps shared files an
   earlier eject copied. Opaque views have no source; wrap them with `Default`.
-- `skins` lists the primitives, or prints classic's skin of one with the constants it reads.
+- `skins` lists each primitive with classic's file that skins it. Given a primitive, it copies that file
+  into `src/skins` the way `eject` copies a view, and prints the import and `ui` entry to add.
 
 ### Testing
 
@@ -1199,9 +1202,8 @@ rendered = renderView('layout.app', {
 
 ### Doctor and pack
 
-`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, view names,
-whether the stylesheet was built against this panel's classes, and for a child theme, over the
-current builds of its parents.
+`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, and for a child
+theme, whether the stylesheet was built over its parents.
 
 `npm run pack` writes a `.pteroext` archive to install on another panel, replacing an earlier one;
 `.gitignore` leaves archives out of the repository. The build writes no source maps, which would embed
@@ -1253,10 +1255,6 @@ What a theme can rely on when it draws behind or around the panel, such as a bac
   `[extensions] "<layer id>" failed in view "<view>": <error>`.
 - **Safe mode.** Opening any page with `?safe_mode=1` renders that session with classic and no extension
   bundles; `?safe_mode=0` leaves it. The Themes page links to both.
-- **Stylesheet fallback.** `dist/theme.json` records the hash of the panel classes the stylesheet was
-  built with. When the panel's differ because the panel was updated after the build, the panel links its
-  own stylesheet and the theme's over it, so classes added since still exist. Doctor and pack warn;
-  rebuilding with the panel's SDK makes the theme's stylesheet the only one again.
 - **Compatibility.** An active theme whose `requires` no longer match after an update is marked failed
   on the Extensions page, and every page renders classic until it is updated.
 
@@ -1268,7 +1266,7 @@ disabled or removed.
 Declare `requires.panel` and `requires.sdk` (`>=2.0.0-beta.5 <3.0`). During the 2.0 betas, view names,
 models, parts and fixtures, and the primitives' parts and state, can change in any beta. Build against
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
-and `npm run doctor` an overridden view that no longer exists; then rebuild. From 2.0, additions to the
+or an overridden view the new SDK does not have; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
 
 ## Reference
@@ -1282,126 +1280,124 @@ classic's values for both schemes, are in `@pterodactyl/sdk/panel.css` and
 stylesheet or an attribute of `<html>` changes. Any colour syntax works, `oklch()` and `color-mix()`
 included: the engine converts the terminal's colours to the hex and `rgba()` its canvas reads.
 
-<!-- generated:tokens -->
 #### Surfaces and text
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--background` | Page background. | `*-background` | Dialog, DropdownMenuItem, Input, NumberInput, SpinnerOverlay, Switch and 7 more |
-| `--foreground` | Body text. | `*-foreground` | Alert, Badge, Button, Card, ChartCard, Code and 34 more |
-| `--card` | Cards, rows and raised panels. | `*-card` | Card, Dialog, FileInput, ListRow, Select, Stat and 15 more |
-| `--card-foreground` | Text on cards. | `*-card-foreground` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm`, `server.schedule`, `server.schedules` |
-| `--popover` | Raised fills: menus, tooltips, hover fills, stat tiles and chart cards. | `*-popover` | Badge, Button, ChartCard, CopyOnClick, DropdownMenu, FileInput and 13 more |
-| `--popover-foreground` | Text on popovers. | `*-popover-foreground` | DropdownMenu, Tooltip |
-| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` | Badge, Card, Code, DropdownMenuItem, Input, NumberInput and 12 more |
-| `--muted-foreground` | Secondary text, icons and placeholders. | `*-muted-foreground` | Badge, Card, Dialog, DropdownMenuItem, Empty, Label and 31 more |
-| `--sunken` | A recessed surface on a card: meter tracks, code chips. | `*-sunken` | Code, ProgressBar |
-| `--border` | Borders and dividers. | `*-border` | Badge, Button, Card, ChartCard, Dialog, DropdownMenu and 18 more |
-| `--input` | Input fills. | `*-input` | Checkbox, Input, NumberInput, Select, Switch, TextArea and 1 more |
-| `--input-border` | Input borders; defaults to `--input`. | `*-input-border` | Checkbox, Input, NumberInput, Select, Switch, TextArea and 1 more |
-| `--ring` | Focus rings and outlines. | `*-ring` | FileInput, Input, NumberInput, Select, Spinner, TextArea and 1 more |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--background` | Page background. | `*-background` |
+| `--foreground` | Body text. | `*-foreground` |
+| `--card` | Cards, rows and raised panels. | `*-card` |
+| `--card-foreground` | Text on cards. | `*-card-foreground` |
+| `--popover` | Raised fills: menus, tooltips, hover fills, stat tiles and chart cards. | `*-popover` |
+| `--popover-foreground` | Text on popovers. | `*-popover-foreground` |
+| `--muted` | Quiet fills: table heads, disabled inputs. | `*-muted` |
+| `--muted-foreground` | Secondary text, icons and placeholders. | `*-muted-foreground` |
+| `--sunken` | A recessed surface on a card: meter tracks, code chips. | `*-sunken` |
+| `--border` | Borders and dividers. | `*-border` |
+| `--input` | Input fills. | `*-input` |
+| `--input-border` | Input borders; defaults to `--input`. | `*-input-border` |
+| `--ring` | Focus rings and outlines. | `*-ring` |
 
 #### Actions and states
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--primary` | Primary buttons, links in focus, selected items. | `*-primary` | Badge, Button, Checkbox, Dialog, Input, ListRow and 12 more |
-| `--primary-foreground` | Text on primary. | `*-primary-foreground` | Badge, Button, Checkbox, Dialog, Stat, Switch |
-| `--secondary` | Secondary fills and hover states. | `*-secondary` | Button, Empty, FileInput |
-| `--secondary-foreground` | Text on secondary. | `*-secondary-foreground` | Empty |
-| `--accent` | Highlights: the active navigation underline, info alerts, the page progress bar. | `*-accent` | Alert, Badge, Empty, ListRow, ProgressBar, Select and 11 more |
-| `--accent-foreground` | Text on accent. | `*-accent-foreground` | Badge, Stat, `app.search` |
-| `--destructive` | Danger buttons, errors, offline status. | `*-destructive` | Alert, Badge, Button, Dialog, DropdownMenuItem, Input and 10 more |
-| `--destructive-foreground` | Text on destructive. | `*-destructive-foreground` | Badge, Button, Dialog, Stat, `server.backups` |
-| `--success` | Success states and running servers. | `*-success` | Alert, Badge, Button, Dialog, ListRow, ProgressBar and 4 more |
-| `--success-foreground` | Text on success. | `*-success-foreground` | Badge, Button, Dialog, Stat |
-| `--warning` | Warnings and starting servers. | `*-warning` | Alert, Badge, Dialog, ListRow, ProgressBar, Stat and 6 more |
-| `--warning-foreground` | Text on warning. | `*-warning-foreground` | Badge, Dialog, Stat, `server.files.manager` |
-| `--caution` | The orange button colour. | `*-caution` | Button |
-| `--caution-foreground` | Text on caution. | `*-caution-foreground` | Button |
-| `--state-foreground` | The text colour the success and warning foregrounds default to. |  |  |
-| `--chart-*` | Five chart series colours (`--chart-1` to `--chart-5`); generated avatars draw from them too. |  | `server.graphs` |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--primary` | Primary buttons, links in focus, selected items. | `*-primary` |
+| `--primary-foreground` | Text on primary. | `*-primary-foreground` |
+| `--secondary` | Secondary fills and hover states. | `*-secondary` |
+| `--secondary-foreground` | Text on secondary. | `*-secondary-foreground` |
+| `--accent` | Highlights: the active navigation underline, info alerts, the page progress bar. | `*-accent` |
+| `--accent-foreground` | Text on accent. | `*-accent-foreground` |
+| `--destructive` | Danger buttons, errors, offline status. | `*-destructive` |
+| `--destructive-foreground` | Text on destructive. | `*-destructive-foreground` |
+| `--success` | Success states and running servers. | `*-success` |
+| `--success-foreground` | Text on success. | `*-success-foreground` |
+| `--warning` | Warnings and starting servers. | `*-warning` |
+| `--warning-foreground` | Text on warning. | `*-warning-foreground` |
+| `--caution` | The orange button colour. | `*-caution` |
+| `--caution-foreground` | Text on caution. | `*-caution-foreground` |
+| `--state-foreground` | The text colour the success and warning foregrounds default to. |  |
+| `--chart-*` | Five chart series colours (`--chart-1` to `--chart-5`); generated avatars draw from them too. |  |
 
 #### Sidebar
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--sidebar` | Sidebar background; defaults to `--card`. | `*-sidebar` |  |
-| `--sidebar-foreground` | Sidebar text. | `*-sidebar-foreground` |  |
-| `--sidebar-primary` | The active sidebar item. | `*-sidebar-primary` |  |
-| `--sidebar-primary-foreground` | Text on the active sidebar item. | `*-sidebar-primary-foreground` |  |
-| `--sidebar-accent` | Sidebar hover fill. | `*-sidebar-accent` |  |
-| `--sidebar-accent-foreground` | Text on the sidebar hover fill. | `*-sidebar-accent-foreground` |  |
-| `--sidebar-border` | Sidebar borders. | `*-sidebar-border` |  |
-| `--sidebar-ring` | Sidebar focus rings. | `*-sidebar-ring` |  |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--sidebar` | Sidebar background; defaults to `--card`. | `*-sidebar` |
+| `--sidebar-foreground` | Sidebar text. | `*-sidebar-foreground` |
+| `--sidebar-primary` | The active sidebar item. | `*-sidebar-primary` |
+| `--sidebar-primary-foreground` | Text on the active sidebar item. | `*-sidebar-primary-foreground` |
+| `--sidebar-accent` | Sidebar hover fill. | `*-sidebar-accent` |
+| `--sidebar-accent-foreground` | Text on the sidebar hover fill. | `*-sidebar-accent-foreground` |
+| `--sidebar-border` | Sidebar borders. | `*-sidebar-border` |
+| `--sidebar-ring` | Sidebar focus rings. | `*-sidebar-ring` |
 
 #### Shape, type and layout
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--radius` | The radius scale `rounded-sm` to `rounded-4xl` is computed from. |  |  |
-| `--spacing` | Tailwind's spacing unit, which every `p-*`, `m-*`, `gap-*` and `w-*` multiplies: density. |  |  |
-| `--font-sans` | Body typeface (`font-sans`). |  |  |
-| `--font-header` | Heading typeface (`font-header`). |  | Card, ChartCard, Dialog, Empty, PageHeading, Stat and 3 more |
-| `--layout-content-width` | Width of page content (`max-w-panel`). | `*-panel` | PageFooter, `layout.admin`, `layout.app` |
-| `--layout-gutter` | The least space beside page content, which centres when wider; `page-width` applies both. |  | PageFooter |
-| `--layout-page-spacing` | Space above and below a page's content (`1rem`, `1.5rem` from `sm`). |  |  |
-| `--layout-auth-width` | Width of the sign-in card (`max-w-auth`). | `*-auth` | `auth.checkpointForm`, `auth.forgotPasswordForm`, `auth.loginForm`, `auth.resetPasswordForm` |
-| `--layout-sidebar-width` | Width of sidebars (`w-sidebar`). | `*-sidebar` | `layout.admin` |
-| `--spinner-overlay-opacity` | Opacity of the background behind a loading overlay. |  | SpinnerOverlay |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--radius` | The radius scale `rounded-sm` to `rounded-4xl` is computed from. |  |
+| `--spacing` | Tailwind's spacing unit, which every `p-*`, `m-*`, `gap-*` and `w-*` multiplies: density. |  |
+| `--font-sans` | Body typeface (`font-sans`). |  |
+| `--font-header` | Heading typeface (`font-header`). |  |
+| `--layout-content-width` | Width of page content (`max-w-panel`). | `*-panel` |
+| `--layout-gutter` | The least space beside page content, which centres when wider; `page-width` applies both. |  |
+| `--layout-page-spacing` | Space above and below a page's content (`1rem`, `1.5rem` from `sm`). |  |
+| `--layout-auth-width` | Width of the sign-in card (`max-w-auth`). | `*-auth` |
+| `--layout-sidebar-width` | Width of sidebars (`w-sidebar`). | `*-sidebar` |
+| `--spinner-overlay-opacity` | Opacity of the background behind a loading overlay. |  |
 
 #### Shadows
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--shadow-*` | Tailwind's shadow scale (`shadow-2xs` to `shadow-2xl`) that lifts cards, tiles and dialogs; retune it in `@theme`. |  | Alert, Card, ChartCard, CopyOnClick, Dialog, DropdownMenu and 15 more |
-| `--shadow-navigation-active` | The underline of the active navigation item (`shadow-navigation-active`). |  | `layout.app` |
-| `--shadow-progress` | The glow under the page progress bar (`shadow-progress`). |  | ProgressBar |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--shadow-*` | Tailwind's shadow scale (`shadow-2xs` to `shadow-2xl`) that lifts cards, tiles and dialogs; retune it in `@theme`. |  |
+| `--shadow-navigation-active` | The underline of the active navigation item (`shadow-navigation-active`). |  |
+| `--shadow-progress` | The glow under the page progress bar (`shadow-progress`). |  |
 
 #### Browser chrome
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--color-scheme` | The `color-scheme` of native widgets: `light` or `dark`. |  |  |
-| `--theme-color` | The `<meta name="theme-color">` the panel keeps in sync. |  |  |
-| `--selection` | Text selection background; unset keeps the browser default. |  |  |
-| `--selection-foreground` | Text selection colour. |  |  |
-| `--scrollbar-thumb` | Scrollbar thumb on hover, and `scrollbar-color`. | `*-scrollbar-thumb` | Table |
-| `--scrollbar-thumb-fill` | Scrollbar thumb at rest. | `*-scrollbar-thumb-fill` |  |
-| `--scrollbar-track` | Scrollbar track. |  |  |
-| `--brand-logo` | A `url(…)` the layouts show as the logo, usually written by an image setting. |  |  |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--color-scheme` | The `color-scheme` of native widgets: `light` or `dark`. |  |
+| `--theme-color` | The `<meta name="theme-color">` the panel keeps in sync. |  |
+| `--selection` | Text selection background; unset keeps the browser default. |  |
+| `--selection-foreground` | Text selection colour. |  |
+| `--scrollbar-thumb` | Scrollbar thumb on hover, and `scrollbar-color`. | `*-scrollbar-thumb` |
+| `--scrollbar-thumb-fill` | Scrollbar thumb at rest. | `*-scrollbar-thumb-fill` |
+| `--scrollbar-track` | Scrollbar track. |  |
+| `--brand-logo` | A `url(…)` the layouts show as the logo, usually written by an image setting. |  |
 
 #### Console
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--terminal-background` | Console background (`bg-terminal`). | `*-terminal` | `server.startup.command`, `server.terminal` |
-| `--terminal-foreground` | Uncoloured console output. | `*-terminal-foreground` |  |
-| `--terminal-cursor` | Console cursor; matches the background to hide it. |  |  |
-| `--terminal-selection` | Selected console text background. |  |  |
-| `--terminal-selection-foreground` | Selected console text. |  |  |
-| `--terminal-ansi-*` | The 16 ANSI colours: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white` and their `bright-` forms. |  |  |
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--terminal-background` | Console background (`bg-terminal`). | `*-terminal` |
+| `--terminal-foreground` | Uncoloured console output. | `*-terminal-foreground` |
+| `--terminal-cursor` | Console cursor; matches the background to hide it. |  |
+| `--terminal-selection` | Selected console text background. |  |
+| `--terminal-selection-foreground` | Selected console text. |  |
+| `--terminal-ansi-*` | The 16 ANSI colours: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white` and their `bright-` forms. |  |
 
 #### File editor
 
-| Token | Role | Utilities | Classic reads it in |
-| --- | --- | --- | --- |
-| `--editor-background` | Editor background. |  |  |
-| `--editor-foreground` | Editor text. |  |  |
-| `--editor-caret` | The caret. |  |  |
-| `--editor-selection` | Selected text background. |  |  |
-| `--editor-selected-foreground` | Text in selected search matches and completions. |  |  |
-| `--editor-border` | Editor borders and gutters. |  |  |
-| `--editor-muted` | Line numbers and other quiet text. |  |  |
-| `--editor-active-line` | The line with the caret. |  |  |
-| `--editor-search-match` | Search matches. |  |  |
-| `--editor-search-match-selected` | The current search match. |  |  |
-| `--editor-tooltip` | Tooltip and autocomplete background. |  |  |
-| `--editor-tooltip-border` | Tooltip and autocomplete border. |  |  |
-| `--editor-panel-shadow` | Shadow of the search panel. |  |  |
-| `--editor-dialog-shadow` | Shadow of editor dialogs. |  |  |
-| `--editor-syntax-*` | Syntax colours: `keyword`, `name`, `function`, `constant`, `definition`, `type`, `operator`, `string`, `invalid`. |  |  |
-<!-- /generated:tokens -->
+| Token | Role | Utilities |
+| --- | --- | --- |
+| `--editor-background` | Editor background. |  |
+| `--editor-foreground` | Editor text. |  |
+| `--editor-caret` | The caret. |  |
+| `--editor-selection` | Selected text background. |  |
+| `--editor-selected-foreground` | Text in selected search matches and completions. |  |
+| `--editor-border` | Editor borders and gutters. |  |
+| `--editor-muted` | Line numbers and other quiet text. |  |
+| `--editor-active-line` | The line with the caret. |  |
+| `--editor-search-match` | Search matches. |  |
+| `--editor-search-match-selected` | The current search match. |  |
+| `--editor-tooltip` | Tooltip and autocomplete background. |  |
+| `--editor-tooltip-border` | Tooltip and autocomplete border. |  |
+| `--editor-panel-shadow` | Shadow of the search panel. |  |
+| `--editor-dialog-shadow` | Shadow of editor dialogs. |  |
+| `--editor-syntax-*` | Syntax colours: `keyword`, `name`, `function`, `constant`, `definition`, `type`, `operator`, `string`, `invalid`. |  |
 
 ### Primitives
 
