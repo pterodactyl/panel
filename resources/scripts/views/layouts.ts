@@ -145,14 +145,10 @@ function useAccountLayoutModel(): AccountLayoutModel {
 }
 
 const adminLink = (internalId: number, order: number): NavItem => {
-    const params = { id: String(internalId) };
-
     return {
         id: 'admin',
         label: 'Open Admin Area',
-        to: '/panel/servers/$id',
-        params,
-        destination: { to: '/panel/servers/$id', params },
+        destination: { to: '/panel/servers/$id', params: { id: String(internalId) } },
         icon: 'external-link',
         group: null,
         order,
@@ -308,24 +304,23 @@ const SERVER_ID = 'a1b2c3d4';
 /** Core items of an area as `useNavigation` lists them, from `[path, label, icon, options]`. */
 function navFixture(
     area: NavArea,
-    entries: readonly (readonly [string, string, string, Partial<NavItem>?])[]
+    entries: readonly (readonly [string, string, string, (Partial<NavItem> & { readonly hash?: string })?])[]
 ): NavigationModel {
     return {
-        items: entries.map(([path, label, icon, options], order) => {
-            const item = {
-                id: path || 'index',
-                label,
-                to: path ? `${SCREEN_ROOTS[area]}/${path}` : SCREEN_ROOTS[area],
-                params: area === 'server' ? { id: SERVER_ID } : {},
-                icon,
-                group: null,
-                order,
-                exact: path === '',
-                ...options,
-            };
-
-            return { ...item, destination: navItemDestination(item) };
-        }),
+        items: entries.map(([path, label, icon, { hash, ...options } = {}], order) => ({
+            id: path || 'index',
+            label,
+            destination: navItemDestination(
+                path ? `${SCREEN_ROOTS[area]}/${path}` : SCREEN_ROOTS[area],
+                area === 'server' ? { id: SERVER_ID } : {},
+                hash
+            ),
+            icon,
+            group: null,
+            order,
+            exact: path === '',
+            ...options,
+        })),
     };
 }
 
@@ -335,7 +330,7 @@ const extensionItem = (area: NavArea, order: number): Partial<NavItem> => ({
     icon: 'life-buoy',
     group: 'Support',
     order,
-    to: `${SCREEN_ROOTS[area]}/tickets`,
+    destination: navItemDestination(`${SCREEN_ROOTS[area]}/tickets`, area === 'server' ? { id: SERVER_ID } : {}),
 });
 
 const accountNav = (extension = false) =>

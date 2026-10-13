@@ -128,9 +128,6 @@ it('lists the server items the subuser may open and whose egg rules match', asyn
     expect(listed()[1]).toEqual({
         id: 'files',
         label: 'Files',
-        to: '/server/$id/files',
-        params: { id: 'abc' },
-        hash: '/',
         destination: { to: '/server/$id/files', params: { id: 'abc' }, hash: '/' },
         icon: null,
         group: null,
@@ -159,22 +156,24 @@ it('picks the most specific active item', async () => {
     expect(screen.getAllByRole('listitem').find((entry) => entry.dataset.active)?.textContent).toContain('"files"');
 });
 
-it('renders gated items once their predicate allows them, with their live badge', async () => {
-    let visible = false;
-
-    await renderServer(
+function ServerNavigation() {
+    return (
         <nav>
-            <Navigation area='server'>
+            <Navigation items={useNavigation('server').items}>
                 {(item, state) => (
                     <NavigationLink item={item} data-active={state.active || undefined}>
                         {item.label} {state.badge}
                     </NavigationLink>
                 )}
             </Navigation>
-        </nav>,
-        subuser(),
-        '/server/abc/files'
+        </nav>
     );
+}
+
+it('renders gated items once their predicate allows them, with their live badge', async () => {
+    let visible = false;
+
+    await renderServer(<ServerNavigation />, subuser(), '/server/abc/files');
 
     expect(screen.getByRole('link', { name: 'Console' })).toHaveAttribute('href', '/server/abc');
     expect(screen.getByRole('link', { name: 'Files' })).toHaveAttribute('data-active');
@@ -204,8 +203,6 @@ it('builds admin resource tabs from its own and the extension screens beneath it
         {
             id: 'about',
             label: 'About',
-            to: '/panel/nodes/$id',
-            params: { id: '42' },
             destination: { to: '/panel/nodes/$id', params: { id: '42' } },
             icon: null,
             group: null,
@@ -215,8 +212,6 @@ it('builds admin resource tabs from its own and the extension screens beneath it
         {
             id: 'probe',
             label: 'Probe',
-            to: '/panel/nodes/$id/probe',
-            params: { id: '42' },
             destination: { to: '/panel/nodes/$id/probe', params: { id: '42' } },
             icon: null,
             group: null,

@@ -461,8 +461,8 @@ place, in a `<div>` when it has a `className`.
 The other layouts each frame an **area**, a part of the panel with navigation of its own: the account, a
 server, or the admin area. They have `model.nav.items`: the area's `NavItem`s, filtered by subuser
 permissions and egg rules, extension screens included. Links and items have an `icon`, a lucide name for
-`<NamedIcon>`, and a `destination` for `PanelLink` and `usePanelNavigate()`. `<Navigation>` calls its
-child with each item and `{ active, badge }`, and keeps an extension screen hidden until its runtime
+`<NamedIcon>`, and a `destination` for `PanelLink` and `usePanelNavigate()`. `<Navigation items>` calls
+its child with each item and `{ active, badge }`, and keeps an extension screen hidden until its runtime
 condition allows it. `NavigationLink` links to an item and carries `data-status="active"` while the item
 is active. [`AreaNav`](#the-shell-knows-the-area) below uses both.
 

@@ -41,7 +41,7 @@ export {
     type UiPrimitives,
     type UiTone,
 } from '@/themes/skins';
-export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
+export { View, type ViewElementProps } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';
 export { usePageTitle } from '@/views/pageTitle';

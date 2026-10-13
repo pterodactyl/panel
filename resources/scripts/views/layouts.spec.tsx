@@ -284,7 +284,13 @@ describe('layout.admin', () => {
             nav: {
                 items: [
                     ...model.nav.items,
-                    { ...settings, id: 'settings/mail', label: 'Mail', to: '/panel/settings/mail', icon: null },
+                    {
+                        ...settings,
+                        id: 'settings/mail',
+                        label: 'Mail',
+                        destination: { to: '/panel/settings/mail' },
+                        icon: null,
+                    },
                 ],
             },
         };
