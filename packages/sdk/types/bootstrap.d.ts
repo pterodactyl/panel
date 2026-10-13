@@ -20,7 +20,6 @@ export interface ThemeBootstrap {
     schemes: ThemeScheme[];
     safeMode: boolean;
     preview: boolean;
-    stylesheetFallback: boolean;
 }
 export declare const getBootstrapUser: () => UserData | undefined;
 export declare const endBootstrapSession: () => void;

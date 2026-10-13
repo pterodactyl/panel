@@ -79,9 +79,11 @@ While the last command runs on a panel with `APP_DEBUG=true`, a stylesheet chang
 without a reload, and any other change reloads them. To try a theme without switching everyone to it,
 skip `p:theme:activate` and choose **Preview for me** on **Admin > Themes**.
 
-At this level you edit only `src/theme.css`. It starts with `@import '@pterodactyl/sdk/theme-entry.css';`,
-the panel's whole stylesheet: Tailwind, the tokens, and every class the panel uses. Your rules come after
-it, so they win. Write plain Tailwind with no prefix.
+At this level you edit only `src/theme.css`. The panel links its own stylesheet, then the theme's, so your
+rules win. A stylesheet of plain CSS, such as tokens and `[data-ui]` selectors, needs nothing else. The
+scaffold's starts with `@import '@pterodactyl/sdk/theme-entry.css';`, which a theme that uses Tailwind
+classes or `@theme` keeps: it builds the panel's stylesheet with the theme's classes added, so its
+utilities are ordered with the panel's. Write plain Tailwind with no prefix.
 
 ### What the build writes
 
@@ -89,8 +91,8 @@ it, so they win. Write plain Tailwind with no prefix.
 
 | File | What it is |
 | --- | --- |
-| `theme.css` | The stylesheet the panel links in place of its own. |
-| `theme.json` | What the build was made from: the panel's classes and SDK, the views the theme overrides, and its parents' builds. Doctor and the panel check it. |
+| `theme.css` | The stylesheet the panel links after its own. |
+| `theme.json` | The parent themes the stylesheet was built over. Doctor and the panel check it. |
 | `theme-source.css` and `classes.txt` | The theme's own CSS and the classes its files use, which the build of a [child theme](#building-on-another-theme) brings in. |
 | `client.js` | From level 2 on, the theme's JavaScript. |
 
@@ -98,8 +100,7 @@ it, so they win. Write plain Tailwind with no prefix.
 
 A **token** is a CSS custom property the panel's classes read. Set one and everything that reads it
 changes: `--primary` colours primary buttons and selected items, `--radius` sets every rounded corner,
-and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all, each with the
-primitives and views classic reads it in, so you can tell what a change reaches before you make it.
+and `--spacing` scales every padding, margin and gap. [Tokens](#tokens) lists them all with their roles.
 
 The colour classes are roles such as `bg-card` and `text-muted-foreground`. Of Tailwind's palette only
 `white` and `black` remain (`text-white`, `bg-black/15`). Add a colour of your own in `@theme`:
@@ -1031,7 +1032,8 @@ test of the chain.
 ```
 <!-- /sample -->
 
-The panel links one stylesheet, the nearest in the chain, so a child's stylesheet carries its parents'.
+The panel links its own stylesheet, then the nearest theme stylesheet in the chain, so a child's stylesheet
+carries its parents'.
 A child's build reads `theme.extends`, finds each parent's build, and brings in its `theme-source.css` and
 `classes.txt` ([what the build writes](#what-the-build-writes)), oldest first, right after the SDK's
 import. The child's `src/theme.css` stays one import and its own rules, and can use the parents'
@@ -1062,9 +1064,8 @@ utilities, variants and fonts:
 
 The build looks for each parent first in `<extensions>/<id>`, where `extensions` is the panel's extensions
 directory passed to `defineThemeConfig` (the scaffold writes it), then in `node_modules/<id>`, for a parent
-installed as a dependency. It records the build of each parent in `dist/theme.json`. Doctor, pack and enable
-refuse a child built without its parents, and doctor warns when a parent was rebuilt since; rebuild the
-child then. A parent's `@plugin` is loaded from the child's packages, so install the same plugins.
+installed as a dependency. It lists the parents it built over in `dist/theme.json`, and doctor, pack and
+enable refuse a child built without them. Rebuild the child when a parent changes. A parent's `@plugin` is loaded from the child's packages, so install the same plugins.
 
 The child's tests render the chain with `themes`, importing each parent's built entry, which
 `pterodactylTestAliases({ extensions })` finds where the build does and the SDK types:
@@ -1199,9 +1200,8 @@ rendered = renderView('layout.app', {
 
 ### Doctor and pack
 
-`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, view names,
-whether the stylesheet was built against this panel's classes, and for a child theme, over the
-current builds of its parents.
+`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, and for a child
+theme, whether the stylesheet was built over its parents.
 
 `npm run pack` writes a `.pteroext` archive to install on another panel, replacing an earlier one;
 `.gitignore` leaves archives out of the repository. The build writes no source maps, which would embed
@@ -1253,10 +1253,6 @@ What a theme can rely on when it draws behind or around the panel, such as a bac
   `[extensions] "<layer id>" failed in view "<view>": <error>`.
 - **Safe mode.** Opening any page with `?safe_mode=1` renders that session with classic and no extension
   bundles; `?safe_mode=0` leaves it. The Themes page links to both.
-- **Stylesheet fallback.** `dist/theme.json` records the hash of the panel classes the stylesheet was
-  built with. When the panel's differ because the panel was updated after the build, the panel links its
-  own stylesheet and the theme's over it, so classes added since still exist. Doctor and pack warn;
-  rebuilding with the panel's SDK makes the theme's stylesheet the only one again.
 - **Compatibility.** An active theme whose `requires` no longer match after an update is marked failed
   on the Extensions page, and every page renders classic until it is updated.
 
@@ -1268,7 +1264,7 @@ disabled or removed.
 Declare `requires.panel` and `requires.sdk` (`>=2.0.0-beta.5 <3.0`). During the 2.0 betas, view names,
 models, parts and fixtures, and the primitives' parts and state, can change in any beta. Build against
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
-and `npm run doctor` an overridden view that no longer exists; then rebuild. From 2.0, additions to the
+or an overridden view that no longer exists; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
 
 ## Reference

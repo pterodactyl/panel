@@ -19,7 +19,6 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from
 import { createRequire } from 'node:module';
 import { dirname, isAbsolute, parse, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseAst } from 'vite';
 import { packageRoot, themeParents } from './theme-chain.mjs';
 
 /** Modules provided by the panel's import map - never bundled into extensions. */
@@ -72,40 +71,7 @@ const extensionStyles = () => ({
     },
 });
 
-/**
- * The view names a `defineTheme({ views: { ... } })` call lists, when they are plain keys;
- * null when the call is there but its views cannot be read without running it.
- */
-function definedViews(program) {
-    const found = [];
-    const key = (property) =>
-        property.type === 'Property' && !property.computed ? String(property.key.name ?? property.key.value) : null;
-    const read = (theme) => {
-        if (theme?.type !== 'ObjectExpression' || theme.properties.some((property) => key(property) === null)) {
-            return null;
-        }
-        const views = theme.properties.find((property) => key(property) === 'views');
-        if (views === undefined) return [];
-        const keys = views.value.type === 'ObjectExpression' ? views.value.properties.map(key) : [null];
-
-        return keys.includes(null) ? null : keys;
-    };
-    const visit = (node) => {
-        if (Array.isArray(node)) return node.forEach(visit);
-        if (!node || typeof node.type !== 'string') return;
-        const callee = node.type === 'CallExpression' ? node.callee : null;
-        if ((callee?.type === 'Identifier' ? callee.name : callee?.property?.name) === 'defineTheme') {
-            found.push(read(node.arguments[0]));
-        }
-        for (const value of Object.values(node)) if (value && typeof value === 'object') visit(value);
-    };
-    visit(program);
-    return found;
-}
-
 const sdkDirectory = fileURLToPath(new URL('.', import.meta.url));
-const sdkVersion = () => JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version;
-const digest = (...parts) => createHash('sha256').update(parts.join('\0')).digest('hex').slice(0, 16);
 const quote = (value) => JSON.stringify(value);
 
 /** A path a stylesheet in `from` can reference `to` by, with forward slashes. */
@@ -198,16 +164,15 @@ function ownStylesheet(file, { postcss, asset, sources }, seen = new Set()) {
 }
 
 /**
- * The theme build: dist/theme.json, which the panel reads to decide whether the theme stylesheet can
- * replace its own, and what a child theme builds on, dist/theme-source.css and dist/classes.txt.
- * When the theme extends others, their stylesheets and classes come into its own after the SDK's.
+ * The theme build: what a child theme builds on, dist/theme-source.css and dist/classes.txt, and
+ * dist/theme.json, which lists the parents the stylesheet was built over. When the theme extends
+ * others, their stylesheets and classes come into its own after the SDK's.
  */
 function themeBuild({ entry, stylesheet, extensions }, inherited) {
     let config;
     let root;
     let sheet;
     let parents = [];
-    let views = [];
 
     return [
         {
@@ -222,20 +187,22 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
                 root = packageRoot(from) ?? from;
             },
             buildStart() {
-                parents = sheet ? themeParents({ root, extensions }).map((parent) => inherit(this, parent)) : [];
+                parents = sheet
+                    ? themeParents({ root, extensions })
+                          .map((parent) => inherit(this, parent))
+                          .filter(Boolean)
+                    : [];
             },
             transform(code, id) {
-                if (id.split('?')[0] !== sheet || !parents.some((parent) => parent.build)) return null;
+                if (id.split('?')[0] !== sheet || !parents.length) return null;
 
                 const postcss = dependency(root, 'postcss');
                 const css = postcss.parse(code, { from: sheet });
-                const imports = parents
-                    .filter((parent) => parent.build)
-                    .map(
-                        (parent) =>
-                            `@import ${quote(cssPath(dirname(sheet), parent.stylesheet))};\n` +
-                            `@source ${quote(cssPath(dirname(sheet), parent.classes))};`
-                    );
+                const imports = parents.map(
+                    (parent) =>
+                        `@import ${quote(cssPath(dirname(sheet), parent.stylesheet))};\n` +
+                        `@source ${quote(cssPath(dirname(sheet), parent.classes))};`
+                );
                 const inherited = postcss.parse(`/* The themes this one extends, oldest first. */\n${imports.join('\n')}`).nodes;
                 const sdk = css.nodes.find(
                     (node) => node.type === 'atrule' && node.name === 'import' && /^\s*(?:url\(\s*)?['"]?@pterodactyl\/sdk\//.test(node.params)
@@ -248,14 +215,6 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
         {
             name: 'pterodactyl-theme-build-info',
             enforce: 'post',
-            buildStart() {
-                views = [];
-            },
-            transform(code, id) {
-                if (!id.includes('/node_modules/') && /\bdefineTheme\b/.test(code))
-                    views.push(...definedViews(parseAst(code)));
-                return null;
-            },
             generateBundle(_options, bundle) {
                 for (const chunk of Object.values(bundle)) {
                     if (
@@ -296,16 +255,7 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
                     ],
                 });
                 const classes = `${[...new Set(scanner.scan())].sort().join('\n')}\n`;
-                const manifest = new URL('./core-classes.txt', import.meta.url);
-                const info = {
-                    core: existsSync(manifest)
-                        ? createHash('sha256').update(readFileSync(manifest)).digest('hex').slice(0, 16)
-                        : null,
-                    sdk: sdkVersion(),
-                    ...(views.length === 1 && views[0] !== null ? { views: views[0] } : {}),
-                    build: digest(source, classes),
-                    ...(parents.length ? { parents: Object.fromEntries(parents.map(({ id, build }) => [id, build])) } : {}),
-                };
+                const info = { parents: parents.map(({ id }) => id) };
                 this.emitFile({ type: 'asset', fileName: 'theme-source.css', source });
                 this.emitFile({ type: 'asset', fileName: 'classes.txt', source: classes });
                 this.emitFile({ type: 'asset', fileName: 'theme.json', source: `${JSON.stringify(info, null, 4)}\n` });
@@ -315,16 +265,16 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
 
     /**
      * A parent's build, its stylesheet copied into Vite's cache with absolute url()s: Tailwind inlines
-     * imports without rebasing their urls, and rebuilds when an imported file changes.
+     * imports without rebasing their urls, and rebuilds when an imported file changes. Null for a
+     * parent with neither styles nor JavaScript, which gives the child nothing to build over.
      */
     function inherit(context, parent) {
         const dist = (file) => resolve(parent.directory, 'dist', file);
-        if (!parent.manifest.ui && !parent.manifest.theme?.stylesheet) return { ...parent, build: null };
+        if (!parent.manifest.ui && !parent.manifest.theme?.stylesheet) return null;
 
-        const info = existsSync(dist('theme.json')) ? JSON.parse(readFileSync(dist('theme.json'), 'utf8')) : null;
-        if (!info?.build || !existsSync(dist('theme-source.css')) || !existsSync(dist('classes.txt'))) {
+        if (!existsSync(dist('theme-source.css')) || !existsSync(dist('classes.txt'))) {
             throw new Error(
-                `Theme "${parent.id}" in ${parent.directory} has no build to extend: build it with @pterodactyl/sdk ${sdkVersion()}, which writes dist/theme-source.css and dist/classes.txt.`
+                `Theme "${parent.id}" in ${parent.directory} has no build to extend: build it with @pterodactyl/sdk, which writes dist/theme-source.css and dist/classes.txt.`
             );
         }
 
@@ -339,17 +289,17 @@ function themeBuild({ entry, stylesheet, extensions }, inherited) {
             mkdirSync(dirname(copy), { recursive: true });
             writeFileSync(copy, text);
         }
-        for (const file of ['theme.json', 'theme-source.css', 'classes.txt']) context.addWatchFile(dist(file));
+        for (const file of ['theme-source.css', 'classes.txt']) context.addWatchFile(dist(file));
         inherited.add(`${relative(config.root, dist('')).split(sep).join('/')}/`);
 
-        return { ...parent, build: info.build, stylesheet: copy, classes: dist('classes.txt') };
+        return { ...parent, stylesheet: copy, classes: dist('classes.txt') };
     }
 }
 
 /**
  * Builds a theme: `entry` (optional) to dist/client.js with the shared modules external and
- * no stylesheet loader, `stylesheet` to dist/theme.css with Tailwind, and dist/theme.json,
- * dist/theme-source.css and dist/classes.txt for themes that extend this one.
+ * no stylesheet loader, `stylesheet` to dist/theme.css with Tailwind, dist/theme-source.css and
+ * dist/classes.txt for themes that extend this one, and dist/theme.json, which lists its parents.
  * When extension.json extends another theme, its stylesheet and classes are built in after the
  * SDK's. Parents are found in `extensions` (the panel's extensions directory), then node_modules.
  * `sourcemap` is off: a map embeds the theme's sources, so turn it on only for builds you keep.

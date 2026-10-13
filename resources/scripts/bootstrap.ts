@@ -21,7 +21,6 @@ export interface ThemeBootstrap {
     schemes: ThemeScheme[];
     safeMode: boolean;
     preview: boolean;
-    stylesheetFallback: boolean;
 }
 
 interface ExtendedWindow extends Window {
@@ -79,7 +78,6 @@ const classicTheme: ThemeBootstrap = {
     schemes: ['dark'],
     safeMode: false,
     preview: false,
-    stylesheetFallback: false,
 };
 
 export const getBootstrapTheme = (): ThemeBootstrap => ({

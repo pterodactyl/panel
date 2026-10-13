@@ -17,7 +17,6 @@ _ide_helper_models.php
 .phpstorm.meta.php
 .yarn
 public/assets/manifest.json
-public/assets/core-classes.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo

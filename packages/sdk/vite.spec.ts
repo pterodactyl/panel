@@ -42,17 +42,7 @@ it('builds a theme entry without a style loader, its stylesheet and its build in
         expect(dist('client.js')).toContain('from"@pterodactyl/sdk/theme"');
         expect(dist('client.js')).not.toContain('document.head.append');
         expect(dist('theme.css')).toContain('.aurora-frame');
-        const info = JSON.parse(dist('theme.json'));
-
-        // The core class manifest is generated with the panel build, so a bare checkout has none.
-        expect(info.core === null || /^[a-f0-9]{16}$/.test(info.core)).toBe(true);
-        expect(info).toEqual({
-            core: info.core,
-            sdk: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version,
-            views: ['layout.app', 'page', 'server.power'],
-            build: info.build,
-        });
-        expect(info.build).toMatch(/^[a-f0-9]{16}$/);
+        expect(JSON.parse(dist('theme.json'))).toEqual({ parents: [] });
     } finally {
         rmSync(directory, { recursive: true, force: true });
     }
@@ -119,7 +109,7 @@ it('ships its own stylesheet and class candidates for the themes that extend it'
         expect(font).toBeDefined();
         expect(theme.dist('theme.css')).toContain(`url(./${font})`);
         expect(theme.dist('classes.txt').split('\n')).toEqual(expect.arrayContaining(['glow', 'sm:rounded-3xl']));
-        expect(JSON.parse(theme.dist('theme.json'))).not.toHaveProperty('parents');
+        expect(JSON.parse(theme.dist('theme.json'))).toEqual({ parents: [] });
     } finally {
         rmSync(directory, { recursive: true, force: true });
     }
@@ -131,7 +121,6 @@ it("builds a child theme over its parent's stylesheet and classes, which it reco
         const child = themePackage(resolve(directory, 'child'));
         const parent = (path: string, contents: string | Buffer) => child.write(`../extensions/parent/${path}`, contents);
         parent('extension.json', JSON.stringify({ id: 'parent', type: 'theme', theme: { stylesheet: 'dist/theme.css' } }));
-        parent('dist/theme.json', JSON.stringify({ core: null, build: '0123456789abcdef' }));
         parent('dist/Brand.AbCd1234.woff2', Buffer.alloc(8192, 1));
         parent('dist/classes.txt', 'glow\nsm:rounded-3xl\n');
         parent(
@@ -149,7 +138,7 @@ it("builds a child theme over its parent's stylesheet and classes, which it reco
         expect(css.indexOf('.child-rule')).toBeGreaterThan(css.indexOf('.parent-rule'));
         // The parent's font is copied from its build under the name its build hashed, not hashed again.
         expect(css).toContain('url(./Brand.AbCd1234.woff2)');
-        expect(JSON.parse(child.dist('theme.json')).parents).toEqual({ parent: '0123456789abcdef' });
+        expect(JSON.parse(child.dist('theme.json'))).toEqual({ parents: ['parent'] });
 
         rmSync(resolve(directory, 'extensions/parent/dist/theme-source.css'));
         await expect(child.build(options)).rejects.toThrow('Theme "parent" in');
@@ -180,17 +169,9 @@ it('ships no source map, which would embed the theme sources, unless asked to', 
     }
 });
 
-it('leaves out views it cannot read without running the theme, and builds a stylesheet-only theme', async () => {
+it('builds a stylesheet-only theme', async () => {
     const directory = mkdtempSync(resolve(tmpdir(), 'theme-build-'));
     try {
-        const computed = await buildTheme(directory, {
-            'theme.css': '.a { color: red; }',
-            'theme.jsx':
-                "import { defineTheme } from '@pterodactyl/sdk/theme'; const views = {}; export default defineTheme({ views });",
-        });
-        expect(JSON.parse(computed('theme.json'))).not.toHaveProperty('views');
-
-        rmSync(resolve(directory, 'dist'), { recursive: true, force: true });
         const stylesheet = await buildTheme(directory, { 'theme.css': '.b { color: blue; }' }, false);
         expect(stylesheet('theme.css')).toContain('.b');
         expect(() => stylesheet('client.js')).toThrow();
