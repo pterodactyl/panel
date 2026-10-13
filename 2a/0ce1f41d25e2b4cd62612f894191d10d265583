@@ -1,0 +1,40 @@
+packages/sdk/types/sdk/models/console.d.ts
+  s_4cabae41bceed9::t_cd3e9a5f444bd0 3
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_b931f2b2325436 849-850
+  s_4cabae41bceed9::t_0acfe8a06e4f62 851-852
+  s_4cabae41bceed9::t_cd3e9a5f444bd0 884-886,1522-1527
+packages/sdk/docs-samples/aurora/src/views/ConsolePage.tsx
+  s_4cabae41bceed9::t_b931f2b2325436 29-31
+resources/scripts/themes/classic/views/server/console/ConsolePage.tsx
+  s_4cabae41bceed9::t_b931f2b2325436 38-40
+packages/sdk/types/views/server/console.d.ts
+  s_4cabae41bceed9::t_cd3e9a5f444bd0 6,15-16
+packages/sdk/types/views/server/features.d.ts
+  s_4cabae41bceed9::t_cd3e9a5f444bd0 12-13
+packages/sdk/docs-samples/level4-console/src/views/ConsolePage.tsx
+  s_4cabae41bceed9::t_b931f2b2325436 29-31
+resources/scripts/views/server/console.spec.tsx
+  s_4cabae41bceed9::t_d10ef42e68e95f 225-226,231-234
+  s_4cabae41bceed9::t_d7d55cb63e933e 14,17,227-230
+resources/scripts/views/server/console.ts
+  s_4cabae41bceed9::t_b931f2b2325436 22,33-34,158,335,342,349
+resources/scripts/views/server/features.ts
+  s_4cabae41bceed9::t_b931f2b2325436 22-26,87-88,109-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2a0ce1f41d25e2b4cd62612f894191d10d265583",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
