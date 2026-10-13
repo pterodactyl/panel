@@ -25,6 +25,7 @@ import {
     type ViewModels,
     type ViewName,
 } from './registry';
+import type { SlotName } from '@/extensions/registry';
 import { useViewDecision } from './session';
 
 const noop = () => {};
@@ -166,16 +167,29 @@ function LayerBoundary({
     );
 }
 
+/**
+ * Watches the slots of a view whose top layer is a theme's or an extension's. It renders beside that
+ * layer, so its effect runs once the layer has rendered, never while the view shows its placeholder.
+ */
+function SlotWatcher({ view, owners, slots }: { view: string; owners: string; slots: readonly SlotName[] }) {
+    useEffect(() => watchViewSlots(view, owners.split(','), slots), [view, owners, slots]);
+
+    return null;
+}
+
 function ViewChain({
     name,
     layers,
     frame,
     placeholder,
+    watcher,
 }: {
     name: string;
     layers: readonly ViewLayer[];
     frame: LayerFrame;
     placeholder: ReactNode;
+    /** Only the outermost chain of a view watches its slots. */
+    watcher?: ReactNode;
 }) {
     const [level] = useState(createLevel);
     const below = useMemo(() => layers.slice(0, -1), [layers]);
@@ -208,6 +222,7 @@ function ViewChain({
                     below={<ViewChain name={name} layers={below} frame={frame} placeholder={placeholder} />}
                 >
                     {element}
+                    {watcher}
                 </LayerBoundary>
             )}
         </level.Context.Provider>
@@ -232,14 +247,6 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
     const owners = layers.flatMap(({ id, source }) => (source === 'classic' ? [] : [id])).join(',');
 
     useEffect(() => viewMounted(definition.name), [definition.name]);
-    // Classic renders every slot of a view; layers above it decide for themselves.
-    useEffect(
-        () =>
-            owners && definition.slots?.length
-                ? watchViewSlots(definition.name, owners.split(','), definition.slots)
-                : undefined,
-        [owners, definition]
-    );
 
     if (decision.status === 'loading') {
         return placeholder;
@@ -255,6 +262,12 @@ function ViewBody({ definition, model, inputs, className, children }: BodyProps 
             layers={layers}
             placeholder={placeholder}
             frame={{ model, inputs, className, children }}
+            // Classic renders every slot of a view; layers above it decide for themselves.
+            watcher={
+                owners && definition.slots?.length ? (
+                    <SlotWatcher view={definition.name} owners={owners} slots={definition.slots} />
+                ) : undefined
+            }
         />
     );
 }
