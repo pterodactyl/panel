@@ -162,28 +162,42 @@ function ReplacementNotice({ replacement }: { replacement: AdminExtensionReplace
 }
 
 function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-    const [file, setFile] = useState<File | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
+    const [installed, setInstalled] = useState(0);
     const [enable, setEnable] = useState(false);
     const [replacement, setReplacement] = useState<AdminExtensionReplacement | null>(null);
     const installExtension = useInstallAdminExtension();
     const submitting = installExtension.isPending;
+    const remaining = files.length - installed;
+    let submitLabel = remaining > 1 ? `Install ${remaining}` : 'Install';
 
+    if (replacement) {
+        submitLabel = `Replace ${replacement.id}`;
+    }
+
+    // Installs in order and stops on a replacement prompt or failure; submitting again resumes there.
     const submit = async () => {
-        if (!file) {
-            return;
-        }
+        let next = installed;
+        let replace = replacement !== null;
 
-        try {
-            await installExtension.mutateAsync(installAdminExtensionInput(file, enable, replacement !== null));
-            onClose();
-        } catch (error) {
-            // A package with an installed id waits for the admin to confirm; other errors are toasted by the mutation.
-            const conflict = extensionReplacement(error);
+        while (next < files.length) {
+            try {
+                // eslint-disable-next-line no-await-in-loop -- Each install must finish before the next starts.
+                await installExtension.mutateAsync(installAdminExtensionInput(files[next]!, enable, replace));
+            } catch (error) {
+                // A package with an installed id waits for the admin to confirm; other errors are toasted by the mutation.
+                setReplacement(extensionReplacement(error));
+                setInstalled(next);
 
-            if (conflict) {
-                setReplacement(conflict);
+                return;
             }
+
+            next++;
+            replace = false;
+            setReplacement(null);
         }
+
+        onClose();
     };
 
     return (
@@ -197,17 +211,34 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
             <SpinnerOverlay visible={submitting} />
             <div className='space-y-5'>
                 <div>
-                    <Label htmlFor='extension_package'>Package</Label>
+                    <Label htmlFor='extension_package'>Packages</Label>
                     <FileInput
                         id='extension_package'
                         accept='.pteroext,.zip,application/zip'
                         aria-label='Extension package'
+                        multiple
                         disabled={submitting}
                         onChange={(event) => {
-                            setFile(event.currentTarget.files?.[0] ?? null);
+                            setFiles([...(event.currentTarget.files ?? [])]);
+                            setInstalled(0);
                             setReplacement(null);
                         }}
                     />
+                    {files.length > 1 && (
+                        <ul className='mt-3 space-y-1 text-sm'>
+                            {files.map((file, index) => (
+                                <li
+                                    key={`${file.name}-${file.size}-${file.lastModified}`}
+                                    className='flex justify-between gap-3'
+                                >
+                                    <span className='truncate font-mono'>{file.name}</span>
+                                    <span className={index < installed ? 'text-success' : 'text-muted-foreground'}>
+                                        {index < installed ? 'Installed' : 'Waiting'}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <label className='flex items-center gap-3 text-sm text-foreground'>
                     <Checkbox checked={enable} onChange={setEnable} disabled={submitting} />
@@ -229,11 +260,11 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                     type='button'
                     color={replacement ? 'red' : 'primary'}
                     className='w-full mt-4 sm:w-auto sm:mt-0'
-                    disabled={!file || submitting}
+                    disabled={remaining < 1 || submitting}
                     isLoading={submitting}
                     onClick={() => void submit()}
                 >
-                    {replacement ? `Replace ${replacement.id}` : 'Install'}
+                    {submitLabel}
                 </Button>
             </div>
         </Dialog>

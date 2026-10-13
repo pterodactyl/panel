@@ -142,6 +142,50 @@ describe('extension install dialog', () => {
         expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
         expect(within(dialog).getByRole('button', { name: 'Install' })).toBeEnabled();
     });
+
+    it('installs several packages in order and resumes after a replacement prompt', async () => {
+        const user = setup();
+        const created = async (config: InternalAxiosRequestConfig) => ({
+            data: { data: installed },
+            status: 201,
+            statusText: 'Created',
+            headers: {},
+            config,
+        });
+
+        upload
+            .mockImplementationOnce(created)
+            .mockImplementationOnce(async (config) => {
+                throw conflict(config);
+            })
+            .mockImplementation(created);
+
+        await user.click(screen.getAllByRole('button', { name: 'Install' })[0]!);
+        const dialog = await screen.findByRole('dialog', { name: 'Install extension' });
+
+        await user.upload(within(dialog).getByLabelText('Extension package'), [
+            new File(['zip'], 'first.pteroext'),
+            new File(['zip'], 'votes.pteroext'),
+            new File(['zip'], 'last.pteroext'),
+        ]);
+        await user.click(within(dialog).getByRole('button', { name: 'Install 3' }));
+        await user.click(await within(dialog).findByRole('button', { name: 'Replace votes' }));
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+        const sent = upload.mock.calls.map(([config]) => {
+            const body = config.data as FormData;
+
+            return [(body.get('package') as File | null)?.name, body.get('replace')];
+        });
+
+        expect(sent).toEqual([
+            ['first.pteroext', 'false'],
+            ['votes.pteroext', 'false'],
+            ['votes.pteroext', 'true'],
+            ['last.pteroext', 'false'],
+        ]);
+    });
 });
 
 const extension = (overrides: Partial<AdminExtension>): AdminExtension =>
