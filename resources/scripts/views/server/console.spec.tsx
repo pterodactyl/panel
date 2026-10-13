@@ -247,4 +247,10 @@ describe('page.server.console', () => {
         expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument();
         expect(screen.getByText('CPU Load', { selector: 'h3' })).toBeInTheDocument();
     });
+
+    it('warns above the console while the server installs', async () => {
+        await renderServer(<View name='page.server.console' active />, { status: 'installing' });
+
+        expect(await screen.findByText(/running its installation process/)).toBeVisible();
+    });
 });
