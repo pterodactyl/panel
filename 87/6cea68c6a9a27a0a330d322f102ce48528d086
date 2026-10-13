@@ -1,0 +1,113 @@
+resources/scripts/themes/classic/views/server/files/FileEditorNotice.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-18
+packages/sdk/types/views/lazy.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 15
+resources/scripts/themes/classic/views/server/files/FileEditorActions.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-15
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_c7296277a3e65b 109
+resources/scripts/views/server/fileEditor.spec.tsx
+  s_4cabae41bceed9::t_099c8217ca02a6 16,95-98,101,104,293-295,298,301,304
+packages/hello-world/src/client/FileDetails.tsx
+  s_4cabae41bceed9::t_58cd33375a9ea2 1,3-5
+resources/scripts/themes/classic/views/dashboard/ServerCardAddress.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-14
+resources/scripts/views/definitions.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 69-73
+  s_4cabae41bceed9::t_08284773d2b3fc 74-75,133-136,147-150
+resources/scripts/themes/classic/views/server/files/FileManagerList.tsx
+  s_4cabae41bceed9::t_ae0c107411eaa4 1-49
+resources/scripts/themes/classic/views/server/files/FileDetails.tsx
+  s_4cabae41bceed9::t_08284773d2b3fc 3,9,14-23
+packages/sdk/types/views/registry.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 19,23,29-35
+resources/scripts/themes/classic/views/dashboard/ServerCardMetrics.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-91
+resources/scripts/themes/classic/views/server/files/FileManager.tsx
+  s_4cabae41bceed9::t_ae0c107411eaa4 1-2,4
+  s_4cabae41bceed9::t_08284773d2b3fc 5,8-10
+resources/scripts/themes/classic/views/server/files/FileEditor.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1,4
+  s_4cabae41bceed9::t_08284773d2b3fc 2,5,8-9,11-12
+resources/scripts/themes/classic/views/index.ts
+  s_4cabae41bceed9::t_08284773d2b3fc 18,30-32,91-93,97-100
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 10
+resources/scripts/views/lazy.ts
+  s_4cabae41bceed9::t_c7296277a3e65b 71
+resources/scripts/themes/classic/views/dashboard/index.ts
+  s_4cabae41bceed9::t_1a769316d69dcc 4-6
+resources/scripts/themes/classic/views/dashboard/ServerCardIdentity.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-18
+resources/scripts/themes/classic/views/server/files/FileManagerToolbar.tsx
+  s_4cabae41bceed9::t_ae0c107411eaa4 1-42
+resources/scripts/themes/classic/views/server/files/index.ts
+  s_4cabae41bceed9::t_ae0c107411eaa4 3-5,9-12
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_872f2c9958aadf 724-725,736-741,743,1105,1575
+  s_4cabae41bceed9::t_8e1269a848326a 1287-1289,1293-1294,1299,1309,1316
+  s_4cabae41bceed9::t_07ffcd069fa0c5 745-747,1266,1452,1459,1469,1496,1511-1514,1528-1537
+packages/sdk/README.md
+  s_4cabae41bceed9::t_07ffcd069fa0c5 749,808,833-834,836,838,851,855,862,866
+packages/sdk/types/sdk/index.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 116
+resources/scripts/themes/classic/views/server/files/FileEditorCanvas.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-11
+resources/scripts/themes/classic/views/dashboard/ServerCard.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-2,4
+  s_4cabae41bceed9::t_08284773d2b3fc 5,8-10
+packages/sdk/docs-samples/snippets/views.tsx
+  s_4cabae41bceed9::t_872f2c9958aadf 2,34-37,39,44,48
+resources/scripts/sdk/testing.spec.tsx
+  s_4cabae41bceed9::t_15700d21c494e8 34
+  s_4cabae41bceed9::t_099c8217ca02a6 10-11,38,49,96-97,101-102,107-110,112
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_872f2c9958aadf 117,127
+resources/scripts/views/View.spec.tsx
+  s_4cabae41bceed9::t_099c8217ca02a6 16,231,237-238,240,250
+packages/sdk/types/views/dashboard.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 90-92,98-109
+resources/scripts/themes/classic/views/server/files/FileManagerSelection.tsx
+  s_4cabae41bceed9::t_ae0c107411eaa4 1-67
+resources/scripts/views/layouts.ts
+  s_4cabae41bceed9::t_8601c53d892a8d 147-155
+packages/hello-world/src/client/examples.spec.tsx
+  s_4cabae41bceed9::t_58cd33375a9ea2 206,209-210,213
+packages/sdk/types/views/server/files.d.ts
+  s_4cabae41bceed9::t_07ffcd069fa0c5 165-168,170-172,178-198
+packages/sdk/types-drift.spec.ts
+  s_4cabae41bceed9::t_58cd33375a9ea2 47,58,60-63,67,73-78,88-89
+resources/scripts/views/dashboard.ts
+  s_4cabae41bceed9::t_5c3103aec48e8f 21,119-121
+  s_4cabae41bceed9::t_08284773d2b3fc 113-115,462-464
+resources/scripts/views/server/files.ts
+  s_4cabae41bceed9::t_08284773d2b3fc 11,175-178,180-182,186-192,266-272
+resources/scripts/themes/classic/views/server/files/FileEditorLanguage.tsx
+  s_4cabae41bceed9::t_1a769316d69dcc 1-15
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_8e1269a848326a 34,38-39
+resources/scripts/views/server/fileManager.spec.tsx
+  s_4cabae41bceed9::t_099c8217ca02a6 180,193-197,200,208,212-213
+  s_4cabae41bceed9::t_86c7e5b68b3c74 181-185,190-192,198-199
+packages/sdk/views.json
+  s_4cabae41bceed9::t_8e1269a848326a 212-213,224-225,234-235,933-934,943-944,953-954,963-964,992-993,1004-1005,1016-1017
+  s_4cabae41bceed9::t_07ffcd069fa0c5 194,206-211,214-223,226-233,236-237,927-932,935-942,945-952,955-962,965-966,970,984-991,994-1003,1006-1015,1018-1019
+resources/scripts/views/registry.ts
+  s_4cabae41bceed9::t_c7296277a3e65b 28,32,39,41-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "876cea68c6a9a27a0a330d322f102ce48528d086",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
