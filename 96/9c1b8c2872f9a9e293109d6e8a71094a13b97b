@@ -1,0 +1,30 @@
+app/Services/Extensions/Scaffolding/stubs/theme-css-readme.stub
+  s_4cabae41bceed9::t_01a87512ed3575 20
+tests/Integration/Services/Themes/ThemeLifecycleTest.php
+  s_4cabae41bceed9::t_5f3b9a2c86d24d 179
+packages/sdk/docs-samples.spec.ts
+  s_4cabae41bceed9::t_da71de974ad838 1
+  s_4cabae41bceed9::t_a39ec14072660a 21
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_125ce2f08727d1 1202-1204
+app/Services/Extensions/Scaffolding/stubs/theme-readme.stub
+  s_4cabae41bceed9::t_3b176a5384b4ba 34
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_4cabae41bceed9::t_54add47ac7a456 197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "969c1b8c2872f9a9e293109d6e8a71094a13b97b",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
