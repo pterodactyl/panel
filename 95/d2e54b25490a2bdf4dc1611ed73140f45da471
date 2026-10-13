@@ -1,0 +1,71 @@
+packages/sdk/README.md
+  s_4cabae41bceed9::t_ac083183f00620 865-866
+scripts/generate-sdk-docs.mjs
+  s_4cabae41bceed9::t_f81af326ed5630 52,142
+  s_4cabae41bceed9::t_3f630f770b94a6 30,36,39-40,156,159-161
+  s_4cabae41bceed9::t_ac0d7b0b8c61c9 42
+packages/sdk/slot-coverage.spec.ts
+  s_4cabae41bceed9::t_2737d7bafc12ee 27
+resources/scripts/views/pages.ts
+  s_4cabae41bceed9::t_399558e2c086a5 4,6-7,12,56-57,64
+  s_4cabae41bceed9::t_89996f3d43e3f2 15
+packages/sdk/THEMES.md
+  s_4cabae41bceed9::t_9a246d794190db 887,889
+  s_4cabae41bceed9::t_5bb5b85ff5aee1 407,454,513
+  s_4cabae41bceed9::t_bb1c61fcc3304c 888
+resources/scripts/views/a11y.tsx
+  s_4cabae41bceed9::t_82ac0849ec7a3d 1
+resources/scripts/router/routeTree.ts
+  s_4cabae41bceed9::t_eab650a0fc2815 80,733,791,1039
+  s_4cabae41bceed9::t_54efd113296895 444-447,453-456,467-470,481-484,497-500,511-514,527-530,543-546,552-555,560-563,568-571,576-579,597-600,618-621,626-629,634-637,647-650,659-662,667-670,681-684,692-695,708-711,723-726,746-749,777-780,812-815,824-827,835-838,846-849,863-866,871-874,888-891,906-909,914-917,931-934,956-959,973-976,981-984,999-1002,1007-1010,1020-1023,1031-1034,1053-1056,1065-1068,1077-1080,1094-1097
+resources/scripts/themes/primitives.ts
+  s_4cabae41bceed9::t_0e358928355f71 23-24,126-193,195
+  s_4cabae41bceed9::t_4e9f8e8e5016c9 31,49-51,53,58,68-70,80-81,83,89,106,122-123
+resources/scripts/sdk/theme.ts
+  s_4cabae41bceed9::t_5b1f416eefc3cb 21
+packages/sdk/theme-cli.spec.ts
+  s_4cabae41bceed9::t_e66ede4cbc33dd 81
+resources/scripts/router/viewRoutes.tsx
+  s_4cabae41bceed9::t_392665a0795c90 104
+  s_4cabae41bceed9::t_06959e9690ffd4 1,103
+  s_4cabae41bceed9::t_cacb651718f55c 2,9,31,50-72,74-76,79,89-91,101-102,105-116
+  s_4cabae41bceed9::t_eb99c7b7ec4646 117
+packages/sdk/types/themes/primitives.d.ts
+  s_4cabae41bceed9::t_0e9a3ff2f9effd 27-28,233-266,268
+packages/sdk/types/sdk/theme.d.ts
+  s_4cabae41bceed9::t_0e9a3ff2f9effd 3
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_82ac0849ec7a3d 362-367
+resources/scripts/themes/skins.spec.tsx
+  s_4cabae41bceed9::t_c48b8405c4fea0 10,234,250,254
+packages/sdk/types/themes/skins.d.ts
+  s_4cabae41bceed9::t_0e9a3ff2f9effd 4
+resources/scripts/router/viewRoutes.spec.tsx
+  s_4cabae41bceed9::t_15963e02917b52 80
+  s_4cabae41bceed9::t_7f9bf2fcb0801f 72,77-79,81-89
+  s_4cabae41bceed9::t_54efd113296895 73-76
+resources/scripts/views/definitions.spec.ts
+  s_4cabae41bceed9::t_651e83c2689961 42
+resources/scripts/themes/skins.ts
+  s_4cabae41bceed9::t_e8d9a497759172 2,7,16,173,181,188,190,195
+  s_4cabae41bceed9::t_fff5ff70213468 172,175-176
+  s_4cabae41bceed9::t_2f93a4c7f49965 174
+resources/scripts/views/a11y.spec.tsx
+  s_4cabae41bceed9::t_82ac0849ec7a3d 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "95d2e54b25490a2bdf4dc1611ed73140f45da471",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
