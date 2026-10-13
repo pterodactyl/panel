@@ -1,5 +1,6 @@
 import { afterEach, beforeAll, expect, test } from 'vitest';
-import { preloadTheme, renderPrimitive, renderView, type RenderedView } from '@pterodactyl/sdk/testing';
+import { Button } from '@pterodactyl/sdk';
+import { preloadTheme, renderView, renderWithTheme, type RenderedView } from '@pterodactyl/sdk/testing';
 import aurora from 'aurora/dist/client.js';
 import theme from './theme';
 
@@ -19,7 +20,7 @@ test("frames Aurora's server card", () => {
 });
 
 test("adds a shadow to Aurora's pill buttons", () => {
-    rendered = renderPrimitive('Button', { children: 'Save' }, { themes });
+    rendered = renderWithTheme(<Button>Save</Button>, { themes });
 
     expect(rendered.container.querySelector('button')?.className).toContain('rounded-full');
     expect(rendered.container.querySelector('button')?.className).toContain('shadow-primary/20');

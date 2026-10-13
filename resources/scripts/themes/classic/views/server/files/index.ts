@@ -1,5 +1,12 @@
 export { default as FilesPage } from './FilesPage';
 export { default as FileManager } from './FileManager';
+export { default as FileManagerToolbar } from './FileManagerToolbar';
+export { default as FileManagerList } from './FileManagerList';
+export { default as FileManagerSelection } from './FileManagerSelection';
 export { default as FileDetails } from './FileDetails';
 export { default as EditorPage } from './EditorPage';
 export { default as FileEditor } from './FileEditor';
+export { default as FileEditorNotice } from './FileEditorNotice';
+export { default as FileEditorCanvas } from './FileEditorCanvas';
+export { default as FileEditorLanguage } from './FileEditorLanguage';
+export { default as FileEditorActions } from './FileEditorActions';

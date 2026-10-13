@@ -60,13 +60,19 @@ defineView('dashboard.serverList', {
 });
 defineView('dashboard.serverCard', {
     context: 'app',
-    slots: ['dashboard.serverRow.name.after'],
     placeholder: createElement('div', {
         className: 'h-12 animate-pulse rounded-sm bg-muted',
         'aria-label': 'Loading server card',
     }),
     ...dashboard,
 });
+defineView('dashboard.serverCard.identity', {
+    context: 'app',
+    slots: ['dashboard.serverRow.name.after'],
+    ...dashboard,
+});
+defineView('dashboard.serverCard.address', { context: 'app', ...dashboard });
+defineView('dashboard.serverCard.metrics', { context: 'app', ...dashboard });
 
 defineView('page.auth.login', {
     ...VIEW_PAGES['page.auth.login'],
@@ -123,12 +129,10 @@ defineView('page.server.files', {
     slots: ['server.files.before', 'server.files.after'],
     ...files,
 });
-defineView('server.files.manager', {
-    context: 'server',
-    slots: ['server.files.toolbar', 'server.files.rowActions', 'server.files.selectionActions'],
-    placeholder: spinner,
-    ...files,
-});
+defineView('server.files.manager', { context: 'server', placeholder: spinner, ...files });
+defineView('server.files.manager.toolbar', { context: 'server', slots: ['server.files.toolbar'], ...files });
+defineView('server.files.manager.list', { context: 'server', slots: ['server.files.rowActions'], ...files });
+defineView('server.files.manager.selection', { context: 'server', slots: ['server.files.selectionActions'], ...files });
 defineView('server.files.details', {
     context: 'server',
     placeholder: createElement('div', {
@@ -139,6 +143,10 @@ defineView('server.files.details', {
 });
 defineView('page.server.files.editor', { ...viewPage('page.server.files.editor'), ...files });
 defineView('server.files.editor', { context: 'server', placeholder: spinner, ...files });
+defineView('server.files.editor.notice', { context: 'server', ...files });
+defineView('server.files.editor.canvas', { context: 'server', ...files });
+defineView('server.files.editor.language', { context: 'server', ...files });
+defineView('server.files.editor.actions', { context: 'server', ...files });
 
 defineView('page.server.databases', { ...viewPage('page.server.databases'), ...databases });
 defineView('server.databases', { context: 'server', ...databases });

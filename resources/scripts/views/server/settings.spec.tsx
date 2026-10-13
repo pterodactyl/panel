@@ -8,7 +8,7 @@ import { serverQueryOptions } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
-import { View, ViewArea } from '@/views/View';
+import { View } from '@/views/View';
 
 let host: ExtensionTestHost | undefined;
 let requests: { method: string; url: string; body: unknown }[];
@@ -40,7 +40,7 @@ async function renderInServer(children: ReactNode, attributes: Attributes = {}, 
 
     host = createExtensionTestHost({ server });
     await act(async () => {
-        render(<ViewArea area='server'>{children}</ViewArea>, { wrapper: host!.Wrapper });
+        render(children, { wrapper: host!.Wrapper });
     });
 
     return server;

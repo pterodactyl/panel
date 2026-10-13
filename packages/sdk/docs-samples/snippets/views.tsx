@@ -1,5 +1,5 @@
 import { PanelLink, usePanelNavigate, useShortcut } from '@pterodactyl/sdk';
-import { defineTheme, View, type AppLayoutLink, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk/theme';
+import { defineTheme, type AppLayoutLink, type ViewProps } from '@pterodactyl/sdk/theme';
 
 // #region shortcut
 /** A link of `layout.app` that a key opens, such as D for the dashboard. */
@@ -31,36 +31,18 @@ function LoudCard({ model, Default }: ViewProps<'dashboard.serverCard'>) {
 }
 // #endregion transform
 
-// #region parts
-/** Replaces one part of classic's card and keeps the others. */
-function Uptime({ model }: ViewPartProps<'dashboard.serverCard'>) {
-    return <span>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
+// #region nested
+/** Replaces the metrics of every server card; the card keeps its identity and address. */
+function Uptime({ model, className }: ViewProps<'dashboard.serverCard.metrics'>) {
+    return <span className={className}>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
 }
-
-function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
-    return <Default parts={{ metrics: Uptime }} />;
-}
-// #endregion parts
-
-/** Places a block a billing extension defines; nothing renders while that extension is not installed. */
-function SidebarFooter() {
-    return <View name='billing.balance' optional className='mt-auto' />;
-}
-
-/** Restyles that block. Its model is `unknown` here: the theme does not know the extension's types. */
-function Balance({ Default }: ViewProps<'billing.balance'>) {
-    return (
-        <div className='rounded-xl bg-card p-3'>
-            <Default />
-        </div>
-    );
-}
+// #endregion nested
 
 export default defineTheme({
     views: {
         'dashboard.serverCard': FramedCard,
-        'billing.balance': Balance,
+        'dashboard.serverCard.metrics': Uptime,
     },
 });
 
-export { CardWithUptime, LoudCard, ShortcutLink, SidebarFooter };
+export { LoudCard, ShortcutLink };

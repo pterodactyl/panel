@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { Suspense, useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { Suspense, use as usePromise, useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type * as RegistryModule from './registry';
 import type * as ViewModule from './View';
@@ -13,10 +13,9 @@ interface ProbeModel {
 }
 interface ProbeProps {
     model: ProbeModel;
-    Default: ComponentType<{ model?: ProbeModel; className?: string; parts?: Record<string, ComponentType<never>> }>;
+    Default: ComponentType<{ model?: ProbeModel; className?: string }>;
     className?: string;
     children?: ReactNode;
-    parts?: Record<string, ComponentType<{ model: ProbeModel }>>;
 }
 
 let views: typeof RegistryModule;
@@ -46,15 +45,17 @@ afterEach(() => {
 const use = vi.fn((): ProbeModel => ({ name: 'live' }));
 
 function define(name: string, options: Partial<RegistryModule.ViewDefinition> = {}) {
-    views.registerViewDefinition({
-        name,
-        kind: 'block',
-        context: 'app',
-        use,
-        placeholder: <span>placeholder</span>,
-        fixtures: { first: () => ({ name: 'first fixture' }), second: () => ({ name: 'second fixture' }) },
-        ...options,
-    });
+    // Test views are typed loosely; the registry checks core view names where they are defined.
+    views.defineView(
+        name as RegistryModule.ViewName,
+        {
+            context: 'app',
+            use,
+            placeholder: <span>placeholder</span>,
+            fixtures: { first: () => ({ name: 'first fixture' }), second: () => ({ name: 'second fixture' }) },
+            ...options,
+        } as never
+    );
 }
 
 /** A layer that names itself, then renders the layer below. */
@@ -209,9 +210,6 @@ describe('<View>', () => {
 
     it('reports a failed layer once, naming the view and the layer', () => {
         define('test.report');
-        const failures: ViewModule.ViewLayerError[] = [];
-        const stop = engine.onViewLayerFailure((failure) => failures.push(failure));
-
         views.registerViewLayer('classic', 'classic', { 'test.report': Classic });
         views.registerViewLayer('aurora', 'theme', {
             'test.report': () => {
@@ -220,62 +218,26 @@ describe('<View>', () => {
         });
 
         render(<engine.View name='test.report' />);
-        stop();
 
-        expect(failures).toHaveLength(1);
-        expect(failures[0]).toMatchObject({ view: 'test.report', layer: 'aurora' });
-        expect(failures[0].message).toBe('The "aurora" layer of view "test.report" failed: theme exploded');
+        expect(extensions.getExtensionErrors()).toEqual([
+            { extensionId: 'aurora', context: 'view "test.report"', message: 'theme exploded' },
+        ]);
         expect(console.error).toHaveBeenCalledWith(
             '[extensions] "aurora" failed in view "test.report":',
             expect.objectContaining({ message: 'theme exploded' })
         );
     });
 
-    it('swaps parts through Default and gives the layer above the parts of the layer below', () => {
-        define('test.parts');
-        function Name({ model }: { model: ProbeModel }) {
-            return <b>{model.name}</b>;
-        }
-
-        function Card({ model, parts }: ProbeProps) {
-            const Part = parts!.name;
-
-            return <Part model={model} />;
-        }
-
-        views.registerViewLayer('classic', 'classic', { 'test.parts': Object.assign(Card, { parts: { name: Name } }) });
-        views.registerViewLayer('theme', 'theme', {
-            'test.parts': ({ Default, parts, model }: ProbeProps) => (
-                <>
-                    <i>{parts && 'name' in parts ? 'has parts' : 'no parts'}</i>
-                    <Default parts={{ name: () => <u>{`custom ${model.name}`}</u> }} />
-                </>
-            ),
-        });
-
-        render(<engine.View name='test.parts' />);
-
-        expect(screen.getByText('has parts')).toBeVisible();
-        expect(screen.getByText('custom live')).toBeVisible();
-    });
-
-    it('loads a lazy classic layer before rendering, so its parts reach the layers above', async () => {
+    it('renders a lazy classic layer below a theme layer once its chunk loads', async () => {
         define('test.lazy');
         function Card({ model }: ProbeProps) {
             return <p>{`lazy:${model.name}`}</p>;
         }
 
-        const module = { default: Object.assign(Card, { parts: { name: Card } }) };
-
-        views.registerViewLayer('classic', 'classic', { 'test.lazy': lazy.lazyView(async () => module) });
-        views.registerViewLayer('theme', 'theme', {
-            'test.lazy': ({ Default, parts }: ProbeProps) => (
-                <>
-                    <i>{parts ? 'parts known' : 'parts missing'}</i>
-                    <Default />
-                </>
-            ),
+        views.registerViewLayer('classic', 'classic', {
+            'test.lazy': lazy.lazyView(async () => ({ default: Card })),
         });
+        views.registerViewLayer('theme', 'theme', { 'test.lazy': layer('theme') });
 
         await act(async () => {
             render(
@@ -285,37 +247,12 @@ describe('<View>', () => {
             );
         });
 
+        expect(screen.getByText('theme:live')).toBeVisible();
         expect(screen.getByText('lazy:live')).toBeVisible();
-        expect(screen.getByText('parts known')).toBeVisible();
     });
 
-    it('renders nothing for an optional unknown view and throws for a required one', () => {
-        const { container } = render(<engine.View name='billing.balance' optional />);
-
-        expect(container).toBeEmptyDOMElement();
+    it('throws for a view no package defines', () => {
         expect(() => render(<engine.View name='billing.balance' />)).toThrow('View "billing.balance" is not defined.');
-    });
-
-    it('refuses to render a view outside its context', () => {
-        define('test.server', { context: 'server' });
-        views.registerViewLayer('classic', 'classic', { 'test.server': Classic });
-
-        expect(() =>
-            render(
-                <engine.ViewArea area='auth'>
-                    <engine.View name='test.server' />
-                </engine.ViewArea>
-            )
-        ).toThrow('renders in the "server" context');
-
-        render(
-            <engine.ViewArea area='app'>
-                <engine.ViewArea area='server'>
-                    <engine.View name='test.server' />
-                </engine.ViewArea>
-            </engine.ViewArea>
-        );
-        expect(screen.getByText('classic:live')).toBeVisible();
     });
 
     it('reads fixtures instead of running the hook below a fixture provider', () => {
@@ -325,9 +262,7 @@ describe('<View>', () => {
 
         const { rerender } = render(
             <engine.ViewFixtureProvider>
-                <engine.ViewArea area='auth'>
-                    <engine.View name='test.fixture' />
-                </engine.ViewArea>
+                <engine.View name='test.fixture' />
             </engine.ViewFixtureProvider>
         );
 
@@ -395,18 +330,42 @@ describe('<View>', () => {
         expect(load).toHaveBeenCalledTimes(1);
     });
 
-    it('renders a fixture with the inputs and scope its view declares', () => {
-        function Scope({ model, children }: { model: unknown; children?: ReactNode }) {
-            return <section aria-label={`scope of ${String(Reflect.get(Object(model), 'name'))}`}>{children}</section>;
+    it('shows the placeholder while an extension layer suspends, then renders it', async () => {
+        define('test.suspending');
+        views.registerViewLayer('classic', 'classic', { 'test.suspending': Classic });
+
+        let arrive = () => {};
+
+        const arrived = new Promise<void>((resolve) => {
+            arrive = resolve;
+        });
+
+        function Suspending({ model }: ProbeProps) {
+            usePromise(arrived);
+
+            return <p>{`suspending:${model.name}`}</p>;
         }
 
+        commitOverrides([{ id: 'ext', component: Suspending }], 'test.suspending');
+        await act(async () => {
+            render(<engine.View name='test.suspending' />);
+        });
+
+        expect(screen.getByText('placeholder')).toBeVisible();
+        expect(extensions.getExtensionErrors()).toEqual([]);
+
+        await act(async () => arrive());
+
+        expect(screen.getByText('suspending:live')).toBeVisible();
+    });
+
+    it('renders a fixture with the inputs its view declares', () => {
         function Card({ model, server }: ProbeProps & { server?: string }) {
             return <p>{`${model.name} on ${server}`}</p>;
         }
 
         define('test.inputs', {
             fixtureInput: (model) => ({ server: `${Reflect.get(Object(model), 'name')} host` }),
-            fixtureScope: Scope,
         });
         views.registerViewLayer('classic', 'classic', { 'test.inputs': Card });
 
@@ -416,9 +375,7 @@ describe('<View>', () => {
             </engine.ViewFixtureProvider>
         );
 
-        expect(screen.getByRole('region', { name: 'scope of first fixture' })).toHaveTextContent(
-            'first fixture on first fixture host'
-        );
+        expect(screen.getByText('first fixture on first fixture host')).toBeVisible();
     });
 });
 

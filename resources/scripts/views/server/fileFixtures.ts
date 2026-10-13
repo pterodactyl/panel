@@ -1,6 +1,6 @@
 import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
 import { fileBreadcrumbs } from '@/components/server/files/breadcrumbs';
-import { editorLanguages, FileEditorCanvas } from '@/components/server/files/fileEditorSession';
+import { bindFileEditor, editorLanguages } from '@/components/server/files/fileEditorSession';
 import { createTestServer } from '../fixtures';
 import type {
     FileDetailsModel,
@@ -36,10 +36,10 @@ export function createTestFileObject(model: FileDetailsModel): FileObject {
 
 const TEST_SERVER = 'test-server';
 
+/** A file editor model; its `Editor` is bound to it, as the editing session binds the panel's. */
 export function createTestFileEditor(options: Partial<FileEditorModel> = {}): FileEditorModel {
     const content = options.content ?? 'motd=Hello\n';
-
-    return {
+    const model: FileEditorModel = {
         path: '/config/server.properties',
         name: 'server.properties',
         isNew: false,
@@ -49,7 +49,7 @@ export function createTestFileEditor(options: Partial<FileEditorModel> = {}): Fi
         readOnly: false,
         dirty: false,
         saving: false,
-        Editor: FileEditorCanvas,
+        Editor: () => null,
         read: () => content,
         change: () => {},
         setLanguage: () => {},
@@ -57,6 +57,8 @@ export function createTestFileEditor(options: Partial<FileEditorModel> = {}): Fi
         saveAs: async () => true,
         ...options,
     };
+
+    return options.Editor ? model : { ...model, Editor: bindFileEditor(model) };
 }
 
 export function createTestFileEditorPage(options: Partial<FileEditorPageModel> = {}): FileEditorPageModel {

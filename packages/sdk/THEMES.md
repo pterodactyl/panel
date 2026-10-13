@@ -405,8 +405,7 @@ returns the props to spread, and `.classes('root')` only the class string.
 | `Tooltip` | Tooltips | `root`, `arrow` | no |
 | `Stat` | A labelled value, such as a server's memory: console tiles and dashboard metrics | `root`, `icon`, `glyph`, `label`, `value`, `limit` and 2 more | yes |
 
-[Primitives](#primitives) lists all 31 with their state. In development, skinning a primitive or part
-that does not exist logs a warning, and a recipe that throws renders no classes.
+[Primitives](#primitives) lists all 31 with their state. A recipe that throws renders no classes.
 
 ## Level 3: change the layout
 
@@ -453,8 +452,7 @@ export default defineTheme({
 A layout places `children` inside `<Main>`, which renders `<main id="main" tabIndex={-1}>`: the target of
 the skip link, which the engine focuses after each navigation while it announces the new page title.
 Layouts nest, and only the outermost `<Main>` renders the element; a nested one renders its children in
-place, in a `<div>` when it has a `className`. In development, a layout that never renders `<Main>` logs
-a warning.
+place, in a `<div>` when it has a `className`.
 
 ### Navigation and the brand
 
@@ -464,8 +462,8 @@ a warning.
 The other layouts each frame an **area**, a part of the panel with navigation of its own: the account, a
 server, or the admin area. They have `model.nav.items`: the area's `NavItem`s, filtered by subuser
 permissions and egg rules, extension screens included. Links and items have an `icon`, a lucide name for
-`<NamedIcon>`, and a `destination` for `PanelLink` and `usePanelNavigate()`. `<Navigation>` calls its
-child with each item and `{ active, badge }`, and keeps an extension screen hidden until its runtime
+`<NamedIcon>`, and a `destination` for `PanelLink` and `usePanelNavigate()`. `<Navigation items>` calls
+its child with each item and `{ active, badge }`, and keeps an extension screen hidden until its runtime
 condition allows it. `NavigationLink` links to an item and carries `data-status="active"` while the item
 is active. [`AreaNav`](#the-shell-knows-the-area) below uses both.
 
@@ -513,8 +511,7 @@ else (`AreaLayout` above).
 A layer that replaces a view renders the view's slots, listed in the [catalogue](#view-catalogue), or
 the extensions mounted there disappear. The area layouts' slots sit in their navigation, so the shell
 renders them where it draws that navigation (`AreaSlot` below); the catalogue lists them with
-`layout.app`. In development, a layer that renders none of its view's slots logs a warning after three
-seconds; slots an enclosing view renders count, so the thin layouts do not warn.
+`layout.app`.
 
 <!-- sample: level3-sidebar/src/views/AreaNav.tsx -->
 ```tsx
@@ -725,8 +722,8 @@ Give them a sized box and colour them with the [`--terminal-*` and `--editor-*` 
 ### `Default`
 
 `<Default />` with no props renders the layer below as it would have rendered, so wrapping it adds a
-frame. It also takes `model`, `className`, `children` and `parts`: `className` is merged with the
-layer's own, and the others replace what the layer below receives.
+frame. It also takes `model`, `className` and `children`: `className` is merged with the layer's own,
+and the others replace what the layer below receives.
 
 <!-- sample: snippets/views.tsx#transform -->
 ```tsx
@@ -737,19 +734,18 @@ function LoudCard({ model, Default }: ViewProps<'dashboard.serverCard'>) {
 ```
 <!-- /sample -->
 
-Four views publish **parts** that `Default` swaps one at a time: `dashboard.serverCard`,
-`server.files.details`, `server.files.editor` and `server.files.manager`. A part receives the model and
-inputs, typed by `ViewPartProps<'name'>`. Define parts outside the layer's render function.
+Three views place smaller views for their pieces: `dashboard.serverCard` places
+`dashboard.serverCard.identity`, `.address` and `.metrics`; `server.files.editor` places `.notice`,
+`.canvas`, `.language` and `.actions`; and `server.files.manager` places `.toolbar`, `.list` and
+`.selection`. Each piece takes the model of its view as its `model` input, so a theme overrides one piece
+and keeps the others. A layer that draws the whole view places the pieces it keeps itself:
+`<View name="dashboard.serverCard.metrics" model={model} server={server} />`.
 
-<!-- sample: snippets/views.tsx#parts -->
+<!-- sample: snippets/views.tsx#nested -->
 ```tsx
-/** Replaces one part of classic's card and keeps the others. */
-function Uptime({ model }: ViewPartProps<'dashboard.serverCard'>) {
-    return <span>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
-}
-
-function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
-    return <Default parts={{ metrics: Uptime }} />;
+/** Replaces the metrics of every server card; the card keeps its identity and address. */
+function Uptime({ model, className }: ViewProps<'dashboard.serverCard.metrics'>) {
+    return <span className={className}>{model.state.kind === 'ready' ? model.state.power : 'unknown'}</span>;
 }
 ```
 <!-- /sample -->
@@ -757,12 +753,9 @@ function CardWithUptime({ Default }: ViewProps<'dashboard.serverCard'>) {
 ### Placing views
 
 `<View name="…" />` renders a view: it runs the view's hook where it is placed, resolves its layers and
-renders the top one. Each view has a **context**: `app` (every signed-in page), `server`, `account`,
-`admin` or `auth`. A view renders anywhere its context exists and throws outside it, such as a server
-view on the dashboard. Pass inputs as props: `<View name="dashboard.serverCard" server={server} />`.
-
-`<View name="billing.balance" optional />` renders nothing when no installed package defines the view,
-for blocks that extensions define. A layer for such a view is typed loosely: its `model` is `unknown`.
+renders the top one. Each view has a **context**, where its hook has the data it reads: `app` (every
+signed-in page), `server`, `account`, `admin` or `auth`. A server view needs a server page around it,
+for example. Pass inputs as props: `<View name="dashboard.serverCard" server={server} />`.
 
 `className` lands on the outermost element a view renders, in every classic view, so
 `<View name="server.sftp" className="h-full" />` stretches the card itself. Keep the rule in your own
@@ -891,7 +884,9 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
 ```
 <!-- /sample -->
 
-The admin pages are [opaque](#opaque-pages): wrap them with `Default`, or place blocks around them.
+The admin pages are not views. `layout.admin` wraps them, and each renders the `panel.*` slots before and
+after it, so a theme restyles them through the layout and the [skins](#level-2-restyle-components), and
+extensions place blocks in those slots.
 
 ## Settings, schemes and branding
 
@@ -1091,7 +1086,7 @@ test("frames Aurora's server card", () => {
 });
 
 test("adds a shadow to Aurora's pill buttons", () => {
-    rendered = renderPrimitive('Button', { children: 'Save' }, { themes });
+    rendered = renderWithTheme(<Button>Save</Button>, { themes });
 
     expect(rendered.container.querySelector('button')?.className).toContain('rounded-full');
     expect(rendered.container.querySelector('button')?.className).toContain('shadow-primary/20');
@@ -1112,7 +1107,7 @@ repository extends the Aurora sample.
    are named after their area and what they draw, such as `server.power`, and the layouts after their
    area.
 2. **Look it up.** The [view catalogue](#view-catalogue), or `npx pterodactyl-theme list`, gives its
-   model type, inputs, parts, slots and fixtures.
+   model type, inputs, slots and fixtures.
 3. **Read classic's source.** `npx pterodactyl-theme eject page.server.console` copies it into
    `src/views`. A page's source shows the blocks it places with `<View name="…" />` and the slots it
    renders, which leads you to the block you are after.
@@ -1135,7 +1130,7 @@ npx pterodactyl-theme skins [primitive] [--out src/skins] [--entry src] [--force
 - `eject` copies classic's source for a view, with the classic files it imports, into `src/views`,
   rewrites its imports to `@pterodactyl/sdk`, and prints the import and `views` entry to add. The copy
   compiles as it is. It overwrites the view's file only with `--force`, and keeps shared files an
-  earlier eject copied. Opaque views have no source; wrap them with `Default`.
+  earlier eject copied.
 - `skins` lists each primitive with classic's file that skins it. Given a primitive, it copies that file
   into `src/skins` the way `eject` copies a view, and prints the import and `ui` entry to add.
 
@@ -1147,41 +1142,42 @@ at its real runtime and adds what jsdom lacks: an inert `ResizeObserver` and `In
 a `matchMedia` that matches nothing. Tests need no stubs of their own; `vi.stubGlobal` still replaces
 one that a test drives. `@pterodactyl/sdk/testing` renders with your theme:
 
-- `renderView(name, { theme, fixture, model, input, className, slots })` renders a view synchronously
-  with the theme's layers over classic, from the named fixture, the first fixture, or `model`. A nested
-  view placed with inputs reads the model they give, so each row of a list shows its own server, and
-  any other nested view reads its first fixture; `usePanelLocation()` returns the path with empty
-  `params` and `search`. It returns `{ container, unmount }`; each call replaces the previous render. A
-  child theme passes its chain, oldest first, as `themes: [parent, theme]`
-  ([Building on another theme](#building-on-another-theme)).
+- `renderView(name, { themes, fixture, model, input, className, slots, prefix })` renders a view
+  synchronously with the layers of `themes` over classic, from the named fixture, the first fixture, or
+  `model`. A theme passes `themes: [theme]`; a child theme passes its chain, oldest first, as
+  `themes: [parent, theme]` ([Building on another theme](#building-on-another-theme)). A nested view
+  placed with inputs reads the model they give, so each row of a list shows its own server, and any
+  other nested view reads its first fixture; `usePanelLocation()` returns the path with empty `params`
+  and `search`. It returns `{ container, unmount }`; each call replaces the previous render. Pass
+  `vi.fn()` callbacks in `model` to assert on actions.
 - `slots` mounts components in slots, typed per slot, as an extension's `slots.register` would. Use it
   to test that a layer renders the slots of the view it replaces.
-- `renderPrimitive(name, props, { theme })` renders a primitive under the theme's skins.
-- `preloadTheme(theme)` loads the theme's `lazyView` chunks, or a chain's. Await it in `beforeAll`:
+- `renderWithTheme(element, { themes })` renders any element under the themes' skins, such as
+  `<Button>Save</Button>`.
+- `preloadTheme(themes)` loads the `lazyView` chunks of the themes. Await it in `beforeAll`:
   `renderView` throws until it has.
-- `createViewTestHost(name, { model, themes })` renders one layer by hand with typed `props`, for
-  asserting on actions with `vi.fn()`. Its `Default` renders the top layer of `themes`, else classic.
 
 To test the stylesheet, build it and read `dist/theme.css` with `readFileSync('dist/theme.css', 'utf8')`
 from `node:fs`: Vitest runs in the theme's directory, and the scaffold's `tsconfig.json` has Node's
 types. When Vitest runs under an AI agent it hides what passing tests log; `npx vitest run
 --reporter=default` shows it.
 
-`renderView` and `createViewTestHost` are strict: a theme or extension layer that throws, in the view or
-a nested one, fails the render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`,
-such as `The "sunrise" layer of view "server.graphs" failed: …`. A failure after the first render, such
+`renderView` is strict: a theme or extension layer that throws, in the view or a nested one, fails the
+render with a `ViewLayerError` naming the `view`, the `layer` and the `cause`, such as
+`The "theme" layer of view "server.graphs" failed: …`. A failure after the first render, such
 as on a click, is thrown by `unmount()`. `{ strict: false }` lets layers fall back as in the panel.
 
 <!-- sample: level4-console/src/theme.spec.tsx#tests -->
 ```tsx
+const themes = [theme];
 let rendered: RenderedView | undefined;
 
 // The views are lazy; loading their chunks first lets renderView render them synchronously.
-beforeAll(() => preloadTheme(theme));
+beforeAll(() => preloadTheme(themes));
 afterEach(() => rendered?.unmount());
 
 test('puts the power controls in the server header', () => {
-    rendered = renderView('layout.server', { theme, fixture: 'owner' });
+    rendered = renderView('layout.server', { themes, fixture: 'owner' });
 
     const header = screen.getByRole('heading', { name: 'Survival' }).closest('header');
 
@@ -1196,7 +1192,7 @@ then check that the shell renders it:
 <!-- sample: level3-sidebar/src/theme.spec.tsx#slots -->
 ```tsx
 rendered = renderView('layout.app', {
-    theme,
+    themes,
     fixture: 'serverArea',
     slots: { 'server.navigation.after': ({ data }) => <span>Mods for {data.attributes.name}</span> },
 });
@@ -1220,7 +1216,7 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
 - **Drop slots.** A layer that replaces a view renders its slots, or the extensions mounted there
   disappear ([level 3](#the-shell-knows-the-area)).
 - **Replace interactive primitives.** Only presentational primitives take a component. Any other is a
-  type error, and is ignored with a warning at runtime.
+  type error, and the panel keeps its own.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.
 - **Bypass the engine on forms.** A layer over a form spreads each field's `fieldProps` (name, type,
   autocomplete, value and handlers) onto an input. A layer over `page.auth.login` also submits through
@@ -1249,9 +1245,10 @@ What a theme can rely on when it draws behind or around the panel, such as a bac
 
 ### Fallback and safe mode
 
-- **Boot.** The panel loads the chain's entries in parallel before its first render, for at most 2.5
-  seconds. When an entry fails, does not export a `defineTheme` result, or is too slow, that browser
-  shows classic, logs the error, and shows root admins a notice.
+- **Boot.** The panel loads the chain's entries in parallel before its first render, for at most 15
+  seconds, as long as an extension bundle may take. When an entry fails to load or is too slow, that
+  browser shows classic, logs the error, and shows root admins a notice. A view of an entry that is not
+  a component falls back like a layer that throws, and an icon that is not one is skipped.
 - **Layers.** A layer that throws falls back to the layer below it, once. If that one throws too,
   classic included, the view shows the panel's error notice, whose Retry tries the failed layer again.
   Each failure logs one line in the browser console:
@@ -1267,7 +1264,7 @@ disabled or removed.
 ### Versions
 
 Declare `requires.panel` and `requires.sdk` (`>=2.0.0-beta.5 <3.0`). During the 2.0 betas, view names,
-models, parts and fixtures, and the primitives' parts and state, can change in any beta. Build against
+models and fixtures, and the primitives' parts and state, can change in any beta. Build against
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
 or an overridden view the new SDK does not have; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
@@ -1451,7 +1448,7 @@ render links with the `Button` skin, as they are.
 
 ### View catalogue
 
-Every view with its context, model type, inputs and parts, slots and fixtures. **Slots** are rendered by
+Every view with its context, model type, inputs, slots and fixtures. **Slots** are rendered by
 the view's layers; a page's **engine slots** are rendered around it by the engine. A page whose model is
 `PageStatusModel` loads data its blocks need: it shows a placeholder while `loading`, and `error` with a
 `retry` in place of its blocks. A failed refresh keeps the loaded data on show, so `error` stays null.
@@ -1460,7 +1457,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 <!-- generated:views -->
 #### Layouts
 
-| View | Context | Model | Inputs and parts | Slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Fixtures |
 | --- | --- | --- | --- | --- | --- |
 | `layout.account` | account | `AccountLayoutModel` |  | `account.navigation.before` `account.navigation.after` | default, extension |
 | `layout.admin` | admin | `AdminLayoutModel` |  | `panel.navigation.before` `panel.navigation.after` | default, extension |
@@ -1470,7 +1467,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 
 #### Pages
 
-| View | Context | Model | Inputs and parts | Slots | Engine slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Engine slots | Fixtures |
 | --- | --- | --- | --- | --- | --- | --- |
 | `page.account.activity` | account | `ActivityPageModel` |  |  | `account.activity.before` `account.activity.after` | default |
 | `page.account.api` | account | `PageStatusModel` |  |  | `account.api.before` `account.api.after` | default, loading, error |
@@ -1497,7 +1494,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 
 #### Blocks
 
-| View | Context | Model | Inputs and parts | Slots | Fixtures |
+| View | Context | Model | Inputs | Slots | Fixtures |
 | --- | --- | --- | --- | --- | --- |
 | `account.apiKeys.create` | account | `ApiKeyCreateModel` |  |  | default, invalid, created |
 | `account.apiKeys.list` | account | `ApiKeyListModel` |  |  | keys, empty, loading, deleting |
@@ -1508,7 +1505,10 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `account.twoFactor` | account | `AccountTwoFactorModel` |  |  | disabled, enabled, setup, setupLoading, disabling, recoveryTokens |
 | `activity.log` | app | `ActivityLogModel` | `scope: ActivityScope` |  | account, server, filtered, empty, paged, loading, error |
 | `app.search` | app | `AppSearchModel` |  |  | closed, results, loading, none, short, error |
-| `dashboard.serverCard` | app | `ServerCardModel` | `server: Server`<br>parts: `identity`, `address`, `metrics` | `dashboard.serverRow.name.after` | running, offline, suspended, loading |
+| `dashboard.serverCard` | app | `ServerCardModel` | `server: Server` |  | running, offline, suspended, loading |
+| `dashboard.serverCard.address` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` |  |  |
+| `dashboard.serverCard.identity` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` | `dashboard.serverRow.name.after` |  |
+| `dashboard.serverCard.metrics` | app | `ServerCardModel` | `model: ServerCardModel`, `server: Server` |  |  |
 | `dashboard.serverList` | app | `ServerListModel` |  | `dashboard.before` `dashboard.after` `dashboard.serverRow.before` `dashboard.serverRow.metrics.after` `dashboard.serverRow.after` | servers, empty, loading |
 | `server.allocations` | server | `ServerAllocationsModel` |  |  | allocations, full, unmanaged, readOnly, empty, loading |
 | `server.backups` | server | `BackupListModel` |  |  | backups, empty, full, noLimit, paged, pastEnd, readOnly |
@@ -1521,9 +1521,16 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.feature.javaVersion` | server | `JavaVersionPromptModel` |  |  | open, loading, noPermission |
 | `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | admin, user |
 | `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | admin, user |
-| `server.files.details` | server | `FileDetailsModel` | `file: FileObject`<br>parts: `icon`, `name`, `size`, `modified` |  | file, directory |
-| `server.files.editor` | server | `FileEditorModel` | parts: `notice`, `editor`, `language`, `actions` |  | file, dirty, saving, readOnly, pteroignore, new |
-| `server.files.manager` | server | `FileManagerModel` | parts: `toolbar`, `list`, `selection` | `server.files.toolbar` `server.files.rowActions` `server.files.selectionActions` | directory, selected, uploading, readOnly, empty, loading |
+| `server.files.details` | server | `FileDetailsModel` | `file: FileObject` |  | file, directory |
+| `server.files.editor` | server | `FileEditorModel` |  |  | file, dirty, saving, readOnly, pteroignore, new |
+| `server.files.editor.actions` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.canvas` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.language` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.editor.notice` | server | `FileEditorModel` | `model: FileEditorModel` |  |  |
+| `server.files.manager` | server | `FileManagerModel` |  |  | directory, selected, uploading, readOnly, empty, loading |
+| `server.files.manager.list` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.rowActions` |  |
+| `server.files.manager.selection` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.selectionActions` |  |
+| `server.files.manager.toolbar` | server | `FileManagerModel` | `model: FileManagerModel` | `server.files.toolbar` |  |
 | `server.graphs` | server | `ServerGraphsModel` |  |  | running, offline |
 | `server.power` | server | `ServerPowerModel` |  | `server.console.power.before` `server.console.power.after` | running, offline, starting, stopping, disconnected, noPermission |
 | `server.reinstall` | server | `ServerReinstallModel` |  |  | default, skipped, denied |
@@ -1539,63 +1546,6 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.subuserForm` | server | `SubuserFormModel` | `subuser?: SubuserSummary`, `onClose?: () => void` | `server.users.permissions.before` | create, edit, restricted, viewOnly, loading |
 | `server.subusers` | server | `SubuserListModel` |  |  | subusers, empty, readOnly |
 | `server.terminal` | server | `ServerTerminalModel` |  |  | running, connecting, failed, scrolledUp, readOnly |
-
-#### Opaque pages
-
-These pages still render the panel's own containers: their model is `OpaqueModel` (empty), they have no
-fixtures, and `Default` renders the container. Wrap them, or place blocks around them.
-
-| View | Slots the engine renders around it |
-| --- | --- |
-| `page.admin.activity` | `panel.activity.before` `panel.activity.after` |
-| `page.admin.apiKeys` | `panel.apiKeys.before` `panel.apiKeys.after` |
-| `page.admin.databaseHosts` | `panel.databaseHosts.before` `panel.databaseHosts.after` |
-| `page.admin.databaseHosts.create` | `panel.databaseHosts.create.before` `panel.databaseHosts.create.after` |
-| `page.admin.databaseHosts.detail` | `panel.databaseHosts.detail.before` `panel.databaseHosts.detail.after` |
-| `page.admin.eggs` | `panel.eggs.before` `panel.eggs.after` |
-| `page.admin.eggs.catalog` |  |
-| `page.admin.eggs.create` | `panel.eggs.create.before` `panel.eggs.create.after` |
-| `page.admin.eggs.detail` | `panel.eggs.detail.before` `panel.eggs.detail.after` |
-| `page.admin.eggs.detail.configuration` | `panel.eggs.detail.configuration.before` `panel.eggs.detail.configuration.after` |
-| `page.admin.eggs.detail.script` | `panel.eggs.detail.script.before` `panel.eggs.detail.script.after` |
-| `page.admin.eggs.detail.tags` | `panel.eggs.detail.tags.before` `panel.eggs.detail.tags.after` |
-| `page.admin.eggs.detail.variables` | `panel.eggs.detail.variables.before` `panel.eggs.detail.variables.after` |
-| `page.admin.extensions` | `panel.extensions.before` `panel.extensions.after` |
-| `page.admin.locations` | `panel.locations.before` `panel.locations.after` |
-| `page.admin.locations.detail` | `panel.locations.detail.before` `panel.locations.detail.after` |
-| `page.admin.mounts` | `panel.mounts.before` `panel.mounts.after` |
-| `page.admin.mounts.create` | `panel.mounts.create.before` `panel.mounts.create.after` |
-| `page.admin.mounts.detail` | `panel.mounts.detail.before` `panel.mounts.detail.after` |
-| `page.admin.nodes` | `panel.nodes.before` `panel.nodes.after` |
-| `page.admin.nodes.create` | `panel.nodes.create.before` `panel.nodes.create.after` |
-| `page.admin.nodes.detail` | `panel.nodes.detail.before` `panel.nodes.detail.after` |
-| `page.admin.nodes.detail.about` | `panel.nodes.detail.about.before` `panel.nodes.detail.about.after` |
-| `page.admin.nodes.detail.allocations` | `panel.nodes.detail.allocations.before` `panel.nodes.detail.allocations.after` |
-| `page.admin.nodes.detail.configuration` | `panel.nodes.detail.configuration.before` `panel.nodes.detail.configuration.after` |
-| `page.admin.nodes.detail.servers` | `panel.nodes.detail.servers.before` `panel.nodes.detail.servers.after` |
-| `page.admin.nodes.detail.settings` | `panel.nodes.detail.settings.before` `panel.nodes.detail.settings.after` |
-| `page.admin.nodes.detail.tags` | `panel.nodes.detail.tags.before` `panel.nodes.detail.tags.after` |
-| `page.admin.overview` |  |
-| `page.admin.servers` | `panel.servers.before` `panel.servers.after` |
-| `page.admin.servers.create` | `panel.servers.create.before` `panel.servers.create.after` |
-| `page.admin.servers.detail` | `panel.servers.detail.before` `panel.servers.detail.after` |
-| `page.admin.servers.detail.about` | `panel.servers.detail.about.before` `panel.servers.detail.about.after` |
-| `page.admin.servers.detail.build` | `panel.servers.detail.build.before` `panel.servers.detail.build.after` |
-| `page.admin.servers.detail.databases` | `panel.servers.detail.databases.before` `panel.servers.detail.databases.after` |
-| `page.admin.servers.detail.delete` | `panel.servers.detail.delete.before` `panel.servers.detail.delete.after` |
-| `page.admin.servers.detail.details` | `panel.servers.detail.details.before` `panel.servers.detail.details.after` |
-| `page.admin.servers.detail.manage` | `panel.servers.detail.manage.before` `panel.servers.detail.manage.after` |
-| `page.admin.servers.detail.mounts` | `panel.servers.detail.mounts.before` `panel.servers.detail.mounts.after` |
-| `page.admin.servers.detail.startup` | `panel.servers.detail.startup.before` `panel.servers.detail.startup.after` |
-| `page.admin.settings` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.settings.advanced` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.settings.mail` | `panel.settings.before` `panel.settings.after` |
-| `page.admin.tags` | `panel.tags.before` `panel.tags.after` |
-| `page.admin.themes` | `panel.themes.before` `panel.themes.after` |
-| `page.admin.users` | `panel.users.before` `panel.users.after` |
-| `page.admin.users.create` | `panel.users.create.before` `panel.users.create.after` |
-| `page.admin.users.detail` | `panel.users.detail.before` `panel.users.detail.after` |
-| `page.admin.users.detail.about` |  |
 <!-- /generated:views -->
 
 ### The full example
@@ -1618,7 +1568,7 @@ package's types, run its tests and build it.
 - **Layout**: a view that frames an area's pages and places them in `<Main>`, such as `layout.app`.
 - **Model**: the data and actions the engine produces for a view, and the view's only data source.
 - **Page**: a view that renders one route, such as `page.server.console`, composed of blocks.
-- **Part**: a named element of a primitive (`root`, `title`), or of one of the views that publish parts.
+- **Part**: a named element of a primitive (`root`, `title`).
 - **Primitive**: a component of the UI kit, such as `Button` or `Dialog`, styled by skins.
 - **Skin**: the recipes, by part, of one primitive.
 - **Slot**: a named place where extensions mount content.

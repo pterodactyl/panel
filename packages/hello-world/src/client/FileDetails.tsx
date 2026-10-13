@@ -1,9 +1,6 @@
-import type { ViewPartProps, ViewProps } from '@pterodactyl/sdk';
+import type { ViewProps } from '@pterodactyl/sdk';
 
-function FileName({ model }: ViewPartProps<'server.files.details'>) {
-    return <div className='hw:flex-1 hw:truncate hw:font-medium hw:text-foreground'>{model.name}</div>;
-}
-
-export default function FileDetails({ Default }: ViewProps<'server.files.details'>) {
-    return <Default parts={{ name: FileName }} />;
+// Keeps the native row and dims hidden files; the prefixed class merges with the row's own.
+export default function FileDetails({ Default, model }: ViewProps<'server.files.details'>) {
+    return <Default className={model.name.startsWith('.') ? 'hw:opacity-60' : undefined} />;
 }

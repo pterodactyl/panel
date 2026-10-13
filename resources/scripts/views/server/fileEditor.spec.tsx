@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { AxiosAdapter } from 'axios';
-import type { ViewOverride, ViewPartProps, ViewProps } from '@/views/registry';
+import type { ViewOverride, ViewProps } from '@/views/registry';
 import type * as Registry from '@/extensions/registry';
 import type * as Testing from '@/sdk/testing';
 import type * as QueryClientModule from '@/api/queryClient';
@@ -92,13 +92,16 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-function replace(replacement: ViewOverride<'server.files.editor'>) {
+function replace<N extends 'server.files.editor' | 'server.files.editor.canvas'>(
+    replacement: ViewOverride<N>,
+    name = 'server.files.editor' as N
+) {
     const { registry } = loaded;
 
-    registry.prepareExtensions([{ id: 'editor', entry: '/editor.js', views: ['server.files.editor'] }]);
+    registry.prepareExtensions([{ id: 'editor', entry: '/editor.js', views: [name] }]);
     const batch = registry.createExtensionRegistryBatch();
 
-    registry.registerViewOverride('editor', 'server.files.editor', replacement, batch);
+    registry.registerViewOverride('editor', name, replacement, batch);
     registry.commitExtensionRegistryBatch('editor', batch);
 }
 
@@ -287,18 +290,18 @@ it('keeps an unsaved new file draft typed just before leaving', async () => {
     expect(readNewFileDraft(serverUuid, '/config')).toBe('draft');
 });
 
-it('saves a replaced editor part with the native action', async () => {
-    function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
-        return <textarea aria-label='Part buffer' onChange={(event) => model.change(event.target.value)} />;
+it('saves a replaced editor canvas with the native action', async () => {
+    function Buffer({ model }: ViewProps<'server.files.editor.canvas'>) {
+        return <textarea aria-label='Canvas buffer' onChange={(event) => model.change(event.target.value)} />;
     }
 
-    replace(({ Default }) => <Default parts={{ editor: Buffer }} />);
+    replace(Buffer, 'server.files.editor.canvas');
     open('/server/test-server/files/edit#/config/app.yml');
 
-    fireEvent.change(await screen.findByLabelText('Part buffer'), { target: { value: 'from part' } });
+    fireEvent.change(await screen.findByLabelText('Canvas buffer'), { target: { value: 'from canvas' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save Content' }));
 
-    await waitFor(() => expect(writes()).toEqual([expect.objectContaining({ body: 'from part' })]));
+    await waitFor(() => expect(writes()).toEqual([expect.objectContaining({ body: 'from canvas' })]));
 });
 
 it('keeps the page and the buffer when the replacement fails to render', async () => {

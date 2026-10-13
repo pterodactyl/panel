@@ -18,7 +18,7 @@ import { hasPermission } from '@/plugins/usePermissions';
 import { getPageSearch, useDashboardSearch } from '@/router/pageSearch';
 import { createTestServer, createTestServerCard } from './fixtures';
 import { pageStatus, pageStatusFixtures, type PageStatusModel } from './pageStatus';
-import { implementViews } from './registry';
+import { implementViews, modelFromInput } from './registry';
 import {
     runState,
     serverConflict,
@@ -105,12 +105,15 @@ declare module './registry' {
         'page.dashboard': PageStatusModel;
         'dashboard.serverList': ServerListModel;
         'dashboard.serverCard': ServerCardModel;
+        'dashboard.serverCard.identity': ServerCardModel;
+        'dashboard.serverCard.address': ServerCardModel;
+        'dashboard.serverCard.metrics': ServerCardModel;
     }
     interface ViewInputs {
         'dashboard.serverCard': { readonly server: Server };
-    }
-    interface ViewPartNames {
-        'dashboard.serverCard': 'identity' | 'address' | 'metrics';
+        'dashboard.serverCard.identity': { readonly model: ServerCardModel; readonly server: Server };
+        'dashboard.serverCard.address': { readonly model: ServerCardModel; readonly server: Server };
+        'dashboard.serverCard.metrics': { readonly model: ServerCardModel; readonly server: Server };
     }
 }
 
@@ -438,4 +441,7 @@ implementViews({
             loading: () => createTestServerCard({ address: null, state: { kind: 'loading' } }),
         },
     },
+    'dashboard.serverCard.identity': { use: modelFromInput },
+    'dashboard.serverCard.address': { use: modelFromInput },
+    'dashboard.serverCard.metrics': { use: modelFromInput },
 });

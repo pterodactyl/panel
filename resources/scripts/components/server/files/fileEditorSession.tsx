@@ -1,4 +1,4 @@
-import { createContext, use, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, use, useCallback, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { basename, dirname, join, normalize } from 'pathe';
 import { useLocation, useNavigate, useParams, useRouter } from '@tanstack/react-router';
 import { httpErrorToHuman } from '@/api/http';
@@ -52,9 +52,15 @@ export function FileEditorCanvas({ className }: FileEditorCanvasProps) {
     );
 }
 
-/** Fixtures of `server.files.editor` hand their model to the editor canvas. */
-export function FileEditorFixtureScope({ model, children }: { model: FileEditorModel; children?: ReactNode }) {
-    return <FileEditorSessionContext.Provider value={model}>{children}</FileEditorSessionContext.Provider>;
+/** The editor canvas bound to a model that has no editing session around it, such as a fixture's. */
+export function bindFileEditor(model: FileEditorModel): ComponentType<FileEditorCanvasProps> {
+    return function BoundFileEditor(props: FileEditorCanvasProps) {
+        return (
+            <FileEditorSessionContext.Provider value={model}>
+                <FileEditorCanvas {...props} />
+            </FileEditorSessionContext.Provider>
+        );
+    };
 }
 
 export function useFileEditorPage(): FileEditorPageModel {

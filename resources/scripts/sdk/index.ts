@@ -1,6 +1,6 @@
 // Every export here is public, semver-governed "@pterodactyl/sdk" API.
 import type { ComponentType } from 'react';
-import type { ExtensionViewOptions, ViewName, ViewOverride } from '@/views/registry';
+import type { ViewName, ViewOverride } from '@/views/registry';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
 import type {
@@ -177,8 +177,6 @@ export interface ExtensionSetupContext {
     views: {
         /** Stacks a layer on a view declared in the manifest's `ui.views`; its `Default` renders the layer below. */
         override<TName extends ViewName>(name: TName, view: ViewOverride<TName>): void;
-        /** Adds a view of the extension's own, which themes and other extensions can restyle or place. */
-        define<TModel>(name: string, view: ExtensionViewOptions<TModel>): void;
     };
     slots: {
         /** Mount a component at a named anchor point; see SlotName for the catalog. */
@@ -212,33 +210,19 @@ export interface ExtensionSetupContext {
 
 export type {
     DefaultViewProps,
-    ExtensionViewOptions,
-    ExtensionViewProps,
     ViewComponent,
     ViewContext,
     ViewImporter,
     ViewModel,
     ViewName,
     ViewOverride,
-    ViewPartProps,
-    ViewParts,
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
-export type * from './models/forms';
-export type * from './models/auth';
-export type * from './models/account';
-export type * from './models/activity';
-export * from './models/schedules';
-export * from './models/subusers';
-export * from './models/backups';
-export * from './models/settings';
-export * from './models/conflict';
-export * from './models/console';
-export * from './models/files';
-export * from './models/databases';
-export * from './models/network';
-export * from './models/startup';
+export { setPermissionsSelected } from '@/views/server/permissionSelection';
+export { default as AreaChart, type AreaChartProps } from '@/components/server/console/AreaChart';
+export type { ChartPoint } from '@/components/server/console/chart';
+export type { ChartSeries } from '@/components/server/console/types';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;

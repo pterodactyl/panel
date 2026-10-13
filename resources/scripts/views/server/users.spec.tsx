@@ -17,7 +17,7 @@ import {
 } from '@/extensions/registry';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import type { TestServerOptions } from '@/views/fixtures';
-import { View, ViewArea } from '@/views/View';
+import { View } from '@/views/View';
 
 const permissions = {
     websocket: { description: 'Connect to the console.', keys: { connect: 'Stream the console.' } },
@@ -89,7 +89,7 @@ async function renderInServer(children: ReactNode, options: TestServerOptions = 
     });
 
     await act(async () => {
-        render(<ViewArea area='server'>{children}</ViewArea>, { wrapper: host!.Wrapper });
+        render(children, { wrapper: host!.Wrapper });
     });
 
     return server;

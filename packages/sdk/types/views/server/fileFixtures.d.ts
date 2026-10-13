@@ -4,6 +4,7 @@ import type { FileDetailsModel, FileEditorModel, FileEditorPageModel, FileManage
 export declare function createTestFileDetails(options?: Partial<FileDetailsModel>): FileDetailsModel;
 /** The file object a file details model was read from. */
 export declare function createTestFileObject(model: FileDetailsModel): FileObject;
+/** A file editor model; its `Editor` is bound to it, as the editing session binds the panel's. */
 export declare function createTestFileEditor(options?: Partial<FileEditorModel>): FileEditorModel;
 export declare function createTestFileEditorPage(options?: Partial<FileEditorPageModel>): FileEditorPageModel;
 export declare function createTestFileManagerEntry(options?: Partial<FileManagerEntry>): FileManagerEntry;

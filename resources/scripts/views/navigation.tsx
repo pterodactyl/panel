@@ -1,5 +1,5 @@
-import { useCallback, useMemo, type ComponentProps, type ReactElement, type ReactNode } from 'react';
-import { Link, useMatchRoute } from '@tanstack/react-router';
+import { useCallback, useMemo, type ReactElement, type ReactNode } from 'react';
+import { useMatchRoute } from '@tanstack/react-router';
 import { selectServerPermissions, useServerQuery } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
 import {
@@ -15,7 +15,13 @@ import { ScreenBadge, ScreenGate } from '@/extensions/screenNavigation';
 import { hasPermission } from '@/plugins/usePermissions';
 import { getAreaNav, type AreaNavEntry } from '@/router/nav';
 import { useServerRouteId } from '@/router/params';
-import type { CorePanelDestination, PanelDestination } from '@/sdk/navigation';
+import {
+    PanelLink,
+    resolvePanelDestination,
+    type CorePanelDestination,
+    type PanelDestination,
+    type PanelLinkProps,
+} from '@/sdk/navigation';
 
 export type NavArea = ScreenArea;
 
@@ -24,11 +30,7 @@ export interface NavItem {
     /** The path below the area root (`index` for the root itself); an extension item's screen id. */
     readonly id: string;
     readonly label: string;
-    /** The route path, e.g. `/server/$id/files`, filled in from `params`. */
-    readonly to: string;
-    readonly params: Readonly<Record<string, string>>;
-    readonly hash?: string;
-    /** Where the item leads, for `usePanelNavigate`, `PanelLink` and keyboard shortcuts. */
+    /** Where the item leads, for `NavigationLink`, `PanelLink`, `usePanelNavigate` and keyboard shortcuts. */
     readonly destination: PanelDestination;
     /** A lucide icon name, as `NamedIcon` takes it. */
     readonly icon: string | null;
@@ -56,28 +58,27 @@ export type NavigationRenderer = (item: NavItem, state: NavItemState) => ReactNo
 /** A key that is unique within one navigation. */
 export const navItemKey = (item: NavItem): string => `${item.extensionId ?? ''}:${item.id}`;
 
-/** An item's route path and params as a destination; extension screens' paths resolve the same way. */
-export const navItemDestination = ({ to, params, hash }: Pick<NavItem, 'to' | 'params' | 'hash'>): PanelDestination =>
-    ({ to, params, hash }) as CorePanelDestination;
+/** A route path, such as `/server/$id/files`, with its params as a destination; extension screens' paths resolve the same way. */
+export const navItemDestination = (
+    to: string,
+    params: Readonly<Record<string, string>>,
+    hash?: string
+): PanelDestination => ({ to, params, hash }) as CorePanelDestination;
 
-const withDestination = (item: Omit<NavItem, 'destination'>): NavItem => ({
-    ...item,
-    destination: navItemDestination(item),
-});
-
-const toNavItem = (area: NavArea, entry: AreaNavEntry, order: number, params: Record<string, string>): NavItem =>
-    withDestination({
-        id: entry.screen?.id ?? (entry.segment || 'index'),
-        label: entry.label,
-        to: entry.segment ? `${SCREEN_ROOTS[area]}/${entry.segment}` : SCREEN_ROOTS[area],
+const toNavItem = (area: NavArea, entry: AreaNavEntry, order: number, params: Record<string, string>): NavItem => ({
+    id: entry.screen?.id ?? (entry.segment || 'index'),
+    label: entry.label,
+    destination: navItemDestination(
+        entry.segment ? `${SCREEN_ROOTS[area]}/${entry.segment}` : SCREEN_ROOTS[area],
         params,
-        hash: entry.hash,
-        icon: entry.icon ?? null,
-        group: entry.group ?? null,
-        order,
-        exact: entry.exact ?? false,
-        extensionId: entry.screen?.extensionId,
-    });
+        entry.hash
+    ),
+    icon: entry.icon ?? null,
+    group: entry.group ?? null,
+    order,
+    exact: entry.exact ?? false,
+    extensionId: entry.screen?.extensionId,
+});
 
 /** Server items need one of their subuser permissions and, for extension screens, a matching egg. */
 function isListed(entry: AreaNavEntry, server: Server | undefined): boolean {
@@ -128,22 +129,25 @@ export function resourceNavigation(
     );
 
     return [
-        ...tabs.map((tab, order) =>
-            withDestination({ ...tab, params, icon: null, group: null, order, exact: tab.exact ?? false })
-        ),
-        ...screens.map(({ id, path, nav, extensionId }, index) =>
-            withDestination({
-                id,
-                label: nav.label,
-                to: `${SCREEN_ROOTS[parent]}/${resolveScreenPath(path, nav.params)}`,
-                params,
-                icon: nav.icon ?? null,
-                group: nav.group ?? null,
-                order: tabs.length + index,
-                exact: nav.exact ?? false,
-                extensionId,
-            })
-        ),
+        ...tabs.map(({ id, label, to, exact }, order) => ({
+            id,
+            label,
+            destination: navItemDestination(to, params),
+            icon: null,
+            group: null,
+            order,
+            exact: exact ?? false,
+        })),
+        ...screens.map(({ id, path, nav, extensionId }, index) => ({
+            id,
+            label: nav.label,
+            destination: navItemDestination(`${SCREEN_ROOTS[parent]}/${resolveScreenPath(path, nav.params)}`, params),
+            icon: nav.icon ?? null,
+            group: nav.group ?? null,
+            order: tabs.length + index,
+            exact: nav.exact ?? false,
+            extensionId,
+        })),
     ];
 }
 
@@ -163,8 +167,7 @@ export function useNavItemActive(): (item: NavItem) => boolean {
     return useCallback(
         (item: NavItem) =>
             matchRoute({
-                to: item.to as never,
-                params: item.params as never,
+                to: resolvePanelDestination(item.destination).pathname as never,
                 fuzzy: !item.exact,
                 includeSearch: false,
             }) !== false,
@@ -172,11 +175,13 @@ export function useNavItemActive(): (item: NavItem) => boolean {
     );
 }
 
+const pathLength = (item: NavItem): number => resolvePanelDestination(item.destination).pathname.length;
+
 /** The most specific active item, e.g. to title a collapsed navigation. */
 export function useActiveNavItem(items: readonly NavItem[]): NavItem | undefined {
     const isActive = useNavItemActive();
 
-    return items.filter(isActive).sort((a, b) => b.to.length - a.to.length)[0];
+    return items.filter(isActive).sort((a, b) => pathLength(b) - pathLength(a))[0];
 }
 
 function NavigationItems({ items, render }: { items: readonly NavItem[]; render: NavigationRenderer }) {
@@ -189,41 +194,25 @@ function NavigationItems({ items, render }: { items: readonly NavItem[]; render:
     ));
 }
 
-function AreaNavigation({ area, render }: { area: NavArea; render: NavigationRenderer }) {
-    return <NavigationItems items={useNavigation(area).items} render={render} />;
+export interface NavigationProps {
+    /** Usually a layout model's `nav.items`. */
+    readonly items: readonly NavItem[];
+    readonly children: NavigationRenderer;
 }
-
-export type NavigationProps = { readonly children: NavigationRenderer } & (
-    | { readonly area: NavArea; readonly items?: undefined }
-    | { readonly items: readonly NavItem[]; readonly area?: undefined }
-);
 
 /**
  * Renders each item through `children`, inside the runtime gate of its extension screen, so a
- * screen hidden by its predicate renders nothing. `items` (usually a layout model's) take the
- * place of the area's live navigation.
+ * screen hidden by its predicate renders nothing.
  */
-export function Navigation(props: NavigationProps) {
-    return props.items ? (
-        <NavigationItems items={props.items} render={props.children} />
-    ) : (
-        <AreaNavigation area={props.area} render={props.children} />
-    );
+export function Navigation({ items, children }: NavigationProps) {
+    return <NavigationItems items={items} render={children} />;
 }
 
-export interface NavigationLinkProps extends Omit<ComponentProps<'a'>, 'href'> {
+export interface NavigationLinkProps extends Omit<PanelLinkProps, 'destination' | 'exact' | 'includeSearch'> {
     readonly item: NavItem;
 }
 
 /** A link to an item; it carries `data-status="active"` while the item is active. */
 export function NavigationLink({ item, ...props }: NavigationLinkProps): ReactElement {
-    return (
-        <Link
-            to={item.to as never}
-            params={item.params as never}
-            hash={item.hash}
-            activeOptions={{ exact: item.exact, includeSearch: false }}
-            {...props}
-        />
-    );
+    return <PanelLink destination={item.destination} exact={item.exact} {...props} />;
 }

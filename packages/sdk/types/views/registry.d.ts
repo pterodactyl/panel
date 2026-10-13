@@ -11,46 +11,28 @@ export interface ViewModels {
 /** Props a view takes besides its model, such as the server of a card. */
 export interface ViewInputs {
 }
-/** Named parts of the views that publish them, which `Default` can swap individually. */
-export interface ViewPartNames {
-}
 export type ViewName = Extract<keyof ViewModels, string>;
 export type ViewModel<N> = N extends keyof ViewModels ? ViewModels[N] : unknown;
 export type LooseViewInput = Readonly<Record<string, unknown>>;
 export type ViewInput<N> = N extends keyof ViewInputs ? ViewInputs[N] : N extends keyof ViewModels ? unknown : LooseViewInput;
-export type ViewPartProps<N> = {
-    readonly model: ViewModel<N>;
-} & ViewInput<N>;
-export type ViewParts<N> = N extends keyof ViewPartNames ? {
-    readonly [P in ViewPartNames[N] & string]: ComponentType<ViewPartProps<N>>;
-} : never;
-type PartsProp<N> = N extends keyof ViewPartNames ? {
-    readonly parts: ViewParts<N>;
-} : unknown;
-type PartsOverride<N> = N extends keyof ViewPartNames ? {
-    readonly parts?: Partial<ViewParts<N>>;
-} : unknown;
 /** `Default` renders the layer below; every prop is optional and replaces what this layer received. */
-export type DefaultViewProps<N> = {
+export interface DefaultViewProps<N> {
     readonly model?: ViewModel<N>;
     readonly className?: string;
     readonly children?: ReactNode;
-} & PartsOverride<N>;
+}
 export type ViewProps<N> = {
     readonly model: ViewModel<N>;
     readonly Default: ComponentType<DefaultViewProps<N>>;
     readonly className?: string;
     readonly children?: ReactNode;
-} & PartsProp<N> & ViewInput<N>;
-/** A layer of a view; `parts` declares the parts it renders for the layers above it. */
-export type ViewComponent<N> = ComponentType<ViewProps<N>> & {
-    readonly parts?: ViewParts<N>;
-};
-/** Wraps a view rendered from a fixture, for views whose parts read an engine session. */
-export type ViewFixtureScope<N> = ComponentType<{
-    readonly model: ViewModel<N>;
-    readonly children?: ReactNode;
-}>;
+} & ViewInput<N>;
+/** A layer of a view. */
+export type ViewComponent<N> = ComponentType<ViewProps<N>>;
+/** The hook of a view its parent places with the parent's model, such as a piece of a card. */
+export declare const modelFromInput: <M>({ model }: {
+    readonly model: M;
+}) => M;
 /** The engine side of a view: the hook producing its model, and the fixtures standing in for it. */
 export interface ViewImplementation<N extends string> {
     /** The engine hook producing the model; the only data source of the view. */
@@ -61,7 +43,6 @@ export interface ViewImplementation<N extends string> {
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
     /** The model of a view placed with inputs from fixtures, such as a card for each server of a list fixture. */
     fixtureFromInput?(input: ViewInput<N>): ViewModel<N>;
-    readonly fixtureScope?: ViewFixtureScope<N>;
 }
 /** What a module passes to `implementViews`, by view name. */
 export type ViewImplementations = {
@@ -87,13 +68,9 @@ export interface ViewDefinition<N extends string = string> extends ViewDeclarati
     readonly fixtures?: Readonly<Record<string, () => ViewModel<N>>>;
     fixtureInput?(model: ViewModel<N>): ViewInput<N>;
     fixtureFromInput?(input: ViewInput<N>): ViewModel<N>;
-    readonly fixtureScope?: ViewFixtureScope<N>;
     readonly load?: ViewLoader;
-    /** The extension that defined the view; core views have none. */
-    readonly extensionId?: string;
 }
 export type ViewLayerSource = 'classic' | 'theme' | 'extension';
-export type ViewPartComponents = Readonly<Partial<Record<string, JSXElementConstructor<never>>>>;
 export interface ViewLayer {
     /** The package the layer belongs to, which its failures are attributed to. */
     readonly id: string;
@@ -107,32 +84,6 @@ export type ViewImporter<N> = () => Promise<{
 export type ViewOverride<N> = ViewComponent<N> | {
     readonly load: ViewImporter<N>;
 };
-export interface ExtensionViewProps<TModel> {
-    readonly model: TModel;
-    readonly Default: ComponentType<{
-        readonly model?: TModel;
-        readonly className?: string;
-        readonly children?: ReactNode;
-    }>;
-    readonly className?: string;
-    readonly children?: ReactNode;
-}
-/** A view an extension adds, so themes and other extensions can restyle or place it. */
-export interface ExtensionViewOptions<TModel> {
-    readonly context: ViewContext;
-    use(input: LooseViewInput): TModel;
-    readonly Default: ComponentType<ExtensionViewProps<TModel> & LooseViewInput>;
-    readonly fixtures?: Readonly<Record<string, () => TModel>>;
-    readonly placeholder?: ReactNode;
-}
-/** Any extension's view definition, as the registry stores it. */
-export interface ExtensionViewDefinition {
-    readonly context: ViewContext;
-    use(input: LooseViewInput): unknown;
-    readonly Default: JSXElementConstructor<never>;
-    readonly fixtures?: Readonly<Record<string, () => unknown>>;
-    readonly placeholder?: ReactNode;
-}
 /** Views a theme or extension provides, keyed by name; unknown names are typed loosely. */
 export type ThemeViews = {
     readonly [N in ViewName]?: ViewComponent<N>;
@@ -151,23 +102,16 @@ export declare function implementViews(views: ViewImplementations): void;
  * shared by all of them; null when the view was implemented without one.
  */
 export declare function loadViewImplementation(name: string): Promise<void> | null;
-export declare function registerViewDefinition(definition: ViewDefinition): void;
 export declare function getViewDefinition(name: string): ViewDefinition | undefined;
 export declare function getViewDefinitions(): readonly ViewDefinition[];
-/** Every defined view by name, including those extensions define as they load. */
-export declare function useViewDefinitions(): readonly ViewDefinition[];
 export declare function useViewDefinition(name: string): ViewDefinition | undefined;
 /** A function component, or a memo, forwardRef or lazy wrapper of one. */
 export declare function isViewComponent<T>(value: T): value is T & JSXElementConstructor<never>;
-/** The parts a layer renders, read when needed since a lazy layer only knows them once loaded. */
-export declare function declaredParts(component: JSXElementConstructor<never>): ViewPartComponents | undefined;
-/** The bottom layer of a view: classic for core views, the defining extension's `Default` otherwise. */
-export declare function registerBaseView(id: string, source: ViewLayerSource, name: string, component: JSXElementConstructor<never>): void;
 /** Classic is registered once at boot; theme layers stack in chain order, parent first. */
 export declare function registerViewLayer(id: string, source: 'classic' | 'theme', views: ThemeViews): void;
 /** Drops every theme layer, leaving classic; used when a theme fails to boot. */
 export declare function clearThemeLayers(): void;
-/** Classic (or the defining extension), then the theme chain; extension overrides come from the view session. */
+/** Classic, then the theme chain; extension overrides come from the view session. */
 export declare function getViewChain(name: string): readonly ViewLayer[];
 export declare function useViewChain(name: string): readonly ViewLayer[];
 export {};

@@ -1,11 +1,10 @@
 import { createElement, useSyncExternalStore, type ComponentType, type ReactElement } from 'react';
-import { clsx } from 'clsx';
+import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/cn';
 import { isObject, isString } from '@/lib/objects';
 import {
-    isPrimitiveName,
     primitiveAttribute,
-    UI_PRIMITIVES,
+    UI_PRIMITIVE_PARTS,
     type PrimitiveName,
     type PrimitiveProps,
     type PrimitiveState,
@@ -14,9 +13,8 @@ import {
 } from './primitives';
 
 export {
-    UI_PRIMITIVES,
+    UI_PRIMITIVE_PARTS,
     type NoState,
-    type PrimitiveMeta,
     type PrimitiveName,
     type PrimitiveProps,
     type PrimitiveState,
@@ -118,12 +116,6 @@ const resolutions = new Map<PrimitiveName, Resolution>();
 const listeners = new Set<() => void>();
 const noClasses = () => '';
 
-function warn(message: string): void {
-    if (import.meta.env.DEV) {
-        console.warn(`[skins] ${message}`);
-    }
-}
-
 function publish(): void {
     resolutions.clear();
     for (const listener of listeners) {
@@ -157,38 +149,6 @@ function layerEntry(layer: SkinLayer, name: PrimitiveName): LayerEntry | undefin
     return isExoticComponent(entry) ? { kind: 'component', component: entry } : { kind: 'skin', skin: entry };
 }
 
-/** The values cva treats as a variant key: booleans as `'true'`/`'false'`, empty values as unset. */
-function variantKey(value: SkinStateValue): string | undefined {
-    if (value === undefined || value === '') {
-        return undefined;
-    }
-
-    return String(value);
-}
-
-/** cva's resolution: base, each variant's class for its value or default, then matching compounds. */
-function recipeClasses(recipe: SkinRecipeConfig<SkinStateMap>, state: SkinStateMap): string {
-    const defaults = recipe.defaultVariants ?? {};
-    const values: SkinStateMap = {
-        ...defaults,
-        ...Object.fromEntries(Object.entries(state).filter(([, value]) => value !== undefined)),
-    };
-    const variants = Object.entries(recipe.variants ?? {}).map(([key, options]) => {
-        const value = variantKey(state[key]) ?? variantKey(defaults[key]);
-
-        return value === undefined ? undefined : options?.[value];
-    });
-    const compounds = (recipe.compoundVariants ?? []).flatMap(({ class: classes, className, ...conditions }) =>
-        Object.entries(conditions).every(([key, expected]) =>
-            Array.isArray(expected) ? expected.includes(values[key]) : values[key] === expected
-        )
-            ? [classes, className]
-            : []
-    );
-
-    return clsx(recipe.base, variants, compounds);
-}
-
 /** A recipe as a resolver; a function recipe reads `below`, the resolver of the layers under it. */
 function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>, below: Resolver): Resolver {
     if (isString(recipe)) {
@@ -209,28 +169,30 @@ function compile(layer: string, name: string, recipe: SkinRecipe<SkinStateMap>, 
         };
     }
 
-    return (state) => recipeClasses(recipe, state);
+    const { base, variants = {}, ...config } = recipe;
+
+    // cva reads the state as its variant props, each typed by the primitive where the recipe is written.
+    // It skips compound variants unless `variants` is set.
+    return cva(base, { ...config, variants } as never) as Resolver;
 }
 
 /** Folds the layers bottom up: a part's recipe is the topmost one, the component the topmost replacement. */
 function resolve(name: PrimitiveName): Resolution {
-    const parts: readonly string[] = UI_PRIMITIVES[name].parts;
+    const parts: readonly string[] = UI_PRIMITIVE_PARTS[name];
     const resolvers = new Map<string, Resolver>();
     let component: ComponentType<never> | undefined;
 
     for (const layer of layers) {
         const entry = layerEntry(layer, name);
 
+        // Only presentational primitives render the replacement; the others keep their markup.
         if (entry?.kind === 'component') {
-            // Base UI primitives keep their markup; registerSkins warned about the replacement.
-            component = UI_PRIMITIVES[name].replaceable ? entry.component : component;
+            component = entry.component;
             continue;
         }
 
         for (const [part, recipe] of Object.entries(entry?.skin ?? {})) {
-            if (!parts.includes(part)) {
-                warn(`${name} has no "${part}" part; the "${layer.id}" recipe for it is ignored.`);
-            } else if (isString(recipe) || recipe instanceof Function || isObject(recipe)) {
+            if (isString(recipe) || recipe instanceof Function || isObject(recipe)) {
                 resolvers.set(part, compile(layer.id, name, recipe, resolvers.get(part) ?? noClasses));
             }
         }
@@ -300,15 +262,6 @@ function bind<N extends PrimitiveName>(
  */
 export function registerSkins(layerId: string, skins: ThemeSkins): void {
     const layer = { id: layerId, skins };
-
-    for (const name of Object.keys(skins)) {
-        if (!isPrimitiveName(name)) {
-            warn(`The "${layerId}" layer skins "${name}", which is not a UI primitive.`);
-        } else if (layerEntry(layer, name)?.kind === 'component' && !UI_PRIMITIVES[name].replaceable) {
-            warn(`${name} keeps its behaviour in core and can only be skinned; the "${layerId}" component is ignored.`);
-        }
-    }
-
     const others = layers.filter((existing) => existing.id !== layerId);
 
     layers = layerId === 'classic' ? [layer, ...others] : [...others, layer];

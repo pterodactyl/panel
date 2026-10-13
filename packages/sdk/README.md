@@ -732,7 +732,7 @@ Classes passed to SDK components and to a view's `Default` are merged with the c
 own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
 drops the button's `mt-*` default, per variant, exactly as a panel class would
 (`hw:hover:bg-accent` replaces `hover:bg-primary/90`; `hw:bg-accent` alone does not). In tests
-pass the prefix to the host: `createViewTestHost(name, { model, prefix: 'hw' })`.
+pass the prefix to `renderView(name, { model, prefix: 'hw' })`.
 
 `p:extension:doctor`, `p:extension:pack`, install and enable all reject a build whose CSS has
 a rule in `@layer utilities` that is not built on a `.hw\:` class, or a custom property in
@@ -746,7 +746,7 @@ model, and a stack of layers that render it. Classic, the stock UI, is the botto
 active theme and its parents stack above it, then extension overrides in the configured order.
 Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders the layer
 below. Themes and extensions write layers the same way: [Level 4](THEMES.md#level-4-rebuild-pages)
-of the themes guide covers models, `Default`, parts and placing views, and the
+of the themes guide covers models, `Default` and placing views, and the
 [view catalogue](THEMES.md#view-catalogue) lists every view with its model, inputs, slots and
 fixtures. The catalogue also ships as `@pterodactyl/sdk/views.json`.
 
@@ -794,17 +794,6 @@ function ServerCard({ Default, model }: ViewProps<'dashboard.serverCard'>) {
 ```tsx
 views.override('dashboard.serverCard', ServerCard);
 views.override('server.files.details', { load: () => import('./FileDetails') });
-views.define<BalanceModel>('billing.balance', {
-    context: 'app',
-    use: useBalance,
-    Default: Balance,
-    fixtures: {
-        funded: () => ({ credits: 120, topUp: () => {} }),
-        empty: () => ({ credits: 0, topUp: () => {} }),
-    },
-});
-// Wherever classic has no place for it yet, a slot places the view.
-slots.register('dashboard.after', () => <View name='billing.balance' />);
 ```
 <!-- /sample -->
 
@@ -812,59 +801,18 @@ slots.register('dashboard.after', () => <View name='billing.balance' />);
 a test. Classes passed to `Default` merge with the layer below's under the extension's prefix (see
 [Styling](#styling)).
 
+An extension's own UI goes in slots with `slots.register`; themes restyle it through the UI kit's skins.
+
 The server card and file details render inside core links. Keep interactive controls in action
 slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
-menus. The classic server-card identity part includes the `dashboard.serverRow.name.after` slot.
-
-### Defining a view
-
-`views.define(name, { context, use, Default, fixtures, placeholder })` adds a view of the
-extension's own, so themes and other extensions can restyle or place it:
-
-| Option | |
-| --- | --- |
-| `context` | Where it can render: `app` (every signed-in page), `server`, `account`, `admin` or `auth`. |
-| `use(inputs)` | The hook that produces the model. It is the view's only data source. |
-| `Default` | The bottom layer, typed by `ExtensionViewProps<Model>`. Build it from the [UI kit](#ui-kit) and it takes the active theme's skins. |
-| `fixtures` | Models by name, which tests render the view from without a backend. The first is the default. |
-| `placeholder` | Shown while a layer above it loads. |
-
-Use a namespace of your own, such as your extension id: `layout.` and `page.` names are refused,
-and so is a second definition of a name. The view renders wherever a layer or a slot places it
-with `<View name="billing.balance" />`; a theme that may run without the extension places it
-with `optional`, which renders nothing while no installed package defines it.
-
-<!-- sample: snippets/extension.tsx#define -->
-```tsx
-interface BalanceModel {
-    readonly credits: number;
-    readonly topUp: () => void;
-}
-
-function useBalance(): BalanceModel {
-    return { credits: 120, topUp: () => window.open('/billing', '_self') };
-}
-
-/** The bottom layer of the extension's own view; themes restyle or move it. Built from the UI kit, it takes their skins. */
-function Balance({ model, className }: ExtensionViewProps<BalanceModel>) {
-    return (
-        <Card title='Balance' className={className} actions={<Badge tone='success'>{model.credits} credits</Badge>}>
-            <Button size='xsmall' onClick={model.topUp}>
-                Top up
-            </Button>
-        </Card>
-    );
-}
-```
-<!-- /sample -->
+menus. `dashboard.serverCard.identity`, a piece of the card, renders the `dashboard.serverRow.name.after` slot.
 
 ### Slots inside views
 
 A view renders the slots listed for it in the catalogue, and a layer that replaces it has to
 render them too, or the extensions mounted there disappear. Rendering `Default` renders the
-slots of the layers below. In development, a layer that renders none of its view's slots logs
-a warning naming them after three seconds. The catalogue's engine slots of a page are rendered by
-the engine around the page view, so no layer renders or drops them.
+slots of the layers below. The catalogue's engine slots of a page are rendered by the engine
+around the page view, so no layer renders or drops them.
 
 ### File editor
 
@@ -882,10 +830,12 @@ the engine around the page view, so no layer renders or drops them.
 | `save()` | Write the buffer in place; a new file first asks for its name in the panel's dialog. Resolves `false` when read-only, cancelled or failed. |
 | `saveAs(name)` | Write the buffer to a name beside the file, or an absolute path, and open it. Needs `file.create`. |
 
-```tsx
-import { useExtensionAction, type ViewPartProps, type ViewProps } from '@pterodactyl/sdk';
+The view places its pieces as views of their own, each given the editor's model: `server.files.editor.notice`, `server.files.editor.canvas` (the code editor), `server.files.editor.language` and `server.files.editor.actions` (the Save button). Override one to replace that piece; declare it in `ui.views` like any view.
 
-function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
+```tsx
+import { useExtensionAction, type ViewProps } from '@pterodactyl/sdk';
+
+export default function Buffer({ model }: ViewProps<'server.files.editor.canvas'>) {
     const save = useExtensionAction('save', async () => void (await model.save()));
     return (
         <textarea
@@ -896,27 +846,24 @@ function Buffer({ model }: ViewPartProps<'server.files.editor'>) {
         />
     );
 }
-export default function Editor({ Default }: ViewProps<'server.files.editor'>) {
-    return <Default parts={{ editor: Buffer }} />;
-}
 ```
 
-Because the panel holds the buffer, a replaced `editor` part works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
+Because the panel holds the buffer, a replaced canvas works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
 
 ### File browser
 
-`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` view belong to the classic parts and render only where you keep those parts.
+`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view. It places `server.files.manager.toolbar`, `server.files.manager.list` and `server.files.manager.selection`, each given its model; they render the `server.files.toolbar`, `server.files.rowActions` and `server.files.selectionActions` slots and, in the list, the `server.files.details` view of each row. A layer that draws the browser itself places the ones it keeps with `<View name="server.files.manager.toolbar" model={model} />`.
 
 `model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt`, `openable`, `extractable`, the `destination` opening it links to, and the API's `file`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has. `breadcrumbs` lead from `container` to the directory, `newFileDestination` opens the editor for a new file, `uploads` lists the uploads in progress, `resolve(name)` shows where a relative name lands, and `slot` is what the file slots receive.
 
 `model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `move(names, directory)`, `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)`, `upload(files)`, `cancelUpload(id)` and `clearUploads()`. They run the panel's own mutations, with its cache updates and notifications; `remove` and `archive` drop their names from the selection, `rename`, `move` and `chmod` clear it. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
 
 ```tsx
-export default function Browser({ model, parts }: ViewProps<'server.files.manager'>) {
+export default function Browser({ model }: ViewProps<'server.files.manager'>) {
     const open = useExtensionAction('open', (name: string) => model.actions.open(name));
     return (
         <>
-            <parts.toolbar model={model} />
+            <View name='server.files.manager.toolbar' model={model} />
             <ul aria-busy={model.loading}>
                 {model.entries.map((entry) => (
                     <li key={entry.path}>
@@ -931,9 +878,9 @@ export default function Browser({ model, parts }: ViewProps<'server.files.manage
 
 ### Loading and failure
 
-While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. Core state remains outside the layer. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
+While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. A layer that suspends shows the view's placeholder until it renders, as a theme's lazy view does. Core state remains outside the layer. Use `useExtensionAction` for callbacks.
 
-The testing entry exports `createViewTestHost(name, { model?, fixture?, input?, extensionId?, prefix?, strict?, theme?, themes? })`, which resolves to a `Wrapper`, the typed `props` of a layer above classic, and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. It exercises classic's layers and parts without issuing core queries; nested views read their fixtures. Pass `vi.fn()` callbacks in the model to assert on `save`, `change` or an action, and call `dispose()` after unmounting. The render fails with a `ViewLayerError` when your layer or a nested view's layer throws; `strict: false` lets it fall back as in the panel. `renderView` and its `slots` option, which mounts test components in slots, are described under [Testing](THEMES.md#testing).
+Test a layer with `renderView(name, { themes, model?, fixture?, input?, prefix?, slots?, strict? })` from the testing entry, described under [Testing](THEMES.md#testing). It renders the view synchronously over classic without issuing core queries; nested views read their fixtures. Pass the extension's layers as the views of a theme, `themes: [{ views: { 'dashboard.serverCard': ServerCard } }]`, and its `ui.prefix` as `prefix`. The model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry` build models to pass as `model`, with `vi.fn()` callbacks to assert on `save`, `change` or an action. The render fails with a `ViewLayerError` when a layer throws; `strict: false` lets it fall back as in the panel.
 
 ## UI kit
 

@@ -46,22 +46,16 @@ function fakeRect(this: HTMLElement): DOMRect {
     return rect(left, widthOf(this));
 }
 
-const navItem = ({ label, extension }: Item, order: number): NavItem => {
-    const to = `/account/${label.toLowerCase()}`;
-
-    return {
-        id: label.toLowerCase(),
-        label,
-        to,
-        params: {},
-        destination: navItemDestination({ to, params: {} }),
-        icon: null,
-        group: null,
-        order,
-        exact: false,
-        extensionId: extension ? 'tabs' : undefined,
-    };
-};
+const navItem = ({ label, extension }: Item, order: number): NavItem => ({
+    id: label.toLowerCase(),
+    label,
+    destination: navItemDestination(`/account/${label.toLowerCase()}`, {}),
+    icon: null,
+    group: null,
+    order,
+    exact: false,
+    extensionId: extension ? 'tabs' : undefined,
+});
 
 async function renderNavigation(
     items: Item[],

@@ -18,11 +18,10 @@ export {
 export {
     skin,
     useSkin,
-    UI_PRIMITIVES,
+    UI_PRIMITIVE_PARTS,
     type CompleteSkin,
     type CompleteSkins,
     type NoState,
-    type PrimitiveMeta,
     type PrimitiveName,
     type PrimitiveProps,
     type PrimitiveState,
@@ -42,7 +41,7 @@ export {
     type UiPrimitives,
     type UiTone,
 } from '@/themes/skins';
-export { View, ViewFixtureProvider, type ViewElementProps, type ViewFixtureSelection } from '@/views/View';
+export { View, type ViewElementProps } from '@/views/View';
 export { lazyView } from '@/views/lazy';
 export { Main } from '@/views/a11y';
 export { usePageTitle } from '@/views/pageTitle';
@@ -62,8 +61,6 @@ export {
 export { default as Slot } from '@/extensions/Slot';
 export type {
     DefaultViewProps,
-    ExtensionViewOptions,
-    ExtensionViewProps,
     ThemeViews,
     ViewComponent,
     ViewContext,
@@ -74,23 +71,9 @@ export type {
     ViewModels,
     ViewName,
     ViewOverride,
-    ViewPartNames,
-    ViewPartProps,
-    ViewParts,
     ViewProps,
 } from '@/views/registry';
 export type * from '@/views/models';
-export type * from './models/forms';
-export type * from './models/schedules';
-export type * from './models/subusers';
-export type * from './models/backups';
-export type * from './models/settings';
-export type * from './models/conflict';
-export type * from './models/console';
-export type * from './models/files';
-export type * from './models/databases';
-export type * from './models/network';
-export type * from './models/startup';
 
 /**
  * Calls `listener`, at most once a frame, after a stylesheet or an `<html>` attribute changes.

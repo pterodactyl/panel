@@ -34,8 +34,6 @@ export interface AppSearchModel {
     readonly shortcut: Shortcut;
     /** The search term for an input; its error asks for three characters. */
     readonly field: FieldModel;
-    /** Replaces the term, for a search drawn without an input of its own. */
-    readonly setQuery: (query: string) => void;
     /** The first five servers that match. */
     readonly results: readonly AppSearchResult[];
     readonly loading: boolean;
@@ -90,7 +88,6 @@ function useAppSearchModel(): AppSearchModel {
             },
             shortcut,
             field: { ...field, error: term.length > 0 && term.length < 3 ? SHORT : null },
-            setQuery: setTerm,
             results: enabled ? (data?.data.slice(0, 5) ?? []).map(searchResult) : [],
             loading: enabled && isFetching,
             searched: enabled && !isFetching && !error && data !== undefined,
@@ -112,7 +109,6 @@ const searchFixture = (options: Partial<AppSearchModel> = {}): AppSearchModel =>
     close: noop,
     shortcut,
     field: fixtureField('term', {}, 'surv'),
-    setQuery: noop,
     results,
     loading: false,
     searched: true,

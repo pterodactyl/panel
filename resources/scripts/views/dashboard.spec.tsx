@@ -5,7 +5,7 @@ import { afterEach, beforeAll, expect, it, vi } from 'vitest';
 import type * as ServerQueries from '@/api/account/servers/queries';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { registerClassicTheme } from './classic';
-import { ViewFixtureProvider, View, ViewArea } from './View';
+import { ViewFixtureProvider, View } from './View';
 import { clearThemeLayers, registerViewLayer, type ViewProps } from './registry';
 import './dashboard';
 
@@ -32,7 +32,7 @@ async function renderInApp(children: ReactNode) {
     const { Wrapper } = host;
 
     await act(async () => {
-        render(<ViewArea area='app'>{children}</ViewArea>, { wrapper: Wrapper });
+        render(children, { wrapper: Wrapper });
     });
 }
 

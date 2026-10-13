@@ -39,7 +39,7 @@ test('scaffolds a theme with a stylesheet, a layout override, a skin, settings a
     expect(File::get($target.'/src/theme.tsx'))->toContain("'layout.app': AppLayout", 'ui: skins');
     expect(File::get($target.'/src/skins.ts'))->toContain("skin('Button'", "root: (state, below) => below('ring-1");
     expect(File::get($target.'/src/views/AppLayout.tsx'))->toContain("data-aurora-layout=''", '<Default />');
-    expect(File::get($target.'/src/theme.spec.tsx'))->toContain('preloadTheme(theme)', "renderView('layout.app', { theme, fixture: 'admin' })", '[data-aurora-layout] main');
+    expect(File::get($target.'/src/theme.spec.tsx'))->toContain('preloadTheme(themes)', "renderView('layout.app', { themes, fixture: 'admin' })", '[data-aurora-layout] main');
     expect(File::get($target.'/README.md'))->toContain('@pterodactyl/sdk/THEMES.md', 'Level 1', 'p:extension:dev . --watch')->not->toContain('{{');
 
     $package = File::json($target.'/package.json');

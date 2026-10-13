@@ -12,7 +12,7 @@ import {
     type TestServerOptions,
 } from '@/sdk/testing';
 import { clearThemeLayers, registerViewLayer } from '../registry';
-import { View, ViewArea } from '../View';
+import { View } from '../View';
 import type { ServerGraphsModel, ServerStatsModel } from './console';
 import { featureViews } from './features';
 
@@ -62,10 +62,10 @@ async function renderServer(children: React.ReactNode, options: TestServerOption
 
     await act(async () => {
         render(
-            <ViewArea area='server'>
+            <>
                 <StatusListener />
                 {children}
-            </ViewArea>,
+            </>,
             { wrapper: host!.Wrapper }
         );
     });

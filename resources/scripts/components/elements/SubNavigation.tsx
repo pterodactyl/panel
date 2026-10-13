@@ -1,5 +1,5 @@
 import React, { useId, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { usePanelNavigate } from '@/sdk/navigation';
 import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import Icon from '@/components/elements/Icon';
@@ -283,14 +283,11 @@ function MenuEntry({
     item: NavItem;
     render: (item: NavItem, state: SubNavigationItemState) => React.ReactNode;
 }) {
-    const navigate = useNavigate();
+    const navigate = usePanelNavigate();
     const active = useNavItemActive()(item);
 
     return (
-        <DropdownMenu.Item
-            className={cn(active && 'bg-muted')}
-            onClick={() => void navigate({ to: item.to as never, params: item.params as never, hash: item.hash })}
-        >
+        <DropdownMenu.Item className={cn(active && 'bg-muted')} onClick={() => void navigate(item.destination)}>
             <span className='inline-flex items-center gap-2'>
                 {render(item, { active, badge: navItemBadge(item), placement: 'menu' })}
             </span>

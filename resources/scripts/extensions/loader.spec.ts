@@ -379,45 +379,4 @@ describe('declared view overrides', () => {
         expect(importer).toHaveBeenCalledExactlyOnceWith('/healthy.js');
         expect(registry.getExtensionStates().find((state) => state.id === 'bad')?.error).toContain('view name');
     });
-    it('defines extension views with their Default as the bottom layer', async () => {
-        stubExtensions([{ id: 'billing', entry: '/billing.js' }]);
-        const registry = await import('./registry');
-        const views = await import('@/views/registry');
-        const loader = await import('./loader');
-        const Balance = () => null;
-
-        await loader.loadExtensions(async () => ({
-            default: {
-                setup(ctx: ExtensionSetupContext) {
-                    ctx.views.define('billing.balance', {
-                        context: 'app',
-                        use: () => ({ amount: 5 }),
-                        Default: Balance,
-                        fixtures: { empty: () => ({ amount: 0 }) },
-                    });
-                },
-            },
-        }));
-        expect(registry.getExtensionStates()).toEqual([{ id: 'billing', status: 'loaded' }]);
-        expect(views.getViewDefinition('billing.balance')).toMatchObject({ extensionId: 'billing', context: 'app' });
-        expect(views.getViewChain('billing.balance')).toEqual([
-            { id: 'billing', source: 'extension', component: Balance },
-        ]);
-    });
-    it('fails an extension that redefines an existing view', async () => {
-        stubExtensions([{ id: 'copycat', entry: '/copycat.js' }]);
-        const registry = await import('./registry');
-        const views = await import('@/views/registry');
-        const loader = await import('./loader');
-
-        views.defineView('server.conflict', { context: 'server', use: () => ({ kind: null }) });
-        await loader.loadExtensions(async () => ({
-            default: {
-                setup(ctx: ExtensionSetupContext) {
-                    ctx.views.define('server.conflict', { context: 'server', use: () => ({}), Default: Component });
-                },
-            },
-        }));
-        expect(registry.getExtensionStates()[0].error).toContain('already defined');
-    });
 });

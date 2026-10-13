@@ -9,13 +9,11 @@ import {
     Outlet,
     RouterProvider,
 } from '@tanstack/react-router';
-import { afterEach, expect, it, vi } from 'vitest';
-import { LayoutMainCheck, Main, RouteAnnouncer, SkipLink } from './a11y';
+import { afterEach, expect, it } from 'vitest';
+import { Main, RouteAnnouncer, SkipLink } from './a11y';
 
 afterEach(() => {
     cleanup();
-    vi.useRealTimers();
-    vi.restoreAllMocks();
 });
 
 it('renders one main landmark however many layouts nest', () => {
@@ -106,25 +104,4 @@ it('focuses the main content and announces the title after navigating to another
 
     await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('main')));
     expect(document.querySelector('[aria-live="polite"]')).toHaveTextContent('Account');
-});
-
-it('warns in development when a layout never renders Main', () => {
-    vi.useFakeTimers();
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    render(
-        <>
-            <LayoutMainCheck name='layout.app'>
-                <p>No main here</p>
-            </LayoutMainCheck>
-            <LayoutMainCheck name='layout.account'>
-                <Main>Placed</Main>
-            </LayoutMainCheck>
-        </>
-    );
-    act(() => {
-        vi.advanceTimersByTime(3000);
-    });
-
-    expect(warn).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('"layout.app" layout never rendered <Main>'));
 });

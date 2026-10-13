@@ -42,38 +42,40 @@ it('publishes the same value exports as the runtime entry points', () => {
 }, 30_000);
 
 const consumer = `
-import { createExtensionTestHost } from '@pterodactyl/sdk/testing';
-import { createViewTestHost, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
-import type { ViewProps, ViewPartProps } from '@pterodactyl/sdk';
+import { createExtensionTestHost, createTestServer } from '@pterodactyl/sdk/testing';
+import { renderView, renderWithTheme, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
+import type { ViewProps } from '@pterodactyl/sdk';
 import { createTestFileEditor, createTestFileManager } from '@pterodactyl/sdk/testing';
 import { defineTheme, lazyView, Main, Slot, View, useTheme, useThemeSettings, type ThemeViews } from '@pterodactyl/sdk/theme';
-const editorHost = createViewTestHost('server.files.editor', {model: createTestFileEditor({readOnly: true})});
-const managerHost = createViewTestHost('server.files.manager', {model: createTestFileManager()});
+const editor: HTMLElement = renderView('server.files.editor', {model: createTestFileEditor({readOnly: true})}).container;
+renderView('server.files.manager', {model: createTestFileManager()});
 // @ts-expect-error An editor model is not a file browser model.
-void createViewTestHost('server.files.manager', {model: createTestFileEditor()});
+renderView('server.files.manager', {model: createTestFileEditor()});
 function Editor({model, Default}: ViewProps<'server.files.editor'>) {
   const saved: Promise<boolean> = model.saveAs('copy.txt');
   // @ts-expect-error The model is read-only; report edits through change().
   model.content = '';
-  return <Default parts={{editor: ({model}) => <textarea defaultValue={model.content} readOnly={model.readOnly} onChange={event => model.change(event.target.value)} />}} />;
+  return <Default />;
 }
-function Browser({model, parts}: ViewProps<'server.files.manager'>) {
+function Canvas({model}: ViewProps<'server.files.editor.canvas'>) {
+  return <textarea defaultValue={model.content} readOnly={model.readOnly} onChange={event => model.change(event.target.value)} />;
+}
+function Browser({model}: ViewProps<'server.files.manager'>) {
   const removed: Promise<void> = model.actions.remove(model.selection);
   // @ts-expect-error Entries have a closed set of kinds.
   const isSocket = model.entries[0]?.kind === 'socket';
-  return <ul><parts.toolbar model={model} />{model.entries.map(entry => <li key={entry.path} onClick={() => void model.actions.open(entry.name)}>{entry.name}</li>)}</ul>;
+  return <ul><View name="server.files.manager.toolbar" model={model} />{model.entries.map(entry => <li key={entry.path} onClick={() => void model.actions.open(entry.name)}>{entry.name}</li>)}</ul>;
 }
-const cardHost = await createViewTestHost('dashboard.serverCard', {model: createTestServerCard()});
-const fileHost = await createViewTestHost('server.files.details', {model: createTestFileDetails()});
-const nativeCard = <cardHost.props.Default />;
+renderView('dashboard.serverCard', {model: createTestServerCard(), prefix: 'hw'});
+renderView('server.files.details', {model: createTestFileDetails()});
 // @ts-expect-error View models remain distinct.
-void createViewTestHost('dashboard.serverCard', {model: createTestFileDetails()});
-function Metrics({model}: ViewPartProps<'dashboard.serverCard'>) {return <span>{model.name}</span>;}
-function Card({Default, model, parts, server}: ViewProps<'dashboard.serverCard'>) {
-  const identity = <parts.identity model={model} server={server} />;
-  // @ts-expect-error Parts receive the view's inputs too.
-  const bare = <parts.identity model={model} />;
-  return <Default parts={{metrics: Metrics}} className="hw:gap-3" />;
+renderView('dashboard.serverCard', {model: createTestFileDetails()});
+function Metrics({model}: ViewProps<'dashboard.serverCard.metrics'>) {return <span>{model.name}</span>;}
+function Card({Default, model, server}: ViewProps<'dashboard.serverCard'>) {
+  const identity = <View name="dashboard.serverCard.identity" model={model} server={server} />;
+  // @ts-expect-error A piece of the card receives the card's server too.
+  const bare = <View name="dashboard.serverCard.identity" model={model} />;
+  return <Default className="hw:gap-3" />;
 }
 function Shell({model, children}: ViewProps<'layout.app'>) {
   const {scheme, setScheme} = useTheme();
@@ -83,26 +85,24 @@ function Shell({model, children}: ViewProps<'layout.app'>) {
 const themeViews: ThemeViews = {
   'layout.app': Shell,
   'dashboard.serverCard': Card,
+  'dashboard.serverCard.metrics': Metrics,
+  'server.files.editor.canvas': Canvas,
   'page.dashboard': lazyView(async () => ({default: ({model}: ViewProps<'page.dashboard'>) => <span>{model.error}</span>})),
-  'billing.balance': ({model}: ViewProps<'billing.balance'>) => <span>{String(model)}</span>,
 };
 // @ts-expect-error A view receives the model of its own name.
 const wrongModel: ThemeViews = {'dashboard.serverList': Card};
 const theme = defineTheme({views: themeViews, icons: {layers: () => null}});
-const optional = <View name="billing.balance" optional />;
-import { renderView } from '@pterodactyl/sdk/testing';
-const framed: HTMLElement = renderView('layout.app', {theme, fixture: 'admin'}).container;
+const framed: HTMLElement = renderView('layout.app', {themes: [theme], fixture: 'admin'}).container;
+// @ts-expect-error A test renders with a chain of themes.
+renderView('layout.app', {theme});
 // @ts-expect-error Models stay typed by the rendered view.
 renderView('layout.app', {model: createTestServerCard()});
-import { renderPrimitive } from '@pterodactyl/sdk/testing';
-const primitive: HTMLElement = renderPrimitive('Button', {children: 'Save', color: 'red'}, {theme}).container;
-// @ts-expect-error Primitive props stay typed by the primitive's name.
-renderPrimitive('Button', {isLoading: 'yes'});
+const primitive: HTMLElement = renderWithTheme(<Button color="red">Save</Button>, {themes: [theme]}).container;
 interface GeneratedSettings { accent: string; compact: boolean }
 const compact: boolean = useThemeSettings<GeneratedSettings>().compact;
 // @ts-expect-error The card needs the server it shows.
 const missingInput = <View name="dashboard.serverCard" />;
-const cardView = <View name="dashboard.serverCard" server={cardHost.props.server} />;
+const cardView = <View name="dashboard.serverCard" server={createTestServer()} />;
 const host = createExtensionTestHost({path: '/account'});
 host.emitWebsocket('status', 'running');
 // @ts-expect-error The test host only emits known socket events.
@@ -169,11 +169,8 @@ definePterodactylExtension({ setup({ slots, screens, columns, views }) {
   views.override('components/dashboard/ServerRow', Card);
   // @ts-expect-error A file view cannot replace a server card.
   views.override('server.files.details', Card);
-  views.define('billing.balance', {context: 'app', use: () => ({amount: 5}), Default: ({model}) => <span>{model.amount}</span>, fixtures: {empty: () => ({amount: 0})}});
-  // @ts-expect-error Fixtures match the model.
-  views.define('billing.other', {context: 'app', use: () => ({amount: 5}), Default: () => null, fixtures: {empty: () => ({total: 0})}});
-  // @ts-expect-error Parts must be named by this contract.
-  const unknownPart = <cardHost.props.Default parts={{unknown: Metrics}} />;
+  // @ts-expect-error An extension places its own UI in slots.
+  views.define('billing.balance', {});
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="username">{field => <field.TextField label="Custom username" />}</data.form.AppField>);
   // @ts-expect-error Native form contributions preserve core field names.
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="unknown">{field => null}</data.form.AppField>);

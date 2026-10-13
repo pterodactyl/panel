@@ -2,7 +2,7 @@ import { useSyncExternalStore, type ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { getBootstrapTheme, type ThemeBootstrap, type ThemeScheme, type ThemeSettingValue } from '@/bootstrap';
 import type { ThemeSkins } from '@/themes/skins';
-import type { ThemeViews } from './registry';
+import { isViewComponent, type ThemeViews } from './registry';
 
 export type { ThemeScheme, ThemeSettingValue };
 /** A scheme the user chose, or `system` to follow the device. */
@@ -46,9 +46,12 @@ let scheme: ThemeScheme | undefined;
 let preference: ThemeSchemePreference | undefined;
 let followingDevice = false;
 
+/** Adds a theme's icons; an entry that is not a component is skipped, as no view boundary would catch it. */
 export function registerThemeIcons(map: ThemeIcons): void {
     for (const [name, icon] of Object.entries(map)) {
-        icons.set(name, icon);
+        if (isViewComponent(icon)) {
+            icons.set(name, icon);
+        }
     }
 }
 
