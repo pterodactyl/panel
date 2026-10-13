@@ -1,0 +1,24 @@
+resources/scripts/extensions/slotWatch.spec.tsx
+  s_4cabae41bceed9::t_3e2caf70413695 2-3,68-80,94-102,104
+  s_4cabae41bceed9::t_83b3aa39a143d2 4,8,10-11,81-93,103,105-109
+  s_4cabae41bceed9::t_abcd64b9706ec4 110
+resources/scripts/views/View.tsx
+  s_4cabae41bceed9::t_9c27e55f05ead6 28,265-270
+  s_4cabae41bceed9::t_5f6a3a5692d540 170-179,185,191-192,225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "344de12a8e09547e95a4bf07121a016f58db131a",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
