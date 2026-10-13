@@ -47,6 +47,14 @@ async function renderInServer(children: ReactNode, attributes: Attributes = {}, 
 }
 
 describe('server settings', () => {
+    it('lays the page out from its blocks', async () => {
+        await renderInServer(<View name='page.server.settings' />);
+
+        for (const title of ['SFTP Details', 'Debug Information', 'Change Server Details', 'Reinstall Server']) {
+            expect(screen.getAllByText(title)[0]).toBeVisible();
+        }
+    });
+
     it('shows the SFTP details of the viewer', async () => {
         await renderInServer(<View name='server.sftp' />, { sftp_details: { ip: '2001:db8::10', port: 2022 } });
 

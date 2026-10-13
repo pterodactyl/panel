@@ -9,10 +9,8 @@ export declare const SERVER_FEATURES: {
     readonly hytale_oauth: "server.feature.hytaleOauth";
 };
 export type ServerFeatureView = (typeof SERVER_FEATURES)[keyof typeof SERVER_FEATURES];
-export interface ServerFeaturesModel {
-    /** The prompt views of the features the server's egg enables. */
-    readonly views: readonly ServerFeatureView[];
-}
+/** The prompt views of the features an egg enables. */
+export declare function featureViews(eggFeatures: readonly string[]): ServerFeatureView[];
 /** A dialog the console opens itself when the server's output matches the feature's errors. */
 export interface ServerPromptModel {
     readonly open: boolean;
@@ -55,7 +53,6 @@ export interface HytaleOauthPromptModel extends ServerPromptModel {
 }
 declare module '../registry' {
     interface ViewModels {
-        'server.features': ServerFeaturesModel;
         'server.feature.eula': EulaPromptModel;
         'server.feature.javaVersion': JavaVersionPromptModel;
         'server.feature.gslToken': GslTokenPromptModel;

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { httpErrorToHuman } from '@/api/http';
 import { useCurrentServer } from '@/api/server/queries';
 import {
     useDockerImagePending,
@@ -11,12 +10,10 @@ import {
 import type { StartupFormSlotData } from '@/extensions/registry';
 import { usePermissions } from '@/plugins/usePermissions';
 import { createTestServer } from '../fixtures';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 import { implementViews } from '../registry';
-import type { ServerPageModel } from './page';
 
-export interface StartupPageModel extends ServerPageModel {
-    /** The startup configuration has not loaded yet. */
-    readonly loading: boolean;
+export interface StartupPageModel extends PageStatusModel {
     /** What the `server.startup.form` slot receives; null until the configuration has loaded. */
     readonly slot: StartupFormSlotData | null;
 }
@@ -135,44 +132,35 @@ function useDockerImage() {
 function useStartupPageModel(): StartupPageModel {
     const { server, query } = useStartup();
     const docker = useDockerImage();
-    const { data, error, isFetching, refetch } = query;
+    const { data, refetch } = query;
+    const slot = useMemo<StartupPageModel['slot']>(
+        () =>
+            data && server
+                ? {
+                      server,
+                      configuration: data,
+                      isPending: docker.pending,
+                      canChangeDockerImage: docker.allowed && !docker.custom,
+                      setDockerImage: async (image) => {
+                          if (!docker.allowed || docker.custom || !docker.images.some(({ value }) => value === image)) {
+                              throw new Error('This Docker image cannot be selected for the current server.');
+                          }
 
-    return useMemo(() => {
-        const failed = !data && error && !isFetching;
+                          await docker.select(image);
+                      },
+                      refresh: async () => {
+                          const result = await refetch();
 
-        return {
-            loading: !data && !failed,
-            error: failed ? httpErrorToHuman(error) : null,
-            retry: () => void refetch(),
-            slot:
-                data && server
-                    ? {
-                          server,
-                          configuration: data,
-                          isPending: docker.pending,
-                          canChangeDockerImage: docker.allowed && !docker.custom,
-                          setDockerImage: async (image) => {
-                              if (
-                                  !docker.allowed ||
-                                  docker.custom ||
-                                  !docker.images.some(({ value }) => value === image)
-                              ) {
-                                  throw new Error('This Docker image cannot be selected for the current server.');
-                              }
+                          if (result.error) {
+                              throw result.error;
+                          }
+                      },
+                  }
+                : null,
+        [server, data, refetch, docker]
+    );
 
-                              await docker.select(image);
-                          },
-                          refresh: async () => {
-                              const result = await refetch();
-
-                              if (result.error) {
-                                  throw result.error;
-                              }
-                          },
-                      }
-                    : null,
-        };
-    }, [server, data, error, isFetching, refetch, docker]);
+    return { ...pageStatus(query), slot };
 }
 
 function useStartupCommandModel(): StartupCommandModel {
@@ -270,9 +258,7 @@ implementViews({
         use: useStartupPageModel,
         fixtures: {
             default: () => ({
-                loading: false,
-                error: null,
-                retry: () => {},
+                ...pageStatusFixtures.default(),
                 slot: {
                     server: createTestServer(),
                     configuration,
@@ -282,13 +268,8 @@ implementViews({
                     refresh: resolved,
                 },
             }),
-            loading: () => ({ loading: true, error: null, retry: () => {}, slot: null }),
-            error: () => ({
-                loading: false,
-                error: 'Request failed with status code 500.',
-                retry: () => {},
-                slot: null,
-            }),
+            loading: () => ({ ...pageStatusFixtures.loading(), slot: null }),
+            error: () => ({ ...pageStatusFixtures.error(), slot: null }),
         },
     },
     'server.startup.command': {

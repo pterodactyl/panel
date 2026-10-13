@@ -847,9 +847,10 @@ export default function ServerLayout({ model, Default }: ViewProps<'layout.serve
 <!-- /sample -->
 
 `page.server.console` composes the console without `server.power`. This page has no engine slots, so it
-renders `server.console.before` and `server.console.after` itself. It stays mounted while another server
-page shows, and `active` says whether it is the page on show. The theme registers both with `lazyView`,
-as in [level 3](#level-3-change-the-layout).
+renders `server.console.before` and `server.console.after` itself. It places the prompt views that
+`model.features` names, each of which opens itself when the server's output asks for it. It stays mounted
+while another server page shows, and `active` says whether it is the page on show. The theme registers
+both with `lazyView`, as in [level 3](#level-3-change-the-layout).
 
 <!-- sample: level4-console/src/views/ConsolePage.tsx -->
 ```tsx
@@ -881,7 +882,9 @@ export default function ConsolePage({ model, active }: ViewProps<'page.server.co
             </div>
             <View name='server.graphs' className='mt-4 gap-4' />
             <Slot name='server.console.after' data={model.server} />
-            <View name='server.features' />
+            {model.features.map((name) => (
+                <View key={name} name={name} />
+            ))}
         </ServerContentBlock>
     );
 }
@@ -1220,7 +1223,7 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
   type error, and is ignored with a warning at runtime.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.
 - **Bypass the engine on forms.** A layer over a form spreads each field's `fieldProps` (name, type,
-  autocomplete, value and handlers) onto an input. A layer over `auth.loginForm` also submits through
+  autocomplete, value and handlers) onto an input. A layer over `page.auth.login` also submits through
   `model.submit`, renders `Captcha` when the panel requires one, and keeps the `auth.login.form.after`
   slot.
 
@@ -1449,7 +1452,9 @@ render links with the `Button` skin, as they are.
 ### View catalogue
 
 Every view with its context, model type, inputs and parts, slots and fixtures. **Slots** are rendered by
-the view's layers; a page's **engine slots** are rendered around it by the engine.
+the view's layers; a page's **engine slots** are rendered around it by the engine. A page whose model is
+`PageStatusModel` loads data its blocks need: it shows a placeholder while `loading`, and `error` with a
+`retry` in place of its blocks. A failed refresh keeps the loaded data on show, so `error` stays null.
 `npx pterodactyl-theme list` prints the same from `@pterodactyl/sdk/views.json`.
 
 <!-- generated:views -->
@@ -1468,26 +1473,26 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | View | Context | Model | Inputs and parts | Slots | Engine slots | Fixtures |
 | --- | --- | --- | --- | --- | --- | --- |
 | `page.account.activity` | account | `ActivityPageModel` |  |  | `account.activity.before` `account.activity.after` | default |
-| `page.account.api` | account | `AccountListPageModel` |  |  | `account.api.before` `account.api.after` | default, error |
+| `page.account.api` | account | `PageStatusModel` |  |  | `account.api.before` `account.api.after` | default, loading, error |
 | `page.account.overview` | account | `AccountOverviewModel` |  | `account.overview.before` `account.overview.after` |  | default, twoFactorRequired |
-| `page.account.ssh` | account | `AccountListPageModel` |  |  | `account.ssh.before` `account.ssh.after` | default, error |
-| `page.auth.checkpoint` | auth | `AuthPageModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | default |
-| `page.auth.login` | auth | `AuthPageModel` |  |  | `auth.login.before` `auth.login.after` | default |
-| `page.auth.password` | auth | `AuthPageModel` |  |  | `auth.password.before` `auth.password.after` | default |
-| `page.auth.passwordReset` | auth | `AuthPageModel` |  |  | `auth.passwordReset.before` `auth.passwordReset.after` | default |
-| `page.dashboard` | app | `DashboardModel` |  |  |  | default, error |
+| `page.account.ssh` | account | `PageStatusModel` |  |  | `account.ssh.before` `account.ssh.after` | default, loading, error |
+| `page.auth.checkpoint` | auth | `CheckpointFormModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | code, recovery |
+| `page.auth.login` | auth | `LoginFormModel` |  | `auth.login.form.after` | `auth.login.before` `auth.login.after` | default, invalid, submitting |
+| `page.auth.password` | auth | `ForgotPasswordFormModel` |  |  | `auth.password.before` `auth.password.after` | default, invalid |
+| `page.auth.passwordReset` | auth | `ResetPasswordFormModel` |  |  | `auth.passwordReset.before` `auth.passwordReset.after` | default, mismatch |
+| `page.dashboard` | app | `PageStatusModel` |  |  |  | default, loading, error |
 | `page.server.activity` | server | `ActivityPageModel` |  |  | `server.activity.before` `server.activity.after` | default |
-| `page.server.backups` | server | `BackupsPageModel` |  |  | `server.backups.before` `server.backups.after` | default, loading, error |
+| `page.server.backups` | server | `PageStatusModel` |  |  | `server.backups.before` `server.backups.after` | default, loading, error |
 | `page.server.console` | server | `ServerConsoleModel` | `active: boolean` | `server.console.before` `server.console.after` |  | default, installing, maintenance |
-| `page.server.databases` | server | `ServerPageModel` |  |  | `server.databases.before` `server.databases.after` | default, error |
-| `page.server.files` | server | `ServerPageModel` |  | `server.files.before` `server.files.after` |  | default, error |
+| `page.server.databases` | server | `PageStatusModel` |  |  | `server.databases.before` `server.databases.after` | default, loading, error |
+| `page.server.files` | server | `PageStatusModel` |  | `server.files.before` `server.files.after` |  | default, loading, error |
 | `page.server.files.editor` | server | `FileEditorPageModel` |  |  | `server.files.editor.before` `server.files.editor.after` | file, new, loading, error |
-| `page.server.network` | server | `ServerPageModel` |  |  | `server.network.before` `server.network.after` | default, error |
-| `page.server.schedules` | server | `SchedulesPageModel` |  |  | `server.schedules.before` `server.schedules.after` | default, error |
-| `page.server.schedules.detail` | server | `ScheduleDetailPageModel` |  |  | `server.schedules.detail.before` `server.schedules.detail.after` | default, loading, error |
+| `page.server.network` | server | `PageStatusModel` |  |  | `server.network.before` `server.network.after` | default, loading, error |
+| `page.server.schedules` | server | `PageStatusModel` |  |  | `server.schedules.before` `server.schedules.after` | default, loading, error |
+| `page.server.schedules.detail` | server | `PageStatusModel` |  |  | `server.schedules.detail.before` `server.schedules.detail.after` | default, loading, error |
 | `page.server.settings` | server | `ServerSettingsPageModel` |  |  | `server.settings.before` `server.settings.after` | default |
 | `page.server.startup` | server | `StartupPageModel` |  | `server.startup.form` | `server.startup.before` `server.startup.after` | default, loading, error |
-| `page.server.users` | server | `SubusersPageModel` |  |  | `server.users.before` `server.users.after` | default, loading, error |
+| `page.server.users` | server | `PageStatusModel` |  |  | `server.users.before` `server.users.after` | default, loading, error |
 | `page.server.users.create` | server | `SubuserCreatePageModel` |  |  | `server.users.create.before` `server.users.create.after` | default, loading |
 
 #### Blocks
@@ -1503,10 +1508,6 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `account.twoFactor` | account | `AccountTwoFactorModel` |  |  | disabled, enabled, setup, setupLoading, disabling, recoveryTokens |
 | `activity.log` | app | `ActivityLogModel` | `scope: ActivityScope` |  | account, server, filtered, empty, paged, loading, error |
 | `app.search` | app | `AppSearchModel` |  |  | closed, results, loading, none, short, error |
-| `auth.checkpointForm` | auth | `CheckpointFormModel` |  |  | code, recovery |
-| `auth.forgotPasswordForm` | auth | `ForgotPasswordFormModel` |  |  | default, invalid |
-| `auth.loginForm` | auth | `LoginFormModel` |  | `auth.login.form.after` | default, invalid, submitting |
-| `auth.resetPasswordForm` | auth | `ResetPasswordFormModel` |  |  | default, mismatch |
 | `dashboard.serverCard` | app | `ServerCardModel` | `server: Server`<br>parts: `identity`, `address`, `metrics` | `dashboard.serverRow.name.after` | running, offline, suspended, loading |
 | `dashboard.serverList` | app | `ServerListModel` |  | `dashboard.before` `dashboard.after` `dashboard.serverRow.before` `dashboard.serverRow.metrics.after` `dashboard.serverRow.after` | servers, empty, loading |
 | `server.allocations` | server | `ServerAllocationsModel` |  |  | allocations, full, unmanaged, readOnly, empty, loading |
@@ -1514,13 +1515,12 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | `server.conflict` | server | `ServerConflictModel` |  |  | installing, suspended, maintenance, transferring, restoring |
 | `server.databases` | server | `ServerDatabasesModel` |  |  | databases, full, empty, noLimit, readOnly, loading |
 | `server.debug` | server | `ServerDebugModel` |  |  | default |
-| `server.feature.eula` | server | `EulaPromptModel` |  |  | closed, open, accepting |
-| `server.feature.gslToken` | server | `GslTokenPromptModel` |  |  | closed, open |
-| `server.feature.hytaleOauth` | server | `HytaleOauthPromptModel` |  |  | closed, open |
-| `server.feature.javaVersion` | server | `JavaVersionPromptModel` |  |  | closed, open, loading, noPermission |
-| `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | closed, admin, user |
-| `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | closed, admin, user |
-| `server.features` | server | `ServerFeaturesModel` |  |  | minecraft, none |
+| `server.feature.eula` | server | `EulaPromptModel` |  |  | open, accepting |
+| `server.feature.gslToken` | server | `GslTokenPromptModel` |  |  | open |
+| `server.feature.hytaleOauth` | server | `HytaleOauthPromptModel` |  |  | open |
+| `server.feature.javaVersion` | server | `JavaVersionPromptModel` |  |  | open, loading, noPermission |
+| `server.feature.pidLimit` | server | `LimitPromptModel` |  |  | admin, user |
+| `server.feature.steamDiskSpace` | server | `LimitPromptModel` |  |  | admin, user |
 | `server.files.details` | server | `FileDetailsModel` | `file: FileObject`<br>parts: `icon`, `name`, `size`, `modified` |  | file, directory |
 | `server.files.editor` | server | `FileEditorModel` | parts: `notice`, `editor`, `language`, `actions` |  | file, dirty, saving, readOnly, pteroignore, new |
 | `server.files.manager` | server | `FileManagerModel` | parts: `toolbar`, `list`, `selection` | `server.files.toolbar` `server.files.rowActions` `server.files.selectionActions` | directory, selected, uploading, readOnly, empty, loading |

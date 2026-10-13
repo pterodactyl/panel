@@ -6,7 +6,6 @@ export type {
     SubuserListModel,
     SubuserPermission,
     SubuserPermissionGroup,
-    SubusersPageModel,
     SubuserSummary,
 } from '@/views/server/users';
 export { setPermissionsSelected } from '@/views/server/permissionSelection';

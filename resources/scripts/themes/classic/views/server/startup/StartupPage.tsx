@@ -1,27 +1,18 @@
-import { ServerContentBlock, ServerError, Spinner } from '@/sdk';
+import { ServerContentBlock } from '@/sdk';
 import { Slot, View, type ViewProps } from '@/sdk/theme';
+import PageStatus from '../../shared/PageStatus';
 
 export default function StartupPage({ model, className }: ViewProps<'page.server.startup'>) {
-    if (model.error !== null) {
-        return <ServerError title='Oops!' message={model.error} onRetry={model.retry} className={className} />;
-    }
-
-    if (model.loading) {
-        return (
-            <div className={className}>
-                <Spinner centered size='large' />
-            </div>
-        );
-    }
-
     return (
-        <ServerContentBlock title='Startup Settings' className={className}>
-            {model.slot && <Slot name='server.startup.form' data={model.slot} />}
-            <div className='md:flex md:items-start'>
-                <View name='server.startup.command' className='flex-1' />
-                <View name='server.startup.image' className='flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10' />
-            </div>
-            <View name='server.startup.variables' />
-        </ServerContentBlock>
+        <PageStatus model={model} className={className}>
+            <ServerContentBlock title='Startup Settings' className={className}>
+                {model.slot && <Slot name='server.startup.form' data={model.slot} />}
+                <div className='md:flex md:items-start'>
+                    <View name='server.startup.command' className='flex-1' />
+                    <View name='server.startup.image' className='flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10' />
+                </div>
+                <View name='server.startup.variables' />
+            </ServerContentBlock>
+        </PageStatus>
     );
 }

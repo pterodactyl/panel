@@ -19,7 +19,7 @@ import { implementViews } from '../registry';
 import { useLoadedServer } from './loadedServer';
 import { statMetric as metric, type ServerRunState, type ServerStatMetric } from './state';
 // The console page places the feature prompts, so they are implemented with it.
-import './features';
+import { featureViews, type ServerFeatureView } from './features';
 
 export type { ServerGraphPoint, ServerNetworkPoint, ServerRunState, ServerStatMetric };
 
@@ -30,6 +30,8 @@ export interface ServerConsoleModel {
     readonly notice: 'maintenance' | 'installing' | 'transferring' | null;
     /** The server as the API returns it, which the console slots receive. */
     readonly server: Server;
+    /** The prompt views of the features the server's egg enables; each opens itself when the output asks. */
+    readonly features: readonly ServerFeatureView[];
 }
 
 export interface TerminalCanvasProps {
@@ -153,6 +155,7 @@ function useServerConsoleModel(): ServerConsoleModel {
             description: server.attributes.description,
             notice: consoleNotice(server),
             server,
+            features: featureViews(server.attributes.egg_features ?? []),
         }),
         [server]
     );
@@ -329,18 +332,21 @@ implementViews({
                 description: 'A vanilla world.',
                 notice: null,
                 server: fixtureServer(),
+                features: [],
             }),
             installing: () => ({
                 name: 'Survival',
                 description: null,
                 notice: 'installing',
                 server: fixtureServer('installing'),
+                features: [],
             }),
             maintenance: () => ({
                 name: 'Survival',
                 description: null,
                 notice: 'maintenance',
                 server: fixtureServer(),
+                features: [],
             }),
         },
     },

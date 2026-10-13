@@ -11,9 +11,10 @@ import {
     type ExtensionTestHost,
     type TestServerOptions,
 } from '@/sdk/testing';
-import { clearThemeLayers, getViewDefinition, registerViewLayer } from '../registry';
+import { clearThemeLayers, registerViewLayer } from '../registry';
 import { View, ViewArea } from '../View';
-import type { ServerGraphsModel } from './console';
+import type { ServerGraphsModel, ServerStatsModel } from './console';
+import { featureViews } from './features';
 
 vi.mock('ghostty-web', () => ({ Ghostty: { load: () => new Promise(() => {}) } }));
 
@@ -148,15 +149,27 @@ describe('server.stats', () => {
     });
 
     it('flags usage close to the limits', async () => {
-        await renderServer(<View name='server.stats' />);
-        await status('running');
-        await stats({ cpu: 95, memory: 870 * 1024 ** 2 });
+        let model: ServerStatsModel | undefined;
 
-        const block = (title: string) => screen.getByText(title).parentElement!.parentElement!;
+        registerViewLayer('test-stats', 'theme', {
+            'server.stats': (props: { model: ServerStatsModel }) => {
+                model = props.model;
 
-        expect(block('CPU Load').querySelector('.bg-destructive')).not.toBeNull();
-        expect(block('Memory').querySelector('.bg-warning')).not.toBeNull();
-        expect(block('Disk').querySelector('.bg-warning, .bg-destructive')).toBeNull();
+                return null;
+            },
+        });
+
+        try {
+            await renderServer(<View name='server.stats' />);
+            await status('running');
+            await stats({ cpu: 95, memory: 870 * 1024 ** 2 });
+
+            expect(model?.cpu.alarm).toBe('danger');
+            expect(model?.memory.alarm).toBe('warning');
+            expect(model?.disk.alarm).toBeNull();
+        } finally {
+            clearThemeLayers();
+        }
     });
 });
 
@@ -221,21 +234,22 @@ describe('server.terminal', () => {
     });
 });
 
-describe('server.features', () => {
-    it('opens the EULA prompt when the output asks for it', async () => {
-        await renderServer(<View name='server.features' />, { eggFeatures: ['EULA'] });
+describe('feature prompts', () => {
+    it('names the prompts the egg enables', () => {
+        expect(featureViews(['EULA', 'pid_limit', 'unknown'])).toEqual([
+            'server.feature.eula',
+            'server.feature.pidLimit',
+        ]);
+    });
+
+    it('opens the EULA prompt on the console when the output asks for it', async () => {
+        await renderServer(<View name='page.server.console' active />, { eggFeatures: ['EULA'] });
         await status('offline');
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         act(() => host!.emitWebsocket('console output', 'You need to agree to the EULA in order to run the server.'));
 
         expect(await screen.findByRole('dialog')).toHaveTextContent('Minecraft® EULA');
-    });
-
-    it('renders only the prompts the egg enables', () => {
-        const fixture = getViewDefinition('server.features')!.fixtures!.none!();
-
-        expect(fixture).toEqual({ views: [] });
     });
 });
 
@@ -246,5 +260,11 @@ describe('page.server.console', () => {
         await waitFor(() => expect(screen.getByRole('heading', { name: 'Test server' })).toBeInTheDocument());
         expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument();
         expect(screen.getByText('CPU Load', { selector: 'h3' })).toBeInTheDocument();
+    });
+
+    it('warns above the console while the server installs', async () => {
+        await renderServer(<View name='page.server.console' active />, { status: 'installing' });
+
+        expect(await screen.findByText(/running its installation process/)).toBeVisible();
     });
 });

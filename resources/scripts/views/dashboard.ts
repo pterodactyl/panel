@@ -12,12 +12,12 @@ import {
 import { sendPowerActionInput, useSendPowerAction, type ServerPowerSignal } from '@/api/server/power/queries';
 import { selectServerPermissions } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
-import { httpErrorToHuman } from '@/api/http';
 import { relationshipData } from '@/api/relationships';
 import { ip, mbToBytes } from '@/lib/formatters';
 import { hasPermission } from '@/plugins/usePermissions';
 import { getPageSearch, useDashboardSearch } from '@/router/pageSearch';
 import { createTestServer, createTestServerCard } from './fixtures';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from './pageStatus';
 import { implementViews } from './registry';
 import {
     runState,
@@ -66,11 +66,6 @@ export interface ServerCardModel {
 
 /** Whose servers the dashboard lists; only root admins can list other users' servers. */
 export type DashboardScope = 'mine' | 'others';
-export interface DashboardModel {
-    /** The server list failed to load, so the page shows this message instead. */
-    readonly error: string | null;
-    readonly retry: () => void;
-}
 /** A server of the list: its card's model, with the server as the API returns it for the row slots and the card. */
 export interface ServerListItem extends ServerCardModel {
     readonly server: Server;
@@ -107,7 +102,7 @@ export interface ServerListModel {
 
 declare module './registry' {
     interface ViewModels {
-        'page.dashboard': DashboardModel;
+        'page.dashboard': PageStatusModel;
         'dashboard.serverList': ServerListModel;
         'dashboard.serverCard': ServerCardModel;
     }
@@ -127,17 +122,7 @@ function useServerListQuery() {
     return { query: useAccountServers({ page, type: scope === 'others' ? 'admin' : undefined }), scope, rootAdmin };
 }
 
-function useDashboardModel(): DashboardModel {
-    const { error, refetch } = useServerListQuery().query;
-
-    return useMemo(
-        () => ({
-            error: error ? httpErrorToHuman(error) : null,
-            retry: () => void refetch(),
-        }),
-        [error, refetch]
-    );
-}
+const useDashboardModel = () => pageStatus(useServerListQuery().query);
 
 const tracksResources = ({ attributes }: Server): boolean =>
     attributes.status !== 'suspended' && !attributes.is_node_under_maintenance && attributes.uuid.length > 0;
@@ -396,10 +381,7 @@ const listFixture = (
 implementViews({
     'page.dashboard': {
         use: useDashboardModel,
-        fixtures: {
-            default: () => ({ error: null, retry: noop }),
-            error: () => ({ error: 'Request failed with status code 500.', retry: noop }),
-        },
+        fixtures: pageStatusFixtures,
     },
     'dashboard.serverList': {
         use: useServerListModel,

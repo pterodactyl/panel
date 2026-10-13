@@ -1,6 +1,5 @@
 import { useMemo, type ComponentType } from 'react';
 import type { ClientFileObjectResource as FileObject } from '@/api/extensionTypes';
-import { httpErrorToHuman } from '@/api/http';
 import { fileObjectKind, useServerFiles } from '@/api/server/files/queries';
 import { useCurrentServerUuid } from '@/api/server/queries';
 import {
@@ -20,7 +19,7 @@ import {
     createTestFileManager,
     createTestFileObject,
 } from './fileFixtures';
-import { serverPageFixtures, type ServerPageModel } from './page';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 
 export interface FileDetailsModel {
     readonly name: string;
@@ -172,7 +171,7 @@ export interface FileManagerModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.files': ServerPageModel;
+        'page.server.files': PageStatusModel;
         'page.server.files.editor': FileEditorPageModel;
         'server.files.details': FileDetailsModel;
         'server.files.editor': FileEditorModel;
@@ -188,14 +187,7 @@ declare module '../registry' {
     }
 }
 
-function useFilesPageModel(): ServerPageModel {
-    const { error, refetch } = useServerFiles(useCurrentServerUuid() ?? '', useServerDirectory());
-
-    return useMemo(
-        () => ({ error: error ? httpErrorToHuman(error) : null, retry: () => void refetch() }),
-        [error, refetch]
-    );
-}
+const useFilesPageModel = () => pageStatus(useServerFiles(useCurrentServerUuid() ?? '', useServerDirectory()));
 
 const fileDetails = ({ file }: { readonly file: FileObject }): FileDetailsModel => ({
     name: file.attributes.name,
@@ -211,7 +203,7 @@ function useFileDetailsModel({ file }: { readonly file: FileObject }): FileDetai
 implementViews({
     'page.server.files': {
         use: useFilesPageModel,
-        fixtures: serverPageFixtures,
+        fixtures: pageStatusFixtures,
     },
     'server.files.manager': {
         use: useFileManagerModel,

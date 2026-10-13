@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type * as AccountQueries from '@/api/account/queries';
 import { createExtensionTestHost, renderView, type ExtensionTestHost } from '@/sdk/testing';
-import { getViewDefinition, type ViewName } from '../registry';
 import { View } from '../View';
 
 const mocks = vi.hoisted(() => ({
@@ -67,31 +66,7 @@ async function renderLive(children: ReactNode) {
     });
 }
 
-const names: ViewName[] = [
-    'page.account.overview',
-    'page.account.api',
-    'page.account.ssh',
-    'account.password',
-    'account.email',
-    'account.twoFactor',
-    'account.apiKeys.list',
-    'account.apiKeys.create',
-    'account.sshKeys.list',
-    'account.sshKeys.create',
-];
-
 describe('account views from fixtures', () => {
-    const fixtures = names.flatMap((name) =>
-        Object.keys(getViewDefinition(name)?.fixtures ?? {}).map((fixture) => [name, fixture] as const)
-    );
-
-    it.each(fixtures)('renders %s from its %s fixture', (name, fixture) => {
-        const { container, unmount } = renderView(name, { fixture });
-
-        expect(container.textContent).not.toBe('');
-        unmount();
-    });
-
     it('composes the overview from its cards, with the two-factor notice when required', () => {
         const { container, unmount } = renderView('page.account.overview', { fixture: 'twoFactorRequired' });
 

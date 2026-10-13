@@ -1,22 +1,13 @@
-import { ServerContentBlock, ServerError, Spinner } from '@/sdk';
+import { ServerContentBlock } from '@/sdk';
 import { View, type ViewProps } from '@/sdk/theme';
+import PageStatus from '../../shared/PageStatus';
 
 export default function UsersPage({ model, className }: ViewProps<'page.server.users'>) {
-    if (model.error !== null) {
-        return <ServerError message={model.error} onRetry={model.retry} className={className} />;
-    }
-
-    if (model.loading) {
-        return (
-            <div className={className}>
-                <Spinner size='large' centered />
-            </div>
-        );
-    }
-
     return (
-        <ServerContentBlock title='Users' className={className}>
-            <View name='server.subusers' />
-        </ServerContentBlock>
+        <PageStatus model={model} className={className}>
+            <ServerContentBlock title='Users' className={className}>
+                <View name='server.subusers' />
+            </ServerContentBlock>
+        </PageStatus>
     );
 }

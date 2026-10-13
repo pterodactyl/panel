@@ -3,7 +3,7 @@ import { type ComponentType } from 'react';
 import type { ClientFileObjectResource as FileObject } from "../../api/extensionTypes.js";
 import type { FileManagerSlotData } from "../../extensions/registry.js";
 import type { CorePanelDestination } from "../../sdk/navigation.js";
-import { type ServerPageModel } from "./page.js";
+import { type PageStatusModel } from "../pageStatus.js";
 export interface FileDetailsModel {
     readonly name: string;
     readonly kind: 'file' | 'directory' | 'archive' | 'symlink';
@@ -158,7 +158,7 @@ export interface FileManagerModel {
 }
 declare module '../registry' {
     interface ViewModels {
-        'page.server.files': ServerPageModel;
+        'page.server.files': PageStatusModel;
         'page.server.files.editor': FileEditorPageModel;
         'server.files.details': FileDetailsModel;
         'server.files.editor': FileEditorModel;

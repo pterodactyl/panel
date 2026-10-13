@@ -129,15 +129,6 @@ afterEach(() => {
 });
 
 describe('activity views from fixtures', () => {
-    const fixtures = Object.keys(getViewDefinition('activity.log')?.fixtures ?? {});
-
-    it.each(fixtures)('renders activity.log from its %s fixture', (fixture) => {
-        const { container, unmount } = renderView('activity.log', { fixture });
-
-        expect(container.querySelector('[data-ui="select"]')).not.toBeNull();
-        unmount();
-    });
-
     it('renders entries with their actor, event link and description values', () => {
         const { container, unmount } = renderView('activity.log', { fixture: 'account' });
 

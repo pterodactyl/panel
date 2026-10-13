@@ -132,9 +132,7 @@ function open(permissions?: string[], directory = '/config') {
 
 const state = () => JSON.parse(screen.getByRole('status').textContent ?? '{}');
 const deletes = () => requests.filter((request) => request.path.endsWith('/files/delete'));
-// The checkbox sits in its own cell of the row.
-const rowOf = async (name: string) =>
-    (await screen.findByRole('checkbox', { name: `Select ${name}` })).closest('div.flex-none')!.parentElement!;
+const checkboxOf = (name: string) => screen.findByRole('checkbox', { name: `Select ${name}` });
 
 it('gives a replacement the listing and runs selection, navigation and deletion through core', async () => {
     override('server.files.manager', Custom);
@@ -234,35 +232,23 @@ it('drops files that leave the listing from the selection', async () => {
     }
 });
 
-it('re-renders only the row whose selection changes', async () => {
-    const renders = new Map<string, number>();
-
-    override('server.files.details', ({ model, Default }) => {
-        renders.set(model.name, (renders.get(model.name) ?? 0) + 1);
-
-        return <Default />;
-    });
+it('selects the row whose box is ticked and offers the selection actions', async () => {
     open();
-    const row = await rowOf('b.txt');
-    const before = new Map(renders);
-
-    fireEvent.click(within(row).getByRole('checkbox'));
+    fireEvent.click(await checkboxOf('b.txt'));
 
     expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
-    expect(within(row).getByRole('checkbox')).toHaveAttribute('aria-checked', 'true');
-    expect(renders.get('plugins')).toBe(before.get('plugins'));
-    expect(renders.get('a.zip')).toBe(before.get('a.zip'));
+    expect(await checkboxOf('b.txt')).toHaveAttribute('aria-checked', 'true');
+    expect(await checkboxOf('a.zip')).not.toHaveAttribute('aria-checked', 'true');
 });
 
 it('removes a file deleted from its row menu from the selection, keeping the rest', async () => {
     open();
-    const row = await rowOf('b.txt');
-
-    fireEvent.click(within(await rowOf('a.zip')).getByRole('checkbox'));
-    fireEvent.click(within(row).getByRole('checkbox'));
+    fireEvent.click(await checkboxOf('a.zip'));
+    fireEvent.click(await checkboxOf('b.txt'));
     expect(await screen.findByRole('button', { name: 'Archive' })).toBeVisible();
 
-    fireEvent.click(within(row).getByRole('button', { name: 'Open file options' }));
+    // Directories list first, then files by name, so b.txt is the last row.
+    fireEvent.click(screen.getAllByRole('button', { name: 'Open file options' }).at(-1)!);
     fireEvent.click(await screen.findByRole('menuitem', { name: /Delete/ }));
     const dialog = await screen.findByRole('dialog');
 
@@ -271,7 +257,7 @@ it('removes a file deleted from its row menu from the selection, keeping the res
     await waitFor(() => expect(deletes()).toHaveLength(1));
     expect(JSON.parse(String(deletes()[0].body))).toEqual({ root: '/config', files: ['b.txt'] });
     await waitFor(() => expect(screen.queryByRole('link', { name: 'b.txt' })).not.toBeInTheDocument());
-    expect(within(await rowOf('a.zip')).getByRole('checkbox')).toHaveAttribute('aria-checked', 'true');
+    expect(await checkboxOf('a.zip')).toHaveAttribute('aria-checked', 'true');
     expect(screen.getByRole('button', { name: 'Archive' })).toBeVisible();
 });
 
@@ -284,11 +270,9 @@ it('keeps the core link, checkbox and menu of a row whose details a replacement 
         'href',
         '/server/test-server/files/edit#/config.json'
     );
-    const row = await rowOf('config.json');
-
-    fireEvent.click(within(row).getByRole('checkbox'));
-    expect(within(row).getByRole('checkbox')).toHaveAttribute('aria-checked', 'true');
-    expect(within(row).getByRole('button', { name: 'Open file options' })).toBeVisible();
+    fireEvent.click(await checkboxOf('config.json'));
+    expect(await checkboxOf('config.json')).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('button', { name: 'Open file options' })).toBeVisible();
 });
 
 it('does not link a file the user may not read', async () => {

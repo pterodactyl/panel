@@ -32,7 +32,7 @@ test('puts the power controls in the server header and asks before a kill', () =
 });
 
 test('keeps the engine field attributes on the sign-in form', () => {
-    rendered = renderView('auth.loginForm', { theme, fixture: 'invalid' });
+    rendered = renderView('page.auth.login', { theme, fixture: 'invalid' });
 
     const password = screen.getByLabelText('Password');
 

@@ -28,8 +28,11 @@ function Field({ field, label }: { field: FieldModel; label: string }) {
     );
 }
 
-/** The engine owns the request, the CSRF cookie, the captcha, two-factor and the redirect. */
-export default function LoginForm({ model }: ViewProps<'auth.loginForm'>) {
+/**
+ * The sign-in page is its form. The engine owns the request, the CSRF cookie, the captcha, two-factor
+ * and the redirect.
+ */
+export default function LoginPage({ model }: ViewProps<'page.auth.login'>) {
     const { fields, Captcha } = model;
     const submit = (event: FormEvent) => {
         event.preventDefault();

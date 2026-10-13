@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import { useCurrentServer } from '@/api/server/queries';
 import {
     useEulaPrompt,
     useGslTokenPrompt,
@@ -21,9 +19,11 @@ export const SERVER_FEATURES = {
 } as const;
 export type ServerFeatureView = (typeof SERVER_FEATURES)[keyof typeof SERVER_FEATURES];
 
-export interface ServerFeaturesModel {
-    /** The prompt views of the features the server's egg enables. */
-    readonly views: readonly ServerFeatureView[];
+/** The prompt views of the features an egg enables. */
+export function featureViews(eggFeatures: readonly string[]): ServerFeatureView[] {
+    const enabled = new Set(eggFeatures.map((feature) => feature.toLowerCase()));
+
+    return Object.entries(SERVER_FEATURES).flatMap(([feature, view]) => (enabled.has(feature) ? [view] : []));
 }
 
 /** A dialog the console opens itself when the server's output matches the feature's errors. */
@@ -66,7 +66,6 @@ export interface HytaleOauthPromptModel extends ServerPromptModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'server.features': ServerFeaturesModel;
         'server.feature.eula': EulaPromptModel;
         'server.feature.javaVersion': JavaVersionPromptModel;
         'server.feature.gslToken': GslTokenPromptModel;
@@ -76,31 +75,17 @@ declare module '../registry' {
     }
 }
 
-function useServerFeaturesModel(): ServerFeaturesModel {
-    const features = useCurrentServer((server) => server.attributes.egg_features);
-
-    return useMemo(() => {
-        const enabled = new Set((features ?? []).map((feature) => feature.toLowerCase()));
-
-        return {
-            views: Object.entries(SERVER_FEATURES).flatMap(([feature, view]) => (enabled.has(feature) ? [view] : [])),
-        };
-    }, [features]);
-}
-
 const noop = () => {};
 
 const resolved = async () => {};
 
-const closed = { open: false, close: noop };
 const opened = { open: true, close: noop };
 const images = [
     { label: 'Java 21', value: 'ghcr.io/pterodactyl/yolks:java_21' },
     { label: 'Java 17', value: 'ghcr.io/pterodactyl/yolks:java_17' },
 ];
-const javaVersion = (open: boolean, canChangeImage = true): JavaVersionPromptModel => ({
-    open,
-    close: noop,
+const javaVersion = (canChangeImage = true): JavaVersionPromptModel => ({
+    ...opened,
     canChangeImage,
     images,
     loading: false,
@@ -111,19 +96,9 @@ const javaVersion = (open: boolean, canChangeImage = true): JavaVersionPromptMod
 });
 
 implementViews({
-    'server.features': {
-        use: useServerFeaturesModel,
-        fixtures: {
-            minecraft: () => ({
-                views: [SERVER_FEATURES.eula, SERVER_FEATURES.java_version, SERVER_FEATURES.pid_limit],
-            }),
-            none: () => ({ views: [] }),
-        },
-    },
     'server.feature.eula': {
         use: useEulaPrompt,
         fixtures: {
-            closed: () => ({ ...closed, pending: false, accept: resolved }),
             open: () => ({ ...opened, pending: false, accept: resolved }),
             accepting: () => ({ ...opened, pending: true, accept: resolved }),
         },
@@ -131,23 +106,20 @@ implementViews({
     'server.feature.javaVersion': {
         use: useJavaVersionPrompt,
         fixtures: {
-            closed: () => javaVersion(false),
-            open: () => javaVersion(true),
-            loading: () => ({ ...javaVersion(true), images: null, loading: true }),
-            noPermission: () => javaVersion(true, false),
+            open: () => javaVersion(),
+            loading: () => ({ ...javaVersion(), images: null, loading: true }),
+            noPermission: () => javaVersion(false),
         },
     },
     'server.feature.gslToken': {
         use: useGslTokenPrompt,
         fixtures: {
-            closed: () => ({ ...closed, pending: false, submit: resolved }),
             open: () => ({ ...opened, pending: false, submit: resolved }),
         },
     },
     'server.feature.pidLimit': {
         use: usePidLimitPrompt,
         fixtures: {
-            closed: () => ({ ...closed, admin: false }),
             admin: () => ({ ...opened, admin: true }),
             user: () => ({ ...opened, admin: false }),
         },
@@ -155,7 +127,6 @@ implementViews({
     'server.feature.steamDiskSpace': {
         use: useSteamDiskSpacePrompt,
         fixtures: {
-            closed: () => ({ ...closed, admin: false }),
             admin: () => ({ ...opened, admin: true }),
             user: () => ({ ...opened, admin: false }),
         },
@@ -163,7 +134,6 @@ implementViews({
     'server.feature.hytaleOauth': {
         use: useHytaleOauthPrompt,
         fixtures: {
-            closed: () => ({ ...closed, link: null, login: noop }),
             open: () => ({
                 ...opened,
                 link: 'https://oauth.accounts.hytale.com/oauth2/device/verify?user_code=ABCD-1234',

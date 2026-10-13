@@ -1,14 +1,13 @@
-import { ServerContentBlock, ServerError } from '@/sdk';
+import { ServerContentBlock } from '@/sdk';
 import { View, type ViewProps } from '@/sdk/theme';
+import PageStatus from '../../shared/PageStatus';
 
 export default function NetworkPage({ model, className }: ViewProps<'page.server.network'>) {
-    if (model.error !== null) {
-        return <ServerError message={model.error} onRetry={model.retry} className={className} />;
-    }
-
     return (
-        <ServerContentBlock title='Network' className={className}>
-            <View name='server.allocations' />
-        </ServerContentBlock>
+        <PageStatus model={model} className={className}>
+            <ServerContentBlock title='Network' className={className}>
+                <View name='server.allocations' />
+            </ServerContentBlock>
+        </PageStatus>
     );
 }

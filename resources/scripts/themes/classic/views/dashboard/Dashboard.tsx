@@ -1,14 +1,13 @@
-import { PageContentBlock, ServerError } from '@/sdk';
+import { PageContentBlock } from '@/sdk';
 import { View, type ViewProps } from '@/sdk/theme';
+import PageStatus from '../shared/PageStatus';
 
 export default function Dashboard({ model, className }: ViewProps<'page.dashboard'>) {
-    if (model.error !== null) {
-        return <ServerError message={model.error} onRetry={model.retry} className={className} />;
-    }
-
     return (
-        <PageContentBlock title='Dashboard' className={className}>
-            <View name='dashboard.serverList' />
-        </PageContentBlock>
+        <PageStatus model={model} className={className}>
+            <PageContentBlock title='Dashboard' className={className}>
+                <View name='dashboard.serverList' />
+            </PageContentBlock>
+        </PageStatus>
     );
 }

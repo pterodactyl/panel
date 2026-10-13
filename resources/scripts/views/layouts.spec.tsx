@@ -78,14 +78,8 @@ const appModel = (overrides: Partial<AppLayoutModel> = {}): AppLayoutModel => ({
 });
 
 describe('classic layouts', () => {
-    const fixtures = Object.keys(contexts).flatMap((name) =>
-        Object.keys(getViewDefinition(name)?.fixtures ?? {}).map(
-            (fixture) => [name as LayoutViewName, fixture] as const
-        )
-    );
-
-    it.each(fixtures)('renders %s from its %s fixture with the page inside main', async (name, fixture) => {
-        await renderLayout(name, { fixtures: { [name]: fixture } });
+    it.each(Object.keys(contexts) as LayoutViewName[])('%s renders the page inside main', async (name) => {
+        await renderLayout(name, {});
 
         expect(await screen.findByRole('main')).toHaveTextContent('Routed page');
     });

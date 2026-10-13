@@ -32,10 +32,6 @@ export const classicViews: ThemeViews = {
     'page.auth.checkpoint': lazyView(auth, 'CheckpointPage'),
     'page.auth.password': lazyView(auth, 'ForgotPasswordPage'),
     'page.auth.passwordReset': lazyView(auth, 'ResetPasswordPage'),
-    'auth.loginForm': lazyView(auth, 'LoginForm'),
-    'auth.checkpointForm': lazyView(auth, 'CheckpointForm'),
-    'auth.forgotPasswordForm': lazyView(auth, 'ForgotPasswordForm'),
-    'auth.resetPasswordForm': lazyView(auth, 'ResetPasswordForm'),
 
     'page.account.overview': lazyView(account, 'AccountOverview'),
     'account.password': lazyView(account, 'PasswordCard'),
@@ -76,7 +72,6 @@ export const classicViews: ThemeViews = {
     'server.power': lazyView(serverConsole, 'Power'),
     'server.stats': lazyView(serverConsole, 'Stats'),
     'server.graphs': lazyView(serverConsole, 'Graphs'),
-    'server.features': lazyView(serverConsole, 'Features'),
     'server.feature.eula': lazyView(serverConsole, 'EulaPrompt'),
     'server.feature.javaVersion': lazyView(serverConsole, 'JavaVersionPrompt'),
     'server.feature.gslToken': lazyView(serverConsole, 'GslTokenPrompt'),

@@ -133,61 +133,6 @@
             "export": "default"
         }
     },
-    "auth.checkpointForm": {
-        "kind": "block",
-        "context": "auth",
-        "slots": [],
-        "fixtures": [
-            "code",
-            "recovery"
-        ],
-        "classic": {
-            "file": "views/auth/CheckpointForm.tsx",
-            "export": "default"
-        }
-    },
-    "auth.forgotPasswordForm": {
-        "kind": "block",
-        "context": "auth",
-        "slots": [],
-        "fixtures": [
-            "default",
-            "invalid"
-        ],
-        "classic": {
-            "file": "views/auth/ForgotPasswordForm.tsx",
-            "export": "default"
-        }
-    },
-    "auth.loginForm": {
-        "kind": "block",
-        "context": "auth",
-        "slots": [
-            "auth.login.form.after"
-        ],
-        "fixtures": [
-            "default",
-            "invalid",
-            "submitting"
-        ],
-        "classic": {
-            "file": "views/auth/LoginForm.tsx",
-            "export": "default"
-        }
-    },
-    "auth.resetPasswordForm": {
-        "kind": "block",
-        "context": "auth",
-        "slots": [],
-        "fixtures": [
-            "default",
-            "mismatch"
-        ],
-        "classic": {
-            "file": "views/auth/ResetPasswordForm.tsx",
-            "export": "default"
-        }
-    },
     "dashboard.serverCard": {
         "kind": "block",
         "context": "app",
@@ -345,6 +290,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -378,6 +324,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -872,7 +819,8 @@
             "auth.checkpoint.after"
         ],
         "fixtures": [
-            "default"
+            "code",
+            "recovery"
         ],
         "classic": {
             "file": "views/auth/CheckpointPage.tsx",
@@ -882,13 +830,17 @@
     "page.auth.login": {
         "kind": "page",
         "context": "auth",
-        "slots": [],
+        "slots": [
+            "auth.login.form.after"
+        ],
         "engineSlots": [
             "auth.login.before",
             "auth.login.after"
         ],
         "fixtures": [
-            "default"
+            "default",
+            "invalid",
+            "submitting"
         ],
         "classic": {
             "file": "views/auth/LoginPage.tsx",
@@ -904,7 +856,8 @@
             "auth.password.after"
         ],
         "fixtures": [
-            "default"
+            "default",
+            "invalid"
         ],
         "classic": {
             "file": "views/auth/ForgotPasswordPage.tsx",
@@ -920,7 +873,8 @@
             "auth.passwordReset.after"
         ],
         "fixtures": [
-            "default"
+            "default",
+            "mismatch"
         ],
         "classic": {
             "file": "views/auth/ResetPasswordPage.tsx",
@@ -933,6 +887,7 @@
         "slots": [],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1001,6 +956,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1017,6 +973,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1053,6 +1010,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1070,6 +1028,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1251,7 +1210,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open",
             "accepting"
         ],
@@ -1265,7 +1223,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open"
         ],
         "classic": {
@@ -1278,7 +1235,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open"
         ],
         "classic": {
@@ -1291,7 +1247,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "open",
             "loading",
             "noPermission"
@@ -1306,7 +1261,6 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "admin",
             "user"
         ],
@@ -1320,25 +1274,11 @@
         "context": "server",
         "slots": [],
         "fixtures": [
-            "closed",
             "admin",
             "user"
         ],
         "classic": {
             "file": "views/server/console/prompts/SteamDiskSpacePrompt.tsx",
-            "export": "default"
-        }
-    },
-    "server.features": {
-        "kind": "block",
-        "context": "server",
-        "slots": [],
-        "fixtures": [
-            "minecraft",
-            "none"
-        ],
-        "classic": {
-            "file": "views/server/console/Features.tsx",
             "export": "default"
         }
     },

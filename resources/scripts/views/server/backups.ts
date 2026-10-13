@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import { httpErrorToHuman } from '@/api/http';
 import {
     backupDownloadUrlInput,
     createServerBackupInput,
@@ -22,6 +21,7 @@ import { SocketEvent } from '@/components/server/events';
 import { usePermissions } from '@/plugins/usePermissions';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { getPageSearch, usePageSearch } from '@/router/pageSearch';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 import { implementViews } from '../registry';
 import { completeBackup, parseBackupCompletedPayload } from './backupCompletion';
 import { attempt } from './attempt';
@@ -47,13 +47,6 @@ export interface BackupFormValues {
     readonly isLocked: boolean;
 }
 
-export interface BackupsPageModel {
-    /** The first page of backups has not loaded yet. */
-    readonly loading: boolean;
-    /** The backups failed to load, so the page shows this message instead. */
-    readonly error: string | null;
-    readonly retry: () => void;
-}
 export interface BackupListModel {
     /** The current page of backups, newest first; one completes live as the node reports it. */
     readonly backups: readonly BackupSummary[];
@@ -97,7 +90,7 @@ export interface BackupListModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.backups': BackupsPageModel;
+        'page.server.backups': PageStatusModel;
         'server.backups': BackupListModel;
     }
 }
@@ -116,16 +109,7 @@ const backupSummary = ({ attributes }: ServerBackup): BackupSummary => ({
 const validateName = (name: string): string | undefined =>
     name.length <= 191 ? undefined : 'The backup name must not exceed 191 characters.';
 
-function useBackupsPageModel(): BackupsPageModel {
-    const { uuid } = useLoadedServer().attributes;
-    const { data, error, refetch } = useServerBackups(uuid, usePageSearch());
-    const failed = error && !data ? httpErrorToHuman(error) : null;
-
-    return useMemo(
-        () => ({ loading: !data && failed === null, error: failed, retry: () => void refetch() }),
-        [data, failed, refetch]
-    );
-}
+const useBackupsPageModel = () => pageStatus(useServerBackups(useLoadedServer().attributes.uuid, usePageSearch()));
 
 function useBackupListModel(): BackupListModel {
     const navigate = useNavigate();
@@ -299,11 +283,7 @@ const listFixture = (options: Partial<BackupListModel> = {}): BackupListModel =>
 implementViews({
     'page.server.backups': {
         use: useBackupsPageModel,
-        fixtures: {
-            default: () => ({ loading: false, error: null, retry: noop }),
-            loading: () => ({ loading: true, error: null, retry: noop }),
-            error: () => ({ loading: false, error: 'Request failed with status code 500.', retry: noop }),
-        },
+        fixtures: pageStatusFixtures,
     },
     'server.backups': {
         use: useBackupListModel,
