@@ -11,7 +11,7 @@ Build extensions and themes for the Pterodactyl panel (v2+). This package provid
 - **Test helpers** (`@pterodactyl/sdk/testing`, `@pterodactyl/sdk/vitest`) that render views,
   UI primitives and screens with the real runtime and no backend.
 - **The `pterodactyl-theme` CLI**, which lists the panel's views, ejects the stock theme's source
-  for one, and prints its skins.
+  for one, and copies its skins.
 
 Extensions start at [Quick start](#quick-start). Themes start at [THEMES.md](THEMES.md).
 
