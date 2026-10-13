@@ -1,7 +1,6 @@
 // The models of the account views.
 export type {
     AccountEmailModel,
-    AccountListPageModel,
     AccountOverviewModel,
     AccountPasswordModel,
     AccountTwoFactorModel,

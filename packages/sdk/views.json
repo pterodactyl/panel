@@ -345,6 +345,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -378,6 +379,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -933,6 +935,7 @@
         "slots": [],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1001,6 +1004,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1017,6 +1021,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1053,6 +1058,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {
@@ -1070,6 +1076,7 @@
         ],
         "fixtures": [
             "default",
+            "loading",
             "error"
         ],
         "classic": {

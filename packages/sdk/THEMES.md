@@ -1453,7 +1453,9 @@ render links with the `Button` skin, as they are.
 ### View catalogue
 
 Every view with its context, model type, inputs and parts, slots and fixtures. **Slots** are rendered by
-the view's layers; a page's **engine slots** are rendered around it by the engine.
+the view's layers; a page's **engine slots** are rendered around it by the engine. A page whose model is
+`PageStatusModel` loads data its blocks need: it shows a placeholder while `loading`, and `error` with a
+`retry` in place of its blocks. A failed refresh keeps the loaded data on show, so `error` stays null.
 `npx pterodactyl-theme list` prints the same from `@pterodactyl/sdk/views.json`.
 
 <!-- generated:views -->
@@ -1472,26 +1474,26 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | View | Context | Model | Inputs and parts | Slots | Engine slots | Fixtures |
 | --- | --- | --- | --- | --- | --- | --- |
 | `page.account.activity` | account | `ActivityPageModel` |  |  | `account.activity.before` `account.activity.after` | default |
-| `page.account.api` | account | `AccountListPageModel` |  |  | `account.api.before` `account.api.after` | default, error |
+| `page.account.api` | account | `PageStatusModel` |  |  | `account.api.before` `account.api.after` | default, loading, error |
 | `page.account.overview` | account | `AccountOverviewModel` |  | `account.overview.before` `account.overview.after` |  | default, twoFactorRequired |
-| `page.account.ssh` | account | `AccountListPageModel` |  |  | `account.ssh.before` `account.ssh.after` | default, error |
+| `page.account.ssh` | account | `PageStatusModel` |  |  | `account.ssh.before` `account.ssh.after` | default, loading, error |
 | `page.auth.checkpoint` | auth | `AuthPageModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | default |
 | `page.auth.login` | auth | `AuthPageModel` |  |  | `auth.login.before` `auth.login.after` | default |
 | `page.auth.password` | auth | `AuthPageModel` |  |  | `auth.password.before` `auth.password.after` | default |
 | `page.auth.passwordReset` | auth | `AuthPageModel` |  |  | `auth.passwordReset.before` `auth.passwordReset.after` | default |
-| `page.dashboard` | app | `DashboardModel` |  |  |  | default, error |
+| `page.dashboard` | app | `PageStatusModel` |  |  |  | default, loading, error |
 | `page.server.activity` | server | `ActivityPageModel` |  |  | `server.activity.before` `server.activity.after` | default |
-| `page.server.backups` | server | `BackupsPageModel` |  |  | `server.backups.before` `server.backups.after` | default, loading, error |
+| `page.server.backups` | server | `PageStatusModel` |  |  | `server.backups.before` `server.backups.after` | default, loading, error |
 | `page.server.console` | server | `ServerConsoleModel` | `active: boolean` | `server.console.before` `server.console.after` |  | default, installing, maintenance |
-| `page.server.databases` | server | `ServerPageModel` |  |  | `server.databases.before` `server.databases.after` | default, error |
-| `page.server.files` | server | `ServerPageModel` |  | `server.files.before` `server.files.after` |  | default, error |
+| `page.server.databases` | server | `PageStatusModel` |  |  | `server.databases.before` `server.databases.after` | default, loading, error |
+| `page.server.files` | server | `PageStatusModel` |  | `server.files.before` `server.files.after` |  | default, loading, error |
 | `page.server.files.editor` | server | `FileEditorPageModel` |  |  | `server.files.editor.before` `server.files.editor.after` | file, new, loading, error |
-| `page.server.network` | server | `ServerPageModel` |  |  | `server.network.before` `server.network.after` | default, error |
-| `page.server.schedules` | server | `SchedulesPageModel` |  |  | `server.schedules.before` `server.schedules.after` | default, error |
-| `page.server.schedules.detail` | server | `ScheduleDetailPageModel` |  |  | `server.schedules.detail.before` `server.schedules.detail.after` | default, loading, error |
+| `page.server.network` | server | `PageStatusModel` |  |  | `server.network.before` `server.network.after` | default, loading, error |
+| `page.server.schedules` | server | `PageStatusModel` |  |  | `server.schedules.before` `server.schedules.after` | default, loading, error |
+| `page.server.schedules.detail` | server | `PageStatusModel` |  |  | `server.schedules.detail.before` `server.schedules.detail.after` | default, loading, error |
 | `page.server.settings` | server | `ServerSettingsPageModel` |  |  | `server.settings.before` `server.settings.after` | default |
 | `page.server.startup` | server | `StartupPageModel` |  | `server.startup.form` | `server.startup.before` `server.startup.after` | default, loading, error |
-| `page.server.users` | server | `SubusersPageModel` |  |  | `server.users.before` `server.users.after` | default, loading, error |
+| `page.server.users` | server | `PageStatusModel` |  |  | `server.users.before` `server.users.after` | default, loading, error |
 | `page.server.users.create` | server | `SubuserCreatePageModel` |  |  | `server.users.create.before` `server.users.create.after` | default, loading |
 
 #### Blocks

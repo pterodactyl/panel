@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { httpErrorToHuman } from '@/api/http';
 import {
     createServerAllocationInput,
     deleteServerAllocationInput,
@@ -16,7 +15,7 @@ import { useCurrentServer } from '@/api/server/queries';
 import { ip } from '@/lib/formatters';
 import { usePermissions } from '@/plugins/usePermissions';
 import { implementViews } from '../registry';
-import { serverPageFixtures, type ServerPageModel } from './page';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 
 export interface ServerAllocationItem {
     readonly id: number;
@@ -53,7 +52,7 @@ export interface ServerAllocationsModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.network': ServerPageModel;
+        'page.server.network': PageStatusModel;
         'server.allocations': ServerAllocationsModel;
     }
 }
@@ -76,14 +75,7 @@ function useAllocationsQuery() {
     return { server, query: useServerAllocations(server?.attributes.uuid ?? '') };
 }
 
-function useNetworkPageModel(): ServerPageModel {
-    const { data, error, refetch } = useAllocationsQuery().query;
-
-    return useMemo(
-        () => ({ error: error && !data ? httpErrorToHuman(error) : null, retry: () => void refetch() }),
-        [data, error, refetch]
-    );
-}
+const useNetworkPageModel = () => pageStatus(useAllocationsQuery().query);
 
 function useServerAllocationsModel(): ServerAllocationsModel {
     const { server, query } = useAllocationsQuery();
@@ -169,7 +161,7 @@ const allocationsFixture = (options: Partial<ServerAllocationsModel> = {}): Serv
 implementViews({
     'page.server.network': {
         use: useNetworkPageModel,
-        fixtures: serverPageFixtures,
+        fixtures: pageStatusFixtures,
     },
     'server.allocations': {
         use: useServerAllocationsModel,

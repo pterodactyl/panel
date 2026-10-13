@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { useCurrentUser } from '@/api/account/queries';
-import { httpErrorToHuman } from '@/api/http';
 import { useCurrentServerPermissions } from '@/api/server/queries';
 import {
     createServerSubuserInput,
@@ -17,6 +16,7 @@ import {
 import { useSystemPermissions } from '@/api/system/queries';
 import type { SubuserPermissionsSlotData } from '@/extensions/registry';
 import { usePermissions } from '@/plugins/usePermissions';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 import { implementViews } from '../registry';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
@@ -35,13 +35,6 @@ export interface SubuserSummary {
     readonly self: boolean;
 }
 
-export interface SubusersPageModel {
-    /** The subusers or the permission catalogue are not loaded yet. */
-    readonly loading: boolean;
-    /** Either failed to load, so the page shows this message instead. */
-    readonly error: string | null;
-    readonly retry: () => void;
-}
 export interface SubuserListModel {
     /** The server's identifier, which the link to invite a user includes. */
     readonly serverId: string;
@@ -118,7 +111,7 @@ export interface SubuserFormInput {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.users': SubusersPageModel;
+        'page.server.users': PageStatusModel;
         'page.server.users.create': SubuserCreatePageModel;
         'server.subusers': SubuserListModel;
         'server.subuserForm': SubuserFormModel;
@@ -146,29 +139,9 @@ const validateEmail = (value: string): string | undefined => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'A valid email address must be provided.';
 };
 
-function useSubusersPageModel(): SubusersPageModel {
-    const { uuid } = useLoadedServer().attributes;
-    const subusers = useServerSubusers(uuid);
-    const groups = useSystemPermissions();
-    const permissions = groups.data?.attributes.permissions;
-    const subuserError = subusers.error && !subusers.data ? subusers.error : null;
-    const groupsError = groups.error && !permissions ? groups.error : null;
-    const failure = subuserError ?? groupsError;
-    const loading =
-        !subusers.data?.data.length &&
-        (subusers.isLoading || groups.isLoading || !permissions || !Object.keys(permissions).length);
-    const { refetch: refetchSubusers } = subusers;
-    const { refetch: refetchGroups } = groups;
-
-    return useMemo(
-        () => ({
-            loading,
-            error: failure ? httpErrorToHuman(failure) : null,
-            retry: () => void (subuserError ? refetchSubusers() : refetchGroups()),
-        }),
-        [loading, failure, subuserError, refetchSubusers, refetchGroups]
-    );
-}
+/** The subusers, and the permission catalogue their forms list. */
+const useSubusersPageModel = () =>
+    pageStatus(useServerSubusers(useLoadedServer().attributes.uuid), useSystemPermissions());
 
 function useSubuserListModel(): SubuserListModel {
     const { uuid, identifier } = useLoadedServer().attributes;
@@ -443,11 +416,7 @@ const editing = subuserFixtures[1];
 implementViews({
     'page.server.users': {
         use: useSubusersPageModel,
-        fixtures: {
-            default: () => ({ loading: false, error: null, retry: noop }),
-            loading: () => ({ loading: true, error: null, retry: noop }),
-            error: () => ({ loading: false, error: 'Request failed with status code 500.', retry: noop }),
-        },
+        fixtures: pageStatusFixtures,
     },
     'server.subusers': {
         use: useSubuserListModel,

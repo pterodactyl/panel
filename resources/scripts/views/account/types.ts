@@ -1,13 +1,9 @@
 import type { FormModel } from '../forms';
+import type { PageStatusModel } from '../pageStatus';
 
 export interface AccountOverviewModel {
     /** The panel sent the user here because their account must enable two-step verification. */
     readonly twoFactorRequired: boolean;
-}
-/** A page that shows its error instead of its content when its list fails to load. */
-export interface AccountListPageModel {
-    readonly error: string | null;
-    readonly retry: () => void;
 }
 
 export type AccountPasswordModel = FormModel<'current' | 'password' | 'confirmPassword'>;
@@ -76,8 +72,8 @@ export type SshKeyCreateModel = FormModel<'name' | 'publicKey'>;
 declare module '../registry' {
     interface ViewModels {
         'page.account.overview': AccountOverviewModel;
-        'page.account.api': AccountListPageModel;
-        'page.account.ssh': AccountListPageModel;
+        'page.account.api': PageStatusModel;
+        'page.account.ssh': PageStatusModel;
         'account.password': AccountPasswordModel;
         'account.email': AccountEmailModel;
         'account.twoFactor': AccountTwoFactorModel;

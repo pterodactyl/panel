@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { httpErrorToHuman } from '@/api/http';
 import { relationshipData } from '@/api/relationships';
 import {
     createScheduleTaskInput,
@@ -26,6 +25,7 @@ import {
     type Task,
 } from '@/api/server/schedules/queries';
 import { usePermissions } from '@/plugins/usePermissions';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 import { implementViews } from '../registry';
 import { attempt } from './attempt';
 import { useLoadedServer } from './loadedServer';
@@ -91,11 +91,6 @@ export interface ScheduleTaskForm {
     readonly validate: (values: ScheduleTaskValues) => string | null;
 }
 
-export interface SchedulesPageModel {
-    /** The schedules failed to load, so the page shows this message instead. */
-    readonly error: string | null;
-    readonly retry: () => void;
-}
 export interface ScheduleListModel {
     /** The server's identifier, which links to each schedule include. */
     readonly serverId: string;
@@ -109,12 +104,6 @@ export interface ScheduleListModel {
     readonly create: (values: ScheduleFormValues) => Promise<boolean>;
 }
 
-export interface ScheduleDetailPageModel {
-    readonly loading: boolean;
-    /** The schedule failed to load, so the page shows this message instead. */
-    readonly error: string | null;
-    readonly retry: () => void;
-}
 export interface ScheduleModel {
     readonly schedule: ScheduleSummary;
     readonly taskCount: number;
@@ -150,8 +139,8 @@ export interface ScheduleTasksModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.schedules': SchedulesPageModel;
-        'page.server.schedules.detail': ScheduleDetailPageModel;
+        'page.server.schedules': PageStatusModel;
+        'page.server.schedules.detail': PageStatusModel;
         'server.schedules': ScheduleListModel;
         'server.schedule': ScheduleModel;
         'server.schedule.tasks': ScheduleTasksModel;
@@ -324,13 +313,7 @@ function useCreateTask(schedule: Schedule): (values: ScheduleTaskValues) => Prom
     );
 }
 
-function useSchedulesPageModel(): SchedulesPageModel {
-    const { uuid } = useLoadedServer().attributes;
-    const { data, error, refetch } = useServerSchedules(uuid);
-    const failed = error && !data ? httpErrorToHuman(error) : null;
-
-    return useMemo(() => ({ error: failed, retry: () => void refetch() }), [failed, refetch]);
-}
+const useSchedulesPageModel = () => pageStatus(useServerSchedules(useLoadedServer().attributes.uuid));
 
 function useScheduleListModel(): ScheduleListModel {
     const { uuid, identifier } = useLoadedServer().attributes;
@@ -357,16 +340,8 @@ function useScheduleListModel(): ScheduleListModel {
     );
 }
 
-function useScheduleDetailPageModel(): ScheduleDetailPageModel {
-    const { uuid } = useLoadedServer().attributes;
-    const { data, error, isFetching, refetch } = useServerSchedule(uuid, useScheduleId());
-    const failed = !data && error && !isFetching ? httpErrorToHuman(error) : null;
-
-    return useMemo(
-        () => ({ loading: !data && failed === null, error: failed, retry: () => void refetch() }),
-        [data, failed, refetch]
-    );
-}
+const useScheduleDetailPageModel = () =>
+    pageStatus(useServerSchedule(useLoadedServer().attributes.uuid, useScheduleId()));
 
 function useScheduleModel(): ScheduleModel {
     const navigate = useNavigate();
@@ -444,8 +419,6 @@ function useScheduleTasksModel(): ScheduleTasksModel {
 }
 
 const resolved = async () => true;
-const noop = () => {};
-
 const scheduleFixture = (options: Partial<ScheduleSummary> = {}): ScheduleSummary => ({
     id: 1,
     name: 'Nightly restart',
@@ -527,10 +500,7 @@ const tasksFixture = (options: Partial<ScheduleTasksModel> = {}): ScheduleTasksM
 implementViews({
     'page.server.schedules': {
         use: useSchedulesPageModel,
-        fixtures: {
-            default: () => ({ error: null, retry: noop }),
-            error: () => ({ error: 'Request failed with status code 500.', retry: noop }),
-        },
+        fixtures: pageStatusFixtures,
     },
     'server.schedules': {
         use: useScheduleListModel,
@@ -543,11 +513,7 @@ implementViews({
     },
     'page.server.schedules.detail': {
         use: useScheduleDetailPageModel,
-        fixtures: {
-            default: () => ({ loading: false, error: null, retry: noop }),
-            loading: () => ({ loading: true, error: null, retry: noop }),
-            error: () => ({ loading: false, error: 'Request failed with status code 404.', retry: noop }),
-        },
+        fixtures: pageStatusFixtures,
     },
     'server.schedule': {
         use: useScheduleModel,

@@ -7,11 +7,10 @@ import {
     type ApiKey,
 } from '@/api/account/api-keys/queries';
 import { useCreateSSHKey, useDeleteSSHKey, useSSHKeys, type SSHKey } from '@/api/account/ssh-keys/queries';
-import { httpErrorToHuman } from '@/api/http';
 import { boundField, fixtureField } from '../forms';
+import { pageStatus, pageStatusFixtures } from '../pageStatus';
 import { implementViews } from '../registry';
 import type {
-    AccountListPageModel,
     ApiKeyCreateModel,
     ApiKeyItem,
     ApiKeyListModel,
@@ -22,12 +21,8 @@ import type {
 
 const noop = () => {};
 
-function listPageModel({ error, refetch }: { error: Error | null; refetch: () => unknown }): AccountListPageModel {
-    return { error: error ? httpErrorToHuman(error) : null, retry: () => void refetch() };
-}
-
-const useApiKeysPageModel = () => listPageModel(useAccountApiKeys());
-const useSshKeysPageModel = () => listPageModel(useSSHKeys());
+const useApiKeysPageModel = () => pageStatus(useAccountApiKeys());
+const useSshKeysPageModel = () => pageStatus(useSSHKeys());
 
 const toApiKeyItem = ({ attributes }: ApiKey): ApiKeyItem => ({
     identifier: attributes.identifier,
@@ -195,19 +190,14 @@ const apiKeyCreateFixture = (createdKey: string | null = null): ApiKeyCreateMode
     dismissCreatedKey: noop,
 });
 
-const listPageFixtures = {
-    default: (): AccountListPageModel => ({ error: null, retry: noop }),
-    error: (): AccountListPageModel => ({ error: 'Request failed with status code 500.', retry: noop }),
-};
-
 implementViews({
     'page.account.api': {
         use: useApiKeysPageModel,
-        fixtures: listPageFixtures,
+        fixtures: pageStatusFixtures,
     },
     'page.account.ssh': {
         use: useSshKeysPageModel,
-        fixtures: listPageFixtures,
+        fixtures: pageStatusFixtures,
     },
     'account.apiKeys.list': {
         use: useApiKeyListModel,

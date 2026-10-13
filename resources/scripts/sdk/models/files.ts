@@ -11,4 +11,3 @@ export type {
     FileManagerPermissions,
     FileUpload,
 } from '@/views/server/files';
-export type { ServerPageModel } from '@/views/server/page';

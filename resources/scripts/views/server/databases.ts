@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { httpErrorToHuman } from '@/api/http';
 import { relationshipAttributes } from '@/api/relationships';
 import {
     createServerDatabaseInput,
@@ -15,7 +14,7 @@ import { useCurrentServer } from '@/api/server/queries';
 import { jdbcConnectionString, serverDatabaseShortName } from '@/lib/databases';
 import { usePermissions } from '@/plugins/usePermissions';
 import { implementViews } from '../registry';
-import { serverPageFixtures, type ServerPageModel } from './page';
+import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 
 export interface ServerDatabaseItem {
     readonly id: string;
@@ -65,7 +64,7 @@ export interface ServerDatabasesModel {
 
 declare module '../registry' {
     interface ViewModels {
-        'page.server.databases': ServerPageModel;
+        'page.server.databases': PageStatusModel;
         'server.databases': ServerDatabasesModel;
     }
 }
@@ -122,14 +121,7 @@ function useDatabasesQuery() {
     return { server, query: useServerDatabases(server?.attributes.uuid ?? '') };
 }
 
-function useDatabasesPageModel(): ServerPageModel {
-    const { data, error, refetch } = useDatabasesQuery().query;
-
-    return useMemo(
-        () => ({ error: error && !data ? httpErrorToHuman(error) : null, retry: () => void refetch() }),
-        [data, error, refetch]
-    );
-}
+const useDatabasesPageModel = () => pageStatus(useDatabasesQuery().query);
 
 function useServerDatabasesModel(): ServerDatabasesModel {
     const { server, query } = useDatabasesQuery();
@@ -221,7 +213,7 @@ const databasesFixture = (options: Partial<ServerDatabasesModel> = {}): ServerDa
 implementViews({
     'page.server.databases': {
         use: useDatabasesPageModel,
-        fixtures: serverPageFixtures,
+        fixtures: pageStatusFixtures,
     },
     'server.databases': {
         use: useServerDatabasesModel,
