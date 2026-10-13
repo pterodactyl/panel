@@ -1065,7 +1065,8 @@ utilities, variants and fonts:
 The build looks for each parent first in `<extensions>/<id>`, where `extensions` is the panel's extensions
 directory passed to `defineThemeConfig` (the scaffold writes it), then in `node_modules/<id>`, for a parent
 installed as a dependency. It lists the parents it built over in `dist/theme.json`, and doctor, pack and
-enable refuse a child built without them. Rebuild the child when a parent changes. A parent's `@plugin` is loaded from the child's packages, so install the same plugins.
+enable refuse a child built without them. Rebuild the child when a parent changes. A parent's `@plugin`
+is loaded from the child's packages, so install the same plugins.
 
 The child's tests render the chain with `themes`, importing each parent's built entry, which
 `pterodactylTestAliases({ extensions })` finds where the build does and the SDK types:
@@ -1265,7 +1266,7 @@ disabled or removed.
 Declare `requires.panel` and `requires.sdk` (`>=2.0.0-beta.5 <3.0`). During the 2.0 betas, view names,
 models, parts and fixtures, and the primitives' parts and state, can change in any beta. Build against
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
-or an overridden view that no longer exists; then rebuild. From 2.0, additions to the
+or an overridden view the new SDK does not have; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
 
 ## Reference
