@@ -127,27 +127,8 @@ test('rejects setting names that are not identifiers and two settings writing th
     ]]]))->toThrow(InvalidExtensionException::class, 'Theme settings "one" and "two" both write "--accent".');
 });
 
-test('a child theme overrides a setting of its parent with only the fields it changes', function (): void {
-    $manifest = theme(['theme' => ['extends' => 'base', 'settings' => [
-        'accent' => ['default' => '#ff4fd8'],
-        'stars' => ['type' => 'toggle', 'label' => 'Stars', 'default' => true],
-    ]]]);
-
-    expect($manifest->theme->overrides)->toBe(['accent' => ['default' => '#ff4fd8']])
-        ->and(array_keys($manifest->theme->settings))->toBe(['stars']);
-    expect(fn () => theme(['theme' => ['settings' => ['accent' => ['default' => '#ff4fd8']]]]))->toThrow(InvalidExtensionException::class, 'only a theme that extends another can override');
-    // What does not depend on the type is checked before the override is merged.
-    expect(fn () => theme(['theme' => ['extends' => 'base', 'settings' => ['accent' => ['token' => 'color']]]]))->toThrow(InvalidExtensionException::class, 'custom property names');
-});
-
-test('an override merged over the declaration it changes is checked as a declaration', function (): void {
-    $validator = new ExtensionManifestValidator;
-    $accent = ThemeSetting::fromValidatedData('accent', ['type' => 'color', 'label' => 'Accent', 'help' => 'Buttons.', 'default' => '#7c5cff', 'token' => '--aurora-accent']);
-    $merged = $validator->themeSetting('accent', $accent->overriddenBy(['default' => '#ff4fd8']));
-
-    expect([$merged->type, $merged->label, $merged->help, $merged->token, $merged->default])->toBe(['color', 'Accent', 'Buttons.', '--aurora-accent', '#ff4fd8']);
-    expect(fn () => $validator->themeSetting('accent', $accent->overriddenBy(['default' => 'red'])))->toThrow(InvalidExtensionException::class, 'A color setting defaults to');
-    expect(fn () => $validator->themeSetting('accent', $accent->overriddenBy(['min' => 1])))->toThrow(InvalidExtensionException::class, 'theme.settings.accent.min');
+test('a setting declares its type and label, in a child theme too', function (): void {
+    expect(fn () => theme(['theme' => ['extends' => 'base', 'settings' => ['accent' => ['default' => '#ff4fd8']]]]))->toThrow(InvalidExtensionException::class, 'theme.settings.accent.type');
 });
 
 test('settings validate saved values with the rules of the matching extension fields', function (string $type, array $extra, mixed $value, bool $valid): void {

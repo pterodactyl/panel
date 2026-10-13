@@ -20,23 +20,14 @@ class RememberThemeFlags
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if ($request->hasSession()) {
-            $this->remember($request, 'safe_mode', ThemeResolver::SAFE_MODE);
+        if ($request->hasSession() && $request->query->has('safe_mode')) {
+            if ($request->query->getBoolean('safe_mode')) {
+                $request->session()->put(ThemeResolver::SAFE_MODE, true);
+            } else {
+                $request->session()->forget(ThemeResolver::SAFE_MODE);
+            }
         }
 
         return $next($request);
-    }
-
-    private function remember(Request $request, string $parameter, string $key): void
-    {
-        if (! $request->query->has($parameter)) {
-            return;
-        }
-
-        if ($request->query->getBoolean($parameter)) {
-            $request->session()->put($key, true);
-        } else {
-            $request->session()->forget($key);
-        }
     }
 }

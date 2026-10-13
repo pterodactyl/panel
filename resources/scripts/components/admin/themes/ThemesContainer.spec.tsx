@@ -34,9 +34,6 @@ const theme = (
         active: false,
         previewing: false,
         extends: 'classic',
-        schemes: ['dark', 'light'],
-        has_stylesheet: true,
-        has_entry: true,
         settings_count: 2,
         problem: null,
         ...attributes,
@@ -67,8 +64,6 @@ const setting = (
     object: 'theme_setting',
     attributes: {
         help: null,
-        token: null,
-        attribute: null,
         options: [],
         min: null,
         max: null,
@@ -90,7 +85,6 @@ const settings: AdminThemeSettingsResponse = {
             label: 'Accent',
             default: '#8b5cf6',
             value: '#8b5cf6',
-            token: '--accent',
         }),
         setting({
             key: 'compact',
@@ -98,7 +92,6 @@ const settings: AdminThemeSettingsResponse = {
             label: 'Compact spacing',
             default: false,
             value: false,
-            attribute: 'data-aurora-compact',
         }),
     ],
 };
@@ -148,9 +141,6 @@ describe('themes page', () => {
     afterEach(() => {
         cleanup();
         http.defaults.adapter = originalAdapter;
-        document.documentElement.removeAttribute('style');
-        document.documentElement.removeAttribute('data-theme');
-        document.documentElement.removeAttribute('data-aurora-compact');
     });
 
     it('lists the built-in and installed themes and activates one', async () => {
@@ -175,31 +165,7 @@ describe('themes page', () => {
         expect(mocks.toastSuccess).toHaveBeenCalledWith('Theme activated', expect.anything());
     });
 
-    it('previews unsaved settings on the page and puts the page back on cancel', async () => {
-        document.documentElement.dataset.theme = 'aurora';
-        document.documentElement.style.setProperty('--accent', 'red');
-        const user = setup();
-        const card = (await screen.findByRole('heading', { name: 'Aurora' })).closest('article')!;
-
-        await user.click(within(card).getByRole('button', { name: 'Settings' }));
-        const dialog = await screen.findByRole('dialog', { name: 'Aurora settings' });
-        const accent = await within(dialog).findByLabelText('Accent');
-
-        await user.clear(accent);
-        await user.type(accent, '#112233');
-        await user.click(within(dialog).getByRole('switch'));
-
-        expect(document.documentElement.style.getPropertyValue('--accent')).toBe('#112233');
-        expect(document.documentElement.getAttribute('data-aurora-compact')).toBe('true');
-
-        await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
-
-        expect(document.documentElement.style.getPropertyValue('--accent')).toBe('red');
-        expect(document.documentElement.hasAttribute('data-aurora-compact')).toBe(false);
-    });
-
-    it('saves every setting and keeps the saved look on the page', async () => {
-        document.documentElement.dataset.theme = 'aurora';
+    it('saves every setting and offers a reload', async () => {
         const user = setup();
         const card = (await screen.findByRole('heading', { name: 'Aurora' })).closest('article')!;
 
@@ -220,6 +186,6 @@ describe('themes page', () => {
 
         expect(JSON.parse(String(patch.data))).toEqual({ settings: { accent: '#445566', compact: false } });
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-        expect(document.documentElement.style.getPropertyValue('--accent')).toBe('#445566');
+        expect(mocks.toastSuccess).toHaveBeenCalledWith('Theme settings saved', expect.anything());
     });
 });

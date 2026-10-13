@@ -73,7 +73,7 @@ php ../../artisan p:extension:dev . --watch
 ```
 
 `--css-only` leaves out the JavaScript that levels 2 to 4 need. The package goes in
-`extensions/sunrise`; `--path=<dir>` puts it in exactly `<dir>`, and `--out=<dir>` in `<dir>/sunrise`.
+`extensions/sunrise`, or with `--out=<dir>` in `<dir>/sunrise`.
 
 While the last command runs on a panel with `APP_DEBUG=true`, a stylesheet change swaps into open pages
 without a reload, and any other change reloads them. To try a theme without switching everyone to it,
@@ -1003,8 +1003,8 @@ test of the chain.
 
 - **Views and skins** stack in that order, so the child's `Default` renders the parent's layer, and a
   recipe's `below` is the parent's classes.
-- **Settings** are the union of the chain's. A child's setting of the same name changes the parent's: give
-  only the fields that change, such as `"accent": { "default": "#f97316" }`, and the rest are the parent's.
+- **Settings** are the union of the chain's. A child's setting of the same name replaces the parent's;
+  declare it in full, with the parent's token to change what the parent's setting writes.
 - **Schemes** are the child's when it declares them, else the nearest parent's.
 - The parent has to be installed and enabled first, and cannot be disabled while the child is. A
   missing parent or a cycle stops the child from activating. Pin its version with `requires.extensions`.
@@ -1023,7 +1023,7 @@ test of the chain.
         "extends": "aurora",
         "stylesheet": "dist/theme.css",
         "settings": {
-            "accent": { "default": "#f97316" },
+            "accent": { "type": "color", "label": "Accent", "default": "#f97316", "token": "--aurora-accent" },
             "glow": { "type": "toggle", "label": "Sunset glow", "default": true, "attribute": "data-sunset-glow" }
         }
     }

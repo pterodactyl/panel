@@ -6,7 +6,7 @@ namespace Pterodactyl\Services\Themes;
 
 /**
  * What one page renders with: the theme chain, its settings as tokens and `<html>`
- * attributes, the colour scheme and the stylesheet to link.
+ * attributes, the colour scheme and the stylesheet linked after the panel's.
  */
 final readonly class ThemeDocument
 {
@@ -30,7 +30,6 @@ final readonly class ThemeDocument
         public bool $safeMode = false,
         public bool $preview = false,
         public ?string $stylesheet = null,
-        public bool $stylesheetFallback = false,
     ) {}
 
     /**
@@ -48,7 +47,6 @@ final readonly class ThemeDocument
             'schemes' => $this->schemes,
             'safeMode' => $this->safeMode,
             'preview' => $this->preview,
-            'stylesheetFallback' => $this->stylesheetFallback,
         ];
     }
 
@@ -72,12 +70,6 @@ final readonly class ThemeDocument
 
         // Doubled so the settings outrank the stylesheet's own :root and .dark declarations.
         return ':root:root{'.$declarations.'}';
-    }
-
-    /** The panel's stylesheet is linked unless the theme's own, built against this panel, replaces it. */
-    public function linksCoreStylesheet(): bool
-    {
-        return $this->stylesheet === null || $this->stylesheetFallback;
     }
 
     /** @return list<string> */

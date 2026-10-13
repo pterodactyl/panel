@@ -77,8 +77,6 @@ class ThemeResolver
             safeMode: $safeMode,
             preview: $preview !== null && $id === $preview,
             stylesheet: $styled === null || $stylesheet === null ? null : $this->assets->assetUrl($styled, Str::after($stylesheet, 'dist/')),
-            // Built against other core classes, the theme stylesheet is laid over the panel's own.
-            stylesheetFallback: $styled !== null && $this->themes->coreMismatch($styled) !== null,
         );
     }
 
@@ -116,7 +114,7 @@ class ThemeResolver
         $attributes = [];
         foreach ($chain as $theme) {
             $stored = $this->themes->settings($theme);
-            foreach ($this->themes->declared($theme) as $key => $setting) {
+            foreach ($theme->theme->settings ?? [] as $key => $setting) {
                 $value = $setting->value(rescue(fn (): mixed => $stored->get(ThemeSetting::KEY_PREFIX.$key), report: false));
                 $values[$key] = $value;
                 if ($setting->token !== null && ($token = $setting->tokenValue($value)) !== null) {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, LifeBuoy, Palette, RotateCcw, Settings2, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LifeBuoy, Palette, Settings2, Sparkles } from 'lucide-react';
 import {
     activateAdminThemeInput,
     previewAdminThemeInput,
@@ -8,7 +8,6 @@ import {
     useActivateAdminTheme,
     useAdminThemes,
     usePreviewAdminTheme,
-    useResetAdminTheme,
     useStopAdminThemePreview,
 } from '@/api/admin/themes/queries';
 import { httpErrorToHuman } from '@/api/http';
@@ -144,10 +143,8 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
     );
 }
 
-function ThemeToolbar({ meta, themes }: { meta?: AdminThemesMeta; themes: AdminTheme[] }) {
-    const reset = useResetAdminTheme();
+function ThemeToolbar({ meta }: { meta?: AdminThemesMeta }) {
     const stopPreview = useStopAdminThemePreview();
-    const classicActive = themes.some((theme) => theme.builtin && theme.active);
 
     return (
         <ListToolbar>
@@ -163,16 +160,6 @@ function ThemeToolbar({ meta, themes }: { meta?: AdminThemesMeta; themes: AdminT
                         Stop preview
                     </NewButton>
                 )}
-                <NewButton
-                    icon={RotateCcw}
-                    color='grey'
-                    isSecondary
-                    disabled={classicActive}
-                    isLoading={reset.isPending}
-                    onClick={() => reset.mutate({})}
-                >
-                    Reset to classic
-                </NewButton>
                 <LinkButton
                     href={meta?.safe_mode ? '/panel/themes?safe_mode=0' : '/?safe_mode=1'}
                     isSecondary
@@ -207,7 +194,7 @@ export default function ThemesContainer() {
             )}
             {data ? (
                 <>
-                    <ThemeToolbar meta={data.meta} themes={themes} />
+                    <ThemeToolbar meta={data.meta} />
                     <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
                         {themes.map((theme) => (
                             <ThemeCard key={theme.id} theme={theme} />

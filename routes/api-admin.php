@@ -109,7 +109,6 @@ Route::prefix('/themes')->name('api.admin.themes')->group(function (): void {
     Route::get('/{theme}/settings', [ThemeController::class, 'settings'])->name('.settings');
 
     Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
-        Route::post('/reset', [ThemeController::class, 'reset'])->name('.reset');
         Route::delete('/preview', [ThemeController::class, 'stopPreview'])->name('.preview.stop');
         Route::post('/{theme}/activate', [ThemeController::class, 'activate'])->name('.activate');
         Route::post('/{theme}/preview', [ThemeController::class, 'preview'])->name('.preview');

@@ -108,23 +108,6 @@ class ExtensionManifestValidator
     }
 
     /**
-     * A child theme's override merged over the declaration it changes, checked as a setting the
-     * manifest declares in full.
-     *
-     * @param  ExtensionThemeSettingOverride  $data
-     *
-     * @throws InvalidExtensionException
-     */
-    public function themeSetting(string $key, array $data): ThemeSetting
-    {
-        $validator = Validator::make(['theme' => ['settings' => [$key => $data]]], $this->themeSettingRules(), self::THEME_SETTING_MESSAGES);
-        throw_if($validator->fails(), InvalidExtensionException::class, $validator->errors()->first());
-        throw_unless(isset($data['type'], $data['label']), InvalidExtensionException::class, "Theme setting \"{$key}\" needs a \"type\" and a \"label\".");
-
-        return $this->validateThemeSetting($key, $data);
-    }
-
-    /**
      * @phpstan-assert ExtensionManifestInput $data
      */
     private function validateManifestStructure(mixed $data): void
@@ -151,8 +134,8 @@ class ExtensionManifestValidator
             'ui.entry' => ['required_with:ui', 'string'],
             'ui.mode' => ['sometimes', 'string'],
             'ui.prefix' => ['sometimes', 'prohibited_if:type,theme', 'filled', 'string', 'regex:'.ExtensionManifest::UI_PREFIX_REGEX, Rule::notIn(ExtensionManifest::RESERVED_UI_PREFIXES)],
-            'ui.views' => ['sometimes', 'prohibited_if:type,theme', 'array', 'list', 'max:256'],
-            'ui.views.*' => ['required', 'string', 'distinct:strict', 'max:128', 'regex:'.ExtensionManifest::VIEW_NAME_REGEX],
+            'ui.views' => ['sometimes', 'prohibited_if:type,theme', 'array', 'list'],
+            'ui.views.*' => ['required', 'string', 'distinct:strict', 'regex:'.ExtensionManifest::VIEW_NAME_REGEX],
             'ui.screens' => ['sometimes', 'array', 'list', 'max:64'],
             'ui.screens.*' => ['required', 'array:id,area,path,nav,permission,parent,when'],
             'ui.screens.*.id' => ['required', 'string', 'max:48', 'regex:/^[a-z][a-z0-9-]*$/D', 'distinct:strict'],
@@ -187,7 +170,20 @@ class ExtensionManifestValidator
             'theme.stylesheet' => ['sometimes', 'nullable', 'string', Rule::in([ThemeDefinition::STYLESHEET])],
             'theme.schemes' => ['sometimes', 'array', 'list', 'min:1', 'max:2'],
             'theme.schemes.*' => ['required', 'string', 'distinct:strict', Rule::in(ThemeDefinition::SCHEMES)],
-            ...$this->themeSettingRules(),
+            'theme.settings' => ['sometimes', 'array', $this->keyedBy(ThemeSetting::KEY_REGEX, 'Theme setting names must match '.ThemeSetting::KEY_REGEX.'.')],
+            'theme.settings.*' => ['required', 'array:type,label,default,help,token,attribute,options,min,max,step,unit,maxLength'],
+            'theme.settings.*.type' => ['required', 'string', Rule::in(ThemeSetting::TYPES)],
+            'theme.settings.*.label' => ['required', 'string'],
+            'theme.settings.*.help' => ['sometimes', 'nullable', 'string'],
+            'theme.settings.*.token' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::TOKEN_REGEX],
+            'theme.settings.*.attribute' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::ATTRIBUTE_REGEX, Rule::notIn(ThemeSetting::RESERVED_ATTRIBUTES)],
+            'theme.settings.*.options' => ['required_if:theme.settings.*.type,select', 'prohibited_unless:theme.settings.*.type,select', 'array', 'min:1', $this->keyedBy(ThemeSetting::OPTION_REGEX, 'Theme setting options must be keyed by identifiers such as "side".')],
+            'theme.settings.*.options.*' => ['required', 'string'],
+            'theme.settings.*.min' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
+            'theme.settings.*.max' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
+            'theme.settings.*.step' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric', 'gt:0'],
+            'theme.settings.*.unit' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'string', 'regex:'.ThemeSetting::UNIT_REGEX],
+            'theme.settings.*.maxLength' => ['sometimes', 'prohibited_unless:theme.settings.*.type,text', 'integer', 'min:1'],
         ], [
             'id.required' => 'Manifest field "id" is required and must be a string.',
             'id.string' => 'Manifest field "id" is required and must be a string.',
@@ -229,35 +225,6 @@ class ExtensionManifestValidator
         }
     }
 
-    /**
-     * A theme setting is declared with a `type` and a `label`, or overrides the setting of the same name
-     * of a theme it extends with only the fields it changes. The fields that depend on the type are
-     * checked once an override is merged over the declaration it changes.
-     *
-     * @return ValidationRules
-     */
-    private function themeSettingRules(): array
-    {
-        $typed = 'exclude_without:theme.settings.*.type';
-
-        return [
-            'theme.settings' => ['sometimes', 'array', 'max:64', $this->keyedBy(ThemeSetting::KEY_REGEX, 'Theme setting names must match '.ThemeSetting::KEY_REGEX.'.')],
-            'theme.settings.*' => ['required', 'array:type,label,default,help,token,attribute,options,min,max,step,unit,maxLength'],
-            'theme.settings.*.type' => ['sometimes', 'string', Rule::in(ThemeSetting::TYPES)],
-            'theme.settings.*.label' => ['required_with:theme.settings.*.type', 'string', 'max:100'],
-            'theme.settings.*.help' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'theme.settings.*.token' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::TOKEN_REGEX],
-            'theme.settings.*.attribute' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::ATTRIBUTE_REGEX, Rule::notIn(ThemeSetting::RESERVED_ATTRIBUTES)],
-            'theme.settings.*.options' => [$typed, 'required_if:theme.settings.*.type,select', 'prohibited_unless:theme.settings.*.type,select', 'array', 'min:1', 'max:64', $this->keyedBy(ThemeSetting::OPTION_REGEX, 'Theme setting options must be keyed by identifiers such as "side".')],
-            'theme.settings.*.options.*' => [$typed, 'required', 'string', 'max:100'],
-            'theme.settings.*.min' => [$typed, 'sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
-            'theme.settings.*.max' => [$typed, 'sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
-            'theme.settings.*.step' => [$typed, 'sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric', 'gt:0'],
-            'theme.settings.*.unit' => [$typed, 'sometimes', 'prohibited_unless:theme.settings.*.type,number', 'string', 'regex:'.ThemeSetting::UNIT_REGEX],
-            'theme.settings.*.maxLength' => [$typed, 'sometimes', 'prohibited_unless:theme.settings.*.type,text', 'integer', 'between:1,1000'],
-        ];
-    }
-
     /** @return Closure(string, mixed, Closure(string): mixed): void */
     private function keyedBy(string $pattern, string $message): Closure
     {
@@ -289,25 +256,18 @@ class ExtensionManifestValidator
                 $targets[$target] = $key;
             }
 
-            if (isset($setting['type'], $setting['label'])) {
-                $this->validateThemeSetting($key, $setting);
-            } else {
-                throw_if($extends === ThemeRepository::CLASSIC, InvalidExtensionException::class, "Theme setting \"{$key}\" needs a \"type\" and a \"label\"; only a theme that extends another can override a setting of its parent with some of the fields.");
-            }
+            $this->validateThemeSetting($key, $setting);
         }
     }
 
     /** @param ExtensionThemeSettingInput $setting */
-    private function validateThemeSetting(string $key, array $setting): ThemeSetting
+    private function validateThemeSetting(string $key, array $setting): void
     {
         foreach (['min', 'max', 'step'] as $limit) {
             throw_if(array_key_exists($limit, $setting) && ! is_int($setting[$limit]) && ! is_float($setting[$limit]), InvalidExtensionException::class, "Theme setting \"{$key}\" must give \"{$limit}\" as a number.");
         }
 
-        $theme = ThemeSetting::fromValidatedData($key, $setting);
-        $this->validateThemeDefault($theme);
-
-        return $theme;
+        $this->validateThemeDefault(ThemeSetting::fromValidatedData($key, $setting));
     }
 
     private function validateThemeDefault(ThemeSetting $setting): void

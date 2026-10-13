@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { AdminExtensionSettingField, AdminExtensionSettingValue } from '@/api/admin/extensions/queries';
 import {
     clearAdminThemeImageInput,
@@ -19,7 +19,6 @@ import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Alert } from '@/components/elements/alert';
 import { Dialog } from '@/components/elements/dialog';
-import { createLivePreview, type LivePreview } from './livePreview';
 
 /** The extension settings form renders theme settings too; an image is its file field. */
 export const settingField = (setting: AdminThemeSetting): AdminExtensionSettingField => ({
@@ -51,9 +50,6 @@ const submitted = (setting: AdminThemeSetting, value: AdminThemeSettingValue | u
     return setting.type === 'number' && value === '' ? null : value;
 };
 
-/** The settings whose live changes the page shows: those of the theme it renders. */
-const rendersTheme = (theme: AdminTheme) => document.documentElement.dataset.theme === theme.id;
-
 export default function ThemeSettingsDialog({
     theme,
     open,
@@ -68,27 +64,13 @@ export default function ThemeSettingsDialog({
     const upload = useUploadAdminThemeImage();
     const clear = useClearAdminThemeImage();
     const [values, setValues] = useState<Record<string, AdminThemeSettingValue | undefined>>({});
-    const preview = useRef<LivePreview | null>(null);
-    const live = rendersTheme(theme);
     const settings = (data?.data ?? []).map((item) => item.attributes);
 
-    // Whatever the page still shows unsaved when the dialog goes away is put back.
-    useEffect(() => () => preview.current?.restore(), []);
-
-    const change = (setting: AdminThemeSetting) => (input: AdminExtensionSettingValue) => {
-        // Theme settings are single values; only list fields hand over arrays.
-        const value = Array.isArray(input) ? null : input;
-
-        setValues((current) => ({ ...current, [setting.key]: value }));
-
-        if (live) {
-            preview.current ??= createLivePreview();
-            preview.current.apply(setting, value);
-        }
-    };
+    // Theme settings are single values; only list fields hand over arrays.
+    const change = (setting: AdminThemeSetting) => (input: AdminExtensionSettingValue) =>
+        setValues((current) => ({ ...current, [setting.key]: Array.isArray(input) ? null : input }));
 
     const cancel = () => {
-        preview.current?.restore();
         setValues({});
         onClose();
     };
@@ -104,7 +86,6 @@ export default function ThemeSettingsDialog({
 
         try {
             await update.mutateAsync(updateAdminThemeSettingsInput(theme.id, body));
-            preview.current?.keep();
             setValues({});
             onClose();
         } catch {
@@ -114,18 +95,7 @@ export default function ThemeSettingsDialog({
 
     const fileActions = (setting: AdminThemeSetting) => ({
         pending: upload.isPending || clear.isPending,
-        onUpload: (file: File) =>
-            upload.mutate(uploadAdminThemeImageInput(theme.id, setting.key, file), {
-                onSuccess: (fresh) => {
-                    const stored = fresh.data.find((item) => item.attributes.key === setting.key)?.attributes;
-
-                    if (live && stored) {
-                        preview.current ??= createLivePreview();
-                        preview.current.apply(stored, stored.value);
-                        preview.current.keep();
-                    }
-                },
-            }),
+        onUpload: (file: File) => upload.mutate(uploadAdminThemeImageInput(theme.id, setting.key, file)),
         onClear: () => clear.mutate(clearAdminThemeImageInput(theme.id, setting.key)),
     });
 
@@ -142,9 +112,6 @@ export default function ThemeSettingsDialog({
             {!error && !data && isFetching && <Spinner size='large' centered />}
             {!error && data && (
                 <div className='space-y-5'>
-                    {!live && (
-                        <Alert type='info'>Changes show on this page once you activate or preview this theme.</Alert>
-                    )}
                     {settings.map((setting) => (
                         <SettingField
                             key={setting.key}

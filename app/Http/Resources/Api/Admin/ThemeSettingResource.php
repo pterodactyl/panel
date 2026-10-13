@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Admin;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
 use Pterodactyl\Services\Themes\ThemeSetting;
 
 /**
- * One entry of a theme's settings form, with what it writes so the page can preview it.
+ * One entry of a theme's settings form.
  *
  * @extends AdminResource<array{setting: ThemeSetting, value: string|int|float|bool|null}>
  */
@@ -31,8 +32,6 @@ class ThemeSettingResource extends AdminResource
             'help' => $setting->help,
             'default' => $setting->default,
             'value' => $this->resource['value'],
-            'token' => $setting->token,
-            'attribute' => $setting->attribute,
             'options' => array_map(fn (string $value, string $label): array => ['value' => $value, 'label' => $label], array_keys($setting->options), $setting->options),
             'min' => $setting->min,
             'max' => $setting->max,
@@ -40,7 +39,7 @@ class ThemeSettingResource extends AdminResource
             'unit' => $setting->unit,
             'max_length' => $setting->type === 'text' ? $setting->maxLength : null,
             'accept' => $image ? ThemeSetting::IMAGE_TYPES : [],
-            'max_kilobytes' => $image ? ThemeSetting::IMAGE_MAX_KILOBYTES : null,
+            'max_kilobytes' => $image ? ExtensionSettingFiles::MAX_KILOBYTES : null,
         ];
     }
 }

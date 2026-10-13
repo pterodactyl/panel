@@ -26,7 +26,7 @@ class ExtensionScaffolder
     public function __construct(private readonly ExtensionManifestValidator $validator, private readonly ThemeRepository $themes) {}
 
     /**
-     * Scaffolds <outDir>/<id>/, or exactly `path` when given, and returns the created
+     * Scaffolds <outDir>/<id>/ and returns the created
      * package path. The manifest is re-validated through the normal loader before
      * returning, so a scaffold that succeeds is guaranteed installable.
      */
@@ -40,7 +40,6 @@ class ExtensionScaffolder
         bool $force = false,
         ?string $prefix = null,
         bool $theme = false,
-        ?string $path = null,
         bool $cssOnly = false,
         ?string $extends = null,
     ): string {
@@ -49,8 +48,6 @@ class ExtensionScaffolder
         throw_unless(preg_match(ExtensionManifest::ID_REGEX, $id), InvalidExtensionException::class, "Extension id \"{$id}\" must match ".ExtensionManifest::ID_REGEX.'.');
 
         throw_if(in_array($id, ExtensionManifest::RESERVED_IDS, true), InvalidExtensionException::class, "Extension id \"{$id}\" is reserved.");
-
-        throw_if($path !== null && $outDir !== null, InvalidExtensionException::class, 'Pass --path (the package directory) or --out (the directory it is created in), not both.');
 
         throw_if($cssOnly && ! $theme, InvalidExtensionException::class, '--css-only scaffolds a theme: pass it with --theme.');
 
@@ -61,9 +58,7 @@ class ExtensionScaffolder
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
 
-        $target = $path === null
-            ? mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id
-            : mb_rtrim($path, '/\\');
+        $target = mb_rtrim($outDir ?? config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.$id;
         throw_if(is_dir($target) && ! $force, InvalidExtensionException::class, "{$target} already exists - pass --force to overwrite it.");
 
         File::deleteDirectory($target);

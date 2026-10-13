@@ -237,18 +237,9 @@ test('rejects malformed and reserved tailwind prefixes before writing anything',
     expect($this->directory.'/my-widget')->not->toBeDirectory();
     $this->artisan('p:extension:make', ['id' => 'my-widget', '--out' => $this->directory, '--prefix' => $prefix])->assertFailed();
 })->with(['a', 'My', 'my-widget', 'w2', 'toolongtobeaprefix', 'sm', 'dark', 'hover', 'group', 'tw', 'color']);
-test('scaffolds into the exact directory --path names, and --out into a directory named after the id', function (): void {
-    $this->artisan('p:extension:make', ['id' => 'aurora', '--theme' => true, '--path' => $this->directory.'/themes/aurora-theme'])->assertSuccessful();
-    expect($this->directory.'/themes/aurora-theme/extension.json')->toBeFile()
-        ->and($this->directory.'/themes/aurora-theme/aurora')->not->toBeDirectory();
-
+test('scaffolds into a directory named after the id under --out', function (): void {
     $this->artisan('p:extension:make', ['id' => 'nebula', '--theme' => true, '--out' => $this->directory.'/themes'])->assertSuccessful();
     expect($this->directory.'/themes/nebula/extension.json')->toBeFile();
-
-    $this->artisan('p:extension:make', ['id' => 'both', '--path' => $this->directory.'/both', '--out' => $this->directory])
-        ->expectsOutputToContain('not both')
-        ->assertFailed();
-    expect($this->directory.'/both')->not->toBeDirectory();
 });
 test('refuses to overwrite without force', function (): void {
     $this->scaffolder->scaffold(id: 'twice', outDir: $this->directory);

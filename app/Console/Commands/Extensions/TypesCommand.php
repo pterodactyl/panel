@@ -8,7 +8,6 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
@@ -73,18 +72,12 @@ class TypesCommand extends Command
      */
     private function chainSettings(ThemeRepository $themes, ExtensionManifest $theme): array
     {
-        try {
-            $settings = [];
-            foreach ([...$themes->ancestors($theme), $theme] as $manifest) {
-                $settings = [...$settings, ...$themes->declarations($manifest)];
-            }
-
-            return $settings;
-        } catch (InvalidExtensionException $invalidExtensionException) {
-            $this->components->warn($invalidExtensionException->getMessage().' ThemeSettings lists only the settings this theme declares in full.');
-
-            return $theme->theme->settings ?? [];
+        $settings = [];
+        foreach ([...$themes->ancestors($theme), $theme] as $manifest) {
+            $settings = [...$settings, ...$manifest->theme->settings ?? []];
         }
+
+        return $settings;
     }
 
     /** @param array<string, ThemeSetting> $settings */

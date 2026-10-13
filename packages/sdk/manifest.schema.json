@@ -538,11 +538,9 @@
                 },
                 "views": {
                     "type": "array",
-                    "maxItems": 256,
                     "uniqueItems": true,
                     "items": {
                         "type": "string",
-                        "maxLength": 128,
                         "pattern": "^[a-z][a-zA-Z0-9]*(?:\\.[a-zA-Z0-9]+)+$"
                     },
                     "description": "The views this extension overrides with views.override, such as \"server.power\" or \"page.dashboard\". Declare a requires.sdk constraint. Themes override views through defineTheme instead."
@@ -577,18 +575,12 @@
                 },
                 "settings": {
                     "type": "object",
-                    "maxProperties": 64,
                     "propertyNames": {
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,47}$"
                     },
                     "additionalProperties": {
                         "type": "object",
                         "additionalProperties": false,
-                        "dependentRequired": {
-                            "type": [
-                                "label"
-                            ]
-                        },
                         "properties": {
                             "type": {
                                 "enum": [
@@ -602,15 +594,13 @@
                             },
                             "label": {
                                 "type": "string",
-                                "minLength": 1,
-                                "maxLength": 100
+                                "minLength": 1
                             },
                             "help": {
                                 "type": [
                                     "string",
                                     "null"
-                                ],
-                                "maxLength": 255
+                                ]
                             },
                             "default": {
                                 "type": [
@@ -644,13 +634,11 @@
                             "options": {
                                 "type": "object",
                                 "minProperties": 1,
-                                "maxProperties": 64,
                                 "propertyNames": {
                                     "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$"
                                 },
                                 "additionalProperties": {
-                                    "type": "string",
-                                    "maxLength": 100
+                                    "type": "string"
                                 },
                                 "description": "Select options: value => label."
                             },
@@ -671,8 +659,7 @@
                             },
                             "maxLength": {
                                 "type": "integer",
-                                "minimum": 1,
-                                "maximum": 1000
+                                "minimum": 1
                             }
                         },
                         "allOf": [
@@ -756,9 +743,13 @@
                                 }
                             }
                         ],
-                        "description": "A setting declares a \"type\" and a \"label\". A setting of the same name as one of the theme it extends may give only the fields it changes, such as its \"default\"."
+                        "description": "A setting declares a \"type\" and a \"label\". A setting of the same name as one of the theme it extends replaces it.",
+                        "required": [
+                            "type",
+                            "label"
+                        ]
                     },
-                    "description": "Settings administrators change on the Themes page. Each writes a token, an <html> attribute or both before the page renders; useThemeSettings() reads them all. A child theme changes a setting of its parent by giving only the fields it changes."
+                    "description": "Settings administrators change on the Themes page. Each writes a token, an <html> attribute or both before the page renders; useThemeSettings() reads them all."
                 }
             },
             "description": "Only for \"type\": \"theme\"."

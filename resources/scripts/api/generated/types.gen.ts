@@ -752,9 +752,6 @@ export type AdminThemeAttributes = {
      * The theme this one is built on; null for the built-in classic theme.
      */
     extends: string | null;
-    schemes: Array<string>;
-    has_stylesheet: boolean;
-    has_entry: boolean;
     settings_count: number;
     /**
      * Why the theme cannot be activated right now.
@@ -784,8 +781,6 @@ export type AdminThemeSettingAttributes = {
     help: string | null;
     default: string | number | boolean | null;
     value: string | number | boolean | null;
-    token: string | null;
-    attribute: string | null;
     options: Array<{
         value: string;
         label: string;
@@ -6027,35 +6022,6 @@ export type AdminUpdateThemeSettingsResponses = {
 };
 
 export type AdminUpdateThemeSettingsResponse = AdminUpdateThemeSettingsResponses[keyof AdminUpdateThemeSettingsResponses];
-
-export type AdminResetThemeData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/themes/reset';
-};
-
-export type AdminResetThemeErrors = {
-    /**
-     * Authentication credentials were missing or invalid.
-     */
-    401: ErrorEnvelope;
-    /**
-     * The API key does not have permission to perform this action.
-     */
-    403: ErrorEnvelope;
-};
-
-export type AdminResetThemeError = AdminResetThemeErrors[keyof AdminResetThemeErrors];
-
-export type AdminResetThemeResponses = {
-    /**
-     * Classic theme active.
-     */
-    200: AdminThemeResource;
-};
-
-export type AdminResetThemeResponse = AdminResetThemeResponses[keyof AdminResetThemeResponses];
 
 export type AdminStopThemePreviewData = {
     body?: never;

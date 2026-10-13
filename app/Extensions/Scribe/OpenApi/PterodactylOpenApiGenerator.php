@@ -603,8 +603,6 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'help' => 'Where the main navigation sits.',
             'default' => 'side',
             'value' => 'side',
-            'token' => '--navigation',
-            'attribute' => 'data-aurora-nav',
             'options' => [['value' => 'side', 'label' => 'Sidebar']],
             'min' => 0,
             'max' => 1,
@@ -612,7 +610,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'unit' => 'rem',
             'max_length' => 255,
             'accept' => ['image/png'],
-            'max_kilobytes' => 1024,
+            'max_kilobytes' => 10240,
         ]);
 
         $value = [...$this->extensionSettingScalarSchema(), 'nullable' => true];
@@ -623,7 +621,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             Arr::set($schema, "properties.{$limit}", ['type' => 'number', 'nullable' => true, 'example' => null]);
         }
 
-        foreach (['help', 'token', 'attribute', 'unit', 'max_length', 'max_kilobytes'] as $field) {
+        foreach (['help', 'unit', 'max_length', 'max_kilobytes'] as $field) {
             Arr::set($schema, "properties.{$field}.nullable", true);
         }
 

@@ -9,7 +9,6 @@ import {
     adminListThemesOptions,
     adminListThemesQueryKey,
     adminPreviewThemeMutation,
-    adminResetThemeMutation,
     adminStopThemePreviewMutation,
     adminUpdateThemeSettingsMutation,
     adminUploadThemeImageMutation,
@@ -100,19 +99,6 @@ export const useActivateAdminTheme = () => {
     });
 };
 
-export const useResetAdminTheme = () => {
-    const invalidate = useThemeListMutation();
-
-    return useMutation({
-        ...adminResetThemeMutation(),
-        onSuccess: async () => {
-            await invalidate();
-            notifyReloadToApply('Theme reset', 'The classic theme is active again.');
-        },
-        onError: (error) => notifyHttpError(error, 'Unable to reset the theme'),
-    });
-};
-
 export const usePreviewAdminTheme = () => {
     const invalidate = useThemeListMutation();
 
@@ -157,7 +143,7 @@ export const useUpdateAdminThemeSettings = () => {
         ...adminUpdateThemeSettingsMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            toast.success('Theme settings saved');
+            notifyReloadToApply('Theme settings saved', 'Pages render with them from now on.');
         },
         onError: (error) => notifyHttpError(error, 'Unable to save the theme settings'),
     });
@@ -170,7 +156,7 @@ export const useUploadAdminThemeImage = () => {
         ...adminUploadThemeImageMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            toast.success('Image uploaded');
+            notifyReloadToApply('Image uploaded', 'Pages render with it from now on.');
         },
         onError: (error) => notifyHttpError(error, 'Unable to upload the image'),
     });
@@ -183,7 +169,7 @@ export const useClearAdminThemeImage = () => {
         ...adminClearThemeImageMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            toast.success('Image removed');
+            notifyReloadToApply('Image removed', 'Pages render without it from now on.');
         },
         onError: (error) => notifyHttpError(error, 'Unable to remove the image'),
     });

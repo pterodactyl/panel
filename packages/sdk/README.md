@@ -245,7 +245,7 @@ shows while the extension is disabled, and `p:extension:pack` adds it to the arc
 ## Author tooling and configuration
 
 `p:extension:make <id>` scaffolds a package in `extensions/<id>`; `--out=<dir>` creates it in
-`<dir>/<id>` and `--path=<dir>` in exactly `<dir>`. Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
+`<dir>/<id>`. Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
 `p:extension:pack <path>` for preflight checks, successful-build publishing with browser reload in debug mode, and
 runtime-only archives; pack leaves `*.map` files out unless given `--sourcemaps`, since a map can embed
 your sources. Scaffolds include tests, CI, OpenAPI generation, and styling.

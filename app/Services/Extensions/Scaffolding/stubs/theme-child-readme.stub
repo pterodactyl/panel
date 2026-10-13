@@ -7,12 +7,12 @@ Everything this theme leaves out is {{parentName}}'s: its views, skins, styleshe
 | To | Edit |
 | --- | --- |
 | Retune {{parentName}}'s colours, fonts, radius or spacing | `src/theme.css`, after the import |
-{{viewsRow}}| Change the default of one of its settings | `extension.json`: `"settings": { "accent": { "default": "#ff4fd8" } }` |
+{{viewsRow}}| Replace one of its settings, such as a new default | `extension.json`: the setting under the same name, declared in full |
 | Add settings of this theme's own | `extension.json`, with a `type` and a `label` |
 
 The build finds {{parentName}} in the panel's extensions directory (`extensions` in `vite.config.mjs`), else in
 `node_modules`, and builds its stylesheet and classes in after the panel's, so `src/theme.css` stays one import
-plus your own rules. Rebuild after {{parentName}} changes; `npm run doctor` says when it has.
+plus your own rules. Rebuild after {{parentName}} changes.
 
 ## Develop
 

@@ -16,7 +16,6 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Extensions\ReplacesExtensionSettingFiles;
 use Pterodactyl\Contracts\Extensions\UpdatesExtensionSettings;
 use Pterodactyl\Contracts\Themes\ActivatesThemes;
-use Pterodactyl\Contracts\Themes\ResetsThemes;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Facades\Activity;
@@ -62,9 +61,6 @@ class ThemeController extends AdminApiController
             'active' => true,
             'previewing' => false,
             'extends' => 'classic',
-            'schemes' => ['dark', 'light'],
-            'has_stylesheet' => true,
-            'has_entry' => true,
             'settings_count' => 2,
             'problem' => null,
         ],
@@ -81,8 +77,6 @@ class ThemeController extends AdminApiController
                 'help' => null,
                 'default' => '#8b5cf6',
                 'value' => '#8b5cf6',
-                'token' => '--accent',
-                'attribute' => null,
                 'options' => [],
                 'min' => null,
                 'max' => null,
@@ -123,17 +117,6 @@ class ThemeController extends AdminApiController
         return ThemeResource::make($this->item($request, $themes, $extensions, $assets, $manifest));
     }
 
-    #[Endpoint('Reset theme', 'Makes the built-in classic theme active again.')]
-    #[ScribeResponse(self::THEME_EXAMPLE, description: 'Classic theme active.')]
-    public function reset(UpdateThemeRequest $request, ResetsThemes $resets, ThemeRepository $themes, ExtensionRepository $extensions, ExtensionAssetPublisher $assets): ThemeResource
-    {
-        $resets->reset();
-
-        Activity::event('admin:theme.reset')->log();
-
-        return ThemeResource::make($this->item($request, $themes, $extensions, $assets, null));
-    }
-
     #[Endpoint('Preview theme', 'Shows a theme to the signed-in administrator only, for the rest of this session, without activating it.')]
     #[ScribeResponse(self::THEME_EXAMPLE, description: 'Preview started.')]
     public function preview(GetThemesRequest $request, ThemeRepository $themes, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, string $theme): ThemeResource
@@ -156,7 +139,7 @@ class ThemeController extends AdminApiController
         return $this->returnNoContent();
     }
 
-    #[Endpoint('Get theme settings', 'Returns the settings a theme declares, with their current values and the token or attribute each one writes. Classic has none.')]
+    #[Endpoint('Get theme settings', 'Returns the settings a theme declares, with their current values. Classic has none.')]
     #[ScribeResponse(self::SETTING_LIST_EXAMPLE, description: 'Settings returned.')]
     public function settings(GetThemesRequest $request, ThemeRepository $themes, string $theme): ApiResourceCollection
     {
@@ -197,7 +180,7 @@ class ThemeController extends AdminApiController
     private function replaceImage(ReplacesExtensionSettingFiles $files, ThemeRepository $themes, string $theme, string $setting, ?UploadedFile $upload): ApiResourceCollection
     {
         $manifest = $this->theme($themes, $theme);
-        abort_unless($manifest instanceof ExtensionManifest && ($themes->declared($manifest)[$setting]->type ?? null) === 'image', Response::HTTP_NOT_FOUND, "Setting \"{$setting}\" is not an image setting.");
+        abort_unless($manifest instanceof ExtensionManifest && ($manifest->theme->settings[$setting]->type ?? null) === 'image', Response::HTTP_NOT_FOUND, "Setting \"{$setting}\" is not an image setting.");
 
         $files->replace($themes->settings($manifest), $setting, $upload);
         Activity::event($upload instanceof UploadedFile ? 'admin:theme.image' : 'admin:theme.image-clear')->property(['theme' => $theme, 'setting' => $setting])->log();
@@ -224,19 +207,17 @@ class ThemeController extends AdminApiController
         $items = array_map(fn (ThemeSetting $setting): array => [
             'setting' => $setting,
             'value' => $setting->value($stored?->get(ThemeSetting::KEY_PREFIX.$setting->key)),
-        ], array_values($theme instanceof ExtensionManifest ? $themes->declared($theme) : []));
+        ], array_values($theme?->theme->settings ?? []));
 
         return ThemeSettingResource::collection($items);
     }
 
     /**
-     * @return array{theme: ExtensionManifest|null, icon_url: string|null, enabled: bool, active: bool, previewing: bool, schemes: list<string>, problem: string|null}
+     * @return array{theme: ExtensionManifest|null, icon_url: string|null, enabled: bool, active: bool, previewing: bool, problem: string|null}
      */
     private function item(Request $request, ThemeRepository $themes, ExtensionRepository $extensions, ExtensionAssetPublisher $assets, ?ExtensionManifest $theme): array
     {
         $id = $theme->id ?? ThemeRepository::CLASSIC;
-        $problem = $themes->activationProblem($id);
-        $chain = $problem === null ? $themes->chain($id) : [];
 
         return [
             'theme' => $theme,
@@ -244,8 +225,7 @@ class ThemeController extends AdminApiController
             'enabled' => ! $theme instanceof ExtensionManifest || once(fn (): Collection => $extensions->records())->get($id)?->enabled === true,
             'active' => $themes->active() === $id,
             'previewing' => $this->previewing($request) === $id,
-            'schemes' => $themes->schemes($chain),
-            'problem' => $problem,
+            'problem' => $themes->activationProblem($id),
         ];
     }
 

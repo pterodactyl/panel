@@ -8,8 +8,6 @@ use Closure;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Services\Themes\ThemeBuild;
-use Pterodactyl\Services\Themes\ViewCatalog;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -20,7 +18,7 @@ class ExtensionAssetPublisher
 
     private const array ICON_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
-    public function __construct(private readonly ExtensionStylesheetInspector $stylesheets, private readonly ViewCatalog $views) {}
+    public function __construct(private readonly ExtensionStylesheetInspector $stylesheets) {}
 
     public function iconUrl(ExtensionManifest $manifest): ?string
     {
@@ -193,8 +191,8 @@ class ExtensionAssetPublisher
     }
 
     /**
-     * Why the built frontend cannot be published: it is missing, its styles would override the
-     * panel's or another extension's, or, for a theme, it overrides views that do not exist.
+     * Why the built frontend cannot be published: it is missing, or its styles would override the
+     * panel's or another extension's.
      */
     public function unusableBuildReason(ExtensionManifest $manifest): ?string
     {
@@ -204,7 +202,7 @@ class ExtensionAssetPublisher
 
         return $this->missingBuildReason($manifest)
             ?? $this->distFilesReason($manifest)
-            ?? ($manifest->isTheme() ? $this->themeBuildReason($manifest) : $this->stylesheets->conflictReason($manifest));
+            ?? ($manifest->isTheme() ? null : $this->stylesheets->conflictReason($manifest));
     }
 
     public function publishedPath(string $identifier): string
@@ -238,13 +236,6 @@ class ExtensionAssetPublisher
         }
 
         return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version, 'scripts' => $this->scriptsRevision($identifier, $version)];
-    }
-
-    private function themeBuildReason(ExtensionManifest $manifest): ?string
-    {
-        $unknown = $this->views->unknown(ThemeBuild::of($manifest)->views ?? []);
-
-        return $unknown === [] ? null : sprintf('Theme "%s" overrides views the panel does not have: %s.', $manifest->id, implode(', ', $unknown));
     }
 
     private function writeDevelopment(string $identifier, string $version): void

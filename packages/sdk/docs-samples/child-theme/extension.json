@@ -10,7 +10,7 @@
         "extends": "aurora",
         "stylesheet": "dist/theme.css",
         "settings": {
-            "accent": { "default": "#f97316" },
+            "accent": { "type": "color", "label": "Accent", "default": "#f97316", "token": "--aurora-accent" },
             "glow": { "type": "toggle", "label": "Sunset glow", "default": true, "attribute": "data-sunset-glow" }
         }
     }

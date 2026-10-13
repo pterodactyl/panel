@@ -36,8 +36,6 @@ final readonly class ThemeSetting
 
     public const array IMAGE_TYPES = [...ExtensionSettingFiles::IMAGES, 'image/svg+xml'];
 
-    public const int IMAGE_MAX_KILOBYTES = 1024;
-
     /**
      * @param  array<string, string>  $options  select option key => label
      */
@@ -90,33 +88,6 @@ final readonly class ThemeSetting
     }
 
     /**
-     * The declaration a child theme's override of this setting makes: these fields, with the ones the
-     * override gives in their place.
-     *
-     * @param  ExtensionThemeSettingOverride  $override
-     * @return ExtensionThemeSettingOverride
-     */
-    public function overriddenBy(array $override): array
-    {
-        $declaration = array_filter([
-            'type' => $this->type,
-            'label' => $this->label,
-            'default' => $this->default,
-            'help' => $this->help,
-            'token' => $this->token,
-            'attribute' => $this->attribute,
-            'options' => $this->type === 'select' ? $this->options : null,
-            'min' => $this->min,
-            'max' => $this->max,
-            'step' => $this->step,
-            'unit' => $this->unit,
-            'maxLength' => $this->type === 'text' ? $this->maxLength : null,
-        ], fn (mixed $value): bool => $value !== null);
-
-        return [...$declaration, ...$override];
-    }
-
-    /**
      * The extension setting that validates and stores this setting's value, with the same
      * rules as the matching `->color()`, `->field()` and `->file()` definitions. A cleared
      * value reads as the default.
@@ -133,7 +104,7 @@ final readonly class ThemeSetting
         return match ($this->type) {
             'color' => $definition->color(),
             'select' => $definition->field('select', array_map(fn (string $value, string $label): array => ['value' => $value, 'label' => $label], array_keys($this->options), $this->options)),
-            'image' => $definition->file(self::IMAGE_TYPES, self::IMAGE_MAX_KILOBYTES),
+            'image' => $definition->file(self::IMAGE_TYPES, ExtensionSettingFiles::MAX_KILOBYTES),
             default => $definition->field($this->type),
         };
     }

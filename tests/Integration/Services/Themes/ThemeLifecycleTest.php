@@ -14,7 +14,6 @@ use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\ExtensionAssetPublisher;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Themes\ThemeRepository;
-use Pterodactyl\Services\Themes\ViewCatalog;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 use function pterodactylTestCase;
@@ -56,7 +55,7 @@ function themePackage(string $id, array $theme = [], array $files = [], array $m
             'theme' => ['stylesheet' => 'dist/theme.css', ...$theme],
             ...$manifest,
         ], JSON_THROW_ON_ERROR));
-        foreach (['theme.css' => ':root{--accent:red}', 'theme.json' => '{"core":"f1x7ure0c0re0000","sdk":"2.0.0-beta.5"}', ...$files] as $name => $contents) {
+        foreach (['theme.css' => ':root{--accent:red}', 'theme.json' => '{}', ...$files] as $name => $contents) {
             File::put($path.'/dist/'.$name, $contents);
         }
 
@@ -96,7 +95,7 @@ test('the active theme cannot be disabled or removed', function (): void {
 test('a child theme needs its parent enabled, and the chain resolves parent first', function (): void {
     $installer = app(InstallsExtensions::class);
     $installer->install(themePackage('base'));
-    $installer->install(themePackage('child', ['extends' => 'base', 'schemes' => ['light']], ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":null}}']));
+    $installer->install(themePackage('child', ['extends' => 'base', 'schemes' => ['light']], ['theme.json' => '{"parents":["base"]}']));
 
     expect(fn () => app(SetsExtensionEnabled::class)->setEnabled('child', true))->toThrow(InvalidExtensionException::class, 'Theme "child" extends "base", which is not an enabled theme.');
 
@@ -114,37 +113,31 @@ test('a child theme needs its parent enabled, and the chain resolves parent firs
 
 test('a child stylesheet must be built over the stylesheets of the themes it extends', function (): void {
     $installer = app(InstallsExtensions::class);
-    $installer->install(themePackage('base', files: ['theme.json' => '{"core":"f1x7ure0c0re0000","build":"0000000000base02"}']), enable: true);
+    $installer->install(themePackage('base'), enable: true);
     $unbuilt = themePackage('child', ['extends' => 'base']);
 
     $this->artisan('p:extension:doctor', ['path' => $unbuilt])->expectsOutputToContain('was not built over the stylesheet of "base"')->assertFailed();
     expect(fn () => $installer->install($unbuilt, enable: true))->toThrow(InvalidExtensionException::class, 'Theme "child" extends "base", but its stylesheet was not built over the stylesheet of "base".');
 
-    // Built over an earlier build of the parent, it still works, and doctor says to rebuild.
-    $stale = themePackage('child', ['extends' => 'base'], ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":"0000000000base01"}}']);
-    $this->artisan('p:extension:doctor', ['path' => $stale])
-        ->expectsOutputToContain('was built over build 0000000000base01 of "base", which is now build 0000000000base02')
-        ->assertSuccessful();
-    $installer->install($stale, enable: true);
+    $built = themePackage('child', ['extends' => 'base'], ['theme.json' => '{"parents":["base"]}']);
+    $this->artisan('p:extension:doctor', ['path' => $built])->assertSuccessful();
+    $installer->install($built, enable: true);
     expect(app(ThemeRepository::class)->activationProblem('child'))->toBeNull();
 });
 
-test('a child theme changes a setting of its parent by giving only the fields it changes', function (): void {
+test('a child theme setting replaces the setting of the same name of its parent', function (): void {
     $installer = app(InstallsExtensions::class);
-    $built = ['theme.json' => '{"core":"f1x7ure0c0re0000","parents":{"base":null}}'];
     $installer->install(themePackage('base', ['settings' => [
-        'accent' => ['type' => 'color', 'label' => 'Accent', 'help' => 'Buttons and links.', 'default' => '#111111', 'token' => '--base-accent'],
+        'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#111111', 'token' => '--base-accent'],
         'density' => ['type' => 'select', 'label' => 'Density', 'options' => ['cosy' => 'Cosy', 'compact' => 'Compact'], 'default' => 'cosy', 'attribute' => 'data-density'],
     ]]), enable: true);
     $child = themePackage('child', ['extends' => 'base', 'settings' => [
-        'accent' => ['default' => '#ff4fd8'],
+        'accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#ff4fd8', 'token' => '--base-accent'],
         'stars' => ['type' => 'toggle', 'label' => 'Stars', 'default' => true],
-    ]], $built);
+    ]], ['theme.json' => '{"parents":["base"]}']);
     $installer->install($child, enable: true);
     app(ActivatesThemes::class)->activate('child');
 
-    $accent = app(ThemeRepository::class)->declarations(app(ExtensionRepository::class)->discovered()->get('child'))['accent'];
-    expect([$accent->type, $accent->label, $accent->help, $accent->token, $accent->default])->toBe(['color', 'Accent', 'Buttons and links.', '--base-accent', '#ff4fd8']);
     $this->get('/auth/login')->assertOk()->assertSee('--base-accent:#ff4fd8', false)->assertSee('data-density="cosy"', false);
 
     $this->artisan('p:extension:types', ['path' => $child])->assertSuccessful();
@@ -155,12 +148,6 @@ test('a child theme changes a setting of its parent by giving only the fields it
             readonly "stars": boolean;
         }
         TS);
-
-    // An override needs a declaration to change, and must make a valid one.
-    foreach ([[['nothing' => ['default' => 'x']], 'overrides setting "nothing", which no theme it extends declares'], [['accent' => ['default' => 'red']], 'A color setting defaults to']] as [$settings, $message]) {
-        $broken = themePackage('broken', ['extends' => 'base', 'settings' => $settings], $built);
-        $this->artisan('p:extension:doctor', ['path' => $broken])->expectsOutputToContain($message)->assertFailed();
-    }
 });
 
 test('an incompatible active theme is reported and renders as classic', function (): void {
@@ -176,27 +163,6 @@ test('an incompatible active theme is reported and renders as classic', function
     $this->get('/auth/login')->assertOk()->assertSee('data-theme="classic"', false);
 });
 
-test('doctor and enable refuse theme builds that override unknown views', function (array $files, string $message): void {
-    File::put($catalog = $this->baseDirectory.'/views.json', json_encode(['server.power', 'layout.app', 'page.dashboard'], JSON_THROW_ON_ERROR));
-    $this->app->instance(ViewCatalog::class, new class($catalog) extends ViewCatalog
-    {
-        public function __construct(private readonly string $catalog) {}
-
-        public function path(): string
-        {
-            return $this->catalog;
-        }
-    });
-    $this->app->forgetInstance(ExtensionAssetPublisher::class);
-    $path = themePackage('aurora', files: $files, manifest: ['ui' => ['entry' => 'dist/client.js']]);
-    File::put($path.'/dist/client.js', $files['client.js'] ?? 'export default {};');
-
-    $this->artisan('p:extension:doctor', ['path' => $path])->expectsOutputToContain($message)->assertFailed();
-    expect(fn () => app(InstallsExtensions::class)->install($path, enable: true))->toThrow(InvalidExtensionException::class, $message);
-})->with([
-    'an unknown core view' => [['theme.json' => '{"core":"f1x7ure0c0re0000","views":["server.powr","billing.balance","layout.app"]}'], 'overrides views the panel does not have: server.powr.'],
-]);
-
 test('a theme may load fonts and images from other origins', function (): void {
     $path = themePackage('aurora', files: [
         'theme.css' => '@import url("https://fonts.example.com/inter.css");@font-face{src:url(//cdn.example.com/a.woff2)}',
@@ -208,34 +174,6 @@ test('a theme may load fonts and images from other origins', function (): void {
     app(ExtensionRepository::class)->flushDiscovery();
 
     expect(app(ExtensionRepository::class)->enabled()->has('aurora'))->toBeTrue();
-});
-
-test('doctor warns when a theme stylesheet was built against other core classes', function (): void {
-    $path = themePackage('aurora', files: ['theme.json' => '{"core":"0ther0000000hash","sdk":"2.0.0-beta.5"}']);
-
-    $this->artisan('p:extension:doctor', ['path' => $path])
-        ->expectsOutputToContain('built against core classes "0ther0000000hash", but this panel has "f1x7ure0c0re0000"')
-        ->assertSuccessful();
-});
-
-test('doctor refuses an extension that overrides views the panel does not have', function (): void {
-    File::put($catalog = $this->baseDirectory.'/views.json', json_encode(['server.power' => [], 'dashboard.serverCard' => []], JSON_THROW_ON_ERROR));
-    $this->app->instance(ViewCatalog::class, new class($catalog) extends ViewCatalog
-    {
-        public function __construct(private readonly string $catalog) {}
-
-        public function path(): string
-        {
-            return $this->catalog;
-        }
-    });
-    $path = $this->baseDirectory.'/source/views';
-    File::ensureDirectoryExists($path);
-    File::put($path.'/extension.json', json_encode(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'requires' => ['sdk' => '*'], 'ui' => ['entry' => 'dist/client.js', 'views' => ['dashboard.serverCrad', 'billing.balance']]], JSON_THROW_ON_ERROR));
-    File::ensureDirectoryExists($path.'/dist');
-    File::put($path.'/dist/client.js', 'export default {};');
-
-    $this->artisan('p:extension:doctor', ['path' => $path])->expectsOutputToContain('views the panel does not have: dashboard.serverCrad.')->assertFailed();
 });
 
 test('types gives a theme typed settings for useThemeSettings', function (): void {

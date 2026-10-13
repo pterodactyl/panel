@@ -11,7 +11,7 @@ use Pterodactyl\Services\Themes\ThemeRepository;
 /**
  * A theme as the admin Themes page lists it; a null manifest is the built-in classic theme.
  *
- * @extends AdminResource<array{theme: ExtensionManifest|null, icon_url: string|null, enabled: bool, active: bool, previewing: bool, schemes: list<string>, problem: string|null}>
+ * @extends AdminResource<array{theme: ExtensionManifest|null, icon_url: string|null, enabled: bool, active: bool, previewing: bool, problem: string|null}>
  */
 class ThemeResource extends AdminResource
 {
@@ -37,10 +37,7 @@ class ThemeResource extends AdminResource
             'active' => $this->resource['active'],
             'previewing' => $this->resource['previewing'],
             'extends' => $theme?->theme?->extends,
-            'schemes' => $this->resource['schemes'],
-            'has_stylesheet' => $theme?->theme?->stylesheet !== null,
-            'has_entry' => $theme?->hasUi() ?? false,
-            'settings_count' => count($theme?->theme->settings ?? []) + count($theme?->theme->overrides ?? []),
+            'settings_count' => count($theme?->theme->settings ?? []),
             'problem' => $this->resource['problem'],
         ];
     }

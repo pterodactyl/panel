@@ -18,28 +18,21 @@ final readonly class ThemeDefinition
 
     /**
      * @param  list<'dark'|'light'>|null  $schemes  null inherits the parent's
-     * @param  array<string, ThemeSetting>  $settings  the settings declared in full
-     * @param  array<string, ExtensionThemeSettingOverride>  $overrides  the fields that change a setting of the same name of a theme this one extends
+     * @param  array<string, ThemeSetting>  $settings  a setting replaces the one of the same name of a theme this one extends
      */
     public function __construct(
         public string $extends = ThemeRepository::CLASSIC,
         public ?string $stylesheet = null,
         public ?array $schemes = null,
         public array $settings = [],
-        public array $overrides = [],
     ) {}
 
     /** @param ExtensionThemeInput $data */
     public static function fromValidatedData(array $data): self
     {
         $settings = [];
-        $overrides = [];
         foreach ($data['settings'] ?? [] as $key => $setting) {
-            if (isset($setting['type'], $setting['label'])) {
-                $settings[$key] = ThemeSetting::fromValidatedData($key, $setting);
-            } else {
-                $overrides[$key] = $setting;
-            }
+            $settings[$key] = ThemeSetting::fromValidatedData($key, $setting);
         }
 
         return new self(
@@ -47,7 +40,6 @@ final readonly class ThemeDefinition
             stylesheet: $data['stylesheet'] ?? null,
             schemes: $data['schemes'] ?? null,
             settings: $settings,
-            overrides: $overrides,
         );
     }
 }

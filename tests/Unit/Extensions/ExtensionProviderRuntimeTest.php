@@ -23,7 +23,6 @@ use Pterodactyl\Actions\Extensions\ReplaceExtensionSettingFile;
 use Pterodactyl\Actions\Extensions\SetExtensionEnabled;
 use Pterodactyl\Actions\Extensions\UpdateExtensionSettings;
 use Pterodactyl\Actions\Themes\ActivateTheme;
-use Pterodactyl\Actions\Themes\ResetTheme;
 use Pterodactyl\Contracts\Extensions\InstallsExtensions;
 use Pterodactyl\Contracts\Extensions\RemovesExtensions;
 use Pterodactyl\Contracts\Extensions\ReplacesExtensionSettingFiles;
@@ -31,7 +30,6 @@ use Pterodactyl\Contracts\Extensions\SetsExtensionEnabled;
 use Pterodactyl\Contracts\Extensions\UpdatesExtensionSettings;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Contracts\Themes\ActivatesThemes;
-use Pterodactyl\Contracts\Themes\ResetsThemes;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Pterodactyl\Http\Middleware\EnsureExtensionIsAvailable;
@@ -187,7 +185,6 @@ test('the actions that manage extensions and themes cannot be wrapped and keep r
     'settings' => [UpdatesExtensionSettings::class, UpdateExtensionSettings::class],
     'setting files' => [ReplacesExtensionSettingFiles::class, ReplaceExtensionSettingFile::class],
     'activate a theme' => [ActivatesThemes::class, ActivateTheme::class],
-    'reset the theme' => [ResetsThemes::class, ResetTheme::class],
 ]);
 
 test('a provider asking to wrap an extension lifecycle action fails to boot and stages nothing', function (): void {

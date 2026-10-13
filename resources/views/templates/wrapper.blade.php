@@ -72,9 +72,7 @@
         <style id="theme-settings">{!! $theme->style() !!}</style>
 
         @yield('assets')
-        @if ($theme->linksCoreStylesheet())
-            {!! $asset->css($asset::STYLESHEET_ENTRY) !!}
-        @endif
+        {!! $asset->css($asset::STYLESHEET_ENTRY) !!}
         @if ($theme->stylesheet !== null)
             <link rel="stylesheet" href="{{ $theme->stylesheet }}">
         @endif

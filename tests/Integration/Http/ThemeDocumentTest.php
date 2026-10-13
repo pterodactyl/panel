@@ -17,8 +17,6 @@ use function pterodactylTestCase;
 
 uses(HttpTestCase::class);
 
-const CORE = 'f1x7ure0c0re0000';
-
 beforeEach(function (): void {
     $this->baseDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'ptero-theme-document-'.uniqid();
     config([
@@ -35,11 +33,10 @@ afterEach(function (): void {
 
 /**
  * @param  array<string, mixed>  $theme
- * @param  array<string, mixed>  $build
  */
-function installTheme(string $id, array $theme = [], array $build = ['core' => CORE, 'sdk' => '2.0.0-beta.5']): void
+function installTheme(string $id, array $theme = []): void
 {
-    (function () use ($id, $theme, $build): void {
+    (function () use ($id, $theme): void {
         $directory = $this->baseDirectory.'/extensions/'.$id;
         File::ensureDirectoryExists($directory.'/dist');
         File::put($directory.'/extension.json', json_encode([
@@ -52,7 +49,6 @@ function installTheme(string $id, array $theme = [], array $build = ['core' => C
         ], JSON_THROW_ON_ERROR));
         File::put($directory.'/dist/client.js', 'export default {};');
         File::put($directory.'/dist/theme.css', ':root{}');
-        File::put($directory.'/dist/theme.json', json_encode($build, JSON_THROW_ON_ERROR));
         Extension::query()->create(['identifier' => $id, 'version' => '1.0.0', 'enabled' => true]);
         $this->app->make(ExtensionRepository::class)->flushDiscovery();
     })->call(pterodactylTestCase());
@@ -98,7 +94,6 @@ test('guests get the classic theme with the panel stylesheet and a zoomable view
         'schemes' => ['dark'],
         'safeMode' => false,
         'preview' => false,
-        'stylesheetFallback' => false,
     ]);
 
     // The import map moved into <head>, ahead of the theme entries it serves.
@@ -114,30 +109,17 @@ test('the active theme renders its settings, stylesheet and entry before any scr
         ->assertSee('class="dark" data-theme="aurora" data-aurora-nav="top" data-density="true" >', false)
         ->assertSee('<style id="theme-settings">:root:root{--accent:#112233;--radius:0.75rem;}</style>', false)
         ->assertSee('<link rel="stylesheet" href="/assets/extensions/aurora/theme.css?v=100">', false)
-        ->assertSee('<link rel="modulepreload" href="/assets/extensions/aurora/client.js?v=100">', false)
-        // Built against this panel's classes, the theme stylesheet replaces the panel's.
-        ->assertDontSee('stylesheet.test.css', false);
+        ->assertSee('<link rel="modulepreload" href="/assets/extensions/aurora/client.js?v=100">', false);
+    $html = (string) $response->getContent();
 
+    // The theme stylesheet loads after the panel's.
+    expect(mb_strpos($html, 'stylesheet.test.css'))->toBeLessThan(mb_strpos($html, '/assets/extensions/aurora/theme.css'));
     expect(themePayload($response))->toMatchArray([
         'id' => 'aurora',
         'chain' => [['id' => 'aurora', 'version' => '1.0.0', 'entry' => '/assets/extensions/aurora/client.js?v=100', 'development' => null]],
         'settings' => ['accent' => '#112233', 'radius' => 0.75, 'navigation' => 'top', 'compact' => true, 'tagline' => null],
-        'stylesheetFallback' => false,
     ]);
 });
-
-test('a theme stylesheet built against other core classes is laid over the panel stylesheet', function (array $build): void {
-    installTheme('aurora', build: $build);
-    app(ThemeRepository::class)->setActive('aurora');
-
-    $html = (string) $this->get('/auth/login')->assertOk()->getContent();
-
-    expect(mb_strpos($html, 'stylesheet.test.css'))->toBeLessThan(mb_strpos($html, '/assets/extensions/aurora/theme.css'));
-    expect(themePayload($this->get('/auth/login'))['stylesheetFallback'])->toBeTrue();
-})->with([
-    'another hash' => [['core' => 'another0000hash0', 'sdk' => '2.0.0-beta.5']],
-    'no build info' => [[]],
-]);
 
 test('setting values cannot leave their declaration or the style element', function (string $hostile): void {
     aurora();

@@ -78,11 +78,11 @@ test('lists the built-in theme and every installed theme', function (): void {
 
     expect(array_keys($themes))->toBe(['classic', 'aurora', 'nebula']);
     expect($themes['classic'])->toMatchArray(['builtin' => true, 'active' => true, 'enabled' => true, 'extends' => null, 'problem' => null, 'settings_count' => 0]);
-    expect($themes['aurora'])->toMatchArray(['builtin' => false, 'active' => false, 'extends' => 'classic', 'schemes' => ['dark'], 'settings_count' => 6, 'problem' => null]);
+    expect($themes['aurora'])->toMatchArray(['builtin' => false, 'active' => false, 'extends' => 'classic', 'settings_count' => 6, 'problem' => null]);
     expect($themes['nebula'])->toMatchArray(['enabled' => false, 'problem' => 'Theme "nebula" is not enabled or failed to load.']);
 });
 
-test('activates a usable theme and resets to classic', function (): void {
+test('activates a usable theme, and classic to reset', function (): void {
     $this->postJson(route('api.admin.themes.activate', ['theme' => 'aurora']))->assertOk()
         ->assertJsonPath('object', 'theme')
         ->assertJsonPath('attributes.active', true);
@@ -94,9 +94,8 @@ test('activates a usable theme and resets to classic', function (): void {
     $this->postJson(route('api.admin.themes.activate', ['theme' => 'missing']))->assertNotFound();
     expect(Setting::fetch(ThemeRepository::SETTING))->toBe('aurora');
 
-    $this->postJson(route('api.admin.themes.reset'))->assertOk()->assertJsonPath('attributes.id', 'classic');
+    $this->postJson(route('api.admin.themes.activate', ['theme' => 'classic']))->assertOk()->assertJsonPath('attributes.active', true);
     $this->assertDatabaseMissing('settings', ['key' => ThemeRepository::SETTING]);
-    $this->assertDatabaseHas('activity_logs', ['event' => 'admin:theme.reset']);
 });
 
 test('previews a theme for this session only', function (): void {
@@ -113,14 +112,14 @@ test('previews a theme for this session only', function (): void {
     expect(session()->has(ThemeResolver::PREVIEW))->toBeFalse();
 });
 
-test('returns each setting with its value and what it writes', function (): void {
+test('returns each setting with its value', function (): void {
     $settings = settingsOf($this->getJson(route('api.admin.themes.settings', ['theme' => 'aurora']))->assertOk()->json());
 
-    expect($settings['accent'])->toMatchArray(['type' => 'color', 'default' => '#8b5cf6', 'value' => '#8b5cf6', 'token' => '--accent', 'attribute' => null]);
+    expect($settings['accent'])->toMatchArray(['type' => 'color', 'default' => '#8b5cf6', 'value' => '#8b5cf6']);
     expect($settings['radius'])->toMatchArray(['min' => 0, 'max' => 2, 'step' => 0.25, 'unit' => 'rem']);
     expect($settings['navigation']['options'])->toBe([['value' => 'side', 'label' => 'Sidebar'], ['value' => 'top', 'label' => 'Top bar']]);
     expect($settings['tagline']['max_length'])->toBe(10);
-    expect($settings['logo'])->toMatchArray(['value' => null, 'max_kilobytes' => 1024])->and($settings['logo']['accept'])->toContain('image/svg+xml');
+    expect($settings['logo'])->toMatchArray(['value' => null, 'max_kilobytes' => 10240])->and($settings['logo']['accept'])->toContain('image/svg+xml');
     $this->getJson(route('api.admin.themes.settings', ['theme' => 'classic']))->assertOk()->assertJsonPath('data', []);
 });
 
@@ -136,11 +135,11 @@ test('saves settings that pass their type and restores defaults from null', func
     expect($reset['accent']['value'])->toBe('#8b5cf6')->and($reset['navigation']['value'])->toBe('side')->and($reset['radius']['value'])->toBe(1.25);
 });
 
-test('a child theme that overrides a setting lists and saves it with the declaration it changes', function (): void {
+test('a child theme lists and saves its own settings', function (): void {
     File::ensureDirectoryExists($this->baseDirectory.'/extensions/midnight');
     File::put($this->baseDirectory.'/extensions/midnight/extension.json', json_encode([
         'id' => 'midnight', 'type' => 'theme', 'name' => 'Midnight', 'version' => '1.0.0',
-        'theme' => ['extends' => 'aurora', 'settings' => ['accent' => ['default' => '#ff4fd8']]],
+        'theme' => ['extends' => 'aurora', 'settings' => ['accent' => ['type' => 'color', 'label' => 'Accent', 'default' => '#ff4fd8', 'token' => '--accent']]],
     ], JSON_THROW_ON_ERROR));
     Extension::query()->create(['identifier' => 'midnight', 'version' => '1.0.0', 'enabled' => true]);
     app(ExtensionRepository::class)->flushDiscovery();
@@ -148,7 +147,7 @@ test('a child theme that overrides a setting lists and saves it with the declara
 
     $settings = settingsOf($this->getJson(route('api.admin.themes.settings', ['theme' => 'midnight']))->assertOk()->json());
     expect(array_keys($settings))->toBe(['accent'])
-        ->and($settings['accent'])->toMatchArray(['type' => 'color', 'label' => 'Accent', 'default' => '#ff4fd8', 'value' => '#ff4fd8', 'token' => '--accent']);
+        ->and($settings['accent'])->toMatchArray(['type' => 'color', 'label' => 'Accent', 'default' => '#ff4fd8', 'value' => '#ff4fd8']);
 
     $this->patchJson($route, ['settings' => ['accent' => 'red']])->assertUnprocessable();
     expect(settingsOf($this->patchJson($route, ['settings' => ['accent' => '#00ff00']])->assertOk()->json())['accent']['value'])->toBe('#00ff00');
@@ -197,7 +196,6 @@ test('non admins cannot see or change themes', function (string $method, string 
     ['getJson', 'api.admin.themes', []],
     ['getJson', 'api.admin.themes.settings', ['theme' => 'aurora']],
     ['postJson', 'api.admin.themes.activate', ['theme' => 'aurora']],
-    ['postJson', 'api.admin.themes.reset', []],
     ['postJson', 'api.admin.themes.preview', ['theme' => 'aurora']],
     ['deleteJson', 'api.admin.themes.preview.stop', []],
     ['patchJson', 'api.admin.themes.settings.update', ['theme' => 'aurora']],

@@ -15,11 +15,8 @@ class AssetHashService
 
     public const string MAIN_ENTRY = 'resources/scripts/index.tsx';
 
-    /** The panel stylesheet, a Vite input of its own so a theme's stylesheet can take its place. */
+    /** The panel stylesheet, a Vite input of its own that a theme's stylesheet is linked after. */
     public const string STYLESHEET_ENTRY = 'resources/scripts/assets/tailwind.css';
-
-    /** Written by scripts/generate-core-classes.mjs beside the build. */
-    public const string CORE_CLASSES_PATH = 'assets/core-classes.json';
 
     /**
      * Bare module specifiers shared with runtime-loaded extension bundles, mapped to
@@ -104,18 +101,6 @@ class AssetHashService
         $entry = $this->entry($resource);
 
         return $entry === null ? '' : $this->stylesheetTag($this->assetUrl($entry['file']), $entry['integrity'] ?? '');
-    }
-
-    /**
-     * The hash of the core class manifest the panel was built with. A theme stylesheet built
-     * against the same hash holds every class the panel uses.
-     */
-    public function coreClassesHash(): ?string
-    {
-        $contents = $this->filesystem->get(self::CORE_CLASSES_PATH);
-        $data = is_string($contents) ? json_decode($contents, true) : null;
-
-        return is_array($data) && is_string($data['hash'] ?? null) ? $data['hash'] : null;
     }
 
     /**
