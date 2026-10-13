@@ -194,8 +194,7 @@ class ExtensionAssetPublisher
 
     /**
      * Why the built frontend cannot be published: it is missing, its styles would override the
-     * panel's or another extension's, or, for a theme, it loads remote resources, exceeds its
-     * size budget or overrides views that do not exist.
+     * panel's or another extension's, or, for a theme, it overrides views that do not exist.
      */
     public function unusableBuildReason(ExtensionManifest $manifest): ?string
     {
@@ -243,14 +242,6 @@ class ExtensionAssetPublisher
 
     private function themeBuildReason(ExtensionManifest $manifest): ?string
     {
-        // Both files exist by now: missingBuildReason() checked them.
-        foreach ([[$manifest->theme?->stylesheet, ThemeBuild::STYLESHEET_BUDGET], [$manifest->uiEntry, ThemeBuild::ENTRY_BUDGET]] as [$file, $budget]) {
-            $size = $file === null ? 0 : File::size($manifest->path(...explode('/', $file)));
-            if ($size > $budget) {
-                return sprintf('Theme "%s" ships %s at %d KB; a theme may ship at most %d KB there.', $manifest->id, $file, (int) ceil($size / 1024), $budget / 1024);
-            }
-        }
-
         $unknown = $this->views->unknown(ThemeBuild::of($manifest)->views ?? []);
 
         return $unknown === [] ? null : sprintf('Theme "%s" overrides views the panel does not have: %s.', $manifest->id, implode(', ', $unknown));

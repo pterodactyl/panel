@@ -12,10 +12,6 @@ use Pterodactyl\Services\Extensions\ExtensionManifest;
  */
 final readonly class ThemeBuild
 {
-    public const int STYLESHEET_BUDGET = 250 * 1024;
-
-    public const int ENTRY_BUDGET = 200 * 1024;
-
     /**
      * @param  string|null  $core  hash of the core class manifest the stylesheet was built against
      * @param  list<string>|null  $views  the view names the theme overrides, when the preset could read them

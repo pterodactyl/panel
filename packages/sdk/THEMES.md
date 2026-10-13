@@ -1199,9 +1199,9 @@ rendered = renderView('layout.app', {
 
 ### Doctor and pack
 
-`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, the
-[budgets](#budgets), view names, whether the stylesheet was built against this panel's
-classes, and for a child theme, over the current builds of its parents.
+`npm run doctor` runs `p:extension:doctor` on the theme: the manifest, the build, view names,
+whether the stylesheet was built against this panel's classes, and for a child theme, over the
+current builds of its parents.
 
 `npm run pack` writes a `.pteroext` archive to install on another panel, replacing an earlier one;
 `.gitignore` leaves archives out of the repository. The build writes no source maps, which would embed
@@ -1270,16 +1270,6 @@ models, parts and fixtures, and the primitives' parts and state, can change in a
 the SDK of the panel you target. After updating it, `npm run typecheck` catches a changed model field
 and `npm run doctor` an overridden view that no longer exists; then rebuild. From 2.0, additions to the
 contract are minor versions and removals major.
-
-### Budgets
-
-| File | Limit |
-| --- | --- |
-| `dist/theme.css` | 250 KB |
-| `dist/client.js` | 200 KB; chunks loaded with `lazyView` do not count |
-
-Doctor, pack, install and enable refuse a build over either limit, or a `dist/theme.json` that names a
-core view that does not exist.
 
 ## Reference
 

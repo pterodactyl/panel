@@ -176,7 +176,7 @@ test('an incompatible active theme is reported and renders as classic', function
     $this->get('/auth/login')->assertOk()->assertSee('data-theme="classic"', false);
 });
 
-test('doctor and enable refuse theme builds that load remote files, outgrow their budget or override unknown views', function (array $files, string $message): void {
+test('doctor and enable refuse theme builds that override unknown views', function (array $files, string $message): void {
     File::put($catalog = $this->baseDirectory.'/views.json', json_encode(['server.power', 'layout.app', 'page.dashboard'], JSON_THROW_ON_ERROR));
     $this->app->instance(ViewCatalog::class, new class($catalog) extends ViewCatalog
     {
@@ -194,8 +194,6 @@ test('doctor and enable refuse theme builds that load remote files, outgrow thei
     $this->artisan('p:extension:doctor', ['path' => $path])->expectsOutputToContain($message)->assertFailed();
     expect(fn () => app(InstallsExtensions::class)->install($path, enable: true))->toThrow(InvalidExtensionException::class, $message);
 })->with([
-    'an oversized stylesheet' => [['theme.css' => str_repeat('a', 251 * 1024)], 'ships dist/theme.css at 251 KB'],
-    'an oversized entry' => [['client.js' => str_repeat('a', 201 * 1024)], 'ships dist/client.js at 201 KB'],
     'an unknown core view' => [['theme.json' => '{"core":"f1x7ure0c0re0000","views":["server.powr","billing.balance","layout.app"]}'], 'overrides views the panel does not have: server.powr.'],
 ]);
 

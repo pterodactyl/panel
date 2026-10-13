@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import postcss from 'postcss';
@@ -15,12 +15,10 @@ async function compile(path: string): Promise<string> {
     const from = resolve(samples, path);
     const { css } = await postcss([tailwind()]).process(readFileSync(from, 'utf8'), { from });
 
-    expect(Buffer.byteLength(css)).toBeLessThan(250 * 1024);
-
     return css;
 }
 
-it('compiles the sample theme stylesheet within the stylesheet budget', async () => {
+it('compiles the sample theme stylesheet', async () => {
     const css = await compile('aurora/src/theme.css');
 
     expect(css).toContain("font-family: 'Aurora Sans'");
@@ -57,7 +55,6 @@ it('builds the sample theme entry and records the views it overrides', async () 
             'dashboard.serverList',
             'dashboard.serverCard',
         ]);
-        expect(statSync(resolve(outDir, 'client.js')).size).toBeLessThan(200 * 1024);
     } finally {
         rmSync(outDir, { recursive: true, force: true });
     }

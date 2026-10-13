@@ -31,7 +31,7 @@ from another theme instead, scaffold with `--extends=<theme>`.
 | `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
 | `npm run typecheck` | Checks the theme against the SDK's types. |
 | `npm test` | Runs the tests. |
-| `npm run doctor` | The panel's checks: manifest, build, budgets and view names. |
+| `npm run doctor` | The panel's checks: manifest, build and view names. |
 | `npm run types` | Generates `src/theme-types.ts` from the settings. |
 | `npm run pack` | Packs a `.pteroext` archive to install on another panel. |
 
