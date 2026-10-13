@@ -13,7 +13,7 @@ import {
 } from '@/sdk/testing';
 import { clearThemeLayers, registerViewLayer } from '../registry';
 import { View, ViewArea } from '../View';
-import type { ServerGraphsModel } from './console';
+import type { ServerGraphsModel, ServerStatsModel } from './console';
 import { featureViews } from './features';
 
 vi.mock('ghostty-web', () => ({ Ghostty: { load: () => new Promise(() => {}) } }));
@@ -149,15 +149,27 @@ describe('server.stats', () => {
     });
 
     it('flags usage close to the limits', async () => {
-        await renderServer(<View name='server.stats' />);
-        await status('running');
-        await stats({ cpu: 95, memory: 870 * 1024 ** 2 });
+        let model: ServerStatsModel | undefined;
 
-        const block = (title: string) => screen.getByText(title).parentElement!.parentElement!;
+        registerViewLayer('test-stats', 'theme', {
+            'server.stats': (props: { model: ServerStatsModel }) => {
+                model = props.model;
 
-        expect(block('CPU Load').querySelector('.bg-destructive')).not.toBeNull();
-        expect(block('Memory').querySelector('.bg-warning')).not.toBeNull();
-        expect(block('Disk').querySelector('.bg-warning, .bg-destructive')).toBeNull();
+                return null;
+            },
+        });
+
+        try {
+            await renderServer(<View name='server.stats' />);
+            await status('running');
+            await stats({ cpu: 95, memory: 870 * 1024 ** 2 });
+
+            expect(model?.cpu.alarm).toBe('danger');
+            expect(model?.memory.alarm).toBe('warning');
+            expect(model?.disk.alarm).toBeNull();
+        } finally {
+            clearThemeLayers();
+        }
     });
 });
 
