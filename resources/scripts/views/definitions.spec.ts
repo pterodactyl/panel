@@ -39,10 +39,12 @@ const loadRoutes = (ids: readonly string[]) =>
 
 describe('view implementations', () => {
     it('declares every view up front and loads none of their hooks or fixtures at boot', () => {
-        const real = views.getViewDefinitions();
+        const definitions = views.getViewDefinitions();
 
-        expect(real.length).toBeGreaterThan(60);
-        expect(real.filter((definition) => !definition.load || definition.use || definition.fixtures)).toEqual([]);
+        expect(definitions.length).toBeGreaterThan(60);
+        expect(definitions.filter((definition) => !definition.load || definition.use || definition.fixtures)).toEqual(
+            []
+        );
         expect(views.getViewDefinition('dashboard.serverList')?.slots).toContain('dashboard.serverRow.before');
     });
 

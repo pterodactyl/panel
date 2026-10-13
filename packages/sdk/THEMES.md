@@ -716,7 +716,7 @@ Some views also take **inputs**: props passed by whatever renders the view, whic
 beside `model`, such as the `server` of `dashboard.serverCard`.
 
 A few models hold an engine component: `model.Terminal` of `server.terminal` draws the console on a
-canvas, `model.Editor` of `server.files.editor` is the code editor, and the auth forms carry `Captcha`.
+canvas, `model.Editor` of `server.files.editor` is the code editor, and `page.auth.login` carries `Captcha`.
 Give them a sized box and colour them with the [`--terminal-*` and `--editor-*` tokens](#console).
 
 ### `Default`
@@ -892,7 +892,7 @@ extensions place blocks in those slots.
 
 ### Settings
 
-`theme.settings` in the manifest declares up to 64 values that administrators change on
+`theme.settings` in the manifest declares values that administrators change on
 **Admin > Themes**. Each setting has a `type`, a `label`, an optional `help` and `default`, and writes
 its value to a token (`token`), an attribute on `<html>` (`attribute`), both, or neither.
 
@@ -951,8 +951,8 @@ nothing flashes. Use a token for a value and an attribute for a choice:
 | `select` | `options`: value to label; values are CSS identifiers | One of the option values | The value, as an identifier | The value |
 | `toggle` | | `true` or `false` | `1` or `0` | `true` or `false` |
 | `number` | `min`, `max`, `step`, `unit` (`%` or up to 4 letters) | A number within the limits, on a step | The number and unit: `0.75rem` | The number |
-| `text` | `maxLength`, 255 unless set (1 to 1000) | A string | A quoted, escaped CSS string | The text |
-| `image` | | An upload: PNG, JPEG, GIF, WebP, AVIF or plain SVG, up to 1 MB. No default. | `url("…")` | The URL |
+| `text` | `maxLength`, 255 unless set (at least 1) | A string | A quoted, escaped CSS string | The text |
+| `image` | | An upload: PNG, JPEG, GIF, WebP, AVIF or plain SVG, up to 10 MB. No default. | `url("…")` | The URL |
 
 A token is a custom property name; an attribute is a `data-*` name other than `data-theme`, which the
 panel writes itself. Two settings cannot write the same one, setting names match
@@ -1106,8 +1106,8 @@ repository extends the Aurora sample.
    is `page.server.backups`, `/account/api` is `page.account.api`, and `/` is `page.dashboard`. Blocks
    are named after their area and what they draw, such as `server.power`, and the layouts after their
    area.
-2. **Look it up.** The [view catalogue](#view-catalogue), or `npx pterodactyl-theme list`, gives its
-   model type, inputs, slots and fixtures.
+2. **Look it up.** The [view catalogue](#view-catalogue) gives its model type, inputs, slots and
+   fixtures, and `npx pterodactyl-theme list` its kind, context and fixtures.
 3. **Read classic's source.** `npx pterodactyl-theme eject page.server.console` copies it into
    `src/views`. A page's source shows the blocks it places with `<View name="…" />` and the slots it
    renders, which leads you to the block you are after.
@@ -1452,7 +1452,7 @@ Every view with its context, model type, inputs, slots and fixtures. **Slots** a
 the view's layers; a page's **engine slots** are rendered around it by the engine. A page whose model is
 `PageStatusModel` loads data its blocks need: it shows a placeholder while `loading`, and `error` with a
 `retry` in place of its blocks. A failed refresh keeps the loaded data on show, so `error` stays null.
-`npx pterodactyl-theme list` prints the same from `@pterodactyl/sdk/views.json`.
+`npx pterodactyl-theme list` prints each view's kind, context and fixtures from `@pterodactyl/sdk/views.json`.
 
 <!-- generated:views -->
 #### Layouts

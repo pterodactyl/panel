@@ -120,8 +120,8 @@ class ThemeRepository
     }
 
     /**
-     * Why a child theme's stylesheet cannot be used: dist/theme.json does not record the builds of the
-     * themes it extends, so it was not built over their stylesheets and classes.
+     * Why a child theme's stylesheet cannot be used: dist/theme.json does not list every theme it
+     * extends, so it was not built over their stylesheets and classes.
      */
     public function parentBuildProblem(ExtensionManifest $theme): ?string
     {

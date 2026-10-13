@@ -58,7 +58,7 @@ export interface LazyViewStatics {
     readonly loaded: boolean;
 }
 
-export function isLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics {
+function isLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics {
     return 'loaded' in component && 'preload' in component;
 }
 

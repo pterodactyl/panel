@@ -32,6 +32,7 @@ import {
     Outlet,
     RouterContextProvider,
     RouterProvider,
+    type HistoryState,
 } from '@tanstack/react-router';
 import { queryClient } from '@/api/queryClient';
 import { currentUserQueryKey } from '@/api/account/queries';
@@ -43,7 +44,7 @@ import { useServerStore } from '@/state/server';
 import { Websocket } from '@/plugins/Websocket';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { registerClassPrefixes } from '@/lib/cn';
-import { ExtensionResourceProvider } from '@/extensions/resourceContext';
+import { ExtensionResourceProvider, type ExtensionResourceContext } from '@/extensions/resourceContext';
 import {
     clearExtensionError,
     getExtensionErrors,
@@ -53,11 +54,8 @@ import {
     type SlotData,
     type SlotName,
 } from '@/extensions/registry';
-import type { ExtensionResourceContext } from '@/extensions/resourceContext';
-import type { HistoryState } from '@tanstack/react-router';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
-import type { SdkServer, SdkSiteSettings, SdkUser } from './index';
-import type { ServerWebsocketEvent } from './index';
+import type { SdkServer, SdkSiteSettings, SdkUser, ServerWebsocketEvent } from './index';
 
 export { createTestServer, createTestServerCard, type TestServerOptions } from '@/views/fixtures';
 export {

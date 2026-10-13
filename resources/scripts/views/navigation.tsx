@@ -184,16 +184,6 @@ export function useActiveNavItem(items: readonly NavItem[]): NavItem | undefined
     return items.filter(isActive).sort((a, b) => pathLength(b) - pathLength(a))[0];
 }
 
-function NavigationItems({ items, render }: { items: readonly NavItem[]; render: NavigationRenderer }) {
-    const isActive = useNavItemActive();
-
-    return items.map((item) => (
-        <ScreenGate key={navItemKey(item)} screen={itemScreen(item)}>
-            {render(item, { active: isActive(item), badge: navItemBadge(item) })}
-        </ScreenGate>
-    ));
-}
-
 export interface NavigationProps {
     /** Usually a layout model's `nav.items`. */
     readonly items: readonly NavItem[];
@@ -205,7 +195,17 @@ export interface NavigationProps {
  * screen hidden by its predicate renders nothing.
  */
 export function Navigation({ items, children }: NavigationProps) {
-    return <NavigationItems items={items} render={children} />;
+    const isActive = useNavItemActive();
+
+    return (
+        <>
+            {items.map((item) => (
+                <ScreenGate key={navItemKey(item)} screen={itemScreen(item)}>
+                    {children(item, { active: isActive(item), badge: navItemBadge(item) })}
+                </ScreenGate>
+            ))}
+        </>
+    );
 }
 
 export interface NavigationLinkProps extends Omit<PanelLinkProps, 'destination' | 'exact' | 'includeSearch'> {

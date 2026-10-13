@@ -22,12 +22,6 @@ use UnexpectedValueException;
 
 class ExtensionManifestValidator
 {
-    private const array THEME_SETTING_MESSAGES = [
-        'theme.settings.*.token.regex' => 'Theme setting tokens must be custom property names such as "--accent".',
-        'theme.settings.*.attribute.regex' => 'Theme setting attributes must be data attributes such as "data-density".',
-        'theme.settings.*.attribute.not_in' => 'Theme setting attributes cannot use "data-theme", which the panel sets.',
-    ];
-
     /** @var list<string>|null */
     private ?array $panelNamespaces = null;
 
@@ -210,7 +204,9 @@ class ExtensionManifestValidator
             'ui.views.*.regex' => 'Manifest "ui.views" must contain view names such as "server.power" or "page.dashboard".',
             'theme.prohibited_unless' => 'Only a package with "type": "theme" can declare a "theme" section.',
             'theme.stylesheet.in' => 'Manifest "theme.stylesheet" must be "'.ThemeDefinition::STYLESHEET.'".',
-            ...self::THEME_SETTING_MESSAGES,
+            'theme.settings.*.token.regex' => 'Theme setting tokens must be custom property names such as "--accent".',
+            'theme.settings.*.attribute.regex' => 'Theme setting attributes must be data attributes such as "data-density".',
+            'theme.settings.*.attribute.not_in' => 'Theme setting attributes cannot use "data-theme", which the panel sets.',
             'ui.screens.*.permission.prohibited_unless' => 'Screen "permission" is only supported on server screens.',
             'ui.screens.*.nav.icon.regex' => 'Navigation "icon" must be a lucide icon name such as "life-buoy".',
             'ui.screens.*.when.eggFeatures.prohibited_unless' => 'Screen "when" egg rules are only supported on server screens.',

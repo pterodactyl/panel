@@ -42,9 +42,9 @@ afterEach(function (): void {
  * @param  array<string, mixed>  $theme
  * @param  array<string, string>  $files  dist files keyed by name
  */
-function themePackage(string $id, array $theme = [], array $files = [], array $manifest = []): string
+function themePackage(string $id, array $theme = [], array $files = []): string
 {
-    return (function () use ($id, $theme, $files, $manifest): string {
+    return (function () use ($id, $theme, $files): string {
         $path = $this->baseDirectory.'/source/'.$id;
         File::ensureDirectoryExists($path.'/dist');
         File::put($path.'/extension.json', json_encode([
@@ -53,9 +53,8 @@ function themePackage(string $id, array $theme = [], array $files = [], array $m
             'name' => ucfirst($id),
             'version' => '1.0.0',
             'theme' => ['stylesheet' => 'dist/theme.css', ...$theme],
-            ...$manifest,
         ], JSON_THROW_ON_ERROR));
-        foreach (['theme.css' => ':root{--accent:red}', 'theme.json' => '{}', ...$files] as $name => $contents) {
+        foreach (['theme.css' => ':root{--accent:red}', ...$files] as $name => $contents) {
             File::put($path.'/dist/'.$name, $contents);
         }
 

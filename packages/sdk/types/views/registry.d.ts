@@ -4,7 +4,6 @@ import type { SlotName } from "../extensions/registry.js";
 /** Where a view can render; `app` covers every signed-in area. */
 export type ViewContext = 'app' | 'server' | 'account' | 'admin' | 'auth';
 export type ViewKind = 'layout' | 'page' | 'block';
-export declare const VIEW_CONTEXTS: readonly ViewContext[];
 /** The model of every engine view by name. Definition modules add their entries. */
 export interface ViewModels {
 }
@@ -90,7 +89,6 @@ export type ThemeViews = {
 };
 export declare function subscribeViews(listener: () => void): () => void;
 export declare function viewKind(name: string): ViewKind;
-export declare function isViewContext(value: string): value is ViewContext;
 /** Core definitions replace an earlier one of the same name, so a hot reload re-registers cleanly. */
 export declare function defineView<N extends ViewName>(name: N, options: ViewOptions<N>): ViewDefinition<N>;
 /** Called by the module a view's `load` imports, which implements every view of its area. */

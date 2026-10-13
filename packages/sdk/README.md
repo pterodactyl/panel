@@ -567,8 +567,8 @@ untouched. A reported exception raised from the extension's package is recorded 
 the extension. The decorator is skipped while the extension is disabled or failed to boot;
 one that throws or returns another type is recorded and skipped, so the core action always
 resolves. Extensions wrap in load order, the last one outermost. The actions that install,
-enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and activate or
-reset themes (`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
+enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and activate
+themes (`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
 
 Core controllers resolve these contracts, not the classes behind them. Renaming a server from the client API calls
 `UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
@@ -748,7 +748,7 @@ Each layer receives `{ model, Default, ...inputs, children }`, and `Default` ren
 below. Themes and extensions write layers the same way: [Level 4](THEMES.md#level-4-rebuild-pages)
 of the themes guide covers models, `Default` and placing views, and the
 [view catalogue](THEMES.md#view-catalogue) lists every view with its model, inputs, slots and
-fixtures. The catalogue also ships as `@pterodactyl/sdk/views.json`.
+fixtures. Its names, contexts, slots and fixtures also ship as `@pterodactyl/sdk/views.json`.
 
 ### Overriding a view
 
@@ -757,8 +757,7 @@ Declare the views an extension overrides in `extension.json` under `ui.views`, w
 `views.override(name, layer)` during `setup`. A layer is a component, or `{ load }` with an
 importer the panel calls when the view first renders. Overrides are not exclusive: several
 enabled extensions and the active theme may override the same view, and each layer's `Default`
-renders the one below. `p:extension:doctor` reports a name under a core namespace that the
-panel does not have.
+renders the one below.
 
 <!-- sample: extension/extension.json -->
 ```json

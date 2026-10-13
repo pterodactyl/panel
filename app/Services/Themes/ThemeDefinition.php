@@ -11,7 +11,7 @@ final readonly class ThemeDefinition
 {
     public const string STYLESHEET = 'dist/theme.css';
 
-    /** Written by the SDK's defineThemeConfig: the core class manifest hash, SDK version and view names. */
+    /** Written by the SDK's defineThemeConfig: the themes its stylesheet was built over. */
     public const string BUILD_INFO = 'dist/theme.json';
 
     public const array SCHEMES = ['dark', 'light'];

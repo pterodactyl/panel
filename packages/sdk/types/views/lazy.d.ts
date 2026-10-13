@@ -10,7 +10,6 @@ export interface LazyViewStatics {
     preload(): Promise<void>;
     readonly loaded: boolean;
 }
-export declare function isLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics;
 export declare function isPendingLazyView<T extends JSXElementConstructor<never>>(component: T): component is T & LazyViewStatics;
 /** A lazily loaded view. Views exported by one chunk share its load, and the router preloads it. */
 export declare function lazyView<M extends {

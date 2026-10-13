@@ -175,13 +175,6 @@ export function ejectView(name, { views = catalog(), root = classicRoot, outDir,
         );
     }
 
-    if (!view.classic) {
-        throw new CliError(
-            `Classic has no source for "${name}" yet; it renders the panel's own component.\n` +
-                `Wrap it instead: '${name}': ({ model, Default }) => <Default />`
-        );
-    }
-
     const main = resolve(root, view.classic.file);
     const local = identifier(main, view.classic.export);
     const binding = view.classic.export === 'default' ? local : `{ ${local} }`;

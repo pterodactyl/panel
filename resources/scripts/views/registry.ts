@@ -6,7 +6,6 @@ import { settledLoad } from './lazy';
 /** Where a view can render; `app` covers every signed-in area. */
 export type ViewContext = 'app' | 'server' | 'account' | 'admin' | 'auth';
 export type ViewKind = 'layout' | 'page' | 'block';
-export const VIEW_CONTEXTS: readonly ViewContext[] = ['app', 'server', 'account', 'admin', 'auth'];
 
 /** The model of every engine view by name. Definition modules add their entries. */
 export interface ViewModels {}
@@ -15,13 +14,13 @@ export interface ViewInputs {}
 
 export type ViewName = Extract<keyof ViewModels, string>;
 export type ViewModel<N> = N extends keyof ViewModels ? ViewModels[N] : unknown;
-// oxlint-disable-next-line rules/no-unsafe-dictionary-type -- views other packages define are typed loosely.
+// oxlint-disable-next-line rules/no-unsafe-dictionary-type -- a view name erased to `string` takes any inputs.
 export type LooseViewInput = Readonly<Record<string, unknown>>;
 export type ViewInput<N> = N extends keyof ViewInputs
     ? ViewInputs[N]
     : N extends keyof ViewModels
       ? unknown
-      : // oxlint-disable-next-line rules/no-unsafe-dictionary-type -- views other packages define are typed loosely.
+      : // oxlint-disable-next-line rules/no-unsafe-dictionary-type -- a view name erased to `string` takes any inputs.
         LooseViewInput;
 
 /** `Default` renders the layer below; every prop is optional and replaces what this layer received. */
@@ -141,10 +140,6 @@ export function viewKind(name: string): ViewKind {
     }
 
     return name.startsWith('page.') ? 'page' : 'block';
-}
-
-export function isViewContext(value: string): value is ViewContext {
-    return VIEW_CONTEXTS.some((context) => context === value);
 }
 
 /** Core definitions replace an earlier one of the same name, so a hot reload re-registers cleanly. */

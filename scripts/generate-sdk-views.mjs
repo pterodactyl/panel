@@ -5,8 +5,8 @@ import { createServer } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { classicViewSources } from './classic-sources.mjs';
 
-// Loads the engine's view definitions and writes the catalog, keyed by name, `p:extension:doctor` validates names
-// against; `classic` names the file and export `pterodactyl-theme eject` copies. `slots` are the slots a layer of
+// Loads the engine's view definitions and writes the catalog, keyed by name, that `pterodactyl-theme list` prints
+// and generate-sdk-docs builds the view catalogue from; `classic` names the file and export `pterodactyl-theme eject` copies. `slots` are the slots a layer of
 // the view renders, `engineSlots` those the engine renders around a page, and `areaSlots` those of the area layouts,
 // which a `layout.app` layer renders where it draws an area's navigation.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,6 +28,9 @@ try {
     const { pageSlots } = await server.ssrLoadModule('/resources/scripts/views/pages.ts');
     const views = await loadViewCatalog();
     const slotsOf = (name) => views.find((view) => view.name === name)?.slots ?? [];
+    // `pterodactyl-theme eject` copies the classic source of any view.
+    const unsourced = views.filter((view) => !classic[view.name]).map((view) => view.name);
+    if (unsourced.length) throw new Error(`Classic has no source for ${unsourced.join(', ')}.`);
     catalog = Object.fromEntries(
         views.map((view) => {
             const engineSlots = view.kind === 'page' ? [...(pageSlots(view.name) ?? [])] : [];
@@ -43,7 +46,7 @@ try {
                         ? { areaSlots: ['layout.account', 'layout.server', 'layout.admin'].flatMap(slotsOf) }
                         : {}),
                     fixtures: Object.keys(view.fixtures ?? {}),
-                    ...(classic[view.name] ? { classic: classic[view.name] } : {}),
+                    classic: classic[view.name],
                 },
             ];
         })

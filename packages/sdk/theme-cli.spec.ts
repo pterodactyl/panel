@@ -112,7 +112,7 @@ describe('eject', () => {
     });
 
     it('produces code that typechecks against the SDK types', () => {
-        for (const name of Object.keys(views).filter((view) => views[view].classic)) {
+        for (const name of Object.keys(views)) {
             expect(cli('eject', name).status).toBe(0);
         }
 
