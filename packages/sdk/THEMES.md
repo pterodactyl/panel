@@ -240,8 +240,8 @@ export const skins = {
 ```
 <!-- /sample -->
 
-`npx pterodactyl-theme skins Button` prints classic's skin of a primitive, with only the constants it
-reads, ready to paste and edit.
+`npx pterodactyl-theme skins Button` copies classic's file that skins `Button`, `skins/buttons.ts`, into
+`src/skins` to start from.
 
 ### Recipes
 
@@ -1124,7 +1124,7 @@ The SDK installs a `pterodactyl-theme` binary:
 ```sh
 npx pterodactyl-theme list [--kind layout|page|block] [--json]
 npx pterodactyl-theme eject <view> [--out src/views] [--entry src] [--force]
-npx pterodactyl-theme skins [primitive]
+npx pterodactyl-theme skins [primitive] [--out src/skins] [--entry src] [--force]
 ```
 
 - `list` prints every view with its kind, context and fixtures, marking those classic has source for.
@@ -1132,7 +1132,8 @@ npx pterodactyl-theme skins [primitive]
   rewrites its imports to `@pterodactyl/sdk`, and prints the import and `views` entry to add. The copy
   compiles as it is. It overwrites the view's file only with `--force`, and keeps shared files an
   earlier eject copied. Opaque views have no source; wrap them with `Default`.
-- `skins` lists the primitives, or prints classic's skin of one with the constants it reads.
+- `skins` lists each primitive with classic's file that skins it. Given a primitive, it copies that file
+  into `src/skins` the way `eject` copies a view, and prints the import and `ui` entry to add.
 
 ### Testing
 

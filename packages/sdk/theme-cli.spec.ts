@@ -163,51 +163,48 @@ export default defineTheme({
 });
 
 describe('skins', () => {
-    it('lists the primitives classic skins and prints one with the constants it reads', () => {
-        write(
-            'classic/skins/forms.ts',
-            [
-                "import type { CompleteSkin } from '@/sdk/theme';",
-                '',
-                "// Shared by the inputs; a ; in a comment does not end it.",
-                "const control = { base: 'p-3 border', variants: { error: { true: 'border-destructive' } } };",
-                "const unused = 'x';",
-                "export const input = { root: control } satisfies CompleteSkin<'Input'>;",
-                "export const label = { root: 'block; text-sm' } satisfies CompleteSkin<'Label'>;",
-                '',
-            ].join('\n')
-        );
+    it("maps each primitive to the classic file and export of its skin, as classic's index does", () => {
         write(
             'classic/skins/index.ts',
             "import type { CompleteSkins } from '@/sdk/theme';\nimport { input, label as fieldLabel } from './forms';\n\nexport const classicSkins = {\n    Input: input,\n    Label: fieldLabel,\n} satisfies CompleteSkins;\n"
         );
+        write('classic/skins/forms.ts', '');
 
-        const skins: Map<string, () => string> = classicSkins(resolve(directory, 'classic'));
-        const input = skins.get('Input')!();
-
-        expect([...skins.keys()]).toEqual(['Input', 'Label']);
-        expect(input).toContain("import type { CompleteSkin } from '@pterodactyl/sdk/theme';");
-        expect(input).toContain("// Shared by the inputs; a ; in a comment does not end it.\nconst control = {");
-        expect(input).toContain("export const input = { root: control } satisfies CompleteSkin<'Input'>;");
-        expect(input).not.toContain('unused');
-        expect(input).not.toContain('export const label');
-        expect(skins.get('Label')!()).toContain("export const label = { root: 'block; text-sm' }");
+        expect(classicSkins(resolve(directory, 'classic'))).toEqual(
+            new Map([
+                ['Input', { file: resolve(directory, 'classic/skins/forms.ts'), exportName: 'input' }],
+                ['Label', { file: resolve(directory, 'classic/skins/forms.ts'), exportName: 'label' }],
+            ])
+        );
     });
 
-    it('prints classic skin of every primitive as code that typechecks against the SDK types', () => {
+    it("copies classic's skins files as code that typechecks against the SDK types", () => {
         const listed = cli('skins');
-        const primitives = listed.stdout.trim().split('\n');
+        const rows = listed.stdout.trim().split('\n').map((line) => line.split(/\s+/));
 
         expect(listed.status).toBe(0);
-        expect(primitives).toEqual(expect.arrayContaining(['Button', 'Card', 'Dialog', 'Select']));
-        for (const primitive of primitives) {
-            write(`skins/${primitive}.ts`, cli('skins', primitive.toLowerCase()).stdout);
-        }
+        expect(rows).toEqual(expect.arrayContaining([['Button', 'skins/buttons.ts']]));
 
+        const button = cli('skins', 'button');
+
+        expect(button.status, button.stderr).toBe(0);
+        expect(button.stdout).toContain("import { button } from './skins/buttons';");
+        expect(button.stdout).toContain('ui: { Button: button },');
+        expect(readFileSync(resolve(directory, 'src/skins/buttons.ts'), 'utf8')).toContain(
+            "from '@pterodactyl/sdk/theme';"
+        );
+        expect(cli('skins', 'NewButton').stderr).toContain('buttons.ts already exists. Pass --force to replace it.');
         expect(cli('skins', 'Buton').stderr).toContain('Classic has no skin for "Buton". It skins Alert, Avatar');
 
+        const files = [...new Map(rows.map(([primitive, file]) => [file, primitive])).values()];
+        for (const primitive of files) expect(cli('skins', primitive, '--force').status).toBe(0);
+        write(
+            'src/theme.ts',
+            "import { defineTheme } from '@pterodactyl/sdk/theme';\nimport { button } from './skins/buttons';\nimport { input } from './skins/forms';\n\nexport default defineTheme({ ui: { Button: button, Input: input } });\n"
+        );
+
         const program = ts.createProgram(
-            primitives.map((primitive) => resolve(directory, `skins/${primitive}.ts`)),
+            [resolve(directory, 'src/theme.ts'), ...new Set(rows.map(([, file]) => resolve(directory, 'src', file)))],
             {
                 strict: true,
                 noEmit: true,
