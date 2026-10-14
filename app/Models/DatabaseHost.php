@@ -48,6 +48,6 @@ class DatabaseHost extends Model
      */
     public function databases(): HasMany
     {
-        return $this->hasMany(Database::class);
+        return $this->hasMany(Database::class)->orderBy('id');
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Pterodactyl\Models\Extension;
+use Pterodactyl\Models\ExtensionSetting;
 use Pterodactyl\Models\Setting;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Themes\ThemeRepository;
@@ -63,6 +64,12 @@ function writeTheme(string $id, array $settings = [], bool $enabled = true): voi
 function settingsOf(array $response): array
 {
     return array_column(array_column($response['data'], 'attributes'), null, 'key');
+}
+
+/** The stored value, decoded: MySQL compares JSON columns by value, so they can't be matched as text. */
+function storedSetting(string $extension, string $key): mixed
+{
+    return json_decode((string) ExtensionSetting::query()->where(['extension' => $extension, 'key' => $key])->value('value'), true);
 }
 
 function png(): string
@@ -129,7 +136,7 @@ test('saves settings that pass their type and restores defaults from null', func
     $saved = settingsOf($this->patchJson($route, ['settings' => ['accent' => '#ABCDEF', 'radius' => 1.25, 'navigation' => 'top', 'compact' => true, 'tagline' => 'Hello']])->assertOk()->json());
 
     expect(array_column($saved, 'value', 'key'))->toMatchArray(['accent' => '#abcdef', 'radius' => 1.25, 'navigation' => 'top', 'compact' => true, 'tagline' => 'Hello']);
-    $this->assertDatabaseHas('extension_settings', ['extension' => 'aurora', 'key' => 'theme.navigation', 'value' => '"top"']);
+    expect(storedSetting('aurora', 'theme.navigation'))->toBe('top');
     $this->assertDatabaseHas('activity_logs', ['event' => 'admin:theme.settings']);
 
     $reset = settingsOf($this->patchJson($route, ['settings' => ['accent' => null, 'navigation' => null]])->assertOk()->json());
@@ -152,7 +159,7 @@ test('a child theme lists and saves its own settings', function (): void {
 
     $this->patchJson($route, ['settings' => ['accent' => 'red']])->assertUnprocessable();
     expect(settingsOf($this->patchJson($route, ['settings' => ['accent' => '#00ff00']])->assertOk()->json())['accent']['value'])->toBe('#00ff00');
-    $this->assertDatabaseHas('extension_settings', ['extension' => 'midnight', 'key' => 'theme.accent', 'value' => '"#00ff00"']);
+    expect(storedSetting('midnight', 'theme.accent'))->toBe('#00ff00');
 });
 
 test('rejects setting values that do not fit their type', function (array $settings, string $field): void {
