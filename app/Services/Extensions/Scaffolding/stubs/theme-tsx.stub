@@ -1,0 +1,15 @@
+import { defineTheme } from '@pterodactyl/sdk/theme';
+import { skins } from './skins';
+import AppLayout from './views/AppLayout';
+
+/**
+ * Skins for the UI kit and views by name. `npx pterodactyl-theme list` lists every view, and
+ * `npx pterodactyl-theme eject <view>` copies classic's source for one into src/views. Wrap pages
+ * and blocks in lazyView(() => import('./views/…')) so they load when first shown.
+ */
+export default defineTheme({
+    ui: skins,
+    views: {
+        'layout.app': AppLayout,
+    },
+});

@@ -6,8 +6,8 @@ namespace Pterodactyl\Extensions\Illuminate\Auth\Passwords;
 
 use Illuminate\Auth\Passwords\DatabaseTokenRepository as IlluminateDatabaseTokenRepository;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Pterodactyl\Support\JsonValueGuard;
 use SensitiveParameter;
 
 class DatabaseTokenRepository extends IlluminateDatabaseTokenRepository
@@ -20,13 +20,14 @@ class DatabaseTokenRepository extends IlluminateDatabaseTokenRepository
         $record = $this->getTable()
             ->where('email', $user->getEmailForPasswordReset())
             ->first(['token', 'created_at']);
+        $record = $record === null ? null : get_object_vars($record);
 
-        if ($record === null || $this->tokenExpired(JsonValueGuard::string($record->created_at))) {
+        if ($record === null || $this->tokenExpired(Arr::string($record, 'created_at'))) {
             $this->hasher->make(Str::random(64));
 
             return false;
         }
 
-        return $this->hasher->check($token, JsonValueGuard::string($record->token));
+        return $this->hasher->check($token, Arr::string($record, 'token'));
     }
 }

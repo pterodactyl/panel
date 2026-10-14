@@ -1,51 +1,65 @@
-import React, { useEffect } from 'react';
-import { Link, Outlet, useLocation, useParams } from '@tanstack/react-router';
-import { ExternalLink } from 'lucide-react';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useParams } from '@tanstack/react-router';
 import { useServerQuery } from '@/api/server/queries';
+import type { Server } from '@/api/server/types';
 import { useServerStore } from '@/state/server';
 import { ServerContext } from '@/state/server/context';
 import { httpErrorToHuman } from '@/api/http';
-import SubNavigation from '@/components/elements/SubNavigation';
-import SubNavigationLayout from '@/components/elements/SubNavigationLayout';
-import NavLink from '@/router/NavLink';
-import Can from '@/components/elements/Can';
-import Icon from '@/components/elements/Icon';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import InstallListener from '@/components/server/InstallListener';
+import StatsListener from '@/components/server/StatsListener';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
-import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
-import { getAreaNav } from '@/router/nav';
 import { useIsRenderedRoute } from '@/router/renderedRoute';
 import { useCurrentUser } from '@/api/account/queries';
-import Slot from '@/extensions/Slot';
-import NavigationLabel from '@/extensions/NavigationLabel';
-import { ScreenGate } from '@/extensions/screenNavigation';
+import { View } from '@/views/View';
 
-const ServerConsoleContainer = React.lazy(() => import('@/components/server/console/ServerConsoleContainer'));
-
-function ServerLayoutInner() {
-    const { id } = useParams({ from: '/authenticated/server/$id' });
+/**
+ * The children of `layout.server`: the server's listeners, its console and the current page, or
+ * the conflict notice instead of both. The engine owns them, so a theme's layout only places them in <Main>.
+ */
+function ServerContent({ id, server }: { id: string; server: Server }) {
     const location = useLocation();
-
     const rootAdmin = useCurrentUser().rootAdmin;
-    const { data, error } = useServerQuery(id);
-
-    const server = data;
+    const { identifier } = server.attributes;
     const inConflictState =
-        !!server &&
-        (server.attributes.status !== null ||
-            server.attributes.is_transferring ||
-            server.attributes.is_node_under_maintenance);
-    const clearServerState = useServerStore((state) => state.clearServerState);
-
-    const to = (segment: string) => `/server/${id}${segment ? `/${segment}` : ''}`;
+        server.attributes.status !== null ||
+        server.attributes.is_transferring ||
+        server.attributes.is_node_under_maintenance;
 
     // The console stays mounted and is shown or hidden here, while every other page comes
     // from <Outlet />. Both have to switch in the same render: following the location
     // showed the console above the page being left, and hid it before the next one arrived.
-    const isConsole = useIsRenderedRoute(to(''));
+    const isConsole = useIsRenderedRoute(`/server/${id}`);
+
+    return (
+        <>
+            <InstallListener />
+            <TransferListener />
+            <WebsocketHandler />
+            <StatsListener />
+            {inConflictState && (!rootAdmin || !location.pathname.endsWith(`/server/${identifier}`)) ? (
+                <View name='server.conflict' />
+            ) : (
+                <>
+                    {/* Stays mounted while hidden so the terminal survives tab switches. */}
+                    <div className={isConsole ? undefined : 'hidden'}>
+                        <Spinner.Suspense>
+                            <View name='page.server.console' active={isConsole} />
+                        </Spinner.Suspense>
+                    </div>
+                    <Outlet />
+                </>
+            )}
+        </>
+    );
+}
+
+function ServerArea() {
+    const { id } = useParams({ from: '/authenticated/server/$id' });
+    const { data: server, error } = useServerQuery(id);
+    const clearServerState = useServerStore((state) => state.clearServerState);
 
     useEffect(() => () => clearServerState(), [clearServerState]);
 
@@ -54,72 +68,9 @@ function ServerLayoutInner() {
     }
 
     return (
-        <SubNavigationLayout
-            navigation={
-                <SubNavigation>
-                    <Slot name='server.navigation.before' data={server} />
-                    {getAreaNav('server').map(({ segment, label, exact, permission, ...meta }) => (
-                        <ScreenGate key={segment || '/'} screen={meta.screen}>
-                            {permission ? (
-                                <Can action={permission} matchAny>
-                                    <NavLink
-                                        to={to(segment)}
-                                        exact={exact}
-                                        hash={segment === 'files' ? '/' : ''}
-                                        data-core={meta.screen ? undefined : ''}
-                                    >
-                                        <NavigationLabel label={label} {...meta} />
-                                    </NavLink>
-                                </Can>
-                            ) : (
-                                <NavLink
-                                    to={to(segment)}
-                                    exact={exact}
-                                    hash={segment === 'files' ? '/' : ''}
-                                    data-core={meta.screen ? undefined : ''}
-                                >
-                                    <NavigationLabel label={label} {...meta} />
-                                </NavLink>
-                            )}
-                        </ScreenGate>
-                    ))}
-                    {rootAdmin && (
-                        <Link
-                            to='/panel/servers/$id'
-                            params={{ id: server.attributes.internal_id }}
-                            aria-label='Open server administration'
-                            title='Open server administration'
-                        >
-                            <span className='inline-flex items-center gap-2 align-top'>
-                                <Icon icon={ExternalLink} />
-                                <span className='hidden in-data-collapsed:inline in-data-overflowed:inline'>
-                                    Open Admin Area
-                                </span>
-                            </span>
-                        </Link>
-                    )}
-                    <Slot name='server.navigation.after' data={server} />
-                </SubNavigation>
-            }
-        >
-            <InstallListener />
-            <TransferListener />
-            <WebsocketHandler />
-            {inConflictState &&
-            (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.attributes.identifier}`))) ? (
-                <ConflictStateRenderer />
-            ) : (
-                <>
-                    {/* Stays mounted while hidden so the terminal survives tab switches. */}
-                    <div className={isConsole ? undefined : 'hidden'}>
-                        <Spinner.Suspense>
-                            <ServerConsoleContainer active={isConsole} />
-                        </Spinner.Suspense>
-                    </div>
-                    <Outlet />
-                </>
-            )}
-        </SubNavigationLayout>
+        <View name='layout.server'>
+            <ServerContent id={id} server={server} />
+        </View>
     );
 }
 
@@ -128,7 +79,7 @@ export default function ServerLayout() {
 
     return (
         <ServerContext.Provider key={id}>
-            <ServerLayoutInner />
+            <ServerArea />
         </ServerContext.Provider>
     );
 }

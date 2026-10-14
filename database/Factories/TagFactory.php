@@ -40,7 +40,7 @@ class TagFactory extends Factory
      * A built-in game tag, whose name and colour come from the EggSpecificTags enum
      * rather than the stored columns.
      */
-    public function predefined(string $slug = 'minecraft'): self
+    public function predefined(string $slug = 'fivem'): self
     {
         return $this->state(fn (): array => [
             'name' => $slug,

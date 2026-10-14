@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Tags;
 
+use Pterodactyl\Actions\Tags\CreateTag;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Tag;
-use Pterodactyl\Validation\TagRules;
 
 class UpdateTagRequest extends StoreTagRequest
 {
@@ -20,6 +20,6 @@ class UpdateTagRequest extends StoreTagRequest
      */
     public function rules(): array
     {
-        return $this->withSlugRule(TagRules::rules($this->parameter('tag', Tag::class)));
+        return $this->writable(CreateTag::rules($this->parameter('tag', Tag::class)));
     }
 }

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables;
 
-use Illuminate\Validation\Rules\Unique;
+use Pterodactyl\Actions\Eggs\Variables\CreateEggVariable;
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 
 class UpdateVariableRequest extends StoreVariableRequest
@@ -15,8 +16,14 @@ class UpdateVariableRequest extends StoreVariableRequest
         return [Permissions::AdminEggVariablesUpdate];
     }
 
-    protected function uniqueEnvironmentVariable(): Unique
+    /**
+     * Validation rules for updating an egg variable, which keeps its own environment
+     * variable name without a uniqueness clash.
+     *
+     * @return ValidationRules
+     */
+    public function rules(): array
     {
-        return parent::uniqueEnvironmentVariable()->ignore($this->parameter('variable', EggVariable::class));
+        return CreateEggVariable::rules($this->parameter('egg', Egg::class), $this->parameter('variable', EggVariable::class));
     }
 }

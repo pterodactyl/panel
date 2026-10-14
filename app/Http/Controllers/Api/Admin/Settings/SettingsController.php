@@ -12,7 +12,6 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Settings\GetSettingsRequest;
 use Pterodactyl\Services\Helpers\BrandingLogoService;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Settings', 'View and update global panel settings.')]
@@ -61,14 +60,14 @@ class SettingsController extends AdminApiController
         return new JsonResponse([
             'general' => [
                 'app:name' => config('app.name'),
-                'pterodactyl:auth:2fa_required' => JsonValueGuard::integer(config('pterodactyl.auth.2fa_required')),
+                'pterodactyl:auth:2fa_required' => config('pterodactyl.auth.2fa_required'),
                 'app:locale' => config('app.locale'),
             ],
             'logo' => $brandingLogo->url(),
             'mail' => [
                 'mail:default' => config('mail.default'),
                 'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),
-                'mail:mailers:smtp:port' => JsonValueGuard::integer(config('mail.mailers.smtp.port')),
+                'mail:mailers:smtp:port' => config('mail.mailers.smtp.port'),
                 'mail:mailers:smtp:encryption' => config('mail.mailers.smtp.encryption'),
                 'mail:mailers:smtp:username' => config('mail.mailers.smtp.username'),
                 // Never return the SMTP password to the client.
@@ -77,17 +76,17 @@ class SettingsController extends AdminApiController
                 'mail:from:name' => config('mail.from.name'),
             ],
             'advanced' => [
-                'recaptcha:enabled' => JsonValueGuard::boolean(config('recaptcha.enabled')),
+                'recaptcha:enabled' => config('recaptcha.enabled'),
                 'recaptcha:secret_key' => '',
                 'recaptcha:website_key' => config('recaptcha.website_key'),
-                'pterodactyl:guzzle:timeout' => JsonValueGuard::integer(config('pterodactyl.guzzle.timeout')),
-                'pterodactyl:guzzle:connect_timeout' => JsonValueGuard::integer(config('pterodactyl.guzzle.connect_timeout')),
-                'pterodactyl:client_features:allocations:enabled' => JsonValueGuard::boolean(config('pterodactyl.client_features.allocations.enabled')),
+                'pterodactyl:guzzle:timeout' => config('pterodactyl.guzzle.timeout'),
+                'pterodactyl:guzzle:connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
+                'pterodactyl:client_features:allocations:enabled' => config('pterodactyl.client_features.allocations.enabled'),
                 'pterodactyl:client_features:allocations:range_start' => config('pterodactyl.client_features.allocations.range_start'),
                 'pterodactyl:client_features:allocations:range_end' => config('pterodactyl.client_features.allocations.range_end'),
             ],
             'meta' => [
-                'load_environment_only' => JsonValueGuard::boolean(config('pterodactyl.load_environment_only', false)),
+                'load_environment_only' => config('pterodactyl.load_environment_only'),
                 'show_recaptcha_warning' => config('recaptcha._shipped_secret_key') === config('recaptcha.secret_key')
                     || config('recaptcha._shipped_website_key') === config('recaptcha.website_key'),
             ],

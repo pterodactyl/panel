@@ -14,12 +14,18 @@ use Throwable;
 
 interface DeploysServerDatabases
 {
-    /** @param DatabaseDeploymentData $data
+    /**
+     * Create a database within the server's database limit, prefixing the name with
+     * "s{server_id}_". With no database_host_id, a host on the server's node is picked, or any
+     * host when random hosts are allowed. The input is validated here.
+     *
+     * @param  array<string, mixed>  $input  database and remote, and optionally database_host_id and max_connections
+     *
      * @throws Throwable
      * @throws TooManyDatabasesException
      * @throws DatabaseClientFeatureNotEnabledException
      * @throws NoSuitableDatabaseHostException
      * @throws DisplayException
      */
-    public function deploy(Server $server, array $data): Database;
+    public function deploy(Server $server, array $input): Database;
 }

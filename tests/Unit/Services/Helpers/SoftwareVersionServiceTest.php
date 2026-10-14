@@ -26,7 +26,7 @@ test('ignores version fields with invalid types', function () {
     expect($service->getPanel())->toBe('error');
     expect($service->getDaemon())->toBe('1.12.0');
 });
-/** @param array<string, JsonValue> $payload */
+/** @param array<string, mixed> $payload */
 function service(array $payload): SoftwareVersionService
 {
     $cache = new Repository(new ArrayStore);

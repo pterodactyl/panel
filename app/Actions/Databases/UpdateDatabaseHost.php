@@ -4,40 +4,36 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Databases\UpdatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateDatabaseHost implements UpdatesDatabaseHosts
 {
     public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
-    /**
-     * Update a database host and persist to the database.
-     *
-     * @param  DatabaseHostUpdateData  $data
-     *
-     * @throws Throwable
-     */
-    public function update(DatabaseHost $host, array $data): DatabaseHost
+    public function update(DatabaseHost $host, array $input): DatabaseHost
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $validated = Validator::validate($input, CreateDatabaseHost::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
 
-        $password = $data['password'] ?? null;
-        if ($password !== null && $password !== '') {
-            $data['password'] = Crypt::encrypt($password);
-        } else {
-            unset($data['password']);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+
+        // A host given no node becomes global, and a blank password keeps the stored one.
+        $attributes = [...Arr::except($validated, 'password'), 'node_id' => $validated['node_id'] ?? null];
+        if (isset($validated['password'])) {
+            $attributes['password'] = Crypt::encrypt($validated['password']);
         }
 
         // Confirm access using the new credentials before saving them.
-        $host->fill($data);
+        $host->fill($attributes);
         $this->dynamic->set('dynamic', $host);
         DB::connection('dynamic')->select('SELECT 1 FROM dual');
 

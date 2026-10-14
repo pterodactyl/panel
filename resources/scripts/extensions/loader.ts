@@ -1,4 +1,4 @@
-import { getBootstrapExtensions } from '@/bootstrap';
+import { getBootstrapExtensions, getBootstrapThemeChain } from '@/bootstrap';
 import type { ExtensionDefinition, ExtensionSetupContext } from '@/sdk';
 import { isObject } from '@/lib/objects';
 import {
@@ -9,7 +9,7 @@ import {
     registerSlotComponent,
     registerExtensionTableColumn,
     registerFormExtension,
-    registerComponentReplacement,
+    registerViewOverride,
     failExtensionLoad,
     clearExtensionError,
     setExtensionState,
@@ -27,7 +27,8 @@ export const EXTENSION_IMPORT_TIMEOUT_MS = 15_000;
 const isThenable = <T>(value: T): value is T & PromiseLike<void> =>
     isObject(value) && 'then' in value && value.then instanceof Function;
 
-const withTimeout = async <T>(promise: Promise<T>): Promise<T> => {
+/** Rejects when the import takes longer than an extension bundle may; the theme chain is held to the same limit. */
+export const withImportTimeout = async <T>(promise: Promise<T>): Promise<T> => {
     let timeout: ReturnType<typeof setTimeout> | undefined;
     const timer = new Promise<never>((_, reject) => {
         timeout = setTimeout(() => {
@@ -44,18 +45,30 @@ const withTimeout = async <T>(promise: Promise<T>): Promise<T> => {
     }
 };
 
+/**
+ * Guests are sent no screens or view overrides, since neither renders on the sign-in pages, so
+ * the same setup() skips those registrations there instead of failing on undeclared names.
+ */
 const createContext = (entry: SiteExtensionEntry, batch: ExtensionRegistryBatch): ExtensionSetupContext => ({
     meta: { id: entry.id, version: entry.version },
     config: entry.config ?? {},
-    components: {
-        replace: (name, replacement) => registerComponentReplacement(entry.id, name, replacement, batch),
+    views: {
+        override: (name, view) => {
+            if (entry.views) {
+                registerViewOverride(entry.id, name, view, batch);
+            }
+        },
     },
     slots: {
         register: (name, component) =>
             registerSlotComponent(entry.id, name, component as Parameters<typeof registerSlotComponent>[2], batch),
     },
     screens: {
-        register: (id, component, options) => registerScreen(entry.id, id, component, batch, options),
+        register: (id, component, options) => {
+            if (entry.screens) {
+                registerScreen(entry.id, id, component, batch, options);
+            }
+        },
     },
     columns: {
         register: (name, column) =>
@@ -95,16 +108,19 @@ const describeBootError = (cause: unknown): Error => {
     );
 };
 
-const parseExtensionDefinition = <T extends object>(module: T): ExtensionDefinition => {
-    if (!('default' in module) || !isObject(module.default) || !('setup' in module.default)) {
+/** The bundle's definition; null for a theme without `setup`, which has nothing to register. */
+const parseExtensionDefinition = <T extends object>(module: T, theme: boolean): ExtensionDefinition | null => {
+    const definition = 'default' in module && isObject(module.default) ? module.default : undefined;
+
+    if (theme && definition && !('setup' in definition)) {
+        return null;
+    }
+
+    if (!definition || !('setup' in definition) || !(definition.setup instanceof Function)) {
         throw new Error('bundle has no default export with a setup() function');
     }
 
-    if (!(module.default.setup instanceof Function)) {
-        throw new Error('bundle has no default export with a setup() function');
-    }
-
-    return module.default as ExtensionDefinition;
+    return definition as ExtensionDefinition;
 };
 
 let loading: Promise<void> | undefined;
@@ -115,7 +131,7 @@ async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     let module: ExtensionModule;
 
     try {
-        module = await withTimeout(importBundle(entry.entry));
+        module = await withImportTimeout(importBundle(entry.entry));
     } catch (cause) {
         failedImports.add(entry.id);
         failExtensionLoad(entry.id, 'boot', describeBootError(cause));
@@ -126,8 +142,8 @@ async function bootExtension(entry: SiteExtensionEntry): Promise<void> {
     const batch = createExtensionRegistryBatch();
 
     try {
-        const definition = parseExtensionDefinition(module);
-        const setupResult = definition.setup(createContext(entry, batch));
+        const definition = parseExtensionDefinition(module, entry.theme === true);
+        const setupResult = definition?.setup(createContext(entry, batch));
 
         if (isThenable(setupResult)) {
             void Promise.resolve(setupResult).catch(() => {});
@@ -153,7 +169,10 @@ export function loadExtensions(importModule: ModuleImporter = nativeImport): Pro
     importBundle = importModule;
     const entries = prepareExtensions(getBootstrapExtensions());
 
-    startExtensionDevelopmentReload(entries);
+    // A theme with JavaScript is an entry too; one poller per package.
+    const ids = new Set(entries.map(({ id }) => id));
+
+    startExtensionDevelopmentReload([...entries, ...getBootstrapThemeChain().filter(({ id }) => !ids.has(id))]);
     loading = Promise.all(entries.map(bootExtension)).then(() => {});
 
     return loading;

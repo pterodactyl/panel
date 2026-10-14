@@ -13,18 +13,15 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Schedules\CreatesScheduleTasks;
 use Pterodactyl\Contracts\Schedules\DeletesScheduleTasks;
 use Pterodactyl\Contracts\Schedules\UpdatesScheduleTasks;
-use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteTaskRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
+use Pterodactyl\Http\Resources\Api\Client\TaskResource;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Task;
-use Pterodactyl\Transformers\Api\Client\TaskTransformer;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
 #[Subgroup('Server Schedules', 'Create, update, execute, delete, and manage scheduled server tasks.')]
@@ -43,52 +40,28 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
-     *
-     * @return ApiPayload
-     *
      * @throws ServiceLimitExceededException
      */
     #[Endpoint('Create schedule task', 'Creates a task in a server schedule.')]
-    #[ResponseFromTransformer(TaskTransformer::class, Task::class, description: 'Schedule task created.', resourceKey: 'schedule_task')]
+    #[ResponseFromResource(TaskResource::class, Task::class, description: 'Schedule task created.', resourceKey: 'schedule_task')]
     #[ScribeResponse(self::LIMIT_ERROR, status: 400, description: 'The schedule has reached its configured task limit.')]
-    public function store(StoreTaskRequest $request, CreatesScheduleTasks $tasks, Server $server, Schedule $schedule): array
+    public function store(StoreTaskRequest $request, CreatesScheduleTasks $tasks, Server $server, Schedule $schedule): TaskResource
     {
-        $this->assertBackupTaskAllowed($request, $server);
+        $task = $tasks->create($schedule, $request->actionInput());
 
-        $task = $tasks->create($schedule, $request->payload());
-
-        Activity::event('server:task.create')
-            ->subject($schedule, $task)
-            ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
-            ->log();
-
-        return Fractal::item($task)
-            ->transformWith($this->getTransformer(TaskTransformer::class))
-            ->toResponseArray();
+        return TaskResource::make($task);
     }
 
     /**
      * Updates a given task for a server.
-     *
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update schedule task', 'Updates a task in a server schedule, including its sequence position.')]
-    #[ResponseFromTransformer(TaskTransformer::class, Task::class, description: 'Schedule task updated.', resourceKey: 'schedule_task')]
-    public function update(StoreTaskRequest $request, UpdatesScheduleTasks $tasks, Server $server, Schedule $schedule, Task $task): array
+    #[ResponseFromResource(TaskResource::class, Task::class, description: 'Schedule task updated.', resourceKey: 'schedule_task')]
+    public function update(StoreTaskRequest $request, UpdatesScheduleTasks $tasks, Server $server, Schedule $schedule, Task $task): TaskResource
     {
-        $this->assertBackupTaskAllowed($request, $server);
+        $task = $tasks->update($schedule, $task, $request->actionInput());
 
-        $task = $tasks->update($schedule, $task, $request->payload());
-
-        Activity::event('server:task.update')
-            ->subject($schedule, $task)
-            ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
-            ->log();
-
-        return Fractal::item($task)
-            ->transformWith($this->getTransformer(TaskTransformer::class))
-            ->toResponseArray();
+        return TaskResource::make($task);
     }
 
     /**
@@ -101,18 +74,6 @@ class ScheduleTaskController extends ClientApiController
     {
         $tasks->delete($schedule, $task);
 
-        Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
-
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * A backup task is refused while the server cannot hold any backups.
-     *
-     * @throws HttpForbiddenException
-     */
-    private function assertBackupTaskAllowed(StoreTaskRequest $request, Server $server): void
-    {
-        throw_if($server->backup_limit === 0 && $request->payload()['action'] === 'backup', HttpForbiddenException::class, "A backup task cannot be created when the server's backup limit is set to 0.");
     }
 }

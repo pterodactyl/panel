@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
 class Fqdn implements DataAwareRule, ValidationRule
 {
     /**
-     * @var ValidationData
+     * @var array<string, mixed>
      */
     protected array $data = [];
 
@@ -29,7 +29,7 @@ class Fqdn implements DataAwareRule, ValidationRule
     }
 
     /**
-     * @param  ValidationData  $data
+     * @param  array<string, mixed>  $data
      */
     public function setData($data): self
     {

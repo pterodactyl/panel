@@ -8,6 +8,9 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
@@ -35,6 +38,61 @@ test('server can be created', function (): void {
     $this->assertDatabaseHas('servers', ['name' => 'Created Via API', 'owner_id' => $owner->id]);
     expect($allocation->refresh()->server_id)->toBe($response->json('attributes.id'));
 });
+test('a server created through the application api takes its nested fields', function (): void {
+    $fake = new FakeDaemonServer;
+    $node = Node::factory()->for(Location::factory())->create();
+    [$default, $additional] = Allocation::factory()->times(2)->create(['node_id' => $node->id]);
+
+    $response = $this->postJson('/api/application/servers', [
+        ...applicationServerPayload($default->id),
+        'external_id' => 'app-ext-1',
+        'description' => 'Provisioned by billing.',
+        'oom_disabled' => false,
+        'start_on_completion' => '1',
+        'limits' => ['memory' => '512', 'swap' => -1, 'disk' => 1024.0, 'io' => 500, 'cpu' => 100, 'threads' => 0],
+        'feature_limits' => ['databases' => null, 'backups' => '2'],
+        'allocation' => ['default' => (string) $default->id, 'additional' => [$additional->id]],
+    ], options: JSON_PRESERVE_ZERO_FRACTION)->assertCreated();
+
+    $server = Server::query()->findOrFail($response->json('attributes.id'));
+    expect($server->external_id)->toBe('app-ext-1')
+        ->and($server->description)->toBe('Provisioned by billing.')
+        ->and($server->image)->toBe('ghcr.io/pterodactyl/yolks:java_17')
+        ->and($server->oom_disabled)->toBeFalse()
+        ->and($server->memory)->toBe(512)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->disk)->toBe(1024)
+        ->and($server->cpu)->toBe(100)
+        ->and($server->threads)->toBe('0')
+        ->and($server->database_limit)->toBe(0)
+        ->and($server->allocation_limit)->toBe(0)
+        ->and($server->backup_limit)->toBe(2)
+        ->and($server->node_id)->toBe($node->id)
+        ->and($server->allocation_id)->toBe($default->id)
+        ->and($additional->refresh()->server_id)->toBe($server->id);
+    $fake->assertCreatedWith(true);
+});
+test('a server created through the application api keeps its own rules', function (array $payload, string $field, string $rule): void {
+    $fake = new FakeDaemonServer;
+    $allocation = Allocation::factory()->for(Node::factory()->for(Location::factory()))->create();
+
+    $this->postJson('/api/application/servers', array_filter([...applicationServerPayload($allocation->id), ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($fake->callsFor('create'))->toBe([]);
+})->with([
+    'a missing environment' => [['environment' => 'missing'], 'environment', 'present'],
+    'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
+    'an owner that does not exist' => [['user' => 0], 'user', 'exists'],
+    'an egg that does not exist' => [['egg' => 'none'], 'egg', 'exists'],
+    'a docker image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image', 'regex'],
+    'a missing database limit' => [['feature_limits' => ['allocations' => 0, 'backups' => 0]], 'feature_limits.databases', 'present'],
+    'a negative memory limit' => [['limits' => ['memory' => -1, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 100]], 'limits.memory', 'min'],
+    'a missing default allocation' => [['allocation' => ['additional' => []]], 'allocation.default', 'required'],
+]);
 test('server details can be updated', function (): void {
     $revocation = new FakeDaemonRevocation;
     $server = $this->createServerModel();
@@ -46,6 +104,32 @@ test('server details can be updated', function (): void {
     expect($server->owner_id)->toBe($owner->id);
     $revocation->assertDeauthorized($previousOwner->uuid, [$server->uuid]);
 });
+test('server details update replaces every detail and keeps its own rules', function (): void {
+    $server = $this->createServerModel(['external_id' => 'ext-old', 'description' => 'Old description.']);
+    $other = $this->createServerModel(['external_id' => 'ext-taken']);
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => (string) $server->owner_id, 'external_id' => 'ext-old'])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', 'ext-old')
+        ->assertJsonPath('attributes.description', '');
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => $server->owner_id])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', null);
+
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => 'Renamed', 'user' => $server->owner_id, 'external_id' => $other->external_id])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'external_id')
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+    $this->patchJson("/api/application/servers/{$server->id}/details", ['name' => str_repeat('a', 192), 'user' => 0, 'description' => ['text']])
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'user')
+        ->assertJsonPath('errors.1.meta.rule', 'exists')
+        ->assertJsonPath('errors.2.meta.source_field', 'description');
+});
 test('server build can be updated', function (): void {
     mockDaemon();
     $server = $this->createServerModel();
@@ -54,6 +138,58 @@ test('server build can be updated', function (): void {
     expect($server->memory)->toBe(1024);
     expect($server->database_limit)->toBe(5);
 });
+test('server build accepts integer strings and whole floats', function (): void {
+    mockDaemon();
+    $server = $this->createServerModel();
+    $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'add_allocations' => [(string) $allocation->id], 'limits' => ['memory' => 1024.0, 'swap' => '0', 'io' => 500, 'cpu' => 200, 'disk' => 5120], 'feature_limits' => ['databases' => 0, 'backups' => 0, 'allocations' => 2]])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 1024);
+
+    expect($allocation->refresh()->server_id)->toBe($server->id);
+});
+test('server build rejects fractional limits with a validation error', function (): void {
+    $server = $this->createServerModel();
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'limits' => ['memory' => 1024.5, 'swap' => 0, 'io' => 500, 'cpu' => 200, 'disk' => 5120], 'feature_limits' => ['databases' => 0, 'backups' => 0, 'allocations' => 1]])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'limits.memory');
+});
+test('server build takes the legacy flat limits, and limits over them', function (): void {
+    $fake = new FakeDaemonServer;
+    $server = $this->createServerModel(['oom_disabled' => true, 'threads' => '0-1', 'database_limit' => 4, 'allocation_limit' => 5, 'backup_limit' => 6]);
+    [$added, $removed] = Allocation::factory()->times(2)->create(['node_id' => $server->node_id]);
+    $removed->update(['server_id' => $server->id]);
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => (string) $server->allocation_id, 'oom_disabled' => '0', 'memory' => '768', 'swap' => -1, 'io' => 400, 'cpu' => 50, 'threads' => 2, 'disk' => 4096, 'add_allocations' => [$added->id], 'remove_allocations' => [(string) $removed->id], 'feature_limits' => ['databases' => null, 'backups' => '1']])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 768)
+        ->assertJsonPath('attributes.limits.threads', '2');
+
+    $server->refresh();
+    expect($server->oom_disabled)->toBeFalse()
+        ->and($server->memory)->toBe(768)
+        ->and($server->swap)->toBe(-1)
+        ->and($server->io)->toBe(400)
+        ->and($server->cpu)->toBe(50)
+        ->and($server->threads)->toBe('2')
+        ->and($server->disk)->toBe(4096)
+        ->and($server->database_limit)->toBeNull()
+        ->and($server->allocation_limit)->toBeNull()
+        ->and($server->backup_limit)->toBe(1)
+        ->and($added->refresh()->server_id)->toBe($server->id)
+        ->and($removed->refresh()->server_id)->toBeNull();
+    $fake->assertSynced();
+
+    $this->patchJson("/api/application/servers/{$server->id}/build", ['allocation' => $server->allocation_id, 'memory' => 128, 'threads' => '3', 'limits' => ['memory' => 256, 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 1024, 'threads' => null], 'feature_limits' => ['databases' => 1, 'backups' => 2, 'allocations' => 3]])
+        ->assertOk();
+
+    $server->refresh();
+    expect($server->memory)->toBe(256)
+        ->and($server->threads)->toBeNull()
+        ->and($server->allocation_limit)->toBe(3);
+});
 test('server startup can be updated', function (): void {
     mockDaemon();
     $server = $this->createServerModel();
@@ -61,6 +197,42 @@ test('server startup can be updated', function (): void {
     $this->patchJson("/api/application/servers/{$server->id}/startup", ['startup' => 'java -jar updated.jar', 'environment' => $environment, 'egg' => $server->egg_id, 'image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => false])->assertOk()->assertJsonPath('attributes.container.startup_command', 'java -jar updated.jar')->assertJsonPath('attributes.container.image', 'ghcr.io/pterodactyl/yolks:java_17');
     expect($server->refresh()->startup)->toBe('java -jar updated.jar');
 });
+test('server startup takes the application field names', function (): void {
+    mockDaemon();
+    $server = $this->createServerModel(['skip_scripts' => false]);
+    $nextEgg = $this->cloneEggAndVariables($server->egg);
+
+    $this->patchJson("/api/application/servers/{$server->id}/startup", ['startup' => 'java -jar moved.jar', 'environment' => ['BUNGEE_VERSION' => '456', 'SERVER_JARFILE' => 'moved.jar'], 'egg' => (string) $nextEgg->id, 'image' => 'ghcr.io/pterodactyl/yolks:java_21', 'skip_scripts' => '1'])
+        ->assertOk()
+        ->assertJsonPath('attributes.egg', $nextEgg->id)
+        ->assertJsonPath('attributes.container.image', 'ghcr.io/pterodactyl/yolks:java_21')
+        ->assertJsonPath('attributes.container.skip_scripts', true);
+
+    $server->refresh();
+    expect($server->egg_id)->toBe($nextEgg->id)
+        ->and($server->startup)->toBe('java -jar moved.jar')
+        ->and($server->skip_scripts)->toBeTrue()
+        ->and($server->variables->pluck('server_value', 'env_variable')->all())->toEqual(['BUNGEE_VERSION' => '456', 'SERVER_JARFILE' => 'moved.jar']);
+});
+test('server startup keeps its own rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel(['startup' => 'old startup']);
+
+    $this->patchJson("/api/application/servers/{$server->id}/startup", array_filter([...['startup' => 'java -jar updated.jar', 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar'], 'egg' => $server->egg_id, 'image' => 'ghcr.io/pterodactyl/yolks:java_17', 'skip_scripts' => false], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($server->refresh()->startup)->toBe('old startup');
+})->with([
+    'a missing startup command' => [['startup' => 'missing'], 'startup', 'required'],
+    'an environment that is not an object' => [['environment' => 'BUNGEE_VERSION=123'], 'environment', 'array'],
+    'a missing egg' => [['egg' => 'missing'], 'egg', 'required'],
+    'an egg that does not exist' => [['egg' => 'none'], 'egg', 'exists'],
+    'an image that is too long' => [['image' => str_repeat('a', 192)], 'image', 'max'],
+    'a skip scripts flag that is not a boolean' => [['skip_scripts' => 'yes'], 'skip_scripts', 'boolean'],
+    'an environment value the egg refuses' => [['environment' => ['BUNGEE_VERSION' => '$$', 'SERVER_JARFILE' => 'updated.jar']], 'environment.BUNGEE_VERSION', 'alpha_num'],
+]);
 test('server can be suspended and unsuspended', function (): void {
     mockDaemon();
     $server = $this->createServerModel();
@@ -74,6 +246,7 @@ test('server can be reinstalled', function (): void {
     $server = $this->createServerModel();
     $this->postJson("/api/application/servers/{$server->id}/reinstall")->assertStatus(Response::HTTP_NO_CONTENT);
     expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING);
+    $this->assertActivityOn('server:reinstall', $server);
 });
 test('a server that skips its install script cannot be reinstalled', function (): void {
     $fake = new FakeDaemonServer;
@@ -135,6 +308,13 @@ test('server database can be created', function (): void {
     $gateway->assertCreated("s{$server->id}_apidb");
     $gateway->assertFlushed(1);
 });
+test('a server database created through the application api takes the default connection limit', function (): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create();
+    $this->app->instance(DatabaseHostGateway::class, new FakeDatabaseHostGateway());
+    $this->postJson("/api/application/servers/{$server->id}/databases", ['database' => 'apidb', 'remote' => '%', 'host' => (string) $host->id])->assertStatus(Response::HTTP_CREATED);
+    expect(Database::query()->where('server_id', $server->id)->firstOrFail()->max_connections)->toBe(0);
+});
 test('server database password can be reset', function (): void {
     $server = $this->createServerModel();
     $host = DatabaseHost::factory()->create();
@@ -155,6 +335,21 @@ test('server database can be deleted', function (): void {
     $gateway->assertDroppedUser($database->username, $database->remote);
     $gateway->assertFlushed(1);
 });
+/** @return array<string, mixed> */
+function applicationServerPayload(int $allocationId): array
+{
+    return [
+        'name' => 'Application Server',
+        'user' => User::factory()->create()->id,
+        'egg' => Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail()->id,
+        'docker_image' => 'ghcr.io/pterodactyl/yolks:java_17',
+        'startup' => 'java -jar server.jar',
+        'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'server.jar'],
+        'limits' => ['memory' => 512, 'swap' => 0, 'disk' => 1024, 'io' => 500, 'cpu' => 100],
+        'feature_limits' => ['databases' => 0, 'allocations' => 0, 'backups' => 0],
+        'allocation' => ['default' => $allocationId],
+    ];
+}
 /** Fake the Wings server endpoints exercised by state-changing requests. */
 function mockDaemon(): void
 {

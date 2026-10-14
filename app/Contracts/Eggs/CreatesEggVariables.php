@@ -10,9 +10,11 @@ use Pterodactyl\Models\EggVariable;
 interface CreatesEggVariables
 {
     /**
-     * Create a new variable for a given Egg from request-validated attributes.
+     * The input is validated here: the environment variable name must be unique among the egg's
+     * variables and not one the panel reserves, and the rules must be a valid rule set. Listing
+     * user_viewable or user_editable in options lets users see or edit the variable.
      *
-     * @param  EggVariableData  $data
+     * @param  array<string, mixed>  $input  name, env_variable, rules and default_value, and optionally description and options
      */
-    public function create(Egg $egg, array $data): EggVariable;
+    public function create(Egg $egg, array $input): EggVariable;
 }

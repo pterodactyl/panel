@@ -18,102 +18,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\JoinClause;
-use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 /**
- * \Pterodactyl\Models\Server.
- *
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $uuidShort
- * @property int $node_id
- * @property string $name
- * @property string $description
- * @property string|null $status
- * @property bool $skip_scripts
- * @property int $owner_id
- * @property int $memory
- * @property int $swap
- * @property int $disk
- * @property int $io
- * @property int $cpu
- * @property string|null $threads
- * @property bool $oom_disabled
- * @property int $allocation_id
- * @property int $egg_id
- * @property string $startup
- * @property string $image
- * @property int|null $allocation_limit
- * @property int|null $database_limit
- * @property int $backup_limit
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $installed_at
- * @property Collection|ActivityLog[] $activity
- * @property int|null $activity_count
- * @property Allocation|null $allocation
- * @property Collection|Allocation[] $allocations
- * @property int|null $allocations_count
- * @property Collection|Backup[] $backups
- * @property int|null $backups_count
- * @property Collection|Database[] $databases
- * @property int|null $databases_count
- * @property Egg|null $egg
- * @property Collection|Mount[] $mounts
- * @property int|null $mounts_count
- * @property Node $node
- * @property DatabaseNotificationCollection<int, DatabaseNotification>|DatabaseNotification[] $notifications
- * @property int|null $notifications_count
- * @property Collection|Schedule[] $schedules
- * @property int|null $schedules_count
- * @property Collection|Subuser[] $subusers
- * @property int|null $subusers_count
- * @property ServerTransfer|null $transfer
- * @property User $user
- * @property Collection|EggVariable[] $variables
- * @property int|null $variables_count
- * @property Collection|ServerVariable[] $serverVariables
- *
- * @method static ServerFactory factory(...$parameters)
- * @method static Builder|Server newModelQuery()
- * @method static Builder|Server newQuery()
- * @method static Builder|Server query()
- * @method static Builder|Server whereAllocationId($value)
- * @method static Builder|Server whereAllocationLimit($value)
- * @method static Builder|Server whereBackupLimit($value)
- * @method static Builder|Server whereCpu($value)
- * @method static Builder|Server whereCreatedAt($value)
- * @method static Builder|Server whereDatabaseLimit($value)
- * @method static Builder|Server whereDescription($value)
- * @method static Builder|Server whereDisk($value)
- * @method static Builder|Server whereEggId($value)
- * @method static Builder|Server whereExternalId($value)
- * @method static Builder|Server whereId($value)
- * @method static Builder|Server whereImage($value)
- * @method static Builder|Server whereIo($value)
- * @method static Builder|Server whereMemory($value)
- * @method static Builder|Server whereName($value)
- * @method static Builder|Server whereNodeId($value)
- * @method static Builder|Server whereOomDisabled($value)
- * @method static Builder|Server whereOwnerId($value)
- * @method static Builder|Server whereSkipScripts($value)
- * @method static Builder|Server whereStartup($value)
- * @method static Builder|Server whereStatus($value)
- * @method static Builder|Server whereSwap($value)
- * @method static Builder|Server whereThreads($value)
- * @method static Builder|Server whereUpdatedAt($value)
- * @method static Builder|Server whereUuid($value)
- * @method static Builder|Server whereUuidShort($value)
- *
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @property int|null $database_limit Larastan's schema dump parser misses that this column is nullable
+ * @property-read Node $node
+ * @property-read User $user
  */
 #[Attributes\Identifiable('serv')]
 #[Guarded(['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'])]
@@ -125,10 +39,6 @@ class Server extends Model implements Identifiable
     use HasRealtimeIdentifier;
     use Notifiable;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'server';
 
     public const string STATUS_INSTALLING = 'installing';
@@ -144,8 +54,7 @@ class Server extends Model implements Identifiable
     private const string ADMIN_ROUTE_BINDING_FIELD = 'admin_identifier';
 
     /**
-     * Default values when creating the model. We want to switch to disabling OOM killer
-     * on server instances unless the user specifies otherwise in the request.
+     * New servers have the OOM killer disabled unless the request says otherwise.
      */
     protected $attributes = [
         'status' => self::STATUS_INSTALLING,
@@ -153,9 +62,6 @@ class Server extends Model implements Identifiable
         'installed_at' => null,
     ];
 
-    /**
-     * The default relationships to load for all server models.
-     */
     protected $with = ['allocation'];
 
     /**
@@ -178,8 +84,6 @@ class Server extends Model implements Identifiable
             'database_limit' => 'integer',
             'allocation_limit' => 'integer',
             'backup_limit' => 'integer',
-            self::CREATED_AT => 'datetime',
-            self::UPDATED_AT => 'datetime',
             'deleted_at' => 'datetime',
             'installed_at' => 'datetime',
         ];
@@ -236,7 +140,6 @@ class Server extends Model implements Identifiable
             return null;
         }
 
-        // SAFETY: the type check above limits route binding values to integers and strings.
         $routeValue = (string) $value;
         if (ctype_digit($routeValue)) {
             $server = self::query()->whereKey($routeValue)->first();
@@ -249,8 +152,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets the user who owns the server.
-     *
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
@@ -259,8 +160,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets the subusers associated with a server.
-     *
      * @return HasMany<Subuser, $this>
      */
     public function subusers(): HasMany
@@ -279,8 +178,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets all allocations associated with this server.
-     *
      * @return HasMany<Allocation, $this>
      */
     public function allocations(): HasMany
@@ -289,8 +186,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets information for the egg associated with this server.
-     *
      * @return HasOne<Egg, $this>
      */
     public function egg(): HasOne
@@ -308,20 +203,15 @@ class Server extends Model implements Identifiable
     {
         $this->loadMissing('egg.tags');
 
-        return $this->egg === null ? [] : JsonValueGuard::stringList($this->egg->tags->pluck('slug')->all());
+        return $this->egg === null ? [] : $this->egg->tags->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
-    /**
-     * Whether this server's egg carries the given tag slug.
-     */
     public function hasTag(string $slug): bool
     {
         return in_array($slug, $this->tagSlugs(), true);
     }
 
     /**
-     * Gets information for the service variables associated with this server.
-     *
      * @return HasMany<EggVariable, $this>
      */
     public function variables(): HasMany
@@ -353,8 +243,51 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets information for the node associated with this server.
+     * The egg's variables with this server's values as server_value. When a list has eager
+     * loaded egg.variables and serverVariables this runs no query for each server.
      *
+     * @return Collection<int, EggVariable>
+     */
+    public function resolvedVariables(): Collection
+    {
+        if (! $this->relationLoaded('egg')
+            || ! $this->egg?->relationLoaded('variables')
+            || ! $this->relationLoaded('serverVariables')
+        ) {
+            return $this->variables()->get();
+        }
+
+        $overrides = $this->serverVariables->pluck('variable_value', 'variable_id');
+
+        return $this->egg->variables->map(function (EggVariable $variable) use ($overrides): EggVariable {
+            $resolved = clone $variable;
+            $resolved->setAttribute('server_value', $overrides->get($variable->id));
+
+            return $resolved;
+        });
+    }
+
+    /**
+     * The startup command with its variables filled in. A variable the user cannot view, or
+     * every variable when $hideAllValues is set, shows as "[hidden]".
+     */
+    public function startupCommand(bool $hideAllValues = false): string
+    {
+        $this->loadMissing('allocation');
+        $allocation = $this->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.');
+
+        $find = ['{{SERVER_MEMORY}}', '{{SERVER_IP}}', '{{SERVER_PORT}}'];
+        $replace = [(string) $this->memory, $allocation->ip, (string) $allocation->port];
+
+        foreach ($this->resolvedVariables() as $variable) {
+            $find[] = '{{'.$variable->env_variable.'}}';
+            $replace[] = (string) (($variable->user_viewable && ! $hideAllValues) ? ($variable->server_value ?? $variable->default_value) : '[hidden]');
+        }
+
+        return str_replace($find, $replace, $this->startup);
+    }
+
+    /**
      * @return BelongsTo<Node, $this>
      */
     public function node(): BelongsTo
@@ -363,8 +296,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets information for the tasks associated with this server.
-     *
      * @return HasMany<Schedule, $this>
      */
     public function schedules(): HasMany
@@ -373,18 +304,14 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Gets all databases associated with a server.
-     *
      * @return HasMany<Database, $this>
      */
     public function databases(): HasMany
     {
-        return $this->hasMany(Database::class)->chaperone('server');
+        return $this->hasMany(Database::class)->chaperone('server')->orderBy('id');
     }
 
     /**
-     * Returns the location that a server belongs to.
-     *
      * The server's location is whatever its node belongs to, so this resolves
      * through the node with local keys - the same native emulation of an inverse
      * through-relation used elsewhere in this codebase.
@@ -397,8 +324,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Returns the associated server transfer.
-     *
      * @return HasOne<ServerTransfer, $this>
      */
     public function transfer(): HasOne
@@ -415,8 +340,6 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * Returns all mounts that have this server has mounted.
-     *
      * @return HasManyThrough<Mount, MountServer, $this>
      */
     public function mounts(): HasManyThrough
@@ -432,6 +355,32 @@ class Server extends Model implements Identifiable
     public function activity(): MorphToMany
     {
         return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
+    }
+
+    /**
+     * The server's activity without disabled events. With activity.hide_admin_activity set,
+     * entries by root admins who are neither the owner nor a subuser are left out.
+     *
+     * @return MorphToMany<ActivityLog, $this>
+     */
+    public function visibleActivity(): MorphToMany
+    {
+        $query = $this->activity()->select('activity_logs.*')->withoutDisabledEvents();
+
+        if (config('activity.hide_admin_activity')) {
+            $subusers = $this->subusers()->pluck('user_id')->merge([$this->owner_id]);
+
+            $query->leftJoin('users', function (JoinClause $join): void {
+                $join->on('users.id', 'activity_logs.actor_id')
+                    ->where('activity_logs.actor_type', (new User)->getMorphClass());
+            })->where(function (Builder $builder) use ($subusers): void {
+                $builder->whereNull('users.id')
+                    ->orWhere('users.root_admin', 0)
+                    ->orWhereIn('users.id', $subusers);
+            });
+        }
+
+        return $query;
     }
 
     /**

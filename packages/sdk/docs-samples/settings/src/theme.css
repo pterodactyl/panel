@@ -1,0 +1,14 @@
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* #region settings */
+/* The "accent" setting writes --sunrise-accent; the colour roles derive from it. */
+:root {
+    --primary: var(--sunrise-accent, #f97316);
+    --ring: color-mix(in oklab, var(--primary) 60%, transparent);
+}
+
+/* The "density" setting writes data-sunrise-density on <html>. */
+[data-sunrise-density='compact'] {
+    --spacing: 0.2rem;
+}
+/* #endregion settings */

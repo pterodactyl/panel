@@ -1,9 +1,12 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { IRenderable, ITerminalOptions } from 'ghostty-web';
+import type { CanvasRenderer, IRenderable, ITerminalAddon, ITerminalOptions } from 'ghostty-web';
 import type { notifyThemeChange as NotifyThemeChange } from '@/lib/theme';
 import type { useTerminal as UseTerminal } from './useTerminal';
+
+// Ghostty doesn't export the interface itself.
+type ScrollbackProvider = Parameters<CanvasRenderer['render']>[3];
 
 type MockTerminal = {
     options: ITerminalOptions;
@@ -12,7 +15,18 @@ type MockTerminal = {
     scrollbackLength: number;
     scrollbackLimit: number;
     renderedViewportY: number | undefined;
-    renderer: { render: (buffer: IRenderable, forceAll: boolean, viewportY: number) => void };
+    renderedScrollbarOpacity: number | undefined;
+    renderer: {
+        render: (
+            buffer: IRenderable,
+            forceAll: boolean,
+            viewportY: number,
+            scrollbackProvider?: ScrollbackProvider,
+            scrollbarOpacity?: number
+        ) => void;
+    };
+    canvas: HTMLCanvasElement;
+    canvasPressed: ReturnType<typeof vi.fn>;
     write: (data: string) => void;
     writeln: (data: string) => void;
 };
@@ -23,6 +37,7 @@ const ghostty = vi.hoisted(() => ({ load: vi.fn<() => Promise<object>>() }));
 vi.mock('ghostty-web', () => ({
     Ghostty: { load: () => ghostty.load() },
     FitAddon: class {
+        activate() {}
         fit() {}
         observeResize() {}
         dispose() {}
@@ -34,16 +49,40 @@ vi.mock('ghostty-web', () => ({
         scrollbackLength = 0;
         scrollbackLimit = Number.POSITIVE_INFINITY;
         renderedViewportY: number | undefined;
+        renderedScrollbarOpacity: number | undefined;
         renderer = {
-            render: (_buffer: IRenderable, _forceAll: boolean, viewportY: number) => {
+            render: (
+                _buffer: IRenderable,
+                _forceAll: boolean,
+                viewportY: number,
+                _scrollbackProvider?: ScrollbackProvider,
+                scrollbarOpacity = 1
+            ) => {
                 this.renderedViewportY = viewportY;
+                this.renderedScrollbarOpacity = scrollbarOpacity;
             },
+            getMetrics: () => ({ width: 8, height: 10, baseline: 8 }),
         };
+        cols = 80;
+        rows = 30;
+        element: HTMLElement | undefined;
+        textarea: HTMLTextAreaElement | undefined;
+        canvas = document.createElement('canvas');
+        // Stands in for Ghostty's own capture listener, which hit-tests its scrollbar.
+        canvasPressed = vi.fn();
         constructor(public options: ITerminalOptions) {
             terminals.push(this);
         }
-        open() {}
-        loadAddon() {}
+        open(element: HTMLElement) {
+            this.element = element;
+            element.addEventListener('mousedown', this.canvasPressed, { capture: true });
+            element.appendChild(this.canvas);
+            this.textarea = element.appendChild(document.createElement('textarea'));
+        }
+        onResize() {}
+        loadAddon(addon: ITerminalAddon) {
+            addon.activate(this);
+        }
         registerLinkProvider() {}
         attachCustomKeyEventHandler() {}
         onScroll() {}
@@ -132,6 +171,70 @@ describe('useTerminal', () => {
         expect(Object.keys(theme)).toHaveLength(22);
     });
 
+    it('converts tokens in oklch() and other syntaxes to the hex or rgba() Ghostty parses', async () => {
+        // jsdom has no canvas, so this one paints the pixels Chrome paints for these colours.
+        const pixels = new Map([
+            ['oklch(0.8 0.12 150)', [130, 212, 148, 255]],
+            ['oklch(0.3 0.05 260 / 50%)', [32, 46, 72, 128]],
+        ]);
+        let fill: CanvasRenderingContext2D['fillStyle'] = 'transparent';
+        const canvas = {
+            clearRect(_x: number, _y: number, _w: number, _h: number) {},
+            fillRect(_x: number, _y: number, _w: number, _h: number) {},
+            get fillStyle() {
+                return fill;
+            },
+            set fillStyle(color: CanvasRenderingContext2D['fillStyle']) {
+                fill = color;
+            },
+            getImageData(_x: number, _y: number, _w: number, _h: number): ImageData {
+                const data = new Uint8ClampedArray(pixels.get(String(fill)) ?? [0, 0, 0, 0]);
+
+                return { colorSpace: 'srgb', data, width: 1, height: 1 };
+            },
+        };
+
+        vi.mocked(HTMLCanvasElement.prototype.getContext).mockReturnValue(canvas as CanvasRenderingContext2D);
+        tokens.set('--terminal-foreground', 'oklch(0.8 0.12 150)');
+        tokens.set('--terminal-selection', 'oklch(0.3 0.05 260 / 50%)');
+
+        render(<Harness />);
+        await waitFor(() => expect(terminals).toHaveLength(1));
+
+        expect(terminals[0].options.theme?.foreground).toBe('#82d494');
+        expect(terminals[0].options.theme?.selectionBackground).toBe('rgba(32, 46, 72, 0.502)');
+    });
+
+    it('scrolls without easing, so new output cannot drag a scrolled-up view along', async () => {
+        render(<Harness />);
+        await waitFor(() => expect(terminals).toHaveLength(1));
+
+        expect(terminals[0].options.smoothScrollDuration).toBe(0);
+    });
+
+    it('keeps the on-screen keyboard closed when the read-only terminal takes focus', async () => {
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        expect(container.firstElementChild).toHaveAttribute('inputmode', 'none');
+        expect(container.querySelector('textarea')).toHaveAttribute('inputmode', 'none');
+    });
+
+    it('scrolls the history with a vertical swipe', async () => {
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const mount = container.firstElementChild!;
+
+        terminals[0].scrollbackLength = 100;
+        fireEvent.touchStart(mount, { touches: [{ clientY: 200 }] });
+        fireEvent.touchMove(mount, { touches: [{ clientY: 300 }] });
+
+        expect(terminals[0].viewportY).toBe(10);
+    });
+
     it('keeps a scrolled-up viewport on the same lines when new output arrives', async () => {
         const { container } = render(<Harness />);
 
@@ -176,9 +279,33 @@ describe('useTerminal', () => {
             clearDirty: () => {},
         };
 
-        terminals[0].renderer.render(buffer, false, 4.29);
+        terminals[0].renderer.render(buffer, false, 4.29, undefined, 1);
 
         expect(terminals[0].renderedViewportY).toBe(4);
+        // Ghostty's scrollbar would cover the last columns; ConsoleScrollbar draws one in the gutter.
+        expect(terminals[0].renderedScrollbarOpacity).toBe(0);
+    });
+
+    it("keeps presses on the canvas's right edge from grabbing Ghostty's hidden scrollbar", async () => {
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const { canvas, canvasPressed } = terminals[0];
+
+        Object.defineProperty(canvas, 'clientWidth', { value: 600 });
+        const press = (offsetX: number) => {
+            const event = new MouseEvent('mousedown', { bubbles: true });
+
+            Object.defineProperty(event, 'offsetX', { value: offsetX });
+            canvas.dispatchEvent(event);
+        };
+
+        press(595);
+        expect(canvasPressed).not.toHaveBeenCalled();
+
+        press(300);
+        expect(canvasPressed).toHaveBeenCalledOnce();
     });
 
     it('follows new output when the viewport is at the bottom', async () => {

@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Validation\NodeRules;
 
 class UpdateNodeRequest extends StoreNodeRequest
 {
@@ -20,13 +19,12 @@ class UpdateNodeRequest extends StoreNodeRequest
     /**
      * Validation rules for updating a node.
      *
-     * @param  NormalizedValidationRules|null  $rules
      * @return ValidationRules
      */
-    public function rules(?array $rules = null): array
+    public function rules(): array
     {
         return [
-            ...parent::rules(NodeRules::rules()),
+            ...parent::rules(),
             'reset_secret' => ['sometimes', 'boolean'],
         ];
     }

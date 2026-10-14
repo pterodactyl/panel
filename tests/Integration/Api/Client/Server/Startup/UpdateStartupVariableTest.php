@@ -38,6 +38,7 @@ test('startup variable can be updated', function (array $permissions): void {
     $this->assertDatabaseHas('server_variables', ['server_id' => $server->id, 'variable_id' => $variable->id, 'variable_value' => '123']);
     $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version 123');
     $response->assertJsonPath('meta.raw_startup_command', $server->startup);
+    $this->assertActivityFor('server:startup.edit', $user, $server, $variable);
 })->with('permissionsDataProvider');
 test('startup variable cannot be updated if not user viewable or editable', function (array $permissions): void {
     /** @var Server $server */

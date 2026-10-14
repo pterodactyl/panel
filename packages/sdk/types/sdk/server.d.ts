@@ -19,8 +19,8 @@ export declare function serverFilesQueryOptions(id: string, directory: string): 
 export declare function serverFileContentQueryOptions(id: string, file: string): SdkServerQueryOptions<string>;
 export declare function serverStartupQueryOptions(id: string): SdkServerQueryOptions<SdkServerStartup>;
 export declare function serverBackupsQueryOptions(id: string, page?: number): SdkServerQueryOptions<SdkServerBackups>;
-/** Power state and resource usage, in the cache entry the dashboard's server cards poll. */
-export declare function serverResourcesQueryOptions(id: string): SdkServerQueryOptions<SdkServerResources>;
+/** Power state and resource usage of the server with this uuid, in the cache entry the dashboard polls. */
+export declare function serverResourcesQueryOptions(uuid: string): SdkServerQueryOptions<SdkServerResources>;
 /** Recent console output, oldest first; `lines` is clamped to 1-100 and needs `websocket.connect`. */
 export declare function serverLogsQueryOptions(id: string, lines?: number): SdkServerQueryOptions<SdkServerLogs>;
 export declare function useServerFiles<TData = SdkServerFiles>(id: string, directory: string, select?: (data: SdkServerFiles) => TData): UseQueryResult<TData, unknown>;
@@ -28,7 +28,7 @@ export declare function useServerFileContent(id: string, file: string): UseQuery
 export declare function useServerStartup<TData = SdkServerStartup>(id: string, select?: (data: SdkServerStartup) => TData): UseQueryResult<TData, unknown>;
 export declare function useServerBackups<TData = SdkServerBackups>(id: string, page?: number, select?: (data: SdkServerBackups) => TData): UseQueryResult<TData, unknown>;
 /** Polls like the dashboard. Inside the server area, the "stats" and "status" websocket events are live. */
-export declare function useServerResources<TData = SdkServerResources>(id: string, select?: (data: SdkServerResources) => TData): UseQueryResult<TData, unknown>;
+export declare function useServerResources<TData = SdkServerResources>(uuid: string, select?: (data: SdkServerResources) => TData): UseQueryResult<TData, unknown>;
 export type SdkServerDataDomain = ServerDataDomain;
 /** Return this promise from extension mutation callbacks to await the host's refetches. */
 export declare function invalidateServerData(id: string, domains: readonly SdkServerDataDomain[]): Promise<void>;

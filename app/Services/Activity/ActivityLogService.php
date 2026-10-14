@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Activity;
 
-use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -15,8 +14,6 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\ActivityLogSubject;
-use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 class ActivityLogService
@@ -108,10 +105,10 @@ class ActivityLogService
     /**
      * Sets a custom property on the activity log instance.
      *
-     * @param  string|array<string, JsonValue>  $key
-     * @param  JsonInputValue  $value  Ignored when an array of properties is provided.
+     * @param  string|array<string, mixed>  $key
+     * @param  mixed  $value  Ignored when an array of properties is provided.
      */
-    public function property(array|string $key, array|bool|float|int|string|JsonEmptyObject|null $value = null): self
+    public function property(array|string $key, mixed $value = null): self
     {
         $activity = $this->getActivity();
         $properties = $activity->properties;
@@ -120,7 +117,6 @@ class ActivityLogService
                 $properties->put($name, $property);
             }
         } else {
-            JsonValueGuard::assertValue($value);
             $properties->put($key, $value);
         }
 
@@ -173,29 +169,6 @@ class ActivityLogService
     public function clone(): self
     {
         return clone $this;
-    }
-
-    /**
-     * Executes the provided callback within the scope of a database transaction
-     * and will only save the activity log entry if everything else successfully
-     * settles.
-     *
-     * @template TReturn of object|ApiValue10
-     *
-     * @param  Closure($this): TReturn  $callback
-     * @return TReturn
-     *
-     * @throws Throwable
-     */
-    public function transaction(Closure $callback): array|bool|float|int|object|string|null
-    {
-        return DB::transaction(function () use ($callback) {
-            $response = $callback($this);
-
-            $this->save();
-
-            return $response;
-        });
     }
 
     /**

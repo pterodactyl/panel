@@ -12,22 +12,21 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Api\CreatesApiKeys;
 use Pterodactyl\Contracts\Api\DeletesApiKeys;
 use Pterodactyl\Contracts\Api\UpdatesApiKeys;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\DeleteApiKeyRequest;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\GetApiKeysRequest;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\StoreApiKeyRequest;
 use Pterodactyl\Http\Requests\Api\Admin\ApiKeys\UpdateApiKeyRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ApiKeyResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Transformers\Api\Admin\ApiKeyTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
+use UnexpectedValueException;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('API Keys', 'Create and manage application API keys.')]
@@ -35,8 +34,6 @@ class ApiKeyController extends AdminApiController
 {
     /**
      * List API keys.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List API keys', 'Returns a paginated list of application API keys.')]
     #[QueryParam('filter[memo]', 'string', 'Filter keys by memo.', required: false, example: 'Automation')]
@@ -44,30 +41,25 @@ class ApiKeyController extends AdminApiController
     #[QueryParam('sort', 'string', 'Sort keys by ID, memo, or creation date. Prefix with a hyphen for descending order.', required: false, example: '-created_at')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
-    #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API keys returned.', collection: true, resourceKey: 'api_key', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetApiKeysRequest $request): array
+    #[ResponseFromResource(ApiKeyResource::class, ApiKey::class, description: 'API keys returned.', collection: true, resourceKey: 'api_key', paginate: 50)]
+    public function index(GetApiKeysRequest $request): ApiResourceCollection
     {
         $keys = QueryBuilder::for(ApiKey::query()->with('user')->where('key_type', ApiKey::TYPE_APPLICATION))
             ->allowedFilters(['memo', 'identifier'])
             ->allowedSorts(['id', 'memo', 'created_at'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($keys)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
-            ->toResponseArray();
+        return ApiKeyResource::collection($keys);
     }
 
     /**
      * Create API key.
      */
     #[Endpoint('Create API key', 'Creates a new application API key and returns the plaintext secret token once.')]
-    #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, status: 201, description: 'API key created.', resourceKey: 'api_key', meta: ['secret_token' => 'ptla_1234567890abcdef'])]
+    #[ResponseFromResource(ApiKeyResource::class, ApiKey::class, status: 201, description: 'API key created.', resourceKey: 'api_key', meta: ['secret_token' => 'ptla_1234567890abcdef'])]
     public function store(StoreApiKeyRequest $request, CreatesApiKeys $keyCreator): JsonResponse
     {
-        $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [
-            'memo' => $request->string('memo')->toString(),
-            'user_id' => $request->user()->id,
-        ], $request->getKeyPermissions());
+        $key = $keyCreator->create(ApiKey::TYPE_APPLICATION, [...$request->actionInput(), 'user_id' => $request->user()->id], $request->getKeyPermissions());
         $key->load('user');
 
         Activity::event('admin:api-key.create')
@@ -75,22 +67,22 @@ class ApiKeyController extends AdminApiController
             ->property('identifier', $key->identifier)
             ->log();
 
-        return Fractal::item($key)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
-            ->addMeta([
-                'secret_token' => $key->identifier.JsonValueGuard::string(Crypt::decrypt($key->token)),
+        $token = Crypt::decrypt($key->token);
+        throw_unless(is_string($token), UnexpectedValueException::class, 'The decrypted API key must be a string.');
+
+        return ApiKeyResource::make($key)
+            ->withMeta([
+                'secret_token' => $key->identifier.$token,
             ])
             ->respond(Response::HTTP_CREATED);
     }
 
     /**
      * Show API key.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get API key', 'Returns a single application API key by identifier without exposing its token.')]
-    #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API key returned.', resourceKey: 'api_key')]
-    public function show(GetApiKeysRequest $request, string $identifier): array
+    #[ResponseFromResource(ApiKeyResource::class, ApiKey::class, description: 'API key returned.', resourceKey: 'api_key')]
+    public function show(GetApiKeysRequest $request, string $identifier): ApiKeyResource
     {
         $key = ApiKey::query()
             ->with('user')
@@ -98,26 +90,22 @@ class ApiKeyController extends AdminApiController
             ->where('identifier', $identifier)
             ->firstOrFail();
 
-        return Fractal::item($key)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
-            ->toResponseArray();
+        return ApiKeyResource::make($key);
     }
 
     /**
      * Update API key.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update API key', 'Updates an application API key memo and resource permissions without regenerating the token.')]
-    #[ResponseFromTransformer(ApiKeyTransformer::class, ApiKey::class, description: 'API key updated.', resourceKey: 'api_key')]
-    public function update(UpdateApiKeyRequest $request, UpdatesApiKeys $keyUpdater, string $identifier): array
+    #[ResponseFromResource(ApiKeyResource::class, ApiKey::class, description: 'API key updated.', resourceKey: 'api_key')]
+    public function update(UpdateApiKeyRequest $request, UpdatesApiKeys $keyUpdater, string $identifier): ApiKeyResource
     {
         $key = ApiKey::query()
             ->where('key_type', ApiKey::TYPE_APPLICATION)
             ->where('identifier', $identifier)
             ->firstOrFail();
 
-        $key = $keyUpdater->update($key, ['memo' => JsonValueGuard::nullableString($request->validated('memo'))], $request->getKeyPermissions());
+        $key = $keyUpdater->update($key, $request->actionInput(), $request->getKeyPermissions());
         $key->load('user');
 
         Activity::event('admin:api-key.update')
@@ -125,9 +113,7 @@ class ApiKeyController extends AdminApiController
             ->property('identifier', $key->identifier)
             ->log();
 
-        return Fractal::item($key)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
-            ->toResponseArray();
+        return ApiKeyResource::make($key);
     }
 
     /**
@@ -142,12 +128,12 @@ class ApiKeyController extends AdminApiController
             ->where('identifier', $identifier)
             ->firstOrFail();
 
+        $keyDeleter->delete($key);
+
         Activity::event('admin:api-key.delete')
             ->subject($key)
             ->property('identifier', $key->identifier)
             ->log();
-
-        $keyDeleter->delete($key);
 
         return $this->returnNoContent();
     }

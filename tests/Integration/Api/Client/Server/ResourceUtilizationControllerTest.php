@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\ResourceUtilizationControllerTest;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -50,4 +51,12 @@ test('error is returned when wings cannot report resource utilization', function
     [$user, $server] = $this->generateTestAccount();
     $fake->throwable = new DaemonConnectionException(Http::failedRequest([], Response::HTTP_BAD_GATEWAY));
     $this->actingAs($user)->getJson("/api/client/servers/{$server->uuid}/resources")->assertStatus(Response::HTTP_BAD_GATEWAY)->assertJsonPath('errors.0.code', 'DaemonConnectionException');
+});
+test('wings errors are logged and returned as json to clients not requesting json', function () {
+    Exceptions::fake();
+    $fake = new FakeDaemonServer;
+    [$user, $server] = $this->generateTestAccount();
+    $fake->throwable = new DaemonConnectionException(Http::failedRequest([], Response::HTTP_BAD_GATEWAY));
+    $this->actingAs($user)->get("/api/client/servers/{$server->uuid}/resources", ['Accept' => '*/*'])->assertStatus(Response::HTTP_BAD_GATEWAY)->assertJsonPath('errors.0.code', 'DaemonConnectionException');
+    Exceptions::assertReported(DaemonConnectionException::class);
 });

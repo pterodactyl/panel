@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables;
 
-use Illuminate\Validation\Rule;
+use Pterodactyl\Actions\Eggs\Variables\ReorderEggVariables;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ReorderVariablesRequest extends AdminApiRequest
 {
@@ -23,15 +22,18 @@ class ReorderVariablesRequest extends AdminApiRequest
      */
     public function rules(): array
     {
-        return [
-            'order' => ['required', 'array', 'list'],
-            'order.*' => ['required', Rule::anyOf([['integer:strict'], ['string']]), 'integer', 'distinct'],
-        ];
+        return ReorderEggVariables::rules();
     }
 
-    /** @return list<int> */
+    /**
+     * The validated variable ids, in their new order.
+     *
+     * @return list<int>
+     */
     public function order(): array
     {
-        return JsonValueGuard::normalizedIntegerList(JsonValueGuard::integerStringList($this->validated('order')));
+        $validated = $this->safe();
+
+        return array_map(fn (int|string $key): int => $validated->integer('order.'.$key), array_keys($validated->array('order')));
     }
 }

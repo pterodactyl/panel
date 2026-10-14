@@ -64,7 +64,12 @@ try {
     const query = await load('resources/scripts/ext-runtime/tanstack-react-query.ts');
     const sdk = await load('resources/scripts/sdk/index.ts');
     const api = await load('resources/scripts/sdk/api.ts');
+    const theme = await load('resources/scripts/sdk/theme.ts');
     assert.equal(sdk.queryClient, api.queryClient, 'SDK entries must share the panel QueryClient');
+    assert.equal(sdk.onThemeChange, theme.onThemeChange, 'SDK entries must share the theme runtime');
+    for (const name of ['defineTheme', 'View', 'Slot', 'Main', 'useTheme', 'useThemeSettings', 'lazyView']) {
+        assert.ok(name in theme, `@pterodactyl/sdk/theme missing export ${name}`);
+    }
     assert.ok(sdk.queryClient instanceof query.QueryClient, 'SDK and shared Query runtime differ');
     function Consumer() {
         const [name] = React.useState('shared');
@@ -82,7 +87,7 @@ try {
     assert.equal(container.textContent, 'shared');
     ReactDOM.flushSync(() => mounted.unmount());
     sdk.queryClient.clear();
-    console.log('Built extension runtime: exports, React hooks, UI and shared QueryClient verified.');
+    console.log('Built extension runtime: exports, React hooks, UI, theme runtime and shared QueryClient verified.');
 } finally {
     rmSync(scope, { force: true });
     dom.window.close();

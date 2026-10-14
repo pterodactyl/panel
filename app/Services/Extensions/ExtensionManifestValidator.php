@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
+use Closure;
 use Composer\Autoload\ClassLoader;
 use Composer\Semver\VersionParser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 use JsonException;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Services\Themes\ThemeDefinition;
+use Pterodactyl\Services\Themes\ThemeRepository;
+use Pterodactyl\Services\Themes\ThemeSetting;
 use ReflectionClass;
 use UnexpectedValueException;
 
@@ -83,6 +87,10 @@ class ExtensionManifestValidator
         $icon = $data['icon'] ?? null;
         throw_if($icon !== null && preg_match(ExtensionManifest::ICON_REGEX, $icon) !== 1 && preg_match(ExtensionManifest::ICON_FILE_REGEX, $icon) !== 1, InvalidExtensionException::class, 'Manifest "icon" must be a lucide icon name such as "life-buoy", or the relative path of a .png, .jpg or .webp image inside the package.');
 
+        if (($data['type'] ?? null) === 'theme') {
+            $this->validateTheme($id, $data['theme'] ?? []);
+        }
+
         return ExtensionManifest::fromValidatedData(
             directory: $directory,
             data: $data,
@@ -104,6 +112,7 @@ class ExtensionManifestValidator
             'id' => ['required', 'string'],
             'name' => ['required', 'string'],
             'version' => ['required', 'string', 'max:64'],
+            'type' => ['sometimes', 'string', Rule::in(ExtensionManifest::TYPES)],
             'description' => ['nullable', 'string'],
             'author' => ['nullable', 'string'],
             'provider' => ['nullable', 'string'],
@@ -111,16 +120,16 @@ class ExtensionManifestValidator
             'autoload' => ['sometimes', 'array'],
             'requires' => ['sometimes', 'array:panel,sdk,php,extensions'],
             'requires.panel' => ['sometimes', 'string', 'max:255'],
-            'requires.sdk' => ['required_with:ui.components', 'string', 'max:255'],
+            'requires.sdk' => ['required_with:ui.views', 'string', 'max:255'],
             'requires.php' => ['sometimes', 'string', 'max:255'],
             'requires.extensions' => ['sometimes', 'array', 'max:64'],
             'requires.extensions.*' => ['required', 'string', 'max:255'],
             'ui' => ['sometimes', 'array'],
             'ui.entry' => ['required_with:ui', 'string'],
             'ui.mode' => ['sometimes', 'string'],
-            'ui.prefix' => ['sometimes', 'filled', 'string', 'regex:'.ExtensionManifest::UI_PREFIX_REGEX, Rule::notIn(ExtensionManifest::RESERVED_UI_PREFIXES)],
-            'ui.components' => ['sometimes', 'array', 'list', 'max:64'],
-            'ui.components.*' => ['required', 'string', 'distinct:strict', Rule::in(ExtensionManifest::COMPONENT_NAMES)],
+            'ui.prefix' => ['sometimes', 'prohibited_if:type,theme', 'filled', 'string', 'regex:'.ExtensionManifest::UI_PREFIX_REGEX, Rule::notIn(ExtensionManifest::RESERVED_UI_PREFIXES)],
+            'ui.views' => ['sometimes', 'prohibited_if:type,theme', 'array', 'list'],
+            'ui.views.*' => ['required', 'string', 'distinct:strict', 'regex:'.ExtensionManifest::VIEW_NAME_REGEX],
             'ui.screens' => ['sometimes', 'array', 'list', 'max:64'],
             'ui.screens.*' => ['required', 'array:id,area,path,nav,permission,parent,when'],
             'ui.screens.*.id' => ['required', 'string', 'max:48', 'regex:/^[a-z][a-z0-9-]*$/D', 'distinct:strict'],
@@ -150,6 +159,26 @@ class ExtensionManifestValidator
             'routes' => ['sometimes', 'array:root'],
             'routes.root' => ['sometimes', 'array', 'list', 'max:8'],
             'routes.root.*' => ['required', 'string', 'distinct:strict', 'regex:'.ExtensionManifest::ROOT_PREFIX_REGEX],
+            'theme' => ['sometimes', 'prohibited_unless:type,theme', 'array:extends,stylesheet,schemes,settings'],
+            'theme.extends' => ['sometimes', 'string', 'regex:'.ExtensionManifest::ID_REGEX],
+            'theme.stylesheet' => ['sometimes', 'nullable', 'string', Rule::in([ThemeDefinition::STYLESHEET])],
+            'theme.schemes' => ['sometimes', 'array', 'list', 'min:1', 'max:2'],
+            'theme.schemes.*' => ['required', 'string', 'distinct:strict', Rule::in(ThemeDefinition::SCHEMES)],
+            'theme.settings' => ['sometimes', 'array', $this->keyedBy(ThemeSetting::KEY_REGEX, 'Theme setting names must match '.ThemeSetting::KEY_REGEX.'.')],
+            'theme.settings.*' => ['required', 'array:type,label,default,help,tab,token,attribute,options,min,max,step,unit,maxLength'],
+            'theme.settings.*.type' => ['required', 'string', Rule::in(ThemeSetting::TYPES)],
+            'theme.settings.*.label' => ['required', 'string'],
+            'theme.settings.*.help' => ['sometimes', 'nullable', 'string'],
+            'theme.settings.*.tab' => ['sometimes', 'nullable', 'string'],
+            'theme.settings.*.token' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::TOKEN_REGEX],
+            'theme.settings.*.attribute' => ['sometimes', 'nullable', 'string', 'regex:'.ThemeSetting::ATTRIBUTE_REGEX, Rule::notIn(ThemeSetting::RESERVED_ATTRIBUTES)],
+            'theme.settings.*.options' => ['required_if:theme.settings.*.type,select', 'prohibited_unless:theme.settings.*.type,select', 'array', 'min:1', $this->keyedBy(ThemeSetting::OPTION_REGEX, 'Theme setting options must be keyed by identifiers such as "side".')],
+            'theme.settings.*.options.*' => ['required', 'string'],
+            'theme.settings.*.min' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
+            'theme.settings.*.max' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric'],
+            'theme.settings.*.step' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'numeric', 'gt:0'],
+            'theme.settings.*.unit' => ['sometimes', 'prohibited_unless:theme.settings.*.type,number', 'string', 'regex:'.ThemeSetting::UNIT_REGEX],
+            'theme.settings.*.maxLength' => ['sometimes', 'prohibited_unless:theme.settings.*.type,text', 'integer', 'min:1'],
         ], [
             'id.required' => 'Manifest field "id" is required and must be a string.',
             'id.string' => 'Manifest field "id" is required and must be a string.',
@@ -170,8 +199,15 @@ class ExtensionManifestValidator
             'ui.prefix.string' => 'Manifest "ui.prefix" must match '.ExtensionManifest::UI_PREFIX_REGEX.'.',
             'ui.prefix.regex' => 'Manifest "ui.prefix" must match '.ExtensionManifest::UI_PREFIX_REGEX.'.',
             'ui.prefix.not_in' => 'Manifest "ui.prefix" is a Tailwind variant, theme namespace or panel name and cannot be used as a prefix.',
-            'requires.sdk.required_with' => 'Component replacements must declare a "requires.sdk" version constraint.',
-            'ui.components.*.in' => 'Manifest "ui.components" must contain supported component names.',
+            'requires.sdk.required_with' => 'View overrides must declare a "requires.sdk" version constraint.',
+            'ui.prefix.prohibited_if' => 'A theme cannot declare "ui.prefix": it builds the panel stylesheet itself.',
+            'ui.views.prohibited_if' => 'A theme cannot declare "ui.views": it overrides views through defineTheme.',
+            'ui.views.*.regex' => 'Manifest "ui.views" must contain view names such as "server.power" or "page.dashboard".',
+            'theme.prohibited_unless' => 'Only a package with "type": "theme" can declare a "theme" section.',
+            'theme.stylesheet.in' => 'Manifest "theme.stylesheet" must be "'.ThemeDefinition::STYLESHEET.'".',
+            'theme.settings.*.token.regex' => 'Theme setting tokens must be custom property names such as "--accent".',
+            'theme.settings.*.attribute.regex' => 'Theme setting attributes must be data attributes such as "data-density".',
+            'theme.settings.*.attribute.not_in' => 'Theme setting attributes cannot use "data-theme", which the panel sets.',
             'ui.screens.*.permission.prohibited_unless' => 'Screen "permission" is only supported on server screens.',
             'ui.screens.*.nav.icon.regex' => 'Navigation "icon" must be a lucide icon name such as "life-buoy".',
             'ui.screens.*.when.eggFeatures.prohibited_unless' => 'Screen "when" egg rules are only supported on server screens.',
@@ -183,6 +219,70 @@ class ExtensionManifestValidator
 
         if ($validator->fails()) {
             throw new InvalidExtensionException($validator->errors()->first());
+        }
+    }
+
+    /** @return Closure(string, mixed, Closure(string): mixed): void */
+    private function keyedBy(string $pattern, string $message): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($pattern, $message): void {
+            if (is_array($value) && array_any(array_keys($value), fn (int|string $key): bool => ! is_string($key) || preg_match($pattern, $key) !== 1)) {
+                $fail($message);
+            }
+        };
+    }
+
+    /**
+     * What the structure rules cannot express: typed numbers, distinct targets and defaults
+     * that pass the same checks as a saved value.
+     *
+     * @param  ExtensionThemeInput  $theme
+     */
+    private function validateTheme(string $id, array $theme): void
+    {
+        $extends = $theme['extends'] ?? ThemeRepository::CLASSIC;
+        throw_if($extends === $id, InvalidExtensionException::class, "Theme \"{$id}\" cannot extend itself.");
+
+        $targets = [];
+        foreach ($theme['settings'] ?? [] as $key => $setting) {
+            foreach (array_filter([$setting['token'] ?? null, $setting['attribute'] ?? null]) as $target) {
+                if (isset($targets[$target])) {
+                    throw new InvalidExtensionException("Theme settings \"{$targets[$target]}\" and \"{$key}\" both write \"{$target}\".");
+                }
+
+                $targets[$target] = $key;
+            }
+
+            $this->validateThemeSetting($key, $setting);
+        }
+    }
+
+    /** @param ExtensionThemeSettingInput $setting */
+    private function validateThemeSetting(string $key, array $setting): void
+    {
+        foreach (['min', 'max', 'step'] as $limit) {
+            throw_if(array_key_exists($limit, $setting) && ! is_int($setting[$limit]) && ! is_float($setting[$limit]), InvalidExtensionException::class, "Theme setting \"{$key}\" must give \"{$limit}\" as a number.");
+        }
+
+        $this->validateThemeDefault(ThemeSetting::fromValidatedData($key, $setting));
+    }
+
+    private function validateThemeDefault(ThemeSetting $setting): void
+    {
+        $default = $setting->default;
+        $problem = match (true) {
+            $setting->min !== null && $setting->max !== null && $setting->min > $setting->max => 'has a "min" above its "max"',
+            $setting->type === 'image' && $default !== null => 'cannot have a default; upload the image from the Themes page',
+            $setting->type === 'text' && $default !== null && (! is_string($default) || mb_strlen($default) > $setting->maxLength) => "defaults to text of at most {$setting->maxLength} characters",
+            $setting->type === 'number' && (is_int($default) || is_float($default)) && (($setting->min !== null && $default < $setting->min) || ($setting->max !== null && $default > $setting->max)) => 'has a default outside its "min" and "max"',
+            default => null,
+        };
+        throw_if($problem !== null, InvalidExtensionException::class, "Theme setting \"{$setting->key}\" {$problem}.");
+
+        try {
+            $setting->definition();
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            throw new InvalidExtensionException("Theme setting \"{$setting->key}\": {$invalidArgumentException->getMessage()}", $invalidArgumentException->getCode(), previous: $invalidArgumentException);
         }
     }
 
@@ -234,7 +334,7 @@ class ExtensionManifestValidator
      * The PSR-4 map of the package's composer.json, which Composer and editors read. It is
      * used when extension.json declares no `autoload` of its own.
      *
-     * @return array<array-key, JsonInputValue>
+     * @return array<mixed>
      */
     private function composerAutoload(string $directory): array
     {
@@ -244,19 +344,21 @@ class ExtensionManifestValidator
         }
 
         try {
-            $composer = JsonValueGuard::decodeArray8(File::get($path));
-        } catch (JsonException|UnexpectedValueException) {
+            $composer = json_decode(File::get($path), true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
             throw new InvalidExtensionException("{$path} is not valid JSON.");
         }
 
-        $psr4 = is_array($composer['autoload'] ?? null) ? $composer['autoload']['psr-4'] ?? [] : [];
+        throw_unless(is_array($composer), InvalidExtensionException::class, "{$path} is not valid JSON.");
+
+        $psr4 = data_get($composer, 'autoload.psr-4', []);
         throw_unless(is_array($psr4), InvalidExtensionException::class, 'composer.json "autoload.psr-4" must map "Vendor\\\\Prefix\\\\" to a source directory.');
 
         return $psr4;
     }
 
     /**
-     * @param  array<array-key, JsonInputValue>  $autoload
+     * @param  array<mixed>  $autoload
      * @return array<string, string>
      */
     private function normalizeAutoload(array $autoload, string $field): array
@@ -307,7 +409,7 @@ class ExtensionManifestValidator
     }
 
     /**
-     * @param  array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, components?: list<string>}|null  $ui
+     * @param  array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, views?: list<string>}|null  $ui
      * @return array{0: string|null, 1: string}
      */
     private function normalizeUi(mixed $ui): array

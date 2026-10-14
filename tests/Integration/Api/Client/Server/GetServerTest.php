@@ -15,10 +15,11 @@ test('server details are returned to the owner', function () {
 });
 test('server details expose the tags of its egg', function () {
     [$user, $server] = $this->generateTestAccount();
+    $server->egg->tags()->detach();
     $this->actingAs($user)->getJson($this->link($server))->assertOk()->assertJsonPath('attributes.egg_tags', []);
 
-    $server->egg->tags()->attach(Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']));
-    $this->actingAs($user)->getJson($this->link($server))->assertOk()->assertJsonPath('attributes.egg_tags', ['minecraft']);
+    $server->egg->tags()->attach(Tag::factory()->create(['name' => 'Survival', 'slug' => 'survival']));
+    $this->actingAs($user)->getJson($this->link($server))->assertOk()->assertJsonPath('attributes.egg_tags', ['survival']);
 });
 test('subuser permissions are returned in meta', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::ControlConsole->value, Permissions::WebsocketConnect->value]);

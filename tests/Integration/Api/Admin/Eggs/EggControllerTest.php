@@ -21,17 +21,28 @@ test('eggs can be filtered by name', function () {
     Egg::factory()->create(['name' => 'Other Egg']);
     $this->getJson(route('api.admin.eggs', ['filter' => ['name' => 'Filterable Egg']]))->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.attributes.id', $egg->id);
 });
+test('eggs can be filtered by tag slug', function () {
+    [$first, $second] = Egg::factory()->times(2)->create();
+    Egg::factory()->create();
+    $first->tags()->attach(Tag::factory()->create(['slug' => 'filter-first']));
+    $second->tags()->attach(Tag::factory()->create(['slug' => 'filter-second']));
+
+    $ids = fn (string $tags): array => collect($this->getJson(route('api.admin.eggs', ['filter' => ['tag' => $tags]]))->assertOk()->json('data'))->pluck('attributes.id')->sort()->values()->all();
+    expect($ids('filter-first'))->toBe([$first->id])
+        ->and($ids('filter-first,filter-second'))->toBe([$first->id, $second->id])
+        ->and($ids('filter-none'))->toBe([]);
+});
 test('egg tags can be included', function () {
     /** @var Egg $egg */
     $egg = Egg::factory()->create();
     /** @var Tag $tag */
-    $tag = Tag::factory()->create(['name' => 'Minecraft', 'slug' => 'minecraft']);
+    $tag = Tag::factory()->create(['name' => 'Survival', 'slug' => 'survival']);
     $egg->tags()->attach($tag);
 
     $this->getJson(route('api.admin.eggs.view', ['egg' => $egg->id, 'include' => 'tags']))
         ->assertOk()
         ->assertJsonPath('attributes.relationships.tags.data.0.attributes.id', $tag->id)
-        ->assertJsonPath('attributes.relationships.tags.data.0.attributes.slug', 'minecraft');
+        ->assertJsonPath('attributes.relationships.tags.data.0.attributes.slug', 'survival');
 });
 test('egg can be created', function () {
     $response = $this->postJson(route('api.admin.eggs.store'), ['name' => 'Standalone Egg', 'description' => 'Grouped by tags.', 'docker_images' => 'Java 21|ghcr.io/pterodactyl/yolks:java_21', 'startup' => 'java -jar server.jar', 'config_stop' => 'stop', 'config_startup' => '{"done":["Done"]}', 'config_logs' => '{}', 'config_files' => '{}']);

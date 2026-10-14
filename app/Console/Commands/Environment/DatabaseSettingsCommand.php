@@ -11,7 +11,6 @@ use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\DB;
 use PDOException;
 use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 
 #[Description('Configure database settings for the Panel.')]
@@ -44,35 +43,35 @@ class DatabaseSettingsCommand extends Command
     public function handle(): int
     {
         $this->output->note('It is highly recommended to not use "localhost" as your database host as we have seen frequent socket connection issues. If you want to use a local connection you should be using "127.0.0.1".');
-        $this->variables['DB_HOST'] = JsonValueGuard::string($this->option('host') ?? $this->ask(
+        $this->variables['DB_HOST'] = $this->answer(fn () => $this->option('host') ?? $this->ask(
             'Database Host',
-            JsonValueGuard::nullableScalarString(config('database.connections.mysql.host', '127.0.0.1'))
+            $this->configured('database.connections.mysql.host', '127.0.0.1')
         ));
 
-        $this->variables['DB_PORT'] = JsonValueGuard::scalar($this->option('port') ?? $this->ask(
+        $this->variables['DB_PORT'] = $this->answer(fn () => $this->option('port') ?? $this->ask(
             'Database Port',
-            JsonValueGuard::nullableScalarString(config('database.connections.mysql.port', 3306))
+            $this->configured('database.connections.mysql.port', 3306)
         ));
 
-        $this->variables['DB_DATABASE'] = JsonValueGuard::string($this->option('database') ?? $this->ask(
+        $this->variables['DB_DATABASE'] = $this->answer(fn () => $this->option('database') ?? $this->ask(
             'Database Name',
-            JsonValueGuard::nullableScalarString(config('database.connections.mysql.database', 'panel'))
+            $this->configured('database.connections.mysql.database', 'panel')
         ));
 
         $this->output->note('Using the "root" account for MySQL connections is not only highly frowned upon, it is also not allowed by this application. You\'ll need to have created a MySQL user for this software.');
-        $this->variables['DB_USERNAME'] = JsonValueGuard::string($this->option('username') ?? $this->ask(
+        $this->variables['DB_USERNAME'] = $this->answer(fn () => $this->option('username') ?? $this->ask(
             'Database Username',
-            JsonValueGuard::nullableScalarString(config('database.connections.mysql.username', 'pterodactyl'))
+            $this->configured('database.connections.mysql.username', 'pterodactyl')
         ));
 
         $askForMySQLPassword = true;
         if (! empty(config('database.connections.mysql.password')) && $this->input->isInteractive()) {
-            $this->variables['DB_PASSWORD'] = JsonValueGuard::scalar(config('database.connections.mysql.password'));
+            $this->variables['DB_PASSWORD'] = $this->configured('database.connections.mysql.password');
             $askForMySQLPassword = $this->confirm('It appears you already have a MySQL connection password defined, would you like to change it?');
         }
 
         if ($askForMySQLPassword) {
-            $this->variables['DB_PASSWORD'] = JsonValueGuard::scalar($this->option('password') ?? $this->secret('Database Password'));
+            $this->variables['DB_PASSWORD'] = $this->answer(fn () => $this->option('password') ?? $this->secret('Database Password'));
         }
 
         try {

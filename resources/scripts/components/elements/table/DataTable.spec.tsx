@@ -131,7 +131,11 @@ describe('DataTable', () => {
 
         render(<StringTable />);
 
-        expect(screen.getByText('No rows')).toHaveAttribute('data-slot', 'empty-description');
+        const description = screen.getByText('No rows');
+
+        expect(description).toHaveAttribute('data-ui', 'empty');
+        expect(description).toHaveAttribute('data-part', 'description');
+        expect(description.parentElement).toHaveAttribute('data-size', 'compact');
     });
 
     it('reports the sort state of hidden sort columns on the header that controls them', () => {

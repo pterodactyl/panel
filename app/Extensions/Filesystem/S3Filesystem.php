@@ -10,7 +10,7 @@ use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 class S3Filesystem extends AwsS3V3Adapter
 {
     /**
-     * @param  array<string, ApiValue10>  $options
+     * @param  array<string, mixed>  $options
      */
     public function __construct(
         private readonly S3ClientInterface $client,

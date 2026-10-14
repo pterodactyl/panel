@@ -13,6 +13,7 @@ import {
     type LucideProps,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { getThemeIcon, type ThemeIcon } from '@/views/theme';
 import type * as IconCatalogModule from './iconCatalog';
 
 // Names that render immediately; every other name waits for the lazily loaded icon catalog.
@@ -67,9 +68,9 @@ export async function loadIconNames(): Promise<readonly string[]> {
     return (await loadCatalog())?.iconNames ?? [...bundled.keys()];
 }
 
-/** The icon for a name: `undefined` while the icon set loads, `null` when the name is unknown. */
-export function useNamedIcon(name: string): LucideIcon | null | undefined {
-    const immediate = bundled.get(name);
+/** The icon for a name, the active theme's first: `undefined` while the icon set loads, `null` when unknown. */
+export function useNamedIcon(name: string): ThemeIcon | null | undefined {
+    const immediate = getThemeIcon(name) ?? bundled.get(name);
     const loaded = useSyncExternalStore(immediate ? subscribeNothing : subscribeCatalog, getCatalog);
 
     if (immediate) {

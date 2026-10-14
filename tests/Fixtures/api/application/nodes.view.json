@@ -1,0 +1,1040 @@
+[
+    {
+        "request": "GET /api/application/nodes/1",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": [],
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=allocations",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": "Primary <game> port",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 2,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25566,
+                                    "notes": "Query/RCON",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 3,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25567,
+                                    "notes": null,
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 4,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25568,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 5,
+                                    "ip": "192.0.2.11",
+                                    "alias": null,
+                                    "port": 25565,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 6,
+                                    "ip": "192.0.2.11",
+                                    "alias": "spare.example.test",
+                                    "port": 25566,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=location",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 1,
+                            "short": "us-east",
+                            "long": "US East / Virginia",
+                            "relationships": [],
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "created_at": "2026-01-02T03:04:05+00:00"
+                        }
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=servers",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "servers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 1,
+                                    "external_id": "ext-survival",
+                                    "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                    "identifier": "5e7f0001",
+                                    "name": "Survival",
+                                    "description": "Main survival world",
+                                    "status": null,
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 2048,
+                                        "swap": 512,
+                                        "disk": 10240,
+                                        "io": 500,
+                                        "cpu": 200,
+                                        "threads": "0-3",
+                                        "oom_disabled": true
+                                    },
+                                    "feature_limits": {
+                                        "databases": 5,
+                                        "allocations": 5,
+                                        "backups": 5
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 1,
+                                    "egg": 1,
+                                    "container": {
+                                        "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                        "installed": 1,
+                                        "environment": {
+                                            "SERVER_JARFILE": "paper.jar",
+                                            "BUILD_NUMBER": "latest",
+                                            "HIDDEN_TOKEN": "hidden-value",
+                                            "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                            "P_SERVER_ALLOCATION_LIMIT": 5
+                                        },
+                                        "skip_scripts": false
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            },
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 2,
+                                    "external_id": null,
+                                    "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                    "identifier": "5e7f0002",
+                                    "name": "Creative",
+                                    "description": "",
+                                    "status": "installing",
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 1024,
+                                        "swap": 0,
+                                        "disk": 5120,
+                                        "io": 500,
+                                        "cpu": 0,
+                                        "threads": null,
+                                        "oom_disabled": false
+                                    },
+                                    "feature_limits": {
+                                        "databases": 0,
+                                        "allocations": null,
+                                        "backups": 0
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 3,
+                                    "egg": 2,
+                                    "container": {
+                                        "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                        "installed": 0,
+                                        "environment": {
+                                            "SERVER_JARFILE": "child.jar",
+                                            "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                            "P_SERVER_ALLOCATION_LIMIT": null
+                                        },
+                                        "skip_scripts": true
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=allocations,location,servers",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": "Primary <game> port",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 2,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25566,
+                                    "notes": "Query/RCON",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 3,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25567,
+                                    "notes": null,
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 4,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25568,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 5,
+                                    "ip": "192.0.2.11",
+                                    "alias": null,
+                                    "port": 25565,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 6,
+                                    "ip": "192.0.2.11",
+                                    "alias": "spare.example.test",
+                                    "port": 25566,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            }
+                        ]
+                    },
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 1,
+                            "short": "us-east",
+                            "long": "US East / Virginia",
+                            "relationships": [],
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "created_at": "2026-01-02T03:04:05+00:00"
+                        }
+                    },
+                    "servers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 1,
+                                    "external_id": "ext-survival",
+                                    "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                    "identifier": "5e7f0001",
+                                    "name": "Survival",
+                                    "description": "Main survival world",
+                                    "status": null,
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 2048,
+                                        "swap": 512,
+                                        "disk": 10240,
+                                        "io": 500,
+                                        "cpu": 200,
+                                        "threads": "0-3",
+                                        "oom_disabled": true
+                                    },
+                                    "feature_limits": {
+                                        "databases": 5,
+                                        "allocations": 5,
+                                        "backups": 5
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 1,
+                                    "egg": 1,
+                                    "container": {
+                                        "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                        "installed": 1,
+                                        "environment": {
+                                            "SERVER_JARFILE": "paper.jar",
+                                            "BUILD_NUMBER": "latest",
+                                            "HIDDEN_TOKEN": "hidden-value",
+                                            "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                            "P_SERVER_ALLOCATION_LIMIT": 5
+                                        },
+                                        "skip_scripts": false
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            },
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 2,
+                                    "external_id": null,
+                                    "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                    "identifier": "5e7f0002",
+                                    "name": "Creative",
+                                    "description": "",
+                                    "status": "installing",
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 1024,
+                                        "swap": 0,
+                                        "disk": 5120,
+                                        "io": 500,
+                                        "cpu": 0,
+                                        "threads": null,
+                                        "oom_disabled": false
+                                    },
+                                    "feature_limits": {
+                                        "databases": 0,
+                                        "allocations": null,
+                                        "backups": 0
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 3,
+                                    "egg": 2,
+                                    "container": {
+                                        "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                        "installed": 0,
+                                        "environment": {
+                                            "SERVER_JARFILE": "child.jar",
+                                            "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                            "P_SERVER_ALLOCATION_LIMIT": null
+                                        },
+                                        "skip_scripts": true
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=servers.egg",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "servers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 1,
+                                    "external_id": "ext-survival",
+                                    "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                    "identifier": "5e7f0001",
+                                    "name": "Survival",
+                                    "description": "Main survival world",
+                                    "status": null,
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 2048,
+                                        "swap": 512,
+                                        "disk": 10240,
+                                        "io": 500,
+                                        "cpu": 200,
+                                        "threads": "0-3",
+                                        "oom_disabled": true
+                                    },
+                                    "feature_limits": {
+                                        "databases": 5,
+                                        "allocations": 5,
+                                        "backups": 5
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 1,
+                                    "egg": 1,
+                                    "container": {
+                                        "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                        "installed": 1,
+                                        "environment": {
+                                            "SERVER_JARFILE": "paper.jar",
+                                            "BUILD_NUMBER": "latest",
+                                            "HIDDEN_TOKEN": "hidden-value",
+                                            "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                            "P_SERVER_ALLOCATION_LIMIT": 5
+                                        },
+                                        "skip_scripts": false
+                                    },
+                                    "relationships": {
+                                        "egg": {
+                                            "object": "egg",
+                                            "attributes": {
+                                                "id": 1,
+                                                "uuid": "e9900001-0000-4000-8000-000000000001",
+                                                "name": "Paper",
+                                                "author": "support@example.test",
+                                                "description": "High performance Minecraft server.",
+                                                "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "docker_images": {
+                                                    "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                                                    "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                                                },
+                                                "config": {
+                                                    "files": {
+                                                        "server.properties": {
+                                                            "parser": "properties",
+                                                            "find": {
+                                                                "server-ip": "0.0.0.0",
+                                                                "server-port": "{{server.build.default.port}}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "startup": {
+                                                        "done": ")! For help, type "
+                                                    },
+                                                    "stop": "stop",
+                                                    "logs": [],
+                                                    "file_denylist": [],
+                                                    "extends": null
+                                                },
+                                                "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                                "script": {
+                                                    "privileged": true,
+                                                    "install": "#!/bin/ash\necho \"installing\"",
+                                                    "entry": "ash",
+                                                    "container": "ghcr.io/pterodactyl/installers:alpine",
+                                                    "extends": null
+                                                },
+                                                "relationships": [],
+                                                "created_at": "2026-01-02T03:04:05+00:00",
+                                                "updated_at": "2026-02-03T04:05:06+00:00"
+                                            }
+                                        }
+                                    },
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            },
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 2,
+                                    "external_id": null,
+                                    "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                    "identifier": "5e7f0002",
+                                    "name": "Creative",
+                                    "description": "",
+                                    "status": "installing",
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 1024,
+                                        "swap": 0,
+                                        "disk": 5120,
+                                        "io": 500,
+                                        "cpu": 0,
+                                        "threads": null,
+                                        "oom_disabled": false
+                                    },
+                                    "feature_limits": {
+                                        "databases": 0,
+                                        "allocations": null,
+                                        "backups": 0
+                                    },
+                                    "user": 2,
+                                    "node": 1,
+                                    "allocation": 3,
+                                    "egg": 2,
+                                    "container": {
+                                        "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                        "installed": 0,
+                                        "environment": {
+                                            "SERVER_JARFILE": "child.jar",
+                                            "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "us-east",
+                                            "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                            "P_SERVER_ALLOCATION_LIMIT": null
+                                        },
+                                        "skip_scripts": true
+                                    },
+                                    "relationships": {
+                                        "egg": {
+                                            "object": "egg",
+                                            "attributes": {
+                                                "id": 2,
+                                                "uuid": "e9900002-0000-4000-8000-000000000002",
+                                                "name": "Paper Child",
+                                                "author": "support@example.test",
+                                                "description": null,
+                                                "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "docker_images": {
+                                                    "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
+                                                },
+                                                "config": {
+                                                    "files": {},
+                                                    "startup": null,
+                                                    "stop": null,
+                                                    "logs": null,
+                                                    "file_denylist": [
+                                                        "*.secret",
+                                                        "config/private.yml"
+                                                    ],
+                                                    "extends": 1
+                                                },
+                                                "startup": "java -jar {{SERVER_JARFILE}}",
+                                                "script": {
+                                                    "privileged": false,
+                                                    "install": null,
+                                                    "entry": "ash",
+                                                    "container": "alpine:3.4",
+                                                    "extends": 1
+                                                },
+                                                "relationships": [],
+                                                "created_at": "2026-01-02T03:04:05+00:00",
+                                                "updated_at": "2026-02-03T04:05:06+00:00"
+                                            }
+                                        }
+                                    },
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=tags",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "tags": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "tag",
+                                "attributes": {
+                                    "id": 1,
+                                    "name": "Minecraft",
+                                    "slug": "minecraft",
+                                    "color": "#5B8731",
+                                    "is_predefined": true,
+                                    "legacy_nest_id": 1,
+                                    "relationships": [],
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/2?include=allocations,location,servers",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 2,
+                "uuid": "d0de0002-0000-4000-8000-000000000002",
+                "public": false,
+                "name": "node-beta",
+                "description": null,
+                "location_id": 2,
+                "fqdn": "beta.example.test",
+                "scheme": "http",
+                "behind_proxy": true,
+                "maintenance_mode": true,
+                "memory": 4096,
+                "memory_overallocate": 10,
+                "disk": 51200,
+                "disk_overallocate": 0,
+                "upload_size": 256,
+                "daemon_listen": 8443,
+                "daemon_sftp": 2222,
+                "daemon_base": "/srv/daemon-data",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 512,
+                    "disk": 1024
+                },
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 7,
+                                    "ip": "198.51.100.20",
+                                    "alias": null,
+                                    "port": 30000,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 8,
+                                    "ip": "198.51.100.20",
+                                    "alias": null,
+                                    "port": 30001,
+                                    "notes": null,
+                                    "assigned": true
+                                }
+                            }
+                        ]
+                    },
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 2,
+                            "short": "eu-west",
+                            "long": "EU West",
+                            "relationships": [],
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "created_at": "2026-01-02T03:04:05+00:00"
+                        }
+                    },
+                    "servers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server",
+                                "attributes": {
+                                    "id": 3,
+                                    "external_id": "ext-lab",
+                                    "uuid": "5e7f0003-0000-4000-8000-000000000003",
+                                    "identifier": "5e7f0003",
+                                    "name": "Admin Lab",
+                                    "description": "Testing ground",
+                                    "status": null,
+                                    "suspended": false,
+                                    "limits": {
+                                        "memory": 512,
+                                        "swap": -1,
+                                        "disk": 1024,
+                                        "io": 10,
+                                        "cpu": 50,
+                                        "threads": null,
+                                        "oom_disabled": true
+                                    },
+                                    "feature_limits": {
+                                        "databases": 1,
+                                        "allocations": 1,
+                                        "backups": 1
+                                    },
+                                    "user": 1,
+                                    "node": 2,
+                                    "allocation": 8,
+                                    "egg": 1,
+                                    "container": {
+                                        "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                        "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                        "installed": 1,
+                                        "environment": {
+                                            "SERVER_JARFILE": "server.jar",
+                                            "BUILD_NUMBER": "latest",
+                                            "HIDDEN_TOKEN": "secret",
+                                            "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                            "P_SERVER_LOCATION": "eu-west",
+                                            "P_SERVER_UUID": "5e7f0003-0000-4000-8000-000000000003",
+                                            "P_SERVER_ALLOCATION_LIMIT": 1
+                                        },
+                                        "skip_scripts": false
+                                    },
+                                    "relationships": [],
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/2?include=deployment_tags.nodes",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 2,
+                "uuid": "d0de0002-0000-4000-8000-000000000002",
+                "public": false,
+                "name": "node-beta",
+                "description": null,
+                "location_id": 2,
+                "fqdn": "beta.example.test",
+                "scheme": "http",
+                "behind_proxy": true,
+                "maintenance_mode": true,
+                "memory": 4096,
+                "memory_overallocate": 10,
+                "disk": 51200,
+                "disk_overallocate": 0,
+                "upload_size": 256,
+                "daemon_listen": 8443,
+                "daemon_sftp": 2222,
+                "daemon_base": "/srv/daemon-data",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 512,
+                    "disk": 1024
+                },
+                "relationships": {
+                    "deployment_tags": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "tag",
+                                "attributes": {
+                                    "id": 3,
+                                    "name": "Reserved",
+                                    "slug": "reserved",
+                                    "color": null,
+                                    "is_predefined": false,
+                                    "legacy_nest_id": null,
+                                    "relationships": {
+                                        "nodes": {
+                                            "object": "list",
+                                            "data": [
+                                                {
+                                                    "object": "node",
+                                                    "attributes": {
+                                                        "id": 2,
+                                                        "uuid": "d0de0002-0000-4000-8000-000000000002",
+                                                        "public": false,
+                                                        "name": "node-beta",
+                                                        "description": null,
+                                                        "location_id": 2,
+                                                        "fqdn": "beta.example.test",
+                                                        "scheme": "http",
+                                                        "behind_proxy": true,
+                                                        "maintenance_mode": true,
+                                                        "memory": 4096,
+                                                        "memory_overallocate": 10,
+                                                        "disk": 51200,
+                                                        "disk_overallocate": 0,
+                                                        "upload_size": 256,
+                                                        "daemon_listen": 8443,
+                                                        "daemon_sftp": 2222,
+                                                        "daemon_base": "/srv/daemon-data",
+                                                        "created_at": "2026-01-02T03:04:05+00:00",
+                                                        "updated_at": "2026-02-03T04:05:06+00:00",
+                                                        "allocated_resources": {
+                                                            "memory": 512,
+                                                            "disk": 1024
+                                                        },
+                                                        "relationships": []
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    }
+]

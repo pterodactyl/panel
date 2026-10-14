@@ -7,6 +7,7 @@ namespace Pterodactyl\Actions\Users;
 use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\User;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -18,9 +19,6 @@ final readonly class UpdateUserEmail implements UpdatesUserEmails
 
     public function __construct(private UpdatesUsers $users) {}
 
-    /**
-     * @return array{user: User, original: string, email: string, changed: bool}
-     */
     public function update(User $user, string $email): array
     {
         throw_if(RateLimiter::tooManyAttempts($key = $this->throttleKey($user), self::THROTTLE_MAX), TooManyRequestsHttpException::class, 'Your email address has been changed too many times today. Please try again later.');
@@ -33,6 +31,8 @@ final readonly class UpdateUserEmail implements UpdatesUserEmails
         RateLimiter::hit($key, self::THROTTLE_DECAY);
 
         $user = $this->users->update($user, ['email' => $email]);
+
+        Activity::event('user:account.email-changed')->subject($user)->property(['old' => $original, 'new' => $email])->log();
 
         return ['user' => $user, 'original' => $original, 'email' => $email, 'changed' => true];
     }

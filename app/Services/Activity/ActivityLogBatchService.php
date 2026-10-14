@@ -52,7 +52,7 @@ class ActivityLogBatchService
      * Executes the logic provided within the callback in the scope of an activity
      * log batch transaction.
      *
-     * @template TReturn of object|ApiValue10
+     * @template TReturn
      *
      * @param  Closure(?string): TReturn  $callback
      * @return TReturn

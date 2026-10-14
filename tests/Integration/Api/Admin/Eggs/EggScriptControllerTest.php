@@ -46,7 +46,31 @@ test('update script copies another egg script when the script is empty', functio
     expect($egg->script_install)->toBeNull();
     expect($egg->copy_script_install)->toBe('echo "source"');
 });
-test('update script copy from must be numeric', function () {
+test('update script accepts string flags and ids', function () {
+    $source = Egg::factory()->create(['script_install' => 'echo "source"']);
+    $egg = Egg::factory()->create(['script_is_privileged' => true]);
+    $this->putJson(route('api.admin.eggs.script.update', ['egg' => $egg->id]), ['script_install' => '', 'script_is_privileged' => '0', 'script_entry' => 'bash', 'script_container' => 'alpine:3.20', 'copy_script_from' => (string) $source->id])
+        ->assertOk();
+
+    $egg->refresh();
+    expect($egg->script_is_privileged)->toBeFalse()->and($egg->copy_script_from)->toBe($source->id);
+});
+test('update script changes only the fields it is given', function () {
+    $source = Egg::factory()->create();
+    $egg = Egg::factory()->create(['script_install' => 'echo "original"', 'script_is_privileged' => false, 'script_entry' => 'bash', 'script_container' => 'alpine:3.4', 'copy_script_from' => $source->id]);
+
+    $this->putJson(route('api.admin.eggs.script.update', ['egg' => $egg->id]), ['script_container' => 'alpine:3.20'])
+        ->assertOk()
+        ->assertJsonPath('attributes.script.container', 'alpine:3.20');
+
+    $egg->refresh();
+    expect($egg->script_container)->toBe('alpine:3.20')
+        ->and($egg->script_install)->toBe('echo "original"')
+        ->and($egg->script_is_privileged)->toBeFalse()
+        ->and($egg->script_entry)->toBe('bash')
+        ->and($egg->copy_script_from)->toBe($source->id);
+});
+test('update script copy from must be an integer', function () {
     $egg = Egg::factory()->create();
     $response = $this->putJson(route('api.admin.eggs.script.update', ['egg' => $egg->id]), ['copy_script_from' => 'not-a-number']);
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -54,7 +78,7 @@ test('update script copy from must be numeric', function () {
     $errors = collect($response->json('errors'));
     $error = $errors->firstWhere('meta.source_field', 'copy_script_from');
     expect($error)->not->toBeNull('Expected a validation error for the [copy_script_from] field.');
-    expect($error['meta']['rule'])->toBe('numeric');
+    expect($error['meta']['rule'])->toBe('integer');
 });
 test('update script copy from invalid', function () {
     $egg = Egg::factory()->create();

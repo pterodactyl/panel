@@ -63,6 +63,8 @@ class UpdateStartupVariableRequest extends ClientApiRequest implements ClientPer
      */
     private function variableRules(EggVariable $variable): array
     {
-        return Str::startsWith($variable->rules, 'regex:') ? [$variable->rules] : explode('|', $variable->rules);
+        $rules = $variable->rules ?? '';
+
+        return Str::startsWith($rules, 'regex:') ? [$rules] : explode('|', $rules);
     }
 }

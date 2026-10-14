@@ -1,22 +1,27 @@
-import React from 'react';
-import { cn } from '@/lib/cn';
-import { pageTitleClass } from '@/components/ui/typography';
+import type React from 'react';
+import { replaceable, useSkin } from '@/themes/skins';
 
-interface Props {
+export interface PageHeadingProps {
     title: React.ReactNode;
     description?: React.ReactNode;
     actions?: React.ReactNode;
     className?: string;
 }
 
-export default function PageHeading({ title, description, actions, className }: Props) {
+function CorePageHeading({ title, description, actions, className }: PageHeadingProps) {
+    const ui = useSkin('PageHeading', {});
+
     return (
-        <header className={cn('mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', className)}>
-            <div className='min-w-0'>
-                <h1 className={pageTitleClass}>{title}</h1>
-                {description && <p className='mt-1 text-sm leading-relaxed text-foreground/70'>{description}</p>}
+        <header {...ui('root', className)}>
+            <div {...ui('text')}>
+                <h1 {...ui('title')}>{title}</h1>
+                {description && <p {...ui('description')}>{description}</p>}
             </div>
-            {actions && <div className='shrink-0'>{actions}</div>}
+            {actions && <div {...ui('actions')}>{actions}</div>}
         </header>
     );
 }
+
+const PageHeading = replaceable('PageHeading', CorePageHeading);
+
+export default PageHeading;

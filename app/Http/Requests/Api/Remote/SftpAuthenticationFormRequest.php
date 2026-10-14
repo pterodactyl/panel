@@ -29,19 +29,4 @@ class SftpAuthenticationFormRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
-
-    /**
-     * Return only the fields that we are interested in from the request.
-     * This will include empty fields as a null value.
-     *
-     * @return SftpAuthenticationData
-     */
-    public function normalize(): array
-    {
-        return [
-            'type' => $this->filled('type') ? $this->string('type')->toString() : null,
-            'username' => $this->string('username')->toString(),
-            'password' => $this->string('password')->toString(),
-        ];
-    }
 }

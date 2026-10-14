@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Extensions;
 
 use Illuminate\Support\Facades\File;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
  * The lucide icon names this panel build can render for `nav.icon`. The list is
@@ -36,6 +35,6 @@ final class ExtensionIconCatalog
     /** @return list<string> */
     public function names(): array
     {
-        return JsonValueGuard::stringList(File::json(base_path(self::PATH)));
+        return array_values(array_filter(File::json(base_path(self::PATH)), is_string(...)));
     }
 }

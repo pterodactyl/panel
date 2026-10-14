@@ -10,14 +10,14 @@ return new class extends Migration
 {
     /**
      * Refuse to upgrade a database that is missing any 1.x migration. The 1.x
-     * migrations live in migrations/old and never run here, so a database from an
+     * migrations live in database/legacy-migrations and never run, so a database from an
      * older 1.x release would otherwise be upgraded without part of its schema.
      * Fresh installs record every one of them through the schema dump and pass.
      * Runs before any other 2.x migration and writes nothing.
      */
     public function up(): void
     {
-        $expected = collect(File::files(database_path('migrations/old')))
+        $expected = collect(File::files(database_path('legacy-migrations')))
             ->map(fn (SplFileInfo $file): string => $file->getBasename('.php'));
 
         $recorded = DB::table('migrations')->whereIn('migration', $expected->all())->pluck('migration');

@@ -1,0 +1,33 @@
+# {{name}}
+
+A Pterodactyl panel theme of CSS alone, scaffolded by `p:extension:make --theme --css-only`. Level 1 of
+the themes guide, `node_modules/@pterodactyl/sdk/THEMES.md`, covers it: colours, fonts, radius and
+spacing, for dark and light. Skins and views (levels 2 to 4) need a theme scaffolded without `--css-only`.
+
+## Files
+
+| File | |
+| --- | --- |
+| `extension.json` | The manifest. `"type": "theme"` and its `theme` section declare the stylesheet, the colour schemes and the settings. |
+| `src/theme.css` | The panel stylesheet with this theme's tokens and classes. Plain Tailwind, no prefix. |
+
+## Scripts
+
+| Script | |
+| --- | --- |
+| `npm run build` | Writes `dist/`: the files listed under "What the build writes" in Level 1. |
+| `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
+| `npm run doctor` | The panel's checks: manifest and build. |
+| `npm run pack` | Packs a `.pteroext` archive to install on another panel. |
+
+## Develop
+
+```sh
+npm install
+php {{artisan}} p:extension:dev . --enable
+php {{artisan}} p:theme:activate {{id}}
+php {{artisan}} p:extension:dev . --watch
+```
+
+The first command builds, installs and enables the theme. While the last one runs on a panel with
+`APP_DEBUG=true`, a change to `src/theme.css` swaps into open pages without a reload.

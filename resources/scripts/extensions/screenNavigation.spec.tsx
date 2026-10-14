@@ -41,7 +41,7 @@ afterEach(() => {
 
 async function mountPanel(entries: SiteExtensionEntry[], options: { server?: SdkServer; path?: string } = {}) {
     const registry = await import('@/extensions/registry');
-    const { ScreenGate } = await import('@/extensions/screenNavigation');
+    const { ScreenBadge, ScreenGate } = await import('@/extensions/screenNavigation');
     const { default: NavigationLabel } = await import('@/extensions/NavigationLabel');
     const { extensionScreenComponent } = await import('@/extensions/screen');
     const { serverQueryKey } = await import('@/api/server/queries');
@@ -64,7 +64,10 @@ async function mountPanel(entries: SiteExtensionEntry[], options: { server?: Sdk
                     {screens.map((registration) => (
                         <ScreenGate key={`${registration.extensionId}:${registration.id}`} screen={registration}>
                             <a href={`/${registration.path}`}>
-                                <NavigationLabel {...registration.nav!} screen={registration} />
+                                <NavigationLabel
+                                    {...registration.nav!}
+                                    badge={<ScreenBadge screen={registration} badge={registration.nav?.badge} />}
+                                />
                             </a>
                         </ScreenGate>
                     ))}

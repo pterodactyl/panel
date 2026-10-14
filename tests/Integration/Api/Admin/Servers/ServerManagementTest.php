@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
@@ -44,7 +45,9 @@ test('reinstall server', function (): void {
     $response = $this->postJson(route('api.admin.servers.reinstall', ['server' => $server->id]));
     $response->assertStatus(Response::HTTP_ACCEPTED);
 
-    expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING);
+    expect($server->refresh()->status)->toBe(Server::STATUS_INSTALLING)
+        ->and($server->activity()->pluck('event')->all())->toBe(['server:reinstall'])
+        ->and(ActivityLog::query()->where('event', 'admin:server.reinstall')->exists())->toBeTrue();
     $fake->assertReinstalled();
 });
 test('a server that skips its install script cannot be reinstalled', function (): void {
@@ -104,6 +107,32 @@ test('update server details', function (): void {
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'name' => 'UpdatedServer', 'owner_id' => $owner->id]);
     Bus::assertDispatched(RevokeSftpAccessJob::class);
 });
+test('update server details replaces every detail', function (): void {
+    Bus::fake();
+    $server = $this->createServerModel(['external_id' => 'ext-old', 'description' => 'Old description.']);
+    $other = $this->createServerModel(['external_id' => 'ext-taken']);
+
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => 'Renamed', 'owner_id' => (string) $server->owner_id])
+        ->assertOk()
+        ->assertJsonPath('attributes.external_id', null);
+
+    $server->refresh();
+    expect($server->name)->toBe('Renamed')
+        ->and($server->external_id)->toBeNull()
+        ->and($server->description)->toBe('');
+    Bus::assertNotDispatched(RevokeSftpAccessJob::class);
+
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => 'Renamed', 'owner_id' => $server->owner_id, 'external_id' => $other->external_id])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'external_id')
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+    $this->putJson(route('api.admin.servers.details', ['server' => $server->id]), ['name' => '', 'owner_id' => 0])
+        ->assertUnprocessable()
+        ->assertJsonCount(2, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'owner_id');
+});
 test('update server build', function (): void {
     $server = $this->createServerModel();
     new FakeDaemonServer;
@@ -116,6 +145,39 @@ test('update server build', function (): void {
     $response->assertJsonPath('attributes.feature_limits.backups', 3);
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'memory' => 1024, 'disk' => 2048]);
 });
+test('update server build adds and removes allocations under the admin field names', function (): void {
+    $server = $this->createServerModel();
+    $fake = new FakeDaemonServer;
+    [$added, $removed] = Allocation::factory()->times(2)->create(['node_id' => $server->node_id]);
+    $removed->update(['server_id' => $server->id]);
+
+    $this->putJson(route('api.admin.servers.build', ['server' => $server->id]), ['allocation_id' => $server->allocation_id, 'memory' => '1024', 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 2048, 'add_allocation_ids' => [(string) $added->id], 'remove_allocation_ids' => [$removed->id], 'database_limit' => null, 'backup_limit' => '1'])
+        ->assertOk()
+        ->assertJsonPath('attributes.limits.memory', 1024)
+        ->assertJsonPath('attributes.feature_limits.backups', 1);
+
+    expect($added->refresh()->server_id)->toBe($server->id)
+        ->and($removed->refresh()->server_id)->toBeNull();
+    $fake->assertSynced();
+});
+test('update server build keeps the admin rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel();
+    $fake = new FakeDaemonServer;
+
+    $this->putJson(route('api.admin.servers.build', ['server' => $server->id]), array_filter([...['allocation_id' => $server->allocation_id, 'memory' => 1024, 'swap' => 0, 'io' => 500, 'cpu' => 100, 'disk' => 2048, 'database_limit' => 0, 'backup_limit' => 0], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($fake->callsFor('sync'))->toBe([]);
+})->with([
+    'a missing default allocation' => [['allocation_id' => 'missing'], 'allocation_id', 'required'],
+    'a missing memory limit' => [['memory' => 'missing'], 'memory', 'required'],
+    'a missing database limit' => [['database_limit' => 'missing'], 'database_limit', 'present'],
+    'a null oom flag' => [['oom_disabled' => null], 'oom_disabled', 'boolean'],
+    'allocations to add that are not a list' => [['add_allocation_ids' => ['first' => 1]], 'add_allocation_ids', 'list'],
+]);
 test('update server startup', function (): void {
     $server = $this->createServerModel(['skip_scripts' => true]);
     $response = $this->putJson(route('api.admin.servers.startup', ['server' => $server->id]), ['startup' => 'java -jar updated.jar', 'egg_id' => $server->egg_id, 'docker_image' => 'java:11', 'skip_scripts' => true, 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar']]);
@@ -126,6 +188,24 @@ test('update server startup', function (): void {
     $response->assertJsonPath('attributes.container.skip_scripts', true);
     $this->assertDatabaseHas('servers', ['id' => $server->id, 'startup' => 'java -jar updated.jar', 'image' => 'java:11', 'skip_scripts' => true]);
 });
+test('update server startup keeps the admin rules', function (array $payload, string $field, string $rule): void {
+    $server = $this->createServerModel(['startup' => 'old startup']);
+
+    $this->putJson(route('api.admin.servers.startup', ['server' => $server->id]), array_filter([...['startup' => 'java -jar updated.jar', 'egg_id' => $server->egg_id, 'docker_image' => 'java:11', 'skip_scripts' => false, 'environment' => ['BUNGEE_VERSION' => '123', 'SERVER_JARFILE' => 'updated.jar']], ...$payload], fn (mixed $value): bool => $value !== 'missing'))
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', $field)
+        ->assertJsonPath('errors.0.meta.rule', $rule);
+
+    expect($server->refresh()->startup)->toBe('old startup');
+})->with([
+    'a missing startup command' => [['startup' => 'missing'], 'startup', 'required'],
+    'a missing environment' => [['environment' => 'missing'], 'environment', 'present'],
+    'an egg that does not exist' => [['egg_id' => 0], 'egg_id', 'exists'],
+    'a docker image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image', 'regex'],
+    'a missing skip scripts flag' => [['skip_scripts' => 'missing'], 'skip_scripts', 'present'],
+    'an environment value the egg refuses' => [['environment' => ['BUNGEE_VERSION' => '$$', 'SERVER_JARFILE' => 'updated.jar']], 'environment.BUNGEE_VERSION', 'alpha_num'],
+]);
 test('build rejects unassigned default allocation', function (): void {
     $server = $this->createServerModel();
     /** @var Allocation $allocation */

@@ -4,42 +4,37 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Users;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Throwable;
 
 final readonly class UpdateUser implements UpdatesUsers
 {
     public function __construct(private ExtensionFields $extensions) {}
 
-    /**
-     * Update the user model instance and return the updated model. The hashed
-     * password cast on the model takes care of hashing a new password.
-     *
-     * @param  UserUpdateData  $data
-     *
-     * @throws Throwable
-     */
-    public function update(User $user, array $data): User
+    public function update(User $user, array $input): User
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
-        unset($data['extensions']);
+        $rules = array_map(fn (array $rules): array => ['sometimes', ...$rules], CreateUser::rules($user));
+        $validated = Validator::validate($input, $rules);
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        if (empty(Arr::get($data, 'password'))) {
-            unset($data['password']);
+        // Blank fields change nothing, a blank password included, apart from a blank external id,
+        // which clears it.
+        $attributes = array_filter($validated, filled(...));
+        if (array_key_exists('external_id', $validated)) {
+            $attributes['external_id'] ??= null;
         }
 
-        DB::transaction(function () use ($user, $data, $extensions): void {
-            $user->forceFill($data)->saveOrFail();
+        DB::transaction(function () use ($user, $attributes, $extensions): void {
+            $user->forceFill($attributes)->saveOrFail();
             $this->extensions->save($user, $extensions);
         });
 
-        if (isset($data['password'])) {
+        if (isset($attributes['password'])) {
             event(new PasswordChanged($user));
         }
 

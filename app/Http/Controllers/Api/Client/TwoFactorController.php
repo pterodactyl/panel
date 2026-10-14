@@ -17,10 +17,8 @@ use Pterodactyl\Contracts\Users\DisablesTwoFactor;
 use Pterodactyl\Contracts\Users\SetsUpTwoFactor;
 use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Requests\Api\Client\Account\DisableTwoFactorRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\EnableTwoFactorRequest;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Throwable;
 
@@ -96,14 +94,12 @@ class TwoFactorController extends ClientApiController
     public function store(EnableTwoFactorRequest $request, TogglesTwoFactor $twoFactor): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        $password = JsonValueGuard::string($request->validated('password'));
+        $password = $request->string('password')->toString();
         throw_unless(Hash::check($password, $user->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
 
-        $code = JsonValueGuard::string($request->validated('code'));
+        $code = $request->string('code')->toString();
 
         $tokens = $twoFactor->toggle($user, $code, true);
-
-        Activity::event('user:two-factor.create')->log();
 
         return new JsonResponse([
             'object' => 'recovery_tokens',
@@ -126,12 +122,10 @@ class TwoFactorController extends ClientApiController
     public function delete(DisableTwoFactorRequest $request, DisablesTwoFactor $twoFactor): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        $password = JsonValueGuard::string($request->validated('password'));
+        $password = $request->string('password')->toString();
         throw_unless(Hash::check($password, $user->password), InvalidPasswordProvidedException::class, trans('validation.internal.invalid_password'));
 
         $twoFactor->disable($user);
-
-        Activity::event('user:two-factor.delete')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

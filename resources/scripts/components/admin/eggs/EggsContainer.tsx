@@ -14,7 +14,6 @@ import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
 import { Alert } from '@/components/elements/alert';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 const eggColumns = [
     {
@@ -102,7 +101,7 @@ export default function EggsContainer() {
                 table={table}
                 tableClassName='table-fixed'
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Egg />

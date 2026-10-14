@@ -61,6 +61,13 @@ test('create node', function (): void {
     $node = Node::query()->where('name', 'NewNode')->first();
     $response->assertJson(['object' => 'node', 'attributes' => ['id' => $node->id, 'uuid' => $node->uuid, 'name' => $node->name, 'fqdn' => $node->fqdn, 'location_id' => $node->location_id, 'memory' => $node->memory, 'disk' => $node->disk], 'meta' => ['resource' => route('api.admin.nodes.view', ['node' => $node->id])]]);
 });
+test('create node accepts integer and string flags', function (): void {
+    $location = Location::factory()->create();
+    $this->postJson(route('api.admin.nodes.store'), ['name' => 'FlagNode', 'location_id' => $location->id, 'public' => '1', 'fqdn' => 'localhost', 'scheme' => 'https', 'behind_proxy' => 0, 'maintenance_mode' => 1, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'daemon_listen' => 8080, 'daemon_sftp' => 2022])
+        ->assertStatus(Response::HTTP_CREATED);
+
+    $this->assertDatabaseHas('nodes', ['name' => 'FlagNode', 'public' => true, 'behind_proxy' => false, 'maintenance_mode' => true]);
+});
 test('create node rejects ip address when using https', function (): void {
     $location = Location::factory()->create();
     $response = $this->postJson(route('api.admin.nodes.store'), ['name' => 'IpNode', 'description' => 'A node with an invalid HTTPS address.', 'location_id' => $location->id, 'public' => true, 'fqdn' => '127.0.0.1', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes']);

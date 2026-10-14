@@ -1,0 +1,26 @@
+[
+    {
+        "request": "POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/databases",
+        "status": 200,
+        "body": {
+            "object": "server_database",
+            "attributes": {
+                "id": "eV8yJRLg",
+                "host": {
+                    "address": "10.0.0.5",
+                    "port": 3306
+                },
+                "name": "s1_limiteddb",
+                "username": "u1_9fc2bf2a6b",
+                "connections_from": "%",
+                "max_connections": null,
+                "relationships": {
+                    "password": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                }
+            }
+        }
+    }
+]

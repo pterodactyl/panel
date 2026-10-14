@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Mounts;
 
+use Pterodactyl\Actions\Mounts\CreateMount;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Mount;
-use Pterodactyl\Validation\MountRules;
 
 class UpdateMountRequest extends StoreMountRequest
 {
@@ -22,7 +22,7 @@ class UpdateMountRequest extends StoreMountRequest
      */
     public function rules(): array
     {
-        return MountRules::rules($this->parameter('mount', Mount::class));
+        return CreateMount::rules($this->parameter('mount', Mount::class));
     }
 
     /**

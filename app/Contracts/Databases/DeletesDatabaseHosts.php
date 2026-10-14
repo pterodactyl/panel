@@ -9,6 +9,10 @@ use Pterodactyl\Models\DatabaseHost;
 
 interface DeletesDatabaseHosts
 {
-    /** @throws HasActiveServersException */
+    /**
+     * A host with databases on it is not deleted.
+     *
+     * @throws HasActiveServersException
+     */
     public function delete(DatabaseHost $host): void;
 }

@@ -10,7 +10,7 @@ use Pterodactyl\Models\Node;
 interface DeletesNodes
 {
     /**
-     * Delete a node from the panel if no servers are attached to it.
+     * A node with servers on it is not deleted.
      *
      * @throws HasActiveServersException
      */

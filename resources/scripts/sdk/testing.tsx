@@ -1,19 +1,31 @@
-import { ExtensionContext } from '@/extensions/context';
-import { DefaultServerCard, ServerCardContext, serverCardParts } from '@/components/dashboard/ServerCardView';
-import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from '@/components/server/files/FileDetailsView';
-import { DefaultFileEditor, FileEditorContext, fileEditorParts } from '@/components/server/files/FileEditorView';
-import { DefaultFileManager, FileManagerContext, fileManagerParts } from '@/components/server/files/FileManagerView';
-import type {
-    ComponentModels,
-    ComponentName,
-    ReplacementProps,
-    ServerCardModel,
-    FileDetailsModel,
-    FileEditorModel,
-    FileManagerEntry,
-    FileManagerModel,
-} from '@/extensions/componentTypes';
-import { createContext, useContext, useLayoutEffect, useMemo, type ComponentType, type ReactNode } from 'react';
+import { registerClassicTheme } from '@/views/classic';
+import { loadViewCatalog } from '@/views/catalog';
+import {
+    clearThemeLayers,
+    getViewDefinition,
+    registerViewLayer,
+    type ViewInput,
+    type ViewModel,
+    type ViewModels,
+    type ViewName,
+} from '@/views/registry';
+import { registerThemeIcons, type ThemeDefinition } from '@/views/theme';
+import { clearThemeSkins, registerSkins } from '@/themes/skins';
+import classic from '@/themes/classic';
+import { isPendingLazyView } from '@/views/lazy';
+import { mountedSlots, mountedViews } from '@/extensions/slotWatch';
+import { loadCodemirrorEditor } from '@/components/elements/LazyCodemirrorEditor';
+import { LooseView, preloadView, ViewFixtureProvider } from '@/views/View';
+import {
+    act,
+    createContext,
+    useContext,
+    useLayoutEffect,
+    type ComponentType,
+    type ReactElement,
+    type ReactNode,
+} from 'react';
+import { createRoot } from 'react-dom/client';
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query';
 import {
     createMemoryHistory,
@@ -21,24 +33,59 @@ import {
     createRoute,
     createRouter,
     Outlet,
+    RouterContextProvider,
     RouterProvider,
+    type HistoryState,
 } from '@tanstack/react-router';
 import { queryClient } from '@/api/queryClient';
 import { currentUserQueryKey } from '@/api/account/queries';
 import { siteSettingsQueryKey } from '@/api/settings/queries';
 import { serverQueryOptions } from '@/api/server/queries';
+import StatsListener from '@/components/server/StatsListener';
 import { ServerContext } from '@/state/server/context';
 import { useServerStore } from '@/state/server';
 import { Websocket } from '@/plugins/Websocket';
 import ExtensionMount from '@/extensions/ExtensionMount';
 import { registerClassPrefixes } from '@/lib/cn';
-import { ExtensionResourceProvider } from '@/extensions/resourceContext';
-import { SCREEN_ROOTS } from '@/extensions/registry';
-import type { ExtensionResourceContext } from '@/extensions/resourceContext';
-import type { HistoryState } from '@tanstack/react-router';
+import { ExtensionResourceProvider, type ExtensionResourceContext } from '@/extensions/resourceContext';
+import {
+    clearExtensionError,
+    getExtensionErrors,
+    mountSlotComponents,
+    SCREEN_ROOTS,
+    type SlotComponentProps,
+    type SlotData,
+    type SlotName,
+} from '@/extensions/registry';
 import { resolvePanelDestination, type PanelDestination, type PanelSearch } from './navigation';
-import type { SdkServer, SdkSiteSettings, SdkUser } from './index';
-import type { ServerWebsocketEvent } from './index';
+import type { SdkServer, SdkSiteSettings, SdkUser, ServerWebsocketEvent } from './index';
+
+export { createTestServer, createTestServerCard, type TestServerOptions } from '@/views/fixtures';
+export {
+    createTestFileDetails,
+    createTestFileEditor,
+    createTestFileManager,
+    createTestFileManagerEntry,
+} from '@/views/server/fileFixtures';
+
+const causeMessage = (cause: unknown): string => (cause instanceof Error ? cause.message : String(cause));
+
+/** A theme or extension layer of a view that failed, which the strict test renderers throw. */
+export class ViewLayerError extends Error {
+    constructor(
+        readonly view: string,
+        readonly layer: string,
+        cause: unknown
+    ) {
+        super(`The "${layer}" layer of view "${view}" failed: ${causeMessage(cause)}`, { cause });
+        this.name = 'ViewLayerError';
+    }
+}
+
+registerClassicTheme();
+// Views' hooks and fixtures, classic's own views and the code editor are lazy; loading them here lets a test
+// render them synchronously.
+await Promise.all([loadViewCatalog(), ...Object.keys(classic.views ?? {}).map(preloadView), loadCodemirrorEditor()]);
 
 export interface ExtensionTestHostOptions {
     extensionId?: string;
@@ -63,51 +110,6 @@ export interface ExtensionTestHost {
     emitWebsocket(event: ServerWebsocketEvent, data: string): void;
     setConnected(connected: boolean): void;
     dispose(): void;
-}
-
-export function createTestServer(
-    options: {
-        identifier?: string;
-        uuid?: string;
-        name?: string;
-        owner?: boolean;
-        permissions?: string[];
-        status?: SdkServer['attributes']['status'];
-        eggFeatures?: string[];
-        eggTags?: string[];
-    } = {}
-): SdkServer {
-    const identifier = options.identifier ?? 'test-server';
-    const owner = options.owner ?? true;
-
-    return {
-        object: 'server',
-        attributes: {
-            identifier,
-            uuid: options.uuid ?? '11111111-1111-4111-8111-111111111111',
-            __deprecated_uuid_short: identifier,
-            server_identifier: identifier,
-            internal_id: 1,
-            server_owner: owner,
-            name: options.name ?? 'Test server',
-            node: 'Test node',
-            is_node_under_maintenance: false,
-            sftp_details: { ip: '127.0.0.1', port: 2022 },
-            description: null,
-            limits: { memory: 1024, swap: 0, disk: 1024, io: 500, cpu: 100, threads: null, oom_disabled: true },
-            invocation: 'run',
-            docker_image: 'test/image',
-            egg_features: options.eggFeatures ?? [],
-            egg_tags: options.eggTags ?? [],
-            feature_limits: { databases: 1, allocations: 1, backups: 1 },
-            status: options.status ?? null,
-            is_suspended: options.status === 'suspended',
-            is_installing: options.status === 'installing',
-            is_transferring: false,
-            skip_scripts: false,
-        },
-        meta: { is_server_owner: owner, user_permissions: options.permissions ?? [] },
-    };
 }
 
 /** Create one host per test; call dispose after unmounting its Wrapper. */
@@ -170,9 +172,11 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
         return useContext(Content);
     }
 
+    const extensionId = options.extensionId ?? 'test-extension';
+
     function Root() {
         const content = (
-            <ExtensionMount extensionId={options.extensionId ?? 'test-extension'} context='test host' resetKey='test'>
+            <ExtensionMount extensionId={extensionId} context='test host' resetKey='test'>
                 <ExtensionResourceProvider.Provider value={options.resource ?? null}>
                     <Outlet />
                 </ExtensionResourceProvider.Provider>
@@ -182,6 +186,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
         return options.server ? (
             <ServerContext.Provider>
                 <SocketFixture />
+                <StatsListener />
                 {content}
             </ServerContext.Provider>
         ) : (
@@ -246,225 +251,235 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
     };
 }
 
-export function createTestServerCard(options: Partial<ServerCardModel> = {}): ServerCardModel {
-    return {
-        identifier: 'test-server',
-        uuid: '11111111-1111-4111-8111-111111111111',
-        name: 'Test server',
-        description: null,
-        address: '127.0.0.1:25565',
-        state: {
-            kind: 'ready',
-            power: 'running',
-            cpu: { value: 12, limit: 100, alarm: false },
-            memory: { value: 256 * 1024 * 1024, limit: 1024 * 1024 * 1024, alarm: false },
-            disk: { value: 512 * 1024 * 1024, limit: 2048 * 1024 * 1024, alarm: false },
+/** The themes a test renders with. */
+export interface TestThemeOptions {
+    /**
+     * The themes, oldest first, as the panel stacks them over classic: `[theme]`, or `[parent, child]`
+     * for a child theme. Each one's `Default` and the `below` of its recipes build on the theme before it.
+     */
+    themes?: readonly ThemeDefinition[];
+}
+
+/** How layer failures name a theme of the chain: "theme" for the last, its parents "parent", "parent 2" and so on. */
+function layerId(distance: number): string {
+    if (distance === 0) {
+        return 'theme';
+    }
+
+    return distance === 1 ? 'parent' : `parent ${distance}`;
+}
+
+/** Replaces the registered theme layers with the chain's skins, views and icons, parent first. */
+function registerThemes(themes: readonly ThemeDefinition[]): void {
+    clearThemeLayers();
+    clearThemeSkins();
+    for (const [index, theme] of themes.entries()) {
+        const id = layerId(themes.length - 1 - index);
+
+        registerSkins(id, theme.ui ?? {});
+        registerViewLayer(id, 'theme', theme.views ?? {});
+        registerThemeIcons(theme.icons ?? {});
+    }
+}
+
+/** Loads the chunks of a theme's `lazyView` views, or those of a chain of themes, which `renderView` renders synchronously. */
+export async function preloadTheme(theme: ThemeDefinition | readonly ThemeDefinition[]): Promise<void> {
+    const themes: readonly ThemeDefinition[] = 'length' in theme ? theme : [theme];
+
+    await Promise.all(
+        themes.flatMap((each) =>
+            Object.values(each.views ?? {}).map((view) => (view && isPendingLazyView(view) ? view.preload() : null))
+        )
+    );
+}
+
+export interface RenderViewOptions<N extends ViewName> extends TestThemeOptions {
+    /** Defaults to the view's first fixture. */
+    fixture?: string;
+    model?: ViewModel<N>;
+    input?: ViewInput<N>;
+    /** Passed to the view as `<View className>` would; it lands on the view's root element. */
+    className?: string;
+    /** Components to mount in slots, as an extension's `slots.register` would. */
+    slots?: TestSlots;
+    /** An extension's `ui.prefix`, so its prefixed classes merge with the view's as they do in the panel. */
+    prefix?: string;
+    /**
+     * Fail when a theme or extension layer throws, or when the themes leave out a slot classic renders for
+     * the same fixture (the default); false lets a layer fall back and slots go missing.
+     */
+    strict?: boolean;
+}
+export type TestSlots = { readonly [N in SlotName]?: ComponentType<SlotComponentProps<SlotData<N>>> };
+export interface RenderedView {
+    container: HTMLElement;
+    /** Throws what failed after the first render, such as a layer failing on a click. */
+    unmount(): void;
+}
+
+interface MountOptions {
+    themes?: readonly ThemeDefinition[];
+    slots?: TestSlots;
+    prefix?: string;
+    strict?: boolean;
+}
+
+const viewRouter = createRouter({
+    routeTree: createRootRoute(),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+});
+let rendered: RenderedView | undefined;
+
+const viewContext = /^view "(.+)"$/;
+
+/** Clears the failures recorded against view layers, so a render reads only its own. */
+function clearLayerFailures(): void {
+    for (const { extensionId, context } of getExtensionErrors()) {
+        if (viewContext.test(context)) {
+            clearExtensionError(extensionId, context);
+        }
+    }
+}
+
+/** The first failure recorded against a view layer, as a `ViewLayerError`. */
+function layerFailure(): ViewLayerError | undefined {
+    for (const { extensionId, context, message } of getExtensionErrors()) {
+        const view = viewContext.exec(context)?.[1];
+
+        if (view !== undefined) {
+            return new ViewLayerError(view, extensionId, new Error(message));
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * Replaces whatever was rendered before with `content`, under the themes' skins, views and icons, and
+ * throws when it fails to render (and, unless `strict` is false, when one of its layers falls back).
+ */
+function mount(content: ReactNode, { themes = [], slots = {}, prefix, strict = true }: MountOptions): RenderedView {
+    rendered?.unmount();
+    registerClassPrefixes([prefix]);
+    registerThemes(themes);
+    clearLayerFailures();
+
+    // Each slot's props are typed by its name where they are given.
+    const removeSlots = mountSlotComponents('test-slots', slots as Parameters<typeof mountSlotComponents>[1]);
+    const crashes: unknown[] = [];
+    const container = document.body.appendChild(document.createElement('div'));
+    const root = createRoot(container, { onUncaughtError: (error) => crashes.push(error) });
+    const failure = (): unknown => crashes.at(0) ?? (strict ? layerFailure() : undefined);
+    const current: RenderedView = {
+        container,
+        unmount: () => {
+            if (rendered !== current) {
+                return;
+            }
+
+            rendered = undefined;
+            act(() => root.unmount());
+            container.remove();
+            removeSlots();
+
+            const error = failure();
+
+            if (error !== undefined) {
+                throw error;
+            }
         },
-        ...options,
     };
-}
 
-export function createTestFileDetails(options: Partial<FileDetailsModel> = {}): FileDetailsModel {
-    return { name: 'config.json', kind: 'file', size: 1024, modifiedAt: '2026-01-01T12:00:00Z', ...options };
-}
+    rendered = current;
+    Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', true);
+    act(() =>
+        root.render(
+            <QueryClientProvider client={queryClient}>
+                <RouterContextProvider router={viewRouter}>{content}</RouterContextProvider>
+            </QueryClientProvider>
+        )
+    );
 
-export function createTestFileEditor(options: Partial<FileEditorModel> = {}): FileEditorModel {
-    return {
-        path: '/config/server.properties',
-        name: 'server.properties',
-        isNew: false,
-        content: 'motd=Hello\n',
-        language: 'text/x-properties',
-        readOnly: false,
-        dirty: false,
-        saving: false,
-        change: () => {},
-        save: async () => true,
-        saveAs: async () => true,
-        ...options,
-    };
-}
-
-export function createTestFileManagerEntry(options: Partial<FileManagerEntry> = {}): FileManagerEntry {
-    const name = options.name ?? 'config.json';
-
-    return {
-        name,
-        path: `/${name}`,
-        kind: 'file',
-        size: 1024,
-        mimetype: 'application/json',
-        mode: '-rw-r--r--',
-        modeBits: '0644',
-        modifiedAt: '2026-01-01T12:00:00Z',
-        openable: true,
-        ...options,
-    };
-}
-
-export function createTestFileManager(options: Partial<FileManagerModel> = {}): FileManagerModel {
-    return {
-        directory: '/',
-        entries: [
-            createTestFileManagerEntry({ name: 'plugins', kind: 'directory', mimetype: 'inode/directory', size: 0 }),
-            createTestFileManagerEntry(),
-        ],
-        truncated: false,
-        loading: false,
-        refreshing: false,
-        selection: [],
-        permissions: { create: true, update: true, delete: true, archive: true },
-        actions: {
-            open: async () => {},
-            navigate: async () => {},
-            newFile: async () => {},
-            select: () => {},
-            refresh: async () => {},
-            createDirectory: async () => {},
-            rename: async () => {},
-            remove: async () => {},
-            copy: async () => {},
-            archive: async () => {},
-            extract: async () => {},
-            chmod: async () => {},
-            download: async () => {},
-            upload: async () => {},
-        },
-        ...options,
-    };
-}
-
-export interface ComponentTestHost<TName extends ComponentName> {
-    Wrapper: ComponentType<{ children?: ReactNode }>;
-    props: ReplacementProps<TName>;
-    /** Call after unmounting the Wrapper. */
-    dispose(): void;
-}
-const noDispose = () => {};
-
-/** Test presentation against the native default and parts without issuing core queries. */
-export function createComponentTestHost<TName extends ComponentName>(
-    name: TName,
-    options: { model: ComponentModels[TName]; extensionId?: string; prefix?: string }
-): ComponentTestHost<TName>;
-export function createComponentTestHost(
-    name: ComponentName,
-    options: { model: ComponentModels[ComponentName]; extensionId?: string; prefix?: string }
-): { [TName in ComponentName]: ComponentTestHost<TName> }[ComponentName] {
-    const extensionId = options.extensionId ?? 'test-extension';
-
-    registerClassPrefixes([options.prefix]);
-    function Context({ children }: { children?: ReactNode }) {
-        const context = useMemo(() => ({ extensionId, context: `component "${name}" test host` }), []);
-
-        return <ExtensionContext.Provider value={context}>{children}</ExtensionContext.Provider>;
+    if (failure() !== undefined) {
+        current.unmount();
     }
 
-    if (name === 'dashboard.serverCard') {
-        const model = options.model as ServerCardModel;
+    return current;
+}
 
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const context = useMemo(
-                () => ({
-                    model,
-                    server: createTestServer({ identifier: model.identifier, uuid: model.uuid, name: model.name }),
-                }),
-                []
-            );
+const AREA_LAYOUTS = new Set(['layout.account', 'layout.server', 'layout.admin']);
 
-            return (
-                <Context>
-                    <ServerCardContext.Provider value={context}>{children}</ServerCardContext.Provider>
-                </Context>
-            );
-        }
+const pendingViews = (themes: readonly ThemeDefinition[]): string[] =>
+    themes.flatMap((theme) =>
+        Object.entries(theme.views ?? {}).flatMap(([name, view]) => (view && isPendingLazyView(view) ? [name] : []))
+    );
 
-        return { Wrapper, props: { model, Default: DefaultServerCard, parts: serverCardParts }, dispose: noDispose };
-    }
+/**
+ * Renders a view synchronously from fixtures, with the layers of `themes` over classic. Each call
+ * replaces what was rendered before it; nested views read their fixtures too. Await
+ * `preloadTheme(themes)` first when the themes have lazy views. It throws when the view fails to
+ * render, and when a theme or extension layer throws unless `strict` is false.
+ */
+export function renderView<N extends ViewName>(name: N, options: RenderViewOptions<N> = {}): RenderedView {
+    const { themes = [] } = options;
+    const pending = pendingViews(themes);
 
-    if (name === 'server.files.editor') {
-        const model = options.model as FileEditorModel;
-
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const session = useMemo(() => ({ model, read: () => model.content, setLanguage: () => {} }), []);
-
-            return (
-                <Context>
-                    <FileEditorContext.Provider value={session}>{children}</FileEditorContext.Provider>
-                </Context>
-            );
-        }
-
-        return { Wrapper, props: { model, Default: DefaultFileEditor, parts: fileEditorParts }, dispose: noDispose };
-    }
-
-    if (name === 'server.files.manager') {
-        const model = options.model as FileManagerModel;
-        const host = createExtensionTestHost({
-            extensionId,
-            server: createTestServer(),
-            path: `/server/test-server/files#${model.directory}`,
-        });
-        const files = model.entries.map((entry) => ({
-            object: 'file_object',
-            attributes: {
-                name: entry.name,
-                mode: entry.mode,
-                mode_bits: entry.modeBits,
-                size: entry.size,
-                is_file: entry.kind !== 'directory',
-                is_symlink: entry.kind === 'symlink',
-                mimetype: entry.mimetype,
-                created_at: entry.modifiedAt,
-                modified_at: entry.modifiedAt,
-            },
-        }));
-        const portal = document.getElementById('modal-portal')
-            ? null
-            : document.body.appendChild(Object.assign(document.createElement('div'), { id: 'modal-portal' }));
-
-        function Selection() {
-            const setSelectedFiles = useServerStore((state) => state.files.setSelectedFiles);
-
-            useLayoutEffect(() => {
-                setSelectedFiles({ directory: model.directory, files: [...model.selection] });
-            }, [setSelectedFiles]);
-
-            return null;
-        }
-
-        function Wrapper({ children }: { children?: ReactNode }) {
-            const session = useMemo(() => ({ model, files }), []);
-
-            return (
-                <host.Wrapper>
-                    <Context>
-                        <Selection />
-                        <FileManagerContext.Provider value={session}>{children}</FileManagerContext.Provider>
-                    </Context>
-                </host.Wrapper>
-            );
-        }
-
-        return {
-            Wrapper,
-            props: { model, Default: DefaultFileManager, parts: fileManagerParts },
-            dispose: () => {
-                portal?.remove();
-                host.dispose();
-            },
-        };
-    }
-
-    const model = options.model as FileDetailsModel;
-
-    function Wrapper({ children }: { children?: ReactNode }) {
-        return (
-            <Context>
-                <FileDetailsContext.Provider value={model}>{children}</FileDetailsContext.Provider>
-            </Context>
+    if (pending.length) {
+        throw new Error(
+            `The theme's views ${pending.join(', ')} are lazy and not loaded yet. ` +
+                'Await preloadTheme(theme) before renderView, for example in beforeAll.'
         );
     }
 
-    return { Wrapper, props: { model, Default: DefaultFileDetails, parts: fileDetailsParts }, dispose: noDispose };
+    // The model is the one of the view being rendered.
+    const models = options.model === undefined ? undefined : ({ [name]: options.model } as Partial<ViewModels>);
+    const fixtures = options.fixture === undefined ? undefined : { [name]: options.fixture };
+    const content = (
+        <ViewFixtureProvider fixtures={fixtures} models={models}>
+            <LooseView name={name} className={options.className} {...Object(options.input ?? {})} />
+        </ViewFixtureProvider>
+    );
+    const strict = options.strict ?? true;
+    const mountOptions = { slots: options.slots, prefix: options.prefix, strict };
+
+    if (!strict || !themes.length) {
+        return mount(content, { ...mountOptions, themes });
+    }
+
+    // The slots classic renders here, which extensions may mount in, must survive the themes. A slot counts
+    // only while a view that renders it is on the page: a theme can move a view, and its slots go with it. A
+    // theme's app layout draws the area layouts' navigation, so their slots are its to render.
+    mount(content, { ...mountOptions, themes: [] });
+    const expected = mountedSlots();
+    const view = mount(content, { ...mountOptions, themes });
+    const shell = themes.some((theme) => theme.views?.['layout.app']);
+    const owned = new Set<string>(
+        [...mountedViews()]
+            .filter((viewName) => !(shell && AREA_LAYOUTS.has(viewName)))
+            .flatMap((viewName) => getViewDefinition(viewName)?.slots ?? [])
+    );
+    const missing = [...expected].filter((slot) => owned.has(slot) && !mountedSlots().has(slot));
+
+    if (missing.length) {
+        view.unmount();
+        throw new ViewLayerError(
+            name,
+            layerId(0),
+            new Error(
+                `The themes leave out the ${missing.map((slot) => `"${slot}"`).join(', ')} slot${missing.length > 1 ? 's' : ''} ` +
+                    'that classic renders here, so extensions mounted there disappear. Render <Slot name="…" /> or <Default />.'
+            )
+        );
+    }
+
+    return view;
+}
+
+/**
+ * Renders any element synchronously with the skins, views and icons of `themes` over classic's, such
+ * as a UI kit primitive: `renderWithTheme(<Button>Save</Button>, { themes: [theme] })`. Each call
+ * replaces what was rendered before it.
+ */
+export function renderWithTheme(element: ReactElement, options: TestThemeOptions = {}): RenderedView {
+    return mount(element, { themes: options.themes });
 }

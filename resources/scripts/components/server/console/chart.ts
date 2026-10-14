@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type RefObject } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 
 export const CHART_WINDOW_MS = 20_000;
 
@@ -7,36 +7,34 @@ const RETAIN_MS = CHART_WINDOW_MS + 2_000;
 // `t` is a performance.now() timestamp; a series value is null until its first sample.
 export type ChartPoint = { t: number } & Record<string, number | null>;
 
-/** Rolling buffer of timestamped samples; `keys` must be referentially stable. */
-export function useRollingData(keys: readonly string[]) {
-    const [data, setData] = useState<ChartPoint[]>([]);
+// Type aliases, not interfaces, so a chart reads them as `ChartPoint`s.
+export type ServerGraphPoint = { readonly t: number; readonly value: number | null };
+export type ServerNetworkPoint = { readonly t: number; readonly rx: number | null; readonly tx: number | null };
+export interface ServerGraphs {
+    /** CPU load in percent. */
+    readonly cpu: readonly ServerGraphPoint[];
+    /** Memory in MiB. */
+    readonly memory: readonly ServerGraphPoint[];
+    /** Bytes received and sent since the previous sample. */
+    readonly network: readonly ServerNetworkPoint[];
+}
 
-    const push = useCallback(
-        (values: Record<string, number | null>, t: number) =>
-            setData((prev) => {
-                const point: ChartPoint = { t };
+/** A sample value as the graphs plot it. */
+export const chartValue = (value: number): number => Number(value.toFixed(2));
 
-                for (const key of keys) {
-                    const value = values[key];
+/** Appends a sample to a rolling buffer, dropping samples older than the chart window keeps. */
+export function appendChartPoint<TPoint extends { readonly t: number }>(
+    points: readonly TPoint[],
+    point: TPoint
+): TPoint[] {
+    const cutoff = point.t - RETAIN_MS;
+    let start = 0;
 
-                    point[key] = value === null || value === undefined ? null : Number(value.toFixed(2));
-                }
+    while (start < points.length && points[start].t < cutoff) {
+        start++;
+    }
 
-                const cutoff = t - RETAIN_MS;
-                let start = 0;
-
-                while (start < prev.length && prev[start].t < cutoff) {
-                    start++;
-                }
-
-                return [...prev.slice(start), point];
-            }),
-        [keys]
-    );
-
-    const clear = useCallback(() => setData([]), []);
-
-    return { data, push, clear };
+    return [...points.slice(start), point];
 }
 
 /** The element's width in whole pixels; 0 until it has been measured. */

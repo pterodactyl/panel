@@ -11,7 +11,6 @@ use Pterodactyl\Contracts\Servers\RecordsServerInstallResults;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 use Pterodactyl\Services\Servers\ServerInstallService;
-use Pterodactyl\Support\JsonValueGuard;
 
 class ServerInstallController extends Controller
 {
@@ -28,14 +27,9 @@ class ServerInstallController extends Controller
      */
     public function store(InstallationDataRequest $request, RecordsServerInstallResults $installResult, string $uuid): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = $request->safe();
 
-        $installResult->record(
-            $request,
-            $uuid,
-            JsonValueGuard::boolean($validated['successful'] ?? false),
-            JsonValueGuard::boolean($validated['reinstall'] ?? false),
-        );
+        $installResult->record($request, $uuid, $validated->boolean('successful'), $validated->boolean('reinstall'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

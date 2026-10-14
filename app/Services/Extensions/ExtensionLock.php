@@ -7,7 +7,6 @@ namespace Pterodactyl\Services\Extensions;
 use Closure;
 use Illuminate\Support\Facades\File;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final class ExtensionLock
 {
@@ -17,7 +16,7 @@ final class ExtensionLock
     private int $depth = 0;
 
     /**
-     * @template T of object|ApiValue10|void
+     * @template T
      *
      * @param  Closure(): T  $callback
      * @return T
@@ -41,7 +40,7 @@ final class ExtensionLock
             return;
         }
 
-        $directory = mb_rtrim(JsonValueGuard::string(config('extensions.directory')), '/\\').DIRECTORY_SEPARATOR.'.locks';
+        $directory = mb_rtrim(config()->string('extensions.directory'), '/\\').DIRECTORY_SEPARATOR.'.locks';
         File::ensureDirectoryExists($directory);
         $lock = fopen($directory.DIRECTORY_SEPARATOR.'packages', 'c');
         throw_if($lock === false, InvalidExtensionException::class, 'Unable to lock extension package.');

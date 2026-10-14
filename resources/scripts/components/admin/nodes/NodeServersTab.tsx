@@ -16,7 +16,6 @@ import DataTablePagination from '@/components/elements/table/DataTablePagination
 import { Alert } from '@/components/elements/alert';
 import Button from '@/components/elements/Button';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { httpErrorToHuman } from '@/api/http';
 import { relationshipAttributes } from '@/api/relationships';
 
@@ -138,7 +137,7 @@ const NodeServerList = ({ query, table }: NodeServerListProps) => {
                 table={table}
                 isFetching={loading}
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Server />

@@ -11,8 +11,10 @@ const options = ts.parseJsonConfigFileContent(config.config, ts.sys, root).optio
 const entries = [
     'resources/scripts/sdk/index.ts',
     'resources/scripts/sdk/api.ts',
+    'resources/scripts/sdk/theme.ts',
     'packages/sdk/types/index.d.ts',
     'packages/sdk/types/api.d.ts',
+    'packages/sdk/types/theme.d.ts',
 ];
 
 it('publishes the same value exports as the runtime entry points', () => {
@@ -33,42 +35,74 @@ it('publishes the same value exports as the runtime entry points', () => {
             .map((symbol) => symbol.name)
             .sort();
     };
-    expect(values(entries[2])).toEqual(values(entries[0]));
-    expect(values(entries[3])).toEqual(values(entries[1]));
+    expect(values(entries[3])).toEqual(values(entries[0]));
+    expect(values(entries[4])).toEqual(values(entries[1]));
+    expect(values(entries[5])).toEqual(values(entries[2]));
     expect(values(entries[0]).length).toBeGreaterThan(20);
 }, 30_000);
 
 const consumer = `
-import { createExtensionTestHost } from '@pterodactyl/sdk/testing';
-import { createComponentTestHost, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
-import type { ReplacementProps, ComponentPartProps } from '@pterodactyl/sdk';
+import { createExtensionTestHost, createTestServer } from '@pterodactyl/sdk/testing';
+import { renderView, renderWithTheme, createTestServerCard, createTestFileDetails } from '@pterodactyl/sdk/testing';
+import type { ViewProps } from '@pterodactyl/sdk';
 import { createTestFileEditor, createTestFileManager } from '@pterodactyl/sdk/testing';
-const editorHost = createComponentTestHost('server.files.editor', {model: createTestFileEditor({readOnly: true})});
-const managerHost = createComponentTestHost('server.files.manager', {model: createTestFileManager()});
+import { defineTheme, lazyView, Main, Slot, View, useTheme, useThemeSettings, type ThemeViews } from '@pterodactyl/sdk/theme';
+const editor: HTMLElement = renderView('server.files.editor', {model: createTestFileEditor({readOnly: true})}).container;
+renderView('server.files.manager', {model: createTestFileManager()});
 // @ts-expect-error An editor model is not a file browser model.
-createComponentTestHost('server.files.manager', {model: createTestFileEditor()});
-function Editor({model, Default}: ReplacementProps<'server.files.editor'>) {
+renderView('server.files.manager', {model: createTestFileEditor()});
+function Editor({model, Default}: ViewProps<'server.files.editor'>) {
   const saved: Promise<boolean> = model.saveAs('copy.txt');
   // @ts-expect-error The model is read-only; report edits through change().
   model.content = '';
-  return <Default parts={{editor: ({model}) => <textarea defaultValue={model.content} readOnly={model.readOnly} onChange={event => model.change(event.target.value)} />}} />;
+  return <Default />;
 }
-function Browser({model, parts}: ReplacementProps<'server.files.manager'>) {
+function Canvas({model}: ViewProps<'server.files.editor.canvas'>) {
+  return <textarea defaultValue={model.content} readOnly={model.readOnly} onChange={event => model.change(event.target.value)} />;
+}
+function Browser({model}: ViewProps<'server.files.manager'>) {
   const removed: Promise<void> = model.actions.remove(model.selection);
   // @ts-expect-error Entries have a closed set of kinds.
   const isSocket = model.entries[0]?.kind === 'socket';
-  return <ul><parts.toolbar model={model} />{model.entries.map(entry => <li key={entry.path} onClick={() => void model.actions.open(entry.name)}>{entry.name}</li>)}</ul>;
+  return <ul><View name="server.files.manager.toolbar" model={model} />{model.entries.map(entry => <li key={entry.path} onClick={() => void model.actions.open(entry.name)}>{entry.name}</li>)}</ul>;
 }
-const cardHost = createComponentTestHost('dashboard.serverCard', {model: createTestServerCard()});
-const fileHost = createComponentTestHost('server.files.details', {model: createTestFileDetails()});
-const nativeCard = <cardHost.props.Default />;
-// @ts-expect-error Component models remain distinct.
-createComponentTestHost('dashboard.serverCard', {model: createTestFileDetails()});
-function Metrics({model}: ComponentPartProps<'dashboard.serverCard'>) {return <span>{model.name}</span>;}
-function Card({Default, model, parts}: ReplacementProps<'dashboard.serverCard'>) {
-  const identity = <parts.identity model={model} />;
-  return <Default parts={{metrics: Metrics}} />;
+renderView('dashboard.serverCard', {model: createTestServerCard(), prefix: 'hw'});
+renderView('server.files.details', {model: createTestFileDetails()});
+// @ts-expect-error View models remain distinct.
+renderView('dashboard.serverCard', {model: createTestFileDetails()});
+function Metrics({model}: ViewProps<'dashboard.serverCard.metrics'>) {return <span>{model.name}</span>;}
+function Card({Default, model, server}: ViewProps<'dashboard.serverCard'>) {
+  const identity = <View name="dashboard.serverCard.identity" model={model} server={server} />;
+  // @ts-expect-error A piece of the card receives the card's server too.
+  const bare = <View name="dashboard.serverCard.identity" model={model} />;
+  return <Default className="hw:gap-3" />;
 }
+function Shell({model, children}: ViewProps<'layout.app'>) {
+  const {scheme, setScheme} = useTheme();
+  const accent = useThemeSettings().accent;
+  return <><span>{model.brand.name}{scheme}{String(accent)}</span><Slot name="nav.items.before" /><View name="app.search" /><Main>{children}</Main><button onClick={() => setScheme('light')} /></>;
+}
+const themeViews: ThemeViews = {
+  'layout.app': Shell,
+  'dashboard.serverCard': Card,
+  'dashboard.serverCard.metrics': Metrics,
+  'server.files.editor.canvas': Canvas,
+  'page.dashboard': lazyView(async () => ({default: ({model}: ViewProps<'page.dashboard'>) => <span>{model.error}</span>})),
+};
+// @ts-expect-error A view receives the model of its own name.
+const wrongModel: ThemeViews = {'dashboard.serverList': Card};
+const theme = defineTheme({views: themeViews, icons: {layers: () => null}});
+const framed: HTMLElement = renderView('layout.app', {themes: [theme], fixture: 'admin'}).container;
+// @ts-expect-error A test renders with a chain of themes.
+renderView('layout.app', {theme});
+// @ts-expect-error Models stay typed by the rendered view.
+renderView('layout.app', {model: createTestServerCard()});
+const primitive: HTMLElement = renderWithTheme(<Button color="red">Save</Button>, {themes: [theme]}).container;
+interface GeneratedSettings { accent: string; compact: boolean }
+const compact: boolean = useThemeSettings<GeneratedSettings>().compact;
+// @ts-expect-error The card needs the server it shows.
+const missingInput = <View name="dashboard.serverCard" />;
+const cardView = <View name="dashboard.serverCard" server={createTestServer()} />;
 const host = createExtensionTestHost({path: '/account'});
 host.emitWebsocket('status', 'running');
 // @ts-expect-error The test host only emits known socket events.
@@ -124,19 +158,19 @@ form.setFieldValue('missing', 'value');
 const fields = <Form form={form}><form.AppField name="name">{field => <field.TextField label="Name" />}</form.AppField></Form>;
 // @ts-expect-error Form requires its form instance.
 const invalidForm = <Form />;
-definePterodactylExtension({ setup({ slots, screens, columns, components }) {
-  components.replace('dashboard.serverCard', Card);
-  components.replace('dashboard.serverCard', {load: async () => ({default: Card})});
-  components.replace('server.files.editor', Editor);
-  components.replace('server.files.manager', {load: async () => ({default: Browser})});
+definePterodactylExtension({ setup({ slots, screens, columns, views }) {
+  views.override('dashboard.serverCard', Card);
+  views.override('dashboard.serverCard', {load: async () => ({default: Card})});
+  views.override('server.files.editor', Editor);
+  views.override('server.files.manager', {load: async () => ({default: Browser})});
   // @ts-expect-error A file browser cannot replace the editor.
-  components.replace('server.files.editor', Browser);
+  views.override('server.files.editor', Browser);
   // @ts-expect-error Names are stable catalog identifiers.
-  components.replace('components/dashboard/ServerRow', Card);
+  views.override('components/dashboard/ServerRow', Card);
   // @ts-expect-error A file view cannot replace a server card.
-  components.replace('server.files.details', Card);
-  // @ts-expect-error Parts must be named by this contract.
-  const unknownPart = <cardHost.props.Default parts={{unknown: Metrics}} />;
+  views.override('server.files.details', Card);
+  // @ts-expect-error An extension places its own UI in slots.
+  views.define('billing.balance', {});
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="username">{field => <field.TextField label="Custom username" />}</data.form.AppField>);
   // @ts-expect-error Native form contributions preserve core field names.
   slots.register('panel.users.detail.form', ({ data }) => <data.form.AppField name="unknown">{field => null}</data.form.AppField>);
@@ -305,8 +339,11 @@ export const useContent = (uuid: string, file: string): string | undefined =>
     }, 120_000);
 });
 
-it('publishes the same component catalog as the manifest schema', async () => {
-    const { COMPONENT_NAMES } = await import('../../resources/scripts/extensions/componentTypes');
+it('declares view overrides by name rather than from a component catalog', () => {
     const schema = JSON.parse(readFileSync(resolve(root, 'packages/sdk/manifest.schema.json'), 'utf8'));
-    expect(schema.properties.ui.properties.components.items.enum).toEqual([...COMPONENT_NAMES]);
+    const name = new RegExp(schema.properties.ui.properties.views.items.pattern);
+
+    expect(schema.properties.ui.properties.components).toBeUndefined();
+    expect(['server.power', 'page.server.backups', 'dashboard.serverCard'].every((view) => name.test(view))).toBe(true);
+    expect(['server', 'Server.power', 'server.'].some((view) => name.test(view))).toBe(false);
 });

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Acl\Api;
 
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionClass;
 use ReflectionException;
 
@@ -49,10 +48,11 @@ class AdminAcl
 
     /**
      * Determine if an API key has permission to perform a specific read/write operation.
+     * Asking for no action is denied, so a request that never set one fails closed.
      */
     public static function can(int $permission, int $action = self::READ): bool
     {
-        return ($permission & $action) === $action;
+        return $action !== self::NONE && ($permission & $action) === $action;
     }
 
     /**
@@ -61,7 +61,9 @@ class AdminAcl
      */
     public static function check(ApiKey $key, string $resource, int $action = self::READ): bool
     {
-        return self::can(JsonValueGuard::integer(data_get($key, self::COLUMN_IDENTIFIER.$resource, self::NONE)), $action);
+        $permission = $key->getAttributes()[self::COLUMN_IDENTIFIER.$resource] ?? self::NONE;
+
+        return self::can(is_numeric($permission) ? (int) $permission : self::NONE, $action);
     }
 
     /**

@@ -1,0 +1,15 @@
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* #region hooks */
+/* Inside @layer components, a utility passed at the call site still wins. */
+@layer components {
+    [data-ui='button'][data-color='red'] {
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    [data-ui='dialog'][data-part='backdrop'] {
+        backdrop-filter: blur(4px);
+    }
+}
+/* #endregion hooks */

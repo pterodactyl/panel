@@ -34,6 +34,7 @@ test('backup can be created', function () {
     $this->assertDatabaseHas('backups', ['server_id' => $server->id, 'name' => 'Test Backup']);
     $backup = Backup::query()->where('server_id', $server->id)->where('name', 'Test Backup')->firstOrFail();
     $fake->assertBackedUp($backup->uuid);
+    $this->assertActivityFor('server:backup.start', $user, $server, $backup);
 });
 test('backup can be created without a name', function (): void {
     $user = User::factory()->create();
@@ -42,6 +43,32 @@ test('backup can be created without a name', function (): void {
     $response = $this->actingAs($user)->postJson($this->link($server, '/backups'))->assertOk()->assertJsonPath('object', 'backup');
     expect($response->json('attributes.name'))->toStartWith('Backup at ');
     $fake->assertBackedUp($response->json('attributes.uuid'));
+});
+test('backup lock accepts null and every value the boolean rule allows', function (bool|int|string|null $locked, bool $expected): void {
+    $user = User::factory()->create();
+    $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 3]);
+    new FakeDaemonBackup;
+
+    $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => 'Flagged', 'is_locked' => $locked])
+        ->assertOk()
+        ->assertJsonPath('attributes.is_locked', $expected);
+})->with([[null, false], [1, true], ['1', true], [0, false]]);
+test('backup ignores the files sent one per line and keeps its own rules', function (): void {
+    $user = User::factory()->create();
+    $server = $this->createServerModel(['owner_id' => $user->id, 'backup_limit' => 3]);
+    new FakeDaemonBackup;
+
+    $uuid = $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => 'Ignoring', 'ignored' => "logs/\n\ncache/"])
+        ->assertOk()
+        ->json('attributes.uuid');
+    expect(Backup::query()->where('uuid', $uuid)->firstOrFail()->ignored_files)->toBe(['logs/', 'cache/']);
+
+    $this->actingAs($user)->postJson($this->link($server, '/backups'), ['name' => str_repeat('a', 192), 'is_locked' => 'yes', 'ignored' => ['logs/']])
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'name')
+        ->assertJsonPath('errors.1.meta.source_field', 'is_locked')
+        ->assertJsonPath('errors.2.meta.source_field', 'ignored');
 });
 test('backup cannot be created past the server limit', function () {
     $user = User::factory()->create();
@@ -57,6 +84,8 @@ test('backup lock can be toggled', function () {
     expect($backup->refresh()->is_locked)->toBeTrue();
     $this->postJson($this->link($backup, '/lock'))->assertOk()->assertJsonPath('attributes.is_locked', false);
     expect($backup->refresh()->is_locked)->toBeFalse();
+    $this->assertActivityFor('server:backup.lock', $user, $server, $backup);
+    $this->assertActivityFor('server:backup.unlock', $user, $server, $backup);
 });
 test('lock toggle requires delete permission', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupCreate->value]);
@@ -67,10 +96,12 @@ test('backup can be restored', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupRestore->value]);
     $backup = Backup::factory()->create(['server_id' => $server->id, 'completed_at' => now(), 'is_successful' => true]);
     $fake = new FakeDaemonBackup;
-    $this->actingAs($user)->postJson($this->link($backup, '/restore'), ['truncate' => false])->assertNoContent();
+    // A form-encoded "0" is as valid as false.
+    $this->actingAs($user)->post($this->link($backup, '/restore'), ['truncate' => '0'], ['Accept' => 'application/json'])->assertNoContent();
     // The server is placed into a restoring state while Wings works.
     expect($server->refresh()->status)->toBe('restoring_backup');
     $fake->assertRestored($backup->uuid);
+    $this->assertActivityFor('server:backup.restore', $user, $server, $backup);
 });
 test('a restore interrupted by a wings restart is logged as failed', function () {
     [$user, $server] = $this->generateTestAccount([Permissions::BackupRestore->value]);

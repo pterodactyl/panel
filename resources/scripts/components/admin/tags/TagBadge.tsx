@@ -1,14 +1,16 @@
 import type { AdminTag } from '@/api/admin/tags/queries';
 import { cn } from '@/lib/cn';
+import { isString } from '@/lib/objects';
 
 interface Props {
-    tag: AdminTag;
+    /** A tag, or the name of one that saving will create. */
+    tag: AdminTag | string;
     className?: string;
     showSlug?: boolean;
 }
 
 export default function TagBadge({ tag, className, showSlug = false }: Props) {
-    const { color, name, slug } = tag.attributes;
+    const { color, name, slug } = isString(tag) ? { color: null, name: tag, slug: 'new' } : tag.attributes;
 
     return (
         <span

@@ -4,40 +4,46 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Databases;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Databases\CreatesDatabaseHosts;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Extensions\ExtensionFields;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Pterodactyl\Support\JsonValueGuard;
-use Throwable;
 
 final readonly class CreateDatabaseHost implements CreatesDatabaseHosts
 {
     public function __construct(private DynamicDatabaseConnection $dynamic, private ExtensionFields $extensions) {}
 
-    /**
-     * Create a new database host on the Panel.
-     *
-     * @param  DatabaseHostUpdateData  $data
-     *
-     * @throws Throwable
-     */
-    public function create(array $data): DatabaseHost
+    /** @return NormalizedValidationRules */
+    public static function rules(): array
     {
-        $extensions = ValidatedExtensionValues::of($data['extensions'] ?? null);
+        return [
+            'name' => ['required', 'string', 'max:191'],
+            'host' => ['required', 'string', 'regex:/^[\w\-\.]+$/'],
+            'port' => ['required', 'integer', 'between:1,65535'],
+            'username' => ['required', 'string', 'max:32'],
+            'password' => ['nullable', 'string'],
+            'node_id' => ['sometimes', 'nullable', 'integer', 'exists:nodes,id'],
+        ];
+    }
 
+    public function create(array $input): DatabaseHost
+    {
+        $validated = Validator::validate($input, self::rules());
+        // Blank strings are null, as they are in a request.
+        $validated = array_map(fn (mixed $value): mixed => is_string($value) && blank($value) ? null : $value, $validated);
+
+        $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
+
+        // A host given no node is global.
         $host = DatabaseHost::query()->make([
-            'password' => Crypt::encrypt(Arr::get($data, 'password')),
-            'name' => JsonValueGuard::string(Arr::get($data, 'name')),
-            'host' => JsonValueGuard::string(Arr::get($data, 'host')),
-            'port' => JsonValueGuard::integer(Arr::get($data, 'port')),
-            'username' => JsonValueGuard::string(Arr::get($data, 'username')),
+            ...$validated,
+            'node_id' => $validated['node_id'] ?? null,
+            'password' => Crypt::encrypt($validated['password'] ?? null),
             'max_databases' => null,
-            'node_id' => JsonValueGuard::nullableInteger(Arr::get($data, 'node_id')),
         ]);
 
         // Confirm access using the provided credentials before saving data.

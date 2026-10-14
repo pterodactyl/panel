@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Services\Daemon;
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class FilesClient
 {
@@ -25,7 +25,7 @@ final readonly class FilesClient
         $response = $this->connection->request('GET', "/api/servers/{$this->uuid}/files/contents", [
             'query' => ['file' => $path],
         ]);
-        $length = JsonValueGuard::integer($response->header('Content-Length') ?: 0);
+        $length = Str::of($response->header('Content-Length'))->toInteger();
         throw_if($notLargerThan && $length > $notLargerThan, FileSizeTooLargeException::class);
 
         return $response->body();
@@ -51,7 +51,6 @@ final readonly class FilesClient
             ...$this->fileRules('data.*'),
         ], expectsList: true);
 
-        // SAFETY: list and file entries are validated by the transport above.
         /** @var list<DaemonFileObject> $data */
         return $data;
     }
@@ -63,7 +62,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function renameFiles(?string $root, array $files): Response
     {
         return $this->connection->request('PUT', "/api/servers/{$this->uuid}/files/rename", [
@@ -78,7 +77,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function deleteFiles(?string $root, array $files): Response
     {
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/delete", [
@@ -87,7 +86,7 @@ final readonly class FilesClient
     }
 
     /**
-     * @param  array<array-key, ApiValue9>  $files
+     * @param  array<mixed>  $files
      * @return DaemonFileObject
      */
     public function compressFiles(?string $root, array $files): array
@@ -98,7 +97,6 @@ final readonly class FilesClient
         ]);
         $data = $this->connection->decode($response, $this->fileRules('data'));
 
-        // SAFETY: the transport validates the bounded JSON and file shape above.
         /** @var DaemonFileObject $data */
         return $data;
     }
@@ -111,7 +109,7 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function chmodFiles(?string $root, array $files): Response
     {
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/chmod", [
@@ -119,20 +117,20 @@ final readonly class FilesClient
         ]);
     }
 
-    /** @param array<array-key, ApiValue9> $params */
+    /** @param  array{filename?: string|null, use_header?: bool, foreground?: bool, timeout?: int}  $params */
     public function pull(string $url, ?string $directory, array $params = []): Response
     {
         $attributes = [
             'url' => $url,
             'root' => $directory ?? '/',
-            'file_name' => JsonValueGuard::nullableString($params['filename'] ?? null),
-            'use_header' => isset($params['use_header']) ? JsonValueGuard::boolean($params['use_header']) : null,
-            'foreground' => isset($params['foreground']) ? JsonValueGuard::boolean($params['foreground']) : null,
+            'file_name' => $params['filename'] ?? null,
+            'use_header' => $params['use_header'] ?? null,
+            'foreground' => $params['foreground'] ?? null,
         ];
         $options = ['json' => array_filter($attributes, fn (bool|string|null $value): bool => $value !== null)];
 
         if (isset($params['timeout'])) {
-            $options['timeout'] = JsonValueGuard::integer($params['timeout']);
+            $options['timeout'] = $params['timeout'];
         }
 
         return $this->connection->request('POST', "/api/servers/{$this->uuid}/files/pull", $options);

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { serverResourceUsageQueryOptions } from '@/api/account/servers/queries';
 import { getServerWebsocketCredentials, useCurrentServer, useCurrentServerUuid } from '@/api/server/queries';
 import type { Server } from '@/api/server/queries';
 import { Websocket } from '@/plugins/Websocket';
@@ -35,6 +37,7 @@ export default function WebsocketHandler() {
     const node = useCurrentServer(selectSocketNode);
     const setServerStatus = useServerStore((state) => state.status.setServerStatus);
     const { setInstance, setConnectionState, setReconnecting } = useServerStore((state) => state.socket);
+    const queryClient = useQueryClient();
 
     const updateToken = useCallback((uuid: string, socket: Websocket) => {
         if (updatingToken.current || activeSocket.current !== socket || activeUuid.current !== uuid) {
@@ -92,6 +95,15 @@ export default function WebsocketHandler() {
             socket.on('status', (status) => {
                 if (isServerStatus(status)) {
                     setServerStatus(status);
+                    // The cached resources carry the state the app shell and the dashboard show.
+                    queryClient.setQueryData(
+                        serverResourceUsageQueryOptions(uuid).queryKey,
+                        (resources) =>
+                            resources && {
+                                ...resources,
+                                attributes: { ...resources.attributes, current_state: status },
+                            }
+                    );
                 }
             });
 
@@ -123,7 +135,7 @@ export default function WebsocketHandler() {
 
             return socket;
         },
-        [setConnectionState, setReconnecting, setServerStatus, updateToken]
+        [queryClient, setConnectionState, setReconnecting, setServerStatus, updateToken]
     );
 
     // Reconnects with fresh credentials whenever the server moves to another node.

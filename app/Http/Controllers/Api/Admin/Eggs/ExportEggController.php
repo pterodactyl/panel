@@ -27,6 +27,7 @@ class ExportEggController extends AdminApiController
         'author' => 'support@example.com',
         'description' => 'Minecraft Java server.',
         'features' => ['eula'],
+        'tags' => ['minecraft'],
         'docker_images' => [
             'Java 21' => 'ghcr.io/pterodactyl/yolks:java_21',
         ],

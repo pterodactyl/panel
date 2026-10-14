@@ -12,12 +12,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Models\Model;
 
 /**
  * @template TToken of \Laravel\Sanctum\Contracts\HasAbilities
- *
- * @mixin Model
  */
 trait HasAccessTokens
 {
@@ -46,7 +43,6 @@ trait HasAccessTokens
      */
     public function createToken(?string $memo, ?array $ips): NewAccessToken
     {
-        // SAFETY: Sanctum is configured globally to persist personal access tokens with the ApiKey model.
         /** @var ApiKey $token */
         $token = $this->tokens()->forceCreate([
             'user_id' => $this->id,

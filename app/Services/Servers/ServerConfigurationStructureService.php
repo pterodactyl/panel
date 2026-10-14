@@ -6,55 +6,26 @@ namespace Pterodactyl\Services\Servers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use UnexpectedValueException;
 
 class ServerConfigurationStructureService
 {
-    /**
-     * ServerConfigurationStructureService constructor.
-     */
     public function __construct(private readonly EnvironmentService $environment) {}
 
     /**
-     * Return a configuration array for a specific server when passed a server model.
+     * The server configuration Wings reads. Its shape is a contract with Wings, so it must not
+     * change.
      *
-     * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
-     * daemon, if you modify the structure eggs will break unexpectedly.
-     *
-     * @param  array<string, JsonValue>  $override  server attributes to override on a cloned model
-     * @return array<string, JsonValue>
+     * @return array<string, mixed>
      */
-    public function handle(Server $server, array $override = [], bool $legacy = false): array
+    public function forServer(Server $server): array
     {
-        $clone = $server;
-        // If any overrides have been set on this call make sure to update them on the
-        // cloned instance so that the configuration generated uses them.
-        if ($override !== []) {
-            $clone = $server->fresh() ?? throw new UnexpectedValueException('The server no longer exists in the database.');
-            foreach ($override as $key => $value) {
-                $clone->setAttribute($key, $value);
-            }
-        }
+        $server->loadMissing(['egg', 'allocation', 'allocations', 'mounts']);
+        $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
+        $allocation = $server->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.');
 
-        $clone->loadMissing(['egg', 'allocation', 'allocations', 'mounts']);
-        $egg = $clone->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
-        $allocation = $clone->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.');
-
-        return $legacy
-            ? $this->returnLegacyFormat($clone, $egg, $allocation)
-            : $this->returnCurrentFormat($clone, $egg, $allocation);
-    }
-
-    /**
-     * Returns the new data format used for the Wings daemon.
-     *
-     * @return array<string, JsonValue>
-     */
-    protected function returnCurrentFormat(Server $server, Egg $egg, Allocation $allocation): array
-    {
         return [
             'uuid' => $server->uuid,
             'meta' => [
@@ -62,7 +33,7 @@ class ServerConfigurationStructureService
                 'description' => $server->description,
             ],
             'suspended' => $server->isSuspended(),
-            'environment' => $this->environment->handle($server),
+            'environment' => $this->environment->forServer($server),
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
@@ -103,15 +74,17 @@ class ServerConfigurationStructureService
     }
 
     /**
-     * Returns the legacy server data format to continue support for old egg configurations
-     * that have not yet been updated.
+     * The structure the old daemon read, which egg configuration placeholders such as
+     * {{server.build.default.port}} still resolve against.
      *
-     * @return array<string, JsonValue>
-     *
-     * @deprecated
+     * @return array<string, mixed>
      */
-    protected function returnLegacyFormat(Server $server, Egg $egg, Allocation $allocation): array
+    public function legacyForServer(Server $server): array
     {
+        $server->loadMissing(['egg', 'allocation', 'allocations']);
+        $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
+        $allocation = $server->allocation ?? throw new UnexpectedValueException('The server does not have a primary allocation.');
+
         return [
             'uuid' => $server->uuid,
             'build' => [
@@ -126,7 +99,7 @@ class ServerConfigurationStructureService
                         ->values()
                         ->all())
                     ->all(),
-                'env' => $this->environment->handle($server),
+                'env' => $this->environment->forServer($server),
                 'oom_disabled' => $server->oom_disabled,
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,

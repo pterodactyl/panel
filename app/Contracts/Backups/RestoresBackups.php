@@ -11,6 +11,11 @@ use Throwable;
 
 interface RestoresBackups
 {
-    /** @throws Throwable */
+    /**
+     * Mark the server as restoring and ask Wings to unpack the backup over its files, deleting
+     * them first when $truncate is set.
+     *
+     * @throws Throwable
+     */
     public function restore(Server $server, Backup $backup, User $user, bool $truncate): void;
 }

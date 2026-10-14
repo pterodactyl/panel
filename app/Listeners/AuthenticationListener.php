@@ -10,7 +10,6 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Pterodactyl\Events\Auth\DirectLogin;
 use Pterodactyl\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Support\JsonValueGuard;
 
 class AuthenticationListener implements SubscribesToEvents
 {
@@ -27,7 +26,6 @@ class AuthenticationListener implements SubscribesToEvents
 
         if ($event instanceof Failed) {
             foreach ($event->credentials as $key => $value) {
-                JsonValueGuard::assertValue($value);
                 $activity = $activity->property($key, $value);
             }
         }

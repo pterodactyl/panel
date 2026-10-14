@@ -1,0 +1,332 @@
+[
+    {
+        "request": "GET /api/admin/database-hosts/1",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 1,
+                "name": "primary-db",
+                "host": "10.0.0.5",
+                "port": 3306,
+                "username": "pterodactyl",
+                "max_databases": 10,
+                "databases_count": 3,
+                "node_id": 1,
+                "relationships": [],
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/database-hosts/1?include=node",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 1,
+                "name": "primary-db",
+                "host": "10.0.0.5",
+                "port": 3306,
+                "username": "pterodactyl",
+                "max_databases": 10,
+                "databases_count": 3,
+                "node_id": 1,
+                "relationships": {
+                    "node": {
+                        "object": "node",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                            "public": true,
+                            "name": "node-alpha",
+                            "description": "Primary \"alpha\" node",
+                            "location_id": 1,
+                            "fqdn": "alpha.example.test",
+                            "scheme": "https",
+                            "behind_proxy": false,
+                            "maintenance_mode": false,
+                            "memory": 8192,
+                            "memory_overallocate": 0,
+                            "disk": 102400,
+                            "disk_overallocate": -1,
+                            "upload_size": 100,
+                            "daemon_listen": 8080,
+                            "daemon_sftp": 2022,
+                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "allocated_resources": {
+                                "memory": 3072,
+                                "disk": 15360
+                            },
+                            "relationships": []
+                        }
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/database-hosts/1?include=databases",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 1,
+                "name": "primary-db",
+                "host": "10.0.0.5",
+                "port": 3306,
+                "username": "pterodactyl",
+                "max_databases": 10,
+                "databases_count": 3,
+                "node_id": 1,
+                "relationships": {
+                    "databases": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 1,
+                                        "name": "Survival"
+                                    },
+                                    "name": "s1_main",
+                                    "username": "u1_mainuser",
+                                    "connections_from": "%",
+                                    "max_connections": 10
+                                }
+                            },
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 1,
+                                        "name": "Survival"
+                                    },
+                                    "name": "s1_logs",
+                                    "username": "u1_logsuser",
+                                    "connections_from": "10.0.0.%",
+                                    "max_connections": 0
+                                }
+                            },
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 3,
+                                        "name": "Admin Lab"
+                                    },
+                                    "name": "s3_lab",
+                                    "username": "u3_labuser",
+                                    "connections_from": "%",
+                                    "max_connections": null
+                                }
+                            }
+                        ]
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/database-hosts/1?include=node,databases",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 1,
+                "name": "primary-db",
+                "host": "10.0.0.5",
+                "port": 3306,
+                "username": "pterodactyl",
+                "max_databases": 10,
+                "databases_count": 3,
+                "node_id": 1,
+                "relationships": {
+                    "node": {
+                        "object": "node",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                            "public": true,
+                            "name": "node-alpha",
+                            "description": "Primary \"alpha\" node",
+                            "location_id": 1,
+                            "fqdn": "alpha.example.test",
+                            "scheme": "https",
+                            "behind_proxy": false,
+                            "maintenance_mode": false,
+                            "memory": 8192,
+                            "memory_overallocate": 0,
+                            "disk": 102400,
+                            "disk_overallocate": -1,
+                            "upload_size": 100,
+                            "daemon_listen": 8080,
+                            "daemon_sftp": 2022,
+                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "allocated_resources": {
+                                "memory": 3072,
+                                "disk": 15360
+                            },
+                            "relationships": []
+                        }
+                    },
+                    "databases": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 1,
+                                        "name": "Survival"
+                                    },
+                                    "name": "s1_main",
+                                    "username": "u1_mainuser",
+                                    "connections_from": "%",
+                                    "max_connections": 10
+                                }
+                            },
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 1,
+                                        "name": "Survival"
+                                    },
+                                    "name": "s1_logs",
+                                    "username": "u1_logsuser",
+                                    "connections_from": "10.0.0.%",
+                                    "max_connections": 0
+                                }
+                            },
+                            {
+                                "object": "server_database",
+                                "attributes": {
+                                    "server": {
+                                        "id": 3,
+                                        "name": "Admin Lab"
+                                    },
+                                    "name": "s3_lab",
+                                    "username": "u3_labuser",
+                                    "connections_from": "%",
+                                    "max_connections": null
+                                }
+                            }
+                        ]
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/database-hosts/1?include=node.location",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 1,
+                "name": "primary-db",
+                "host": "10.0.0.5",
+                "port": 3306,
+                "username": "pterodactyl",
+                "max_databases": 10,
+                "databases_count": 3,
+                "node_id": 1,
+                "relationships": {
+                    "node": {
+                        "object": "node",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                            "public": true,
+                            "name": "node-alpha",
+                            "description": "Primary \"alpha\" node",
+                            "location_id": 1,
+                            "fqdn": "alpha.example.test",
+                            "scheme": "https",
+                            "behind_proxy": false,
+                            "maintenance_mode": false,
+                            "memory": 8192,
+                            "memory_overallocate": 0,
+                            "disk": 102400,
+                            "disk_overallocate": -1,
+                            "upload_size": 100,
+                            "daemon_listen": 8080,
+                            "daemon_sftp": 2022,
+                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "allocated_resources": {
+                                "memory": 3072,
+                                "disk": 15360
+                            },
+                            "relationships": {
+                                "location": {
+                                    "object": "location",
+                                    "attributes": {
+                                        "id": 1,
+                                        "short": "us-east",
+                                        "long": "US East / Virginia",
+                                        "nodes_count": 1,
+                                        "servers_count": 2,
+                                        "created_at": "2026-01-02T03:04:05+00:00",
+                                        "updated_at": "2026-02-03T04:05:06+00:00"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/database-hosts/2?include=node,databases",
+        "status": 200,
+        "body": {
+            "object": "database_host",
+            "attributes": {
+                "id": 2,
+                "name": "empty-host",
+                "host": "db2.example.test",
+                "port": 3307,
+                "username": "admin",
+                "max_databases": null,
+                "databases_count": 0,
+                "node_id": null,
+                "relationships": {
+                    "node": {
+                        "object": "null_resource",
+                        "attributes": null
+                    },
+                    "databases": {
+                        "object": "list",
+                        "data": []
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    }
+]

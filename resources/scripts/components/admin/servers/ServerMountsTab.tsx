@@ -17,7 +17,6 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Code from '@/components/elements/Code';
 import { NewLinkButton } from '@/components/elements/NewButton';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import Button from '@/components/elements/Button';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
@@ -142,7 +141,7 @@ function ServerMountsContent({ server }: Props) {
                         table={table}
                         isFetching={isFetching}
                         emptyState={
-                            <Empty className={emptyCompactClass}>
+                            <Empty size='compact'>
                                 <EmptyHeader>
                                     <EmptyMedia variant='icon'>
                                         <FolderInput />

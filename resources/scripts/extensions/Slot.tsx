@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { getSlotComponents, useExtensionRegistry, type SlotProps } from '@/extensions/registry';
 import ExtensionMount from '@/extensions/ExtensionMount';
+import { slotMounted } from '@/extensions/slotWatch';
 
 function slotResetKey(name: SlotProps['name'], data: SlotProps['data']): string {
     if (!data) {
@@ -25,9 +27,11 @@ function slotResetKey(name: SlotProps['name'], data: SlotProps['data']): string 
     return name;
 }
 
-export default function Slot({ name, data }: SlotProps) {
+export default function Slot({ name, data, compact }: SlotProps) {
     const registrations = useExtensionRegistry(() => getSlotComponents(name));
     const resetKey = slotResetKey(name, data);
+
+    useEffect(() => slotMounted(name), [name]);
 
     return (
         <>
@@ -39,7 +43,7 @@ export default function Slot({ name, data }: SlotProps) {
                     context={`slot "${name}"`}
                     resetKey={resetKey}
                 >
-                    <Component data={data} />
+                    <Component data={data} compact={compact} />
                 </ExtensionMount>
             ))}
         </>

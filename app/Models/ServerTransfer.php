@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\Carbon;
 use Database\Factories\ServerTransferFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,21 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property int $old_node
- * @property int $new_node
- * @property int $old_allocation
- * @property int $new_allocation
- * @property list<int>|null $old_additional_allocations
- * @property list<int>|null $new_additional_allocations
- * @property bool|null $successful
- * @property bool $archived
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Server $server
- * @property Node $oldNode
- * @property Node $newNode
+ * @property-read Server $server
+ * @property-read Node $newNode
  */
 #[Guarded(['id', 'created_at', 'updated_at'])]
 class ServerTransfer extends Model
@@ -34,10 +20,6 @@ class ServerTransfer extends Model
     /** @use HasFactory<ServerTransferFactory> */
     use HasFactory;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'server_transfer';
 
     /**
@@ -59,8 +41,6 @@ class ServerTransfer extends Model
     }
 
     /**
-     * Gets the server associated with a server transfer.
-     *
      * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
@@ -69,8 +49,6 @@ class ServerTransfer extends Model
     }
 
     /**
-     * Gets the source node associated with a server transfer.
-     *
      * @return HasOne<Node, $this>
      */
     public function oldNode(): HasOne
@@ -79,8 +57,6 @@ class ServerTransfer extends Model
     }
 
     /**
-     * Gets the target node associated with a server transfer.
-     *
      * @return HasOne<Node, $this>
      */
     public function newNode(): HasOne

@@ -6,11 +6,11 @@ namespace Pterodactyl\Http\Requests\Api\Admin\Servers\Databases;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Validation\Rule;
+use Pterodactyl\Actions\Databases\CreateDatabase;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Admin\AdminApiRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Support\DatabaseName;
-use Pterodactyl\Support\JsonValueGuard;
 
 class StoreDatabaseRequest extends AdminApiRequest
 {
@@ -20,13 +20,15 @@ class StoreDatabaseRequest extends AdminApiRequest
     }
 
     /**
-     * Validation rules for creating a server database.
+     * Validation rules for creating a server database. The name is the one before the
+     * "s{server_id}_" prefix, and the remote is held to an IP address pattern.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
         $server = $this->parameter('server', Server::class);
+        $rules = CreateDatabase::rules();
 
         return [
             'database' => [
@@ -39,23 +41,25 @@ class StoreDatabaseRequest extends AdminApiRequest
                 }),
             ],
             'remote' => ['required', 'string', 'regex:/^[0-9%.]{1,15}$/'],
-            'database_host_id' => ['required', 'integer', 'exists:database_hosts,id'],
-            'max_connections' => ['nullable', 'integer', 'min:0'],
+            'database_host_id' => $rules['database_host_id'],
+            'max_connections' => $rules['max_connections'],
         ];
     }
 
     /**
-     * Format the validated data for the service to consume.
+     * The validated input, with the database name prefixed for the action. A database
+     * created without a connection limit gets none.
      *
-     * @return DatabaseCreationData
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
+        $input = parent::actionInput();
+
         return [
-            'database' => $this->string('database')->toString(),
-            'remote' => $this->string('remote')->toString(),
-            'database_host_id' => $this->integer('database_host_id'),
-            'max_connections' => $this->filled('max_connections') ? $this->integer('max_connections') : null,
+            ...$input,
+            'database' => $this->databaseName(),
+            'max_connections' => $input['max_connections'] ?? null,
         ];
     }
 
@@ -70,11 +74,11 @@ class StoreDatabaseRequest extends AdminApiRequest
         ];
     }
 
-    /** The unique, prefixed database name used by the uniqueness rule and the service. */
+    /** The unique, prefixed database name used by the uniqueness rule and the action. */
     public function databaseName(): string
     {
         $server = $this->parameter('server', Server::class);
 
-        return DatabaseName::generateUnique(JsonValueGuard::string($this->input('database')), $server->id);
+        return DatabaseName::generateUnique($this->string('database')->toString(), $server->id);
     }
 }

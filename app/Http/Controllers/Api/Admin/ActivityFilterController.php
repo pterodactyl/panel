@@ -11,7 +11,6 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Http\Requests\Api\Admin\Activity\GetActivityLogsRequest;
 use Pterodactyl\Models\ActivityLog;
-use Pterodactyl\Services\Activity\ActivityLogFacetService;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Activity', 'Panel-wide activity log covering every actor and subject.')]
@@ -31,10 +30,10 @@ class ActivityFilterController extends AdminApiController
      */
     #[Endpoint('List activity filter options', 'Returns the distinct events and users present in the administrative activity log.')]
     #[ScribeResponse(self::FACETS_EXAMPLE, description: 'Filter options returned.')]
-    public function __invoke(GetActivityLogsRequest $request, ActivityLogFacetService $facets): JsonResponse
+    public function __invoke(GetActivityLogsRequest $request): JsonResponse
     {
         return new JsonResponse([
-            'data' => $facets->handle(ActivityLog::query()->where('event', 'like', ActivityController::ADMIN_EVENT_PREFIX.'%')),
+            'data' => ActivityLog::query()->where('event', 'like', ActivityController::ADMIN_EVENT_PREFIX.'%')->facets(),
         ]);
     }
 }

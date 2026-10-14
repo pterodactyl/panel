@@ -10,6 +10,9 @@
     --container-auth: var(--layout-auth-width);
     --container-sidebar: var(--layout-sidebar-width);
     --color-*: initial;
+    /* The palette is the role tokens below; plain white and black stay for text and scrims over images. */
+    --color-white: #fff;
+    --color-black: #000;
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
@@ -29,6 +32,7 @@
     --color-destructive-foreground: var(--destructive-foreground);
     --color-border: var(--border);
     --color-input: var(--input);
+    --color-input-border: var(--input-border);
     --color-ring: var(--ring);
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
@@ -51,6 +55,8 @@
     --color-sidebar-ring: var(--sidebar-ring);
     --color-terminal: var(--terminal-background);
     --color-terminal-foreground: var(--terminal-foreground);
+    --color-scrollbar-thumb: var(--scrollbar-thumb);
+    --color-scrollbar-thumb-fill: var(--scrollbar-thumb-fill);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);

@@ -124,7 +124,7 @@ final readonly class InstallExtension implements InstallsExtensions
 
         Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
-            ['version' => $manifest->version, 'error' => null],
+            ['version' => $manifest->version, ...Extension::NO_ERROR],
         );
 
         return $manifest;

@@ -79,6 +79,7 @@ test('file contents can be written', function (): void {
     $this->actingAs($user)->call('POST', $this->link($server, '/files/write?file=%2Ftest.txt'), [], [], [], $this->transformHeadersToServerVars(['Accept' => 'application/json']), 'new file contents')->assertNoContent();
     $fake->assertDirectoryListed('/');
     $fake->assertContentPut('/test.txt', 'new file contents');
+    $this->assertActivityFor('server:file.write', $user, $server);
 });
 test('new file can be written into a directory that does not exist yet', function (): void {
     [$user, $server] = $this->generateTestAccount([Permissions::FileCreate->value]);
@@ -114,6 +115,7 @@ test('folder can be created', function (): void {
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->postJson($this->link($server, '/files/create-folder'), ['root' => '/', 'name' => 'new-folder'])->assertNoContent();
     $fake->assertDirectoryCreated('new-folder', '/');
+    $this->assertActivityFor('server:file.create-directory', $user, $server);
 });
 test('files can be renamed', function (): void {
     [$user, $server] = $this->generateTestAccount([Permissions::FileUpdate->value]);
@@ -145,6 +147,7 @@ test('files can be deleted', function (): void {
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->postJson($this->link($server, '/files/delete'), ['root' => '/', 'files' => ['test.txt']])->assertNoContent();
     $fake->assertFilesDeleted('/', ['test.txt']);
+    $this->assertActivityFor('server:file.delete', $user, $server);
 });
 test('file permissions can be updated', function (): void {
     [$user, $server] = $this->generateTestAccount([Permissions::FileUpdate->value]);
@@ -162,6 +165,7 @@ test('remote file can be pulled', function (): void {
     $fake = new FakeDaemonFile;
     $this->actingAs($user)->postJson($this->link($server, '/files/pull'), ['url' => 'https://cdn.example.com/file.zip', 'directory' => '/'])->assertNoContent();
     $fake->assertPulled('https://cdn.example.com/file.zip');
+    $this->assertActivityFor('server:file.pull', $user, $server);
 });
 test('pull requires both create and update permission', function (Permissions $permission, array $payload): void {
     [$user, $server] = $this->generateTestAccount([$permission->value]);

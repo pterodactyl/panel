@@ -12,13 +12,12 @@ use Pterodactyl\Contracts\Servers\UpdatesServerBuild;
 use Pterodactyl\Contracts\Servers\UpdatesServerDetails;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigurationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerDetailsRequest;
+use Pterodactyl\Http\Resources\Api\Application\ServerResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
 #[Subgroup('Servers', 'Create, update, retrieve, manage, and delete servers.')]
@@ -37,43 +36,33 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * Update the details for a specific server.
      *
-     *
-     * @return ApiPayload
-     *
      * @throws DisplayException
      */
     #[Endpoint('Update server details', 'Updates ownership and display details for a server.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ResponseFromResource(ServerResource::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ExtensionFieldsParam]
-    public function details(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): array
+    public function details(UpdateServerDetailsRequest $request, UpdatesServerDetails $details, Server $server): ServerResource
     {
         $updated = $details->update(
             $server,
-            $request->payload()
+            $request->actionInput()
         );
 
-        return Fractal::item($updated)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return ServerResource::make($updated)->withExtensionFields();
     }
 
     /**
      * Update the build details for a specific server.
      *
-     *
-     * @return ApiPayload
-     *
      * @throws DisplayException
      */
     #[Endpoint('Update server build', 'Updates resource limits, feature limits, and allocations for a server.')]
-    #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ResponseFromResource(ServerResource::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
     #[ScribeResponse(self::ALLOCATION_ERROR, status: 400, description: 'The requested allocation change is invalid.')]
-    public function build(UpdateServerBuildConfigurationRequest $request, UpdatesServerBuild $build, Server $server): array
+    public function build(UpdateServerBuildConfigurationRequest $request, UpdatesServerBuild $build, Server $server): ServerResource
     {
-        $server = $build->update($server, $request->payload());
+        $server = $build->update($server, $request->actionInput());
 
-        return Fractal::item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return ServerResource::make($server)->withExtensionFields();
     }
 }

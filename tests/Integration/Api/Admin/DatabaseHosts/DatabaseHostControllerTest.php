@@ -6,9 +6,12 @@ namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\DatabaseHosts\DatabaseHos
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Testing\Assert;
 use PDOException;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\Api\Admin\AdminApiIntegrationTestCase;
@@ -97,6 +100,17 @@ test('create database host connection failure', function (): void {
     $response->assertJsonPath('errors.0.code', 'DisplayException');
     $response->assertJsonFragment(['detail' => 'There was an error while trying to connect to the host or while executing a query: "connection refused"']);
 });
+test('database host connection failures are logged', function (): void {
+    Exceptions::fake();
+    $fake = new FakeDynamicDatabaseConnection();
+    $fake->throwOnSet = new PDOException('connection refused');
+
+    $this->app->instance(DynamicDatabaseConnection::class, $fake);
+    $this->postJson(route('api.admin.database-hosts.store'), ['name' => 'Broken Host', 'host' => '127.0.0.1', 'port' => 3306, 'username' => 'someuser', 'password' => 'somepassword'])->assertStatus(Response::HTTP_BAD_REQUEST);
+
+    Exceptions::assertReported(fn (PDOException $exception): bool => $exception === $fake->throwOnSet);
+    Exceptions::assertNotReported(DisplayException::class);
+});
 test('create database host validation', function (): void {
     $response = $this->postJson(route('api.admin.database-hosts.store'), []);
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -149,6 +163,15 @@ test('delete database host', function (): void {
     $response = $this->delete(route('api.admin.database-hosts.delete', ['databaseHost' => $host->id]));
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseMissing('database_hosts', ['id' => $host->id]);
+});
+test('a database host that still has databases is not logged as deleted', function (): void {
+    $host = DatabaseHost::factory()->create();
+    Database::factory()->create(['server_id' => $this->createServerModel()->id, 'database_host_id' => $host->id]);
+
+    $this->delete(route('api.admin.database-hosts.delete', ['databaseHost' => $host->id]))->assertBadRequest();
+
+    $this->assertDatabaseHas('database_hosts', ['id' => $host->id]);
+    expect(ActivityLog::query()->where('event', 'admin:database-host.delete')->exists())->toBeFalse();
 });
 test('non admin forbidden', function (string $method, string $routeName): void {
     $this->actingAsNonAdmin();

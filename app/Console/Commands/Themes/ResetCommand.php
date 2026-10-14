@@ -7,17 +7,17 @@ namespace Pterodactyl\Console\Commands\Themes;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Pterodactyl\Contracts\Themes\ResetsThemes;
+use Pterodactyl\Services\Themes\ThemeRepository;
 
-#[Description('Remove the applied theme, restoring the stock panel look.')]
+#[Description('Make the built-in classic theme active again.')]
 #[Signature('p:theme:reset')]
 class ResetCommand extends Command
 {
-    public function handle(ResetsThemes $themes): int
+    public function handle(ThemeRepository $themes): int
     {
-        $themes->reset();
+        $themes->setActive(ThemeRepository::CLASSIC);
 
-        $this->components->info('Theme removed - the panel is back on its stock tokens.');
+        $this->components->info('The panel is back on the classic theme.');
 
         return self::SUCCESS;
     }

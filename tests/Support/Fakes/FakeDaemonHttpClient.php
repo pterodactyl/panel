@@ -44,7 +44,7 @@ abstract class FakeDaemonHttpClient
         $this->calls[] = ['method' => $method, ...$arguments];
     }
 
-    /** @param string|array<array-key, mixed> $body */
+    /** @param string|array<mixed> $body */
     protected function reply(string|array $body = ''): PromiseInterface
     {
         if ($this->throwable !== null) {

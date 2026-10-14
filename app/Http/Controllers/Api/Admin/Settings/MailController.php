@@ -52,7 +52,6 @@ class MailController extends AdminApiController
                 $value = Crypt::encrypt($value);
             }
 
-            // SAFETY: settings are persisted in the environment store as strings; null retains its deletion semantics.
             Setting::put('settings::'.$key, ($value) === null ? null : (string) $value);
         }
 

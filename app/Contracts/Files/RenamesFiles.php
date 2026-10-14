@@ -8,6 +8,6 @@ use Pterodactyl\Models\Server;
 
 interface RenamesFiles
 {
-    /** @param array<array-key, ApiValue9> $files */
+    /** @param array<mixed> $files */
     public function rename(Server $server, ?string $root, array $files): void;
 }

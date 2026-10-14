@@ -8,7 +8,6 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Description('Displays the application, database, and email configurations along with the panel version.')]
 #[Signature('p:info')]
@@ -34,7 +33,7 @@ class InfoCommand extends Command
 
         $this->output->title('Application Configuration');
         $this->table([], [
-            ['Environment', $this->formatText(JsonValueGuard::string(config('app.env')), config('app.env') === 'production' ? '' : 'bg=red')],
+            ['Environment', $this->formatText(config()->string('app.env'), config('app.env') === 'production' ? '' : 'bg=red')],
             ['Debug Mode', $this->formatText(config('app.debug') ? 'Yes' : 'No', config('app.debug') ? 'bg=red' : '')],
             ['Installation URL', config('app.url')],
             ['Installation Directory', base_path()],
@@ -48,7 +47,7 @@ class InfoCommand extends Command
         ], 'compact');
 
         $this->output->title('Database Configuration');
-        $driver = JsonValueGuard::string(config('database.default'));
+        $driver = config()->string('database.default');
         $this->table([], [
             ['Driver', $driver],
             ['Host', config("database.connections.$driver.host")],

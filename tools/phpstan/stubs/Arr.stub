@@ -1,0 +1,26 @@
+<?php
+
+namespace Illuminate\Support;
+
+class Arr
+{
+    /**
+     * @template TKey of array-key
+     * @template TValue
+     *
+     * @param  array<TKey, TValue>  $array
+     * @param  array<array-key, array-key>|array-key  $keys
+     * @return array<TKey, TValue>
+     */
+    public static function except($array, $keys);
+
+    /**
+     * @template TKey of array-key
+     * @template TValue
+     *
+     * @param  array<TKey, TValue>  $array
+     * @param  array<array-key, array-key>|array-key  $keys
+     * @return array<TKey, TValue>
+     */
+    public static function only($array, $keys);
+}

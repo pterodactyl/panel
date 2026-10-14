@@ -18,7 +18,7 @@ class ExtensionPackageLocator
     public const int MAX_ARCHIVE_UNCOMPRESSED_BYTES = 200 * 1024 * 1024;
 
     /**
-     * @template T of object|ApiValue10
+     * @template T
      *
      * @param  Closure(string): T  $callback
      * @return T

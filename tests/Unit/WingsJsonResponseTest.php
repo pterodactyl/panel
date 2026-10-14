@@ -14,7 +14,7 @@ use Throwable;
 
 uses(TestCase::class);
 
-/** @return array<array-key, mixed> */
+/** @return array<mixed> */
 function wingsResponse(string $operation, string $body): array
 {
     Http::fake(['*/api/*' => Http::response($body, 200, ['X-Request-Id' => 'invalid-response-123'])]);

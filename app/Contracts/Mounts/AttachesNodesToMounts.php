@@ -9,9 +9,10 @@ use Pterodactyl\Models\Mount;
 interface AttachesNodesToMounts
 {
     /**
-     * Attach nodes to a mount, keeping any nodes already attached.
+     * Nodes already attached stay attached. The ids are validated here; errors are reported
+     * under `nodes` and `nodes.N`.
      *
-     * @param  list<int>  $nodeIds
+     * @param  list<mixed>  $nodeIds  ids of existing nodes, as integers or numeric strings
      */
     public function attach(Mount $mount, array $nodeIds): void;
 }

@@ -1,0 +1,6 @@
+/*
+ * The panel stylesheet, then the stylesheets of {{parentName}} and the themes it extends, which the build
+ * brings in after this import, then this theme's own rules. Retune their tokens here: an override of
+ * --primary or --radius restyles everything that reads it.
+ */
+@import '@pterodactyl/sdk/theme-entry.css';

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
+use Pterodactyl\Actions\Users\CreateSshKey;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Facades\Activity;
@@ -21,10 +22,7 @@ use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Helpers\ThrottlesLogins;
-use Pterodactyl\Validation\UserSSHKeyRules;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -40,9 +38,9 @@ class SftpAuthenticationController extends Controller
      * for a SFTP connection on the daemon. This supports both public key and password
      * based credentials.
      */
-    public function __invoke(SftpAuthenticationFormRequest $request, GetUserPermissionsService $permissions): JsonResponse
+    public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
-        $connection = $this->parseUsername(JsonValueGuard::string($request->validated('username')));
+        $connection = $this->parseUsername($request->safe()->string('username')->toString());
         throw_if(empty($connection['server']), BadRequestHttpException::class, 'No valid server identifier was included in the request.');
 
         $server = $this->getServer($request, $connection['server']);
@@ -56,7 +54,7 @@ class SftpAuthenticationController extends Controller
         $user = User::query()->where('username', $connection['username'])->first();
 
         if ($request->validated('type') !== 'public_key') {
-            $password = JsonValueGuard::string($request->validated('password'));
+            $password = $request->safe()->string('password')->toString();
             if ($user === null) {
                 Hash::make($password);
                 $this->reject($request);
@@ -69,8 +67,8 @@ class SftpAuthenticationController extends Controller
             }
         } else {
             $key = null;
-            $publicKey = mb_trim(JsonValueGuard::string($request->validated('password')));
-            if (UserSSHKeyRules::isSupportedPublicKey($publicKey)) {
+            $publicKey = mb_trim($request->safe()->string('password')->toString());
+            if (CreateSshKey::isSupportedPublicKey($publicKey)) {
                 try {
                     $key = PublicKeyLoader::loadPublicKey($publicKey);
                 } catch (NoKeyLoadedException) {
@@ -90,12 +88,12 @@ class SftpAuthenticationController extends Controller
             }
         }
 
-        $this->validateSftpAccess($user, $server, $permissions);
+        $this->validateSftpAccess($user, $server);
 
         return new JsonResponse([
             'user' => $user->uuid,
             'server' => $server->uuid,
-            'permissions' => $permissions->handle($server, $user),
+            'permissions' => $user->permissionsOn($server),
         ]);
     }
 
@@ -151,12 +149,10 @@ class SftpAuthenticationController extends Controller
     /**
      * Validates that a user should have permission to use SFTP for the given server.
      */
-    protected function validateSftpAccess(User $user, Server $server, GetUserPermissionsService $permissions): void
+    protected function validateSftpAccess(User $user, Server $server): void
     {
         if (! $user->root_admin && $server->owner_id !== $user->id) {
-            $resolved = $permissions->handle($server, $user);
-
-            if (! in_array(Permissions::FileSftp->value, $resolved)) {
+            if (! in_array(Permissions::FileSftp->value, $user->permissionsOn($server))) {
                 Activity::event('server:sftp.denied')->actor($user)->subject($server)->log();
 
                 throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');
@@ -171,8 +167,7 @@ class SftpAuthenticationController extends Controller
      */
     protected function throttleKey(Request $request): string
     {
-        $raw = JsonValueGuard::nullableString($request->input('username', '')) ?? '';
-        $username = Str::transliterate(mb_strtolower(mb_rtrim($this->parseUsername($raw)['username'], ' ')));
+        $username = Str::transliterate(mb_strtolower(mb_rtrim($this->parseUsername($request->string('username')->toString())['username'], ' ')));
 
         return $username.'|'.($this->throttleServer->uuid ?? '');
     }

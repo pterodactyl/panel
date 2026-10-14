@@ -15,7 +15,7 @@ final class FilesystemChanges
     /**
      * Replace or remove paths, retaining originals until the operation succeeds.
      *
-     * @template T of object|ApiValue10|void
+     * @template T
      *
      * @param  array<string, string|null>  $replacements  Target paths mapped to staged paths, or null for removal.
      * @param  Closure(): T  $callback

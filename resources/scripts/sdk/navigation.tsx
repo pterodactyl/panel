@@ -14,6 +14,8 @@ export {
 
 export type CorePanelPath =
     | '/'
+    | '/auth/login'
+    | '/auth/password'
     | `/account${'' | '/api' | '/ssh' | '/activity'}`
     | `/server/$id${'' | '/files' | '/databases' | '/schedules' | '/users' | '/users/new' | '/backups' | '/network' | '/startup' | '/settings' | '/activity'}`
     | '/server/$id/files/$action'
@@ -87,10 +89,14 @@ export function usePanelNavigate(): (destination: PanelDestination) => Promise<v
     );
 }
 
+/**
+ * The current path, params and search. A view rendered from fixtures, as in tests, sits
+ * outside any route and sees empty params and search.
+ */
 export function usePanelLocation(): RouteSlotData {
     const { pathname } = useLocation();
-    const params = useParams({ strict: false });
-    const search = useSearch({ strict: false });
+    const params = useParams({ strict: false, shouldThrow: false }) ?? {};
+    const search = useSearch({ strict: false, shouldThrow: false }) ?? {};
 
     return { pathname, params: routeParamStrings(params), search };
 }
@@ -98,8 +104,15 @@ export function usePanelLocation(): RouteSlotData {
 export interface PanelLinkProps extends Omit<ComponentProps<'a'>, 'href'> {
     destination: PanelDestination;
     exact?: boolean;
+    /** Active only while the current search includes the destination's. */
+    includeSearch?: boolean;
 }
-export function PanelLink({ destination, exact = false, ...props }: PanelLinkProps): ReactElement {
+export function PanelLink({
+    destination,
+    exact = false,
+    includeSearch = false,
+    ...props
+}: PanelLinkProps): ReactElement {
     const { pathname, ...options } = resolvePanelDestination(destination);
 
     return (
@@ -107,7 +120,7 @@ export function PanelLink({ destination, exact = false, ...props }: PanelLinkPro
             to={pathname as never}
             {...options}
             search={options.search as never}
-            activeOptions={{ exact, includeSearch: false }}
+            activeOptions={{ exact, includeSearch }}
             {...props}
         />
     );

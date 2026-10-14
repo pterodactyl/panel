@@ -9,5 +9,9 @@ use Pterodactyl\Models\Node;
 
 interface RestoresBackupStatuses
 {
-    public function restoreStatus(string $backupUuid, Node $node): Backup;
+    /**
+     * Return a server to a normal state once Wings reports how restoring one of its
+     * backups ended. A restore that failed is recoverable by retrying it or reinstalling.
+     */
+    public function restoreStatus(string $backupUuid, Node $node, bool $successful): Backup;
 }

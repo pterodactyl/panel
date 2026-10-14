@@ -12,23 +12,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Carbon;
 use Pterodactyl\Enum\EggSpecificTags;
 use Pterodactyl\Rules\TagSlug;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string|null $color
- * @property int|null $legacy_nest_id
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Collection|Node[] $nodes
- * @property int|null $nodes_count
- * @property Collection|Egg[] $eggs
- * @property int|null $eggs_count
- */
 #[Fillable([
     'name',
     'slug',
@@ -41,15 +27,9 @@ class Tag extends Model
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'tag';
 
     /**
-     * Fields that are searchable.
-     *
      * @var list<string>
      */
     public static array $searchableColumns = [
@@ -68,7 +48,7 @@ class Tag extends Model
     }
 
     /**
-     * @param  list<string>  $identifiers
+     * @param  array<string>  $identifiers
      * @return Collection<int, self>
      */
     public static function matchingKeysOrSlugs(array $identifiers): Collection
@@ -77,6 +57,27 @@ class Tag extends Model
         self::filterKeysOrSlugs($query, $identifiers);
 
         return $query->get(['id', 'slug']);
+    }
+
+    /**
+     * The tags with these slugs, creating the missing ones; a built-in slug gets its friendly
+     * name. Numbers are never slugs (see TagSlug), so they are skipped.
+     *
+     * @param  array<string>  $slugs
+     * @return Collection<int, self>
+     */
+    public static function findOrCreateFromSlugs(array $slugs): Collection
+    {
+        $slugs = collect($slugs)->reject(TagSlug::isReserved(...))->unique();
+        if ($slugs->isEmpty()) {
+            return new Collection;
+        }
+
+        $existing = self::query()->whereIn('slug', $slugs)->get();
+
+        return $existing->merge($slugs->diff($existing->map(fn (self $tag): string => $tag->slug))->map(
+            fn (string $slug): self => self::query()->firstOrCreate(['slug' => $slug], ['name' => EggSpecificTags::tryFrom($slug)?->friendlyName() ?? $slug]),
+        ));
     }
 
     /**
@@ -91,8 +92,6 @@ class Tag extends Model
     }
 
     /**
-     * The eggs carrying this tag.
-     *
      * @return MorphToMany<Egg, $this>
      */
     public function eggs(): MorphToMany
@@ -139,7 +138,6 @@ class Tag extends Model
     #[Scope]
     protected function whereKeyOrSlug(Builder $query, string|array $identifier): void
     {
-        // SAFETY: the declared union is either one string or a list of strings; array casting only wraps the scalar case.
         $identifiers = array_values((array) $identifier);
 
         self::filterKeysOrSlugs($query, $identifiers);
@@ -147,19 +145,15 @@ class Tag extends Model
 
     /**
      * @param  Builder<self>  $query
-     * @param  list<string>  $identifiers
+     * @param  array<string>  $identifiers
      */
     private static function filterKeysOrSlugs(Builder $query, array $identifiers): void
     {
-        $keys = array_values(array_filter($identifiers, fn (string $value): bool => preg_match('/^\d+$/', $value) === 1));
+        $keys = array_values(array_filter($identifiers, TagSlug::isReserved(...)));
         $slugColumn = $query->getModel()->qualifyColumn('slug');
 
-        $query->where(function (Builder $inner) use ($identifiers, $keys, $slugColumn): void {
-            if ($keys !== []) {
-                $inner->whereKey($keys);
-            }
-
-            $inner->orWhereIn($slugColumn, $identifiers);
-        });
+        $query->where(fn (Builder $inner) => $inner
+            ->when($keys !== [], fn (Builder $byKey) => $byKey->whereKey($keys))
+            ->orWhereIn($slugColumn, $identifiers));
     }
 }
