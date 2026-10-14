@@ -1,0 +1,31 @@
+tests/Fixtures/api/admin/nodes.update.json
+  s_4cabae41bceed9::t_e2106449652ced 14
+tests/Integration/Api/Fixtures/ApplicationApiFixturesTest.php
+  s_4cabae41bceed9::t_4f63f993d92632 186,194
+  s_4cabae41bceed9::t_03b471a977257a 185
+tests/Integration/Api/Fixtures/AdminApiFixturesTest.php
+  s_4cabae41bceed9::t_8d53a9650d5919 182
+  s_4cabae41bceed9::t_4f63f993d92632 183,220
+tests/Fixtures/api/admin/nodes.store.json
+  s_4cabae41bceed9::t_e2106449652ced 14
+tests/Fixtures/api/application/nodes.update.json
+  s_4cabae41bceed9::t_e2106449652ced 14
+tests/Fixtures/api/application/nodes.store.json
+  s_4cabae41bceed9::t_e2106449652ced 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "57d85e878fb250710c8665206ce0489bcdd925cb",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
