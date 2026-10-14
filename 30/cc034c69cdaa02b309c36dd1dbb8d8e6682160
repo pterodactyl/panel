@@ -1,0 +1,20 @@
+.github/workflows/ci.yaml
+  s_4cabae41bceed9::t_b4ce09b3776adf 4-6
+  s_4cabae41bceed9::t_e751ffe1c9e842 59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "30cc034c69cdaa02b309c36dd1dbb8d8e6682160",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
