@@ -1,0 +1,29 @@
+app/Models/DatabaseHost.php
+  s_4cabae41bceed9::t_f6260792ffcf2f 51
+app/Models/Server.php
+  s_4cabae41bceed9::t_f6260792ffcf2f 311
+tests/Fixtures/api/application/servers/databases.view.json
+  s_4cabae41bceed9::t_f6260792ffcf2f 152,155-158,166,169-172
+tests/Fixtures/api/admin/database-hosts.index.json
+  s_4cabae41bceed9::t_f6260792ffcf2f 111-114,124-127
+tests/Fixtures/api/admin/database-hosts/databases.index.json
+  s_4cabae41bceed9::t_f6260792ffcf2f 15-18,28-31,91-94,125-128
+tests/Fixtures/api/admin/database-hosts.view.json
+  s_4cabae41bceed9::t_f6260792ffcf2f 100-103,113-116,196-199,209-212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7d1f2d70262045d2e0c486b94c1c872f1463803",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
