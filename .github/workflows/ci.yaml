@@ -18,7 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The oldest supported release and the newest.
+        # The oldest release the install guide supports, which only has to build the
+        # panel, and the newest, which also runs the tooling.
         node:
           - "22.12"
           - "22"
@@ -35,9 +36,14 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
+      - run: npm run build:production
+        if: matrix.node == '22.12'
       - run: npm run api:check
+        if: matrix.node == '22'
       - run: npm test
+        if: matrix.node == '22'
       - run: npm run build:vite
+        if: matrix.node == '22'
 
   static-analysis:
     name: Static Analysis

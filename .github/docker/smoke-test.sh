@@ -92,7 +92,7 @@ docker exec "$app" /bin/ash -ec '
   test ! -d vendor/phpstan
   test ! -d vendor/laravel/boost
   test -s public/assets/manifest.json
-  test -s public/assets/svgs/pterodactyl.svg
+  test -s public/assets/svgs/server_error.svg
   curl -fsS -c /tmp/smoke-cookies http://127.0.0.1/auth/login >/dev/null
 '
 test "$(docker exec "$redis" redis-cli -n 1 dbsize)" -gt 0
