@@ -1368,6 +1368,7 @@ export type ClientServerAttributes = {
     name: string;
     node: string;
     is_node_under_maintenance: boolean;
+    upload_size: number;
     sftp_details: {
         ip: string;
         port: number;
