@@ -1,0 +1,30 @@
+.github/workflows/docker.yaml
+  s_4cabae41bceed9::t_89cb9021319958 43,54,59,62,80,89,107,124,132,143,146
+.github/workflows/install.yaml
+  s_4cabae41bceed9::t_89cb9021319958 36,38
+  s_4cabae41bceed9::t_b8f6494ec911a4 51-52,60,119
+.github/workflows/build.yaml
+  s_4cabae41bceed9::t_89cb9021319958 20,23
+.github/workflows/react-doctor.yml
+  s_4cabae41bceed9::t_89cb9021319958 33
+.github/workflows/ci.yaml
+  s_4cabae41bceed9::t_89cb9021319958 22,26,38,60,67,103,107
+.github/workflows/release.yaml
+  s_4cabae41bceed9::t_89cb9021319958 20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "484a2b6995fbb101d32fab62a19107fcf12a86c8",
+  "prompts": {},
+  "sessions": {
+    "s_4cabae41bceed9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ab74d1d-a20d-4fbc-acd7-ee9d976e37e8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
