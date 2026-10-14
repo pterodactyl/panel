@@ -308,7 +308,7 @@ class Server extends Model implements Identifiable
      */
     public function databases(): HasMany
     {
-        return $this->hasMany(Database::class)->chaperone('server');
+        return $this->hasMany(Database::class)->chaperone('server')->orderBy('id');
     }
 
     /**
