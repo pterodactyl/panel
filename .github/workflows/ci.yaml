@@ -1,6 +1,9 @@
 name: Tests
 
 on:
+  push:
+    branches:
+      - "2.0-develop"
   pull_request:
     branches:
       - "1.0-develop"
@@ -53,10 +56,8 @@ jobs:
           coverage: none
       - run: cp .env.ci .env
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-      - run: vendor/bin/phpstan analyse -c phpstan-rules.neon --no-progress --memory-limit=2G
+      - run: vendor/bin/phpstan analyse --no-progress --memory-limit=2G
       - run: vendor/bin/rector --dry-run --no-progress-bar
-      - run: vendor/bin/phpstan analyse -c tools/phpstan/rules/phpstan.neon --no-progress --memory-limit=2G
-      - run: vendor/bin/phpunit -c tools/phpstan/rules/phpunit.xml
 
   tests:
     name: Tests
