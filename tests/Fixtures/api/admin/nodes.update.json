@@ -11,7 +11,7 @@
                 "name": "node-alpha-renamed",
                 "description": "Created by an admin",
                 "location_id": 1,
-                "fqdn": "alpha.example.test",
+                "fqdn": "localhost",
                 "scheme": "https",
                 "behind_proxy": false,
                 "maintenance_mode": false,
