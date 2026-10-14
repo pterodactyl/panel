@@ -8,28 +8,24 @@ use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Services\Extensions\Contracts\ManagesExtensionSettings;
 use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
-use Pterodactyl\Support\JsonValueGuard;
 
 abstract class ExtensionAdminSettingsController extends AdminApiController
 {
     abstract protected function extensionSettings(): ManagesExtensionSettings;
 
     /**
-     * @param  ApiPayload9  $extra
-     * @return ApiPayload
+     * @param  array<string, mixed>  $extra
+     * @return array<string, mixed>
      */
     protected function settingsPayload(array $extra = []): array
     {
-        $payload = [
+        return [
             ...$extra,
             'settings' => $this->extensionSettings()->publicSettings(),
         ];
-        JsonValueGuard::assertPayload($payload);
-
-        return $payload;
     }
 
-    /** @return ApiPayload */
+    /** @return array<string, mixed> */
     protected function updateExtensionSettings(Request $request): array
     {
         $data = $request->validate($this->extensionSettings()->validationRules());

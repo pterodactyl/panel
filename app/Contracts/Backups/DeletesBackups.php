@@ -9,6 +9,10 @@ use Throwable;
 
 interface DeletesBackups
 {
-    /** @throws Throwable */
+    /**
+     * An S3 backup's archive is deleted from its bucket as well.
+     *
+     * @throws Throwable
+     */
     public function delete(Backup $backup): void;
 }

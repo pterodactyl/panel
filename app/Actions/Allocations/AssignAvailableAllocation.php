@@ -8,19 +8,17 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Contracts\Allocations\AssignsAvailableAllocations;
 use Pterodactyl\Contracts\Allocations\CreatesAllocations;
 use Pterodactyl\Data\AllocationRange;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 final readonly class AssignAvailableAllocation implements AssignsAvailableAllocations
 {
     public function __construct(private CreatesAllocations $allocations) {}
 
-    /** @throws DisplayException */
     public function assignAvailable(Server $server): Allocation
     {
         throw_unless(config('pterodactyl.client_features.allocations.enabled'), AutoAllocationNotEnabledException::class);
@@ -30,8 +28,6 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
         if ($allocation === null) {
             $start = config('pterodactyl.client_features.allocations.range_start');
             $end = config('pterodactyl.client_features.allocations.range_end');
-            JsonValueGuard::assertValue($start);
-            JsonValueGuard::assertValue($end);
             $range = AllocationRange::fromConfig($start, $end);
             throw_unless($range instanceof AllocationRange, NoAutoAllocationSpaceAvailableException::class);
             $ports = $server->node->allocations()->where('ip', $primaryAllocation->ip)->whereBetween('port', [$range->start, $range->end])->get(['port'])->map(fn (Allocation $allocation): int => $allocation->port)->all();
@@ -43,6 +39,8 @@ final readonly class AssignAvailableAllocation implements AssignsAvailableAlloca
         }
 
         $allocation->update(['server_id' => $server->id]);
+
+        Activity::event('server:allocation.create')->subject($server, $allocation)->property('allocation', $allocation->toString())->log();
 
         return $allocation;
     }

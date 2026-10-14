@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
+use Pterodactyl\Actions\Servers\UpdateServerDetails;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
@@ -25,30 +25,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules($this->parameter('server', Server::class));
-
-        return [
-            'external_id' => $rules['external_id'],
-            'name' => $rules['name'],
-            'owner_id' => $rules['owner_id'],
-            'description' => array_merge(['nullable'], $rules['description']),
-        ];
-    }
-
-    /**
-     * Normalize the validated data for the service.
-     *
-     * @return ServerDetailsModificationData
-     */
-    public function payload(): array
-    {
-        return [
-            'external_id' => $this->filled('external_id') ? $this->string('external_id')->toString() : null,
-            'name' => $this->string('name')->toString(),
-            'owner_id' => $this->integer('owner_id'),
-            'description' => $this->filled('description') ? $this->string('description')->toString() : null,
-            'extensions' => $this->extensionValues(),
-        ];
+        return UpdateServerDetails::rules($this->parameter('server', Server::class));
     }
 
     /** Rename fields to be more clear in error messages. */

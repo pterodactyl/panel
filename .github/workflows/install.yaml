@@ -1,0 +1,259 @@
+name: Install
+
+# Follows the panel installation guide on every operating system it supports, so a
+# package, repository or step that stops working on one of them fails here first.
+# The guide depends on outside package repositories, so pull requests only run it
+# when they change dependencies or CI; the nightly run catches upstream changes.
+on:
+  push:
+    branches:
+      - "2.0-develop"
+  pull_request:
+    branches:
+      - "2.0-develop"
+    paths:
+      - composer.json
+      - composer.lock
+      - package.json
+      - package-lock.json
+      - .github/**
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: install-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: Node 22.12
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      # The oldest Node the guide supports only has to build the panel.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.12"
+          cache: npm
+      - run: npm ci
+      - run: npm run build:production
+
+  archive:
+    name: Release archive
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:production
+      # The same archive a release publishes, which the install guide downloads.
+      - run: bash .github/scripts/archive.sh
+      - uses: actions/upload-artifact@v7
+        with:
+          name: panel
+          path: panel.tar.gz
+          retention-days: 1
+
+  install:
+    name: ${{ matrix.os }}
+    needs: archive
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    container: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu:24.04
+          - ubuntu:22.04
+          - debian:13
+          - debian:12
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      DB_PASSWORD: install-check-only
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Add repositories (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          apt-get update
+          apt -y install software-properties-common curl
+          LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+
+      - name: Add repositories (Debian)
+        if: startsWith(matrix.os, 'debian')
+        run: |
+          apt-get update
+          apt -y install curl ca-certificates gnupg2 lsb-release
+          echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/sury-php.list
+          curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/sury-keyring.gpg
+
+      - name: Add Redis and MariaDB repositories (Debian 12)
+        if: matrix.os == 'debian:12'
+        run: |
+          curl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list
+          curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash
+
+      - name: Install packages
+        run: |
+          apt update
+          apt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip,intl} mariadb-server redis-server tar unzip curl nginx
+
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: panel
+
+      - name: Download the Panel
+        run: |
+          mkdir -p /var/www/pterodactyl
+          tar -xzf panel.tar.gz -C /var/www/pterodactyl
+          cd /var/www/pterodactyl
+          chmod -R 755 storage/* bootstrap/cache/
+
+      - name: Start MariaDB and Redis
+        run: |
+          mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
+          "$(command -v mariadbd-safe || command -v mysqld_safe)" --user=mysql > /tmp/mariadb.log 2>&1 &
+          for _ in $(seq 60); do mariadb-admin ping > /dev/null 2>&1 && break; sleep 1; done
+          mariadb-admin ping
+          redis-server --daemonize yes
+          redis-cli ping
+
+      - name: Create the database and user
+        run: |
+          mariadb -u root <<SQL
+          CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${DB_PASSWORD}';
+          CREATE DATABASE panel;
+          GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;
+          SQL
+
+      - name: Install PHP dependencies
+        working-directory: /var/www/pterodactyl
+        run: |
+          cp .env.example .env
+          COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
+          php artisan key:generate --force
+
+      - name: Configure the environment
+        working-directory: /var/www/pterodactyl
+        run: |
+          php artisan p:environment:setup --no-interaction --new-salt --author=install@example.com --url=http://localhost \
+            --timezone=UTC --cache=redis --session=redis --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379 \
+            --settings-ui=true --telemetry=false
+          php artisan p:environment:database --no-interaction --host=127.0.0.1 --port=3306 --database=panel \
+            --username=pterodactyl --password="$DB_PASSWORD"
+
+      - name: Run migrations and seed eggs
+        working-directory: /var/www/pterodactyl
+        run: php artisan migrate --seed --force
+
+      - name: Create the first admin user
+        working-directory: /var/www/pterodactyl
+        run: |
+          php artisan p:user:make --no-interaction --email=admin@example.com --username=admin \
+            --name-first=Install --name-last=Check --password='install-check-only-1A' --admin=1
+
+      - name: Set file ownership
+        run: chown -R www-data:www-data /var/www/pterodactyl/*
+
+      - name: Configure NGINX and PHP-FPM
+        run: |
+          cat > /etc/nginx/sites-available/pterodactyl.conf <<'NGINX'
+          server {
+              listen 80;
+              server_name localhost;
+
+              root /var/www/pterodactyl/public;
+              index index.php;
+
+              access_log off;
+              error_log  /var/log/nginx/pterodactyl.app-error.log error;
+
+              client_max_body_size 100m;
+              client_body_timeout 120s;
+
+              sendfile off;
+
+              location / {
+                  try_files $uri $uri/ /index.php?$query_string;
+              }
+
+              location ~ \.php$ {
+                  fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                  fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+                  fastcgi_index index.php;
+                  include fastcgi_params;
+                  fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
+                  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                  fastcgi_param HTTP_PROXY "";
+                  fastcgi_intercept_errors off;
+                  fastcgi_buffer_size 16k;
+                  fastcgi_buffers 4 16k;
+                  fastcgi_connect_timeout 300;
+                  fastcgi_send_timeout 300;
+                  fastcgi_read_timeout 300;
+              }
+
+              location ~ /\.ht {
+                  deny all;
+              }
+          }
+          NGINX
+          rm /etc/nginx/sites-enabled/default
+          ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+          mkdir -p /run/php
+          php-fpm8.3 --daemonize
+          nginx -t
+          nginx
+
+      - name: Check the panel
+        working-directory: /var/www/pterodactyl
+        run: |
+          set -euo pipefail
+          # The sign-in page renders with its built assets.
+          curl -fsS http://localhost/auth/login > /tmp/login.html
+          asset=$(grep -oE '/assets/[^"]+\.js' /tmp/login.html | head -n 1)
+          test -n "$asset"
+          curl -fsS -o /dev/null "http://localhost$asset"
+          # The API answers, and refuses a request without credentials.
+          test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Accept: application/json' http://localhost/api/client)" = 401
+          # Sessions are in Redis.
+          test "$(redis-cli dbsize)" -gt 0
+          # The scheduler and a queued job run as the web server user.
+          runuser -u www-data -- php artisan schedule:run
+          cat > /tmp/queue-check.php <<'PHP'
+          <?php
+          require 'vendor/autoload.php';
+          $app = require 'bootstrap/app.php';
+          $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+          dispatch(function () {
+              file_put_contents(storage_path('logs/queue-check'), 'ok');
+          });
+          PHP
+          runuser -u www-data -- php /tmp/queue-check.php
+          runuser -u www-data -- php artisan queue:work --queue=high,standard,low,default --stop-when-empty --tries=1
+          grep -qx ok storage/logs/queue-check
+
+      - name: Show logs
+        if: failure()
+        run: |
+          tail -n 50 /var/www/pterodactyl/storage/logs/*.log 2>/dev/null || true
+          tail -n 50 /var/log/nginx/pterodactyl.app-error.log 2>/dev/null || true
+          tail -n 50 /tmp/mariadb.log 2>/dev/null || true

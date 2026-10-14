@@ -59,9 +59,9 @@ export function serverBackupsQueryOptions(id: string, page = 1): SdkServerQueryO
     return publicQueryOptions(panelBackupsOptions(id, page));
 }
 
-/** Power state and resource usage, in the cache entry the dashboard's server cards poll. */
-export function serverResourcesQueryOptions(id: string): SdkServerQueryOptions<SdkServerResources> {
-    const options = panelResourcesOptions(id);
+/** Power state and resource usage of the server with this uuid, in the cache entry the dashboard polls. */
+export function serverResourcesQueryOptions(uuid: string): SdkServerQueryOptions<SdkServerResources> {
+    const options = panelResourcesOptions(uuid);
 
     return publicQueryOptions(options, options.retry);
 }
@@ -100,12 +100,12 @@ export function useServerBackups<TData = SdkServerBackups>(
 
 /** Polls like the dashboard. Inside the server area, the "stats" and "status" websocket events are live. */
 export function useServerResources<TData = SdkServerResources>(
-    id: string,
+    uuid: string,
     select?: (data: SdkServerResources) => TData
 ): UseQueryResult<TData, unknown> {
     return useQuery({
-        ...serverResourcesQueryOptions(id),
-        enabled: !!id,
+        ...serverResourcesQueryOptions(uuid),
+        enabled: !!uuid,
         select,
         refetchInterval: serverResourceUsageRefetchInterval,
     });

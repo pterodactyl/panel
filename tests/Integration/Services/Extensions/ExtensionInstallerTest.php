@@ -271,6 +271,35 @@ test('provider recovery clears errors in one write and leaves healthy timestamps
     }
 });
 
+test('a clean boot keeps runtime failures and writes nothing without a load failure', function (): void {
+    $repository = $this->app->make(ExtensionRepository::class);
+    try {
+        $this->app->make(InstallsExtensions::class)->install(writeExtension('runtime-failure'), enable: true);
+        $repository->recordFailure('runtime-failure', 'listener exploded', new RuntimeException('listener exploded'), 'event');
+        $enabled = $repository->enabled();
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        try {
+            $this->app->make(ExtensionProviderLoader::class)->registerProviders($enabled);
+            $writes = array_filter(DB::getQueryLog(), fn (array $query): bool => str_starts_with(mb_strtolower($query['query']), 'update'));
+            expect($writes)->toBe([]);
+        } finally {
+            DB::disableQueryLog();
+        }
+
+        $record = Extension::query()->where('identifier', 'runtime-failure')->firstOrFail();
+        expect($record->error)->toBe('listener exploded')
+            ->and($record->error_phase)->toBe('event')
+            ->and($record->errored_at)->not->toBeNull();
+
+        $this->app->make(SetsExtensionEnabled::class)->setEnabled('runtime-failure', false);
+        expect(Extension::query()->where('identifier', 'runtime-failure')->firstOrFail()->only(['error', 'error_phase', 'errored_at']))
+            ->toBe(['error' => null, 'error_phase' => null, 'errored_at' => null]);
+    } finally {
+        Extension::query()->where('identifier', 'runtime-failure')->delete();
+    }
+});
+
 test('extension settings batch reads preserve values and subsequent mutations', function (): void {
     $settings = [];
     for ($i = 0; $i < 10; $i++) {
@@ -474,54 +503,16 @@ test('disabled packages can be installed before their dependencies and cannot be
     $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => false]);
 });
 
-/** @param list<string> $components */
-function writePresentation(string $identifier, array $components, string $version = '1.0.0'): string
+/** @param list<string> $views */
+function writePresentation(string $identifier, array $views, string $version = '1.0.0'): string
 {
     $source = writeExtension($identifier);
-    File::put($source.'/extension.json', json_encode(['id' => $identifier, 'name' => $identifier, 'version' => $version, 'requires' => ['sdk' => '*'], 'ui' => ['entry' => 'dist/client.js', 'components' => $components]], JSON_THROW_ON_ERROR));
+    File::put($source.'/extension.json', json_encode(['id' => $identifier, 'name' => $identifier, 'version' => $version, 'requires' => ['sdk' => '*'], 'ui' => ['entry' => 'dist/client.js', 'views' => $views]], JSON_THROW_ON_ERROR));
     File::ensureDirectoryExists($source.'/dist');
     File::put($source.'/dist/client.js', 'export default {setup() {}};');
 
     return $source;
 }
-
-test('rejects enabling a competing replacement before migrations or activation events', function (): void {
-    $installer = $this->app->make(InstallsExtensions::class);
-    try {
-        $installer->install(writePresentation('card-owner', ['dashboard.serverCard']), enable: true);
-        $installer->install(writePresentation('eventful', ['dashboard.serverCard']));
-        File::ensureDirectoryExists($this->installDirectory.'/eventful/database/migrations');
-        Event::fake([ExtensionEnabling::class, ExtensionEnabled::class]);
-        Artisan::shouldReceive('call')->never();
-
-        expect(fn () => $this->app->make(SetsExtensionEnabled::class)->setEnabled('eventful', true))->toThrow(InvalidExtensionException::class, 'card-owner');
-
-        $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => false]);
-        $this->assertDatabaseHas('extensions', ['identifier' => 'card-owner', 'enabled' => true]);
-        Event::assertNothingDispatched();
-        expect($this->app->make(ExtensionRepository::class)->frontendPayload(false)[0]['components'])->toBe(['dashboard.serverCard']);
-    } finally {
-        Extension::query()->where('identifier', 'card-owner')->delete();
-    }
-});
-
-test('rejects an enabled upgrade with conflicting replacements and preserves its package', function (): void {
-    $installer = $this->app->make(InstallsExtensions::class);
-    try {
-        $installer->install(writePresentation('card-owner', ['dashboard.serverCard']), enable: true);
-        $installer->install(writeExtension('eventful'), enable: true);
-        $source = writePresentation('eventful', ['dashboard.serverCard'], '2.0.0');
-        Event::fake([ExtensionInstalling::class, ExtensionEnabling::class]);
-
-        expect(fn () => $installer->install($source, replace: true))->toThrow(InvalidExtensionException::class, 'dashboard.serverCard');
-
-        $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'version' => '1.0.0', 'enabled' => true]);
-        expect((new ExtensionManifestValidator)->fromDirectory($this->installDirectory.'/eventful')->components)->toBe([]);
-        Event::assertNothingDispatched();
-    } finally {
-        Extension::query()->where('identifier', 'card-owner')->delete();
-    }
-});
 
 test('failed removal restores the package and published assets with its metadata', function (): void {
     $source = writeExtension('eventful');
@@ -546,22 +537,18 @@ test('failed removal restores the package and published assets with its metadata
     expect(glob($this->installDirectory.'/.previous-*'))->toBeEmpty();
 });
 
-test('file editor and file browser replacements reach the frontend and stay exclusive per component', function (): void {
+test('view overrides of several extensions reach the frontend together', function (): void {
     $installer = $this->app->make(InstallsExtensions::class);
     try {
         $installer->install(writePresentation('code-editor', ['server.files.editor']), enable: true);
-        $installer->install(writePresentation('tree-browser', ['server.files.manager']), enable: true);
-        $installer->install(writePresentation('eventful', ['server.files.details', 'server.files.editor']));
+        $installer->install(writePresentation('eventful', ['server.files.details', 'server.files.editor']), enable: true);
 
-        expect(fn () => $this->app->make(SetsExtensionEnabled::class)->setEnabled('eventful', true))->toThrow(InvalidExtensionException::class, 'code-editor');
-
-        $this->assertDatabaseHas('extensions', ['identifier' => 'eventful', 'enabled' => false]);
-        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(false))->pluck('components', 'id')->all())->toBe([
+        expect(collect($this->app->make(ExtensionRepository::class)->frontendPayload(true))->pluck('views', 'id')->all())->toBe([
             'code-editor' => ['server.files.editor'],
-            'tree-browser' => ['server.files.manager'],
+            'eventful' => ['server.files.details', 'server.files.editor'],
         ]);
     } finally {
-        Extension::query()->whereIn('identifier', ['code-editor', 'tree-browser'])->delete();
+        Extension::query()->where('identifier', 'code-editor')->delete();
     }
 });
 

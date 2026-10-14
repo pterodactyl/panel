@@ -57,6 +57,7 @@ use Pterodactyl\Http\Controllers\Api\Admin\Settings\MailController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\SettingsController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\TestMailController;
 use Pterodactyl\Http\Controllers\Api\Admin\Tags\TagController;
+use Pterodactyl\Http\Controllers\Api\Admin\Themes\ThemeController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\DisableTwoFactorController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\ExternalController as UserExternalController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\UserController;
@@ -97,6 +98,28 @@ Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): v
 
 /*
 |--------------------------------------------------------------------------
+| Theme Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/themes
+|
+*/
+Route::prefix('/themes')->name('api.admin.themes')->group(function (): void {
+    Route::get('/', [ThemeController::class, 'index']);
+    Route::get('/{theme}/settings', [ThemeController::class, 'settings'])->name('.settings');
+
+    Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
+        Route::delete('/preview', [ThemeController::class, 'stopPreview'])->name('.preview.stop');
+        Route::post('/{theme}/activate', [ThemeController::class, 'activate'])->name('.activate');
+        Route::post('/{theme}/preview', [ThemeController::class, 'preview'])->name('.preview');
+        Route::patch('/{theme}/settings', [ThemeController::class, 'updateSettings'])->name('.settings.update');
+        Route::post('/{theme}/settings/{setting}/image', [ThemeController::class, 'uploadImage'])->name('.settings.image');
+        Route::delete('/{theme}/settings/{setting}/image', [ThemeController::class, 'clearImage'])->name('.settings.image.clear');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
 | User Controller Routes
 |--------------------------------------------------------------------------
 |
@@ -126,7 +149,7 @@ Route::prefix('/users')->name('api.admin.users')->group(function (): void {
 */
 Route::prefix('/nodes/{node:id}')->name('api.admin.nodes')->group(function (): void {
     Route::get('/system-information', SystemInformationController::class)->name('.system-information');
-    Route::post('/deploy-token', DeployTokenController::class)->name('.deploy-token');
+    Route::post('/deploy-token', DeployTokenController::class)->middleware(RequireSessionAuthentication::class)->name('.deploy-token');
     Route::get('/utilization', UtilizationController::class)->name('.utilization');
 });
 
@@ -203,7 +226,7 @@ Route::prefix('/servers/{server:admin_identifier}/databases')->name('api.admin.s
 */
 Route::prefix('/servers/{server:admin_identifier}/backups')->name('api.admin.servers.backups')->group(function (): void {
     Route::get('/', [ServerBackupController::class, 'index']);
-    Route::post('/{backup:id}/toggle', ToggleBackupController::class)->name('.toggle')->withoutScopedBindings();
+    Route::post('/{backup:uuid}/toggle', ToggleBackupController::class)->name('.toggle')->withoutScopedBindings();
 });
 
 /*
@@ -217,7 +240,7 @@ Route::prefix('/servers/{server:admin_identifier}/backups')->name('api.admin.ser
 Route::prefix('/nodes')->name('api.admin.nodes')->group(function (): void {
     Route::get('/', [NodeController::class, 'index']);
     Route::get('/{node:id}', [NodeController::class, 'show'])->name('.view');
-    Route::get('/{node:id}/configuration', ConfigurationController::class)->name('.configuration');
+    Route::get('/{node:id}/configuration', ConfigurationController::class)->middleware(RequireSessionAuthentication::class)->name('.configuration');
 
     Route::post('/', [NodeController::class, 'store'])->name('.store');
     Route::put('/{node:id}', [NodeController::class, 'update'])->name('.update');

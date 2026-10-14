@@ -86,26 +86,25 @@ describe('server backup mutations', () => {
         expect(mocks.toastSuccess).toHaveBeenCalledOnce();
     });
 
-    it('updates current server state before notifying when a restore starts', async () => {
+    it('updates current server state before the restore resolves', async () => {
         const { wrapper } = setup();
-        const selected = backup('backup', 'before-upgrade');
+        const resolved = vi.fn();
 
         mocks.restore.mockResolvedValue(undefined);
-        const { result } = renderHook(() => useRestoreServerBackup(selected), { wrapper });
+        const { result } = renderHook(() => useRestoreServerBackup(), { wrapper });
 
         await act(async () =>
-            result.current.mutateAsync({
-                path: { server_uuid: 'server', backup_uuid: 'backup' },
-                body: { truncate: false },
-            } as Options<ClientRestoreServerBackupData>)
+            result.current
+                .mutateAsync({
+                    path: { server_uuid: 'server', backup_uuid: 'backup' },
+                    body: { truncate: false },
+                } as Options<ClientRestoreServerBackupData>)
+                .then(resolved)
         );
 
         expect(mocks.updateCurrentServer).toHaveBeenCalledOnce();
-        expect(mocks.toastSuccess).toHaveBeenCalledWith('Backup restore started', {
-            description: 'before-upgrade is being restored.',
-        });
         expect(mocks.updateCurrentServer.mock.invocationCallOrder[0]).toBeLessThan(
-            mocks.toastSuccess.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER
+            resolved.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER
         );
     });
 });

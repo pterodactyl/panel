@@ -15,12 +15,15 @@ const RIGHT_LAG_MS = 1100;
 // Time drawn past the visible right edge, so the plot can keep sliding while the next sample is late.
 const SLIDE_MS = 4000;
 
-interface Props {
-    data: ChartPoint[];
-    series: ChartSeries[];
+export interface AreaChartProps {
+    /** Samples by `t`, a performance.now() timestamp; a series value is null until its first sample. */
+    data: readonly ChartPoint[];
+    series: readonly ChartSeries[];
+    /** Keeps the plot sliding between samples. */
     live: boolean;
+    /** The time the plot shows, in milliseconds. */
     windowMs: number;
-    // Y-axis maximum that grows when the data exceeds it; omit to auto-scale.
+    /** A y-axis maximum that grows when the data exceeds it; omit to auto-scale. */
     suggestedMax?: number;
     tickFormatter?: (value: number) => string;
     height?: number;
@@ -29,8 +32,8 @@ interface Props {
 type YDomain = [number, (dataMax: number) => number] | [number, string];
 
 interface RechartsAreaChartContentProps {
-    data: ChartPoint[];
-    series: ChartSeries[];
+    data: readonly ChartPoint[];
+    series: readonly ChartSeries[];
     live: boolean;
     uid: string;
     width: number;
@@ -62,6 +65,7 @@ const LazyRechartsAreaChart = lazy(async () => {
             tickFormatter,
         }: RechartsAreaChartContentProps) {
             const slider = useRef<HTMLDivElement>(null);
+            const points = useMemo(() => [...data], [data]);
             const plotWidth = Math.max(0, width - Y_AXIS_WIDTH - MARGIN.right);
             const slideDistance = (plotWidth * SLIDE_MS) / windowMs;
 
@@ -92,7 +96,7 @@ const LazyRechartsAreaChart = lazy(async () => {
             return (
                 <>
                     <div className='absolute inset-0'>
-                        <RechartsAreaChart width={width} height={height} data={data} margin={MARGIN}>
+                        <RechartsAreaChart width={width} height={height} data={points} margin={MARGIN}>
                             <CartesianGrid stroke={GRID_COLOR} strokeDasharray='0' vertical={false} />
                             <XAxis dataKey='t' type='number' domain={xDomain} allowDataOverflow hide />
                             <YAxis
@@ -132,7 +136,7 @@ const LazyRechartsAreaChart = lazy(async () => {
                             <RechartsAreaChart
                                 width={plotWidth + slideDistance}
                                 height={height}
-                                data={data}
+                                data={points}
                                 margin={{ ...MARGIN, right: 0 }}
                             >
                                 <defs>
@@ -194,7 +198,16 @@ const LazyRechartsAreaChart = lazy(async () => {
     };
 });
 
-export default function AreaChart({ data, series, live, windowMs, suggestedMax, tickFormatter, height = 180 }: Props) {
+/** A live time series chart drawn with the `--chart-*`, `--border` and `--muted-foreground` tokens. */
+export default function AreaChart({
+    data,
+    series,
+    live,
+    windowMs,
+    suggestedMax,
+    tickFormatter,
+    height = 180,
+}: AreaChartProps) {
     const uid = useId().replaceAll(':', '');
     const container = useRef<HTMLDivElement>(null);
     const width = useElementWidth(container);

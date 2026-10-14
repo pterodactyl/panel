@@ -28,8 +28,8 @@ class DisableTwoFactorController extends AdminApiController
     {
         $twoFactor->disable($user);
 
+        // The action logs the change on the user's own feed.
         Activity::event('admin:user.disable-2fa')
-            ->subject($user)
             ->property('email', $user->email)
             ->log();
 

@@ -1,0 +1,17 @@
+[
+    {
+        "request": "POST /api/client/servers/5e7f0001-0000-4000-8000-000000000001/network/allocations",
+        "status": 200,
+        "body": {
+            "object": "allocation",
+            "attributes": {
+                "id": 4,
+                "ip": "192.0.2.10",
+                "ip_alias": null,
+                "port": 25568,
+                "notes": null,
+                "is_default": false
+            }
+        }
+    }
+]

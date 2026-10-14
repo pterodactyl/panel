@@ -7,25 +7,20 @@ namespace Pterodactyl\Actions\Eggs\Sharing;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\UpdatesEggsFromImports;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
+use Pterodactyl\Data\EggImportData;
+use Pterodactyl\Data\EggImportVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Eggs\EggImportVariable;
-use Pterodactyl\Services\Eggs\EggParserService;
-use Throwable;
+use Pterodactyl\Models\Tag;
 
 final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 {
-    public function __construct(private EggParserService $parser) {}
-
-    /** @throws InvalidFileUploadException|Throwable */
     public function update(Egg $egg, UploadedFile $file): Egg
     {
-        $parsed = $this->parser->handle($file);
+        $parsed = EggImportData::fromFile($file);
 
         return DB::transaction(function () use ($egg, $parsed): Egg {
-            $egg = $this->parser->fillFromParsed($egg, $parsed);
-            $egg->save();
+            $egg->forceFill($parsed->attributes())->save();
 
             foreach ($parsed->variables as $variable) {
                 EggVariable::unguarded(function () use ($egg, $variable): void {
@@ -37,6 +32,10 @@ final readonly class UpdateEggFromImport implements UpdatesEggsFromImports
 
             $imported = array_map(fn (EggImportVariable $variable): string => $variable->environmentVariable, $parsed->variables);
             $egg->variables()->whereNotIn('env_variable', $imported)->delete();
+
+            if ($parsed->tags !== null) {
+                $egg->tags()->sync(Tag::findOrCreateFromSlugs($parsed->tags));
+            }
 
             return $egg->refresh();
         });

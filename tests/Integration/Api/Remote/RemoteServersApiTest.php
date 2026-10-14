@@ -54,6 +54,15 @@ test('node can report a failed install', function () {
     actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['successful' => false, 'reinstall' => false])->assertNoContent();
     expect($server->refresh()->status)->toBe(Server::STATUS_INSTALL_FAILED);
 });
+test('an install report takes boolean strings and needs its outcome', function () {
+    $server = $this->createServerModel(['status' => Server::STATUS_INSTALLING, 'installed_at' => null]);
+    actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['reinstall' => '1'])
+        ->assertUnprocessable()
+        ->assertJsonCount(1, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'successful');
+    actingAsNode($server->node)->postJson("/api/remote/servers/{$server->uuid}/install", ['successful' => '0', 'reinstall' => '1'])->assertNoContent();
+    expect($server->refresh()->status)->toBe(Server::STATUS_REINSTALL_FAILED);
+});
 test('node can reset restoring servers', function () {
     $server = $this->createServerModel();
     $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);
@@ -75,6 +84,25 @@ test('node can mark a backup as completed', function () {
     expect($backup->checksum)->toBe('sha1:abc123');
     expect($backup->bytes)->toBe(1024);
     expect($backup->completed_at)->not->toBeNull();
+});
+test('a backup report keeps the wings field names and rules', function () {
+    $server = $this->createServerModel();
+    $backup = Backup::factory()->create(['server_id' => $server->id, 'is_successful' => false, 'completed_at' => null]);
+
+    actingAsNode($server->node)->postJson("/api/remote/backups/{$backup->uuid}", ['successful' => true, 'parts' => [['etag' => 'a']]])
+        ->assertUnprocessable()
+        ->assertJsonCount(4, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'checksum')
+        ->assertJsonPath('errors.1.meta.source_field', 'checksum_type')
+        ->assertJsonPath('errors.2.meta.source_field', 'size')
+        ->assertJsonPath('errors.3.meta.source_field', 'parts.0.part_number');
+    expect($backup->refresh()->completed_at)->toBeNull();
+
+    actingAsNode($server->node)->postJson("/api/remote/backups/{$backup->uuid}", ['successful' => '0'])->assertNoContent();
+    $backup->refresh();
+    expect($backup->is_successful)->toBeFalse();
+    expect($backup->completed_at)->not->toBeNull();
+    expect($server->activity()->where('event', 'server:backup.fail')->exists())->toBeTrue();
 });
 test('completed backup cannot be reported again', function () {
     $server = $this->createServerModel();

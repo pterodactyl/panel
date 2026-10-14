@@ -29,8 +29,8 @@ class ReinstallController extends AdminApiController
     {
         $reinstall->reinstall($server);
 
+        // The action logs the reinstall on the server's own feed.
         Activity::event('admin:server.reinstall')
-            ->subject($server)
             ->property('name', $server->name)
             ->log();
 

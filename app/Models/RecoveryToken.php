@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property int $id
- * @property int $user_id
- * @property string $token
- * @property CarbonImmutable $created_at
- * @property User $user
- */
 class RecoveryToken extends Model
 {
     /**

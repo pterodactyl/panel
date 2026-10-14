@@ -8,8 +8,11 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
@@ -164,7 +167,12 @@ final class ApiErrorResponse
             foreach (array_keys($reasons) as $reason) {
                 throw_unless(is_string($reason), UnexpectedValueException::class, 'Laravel returned a malformed validation rule name.');
 
-                $cleaned[] = Str::snake($reason);
+                // Laravel's own rule objects are named after their class.
+                $cleaned[] = match (true) {
+                    $reason === Password::class => self::passwordRuleCode($exception, $field),
+                    str_starts_with($reason, 'Illuminate\\') => Str::snake(class_basename($reason)),
+                    default => Str::snake($reason),
+                };
             }
 
             $codes[str_replace('.', '_', $field)] = $cleaned;
@@ -173,7 +181,20 @@ final class ApiErrorResponse
         return $codes;
     }
 
-    /** @return list<array<string, ApiScalar>> */
+    /**
+     * Laravel's Password rule fails under its own name. A password shorter than the
+     * policy's minimum has always been reported as the "min" rule, so it keeps that code;
+     * any other part of the policy reports "password".
+     */
+    private static function passwordRuleCode(ValidationException $exception, string $field): string
+    {
+        $min = Password::default()->appliedRules()['min'];
+        $value = $exception->validator instanceof Validator ? Arr::get($exception->validator->getData(), $field) : null;
+
+        return is_int($min) && is_string($value) && mb_strlen($value) < $min ? 'min' : 'password';
+    }
+
+    /** @return list<array<string, bool|float|int|string|null>> */
     private static function cleanTrace(Throwable $exception): array
     {
         $cleaned = [];

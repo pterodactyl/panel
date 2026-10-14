@@ -31,7 +31,6 @@ import { actionsColumn, DeleteAction, RowActions } from '@/components/elements/t
 import { Dialog } from '@/components/elements/dialog';
 import { Alert } from '@/components/elements/alert';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { cardTitleClass } from '@/components/ui/typography';
 import { httpErrorToHuman } from '@/api/http';
 import { cn } from '@/lib/cn';
@@ -372,7 +371,7 @@ const AllocationList = ({ query, paginationTable, showPagination, onBlockDelete 
     return (
         <>
             {grouped.length === 0 ? (
-                <Empty className={emptyCompactClass}>
+                <Empty size='compact'>
                     <EmptyHeader>
                         <EmptyMedia variant='icon'>
                             <Network />

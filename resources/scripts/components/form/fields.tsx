@@ -234,6 +234,7 @@ export type MultiSelectFieldProps = BaseProps & {
     disabled?: boolean;
     placeholder?: string;
     searchPlaceholder?: string;
+    onCreate?: (text: string) => void;
 };
 
 export function MultiSelectField({
@@ -245,6 +246,7 @@ export function MultiSelectField({
     disabled,
     placeholder = 'None selected',
     searchPlaceholder,
+    onCreate,
 }: MultiSelectFieldProps) {
     const { field, error, fieldId, helpId, describedById } = useFieldState<(string | number)[]>(id, description);
     const selected = Array.isArray(field.state.value) ? field.state.value : [];
@@ -262,6 +264,7 @@ export function MultiSelectField({
                 options={options}
                 value={selected}
                 onChange={(value) => field.handleChange(value)}
+                onCreate={onCreate}
                 disabled={disabled}
                 placeholder={placeholder}
                 searchPlaceholder={searchPlaceholder}

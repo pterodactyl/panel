@@ -2,17 +2,19 @@ import type { ComponentProps, ReactElement, ReactNode } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Link, type AnyRouter, type LinkComponentProps, type RegisteredRouter } from '@tanstack/react-router';
 import { MoreHorizontal, Pencil, Trash2, type LucideIcon } from 'lucide-react';
-import Button, { buttonClassName } from '@/components/elements/Button';
+import Button from '@/components/elements/Button';
 import DropdownMenu from '@/components/elements/dropdown/DropdownMenu';
 import Icon from '@/components/elements/Icon';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import { useSkin } from '@/themes/skins';
 
 const iconClassName = 'h-3.5 w-3.5';
-const actionClassName = buttonClassName({ color: 'grey', size: 'xsmall', isSecondary: true });
+/** Links and menu triggers look like the row's icon buttons. */
+const useActionButton = () => useSkin('Button', { color: 'grey', size: 'xsmall', secondary: true, loading: false });
 
 type RowActionCount = 1 | 2 | 3;
 
-const actionWidths = { 1: 'w-14', 2: 'w-24', 3: 'w-32' } satisfies Record<RowActionCount, string>;
+export const actionWidths = { 1: 'w-14', 2: 'w-24', 3: 'w-32' } satisfies Record<RowActionCount, string>;
 
 /** The trailing, always-visible "Actions" column sized for `actions` icon buttons; `width` overrides the size. */
 export function actionsColumn<TData>(
@@ -84,9 +86,11 @@ export function EditLinkAction<
     const TMaskFrom extends string = TFrom,
     const TMaskTo extends string = '',
 >(props: LinkComponentProps<'a', TRouter, TFrom, TTo, TMaskFrom, TMaskTo> & { 'aria-label': string }) {
+    const button = useActionButton();
+
     return (
         <ActionTooltip content='Edit'>
-            <Link {...props} className={actionClassName}>
+            <Link {...props} {...button('root')}>
                 <Icon icon={Pencil} className={iconClassName} />
             </Link>
         </ActionTooltip>
@@ -95,9 +99,11 @@ export function EditLinkAction<
 
 /** The "…" menu for actions other than edit and delete. */
 export function RowActionsMenu({ label, children }: { label: string; children: ReactNode }) {
+    const button = useActionButton();
+
     return (
         <DropdownMenu
-            triggerClassName={actionClassName}
+            triggerClassName={button.classes('root')}
             triggerContent={
                 <>
                     <Icon icon={MoreHorizontal} className={iconClassName} />

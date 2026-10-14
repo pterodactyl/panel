@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 class ExtensionAssetPublisher
@@ -65,12 +64,18 @@ class ExtensionAssetPublisher
 
     public function entryUrl(ExtensionManifest $manifest): string
     {
+        return $this->assetUrl($manifest, 'client.js');
+    }
+
+    /** The URL of a file of the published build, by its path inside dist. */
+    public function assetUrl(ExtensionManifest $manifest, string $file): string
+    {
         $version = $this->currentVersion($manifest->id);
         if ($version !== null) {
-            return sprintf('/assets/extensions/%s/%s/client.js', $manifest->id, $version);
+            return sprintf('/assets/extensions/%s/%s/%s', $manifest->id, $version, $file);
         }
 
-        return sprintf('/assets/extensions/%s/client.js?v=%s', $manifest->id, Str::slug($manifest->version));
+        return sprintf('/assets/extensions/%s/%s?v=%s', $manifest->id, $file, Str::slug($manifest->version));
     }
 
     public function publish(ExtensionManifest $manifest): void
@@ -111,7 +116,7 @@ class ExtensionAssetPublisher
 
     public function stage(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
+        if (! $manifest->hasAssets()) {
             return null;
         }
 
@@ -166,44 +171,50 @@ class ExtensionAssetPublisher
         } else {
             File::replace($path, $version);
             if (is_file($this->developmentPath($identifier))) {
-                File::replace($this->developmentPath($identifier), $version);
+                $this->writeDevelopment($identifier, $version);
             }
         }
     }
 
     public function missingBuildReason(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
-            return null;
+        if ($manifest->hasUi() && ! is_file($manifest->path($manifest->uiEntry ?? ExtensionManifest::UI_ENTRY))) {
+            return "Extension \"{$manifest->id}\" declares ui.entry \"{$manifest->uiEntry}\" but the built file is missing - build the extension before installing.";
         }
 
-        if (! is_file($manifest->path($manifest->uiEntry ?? ExtensionManifest::UI_ENTRY))) {
-            return "Extension \"{$manifest->id}\" declares ui.entry \"{$manifest->uiEntry}\" but the built file is missing - build the extension before installing.";
+        $stylesheet = $manifest->theme?->stylesheet;
+        if ($stylesheet !== null && ! is_file($manifest->path(...explode('/', $stylesheet)))) {
+            return "Theme \"{$manifest->id}\" declares theme.stylesheet \"{$stylesheet}\" but the built file is missing - build the theme before installing.";
         }
 
         return null;
     }
 
-    /** Why the built frontend cannot be published: it is missing, or its styles would override the panel's or another extension's. */
+    /**
+     * Why the built frontend cannot be published: it is missing, or its styles would override the
+     * panel's or another extension's.
+     */
     public function unusableBuildReason(ExtensionManifest $manifest): ?string
     {
-        if (! $manifest->hasUi()) {
+        if (! $manifest->hasAssets()) {
             return null;
         }
 
-        return $this->missingBuildReason($manifest) ?? $this->distFilesReason($manifest) ?? $this->stylesheets->conflictReason($manifest);
+        return $this->missingBuildReason($manifest)
+            ?? $this->distFilesReason($manifest)
+            ?? ($manifest->isTheme() ? null : $this->stylesheets->conflictReason($manifest));
     }
 
     public function publishedPath(string $identifier): string
     {
-        return mb_rtrim(JsonValueGuard::string(config('extensions.assets_directory')), '/\\').DIRECTORY_SEPARATOR.$identifier;
+        return mb_rtrim(config()->string('extensions.assets_directory'), '/\\').DIRECTORY_SEPARATOR.$identifier;
     }
 
     public function watchDevelopment(string $identifier): void
     {
         $version = $this->currentVersion($identifier);
         throw_if($version === null, InvalidExtensionException::class, 'Publish a frontend build before watching it.');
-        File::replace($this->developmentPath($identifier), $version);
+        $this->writeDevelopment($identifier, $version);
     }
 
     public function stopDevelopment(string $identifier): void
@@ -211,7 +222,12 @@ class ExtensionAssetPublisher
         File::delete($this->developmentPath($identifier));
     }
 
-    /** @return array{url: string, version: string}|null */
+    /**
+     * What the page polls while `p:extension:dev --watch` runs. `scripts` only changes when a
+     * file other than a stylesheet does, so a CSS-only rebuild is swapped in without a reload.
+     *
+     * @return array{url: string, version: string, scripts: string}|null
+     */
     public function developmentPayload(string $identifier): ?array
     {
         $version = $this->currentVersion($identifier);
@@ -219,7 +235,25 @@ class ExtensionAssetPublisher
             return null;
         }
 
-        return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version];
+        return ['url' => '/assets/extensions/'.$identifier.'/_development', 'version' => $version, 'scripts' => $this->scriptsRevision($identifier, $version)];
+    }
+
+    private function writeDevelopment(string $identifier, string $version): void
+    {
+        File::replace($this->developmentPath($identifier), json_encode(['version' => $version, 'scripts' => $this->scriptsRevision($identifier, $version)], JSON_THROW_ON_ERROR));
+    }
+
+    private function scriptsRevision(string $identifier, string $version): string
+    {
+        $hash = hash_init('sha256');
+        foreach (ExtensionDistFiles::list($this->publishedPath($identifier).DIRECTORY_SEPARATOR.$version) as $relative => $path) {
+            if (preg_match('/\.css(?:\.map)?$/', $relative) !== 1) {
+                hash_update($hash, $relative."\0");
+                hash_update_file($hash, $path);
+            }
+        }
+
+        return hash_final($hash);
     }
 
     /** Published assets are web-served, so dist may only hold static browser assets. */

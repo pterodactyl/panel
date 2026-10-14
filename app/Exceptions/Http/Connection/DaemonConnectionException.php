@@ -8,39 +8,39 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Pterodactyl\Exceptions\DisplayException;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 /** @method Throwable getPrevious() */
-class DaemonConnectionException extends DisplayException
+class DaemonConnectionException extends HttpException
 {
-    private readonly int $statusCode;
-
     private readonly ?string $requestId;
+
+    private readonly string $level;
 
     public function __construct(Throwable $previous, bool $useStatusCode = true, ?ClientResponse $response = null)
     {
         $response ??= $previous instanceof RequestException ? $previous->response : null;
         $this->requestId = $response?->header('X-Request-Id');
-        $this->statusCode = $this->statusFor($response, $useStatusCode);
-        $level = $this->statusCode >= 500 && $this->statusCode !== Response::HTTP_GATEWAY_TIMEOUT
-            ? self::LEVEL_ERROR
-            : self::LEVEL_WARNING;
+        $statusCode = $this->statusFor($response, $useStatusCode);
+        $this->level = $statusCode >= 500 && $statusCode !== Response::HTTP_GATEWAY_TIMEOUT
+            ? LogLevel::ERROR
+            : LogLevel::WARNING;
 
-        parent::__construct($this->messageFor($response), $previous, $level);
+        parent::__construct($statusCode, $this->messageFor($response, $statusCode), $previous);
     }
 
+    /**
+     * Log the failed Wings call. bootstrap/app.php keeps this exception reportable,
+     * unlike other HTTP exceptions.
+     */
     public function report(): void
     {
-        Log::log($this->getErrorLevel(), $this->getPrevious()->getMessage(), [
+        Log::log($this->level, $this->getPrevious()->getMessage(), [
             'request_id' => $this->requestId,
             'exception' => $this->getPrevious(),
         ]);
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
     }
 
     public function getRequestId(): ?string
@@ -58,14 +58,14 @@ class DaemonConnectionException extends DisplayException
         return $response->status() < 400 ? Response::HTTP_BAD_GATEWAY : $response->status();
     }
 
-    private function messageFor(?ClientResponse $response): string
+    private function messageFor(?ClientResponse $response, int $statusCode): string
     {
         if (! $response instanceof ClientResponse) {
             return 'Could not establish a connection to the machine running this server. Please try again.';
         }
 
         $message = sprintf('There was an error while communicating with the machine running this server. This error has been logged, please try again. (code: %s) (request_id: %s)', $response->status(), $this->requestId ?? '<nil>');
-        if ($this->statusCode >= 500) {
+        if ($statusCode >= 500) {
             return $message;
         }
 

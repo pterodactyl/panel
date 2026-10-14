@@ -13,7 +13,6 @@ import Select from '@/components/ui/Select';
 import Label from '@/components/elements/Label';
 import Spinner from '@/components/elements/Spinner';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 import { cn } from '@/lib/cn';
 
@@ -82,7 +81,7 @@ export default function AttachNodesModal({ mount, open, onClose, onAttached }: P
             ) : (
                 <>
                     {groups.length === 0 ? (
-                        <Empty className={emptyCompactClass}>
+                        <Empty size='compact'>
                             <EmptyHeader>
                                 <EmptyMedia variant='icon'>
                                     <HardDrive />

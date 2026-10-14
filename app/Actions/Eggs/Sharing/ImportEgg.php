@@ -7,22 +7,17 @@ namespace Pterodactyl\Actions\Eggs\Sharing;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Eggs\ImportsEggs;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
+use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Eggs\EggImportData;
-use Pterodactyl\Services\Eggs\EggParserService;
+use Pterodactyl\Models\Tag;
 use Ramsey\Uuid\Uuid;
-use Throwable;
 
 final readonly class ImportEgg implements ImportsEggs
 {
-    public function __construct(private EggParserService $parser) {}
-
-    /** @throws InvalidFileUploadException|Throwable */
     public function import(UploadedFile $file): Egg
     {
-        return $this->importParsed($this->parser->handle($file));
+        return $this->importParsed(EggImportData::fromFile($file));
     }
 
     public function importParsed(EggImportData $parsed): Egg
@@ -32,11 +27,15 @@ final readonly class ImportEgg implements ImportsEggs
                 'uuid' => Uuid::uuid4()->toString(),
                 'author' => $parsed->author,
                 'copy_script_from' => null,
+                ...$parsed->attributes(),
             ]);
-            $egg = $this->parser->fillFromParsed($egg, $parsed);
             $egg->save();
             foreach ($parsed->variables as $variable) {
                 EggVariable::query()->forceCreate($variable->attributesForEgg($egg->id));
+            }
+
+            if ($parsed->tags !== null) {
+                $egg->tags()->sync(Tag::findOrCreateFromSlugs($parsed->tags));
             }
 
             return $egg;

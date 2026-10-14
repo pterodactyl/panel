@@ -9,7 +9,6 @@ use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionClass;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -76,7 +75,7 @@ final class ExtensionConsoleRegistry
                     if ($names === null) {
                         $command = $this->app->make($class);
                         throw_unless($command instanceof Command, InvalidArgumentException::class, sprintf('Extension "%s" registered "%s", which is not a console command.', $identifier, $class));
-                        $names = [$command->getName(), ...array_map(JsonValueGuard::string(...), $command->getAliases())];
+                        $names = [$command->getName(), ...array_filter($command->getAliases(), is_string(...))];
                     }
 
                     foreach ($names as $name) {

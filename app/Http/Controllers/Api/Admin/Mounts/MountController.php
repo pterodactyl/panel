@@ -11,22 +11,21 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Mounts\CreatesMounts;
 use Pterodactyl\Contracts\Mounts\DeletesMounts;
 use Pterodactyl\Contracts\Mounts\UpdatesMounts;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\DeleteMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\GetMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\GetMountsRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\StoreMountRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Mounts\UpdateMountRequest;
+use Pterodactyl\Http\Resources\Api\Admin\MountResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Mount;
-use Pterodactyl\Transformers\Api\Admin\MountTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -52,8 +51,6 @@ class MountController extends AdminApiController
 
     /**
      * List mounts.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List mounts', 'Returns a paginated list of mount definitions.')]
     #[QueryParam('filter[name]', 'string', 'Filter mounts by name.', required: false, example: 'Shared Mods')]
@@ -61,54 +58,48 @@ class MountController extends AdminApiController
     #[QueryParam('page', 'integer', 'Page number to return.', required: false, example: 1)]
     #[QueryParam('per_page', 'integer', 'Results to return per page.', required: false, example: 50)]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]
-    #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mounts returned.', collection: true, resourceKey: 'mount', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetMountsRequest $request): array
+    #[ResponseFromResource(MountResource::class, Mount::class, description: 'Mounts returned.', collection: true, resourceKey: 'mount', paginate: 50)]
+    public function index(GetMountsRequest $request): ApiResourceCollection
     {
         $mounts = QueryBuilder::for(Mount::query()->withCount('eggs', 'nodes', 'servers'))
             ->allowedFilters(['name'])
             ->allowedSorts(['id', 'name'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($mounts)
-            ->transformWith($this->getTransformer(MountTransformer::class))
-            ->toResponseArray();
+        return MountResource::collection($mounts);
     }
 
     /**
      * Show mount.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get mount', 'Returns a single mount definition by ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "eggs", "nodes", and "servers".', required: false, example: 'eggs,nodes', enum: ['eggs', 'nodes', 'servers', 'eggs,nodes', 'eggs,nodes,servers'])]
-    #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount returned.', resourceKey: 'mount', include: ['eggs', 'nodes', 'servers'])]
-    public function show(GetMountRequest $request, Mount $mount): array
+    #[ResponseFromResource(MountResource::class, Mount::class, description: 'Mount returned.', resourceKey: 'mount', include: ['eggs', 'nodes', 'servers'])]
+    public function show(GetMountRequest $request, Mount $mount): MountResource
     {
         $mount->loadCount('eggs', 'nodes', 'servers');
 
-        return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return MountResource::make($mount)->withExtensionFields();
     }
 
     /**
      * Create mount.
      */
     #[Endpoint('Create mount', 'Creates a mount definition and generates its UUID.')]
-    #[ResponseFromTransformer(MountTransformer::class, Mount::class, status: 201, description: 'Mount created.', resourceKey: 'mount', meta: ['resource' => 'https://panel.example.com/api/admin/mounts/1'])]
+    #[ResponseFromResource(MountResource::class, Mount::class, status: 201, description: 'Mount created.', resourceKey: 'mount', meta: ['resource' => 'https://panel.example.com/api/admin/mounts/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreMountRequest $request, CreatesMounts $mounts): JsonResponse
     {
-        $mount = $mounts->create($request->payload());
+        $mount = $mounts->create($request->actionInput());
 
         Activity::event('admin:mount.create')
             ->subject($mount)
             ->property('name', $mount->name)
             ->log();
 
-        return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return MountResource::make($mount)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.admin.mounts.view', [
                     'mount' => $mount->id,
                 ]),
@@ -118,24 +109,20 @@ class MountController extends AdminApiController
 
     /**
      * Update mount.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update mount', 'Updates an existing mount definition.')]
-    #[ResponseFromTransformer(MountTransformer::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
+    #[ResponseFromResource(MountResource::class, Mount::class, description: 'Mount updated.', resourceKey: 'mount')]
     #[ExtensionFieldsParam]
-    public function update(UpdateMountRequest $request, UpdatesMounts $mounts, Mount $mount): array
+    public function update(UpdateMountRequest $request, UpdatesMounts $mounts, Mount $mount): MountResource
     {
-        $mount = $mounts->update($mount, $request->payload());
+        $mount = $mounts->update($mount, $request->actionInput());
 
         Activity::event('admin:mount.update')
             ->subject($mount)
             ->property('name', $mount->name)
             ->log();
 
-        return Fractal::item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return MountResource::make($mount)->withExtensionFields();
     }
 
     /**

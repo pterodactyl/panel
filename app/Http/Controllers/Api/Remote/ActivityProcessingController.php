@@ -12,6 +12,6 @@ class ActivityProcessingController extends Controller
 {
     public function __invoke(ActivityEventRequest $request, IngestsActivityLogs $ingestion): void
     {
-        $ingestion->ingest($request->node(), $request->events());
+        $ingestion->ingest($request->node(), $request->actionInput());
     }
 }

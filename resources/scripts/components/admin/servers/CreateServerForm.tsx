@@ -17,9 +17,16 @@ import {
 } from '@/components/admin/servers/helpers';
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
 import { type AdminUser, useAllAdminUsers } from '@/api/admin/users/queries';
-import { type LocationWithNodes, useAdminNodesGroupedByLocation } from '@/api/admin/nodes/queries';
+import { type LocationWithNodes, useAdminNodesGroupedByLocation, useAdminNodeTags } from '@/api/admin/nodes/queries';
 import { type AdminEggListItem, useAdminEggs } from '@/api/admin/eggs/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import TagCheckAlert from '@/components/admin/tags/TagCheckAlert';
+import {
+    nodeAcceptsEgg,
+    nodeRejectsEggMessage,
+    tagCheckError,
+    type TagCheckMeta,
+} from '@/components/admin/tags/helpers';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import { type ExtensionFormValues, initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
@@ -47,7 +54,7 @@ interface Values extends Omit<
     extensions: ExtensionFormValues;
 }
 
-type ServerForm = AppForm<Values>;
+type ServerForm = AppForm<Values, TagCheckMeta>;
 
 const initialValues: Values = {
     name: '',
@@ -160,9 +167,17 @@ const CoreDetailsBox = ({ form, users }: { form: ServerForm; users: AdminUser[] 
     </TitledGreyBox>
 );
 
-const AllocationBox = ({ form, locations }: { form: ServerForm; locations: LocationWithNodes[] }) => {
-    const [nodeId, setNodeId] = useState(0);
-
+const AllocationBox = ({
+    form,
+    locations,
+    nodeId,
+    onNodeChange,
+}: {
+    form: ServerForm;
+    locations: LocationWithNodes[];
+    nodeId: number;
+    onNodeChange: (nodeId: number) => void;
+}) => {
     const { data: allocationsResponse, isFetching: loading } = useAdminServerUnassignedAllocations(nodeId);
     const allocations = allocationsResponse?.data ?? [];
 
@@ -186,7 +201,7 @@ const AllocationBox = ({ form, locations }: { form: ServerForm; locations: Locat
                         value={nodeId}
                         placeholder='Select a node…'
                         onChange={(value) => {
-                            setNodeId(Number(value));
+                            onNodeChange(Number(value));
                             form.setFieldValue('allocationId', 0);
                             form.setFieldValue('allocationAdditional', []);
                         }}
@@ -568,6 +583,48 @@ const EggSection = ({ form, eggs }: { form: ServerForm; eggs: AdminEggListItem[]
     );
 };
 
+interface TagRejection {
+    message: string;
+    nodeId: number;
+    eggId: number;
+}
+
+const TagCheck = ({
+    nodeId,
+    eggId,
+    rejection,
+    pending,
+    onCreateAnyway,
+}: {
+    nodeId: number;
+    eggId: number;
+    rejection: TagRejection | null;
+    pending: boolean;
+    onCreateAnyway: () => void;
+}) => {
+    const { data: node } = useAdminNodeTags(nodeId);
+    const { data: egg } = useAdminEggForServer(eggId);
+
+    if (rejection?.nodeId === nodeId && rejection.eggId === eggId) {
+        return (
+            <TagCheckAlert
+                message={rejection.message}
+                action='Create anyway'
+                pending={pending}
+                onAction={onCreateAnyway}
+            />
+        );
+    }
+
+    const nodeTags = relationshipData(node?.attributes.relationships?.tags);
+
+    if (!node || !egg || nodeAcceptsEgg(nodeTags, relationshipData(egg.attributes.relationships?.tags))) {
+        return null;
+    }
+
+    return <TagCheckAlert message={nodeRejectsEggMessage(node.attributes.name, nodeTags)} />;
+};
+
 const NoNodesAlert = () => (
     <Alert type='warning' className='text-sm'>
         <span>
@@ -610,24 +667,33 @@ export default function CreateServerForm() {
     const loading = usersLoading || locationsLoading || eggsLoading;
     const hasNodes = locations.some((location) => location.nodes.length > 0);
 
+    const [nodeId, setNodeId] = useState(0);
+    const [rejection, setRejection] = useState<TagRejection | null>(null);
+
     const { extensionFormPayload } = useExtensionPayload('admin.server');
     const form = useAppForm({
         defaultValues: initialValues,
-        onSubmit: async ({ value }) => {
+        onSubmitMeta: { ignoreTags: false },
+        onSubmit: async ({ value, meta }) => {
             try {
                 const server = await createServer.mutateAsync(
                     createAdminServerInput({
                         ...createServerBodyFromFormValues(createServerValues(value)),
+                        ignore_tags: meta.ignoreTags,
                         extensions: extensionFormPayload(value.extensions),
                     })
                 );
 
                 void navigate({ to: '/panel/servers/$id', params: { id: server.attributes.id } });
-            } catch {
-                // Error toast is handled by the mutation.
+            } catch (error) {
+                const message = tagCheckError(error, 'primary_allocation_id');
+
+                setRejection(message === null ? null : { message, nodeId, eggId: value.eggId });
             }
         },
     });
+    const eggId = useStore(form.store, (state) => Number(state.values.eggId ?? 0));
+    const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
     return (
         <AdminContentBlock
@@ -646,7 +712,7 @@ export default function CreateServerForm() {
                 <Form form={form}>
                     <div className='space-y-6'>
                         <CoreDetailsBox form={form} users={users} />
-                        <AllocationBox form={form} locations={locations} />
+                        <AllocationBox form={form} locations={locations} nodeId={nodeId} onNodeChange={setNodeId} />
                         <FeatureLimitsBox form={form} />
                         <ResourceManagementBox form={form} />
                         <EggSection form={form} eggs={eggs?.data ?? []} />
@@ -660,6 +726,13 @@ export default function CreateServerForm() {
                                 />
                             )}
                         </form.AppField>
+                        <TagCheck
+                            nodeId={nodeId}
+                            eggId={eggId}
+                            rejection={rejection}
+                            pending={isSubmitting}
+                            onCreateAnyway={() => void form.handleSubmit({ ignoreTags: true })}
+                        />
                         <div className='flex justify-end'>
                             <form.AppForm>
                                 <form.SubmitButton>Create Server</form.SubmitButton>

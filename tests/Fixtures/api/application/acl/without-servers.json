@@ -1,0 +1,671 @@
+[
+    {
+        "request": "GET /api/application/eggs/1?include=servers,config,script,variables,tags,servers.user",
+        "status": 200,
+        "body": {
+            "object": "egg",
+            "attributes": {
+                "id": 1,
+                "uuid": "e9900001-0000-4000-8000-000000000001",
+                "name": "Paper",
+                "author": "support@example.test",
+                "description": "High performance Minecraft server.",
+                "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                "docker_images": {
+                    "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                    "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                },
+                "config": {
+                    "files": {
+                        "server.properties": {
+                            "parser": "properties",
+                            "find": {
+                                "server-ip": "0.0.0.0",
+                                "server-port": "{{server.build.default.port}}"
+                            }
+                        }
+                    },
+                    "startup": {
+                        "done": ")! For help, type "
+                    },
+                    "stop": "stop",
+                    "logs": [],
+                    "file_denylist": [],
+                    "extends": null
+                },
+                "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                "script": {
+                    "privileged": true,
+                    "install": "#!/bin/ash\necho \"installing\"",
+                    "entry": "ash",
+                    "container": "ghcr.io/pterodactyl/installers:alpine",
+                    "extends": null
+                },
+                "relationships": {
+                    "servers": {
+                        "object": "null_resource",
+                        "attributes": null
+                    },
+                    "config": {
+                        "object": "null_resource",
+                        "attributes": null
+                    },
+                    "script": {
+                        "object": "null_resource",
+                        "attributes": null
+                    },
+                    "variables": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "egg_variable",
+                                "attributes": {
+                                    "id": 1,
+                                    "egg_id": 1,
+                                    "name": "Server Jar File",
+                                    "description": "The name of the server jarfile to run.",
+                                    "env_variable": "SERVER_JARFILE",
+                                    "default_value": "server.jar",
+                                    "user_viewable": true,
+                                    "user_editable": true,
+                                    "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
+                                    "sort_order": 1,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z"
+                                }
+                            },
+                            {
+                                "object": "egg_variable",
+                                "attributes": {
+                                    "id": 2,
+                                    "egg_id": 1,
+                                    "name": "Build Number",
+                                    "description": "The build to download, or \"latest\".",
+                                    "env_variable": "BUILD_NUMBER",
+                                    "default_value": "latest",
+                                    "user_viewable": true,
+                                    "user_editable": false,
+                                    "rules": "required|string|max:20",
+                                    "sort_order": 2,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z"
+                                }
+                            },
+                            {
+                                "object": "egg_variable",
+                                "attributes": {
+                                    "id": 3,
+                                    "egg_id": 1,
+                                    "name": "Hidden Token",
+                                    "description": "Never shown to clients.",
+                                    "env_variable": "HIDDEN_TOKEN",
+                                    "default_value": "secret",
+                                    "user_viewable": false,
+                                    "user_editable": false,
+                                    "rules": "nullable|string",
+                                    "sort_order": null,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z"
+                                }
+                            }
+                        ]
+                    },
+                    "tags": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "tag",
+                                "attributes": {
+                                    "id": 1,
+                                    "name": "Minecraft",
+                                    "slug": "minecraft",
+                                    "color": "#5B8731",
+                                    "is_predefined": true,
+                                    "legacy_nest_id": 1,
+                                    "relationships": [],
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            },
+                            {
+                                "object": "tag",
+                                "attributes": {
+                                    "id": 2,
+                                    "name": "Premium",
+                                    "slug": "premium",
+                                    "color": "#ffaa00",
+                                    "is_predefined": false,
+                                    "legacy_nest_id": null,
+                                    "relationships": [],
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00"
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/locations/1?include=nodes,servers,nodes.location",
+        "status": 200,
+        "body": {
+            "object": "location",
+            "attributes": {
+                "id": 1,
+                "short": "us-east",
+                "long": "US East / Virginia",
+                "relationships": {
+                    "nodes": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": {
+                                        "location": {
+                                            "object": "location",
+                                            "attributes": {
+                                                "id": 1,
+                                                "short": "us-east",
+                                                "long": "US East / Virginia",
+                                                "relationships": [],
+                                                "updated_at": "2026-02-03T04:05:06+00:00",
+                                                "created_at": "2026-01-02T03:04:05+00:00"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "servers": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                },
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1?include=allocations,location,servers,servers.node",
+        "status": 200,
+        "body": {
+            "object": "node",
+            "attributes": {
+                "id": 1,
+                "uuid": "d0de0001-0000-4000-8000-000000000001",
+                "public": true,
+                "name": "node-alpha",
+                "description": "Primary \"alpha\" node",
+                "location_id": 1,
+                "fqdn": "alpha.example.test",
+                "scheme": "https",
+                "behind_proxy": false,
+                "maintenance_mode": false,
+                "memory": 8192,
+                "memory_overallocate": 0,
+                "disk": 102400,
+                "disk_overallocate": -1,
+                "upload_size": 100,
+                "daemon_listen": 8080,
+                "daemon_sftp": 2022,
+                "daemon_base": "/var/lib/pterodactyl/volumes",
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "allocated_resources": {
+                    "memory": 3072,
+                    "disk": 15360
+                },
+                "relationships": {
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": "Primary <game> port",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 2,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25566,
+                                    "notes": "Query/RCON",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 3,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25567,
+                                    "notes": null,
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 4,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25568,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 5,
+                                    "ip": "192.0.2.11",
+                                    "alias": null,
+                                    "port": 25565,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 6,
+                                    "ip": "192.0.2.11",
+                                    "alias": "spare.example.test",
+                                    "port": 25566,
+                                    "notes": null,
+                                    "assigned": false
+                                }
+                            }
+                        ]
+                    },
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 1,
+                            "short": "us-east",
+                            "long": "US East / Virginia",
+                            "relationships": [],
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "created_at": "2026-01-02T03:04:05+00:00"
+                        }
+                    },
+                    "servers": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                },
+                "extensions": {}
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/nodes/1/allocations?include=node,server,server.allocations",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 1,
+                        "ip": "192.0.2.10",
+                        "alias": "play.example.test",
+                        "port": 25565,
+                        "notes": "Primary <game> port",
+                        "assigned": true,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 2,
+                        "ip": "192.0.2.10",
+                        "alias": null,
+                        "port": 25566,
+                        "notes": "Query/RCON",
+                        "assigned": true,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 3,
+                        "ip": "192.0.2.10",
+                        "alias": null,
+                        "port": 25567,
+                        "notes": null,
+                        "assigned": true,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 4,
+                        "ip": "192.0.2.10",
+                        "alias": null,
+                        "port": 25568,
+                        "notes": null,
+                        "assigned": false,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 5,
+                        "ip": "192.0.2.11",
+                        "alias": null,
+                        "port": 25565,
+                        "notes": null,
+                        "assigned": false,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "allocation",
+                    "attributes": {
+                        "id": 6,
+                        "ip": "192.0.2.11",
+                        "alias": "spare.example.test",
+                        "port": 25566,
+                        "notes": null,
+                        "assigned": false,
+                        "relationships": {
+                            "node": {
+                                "object": "node",
+                                "attributes": {
+                                    "id": 1,
+                                    "uuid": "d0de0001-0000-4000-8000-000000000001",
+                                    "public": true,
+                                    "name": "node-alpha",
+                                    "description": "Primary \"alpha\" node",
+                                    "location_id": 1,
+                                    "fqdn": "alpha.example.test",
+                                    "scheme": "https",
+                                    "behind_proxy": false,
+                                    "maintenance_mode": false,
+                                    "memory": 8192,
+                                    "memory_overallocate": 0,
+                                    "disk": 102400,
+                                    "disk_overallocate": -1,
+                                    "upload_size": 100,
+                                    "daemon_listen": 8080,
+                                    "daemon_sftp": 2022,
+                                    "daemon_base": "/var/lib/pterodactyl/volumes",
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00",
+                                    "allocated_resources": {
+                                        "memory": 3072,
+                                        "disk": 15360
+                                    },
+                                    "relationships": []
+                                }
+                            },
+                            "server": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 6,
+                    "count": 6,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/application/users/2?include=servers,servers.user,servers.subusers",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 2,
+                "external_id": "ext-owner",
+                "uuid": "00000000-0000-4000-8000-000000000002",
+                "username": "owner",
+                "email": "owner@example.test",
+                "first_name": "Olive",
+                "last_name": "Owner",
+                "language": "en",
+                "root_admin": false,
+                "2fa": false,
+                "relationships": {
+                    "servers": {
+                        "object": "null_resource",
+                        "attributes": null
+                    }
+                },
+                "created_at": "2026-01-02T03:04:05+00:00",
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "extensions": {}
+            }
+        }
+    }
+]

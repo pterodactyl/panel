@@ -2,7 +2,8 @@
 import React from 'react';
 import { Menu } from '@base-ui/react/menu';
 import type { LucideIcon } from 'lucide-react';
-interface DropdownMenuProps {
+import { type PanelDestination } from "../../../sdk/navigation.js";
+export interface DropdownMenuProps {
     /** Rendered inside the trigger `<button>`. */
     triggerContent: React.ReactNode;
     triggerClassName?: string;
@@ -11,7 +12,7 @@ interface DropdownMenuProps {
     className?: string;
 }
 declare function DropdownMenu({ triggerContent, triggerClassName, openOnHover, children, className }: DropdownMenuProps): React.JSX.Element;
-interface ContextDropdownMenuProps {
+export interface ContextDropdownMenuProps {
     className?: string;
     menuClassName?: string;
     children: React.ReactNode;
@@ -19,13 +20,18 @@ interface ContextDropdownMenuProps {
 }
 /** Opens `items` at the cursor on right-click or long-press over `children`. */
 export declare function ContextDropdownMenu({ className, menuClassName, children, items }: ContextDropdownMenuProps): React.JSX.Element;
-interface ItemProps extends React.ComponentProps<typeof Menu.Item> {
+export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof Menu.Item>, 'className'> {
+    className?: string;
     icon?: LucideIcon;
     danger?: boolean;
     description?: React.ReactNode;
+    /** Makes the item a link to a panel page; following it closes the menu. */
+    destination?: PanelDestination;
+    /** Makes the item a choice that is on or off, such as the scheme in use: a `menuitemcheckbox`. */
+    checked?: boolean;
 }
 /** An item for either DropdownMenu or ContextDropdownMenu. */
-export declare function DropdownMenuItem({ icon, danger, description, className, children, ...props }: ItemProps): React.JSX.Element;
+export declare function DropdownMenuItem({ icon, danger, description, destination, checked, className, children, ...props }: DropdownMenuItemProps): React.JSX.Element;
 declare const DropdownMenuWithItems: typeof DropdownMenu & {
     Item: typeof DropdownMenuItem;
 };

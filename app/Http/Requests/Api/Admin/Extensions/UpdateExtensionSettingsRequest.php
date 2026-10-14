@@ -17,7 +17,7 @@ class UpdateExtensionSettingsRequest extends UpdateExtensionRequest
         return ['settings' => ['bail', 'present', 'array', new ValidExtensionSettings]];
     }
 
-    /** @return ExtensionSettingValues */
+    /** @return array<string, mixed> */
     public function settings(ExtensionSettingsDefinition $definition): array
     {
         $input = $this->validated('settings');

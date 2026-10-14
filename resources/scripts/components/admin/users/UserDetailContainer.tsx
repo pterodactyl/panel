@@ -26,7 +26,6 @@ import Spinner from '@/components/elements/Spinner';
 import { Dialog } from '@/components/elements/dialog';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
-import ResourceExtensionTabs from '@/extensions/ResourceExtensionTabs';
 import {
     ExtensionResourceProvider,
     useCurrentResource,
@@ -48,10 +47,12 @@ import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, RowActions } from '@/components/elements/table/RowActions';
 import ServerEditAction from '@/components/admin/servers/ServerEditAction';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
+import { resourceNavigation, type ResourceTab } from '@/views/navigation';
 
 type UserForm = AppForm<UserValues>;
+
+const tabs: ResourceTab[] = [{ id: 'about', label: 'About', to: '/panel/users/$id', exact: true }];
 
 const IdentityCard = ({
     form,
@@ -237,7 +238,7 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
             <DataTable
                 table={table}
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Server />
@@ -360,17 +361,10 @@ export function UserDetailLayout() {
                     Back to Users
                 </Link>
                 <Slot name='panel.users.detail.actions' data={resourceContext} />
-                <SubNavigation className='mb-6 rounded-sm'>
-                    <Link
-                        data-core
-                        to='/panel/users/$id'
-                        params={{ id: user.attributes.id }}
-                        activeOptions={{ exact: true, includeSearch: false }}
-                    >
-                        About
-                    </Link>
-                    <ResourceExtensionTabs parent='admin.user' basePath={`/panel/users/${user.attributes.id}`} />
-                </SubNavigation>
+                <SubNavigation
+                    className='mb-6 rounded-sm'
+                    items={resourceNavigation('admin.user', { id: String(user.attributes.id) }, tabs)}
+                />
                 <Outlet />
             </AdminContentBlock>
         </ExtensionResourceProvider.Provider>

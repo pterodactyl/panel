@@ -21,10 +21,10 @@ class ExtensionSettingDefinition
     /** Fields whose values are structured or stored elsewhere; these cannot be ->secret(). */
     private const array RICH_FIELDS = ['color', 'textarea', 'multiselect', 'list', 'file'];
 
-    /** @var (Closure(ExtensionSettingValue): ExtensionSettingValue)|null */
+    /** @var (Closure(mixed): mixed)|null */
     private ?Closure $normalizer = null;
 
-    /** @var (Closure(ExtensionSettingValue): ExtensionSettingValue)|null */
+    /** @var (Closure(mixed): mixed)|null */
     private ?Closure $publicSerializer = null;
 
     private ?string $label = null;
@@ -60,7 +60,6 @@ class ExtensionSettingDefinition
     private array $mimes = [];
 
     /**
-     * @param  ExtensionSettingValue  $default
      * @param  ValidationRuleSet  $rules
      */
     public function __construct(
@@ -72,7 +71,6 @@ class ExtensionSettingDefinition
     ) {}
 
     /**
-     * @param  ExtensionSettingValue  $default
      * @param  ValidationRuleSet  $rules
      */
     public static function make(string $key, string $input, mixed $default, array $rules = [], ?string $public = null): self
@@ -80,7 +78,7 @@ class ExtensionSettingDefinition
         return new self($key, $input, $default, $rules, $public);
     }
 
-    /** @param callable(ExtensionSettingValue): ExtensionSettingValue $normalizer */
+    /** @param callable(mixed): mixed $normalizer */
     public function normalizeUsing(callable $normalizer): self
     {
         $this->normalizer = $normalizer instanceof Closure ? $normalizer : Closure::fromCallable($normalizer);
@@ -88,7 +86,7 @@ class ExtensionSettingDefinition
         return $this;
     }
 
-    /** @param callable(ExtensionSettingValue): ExtensionSettingValue $serializer */
+    /** @param callable(mixed): mixed $serializer */
     public function publicUsing(callable $serializer): self
     {
         $this->publicSerializer = $serializer instanceof Closure ? $serializer : Closure::fromCallable($serializer);
@@ -351,9 +349,6 @@ class ExtensionSettingDefinition
     /**
      * Coerce a submitted or stored value to the field type's shape, then apply
      * normalizeUsing(). A value that does not fit falls back to the default.
-     *
-     * @param  ExtensionSettingValue  $value
-     * @return ExtensionSettingValue
      */
     public function normalize(mixed $value): mixed
     {
@@ -368,10 +363,6 @@ class ExtensionSettingDefinition
         return $this->normalizer instanceof Closure ? ($this->normalizer)($value) : $value;
     }
 
-    /**
-     * @param  ExtensionSettingValue  $value
-     * @return ExtensionSettingValue
-     */
     public function serializePublic(mixed $value): mixed
     {
         if ($this->secret) {
@@ -392,7 +383,6 @@ class ExtensionSettingDefinition
      * `constraints` carries the limits the field's control enforces up front,
      * and `visibility` who receives the value.
      *
-     * @param  ExtensionSettingValue  $currentValue
      * @return ExtensionSettingField
      */
     public function describe(mixed $currentValue): array

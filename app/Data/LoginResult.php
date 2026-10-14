@@ -32,7 +32,7 @@ final readonly class LoginResult
     /**
      * The `data` payload the panel's login screens expect from a JSON login endpoint.
      *
-     * @return array{complete: false, confirmation_token: string|null}|array{complete: true, intended: string, user: ApiPayload}
+     * @return array{complete: false, confirmation_token: string|null}|array{complete: true, intended: string, user: array<mixed>}
      */
     public function toResponseData(): array
     {

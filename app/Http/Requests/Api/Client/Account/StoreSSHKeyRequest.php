@@ -11,9 +11,8 @@ use phpseclib3\Crypt\DSA;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Exception\NoKeyLoadedException;
+use Pterodactyl\Actions\Users\CreateSshKey;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Validation\UserSSHKeyRules;
 use UnexpectedValueException;
 
 class StoreSSHKeyRequest extends ClientApiRequest
@@ -21,15 +20,19 @@ class StoreSSHKeyRequest extends ClientApiRequest
     protected ?PublicKey $key = null;
 
     /**
-     * Returns the rules for this request.
+     * Returns the rules for this request. The key is parsed here, so it is held to the
+     * longest key that is parsed; the action gets it in a consistent format, with its
+     * fingerprint.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
+        $rules = CreateSshKey::rules();
+
         return [
-            'name' => UserSSHKeyRules::rules()['name'],
-            'public_key' => UserSSHKeyRules::rules()['public_key'],
+            'name' => $rules['name'],
+            'public_key' => [...$rules['public_key'], 'max:'.CreateSshKey::PUBLIC_KEY_MAX_LENGTH],
         ];
     }
 
@@ -47,8 +50,8 @@ class StoreSSHKeyRequest extends ClientApiRequest
                 return;
             }
 
-            $publicKey = mb_trim(JsonValueGuard::string($this->input('public_key')));
-            if (! UserSSHKeyRules::isSupportedPublicKey($publicKey)) {
+            $publicKey = mb_trim($this->string('public_key')->toString());
+            if (! CreateSshKey::isSupportedPublicKey($publicKey)) {
                 $validator->errors()->add('public_key', 'The public key provided is not valid.');
 
                 return;

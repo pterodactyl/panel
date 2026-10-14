@@ -10,7 +10,7 @@ use Pterodactyl\Models\Tag;
 interface DeletesTags
 {
     /**
-     * Delete a tag and detach it from every egg and node. Built-in game tags cannot be deleted.
+     * The tag is detached from every egg and node. Built-in game tags cannot be deleted.
      *
      * @throws DisplayException
      */

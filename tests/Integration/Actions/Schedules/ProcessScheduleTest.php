@@ -66,6 +66,9 @@ test('job can be dispatched with expected initial delay', function (bool $now): 
     });
     $this->assertDatabaseHas('schedules', ['id' => $schedule->id, 'is_processing' => true]);
     $this->assertDatabaseHas('tasks', ['id' => $task->id, 'is_queued' => true]);
+
+    // Only a run on demand is logged, on the server's feed.
+    expect($server->activity()->pluck('event')->all())->toBe($now ? ['server:schedule.execute'] : []);
 })->with('dispatchNowDataProvider');
 test('first sequence task is found', function (): void {
     Bus::fake();

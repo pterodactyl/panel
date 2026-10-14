@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Models;
 
-use Carbon\CarbonImmutable;
 use Database\Factories\BackupFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -16,22 +15,8 @@ use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $uuid
- * @property bool $is_successful
- * @property bool $is_locked
- * @property string $name
- * @property string[] $ignored_files
- * @property string $disk
- * @property string|null $checksum
- * @property int $bytes
- * @property string|null $upload_id
- * @property CarbonImmutable|null $completed_at
- * @property CarbonImmutable $created_at
- * @property CarbonImmutable $updated_at
- * @property CarbonImmutable|null $deleted_at
- * @property Server $server
+ * @property list<string> $ignored_files
+ * @property-read Server $server
  */
 #[Attributes\Identifiable('bkup')]
 #[Guarded(['id', 'created_at', 'updated_at', 'deleted_at'])]

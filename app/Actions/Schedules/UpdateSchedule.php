@@ -4,54 +4,47 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Actions\Schedules;
 
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Pterodactyl\Contracts\Schedules\UpdatesSchedules;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Helpers\Utilities;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 final class UpdateSchedule implements UpdatesSchedules
 {
-    /**
-     * @param  ScheduleUpdateData  $data
-     *
-     * @throws DisplayException
-     */
-    public function update(Schedule $schedule, array $data): Schedule
+    public function update(Schedule $schedule, array $input): Schedule
     {
-        $minute = JsonValueGuard::string(Arr::get($data, 'minute'));
-        $hour = JsonValueGuard::string(Arr::get($data, 'hour'));
-        $dayOfMonth = JsonValueGuard::string(Arr::get($data, 'day_of_month'));
-        $month = JsonValueGuard::string(Arr::get($data, 'month'));
-        $dayOfWeek = JsonValueGuard::string(Arr::get($data, 'day_of_week'));
+        $validated = Validator::validate($input, CreateSchedule::rules());
+
+        $schedule->fill([
+            'name' => $validated['name'],
+            'cron_minute' => $validated['minute'],
+            'cron_hour' => $validated['hour'],
+            'cron_day_of_month' => $validated['day_of_month'],
+            'cron_month' => $validated['month'],
+            'cron_day_of_week' => $validated['day_of_week'],
+            'is_active' => $validated['is_active'] ?? false,
+            'only_when_online' => $validated['only_when_online'] ?? false,
+        ]);
 
         try {
-            $nextRunAt = Utilities::getScheduleNextRunDate($minute, $hour, $dayOfMonth, $month, $dayOfWeek);
+            $schedule->next_run_at = $schedule->getNextRunDate();
         } catch (Throwable) {
             throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
         }
 
-        $active = JsonValueGuard::boolean(Arr::get($data, 'is_active'));
-
-        $attributes = [
-            'name' => JsonValueGuard::string(Arr::get($data, 'name')),
-            'cron_day_of_week' => $dayOfWeek,
-            'cron_month' => $month,
-            'cron_day_of_month' => $dayOfMonth,
-            'cron_hour' => $hour,
-            'cron_minute' => $minute,
-            'is_active' => $active,
-            'only_when_online' => JsonValueGuard::boolean(Arr::get($data, 'only_when_online')),
-            'next_run_at' => $nextRunAt,
-        ];
-
-        if ($schedule->is_active !== $active) {
-            $attributes['is_processing'] = false;
+        // A schedule switched on or off is no longer mid-run.
+        if ($schedule->isDirty('is_active')) {
+            $schedule->is_processing = false;
         }
 
-        $schedule->update($attributes);
+        $schedule->save();
+
+        Activity::event('server:schedule.update')
+            ->subject($schedule->server, $schedule)
+            ->property(['name' => $schedule->name, 'active' => $schedule->is_active])
+            ->log();
 
         return $schedule;
     }

@@ -265,6 +265,29 @@ test('leaves settings out of the bootstrap payload when config is not included',
     expect($payload[0]['translations'])->toBeNull();
     expect((array) $payload[0]['config'])->toBe([]);
 });
+test('describes extensions to guests only as far as the sign-in pages need', function (): void {
+    $screen = ['id' => 'main', 'area' => 'admin', 'path' => 'example', 'nav' => ['label' => 'Example']];
+    writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.2.3', 'ui' => ['entry' => 'dist/client.js', 'prefix' => 'ex', 'screens' => [$screen]]]);
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+    $repository = Mockery::mock(ExtensionRepository::class, [
+        new ExtensionManifestValidator,
+        resolve(ExtensionAssetPublisher::class),
+        resolve(Dispatcher::class),
+        resolve(ExtensionSettingsRegistry::class),
+        resolve(\Pterodactyl\Services\Extensions\ExtensionCompatibility::class),
+    ])->makePartial();
+    $repository->shouldReceive('enabled')->andReturn(collect(['example' => $manifest]));
+    $repository->shouldReceive('settings')->andThrow(new RuntimeException('settings not ready'));
+
+    $guest = $repository->frontendPayload(authenticated: false)[0];
+    expect($guest)->toHaveKeys(['id', 'entry', 'prefix', 'translations', 'config'])
+        ->not->toHaveKeys(['version', 'screens', 'views']);
+
+    $user = $repository->frontendPayload(authenticated: true)[0];
+    expect($user['version'])->toBe('1.2.3')
+        ->and($user['screens'])->toBe([$screen])
+        ->and($user['views'])->toBe([]);
+});
 test('reports a translations revision that changes with the translation files', function (): void {
     writeManifest(['id' => 'example', 'name' => 'Example', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js']]);
     $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
@@ -324,33 +347,39 @@ test('rejects navigation missing defaults or declaring parameters outside its ro
     expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class);
 })->with([[[]], [['other' => 'overview']], [['tab' => 'overview', 'other' => 'extra']]]);
 
-test('preserves declared component replacements for bootstrap', function (): void {
-    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'requires' => ['sdk' => '>=2.0.0-beta.3 <3.0'], 'ui' => ['entry' => 'dist/client.js', 'components' => ExtensionManifest::COMPONENT_NAMES]]);
+test('preserves declared view overrides for bootstrap', function (): void {
+    $views = ['dashboard.serverCard', 'server.files.details', 'page.server.backups', 'billing.balance'];
+    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'requires' => ['sdk' => '>=2.0.0-beta.3 <3.0'], 'ui' => ['entry' => 'dist/client.js', 'views' => $views]]);
 
-    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->components)->toBe(['dashboard.serverCard', 'server.files.details', 'server.files.editor', 'server.files.manager']);
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->views)->toBe($views);
 });
 
-test('rejects unsupported duplicate or malformed replacement declarations', function (array $components): void {
-    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'requires' => ['sdk' => '*'], 'ui' => ['entry' => 'dist/client.js', 'components' => $components]]);
+test('rejects duplicate or malformed view declarations', function (array $views): void {
+    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'requires' => ['sdk' => '*'], 'ui' => ['entry' => 'dist/client.js', 'views' => $views]]);
 
     expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class);
 })->with([
-    'unknown name' => [['components/dashboard/ServerRow']],
+    'a path' => [['components/dashboard/ServerRow']],
+    'one segment' => [['dashboard']],
+    'a leading capital' => [['Server.power']],
+    'a trailing dot' => [['server.power.']],
+    'a trailing newline' => [["server.power\n"]],
     'duplicate name' => [['dashboard.serverCard', 'dashboard.serverCard']],
     'not a string' => [[123]],
     'not a list' => [['name' => 'dashboard.serverCard']],
 ]);
 
-test('requires an SDK constraint when declaring replacements', function (): void {
-    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'components' => ['dashboard.serverCard']]]);
+test('requires an SDK constraint when declaring view overrides', function (): void {
+    writeManifest(['id' => 'views', 'name' => 'Views', 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'views' => ['dashboard.serverCard']]]);
 
     expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, 'requires.sdk');
 });
 
-test('matches the SDK manifest component catalog', function (): void {
+test('matches the SDK manifest schema', function (): void {
     $schema = File::json(base_path('packages/sdk/manifest.schema.json'));
 
-    expect($schema['properties']['ui']['properties']['components']['items']['enum'])->toBe(ExtensionManifest::COMPONENT_NAMES);
+    expect('/'.$schema['properties']['ui']['properties']['views']['items']['pattern'].'/D')->toBe(ExtensionManifest::VIEW_NAME_REGEX);
+    expect($schema['properties']['id']['not']['enum'])->toBe(ExtensionManifest::RESERVED_IDS);
     expect('/'.$schema['properties']['ui']['properties']['screens']['items']['properties']['nav']['properties']['icon']['pattern'].'/D')->toBe(ExtensionManifest::ICON_REGEX);
     expect('/'.$schema['properties']['id']['pattern'].'/D')->toBe(ExtensionManifest::ID_REGEX);
 });

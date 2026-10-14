@@ -36,6 +36,8 @@ interface MultiSelectProps extends BaseSelectProps {
     multiple: true;
     value: SelectValue[];
     onChange: (value: SelectValue[]) => void;
+    /** Offers typed text that matches no option label, and receives it when picked. */
+    onCreate?: (text: string) => void;
 }
 export type SelectProps = SingleSelectProps | MultiSelectProps;
 export default function Select(props: SelectProps): React.JSX.Element;

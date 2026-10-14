@@ -22,6 +22,7 @@ use Pterodactyl\Services\Extensions\ExtensionLock;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionRuntimeRefresher;
+use Pterodactyl\Services\Themes\ThemeRepository;
 
 final readonly class SetExtensionEnabled implements SetsExtensionEnabled
 {
@@ -33,6 +34,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
         private ExtensionLock $lock,
         private ExtensionRuntimeRefresher $runtime,
         private ExtensionDirectories $directories,
+        private ThemeRepository $themes,
     ) {}
 
     public function setEnabled(string $identifier, bool $enabled, ?ExtensionManifest $manifest = null): void
@@ -64,6 +66,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
     private function checkStateChange(ExtensionManifest $manifest, bool $enabled): void
     {
         if (! $enabled) {
+            $this->themes->assertNotActive($manifest->id);
             $this->compatibility->assertCanDisable($manifest->id, $this->extensions->enabled());
 
             return;
@@ -72,6 +75,9 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
         $this->compatibility->assertCompatible($manifest, $this->extensions->configuredEnabled());
         $this->compatibility->assertMigrationsAreUnique($manifest, $this->extensions->discovered());
         throw_if($reason = $this->assets->unusableBuildReason($manifest), InvalidExtensionException::class, $reason);
+        if ($manifest->isTheme()) {
+            throw_if($problem = $this->themes->parentBuildProblem($manifest), InvalidExtensionException::class, $problem);
+        }
     }
 
     private function activate(ExtensionManifest $manifest): void
@@ -84,7 +90,7 @@ final readonly class SetExtensionEnabled implements SetsExtensionEnabled
     {
         Extension::query()->updateOrCreate(
             ['identifier' => $manifest->id],
-            ['version' => $manifest->version, 'enabled' => $enabled, 'error' => null],
+            ['version' => $manifest->version, 'enabled' => $enabled, ...Extension::NO_ERROR],
         );
     }
 

@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Contracts\Validation\Rule as RuleContract;
 use Illuminate\Contracts\Validation\ValidationRule as ValidationRuleContract;
 use Illuminate\Support\Facades\Crypt;
-use Pterodactyl\Support\JsonValueGuard;
 use Stringable;
 use UnexpectedValueException;
 
@@ -20,21 +19,20 @@ final class ExtensionSettingValueGuard
     private const string COLOR_PATTERN = '/\A(?:#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|oklch\((?&n)%? (?&n)%? (?&n)(?:deg)?(?: \/ (?&n)%?)?\))\z(?(DEFINE)(?<n>\d{1,3}(?:\.\d{1,6})?|\.\d{1,6}))/';
 
     /**
-     * @return ExtensionSettingValue
+     * A stored setting, decrypted first when it is a secret.
      */
-    public static function decode(string $encoded, bool $secret = false): bool|float|int|string|array|null
+    public static function decode(string $encoded, bool $secret = false): mixed
     {
-        $value = JsonValueGuard::decode($encoded);
+        $value = json_decode($encoded, true, flags: JSON_THROW_ON_ERROR);
         if (! $secret) {
             return $value;
         }
 
         throw_unless(is_string($value), UnexpectedValueException::class, 'Encrypted extension settings must be strings.');
 
-        return JsonValueGuard::decode(Crypt::decryptString($value));
+        return json_decode(Crypt::decryptString($value), true, flags: JSON_THROW_ON_ERROR);
     }
 
-    /** @param ExtensionSettingValue $value */
     public static function encode(mixed $value, bool $secret = false): string
     {
         $encoded = json_encode($value, JSON_THROW_ON_ERROR);
@@ -43,14 +41,25 @@ final class ExtensionSettingValueGuard
     }
 
     /**
-     * @phpstan-assert ExtensionSettingValue $value
+     * Rejects what JSON cannot hold, such as objects and uploaded files, and nesting
+     * deeper than ten levels.
      */
     public static function assertValue(mixed $value, int $remainingDepth = 10): void
     {
-        JsonValueGuard::assertValue($value, $remainingDepth);
+        if (! is_array($value)) {
+            throw_unless($value === null || is_scalar($value), UnexpectedValueException::class, 'Extension setting values must be JSON scalars or arrays.');
+
+            return;
+        }
+
+        throw_if($remainingDepth === 0, UnexpectedValueException::class, 'Extension setting values may be nested at most 10 levels.');
+
+        foreach ($value as $item) {
+            self::assertValue($item, $remainingDepth - 1);
+        }
     }
 
-    /** @phpstan-assert ExtensionSettingValues $value */
+    /** @phpstan-assert array<string, mixed> $value */
     public static function assertValues(mixed $value): void
     {
         throw_unless(is_array($value), UnexpectedValueException::class, 'Extension settings must be an object.');
@@ -159,10 +168,8 @@ final class ExtensionSettingValueGuard
     /**
      * The canonical form of a colour setting (lower case, single spaces), or
      * null when the value is not a colour this panel accepts.
-     *
-     * @param  ExtensionSettingValue  $value
      */
-    public static function color(bool|float|int|string|array|null $value): ?string
+    public static function color(mixed $value): ?string
     {
         if (! is_string($value) || mb_strlen($value) > 64) {
             return null;
@@ -177,10 +184,8 @@ final class ExtensionSettingValueGuard
     /**
      * A multi-line text setting with its line endings normalized, or null when
      * the value is not a string.
-     *
-     * @param  ExtensionSettingValue  $value
      */
-    public static function text(bool|float|int|string|array|null $value): ?string
+    public static function text(mixed $value): ?string
     {
         return is_string($value) ? str_replace(["\r\n", "\r"], "\n", $value) : null;
     }
@@ -189,10 +194,9 @@ final class ExtensionSettingValueGuard
      * The string items of a list setting, in order, or null when the value is
      * not a list.
      *
-     * @param  ExtensionSettingValue  $value
      * @return list<string>|null
      */
-    public static function strings(bool|float|int|string|array|null $value): ?array
+    public static function strings(mixed $value): ?array
     {
         if (! is_array($value) || ! array_is_list($value)) {
             return null;
@@ -206,11 +210,10 @@ final class ExtensionSettingValueGuard
      * declaration order, or null when the value is not a list. Anything that is
      * not a declared choice is dropped.
      *
-     * @param  ExtensionSettingValue  $value
      * @param  list<string|int>  $choices
      * @return list<string|int>|null
      */
-    public static function choices(bool|float|int|string|array|null $value, array $choices): ?array
+    public static function choices(mixed $value, array $choices): ?array
     {
         if (! is_array($value) || ! array_is_list($value)) {
             return null;
@@ -219,12 +222,10 @@ final class ExtensionSettingValueGuard
         $selected = [];
         foreach ($value as $item) {
             if (is_string($item) || is_int($item)) {
-                // SAFETY: only strings and integers reach this cast, and both stringify losslessly.
                 $selected[(string) $item] = true;
             }
         }
 
-        // SAFETY: declared choices are strings or integers, which stringify losslessly.
         return array_values(array_filter($choices, fn (string|int $choice): bool => isset($selected[(string) $choice])));
     }
 
@@ -233,10 +234,9 @@ final class ExtensionSettingValueGuard
      * stores: text is a string or a number, a select value is identical to one of
      * the declared choices. Null always fits; other fields have their own checks.
      *
-     * @param  ExtensionSettingValue  $value
      * @param  list<string|int|bool>  $choices
      */
-    public static function fitsField(string $field, bool|float|int|string|array|null $value, array $choices = []): bool
+    public static function fitsField(string $field, mixed $value, array $choices = []): bool
     {
         return $value === null || match ($field) {
             'text', 'password' => is_string($value) || is_int($value) || is_float($value),
@@ -249,16 +249,13 @@ final class ExtensionSettingValueGuard
 
     /**
      * The stored name of an uploaded settings file, or null when the value is not one.
-     *
-     * @param  ExtensionSettingValue  $value
      */
-    public static function fileReference(bool|float|int|string|array|null $value): ?string
+    public static function fileReference(mixed $value): ?string
     {
         return is_string($value) && preg_match(ExtensionSettingFiles::NAME_PATTERN, $value) === 1 ? $value : null;
     }
 
     /**
-     * @param  ExtensionSettingValue  $value
      * @param  'string'|'number'|'boolean'|'array'|'object'|'null'|'json'  $type
      */
     public static function assertFrontendType(mixed $value, string $type): void

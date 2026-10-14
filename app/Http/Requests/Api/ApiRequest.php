@@ -24,6 +24,17 @@ abstract class ApiRequest extends FormRequest
         return [];
     }
 
+    /**
+     * The validated input, for an action that validates it again itself so that
+     * extensions and commands calling the action directly meet the same rules.
+     *
+     * @return array<string, mixed>
+     */
+    public function actionInput(): array
+    {
+        return $this->validated();
+    }
+
     public function perPage(int $default = self::DEFAULT_PER_PAGE): int
     {
         $perPage = filter_var($this->validated('per_page') ?? $default, FILTER_VALIDATE_INT);

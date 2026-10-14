@@ -3,8 +3,8 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v2.0.0 (unreleased)
-Extension SDK `2.0.0-beta.4`.
+## v2.0.0-beta.1
+Extension SDK `2.0.0-beta.6`.
 
 ### Fixed
 * Extension web routes under `/extensions/<id>` are now matched before the SPA catch-all route, which previously answered them.
@@ -18,7 +18,11 @@ Extension SDK `2.0.0-beta.4`.
 * The client API server resource includes `egg_tags`.
 * Each extension builds Tailwind with its own prefix, declared as `ui.prefix` in the manifest (2-12 lowercase letters; `hw` gives `hw:flex`, `hw:lg:hidden` and theme variables under `--hw-*`). Tailwind variant names, theme namespaces and panel names are reserved, two enabled extensions cannot share a prefix, and `p:extension:doctor`, `p:extension:pack`, install and enable reject a build whose utilities or theme variables do not carry the declared prefix. `p:extension:make` derives a prefix from the id or takes `--prefix`.
 * `@pterodactyl/sdk/theme.css` points prefixed extension builds at the panel's live `--spacing` and font tokens; the panel imports the shared mapping from `packages/sdk/theme-tokens.css`.
-* Class names passed to core components resolve the prefixed utilities of every enabled extension against the panel utility they replace; the SDK test hosts take the `prefix` to do the same.
+* Class names passed to core components resolve the prefixed utilities of every enabled extension against the panel utility they replace; `createExtensionTestHost` and `renderView` take the `prefix` to do the same.
+* The stock UI is the built-in `classic` theme, written on the public theme API. Every layout, page and block outside the admin area is a named view with an engine model, rendered through a chain of layers (classic, the active theme and its parents, then extension overrides) in which each layer can render the one below and a failing layer falls back to it.
+* Extensions override views with `views.override`, declaring each in the manifest's `ui.views`.
+* Core components take their classes from UI kit skins and mark their parts with `data-ui`, `data-part` and their state.
+* The extension and theme Vite presets emit fonts and images with URLs relative to the file that uses them, so they load from the published build.
 
 ### Added
 * Adds `ReadsFileContents`, `ListsDirectories`, `ReadsServerLogs`, `ReadsServerState`, `ChangesServerEgg` and `CompletesLogins` action contracts.
@@ -27,7 +31,15 @@ Extension SDK `2.0.0-beta.4`.
 * `OperationCompleted` now also reports `delete`, `suspend`, `unsuspend` and `transfer`.
 * Adds public extension settings (`->frontend()->public()`) and the `color`, `textarea`, `multiselect`, `list` and `file` setting fields, with uploads served from `/extension-files/<id>/`.
 * Adds conditional extension screens (`ui.screens[].when` and a runtime `visible` predicate), live navigation badges, `NamedIcon` and `@pterodactyl/sdk/icons.json`.
-* Adds the replaceable `server.files.editor` and `server.files.manager` components, `useNavigationBlocker`, `serverResourcesQueryOptions`, `useServerResources`, `useSendServerPower` and `useSendServerCommand` to the SDK.
+* Adds the `server.files.editor` and `server.files.manager` views, `useNavigationBlocker`, `serverResourcesQueryOptions`, `useServerResources`, `useSendServerPower` and `useSendServerCommand` to the SDK.
+* Adds themes: extensions with `"type": "theme"` that rebuild the panel stylesheet, skin the UI kit and override views through `defineTheme` (`@pterodactyl/sdk/theme`), with typed settings written as tokens and `<html>` attributes, dark and light schemes with a user switch, and child themes through `theme.extends`.
+* Adds the admin Themes page (activate, preview for me, settings), `p:theme:activate`, `p:theme:reset`, `p:theme:list`, safe mode (`?safe_mode=1`), and a fallback to classic when a theme fails to load.
+* Adds the theme toolchain: `p:extension:make --theme` (`--css-only` for a theme without JavaScript), `defineThemeConfig`, the `pterodactyl-theme` CLI (`list`, `eject`, `skins`), `renderView`, `renderWithTheme` and `preloadTheme` in `@pterodactyl/sdk/testing`, and the SDK's themes guide, `THEMES.md`.
+* `renderView` throws a `ViewLayerError` when a theme or extension layer fails or leaves out a slot classic renders for the same fixture, unless `strict` is false, and `renderView` mounts test components in slots with `slots`.
+* A theme or extension layer that leaves out a slot with components logs a browser console warning naming the layer, the slot and the extensions it hides.
+* `defineTheme` takes `setup`, run with an extension's context while the theme or a theme extending it is active, so a theme registers slots, screens, table columns and form fields as an extension does.
+* Theme settings take a `tab`, which splits the settings dialog on the Themes page into sections.
+* `<Slot compact />` tells the components mounted in a slot that the theme placed it somewhere narrow, such as an icon rail, through their `compact` prop.
 * Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.
 * Scaffolded extensions set `preserveSymlinks` so a linked SDK resolves its peer types from the extension.
 

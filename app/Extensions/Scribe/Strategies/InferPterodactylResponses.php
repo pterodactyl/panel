@@ -19,8 +19,8 @@ use ReflectionNamedType;
 class InferPterodactylResponses extends Strategy
 {
     /**
-     * @param  array<string, ApiValue10>  $settings  settings to be applied to this strategy
-     * @return list<ScribeResponse>
+     * @param  array<string, mixed>  $settings  settings to be applied to this strategy
+     * @return list<array{status: int, content: array<string, mixed>, description: string}>
      */
     public function __invoke(ExtractedEndpointData $endpointData, array $settings = []): ?array
     {
@@ -43,7 +43,7 @@ class InferPterodactylResponses extends Strategy
     }
 
     /**
-     * @return list<ScribeResponse>
+     * @return list<array{status: int, content: array<string, mixed>, description: string}>
      */
     private function standardErrorResponses(ExtractedEndpointData $endpointData): array
     {

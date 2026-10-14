@@ -65,35 +65,58 @@ test('rejects upgrades and disabling that would break an enabled dependent', fun
     $compatibility->assertCanDisable('child', $enabled);
 });
 
-/** @param list<string> $components */
-function presentation(string $id, array $components): ExtensionManifest
+test('an extension that is already failing does not stop another from being enabled', function (): void {
+    $enabled = collect([
+        'future' => manifest('future', ['panel' => '^3.0']),
+        'orphan' => manifest('orphan', ['extensions' => ['gone' => '*']]),
+    ]);
+    $compatibility = resolve(ExtensionCompatibility::class);
+
+    $compatibility->assertCompatible(manifest('healthy'), $enabled);
+
+    expect(fn () => $compatibility->assertCompatible(manifest('dependent', ['extensions' => ['future' => '*']]), $enabled))
+        ->toThrow(InvalidExtensionException::class, 'Extension "dependent" requires unavailable extension "future".');
+});
+
+/** @param list<string> $views */
+function presentation(string $id, array $views): ExtensionManifest
 {
-    return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'components' => $components]], [], 'dist/client.js', 'native', null);
+    return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0', 'ui' => ['entry' => 'dist/client.js', 'views' => $views]], [], 'dist/client.js', 'native', null);
 }
 
-test('rejects conflicting component ownership while preserving unrelated extensions', function (): void {
+test('view overrides are not exclusive claims', function (): void {
     $enabled = collect([
         'first' => presentation('first', ['dashboard.serverCard']),
         'second' => presentation('second', ['dashboard.serverCard']),
-        'healthy' => presentation('healthy', ['server.files.details']),
+    ]);
+
+    expect(resolve(ExtensionCompatibility::class)->resolve($enabled)['errors'])->toBe([]);
+});
+
+function themed(string $id, string $extends = 'classic'): ExtensionManifest
+{
+    return ExtensionManifest::fromValidatedData('', ['id' => $id, 'name' => $id, 'version' => '1.0.0', 'type' => 'theme', 'theme' => ['extends' => $extends]], [], null, 'native', null);
+}
+
+test('a theme needs the theme it extends enabled, and a chain cannot loop', function (): void {
+    $enabled = collect([
+        'base' => themed('base'),
+        'child' => themed('child', 'base'),
+        'orphan' => themed('orphan', 'gone'),
+        'impostor' => themed('impostor', 'plain'),
+        'plain' => manifest('plain'),
+        'loop-a' => themed('loop-a', 'loop-b'),
+        'loop-b' => themed('loop-b', 'loop-a'),
     ]);
     $compatibility = resolve(ExtensionCompatibility::class);
     $result = $compatibility->resolve($enabled);
 
-    expect($result['manifests']->keys()->all())->toBe(['healthy']);
-    expect($result['errors']['first'])->toContain('dashboard.serverCard', 'second');
-    expect($result['errors']['second'])->toContain('dashboard.serverCard', 'first');
-    expect(fn () => $compatibility->assertCompatible(presentation('third', ['dashboard.serverCard']), $enabled))->toThrow(InvalidExtensionException::class, 'dashboard.serverCard');
-});
-
-test('allows an owner to update itself and ownership to transfer after disabling', function (): void {
-    $compatibility = resolve(ExtensionCompatibility::class);
-    $first = presentation('first', ['dashboard.serverCard']);
-    $enabled = collect(['first' => $first]);
-
-    $compatibility->assertCompatible(presentation('first', ['dashboard.serverCard']), $enabled);
-    expect($enabled->get('first'))->toBe($first);
-    $compatibility->assertCompatible(presentation('second', ['dashboard.serverCard']), collect());
+    expect($result['manifests']->keys()->all())->toBe(['base', 'child', 'plain']);
+    expect($result['errors']['orphan'])->toBe('Theme "orphan" extends "gone", which is not an enabled theme.');
+    expect($result['errors']['impostor'])->toBe('Theme "impostor" extends "plain", which is not an enabled theme.');
+    expect($result['errors']['loop-a'])->toContain('circular');
+    expect(fn () => $compatibility->assertCanDisable('base', $enabled))->toThrow(InvalidExtensionException::class, 'Disable dependent extension "child" before "base".');
+    expect(fn () => $compatibility->assertCompatible(themed('next', 'gone'), $enabled))->toThrow(InvalidExtensionException::class, 'extends "gone"');
 });
 
 /** @param list<string> $prefixes */

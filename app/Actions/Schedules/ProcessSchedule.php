@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Schedules\ProcessesSchedules;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Models\Schedule;
@@ -17,12 +18,18 @@ use Throwable;
 
 final readonly class ProcessSchedule implements ProcessesSchedules
 {
-    /**
-     * Process a schedule and push the first task onto the queue worker.
-     *
-     * @throws Throwable
-     */
     public function process(Schedule $schedule, bool $now = false): void
+    {
+        $this->run($schedule, $now);
+
+        // A run on demand is someone's doing; runs on the schedule's timer are not logged.
+        if ($now) {
+            Activity::event('server:schedule.execute')->subject($schedule->server, $schedule)->property('name', $schedule->name)->log();
+        }
+    }
+
+    /** @throws Throwable */
+    private function run(Schedule $schedule, bool $now): void
     {
         $run = $this->claim($schedule, $now);
         $job = $run['job'];

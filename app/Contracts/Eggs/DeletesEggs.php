@@ -11,8 +11,8 @@ use Pterodactyl\Models\Egg;
 interface DeletesEggs
 {
     /**
-     * Delete an egg, provided no servers use it and no eggs inherit their
-     * configuration from it.
+     * An egg that servers use, or that other eggs inherit their configuration from, is not
+     * deleted.
      *
      * @throws HasActiveServersException
      * @throws HasChildrenException

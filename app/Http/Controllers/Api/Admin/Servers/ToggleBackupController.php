@@ -9,14 +9,13 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Backups\TogglesBackupLocks;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\Backups\ToggleBackupRequest;
+use Pterodactyl\Http\Resources\Api\Admin\BackupResource;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Admin\BackupTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Server Backups', 'Inspect and lock backups assigned to a server.')]
@@ -24,12 +23,10 @@ class ToggleBackupController extends AdminApiController
 {
     /**
      * Toggle backup lock state.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Toggle server backup lock', 'Toggles whether a server backup is locked against deletion.')]
-    #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backup lock state toggled.', resourceKey: 'backup')]
-    public function __invoke(ToggleBackupRequest $request, TogglesBackupLocks $toggle, Server $server, Backup $backup): array
+    #[ResponseFromResource(BackupResource::class, Backup::class, description: 'Server backup lock state toggled.', resourceKey: 'backup')]
+    public function __invoke(ToggleBackupRequest $request, TogglesBackupLocks $toggle, Server $server, Backup $backup): BackupResource
     {
         if ($backup->server_id !== $server->id) {
             throw (new ModelNotFoundException)->setModel(Backup::class);
@@ -42,8 +39,6 @@ class ToggleBackupController extends AdminApiController
             ->property(['name' => $backup->name, 'locked' => $backup->is_locked])
             ->log();
 
-        return Fractal::item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
-            ->toResponseArray();
+        return BackupResource::make($backup);
     }
 }

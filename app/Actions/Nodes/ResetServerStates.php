@@ -11,16 +11,9 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
-use Throwable;
 
 final readonly class ResetServerStates implements ResetsServerStates
 {
-    /**
-     * Returns every installing or restoring server on the node to a normal state after a
-     * Wings restart, logging a failed restore for each backup that was in progress.
-     *
-     * @throws Throwable
-     */
     public function reset(Node $node): void
     {
         $servers = Server::query()

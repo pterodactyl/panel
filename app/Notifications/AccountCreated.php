@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 class AccountCreated extends Notification implements ShouldQueue
 {
@@ -40,7 +39,7 @@ class AccountCreated extends Notification implements ShouldQueue
     {
         $message = (new MailMessage)
             ->greeting('Hello '.$this->user->name.'!')
-            ->line('You are receiving this email because an account has been created for you on '.JsonValueGuard::string(config('app.name')).'.')
+            ->line('You are receiving this email because an account has been created for you on '.config()->string('app.name').'.')
             ->line('Username: '.$this->user->username)
             ->line('Email: '.$this->user->email);
 

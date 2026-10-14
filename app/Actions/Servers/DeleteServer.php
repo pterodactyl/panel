@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
 use Pterodactyl\Contracts\Servers\DeletesServers;
 use Pterodactyl\Events\Server\OperationCompleted;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Server;
@@ -33,10 +32,6 @@ final class DeleteServer implements DeletesServers
         return $this;
     }
 
-    /**
-     * @throws Throwable
-     * @throws DisplayException
-     */
     public function delete(Server $server): void
     {
         try {
@@ -52,8 +47,9 @@ final class DeleteServer implements DeletesServers
         // them inside the transaction could not be undone if the deletion later rolled back.
         $databases = DB::transaction(function () use ($server): Collection {
             $databases = $server->loadMissing('databases.host')->databases;
+            // Each database keeps its server, which the drop below logs against once the row is gone.
             foreach ($databases as $database) {
-                $database->delete();
+                $database->setRelation('server', $server)->delete();
             }
 
             // Clear notes before releasing the allocations back to the unassigned pool.

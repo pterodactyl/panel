@@ -8,7 +8,9 @@ use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Activity\IngestsActivityLogs;
 use Pterodactyl\Models\ActivityLog;
@@ -17,11 +19,59 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 
+/**
+ * @phpstan-type ActivityEvent array{user: string|null, server: string, event: string, metadata: array<mixed>, ip: string|null, timestamp: string}
+ */
 final class IngestActivityLogs implements IngestsActivityLogs
 {
-    /** @param ActivityEvents $events */
-    public function ingest(Node $node, array $events): void
+    /** @return NormalizedValidationRules */
+    public static function rules(): array
     {
+        return [
+            'data' => ['required', 'array'],
+            'data.*' => ['array'],
+            'data.*.user' => ['sometimes', 'nullable', 'uuid'],
+            'data.*.server' => ['required', 'uuid'],
+            'data.*.event' => ['required', 'string'],
+            'data.*.metadata' => ['present', 'nullable', 'array'],
+            'data.*.ip' => ['sometimes', 'nullable', 'ip'],
+            'data.*.timestamp' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Metadata given as null is empty.
+     *
+     * @param  array<string, mixed>  $input
+     * @return list<ActivityEvent>
+     *
+     * @throws ValidationException
+     */
+    public static function events(array $input): array
+    {
+        $input = Validator::make($input, self::rules())->safe();
+
+        $events = [];
+        foreach (array_keys($input->array('data')) as $key) {
+            $event = 'data.'.$key.'.';
+
+            $events[] = [
+                'user' => $input->filled($event.'user') ? $input->string($event.'user')->toString() : null,
+                'server' => $input->string($event.'server')->toString(),
+                'event' => $input->string($event.'event')->toString(),
+                'metadata' => $input->array($event.'metadata'),
+                'ip' => $input->filled($event.'ip') ? $input->string($event.'ip')->toString() : null,
+                'timestamp' => $input->string($event.'timestamp')->toString(),
+            ];
+        }
+
+        return $events;
+    }
+
+    public function ingest(Node $node, array $input): void
+    {
+        $events = self::events($input);
+
         $tz = now()->getTimezone();
         $servers = $node->servers()->whereIn('uuid', array_column($events, 'server'))->get()->keyBy('uuid');
         $users = User::query()->whereIn('uuid', array_filter(array_column($events, 'user')))->get()->keyBy('uuid');

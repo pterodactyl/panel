@@ -1,12 +1,19 @@
 # @pterodactyl/sdk
 
-Build extensions for the Pterodactyl panel (v2+). This package provides:
+Build extensions and themes for the Pterodactyl panel (v2+). This package provides:
 
 - **Types** for the runtime API. The implementation is provided *by the panel*
   through its import map, so your built extension never bundles the SDK, React, or
   TanStack Query: it shares the panel's own instances.
-- **The Vite build preset** (`@pterodactyl/sdk/vite`) that keeps those modules external
-  and emits `dist/client.js` plus lazy screen chunks.
+- **The Vite build presets** (`@pterodactyl/sdk/vite`): `defineExtensionConfig` keeps those
+  modules external and emits `dist/client.js` plus lazy screen chunks; `defineThemeConfig`
+  also builds a theme's stylesheet.
+- **Test helpers** (`@pterodactyl/sdk/testing`, `@pterodactyl/sdk/vitest`) that render views,
+  UI primitives and screens with the real runtime and no backend.
+- **The `pterodactyl-theme` CLI**, which lists the panel's views, ejects the stock theme's source
+  for one, and copies its skins.
+
+Extensions start at [Quick start](#quick-start). Themes start at [THEMES.md](THEMES.md).
 
 ## Quick start
 
@@ -72,7 +79,7 @@ minor versions, removals are majors.
 
 Screen IDs, paths, navigation, and permissions live in `ui.screens` in the manifest. A screen's `permission` list names the subuser permissions needed to open it and is only accepted on `server` screens; account and admin screens are open to every signed-in user and every root admin respectively. Register each declared screen with `screens.register(id, importer)` during synchronous `setup`. Paths use a static first segment and may include named parameters such as `votes/$tab` (the panel reserves `$id`); duplicate paths, duplicate parameter patterns, and core route collisions reject the offending extension. Screen components receive a `data` prop (`ScreenComponentProps`) with the current `pathname`, `search`, and `params`, so `votes/$tab` reads its value from `data.params.tab`.
 
-The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the configured extension order. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
+The panel renders before optional bundles finish importing. Each extension commits atomically when ready; slot display order follows the load order: an extension after the ones it requires, then alphabetical by id. Screens show local loading state while their bundle or chunk loads. Slots have individual Suspense and error boundaries, and SDK websocket callbacks are isolated and attributed to their mod. Native extensions execute in the panel's JavaScript environment; boundaries are not a sandbox and cannot interrupt synchronous code.
 
 Recoverable render/query failures offer Retry. Failed screen chunks offer an explicit page reload because resetting an error boundary cannot evict a rejected browser module. Enabling, disabling, updating, or changing frontend configuration takes effect on the next full page load; reload after management changes. Already evaluated JavaScript is not unloaded dynamically.
 
@@ -143,17 +150,17 @@ matches the panel's empty states; pass it as a `Table`'s `emptyState`.
 `resources/lang/<locale>/messages.php` group. Extension CSS is built with the extension's own
 Tailwind prefix (see [Styling](#styling)). The Vite preset waits for entry CSS before setup.
 
-Themes override the panel's CSS tokens: colour roles, the `--terminal-*`
-and `--editor-*` palettes, `--selection`, `--scrollbar-*`, `--color-scheme`, `--theme-color`,
-and the layout tokens `--layout-content-width`, `--layout-auth-width`,
-`--layout-sidebar-width` (`max-w-panel`, `max-w-auth`, `w-sidebar`) and `--spacing` (density).
-Extension utilities read the same live tokens (`hw:bg-card`, `hw:w-sidebar`, `hw:p-4` for the prefix `hw`).
-`document.documentElement.dataset.subNavigation = 'side'` moves the account and server
-sub-navigation into a sidebar. The console and the `theme-color` meta re-read their tokens
-when a stylesheet or an inline property on `<html>` changes; `onThemeChange(listener)` gives
-canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
-`notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own
-`theme-color` tag follows the token; one registered with `registerHeadTags` is left as rendered.
+The active theme sets the panel's CSS tokens (see [Tokens](THEMES.md#tokens)). Extension utilities read
+the same live tokens (`hw:bg-card`, `hw:w-sidebar`, `hw:p-4` for the prefix `hw`), so an
+extension follows the theme without knowing it. The console and the `theme-color` meta re-read
+their tokens when a stylesheet or an inline property on `<html>` changes; `onThemeChange(listener)`
+gives canvas or chart code the same signal, `readThemeToken('--name')` reads a value, and
+`notifyThemeChange()` reports changes made through the CSSOM. Only the panel's own `theme-color`
+tag follows the token; one registered with `registerHeadTags` is left as rendered.
+
+`useShortcut('g', handler)` binds a key, or `mod+` and a key for Cmd (Ctrl off Apple devices), while
+focus is outside fields, dialogs and menus, and returns its names for `aria-keyshortcuts` and a hint
+(see [Keyboard shortcuts](THEMES.md#keyboard-shortcuts)).
 
 ## Conditional screens, badges, and icons
 
@@ -237,11 +244,14 @@ shows while the extension is disabled, and `p:extension:pack` adds it to the arc
 
 ## Author tooling and configuration
 
-Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
+`p:extension:make <id>` scaffolds a package in `extensions/<id>`; `--out=<dir>` creates it in
+`<dir>/<id>`. Use `p:extension:doctor <path>`, `p:extension:dev <path> --watch`, and
 `p:extension:pack <path>` for preflight checks, successful-build publishing with browser reload in debug mode, and
-runtime-only archives. Scaffolds include tests, CI, OpenAPI generation, and styling.
+runtime-only archives; pack leaves `*.map` files out unless given `--sourcemaps`, since a map can embed
+your sources. Scaffolds include tests, CI, OpenAPI generation, and styling.
 `@pterodactyl/sdk/testing` supplies `createExtensionTestHost` and `createTestServer`;
-`@pterodactyl/sdk/vitest` supplies aliases and setup for the real runtime. Unmount the
+`@pterodactyl/sdk/vitest` supplies aliases and setup for the real runtime, including the
+`ResizeObserver`, `IntersectionObserver` and `matchMedia` jsdom lacks. Unmount the
 wrapper and dispose the host after each test. The test host shares the real cache;
 create one host at a time within a test environment.
 
@@ -547,7 +557,8 @@ run outside their transactions:
   failed drop is reported and the rest are dropped.
 - `InitiatesTransfers` calls Wings after the transfer records commit. A transfer Wings
   rejects is marked failed through `FailsTransfers`.
-- `RotatesDatabasePasswords` finishes before the controller writes the activity log entry.
+- `RotatesDatabasePasswords` logs the rotation after its transaction around the remote user
+  change commits.
 
 The wrapper owns the call: it decides whether and when to invoke the inner action and
 must forward fluent options such as `withForce()` itself, returning itself. Whatever it
@@ -556,24 +567,43 @@ untouched. A reported exception raised from the extension's package is recorded 
 the extension. The decorator is skipped while the extension is disabled or failed to boot;
 one that throws or returns another type is recorded and skipped, so the core action always
 resolves. Extensions wrap in load order, the last one outermost. The actions that install,
-enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and apply themes
-(`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
+enable, disable, remove and configure extensions (`Contracts\Extensions\*`) and activate
+themes (`Contracts\Themes\*`) cannot be wrapped; asking for one fails the provider's boot.
 
 Core controllers resolve these contracts, not the classes behind them. Renaming a server from the client API calls
 `UpdatesServerDetails`. Toggling a backup lock from the admin API calls `TogglesBackupLocks`.
 Deleting an allocation block calls `DeletesAllocations` once per allocation. Disabling
 two-factor, by an admin or by the user, calls `DisablesTwoFactor`, which clears the TOTP
-secret. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
-endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image.
+secret. Changing a password, from the account page or with a reset link, calls
+`UpdatesUserPasswords`. Changing a Docker image calls `UpdatesServerDockerImage`, both from the client
+endpoint and when an admin startup update (`UpdatesServerStartup`) sets the image. Changing a
+startup variable calls `UpdatesServerVariable`, once from the client endpoint and once per
+variable in a startup update.
 `UpdatesEggs`, `UpdatesEggInstallScripts` and `UpdatesEggVariables` return the updated model.
 Mounts (`CreatesMounts`, `UpdatesMounts`, `DeletesMounts`, `AttachesEggsToMounts`,
 `AttachesNodesToMounts`, `DetachesEggsFromMounts`, `DetachesNodesFromMounts`), tags
-(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, `DeletesApiKeys`),
+(`CreatesTags`, `UpdatesTags`, `DeletesTags`), API keys (`UpdatesApiKeys`, and `DeletesApiKeys` for
+application and account keys alike), account SSH keys (`CreatesSshKeys`, `DeletesSshKeys`),
 egg variable deletion (`DeletesEggVariables`) and the server install-status toggle
 (`TogglesServerInstallStatus`) have contracts of their own as well.
 
 Resolve the same contracts from the container to call core behaviour instead of
-reimplementing it. Beside the mutating actions, these read or complete on your behalf:
+reimplementing it. An action that takes an input array validates it with the same rules
+as the API, whoever calls it, and throws a `ValidationException` naming the field that
+failed; values arrive as Laravel's rules accept them, so `"1"` is a boolean and `"25"` an
+integer. Pass the field names the Admin API uses. Extension form field values for a model
+go under `extensions` and are only accepted from a request that validated them.
+
+An action that changes a server or an account writes the `server:*` or `user:*` activity
+entry for that change itself, so it shows on the server's or user's activity feed whoever
+calls it. A call from an extension, a console command or the Application API is logged the
+same way as one from the client API, with the signed-in user, if there is one, as the
+actor. The admin API also writes its own `admin:*` entry to the admin activity log. A
+wrapper that does not call the inner action leaves no entry. Reading a file and downloading
+a file or a backup are logged by the endpoint the user called, not by `ReadsFileContents`
+or `GeneratesBackupDownloadLinks`.
+
+Beside the mutating actions, these read or complete on your behalf:
 
 | Contract | Call |
 | --- | --- |
@@ -698,68 +728,119 @@ Hand-written classes are yours to name and belong outside the Tailwind layers. `
 defines `hw:card`, and a `@theme` variable `--color-brand` is emitted as `--hw-color-brand`
 and used as `hw:bg-brand`.
 
-Classes passed to SDK components and to `Default` in a component replacement are merged with
-the component's own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
+Classes passed to SDK components and to a view's `Default` are merged with the component's
+own for the prefix of every enabled extension: `<Button className="hw:mt-4">`
 drops the button's `mt-*` default, per variant, exactly as a panel class would
 (`hw:hover:bg-accent` replaces `hover:bg-primary/90`; `hw:bg-accent` alone does not). In tests
-pass the prefix to the host: `createComponentTestHost(name, { model, prefix: 'hw' })`.
+pass the prefix to `renderView(name, { model, prefix: 'hw' })`.
 
 `p:extension:doctor`, `p:extension:pack`, install and enable all reject a build whose CSS has
 a rule in `@layer utilities` that is not built on a `.hw\:` class, or a custom property in
 `@layer theme` that does not start with `--hw-`, for the prefix that extension declares. A
 build with either layer and no `ui.prefix` is rejected with the line to add.
 
-## Component replacements
+## Views
 
-Declare supported component names in `extension.json` under `ui.components`, with a `requires.sdk` constraint of `>=2.0.0-beta.4 <3.0`. Enabling the extension activates its replacements. Enable and upgrade operations reject claims already owned by another enabled extension.
+Every layout, page and block of the panel is a named view: an engine hook that produces its
+model, and a stack of layers that render it. Classic, the stock UI, is the bottom layer; the
+active theme and its parents stack above it, then extension overrides in load order.
+Each layer receives `{ model, Default, ...inputs, children }`, and `Default` renders the layer
+below. Themes and extensions write layers the same way: [Level 4](THEMES.md#level-4-rebuild-pages)
+of the themes guide covers models, `Default` and placing views, and the
+[view catalogue](THEMES.md#view-catalogue) lists every view with its model, inputs, slots and
+fixtures. Its names, contexts, slots and fixtures also ship as `@pterodactyl/sdk/views.json`.
 
-```tsx
-import { definePterodactylExtension, type ReplacementProps } from '@pterodactyl/sdk';
+### Overriding a view
 
-function ServerCard({ Default }: ReplacementProps<'dashboard.serverCard'>) {
-    return <Default className="hw:gap-3" />;
+Declare the views an extension overrides in `extension.json` under `ui.views`, with a
+`requires.sdk` constraint such as `>=2.0.0-beta.5 <3.0`, and register each layer with
+`views.override(name, layer)` during `setup`. A layer is a component, or `{ load }` with an
+importer the panel calls when the view first renders. Overrides are not exclusive: several
+enabled extensions and the active theme may override the same view, and each layer's `Default`
+renders the one below. Extension layers stack in load order, each above the extensions it requires
+and otherwise alphabetical by id, so the last one is outermost and decides whether to render
+`<Default />`. To sit above a given extension, list it in `requires.extensions`.
+
+<!-- sample: extension/extension.json -->
+```json
+{
+    "id": "billing",
+    "name": "Billing",
+    "version": "1.0.0",
+    "requires": { "panel": "^2.0.0-dev", "sdk": ">=2.0.0-beta.5 <3.0" },
+    "ui": {
+        "entry": "dist/client.js",
+        "prefix": "bl",
+        "views": ["dashboard.serverCard", "server.files.details"]
+    }
 }
-
-export default definePterodactylExtension({
-    setup({ components }) {
-        components.replace('dashboard.serverCard', ServerCard);
-        components.replace('server.files.details', { load: () => import('./FileDetails') });
-    },
-});
 ```
+<!-- /sample -->
 
-`packages/hello-world` replaces the server card, the file details and the file editor, each with a test.
+<!-- sample: snippets/extension.tsx#override -->
+```tsx
+/** A layer over the server card: it keeps the layers below and adds a note. */
+function ServerCard({ Default, model }: ViewProps<'dashboard.serverCard'>) {
+    return (
+        <>
+            <Default className='bl:gap-3' />
+            {model.state.kind === 'unavailable' && <p className='bl:text-xs'>Ask support about {model.name}.</p>}
+        </>
+    );
+}
+```
+<!-- /sample -->
 
-`ReplacementProps<Name>` supplies a read-only `model`, native `Default`, and typed `parts`. `Default` accepts `className` and partial part overrides. Parts receive `{ model }`, typed by `ComponentPartProps<Name>`; define them outside the replacement's render function.
+<!-- sample: snippets/extension.tsx#setup -->
+```tsx
+views.override('dashboard.serverCard', ServerCard);
+views.override('server.files.details', { load: () => import('./FileDetails') });
+```
+<!-- /sample -->
 
-| Name | Model | Parts |
-| --- | --- | --- |
-| `dashboard.serverCard` | `ServerCardModel` | `identity`, `address`, `metrics` |
-| `server.files.details` | `FileDetailsModel` | `icon`, `name`, `size`, `modified` |
-| `server.files.editor` | `FileEditorModel` | `notice`, `editor`, `language`, `actions` |
-| `server.files.manager` | `FileManagerModel` | `toolbar`, `list`, `selection` |
+`packages/hello-world` overrides the server card, the file details and the file editor, each with
+a test. Classes passed to `Default` merge with the layer below's under the extension's prefix (see
+[Styling](#styling)).
 
-The server card and file details contain presentation inside core links. Keep interactive controls in action slots. The panel retains queries, permissions, navigation, accessible link names, selection, and menus. The native server-card identity part includes the `dashboard.serverRow.name.after` slot.
+An extension's own UI goes in slots with `slots.register`; themes restyle it through the UI kit's skins.
+A slot component receives `data` and `compact`, which is true where the theme places the slot
+somewhere narrow, such as an icon rail; render a smaller version there.
+
+The server card and file details render inside core links. Keep interactive controls in action
+slots. The panel retains queries, permissions, navigation, accessible link names, selection, and
+menus. `dashboard.serverCard.identity`, a piece of the card, renders the `dashboard.serverRow.name.after` slot.
+
+### Slots inside views
+
+A view renders the slots listed for it in the catalogue, and a layer that replaces it has to
+render them too, or the extensions mounted there disappear. Rendering `Default` renders the
+slots of the layers below. The catalogue's engine slots of a page are rendered by the engine
+around the page view, so no layer renders or drops them. When a layer leaves out a slot that has
+components, the browser console names it:
+`[views] The "<layer>" layer of "<view>" does not render the "<slot>" slot, so "<extension>" does not show there.`
 
 ### File editor
 
-`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, breadcrumbs, loading and error screens, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard. The replacement mounts once per opened document, after its content has loaded.
+`server.files.editor` replaces the editing surface of `/server/$id/files/edit` and `/files/new`. The panel keeps the route, the new-file name dialog, the write mutation, permission checks and the unsaved-changes guard, whatever the theme draws. `page.server.files.editor` places the breadcrumbs, loading and error screens around it. The layer mounts once per opened document, after its content has loaded.
 
 | Model field | |
 | --- | --- |
 | `path`, `name`, `isNew` | The open file. For a new file `path` is its directory and `name` is empty. |
 | `content` | Text to open: the loaded file, or the restored draft of a new file. It does not change while the document is open. |
-| `language` | Syntax hint as a MIME type (`text/x-yaml`); the native `language` part changes it. |
+| `Editor` | The panel's code editor, bound to this document and themed with the `--editor-*` tokens. |
+| `language`, `languages`, `setLanguage(mime)` | Syntax hint as a MIME type (`text/x-yaml`), the ones the editor knows, and switching. |
 | `readOnly` | The user lacks `file.update` (or `file.create` for a new file). |
 | `dirty`, `saving` | Derived by the panel from the reported buffer and the running write. |
-| `change(content)` | Report the buffer after every edit. The panel saves exactly this text. |
+| `change(content)`, `read()` | Report the buffer after every edit, and read the last one reported. The panel saves exactly this text. |
 | `save()` | Write the buffer in place; a new file first asks for its name in the panel's dialog. Resolves `false` when read-only, cancelled or failed. |
 | `saveAs(name)` | Write the buffer to a name beside the file, or an absolute path, and open it. Needs `file.create`. |
 
-```tsx
-import { useExtensionAction, type ComponentPartProps, type ReplacementProps } from '@pterodactyl/sdk';
+The view places its pieces as views of their own, each given the editor's model: `server.files.editor.notice`, `server.files.editor.canvas` (the code editor), `server.files.editor.language` and `server.files.editor.actions` (the Save button). Override one to replace that piece; declare it in `ui.views` like any view.
 
-function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
+```tsx
+import { useExtensionAction, type ViewProps } from '@pterodactyl/sdk';
+
+export default function Buffer({ model }: ViewProps<'server.files.editor.canvas'>) {
     const save = useExtensionAction('save', async () => void (await model.save()));
     return (
         <textarea
@@ -770,27 +851,24 @@ function Buffer({ model }: ComponentPartProps<'server.files.editor'>) {
         />
     );
 }
-export default function Editor({ Default }: ReplacementProps<'server.files.editor'>) {
-    return <Default parts={{ editor: Buffer }} />;
-}
 ```
 
-Because the panel holds the buffer, a replaced `editor` part works with the native Save button, and the native editor continues with the user's text if the replacement fails to render. Do not add your own `useNavigationBlocker` here.
+Because the panel holds the buffer, a replaced canvas works with the classic Save button, and the classic editor continues with the user's text if the layer fails to render. Do not add your own `useNavigationBlocker` here.
 
 ### File browser
 
-`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the replacement; the `server.files.toolbar`, `rowActions` and `selectionActions` slots and the `server.files.details` replacement belong to the native parts and render only where you keep those parts.
+`server.files.manager` replaces the browser on `/server/$id/files`: toolbar, listing and selection bar. The panel keeps the page, the directory query, the selection store, uploads, and every mutation and navigation. `server.files.before` and `server.files.after` stay around the view. It places `server.files.manager.toolbar`, `server.files.manager.list` and `server.files.manager.selection`, each given its model; they render the `server.files.toolbar`, `server.files.rowActions` and `server.files.selectionActions` slots and, in the list, the `server.files.details` view of each row. A layer that draws the browser itself places the ones it keeps with `<View name="server.files.manager.toolbar" model={model} />`.
 
-`model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt` and `openable`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has.
+`model.entries` are `FileManagerEntry` rows of `model.directory` (directories first, at most 250, `truncated` when there are more) with `name`, `path`, `kind`, `size`, `mimetype`, `mode`, `modeBits`, `modifiedAt`, `openable`, `extractable`, the `destination` opening it links to, and the API's `file`. `loading` is true until a directory is first listed, `refreshing` during later fetches. `selection` holds the selected names and `permissions` says which of `create`, `update`, `delete` and `archive` the user has. `breadcrumbs` lead from `container` to the directory, `newFileDestination` opens the editor for a new file, `uploads` lists the uploads in progress, `resolve(name)` shows where a relative name lands, and `slot` is what the file slots receive.
 
-`model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)` and `upload(files)`. They run the panel's own mutations, with its cache updates and notifications. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
+`model.actions` take names in the current directory: `open(name)` enters a directory or opens a text file in the editor, `navigate(directory)`, `newFile()`, `select(names)`, `refresh()`, `createDirectory(name)`, `rename([{ from, to }])` (a relative path in `to` moves), `move(names, directory)`, `remove(names)`, `copy(name)`, `archive(names)`, `extract(name)`, `chmod([{ file, mode }])`, `download(name)`, `upload(files)`, `cancelUpload(id)` and `clearUploads()`. They run the panel's own mutations, with its cache updates and notifications; `remove` and `archive` drop their names from the selection, `rename`, `move` and `chmod` clear it. A call the user has no permission for rejects before any request; the API enforces the same rule. `remove` deletes at once, so confirm first. For files outside the current directory, such as a tree view, use `serverFilesQueryOptions` and the mutation hooks.
 
 ```tsx
-export default function Browser({ model, parts }: ReplacementProps<'server.files.manager'>) {
+export default function Browser({ model }: ViewProps<'server.files.manager'>) {
     const open = useExtensionAction('open', (name: string) => model.actions.open(name));
     return (
         <>
-            <parts.toolbar model={model} />
+            <View name='server.files.manager.toolbar' model={model} />
             <ul aria-busy={model.loading}>
                 {model.entries.map((entry) => (
                     <li key={entry.path}>
@@ -805,6 +883,31 @@ export default function Browser({ model, parts }: ReplacementProps<'server.files
 
 ### Loading and failure
 
-Rows share one loading decision per page and component. The five-second deadline, import failures, and render failures restore the native view. Late imports cannot replace a native view committed after a timeout. Core state remains outside the presentation boundary. Use local Suspense for extension-owned asynchronous rendering and `useExtensionAction` for callbacks.
+While a bundle that declares a view loads, the view shows its placeholder; mounts of one page share that decision. After five seconds, or when the import or the layer fails, the layers below render instead, and a late bundle cannot replace a view already shown. A layer that throws while rendering falls back to the layer below once; if that one throws too, the view shows the panel's error notice with a Retry. Each failure logs `[extensions] "<id>" failed in view "<view>": <error>` to the browser console. A layer that suspends shows the view's placeholder until it renders, as a theme's lazy view does. Core state remains outside the layer. Use `useExtensionAction` for callbacks.
 
-The testing entry exports `createComponentTestHost(name, { model, extensionId?, prefix? })`, returning `Wrapper`, typed `props` and `dispose`, plus the model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry`. This exercises the panel's native defaults and parts without issuing core queries. Pass `vi.fn()` callbacks in the fixture to assert on `save`, `change` or an action. The file browser host mounts a server, router and store for the native rows; call `dispose()` after unmounting.
+Test a layer with `renderView(name, { themes, model?, fixture?, input?, prefix?, slots?, strict? })` from the testing entry, described under [Testing](THEMES.md#testing). It renders the view synchronously over classic without issuing core queries; nested views read their fixtures. Pass the extension's layers as the views of a theme, `themes: [{ views: { 'dashboard.serverCard': ServerCard } }]`, and its `ui.prefix` as `prefix`. The model fixtures `createTestServerCard`, `createTestFileDetails`, `createTestFileEditor`, `createTestFileManager` and `createTestFileManagerEntry` build models to pass as `model`, with `vi.fn()` callbacks to assert on `save`, `change` or an action. The render fails with a `ViewLayerError` when a layer throws, or when the layers leave out a slot classic renders for the same fixture; `strict: false` lets them fall back and drop slots as in the panel.
+
+## UI kit
+
+The SDK's components are the panel's design system: `Button`, `Input`, `Select`, `Card`,
+`ListRow`, `Badge`, `Dialog`, `Table`, `Empty` and the rest of the [primitives](THEMES.md#primitives).
+Each one takes its classes from the active theme's skin and marks its parts with `data-ui`,
+`data-part` and its state (`data-color="red"`). An extension built from them looks native under
+every theme, and a theme restyles it without knowing it exists.
+
+A `className` passed to a primitive is appended to its skin's classes, and a conflicting utility
+replaces the skin's: `<Button className="hw:mt-4">` drops the button's own `mt-*` class.
+
+## Themes
+
+A theme is an extension with `"type": "theme"`. It decides how every page of the panel looks, while the
+panel keeps the data, permissions, routing, requests and accessibility. It works with four tools: the
+panel stylesheet and its tokens, skins for the UI kit, views, and the slots those views keep. Only one
+theme is active at a time, and the stock look, classic, is itself a theme. A theme can do everything an
+extension can (a provider, screens, slots, PHP settings) except declare `ui.prefix` or `ui.views`: it
+builds the panel stylesheet itself and overrides views through `defineTheme`, whose `setup` registers
+slots, screens, columns and form fields as an extension's does, while the theme is active.
+
+The themes guide, [THEMES.md](THEMES.md), ships in this package. It starts with a theme of colours and
+fonts in five commands, goes level by level as far as rebuilding pages, and ends with the reference:
+every token, primitive and view.

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pterodactyl\Contracts\Eggs;
 
 use Illuminate\Http\UploadedFile;
+use Pterodactyl\Data\EggImportData;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Services\Eggs\EggImportData;
 use Throwable;
 
 interface ImportsEggs

@@ -7,6 +7,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Actions\Databases\CreateDatabaseTes
 use BadMethodCallException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Exceptions;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Pterodactyl\Contracts\Databases\CreatesDatabases;
 use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
@@ -50,11 +51,18 @@ test('database cannot be created if server has reached limit', function (): void
     $this->expectException(TooManyDatabasesException::class);
     getService()->create($server, []);
 });
-test('empty database name or invalid name triggers an exception', function (array $data): void {
+test('empty database name or invalid name fails validation', function (array $data): void {
     $server = $this->createServerModel();
-    $this->expectException(InvalidArgumentException::class);
-    $this->expectExceptionMessage('The database name passed to CreateDatabase::create MUST be prefixed with "s{server_id}_".');
-    getService()->create($server, $data);
+    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    try {
+        getService()->create($server, [...['remote' => '%', 'database_host_id' => $host->id], ...$data]);
+        $this->fail('The database was created.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe(['database']);
+    }
+
+    expect($this->fake->calls)->toBe([]);
 })->with('invalidDataDataProvider');
 test('creating database with identical name triggers an exception', function (): void {
     $server = $this->createServerModel();
@@ -65,7 +73,7 @@ test('creating database with identical name triggers an exception', function ():
     // Try to create a database with the same name as a database on a different host. We expect
     // this to fail since we don't account for the specific host when checking uniqueness.
     try {
-        getService()->create($server, ['database' => $name, 'database_host_id' => $host2->id]);
+        getService()->create($server, ['database' => $name, 'remote' => '%', 'database_host_id' => $host2->id]);
         $this->fail('Expected DuplicateDatabaseNameException to be thrown.');
     } catch (DuplicateDatabaseNameException $duplicateDatabaseNameException) {
         expect($duplicateDatabaseNameException->getMessage())->toBe('A database with that name already exists for this server.');
@@ -94,6 +102,7 @@ test('server database can be created', function (): void {
 
     $fake->assertAssigned($name, $fake->createdUsers[0]['username'], '%');
     $fake->assertFlushed(1);
+    $this->assertActivityOn('server:database.create', $server, $response);
 });
 test('exception encountered while creating database attempts to cleanup', function (): void {
     $server = $this->createServerModel();
@@ -145,6 +154,52 @@ test('host selection failure never mutates the previous database host', function
 
     $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
     expect($this->fake->calls)->toBe([]);
+});
+test('databases created without the http api meet the same rules', function (array $input, string $field): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    try {
+        getService()->create($server, [...['database' => DatabaseName::generateUnique('direct', $server->id), 'remote' => '%', 'database_host_id' => $host->id], ...$input]);
+        $this->fail('The database was created.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe([$field]);
+    }
+
+    $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
+    expect($this->fake->calls)->toBe([]);
+})->with([
+    'a name that is too long' => [['database' => 's1_'.str_repeat('a', 46)], 'database'],
+    'a name with a space' => [['database' => 's1_my database'], 'database'],
+    'a missing remote' => [['remote' => null], 'remote'],
+    'a remote with a quote' => [['remote' => "%'"], 'remote'],
+    'a missing host' => [['database_host_id' => null], 'database_host_id'],
+    'an unknown host' => [['database_host_id' => 0], 'database_host_id'],
+    'a host that is not a number' => [['database_host_id' => 'primary'], 'database_host_id'],
+    'a negative connection limit' => [['max_connections' => -1], 'max_connections'],
+    'a connection limit that is not a number' => [['max_connections' => 'many'], 'max_connections'],
+]);
+test('values are coerced the way laravel validates them', function (): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    $database = getService()->create($server, ['database' => DatabaseName::generateUnique('coerced', $server->id), 'remote' => '%', 'database_host_id' => (string) $host->id, 'max_connections' => '10']);
+
+    $database->refresh();
+    expect($database->database_host_id)->toBe($host->id)
+        ->and($database->max_connections)->toBe(10)
+        ->and($this->fake->createdUsers[0]['maxConnections'])->toBe(10);
+});
+test('a database given no connection limit takes the column default, and one given null has none', function (): void {
+    $server = $this->createServerModel();
+    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+    $input = ['remote' => '%', 'database_host_id' => $host->id];
+
+    $default = getService()->create($server, [...$input, 'database' => DatabaseName::generateUnique('default', $server->id)]);
+    $none = getService()->create($server, [...$input, 'database' => DatabaseName::generateUnique('none', $server->id), 'max_connections' => null]);
+
+    expect($default->refresh()->max_connections)->toBe(0)
+        ->and($none->refresh()->max_connections)->toBeNull();
 });
 function getService(): CreatesDatabases
 {

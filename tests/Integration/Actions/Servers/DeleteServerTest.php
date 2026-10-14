@@ -162,6 +162,9 @@ test('databases on different hosts are each dropped on their own host', function
         DB::purge(DatabaseHostGateway::DEFAULT_CONNECTION_NAME);
     }
 
+    $this->assertActivityOn('server:database.delete', $server, $a);
+    $this->assertActivityOn('server:database.delete', $server, $b);
+
     expect($gateway->hosts)->toBe([$a->database => $first->host, $b->database => $second->host]);
 });
 function getService(): DeletesServers

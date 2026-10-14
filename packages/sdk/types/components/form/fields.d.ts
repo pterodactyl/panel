@@ -38,8 +38,9 @@ export type MultiSelectFieldProps = BaseProps & {
     disabled?: boolean;
     placeholder?: string;
     searchPlaceholder?: string;
+    onCreate?: (text: string) => void;
 };
-export declare function MultiSelectField({ id, label, description, light, options, disabled, placeholder, searchPlaceholder, }: MultiSelectFieldProps): React.JSX.Element;
+export declare function MultiSelectField({ id, label, description, light, options, disabled, placeholder, searchPlaceholder, onCreate, }: MultiSelectFieldProps): React.JSX.Element;
 export type SwitchFieldProps = {
     label?: string;
     description?: string;

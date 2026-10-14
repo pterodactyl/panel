@@ -10,11 +10,6 @@ use Pterodactyl\Models\DatabaseHost;
 
 final readonly class DeleteDatabaseHost implements DeletesDatabaseHosts
 {
-    /**
-     * Delete a database host, provided no databases are attached to it.
-     *
-     * @throws HasActiveServersException
-     */
     public function delete(DatabaseHost $host): void
     {
         if ($host->databases()->exists()) {

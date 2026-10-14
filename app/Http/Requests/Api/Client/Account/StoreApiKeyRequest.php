@@ -6,60 +6,45 @@ namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
 use Closure;
 use Illuminate\Validation\Validator;
-use InvalidArgumentException;
-use IPTools\Exception\IpException;
-use IPTools\Exception\NetworkException;
-use IPTools\Range;
+use Pterodactyl\Actions\Api\CreateAccountApiKey;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Validation\ApiKeyRules;
+use Pterodactyl\Validation\Concerns\ValidatesAllowedIps;
 
 class StoreApiKeyRequest extends ClientApiRequest
 {
+    use ValidatesAllowedIps;
+
     /**
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = ApiKeyRules::rules();
-
-        return [
-            'description' => $rules['memo'],
-            'allowed_ips' => [...$rules['allowed_ips'], 'list', 'max:50'],
-            'allowed_ips.*' => ['string'],
-        ];
+        return CreateAccountApiKey::rules();
     }
 
     /**
      * Check that each of the values entered is actually valid.
-     */
-    /**
+     *
      * @return list<Closure(Validator): void>
      */
     public function after(): array
     {
-        return [function (Validator $validator): void {
-            if (! is_array($ips = $this->input('allowed_ips'))) {
-                return;
-            }
+        return [self::validateAllowedIps(...)];
+    }
 
-            foreach ($ips as $index => $ip) {
-                if (! is_string($ip)) {
-                    $validator->errors()->add("allowed_ips.{$index}", 'The IP address or CIDR range must be a string.');
+    /**
+     * The validated IP addresses and CIDR ranges the key may be used from, or null when
+     * none were sent.
+     *
+     * @return list<string>|null
+     */
+    public function allowedIps(): ?array
+    {
+        $validated = $this->safe();
+        if (! $validated->filled('allowed_ips')) {
+            return null;
+        }
 
-                    continue;
-                }
-
-                $valid = false;
-                try {
-                    $valid = Range::parse($ip)->valid();
-                } catch (IpException|NetworkException|InvalidArgumentException) {
-                    $valid = false;
-                }
-
-                if (! $valid) {
-                    $validator->errors()->add("allowed_ips.{$index}", '"'.$ip.'" is not a valid IP address or CIDR range.');
-                }
-            }
-        }];
+        return array_map(fn (int|string $key): string => $validated->string('allowed_ips.'.$key)->toString(), array_keys($validated->array('allowed_ips')));
     }
 }

@@ -9,8 +9,5 @@ use Pterodactyl\Models\Node;
 
 interface DetachesNodesFromMounts
 {
-    /**
-     * Remove a single node attachment from a mount.
-     */
     public function detach(Mount $mount, Node $node): void;
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Extensions\Scribe\Support;
 
 use Pterodactyl\Support\JsonEmptyObject;
-use Pterodactyl\Support\JsonValueGuard;
 use ReflectionMethod;
 
 class PterodactylDocumentation
@@ -50,6 +49,8 @@ class PterodactylDocumentation
             ],
         ],
     ];
+
+    public const string DEPLOY_TAGS = "Deploy tags (IDs or slugs) the deployment declares. A node's egg tags are OR-matched against the egg's tags: a node with none accepts every egg, otherwise it needs one tag in common with the egg. Its deployment tags must match these exactly: a node reserved for a tag missing here is skipped, and every tag listed must be reserved on the node.";
 
     private const array URL_PARAMETERS = [
         'allocation' => ['integer', 'The allocation ID.', 1],
@@ -109,6 +110,7 @@ class PterodactylDocumentation
         'database_host_id' => 'The database host ID.',
         'database_limit' => 'The maximum number of databases allowed.',
         'default_value' => 'The default value.',
+        'deploy.tags' => self::DEPLOY_TAGS,
         'directory' => 'The directory path.',
         'disk' => 'The disk limit in megabytes.',
         'description' => 'A description for this resource.',
@@ -131,6 +133,7 @@ class PterodactylDocumentation
         'force_outgoing_ip' => 'Whether servers should use their allocation IP for outgoing traffic.',
         'fqdn' => 'The fully qualified domain name.',
         'host' => 'The database host address.',
+        'ignore_tags' => "Whether to place the server on a node whose egg tags the egg does not share. The node's deployment tags are never checked here.",
         'ignored' => 'Whether this item should be ignored.',
         'import_file' => 'The file to import.',
         'io' => 'The block IO weight.',
@@ -221,8 +224,7 @@ class PterodactylDocumentation
         return self::FIELD_TYPES[$name] ?? null;
     }
 
-    /** @return ApiValue1 */
-    public static function fieldExample(string $name, string $type): bool|float|int|string|array|null
+    public static function fieldExample(string $name, string $type): mixed
     {
         return match (true) {
             str_starts_with($name, 'feature_limits.'), str_starts_with($name, 'limits.') => 1,
@@ -292,8 +294,7 @@ class PterodactylDocumentation
     }
 
     /**
-     * @param  JsonInputValue  $value
-     * @return DeepOpenApiSchema an OpenAPI schema fragment describing the value
+     * @return array<string, mixed> an OpenAPI schema fragment describing the value
      */
     public static function schemaForValue(mixed $value): array
     {
@@ -312,50 +313,38 @@ class PterodactylDocumentation
                     }
                 }
 
-                return self::openApiSchema([
+                return [
                     'type' => 'object',
                     'required' => array_keys($properties),
                     'properties' => $properties,
-                ]);
+                ];
             }
 
-            return self::openApiSchema([
+            return [
                 'type' => 'array',
                 'items' => isset($value[0]) ? self::schemaForValue($value[0]) : ['type' => 'string'],
-            ]);
+            ];
         }
 
         if ($value === null) {
-            return self::openApiSchema([
+            return [
                 'type' => 'string',
                 'nullable' => true,
-            ]);
+            ];
         }
 
         if ($value instanceof JsonEmptyObject) {
-            return self::openApiSchema([
+            return [
                 'type' => 'object',
                 'properties' => new JsonEmptyObject,
-            ]);
+            ];
         }
 
-        return self::openApiSchema(match (gettype($value)) {
-            'boolean' => ['type' => 'boolean', 'example' => $value],
-            'integer' => ['type' => 'integer', 'example' => $value],
-            'double' => ['type' => 'number', 'example' => $value],
-            default => ['type' => 'string', 'example' => (string) $value],
-        });
-    }
-
-    /**
-     * @phpstan-assert DeepOpenApiSchema $schema
-     *
-     * @return DeepOpenApiSchema
-     */
-    private static function openApiSchema(mixed $schema): array
-    {
-        JsonValueGuard::assertPayload9($schema);
-
-        return $schema;
+        return match (true) {
+            is_bool($value) => ['type' => 'boolean', 'example' => $value],
+            is_int($value) => ['type' => 'integer', 'example' => $value],
+            is_float($value) => ['type' => 'number', 'example' => $value],
+            default => ['type' => 'string', 'example' => $value],
+        };
     }
 }

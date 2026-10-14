@@ -46,6 +46,18 @@ test('email is not updated when password is invalid', function (): void {
     $response->assertJsonPath('errors.0.code', 'InvalidPasswordProvidedException');
     $response->assertJsonPath('errors.0.detail', 'The password provided was invalid for this account.');
 });
+test('email change only reveals that an address is taken to someone with the password', function (): void {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $other->email, 'password' => 'invalid'])
+        ->assertStatus(Response::HTTP_BAD_REQUEST)
+        ->assertJsonPath('errors.0.code', 'InvalidPasswordProvidedException');
+
+    $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $other->email, 'password' => 'password'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.rule', 'unique');
+});
 test('email is not updated when not valid', function (): void {
     /** @var User $user */
     $user = User::factory()->create();

@@ -49,6 +49,15 @@ test('events for other nodes and foreign namespaces are discarded', function () 
     expect(logsFor($this->server)->count())->toBe(0);
     expect(logsFor($other)->count())->toBe(0);
 });
+test('malformed events are refused under the wings field names', function () {
+    $this->postJson('/api/remote/activity', ['data' => [['user' => 'someone', 'server' => $this->server->uuid, 'event' => 'server:console.command', 'ip' => 'nowhere', 'timestamp' => CarbonImmutable::now()->toRfc3339String()]]])
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'data.0.user')
+        ->assertJsonPath('errors.1.meta.source_field', 'data.0.metadata')
+        ->assertJsonPath('errors.2.meta.source_field', 'data.0.ip');
+    expect(logsFor($this->server)->count())->toBe(0);
+});
 test('unparsable timestamps do not fail the request', function () {
     $this->postJson('/api/remote/activity', ['data' => [['user' => $this->user->uuid, 'server' => $this->server->uuid, 'event' => 'server:console.command', 'metadata' => [], 'timestamp' => 'not a timestamp']]])->assertSuccessful();
     $log = logsFor($this->server)->where('event', 'server:console.command')->sole();

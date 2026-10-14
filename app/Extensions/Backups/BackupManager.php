@@ -6,14 +6,13 @@ namespace Pterodactyl\Extensions\Backups;
 
 use Aws\S3\S3Client;
 use Closure;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
-use Pterodactyl\Support\JsonValueGuard;
 
 class BackupManager
 {
@@ -88,7 +87,7 @@ class BackupManager
      */
     public function getDefaultAdapter(): string
     {
-        return JsonValueGuard::string($this->config->get('backups.default'));
+        return $this->config->string('backups.default');
     }
 
     /**
@@ -173,7 +172,6 @@ class BackupManager
     protected function getConfig(string $name): array
     {
         $config = $this->config->get("backups.disks.$name") ?: [];
-        JsonValueGuard::assertValue($config);
         if (! is_array($config)) {
             return [];
         }

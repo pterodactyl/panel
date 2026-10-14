@@ -146,8 +146,8 @@ export default function ExtensionMount({
     resetKey: string;
     loading?: ReactNode;
     isSlot?: boolean;
-    /** Rendered instead of the failure notice. */
-    failure?: ReactNode;
+    /** Rendered instead of the failure notice; a function receives the error and a retry. */
+    failure?: ReactNode | ((error: Error, retry: () => void) => ReactNode);
     children: ReactNode;
 }) {
     const mount = useMemo(() => ({ extensionId, context }), [extensionId, context]);
@@ -160,8 +160,12 @@ export default function ExtensionMount({
                         {...mount}
                         resetKey={resetKey}
                         onReset={reset}
-                        fallback={(error, retry) =>
-                            failure === undefined ? (
+                        fallback={(error, retry) => {
+                            if (failure instanceof Function) {
+                                return failure(error, retry);
+                            }
+
+                            return failure === undefined ? (
                                 <ExtensionFailure
                                     extensionId={extensionId}
                                     notificationId={isSlot ? failureNotificationId(extensionId, context) : undefined}
@@ -169,8 +173,8 @@ export default function ExtensionMount({
                                 />
                             ) : (
                                 failure
-                            )
-                        }
+                            );
+                        }}
                     >
                         <Suspense fallback={loading}>{children}</Suspense>
                     </ExtensionBoundary>

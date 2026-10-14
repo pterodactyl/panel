@@ -14,7 +14,7 @@ class ServerPolicy
      * not call the before() function if there isn't a function matching the
      * policy permission.
      */
-    /** @param list<User|Server|ApiValue10> $arguments */
+    /** @param list<mixed> $arguments */
     public function __call(string $name, array $arguments): void
     {
         // do nothing

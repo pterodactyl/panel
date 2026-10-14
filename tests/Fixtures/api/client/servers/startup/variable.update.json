@@ -1,0 +1,22 @@
+[
+    {
+        "request": "PUT /api/client/servers/5e7f0001-0000-4000-8000-000000000001/startup/variable",
+        "status": 200,
+        "body": {
+            "object": "egg_variable",
+            "attributes": {
+                "name": "Server Jar File",
+                "description": "The name of the server jarfile to run.",
+                "env_variable": "SERVER_JARFILE",
+                "default_value": "server.jar",
+                "server_value": "custom.jar",
+                "is_editable": true,
+                "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/"
+            },
+            "meta": {
+                "startup_command": "java -Xms128M -Xmx2048M -jar custom.jar",
+                "raw_startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
+            }
+        }
+    }
+]

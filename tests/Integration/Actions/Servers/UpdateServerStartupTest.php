@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Actions\Servers\UpdateServerStartupTest;
 
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Actions\Servers\UpdateServerDockerImage;
+use Pterodactyl\Actions\Servers\UpdateServerVariable;
 use Pterodactyl\Contracts\Servers\UpdatesServerDockerImage;
 use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
+use Pterodactyl\Contracts\Servers\UpdatesServerVariable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use UnexpectedValueException;
 
 use function pterodactylTestCase;
 
@@ -135,11 +137,134 @@ test('admin image changes go through the docker image contract only when the ima
         ->and($response->image)->toBe('new/image')
         ->and($response->startup)->toBe('new startup');
 });
+test('variable writes from the admin update and the client endpoint both go through the variable contract', function (): void {
+    $spy = new class(new UpdateServerVariable()) implements UpdatesServerVariable
+    {
+        /** @var list<array{int, string}> */
+        public array $writes = [];
+
+        public function __construct(private readonly UpdatesServerVariable $inner) {}
+
+        public function update(Server $server, int $variableId, string $value): void
+        {
+            $this->writes[] = [$variableId, $value];
+            $this->inner->update($server, $variableId, $value);
+        }
+    };
+    $this->app->instance(UpdatesServerVariable::class, $spy);
+    $server = $this->createServerModel();
+    $user = $server->user;
+    $variable = $server->variables()->where('env_variable', 'BUNGEE_VERSION')->firstOrFail();
+
+    getService()->update($server, ['environment' => ['BUNGEE_VERSION' => '10', 'SERVER_JARFILE' => 'server.jar']], User::USER_LEVEL_ADMIN);
+    $this->actingAs($user)->putJson("/api/client/servers/{$server->uuid}/startup/variable", ['key' => 'BUNGEE_VERSION', 'value' => '20'])->assertOk();
+
+    expect($spy->writes)->toContain([$variable->id, '10'], [$variable->id, '20']);
+});
 test('invalid egg id triggers exception', function (): void {
     $server = $this->createServerModel();
-    $this->expectException(ModelNotFoundException::class);
-    getService()->update($server, ['egg_id' => 123456789], User::USER_LEVEL_ADMIN);
+
+    try {
+        getService()->update($server, ['egg_id' => 123456789], User::USER_LEVEL_ADMIN);
+        $this->fail('The startup was updated.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe(['egg_id']);
+    }
 });
+test('startup updated without the http api meets the same rules', function (array $input, string $field): void {
+    $server = $this->createServerModel()->refresh();
+    $before = $server->getAttributes();
+
+    try {
+        getService()->update($server, $input, User::USER_LEVEL_ADMIN);
+        $this->fail('The startup was updated.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe([$field]);
+    }
+
+    expect($server->fresh()->getAttributes())->toBe($before);
+})->with([
+    'a missing startup command' => [['startup' => ''], 'startup'],
+    'a startup command that is not a string' => [['startup' => ['java']], 'startup'],
+    'an environment that is not an object' => [['environment' => 'BUNGEE_VERSION=123'], 'environment'],
+    'a missing egg' => [['egg_id' => null], 'egg_id'],
+    'an egg that does not exist' => [['egg_id' => 0], 'egg_id'],
+    'an image with shell characters' => [['docker_image' => 'java;rm -rf /'], 'docker_image'],
+    'an image that is too long' => [['docker_image' => str_repeat('a', 192)], 'docker_image'],
+    'a skip scripts flag that is not a boolean' => [['skip_scripts' => 'yes'], 'skip_scripts'],
+    'a null skip scripts flag' => [['skip_scripts' => null], 'skip_scripts'],
+]);
+test('below the admin level the admin fields are neither checked nor applied', function (): void {
+    $server = $this->createServerModel(['startup' => 'old startup', 'image' => 'old/image', 'skip_scripts' => true]);
+
+    $response = getService()->update($server, ['egg_id' => 0, 'startup' => '', 'docker_image' => 'java;rm -rf /', 'skip_scripts' => 'yes', 'environment' => ['BUNGEE_VERSION' => '1234', 'SERVER_JARFILE' => 'user.jar']]);
+
+    expect($response->egg_id)->toBe($server->egg_id)
+        ->and($response->startup)->toBe('old startup')
+        ->and($response->image)->toBe('old/image')
+        ->and($response->skip_scripts)->toBeTrue()
+        ->and($response->variables->pluck('server_value', 'env_variable')->all())->toEqual(['BUNGEE_VERSION' => '1234', 'SERVER_JARFILE' => 'user.jar']);
+
+    // The environment is still checked at a user's level.
+    try {
+        getService()->update($server, ['environment' => 'BUNGEE_VERSION=123']);
+        $this->fail('The startup was updated.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe(['environment']);
+    }
+});
+test('an admin update changes only the fields it is given, and turns off a skip scripts flag left out', function (): void {
+    $server = $this->createServerModel(['startup' => 'old startup', 'image' => 'old/image', 'skip_scripts' => true]);
+    $variables = $server->variables->pluck('server_value', 'env_variable')->all();
+
+    $response = getService()->update($server, ['startup' => 'new startup'], User::USER_LEVEL_ADMIN);
+
+    expect($response->startup)->toBe('new startup')
+        ->and($response->egg_id)->toBe($server->egg_id)
+        ->and($response->image)->toBe('old/image')
+        ->and($response->variables->pluck('server_value', 'env_variable')->all())->toEqual($variables)
+        ->and($response->skip_scripts)->toBeFalse();
+});
+test('startup values are coerced the way laravel validates them', function (int|string $flag, bool $expected): void {
+    /** @var Egg $nextEgg */
+    $nextEgg = Egg::query()->where('id', '!=', 1)->firstOrFail();
+    $server = $this->createServerModel(['egg_id' => 1]);
+
+    $response = getService()->update($server, ['egg_id' => (string) $nextEgg->id, 'skip_scripts' => $flag], User::USER_LEVEL_ADMIN);
+
+    expect($response->egg_id)->toBe($nextEgg->id)
+        ->and($response->skip_scripts)->toBe($expected);
+})->with([[1, true], ['1', true], [0, false], ['0', false]]);
+test('variable and image changes made without the client api are logged on the server', function (): void {
+    $server = $this->createServerModel(['image' => 'old/image']);
+    $values = ['BUNGEE_VERSION' => '1234', 'SERVER_JARFILE' => 'server.jar'];
+    foreach ($server->variables as $variable) {
+        ServerVariable::query()->updateOrCreate(['server_id' => $server->id, 'variable_id' => $variable->id], ['variable_value' => $values[$variable->env_variable]]);
+    }
+
+    getService()->update($server, [
+        'egg_id' => $server->egg_id,
+        'startup' => $server->startup,
+        'skip_scripts' => false,
+        'docker_image' => 'new/image',
+        'environment' => [...$values, 'BUNGEE_VERSION' => '4321'],
+    ], User::USER_LEVEL_ADMIN);
+
+    expect($this->assertActivityOn('server:startup.edit', $server)->properties->all())->toBe(['variable' => 'BUNGEE_VERSION', 'old' => '1234', 'new' => '4321'])
+        ->and($this->assertActivityOn('server:startup.image', $server)->properties->all())->toBe(['old' => 'old/image', 'new' => 'new/image']);
+
+    getService()->update($server->fresh(), ['environment' => [...$values, 'BUNGEE_VERSION' => '4321']]);
+
+    expect($server->activity()->where('event', 'server:startup.edit')->count())->toBe(1);
+});
+test('environment values must be scalars', function (array $environment): void {
+    $server = $this->createServerModel();
+
+    expect(fn () => getService()->update($server, ['environment' => $environment], User::USER_LEVEL_ADMIN))->toThrow(UnexpectedValueException::class);
+})->with([
+    'a nested value' => [['BUNGEE_VERSION' => ['nested'], 'SERVER_JARFILE' => 'server.jar']],
+    'a list' => [['1234', 'server.jar']],
+]);
 function getService(): UpdatesServerStartup
 {
     return (fn () => $this->app->make(UpdatesServerStartup::class))->call(pterodactylTestCase());

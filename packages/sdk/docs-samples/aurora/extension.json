@@ -1,0 +1,56 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "aurora",
+    "type": "theme",
+    "name": "Aurora",
+    "version": "1.0.0",
+    "description": "A glass sidebar theme with a light and a dark scheme.",
+    "icon": "palette",
+    "requires": { "panel": "^2.0.0-dev", "sdk": ">=2.0.0-beta.5 <3.0" },
+    "ui": { "entry": "dist/client.js" },
+    "theme": {
+        "extends": "classic",
+        "stylesheet": "dist/theme.css",
+        "schemes": ["dark", "light"],
+        "settings": {
+            "accent": { "type": "color", "label": "Accent", "default": "#8b5cf6", "token": "--aurora-accent" },
+            "sidebar": {
+                "type": "select",
+                "label": "Sidebar",
+                "options": { "left": "Left", "right": "Right" },
+                "default": "left",
+                "attribute": "data-aurora-sidebar"
+            },
+            "density": {
+                "type": "select",
+                "label": "Density",
+                "options": { "comfortable": "Comfortable", "compact": "Compact" },
+                "default": "comfortable",
+                "attribute": "data-aurora-density"
+            },
+            "blur": {
+                "type": "number",
+                "label": "Glass blur",
+                "default": 16,
+                "min": 0,
+                "max": 40,
+                "step": 4,
+                "unit": "px",
+                "token": "--aurora-blur"
+            },
+            "logo": {
+                "type": "image",
+                "label": "Logo",
+                "help": "Shown in the sidebar and on the sign-in page.",
+                "token": "--brand-logo"
+            },
+            "tagline": {
+                "type": "text",
+                "label": "Sign-in tagline",
+                "default": "Every server, one place.",
+                "maxLength": 80
+            },
+            "liveStats": { "type": "toggle", "label": "Live stats on the dashboard", "default": true }
+        }
+    }
+}

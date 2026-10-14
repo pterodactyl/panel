@@ -12,24 +12,23 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Contracts\Users\DeletesUsers;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateUserRequest;
+use Pterodactyl\Http\Resources\Api\Admin\UserResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -49,8 +48,6 @@ class UserController extends AdminApiController
 
     /**
      * List users.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List users', 'Returns a paginated list of panel users, sorted with root administrators first by default.')]
     #[QueryParam('page', 'integer', 'Page number to retrieve.', required: false, example: 1)]
@@ -61,8 +58,8 @@ class UserController extends AdminApiController
     #[QueryParam('filter[external_id]', 'string', 'Filter users by external identifier.', required: false, example: 'remote-123')]
     #[QueryParam('filter[search]', 'string', 'Search users by username, email, or UUID.', required: false, example: 'admin')]
     #[QueryParam('sort', 'string', 'Sort users by id, uuid, email, username, or creation date. Prefix with a hyphen for descending order.', required: false, example: '-created_at')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'Users returned.', collection: true, resourceKey: 'user', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetUsersRequest $request): array
+    #[ResponseFromResource(UserResource::class, User::class, description: 'Users returned.', collection: true, resourceKey: 'user', paginate: 50)]
+    public function index(GetUsersRequest $request): ApiResourceCollection
     {
         $users = QueryBuilder::for(
             User::query()
@@ -93,44 +90,38 @@ class UserController extends AdminApiController
             ->allowedSorts(['id', 'uuid', 'email', 'username', 'created_at'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($users)
-            ->transformWith($this->getTransformer(UserTransformer::class))
-            ->toResponseArray();
+        return UserResource::collection($users);
     }
 
     /**
      * Show user.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get user', 'Returns a single panel user by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports servers.', required: false, example: 'servers')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'User returned.', resourceKey: 'user', include: ['servers'])]
-    public function show(GetUserRequest $request, User $user): array
+    #[ResponseFromResource(UserResource::class, User::class, description: 'User returned.', resourceKey: 'user', include: ['servers'])]
+    public function show(GetUserRequest $request, User $user): UserResource
     {
-        return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return UserResource::make($user)->withExtensionFields();
     }
 
     /**
      * Create user.
      */
     #[Endpoint('Create user', 'Creates a panel user. Optional password and language fields may be supplied explicitly.')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.com/api/admin/users/1'])]
+    #[ResponseFromResource(UserResource::class, User::class, status: 201, description: 'User created.', resourceKey: 'user', meta: ['resource' => 'https://panel.example.com/api/admin/users/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreUserRequest $request, CreatesUsers $users): JsonResponse
     {
-        $user = $users->create($request->payload());
+        $user = $users->create($request->actionInput());
 
+        // The action logs the new account on the user's own feed.
         Activity::event('admin:user.create')
-            ->subject($user)
             ->property('email', $user->email)
             ->log();
 
-        return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return UserResource::make($user)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.admin.users.view', [
                     'user' => $user->id,
                 ]),
@@ -140,24 +131,20 @@ class UserController extends AdminApiController
 
     /**
      * Update user.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update user', 'Updates an existing panel user. Supplying a password changes the user password.')]
-    #[ResponseFromTransformer(UserTransformer::class, User::class, description: 'User updated.', resourceKey: 'user')]
+    #[ResponseFromResource(UserResource::class, User::class, description: 'User updated.', resourceKey: 'user')]
     #[ExtensionFieldsParam]
-    public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): array
+    public function update(UpdateUserRequest $request, UpdatesUsers $users, User $user): UserResource
     {
-        $user = $users->update($user, $request->payload());
+        $user = $users->update($user, $request->actionInput());
 
         Activity::event('admin:user.update')
             ->subject($user)
             ->property('email', $user->email)
             ->log();
 
-        return Fractal::item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return UserResource::make($user)->withExtensionFields();
     }
 
     /**

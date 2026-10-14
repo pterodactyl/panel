@@ -147,6 +147,39 @@ describe('extension install dialog', () => {
 const extension = (overrides: Partial<AdminExtension>): AdminExtension =>
     ({ id: 'server-tools', name: 'Server Tools', icon: null, icon_url: null, ...overrides }) as AdminExtension;
 
+describe('extension failures', () => {
+    afterEach(cleanup);
+
+    it.each([
+        ['boot', 'Failed to load'],
+        ['event', 'Runtime error'],
+    ])('labels a %s failure "%s" and says when it happened', async (phase, label) => {
+        const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+
+        queryClient.setQueryData(adminExtensionsQueryOptions().queryKey, {
+            data: [
+                extension({
+                    installed: true,
+                    enabled: true,
+                    state: 'error',
+                    error: 'It broke.',
+                    error_phase: phase,
+                    errored_at: '2026-10-11T10:00:00+00:00',
+                }),
+            ],
+            meta: { enabled: true, directory: '/srv/extensions' },
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <ExtensionsContainer />
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText(label)).toBeInTheDocument();
+        expect(screen.getByText(new RegExp(`^In ${phase},`))).toBeInTheDocument();
+    });
+});
+
 describe('extension mark', () => {
     afterEach(cleanup);
 

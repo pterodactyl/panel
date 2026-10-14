@@ -1,0 +1,7 @@
+import { defineTheme } from '@pterodactyl/sdk/theme';
+
+/**
+ * {{name}} extends {{parentName}} ("theme.extends" in extension.json): every view and skin it leaves out is
+ * {{parentName}}'s, and a view it adds receives {{parentName}}'s layer as `Default`.
+ */
+export default defineTheme({});

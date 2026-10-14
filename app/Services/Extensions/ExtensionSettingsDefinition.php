@@ -44,8 +44,6 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
     /**
      * The setting's current value. A file setting reads as the public URL of
      * its uploaded file, or its default while nothing is uploaded.
-     *
-     * @return ExtensionSettingValue
      */
     public function get(string $key): mixed
     {
@@ -63,7 +61,7 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
         return $definition->normalize($this->settings->get($definition->key, $definition->default));
     }
 
-    /** @return ExtensionSettingValues */
+    /** @return array<string, mixed> */
     public function publicSettings(): array
     {
         $values = [];
@@ -91,7 +89,7 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
         return $rules;
     }
 
-    /** @param ExtensionSettingValues $input */
+    /** @param array<string, mixed> $input */
     public function update(array $input): void
     {
         $input = $this->withoutBlankSecrets($input);
@@ -121,8 +119,8 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
      * Drops secret inputs that would replace the stored value with nothing or with
      * its own mask, whatever the field type, so they keep the stored value.
      *
-     * @param  ExtensionSettingValues  $input
-     * @return ExtensionSettingValues
+     * @param  array<string, mixed>  $input
+     * @return array<string, mixed>
      */
     public function withoutBlankSecrets(array $input): array
     {
@@ -182,7 +180,7 @@ class ExtensionSettingsDefinition implements ManagesExtensionSettings
      * are visible to every logged-in user. With $publicOnly, only those also
      * marked ->public(), which is what visitors who are not signed in receive.
      *
-     * @return ExtensionSettingValues
+     * @return array<string, mixed>
      */
     public function frontendConfig(bool $publicOnly = false): array
     {

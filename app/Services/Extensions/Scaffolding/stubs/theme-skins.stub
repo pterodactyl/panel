@@ -1,0 +1,34 @@
+import { skin, type PrimitiveState, type ThemeSkins } from '@pterodactyl/sdk/theme';
+
+type ButtonState = PrimitiveState<'Button'>;
+
+const fills: Record<ButtonState['color'], string> = {
+    primary: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/85',
+    grey: 'bg-popover text-foreground hover:not-disabled:bg-secondary',
+    green: 'bg-success text-success-foreground hover:not-disabled:bg-success/85',
+    red: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive/85',
+    orange: 'bg-caution text-caution-foreground hover:not-disabled:bg-caution/85',
+};
+
+/**
+ * Class recipes by primitive and part; a part left out keeps classic's recipe. `npx pterodactyl-theme
+ * skins Button` copies classic's skins of a primitive into src/skins to start from.
+ */
+export const skins: ThemeSkins = {
+    // Replaces the root recipe; the spinner and label keep classic's.
+    Button: skin('Button', {
+        root: ({ color, size, secondary }) =>
+            [
+                'relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors disabled:opacity-50',
+                size === 'xsmall' ? 'h-7 px-3 text-xs' : 'h-9 px-4 text-sm',
+                size === 'xlarge' && 'w-full',
+                secondary ? 'bg-transparent text-foreground ring-1 ring-border hover:not-disabled:bg-popover' : fills[color],
+            ]
+                .filter(Boolean)
+                .join(' '),
+    }),
+    // Builds on classic's card: `below(extra)` is its classes with `extra` merged in.
+    Card: skin('Card', {
+        root: (state, below) => below('ring-1 ring-border/60'),
+    }),
+};

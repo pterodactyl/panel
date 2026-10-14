@@ -26,7 +26,6 @@ class AdvancedController extends AdminApiController
     public function __invoke(UpdateAdvancedSettingsRequest $request, Kernel $kernel): Response
     {
         foreach ($request->normalize() as $key => $value) {
-            // SAFETY: settings are persisted in the environment store as strings; null retains its deletion semantics.
             Setting::put('settings::'.$key, ($value) === null ? null : (string) $value);
         }
 

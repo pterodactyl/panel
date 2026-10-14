@@ -62,7 +62,13 @@ test('the configured edit size rejects larger files by default', function (): vo
 })->throws(FileSizeTooLargeException::class);
 
 test('an edit size configured from the environment as a string is honoured', function (string $size, bool $rejected): void {
-    config()->set('pterodactyl.files.max_edit_size', $size);
+    $_SERVER['PTERODACTYL_FILES_MAX_EDIT_SIZE'] = $size;
+    try {
+        config()->set('pterodactyl.files', (require config_path('pterodactyl.php'))['files']);
+    } finally {
+        unset($_SERVER['PTERODACTYL_FILES_MAX_EDIT_SIZE']);
+    }
+
     Http::fake(['*/files/contents*' => Http::response('123456', 200, ['Content-Length' => '6'])]);
 
     $read = fn (): string => $this->app->make(ReadsFileContents::class)->read(server(), '/large.log');

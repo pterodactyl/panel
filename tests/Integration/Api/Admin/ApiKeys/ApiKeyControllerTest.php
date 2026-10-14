@@ -84,6 +84,8 @@ test('delete api key', function (): void {
     $response = $this->delete(route('api.admin.api-keys.delete', ['identifier' => $key->identifier]));
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseMissing('api_keys', ['id' => $key->id]);
+    // An application key is not the admin's account key, so only the admin log records it.
+    expect($this->getAdminUser()->activity()->where('event', 'user:api-key.delete')->exists())->toBeFalse();
 });
 test('delete missing api key', function (): void {
     $response = $this->delete(route('api.admin.api-keys.delete', ['identifier' => 'nil']));

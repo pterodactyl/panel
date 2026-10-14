@@ -1,22 +1,31 @@
-import type { AvatarProps } from 'boring-avatars';
 import BoringAvatar from 'boring-avatars';
 import { useCurrentUser } from '@/api/account/queries';
+import { replaceable, useSkin } from '@/themes/skins';
 
 const palette = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
 
-type Props = Omit<AvatarProps, 'colors'>;
+export type AvatarVariant = 'beam' | 'marble' | 'pixel' | 'sunset' | 'ring' | 'bauhaus';
 
-const _Avatar = ({ variant = 'beam', ...props }: AvatarProps) => (
-    <BoringAvatar colors={palette} variant={variant} {...props} />
-);
+export interface AvatarProps {
+    /** Seeds the generated pattern; the panel uses a user's UUID. */
+    name: string;
+    size?: number | string;
+    variant?: AvatarVariant;
+    square?: boolean;
+    title?: boolean;
+    className?: string;
+}
 
-const UserAvatar = ({ variant = 'beam', ...props }: Omit<Props, 'name'>) => {
-    const uuid = useCurrentUser().uuid;
+function CoreAvatar({ variant = 'beam', className, ...props }: AvatarProps) {
+    const ui = useSkin('Avatar', { variant });
 
-    return <BoringAvatar colors={palette} name={uuid} variant={variant} {...props} />;
-};
+    return <BoringAvatar colors={palette} variant={variant} {...props} {...ui('root', className)} />;
+}
 
-_Avatar.displayName = 'Avatar';
+const _Avatar = replaceable('Avatar', CoreAvatar);
+
+const UserAvatar = (props: Omit<AvatarProps, 'name'>) => <_Avatar name={useCurrentUser().uuid} {...props} />;
+
 UserAvatar.displayName = 'Avatar.User';
 
 const Avatar = Object.assign(_Avatar, {

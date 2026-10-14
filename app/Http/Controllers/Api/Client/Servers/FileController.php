@@ -7,6 +7,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -29,7 +30,6 @@ use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ChmodFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest;
@@ -42,10 +42,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\FileObjectResource;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Support\JsonValueGuard;
-use Pterodactyl\Transformers\Api\Client\FileObjectTransformer;
+use Pterodactyl\Services\Nodes\NodeJwt;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -112,23 +112,18 @@ class FileController extends ClientApiController
     /**
      * Returns a listing of files in a given directory.
      *
-     *
-     * @return ApiPayload
-     *
      * @throws DaemonConnectionException
      */
     #[Endpoint('List files', 'Returns files and folders in a server directory.')]
     #[QueryParam('directory', 'string', 'Directory to list. Defaults to the server root.', required: false, example: '/config', nullable: true)]
     #[ScribeResponse(self::FILE_LIST_EXAMPLE, description: 'Directory contents returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not list the directory.')]
-    public function directory(ListFilesRequest $request, ListsDirectories $operation, Server $server): array
+    public function directory(ListFilesRequest $request, ListsDirectories $operation, Server $server): ApiResourceCollection
     {
-        $directory = JsonValueGuard::nullableString($request->validated('directory')) ?? '/';
+        $directory = $this->path($request, 'directory') ?? '/';
         $contents = $operation->list($server, $directory);
 
-        return Fractal::collection($contents)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
-            ->toResponseArray();
+        return FileObjectResource::collection($contents);
     }
 
     /**
@@ -142,7 +137,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not read the file.')]
     public function contents(GetFileContentsRequest $request, ReadsFileContents $operation, Server $server): Response
     {
-        $file = JsonValueGuard::string($request->validated('file'));
+        $file = $request->string('file')->toString();
         $response = $operation->read($server, $file);
 
         Activity::event('server:file.read')->property('file', $file)->log();
@@ -163,18 +158,17 @@ class FileController extends ClientApiController
     #[QueryParam('file', 'string', 'Path to the file to download.', required: true, example: '/server.properties')]
     #[ScribeResponse(self::SIGNED_URL_EXAMPLE, description: 'Signed download URL returned.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the download URL.')]
-    public function download(GetFileContentsRequest $request, NodeJWTService $jwtService, Server $server): array
+    public function download(GetFileContentsRequest $request, NodeJwt $jwt, Server $server): array
     {
-        $file = JsonValueGuard::string($request->validated('file'));
-        $token = $jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-            ->setUser($request->user())
-            ->setClaims([
-                'file_path' => rawurldecode($file),
-                'server_uuid' => $server->uuid,
-            ])
-            ->setScopes(JwtScope::FileDownload)
-            ->handle($server->node, $request->user()->id.$server->uuid);
+        $file = $request->string('file')->toString();
+        $token = $jwt->issue(
+            $server->node,
+            JwtScope::FileDownload,
+            identifiedBy: $request->user()->id.$server->uuid,
+            expiresAt: CarbonImmutable::now()->addMinutes(15),
+            user: $request->user(),
+            claims: ['file_path' => rawurldecode($file), 'server_uuid' => $server->uuid],
+        );
 
         Activity::event('server:file.download')->property('file', $file)->log();
 
@@ -201,13 +195,11 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not write the file.')]
     public function write(WriteFileContentRequest $request, WritesFileContents $operation, ListsDirectories $lister, Server $server): JsonResponse
     {
-        $file = JsonValueGuard::string($request->validated('file'));
+        $file = $request->string('file')->toString();
         $permission = $this->fileExists($lister, $server, $file) ? Permissions::FileUpdate : Permissions::FileCreate;
         throw_unless($request->user()->can($permission->value, $server), AuthorizationException::class);
 
         $operation->write($server, $file, $request->getContent());
-
-        Activity::event('server:file.write')->property('file', $file)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -222,14 +214,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the folder.')]
     public function create(CreateFolderRequest $request, CreatesDirectories $operation, Server $server): JsonResponse
     {
-        $name = JsonValueGuard::string($request->validated('name'));
-        $root = JsonValueGuard::string($request->validated('root', '/'));
-        $operation->create($server, $name, $root);
-
-        Activity::event('server:file.create-directory')
-            ->property('name', $name)
-            ->property('directory', $root)
-            ->log();
+        $operation->create($server, $request->string('name')->toString(), $this->path($request, 'root') ?? '/');
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -244,14 +229,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not rename the files.')]
     public function rename(RenameFileRequest $request, RenamesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->rename($server, $root, $files);
-
-        Activity::event('server:file.rename')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->rename($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -266,39 +244,22 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not copy the file.')]
     public function copy(CopyFileRequest $request, CopiesFiles $operation, Server $server): JsonResponse
     {
-        $location = JsonValueGuard::string($request->validated('location'));
-        $operation->copy($server, $location);
-
-        Activity::event('server:file.copy')->property('file', $location)->log();
+        $operation->copy($server, $request->string('location')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * @return ApiPayload
-     *
      * @throws DaemonConnectionException
      */
     #[Endpoint('Compress files', 'Creates an archive from one or more files or folders in a server directory.')]
     #[ScribeResponse(self::ARCHIVE_OBJECT_EXAMPLE, description: 'Archive created.')]
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not create the archive.')]
-    public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): array
+    public function compress(CompressFilesRequest $request, CompressesFiles $operation, Server $server): FileObjectResource
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $file = $operation->compress($server,
-            $root,
-            $files
-        );
+        $file = $operation->compress($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
-        Activity::event('server:file.compress')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
-
-        return Fractal::item($file)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
-            ->toResponseArray();
+        return FileObjectResource::make($file);
     }
 
     /**
@@ -309,18 +270,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not extract the archive.')]
     public function decompress(DecompressFilesRequest $request, DecompressesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $file = JsonValueGuard::string($request->validated('file'));
-
-        $operation->decompress($server,
-            $root,
-            $file
-        );
-
-        Activity::event('server:file.decompress')
-            ->property('directory', $root)
-            ->property('files', $file)
-            ->log();
+        $operation->decompress($server, $this->path($request, 'root'), $request->string('file')->toString());
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
@@ -335,17 +285,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not delete the files.')]
     public function delete(DeleteFileRequest $request, DeletesFiles $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->delete($server,
-            $root,
-            $files
-        );
-
-        Activity::event('server:file.delete')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->delete($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -360,17 +300,7 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not update file permissions.')]
     public function chmod(ChmodFilesRequest $request, ChangesFilePermissions $operation, Server $server): JsonResponse
     {
-        $root = JsonValueGuard::nullableString($request->validated('root'));
-        $files = JsonValueGuard::jsonArray($request->validated('files'));
-        $operation->change($server,
-            $root,
-            $files
-        );
-
-        Activity::event('server:file.chmod')
-            ->property('directory', $root)
-            ->property('files', $files)
-            ->log();
+        $operation->change($server, $this->path($request, 'root'), $request->safe()->array('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -385,20 +315,27 @@ class FileController extends ClientApiController
     #[ScribeResponse(self::DAEMON_ERROR, status: 502, description: 'Wings could not pull the remote file.')]
     public function pull(PullFileRequest $request, PullsFiles $operation, Server $server): JsonResponse
     {
-        $url = JsonValueGuard::string($request->validated('url'));
-        $directory = JsonValueGuard::nullableString($request->validated('directory'));
-        $operation->pull($server,
-            $url,
-            $directory,
-            JsonValueGuard::jsonArray($request->safe()->only(['filename', 'use_header', 'foreground']))
-        );
+        $url = $request->string('url')->toString();
+        $directory = $this->path($request, 'directory');
+        $options = $request->safe()->has('filename') ? ['filename' => $this->path($request, 'filename')] : [];
+        foreach (['use_header', 'foreground'] as $flag) {
+            if ($request->safe()->has($flag)) {
+                $options[$flag] = $request->boolean($flag);
+            }
+        }
 
-        Activity::event('server:file.pull')
-            ->property('directory', $directory)
-            ->property('url', $url)
-            ->log();
+        $operation->pull($server, $url, $directory, $options);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * File routes skip TrimStrings, so a path made only of spaces is kept as given;
+     * only a missing or null value is read as absent.
+     */
+    private function path(Request $request, string $key): ?string
+    {
+        return $request->input($key) === null ? null : $request->string($key)->toString();
     }
 
     /**

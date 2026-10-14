@@ -13,10 +13,6 @@ final readonly class AllocationRange
         public int $end,
     ) {}
 
-    /**
-     * @param  JsonInputValue  $start
-     * @param  JsonInputValue  $end
-     */
     public static function fromConfig(mixed $start, mixed $end): ?self
     {
         if (! $start || ! $end) {
@@ -29,7 +25,6 @@ final readonly class AllocationRange
         );
     }
 
-    /** @param JsonInputValue $value */
     private static function integerLike(mixed $value, string $name): int
     {
         if (is_int($value)) {
@@ -37,7 +32,6 @@ final readonly class AllocationRange
         }
 
         if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
-            // SAFETY: the anchored decimal-integer pattern proves the string has an integer representation.
             return (int) $value;
         }
 

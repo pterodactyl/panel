@@ -7,12 +7,12 @@ namespace Pterodactyl\Actions\Backups;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Backups\GeneratesBackupDownloadLinks;
 use Pterodactyl\Contracts\Backups\RestoresBackups;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Throwable;
 
 final readonly class RestoreBackup implements RestoresBackups
 {
@@ -21,11 +21,17 @@ final readonly class RestoreBackup implements RestoresBackups
     ) {}
 
     /**
-     * Marks the server as restoring and asks Wings to unpack the backup over its files.
-     * S3 backups are handed to Wings as a signed download link.
+     * The action takes `truncate` as a bool, which always meets these rules.
      *
-     * @throws Throwable
+     * @return NormalizedValidationRules
      */
+    public static function rules(): array
+    {
+        return [
+            'truncate' => ['required', 'boolean'],
+        ];
+    }
+
     public function restore(Server $server, Backup $backup, User $user, bool $truncate): void
     {
         throw_if(($server->status) !== null, BadRequestHttpException::class, 'This server is not currently in a state that allows for a backup to be restored.');
@@ -40,5 +46,11 @@ final readonly class RestoreBackup implements RestoresBackups
 
             Daemon::server($server)->backups()->restore($backup, $url, $truncate);
         });
+
+        // ResetServerStates finds the backup a restoring server was given through this entry.
+        Activity::event('server:backup.restore')
+            ->subject($server, $backup)
+            ->property(['name' => $backup->name, 'truncate' => $truncate])
+            ->log();
     }
 }
