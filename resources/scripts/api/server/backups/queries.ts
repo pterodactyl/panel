@@ -106,22 +106,22 @@ export const useCreateServerBackup = () => {
     });
 };
 
-export const useDeleteServerBackup = (backup: ServerBackup) => {
+/** Reports failures; the caller announces success, since it knows the backup's name. */
+export const useDeleteServerBackup = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         ...clientDeleteServerBackupMutation(),
-        onSuccess: async (_data, { path }) => {
-            await queryClient.invalidateQueries({
+        onSuccess: (_data, { path }) =>
+            queryClient.invalidateQueries({
                 queryKey: clientListServerBackupsQueryKey({ path: { server_uuid: path.server_uuid } }),
-            });
-            toast.success('Backup deleted', { description: `${backup.attributes.name} has been removed.` });
-        },
+            }),
         onError: (error) => notifyHttpError(error, 'Unable to delete backup'),
     });
 };
 
-export const useRestoreServerBackup = (backup: ServerBackup) => {
+/** Reports failures; the caller announces success, since it knows the backup's name. */
+export const useRestoreServerBackup = () => {
     const updateCurrentServer = useUpdateCurrentServer();
 
     return useMutation({
@@ -131,22 +131,19 @@ export const useRestoreServerBackup = (backup: ServerBackup) => {
                 ...server,
                 attributes: { ...server.attributes, status: 'restoring_backup' },
             }));
-            toast.success('Backup restore started', {
-                description: `${backup.attributes.name} is being restored.`,
-            });
         },
         onError: (error) => notifyHttpError(error, 'Unable to restore backup'),
     });
 };
 
-export const useToggleServerBackupLock = (page: number, backup: ServerBackup) => {
+export const useToggleServerBackupLock = (page: number) => {
     const queryClient = useQueryClient();
 
     return useMutation({
         ...clientToggleBackupLockMutation(),
         onSuccess: (updated, { path }) => {
             updateServerBackup(queryClient, path.server_uuid, page, path.backup_uuid, () => updated);
-            toast.success(backup.attributes.is_locked ? 'Backup unlocked' : 'Backup locked');
+            toast.success(updated.attributes.is_locked ? 'Backup locked' : 'Backup unlocked');
         },
         onError: (error) => notifyHttpError(error, 'Unable to update backup lock'),
     });

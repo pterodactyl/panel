@@ -30,7 +30,7 @@ final class ExtensionCompatibility
         while ($remaining !== []) {
             $progress = false;
             foreach ($remaining as $id => $manifest) {
-                $dependencies = array_keys($manifest->requiredExtensions);
+                $dependencies = array_keys($manifest->dependencies());
                 $failed = array_intersect($dependencies, array_keys($errors));
                 if ($failed !== []) {
                     $errors[$id] = sprintf('Extension "%s" requires unavailable extension "%s".', $id, reset($failed));
@@ -74,7 +74,7 @@ final class ExtensionCompatibility
     public function assertCanDisable(string $identifier, Collection $enabled): void
     {
         foreach ($enabled as $manifest) {
-            throw_if(isset($manifest->requiredExtensions[$identifier]), InvalidExtensionException::class, "Disable dependent extension \"{$manifest->id}\" before \"{$identifier}\".");
+            throw_if(isset($manifest->dependencies()[$identifier]), InvalidExtensionException::class, "Disable dependent extension \"{$manifest->id}\" before \"{$identifier}\".");
         }
     }
 
@@ -147,11 +147,6 @@ final class ExtensionCompatibility
                 continue;
             }
 
-            $conflicts = array_intersect($manifest->components, $other->components);
-            if ($conflicts !== []) {
-                return sprintf('Extension "%s" cannot replace "%s": enabled extension "%s" also declares it.', $manifest->id, reset($conflicts), $other->id);
-            }
-
             $prefixes = array_intersect($manifest->rootPrefixes, $other->rootPrefixes);
             if ($prefixes !== []) {
                 return sprintf('Extension "%s" cannot claim root path "/%s": enabled extension "%s" also declares it.', $manifest->id, reset($prefixes), $other->id);
@@ -171,8 +166,13 @@ final class ExtensionCompatibility
             }
         }
 
-        foreach ($manifest->requiredExtensions as $id => $constraint) {
+        $parent = $manifest->theme?->extends;
+        foreach ($manifest->dependencies() as $id => $constraint) {
             $dependency = $enabled->get($id);
+            if ($id === $parent && ! $dependency?->isTheme()) {
+                return sprintf('Theme "%s" extends "%s", which is not an enabled theme.', $manifest->id, $id);
+            }
+
             if ($dependency === null || ! Semver::satisfies($dependency->version, $constraint)) {
                 return sprintf('Extension "%s" requires enabled extension "%s" %s.', $manifest->id, $id, $constraint);
             }

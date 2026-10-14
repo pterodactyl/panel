@@ -18,9 +18,7 @@ import { notifyHttpError } from '@/plugins/notifications';
 
 export type SSHKey = ClientSshKeyResource;
 
-export const accountSshKeysQueryOptions = () => ({
-    ...clientListSshKeysOptions(),
-});
+export const accountSshKeysQueryOptions = () => clientListSshKeysOptions();
 
 export const useSSHKeys = () => useQuery(accountSshKeysQueryOptions());
 

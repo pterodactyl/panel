@@ -1,10 +1,13 @@
 {
     "name": "@pterodactyl/sdk",
-    "version": "2.0.0-beta.4",
+    "version": "2.0.0-beta.6",
     "description": "SDK for building Pterodactyl panel extensions: types for the runtime API and the Vite build preset.",
     "license": "MIT",
     "type": "module",
     "types": "./types/index.d.ts",
+    "bin": {
+        "pterodactyl-theme": "./bin/pterodactyl-theme.mjs"
+    },
     "exports": {
         ".": {
             "types": "./types/index.d.ts",
@@ -14,6 +17,10 @@
             "types": "./types/api.d.ts",
             "default": "./api-runtime-stub.mjs"
         },
+        "./theme": {
+            "types": "./types/theme.d.ts",
+            "default": "./theme-runtime-stub.mjs"
+        },
         "./vite": "./vite.mjs",
         "./testing": {
             "types": "./types/testing.d.ts",
@@ -22,15 +29,24 @@
         "./vitest": "./vitest.mjs",
         "./openapi": "./openapi.mjs",
         "./theme.css": "./theme.css",
+        "./panel.css": "./panel.css",
+        "./theme-entry.css": "./theme-entry.css",
+        "./core-classes.txt": "./core-classes.txt",
         "./icons.json": "./icons.json",
+        "./views.json": "./views.json",
         "./manifest.schema.json": "./manifest.schema.json"
     },
     "files": [
+        "bin",
+        "classic",
         "types",
         "api-runtime-stub.mjs",
         "runtime-stub.mjs",
+        "theme-runtime-stub.mjs",
         "vite.mjs",
+        "theme-chain.mjs",
         "README.md",
+        "THEMES.md",
         "testing-runtime",
         "vitest.mjs",
         "vitest-setup.mjs",
@@ -38,7 +54,11 @@
         "openapi.mjs",
         "theme.css",
         "theme-tokens.css",
+        "panel.css",
+        "theme-entry.css",
+        "core-classes.txt",
         "icons.json",
+        "views.json",
         "manifest.schema.json"
     ],
     "peerDependencies": {

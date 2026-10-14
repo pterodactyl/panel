@@ -2,7 +2,7 @@
     "id": "hello-world",
     "name": "Hello World",
     "version": "1.0.0",
-    "description": "A frontend example demonstrating slots, server pages, component replacements, React state, and SDK hooks.",
+    "description": "A frontend example demonstrating slots, server pages, view overrides, React state, and SDK hooks.",
     "ui": {
         "entry": "dist/client.js",
         "mode": "native",
@@ -18,9 +18,9 @@
                 }
             }
         ],
-        "components": ["dashboard.serverCard", "server.files.details", "server.files.editor"]
+        "views": ["dashboard.serverCard", "server.files.details", "server.files.editor"]
     },
     "requires": {
-        "sdk": ">=2.0.0-beta.4 <3.0"
+        "sdk": ">=2.0.0-beta.5 <3.0"
     }
 }

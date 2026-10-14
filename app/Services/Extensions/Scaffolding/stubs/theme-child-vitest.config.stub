@@ -1,0 +1,9 @@
+import { defineConfig } from 'vitest/config';
+import { pterodactylTestAliases, pterodactylTestSetup, pterodactylTestDirectory } from '@pterodactyl/sdk/vitest';
+
+// `extensions` lets the tests import the built entries of the themes this one extends: '{{parent}}/dist/client.js'.
+export default defineConfig({
+    server: { fs: { allow: [process.cwd(), pterodactylTestDirectory] } },
+    resolve: { alias: pterodactylTestAliases({ extensions: '{{extensions}}' }) },
+    test: { environment: 'jsdom', setupFiles: [pterodactylTestSetup] },
+});

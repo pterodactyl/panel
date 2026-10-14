@@ -45,7 +45,6 @@ import Checkbox from '@/components/ui/Checkbox';
 import Switch from '@/components/ui/Switch';
 import { FileInput } from '@/components/form/controls';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 type ExtensionState = NonNullable<AdminExtension['state']>;
 
@@ -340,7 +339,7 @@ const buildSettingsPayload = (
 
 function SettingsEmptyState({ extensionEnabled }: { extensionEnabled: boolean | undefined }) {
     return (
-        <Empty className={emptyCompactClass}>
+        <Empty size='compact'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <Settings2 />

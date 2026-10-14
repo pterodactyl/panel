@@ -1,0 +1,20 @@
+{
+    "name": "{{id}}",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite build --watch",
+        "doctor": "php {{artisan}} p:extension:doctor .",
+        "pack": "php {{artisan}} p:extension:pack . --force"
+    },
+    "devDependencies": {
+        "@pterodactyl/sdk": "{{sdkDependency}}",
+        "vite": "^8",
+        "tailwindcss": "^4.3.0",
+        "@tailwindcss/forms": "^0.5.2",
+        "@tailwindcss/postcss": "^4",
+        "postcss": "^8.5.6"
+    }
+}

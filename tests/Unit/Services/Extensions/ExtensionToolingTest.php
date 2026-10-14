@@ -98,6 +98,25 @@ test('packs runtime sources and lazy assets without developer files or hidden se
     $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive])->assertFailed();
 });
 
+test('leaves source maps, which can embed the full sources, out of an archive unless asked', function (): void {
+    File::put($this->directory.'/dist/client.js.map', '{"sourcesContent":["secret source"]}');
+    $archive = $this->directory.'/probe.pteroext';
+    $names = function () use ($archive): array {
+        $zip = new ZipArchive;
+        expect($zip->open($archive))->toBeTrue();
+        $names = array_map(fn (int $index): string|false => $zip->getNameIndex($index), range(0, $zip->numFiles - 1));
+        $zip->close();
+
+        return $names;
+    };
+
+    $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive])->assertSuccessful();
+    expect($names())->toContain('dist/client.js')->not->toContain('dist/client.js.map');
+
+    $this->artisan('p:extension:pack', ['path' => $this->directory, '--output' => $archive, '--force' => true, '--sourcemaps' => true])->assertSuccessful();
+    expect($names())->toContain('dist/client.js.map');
+});
+
 test('packs an image icon declared outside the runtime directories once', function (string $icon): void {
     File::put($this->directory.'/extension.json', json_encode(['id' => 'probe', 'name' => 'Probe', 'version' => '1.0.0', 'icon' => $icon, 'autoload' => ['Probe\\' => 'src'], 'ui' => ['entry' => 'dist/client.js']], JSON_THROW_ON_ERROR));
     File::ensureDirectoryExists(dirname($this->directory.'/'.$icon));
@@ -220,4 +239,18 @@ test('generates literal screen ids and only declared frontend configuration keys
     expect($source)->toContain('ExtensionScreenId = "main"', 'readonly "enabled": boolean', 'ExtensionPermission = "ext.probe.view"');
     expect($source)->toContain('readonly "accent": string;', 'readonly "links": readonly ExtensionConfigValue[];', 'ExtensionPublicConfigKey = "enabled";', 'ExtensionPublicConfig = Pick<ExtensionConfig, ExtensionPublicConfigKey>');
     expect($source)->not->toContain('token', 'private');
+});
+
+test('warns about missing frontend configuration keys only when a provider could declare them', function (): void {
+    $this->artisan('p:extension:types', ['path' => $this->directory])
+        ->doesntExpectOutputToContain('provider is not loaded')
+        ->assertSuccessful();
+
+    $manifest = File::json($this->directory.'/extension.json');
+    $manifest['provider'] = 'Probe\\ProbeServiceProvider';
+    File::put($this->directory.'/extension.json', json_encode($manifest, JSON_THROW_ON_ERROR));
+
+    $this->artisan('p:extension:types', ['path' => $this->directory])
+        ->expectsOutputToContain('provider is not loaded')
+        ->assertSuccessful();
 });

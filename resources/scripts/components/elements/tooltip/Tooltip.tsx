@@ -17,7 +17,7 @@ import {
     useMergeRefs,
     useTransitionStyles,
 } from '@floating-ui/react';
-import { cn } from '@/lib/cn';
+import { useSkin, type SkinBinding } from '@/themes/skins';
 
 type Interaction = 'hover' | 'click' | 'focus';
 type TooltipChildProps = React.DOMAttributes<Element> &
@@ -25,7 +25,7 @@ type TooltipChildProps = React.DOMAttributes<Element> &
         className?: string;
     };
 
-interface Props {
+export interface TooltipProps {
     rest?: number;
     delay?: number | Partial<{ open: number; close: number }>;
     content: string | React.ReactNode;
@@ -37,14 +37,7 @@ interface Props {
     children: React.ReactElement<TooltipChildProps>;
 }
 
-const arrowSides = {
-    top: 'bottom-[-6px] left-0',
-    bottom: 'top-[-6px] left-0',
-    right: 'top-0 left-[-6px]',
-    left: 'top-0 right-[-6px]',
-} satisfies Record<Side, string>;
-
-type TooltipInteractionOptions = Pick<Props, 'interactions' | 'rest' | 'delay'>;
+type TooltipInteractionOptions = Pick<TooltipProps, 'interactions' | 'rest' | 'delay'>;
 
 function useTooltipInteractions(
     context: FloatingContext,
@@ -67,25 +60,18 @@ function useTooltipInteractions(
 
 type TooltipArrowProps = {
     ref: React.Ref<HTMLDivElement>;
-    placement: Placement;
+    ui: SkinBinding<'Tooltip'>;
     position?: { x?: number; y?: number };
 };
 
-function TooltipArrow({ ref, placement, position }: TooltipArrowProps) {
-    const side = arrowSides[placement.split('-')[0] as Side];
+function TooltipArrow({ ref, ui, position }: TooltipArrowProps) {
     const x = Math.round(position?.x || 0);
     const y = Math.round(position?.y || 0);
 
-    return (
-        <div
-            ref={ref}
-            style={{ transform: `translate(${x}px, ${y}px) rotate(45deg)` }}
-            className={cn('absolute bg-popover w-3 h-3', side)}
-        />
-    );
+    return <div ref={ref} style={{ transform: `translate(${x}px, ${y}px) rotate(45deg)` }} {...ui('arrow')} />;
 }
 
-export default function Tooltip({ children, ...props }: Props) {
+export default function Tooltip({ children, ...props }: TooltipProps) {
     const arrowEl = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
     const enabled = !props.disabled;
@@ -120,6 +106,7 @@ export default function Tooltip({ children, ...props }: Props) {
     });
 
     const referenceRef = useMergeRefs([refs.setReference, children.props.ref]);
+    const ui = useSkin('Tooltip', { side: placement.split('-')[0] as Side, arrow: !!props.arrow });
 
     return (
         <>
@@ -129,17 +116,12 @@ export default function Tooltip({ children, ...props }: Props) {
                     <div
                         {...getFloatingProps({
                             ref: refs.setFloating,
-                            className: cn(
-                                'bg-popover text-sm text-popover-foreground px-3 py-2 rounded-sm pointer-events-none max-w-[24rem] z-9999',
-                                props.className
-                            ),
+                            ...ui('root', props.className),
                             style: { ...floatingStyles, ...transitionStyles },
                         })}
                     >
                         {props.content}
-                        {props.arrow && (
-                            <TooltipArrow ref={arrowEl} placement={placement} position={middlewareData.arrow} />
-                        )}
+                        {props.arrow && <TooltipArrow ref={arrowEl} ui={ui} position={middlewareData.arrow} />}
                     </div>
                 </FloatingPortal>
             )}

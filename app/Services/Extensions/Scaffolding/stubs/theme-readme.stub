@@ -1,0 +1,50 @@
+# {{name}}
+
+A Pterodactyl panel theme, scaffolded by `p:extension:make --theme`. The themes guide,
+`node_modules/@pterodactyl/sdk/THEMES.md`, goes one level at a time; stop at the level you need. To start
+from another theme instead, scaffold with `--extends=<theme>`.
+
+| To | Edit | Guide |
+| --- | --- | --- |
+| Change colours, fonts, radius and spacing, for dark and light | `src/theme.css` | Level 1 |
+| Restyle buttons, cards, dialogs and the rest of the UI kit | `src/skins.ts` | Level 2 |
+| Change the layout, such as a sidebar | `src/views/AppLayout.tsx` | Level 3 |
+| Rearrange or rebuild pages | `src/views/`, registered in `src/theme.tsx` | Level 4 |
+| Add settings administrators change on the Themes page | `extension.json` | Settings, schemes and branding |
+
+## Files
+
+| File | |
+| --- | --- |
+| `extension.json` | The manifest. `"type": "theme"` and its `theme` section declare the stylesheet, the colour schemes and the settings. |
+| `src/theme.css` | The panel stylesheet with this theme's tokens and classes. Plain Tailwind, no prefix. |
+| `src/theme.tsx` | `defineTheme`: skins for the UI kit and views by name. |
+| `src/skins.ts` | Class recipes for UI primitives such as `Button` and `Card`. |
+| `src/views/AppLayout.tsx` | A layer over classic's app layout. |
+| `src/theme.spec.tsx` | Renders views and primitives with the theme through `@pterodactyl/sdk/testing`. |
+
+## Scripts
+
+| Script | |
+| --- | --- |
+| `npm run build` | Writes `dist/`: the files listed under "What the build writes" in Level 1. |
+| `npm run dev` | Rebuilds on change; `p:extension:dev --watch` runs it. |
+| `npm run typecheck` | Checks the theme against the SDK's types. |
+| `npm test` | Runs the tests. |
+| `npm run doctor` | The panel's checks: manifest and build. |
+| `npm run types` | Generates `src/theme-types.ts` from the settings. |
+| `npm run pack` | Packs a `.pteroext` archive to install on another panel. |
+
+## Develop
+
+```sh
+npm install
+php {{artisan}} p:extension:dev . --enable
+php {{artisan}} p:theme:activate {{id}}
+php {{artisan}} p:extension:dev . --watch
+```
+
+The first command builds, installs and enables the theme. While the last one runs on a panel with
+`APP_DEBUG=true`, a change to `src/theme.css` swaps into open pages without a reload, and any other
+change reloads them. `npx pterodactyl-theme list` lists every view, and `npx pterodactyl-theme eject <view>`
+copies classic's source for one into `src/views`.

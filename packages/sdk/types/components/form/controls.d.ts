@@ -9,10 +9,12 @@ interface ThemeProps {
 type WithStringClassName<TProps> = Omit<TProps, 'className'> & {
     className?: string;
 };
-type TextInputProps = ThemeProps & WithStringClassName<React.ComponentProps<typeof BaseInput>>;
-type NumberInputProps = ThemeProps & Pick<React.ComponentProps<typeof NumberField.Root>, 'value' | 'onValueChange' | 'min' | 'max' | 'step' | 'format' | 'disabled'> & WithStringClassName<Omit<React.ComponentProps<typeof NumberField.Input>, 'value' | 'onChange' | 'disabled'>>;
+export type TextInputProps = ThemeProps & WithStringClassName<React.ComponentProps<typeof BaseInput>>;
+export type TextAreaProps = ThemeProps & React.ComponentProps<'textarea'>;
+export type NumberInputProps = ThemeProps & Pick<React.ComponentProps<typeof NumberField.Root>, 'value' | 'onValueChange' | 'min' | 'max' | 'step' | 'format' | 'disabled'> & WithStringClassName<Omit<React.ComponentProps<typeof NumberField.Input>, 'value' | 'onChange' | 'disabled'>>;
+export type FileInputProps = Omit<React.ComponentProps<'input'>, 'type'>;
 export declare const TextInput: ({ $isLight, $hasError, className, ...props }: TextInputProps) => React.JSX.Element;
-export declare const FileInput: ({ className, ...props }: Omit<React.ComponentProps<"input">, "type">) => React.JSX.Element;
-export declare const TextArea: ({ $isLight, $hasError, className, ...props }: ThemeProps & React.ComponentProps<"textarea">) => React.JSX.Element;
+export declare const FileInput: ({ className, ...props }: FileInputProps) => React.JSX.Element;
+export declare const TextArea: ({ $isLight, $hasError, className, ...props }: TextAreaProps) => React.JSX.Element;
 export declare const NumberInput: ({ $isLight, $hasError, className, value, onValueChange, min, max, step, format, disabled, ...props }: NumberInputProps) => React.JSX.Element;
 export {};

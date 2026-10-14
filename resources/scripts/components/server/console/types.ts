@@ -1,6 +1,8 @@
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
 export interface ChartSeries {
+    /** The key of the plotted value in each point. */
     dataKey: string;
+    /** Any CSS colour, typically a token such as `var(--chart-1)`. */
     color: string;
 }

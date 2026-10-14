@@ -15,7 +15,6 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import ListToolbar from '@/components/elements/ListToolbar';
 import { NewLinkButton } from '@/components/elements/NewButton';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 function ServerDatabaseContent({ server }: { server: AdminServer }) {
     const { attributes } = server;
@@ -106,7 +105,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                             table={table}
                             isFetching={isFetching}
                             emptyState={
-                                <Empty className={emptyCompactClass}>
+                                <Empty size='compact'>
                                     <EmptyHeader>
                                         <EmptyMedia variant='icon'>
                                             <Database />

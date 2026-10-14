@@ -11,7 +11,7 @@
                 "name": "node-gamma",
                 "description": "Created through the API",
                 "location_id": 1,
-                "fqdn": "gamma.example.test",
+                "fqdn": "localhost",
                 "scheme": "https",
                 "behind_proxy": false,
                 "maintenance_mode": false,

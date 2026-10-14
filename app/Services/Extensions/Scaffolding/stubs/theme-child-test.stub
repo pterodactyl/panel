@@ -1,0 +1,18 @@
+import { afterEach, beforeAll, expect, test } from 'vitest';
+import { preloadTheme, renderView, type RenderedView } from '@pterodactyl/sdk/testing';
+{{parentImports}}
+import theme from './theme';
+
+// The chain the panel stacks over classic, oldest first: the themes this one extends, then this one.
+const themes = [{{parentNames}}, theme];
+
+let rendered: RenderedView | undefined;
+
+beforeAll(() => preloadTheme(themes));
+afterEach(() => rendered?.unmount());
+
+test('renders a server card with the views of the themes it extends', () => {
+    rendered = renderView('dashboard.serverCard', { themes, fixture: 'running' });
+
+    expect(rendered.container.textContent).toContain('Test server');
+});

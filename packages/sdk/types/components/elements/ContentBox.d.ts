@@ -5,5 +5,6 @@ type Props = Readonly<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElemen
     borderColor?: string;
     showLoadingOverlay?: boolean;
 }>;
+/** A section title above a plain `Card`. */
 declare const ContentBox: ({ title, borderColor, showLoadingOverlay, children, ...props }: Props) => React.JSX.Element;
 export default ContentBox;

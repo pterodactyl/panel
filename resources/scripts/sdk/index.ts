@@ -1,54 +1,97 @@
 // Every export here is public, semver-governed "@pterodactyl/sdk" API.
-import type { ComponentName, ComponentReplacement } from '@/extensions/componentTypes';
 import type { ComponentType } from 'react';
+import type { ViewName, ViewOverride } from '@/views/registry';
 import type { ExtensionTableName, ExtensionTableColumn } from '@/extensions/tableTypes';
 import type { ExtensionFieldValues, ExtensionFormName, FormExtension } from '@/extensions/formTypes';
-import {
-    SLOT_NAMES,
-    type SlotComponentProps,
-    type SlotData,
-    type ScreenImporter,
-    type ScreenComponentProps,
-    type ScreenOptions,
-    type ExtensionScreenDefinition,
-    type RouteSlotData,
-    type SlotName,
-    type SubuserPermissionsSlotData,
+import type {
+    SlotComponentProps,
+    SlotData,
+    ScreenImporter,
+    ScreenComponentProps,
+    ScreenOptions,
+    ExtensionScreenDefinition,
+    RouteSlotData,
+    SlotName,
+    SubuserPermissionsSlotData,
 } from '@/extensions/registry';
-import {
-    useCurrentServer as usePanelServer,
-    useCurrentServerPermissions as usePanelPermissions,
-    useCurrentServerUuid as usePanelServerUuid,
-} from '@/api/server/queries';
-import { useCurrentUser as usePanelUser } from '@/api/account/queries';
-import { useSiteSettings as usePanelSettings } from '@/api/settings/queries';
 import type { UserData as SdkUser } from '@/api/account/types';
 import type { SiteSettings as SdkSiteSettings } from '@/api/settings/types';
 import type { Server as SdkServer } from '@/api/server/types';
-import { useExtensionCallback } from '@/extensions/context';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { SocketEvent } from '@/components/server/events';
-import { hasPermission } from '@/plugins/usePermissions';
+import type { SocketEvent } from '@/components/server/events';
 
-export { default as Button } from '@/components/elements/Button';
-export { default as Spinner } from '@/components/elements/Spinner';
+export {
+    default as Button,
+    ButtonStyle,
+    LinkButton,
+    RouterLinkButton,
+    type ButtonColor,
+    type ButtonProps,
+    type ButtonSize,
+} from '@/components/elements/Button';
+export { default as Spinner, type SpinnerProps, type SpinnerSize } from '@/components/elements/Spinner';
 export { default as Icon } from '@/components/elements/Icon';
 export { default as NamedIcon, loadIconNames, type NamedIconProps } from '@/components/elements/NamedIcon';
 export { default as Can } from '@/components/elements/Can';
+export { default as Card, type CardProps } from '@/components/elements/Card';
+export { default as ListRow, type ListRowProps } from '@/components/elements/ListRow';
+export { default as Stat, type StatProps, type StatVariant } from '@/components/elements/Stat';
+export { default as ChartCard, type ChartCardProps } from '@/components/elements/ChartCard';
+export { default as PageFooter, type PageFooterProps } from '@/components/elements/PageFooter';
+export { default as Badge, type BadgeProps, type BadgeSize, type BadgeVariant } from '@/components/elements/Badge';
+export {
+    default as ProgressBar,
+    type ProgressBarProps,
+    type ProgressBarVariant,
+} from '@/components/elements/ProgressBar';
+export { default as Code, type CodeProps } from '@/components/elements/Code';
 export { default as ContentBox } from '@/components/elements/ContentBox';
 export { default as PageContentBlock } from '@/components/elements/PageContentBlock';
 export { default as ServerContentBlock } from '@/components/elements/ServerContentBlock';
 export { default as TitledGreyBox } from '@/components/elements/TitledGreyBox';
-export { default as CopyOnClick } from '@/components/elements/CopyOnClick';
-export { default as ScreenBlock, ServerError, NotFound } from '@/components/elements/ScreenBlock';
-export { default as Label } from '@/components/elements/Label';
-export { TextInput as Input, TextArea, NumberInput } from '@/components/form/controls';
+export { default as CopyOnClick, type CopyOnClickProps } from '@/components/elements/CopyOnClick';
+export { default as ScreenBlock, ServerError, NotFound, screenImages } from '@/components/elements/ScreenBlock';
+export { default as PaginationFooter } from '@/components/elements/table/PaginationFooter';
+export { default as Translate, type TranslationValue, type TranslationValues } from '@/components/elements/Translate';
+export { default as Label, type LabelProps } from '@/components/elements/Label';
+export { default as PageHeading, type PageHeadingProps } from '@/components/elements/PageHeading';
+export {
+    NewButton,
+    NewLinkButton,
+    type NewButtonProps,
+    type NewLinkButtonProps,
+} from '@/components/elements/NewButton';
+export { default as SpinnerOverlay, type SpinnerOverlayProps } from '@/components/elements/SpinnerOverlay';
+export { default as ErrorBoundary } from '@/components/elements/ErrorBoundary';
+export { default as Portal } from '@/components/elements/Portal';
+export { default as InputSpinner } from '@/components/elements/InputSpinner';
+export {
+    TextInput as Input,
+    TextArea,
+    NumberInput,
+    FileInput,
+    type TextInputProps as InputProps,
+    type TextAreaProps,
+    type NumberInputProps,
+    type FileInputProps,
+} from '@/components/form/controls';
+export {
+    default as SubNavigation,
+    type SubNavigationItemState,
+    type SubNavigationProps,
+} from '@/components/elements/SubNavigation';
+export { default as SubNavigationLayout } from '@/components/elements/SubNavigationLayout';
+export { default as NavigationLabel, type NavigationLabelProps } from '@/extensions/NavigationLabel';
 export { Form, useAppForm, useFieldContext, useFormContext, type AppForm, type SelectOption } from '@/components/form';
 export { default as Select, type SelectGroup, type SelectProps, type SelectValue } from '@/components/ui/Select';
 export { default as Checkbox, type CheckboxProps } from '@/components/ui/Checkbox';
 export { default as Switch, type SwitchProps } from '@/components/ui/Switch';
-export { Alert } from '@/components/elements/alert';
-export { Dialog } from '@/components/elements/dialog';
+export { Alert, type AlertProps, type AlertType } from '@/components/elements/alert';
+export {
+    Dialog,
+    useDialogState,
+    type DialogIconProps,
+    type RenderDialogProps as DialogProps,
+} from '@/components/elements/dialog';
 export { toast } from 'sonner';
 export * from './ui';
 
@@ -59,29 +102,30 @@ export * from './mutations';
 export * from './navigation';
 export * from './localization';
 export * from './progress';
-export * from './theme';
+export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
+export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+export { formatDate, fromNow } from '@/lib/dates';
+export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
+export { useShortcut, type Shortcut } from '@/plugins/useShortcut';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';
 export type { SdkUser, SdkSiteSettings, SdkServer };
-export function useCurrentUser(): SdkUser {
-    return usePanelUser();
-}
-
-export function useSiteSettings(): SdkSiteSettings {
-    return usePanelSettings();
-}
-
-export function useCurrentServer<TData = SdkServer>(select?: (server: SdkServer) => TData): TData | undefined {
-    return usePanelServer(select);
-}
-
-export function useCurrentServerPermissions(): string[] {
-    return usePanelPermissions();
-}
-
+export {
+    cn,
+    defineConfiguredExtension,
+    definePterodactylExtension,
+    useCurrentServer,
+    useCurrentServerPermissions,
+    useCurrentServerRequired,
+    useCurrentServerUuid,
+    useCurrentUser,
+    useServerPermission,
+    useServerWebsocketEvent,
+    useSiteSettings,
+} from './core';
 export { usePermissions } from '@/plugins/usePermissions';
 export { useExtensionCallback as useExtensionAction } from '@/extensions/context';
 
-export { SLOT_NAMES };
+export { SLOT_NAMES } from '@/extensions/registry';
 export type { ExtensionScreenDefinition, RouteSlotData, ScreenComponentProps, SlotName, SubuserPermissionsSlotData };
 export type {
     AdminUserFormSlotData,
@@ -130,8 +174,9 @@ export interface ExtensionSetupContext {
     meta: ExtensionMeta;
     /** Per-install extension settings. */
     config: ExtensionConfig;
-    components: {
-        replace<TName extends ComponentName>(name: TName, replacement: ComponentReplacement<TName>): void;
+    views: {
+        /** Stacks a layer on a view declared in the manifest's `ui.views`; its `Default` renders the layer below. */
+        override<TName extends ViewName>(name: TName, view: ViewOverride<TName>): void;
     };
     slots: {
         /** Mount a component at a named anchor point; see SlotName for the catalog. */
@@ -163,34 +208,24 @@ export interface ExtensionSetupContext {
     };
 }
 
-export { COMPONENT_NAMES } from '@/extensions/componentTypes';
 export type {
-    ComponentName,
-    ComponentModels,
-    ComponentParts,
-    ComponentPartProps,
-    DefaultComponentProps,
-    ReplacementProps,
-    ReplacementImporter,
-    ComponentReplacement,
-    ServerCardModel,
-    ServerCardState,
-    ServerCardMetric,
-    FileDetailsModel,
-    FileEditorModel,
-    FileManagerModel,
-    FileManagerEntry,
-    FileManagerPermissions,
-    FileManagerActions,
-} from '@/extensions/componentTypes';
+    DefaultViewProps,
+    ViewComponent,
+    ViewContext,
+    ViewImporter,
+    ViewModel,
+    ViewName,
+    ViewOverride,
+    ViewProps,
+} from '@/views/registry';
+export type * from '@/views/models';
+export { setPermissionsSelected } from '@/views/server/permissionSelection';
+export { default as AreaChart, type AreaChartProps } from '@/components/server/console/AreaChart';
+export type { ChartPoint } from '@/components/server/console/chart';
+export type { ChartSeries } from '@/components/server/console/types';
 
 export interface ExtensionDefinition {
     setup(context: ExtensionSetupContext): void;
-}
-
-/** Identity helper giving extension entrypoints full typing: `export default definePterodactylExtension({...})`. */
-export function definePterodactylExtension(definition: ExtensionDefinition): ExtensionDefinition {
-    return definition;
 }
 
 export type ConfiguredExtensionContext<TConfig extends ExtensionConfig, TScreenId extends string> = Omit<
@@ -201,48 +236,7 @@ export type ConfiguredExtensionContext<TConfig extends ExtensionConfig, TScreenI
     screens: { register(id: TScreenId, component: ScreenImporter, options?: ScreenOptions): void };
 };
 
-/** Like definePterodactylExtension, with `config` decoded by `parseConfig` and typed screen ids. */
-export function defineConfiguredExtension<TConfig extends ExtensionConfig, TScreenId extends string = string>(
-    parseConfig: (config: ExtensionConfig) => TConfig,
-    definition: { setup(context: ConfiguredExtensionContext<TConfig, TScreenId>): void }
-): ExtensionDefinition {
-    return { setup: (context) => definition.setup({ ...context, config: parseConfig(context.config) }) };
-}
-
-export { SocketEvent };
+export { SocketEvent } from '@/components/server/events';
 export type ServerWebsocketEvent = SocketEvent | `${SocketEvent}`;
-
-/**
- * Subscribes to a server websocket event while mounted under /server/$id.
- * Only call from server screens, server slots, or components rendered under them.
- */
-export function useServerWebsocketEvent(
-    event: ServerWebsocketEvent,
-    callback: (data: string) => void | Promise<void>
-): void {
-    useWebsocketEvent(event as SocketEvent, useExtensionCallback(event, callback));
-}
-
-export function useCurrentServerUuid(): string | undefined {
-    return usePanelServerUuid();
-}
-
-export function useCurrentServerRequired(message = 'This extension screen requires a server context.'): SdkServer {
-    const server = useCurrentServer();
-
-    if (!server) {
-        throw new Error(message);
-    }
-
-    return server;
-}
-
-export function useServerPermission(permission: string | string[], matchAny = false): boolean {
-    const permissions = useCurrentServerPermissions();
-    const required = Array.isArray(permission) ? permission : [permission];
-    const matches = required.map((item) => hasPermission(permissions, item));
-
-    return matchAny ? matches.some(Boolean) : matches.every(Boolean);
-}
 
 export type { UserValues as AdminUserFormValues } from '@/api/admin/users/types';

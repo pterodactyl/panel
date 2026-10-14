@@ -23,6 +23,7 @@ use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionRuntimeRefresher;
 use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
 use Pterodactyl\Services\FilesystemChanges;
+use Pterodactyl\Services\Themes\ThemeRepository;
 
 final readonly class RemoveExtension implements RemovesExtensions
 {
@@ -35,6 +36,7 @@ final readonly class RemoveExtension implements RemovesExtensions
         private FilesystemChanges $files,
         private ExtensionSettingFiles $settingFiles,
         private ExtensionDirectories $directories,
+        private ThemeRepository $themes,
     ) {}
 
     public function remove(string $identifier): void
@@ -48,6 +50,7 @@ final readonly class RemoveExtension implements RemovesExtensions
     {
         $manifest = $this->extensions->discovered()->get($identifier);
         throw_if($manifest === null, InvalidExtensionException::class, "Extension \"{$identifier}\" is not installed.");
+        $this->themes->assertNotActive($identifier);
         $this->compatibility->assertCanDisable($identifier, $this->extensions->enabled());
         Event::dispatch(new ExtensionRemoving($manifest));
         $this->files->run([

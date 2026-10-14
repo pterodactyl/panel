@@ -10,7 +10,6 @@ import { httpErrorToHuman } from '@/api/http';
 import { Alert } from '@/components/elements/alert';
 import Button from '@/components/elements/Button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 
 export default function EggVariablesTab() {
     const egg = useEggDetail();
@@ -35,7 +34,7 @@ export default function EggVariablesTab() {
         if (variables.data.length === 0) {
             return (
                 <TitledGreyBox title='Egg Variables'>
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Variable />

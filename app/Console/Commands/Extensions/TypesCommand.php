@@ -8,16 +8,20 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
+use Pterodactyl\Services\Themes\ThemeRepository;
+use Pterodactyl\Services\Themes\ThemeSetting;
 
-#[Description('Generate literal screen ids and frontend configuration types for an extension.')]
-#[Signature('p:extension:types {path : Unpacked package path.} {--output= : Generated TypeScript file; defaults to src/client/extension-types.ts.}')]
+#[Description('Generate literal screen ids, frontend configuration types and theme settings types for an extension or theme.')]
+#[Signature('p:extension:types {path : Unpacked package path.} {--output= : Generated TypeScript file; defaults to src/client/extension-types.ts, or src/theme-types.ts for a theme.}')]
 class TypesCommand extends Command
 {
-    public function handle(ExtensionManifestValidator $validator, ExtensionSettingsRegistry $settings, ExtensionPermissionRegistry $permissions): int
+    public function handle(ExtensionManifestValidator $validator, ExtensionSettingsRegistry $settings, ExtensionPermissionRegistry $permissions, ThemeRepository $themes, ExtensionRepository $extensions): int
     {
         $manifest = $validator->fromDirectory($this->argument('path'));
         $definition = $settings->get($manifest->id);
@@ -43,15 +47,54 @@ class TypesCommand extends Command
         $source .= "// Visitors who are not signed in receive only these keys; every other key is absent for them.\n";
         $source .= 'export type ExtensionPublicConfigKey = '.($publicNames === [] ? 'never' : implode(' | ', $publicNames)).";\n";
         $source .= "export type ExtensionPublicConfig = Pick<ExtensionConfig, ExtensionPublicConfigKey>;\n";
-        $output = $this->option('output') ?: $manifest->path('src', 'client', 'extension-types.ts');
+        if ($manifest->isTheme()) {
+            $source .= $this->themeSettings($this->chainSettings($themes, $manifest));
+        }
+
+        $output = $this->option('output') ?: ($manifest->isTheme() ? $manifest->path('src', 'theme-types.ts') : $manifest->path('src', 'client', 'extension-types.ts'));
         File::ensureDirectoryExists(dirname($output));
         File::replace($output, $source);
-        if (! $definition instanceof ExtensionSettingsDefinition) {
-            $this->components->warn('No settings definition is loaded; enable the extension to include declared frontend configuration keys.');
+        // Only a provider declares settings, and only once it is loaded; a package without one has none to miss.
+        if (! $definition instanceof ExtensionSettingsDefinition && $manifest->provider !== null && ! $extensions->isAvailable($manifest->id)) {
+            $this->components->warn("The extension's provider is not loaded; enable the extension to include the frontend configuration keys it declares.");
         }
 
         $this->components->info("Generated extension types: {$output}");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The settings of the whole chain, as useThemeSettings() returns them: the themes it extends, then
+     * its own, each replacing a setting of the same name.
+     *
+     * @return array<string, ThemeSetting>
+     */
+    private function chainSettings(ThemeRepository $themes, ExtensionManifest $theme): array
+    {
+        $settings = [];
+        foreach ([...$themes->ancestors($theme), $theme] as $manifest) {
+            $settings = [...$settings, ...$manifest->theme->settings ?? []];
+        }
+
+        return $settings;
+    }
+
+    /** @param array<string, ThemeSetting> $settings */
+    private function themeSettings(array $settings): string
+    {
+        $properties = array_map(function (ThemeSetting $setting): string {
+            $type = match ($setting->type) {
+                'select' => implode(' | ', array_map(fn (string $option): string => json_encode($option, JSON_THROW_ON_ERROR), array_keys($setting->options))),
+                'toggle' => 'boolean',
+                'number' => 'number',
+                default => 'string',
+            };
+            $nullable = $setting->default === null ? ' | null' : '';
+
+            return '    readonly '.json_encode($setting->key, JSON_THROW_ON_ERROR).': '.$type.$nullable.';';
+        }, $settings);
+
+        return "// The theme's settings, as useThemeSettings<ThemeSettings>() returns them.\nexport interface ThemeSettings {\n".implode("\n", $properties)."\n}\n";
     }
 }

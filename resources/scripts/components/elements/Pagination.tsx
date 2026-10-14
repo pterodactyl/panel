@@ -1,8 +1,8 @@
 import React from 'react';
-import { cn } from '@/lib/cn';
 import Button from '@/components/elements/Button';
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import Icon from '@/components/elements/Icon';
+import { useSkin, type SkinBinding } from '@/themes/skins';
 
 interface RenderFuncProps<T> {
     items: T[];
@@ -10,7 +10,7 @@ interface RenderFuncProps<T> {
     isFirstPage: boolean;
 }
 
-interface Props<T> {
+export interface PaginationProps<T> {
     data: GeneratedPaginatedResult<T>;
     showGoToLast?: boolean;
     showGoToFirst?: boolean;
@@ -39,8 +39,18 @@ interface PaginationDataSet {
     totalPages: number;
 }
 
-const Block = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
-    <Button type='button' className={cn('p-0 w-10 h-10 not-last-of-type:mr-2', className)} {...props} />
+const PageButton = ({
+    ui,
+    current,
+    ...props
+}: { ui: SkinBinding<'Pagination'>; current: boolean } & React.ComponentProps<typeof Button>) => (
+    <Button
+        type='button'
+        className={ui.classes('page', undefined, { current })}
+        isSecondary={!current}
+        color='primary'
+        {...props}
+    />
 );
 
 const normalizeGeneratedPagination = (
@@ -53,7 +63,8 @@ const normalizeGeneratedPagination = (
     totalPages: pagination.total_pages,
 });
 
-function Pagination<T>({ data, onPageSelect, children }: Props<T>) {
+function Pagination<T>({ data, onPageSelect, children }: PaginationProps<T>) {
+    const ui = useSkin('Pagination', {});
     const items = data.data;
     const pagination = normalizeGeneratedPagination(data.meta.pagination);
     const isFirstPage = pagination.currentPage === 1;
@@ -72,26 +83,26 @@ function Pagination<T>({ data, onPageSelect, children }: Props<T>) {
         <>
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
-                <div className='mt-4 flex justify-center'>
+                <div {...ui('root')}>
                     {pages[0] > 1 && !isFirstPage && (
-                        <Block isSecondary color='primary' onClick={() => onPageSelect(1)}>
+                        <PageButton ui={ui} current={false} onClick={() => onPageSelect(1)}>
                             <Icon icon={ChevronsLeft} />
-                        </Block>
+                        </PageButton>
                     )}
                     {pages.map((page) => (
-                        <Block
-                            isSecondary={pagination.currentPage !== page}
-                            color='primary'
+                        <PageButton
                             key={`block_page_${page}`}
+                            ui={ui}
+                            current={pagination.currentPage === page}
                             onClick={() => onPageSelect(page)}
                         >
                             {page}
-                        </Block>
+                        </PageButton>
                     ))}
                     {pages[4] < pagination.totalPages && !isLastPage && (
-                        <Block isSecondary color='primary' onClick={() => onPageSelect(pagination.totalPages)}>
+                        <PageButton ui={ui} current={false} onClick={() => onPageSelect(pagination.totalPages)}>
                             <Icon icon={ChevronsRight} />
-                        </Block>
+                        </PageButton>
                     )}
                 </div>
             )}

@@ -1,16 +1,16 @@
 import { useAppForm, Form } from '@/components/form';
 import type { DialogProps } from '@/components/elements/dialog';
 import { Dialog } from '@/components/elements/dialog';
-import { useServerDirectory } from '@/state/server';
 import { join } from 'pathe';
 
 type Props = DialogProps & {
+    /** The directory the new file is written to. */
+    directory: string;
     onFileNamed: (name: string) => void;
 };
 
-export default function FileNameModal({ onFileNamed, onClose, ...props }: Props) {
-    const directory = useServerDirectory();
-
+/** Names a new file before the editor first writes it. */
+export default function FileNameModal({ directory, onFileNamed, onClose, ...props }: Props) {
     const form = useAppForm({
         defaultValues: { fileName: '' },
         onSubmit: async ({ value }) => {

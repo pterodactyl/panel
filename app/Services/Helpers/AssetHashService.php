@@ -15,6 +15,9 @@ class AssetHashService
 
     public const string MAIN_ENTRY = 'resources/scripts/index.tsx';
 
+    /** The panel stylesheet, a Vite input of its own that a theme's stylesheet is linked after. */
+    public const string STYLESHEET_ENTRY = 'resources/scripts/assets/tailwind.css';
+
     /**
      * Bare module specifiers shared with runtime-loaded extension bundles, mapped to
      * the source keys of the runtime entries in Vite's native manifest. The
@@ -29,6 +32,7 @@ class AssetHashService
         '@tanstack/react-query' => 'resources/scripts/ext-runtime/tanstack-react-query.ts',
         '@pterodactyl/sdk' => 'resources/scripts/sdk/index.ts',
         '@pterodactyl/sdk/api' => 'resources/scripts/sdk/api.ts',
+        '@pterodactyl/sdk/theme' => 'resources/scripts/sdk/theme.ts',
     ];
 
     /** @var ViteManifest|null */
@@ -87,6 +91,16 @@ class AssetHashService
         }
 
         return implode('', $tags);
+    }
+
+    /**
+     * Return the stylesheet tag for a CSS entry of the build.
+     */
+    public function css(string $resource): string
+    {
+        $entry = $this->entry($resource);
+
+        return $entry === null ? '' : $this->stylesheetTag($this->assetUrl($entry['file']), $entry['integrity'] ?? '');
     }
 
     /**

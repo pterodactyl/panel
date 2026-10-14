@@ -4,8 +4,9 @@ import Button from '@/components/elements/Button';
 import { TextArea, TextInput } from '@/components/form/controls';
 import copyToClipboard from '@/lib/clipboard';
 import { cn } from '@/lib/cn';
+import { useSkin } from '@/themes/skins';
 
-interface CopyOnClickProps {
+export interface CopyOnClickProps {
     text: string | number | null | undefined;
     showInNotification?: boolean;
     children: React.ReactNode;
@@ -45,6 +46,7 @@ const copyStatusMessage = (status: CopyStatus, text: CopyOnClickProps['text'], s
 /** Copies `text` when its single child is clicked; a non-interactive child becomes a focusable button. */
 const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClickProps) => {
     const [status, setStatus] = useState<CopyStatus | null>(null);
+    const ui = useSkin('CopyOnClick', { status: status ?? undefined });
 
     useEffect(() => {
         if (!status) {
@@ -85,7 +87,7 @@ const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClick
               role: interactive ? element.props.role : (element.props.role ?? 'button'),
               tabIndex: interactive ? element.props.tabIndex : (element.props.tabIndex ?? 0),
               onKeyDown: interactive ? element.props.onKeyDown : onKeyDown,
-              className: cn(element.props.className || '', 'cursor-pointer'),
+              className: cn(element.props.className, ui.classes('target')),
               onClick: (e: React.MouseEvent<HTMLElement>) => {
                   copy();
                   element.props.onClick?.(e);
@@ -97,9 +99,9 @@ const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClick
         <>
             {status && (
                 <Portal>
-                    <div className='fixed z-50 bottom-0 right-0 m-4'>
-                        <div role='status' className='rounded-md py-3 px-4 text-foreground bg-popover/95 shadow-sm'>
-                            <p>{copyStatusMessage(status, text, showInNotification)}</p>
+                    <div {...ui('root')}>
+                        <div role='status' {...ui('status')}>
+                            <p {...ui('message')}>{copyStatusMessage(status, text, showInNotification)}</p>
                         </div>
                     </div>
                 </Portal>

@@ -24,6 +24,8 @@ export interface RenderDialogProps extends DialogProps {
 }
 
 export interface DialogContextType {
-    setIcon: Callback<React.ReactNode>;
+    setIcon: Callback<DialogIconProps | undefined>;
     setIconPosition: Callback<IconPosition>;
+    /** The state the dialog's skin reads, for parts rendered by its children. */
+    described: boolean;
 }

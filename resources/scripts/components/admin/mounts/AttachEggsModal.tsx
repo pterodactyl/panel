@@ -13,7 +13,6 @@ import Label from '@/components/elements/Label';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 import { cn } from '@/lib/cn';
 
@@ -65,7 +64,7 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
             ) : (
                 <>
                     {availableEggs.length === 0 ? (
-                        <Empty className={emptyCompactClass}>
+                        <Empty size='compact'>
                             <EmptyHeader>
                                 <EmptyMedia variant='icon'>
                                     <Egg />

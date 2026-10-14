@@ -1,7 +1,7 @@
 import React, { useId } from 'react';
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
-import { cn } from '@/lib/cn';
 import Label from '@/components/elements/Label';
+import { useSkin } from '@/themes/skins';
 
 export interface SwitchProps {
     checked: boolean;
@@ -17,19 +17,6 @@ export interface SwitchProps {
     'aria-label'?: string;
     'aria-labelledby'?: string;
 }
-
-const rootClass = [
-    'group relative inline-block shrink-0 w-12 h-6 rounded-full border cursor-pointer select-none p-0',
-    'bg-input border-input transition-colors duration-75',
-    'hover:border-primary/70 active:bg-popover data-[checked]:bg-primary data-[checked]:border-primary',
-    'data-[disabled]:opacity-60 data-[disabled]:cursor-default',
-].join(' ');
-const thumbClass = [
-    'block absolute top-1/2 left-0.5 size-4.5 -translate-y-1/2 rounded-full border bg-background',
-    'transition-[left] duration-75 ease-in',
-    'group-data-[checked]:left-[calc(100%_-_1.125rem_-_0.125rem)]',
-    'group-data-[checked]:bg-primary-foreground group-data-[checked]:border-primary-foreground',
-].join(' ');
 
 export default function Switch({
     checked,
@@ -50,6 +37,7 @@ export default function Switch({
     const labelId = `${generatedId}-label`;
     const descriptionId = `${generatedId}-description`;
     const hasText = !!label || !!description;
+    const ui = useSkin('Switch', { described: !!description, position: controlPosition });
     const control = (
         <BaseSwitch.Root
             id={fieldId}
@@ -61,20 +49,20 @@ export default function Switch({
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy ?? (label ? labelId : undefined)}
             aria-describedby={description ? descriptionId : undefined}
-            className={rootClass}
+            {...ui('control')}
         >
-            <BaseSwitch.Thumb className={thumbClass} />
+            <BaseSwitch.Thumb {...ui('thumb')} />
         </BaseSwitch.Root>
     );
     const text = hasText ? (
-        <div className='min-w-0 flex-1'>
+        <div {...ui('text')}>
             {label && (
-                <Label id={labelId} htmlFor={fieldId} className='cursor-pointer mb-0'>
+                <Label id={labelId} htmlFor={fieldId} className={ui.classes('label')}>
                     {label}
                 </Label>
             )}
             {description && (
-                <p id={descriptionId} className='input-help'>
+                <p id={descriptionId} {...ui('description')}>
                     {description}
                 </p>
             )}
@@ -82,7 +70,7 @@ export default function Switch({
     ) : null;
 
     return (
-        <div className={cn('flex gap-4', description ? 'items-start' : 'items-center', className)}>
+        <div {...ui('root', className)}>
             {controlPosition === 'end' ? (
                 <>
                     {text}
