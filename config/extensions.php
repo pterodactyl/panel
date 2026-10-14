@@ -18,7 +18,7 @@ return [
     'enabled' => (bool) env('PTERODACTYL_EXTENSIONS_ENABLED', true),
 
     'panel_version' => config('app.version') === 'canary' ? '2.0.0-dev' : config('app.version'),
-    'sdk_version' => '2.0.0-beta.4',
+    'sdk_version' => '2.0.0-beta.6',
     'progress_retention_seconds' => 3600,
 
     // How long the result of a head tag callback (registerHeadTags) is cached; 0 disables it.

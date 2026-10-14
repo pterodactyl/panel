@@ -47,5 +47,7 @@ result
 # Local extension development checkouts
 /extensions/
 
-# Generated SDK test host bundles
+# Generated SDK test host bundles, core class manifest and packed classic sources
 /packages/sdk/testing-runtime/
+/packages/sdk/core-classes.txt
+/packages/sdk/classic/

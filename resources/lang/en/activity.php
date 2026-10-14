@@ -226,6 +226,13 @@ return [
             'update' => 'Updated the :slug tag',
             'delete' => 'Deleted the :slug tag',
         ],
+        'theme' => [
+            'activate' => 'Activated the :theme theme',
+            'reset' => 'Reset the panel to the classic theme',
+            'settings' => 'Updated the settings of the :theme theme',
+            'image' => 'Uploaded the :setting image of the :theme theme',
+            'image-clear' => 'Removed the :setting image of the :theme theme',
+        ],
         'user' => [
             'create' => 'Created the user :email',
             'update' => 'Updated the user :email',

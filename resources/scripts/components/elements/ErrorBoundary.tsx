@@ -12,6 +12,8 @@ const retryButtonClass = [
 interface Props {
     children?: React.ReactNode;
     resetKeys?: readonly ResetKey[];
+    /** Called by Retry before the children render again. */
+    onReset?: () => void;
 }
 
 interface State {
@@ -44,6 +46,11 @@ class ErrorBoundary extends React.Component<Props, State> {
         this.setState({ hasError: false });
     };
 
+    retry = () => {
+        this.props.onReset?.();
+        this.reset();
+    };
+
     render() {
         return this.state.hasError ? (
             <div className='flex items-center justify-center w-full my-4'>
@@ -52,7 +59,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                     <p className='text-sm text-foreground'>
                         An error was encountered by the application while rendering this view. Try refreshing the page.
                     </p>
-                    <button type='button' className={retryButtonClass} onClick={this.reset}>
+                    <button type='button' className={retryButtonClass} onClick={this.retry}>
                         Retry
                     </button>
                 </div>

@@ -1,0 +1,4 @@
+import { defineThemeConfig } from '@pterodactyl/sdk/vite';
+
+// {{parentName}} and the themes it extends are found in the panel's extensions directory, then in node_modules.
+export default defineThemeConfig({ {{entry}}stylesheet: 'src/theme.css', extensions: '{{extensions}}' });

@@ -1,7 +1,7 @@
-import type { ReplacementProps } from '@pterodactyl/sdk';
+import type { ViewProps } from '@pterodactyl/sdk';
 
 // The panel owns the buffer, the save and the unsaved-changes guard; this adds a status line and keeps every native part.
-export default function FileEditor({ Default, model }: ReplacementProps<'server.files.editor'>) {
+export default function FileEditor({ Default, model }: ViewProps<'server.files.editor'>) {
     return (
         <>
             {model.dirty && (

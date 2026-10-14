@@ -25,6 +25,8 @@ use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionProviderLoader;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
+use Pterodactyl\Services\Themes\ThemeRepository;
+use Pterodactyl\Services\Themes\ThemeResolver;
 use Throwable;
 
 class ExtensionServiceProvider extends ServiceProvider
@@ -43,6 +45,9 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->singleton(ExtensionConsoleRegistry::class);
         $this->app->singleton(ExtensionHeadTags::class);
         $this->app->singleton(ExtensionFailureAttributor::class);
+        // Remembers the active theme for one request or job at a time.
+        $this->app->scoped(ThemeRepository::class);
+        $this->app->scoped(ThemeResolver::class);
 
         if (! config('extensions.enabled')) {
             return;

@@ -149,20 +149,6 @@
                                         {
                                             "object": "server_database",
                                             "attributes": {
-                                                "id": 2,
-                                                "server": 1,
-                                                "host": 1,
-                                                "database": "s1_logs",
-                                                "username": "u1_logsuser",
-                                                "remote": "10.0.0.%",
-                                                "max_connections": 0,
-                                                "created_at": "2026-01-02T03:04:05+00:00",
-                                                "updated_at": "2026-02-03T04:05:06+00:00"
-                                            }
-                                        },
-                                        {
-                                            "object": "server_database",
-                                            "attributes": {
                                                 "id": 1,
                                                 "server": 1,
                                                 "host": 1,
@@ -170,6 +156,20 @@
                                                 "username": "u1_mainuser",
                                                 "remote": "%",
                                                 "max_connections": 10,
+                                                "created_at": "2026-01-02T03:04:05+00:00",
+                                                "updated_at": "2026-02-03T04:05:06+00:00"
+                                            }
+                                        },
+                                        {
+                                            "object": "server_database",
+                                            "attributes": {
+                                                "id": 2,
+                                                "server": 1,
+                                                "host": 1,
+                                                "database": "s1_logs",
+                                                "username": "u1_logsuser",
+                                                "remote": "10.0.0.%",
+                                                "max_connections": 0,
                                                 "created_at": "2026-01-02T03:04:05+00:00",
                                                 "updated_at": "2026-02-03T04:05:06+00:00"
                                             }

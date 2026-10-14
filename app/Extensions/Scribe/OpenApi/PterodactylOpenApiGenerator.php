@@ -20,6 +20,7 @@ use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Extensions\ExtensionPermissionRegistry;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettings;
+use Pterodactyl\Services\Themes\ThemeSetting;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -162,6 +163,9 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'AdminServerVariablePaginatedResponse' => $this->resourcePaginatedSchema('AdminServerVariableResource'),
             'AdminServerVariableResource' => $this->resourceItemSchema('server_variable', 'AdminServerVariableAttributes'),
             'AdminSettingsResponse' => $this->adminSettingsSchema(),
+            'AdminThemeSettingAttributes' => $this->adminThemeSettingAttributesSchema(),
+            'AdminThemeSettingListResponse' => $this->resourceListSchema('AdminThemeSettingResource'),
+            'AdminThemeSettingResource' => $this->resourceItemSchema('theme_setting', 'AdminThemeSettingAttributes'),
             'AdminVersionInformationResponse' => $this->adminVersionInformationSchema(),
             'AuthLoginCheckpointResponse' => $this->authLoginCheckpointResponseSchema(),
             'AuthLoginCompleteResponse' => $this->authLoginCompleteResponseSchema(),
@@ -590,6 +594,42 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     }
 
     /** @return array<mixed> */
+    private function adminThemeSettingAttributesSchema(): array
+    {
+        $schema = PterodactylDocumentation::schemaForValue([
+            'key' => 'navigation',
+            'type' => 'select',
+            'label' => 'Navigation',
+            'help' => 'Where the main navigation sits.',
+            'tab' => 'Layout',
+            'default' => 'side',
+            'value' => 'side',
+            'options' => [['value' => 'side', 'label' => 'Sidebar']],
+            'min' => 0,
+            'max' => 1,
+            'step' => 1,
+            'unit' => 'rem',
+            'max_length' => 255,
+            'accept' => ['image/png'],
+            'max_kilobytes' => 10240,
+        ]);
+
+        $value = [...$this->extensionSettingScalarSchema(), 'nullable' => true];
+        Arr::set($schema, 'properties.default', $value);
+        Arr::set($schema, 'properties.value', $value);
+        Arr::set($schema, 'properties.type', ['type' => 'string', 'enum' => ThemeSetting::TYPES, 'example' => 'select']);
+        foreach (['min', 'max', 'step'] as $limit) {
+            Arr::set($schema, "properties.{$limit}", ['type' => 'number', 'nullable' => true, 'example' => null]);
+        }
+
+        foreach (['help', 'tab', 'unit', 'max_length', 'max_kilobytes'] as $field) {
+            Arr::set($schema, "properties.{$field}.nullable", true);
+        }
+
+        return $schema;
+    }
+
+    /** @return array<mixed> */
     private function clientTwoFactorSetupSchema(): array
     {
         return [
@@ -865,6 +905,12 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
 
         if (in_array($pathItem['operationId'] ?? null, ['adminGetExtensionSettings', 'adminUpdateExtensionSettings', 'adminUploadExtensionSettingFile', 'adminClearExtensionSettingFile'], true)) {
             $this->replaceResponseSchemas($pathItem, $isSuccess, fn (): array => $this->adminExtensionSettingsSchema());
+
+            return;
+        }
+
+        if (in_array($pathItem['operationId'] ?? null, ['adminGetThemeSettings', 'adminUpdateThemeSettings', 'adminUploadThemeImage', 'adminClearThemeImage'], true)) {
+            $this->replaceResponseSchemas($pathItem, $isSuccess, fn (): array => ['$ref' => '#/components/schemas/AdminThemeSettingListResponse']);
 
             return;
         }
@@ -1431,6 +1477,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'adminUpdateMailSettings' => $this->enforceAdminMailSettingsBodySchema($properties),
             'adminUpdateMinecraftVersionChangerSettings' => $this->enforceMinecraftVersionChangerSettingsBodySchema($properties),
             'adminUpdateExtensionSettings' => $this->enforceAdminExtensionSettingsBodySchema($properties),
+            'adminUpdateThemeSettings' => $this->enforceAdminThemeSettingsBodySchema($properties),
             default => null,
         };
 
@@ -1485,6 +1532,19 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 'enabled' => true,
                 'result_limit' => 25,
             ],
+        ];
+    }
+
+    /**
+     * @param  array<mixed>  $properties
+     */
+    private function enforceAdminThemeSettingsBodySchema(array &$properties): void
+    {
+        $properties['settings'] = [
+            'type' => 'object',
+            'description' => "Values keyed by setting name; null restores a setting's default.",
+            'additionalProperties' => [...$this->extensionSettingScalarSchema(), 'nullable' => true],
+            'example' => ['accent' => '#8b5cf6', 'compact' => true, 'radius' => 0.75],
         ];
     }
 

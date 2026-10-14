@@ -182,7 +182,8 @@ function applicationAcl(): array
 
 function applicationWrites(): array
 {
-    $node = ['name' => 'node-gamma', 'description' => 'Created through the API', 'location_id' => 1, 'public' => true, 'fqdn' => 'gamma.example.test', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes'];
+    // A node's fqdn has to resolve, and only localhost does without DNS.
+    $node = ['name' => 'node-gamma', 'description' => 'Created through the API', 'location_id' => 1, 'public' => true, 'fqdn' => 'localhost', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes'];
     $environment = ['SERVER_JARFILE' => 'server.jar', 'BUILD_NUMBER' => '42', 'HIDDEN_TOKEN' => 'abc'];
     $user = ['username' => 'owner', 'email' => 'owner@example.test', 'first_name' => 'Olivia', 'last_name' => 'Owner', 'language' => 'en'];
 
@@ -190,7 +191,7 @@ function applicationWrites(): array
         'application/locations.store' => ['requests' => [['POST', APP.'/locations', ['short' => 'ap-south', 'long' => 'Asia Pacific "South"']]]],
         'application/locations.update' => ['requests' => [['PATCH', APP.'/locations/1', ['short' => 'us-east-1', 'long' => 'US East (renamed)']]]],
         'application/nodes.store' => ['requests' => [['POST', APP.'/nodes', $node]]],
-        'application/nodes.update' => ['requests' => [['PATCH', APP.'/nodes/1', [...$node, 'name' => 'node-alpha-renamed', 'fqdn' => 'alpha.example.test', 'memory' => 16384]]]],
+        'application/nodes.update' => ['requests' => [['PATCH', APP.'/nodes/1', [...$node, 'name' => 'node-alpha-renamed', 'memory' => 16384]]]],
         'application/servers.store' => ['requests' => [['POST', APP.'/servers', [
             'name' => 'Created Server', 'description' => 'Created through the API', 'external_id' => 'ext-created', 'user' => World::OWNER, 'egg' => 1,
             'docker_image' => 'ghcr.io/pterodactyl/yolks:java_21', 'startup' => 'java -jar {{SERVER_JARFILE}}', 'environment' => $environment,

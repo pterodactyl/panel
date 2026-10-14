@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-{{-- Dark is the shipping theme; the React SPA's semantic tokens key off this class (assets/tailwind.css). --}}
-<html class="dark" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+{{-- The theme's scheme class, id and setting attributes (ThemeDocument::htmlAttributes); values are escaped here. --}}
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @foreach ($theme->htmlAttributes() as $attribute => $value){{ $attribute }}="{{ $value }}" @endforeach>
     <head>
         <title>{{ config('app.name', 'Pterodactyl') }}</title>
 
         @section('meta')
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+            <meta content="width=device-width, initial-scale=1" name="viewport">
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <meta name="robots" content="noindex">
             {{-- An extension that registers one of these elements (registerHeadTags)
@@ -55,13 +55,35 @@
             @endif
         @show
 
-        @yield('assets')
-        {!! $asset->cssImports('resources/scripts/index.tsx') !!}
-        {{-- Applied theme (p:theme:apply): token overrides linked after the app CSS so
-             the theme's :root/.dark declarations win the cascade at equal specificity. --}}
-        @if (file_exists(public_path('assets/theme.css')))
-            <link rel="stylesheet" href="/assets/theme.css?v={{ filemtime(public_path('assets/theme.css')) }}">
+        {{-- The "system" scheme preference is resolved before any stylesheet applies. --}}
+        @if ($theme->systemScheme)
+            <script>
+                (function (root) {
+                    var scheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                    root.className = scheme;
+                    if (window.SiteConfiguration && window.SiteConfiguration.theme) {
+                        window.SiteConfiguration.theme.scheme = scheme;
+                    }
+                })(document.documentElement);
+            </script>
         @endif
+
+        {{-- Setting tokens, escaped by their settings (ThemeSetting::tokenValue), so they print as is. --}}
+        <style id="theme-settings">{!! $theme->style() !!}</style>
+
+        @yield('assets')
+        {!! $asset->css($asset::STYLESHEET_ENTRY) !!}
+        @if ($theme->stylesheet !== null)
+            <link rel="stylesheet" href="{{ $theme->stylesheet }}">
+        @endif
+        {!! $asset->cssImports('resources/scripts/index.tsx') !!}
+
+        {{-- The import map must precede any module script: it lets runtime-loaded
+             extension and theme bundles share the panel's React/TanStack/SDK module instances. --}}
+        {!! $asset->importMap() !!}
+        @foreach ($theme->modulePreloads() as $entry)
+            <link rel="modulepreload" href="{{ $entry }}">
+        @endforeach
     </head>
     <body class="{{ $css['body'] ?? 'bg-background' }}">
         @section('content')
@@ -70,9 +92,6 @@
             @yield('below-container')
         @show
         @section('scripts')
-            {{-- The import map must precede any module script: it lets runtime-loaded
-                 extension bundles share the panel's React/TanStack/SDK module instances. --}}
-            {!! $asset->importMap() !!}
             {!! $asset->js('resources/scripts/index.tsx') !!}
         @show
     </body>

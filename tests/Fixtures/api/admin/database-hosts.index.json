@@ -108,10 +108,10 @@
                                                 "id": 1,
                                                 "name": "Survival"
                                             },
-                                            "name": "s1_logs",
-                                            "username": "u1_logsuser",
-                                            "connections_from": "10.0.0.%",
-                                            "max_connections": 0
+                                            "name": "s1_main",
+                                            "username": "u1_mainuser",
+                                            "connections_from": "%",
+                                            "max_connections": 10
                                         }
                                     },
                                     {
@@ -121,10 +121,10 @@
                                                 "id": 1,
                                                 "name": "Survival"
                                             },
-                                            "name": "s1_main",
-                                            "username": "u1_mainuser",
-                                            "connections_from": "%",
-                                            "max_connections": 10
+                                            "name": "s1_logs",
+                                            "username": "u1_logsuser",
+                                            "connections_from": "10.0.0.%",
+                                            "max_connections": 0
                                         }
                                     },
                                     {

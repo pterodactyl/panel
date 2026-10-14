@@ -1,18 +1,23 @@
+import type { ReactNode } from 'react';
 import NamedIcon from '@/components/elements/NamedIcon';
-import type { ExtensionScreenDefinition, ExtensionScreenRegistration } from './registry';
-import { ScreenBadge } from './screenNavigation';
 
-type Props = NonNullable<ExtensionScreenDefinition['nav']> & {
-    /** Enables the screen's live badge. */
-    screen?: ExtensionScreenRegistration;
-};
+export interface NavigationLabelProps {
+    label: string;
+    /** Shown as the label's title. */
+    group?: string | null;
+    /** A lucide icon name. */
+    icon?: string | null;
+    /** A navigation item's `state.badge`. */
+    badge?: ReactNode;
+}
 
-export default function NavigationLabel({ label, group, badge, icon, screen }: Props) {
+/** A navigation item's icon, label and badge. */
+export default function NavigationLabel({ label, group, icon, badge }: NavigationLabelProps) {
     return (
-        <span className='inline-flex items-center gap-2 align-top' title={group}>
+        <span className='inline-flex items-center gap-2 align-top' title={group ?? undefined}>
             {icon && <NamedIcon name={icon} size={16} className='shrink-0' aria-hidden />}
             <span>{label}</span>
-            <ScreenBadge screen={screen} badge={badge} />
+            {badge}
         </span>
     );
 }

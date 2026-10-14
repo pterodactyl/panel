@@ -92,7 +92,7 @@ docker exec "$app" /bin/ash -ec '
   test ! -d vendor/phpstan
   test ! -d vendor/laravel/boost
   test -s public/assets/manifest.json
-  test -s public/assets/svgs/pterodactyl.svg
+  test -s public/assets/svgs/server_error.svg
   curl -fsS -c /tmp/smoke-cookies http://127.0.0.1/auth/login >/dev/null
 '
 test "$(docker exec "$redis" redis-cli -n 1 dbsize)" -gt 0
@@ -107,7 +107,8 @@ if (Illuminate\Support\Facades\Cache::get('docker-smoke-cache') !== 'ok') {
 }
 PHP
 
-docker exec "$app" composer docs:openapi:verify > "$workdir/docs.log" 2>&1
+# The contract test needs dev dependencies, so it runs with the test suite; this proves the spec builds.
+docker exec "$app" composer docs:openapi > "$workdir/docs.log" 2>&1
 tail -n 2 "$workdir/docs.log"
 
 # Exercise the installed scheduler as its configured Unix user.

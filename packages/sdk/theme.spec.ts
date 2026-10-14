@@ -131,3 +131,31 @@ describe('extension stylesheet', () => {
         expect(layer(unprefixed, 'theme')).toContain('--spacing: var(--spacing);');
     });
 });
+
+describe('panel stylesheet in a theme build', () => {
+    let utilities = '';
+
+    beforeAll(async () => {
+        const classes = 'text-white text-white/55 bg-black/15 bg-transparent text-current border-inherit bg-red-500 page-width';
+        const source = `@import './panel.css';\n@source inline('${classes}');`;
+        const css = (await postcss([tailwind({ optimize: false })]).process(source, { from: path('./entry.css') })).css;
+
+        utilities = layer(css, 'utilities');
+    });
+
+    it('keeps white, black and the keyword colours, but not the default palette', () => {
+        expect(utilities).toContain('.text-white {\n    color: #fff;');
+        expect(utilities).toContain('color: color-mix(in oklab, #fff 55%, transparent);');
+        expect(utilities).toContain('background-color: color-mix(in oklab, #000 15%, transparent);');
+        expect(utilities).toContain('.bg-transparent {\n    background-color: transparent;');
+        expect(utilities).toContain('.text-current {\n    color: currentcolor;');
+        expect(utilities).toContain('.border-inherit {\n    border-color: inherit;');
+        expect(utilities).not.toContain('.bg-red-500');
+    });
+
+    it('lays page content out from the layout tokens, centred and never closer than the gutter', () => {
+        expect(utilities).toMatch(
+            /\.page-width \{\s*max-width: var\(--layout-content-width\);\s*margin-inline: max\(var\(--layout-gutter\), \(100% - var\(--layout-content-width\)\) \/ 2\);\s*\}/
+        );
+    });
+});

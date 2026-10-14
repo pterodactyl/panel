@@ -76,6 +76,9 @@ enum Permissions: string
     case AdminExtensionsUpdate = 'admin:extensions.update';
     case AdminExtensionsDelete = 'admin:extensions.delete';
 
+    case AdminThemesRead = 'admin:themes.read';
+    case AdminThemesUpdate = 'admin:themes.update';
+
     case AdminDatabaseHostsRead = 'admin:database-hosts.read';
     case AdminDatabaseHostsCreate = 'admin:database-hosts.create';
     case AdminDatabaseHostsUpdate = 'admin:database-hosts.update';

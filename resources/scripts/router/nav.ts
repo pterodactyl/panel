@@ -8,6 +8,8 @@ export interface RouteNavMeta {
     /** Subuser permissions; any one shows the link. */
     permission?: string | string[];
     params?: Record<string, string>;
+    /** Sent with the link, e.g. the file manager's root directory. */
+    hash?: string;
     group?: string;
     badge?: string;
     /** A lucide icon name. */

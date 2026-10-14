@@ -736,6 +736,75 @@ export type AdminTagResource = {
     };
 };
 
+export type AdminThemeAttributes = {
+    id: string;
+    name: string;
+    version: string | null;
+    description: string | null;
+    author: string | null;
+    icon: string | null;
+    icon_url: string | null;
+    builtin: boolean;
+    enabled: boolean;
+    active: boolean;
+    previewing: boolean;
+    /**
+     * The theme this one is built on; null for the built-in classic theme.
+     */
+    extends: string | null;
+    settings_count: number;
+    /**
+     * Why the theme cannot be activated right now.
+     */
+    problem: string | null;
+};
+
+export type AdminThemeListResponse = {
+    object: string;
+    data: Array<AdminThemeResource>;
+    meta?: {
+        active: string;
+        preview: string | null;
+        safe_mode: boolean;
+    };
+};
+
+export type AdminThemeResource = {
+    object: string;
+    attributes: AdminThemeAttributes;
+};
+
+export type AdminThemeSettingAttributes = {
+    key: string;
+    type: 'color' | 'select' | 'toggle' | 'number' | 'text' | 'image';
+    label: string;
+    help: string | null;
+    tab: string | null;
+    default: string | number | boolean | null;
+    value: string | number | boolean | null;
+    options: Array<{
+        value: string;
+        label: string;
+    }>;
+    min: number | null;
+    max: number | null;
+    step: number | null;
+    unit: string | null;
+    max_length: number | null;
+    accept: Array<string>;
+    max_kilobytes: number | null;
+};
+
+export type AdminThemeSettingListResponse = {
+    object: string;
+    data: Array<AdminThemeSettingResource>;
+};
+
+export type AdminThemeSettingResource = {
+    object: string;
+    attributes: AdminThemeSettingAttributes;
+};
+
 export type AdminUserAttributes = {
     id: number;
     external_id: string | null;
@@ -1590,6 +1659,22 @@ export type AdminUpdateExtensionSettingsRequest = {
 export type AdminUploadExtensionSettingFileRequest = {
     /**
      * File to store.
+     */
+    file: Blob | File;
+};
+
+export type AdminUpdateThemeSettingsRequest = {
+    /**
+     * Values keyed by setting name; null restores a setting's default.
+     */
+    settings: {
+        [key: string]: string | number | boolean | null;
+    };
+};
+
+export type AdminUploadThemeImageRequest = {
+    /**
+     * Image to store.
      */
     file: Blob | File;
 };
@@ -4037,6 +4122,16 @@ export type AdminDisableExtensionExtensionPathParameter = string;
 
 export type AdminRemoveExtensionExtensionPathParameter = string;
 
+export type AdminGetThemeSettingsThemePathParameter = string;
+
+export type AdminActivateThemeThemePathParameter = string;
+
+export type AdminPreviewThemeThemePathParameter = string;
+
+export type AdminUploadThemeImageThemePathParameter = string;
+
+export type AdminUploadThemeImageSettingPathParameter = string;
+
 /**
  * Page number to retrieve.
  */
@@ -5819,6 +5914,308 @@ export type AdminRemoveExtensionResponses = {
 };
 
 export type AdminRemoveExtensionResponse = AdminRemoveExtensionResponses[keyof AdminRemoveExtensionResponses];
+
+export type AdminListThemesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/themes';
+};
+
+export type AdminListThemesErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+};
+
+export type AdminListThemesError = AdminListThemesErrors[keyof AdminListThemesErrors];
+
+export type AdminListThemesResponses = {
+    /**
+     * Themes returned.
+     */
+    200: AdminThemeListResponse;
+};
+
+export type AdminListThemesResponse = AdminListThemesResponses[keyof AdminListThemesResponses];
+
+export type AdminGetThemeSettingsData = {
+    body?: never;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminGetThemeSettingsThemePathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/settings';
+};
+
+export type AdminGetThemeSettingsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminGetThemeSettingsError = AdminGetThemeSettingsErrors[keyof AdminGetThemeSettingsErrors];
+
+export type AdminGetThemeSettingsResponses = {
+    /**
+     * Settings returned.
+     */
+    200: AdminThemeSettingListResponse;
+};
+
+export type AdminGetThemeSettingsResponse = AdminGetThemeSettingsResponses[keyof AdminGetThemeSettingsResponses];
+
+export type AdminUpdateThemeSettingsData = {
+    body: AdminUpdateThemeSettingsRequest;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminGetThemeSettingsThemePathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/settings';
+};
+
+export type AdminUpdateThemeSettingsErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUpdateThemeSettingsError = AdminUpdateThemeSettingsErrors[keyof AdminUpdateThemeSettingsErrors];
+
+export type AdminUpdateThemeSettingsResponses = {
+    /**
+     * Settings updated; fresh settings returned.
+     */
+    200: AdminThemeSettingListResponse;
+};
+
+export type AdminUpdateThemeSettingsResponse = AdminUpdateThemeSettingsResponses[keyof AdminUpdateThemeSettingsResponses];
+
+export type AdminStopThemePreviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/themes/preview';
+};
+
+export type AdminStopThemePreviewErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+};
+
+export type AdminStopThemePreviewError = AdminStopThemePreviewErrors[keyof AdminStopThemePreviewErrors];
+
+export type AdminStopThemePreviewResponses = {
+    /**
+     * Preview stopped.
+     */
+    204: void;
+};
+
+export type AdminStopThemePreviewResponse = AdminStopThemePreviewResponses[keyof AdminStopThemePreviewResponses];
+
+export type AdminActivateThemeData = {
+    body?: never;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminActivateThemeThemePathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/activate';
+};
+
+export type AdminActivateThemeErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminActivateThemeError = AdminActivateThemeErrors[keyof AdminActivateThemeErrors];
+
+export type AdminActivateThemeResponses = {
+    /**
+     * Theme activated.
+     */
+    200: AdminThemeResource;
+};
+
+export type AdminActivateThemeResponse = AdminActivateThemeResponses[keyof AdminActivateThemeResponses];
+
+export type AdminPreviewThemeData = {
+    body?: never;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminPreviewThemeThemePathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/preview';
+};
+
+export type AdminPreviewThemeErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminPreviewThemeError = AdminPreviewThemeErrors[keyof AdminPreviewThemeErrors];
+
+export type AdminPreviewThemeResponses = {
+    /**
+     * Preview started.
+     */
+    200: AdminThemeResource;
+};
+
+export type AdminPreviewThemeResponse = AdminPreviewThemeResponses[keyof AdminPreviewThemeResponses];
+
+export type AdminClearThemeImageData = {
+    body?: never;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminUploadThemeImageThemePathParameter;
+        /**
+         * The setting.
+         */
+        setting: AdminUploadThemeImageSettingPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/settings/{setting}/image';
+};
+
+export type AdminClearThemeImageErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+
+export type AdminClearThemeImageError = AdminClearThemeImageErrors[keyof AdminClearThemeImageErrors];
+
+export type AdminClearThemeImageResponses = {
+    /**
+     * Image removed; fresh settings returned.
+     */
+    200: AdminThemeSettingListResponse;
+};
+
+export type AdminClearThemeImageResponse = AdminClearThemeImageResponses[keyof AdminClearThemeImageResponses];
+
+export type AdminUploadThemeImageData = {
+    body: AdminUploadThemeImageRequest;
+    path: {
+        /**
+         * The theme.
+         */
+        theme: AdminUploadThemeImageThemePathParameter;
+        /**
+         * The setting.
+         */
+        setting: AdminUploadThemeImageSettingPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/themes/{theme}/settings/{setting}/image';
+};
+
+export type AdminUploadThemeImageErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUploadThemeImageError = AdminUploadThemeImageErrors[keyof AdminUploadThemeImageErrors];
+
+export type AdminUploadThemeImageResponses = {
+    /**
+     * Image stored; fresh settings returned.
+     */
+    200: AdminThemeSettingListResponse;
+};
+
+export type AdminUploadThemeImageResponse = AdminUploadThemeImageResponses[keyof AdminUploadThemeImageResponses];
 
 export type AdminListUsersData = {
     body?: never;

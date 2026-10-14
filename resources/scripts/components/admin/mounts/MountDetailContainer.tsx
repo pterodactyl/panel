@@ -40,7 +40,6 @@ import { actionsColumn, DeleteAction, EditLinkAction, RowActions } from '@/compo
 import ListToolbar from '@/components/elements/ListToolbar';
 import { NewButton } from '@/components/elements/NewButton';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { emptyCompactClass } from '@/components/ui/styles';
 import { relationshipData } from '@/api/relationships';
 
 type MountForm = AppForm<MountValues>;
@@ -259,7 +258,7 @@ const AttachedEggsCard = ({
             <DataTable
                 table={table}
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Egg />
@@ -352,7 +351,7 @@ const AttachedNodesCard = ({
             <DataTable
                 table={table}
                 emptyState={
-                    <Empty className={emptyCompactClass}>
+                    <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <HardDrive />

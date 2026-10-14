@@ -171,6 +171,40 @@ describe('useTerminal', () => {
         expect(Object.keys(theme)).toHaveLength(22);
     });
 
+    it('converts tokens in oklch() and other syntaxes to the hex or rgba() Ghostty parses', async () => {
+        // jsdom has no canvas, so this one paints the pixels Chrome paints for these colours.
+        const pixels = new Map([
+            ['oklch(0.8 0.12 150)', [130, 212, 148, 255]],
+            ['oklch(0.3 0.05 260 / 50%)', [32, 46, 72, 128]],
+        ]);
+        let fill: CanvasRenderingContext2D['fillStyle'] = 'transparent';
+        const canvas = {
+            clearRect(_x: number, _y: number, _w: number, _h: number) {},
+            fillRect(_x: number, _y: number, _w: number, _h: number) {},
+            get fillStyle() {
+                return fill;
+            },
+            set fillStyle(color: CanvasRenderingContext2D['fillStyle']) {
+                fill = color;
+            },
+            getImageData(_x: number, _y: number, _w: number, _h: number): ImageData {
+                const data = new Uint8ClampedArray(pixels.get(String(fill)) ?? [0, 0, 0, 0]);
+
+                return { colorSpace: 'srgb', data, width: 1, height: 1 };
+            },
+        };
+
+        vi.mocked(HTMLCanvasElement.prototype.getContext).mockReturnValue(canvas as CanvasRenderingContext2D);
+        tokens.set('--terminal-foreground', 'oklch(0.8 0.12 150)');
+        tokens.set('--terminal-selection', 'oklch(0.3 0.05 260 / 50%)');
+
+        render(<Harness />);
+        await waitFor(() => expect(terminals).toHaveLength(1));
+
+        expect(terminals[0].options.theme?.foreground).toBe('#82d494');
+        expect(terminals[0].options.theme?.selectionBackground).toBe('rgba(32, 46, 72, 0.502)');
+    });
+
     it('scrolls without easing, so new output cannot drag a scrolled-up view along', async () => {
         render(<Harness />);
         await waitFor(() => expect(terminals).toHaveLength(1));

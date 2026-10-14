@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ITerminalOptions, ITheme } from 'ghostty-web';
-import { FitAddon, Ghostty, Terminal, UrlRegexProvider } from 'ghostty-web';
+import type * as GhosttyWeb from 'ghostty-web';
+import type { ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
+import { toRgbColor } from '@/lib/color';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
 import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
@@ -39,22 +40,12 @@ const buildTerminalStyle = (): Pick<ITerminalOptions, 'fontFamily' | 'fontSize' 
     probe.style.fontFamily = 'var(--font-mono)';
     probe.style.fontSize = 'var(--text-xs)';
     document.body.appendChild(probe);
-    // Ghostty only parses hex/rgb(a); a canvas fillStyle converts oklch and other colours.
-    const ctx = document.createElement('canvas').getContext('2d');
     const theme: ITheme = {};
 
     for (const slot of getObjectKeys(TERMINAL_COLOR_VARS)) {
-        const cssVar = TERMINAL_COLOR_VARS[slot];
-
-        probe.style.color = `var(${cssVar})`;
-        const resolved = getComputedStyle(probe).color;
-
-        if (ctx) {
-            ctx.fillStyle = resolved;
-            theme[slot] = ctx.fillStyle;
-        } else {
-            theme[slot] = resolved;
-        }
+        probe.style.color = `var(${TERMINAL_COLOR_VARS[slot]})`;
+        // Ghostty parses only hex and rgb(a), so a token in oklch() or any other syntax is converted.
+        theme[slot] = toRgbColor(getComputedStyle(probe).color);
     }
 
     const computedStyle = getComputedStyle(probe);
@@ -169,8 +160,13 @@ const copySelectionOnShortcut = (term: Terminal) => {
 };
 
 /** Opens a read-only console terminal in `mount`, sized to fill it; `signal` removes its listeners on the mount. */
-const openTerminal = (mount: HTMLElement, options: ITerminalOptions, signal: AbortSignal) => {
-    const term = new Terminal({ ...terminalProps, ...options });
+const openTerminal = (
+    { FitAddon, Terminal: GhosttyTerminal, UrlRegexProvider }: typeof GhosttyWeb,
+    mount: HTMLElement,
+    options: ITerminalOptions,
+    signal: AbortSignal
+) => {
+    const term = new GhosttyTerminal({ ...terminalProps, ...options });
     const fit = new FitAddon();
 
     // Ghostty makes the mount editable and focuses it on open, then focuses its hidden textarea on
@@ -207,8 +203,9 @@ const hasStyleChanged = (appliedStyle: string) => {
     }
 };
 
+/** Opens the console terminal in the element given to `ref`; Ghostty loads with the first one. */
 export const useTerminal = () => {
-    const ref = useRef<HTMLDivElement>(null);
+    const [mount, ref] = useState<HTMLDivElement | null>(null);
     const terminal = useRef<Terminal | null>(null);
     const [terminalReady, setTerminalReady] = useState(false);
     const [scroll] = useState(() => new TerminalScrollStore());
@@ -236,20 +233,20 @@ export const useTerminal = () => {
         let cancelled = false;
         let mountedTerminal: Terminal | null = null;
         const listeners = new AbortController();
-        const mount = ref.current;
 
         if (!mount) {
             return;
         }
 
-        Ghostty.load()
-            .then((ghostty) => {
+        import('ghostty-web')
+            .then(async (module) => ({ module, ghostty: await module.Ghostty.load() }))
+            .then(({ module, ghostty }) => {
                 if (cancelled) {
                     return;
                 }
 
                 const style = buildTerminalStyle();
-                const { term, fit } = openTerminal(mount, { ...style, ghostty }, listeners.signal);
+                const { term, fit } = openTerminal(module, mount, { ...style, ghostty }, listeners.signal);
 
                 scroll.attach(term);
                 terminal.current = term;
@@ -283,7 +280,7 @@ export const useTerminal = () => {
             appliedStyle.current = null;
             setTerminalReady(false);
         };
-    }, [revision, scroll]);
+    }, [mount, revision, scroll]);
 
     return { ref, retry, scroll, terminal, terminalError, terminalReady };
 };

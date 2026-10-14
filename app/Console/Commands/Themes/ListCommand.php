@@ -7,30 +7,29 @@ namespace Pterodactyl\Console\Commands\Themes;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Themes\ThemeService;
+use Pterodactyl\Services\Extensions\ExtensionRepository;
+use Pterodactyl\Services\Themes\ThemeRepository;
 
-#[Description('List installed themes and whether one is applied.')]
+#[Description('List the built-in and installed themes: which one is active, and which are enabled.')]
 #[Signature('p:theme:list')]
 class ListCommand extends Command
 {
-    public function handle(ThemeService $themes): int
+    public function handle(ThemeRepository $themes, ExtensionRepository $extensions): int
     {
-        $rows = array_map(
-            fn (array $theme): array => [$theme['id'], $theme['name'], $theme['version']],
-            array_values($themes->discovered()),
-        );
-
-        if ($rows === []) {
-            $this->components->info('No themes installed. Drop one into '.$themes->directory().'.');
-        } else {
-            $this->table(['ID', 'Name', 'Version'], $rows);
+        $active = $themes->active();
+        $enabled = $extensions->configuredEnabled();
+        $rows = [[ThemeRepository::CLASSIC, 'Classic', '', $active === ThemeRepository::CLASSIC ? 'active' : 'built in']];
+        foreach ($themes->installed() as $theme) {
+            $state = match (true) {
+                $theme->id === $active => 'active',
+                $enabled->has($theme->id) => 'enabled',
+                default => 'disabled',
+            };
+            $problem = $themes->activationProblem($theme->id);
+            $rows[] = [$theme->id, $theme->name, $theme->theme?->extends, $problem === null ? $state : "{$state}, unusable: {$problem}"];
         }
 
-        $this->components->info(
-            is_file($themes->publishedStylesheet())
-                ? 'A theme is currently applied (public/assets/theme.css).'
-                : 'No theme applied - the panel uses its stock tokens.',
-        );
+        $this->table(['ID', 'Name', 'Extends', 'State'], $rows);
 
         return self::SUCCESS;
     }

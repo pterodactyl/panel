@@ -179,7 +179,8 @@ function adminReads(): array
 
 function adminWrites(): array
 {
-    $node = ['name' => 'node-gamma', 'description' => 'Created by an admin', 'location_id' => 1, 'public' => true, 'fqdn' => 'gamma.example.test', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes'];
+    // A node's fqdn has to resolve, and only localhost does without DNS.
+    $node = ['name' => 'node-gamma', 'description' => 'Created by an admin', 'location_id' => 1, 'public' => true, 'fqdn' => 'localhost', 'scheme' => 'https', 'behind_proxy' => false, 'maintenance_mode' => false, 'memory' => 2048, 'memory_overallocate' => 0, 'disk' => 20480, 'disk_overallocate' => 0, 'upload_size' => 100, 'daemon_listen' => 8080, 'daemon_sftp' => 2022, 'daemon_base' => '/var/lib/pterodactyl/volumes'];
     $egg = ['name' => 'Created Egg', 'description' => 'A freshly created egg.', 'docker_images' => "Java 21|ghcr.io/pterodactyl/yolks:java_21\nJava 17|ghcr.io/pterodactyl/yolks:java_17", 'startup' => 'java -jar server.jar', 'config_stop' => 'stop', 'config_startup' => '{"done": ["Done"]}', 'config_logs' => '{}', 'config_files' => '{}', 'features' => ['eula', 'fastdl']];
     $environment = ['SERVER_JARFILE' => 'server.jar', 'BUILD_NUMBER' => '42', 'HIDDEN_TOKEN' => 'abc'];
     $server = [
@@ -216,7 +217,7 @@ function adminWrites(): array
         'admin/mounts/eggs.attach' => ['requests' => [['POST', ADMIN.'/mounts/2/eggs?include=eggs,nodes', ['eggs' => [1, 2]]]]],
         'admin/mounts/nodes.attach' => ['requests' => [['POST', ADMIN.'/mounts/2/nodes', ['nodes' => [1]]]]],
         'admin/nodes.store' => ['requests' => [['POST', ADMIN.'/nodes', $node]]],
-        'admin/nodes.update' => ['requests' => [['PUT', ADMIN.'/nodes/1', [...$node, 'name' => 'node-alpha-renamed', 'fqdn' => 'alpha.example.test', 'memory' => 16384]]]],
+        'admin/nodes.update' => ['requests' => [['PUT', ADMIN.'/nodes/1', [...$node, 'name' => 'node-alpha-renamed', 'memory' => 16384]]]],
         'admin/nodes/allocations.update' => ['requests' => [['PUT', ADMIN.'/nodes/1/allocations/4', ['alias' => 'renamed.example.test']]]],
         'admin/nodes/deployment-tags.update' => ['requests' => [['PUT', ADMIN.'/nodes/1/deployment-tags', ['tags' => [3]]]]],
         'admin/nodes/tags.update' => ['requests' => [['PUT', ADMIN.'/nodes/1/tags', ['tags' => [1, 2]]]]],

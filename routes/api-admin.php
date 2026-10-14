@@ -57,6 +57,7 @@ use Pterodactyl\Http\Controllers\Api\Admin\Settings\MailController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\SettingsController;
 use Pterodactyl\Http\Controllers\Api\Admin\Settings\TestMailController;
 use Pterodactyl\Http\Controllers\Api\Admin\Tags\TagController;
+use Pterodactyl\Http\Controllers\Api\Admin\Themes\ThemeController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\DisableTwoFactorController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\ExternalController as UserExternalController;
 use Pterodactyl\Http\Controllers\Api\Admin\Users\UserController;
@@ -92,6 +93,28 @@ Route::prefix('/extensions')->name('api.admin.extensions')->group(function (): v
         Route::post('/{extension}/enable', [ExtensionController::class, 'enable'])->name('.enable');
         Route::post('/{extension}/disable', [ExtensionController::class, 'disable'])->name('.disable');
         Route::delete('/{extension}', [ExtensionController::class, 'destroy'])->name('.delete');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Theme Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/themes
+|
+*/
+Route::prefix('/themes')->name('api.admin.themes')->group(function (): void {
+    Route::get('/', [ThemeController::class, 'index']);
+    Route::get('/{theme}/settings', [ThemeController::class, 'settings'])->name('.settings');
+
+    Route::middleware(RequireSessionAuthentication::class)->group(function (): void {
+        Route::delete('/preview', [ThemeController::class, 'stopPreview'])->name('.preview.stop');
+        Route::post('/{theme}/activate', [ThemeController::class, 'activate'])->name('.activate');
+        Route::post('/{theme}/preview', [ThemeController::class, 'preview'])->name('.preview');
+        Route::patch('/{theme}/settings', [ThemeController::class, 'updateSettings'])->name('.settings.update');
+        Route::post('/{theme}/settings/{setting}/image', [ThemeController::class, 'uploadImage'])->name('.settings.image');
+        Route::delete('/{theme}/settings/{setting}/image', [ThemeController::class, 'clearImage'])->name('.settings.image.clear');
     });
 });
 

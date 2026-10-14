@@ -55,7 +55,7 @@ export const deleteServerAllocationInput = (
     path: { server_uuid: uuid, allocation_id: allocation },
 });
 
-export const serverAllocationsQueryOptions = (uuid: string) => ({
+export const serverAllocationsQueryOptions = (uuid: string): ReturnType<typeof clientListServerAllocationsOptions> => ({
     ...clientListServerAllocationsOptions(serverAllocationsInput(uuid)),
 });
 

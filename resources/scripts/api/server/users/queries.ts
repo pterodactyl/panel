@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
 import {
@@ -46,17 +45,19 @@ export const createServerSubuserInput = (
     body: values,
 });
 
+/** `subuser` is the subuser's user uuid. */
 export const updateServerSubuserInput = (
     uuid: string,
-    subuser: Subuser,
+    subuser: string,
     values: CreateOrUpdateSubuserValues
 ): Options<ClientUpdateServerSubuserData> => ({
-    path: { server_uuid: uuid, user: subuser.attributes.uuid },
+    path: { server_uuid: uuid, user: subuser },
     body: { permissions: values.permissions },
 });
 
-export const deleteServerSubuserInput = (uuid: string, subuser: Subuser): Options<ClientDeleteServerSubuserData> => ({
-    path: { server_uuid: uuid, user: subuser.attributes.uuid },
+/** `subuser` is the subuser's user uuid. */
+export const deleteServerSubuserInput = (uuid: string, subuser: string): Options<ClientDeleteServerSubuserData> => ({
+    path: { server_uuid: uuid, user: subuser },
 });
 
 const upsertSubuser = async (queryClient: QueryClient, uuid: string, subuser: Subuser) => {
@@ -97,17 +98,13 @@ export const useUpdateSubuser = () => {
     });
 };
 
-export const useDeleteSubuser = (subuser: Subuser) => {
+/** Reports failures; the caller announces success, since it knows the subuser's email. */
+export const useDeleteSubuser = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         ...clientDeleteServerSubuserMutation(),
-        onSuccess: async (_data, { path }) => {
-            await removeSubuser(queryClient, path.server_uuid, path.user);
-            toast.success('Subuser removed', {
-                description: `${subuser.attributes.email} no longer has access to this server.`,
-            });
-        },
+        onSuccess: (_data, { path }) => removeSubuser(queryClient, path.server_uuid, path.user),
         onError: (error) => notifyHttpError(error, 'Unable to remove subuser'),
     });
 };
