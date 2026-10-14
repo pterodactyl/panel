@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Admin\Servers;
 
+use Pterodactyl\Actions\Servers\UpdateServerBuild;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Validation\ServerRules;
-use UnexpectedValueException;
 
 class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 {
@@ -23,23 +22,23 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules($this->parameter('server', Server::class));
+        $rules = UpdateServerBuild::rules($this->parameter('server', Server::class));
 
         return [
             'allocation_id' => $rules['allocation_id'],
             'oom_disabled' => $rules['oom_disabled'],
 
-            'memory' => $this->requiredToOptional('memory', $rules['memory']),
-            'swap' => $this->requiredToOptional('swap', $rules['swap']),
-            'io' => $this->requiredToOptional('io', $rules['io']),
-            'cpu' => $this->requiredToOptional('cpu', $rules['cpu']),
-            'threads' => $this->requiredToOptional('threads', $rules['threads']),
-            'disk' => $this->requiredToOptional('disk', $rules['disk']),
+            'memory' => $rules['memory'],
+            'swap' => $rules['swap'],
+            'io' => $rules['io'],
+            'cpu' => $rules['cpu'],
+            'threads' => $rules['threads'],
+            'disk' => $rules['disk'],
 
-            'add_allocation_ids' => ['bail', 'array'],
-            'add_allocation_ids.*' => ['integer'],
-            'remove_allocation_ids' => ['bail', 'array'],
-            'remove_allocation_ids.*' => ['integer'],
+            'add_allocation_ids' => $rules['add_allocations'],
+            'add_allocation_ids.*' => $rules['add_allocations.*'],
+            'remove_allocation_ids' => $rules['remove_allocations'],
+            'remove_allocation_ids.*' => $rules['remove_allocations.*'],
 
             'database_limit' => $rules['database_limit'],
             'allocation_limit' => $rules['allocation_limit'],
@@ -48,43 +47,22 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
     }
 
     /**
-     * Rename the allocation id fields into the add/remove keys the service expects.
+     * The validated input under the action's field names: add_allocation_ids and
+     * remove_allocation_ids are its add_allocations and remove_allocations.
      *
-     * @return ServerBuildModificationData
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        $data = [];
-
-        if ($this->has('oom_disabled')) {
-            $data['oom_disabled'] = $this->boolean('oom_disabled');
-        }
-
-        foreach (['memory', 'swap', 'io', 'cpu', 'disk', 'allocation_id'] as $field) {
-            if ($this->filled($field)) {
-                $data[$field] = $this->integer($field);
+        $input = parent::actionInput();
+        foreach (['add_allocation_ids' => 'add_allocations', 'remove_allocation_ids' => 'remove_allocations'] as $field => $key) {
+            if (array_key_exists($field, $input)) {
+                $input[$key] = $input[$field];
+                unset($input[$field]);
             }
         }
 
-        if ($this->has('threads')) {
-            $data['threads'] = $this->filled('threads') ? $this->string('threads')->toString() : null;
-        }
-
-        foreach (['database_limit', 'allocation_limit', 'backup_limit'] as $field) {
-            if ($this->has($field)) {
-                $data[$field] = $this->filled($field) ? $this->integer($field) : null;
-            }
-        }
-
-        if ($this->has('add_allocation_ids')) {
-            $data['add_allocations'] = $this->integerList('add_allocation_ids');
-        }
-
-        if ($this->has('remove_allocation_ids')) {
-            $data['remove_allocations'] = $this->integerList('remove_allocation_ids');
-        }
-
-        return $data;
+        return $input;
     }
 
     /** Rename fields to be more clear in error messages. */
@@ -99,43 +77,5 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'allocation_limit' => 'Allocation Limit',
             'backup_limit' => 'Backup Limit',
         ];
-    }
-
-    /**
-     * Relax a `required` limit rule into required_with/without:limits for backwards compat. @see https://github.com/pterodactyl/panel/issues/1500
-     *
-     * @param  ValidationRuleSet  $rules
-     * @return ValidationRuleSet
-     */
-    protected function requiredToOptional(string $field, array $rules, bool $limits = false): array
-    {
-        if (! in_array('required', $rules, true)) {
-            return $rules;
-        }
-
-        $optional = [$limits ? 'required_with:limits' : 'required_without:limits'];
-        foreach ($rules as $rule) {
-            if ($rule !== 'required') {
-                $optional[] = $rule;
-            }
-        }
-
-        return $optional;
-    }
-
-    /** @return list<int> */
-    private function integerList(string $field): array
-    {
-        $values = $this->input($field, []);
-        throw_if(! is_array($values) || ! array_is_list($values), UnexpectedValueException::class, "The validated [{$field}] field must be a list.");
-
-        $integers = [];
-        foreach ($values as $value) {
-            throw_unless(is_int($value), UnexpectedValueException::class, "The validated [{$field}] field must contain integers.");
-
-            $integers[] = $value;
-        }
-
-        return $integers;
     }
 }

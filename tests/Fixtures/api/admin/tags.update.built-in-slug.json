@@ -1,0 +1,19 @@
+[
+    {
+        "request": "PUT /api/admin/tags/2",
+        "status": 422,
+        "body": {
+            "errors": [
+                {
+                    "code": "ValidationException",
+                    "status": "422",
+                    "detail": "The slug rust belongs to a built-in game tag.",
+                    "meta": {
+                        "source_field": "slug",
+                        "rule": "not_in"
+                    }
+                }
+            ]
+        }
+    }
+]

@@ -56,7 +56,7 @@ export const createAdminEggInput = (body: EggConfigurationBody): Options<AdminCr
 export const importAdminEggInput = (body: AdminImportEggData['body']): Options<AdminImportEggData> => ({ body });
 
 export const updateAdminEggInput = (eggId: number, body: AdminUpdateEggData['body']): Options<AdminUpdateEggData> => ({
-    path: { id: eggId },
+    path: { egg_id: eggId },
     body,
 });
 
@@ -94,7 +94,7 @@ export const updateAdminEggVariableInput = (
     variableId: number,
     body: AdminUpdateEggVariableData['body']
 ): Options<AdminUpdateEggVariableData> => ({
-    path: { egg_id: eggId, id: variableId },
+    path: { egg_id: eggId, variable_id: variableId },
     body,
 });
 

@@ -7,6 +7,7 @@ namespace Pterodactyl\Services\Extensions;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -19,8 +20,8 @@ use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
+use UnexpectedValueException;
 
 /**
  * Downloads extension packages from signed install URLs.
@@ -85,7 +86,7 @@ class ExtensionUrlDownloader
      */
     public function verifiedUrl(string $link): string
     {
-        throw_unless(filter_var(config('extensions.signed_urls.enabled'), FILTER_VALIDATE_BOOLEAN), InvalidExtensionException::class, 'Installing extensions from a URL is disabled on this panel.');
+        throw_unless(config('extensions.signed_urls.enabled'), InvalidExtensionException::class, 'Installing extensions from a URL is disabled on this panel.');
         throw_unless(extension_loaded('sodium'), InvalidExtensionException::class, 'The PHP sodium extension is required to verify signed install URLs.');
 
         $jwt = Str::afterLast(Str::before(Str::before(mb_trim($link), '?'), '#'), '/');
@@ -95,7 +96,9 @@ class ExtensionUrlDownloader
         if ($jwt !== '') {
             try {
                 $token = (new Parser(new JoseEncoder))->parse($jwt);
-                $key = InMemory::base64Encoded(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.public_key')));
+                $publicKey = config()->string('extensions.signed_urls.public_key');
+                throw_if($publicKey === '', UnexpectedValueException::class, 'Signed install URLs need a public key.');
+                $key = InMemory::base64Encoded($publicKey);
                 $signed = $token instanceof UnencryptedToken && (new Validator)->validate($token, new SignedWith(new Eddsa, $key));
             } catch (Throwable) {
                 $signed = false;
@@ -110,8 +113,11 @@ class ExtensionUrlDownloader
         );
 
         $claims = $token->claims();
+        $issuer = config()->string('extensions.signed_urls.issuer');
+        $audience = config()->string('extensions.signed_urls.audience');
+        throw_if($issuer === '' || $audience === '', UnexpectedValueException::class, 'Signed install URLs need an issuer and an audience.');
         throw_unless(
-            $token->hasBeenIssuedBy(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.issuer'))) && $token->isPermittedFor(JsonValueGuard::nonEmptyString(config('extensions.signed_urls.audience'))),
+            $token->hasBeenIssuedBy($issuer) && $token->isPermittedFor($audience),
             InvalidExtensionException::class,
             'This signed URL is not an extension install URL.',
         );
@@ -122,7 +128,7 @@ class ExtensionUrlDownloader
             'This install URL has expired. Copy a new install command.',
         );
 
-        $base = rescue(fn (): ?string => JsonValueGuard::nullableString($claims->get('url')), report: false);
+        $base = rescue(fn (): string => Arr::string($claims->all(), 'url'), report: false);
         throw_unless($base !== null && $this->isUrl($base), InvalidExtensionException::class, 'This install URL does not say where to download the extension from.');
 
         return $base.$jwt;
@@ -142,7 +148,7 @@ class ExtensionUrlDownloader
     /** The server explains refusals in a JSON body, which was written to the sink file. */
     private function failureMessage(string $path, int $status): string
     {
-        $message = rescue(fn (): ?string => JsonValueGuard::nullableString(data_get(JsonValueGuard::decode(File::get($path)), 'error.message')), report: false);
+        $message = rescue(fn (): string => Arr::string(File::json($path), 'error.message'), report: false);
 
         return $message !== null
             ? "The download was refused: {$message}"

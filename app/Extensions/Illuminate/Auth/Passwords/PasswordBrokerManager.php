@@ -6,12 +6,11 @@ namespace Pterodactyl\Extensions\Illuminate\Auth\Passwords;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Passwords\PasswordBrokerManager as IlluminatePasswordBrokerManager;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\DatabaseManager;
 use InvalidArgumentException;
-use Pterodactyl\Support\JsonValueGuard;
 
 class PasswordBrokerManager extends IlluminatePasswordBrokerManager
 {
@@ -26,27 +25,27 @@ class PasswordBrokerManager extends IlluminatePasswordBrokerManager
         throw_unless($config->has($prefix), InvalidArgumentException::class, "Password resetter [{$name}] is not defined.");
 
         $users = $this->app->make(AuthManager::class)->createUserProvider(
-            JsonValueGuard::nullableString($config->get("{$prefix}.provider"))
+            $config->get("{$prefix}.provider") === null ? null : $config->string("{$prefix}.provider")
         );
 
         throw_if($users === null, InvalidArgumentException::class, "Password resetter [{$name}] has no user provider.");
 
-        $key = JsonValueGuard::string($config->get('app.key'));
+        $key = $config->string('app.key');
 
         $tokens = new DatabaseTokenRepository(
-            $this->app->make(DatabaseManager::class)->connection(JsonValueGuard::nullableString($config->get("{$prefix}.connection"))),
+            $this->app->make(DatabaseManager::class)->connection($config->get("{$prefix}.connection") === null ? null : $config->string("{$prefix}.connection")),
             $this->app->make(Hasher::class),
-            JsonValueGuard::string($config->get("{$prefix}.table")),
+            $config->string("{$prefix}.table"),
             str_starts_with($key, 'base64:') ? base64_decode(mb_substr($key, 7)) : $key,
-            JsonValueGuard::integer($config->get("{$prefix}.expire", 60)) * 60,
-            JsonValueGuard::integer($config->get("{$prefix}.throttle", 0)),
+            $config->integer("{$prefix}.expire", 60) * 60,
+            $config->integer("{$prefix}.throttle", 0),
         );
 
         return new PasswordBroker(
             $tokens,
             $users,
             $this->app->make(Dispatcher::class),
-            timeboxDuration: JsonValueGuard::integer($config->get('auth.timebox_duration', 200000)),
+            timeboxDuration: $config->integer('auth.timebox_duration', 200000),
         );
     }
 }

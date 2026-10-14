@@ -208,6 +208,18 @@ test('malformed activity user filters return 422 on the client feeds', function 
         ->assertUnprocessable()->assertJsonPath('errors.0.meta.source_field', 'filter.user');
 })->with(['account', 'server']);
 
+test('activity filters and pagination are validated in field order on the client feeds', function (string $feed) {
+    [$user, $server] = $this->generateTestAccount([Permissions::ActivityRead->value]);
+    $endpoint = $feed === 'account' ? '/api/client/account/activity' : $this->link($server, '/activity');
+
+    $this->actingAs($user)->getJson($endpoint.'?'.http_build_query(['filter' => ['user_id' => 'abc', 'event_name' => ['server']], 'per_page' => 0]))
+        ->assertUnprocessable()
+        ->assertJsonCount(3, 'errors')
+        ->assertJsonPath('errors.0.meta.source_field', 'filter.user_id')
+        ->assertJsonPath('errors.1.meta.source_field', 'filter.event_name')
+        ->assertJsonPath('errors.2.meta.source_field', 'per_page');
+})->with(['account', 'server']);
+
 test('server filter options respect hidden administrator activity', function () {
     config()->set('activity.hide_admin_activity', true);
     [$user, $server] = $this->generateTestAccount([Permissions::ActivityRead->value]);

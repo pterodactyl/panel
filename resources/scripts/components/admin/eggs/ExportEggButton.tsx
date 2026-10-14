@@ -25,7 +25,7 @@ export default function ExportEggButton({ egg }: Props) {
                 return;
             }
 
-            const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+            const blob = new Blob([json], { type: 'application/json' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
 

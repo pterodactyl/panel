@@ -1,90 +1,53 @@
-import type * as React from 'react';
-import { cva } from 'class-variance-authority';
-import { cn } from '@/lib/cn';
+import * as React from 'react';
+import { replaceable, useSkin } from '@/themes/skins';
 
-function Empty({ className, ...props }: React.ComponentProps<'div'>) {
+export type EmptySize = 'default' | 'compact';
+export type EmptyMediaVariant = 'default' | 'icon';
+
+export type EmptyProps = React.ComponentProps<'div'> & {
+    /** `compact` tightens the spacing for an `Empty` inside a card, table or dialog. */
+    size?: EmptySize;
+};
+
+const EmptySizeContext = React.createContext<EmptySize>('default');
+
+const usePartSkin = () => useSkin('Empty', { size: React.use(EmptySizeContext) });
+
+function CoreEmpty({ className, size = 'default', ...props }: EmptyProps) {
+    const ui = useSkin('Empty', { size });
+
     return (
-        <div
-            data-slot='empty'
-            className={cn(
-                'flex min-w-0 flex-1 flex-col items-center justify-center gap-6 rounded-sm border-dashed p-6 text-center text-balance md:p-12',
-                className
-            )}
-            {...props}
-        />
+        <EmptySizeContext.Provider value={size}>
+            <div {...ui('root', className)} {...props} />
+        </EmptySizeContext.Provider>
     );
 }
+
+const Empty = replaceable('Empty', CoreEmpty);
 
 function EmptyHeader({ className, ...props }: React.ComponentProps<'div'>) {
-    return (
-        <div
-            data-slot='empty-header'
-            className={cn('flex max-w-sm flex-col items-center gap-2 text-center', className)}
-            {...props}
-        />
-    );
+    return <div {...usePartSkin()('header', className)} {...props} />;
 }
-
-const emptyMediaVariants = cva(
-    'mb-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0',
-    {
-        variants: {
-            variant: {
-                default: 'bg-transparent',
-                icon: "flex size-10 shrink-0 items-center justify-center rounded-sm bg-secondary text-secondary-foreground [&_svg:not([class*='size-'])]:size-6",
-            },
-        },
-        defaultVariants: { variant: 'default' },
-    }
-);
 
 /** `icon` frames a single icon in a tile; `default` leaves the media unframed. */
 function EmptyMedia({
     className,
     variant = 'default',
     ...props
-}: React.ComponentProps<'div'> & { variant?: 'default' | 'icon' }) {
-    return (
-        <div
-            data-slot='empty-icon'
-            data-variant={variant}
-            className={cn(emptyMediaVariants({ variant }), className)}
-            {...props}
-        />
-    );
+}: React.ComponentProps<'div'> & { variant?: EmptyMediaVariant }) {
+    return <div {...usePartSkin()('media', className, { variant })} {...props} />;
 }
 
 function EmptyTitle({ className, ...props }: React.ComponentProps<'div'>) {
-    return (
-        <div
-            data-slot='empty-title'
-            className={cn('font-header text-lg font-medium tracking-tight text-foreground', className)}
-            {...props}
-        />
-    );
+    return <div {...usePartSkin()('title', className)} {...props} />;
 }
 
 function EmptyDescription({ className, ...props }: React.ComponentProps<'div'>) {
-    return (
-        <div
-            data-slot='empty-description'
-            className={cn(
-                'text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-accent',
-                className
-            )}
-            {...props}
-        />
-    );
+    return <div {...usePartSkin()('description', className)} {...props} />;
 }
 
 function EmptyContent({ className, ...props }: React.ComponentProps<'div'>) {
-    return (
-        <div
-            data-slot='empty-content'
-            className={cn('flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance', className)}
-            {...props}
-        />
-    );
+    return <div {...usePartSkin()('content', className)} {...props} />;
 }
 
 export { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent };

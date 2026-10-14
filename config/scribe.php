@@ -11,7 +11,6 @@ use Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromFormRequest;
 use Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
 use Knuckles\Scribe\Extracting\Strategies\StaticData;
-use Pterodactyl\Extensions\League\Fractal\Serializers\PterodactylSerializer;
 use Pterodactyl\Extensions\Scribe\OpenApi\PterodactylOpenApiGenerator;
 use Pterodactyl\Extensions\Scribe\Strategies\InferPterodactylBodyParameters;
 use Pterodactyl\Extensions\Scribe\Strategies\InferPterodactylResponses;
@@ -283,9 +282,4 @@ return [
     // Scribe will try to start database transactions, so no changes are persisted to your database.
     // Tell Scribe which connections should be transacted here. If you only use one db connection, you can leave this as is.
     'database_connections_to_transact' => [config('database.default')],
-
-    'fractal' => [
-        // If you are using a custom serializer with league/fractal, you can specify it here.
-        'serializer' => PterodactylSerializer::class,
-    ],
 ];

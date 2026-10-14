@@ -1,0 +1,98 @@
+/* The panel stylesheet, every class the panel uses, then Aurora's own. Plain Tailwind: no prefix. */
+@import '@pterodactyl/sdk/theme-entry.css';
+
+/* #region font */
+/* Bundled with the theme: the build copies the file beside dist/theme.css. */
+@font-face {
+    font-family: 'Aurora Sans';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('./fonts/aurora-sans.woff2') format('woff2');
+}
+
+@theme {
+    --font-sans: 'Aurora Sans', system-ui, sans-serif;
+    --font-header: 'Aurora Sans', system-ui, sans-serif;
+}
+/* #endregion font */
+
+/* #region tokens */
+/* Both schemes. The "accent" setting writes --aurora-accent; the colour roles derive from it. */
+:root {
+    --radius: 0.875rem;
+    --layout-sidebar-width: 15rem;
+    --primary: var(--aurora-accent, #8b5cf6);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: color-mix(in oklab, var(--primary) 60%, transparent);
+    --accent: color-mix(in oklab, var(--primary) 65%, white);
+    --accent-foreground: oklch(0.2 0.02 280);
+    --selection: color-mix(in oklab, var(--primary) 35%, transparent);
+    --glass: color-mix(in oklab, var(--card) 60%, transparent);
+    --glass-border: color-mix(in oklab, var(--foreground) 12%, transparent);
+}
+
+.dark {
+    --background: oklch(0.17 0.02 280);
+    --foreground: oklch(0.94 0.01 280);
+    --card: oklch(0.23 0.025 280);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.27 0.03 280);
+    --popover-foreground: var(--foreground);
+    --muted: oklch(0.25 0.02 280);
+    --muted-foreground: oklch(0.7 0.02 280);
+    --secondary: oklch(0.3 0.03 280);
+    --border: oklch(0.32 0.03 280);
+    --terminal-background: oklch(0.13 0.02 280);
+}
+
+.light {
+    --background: oklch(0.97 0.01 280);
+    --foreground: oklch(0.22 0.03 280);
+    --card: oklch(1 0 0);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.99 0.005 280);
+    --popover-foreground: var(--foreground);
+    --muted: oklch(0.94 0.01 280);
+    --muted-foreground: oklch(0.5 0.02 280);
+    --secondary: oklch(0.92 0.015 280);
+    --border: oklch(0.88 0.015 280);
+    --terminal-background: oklch(0.2 0.02 280);
+    --terminal-foreground: oklch(0.92 0.01 280);
+}
+/* #endregion tokens */
+
+/* #region settings */
+/* `sidebar-right:` applies while the "sidebar" setting is "right". */
+@custom-variant sidebar-right (&:where([data-aurora-sidebar='right'] *));
+
+/* The "density" setting retunes the spacing scale every utility reads. */
+[data-aurora-density='compact'] {
+    --spacing: 0.2rem;
+}
+/* #endregion settings */
+
+/* #region glass */
+/* A frosted surface for skins and views: `glass`. The "blur" setting writes --aurora-blur. */
+@utility glass {
+    background-color: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--aurora-blur, 16px)) saturate(1.4);
+}
+
+@layer base {
+    body {
+        background:
+            radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--primary) 22%, transparent), transparent),
+            radial-gradient(50rem 30rem at 110% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent),
+            var(--background);
+        background-attachment: fixed;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --glass: var(--card);
+    }
+}
+/* #endregion glass */

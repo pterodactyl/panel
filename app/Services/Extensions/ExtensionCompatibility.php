@@ -7,7 +7,6 @@ namespace Pterodactyl\Services\Extensions;
 use Composer\Semver\Semver;
 use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
-use Pterodactyl\Support\JsonValueGuard;
 
 final class ExtensionCompatibility
 {
@@ -31,7 +30,7 @@ final class ExtensionCompatibility
         while ($remaining !== []) {
             $progress = false;
             foreach ($remaining as $id => $manifest) {
-                $dependencies = array_keys($manifest->requiredExtensions);
+                $dependencies = array_keys($manifest->dependencies());
                 $failed = array_intersect($dependencies, array_keys($errors));
                 if ($failed !== []) {
                     $errors[$id] = sprintf('Extension "%s" requires unavailable extension "%s".', $id, reset($failed));
@@ -60,9 +59,13 @@ final class ExtensionCompatibility
     /** @param Collection<string, ExtensionManifest> $enabled */
     public function assertCompatible(ExtensionManifest $manifest, Collection $enabled): void
     {
-        $errors = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
-        // A claim both sides make is reported from the side of the extension being checked.
-        $reason = $errors[$manifest->id] ?? reset($errors);
+        $before = $this->resolve($enabled)['errors'];
+        $after = $this->resolve((clone $enabled)->put($manifest->id, $manifest))['errors'];
+        // An extension that was already failing does not hold this one back: only a failure
+        // of its own, or one it causes in another extension, does. A claim both sides make
+        // is reported from the side of the extension being checked.
+        $caused = array_diff_key($after, $before);
+        $reason = $after[$manifest->id] ?? reset($caused);
         throw_if($reason !== false, InvalidExtensionException::class, $reason);
         $this->assertDistinctAutoloader($manifest, $enabled);
     }
@@ -71,7 +74,7 @@ final class ExtensionCompatibility
     public function assertCanDisable(string $identifier, Collection $enabled): void
     {
         foreach ($enabled as $manifest) {
-            throw_if(isset($manifest->requiredExtensions[$identifier]), InvalidExtensionException::class, "Disable dependent extension \"{$manifest->id}\" before \"{$identifier}\".");
+            throw_if(isset($manifest->dependencies()[$identifier]), InvalidExtensionException::class, "Disable dependent extension \"{$manifest->id}\" before \"{$identifier}\".");
         }
     }
 
@@ -144,11 +147,6 @@ final class ExtensionCompatibility
                 continue;
             }
 
-            $conflicts = array_intersect($manifest->components, $other->components);
-            if ($conflicts !== []) {
-                return sprintf('Extension "%s" cannot replace "%s": enabled extension "%s" also declares it.', $manifest->id, reset($conflicts), $other->id);
-            }
-
             $prefixes = array_intersect($manifest->rootPrefixes, $other->rootPrefixes);
             if ($prefixes !== []) {
                 return sprintf('Extension "%s" cannot claim root path "/%s": enabled extension "%s" also declares it.', $manifest->id, reset($prefixes), $other->id);
@@ -168,8 +166,13 @@ final class ExtensionCompatibility
             }
         }
 
-        foreach ($manifest->requiredExtensions as $id => $constraint) {
+        $parent = $manifest->theme?->extends;
+        foreach ($manifest->dependencies() as $id => $constraint) {
             $dependency = $enabled->get($id);
+            if ($id === $parent && ! $dependency?->isTheme()) {
+                return sprintf('Theme "%s" extends "%s", which is not an enabled theme.', $manifest->id, $id);
+            }
+
             if ($dependency === null || ! Semver::satisfies($dependency->version, $constraint)) {
                 return sprintf('Extension "%s" requires enabled extension "%s" %s.', $manifest->id, $id, $constraint);
             }
@@ -191,8 +194,8 @@ final class ExtensionCompatibility
     private function runtimeFailureReason(ExtensionManifest $manifest): ?string
     {
         $versions = [
-            'panel' => JsonValueGuard::string(config('extensions.panel_version')),
-            'sdk' => JsonValueGuard::string(config('extensions.sdk_version')),
+            'panel' => config()->string('extensions.panel_version'),
+            'sdk' => config()->string('extensions.sdk_version'),
             'php' => PHP_VERSION,
         ];
         foreach ($manifest->requirements as $runtime => $constraint) {

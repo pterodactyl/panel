@@ -12,10 +12,6 @@ use Illuminate\Support\Collection;
 #[WithoutTimestamps]
 class Permission extends Model
 {
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'subuser_permission';
 
     /**
@@ -147,9 +143,6 @@ class Permission extends Model
     }
 
     /**
-     * Returns all the permissions available on the system for a user to
-     * have when controlling a server.
-     *
      * @return Collection<string, array{description: string, keys: array<string, string>}>
      */
     public static function permissions(): Collection

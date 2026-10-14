@@ -7,7 +7,6 @@ namespace Pterodactyl\Traits\Helpers;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Locale;
-use Pterodactyl\Support\JsonValueGuard;
 
 trait AvailableLanguages
 {
@@ -20,7 +19,7 @@ trait AvailableLanguages
     public function getAvailableLanguages(bool $localize = false): array
     {
         $languages = [];
-        foreach (JsonValueGuard::stringList(File::directories(resource_path('lang'))) as $path) {
+        foreach (array_filter(File::directories(resource_path('lang')), is_string(...)) as $path) {
             $code = basename($path);
             $value = Locale::getDisplayLanguage($code, $localize ? $code : 'en') ?: $code;
             $languages[$code] = Str::title($value);

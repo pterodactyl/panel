@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Services\Databases\DatabaseHostGateway;
-use Throwable;
 
 final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
 {
@@ -20,7 +20,6 @@ final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
         private DatabaseHostGateway $gateway,
     ) {}
 
-    /** @throws Throwable */
     public function rotate(Database $database): string
     {
         $password = Utilities::randomStringWithSpecialCharacters(24);
@@ -35,6 +34,8 @@ final readonly class RotateDatabasePassword implements RotatesDatabasePasswords
             $this->gateway->assignUserToDatabase($database->database, $database->username, $database->remote);
             $this->gateway->flush();
         });
+
+        Activity::event('server:database.rotate-password')->subject($database->server, $database)->property('name', $database->database)->log();
 
         return $password;
     }

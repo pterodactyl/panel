@@ -37,6 +37,7 @@ test('new allocation can be assigned to server', function (array $permission): v
         'notes' => null,
         'is_default' => false,
     ]);
+    $this->assertActivityFor('server:allocation.create', $user, $server, $matched);
 })->with('permissionDataProvider');
 test('allocation cannot be created if user does not have permission', function (): void {
     /** @var Server $server */

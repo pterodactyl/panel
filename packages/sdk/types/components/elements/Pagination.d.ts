@@ -5,7 +5,7 @@ interface RenderFuncProps<T> {
     isLastPage: boolean;
     isFirstPage: boolean;
 }
-interface Props<T> {
+export interface PaginationProps<T> {
     data: GeneratedPaginatedResult<T>;
     showGoToLast?: boolean;
     showGoToFirst?: boolean;
@@ -24,5 +24,5 @@ interface GeneratedPaginatedResult<T> {
         };
     };
 }
-declare function Pagination<T>({ data, onPageSelect, children }: Props<T>): React.JSX.Element;
+declare function Pagination<T>({ data, onPageSelect, children }: PaginationProps<T>): React.JSX.Element;
 export default Pagination;

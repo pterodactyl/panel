@@ -7,6 +7,7 @@ namespace Pterodactyl\Tests\Pest\Integration\Actions\Backups\InitiateBackupTest;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
@@ -33,6 +34,8 @@ test('a server at its limit rotates out the oldest backup once wings accepts the
     $this->assertSoftDeleted($oldest);
     $this->assertNotSoftDeleted($newer);
     expect($backup->completed_at)->toBeNull();
+    $this->assertActivityOn('server:backup.start', $server, $backup);
+    $this->assertActivityOn('server:backup.delete', $server, $oldest);
 });
 
 test('a backup wings rejects is marked failed and the oldest backup is kept', function (): void {
@@ -71,6 +74,46 @@ test('a backup rotated out by another request that is still pending is not count
     $this->assertSoftDeleted($second);
     $this->assertNotSoftDeleted($third);
     expect(Backup::query()->where('server_id', $server->id)->count())->toBe(2);
+});
+
+test('backups initiated without the http api meet the same rules', function (?string $name, ?array $ignored, string $field): void {
+    $server = $this->createServerModel(['backup_limit' => 3]);
+    $fake = new FakeDaemonBackup;
+
+    try {
+        $this->app->make(InitiatesBackups::class)->setIgnoredFiles($ignored)->initiate($server, $name);
+        $this->fail('The backup was initiated.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe([$field]);
+    }
+
+    $fake->assertNothingHappened();
+    expect($server->backups()->exists())->toBeFalse();
+})->with([
+    'a name that is too long' => [str_repeat('a', 192), null, 'name'],
+    'ignored files that are not a list' => ['Named', ['logs' => 'logs/'], 'ignored_files'],
+    'an ignored file that is not a string' => ['Named', ['logs/', ['cache/']], 'ignored_files.1'],
+    'an ignored file that is null' => ['Named', [null], 'ignored_files.0'],
+]);
+
+test('a backup keeps its ignored files without empty entries, and a blank name is replaced', function (): void {
+    $server = $this->createServerModel(['backup_limit' => 3]);
+    $fake = new FakeDaemonBackup;
+
+    $backup = $this->app->make(InitiatesBackups::class)
+        ->setIgnoredFiles(['logs/', '', '0', 'cache/'])
+        ->setIsLocked(true)
+        ->initiate($server, '   ');
+
+    $fake->assertBackedUp($backup->uuid);
+    expect($backup->ignored_files)->toBe(['logs/', '0', 'cache/'])
+        ->and($backup->is_locked)->toBeTrue()
+        ->and($backup->name)->toStartWith('Backup at ');
+
+    $named = $this->app->make(InitiatesBackups::class)->initiate($server, 'Named');
+    expect($named->name)->toBe('Named')
+        ->and($named->ignored_files)->toBe([])
+        ->and($named->is_locked)->toBeFalse();
 });
 
 test('a server at its limit without an unlocked backup is rejected before wings is called', function (): void {

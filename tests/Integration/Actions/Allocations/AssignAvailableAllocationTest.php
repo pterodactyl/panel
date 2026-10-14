@@ -11,6 +11,7 @@ use Pterodactyl\Actions\Allocations\AssignAvailableAllocation;
 use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 use function pterodactylTestCase;
@@ -33,6 +34,7 @@ test('existing allocation is preferred', function () {
     expect($response->node_id)->toBe($server->node_id);
     expect($response->server_id)->toBe($server->id);
     $this->assertNotSame($server->allocation_id, $response->id);
+    $this->assertActivityOn('server:allocation.create', $server, $response);
 });
 test('new allocation is created if one is not found', function () {
     $server = $this->createServerModel();
@@ -55,6 +57,7 @@ test('numeric string ranges are normalized', function () {
 test('only port not in use is created', function () {
     $server = $this->createServerModel();
     $server2 = $this->createServerModel(['node_id' => $server->node_id]);
+    keepPrimaryPortsOutOfRange($server, $server2);
     config()->set('pterodactyl.client_features.allocations.range_start', 5000);
     config()->set('pterodactyl.client_features.allocations.range_end', 5001);
     Allocation::factory()->create(['server_id' => $server2->id, 'node_id' => $server->node_id, 'ip' => $server->allocation->ip, 'port' => 5000]);
@@ -64,6 +67,7 @@ test('only port not in use is created', function () {
 test('exception is thrown if no more allocations can be created in range', function () {
     $server = $this->createServerModel();
     $server2 = $this->createServerModel(['node_id' => $server->node_id]);
+    keepPrimaryPortsOutOfRange($server, $server2);
     config()->set('pterodactyl.client_features.allocations.range_start', 5000);
     config()->set('pterodactyl.client_features.allocations.range_end', 5005);
     for ($i = 5000; $i <= 5005; $i++) {
@@ -118,4 +122,12 @@ function getAction(): AssignAvailableAllocation
     return (function () {
         return $this->app->make(AssignAvailableAllocation::class);
     })->call(pterodactylTestCase());
+}
+
+/** The factory picks primary ports at random, which could otherwise land in the 5000 range under test. */
+function keepPrimaryPortsOutOfRange(Server ...$servers): void
+{
+    foreach ($servers as $i => $server) {
+        $server->allocation?->update(['port' => 4000 + $i]);
+    }
 }

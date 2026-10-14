@@ -1,0 +1,70 @@
+[
+    {
+        "request": "GET /api/client",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account",
+        "status": 200,
+        "body": {
+            "object": "user",
+            "attributes": {
+                "id": 5,
+                "admin": false,
+                "username": "spare",
+                "email": "Spare.User@Example.test",
+                "first_name": "Spare",
+                "last_name": "User",
+                "language": "en"
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 25,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/api-keys",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": []
+        }
+    },
+    {
+        "request": "GET /api/client/account/ssh-keys",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": []
+        }
+    }
+]

@@ -121,8 +121,7 @@ export const updateAdminExtensionSettingsInput = (
     extension: string,
     settings: Record<string, AdminExtensionSettingValue>
 ): Options<AdminUpdateExtensionSettingsData> => ({
-    // Scribe names the PATCH path parameter extension_id; the GET uses extension.
-    path: { extension_id: extension },
+    path: { extension },
     body: { settings },
     meta: { name: extension },
 });
@@ -160,7 +159,7 @@ export const useUpdateAdminExtensionSettings = () => {
         onSuccess: async (_data, variables) => {
             await queryClient.invalidateQueries({
                 queryKey: adminGetExtensionSettingsQueryKey({
-                    path: { extension: variables.path.extension_id },
+                    path: { extension: variables.path.extension },
                 }),
             });
             const name = variables.meta?.name ?? 'the extension';

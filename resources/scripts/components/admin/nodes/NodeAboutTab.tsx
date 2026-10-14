@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/cn';
 import { bytesRatioToString, mbToBytes } from '@/lib/formatters';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteAdminNodeInput, type NodeUtilization } from '@/api/admin/nodes/queries';
@@ -8,24 +7,26 @@ import { useAdminNodeSystemInformation, useAdminNodeUtilization, useDeleteAdminN
 import { useNodeDetail } from '@/components/admin/nodes/useNodeDetail';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Code from '@/components/elements/Code';
+import ProgressBar from '@/components/elements/ProgressBar';
+import type { UiTone } from '@/themes/skins';
 import Spinner from '@/components/elements/Spinner';
 import Button from '@/components/elements/Button';
 import { Dialog } from '@/components/elements/dialog';
 
-const usageColour = (metric: NodeUtilization['memory'] | undefined): string => {
+const usageTone = (metric: NodeUtilization['memory'] | undefined): UiTone => {
     if (!metric) {
-        return 'bg-popover';
+        return 'neutral';
     }
 
     if (metric.css === 'red') {
-        return 'bg-destructive';
+        return 'danger';
     }
 
     if (metric.css === 'yellow') {
-        return 'bg-warning';
+        return 'warning';
     }
 
-    return 'bg-success';
+    return 'success';
 };
 
 type SystemInformation = NonNullable<ReturnType<typeof useAdminNodeSystemInformation>['data']>;
@@ -52,7 +53,6 @@ const megabytes = (formatted: string): number => Number(formatted.replaceAll(','
 
 const UsageBox = ({ title, metric }: { title: string; metric: NodeUtilization['memory'] | undefined }) => {
     const percent = metric ? Math.min(metric.percent, 100) : 0;
-    const colour = usageColour(metric);
 
     return (
         <TitledGreyBox title={title}>
@@ -63,12 +63,7 @@ const UsageBox = ({ title, metric }: { title: string; metric: NodeUtilization['m
                     <Spinner size='small' />
                 )}
             </p>
-            <div className='mt-2 h-2 w-full rounded-sm bg-sunken overflow-hidden'>
-                <div
-                    className={cn('h-2 rounded-sm transition-[width,background-color] duration-150', colour)}
-                    style={{ width: `${percent}%` }}
-                />
-            </div>
+            <ProgressBar value={percent} tone={usageTone(metric)} label={`${title} usage`} className='mt-2' />
         </TitledGreyBox>
     );
 };

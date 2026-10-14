@@ -9,7 +9,7 @@ use Pterodactyl\Models\Server;
 interface CompressesFiles
 {
     /**
-     * @param  array<array-key, ApiValue9>  $files
+     * @param  array<mixed>  $files
      * @return DaemonFileObject
      */
     public function compress(Server $server, ?string $root, array $files): array;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Enum\Permissions;
@@ -13,7 +12,6 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
 use UnexpectedValueException;
 
@@ -23,8 +21,6 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
 
     /**
      * Authorize the request and ensure that a user is not trying to modify themselves.
-     *
-     * @throws BindingResolutionException
      */
     public function authorize(): bool
     {
@@ -62,7 +58,8 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
 
     /**
      * The permissions to store for the subuser: the submitted keys the panel or an enabled
-     * extension knows about, always including websocket access.
+     * extension knows about, always including websocket access. The API drops any other key
+     * it is sent, where the action would refuse it.
      *
      * @return list<string>
      */
@@ -80,8 +77,6 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
      * by the user making the request.
      *
      * @param  list<string>  $permissions  unvalidated input, this runs before validation
-     *
-     * @throws BindingResolutionException
      */
     protected function validatePermissionsCanBeAssigned(array $permissions): void
     {
@@ -113,14 +108,10 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
      * The permissions the requester holds on this server as a subuser.
      *
      * @return list<string>
-     *
-     * @throws BindingResolutionException
      */
     protected function requesterPermissions(): array
     {
-        $service = $this->container->make(GetUserPermissionsService::class);
-
-        return array_values($service->handle($this->parameter('server', Server::class), $this->user()));
+        return array_values($this->user()->permissionsOn($this->parameter('server', Server::class)));
     }
 
     /** @return list<string> */

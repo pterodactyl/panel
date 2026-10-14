@@ -1,0 +1,1000 @@
+[
+    {
+        "request": "GET /api/admin/eggs",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 1,
+                        "uuid": "e9900001-0000-4000-8000-000000000001",
+                        "author": "support@example.test",
+                        "name": "Paper",
+                        "description": "High performance Minecraft server.",
+                        "features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                            "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                        },
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": {
+                                "server.properties": {
+                                    "parser": "properties",
+                                    "find": {
+                                        "server-ip": "0.0.0.0",
+                                        "server-port": "{{server.build.default.port}}"
+                                    }
+                                }
+                            },
+                            "startup": {
+                                "done": ")! For help, type "
+                            },
+                            "stop": "stop",
+                            "logs": {},
+                            "file_denylist": [],
+                            "extends": null
+                        },
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": true,
+                            "install": "#!/bin/ash\necho \"installing\"",
+                            "entry": "ash",
+                            "container": "ghcr.io/pterodactyl/installers:alpine",
+                            "extends": null
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 2,
+                        "uuid": "e9900002-0000-4000-8000-000000000002",
+                        "author": "support@example.test",
+                        "name": "Paper Child",
+                        "description": null,
+                        "features": null,
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
+                        },
+                        "force_outgoing_ip": true,
+                        "config": {
+                            "files": null,
+                            "startup": null,
+                            "stop": null,
+                            "logs": null,
+                            "file_denylist": [
+                                "*.secret",
+                                "config/private.yml"
+                            ],
+                            "extends": 1
+                        },
+                        "startup": "java -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": false,
+                            "install": null,
+                            "entry": "ash",
+                            "container": "alpine:3.4",
+                            "extends": 1
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 3,
+                        "uuid": "e9900003-0000-4000-8000-000000000003",
+                        "author": "empty@example.test",
+                        "name": "Empty Egg",
+                        "description": "",
+                        "features": [],
+                        "docker_image": "",
+                        "docker_images": [],
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": [],
+                            "startup": {},
+                            "stop": "^C",
+                            "logs": [],
+                            "file_denylist": null,
+                            "extends": null
+                        },
+                        "startup": "./start.sh",
+                        "script": {
+                            "privileged": true,
+                            "install": "",
+                            "entry": "sh",
+                            "container": "alpine:3.4",
+                            "extends": null
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?include=variables,tags,servers",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 1,
+                        "uuid": "e9900001-0000-4000-8000-000000000001",
+                        "author": "support@example.test",
+                        "name": "Paper",
+                        "description": "High performance Minecraft server.",
+                        "features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                            "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                        },
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": {
+                                "server.properties": {
+                                    "parser": "properties",
+                                    "find": {
+                                        "server-ip": "0.0.0.0",
+                                        "server-port": "{{server.build.default.port}}"
+                                    }
+                                }
+                            },
+                            "startup": {
+                                "done": ")! For help, type "
+                            },
+                            "stop": "stop",
+                            "logs": {},
+                            "file_denylist": [],
+                            "extends": null
+                        },
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": true,
+                            "install": "#!/bin/ash\necho \"installing\"",
+                            "entry": "ash",
+                            "container": "ghcr.io/pterodactyl/installers:alpine",
+                            "extends": null
+                        },
+                        "relationships": {
+                            "variables": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "egg_variable",
+                                        "attributes": {
+                                            "id": 1,
+                                            "egg_id": 1,
+                                            "name": "Server Jar File",
+                                            "description": "The name of the server jarfile to run.",
+                                            "env_variable": "SERVER_JARFILE",
+                                            "default_value": "server.jar",
+                                            "user_viewable": true,
+                                            "user_editable": true,
+                                            "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
+                                            "sort_order": 1,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "egg_variable",
+                                        "attributes": {
+                                            "id": 2,
+                                            "egg_id": 1,
+                                            "name": "Build Number",
+                                            "description": "The build to download, or \"latest\".",
+                                            "env_variable": "BUILD_NUMBER",
+                                            "default_value": "latest",
+                                            "user_viewable": true,
+                                            "user_editable": false,
+                                            "rules": "required|string|max:20",
+                                            "sort_order": 2,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "egg_variable",
+                                        "attributes": {
+                                            "id": 3,
+                                            "egg_id": 1,
+                                            "name": "Hidden Token",
+                                            "description": "Never shown to clients.",
+                                            "env_variable": "HIDDEN_TOKEN",
+                                            "default_value": "secret",
+                                            "user_viewable": false,
+                                            "user_editable": false,
+                                            "rules": "nullable|string",
+                                            "sort_order": null,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            },
+                            "tags": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 1,
+                                            "name": "Minecraft",
+                                            "slug": "minecraft",
+                                            "color": "#5B8731",
+                                            "is_predefined": true,
+                                            "legacy_nest_id": 1,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 2,
+                                            "name": "Premium",
+                                            "slug": "premium",
+                                            "color": "#ffaa00",
+                                            "is_predefined": false,
+                                            "legacy_nest_id": null,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 1,
+                                            "external_id": "ext-survival",
+                                            "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                                            "identifier": "5e7f0001",
+                                            "name": "Survival",
+                                            "description": "Main survival world",
+                                            "status": null,
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 2048,
+                                                "swap": 512,
+                                                "disk": 10240,
+                                                "io": 500,
+                                                "cpu": 200,
+                                                "threads": "0-3",
+                                                "oom_disabled": true
+                                            },
+                                            "feature_limits": {
+                                                "databases": 5,
+                                                "allocations": 5,
+                                                "backups": 5
+                                            },
+                                            "user": 2,
+                                            "node": 1,
+                                            "allocation": 1,
+                                            "egg": 1,
+                                            "container": {
+                                                "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "skip_scripts": false,
+                                                "installed": 1,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "paper.jar",
+                                                    "BUILD_NUMBER": "latest",
+                                                    "HIDDEN_TOKEN": "hidden-value",
+                                                    "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "us-east",
+                                                    "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                                                    "P_SERVER_ALLOCATION_LIMIT": 5
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 3,
+                                            "external_id": "ext-lab",
+                                            "uuid": "5e7f0003-0000-4000-8000-000000000003",
+                                            "identifier": "5e7f0003",
+                                            "name": "Admin Lab",
+                                            "description": "Testing ground",
+                                            "status": null,
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 512,
+                                                "swap": -1,
+                                                "disk": 1024,
+                                                "io": 10,
+                                                "cpu": 50,
+                                                "threads": null,
+                                                "oom_disabled": true
+                                            },
+                                            "feature_limits": {
+                                                "databases": 1,
+                                                "allocations": 1,
+                                                "backups": 1
+                                            },
+                                            "user": 1,
+                                            "node": 2,
+                                            "allocation": 8,
+                                            "egg": 1,
+                                            "container": {
+                                                "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_21",
+                                                "skip_scripts": false,
+                                                "installed": 1,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "server.jar",
+                                                    "BUILD_NUMBER": "latest",
+                                                    "HIDDEN_TOKEN": "secret",
+                                                    "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "eu-west",
+                                                    "P_SERVER_UUID": "5e7f0003-0000-4000-8000-000000000003",
+                                                    "P_SERVER_ALLOCATION_LIMIT": 1
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 2,
+                        "uuid": "e9900002-0000-4000-8000-000000000002",
+                        "author": "support@example.test",
+                        "name": "Paper Child",
+                        "description": null,
+                        "features": null,
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
+                        },
+                        "force_outgoing_ip": true,
+                        "config": {
+                            "files": null,
+                            "startup": null,
+                            "stop": null,
+                            "logs": null,
+                            "file_denylist": [
+                                "*.secret",
+                                "config/private.yml"
+                            ],
+                            "extends": 1
+                        },
+                        "startup": "java -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": false,
+                            "install": null,
+                            "entry": "ash",
+                            "container": "alpine:3.4",
+                            "extends": 1
+                        },
+                        "relationships": {
+                            "variables": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "egg_variable",
+                                        "attributes": {
+                                            "id": 4,
+                                            "egg_id": 2,
+                                            "name": "Server Jar File",
+                                            "description": "The jar the child egg runs.",
+                                            "env_variable": "SERVER_JARFILE",
+                                            "default_value": "child.jar",
+                                            "user_viewable": true,
+                                            "user_editable": true,
+                                            "rules": "required|string",
+                                            "sort_order": 1,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            },
+                            "tags": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 1,
+                                            "name": "Minecraft",
+                                            "slug": "minecraft",
+                                            "color": "#5B8731",
+                                            "is_predefined": true,
+                                            "legacy_nest_id": 1,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "server",
+                                        "attributes": {
+                                            "id": 2,
+                                            "external_id": null,
+                                            "uuid": "5e7f0002-0000-4000-8000-000000000002",
+                                            "identifier": "5e7f0002",
+                                            "name": "Creative",
+                                            "description": "",
+                                            "status": "installing",
+                                            "suspended": false,
+                                            "limits": {
+                                                "memory": 1024,
+                                                "swap": 0,
+                                                "disk": 5120,
+                                                "io": 500,
+                                                "cpu": 0,
+                                                "threads": null,
+                                                "oom_disabled": false
+                                            },
+                                            "feature_limits": {
+                                                "databases": 0,
+                                                "allocations": null,
+                                                "backups": 0
+                                            },
+                                            "user": 2,
+                                            "node": 1,
+                                            "allocation": 3,
+                                            "egg": 2,
+                                            "container": {
+                                                "startup_command": "java -jar {{SERVER_JARFILE}}",
+                                                "image": "ghcr.io/pterodactyl/yolks:java_17",
+                                                "skip_scripts": true,
+                                                "installed": 0,
+                                                "environment": {
+                                                    "SERVER_JARFILE": "child.jar",
+                                                    "STARTUP": "java -jar {{SERVER_JARFILE}}",
+                                                    "P_SERVER_LOCATION": "us-east",
+                                                    "P_SERVER_UUID": "5e7f0002-0000-4000-8000-000000000002",
+                                                    "P_SERVER_ALLOCATION_LIMIT": null
+                                                }
+                                            },
+                                            "relationships": [],
+                                            "updated_at": "2026-02-03T04:05:06+00:00",
+                                            "created_at": "2026-01-02T03:04:05+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 3,
+                        "uuid": "e9900003-0000-4000-8000-000000000003",
+                        "author": "empty@example.test",
+                        "name": "Empty Egg",
+                        "description": "",
+                        "features": [],
+                        "docker_image": "",
+                        "docker_images": [],
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": [],
+                            "startup": {},
+                            "stop": "^C",
+                            "logs": [],
+                            "file_denylist": null,
+                            "extends": null
+                        },
+                        "startup": "./start.sh",
+                        "script": {
+                            "privileged": true,
+                            "install": "",
+                            "entry": "sh",
+                            "container": "alpine:3.4",
+                            "extends": null
+                        },
+                        "relationships": {
+                            "variables": {
+                                "object": "list",
+                                "data": []
+                            },
+                            "tags": {
+                                "object": "list",
+                                "data": []
+                            },
+                            "servers": {
+                                "object": "list",
+                                "data": []
+                            }
+                        },
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?filter[name]=no-such-egg",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?per_page=1",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 1,
+                        "uuid": "e9900001-0000-4000-8000-000000000001",
+                        "author": "support@example.test",
+                        "name": "Paper",
+                        "description": "High performance Minecraft server.",
+                        "features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                            "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                        },
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": {
+                                "server.properties": {
+                                    "parser": "properties",
+                                    "find": {
+                                        "server-ip": "0.0.0.0",
+                                        "server-port": "{{server.build.default.port}}"
+                                    }
+                                }
+                            },
+                            "startup": {
+                                "done": ")! For help, type "
+                            },
+                            "stop": "stop",
+                            "logs": {},
+                            "file_denylist": [],
+                            "extends": null
+                        },
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": true,
+                            "install": "#!/bin/ash\necho \"installing\"",
+                            "entry": "ash",
+                            "container": "ghcr.io/pterodactyl/installers:alpine",
+                            "extends": null
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 1,
+                    "total_pages": 3,
+                    "links": {
+                        "next": "https://panel.example.test/api/admin/eggs?page=2"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?per_page=1&page=2",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 2,
+                        "uuid": "e9900002-0000-4000-8000-000000000002",
+                        "author": "support@example.test",
+                        "name": "Paper Child",
+                        "description": null,
+                        "features": null,
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
+                        },
+                        "force_outgoing_ip": true,
+                        "config": {
+                            "files": null,
+                            "startup": null,
+                            "stop": null,
+                            "logs": null,
+                            "file_denylist": [
+                                "*.secret",
+                                "config/private.yml"
+                            ],
+                            "extends": 1
+                        },
+                        "startup": "java -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": false,
+                            "install": null,
+                            "entry": "ash",
+                            "container": "alpine:3.4",
+                            "extends": 1
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 2,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/admin/eggs?page=1",
+                        "next": "https://panel.example.test/api/admin/eggs?page=3"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?per_page=1&page=99",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 0,
+                    "per_page": 1,
+                    "current_page": 99,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/admin/eggs?page=98"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?filter[tag]=premium",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 1,
+                        "uuid": "e9900001-0000-4000-8000-000000000001",
+                        "author": "support@example.test",
+                        "name": "Paper",
+                        "description": "High performance Minecraft server.",
+                        "features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                            "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                        },
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": {
+                                "server.properties": {
+                                    "parser": "properties",
+                                    "find": {
+                                        "server-ip": "0.0.0.0",
+                                        "server-port": "{{server.build.default.port}}"
+                                    }
+                                }
+                            },
+                            "startup": {
+                                "done": ")! For help, type "
+                            },
+                            "stop": "stop",
+                            "logs": {},
+                            "file_denylist": [],
+                            "extends": null
+                        },
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": true,
+                            "install": "#!/bin/ash\necho \"installing\"",
+                            "entry": "ash",
+                            "container": "ghcr.io/pterodactyl/installers:alpine",
+                            "extends": null
+                        },
+                        "relationships": [],
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 1,
+                    "count": 1,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?filter[tag]=minecraft,premium&include=tags",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 1,
+                        "uuid": "e9900001-0000-4000-8000-000000000001",
+                        "author": "support@example.test",
+                        "name": "Paper",
+                        "description": "High performance Minecraft server.",
+                        "features": [
+                            "eula",
+                            "java_version"
+                        ],
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                            "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                        },
+                        "force_outgoing_ip": false,
+                        "config": {
+                            "files": {
+                                "server.properties": {
+                                    "parser": "properties",
+                                    "find": {
+                                        "server-ip": "0.0.0.0",
+                                        "server-port": "{{server.build.default.port}}"
+                                    }
+                                }
+                            },
+                            "startup": {
+                                "done": ")! For help, type "
+                            },
+                            "stop": "stop",
+                            "logs": {},
+                            "file_denylist": [],
+                            "extends": null
+                        },
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": true,
+                            "install": "#!/bin/ash\necho \"installing\"",
+                            "entry": "ash",
+                            "container": "ghcr.io/pterodactyl/installers:alpine",
+                            "extends": null
+                        },
+                        "relationships": {
+                            "tags": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 1,
+                                            "name": "Minecraft",
+                                            "slug": "minecraft",
+                                            "color": "#5B8731",
+                                            "is_predefined": true,
+                                            "legacy_nest_id": 1,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    },
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 2,
+                                            "name": "Premium",
+                                            "slug": "premium",
+                                            "color": "#ffaa00",
+                                            "is_predefined": false,
+                                            "legacy_nest_id": null,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                },
+                {
+                    "object": "egg",
+                    "attributes": {
+                        "id": 2,
+                        "uuid": "e9900002-0000-4000-8000-000000000002",
+                        "author": "support@example.test",
+                        "name": "Paper Child",
+                        "description": null,
+                        "features": null,
+                        "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                        "docker_images": {
+                            "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
+                        },
+                        "force_outgoing_ip": true,
+                        "config": {
+                            "files": null,
+                            "startup": null,
+                            "stop": null,
+                            "logs": null,
+                            "file_denylist": [
+                                "*.secret",
+                                "config/private.yml"
+                            ],
+                            "extends": 1
+                        },
+                        "startup": "java -jar {{SERVER_JARFILE}}",
+                        "script": {
+                            "privileged": false,
+                            "install": null,
+                            "entry": "ash",
+                            "container": "alpine:3.4",
+                            "extends": 1
+                        },
+                        "relationships": {
+                            "tags": {
+                                "object": "list",
+                                "data": [
+                                    {
+                                        "object": "tag",
+                                        "attributes": {
+                                            "id": 1,
+                                            "name": "Minecraft",
+                                            "slug": "minecraft",
+                                            "color": "#5B8731",
+                                            "is_predefined": true,
+                                            "legacy_nest_id": 1,
+                                            "eggs_count": 0,
+                                            "nodes_count": 0,
+                                            "created_at": "2026-01-02T03:04:05+00:00",
+                                            "updated_at": "2026-02-03T04:05:06+00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "created_at": "2026-01-02T03:04:05+00:00",
+                        "updated_at": "2026-02-03T04:05:06+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 2,
+                    "count": 2,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/eggs?filter[tag]=none",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 50,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    }
+]

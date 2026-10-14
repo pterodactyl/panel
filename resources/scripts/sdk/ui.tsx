@@ -1,53 +1,28 @@
-import { useMemo, type DOMAttributes, type ReactElement, type ReactNode, type RefAttributes } from 'react';
-import { getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
-import PanelDataTable from '@/components/elements/table/DataTable';
-import PanelTooltip from '@/components/elements/tooltip/Tooltip';
-
+// UI primitives beyond those of components/elements. Each lives in its own module, so importing one
+// does not load the others.
 export {
     default as DropdownMenu,
     DropdownMenuItem,
     ContextDropdownMenu,
+    type ContextDropdownMenuProps,
+    type DropdownMenuItemProps,
+    type DropdownMenuProps,
 } from '@/components/elements/dropdown/DropdownMenu';
-export { default as Pagination } from '@/components/elements/Pagination';
-export { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-
-export interface TableColumn<TRow> {
-    id: string;
-    label: ReactNode;
-    cell(row: TRow): ReactNode;
-}
-export interface TableProps<TRow> {
-    rows: readonly TRow[];
-    columns: readonly TableColumn<TRow>[];
-    keyOf(row: TRow): string;
-    /** Replaces the table when there are no rows, typically an `Empty`; a string renders as its description. */
-    emptyState: ReactNode;
-    isFetching?: boolean;
-    className?: string;
-}
-export function Table<TRow>({ rows, columns, keyOf, ...props }: TableProps<TRow>): ReactElement {
-    const data = useMemo(() => [...rows], [rows]);
-    const definitions = useMemo<ColumnDef<TRow>[]>(
-        () =>
-            columns.map((column) => ({
-                id: column.id,
-                header: () => column.label,
-                cell: ({ row }) => column.cell(row.original),
-            })),
-        [columns]
-    );
-    const table = useReactTable({ data, columns: definitions, getRowId: keyOf, getCoreRowModel: getCoreRowModel() });
-
-    return <PanelDataTable table={table} {...props} />;
-}
-
-export interface TooltipProps {
-    content: ReactNode;
-    children: ReactElement<DOMAttributes<Element> & RefAttributes<Element> & { className?: string }>;
-    disabled?: boolean;
-    className?: string;
-    placement?: 'top' | 'bottom' | 'left' | 'right';
-}
-export function Tooltip(props: TooltipProps): ReactElement {
-    return <PanelTooltip {...props} />;
-}
+export { default as Pagination, type PaginationProps } from '@/components/elements/Pagination';
+export {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    type EmptyMediaVariant,
+    type EmptyProps,
+    type EmptySize,
+} from '@/components/ui/empty';
+export { default as Avatar, type AvatarProps, type AvatarVariant } from '@/components/Avatar';
+export { default as ListToolbar } from '@/components/elements/ListToolbar';
+export { default as SecretInput } from '@/components/elements/SecretInput';
+export * from './table';
+export * from './tooltip';
+export * from './qrCode';

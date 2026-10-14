@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Actions\Databases\DeployServerDatabaseTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Contracts\Databases\DeploysServerDatabases;
 use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 use Pterodactyl\Models\Database;
@@ -36,12 +36,58 @@ afterEach(function () {
 dataset('invalidDataProvider', function () {
     return [[['remote' => '%']], [['database' => null, 'remote' => '%']], [['database' => '', 'remote' => '%']], [['database' => '']], [['database' => '', 'remote' => '']]];
 });
-test('error is thrown if database name is empty', function (array $data) {
+test('validation fails if database name is empty', function (array $data) {
     $server = $this->createServerModel(['database_limit' => 5]);
-    $this->expectException(InvalidArgumentException::class);
-    $this->expectExceptionMessage('Expected a non-empty database name.');
-    getService()->deploy($server, $data);
+
+    try {
+        getService()->deploy($server, $data);
+        $this->fail('The database was deployed.');
+    } catch (ValidationException $validationException) {
+        expect($validationException->errors())->toHaveKey('database');
+    }
 })->with('invalidDataProvider');
+test('databases deployed without the http api meet the same rules', function (array $input, string $field) {
+    $server = $this->createServerModel(['database_limit' => 5]);
+    DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    try {
+        getService()->deploy($server, [...['database' => 'direct', 'remote' => '%'], ...$input]);
+        $this->fail('The database was deployed.');
+    } catch (ValidationException $validationException) {
+        expect(array_keys($validationException->errors()))->toBe([$field]);
+    }
+
+    expect($server->databases()->exists())->toBeFalse()
+        ->and($this->gateway->calls)->toBe([]);
+})->with([
+    'a name that is too short' => [['database' => 'ab'], 'database'],
+    'a name with a dot' => [['database' => 'my.database'], 'database'],
+    'a name that is too long' => [['database' => str_repeat('a', 49)], 'database'],
+    'a missing remote' => [['remote' => null], 'remote'],
+    'a remote with a space' => [['remote' => '10.0.0. %'], 'remote'],
+    'an unknown host' => [['database_host_id' => 0], 'database_host_id'],
+    'a negative connection limit' => [['max_connections' => -1], 'max_connections'],
+]);
+test('values are coerced the way laravel validates them, and a given host is used', function () {
+    $server = $this->createServerModel(['database_limit' => 5]);
+    DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+    $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    $response = getService()->deploy($server, ['database' => 'chosen', 'remote' => '%', 'database_host_id' => (string) $host->id, 'max_connections' => '15']);
+
+    $response->refresh();
+    expect($response->database_host_id)->toBe($host->id)
+        ->and($response->database)->toBe("s{$server->id}_chosen")
+        ->and($response->max_connections)->toBe(15);
+});
+test('a database deployed without a connection limit has none', function () {
+    $server = $this->createServerModel(['database_limit' => 5]);
+    DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+
+    $response = getService()->deploy($server, ['database' => 'unlimited', 'remote' => '%']);
+
+    expect($response->refresh()->max_connections)->toBeNull();
+});
 test('error is thrown if no database hosts exist on node', function () {
     $server = $this->createServerModel(['database_limit' => 5]);
     $node = Node::factory()->create(['location_id' => $server->location->id]);

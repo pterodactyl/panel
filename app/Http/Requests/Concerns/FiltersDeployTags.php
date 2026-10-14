@@ -8,14 +8,14 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Tag;
 use Pterodactyl\Rules\TagSlug;
-use Pterodactyl\Support\JsonValueGuard;
 
 /**
- * Shared "deploy.tags" handling for the server store requests: tags may be given by
- * id or slug and are resolved to slugs from after() or later (never before
- * authorization), while a purely numeric value matching no tag is silently ignored as
- * a stale nest id left over in an un-updated billing module's configuration - a real
- * slug can never be purely numeric ({@see TagSlug}), so genuine typos still fail loudly.
+ * Shared deploy tag handling for the server store requests and the deployable nodes
+ * search: tags may be given by id or slug and are resolved to slugs from after() or later
+ * (never before authorization), while a purely numeric value matching no tag is silently
+ * ignored as a stale nest id left over in an un-updated billing module's configuration - a
+ * real slug can never be purely numeric ({@see TagSlug}), so genuine typos still fail
+ * loudly.
  */
 trait FiltersDeployTags
 {
@@ -26,6 +26,11 @@ trait FiltersDeployTags
      * @var Collection<int, Tag>|null
      */
     private $resolvedDeployTags;
+
+    protected function deployTagsField(): string
+    {
+        return 'deploy.tags';
+    }
 
     /**
      * Fail validation when a deploy tag names neither an existing tag id nor an
@@ -40,16 +45,17 @@ trait FiltersDeployTags
             return;
         }
 
+        // Slugs match without regard to case in the database, so they do here too.
         $known = $this->matchedDeployTags()
-            ->flatMap(fn (Tag $tag): array => [(string) $tag->id, $tag->slug])
+            ->flatMap(fn (Tag $tag): array => [(string) $tag->id, mb_strtolower($tag->slug)])
             ->all();
 
-        foreach (array_diff($submitted, $known) as $value) {
-            if (TagSlug::isReserved($value)) {
+        foreach ($submitted as $value) {
+            if (in_array(mb_strtolower($value), $known, true) || TagSlug::isReserved($value)) {
                 continue;
             }
 
-            $validator->errors()->add('deploy.tags', "The node tag '{$value}' does not exist.");
+            $validator->errors()->add($this->deployTagsField(), "The node tag '{$value}' does not exist.");
         }
     }
 
@@ -62,11 +68,11 @@ trait FiltersDeployTags
      */
     protected function resolveDeployTagSlugs(): array
     {
-        return JsonValueGuard::stringList($this->matchedDeployTags()->pluck('slug')->all());
+        return $this->matchedDeployTags()->map(fn (Tag $tag): string => $tag->slug)->all();
     }
 
     /**
-     * The tags named by deploy.tags, by id or slug, in one query.
+     * The tags named by the deploy tags, by id or slug, in one query.
      *
      * @return Collection<int, Tag>
      */
@@ -88,7 +94,7 @@ trait FiltersDeployTags
      */
     private function deployTagInput(): array
     {
-        $input = $this->input('deploy.tags', []);
+        $input = $this->input($this->deployTagsField(), []);
         if (! is_array($input)) {
             return [];
         }
@@ -98,7 +104,6 @@ trait FiltersDeployTags
             if (is_string($tag) && mb_trim($tag) !== '') {
                 $tags[] = mb_trim($tag);
             } elseif (is_int($tag)) {
-                // SAFETY: integer tag IDs have an exact decimal string representation.
                 $tags[] = (string) $tag;
             }
         }

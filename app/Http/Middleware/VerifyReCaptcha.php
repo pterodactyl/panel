@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Pterodactyl\Events\Auth\FailedCaptcha;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class VerifyReCaptcha
@@ -31,7 +30,7 @@ class VerifyReCaptcha
 
         $result = $this->verifyCaptcha($request);
 
-        $domainValid = ! config('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
+        $domainValid = ! config()->boolean('recaptcha.verify_domain') || $this->isResponseVerified($result, $request);
 
         if ($result['success'] && $domainValid) {
             return $next($request);
@@ -58,7 +57,7 @@ class VerifyReCaptcha
 
         try {
             $client = new Client(['timeout' => 5, 'connect_timeout' => 2]);
-            $res = $client->post(JsonValueGuard::string(config('recaptcha.domain')), [
+            $res = $client->post(config()->string('recaptcha.domain'), [
                 'form_params' => [
                     'secret' => config('recaptcha.secret_key'),
                     'response' => $request->input('g-recaptcha-response'),

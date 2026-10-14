@@ -49,6 +49,7 @@ test('allocation notes can be updated', function (array $permissions): void {
     $this->actingAs($user)->postJson($this->link($allocation), ['notes' => null])->assertOk()->assertJsonPath('object', Allocation::RESOURCE_NAME)->assertJsonPath('attributes.notes', null);
     $allocation = $allocation->refresh();
     expect($allocation->notes)->toBeNull();
+    $this->assertActivityFor('server:allocation.notes', $user, $server, $allocation);
 })->with('updatePermissionsDataProvider');
 test('allocation notes cannot be updated by invalid users', function (): void {
     [$user, $server] = $this->generateTestAccount();
@@ -68,6 +69,7 @@ test('primary allocation can be modified', function (array $permissions): void {
     $this->actingAs($user)->postJson($this->link($allocation2, '/primary'))->assertOk();
     $server = $server->refresh();
     expect($server->allocation_id)->toBe($allocation2->id);
+    $this->assertActivityFor('server:allocation.primary', $user, $server, $allocation2);
 })->with('updatePermissionsDataProvider');
 test('primary allocation cannot be modified by invalid user', function (): void {
     [$user, $server] = $this->generateTestAccount();

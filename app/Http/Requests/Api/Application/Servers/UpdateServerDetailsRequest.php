@@ -4,46 +4,46 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Pterodactyl\Actions\Servers\UpdateServerDetails;
 use Pterodactyl\Http\Requests\Concerns\ValidatesExtensionFields;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
-    use ValidatesExtensionFields;
+    use ValidatesExtensionFields {
+        actionInput as private inputWithExtensions;
+    }
 
     /**
-     * Rules to apply to a server details update request.
+     * Rules to apply to a server details update request. The Application API keeps its own
+     * field names; actionInput() hands the values to the action under its names.
      *
      * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = ServerRules::rules($this->parameter('server', Server::class));
+        $rules = UpdateServerDetails::rules($this->parameter('server', Server::class));
 
         return [
             'external_id' => $rules['external_id'],
             'name' => $rules['name'],
             'user' => $rules['owner_id'],
-            'description' => array_merge(['nullable'], $rules['description']),
+            'description' => $rules['description'],
         ];
     }
 
     /**
-     * Convert the posted data into the correct format that is expected
-     * by the application.
+     * The validated input under the action's field names: user is its owner_id.
      *
-     * @return ServerDetailsModificationData
+     * @return array<string, mixed>
      */
-    public function payload(): array
+    public function actionInput(): array
     {
-        return [
-            'external_id' => $this->filled('external_id') ? $this->string('external_id')->toString() : null,
-            'name' => $this->string('name')->toString(),
-            'owner_id' => $this->integer('user'),
-            'description' => $this->filled('description') ? $this->string('description')->toString() : null,
-            'extensions' => $this->extensionValues(),
-        ];
+        $input = $this->inputWithExtensions();
+        $input['owner_id'] = $input['user'] ?? null;
+        unset($input['user']);
+
+        return $input;
     }
 
     /**

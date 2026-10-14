@@ -20,7 +20,6 @@ use Pterodactyl\Contracts\Users\CompletesLogins;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Auth\LoginRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
 
 #[Group('Authentication', 'Browser session authentication endpoints used by the panel frontend.', authenticated: false)]
 class LoginController extends AbstractLoginController
@@ -118,8 +117,8 @@ class LoginController extends AbstractLoginController
             $this->sendLockoutResponse($request);
         }
 
-        $username = JsonValueGuard::string($request->validated('user'));
-        $password = JsonValueGuard::string($request->validated('password'));
+        $username = $request->string('user')->toString();
+        $password = $request->string('password')->toString();
 
         $user = User::query()->where($this->getField($username), $username)->first();
         if ($user === null) {

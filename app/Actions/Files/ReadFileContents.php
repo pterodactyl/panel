@@ -7,7 +7,6 @@ namespace Pterodactyl\Actions\Files;
 use Pterodactyl\Contracts\Files\ReadsFileContents;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\JsonValueGuard;
 
 final readonly class ReadFileContents implements ReadsFileContents
 {
@@ -15,7 +14,7 @@ final readonly class ReadFileContents implements ReadsFileContents
     {
         return Daemon::server($server)->files()->getContent(
             $path,
-            $maxBytes ?? JsonValueGuard::integer(config('pterodactyl.files.max_edit_size'))
+            $maxBytes ?? config('pterodactyl.files.max_edit_size')
         );
     }
 }

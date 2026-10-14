@@ -8,45 +8,31 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
-use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
-use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 use Pterodactyl\Contracts\Users\TogglesTwoFactor;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\RecoveryToken;
 use Pterodactyl\Models\User;
-use Pterodactyl\Support\JsonValueGuard;
-use Throwable;
+use UnexpectedValueException;
 
 final readonly class ToggleTwoFactor implements TogglesTwoFactor
 {
     public function __construct(private Google2FA $google2FA) {}
 
-    /**
-     * Toggle 2FA on an account only if the token provided is valid.
-     *
-     * @return list<string> The plaintext recovery tokens generated for the account,
-     *                      empty when 2FA is being turned off.
-     *
-     * @throws Throwable
-     * @throws IncompatibleWithGoogleAuthenticatorException
-     * @throws InvalidCharactersException
-     * @throws SecretKeyTooShortException
-     * @throws TwoFactorAuthenticationTokenInvalid
-     */
     public function toggle(User $user, string $token, ?bool $toggleState = null): array
     {
         $encryptedSecret = $user->totp_secret;
         throw_if($encryptedSecret === null, TwoFactorAuthenticationTokenInvalid::class);
 
-        $secret = JsonValueGuard::string(Crypt::decrypt($encryptedSecret));
+        $secret = Crypt::decrypt($encryptedSecret);
+        throw_unless(is_string($secret), UnexpectedValueException::class, 'The decrypted two-factor secret must be a string.');
 
-        $isValidToken = $this->google2FA->verifyKey($secret, $token, JsonValueGuard::integer(config()->get('pterodactyl.auth.2fa.window')));
+        $isValidToken = $this->google2FA->verifyKey($secret, $token, config('pterodactyl.auth.2fa.window'));
 
         throw_unless($isValidToken, TwoFactorAuthenticationTokenInvalid::class);
 
-        return DB::transaction(function () use ($user, $toggleState): array {
+        $tokens = DB::transaction(function () use ($user, $toggleState): array {
             // Now that we're enabling 2FA on the account, generate 10 recovery tokens for the account
             // and store them hashed in the database. We'll return them to the caller so that the user
             // can see and save them.
@@ -86,5 +72,9 @@ final readonly class ToggleTwoFactor implements TogglesTwoFactor
 
             return $tokens;
         });
+
+        Activity::event($user->use_totp ? 'user:two-factor.create' : 'user:two-factor.delete')->subject($user)->log();
+
+        return $tokens;
     }
 }

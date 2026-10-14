@@ -14,16 +14,16 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Databases\CreatesDatabases;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
 use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\ServerDatabaseResource;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Transformers\Api\Application\ServerDatabaseTransformer;
 use Throwable;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
@@ -43,32 +43,24 @@ class DatabaseController extends ApplicationApiController
     /**
      * Return a listing of all databases currently available to a single
      * server.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List server databases', 'Returns all databases attached to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" and "host" when the key can read database hosts.', required: false, example: 'password,host', enum: ['password', 'host', 'password,host'])]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, description: 'Server databases returned.', collection: true, factoryStates: ['withServerAndHost'], resourceKey: 'server_database')]
-    public function index(GetServerDatabasesRequest $request, Server $server): array
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, description: 'Server databases returned.', collection: true, factoryStates: ['withServerAndHost'], resourceKey: 'server_database')]
+    public function index(GetServerDatabasesRequest $request, Server $server): ApiResourceCollection
     {
-        return Fractal::collection($server->databases)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->toResponseArray();
+        return ServerDatabaseResource::collection($server->databases);
     }
 
     /**
      * Return a single server database.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get server database', 'Returns a single database attached to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" and "host" when the key can read database hosts.', required: false, example: 'password,host', enum: ['password', 'host', 'password,host'])]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, factoryStates: ['withServerAndHost'], resourceKey: 'server_database')]
-    public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, factoryStates: ['withServerAndHost'], resourceKey: 'server_database')]
+    public function view(GetServerDatabaseRequest $request, Server $server, Database $database): ServerDatabaseResource
     {
-        return Fractal::item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->toResponseArray();
+        return ServerDatabaseResource::make($database);
     }
 
     /**
@@ -91,17 +83,14 @@ class DatabaseController extends ApplicationApiController
      * @throws Throwable
      */
     #[Endpoint('Create server database', 'Creates a database for a server on a configured database host.')]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, status: 201, description: 'Database created.', factoryStates: ['withServerAndHost'], resourceKey: 'server_database', meta: ['resource' => 'https://panel.example.test/api/application/servers/1/databases/1'])]
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, status: 201, description: 'Database created.', factoryStates: ['withServerAndHost'], resourceKey: 'server_database', meta: ['resource' => 'https://panel.example.test/api/application/servers/1/databases/1'])]
     #[ScribeResponse(self::DATABASE_LIMIT_ERROR, status: 400, description: 'The server has reached its configured database limit.')]
     public function store(StoreServerDatabaseRequest $request, CreatesDatabases $createDatabase, Server $server): JsonResponse
     {
-        $database = $createDatabase->create($server, array_merge($request->payload(), [
-            'database' => $request->databaseName(),
-        ]));
+        $database = $createDatabase->create($server, $request->actionInput());
 
-        return Fractal::item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->addMeta([
+        return ServerDatabaseResource::make($database)
+            ->withMeta([
                 'resource' => route('api.application.servers.databases.view', [
                     'server' => $server->id,
                     'database' => $database->id,

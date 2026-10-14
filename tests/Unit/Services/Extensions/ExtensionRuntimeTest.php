@@ -49,22 +49,33 @@ test('activation invalidates cached routes and signals existing workers to resta
     }
 });
 
-test('development reload follows asset activation and rollback and stays absent outside debug mode', function (): void {
+test('development reload follows asset activation and rollback, tells stylesheet-only builds apart and stays absent outside debug mode', function (): void {
     $directory = sys_get_temp_dir().'/ptero-development-'.uniqid();
     config(['extensions.assets_directory' => $directory, 'app.debug' => true]);
     $assets = resolve(\Pterodactyl\Services\Extensions\ExtensionAssetPublisher::class);
-    File::ensureDirectoryExists($directory.'/probe');
-    $first = str_repeat('a', 64);
-    $second = str_repeat('b', 64);
+    [$first, $second, $restyled] = [str_repeat('a', 64), str_repeat('b', 64), str_repeat('c', 64)];
+    foreach ([$first => ['one', 'a{}'], $second => ['two', 'a{}'], $restyled => ['one', 'b{}']] as $version => [$script, $style]) {
+        File::ensureDirectoryExists("{$directory}/probe/{$version}");
+        File::put("{$directory}/probe/{$version}/client.js", $script);
+        File::put("{$directory}/probe/{$version}/theme.css", $style);
+    }
+
+    $marker = fn (): array => File::json($directory.'/probe/_development');
     try {
         $assets->activate('probe', $first);
         expect($assets->developmentPayload('probe'))->toBeNull();
         $assets->watchDevelopment('probe');
+        $scripts = $marker()['scripts'];
+        expect($scripts)->toMatch('/^[a-f0-9]{64}$/');
+
+        // Only the stylesheet changed, so the page can swap it in.
+        $assets->activate('probe', $restyled);
+        expect($marker())->toBe(['version' => $restyled, 'scripts' => $scripts]);
         $assets->activate('probe', $second);
-        expect(File::get($directory.'/probe/_development'))->toBe($second);
+        expect($marker()['version'])->toBe($second)->and($marker()['scripts'])->not->toBe($scripts);
         $assets->activate('probe', $first);
-        expect(File::get($directory.'/probe/_development'))->toBe($first);
-        expect($assets->developmentPayload('probe'))->toBe(['url' => '/assets/extensions/probe/_development', 'version' => $first]);
+        expect($marker())->toBe(['version' => $first, 'scripts' => $scripts]);
+        expect($assets->developmentPayload('probe'))->toBe(['url' => '/assets/extensions/probe/_development', 'version' => $first, 'scripts' => $scripts]);
         config(['app.debug' => false]);
         expect($assets->developmentPayload('probe'))->toBeNull();
         $assets->stopDevelopment('probe');

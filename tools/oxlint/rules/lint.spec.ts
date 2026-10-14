@@ -19,6 +19,7 @@ afterAll(() => rmSync(directory, { recursive: true, force: true }));
 const components = 'resources/scripts/components/Probe.tsx';
 const api = 'resources/scripts/api/queries.ts';
 const generated = 'resources/scripts/api/generated/types.gen.ts';
+const classic = 'resources/scripts/themes/classic/views/Probe.tsx';
 
 type LintDiagnostic = {
     readonly code?: string;
@@ -128,6 +129,24 @@ it.each([
         'design-tokens',
     ],
     [
+        'rejects core imports in the classic theme',
+        classic,
+        "import Button from '@/components/elements/Button';",
+        'classic-theme-imports',
+    ],
+    [
+        'rejects relative imports that leave the classic theme',
+        classic,
+        "import { View } from '../../../views/View';",
+        'classic-theme-imports',
+    ],
+    [
+        'rejects other packages in the classic theme',
+        classic,
+        "import { cva } from 'class-variance-authority';",
+        'classic-theme-imports',
+    ],
+    [
         'rejects literal SVG palette paint',
         components,
         'export const View = () => <svg fill="black" />;',
@@ -161,6 +180,11 @@ it.each([
         'allows theme tokens',
         components,
         'export const View = () => <div className="bg-surface" style={{ color: "var(--color-text)" }} />;',
+    ],
+    [
+        'allows the classic theme its public imports',
+        classic,
+        "import { lazy } from 'react';\nimport { Layers } from 'lucide-react';\nimport { Button } from '@/sdk';\nimport { View } from '@/sdk/theme';\nimport { classicSkins } from '../skins';\nexport const views = { lazy, Layers, Button, View, classicSkins, load: () => import('./dashboard') };",
     ],
     [
         'ignores examples in comments',

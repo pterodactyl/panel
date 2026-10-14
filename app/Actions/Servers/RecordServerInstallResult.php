@@ -17,6 +17,19 @@ final readonly class RecordServerInstallResult implements RecordsServerInstallRe
 {
     public function __construct(private ServerInstallService $serverInstallService) {}
 
+    /**
+     * The action takes both flags as bools, which always meet these rules.
+     *
+     * @return NormalizedValidationRules
+     */
+    public static function rules(): array
+    {
+        return [
+            'successful' => ['present', 'boolean'],
+            'reinstall' => ['sometimes', 'boolean'],
+        ];
+    }
+
     public function record(Request $request, string $uuid, bool $successful, bool $reinstall): Server
     {
         $server = $this->serverInstallService->resolveForNode($request, $uuid);

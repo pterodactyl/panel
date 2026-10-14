@@ -12,8 +12,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Pterodactyl\Services\FilesystemChanges;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 #[Description('Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.')]
@@ -46,10 +46,8 @@ class UpgradeCommand extends Command
             $this->line($this->getUrl());
         }
 
-        $userOption = $this->option('user');
-        $groupOption = $this->option('group');
-        $user = $userOption === null ? 'www-data' : JsonValueGuard::string($userOption);
-        $group = $groupOption === null ? 'www-data' : JsonValueGuard::string($groupOption);
+        $user = is_string($this->option('user')) ? $this->option('user') : 'www-data';
+        $group = is_string($this->option('group')) ? $this->option('group') : 'www-data';
         if ($this->input->isInteractive()) {
             if (! $skipDownload) {
                 $skipDownload = ! $this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
@@ -61,14 +59,15 @@ class UpgradeCommand extends Command
                 $user = $userDetails !== false ? $userDetails['name'] : 'www-data';
 
                 if (! $this->confirm("Your webserver user has been detected as <fg=blue>[{$user}]:</> is this correct?", true)) {
-                    $user = JsonValueGuard::string($this->anticipate(
+                    $user = $this->anticipate(
                         'Please enter the name of the user running your webserver process. This varies from system to system, but is generally "www-data", "nginx", or "apache".',
                         [
                             'www-data',
                             'nginx',
                             'apache',
                         ]
-                    ));
+                    );
+                    throw_unless(is_string($user), InvalidArgumentException::class, 'A webserver user is required.');
                 }
             }
 
@@ -78,14 +77,15 @@ class UpgradeCommand extends Command
                 $group = $groupDetails !== false ? $groupDetails['name'] : 'www-data';
 
                 if (! $this->confirm("Your webserver group has been detected as <fg=blue>[{$group}]:</> is this correct?", true)) {
-                    $group = JsonValueGuard::string($this->anticipate(
+                    $group = $this->anticipate(
                         'Please enter the name of the group running your webserver process. Normally this is the same as your user.',
                         [
                             'www-data',
                             'nginx',
                             'apache',
                         ]
-                    ));
+                    );
+                    throw_unless(is_string($group), InvalidArgumentException::class, 'A webserver group is required.');
                 }
             }
 

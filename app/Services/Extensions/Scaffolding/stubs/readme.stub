@@ -14,13 +14,14 @@ A Pterodactyl panel extension, scaffolded by `p:extension:make`.
 - `database/migrations/`: extension-owned migrations. Prefix tables with
   `ext_{{id}}_` by convention.
 
-{{frontend}}## Install
+{{frontend}}## Develop
 
 ```sh
-php artisan p:extension:install /path/to/{{id}} --enable
+php artisan p:extension:dev /path/to/{{id}} --enable
 ```
 
-Package for distribution with `p:extension:pack`, after building `dist/` and, if
+This builds the extension, installs it from where it is and enables it; `--watch` republishes each
+change. Package for distribution with `p:extension:pack`, after building `dist/` and, if
 the extension has Composer dependencies, running
 `composer install --no-dev --optimize-autoloader`:
 

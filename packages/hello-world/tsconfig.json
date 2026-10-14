@@ -12,7 +12,8 @@
         "paths": {
             "@pterodactyl/sdk": ["../sdk/types/index.d.ts"],
             "@pterodactyl/sdk/testing": ["../sdk/types/testing.d.ts"],
-            "@pterodactyl/sdk/api": ["../sdk/types/api.d.ts"]
+            "@pterodactyl/sdk/api": ["../sdk/types/api.d.ts"],
+            "@pterodactyl/sdk/theme": ["../sdk/types/theme.d.ts"]
         }
     },
     "include": ["src/client/**/*"]

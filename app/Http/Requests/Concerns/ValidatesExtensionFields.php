@@ -8,15 +8,15 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Services\Extensions\ExtensionFields;
+use Pterodactyl\Services\Extensions\ExtensionSettingValueGuard;
 use Pterodactyl\Services\Extensions\ValidatedExtensionValues;
-use Pterodactyl\Support\JsonValueGuard;
 use UnexpectedValueException;
 
 /**
  * Accepts the `extensions` input of a request that creates or updates a model extensions
  * add Fields to: refuses values the signed-in user may not change, validates each
  * extension's values against its own rules alongside the request's, and hands the
- * validated values to the action through payload()'s `extensions` key.
+ * validated values to the action under the `extensions` key of actionInput().
  */
 trait ValidatesExtensionFields
 {
@@ -35,6 +35,16 @@ trait ValidatesExtensionFields
     public function extensionValues(): ValidatedExtensionValues
     {
         return $this->extensionValues ?? ValidatedExtensionValues::none();
+    }
+
+    /**
+     * The validated input, with the validated extension field values under `extensions`.
+     *
+     * @return array<string, mixed>
+     */
+    public function actionInput(): array
+    {
+        return [...parent::actionInput(), 'extensions' => $this->extensionValues()];
     }
 
     /**
@@ -76,7 +86,7 @@ trait ValidatesExtensionFields
      * ignored without being read.
      *
      * @param  list<string>  $running
-     * @return array<string, array<array-key, ApiValue9>>
+     * @return array<string, array<mixed>>
      */
     private function submittedExtensionValues(Validator $validator, array $running): array
     {
@@ -100,7 +110,8 @@ trait ValidatesExtensionFields
             }
 
             try {
-                $submitted[$extension] = JsonValueGuard::jsonArray($values);
+                ExtensionSettingValueGuard::assertValue($values);
+                $submitted[$extension] = $values;
             } catch (UnexpectedValueException) {
                 $validator->errors()->add('extensions.'.$extension, sprintf('The %s values are nested too deeply.', $extension));
             }

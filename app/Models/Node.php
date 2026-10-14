@@ -7,7 +7,7 @@ namespace Pterodactyl\Models;
 use Database\Factories\NodeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,42 +15,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Models\Identifiable;
+use Pterodactyl\Models\Builders\NodeBuilder;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Pterodactyl\Support\JsonValueGuard;
 use Symfony\Component\Yaml\Yaml;
 use UnexpectedValueException;
 
 /**
- * @property int $id
- * @property string $uuid
- * @property bool $public
- * @property string $name
- * @property string|null $description
- * @property int $location_id
- * @property string $fqdn
- * @property string $scheme
- * @property bool $behind_proxy
- * @property bool $maintenance_mode
- * @property int $memory
- * @property int $memory_overallocate
- * @property int $disk
- * @property int $disk_overallocate
- * @property int $upload_size
- * @property string $daemon_token_id
- * @property string $daemon_token
- * @property int $daemonListen
- * @property int $daemonSFTP
- * @property string $daemonBase
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Location $location
- * @property Collection<int, Mount> $mounts
- * @property Server[]|Collection $servers
- * @property Allocation[]|Collection $allocations
+ * @property-read Location $location
  */
 #[Attributes\Identifiable('node')]
 #[Fillable([
@@ -62,6 +36,7 @@ use UnexpectedValueException;
     'maintenance_mode',
 ])]
 #[Hidden(['daemon_token_id', 'daemon_token'])]
+#[UseEloquentBuilder(NodeBuilder::class)]
 class Node extends Model implements Identifiable
 {
     /** @use HasFactory<NodeFactory> */
@@ -71,10 +46,6 @@ class Node extends Model implements Identifiable
     use HasVersion4Uuids;
     use Notifiable;
 
-    /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
-     */
     public const string RESOURCE_NAME = 'node';
 
     public const int DAEMON_TOKEN_ID_LENGTH = 16;
@@ -87,9 +58,6 @@ class Node extends Model implements Identifiable
     /** Utilization above this percentage renders red; between the two, yellow. */
     public const int THRESHOLD_PERCENTAGE_MEDIUM = 90;
 
-    /**
-     * Default values for specific columns that are generally not changed on base installs.
-     */
     protected $attributes = [
         'public' => true,
         'behind_proxy' => false,
@@ -107,6 +75,8 @@ class Node extends Model implements Identifiable
     protected function casts(): array
     {
         return [
+            'name' => 'string',
+            'scheme' => 'string',
             'location_id' => 'integer',
             'memory' => 'integer',
             'memory_overallocate' => 'integer',
@@ -129,17 +99,12 @@ class Node extends Model implements Identifiable
         return ['uuid'];
     }
 
-    /**
-     * Get the connection address to use when making calls to this node.
-     */
     public function getConnectionAddress(): string
     {
         return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
     }
 
     /**
-     * Returns the configuration as an array.
-     *
      * @return NodeConfiguration the wings configuration blob for this node
      */
     public function getConfiguration(): array
@@ -148,6 +113,9 @@ class Node extends Model implements Identifiable
         foreach ($this->mounts as $mount) {
             $allowedMounts[] = $mount->source;
         }
+
+        $remote = config()->string('app.url');
+        throw_if($remote === '', UnexpectedValueException::class, 'The application URL must not be empty.');
 
         return [
             'debug' => false,
@@ -171,21 +139,15 @@ class Node extends Model implements Identifiable
                 ],
             ],
             'allowed_mounts' => $allowedMounts,
-            'remote' => mb_rtrim(JsonValueGuard::nonEmptyString(config('app.url')), '/'),
+            'remote' => mb_rtrim($remote, '/'),
         ];
     }
 
-    /**
-     * Returns the configuration in Yaml format.
-     */
     public function getYamlConfiguration(): string
     {
         return Yaml::dump($this->getConfiguration(), 4, 2, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
     }
 
-    /**
-     * Returns the configuration in JSON format.
-     */
     public function getJsonConfiguration(bool $pretty = false): string
     {
         return json_encode(
@@ -194,9 +156,6 @@ class Node extends Model implements Identifiable
         );
     }
 
-    /**
-     * Helper function to return the decrypted key for a node.
-     */
     public function getDecryptedKey(): string
     {
         $key = Crypt::decrypt($this->daemon_token);
@@ -219,8 +178,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the location associated with a node.
-     *
      * @return BelongsTo<Location, $this>
      */
     public function location(): BelongsTo
@@ -229,8 +186,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the servers associated with a node.
-     *
      * @return HasMany<Server, $this>
      */
     public function servers(): HasMany
@@ -239,8 +194,6 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * Gets the allocations associated with a node.
-     *
      * @return HasMany<Allocation, $this>
      */
     public function allocations(): HasMany
@@ -276,7 +229,7 @@ class Node extends Model implements Identifiable
 
     /**
      * The reservations on this node: a deploy lands here only when its own deploy
-     * tags match these exactly (see NodeTagGate).
+     * tags match these exactly (see NodeBuilder::forDeployTags()).
      *
      * @return MorphToMany<Tag, $this>
      */
@@ -287,19 +240,12 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * @return string[]
+     * Whether this node accepts the egg, as NodeBuilder::forEggTags() decides it: a node
+     * without egg tags accepts every egg, any other needs a tag in common with it.
      */
-    public function eggTagSlugs(): array
+    public function acceptsEgg(Egg $egg): bool
     {
-        return JsonValueGuard::stringList($this->eggTags->pluck('slug')->all());
-    }
-
-    /**
-     * @return string[]
-     */
-    public function deploymentTagSlugs(): array
-    {
-        return JsonValueGuard::stringList($this->deploymentTags->pluck('slug')->all());
+        return $this->eggTags->isEmpty() || $this->eggTags->intersect($egg->tags)->isNotEmpty();
     }
 
     /**
@@ -335,12 +281,10 @@ class Node extends Model implements Identifiable
     public function allocatedResources(): array
     {
         if (array_key_exists('sum_memory', $this->getAttributes()) && array_key_exists('sum_disk', $this->getAttributes())) {
-            // SAFETY: these aliases are database SUM projections and therefore integer-like.
-            $sumMemory = $this->getAttribute('sum_memory');
-            $memory = $sumMemory === null ? 0 : JsonValueGuard::integer($sumMemory);
-            // SAFETY: these aliases are database SUM projections and therefore integer-like.
-            $sumDisk = $this->getAttribute('sum_disk');
-            $disk = $sumDisk === null ? 0 : JsonValueGuard::integer($sumDisk);
+            // The SUM aliases come back from the database as numeric strings, or null for no servers.
+            $sums = $this->getAttributes();
+            $memory = is_numeric($sums['sum_memory']) ? (int) $sums['sum_memory'] : 0;
+            $disk = is_numeric($sums['sum_disk']) ? (int) $sums['sum_disk'] : 0;
         } else {
             $resources = $this->servers()->toBase()
                 ->selectRaw('COALESCE(SUM(memory), 0) AS memory, COALESCE(SUM(disk), 0) AS disk')
@@ -348,9 +292,7 @@ class Node extends Model implements Identifiable
 
             throw_if($resources === null || ! is_numeric($resources->memory) || ! is_numeric($resources->disk), UnexpectedValueException::class, 'The node resource aggregate query returned malformed values.');
 
-            // SAFETY: the aggregate values were validated as numeric immediately above.
             $memory = (int) $resources->memory;
-            // SAFETY: the aggregate values were validated as numeric immediately above.
             $disk = (int) $resources->disk;
         }
 

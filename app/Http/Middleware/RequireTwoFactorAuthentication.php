@@ -48,8 +48,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        $configuredLevel = filter_var(config('pterodactyl.auth.2fa_required'), FILTER_VALIDATE_INT);
-        $level = $configuredLevel === false ? self::LEVEL_NONE : $configuredLevel;
+        $level = config('pterodactyl.auth.2fa_required');
         // If this setting is not configured, or the user is already using 2FA then we can just
         // send them right through, nothing else needs to be checked.
         //

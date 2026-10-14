@@ -1,5 +1,5 @@
-import type { ReplacementProps } from '@pterodactyl/sdk';
+import type { ViewProps } from '@pterodactyl/sdk';
 
-export default function ServerCard({ Default }: ReplacementProps<'dashboard.serverCard'>) {
+export default function ServerCard({ Default }: ViewProps<'dashboard.serverCard'>) {
     return <Default className='hw:gap-3' />;
 }

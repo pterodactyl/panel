@@ -1,0 +1,341 @@
+[
+    {
+        "request": "GET /api/client/account/activity",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
+                        "batch": null,
+                        "event": "admin:user.create",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "email": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:06:05+00:00"
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "1b6453892473a467d07372d45eb05abc2031647a",
+                        "batch": null,
+                        "event": "user:account.email-changed",
+                        "is_api": false,
+                        "ip": "198.51.100.7",
+                        "description": null,
+                        "properties": {
+                            "old": "old@example.test",
+                            "new": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:08:05+00:00"
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "902ba3cda1883801594b6e1b452790cc53948fda",
+                        "batch": null,
+                        "event": "auth:fail",
+                        "is_api": false,
+                        "ip": "192.0.2.99",
+                        "description": null,
+                        "properties": {
+                            "username": "owner",
+                            "ip": "192.0.2.99"
+                        },
+                        "has_additional_metadata": true,
+                        "timestamp": "2026-01-02T03:11:05+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 25,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?include=actor",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
+                        "batch": null,
+                        "event": "admin:user.create",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "email": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:06:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000001",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaae",
+                                    "username": "admin",
+                                    "email": "admin@example.test",
+                                    "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "1b6453892473a467d07372d45eb05abc2031647a",
+                        "batch": null,
+                        "event": "user:account.email-changed",
+                        "is_api": false,
+                        "ip": "198.51.100.7",
+                        "description": null,
+                        "properties": {
+                            "old": "old@example.test",
+                            "new": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:08:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000002",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaai",
+                                    "username": "owner",
+                                    "email": "owner@example.test",
+                                    "image": "https://gravatar.com/avatar/f17712239715b86f1dfd9ba550b7f607",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "902ba3cda1883801594b6e1b452790cc53948fda",
+                        "batch": null,
+                        "event": "auth:fail",
+                        "is_api": false,
+                        "ip": "192.0.2.99",
+                        "description": null,
+                        "properties": {
+                            "username": "owner",
+                            "ip": "192.0.2.99"
+                        },
+                        "has_additional_metadata": true,
+                        "timestamp": "2026-01-02T03:11:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "null_resource",
+                                "attributes": null
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 3,
+                    "per_page": 25,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?filter[event]=none",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 0,
+                    "count": 0,
+                    "per_page": 25,
+                    "current_page": 1,
+                    "total_pages": 1,
+                    "links": {}
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?per_page=1",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
+                        "batch": null,
+                        "event": "admin:user.create",
+                        "is_api": false,
+                        "ip": null,
+                        "description": null,
+                        "properties": {
+                            "email": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:06:05+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 1,
+                    "total_pages": 3,
+                    "links": {
+                        "next": "https://panel.example.test/api/client/account/activity?per_page=1&page=2"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?per_page=1&page=2",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "1b6453892473a467d07372d45eb05abc2031647a",
+                        "batch": null,
+                        "event": "user:account.email-changed",
+                        "is_api": false,
+                        "ip": "198.51.100.7",
+                        "description": null,
+                        "properties": {
+                            "old": "old@example.test",
+                            "new": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:08:05+00:00"
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 2,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/client/account/activity?per_page=1&page=1",
+                        "next": "https://panel.example.test/api/client/account/activity?per_page=1&page=3"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?per_page=1&page=99",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 0,
+                    "per_page": 1,
+                    "current_page": 99,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/client/account/activity?per_page=1&page=98"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": "GET /api/client/account/activity?per_page=1&page=2&sort=-timestamp&include=actor",
+        "status": 200,
+        "body": {
+            "object": "list",
+            "data": [
+                {
+                    "object": "activity_log",
+                    "attributes": {
+                        "id": "1b6453892473a467d07372d45eb05abc2031647a",
+                        "batch": null,
+                        "event": "user:account.email-changed",
+                        "is_api": false,
+                        "ip": "198.51.100.7",
+                        "description": null,
+                        "properties": {
+                            "old": "old@example.test",
+                            "new": "owner@example.test"
+                        },
+                        "has_additional_metadata": false,
+                        "timestamp": "2026-01-02T03:08:05+00:00",
+                        "relationships": {
+                            "actor": {
+                                "object": "user",
+                                "attributes": {
+                                    "uuid": "00000000-0000-4000-8000-000000000002",
+                                    "identifier": "user_aaaaaaaaabaabaaaaaaaaaaaai",
+                                    "username": "owner",
+                                    "email": "owner@example.test",
+                                    "image": "https://gravatar.com/avatar/f17712239715b86f1dfd9ba550b7f607",
+                                    "2fa_enabled": false,
+                                    "created_at": "2026-01-02T03:04:05+00:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "pagination": {
+                    "total": 3,
+                    "count": 1,
+                    "per_page": 1,
+                    "current_page": 2,
+                    "total_pages": 3,
+                    "links": {
+                        "previous": "https://panel.example.test/api/client/account/activity?per_page=1&sort=-timestamp&include=actor&page=1",
+                        "next": "https://panel.example.test/api/client/account/activity?per_page=1&sort=-timestamp&include=actor&page=3"
+                    }
+                }
+            }
+        }
+    }
+]

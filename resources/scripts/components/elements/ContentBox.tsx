@@ -1,5 +1,5 @@
 import React from 'react';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import Card from '@/components/elements/Card';
 import { cn } from '@/lib/cn';
 import { sectionTitleClass } from '@/components/ui/typography';
 
@@ -11,13 +11,13 @@ type Props = Readonly<
     }
 >;
 
+/** A section title above a plain `Card`. */
 const ContentBox = ({ title, borderColor, showLoadingOverlay, children, ...props }: Props) => (
     <div {...props}>
         {title && <h2 className={cn(sectionTitleClass, 'mb-4 px-4')}>{title}</h2>}
-        <div className={cn('bg-card p-4 rounded-sm shadow-lg relative', !!borderColor && 'border-t-4')}>
-            <SpinnerOverlay visible={showLoadingOverlay || false} />
+        <Card loading={showLoadingOverlay} className={borderColor ? 'border-t-4' : undefined}>
             {children}
-        </div>
+        </Card>
     </div>
 );
 

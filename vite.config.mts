@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { fileURLToPath, URL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { classicSdkImports } from './scripts/classic-sdk-imports.mjs';
 
 // A single build hash exposed to the app the same way the old webpack EnvironmentPlugin did.
 const buildHash = process.env.PTERODACTYL_BUILD_HASH ?? Date.now().toString(16);
@@ -46,8 +47,41 @@ function manifestIntegrity() {
     };
 }
 
+/**
+ * The chunks the main entry imports statically. They are loaded before any lazy import runs, so the
+ * preload list of a lazy import leaves them out.
+ */
+function mainEntryChunks(entry: string) {
+    const chunks = new Set<string>();
+    const plugin: Plugin = {
+        name: 'pterodactyl-main-entry-chunks',
+        apply: 'build',
+        generateBundle(_options, bundle) {
+            const visit = (fileName: string) => {
+                const chunk = bundle[fileName];
+
+                if (chunks.has(fileName) || chunk?.type !== 'chunk') {
+                    return;
+                }
+
+                chunks.add(fileName);
+                chunk.imports.forEach(visit);
+            };
+            const main = Object.values(bundle).find((output) => output.type === 'chunk' && output.facadeModuleId === entry);
+
+            chunks.clear();
+            if (main) {
+                visit(main.fileName);
+            }
+        },
+    };
+
+    return { plugin, resolveDependencies: (_file: string, deps: string[]) => deps.filter((dep) => !chunks.has(dep)) };
+}
+
 export default defineConfig(({ mode }) => {
     const isProduction = mode === 'production';
+    const mainChunks = mainEntryChunks(fileURLToPath(new URL('./resources/scripts/index.tsx', import.meta.url)));
 
     return {
         base: '/assets/',
@@ -73,10 +107,13 @@ export default defineConfig(({ mode }) => {
             // No custom transforms are needed (twin.macro / styled-components are long gone).
             react(),
             manifestIntegrity(),
+            mainChunks.plugin,
+            classicSdkImports(fileURLToPath(new URL('./resources/scripts/', import.meta.url))),
         ],
         build: {
             outDir: 'public/assets',
             manifest: 'manifest.json',
+            modulePreload: { resolveDependencies: mainChunks.resolveDependencies },
             // Don't wipe the directory — it holds tracked legacy webpack output + fonts/images.
             // Hashed filenames prevent collisions; stale files can be pruned separately.
             emptyOutDir: false,
@@ -86,6 +123,8 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 input: {
                     main: fileURLToPath(new URL('./resources/scripts/index.tsx', import.meta.url)),
+                    // The panel stylesheet is linked by Blade, before a theme's.
+                    stylesheet: fileURLToPath(new URL('./resources/scripts/assets/tailwind.css', import.meta.url)),
                     // Shared extension-runtime entries: each is emitted as a real module
                     // chunk whose exports ARE the package's exports, at a URL recorded in
                     // manifest.json. The import map maps bare specifiers ("react", ...)
@@ -109,6 +148,7 @@ export default defineConfig(({ mode }) => {
                     ),
                     sdk: fileURLToPath(new URL('./resources/scripts/sdk/index.ts', import.meta.url)),
                     'sdk-api': fileURLToPath(new URL('./resources/scripts/sdk/api.ts', import.meta.url)),
+                    'sdk-theme': fileURLToPath(new URL('./resources/scripts/sdk/theme.ts', import.meta.url)),
                 },
                 // Keep every entry's export signature intact — the runtime entries are
                 // consumed as libraries by extension bundles via the import map.

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\Files\CompressFilesTest;
 
 use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Http\Resources\Api\Client\ActivityLogResource;
 use Pterodactyl\Models\ActivityLog;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 use Pterodactyl\Tests\Support\Fakes\FakeDaemonFile;
-use Pterodactyl\Transformers\Api\Client\ActivityLogTransformer;
 
 uses(ClientApiIntegrationTestCase::class);
 test('endpoint requires authorization', function () {
@@ -31,7 +31,7 @@ test('compress description only interpolates properties the event records', func
     $this->actingAs($user)->postJson($this->link($server, '/files/compress'), ['root' => '/logs', 'files' => ['latest.log']])->assertOk();
 
     $log = ActivityLog::query()->where('event', 'server:file.compress')->latest('id')->firstOrFail();
-    $properties = (array) app(ActivityLogTransformer::class)->transform($log)['properties'];
+    $properties = (array) ActivityLogResource::make($log)->toArray(request())['properties'];
 
     // A single file resolves the "_one" plural, whose placeholders must all be present
     // in the transformed properties or the front-end renders a raw "{{name}}" token.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Traits\Commands;
 
+use Closure;
 use Pterodactyl\Exceptions\PterodactylException;
 
 trait EnvironmentWriterTrait
@@ -43,7 +44,6 @@ trait EnvironmentWriterTrait
 
         collect($values)->each(function ($value, $key) use (&$saveContents): void {
             $key = mb_strtoupper($key);
-            // SAFETY: EnvironmentValue is restricted to JSON scalars, which have deterministic string representations for .env persistence.
             $saveValue = sprintf('%s=%s', $key, $this->escapeEnvironmentValue($value === null ? null : (string) $value));
 
             if (preg_match_all('/^'.$key.'=(.*)$/m', $saveContents) < 1) {
@@ -56,5 +56,26 @@ trait EnvironmentWriterTrait
         });
 
         file_put_contents($path, $saveContents);
+    }
+
+    /**
+     * The answer to a prompt, or the option passed in its place. Symfony returns
+     * either one untyped: a string, or null for a blank answer without a default.
+     */
+    protected function answer(Closure $prompt): ?string
+    {
+        $answer = $prompt();
+
+        return is_scalar($answer) ? (string) $answer : null;
+    }
+
+    /**
+     * The value currently configured for a key, offered as a prompt's default.
+     */
+    protected function configured(string $key, int|string|null $default = null): ?string
+    {
+        $value = config($key, $default);
+
+        return is_scalar($value) ? (string) $value : null;
     }
 }

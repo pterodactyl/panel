@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useIsMutating, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { useUpdateCurrentServer } from '@/api/server/queries';
@@ -8,6 +8,7 @@ import {
     clientGetStartupConfigurationOptions,
     clientGetStartupConfigurationQueryKey,
     clientSetServerDockerImageMutation,
+    clientSetServerDockerImageMutationKey,
     clientUpdateStartupVariableMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import type {
@@ -15,6 +16,7 @@ import type {
     ClientGetStartupConfigurationResponse,
     Options,
 } from '@/api/generated';
+import { isObject } from '@/lib/objects';
 import { notifyHttpError } from '@/plugins/notifications';
 
 export type ServerStartupVariable = ClientGetStartupConfigurationResponse['data'][number];
@@ -51,6 +53,17 @@ export const useSetSelectedDockerImage = (uuid: string) => {
         onError: (error) => notifyHttpError(error, 'Unable to update Docker image'),
     });
 };
+
+/** A Docker image change of the server is in flight, whichever component started it. */
+export const useDockerImagePending = (uuid: string): boolean =>
+    useIsMutating({
+        mutationKey: clientSetServerDockerImageMutationKey(),
+        predicate: ({ state: { variables } }) =>
+            isObject(variables) &&
+            'path' in variables &&
+            isObject(variables.path) &&
+            Reflect.get(variables.path, 'server_uuid') === uuid,
+    }) > 0;
 
 export const useUpdateStartupVariable = (uuid: string) => {
     const queryClient = useQueryClient();

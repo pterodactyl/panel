@@ -14,17 +14,16 @@ use Pterodactyl\Contracts\Subusers\DeletesSubusers;
 use Pterodactyl\Contracts\Subusers\UpdatesSubusers;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Client\SubuserResource;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Transformers\Api\Client\SubuserTransformer;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -43,110 +42,53 @@ class SubuserController extends ClientApiController
 
     /**
      * Return the users associated with this server instance.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List server subusers', 'Returns subusers assigned to the server.')]
-    #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subusers returned.', collection: true, resourceKey: 'server_subuser')]
-    public function index(GetSubuserRequest $request, Server $server): array
+    #[ResponseFromResource(SubuserResource::class, Subuser::class, description: 'Server subusers returned.', collection: true, resourceKey: 'server_subuser')]
+    public function index(GetSubuserRequest $request, Server $server): ApiResourceCollection
     {
-        return Fractal::collection($server->subusers)
-            ->transformWith($this->getTransformer(SubuserTransformer::class))
-            ->toResponseArray();
+        return SubuserResource::collection($server->subusers);
     }
 
     /**
      * Returns a single subuser associated with this server instance.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get server subuser', 'Returns one subuser assignment for the server.')]
-    #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser returned.', resourceKey: 'server_subuser')]
-    public function view(GetSubuserRequest $request): array
+    #[ResponseFromResource(SubuserResource::class, Subuser::class, description: 'Server subuser returned.', resourceKey: 'server_subuser')]
+    public function view(GetSubuserRequest $request): SubuserResource
     {
         $subuser = $request->attributes->get('subuser');
 
-        return Fractal::item($subuser)
-            ->transformWith($this->getTransformer(SubuserTransformer::class))
-            ->toResponseArray();
+        return SubuserResource::make($subuser);
     }
 
     /**
      * Create a new subuser for the given server.
-     *
-     *
-     * @return ApiPayload
      *
      * @throws ServerSubuserExistsException
      * @throws UserIsServerOwnerException
      * @throws Throwable
      */
     #[Endpoint('Create server subuser', 'Assigns an existing or new user as a subuser on the server.')]
-    #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser created.', resourceKey: 'server_subuser')]
+    #[ResponseFromResource(SubuserResource::class, Subuser::class, description: 'Server subuser created.', resourceKey: 'server_subuser')]
     #[ScribeResponse(self::SUBUSER_EXISTS_ERROR, status: 400, description: 'The user is already assigned to the server or is the server owner.')]
-    public function store(StoreSubuserRequest $request, CreatesSubusers $subusers, Server $server): array
+    public function store(StoreSubuserRequest $request, CreatesSubusers $subusers, Server $server): SubuserResource
     {
-        $email = $request->string('email')->toString();
-        $permissions = $request->permissions();
-        $response = $subusers->create(
-            $server,
-            $email,
-            $permissions,
-        );
+        $response = $subusers->create($server, $request->string('email')->toString(), $request->permissions());
 
-        if ($response->user->wasRecentlyCreated) {
-            Activity::event('user:user.create')
-                ->subject($response->user)
-                ->property(['email' => $response->user->email, 'username' => $response->user->username, 'admin' => $response->user->root_admin])
-                ->log();
-        }
-
-        Activity::event('server:subuser.create')
-            ->subject($response->user)
-            ->property(['email' => $email, 'permissions' => $permissions])
-            ->log();
-
-        return Fractal::item($response)
-            ->transformWith($this->getTransformer(SubuserTransformer::class))
-            ->toResponseArray();
+        return SubuserResource::make($response);
     }
 
     /**
      * Update a given subuser in the system for the server.
-     *
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update server subuser', 'Updates permissions for a server subuser and revokes their SFTP access tokens.')]
-    #[ResponseFromTransformer(SubuserTransformer::class, Subuser::class, description: 'Server subuser updated.', resourceKey: 'server_subuser')]
-    public function update(UpdateSubuserRequest $request, UpdatesSubusers $subusers, Server $server): array
+    #[ResponseFromResource(SubuserResource::class, Subuser::class, description: 'Server subuser updated.', resourceKey: 'server_subuser')]
+    public function update(UpdateSubuserRequest $request, UpdatesSubusers $subusers, Server $server): SubuserResource
     {
-        $subuser = $request->subuser();
-        $permissions = $request->permissions();
+        $subuser = $subusers->update($server, $request->subuser(), $request->permissions());
 
-        $current = $subuser->permissions;
-        $requested = $permissions;
-        sort($current);
-        sort($requested);
-
-        // Only touch the database and Wings when the permissions actually change.
-        if ($requested !== $current) {
-            $subuser = $subusers->update($server, $subuser, $permissions);
-
-            Activity::event('server:subuser.update')
-                ->subject($subuser->user)
-                ->property([
-                    'email' => $subuser->user->email,
-                    'old' => $current,
-                    'new' => $requested,
-                    'revoked' => true,
-                ])
-                ->log();
-        }
-
-        return Fractal::item($subuser)
-            ->transformWith($this->getTransformer(SubuserTransformer::class))
-            ->toResponseArray();
+        return SubuserResource::make($subuser);
     }
 
     /**
@@ -156,15 +98,7 @@ class SubuserController extends ClientApiController
     #[ScribeResponse(status: 204, description: 'Server subuser removed.')]
     public function delete(DeleteSubuserRequest $request, DeletesSubusers $subusers, Server $server): JsonResponse
     {
-        $subuser = $request->subuser();
-
-        $subusers->delete($server, $subuser);
-
-        Activity::event('server:subuser.delete')
-            ->subject($subuser->user)
-            ->property('email', $subuser->user->email)
-            ->property('revoked', true)
-            ->log();
+        $subusers->delete($server, $request->subuser());
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

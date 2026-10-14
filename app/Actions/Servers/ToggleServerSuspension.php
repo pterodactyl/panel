@@ -12,7 +12,6 @@ use Pterodactyl\Events\Server\OperationCompleted;
 use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Throwable;
 
 final readonly class ToggleServerSuspension implements TogglesServerSuspension
 {
@@ -20,7 +19,6 @@ final readonly class ToggleServerSuspension implements TogglesServerSuspension
 
     public const string ACTION_UNSUSPEND = TogglesServerSuspension::ACTION_UNSUSPEND;
 
-    /** @throws Throwable */
     public function toggle(Server $server, string $action = self::ACTION_SUSPEND): void
     {
         throw_unless(in_array($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND], true), InvalidArgumentException::class, "Unsupported suspension action [$action].");

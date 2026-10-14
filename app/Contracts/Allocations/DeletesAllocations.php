@@ -10,7 +10,7 @@ use Pterodactyl\Models\Allocation;
 interface DeletesAllocations
 {
     /**
-     * Delete an allocation, provided no server is attached to it.
+     * An allocation a server is using is not deleted.
      *
      * @throws ServerUsingAllocationException
      */

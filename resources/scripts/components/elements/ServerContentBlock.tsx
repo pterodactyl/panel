@@ -8,10 +8,10 @@ interface Props extends PageContentBlockProps {
 }
 
 const ServerContentBlock = ({ title, children, ...props }: Props) => {
-    const name = useCurrentServerName()!;
+    const name = useCurrentServerName();
 
     return (
-        <PageContentBlock title={title ? `${name} | ${title}` : undefined} {...props}>
+        <PageContentBlock title={title && name ? `${name} | ${title}` : title} {...props}>
             {children}
         </PageContentBlock>
     );

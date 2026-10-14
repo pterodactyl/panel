@@ -1,4 +1,10 @@
-import { lazy, useSyncExternalStore, type ComponentType, type LazyExoticComponent } from 'react';
+import {
+    lazy,
+    useSyncExternalStore,
+    type ComponentType,
+    type JSXElementConstructor,
+    type LazyExoticComponent,
+} from 'react';
 import type { Server } from '@/api/server/types';
 import type { ExtensionConfig } from '@/sdk';
 import type { AppForm } from '@/components/form';
@@ -11,14 +17,9 @@ import type {
 import type { ExtensionResourceContext } from './resourceContext';
 import type { ExtensionTableName, ExtensionTableColumnRegistration } from './tableTypes';
 import { EXTENSION_FORM_NAMES, type ExtensionFormName, type FormExtensionRegistration } from './formTypes';
-import {
-    isComponentName,
-    isReplacementComponent,
-    type ComponentName,
-    type ComponentReplacement,
-} from './componentTypes';
+import { isViewComponent } from '@/views/registry';
 
-// Only type imports from application modules.
+// Only type imports from application modules, apart from the view registry.
 
 /** Every anchor a core <Slot/> renders; registering an unknown name fails at load time. */
 export const SLOT_NAMES = [
@@ -119,6 +120,8 @@ export const SLOT_NAMES = [
     'panel.nodes.detail.configuration.after',
     'panel.nodes.detail.allocations.before',
     'panel.nodes.detail.allocations.after',
+    'panel.nodes.detail.tags.before',
+    'panel.nodes.detail.tags.after',
     'panel.nodes.detail.servers.before',
     'panel.nodes.detail.servers.after',
 
@@ -185,6 +188,8 @@ export const SLOT_NAMES = [
     'panel.settings.after',
     'panel.extensions.before',
     'panel.extensions.after',
+    'panel.themes.before',
+    'panel.themes.after',
     'panel.apiKeys.before',
     'panel.apiKeys.after',
 ] as const;
@@ -247,7 +252,15 @@ type ResourceActionSlotData<TName extends ResourceActionSlotName> = Extract<
     }
 >;
 
-export type SlotComponentProps<TData = unknown> = [TData] extends [undefined] ? { data?: undefined } : { data: TData };
+/** How a theme places a slot. */
+export interface SlotPlacement {
+    /** The slot sits somewhere narrow, such as an icon rail, so its components render a smaller version. */
+    readonly compact?: boolean;
+}
+export type SlotComponentProps<TData = unknown> = ([TData] extends [undefined]
+    ? { data?: undefined }
+    : { data: TData }) &
+    SlotPlacement;
 type ServerSlotName =
     | `dashboard.serverRow.${string}`
     | `server.navigation.${'before' | 'after'}`
@@ -280,9 +293,11 @@ export type SlotData<TName extends SlotName> = TName extends 'panel.users.detail
 export type RouteSlotName = { [TName in SlotName]: SlotData<TName> extends RouteSlotData ? TName : never }[SlotName];
 type DataSlotName = Exclude<SlotName, RouteSlotName>;
 /** Route slots share one member, so a component can pass any route slot name it holds. */
-export type SlotProps =
+export type SlotProps = (
     | { name: RouteSlotName; data: RouteSlotData }
-    | { [TName in DataSlotName]: { name: TName } & SlotComponentProps<SlotData<TName>> }[DataSlotName];
+    | { [TName in DataSlotName]: { name: TName } & SlotComponentProps<SlotData<TName>> }[DataSlotName]
+) &
+    SlotPlacement;
 
 export interface SlotRegistration {
     id: number;
@@ -369,20 +384,26 @@ export interface SiteExtensionEntry {
     translations?: string | null;
     config?: ExtensionConfig;
     screens?: ExtensionScreenDefinition[];
-    components?: ComponentName[];
+    /** Views the extension overrides (`ui.views`); each shows its placeholder while the bundle loads. */
+    views?: string[];
+    /** A theme of the chain the page renders with: its entry is `defineTheme`, whose `setup` is optional. */
+    theme?: boolean;
     development?: { url: string; version: string } | null;
 }
 interface StagedScreen {
     importer: ScreenImporter;
     options: Readonly<ScreenOptions>;
 }
+export type ExtensionViewOverride =
+    | JSXElementConstructor<never>
+    | { readonly load: () => Promise<{ default: JSXElementConstructor<never> }> };
 export interface ExtensionRegistryBatch {
     closed: boolean;
     slots: BatchedSlotRegistration[];
     screens: Map<string, StagedScreen>;
     columns: ExtensionTableColumnRegistration[];
     forms: FormExtensionRegistration[];
-    components: Map<ComponentName, ComponentReplacement<ComponentName>>;
+    views: Map<string, ExtensionViewOverride>;
 }
 export interface ExtensionRuntimeState {
     id: string;
@@ -404,7 +425,8 @@ const screenImplementations = new Map<
     { component: LazyExoticComponent<ComponentType<ScreenComponentProps>>; options: Readonly<ScreenOptions> }
 >();
 const emptyConfig: ExtensionConfig = Object.freeze({});
-const componentReplacements = new Map<ComponentName, ComponentReplacement<ComponentName>>();
+/** Committed view overrides, keyed by extension id and view name. */
+const viewOverrides = new Map<string, ExtensionViewOverride>();
 const loadStates = new Map<string, ExtensionRuntimeState>();
 
 /** Failures of mounted extension code, by extension and then by context, the latest last. */
@@ -467,12 +489,13 @@ export function getLoadableExtensions(): readonly SiteExtensionEntry[] | undefin
     return entries;
 }
 
-export function getComponentOwner(name: ComponentName): string | undefined {
-    return entries?.find((entry) => entry.components?.includes(name))?.id;
+/** Extensions that declare an override of the view, in load order. */
+export function getViewOwners(name: string): readonly string[] {
+    return (entries ?? []).filter((entry) => entry.views?.includes(name)).map((entry) => entry.id);
 }
 
-export function getComponentReplacement(name: ComponentName): ComponentReplacement<ComponentName> | undefined {
-    return componentReplacements.get(name);
+export function getViewOverride(extensionId: string, name: string): ExtensionViewOverride | undefined {
+    return viewOverrides.get(`${extensionId}:${name}`);
 }
 
 export function getExtensionStates(): readonly ExtensionRuntimeState[] {
@@ -499,6 +522,20 @@ function recordError(extensionId: string, context: string, cause: unknown): stri
     mountErrors.set(extensionId, errors);
 
     return message;
+}
+
+export interface ExtensionError {
+    readonly extensionId: string;
+    /** Where it failed, such as `view "server.graphs"`. */
+    readonly context: string;
+    readonly message: string;
+}
+
+/** Every failure of mounted code still recorded, oldest first for each extension. */
+export function getExtensionErrors(): readonly ExtensionError[] {
+    return [...mountErrors].flatMap(([extensionId, errors]) =>
+        [...errors].map(([context, message]) => ({ extensionId, context, message }))
+    );
 }
 
 /** Repeat reports of the same failure in a context are ignored. */
@@ -577,37 +614,14 @@ type ScreenRules = {
     claimed: Map<string, string>;
 };
 
-/** Every extension that declares each component replacement, so a contested name fails all its claimants. */
-function collectComponentClaims(advertised: readonly SiteExtensionEntry[]): Map<string, Set<string>> {
-    const componentClaims = new Map<string, Set<string>>();
+const VIEW_NAME = /^[a-z][a-zA-Z0-9]*(?:\.[a-z][a-zA-Z0-9]*)+$/;
 
-    for (const entry of advertised) {
-        for (const name of entry.components ?? []) {
-            const owners = componentClaims.get(name) ?? new Set<string>();
+/** Several extensions may override one view; they stack in load order. */
+function assertViewNames(entry: SiteExtensionEntry): void {
+    const names = entry.views ?? [];
 
-            owners.add(entry.id);
-            componentClaims.set(name, owners);
-        }
-    }
-
-    return componentClaims;
-}
-
-function assertComponentClaims(entry: SiteExtensionEntry, componentClaims: Map<string, Set<string>>): void {
-    const names = entry.components ?? [];
-
-    if (new Set(names).size !== names.length || names.some((name) => !isComponentName(name))) {
-        throw new Error('Invalid or duplicate component replacement name.');
-    }
-
-    for (const name of names) {
-        const owners = componentClaims.get(name)!;
-
-        if (owners.size > 1) {
-            throw new Error(
-                `Component "${name}" is declared by competing extensions: ${[...owners].sort().join(', ')}.`
-            );
-        }
+    if (new Set(names).size !== names.length || names.some((name) => !VIEW_NAME.test(name))) {
+        throw new Error('Invalid or duplicate view name.');
     }
 }
 
@@ -685,12 +699,8 @@ function prepareScreen(
 }
 
 /** Validates an entry's metadata and registers its screens; throws without registering anything when invalid. */
-function registerEntryScreens(
-    entry: SiteExtensionEntry,
-    componentClaims: Map<string, Set<string>>,
-    rules: ScreenRules
-): void {
-    assertComponentClaims(entry, componentClaims);
+function registerEntryScreens(entry: SiteExtensionEntry, rules: ScreenRules): void {
+    assertViewNames(entry);
 
     const ids = new Set<string>();
     const paths = new Map<string, string>();
@@ -714,7 +724,6 @@ export function prepareExtensions(
 
     const accepted: SiteExtensionEntry[] = [];
     const seenIds = new Set<string>();
-    const componentClaims = collectComponentClaims(advertised);
     const rules: ScreenRules = { corePaths, resourcePaths, claimed: new Map() };
 
     for (const entry of advertised) {
@@ -724,7 +733,7 @@ export function prepareExtensions(
 
         seenIds.add(entry.id);
         try {
-            registerEntryScreens(entry, componentClaims, rules);
+            registerEntryScreens(entry, rules);
             accepted.push(entry);
             setExtensionState({ id: entry.id, status: 'loading' });
         } catch (error) {
@@ -744,7 +753,14 @@ function assertBatchOpen(batch: ExtensionRegistryBatch): void {
 }
 
 export function createExtensionRegistryBatch(): ExtensionRegistryBatch {
-    return { closed: false, slots: [], screens: new Map(), columns: [], forms: [], components: new Map() };
+    return {
+        closed: false,
+        slots: [],
+        screens: new Map(),
+        columns: [],
+        forms: [],
+        views: new Map(),
+    };
 }
 
 /** Keeps registrations in the order the panel advertises their extensions; the sort is stable. */
@@ -761,7 +777,7 @@ function mergeByEntryOrder<TKey, TItem extends { extensionId: string }>(
     );
 }
 
-/** Every declared screen and component must have an implementation before a batch commits. */
+/** Every declared screen and view must have an implementation before a batch commits. */
 function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch): void {
     for (const screen of screens.filter((screen) => screen.extensionId === extensionId)) {
         const staged = batch.screens.get(screen.id);
@@ -775,9 +791,9 @@ function assertBatchComplete(extensionId: string, batch: ExtensionRegistryBatch)
         }
     }
 
-    for (const name of entries?.find((entry) => entry.id === extensionId)?.components ?? []) {
-        if (!batch.components.has(name)) {
-            throw new Error(`Missing implementation for component "${name}"`);
+    for (const name of entries?.find((entry) => entry.id === extensionId)?.views ?? []) {
+        if (!batch.views.has(name)) {
+            throw new Error(`Missing implementation for view "${name}"`);
         }
     }
 }
@@ -821,37 +837,34 @@ export function commitExtensionRegistryBatch(extensionId: string, batch: Extensi
         });
     }
 
-    for (const [name, replacement] of batch.components) {
-        componentReplacements.set(name, replacement);
+    for (const [name, override] of batch.views) {
+        viewOverrides.set(`${extensionId}:${name}`, override);
     }
 
     loadStates.set(extensionId, Object.freeze({ id: extensionId, status: 'loaded' }));
     publish();
 }
 
-export function registerComponentReplacement<TName extends ComponentName>(
+export function registerViewOverride(
     extensionId: string,
-    name: TName,
-    replacement: ComponentReplacement<TName>,
+    name: string,
+    override: ExtensionViewOverride,
     batch: ExtensionRegistryBatch
 ): void {
     assertBatchOpen(batch);
-    if (!isComponentName(name) || getComponentOwner(name) !== extensionId) {
-        throw new Error(`Component "${name}" must be declared in this extension's ui.components.`);
+    if (!entries?.find((entry) => entry.id === extensionId)?.views?.includes(name)) {
+        throw new Error(`View "${name}" must be declared in this extension's ui.views.`);
     }
 
-    if (batch.components.has(name)) {
-        throw new Error(`Duplicate implementation for component "${name}".`);
+    if (batch.views.has(name)) {
+        throw new Error(`Duplicate implementation for view "${name}".`);
     }
 
-    if (
-        !isReplacementComponent(replacement) &&
-        !(replacement !== null && 'load' in replacement && replacement.load instanceof Function)
-    ) {
-        throw new Error(`Invalid implementation for component "${name}". Use a component or a lazy importer.`);
+    if (!isViewComponent(override) && !('load' in override && override.load instanceof Function)) {
+        throw new Error(`Invalid implementation for view "${name}". Use a component or a lazy importer.`);
     }
 
-    batch.components.set(name, replacement);
+    batch.views.set(name, override);
 }
 
 export function abortExtensionRegistryBatch(batch: ExtensionRegistryBatch): void {
@@ -875,6 +888,43 @@ export function registerSlotComponent(
 
 export function getSlotComponents(name: SlotName): readonly SlotRegistration[] {
     return slots.get(name) ?? emptySlots;
+}
+
+/** Mounts components in slots without an extension batch, as the SDK's `renderView` does; returns their removal. */
+export function mountSlotComponents(
+    extensionId: string,
+    components: Readonly<Partial<Record<SlotName, ComponentType<SlotComponentProps>>>>
+): () => void {
+    const added: BatchedSlotRegistration[] = [];
+
+    for (const [name, component] of Object.entries(components)) {
+        const slot = SLOT_NAMES.find((candidate) => candidate === name);
+
+        if (!slot) {
+            throw new Error(`Unknown slot "${name}"`);
+        }
+
+        if (component) {
+            added.push(Object.freeze({ id: nextSlotRegistrationId++, extensionId, name: slot, component }));
+        }
+    }
+
+    for (const registration of added) {
+        slots.set(registration.name, Object.freeze([...getSlotComponents(registration.name), registration]));
+    }
+
+    publish();
+
+    return () => {
+        for (const registration of added) {
+            slots.set(
+                registration.name,
+                Object.freeze(getSlotComponents(registration.name).filter((existing) => existing !== registration))
+            );
+        }
+
+        publish();
+    };
 }
 
 export function registerExtensionTableColumn(
@@ -907,7 +957,7 @@ export function registerFormExtension(registration: FormExtensionRegistration, b
         throw new Error(`Unknown form "${registration.form}".`);
     }
 
-    if (!(registration.component instanceof Function) && !isReplacementComponent(registration.component)) {
+    if (!isViewComponent(registration.component)) {
         throw new Error(`The "${registration.form}" form needs a component.`);
     }
 

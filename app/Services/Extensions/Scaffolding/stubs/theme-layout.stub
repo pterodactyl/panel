@@ -1,0 +1,14 @@
+import type { ViewProps } from '@pterodactyl/sdk/theme';
+
+/**
+ * A layer over classic's app layout: `Default` renders classic's navigation bar and the page. To
+ * draw your own shell, render `model.links` and `model.brand`, keep the `nav.items.before` and
+ * `nav.items.after` slots, and place `children` inside `<Main>`.
+ */
+export default function AppLayout({ Default }: ViewProps<'layout.app'>) {
+    return (
+        <div data-{{id}}-layout='' className='min-h-dvh bg-linear-to-b from-primary/10 to-transparent'>
+            <Default />
+        </div>
+    );
+}

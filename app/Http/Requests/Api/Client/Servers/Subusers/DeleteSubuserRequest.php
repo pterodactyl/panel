@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 
@@ -15,9 +14,6 @@ class DeleteSubuserRequest extends SubuserRequest
         return Permissions::UserDelete->value;
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
     public function authorize(): bool
     {
         if (! parent::authorize()) {

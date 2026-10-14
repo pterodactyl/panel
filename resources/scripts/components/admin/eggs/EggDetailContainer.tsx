@@ -12,9 +12,16 @@ import Icon from '@/components/elements/Icon';
 import SubNavigation from '@/components/elements/SubNavigation';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import ResourceExtensionTabs from '@/extensions/ResourceExtensionTabs';
 import { ExtensionResourceProvider, type ExtensionResourceContext } from '@/extensions/resourceContext';
 import Slot from '@/extensions/Slot';
+import { resourceNavigation, type ResourceTab } from '@/views/navigation';
+
+const tabs: ResourceTab[] = [
+    { id: 'configuration', label: 'Configuration', to: '/panel/eggs/$eggId', exact: true },
+    { id: 'tags', label: 'Tags', to: '/panel/eggs/$eggId/tags' },
+    { id: 'variables', label: 'Variables', to: '/panel/eggs/$eggId/variables' },
+    { id: 'script', label: 'Install Script', to: '/panel/eggs/$eggId/script' },
+];
 
 export default function EggDetailContainer() {
     const loadedEgg = eggDetailRoute.useLoaderData();
@@ -58,26 +65,10 @@ export default function EggDetailContainer() {
                     </div>
                 </div>
                 <Slot name='panel.eggs.detail.actions' data={resourceContext} />
-                <SubNavigation className='mb-4 rounded-sm'>
-                    <Link
-                        data-core
-                        to='/panel/eggs/$eggId'
-                        params={{ eggId }}
-                        activeOptions={{ exact: true, includeSearch: false }}
-                    >
-                        Configuration
-                    </Link>
-                    <Link data-core to='/panel/eggs/$eggId/tags' params={{ eggId }}>
-                        Tags
-                    </Link>
-                    <Link data-core to='/panel/eggs/$eggId/variables' params={{ eggId }}>
-                        Variables
-                    </Link>
-                    <Link data-core to='/panel/eggs/$eggId/script' params={{ eggId }}>
-                        Install Script
-                    </Link>
-                    <ResourceExtensionTabs parent='admin.egg' basePath={`/panel/eggs/${eggId}`} />
-                </SubNavigation>
+                <SubNavigation
+                    className='mb-4 rounded-sm'
+                    items={resourceNavigation('admin.egg', { eggId: String(eggId) }, tabs)}
+                />
                 <Outlet />
             </AdminContentBlock>
         </ExtensionResourceProvider.Provider>

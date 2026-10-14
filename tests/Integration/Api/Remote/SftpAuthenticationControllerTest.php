@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Remote\SftpAuthenticationControllerTest;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use phpseclib3\Crypt\EC;
@@ -18,7 +19,7 @@ use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 use function pterodactylTestCase;
 
-uses(IntegrationTestCase::class);
+uses(IntegrationTestCase::class, DatabaseTransactions::class);
 /**
  * Sets up the tests.
  */

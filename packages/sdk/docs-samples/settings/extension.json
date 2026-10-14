@@ -1,0 +1,25 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "sunrise",
+    "type": "theme",
+    "name": "Sunrise",
+    "version": "1.0.0",
+    "requires": { "panel": "^2.0.0-dev", "sdk": ">=2.0.0-beta.5 <3.0" },
+    "ui": { "entry": "dist/client.js" },
+    "theme": {
+        "stylesheet": "dist/theme.css",
+        "schemes": ["dark", "light"],
+        "settings": {
+            "accent": { "type": "color", "label": "Accent", "default": "#f97316", "token": "--sunrise-accent" },
+            "density": {
+                "type": "select",
+                "label": "Density",
+                "options": { "comfortable": "Comfortable", "compact": "Compact" },
+                "default": "comfortable",
+                "attribute": "data-sunrise-density"
+            },
+            "logo": { "type": "image", "label": "Logo", "token": "--brand-logo" },
+            "tagline": { "type": "text", "label": "Tagline", "default": "Every server, one place.", "maxLength": 80 }
+        }
+    }
+}

@@ -8,7 +8,6 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Support\JsonValueGuard;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 
 #[Description('Set or update the email sending configuration for the Panel.')]
@@ -45,7 +44,7 @@ class EmailSettingsCommand extends Command
                 'mandrill' => 'Mandrill Transactional Email',
                 'postmark' => 'Postmark Transactional Email',
             ],
-            JsonValueGuard::nullableScalarString(config('mail.default', 'smtp'))
+            $this->configured('mail.default', 'smtp')
         );
 
         throw_unless(is_string($driver), PterodactylException::class, 'The mail driver selection must resolve to a single value.');
@@ -67,14 +66,14 @@ class EmailSettingsCommand extends Command
                 break;
         }
 
-        $this->variables['MAIL_FROM_ADDRESS'] = JsonValueGuard::scalar($this->option('email') ?? $this->ask(
+        $this->variables['MAIL_FROM_ADDRESS'] = $this->answer(fn () => $this->option('email') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mail_from'),
-            JsonValueGuard::nullableScalarString(config('mail.from.address'))
+            $this->configured('mail.from.address')
         ));
 
-        $this->variables['MAIL_FROM_NAME'] = JsonValueGuard::scalar($this->option('from') ?? $this->ask(
+        $this->variables['MAIL_FROM_NAME'] = $this->answer(fn () => $this->option('from') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mail_name'),
-            JsonValueGuard::nullableScalarString(config('mail.from.name'))
+            $this->configured('mail.from.name')
         ));
 
         $this->writeToEnvironment($this->variables);
@@ -88,29 +87,29 @@ class EmailSettingsCommand extends Command
      */
     private function setupSmtpDriverVariables(): void
     {
-        $this->variables['MAIL_HOST'] = JsonValueGuard::scalar($this->option('host') ?? $this->ask(
+        $this->variables['MAIL_HOST'] = $this->answer(fn () => $this->option('host') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_host'),
-            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.host'))
+            $this->configured('mail.mailers.smtp.host')
         ));
 
-        $this->variables['MAIL_PORT'] = JsonValueGuard::scalar($this->option('port') ?? $this->ask(
+        $this->variables['MAIL_PORT'] = $this->answer(fn () => $this->option('port') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_port'),
-            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.port'))
+            $this->configured('mail.mailers.smtp.port')
         ));
 
-        $this->variables['MAIL_USERNAME'] = JsonValueGuard::scalar($this->option('username') ?? $this->ask(
+        $this->variables['MAIL_USERNAME'] = $this->answer(fn () => $this->option('username') ?? $this->ask(
             trans('command/messages.environment.mail.ask_smtp_username'),
-            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.username'))
+            $this->configured('mail.mailers.smtp.username')
         ));
 
-        $this->variables['MAIL_PASSWORD'] = JsonValueGuard::scalar($this->option('password') ?? $this->secret(
+        $this->variables['MAIL_PASSWORD'] = $this->answer(fn () => $this->option('password') ?? $this->secret(
             trans('command/messages.environment.mail.ask_smtp_password')
         ));
 
         $encryption = $this->option('encryption') ?? $this->choice(
             trans('command/messages.environment.mail.ask_encryption'),
             ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'],
-            JsonValueGuard::nullableScalarString(config('mail.mailers.smtp.encryption', 'tls'))
+            $this->configured('mail.mailers.smtp.encryption', 'tls')
         );
 
         throw_unless(is_string($encryption), PterodactylException::class, 'The mail encryption selection must resolve to a single value.');
@@ -123,19 +122,19 @@ class EmailSettingsCommand extends Command
      */
     private function setupMailgunDriverVariables(): void
     {
-        $this->variables['MAILGUN_DOMAIN'] = JsonValueGuard::scalar($this->option('host') ?? $this->ask(
+        $this->variables['MAILGUN_DOMAIN'] = $this->answer(fn () => $this->option('host') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_domain'),
-            JsonValueGuard::nullableScalarString(config('services.mailgun.domain'))
+            $this->configured('services.mailgun.domain')
         ));
 
-        $this->variables['MAILGUN_SECRET'] = JsonValueGuard::scalar($this->option('password') ?? $this->ask(
+        $this->variables['MAILGUN_SECRET'] = $this->answer(fn () => $this->option('password') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_secret'),
-            JsonValueGuard::nullableScalarString(config('services.mailgun.secret'))
+            $this->configured('services.mailgun.secret')
         ));
 
-        $this->variables['MAILGUN_ENDPOINT'] = JsonValueGuard::scalar($this->option('endpoint') ?? $this->ask(
+        $this->variables['MAILGUN_ENDPOINT'] = $this->answer(fn () => $this->option('endpoint') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_endpoint'),
-            JsonValueGuard::nullableScalarString(config('services.mailgun.endpoint'))
+            $this->configured('services.mailgun.endpoint')
         ));
     }
 
@@ -144,9 +143,9 @@ class EmailSettingsCommand extends Command
      */
     private function setupMandrillDriverVariables(): void
     {
-        $this->variables['MANDRILL_SECRET'] = JsonValueGuard::scalar($this->option('password') ?? $this->ask(
+        $this->variables['MANDRILL_SECRET'] = $this->answer(fn () => $this->option('password') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mandrill_secret'),
-            JsonValueGuard::nullableScalarString(config('services.mandrill.secret'))
+            $this->configured('services.mandrill.secret')
         ));
     }
 
@@ -158,9 +157,9 @@ class EmailSettingsCommand extends Command
         $this->variables['MAIL_DRIVER'] = 'smtp';
         $this->variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
         $this->variables['MAIL_PORT'] = '587';
-        $credentials = JsonValueGuard::scalar($this->option('username') ?? $this->ask(
+        $credentials = $this->answer(fn () => $this->option('username') ?? $this->ask(
             trans('command/messages.environment.mail.ask_postmark_username'),
-            JsonValueGuard::nullableScalarString(config('mail.username'))
+            $this->configured('mail.username')
         ));
         $this->variables['MAIL_USERNAME'] = $credentials;
         $this->variables['MAIL_PASSWORD'] = $credentials;

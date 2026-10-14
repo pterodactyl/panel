@@ -1,0 +1,409 @@
+[
+    {
+        "request": "GET /api/admin/servers/external/ext-survival",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "id": 1,
+                "external_id": "ext-survival",
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "identifier": "5e7f0001",
+                "name": "Survival",
+                "description": "Main survival world",
+                "status": null,
+                "suspended": false,
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "user": 2,
+                "node": 1,
+                "allocation": 1,
+                "egg": 1,
+                "container": {
+                    "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                    "image": "ghcr.io/pterodactyl/yolks:java_21",
+                    "skip_scripts": false,
+                    "installed": 1,
+                    "environment": {
+                        "SERVER_JARFILE": "paper.jar",
+                        "BUILD_NUMBER": "latest",
+                        "HIDDEN_TOKEN": "hidden-value",
+                        "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "P_SERVER_LOCATION": "us-east",
+                        "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                        "P_SERVER_ALLOCATION_LIMIT": 5
+                    }
+                },
+                "relationships": [],
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00"
+            }
+        }
+    },
+    {
+        "request": "GET /api/admin/servers/external/ext-survival?include=allocation,allocations,user,subusers,egg,variables,location,node,databases",
+        "status": 200,
+        "body": {
+            "object": "server",
+            "attributes": {
+                "id": 1,
+                "external_id": "ext-survival",
+                "uuid": "5e7f0001-0000-4000-8000-000000000001",
+                "identifier": "5e7f0001",
+                "name": "Survival",
+                "description": "Main survival world",
+                "status": null,
+                "suspended": false,
+                "limits": {
+                    "memory": 2048,
+                    "swap": 512,
+                    "disk": 10240,
+                    "io": 500,
+                    "cpu": 200,
+                    "threads": "0-3",
+                    "oom_disabled": true
+                },
+                "feature_limits": {
+                    "databases": 5,
+                    "allocations": 5,
+                    "backups": 5
+                },
+                "user": 2,
+                "node": 1,
+                "allocation": 1,
+                "egg": 1,
+                "container": {
+                    "startup_command": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                    "image": "ghcr.io/pterodactyl/yolks:java_21",
+                    "skip_scripts": false,
+                    "installed": 1,
+                    "environment": {
+                        "SERVER_JARFILE": "paper.jar",
+                        "BUILD_NUMBER": "latest",
+                        "HIDDEN_TOKEN": "hidden-value",
+                        "STARTUP": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "P_SERVER_LOCATION": "us-east",
+                        "P_SERVER_UUID": "5e7f0001-0000-4000-8000-000000000001",
+                        "P_SERVER_ALLOCATION_LIMIT": 5
+                    }
+                },
+                "relationships": {
+                    "allocation": {
+                        "object": "allocation",
+                        "attributes": {
+                            "id": 1,
+                            "ip": "192.0.2.10",
+                            "alias": "play.example.test",
+                            "port": 25565,
+                            "notes": "Primary <game> port",
+                            "server_id": 1,
+                            "server_name": "Survival",
+                            "assigned": true
+                        }
+                    },
+                    "allocations": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 1,
+                                    "ip": "192.0.2.10",
+                                    "alias": "play.example.test",
+                                    "port": 25565,
+                                    "notes": "Primary <game> port",
+                                    "server_id": 1,
+                                    "server_name": "Survival",
+                                    "assigned": true
+                                }
+                            },
+                            {
+                                "object": "allocation",
+                                "attributes": {
+                                    "id": 2,
+                                    "ip": "192.0.2.10",
+                                    "alias": null,
+                                    "port": 25566,
+                                    "notes": "Query/RCON",
+                                    "server_id": 1,
+                                    "server_name": "Survival",
+                                    "assigned": true
+                                }
+                            }
+                        ]
+                    },
+                    "user": {
+                        "object": "user",
+                        "attributes": {
+                            "id": 2,
+                            "external_id": "ext-owner",
+                            "uuid": "00000000-0000-4000-8000-000000000002",
+                            "username": "owner",
+                            "email": "owner@example.test",
+                            "first_name": "Olive",
+                            "last_name": "Owner",
+                            "language": "en",
+                            "root_admin": false,
+                            "2fa": false,
+                            "image": "https://gravatar.com/avatar/f17712239715b86f1dfd9ba550b7f607",
+                            "servers_count": 0,
+                            "subuser_of_count": 0,
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "relationships": []
+                        }
+                    },
+                    "subusers": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "subuser",
+                                "attributes": {
+                                    "id": 1,
+                                    "user_id": 3,
+                                    "server_id": 1,
+                                    "permissions": [
+                                        "websocket.connect",
+                                        "control.console",
+                                        "control.start",
+                                        "allocation.read",
+                                        "startup.read",
+                                        "user.read",
+                                        "database.read",
+                                        "database.view_password",
+                                        "backup.read",
+                                        "schedule.read",
+                                        "activity.read",
+                                        "file.read"
+                                    ],
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            },
+                            {
+                                "object": "subuser",
+                                "attributes": {
+                                    "id": 2,
+                                    "user_id": 4,
+                                    "server_id": 1,
+                                    "permissions": [
+                                        "websocket.connect",
+                                        "control.console",
+                                        "database.read",
+                                        "database.create",
+                                        "database.update",
+                                        "backup.read",
+                                        "schedule.read",
+                                        "activity.read",
+                                        "file.read"
+                                    ],
+                                    "created_at": "2026-01-02T03:04:05+00:00",
+                                    "updated_at": "2026-02-03T04:05:06+00:00"
+                                }
+                            }
+                        ]
+                    },
+                    "egg": {
+                        "object": "egg",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "e9900001-0000-4000-8000-000000000001",
+                            "author": "support@example.test",
+                            "name": "Paper",
+                            "description": "High performance Minecraft server.",
+                            "features": [
+                                "eula",
+                                "java_version"
+                            ],
+                            "docker_image": "ghcr.io/pterodactyl/yolks:java_21",
+                            "docker_images": {
+                                "Java 21": "ghcr.io/pterodactyl/yolks:java_21",
+                                "Java 17": "ghcr.io/pterodactyl/yolks:java_17"
+                            },
+                            "force_outgoing_ip": false,
+                            "config": {
+                                "files": {
+                                    "server.properties": {
+                                        "parser": "properties",
+                                        "find": {
+                                            "server-ip": "0.0.0.0",
+                                            "server-port": "{{server.build.default.port}}"
+                                        }
+                                    }
+                                },
+                                "startup": {
+                                    "done": ")! For help, type "
+                                },
+                                "stop": "stop",
+                                "logs": {},
+                                "file_denylist": [],
+                                "extends": null
+                            },
+                            "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                            "script": {
+                                "privileged": true,
+                                "install": "#!/bin/ash\necho \"installing\"",
+                                "entry": "ash",
+                                "container": "ghcr.io/pterodactyl/installers:alpine",
+                                "extends": null
+                            },
+                            "relationships": [],
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00"
+                        }
+                    },
+                    "variables": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "server_variable",
+                                "attributes": {
+                                    "id": 1,
+                                    "egg_id": 1,
+                                    "name": "Server Jar File",
+                                    "description": "The name of the server jarfile to run.",
+                                    "env_variable": "SERVER_JARFILE",
+                                    "default_value": "server.jar",
+                                    "user_viewable": true,
+                                    "user_editable": true,
+                                    "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
+                                    "sort_order": 1,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z",
+                                    "server_value": "paper.jar"
+                                }
+                            },
+                            {
+                                "object": "server_variable",
+                                "attributes": {
+                                    "id": 2,
+                                    "egg_id": 1,
+                                    "name": "Build Number",
+                                    "description": "The build to download, or \"latest\".",
+                                    "env_variable": "BUILD_NUMBER",
+                                    "default_value": "latest",
+                                    "user_viewable": true,
+                                    "user_editable": false,
+                                    "rules": "required|string|max:20",
+                                    "sort_order": 2,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z",
+                                    "server_value": null
+                                }
+                            },
+                            {
+                                "object": "server_variable",
+                                "attributes": {
+                                    "id": 3,
+                                    "egg_id": 1,
+                                    "name": "Hidden Token",
+                                    "description": "Never shown to clients.",
+                                    "env_variable": "HIDDEN_TOKEN",
+                                    "default_value": "secret",
+                                    "user_viewable": false,
+                                    "user_editable": false,
+                                    "rules": "nullable|string",
+                                    "sort_order": null,
+                                    "created_at": "2026-01-02T03:04:05.000000Z",
+                                    "updated_at": "2026-02-03T04:05:06.000000Z",
+                                    "server_value": "hidden-value"
+                                }
+                            }
+                        ]
+                    },
+                    "location": {
+                        "object": "location",
+                        "attributes": {
+                            "id": 1,
+                            "short": "us-east",
+                            "long": "US East / Virginia",
+                            "nodes_count": 1,
+                            "servers_count": 2,
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00"
+                        }
+                    },
+                    "node": {
+                        "object": "node",
+                        "attributes": {
+                            "id": 1,
+                            "uuid": "d0de0001-0000-4000-8000-000000000001",
+                            "public": true,
+                            "name": "node-alpha",
+                            "description": "Primary \"alpha\" node",
+                            "location_id": 1,
+                            "fqdn": "alpha.example.test",
+                            "scheme": "https",
+                            "behind_proxy": false,
+                            "maintenance_mode": false,
+                            "memory": 8192,
+                            "memory_overallocate": 0,
+                            "disk": 102400,
+                            "disk_overallocate": -1,
+                            "upload_size": 100,
+                            "daemon_listen": 8080,
+                            "daemon_sftp": 2022,
+                            "daemon_base": "/var/lib/pterodactyl/volumes",
+                            "created_at": "2026-01-02T03:04:05+00:00",
+                            "updated_at": "2026-02-03T04:05:06+00:00",
+                            "allocated_resources": {
+                                "memory": 3072,
+                                "disk": 15360
+                            },
+                            "relationships": []
+                        }
+                    },
+                    "databases": {
+                        "object": "list",
+                        "data": [
+                            {
+                                "object": "databases",
+                                "attributes": {
+                                    "id": "eV8y0jg6",
+                                    "host": {
+                                        "address": "10.0.0.5",
+                                        "port": 3306
+                                    },
+                                    "name": "s1_main",
+                                    "username": "u1_mainuser",
+                                    "connections_from": "%",
+                                    "max_connections": 10,
+                                    "relationships": []
+                                }
+                            },
+                            {
+                                "object": "databases",
+                                "attributes": {
+                                    "id": "kEjgP8V2",
+                                    "host": {
+                                        "address": "10.0.0.5",
+                                        "port": 3306
+                                    },
+                                    "name": "s1_logs",
+                                    "username": "u1_logsuser",
+                                    "connections_from": "10.0.0.%",
+                                    "max_connections": 0,
+                                    "relationships": []
+                                }
+                            }
+                        ]
+                    }
+                },
+                "updated_at": "2026-02-03T04:05:06+00:00",
+                "created_at": "2026-01-02T03:04:05+00:00"
+            }
+        }
+    }
+]

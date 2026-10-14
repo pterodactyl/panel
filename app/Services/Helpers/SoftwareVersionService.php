@@ -9,7 +9,6 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
-use Pterodactyl\Support\JsonValueGuard;
 
 class SoftwareVersionService
 {
@@ -63,11 +62,12 @@ class SoftwareVersionService
      */
     public function isLatestPanel(): bool
     {
-        if (config('app.version') === 'canary') {
+        $version = config()->string('app.version');
+        if ($version === 'canary') {
             return true;
         }
 
-        return version_compare(JsonValueGuard::string(config('app.version')), $this->getPanel()) >= 0;
+        return version_compare($version, $this->getPanel()) >= 0;
     }
 
     /**
@@ -87,12 +87,14 @@ class SoftwareVersionService
      */
     protected function cacheVersionData(): array
     {
-        $cached = $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(JsonValueGuard::integer(config('pterodactyl.cdn.cache_time', 60))), function (): array {
+        $cached = $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config()->integer('pterodactyl.cdn.cache_time', 60)), function (): array {
             try {
-                $response = $this->client->request('GET', JsonValueGuard::string(config('pterodactyl.cdn.url')), ['timeout' => 5, 'connect_timeout' => 2]);
+                $response = $this->client->request('GET', config()->string('pterodactyl.cdn.url'), ['timeout' => 5, 'connect_timeout' => 2]);
 
                 if ($response->getStatusCode() === 200) {
-                    return JsonValueGuard::decodeArray8($response->getBody()->__toString());
+                    $data = json_decode($response->getBody()->__toString(), true, flags: JSON_THROW_ON_ERROR);
+
+                    return is_array($data) ? $data : [];
                 }
 
                 throw new CdnVersionFetchingException;
@@ -105,7 +107,6 @@ class SoftwareVersionService
     }
 
     /**
-     * @param  JsonInputValue  $value
      * @return SoftwareVersionData
      */
     private function normalizeVersionData(mixed $value): array

@@ -1,27 +1,31 @@
 import React, { useMemo, useState } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import Button from '@/components/elements/Button';
-import { X } from 'lucide-react';
+import { Check, Info, ShieldAlert, TriangleAlert, X } from 'lucide-react';
+import { useSkin, type SkinBinding } from '@/themes/skins';
 import { DialogContext } from './context';
 import DialogFooter from './DialogFooter';
-import type { IconPosition, RenderDialogProps } from './types';
-import { dialogTitleClass } from '@/components/ui/typography';
-import { cn } from '@/lib/cn';
+import type { DialogIconProps, IconPosition, RenderDialogProps } from './types';
 
 const focusableSelector =
     ':is(input, select, textarea, button, a[href], [tabindex]):not([disabled]):not([tabindex="-1"])';
-const dialogContainerClass = 'flex min-h-full items-center justify-center p-4 text-center';
-const closeIconClass = 'w-5 h-5 group-hover:rotate-90 transition-transform duration-100';
-const backdropClass = [
-    'fixed inset-0 bg-background/50 z-40 transition-opacity duration-150 ease-out',
-    'data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:ease-in',
-].join(' ');
-const panelClass = [
-    'relative flex flex-col overflow-hidden bg-card rounded-sm max-w-xl w-full mx-auto shadow-lg text-left',
-    'max-h-[calc(100dvh-2rem)] ring-4 ring-border/80 transition duration-150 ease-out',
-    'data-[starting-style]:opacity-0 data-[starting-style]:scale-75',
-    'data-[ending-style]:opacity-0 data-[ending-style]:scale-75 data-[ending-style]:ease-in',
-].join(' ');
+
+const icons = {
+    danger: ShieldAlert,
+    warning: TriangleAlert,
+    success: Check,
+    info: Info,
+};
+
+function TypeIcon({ ui, icon }: { ui: SkinBinding<'Dialog'>; icon: DialogIconProps }) {
+    const Glyph = icons[icon.type];
+
+    return (
+        <div {...ui('icon', icon.className, { type: icon.type })}>
+            <Glyph {...ui('iconGlyph')} />
+        </div>
+    );
+}
 
 export default function DialogComponent({
     open,
@@ -32,9 +36,11 @@ export default function DialogComponent({
     preventExternalClose,
     children,
 }: RenderDialogProps) {
-    const [icon, setIcon] = useState<React.ReactNode>();
+    const [icon, setIcon] = useState<DialogIconProps>();
     const [iconPosition, setIconPosition] = useState<IconPosition>('title');
     const popupRef = React.useRef<HTMLDivElement>(null);
+    const described = !!description;
+    const ui = useSkin('Dialog', { described });
 
     const initialFocus = (interactionType: string) => {
         if (interactionType === 'touch') {
@@ -55,61 +61,52 @@ export default function DialogComponent({
         onClose();
     };
 
-    const context = useMemo(() => ({ setIcon, setIconPosition }), [setIcon, setIconPosition]);
+    const context = useMemo(() => ({ setIcon, setIconPosition, described }), [setIcon, setIconPosition, described]);
 
     const items = React.Children.toArray(children);
     const isFooter = (child: React.ReactNode) => React.isValidElement(child) && child.type === DialogFooter;
     const footer = items.filter(isFooter);
     const content = items.filter((child) => !isFooter(child));
+    const typeIcon = icon && <TypeIcon ui={ui} icon={icon} />;
 
     return (
         <DialogContext.Provider value={context}>
             {/* Base UI unmounts the popup after its data-ending-style transition finishes. */}
             <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
                 <BaseDialog.Portal>
-                    <BaseDialog.Backdrop className={backdropClass} />
-                    <div className='fixed inset-0 overflow-y-auto z-50'>
-                        <div className={dialogContainerClass}>
-                            <BaseDialog.Popup ref={popupRef} className={panelClass} initialFocus={initialFocus}>
-                                <div className='flex min-h-0 flex-1 overflow-y-auto p-6 pb-0'>
-                                    {iconPosition === 'container' && icon}
-                                    <div className='flex-1 min-w-0'>
-                                        <div className='flex items-center'>
-                                            {iconPosition !== 'container' && icon}
-                                            <div>
-                                                {title && (
-                                                    <BaseDialog.Title
-                                                        className={cn(
-                                                            dialogTitleClass,
-                                                            description ? 'mb-2' : 'mb-5',
-                                                            'pr-4'
-                                                        )}
-                                                    >
-                                                        {title}
-                                                    </BaseDialog.Title>
-                                                )}
+                    <BaseDialog.Backdrop {...ui('backdrop')} />
+                    <div {...ui('viewport')}>
+                        <div {...ui('container')}>
+                            <BaseDialog.Popup ref={popupRef} {...ui('root')} initialFocus={initialFocus}>
+                                <div {...ui('body')}>
+                                    {iconPosition === 'container' && typeIcon}
+                                    <div {...ui('content')}>
+                                        <div {...ui('header')}>
+                                            {iconPosition !== 'container' && typeIcon}
+                                            <div {...ui('heading')}>
+                                                {title && <BaseDialog.Title {...ui('title')}>{title}</BaseDialog.Title>}
                                                 {description && (
-                                                    <BaseDialog.Description className='mb-5 text-sm leading-relaxed text-muted-foreground'>
+                                                    <BaseDialog.Description {...ui('description')}>
                                                         {description}
                                                     </BaseDialog.Description>
                                                 )}
                                             </div>
                                         </div>
                                         {content}
-                                        <div className='invisible h-6' />
+                                        <div {...ui('spacer')} />
                                     </div>
                                 </div>
                                 {footer}
                                 {/* Rendered after the other buttons so it is not the default focus. */}
                                 {!hideCloseIcon && (
-                                    <div className='absolute right-0 top-0 m-4'>
+                                    <div {...ui('close')}>
                                         <Button.Text
                                             type='button'
                                             size='xsmall'
                                             onClick={onClose}
-                                            className='group w-8 h-8 p-0 inline-flex items-center justify-center'
+                                            className={ui.classes('closeButton')}
                                         >
-                                            <X className={closeIconClass} />
+                                            <X {...ui('closeIcon')} />
                                         </Button.Text>
                                     </div>
                                 )}

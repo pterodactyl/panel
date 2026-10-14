@@ -16,7 +16,6 @@ use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Nodes\Allocations\BlockDeleteAllocationRequest;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Support\JsonValueGuard;
 use Throwable;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -32,7 +31,7 @@ class DeleteAllocationBlockController extends AdminApiController
     #[ScribeResponse(status: 204, description: 'Unassigned allocations for the IP were deleted.')]
     public function __invoke(BlockDeleteAllocationRequest $request, DeletesAllocations $deleter, Node $node): Response
     {
-        $ip = JsonValueGuard::string($request->validated('ip'));
+        $ip = $request->string('ip')->toString();
 
         // Delete through the action so extension wrappers see each allocation, while
         // the transaction keeps the block delete all-or-nothing like the bulk query was.

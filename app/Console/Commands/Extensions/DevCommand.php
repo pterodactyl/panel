@@ -26,7 +26,7 @@ class DevCommand extends Command
                 $installer->install($manifest->directory, (bool) $this->option('enable'), replace: true);
                 $this->components->info('Published '.$manifest->id.'.');
             };
-            if (! $manifest->hasUi()) {
+            if (! $manifest->hasAssets()) {
                 $publish();
 
                 return self::SUCCESS;

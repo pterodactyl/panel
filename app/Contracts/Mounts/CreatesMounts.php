@@ -9,9 +9,10 @@ use Pterodactyl\Models\Mount;
 interface CreatesMounts
 {
     /**
-     * Create a new mount from validated attributes, assigning it a fresh UUID.
+     * The mount gets a fresh UUID. The input is validated here. Extension field values go under
+     * `extensions` as ValidatedExtensionValues.
      *
-     * @param  MountData  $data
+     * @param  array<string, mixed>  $input  name, source and target, and optionally description, read_only and user_mountable
      */
-    public function create(array $data): Mount;
+    public function create(array $input): Mount;
 }

@@ -10,11 +10,11 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\ActivityLogged;
+use Pterodactyl\Http\Resources\Api\ApiResource;
 use Pterodactyl\Services\Helpers\AssetHashService;
 use Pterodactyl\Tests\Assertions\AssertsActivityLogged;
 use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
 {
@@ -50,6 +50,6 @@ abstract class IntegrationTestCase extends TestCase
             ? CarbonImmutable::instance($timestamp)
             : CarbonImmutable::createFromFormat(CarbonInterface::DEFAULT_TO_STRING_FORMAT, $timestamp);
 
-        return $value->setTimezone(BaseTransformer::RESPONSE_TIMEZONE)->toAtomString();
+        return $value->setTimezone(ApiResource::RESPONSE_TIMEZONE)->toAtomString();
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\Schedule\UpdateServerScheduleTest;
 
 use Pterodactyl\Enum\Permissions;
-use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
@@ -18,7 +17,6 @@ test('schedule can be updated', function (array $permissions): void {
     [$user, $server] = $this->generateTestAccount($permissions);
     /** @var Schedule $schedule */
     $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-    $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
     $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
     $schedule = $schedule->refresh();
     $response->assertOk();
@@ -42,7 +40,7 @@ test('schedule can be updated', function (array $permissions): void {
         'created_at' => $schedule->created_at->toAtomString(),
         'updated_at' => $schedule->updated_at->toAtomString(),
     ]);
-    expect($schedule->next_run_at->toAtomString())->toBe($expected->toAtomString());
+    expect($schedule->next_run_at->toAtomString())->toBe($schedule->getNextRunDate()->toAtomString());
 })->with('permissionsDataProvider');
 test('error is returned if schedule does not belong to server', function (): void {
     [$user, $server] = $this->generateTestAccount();

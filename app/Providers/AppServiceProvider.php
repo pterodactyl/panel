@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\Route as IlluminateRoute;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +21,11 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use League\Fractal\Manager;
+use Illuminate\Validation\Rules\Password;
+use Knuckles\Scribe\Scribe;
 use Pterodactyl\Enum\ResourceLimit;
 use Pterodactyl\Extensions\Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
+use Pterodactyl\Extensions\Scribe\Support\PathParameterNames;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\Backup;
@@ -42,7 +44,7 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Services\Daemon\DaemonManager;
 use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Support\JsonValueGuard;
+use ReflectionFunctionAbstract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -52,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        // The password policy every password rule applies (see CreateUser::passwordRules()).
+        Password::defaults(Password::min(8));
 
         Route::model('database', Database::class);
 
@@ -79,8 +83,14 @@ class AppServiceProvider extends ServiceProvider
         // doesn't, and it triggers a lot of support requests, so lets just head it off here.
         //
         // @see https://github.com/pterodactyl/panel/issues/3623
-        if (Str::startsWith(JsonValueGuard::nullableString(config('app.url')) ?? '', 'https://')) {
+        if (Str::startsWith(config('app.url'), 'https://')) {
             URL::forceScheme('https');
+        }
+
+        if ($this->app->runningConsoleCommand('scribe:generate')) {
+            Scribe::normalizeEndpointUrlUsing(
+                fn (string $url, IlluminateRoute $route, ReflectionFunctionAbstract $method): string => PathParameterNames::normalize($route, $method),
+            );
         }
 
         Relation::enforceMorphMap([
@@ -116,19 +126,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(EnvironmentService::class);
 
         $this->app->extend('auth.password', fn (): PasswordBrokerManager => new PasswordBrokerManager($this->app));
-
-        $this->app->bind(function (): Fractal {
-            $requested = JsonValueGuard::stringList(array_values($this->app->make(Request::class)->collect('include')->all()));
-
-            $includes = collect($requested)
-                ->flatMap(fn (string $value): array => explode(',', $value))
-                ->map(fn (string $value): string => mb_trim($value))
-                ->filter()
-                ->values()
-                ->all();
-
-            return (new Fractal(new Manager))->parseIncludes($includes)->limitRecursion(2);
-        });
 
         // Only load the settings service provider if the environment
         // is configured to allow it.
@@ -200,9 +197,6 @@ class AppServiceProvider extends ServiceProvider
         $user = $request->user();
         $key = $user instanceof User ? $user->uuid : $request->ip();
 
-        return Limit::perMinutes(
-            JsonValueGuard::integer(config("http.rate_limit.{$name}_period")),
-            JsonValueGuard::integer(config("http.rate_limit.{$name}")),
-        )->by($key);
+        return Limit::perMinutes(config()->integer("http.rate_limit.{$name}_period"), config()->integer("http.rate_limit.{$name}"))->by($key);
     }
 }

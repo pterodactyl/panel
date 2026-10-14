@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveReturnTagIncompatibleWithNativeTypeRector;
-use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use RectorLaravel\Rector\ArrayDimFetch\EnvVariableToEnvHelperRector;
@@ -48,15 +47,10 @@ return RectorConfig::configure()
         EnvVariableToEnvHelperRector::class => [
             __DIR__.'/bootstrap/app.php',
         ],
-        __DIR__.'/database/migrations/old',
+        __DIR__.'/database/legacy-migrations',
         // These return tags carry project type aliases and array shapes that cannot
         // be expressed by the native array return type.
         RemoveReturnTagIncompatibleWithNativeTypeRector::class,
-        // Empty top-level Fractal metadata is intentionally omitted from generated
-        // OpenAPI schemas; the guard call does not make that array non-empty.
-        RemoveAlwaysTrueIfConditionRector::class => [
-            __DIR__.'/app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php',
-        ],
     ])
     ->withPreparedSets(
         deadCode: true,

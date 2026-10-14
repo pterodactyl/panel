@@ -11,22 +11,21 @@ use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Locations\CreatesLocations;
 use Pterodactyl\Contracts\Locations\DeletesLocations;
 use Pterodactyl\Contracts\Locations\UpdatesLocations;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
-use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
+use Pterodactyl\Http\Resources\Api\Application\LocationResource;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
@@ -45,8 +44,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return all the locations currently registered on the Panel.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List locations', 'Returns a paginated list of all locations registered on the panel.')]
     #[QueryParam('per_page', 'integer', 'Number of locations to return per page, up to 100.', required: false, example: 50)]
@@ -54,32 +51,26 @@ class LocationController extends ApplicationApiController
     #[QueryParam('filter[long]', 'string', 'Filter locations by description.', required: false, example: 'US East Datacenter')]
     #[QueryParam('sort', 'string', 'Sort locations by id. Prefix with "-" for descending order.', required: false, example: 'id', enum: ['id', '-id'])]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "nodes" and "servers" when the key can read those resources.', required: false, example: 'nodes,servers', enum: ['nodes', 'servers', 'nodes,servers'])]
-    #[ResponseFromTransformer(LocationTransformer::class, Location::class, collection: true, resourceKey: 'location', paginate: [IlluminatePaginatorAdapter::class, 50])]
-    public function index(GetLocationsRequest $request): array
+    #[ResponseFromResource(LocationResource::class, Location::class, collection: true, resourceKey: 'location', paginate: 50)]
+    public function index(GetLocationsRequest $request): ApiResourceCollection
     {
         $locations = QueryBuilder::for(Location::query())
             ->allowedFilters(['short', 'long'])
             ->allowedSorts(['id'])
             ->paginate($request->perPage());
 
-        return Fractal::collection($locations)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
-            ->toResponseArray();
+        return LocationResource::collection($locations);
     }
 
     /**
      * Return a single location.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get location', 'Returns a single location by internal numeric ID.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "nodes" and "servers" when the key can read those resources.', required: false, example: 'nodes,servers', enum: ['nodes', 'servers', 'nodes,servers'])]
-    #[ResponseFromTransformer(LocationTransformer::class, Location::class, resourceKey: 'location')]
-    public function view(GetLocationRequest $request, Location $location): array
+    #[ResponseFromResource(LocationResource::class, Location::class, resourceKey: 'location')]
+    public function view(GetLocationRequest $request, Location $location): LocationResource
     {
-        return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return LocationResource::make($location)->withExtensionFields();
     }
 
     /**
@@ -87,15 +78,15 @@ class LocationController extends ApplicationApiController
      * new location attached.
      */
     #[Endpoint('Create location', 'Creates a new location and returns the created resource.')]
-    #[ResponseFromTransformer(LocationTransformer::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.test/api/application/locations/1'])]
+    #[ResponseFromResource(LocationResource::class, Location::class, status: 201, description: 'Location created.', resourceKey: 'location', meta: ['resource' => 'https://panel.example.test/api/application/locations/1'])]
     #[ExtensionFieldsParam]
     public function store(StoreLocationRequest $request, CreatesLocations $locations): JsonResponse
     {
-        $location = $locations->create($request->payload());
+        $location = $locations->create($request->actionInput());
 
-        return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
-            ->addMeta([
+        return LocationResource::make($location)
+            ->withExtensionFields()
+            ->withMeta([
                 'resource' => route('api.application.locations.view', [
                     'location' => $location->id,
                 ]),
@@ -105,19 +96,15 @@ class LocationController extends ApplicationApiController
 
     /**
      * Update a location on the Panel and return the updated record to the user.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update location', 'Updates an existing location by internal numeric ID.')]
-    #[ResponseFromTransformer(LocationTransformer::class, Location::class, resourceKey: 'location')]
+    #[ResponseFromResource(LocationResource::class, Location::class, resourceKey: 'location')]
     #[ExtensionFieldsParam]
-    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): array
+    public function update(UpdateLocationRequest $request, UpdatesLocations $locations, Location $location): LocationResource
     {
-        $location = $locations->update($location, $request->payload());
+        $location = $locations->update($location, $request->actionInput());
 
-        return Fractal::item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class)->withExtensionFields())
-            ->toResponseArray();
+        return LocationResource::make($location)->withExtensionFields();
     }
 
     /**

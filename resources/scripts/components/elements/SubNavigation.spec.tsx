@@ -1,6 +1,9 @@
 /** @vitest-environment jsdom */
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createExtensionTestHost, type ExtensionTestHost } from '@/sdk/testing';
+import { navItemDestination, type NavItem } from '@/views/navigation';
 import SubNavigation from './SubNavigation';
 
 interface Layout {
@@ -12,52 +15,69 @@ interface Layout {
 interface Item {
     label: string;
     width: number;
-    core?: boolean;
-    active?: boolean;
+    /** Extension items may move into the menu; the panel's own stay. */
+    extension?: boolean;
 }
 
 let layout: Layout;
+let widths: Map<string, number>;
+let host: ExtensionTestHost | undefined;
 
 const rect = (left: number, width: number) => DOMRect.fromRect({ x: left, y: 0, width, height: 40 });
+const widthOf = (element: Element) =>
+    element instanceof HTMLElement ? (widths.get(element.dataset.navItem ?? element.textContent ?? '') ?? 0) : 0;
 
-/** Lays the row's items out left to right at their `data-width`, starting at x = 0 with no padding. */
+/** Lays the row's children out left to right at their widths, starting at x = 0 with no padding. */
 function fakeRect(this: HTMLElement): DOMRect {
-    const parent = this.parentElement;
-
-    if (parent?.dataset.testid === 'nav') {
+    if (this.parentElement?.dataset.testid === 'nav') {
         return rect(0, layout.rowWidth);
     }
 
-    if (this.dataset.width === undefined) {
+    if (this.parentElement?.parentElement?.dataset.testid !== 'nav' || this.querySelector('[aria-haspopup]')) {
         return rect(0, layout.moreWidth);
     }
 
     let left = 0;
 
-    for (let sibling = this.previousElementSibling; sibling instanceof HTMLElement;) {
-        left += Number(sibling.dataset.width ?? 0);
-        sibling = sibling.previousElementSibling;
+    for (let sibling = this.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
+        left += widthOf(sibling);
     }
 
-    return rect(left, Number(this.dataset.width));
+    return rect(left, widthOf(this));
 }
 
-const renderNavigation = (items: Item[]) =>
-    render(
-        <SubNavigation data-testid='nav'>
-            {items.map((item) => (
-                <a
-                    key={item.label}
-                    href={`#${item.label}`}
-                    data-width={item.width}
-                    data-core={item.core ? '' : undefined}
-                    data-status={item.active ? 'active' : undefined}
-                >
-                    {item.label}
-                </a>
-            ))}
-        </SubNavigation>
-    );
+const navItem = ({ label, extension }: Item, order: number): NavItem => ({
+    id: label.toLowerCase(),
+    label,
+    destination: navItemDestination(`/account/${label.toLowerCase()}`, {}),
+    icon: null,
+    group: null,
+    order,
+    exact: false,
+    extensionId: extension ? 'tabs' : undefined,
+});
+
+async function renderNavigation(
+    items: Item[],
+    options: { path?: string; before?: ReactNode; widths?: Record<string, number> } = {}
+) {
+    const navItems = items.map(navItem);
+
+    widths = new Map([
+        ...items.map(
+            (item, index) => [`${navItems[index].extensionId ?? ''}:${navItems[index].id}`, item.width] as const
+        ),
+        ...Object.entries(options.widths ?? {}),
+    ]);
+    host = createExtensionTestHost({ path: options.path ?? '/account' });
+
+    await act(async () => {
+        render(<SubNavigation data-testid='nav' items={navItems} before={options.before} />, {
+            wrapper: host!.Wrapper,
+        });
+    });
+    await screen.findByTestId('nav');
+}
 
 const overflowed = () =>
     screen
@@ -95,12 +115,14 @@ describe('SubNavigation overflow', () => {
 
     afterEach(() => {
         cleanup();
+        host?.dispose();
+        host = undefined;
         vi.unstubAllGlobals();
         vi.restoreAllMocks();
     });
 
-    it('shows every item when they fit', () => {
-        renderNavigation([
+    it('shows every item when they fit', async () => {
+        await renderNavigation([
             { label: 'Console', width: 100 },
             { label: 'Files', width: 100 },
             { label: 'Backups', width: 100 },
@@ -111,27 +133,70 @@ describe('SubNavigation overflow', () => {
         expect(moreToggle().hidden).toBe(true);
     });
 
-    it('keeps core and active items, then fills the rest in order', () => {
-        renderNavigation([
-            { label: 'Console', width: 100, core: true },
-            { label: 'Files', width: 100 },
-            { label: 'Backups', width: 100 },
-            { label: 'Startup', width: 100, active: true },
-            { label: 'Settings', width: 40 },
-        ]);
+    it('keeps the panel items and the active item, fills the rest in order, and lists the others in the menu', async () => {
+        await renderNavigation(
+            [
+                { label: 'Console', width: 100 },
+                { label: 'Files', width: 100, extension: true },
+                { label: 'Backups', width: 100, extension: true },
+                { label: 'Startup', width: 100, extension: true },
+                { label: 'Settings', width: 40, extension: true },
+            ],
+            { path: '/account/startup' }
+        );
 
         // Budget is 400 - 50 = 350: Console + Startup + Files fill 300, Backups would exceed it,
         // and filling stops there even though Settings alone would still fit.
         expect(overflowed()).toEqual(['Backups', 'Settings']);
         expect(screen.getByTestId('nav')).not.toHaveAttribute('data-collapsed');
         expect(moreToggle().hidden).toBe(false);
+
+        fireEvent.click(screen.getByRole('button', { name: /More/ }));
+
+        expect((await screen.findAllByRole('menuitem')).map((entry) => entry.textContent)).toEqual([
+            'Backups',
+            'Settings',
+        ]);
     });
 
-    it('collapses when the core items alone exceed the budget', () => {
-        renderNavigation([
-            { label: 'Console', width: 200, core: true },
-            { label: 'Files', width: 200, core: true },
-            { label: 'Backups', width: 100 },
+    it('highlights the menu holding the active item and navigates from it', async () => {
+        await renderNavigation(
+            [
+                { label: 'Console', width: 300 },
+                { label: 'Files', width: 100, extension: true },
+                { label: 'Backups', width: 100, extension: true },
+            ],
+            { path: '/account/backups' }
+        );
+
+        expect(overflowed()).toEqual(['Files', 'Backups']);
+        expect(screen.getByRole('button', { name: /More/ })).toHaveClass('shadow-navigation-active');
+
+        fireEvent.click(screen.getByRole('button', { name: /More/ }));
+        fireEvent.click(await screen.findByRole('menuitem', { name: 'Files' }));
+
+        await waitFor(() => expect(host!.location().pathname).toBe('/account/files'));
+    });
+
+    it('keeps slot content in the row', async () => {
+        await renderNavigation(
+            [
+                { label: 'Files', width: 100, extension: true },
+                { label: 'Backups', width: 100, extension: true },
+            ],
+            { before: <a href='#slot'>Slot link</a>, widths: { 'Slot link': 250 } }
+        );
+
+        // Budget is 350: the slot's 250 always stays, Files fits beside it and Backups does not.
+        expect(overflowed()).toEqual(['Backups']);
+        expect(screen.getByText('Slot link')).not.toHaveAttribute('data-overflowed');
+    });
+
+    it('collapses when the pinned items alone exceed the budget', async () => {
+        await renderNavigation([
+            { label: 'Console', width: 200 },
+            { label: 'Files', width: 200 },
+            { label: 'Backups', width: 100, extension: true },
         ]);
 
         expect(screen.getByTestId('nav')).toHaveAttribute('data-collapsed');
@@ -140,22 +205,25 @@ describe('SubNavigation overflow', () => {
         expect(screen.getByRole('button', { name: /Navigation/ })).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('names the collapsed toggle after the active item', () => {
-        renderNavigation([
-            { label: 'Console', width: 300, core: true },
-            { label: 'Files', width: 150, core: true, active: true },
-        ]);
+    it('names the collapsed toggle after the active item', async () => {
+        await renderNavigation(
+            [
+                { label: 'Console', width: 300 },
+                { label: 'Files', width: 150 },
+            ],
+            { path: '/account/files' }
+        );
 
         expect(screen.getByTestId('nav')).toHaveAttribute('data-collapsed');
         expect(screen.getByRole('button', { name: /^Files$/ })).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('never overflows a column layout', () => {
+    it('never overflows a column layout', async () => {
         layout.direction = 'column';
-        renderNavigation([
-            { label: 'Console', width: 300, core: true },
-            { label: 'Files', width: 300 },
-            { label: 'Backups', width: 300 },
+        await renderNavigation([
+            { label: 'Console', width: 300 },
+            { label: 'Files', width: 300, extension: true },
+            { label: 'Backups', width: 300, extension: true },
         ]);
 
         expect(overflowed()).toEqual([]);

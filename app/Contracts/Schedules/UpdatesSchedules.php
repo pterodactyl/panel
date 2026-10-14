@@ -10,9 +10,12 @@ use Pterodactyl\Models\Schedule;
 interface UpdatesSchedules
 {
     /**
-     * @param  ScheduleUpdateData  $data
+     * The input is validated here, and cron fields that do not form a valid expression are
+     * refused.
+     *
+     * @param  array<string, mixed>  $input  the same fields a schedule is created with
      *
      * @throws DisplayException
      */
-    public function update(Schedule $schedule, array $data): Schedule;
+    public function update(Schedule $schedule, array $input): Schedule;
 }

@@ -8,7 +8,7 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class InvalidPortMappingException extends DisplayException
 {
-    /** @param ApiScalar $port */
+    /** @param bool|float|int|string|null $port */
     public function __construct(mixed $port)
     {
         parent::__construct(trans('exceptions.allocations.invalid_mapping', ['port' => $port]));

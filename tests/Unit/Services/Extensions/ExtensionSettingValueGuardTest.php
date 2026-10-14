@@ -10,9 +10,21 @@ use stdClass;
 use UnexpectedValueException;
 
 uses(TestCase::class);
-test('delegates decoding and assertion to the json value guard', function () {
+test('decodes stored values and rejects what json cannot hold', function () {
     expect(ExtensionSettingValueGuard::decode('{"enabled":true,"limits":[1,2.5,null]}'))->toBe(['enabled' => true, 'limits' => [1, 2.5, null]]);
     expect(fn () => ExtensionSettingValueGuard::assertValue(new stdClass()))->toThrow(UnexpectedValueException::class);
+});
+test('decodes encrypted values', function () {
+    $encoded = ExtensionSettingValueGuard::encode(['key' => 'secret'], secret: true);
+
+    expect($encoded)->not->toContain('secret')
+        ->and(ExtensionSettingValueGuard::decode($encoded, secret: true))->toBe(['key' => 'secret']);
+});
+test('values may be nested at most ten levels', function () {
+    $nested = fn (int $depth): array => array_reduce(range(1, $depth), fn (mixed $value): array => [$value], 'leaf');
+
+    expect(fn () => ExtensionSettingValueGuard::assertValue($nested(10)))->not->toThrow(UnexpectedValueException::class)
+        ->and(fn () => ExtensionSettingValueGuard::assertValue($nested(11)))->toThrow(UnexpectedValueException::class);
 });
 test('color accepts hex and oklch colours only', function (mixed $value, ?string $expected) {
     expect(ExtensionSettingValueGuard::color($value))->toBe($expected);

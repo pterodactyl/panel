@@ -7,13 +7,16 @@ namespace Pterodactyl\Services\Helpers;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Pterodactyl\Exceptions\ManifestDoesNotExistException;
-use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 class AssetHashService
 {
     public const string MANIFEST_PATH = 'assets/manifest.json';
 
     public const string MAIN_ENTRY = 'resources/scripts/index.tsx';
+
+    /** The panel stylesheet, a Vite input of its own that a theme's stylesheet is linked after. */
+    public const string STYLESHEET_ENTRY = 'resources/scripts/assets/tailwind.css';
 
     /**
      * Bare module specifiers shared with runtime-loaded extension bundles, mapped to
@@ -29,6 +32,7 @@ class AssetHashService
         '@tanstack/react-query' => 'resources/scripts/ext-runtime/tanstack-react-query.ts',
         '@pterodactyl/sdk' => 'resources/scripts/sdk/index.ts',
         '@pterodactyl/sdk/api' => 'resources/scripts/sdk/api.ts',
+        '@pterodactyl/sdk/theme' => 'resources/scripts/sdk/theme.ts',
     ];
 
     /** @var ViteManifest|null */
@@ -87,6 +91,16 @@ class AssetHashService
         }
 
         return implode('', $tags);
+    }
+
+    /**
+     * Return the stylesheet tag for a CSS entry of the build.
+     */
+    public function css(string $resource): string
+    {
+        $entry = $this->entry($resource);
+
+        return $entry === null ? '' : $this->stylesheetTag($this->assetUrl($entry['file']), $entry['integrity'] ?? '');
     }
 
     /**
@@ -206,7 +220,9 @@ class AssetHashService
     /** @return ViteManifest */
     private function parseManifest(string $contents): array
     {
-        $decoded = JsonValueGuard::decodeArray8($contents);
+        $decoded = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
+        throw_unless(is_array($decoded), UnexpectedValueException::class, 'The asset manifest must be a JSON object.');
+
         $manifest = [];
 
         foreach ($decoded as $source => $value) {

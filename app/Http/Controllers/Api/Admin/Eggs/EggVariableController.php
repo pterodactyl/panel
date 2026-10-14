@@ -15,17 +15,17 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Eggs\CreatesEggVariables;
 use Pterodactyl\Contracts\Eggs\DeletesEggVariables;
 use Pterodactyl\Contracts\Eggs\UpdatesEggVariables;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables\DeleteVariableRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables\GetVariablesRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables\StoreVariableRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Eggs\Variables\UpdateVariableRequest;
+use Pterodactyl\Http\Resources\Api\Admin\EggVariableResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Transformers\Api\Admin\EggVariableTransformer;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Egg Variables', 'Create and manage startup variables for an egg.')]
@@ -33,59 +33,49 @@ class EggVariableController extends AdminApiController
 {
     /**
      * List egg variables.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List egg variables', 'Returns variables for an egg in display order.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Unknown includes are ignored.', required: false, example: 'egg')]
-    #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variables returned.', collection: true, resourceKey: 'egg_variable')]
-    public function index(GetVariablesRequest $request, Egg $egg): array
+    #[ResponseFromResource(EggVariableResource::class, EggVariable::class, description: 'Egg variables returned.', collection: true, resourceKey: 'egg_variable')]
+    public function index(GetVariablesRequest $request, Egg $egg): ApiResourceCollection
     {
 
-        return Fractal::collection($this->orderedVariables($egg))
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
-            ->toResponseArray();
+        return EggVariableResource::collection($this->orderedVariables($egg));
     }
 
     /**
      * Create egg variable.
      */
     #[Endpoint('Create egg variable', 'Creates a startup variable for an egg.')]
-    #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, status: 201, description: 'Egg variable created.', resourceKey: 'egg_variable')]
+    #[ResponseFromResource(EggVariableResource::class, EggVariable::class, status: 201, description: 'Egg variable created.', resourceKey: 'egg_variable')]
     public function store(StoreVariableRequest $request, CreatesEggVariables $variables, Egg $egg): JsonResponse
     {
 
-        $variable = $variables->create($egg, $request->payload());
+        $variable = $variables->create($egg, $request->actionInput());
 
         Activity::event('admin:egg-variable.create')
             ->subject($egg, $variable)
             ->property('name', $variable->name)
             ->log();
 
-        return Fractal::item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
-            ->respond(Response::HTTP_CREATED);
+        return EggVariableResource::make($variable)->respond(Response::HTTP_CREATED);
     }
 
     /**
      * Update egg variable.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Update egg variable', 'Updates a startup variable for an egg.')]
-    #[ResponseFromTransformer(EggVariableTransformer::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]
-    public function update(UpdateVariableRequest $request, UpdatesEggVariables $variables, Egg $egg, EggVariable $variable): array
+    #[ResponseFromResource(EggVariableResource::class, EggVariable::class, description: 'Egg variable updated.', resourceKey: 'egg_variable')]
+    public function update(UpdateVariableRequest $request, UpdatesEggVariables $variables, Egg $egg, EggVariable $variable): EggVariableResource
     {
-        $variable = $variables->update($variable, $request->payload());
+        $variable = $variables->update($variable, $request->actionInput());
 
         Activity::event('admin:egg-variable.update')
             ->subject($egg, $variable)
             ->property('name', $variable->name)
             ->log();
 
-        return Fractal::item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
-            ->toResponseArray();
+        return EggVariableResource::make($variable);
     }
 
     /**

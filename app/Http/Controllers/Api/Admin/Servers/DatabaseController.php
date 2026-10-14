@@ -14,17 +14,16 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Databases\CreatesDatabases;
 use Pterodactyl\Contracts\Databases\DeletesDatabases;
-use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\Databases\GetDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\Databases\ServerDatabaseWriteRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Servers\Databases\StoreDatabaseRequest;
+use Pterodactyl\Http\Resources\Api\Admin\ServerDatabaseResource;
+use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Support\DatabaseName;
-use Pterodactyl\Transformers\Api\Admin\ServerDatabaseTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -43,69 +42,53 @@ class DatabaseController extends AdminApiController
 
     /**
      * List server databases.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('List server databases', 'Returns all databases assigned to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password".', required: false, example: 'password', enum: ['password'])]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, description: 'Server databases returned.', collection: true, resourceKey: 'server_database')]
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, description: 'Server databases returned.', collection: true, resourceKey: 'server_database')]
     #[ScribeResponse(self::INSTALL_STATE_ERROR, status: 403, description: 'The server is not installed.')]
-    public function index(GetDatabasesRequest $request, Server $server): array
+    public function index(GetDatabasesRequest $request, Server $server): ApiResourceCollection
     {
         $this->assertServerInstalled($server);
 
-        return Fractal::collection($server->databases)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->toResponseArray();
+        return ServerDatabaseResource::collection($server->databases);
     }
 
     /**
      * Show server database.
-     *
-     * @return ApiPayload
      */
     #[Endpoint('Get server database', 'Returns a single database assigned to a server.')]
     #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password".', required: false, example: 'password', enum: ['password'])]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, description: 'Server database returned.', resourceKey: 'server_database')]
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, description: 'Server database returned.', resourceKey: 'server_database')]
     #[ScribeResponse(self::INSTALL_STATE_ERROR, status: 403, description: 'The server is not installed.')]
-    public function show(GetDatabasesRequest $request, Server $server, Database $database): array
+    public function show(GetDatabasesRequest $request, Server $server, Database $database): ServerDatabaseResource
     {
         $this->assertServerInstalled($server);
         $this->assertDatabaseBelongsToServer($server, $database);
 
-        return Fractal::item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->toResponseArray();
+        return ServerDatabaseResource::make($database);
     }
 
     /**
      * Create server database.
      */
     #[Endpoint('Create server database', 'Creates a database for a server and returns the generated password.')]
-    #[ResponseFromTransformer(ServerDatabaseTransformer::class, Database::class, status: 201, description: 'Server database created.', resourceKey: 'server_database', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1/databases/Lk3jx4pQ'], include: ['password'])]
+    #[ResponseFromResource(ServerDatabaseResource::class, Database::class, status: 201, description: 'Server database created.', resourceKey: 'server_database', meta: ['resource' => 'https://panel.example.com/api/admin/servers/1/databases/Lk3jx4pQ'], include: ['password'])]
     #[ScribeResponse(self::INSTALL_STATE_ERROR, status: 403, description: 'The server is not installed.')]
     public function store(StoreDatabaseRequest $request, CreatesDatabases $createDatabase, Server $server): JsonResponse
     {
         $this->assertServerInstalled($server);
 
-        $data = $request->payload();
-
-        $database = $createDatabase->create($server, [
-            'database_host_id' => $data['database_host_id'],
-            'database' => DatabaseName::generateUnique($data['database'], $server->id),
-            'remote' => $data['remote'],
-            'max_connections' => $data['max_connections'] ?? null,
-        ]);
+        $database = $createDatabase->create($server, $request->actionInput());
 
         Activity::event('admin:server-database.create')
             ->subject($database)
             ->property('name', $database->database)
             ->log();
 
-        return Fractal::item($database)
-            ->parseIncludes(['password'])
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->addMeta([
+        return ServerDatabaseResource::make($database)
+            ->withIncludes('password')
+            ->withMeta([
                 'resource' => route('api.admin.servers.databases.view', [
                     'server' => $server->id,
                     'database' => $database->id,
