@@ -2,6 +2,8 @@ name: Install
 
 # Follows the panel installation guide on every operating system it supports, so a
 # package, repository or step that stops working on one of them fails here first.
+# The guide depends on outside package repositories, so pull requests only run it
+# when they change dependencies or CI; the nightly run catches upstream changes.
 on:
   push:
     branches:
@@ -9,13 +11,37 @@ on:
   pull_request:
     branches:
       - "2.0-develop"
+    paths:
+      - composer.json
+      - composer.lock
+      - package.json
+      - package-lock.json
+      - .github/**
+  schedule:
+    - cron: "0 4 * * *"
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
-  group: install-${{ github.event.pull_request.number || github.ref }}
+  group: install-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  node:
+    name: Node 22.12
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      # The oldest Node the guide supports only has to build the panel.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12"
+          cache: npm
+      - run: npm ci
+      - run: npm run build:production
+
   install:
     name: ${{ matrix.os }}
     runs-on: ubuntu-24.04

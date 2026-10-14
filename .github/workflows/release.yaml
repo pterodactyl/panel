@@ -4,8 +4,15 @@ on:
     tags:
       - "v*"
 jobs:
+  # A release is only built once the install guide works on every supported system.
+  install:
+    uses: ./.github/workflows/install.yaml
+    permissions:
+      contents: read
+
   release:
     name: Release
+    needs: install
     runs-on: ubuntu-latest
     permissions:
       contents: write
