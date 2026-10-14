@@ -11,10 +11,17 @@ on:
 
 jobs:
   frontend:
-    name: Frontend
+    name: Frontend (Node ${{ matrix.node }})
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest supported release and the newest.
+        node:
+          - "22.12"
+          - "22"
     steps:
       - uses: actions/checkout@v4
       # SDK tests exercise the PHP extension OpenAPI generator.
@@ -25,7 +32,7 @@ jobs:
           coverage: none
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
       - run: npm run api:check
@@ -51,7 +58,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
-          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          extensions: bcmath, cli, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
       - run: cp .env.ci .env
@@ -71,7 +78,7 @@ jobs:
           - 8.3
           - 8.4
         database:
-          - mariadb:10
+          - mariadb:10.11
           - mariadb:11
           - mysql:8
           - mysql:9
@@ -97,7 +104,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          extensions: bcmath, cli, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
       - run: cp .env.ci .env

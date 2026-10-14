@@ -13,13 +13,14 @@ on:
   push:
     branches:
       - 1.0-develop
+      - 2.0-develop
   release:
     types:
       - published
 
 env:
   IMAGE: ghcr.io/pterodactyl/panel
-  PUBLISH: ${{ github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip') }}
+  PUBLISH: ${{ github.event_name != 'pull_request' && github.ref != 'refs/heads/2.0-develop' && !contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip') }}
 
 jobs:
   build:
@@ -114,7 +115,7 @@ jobs:
     name: Push
     needs: build
     runs-on: ubuntu-24.04
-    if: "github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip')"
+    if: "github.event_name != 'pull_request' && github.ref != 'refs/heads/2.0-develop' && !contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip')"
     permissions:
       contents: read
       packages: write
