@@ -39,9 +39,7 @@ jobs:
           git commit -m 'ci(release): bump version'
           git push
       - name: create release archive
-        run: |
-          rm -rf node_modules tests CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
-          tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .oxfmtrc.json
+        run: bash .github/scripts/archive.sh
       - name: write changelog
         run: |
           sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG

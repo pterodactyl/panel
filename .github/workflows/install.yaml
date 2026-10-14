@@ -42,8 +42,30 @@ jobs:
       - run: npm ci
       - run: npm run build:production
 
+  archive:
+    name: Release archive
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:production
+      # The same archive a release publishes, which the install guide downloads.
+      - run: bash .github/scripts/archive.sh
+      - uses: actions/upload-artifact@v7
+        with:
+          name: panel
+          path: panel.tar.gz
+          retention-days: 1
+
   install:
     name: ${{ matrix.os }}
+    needs: archive
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -94,27 +116,16 @@ jobs:
       - name: Install Composer
         run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-      - name: Install Node.js
-        run: |
-          curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-          apt -y install nodejs
-
-      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
-          path: panel
+          name: panel
 
-      - name: Move the panel into place
+      - name: Download the Panel
         run: |
           mkdir -p /var/www/pterodactyl
-          cp -a panel/. /var/www/pterodactyl/
+          tar -xzf panel.tar.gz -C /var/www/pterodactyl
           cd /var/www/pterodactyl
           chmod -R 755 storage/* bootstrap/cache/
-
-      - name: Build the frontend
-        working-directory: /var/www/pterodactyl
-        run: |
-          npm ci
-          npm run build:production
 
       - name: Start MariaDB and Redis
         run: |
