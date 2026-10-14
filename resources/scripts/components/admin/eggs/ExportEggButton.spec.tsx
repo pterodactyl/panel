@@ -44,7 +44,7 @@ describe('ExportEggButton', () => {
             return 'blob:egg';
         });
         window.URL.revokeObjectURL = vi.fn();
-        vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+        vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -61,6 +61,7 @@ describe('ExportEggButton', () => {
         // jsdom's Blob has no text(), so read it back with a FileReader.
         const contents = await new Promise<string>((resolve) => {
             const reader = new FileReader();
+
             reader.onload = () => resolve(reader.result as string);
             reader.readAsText(blobs[0]);
         });
