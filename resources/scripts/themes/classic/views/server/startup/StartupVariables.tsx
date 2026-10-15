@@ -43,7 +43,12 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
 
     const suggestionOptions =
         control.kind === 'suggest'
-            ? control.options.filter((option) => {
+            ? [
+                  ...control.options,
+                  ...(control.allowManualInput && value && !control.options.some((option) => option.value === value)
+                      ? [{ label: value, value }]
+                      : []),
+              ].filter((option) => {
                   if (search.trim() === '') {
                       return true;
                   }
