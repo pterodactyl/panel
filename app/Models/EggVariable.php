@@ -39,6 +39,7 @@ class EggVariable extends Model
             'env_variable' => 'string',
             'user_viewable' => 'bool',
             'user_editable' => 'bool',
+            'options_source' => 'array',
             'sort_order' => 'integer',
         ];
     }

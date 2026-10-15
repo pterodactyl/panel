@@ -37,6 +37,11 @@ export interface StartupImageModel {
 export type StartupVariableControl =
     | { readonly kind: 'switch'; readonly on: string; readonly off: string }
     | { readonly kind: 'select'; readonly options: readonly string[] }
+    | {
+          readonly kind: 'suggest';
+          readonly options: readonly { readonly label: string; readonly value: string }[];
+          readonly allowManualInput: boolean;
+      }
     | { readonly kind: 'text' };
 export interface StartupVariable {
     /** The environment variable, which identifies it. */
@@ -92,7 +97,13 @@ const startupVariable = ({ attributes }: ServerStartupVariable): StartupVariable
     value: attributes.server_value ?? attributes.default_value,
     defaultValue: attributes.default_value,
     editable: attributes.is_editable,
-    control: variableControl(attributes.rules),
+    control: attributes.has_options_source
+        ? {
+              kind: 'suggest',
+              options: attributes.options,
+              allowManualInput: attributes.allow_manual_input,
+          }
+        : variableControl(attributes.rules),
 });
 
 function useStartup() {

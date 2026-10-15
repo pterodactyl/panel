@@ -17,9 +17,10 @@ import {
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { View } from '../View';
 
-const mocks = vi.hoisted(() => ({ error: vi.fn() }));
+const mocks = vi.hoisted(() => ({ error: vi.fn(), copy: vi.fn<(text: string) => Promise<boolean>>() }));
 
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: mocks.error }));
+vi.mock('@/lib/clipboard', () => ({ default: mocks.copy }));
 vi.mock('@/components/elements/InputSpinner', () => ({
     default: ({ visible, children }: PropsWithChildren<{ visible: boolean }>) => (
         <div>
@@ -39,6 +40,9 @@ const variable = (value: string, rules = 'required|string'): ServerStartupVariab
         server_value: value,
         is_editable: true,
         rules,
+        options: [],
+        has_options_source: false,
+        allow_manual_input: true,
     },
     meta: { startup_command: `start ${value}`, raw_startup_command: 'start {{PORT}}' },
 });
@@ -52,6 +56,7 @@ let imageChanges: { image: string; finish: () => void }[];
 beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     vi.clearAllMocks();
+    mocks.copy.mockResolvedValue(true);
     saves = [];
     imageChanges = [];
     http.defaults.adapter = ((config) =>
@@ -174,6 +179,39 @@ describe('startup variables', () => {
         await advance(500);
 
         expect(saves.map((save) => save.value)).toEqual(['1']);
+    });
+
+    it('offers remote suggestions while allowing a custom value', async () => {
+        const remote = variable('1.21.11');
+        remote.attributes.has_options_source = true;
+        remote.attributes.options = [
+            { label: 'Minecraft 1.21.11', value: '1.21.11' },
+            { label: 'Minecraft 1.20.6', value: '1.20.6' },
+        ];
+        renderStartup([remote]);
+
+        const input = await screen.findByDisplayValue('1.21.11');
+        expect(input).toHaveAttribute('list', 'startup-variable-options-port');
+        expect(document.querySelector('#startup-variable-options-port option[value="1.21.11"]')).toHaveTextContent(
+            'Minecraft 1.21.11',
+        );
+
+        fireEvent.change(input, { target: { value: 'custom-build' } });
+        fireEvent.blur(input);
+        await advance();
+        expect(saves.map((save) => save.value)).toEqual(['custom-build']);
+    });
+});
+
+describe('startup command', () => {
+    it('copies the rendered command', async () => {
+        renderStartup();
+
+        fireEvent.click(await screen.findByRole('button', { name: 'Copy startup command' }));
+        await advance();
+
+        expect(mocks.copy).toHaveBeenCalledWith('start original');
+        expect(screen.getByText('Copied text to clipboard.')).toBeVisible();
     });
 });
 

@@ -23,6 +23,7 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
     const value = draft ?? variable.value;
     const editable = model.canEdit && variable.editable;
     const { control } = variable;
+    const optionListId = `startup-variable-options-${variable.key.toLowerCase().replace(/[^a-z0-9_-]/g, '-')}`;
     // The update of the edit's own model, so an edit flushed after the server changes saves to its server.
     const save = useDebouncedCallback((update: StartupVariablesModel['update'], next: string) => {
         const saved = update(variable.key, next);
@@ -66,6 +67,34 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                     placeholder={variable.defaultValue}
                 />
             )}
+            {control.kind === 'suggest' &&
+                (control.allowManualInput || control.options.length === 0 ? (
+                    <>
+                        <Input
+                            list={optionListId}
+                            onChange={(event) => editable && change(event.currentTarget.value)}
+                            onBlur={save.flush}
+                            readOnly={!editable}
+                            name={variable.key}
+                            value={value}
+                            placeholder={variable.defaultValue}
+                        />
+                        <datalist id={optionListId}>
+                            {control.options.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </datalist>
+                    </>
+                ) : (
+                    <Select
+                        value={value}
+                        onChange={(selected) => change(String(selected))}
+                        disabled={!editable}
+                        options={[...control.options]}
+                    />
+                ))}
         </InputSpinner>
     );
 }
