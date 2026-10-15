@@ -19,7 +19,6 @@ import { usePending } from '../usePending';
 
 function VariableControl({ model, variable }: { model: StartupVariablesModel; variable: StartupVariable }) {
     const [draft, setDraft] = useState<string | null>(null);
-    const [search, setSearch] = useState('');
     const [saving, track] = usePending();
     const value = draft ?? variable.value;
     const editable = model.canEdit && variable.editable;
@@ -53,16 +52,6 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                   ...(variable.defaultValue ? [{ label: variable.defaultValue, value: variable.defaultValue }] : []),
                   ...control.options.filter((option) => option.value !== variable.defaultValue),
               ];
-    const filteredSuggestionOptions = suggestionOptions.filter((option) => {
-        if (search.trim() === '') {
-            return true;
-        }
-
-        const query = search.toLowerCase();
-
-        return option.label.toLowerCase().includes(query) || option.value.toLowerCase().includes(query);
-    });
-
     return (
         <InputSpinner visible={saving}>
             {control.kind === 'switch' && (
@@ -115,14 +104,14 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                         value={value}
                         onChange={(selected) => change(String(selected))}
                         onSearchChange={(query) => {
-                            setSearch(query);
                             if (control.allowManualInput && query !== '') {
                                 change(query);
                             }
                         }}
                         onBlur={save.flush}
+                        filterOptions
                         disabled={!editable}
-                        options={filteredSuggestionOptions}
+                        options={suggestionOptions}
                     />
                 ))}
         </InputSpinner>
