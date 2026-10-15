@@ -131,12 +131,6 @@ const ComboboxOptionItem = ({
     </Combobox.Item>
 );
 
-const scrollOptions = (event: React.WheelEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    event.currentTarget.scrollTop += event.deltaY;
-};
-
 const ComboboxOptionsList = ({
     ui,
     groups,
@@ -147,7 +141,7 @@ const ComboboxOptionsList = ({
     showIndicator: boolean;
 }) =>
     groups ? (
-        <Combobox.List {...ui('list')} onWheel={scrollOptions}>
+        <Combobox.List {...ui('list')} onWheel={(event) => event.stopPropagation()}>
             {(group: ComboboxGroupItem) => (
                 <Combobox.Group key={group.value} items={group.items} {...ui('group')}>
                     <Combobox.GroupLabel {...ui('groupLabel')}>{group.label}</Combobox.GroupLabel>
@@ -165,7 +159,7 @@ const ComboboxOptionsList = ({
             )}
         </Combobox.List>
     ) : (
-        <Combobox.List {...ui('list')} onWheel={scrollOptions}>
+        <Combobox.List {...ui('list')} onWheel={(event) => event.stopPropagation()}>
             {(option: SelectOption) => (
                 <ComboboxOptionItem key={optionKey(option)} ui={ui} option={option} showIndicator={showIndicator} />
             )}
