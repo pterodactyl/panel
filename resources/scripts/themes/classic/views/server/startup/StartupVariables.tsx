@@ -47,10 +47,19 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
     };
 
     const suggestionOptions = control.kind === 'suggest' ? [...control.options] : [];
-    if (control.kind === 'suggest' && variable.defaultValue && !suggestionOptions.some((option) => option.value === variable.defaultValue)) {
+    if (
+        control.kind === 'suggest' &&
+        variable.defaultValue &&
+        !suggestionOptions.some((option) => option.value === variable.defaultValue)
+    ) {
         suggestionOptions.push({ label: `${variable.defaultValue} (Default)`, value: variable.defaultValue });
     }
-    if (control.kind === 'suggest' && control.allowManualInput && value && !suggestionOptions.some((option) => option.value === value)) {
+    if (
+        control.kind === 'suggest' &&
+        control.allowManualInput &&
+        value &&
+        !suggestionOptions.some((option) => option.value === value)
+    ) {
         suggestionOptions.push({ label: value, value });
     }
     const filteredSuggestionOptions = suggestionOptions.filter((option) => {
