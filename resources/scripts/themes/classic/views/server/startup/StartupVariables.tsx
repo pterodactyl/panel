@@ -27,12 +27,17 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
     const optionListId = `startup-variable-options-${variable.key.toLowerCase().replace(/[^a-z0-9_-]/g, '-')}`;
     // The update of the edit's own model, so an edit flushed after the server changes saves to its server.
     const save = useDebouncedCallback((update: StartupVariablesModel['update'], next: string) => {
-        const saved = update(variable.key, next);
+        const shouldUseDefault =
+            control.kind === 'suggest' &&
+            control.allowManualInput &&
+            !control.options.some((option) => option.value === next);
+        const valueToSave = shouldUseDefault ? variable.defaultValue : next;
+        const saved = update(variable.key, valueToSave);
 
         track(saved);
         // A newer draft keeps showing until it has saved too.
         void saved.then(
-            () => setDraft((current) => (current === next ? null : current)),
+            () => setDraft((current) => (current === valueToSave ? null : current)),
             () => {}
         );
     }, 500);
@@ -41,23 +46,22 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
         save(model.update, next);
     };
 
-    const suggestionOptions =
-        control.kind === 'suggest'
-            ? [
-                  ...control.options,
-                  ...(control.allowManualInput && value && !control.options.some((option) => option.value === value)
-                      ? [{ label: value, value }]
-                      : []),
-              ].filter((option) => {
-                  if (search.trim() === '') {
-                      return true;
-                  }
+    const suggestionOptions = control.kind === 'suggest' ? [...control.options] : [];
+    if (control.kind === 'suggest' && variable.defaultValue && !suggestionOptions.some((option) => option.value === variable.defaultValue)) {
+        suggestionOptions.push({ label: `${variable.defaultValue} (Default)`, value: variable.defaultValue });
+    }
+    if (control.kind === 'suggest' && control.allowManualInput && value && !suggestionOptions.some((option) => option.value === value)) {
+        suggestionOptions.push({ label: value, value });
+    }
+    const filteredSuggestionOptions = suggestionOptions.filter((option) => {
+        if (search.trim() === '') {
+            return true;
+        }
 
-                  const query = search.toLowerCase();
+        const query = search.toLowerCase();
 
-                  return option.label.toLowerCase().includes(query) || option.value.toLowerCase().includes(query);
-              })
-            : [];
+        return option.label.toLowerCase().includes(query) || option.value.toLowerCase().includes(query);
+    });
 
     return (
         <InputSpinner visible={saving}>
@@ -118,7 +122,7 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                         }}
                         onBlur={save.flush}
                         disabled={!editable}
-                        options={suggestionOptions}
+                        options={filteredSuggestionOptions}
                     />
                 ))}
         </InputSpinner>

@@ -166,11 +166,13 @@ final class VariableOptionsService
 
         $rows = [];
         foreach ($value as $item) {
-            if (is_array($item) && array_is_list($item)) {
-                array_push($rows, ...$this->rows($item));
-            } else {
+            if (! is_array($item) || ! array_is_list($item)) {
                 $rows[] = ['key' => null, 'value' => $item];
+
+                continue;
             }
+
+            $rows = [...$rows, ...$this->rows($item)];
         }
 
         return $rows;

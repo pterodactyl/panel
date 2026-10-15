@@ -181,7 +181,7 @@ describe('startup variables', () => {
         expect(saves.map((save) => save.value)).toEqual(['1']);
     });
 
-    it('offers remote suggestions while allowing a custom value', async () => {
+    it('offers remote suggestions and falls back to the default for unknown values', async () => {
         const remote = variable('1.21.11');
         remote.attributes.has_options_source = true;
         remote.attributes.options = [
@@ -198,7 +198,7 @@ describe('startup variables', () => {
         fireEvent.change(input, { target: { value: 'custom-build' } });
         fireEvent.blur(input);
         await advance();
-        expect(saves.map((save) => save.value)).toEqual(['custom-build']);
+        expect(saves.map((save) => save.value)).toEqual(['25565']);
     });
 });
 
