@@ -190,12 +190,11 @@ describe('startup variables', () => {
         ];
         renderStartup([remote]);
 
-        const input = await screen.findByDisplayValue('1.21.11');
-        expect(input).toHaveAttribute('list', 'startup-variable-options-port');
-        expect(document.querySelector('#startup-variable-options-port option[value="1.21.11"]')).toHaveTextContent(
-            'Minecraft 1.21.11',
-        );
+        const input = (await screen.findAllByRole('combobox'))[1];
+        fireEvent.click(screen.getAllByRole('button', { name: 'Open popup' })[1]);
+        expect(await screen.findByText('Minecraft 1.21.11')).toBeVisible();
 
+        fireEvent.focus(input);
         fireEvent.change(input, { target: { value: 'custom-build' } });
         fireEvent.blur(input);
         await advance();

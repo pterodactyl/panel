@@ -122,7 +122,7 @@ function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDial
                             <field.TextAreaField
                                 id='create_options_source'
                                 label='API Options Source'
-                                rows={8}
+                                rows={4}
                                 description='Optional JSON configuration for loading suggestions from a public HTTPS API.'
                             />
                         )}

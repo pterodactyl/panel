@@ -155,7 +155,7 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                             <field.TextAreaField
                                 id={`options_source_${variable.attributes.id}`}
                                 label='API Options Source'
-                                rows={10}
+                                rows={4}
                                 description='Optional JSON configuration for loading suggestions from a public HTTPS API. Users can still type a value when allow_manual_input is true.'
                             />
                         )}

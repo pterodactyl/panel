@@ -94,7 +94,7 @@ const startupVariable = ({ attributes }: ServerStartupVariable): StartupVariable
     key: attributes.env_variable,
     name: attributes.name,
     description: attributes.description,
-    value: attributes.server_value ?? attributes.default_value,
+    value: attributes.server_value ?? (attributes.has_options_source ? '' : attributes.default_value),
     defaultValue: attributes.default_value,
     editable: attributes.is_editable,
     control: attributes.has_options_source

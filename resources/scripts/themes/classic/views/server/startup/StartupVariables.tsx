@@ -19,6 +19,7 @@ import { usePending } from '../usePending';
 
 function VariableControl({ model, variable }: { model: StartupVariablesModel; variable: StartupVariable }) {
     const [draft, setDraft] = useState<string | null>(null);
+    const [search, setSearch] = useState('');
     const [saving, track] = usePending();
     const value = draft ?? variable.value;
     const editable = model.canEdit && variable.editable;
@@ -39,6 +40,19 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
         setDraft(next);
         save(model.update, next);
     };
+
+    const suggestionOptions =
+        control.kind === 'suggest'
+            ? control.options.filter((option) => {
+                  if (search.trim() === '') {
+                      return true;
+                  }
+
+                  const query = search.toLowerCase();
+
+                  return option.label.toLowerCase().includes(query) || option.value.toLowerCase().includes(query);
+              })
+            : [];
 
     return (
         <InputSpinner visible={saving}>
@@ -68,7 +82,7 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                 />
             )}
             {control.kind === 'suggest' &&
-                (control.allowManualInput || control.options.length === 0 ? (
+                (control.options.length === 0 ? (
                     <>
                         <Input
                             list={optionListId}
@@ -91,8 +105,15 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                     <Select
                         value={value}
                         onChange={(selected) => change(String(selected))}
+                        onSearchChange={(query) => {
+                            setSearch(query);
+                            if (control.allowManualInput && query !== '') {
+                                change(query);
+                            }
+                        }}
+                        onBlur={save.flush}
                         disabled={!editable}
-                        options={[...control.options]}
+                        options={suggestionOptions}
                     />
                 ))}
         </InputSpinner>
