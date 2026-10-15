@@ -30,7 +30,10 @@ final class VariableOptionsService
             return [];
         }
 
-        $cacheKey = 'egg-variable-options:'.hash('sha256', json_encode($source, JSON_THROW_ON_ERROR));
+        $cacheKey = sprintf(
+            'egg-variable-options:%s',
+            hash('sha256', json_encode($source, JSON_THROW_ON_ERROR)),
+        );
 
         return Cache::remember($cacheKey, now()->addMinutes(15), fn (): array => $this->fetch($source));
     }
@@ -51,7 +54,12 @@ final class VariableOptionsService
             }
 
             $response = $request->get($url);
-            if (! $response->successful() || mb_strlen($response->body(), '8bit') > self::MAX_RESPONSE_BYTES) {
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $body = $response->body();
+            if (mb_strlen($body, '8bit') > self::MAX_RESPONSE_BYTES) {
                 return [];
             }
 
@@ -72,20 +80,37 @@ final class VariableOptionsService
         $host = is_array($parts) ? ($parts['host'] ?? null) : null;
         $port = is_array($parts) ? ($parts['port'] ?? 443) : 443;
 
-        if (($parts['scheme'] ?? null) !== 'https' || ! is_string($host) || $host === '' || $port !== 443 || isset($parts['user']) || isset($parts['pass'])) {
+        $isInvalidUrl = ($parts['scheme'] ?? null) !== 'https'
+            || ! is_string($host)
+            || $host === ''
+            || $port !== 443
+            || isset($parts['user'])
+            || isset($parts['pass']);
+        if ($isInvalidUrl) {
             throw new UnexpectedValueException('Only public HTTPS option sources are supported.');
         }
 
         if (filter_var($host, FILTER_VALIDATE_IP)) {
-            throw_unless($this->isPublicIp($host), UnexpectedValueException::class, 'Private option source addresses are not supported.');
+            throw_unless(
+                $this->isPublicIp($host),
+                UnexpectedValueException::class,
+                'Private option source addresses are not supported.',
+            );
 
             return null;
         }
 
         $records = @dns_get_record($host, DNS_A);
         $addresses = is_array($records) ? array_column($records, 'ip') : [];
-        $address = Arr::first($addresses, fn (mixed $ip): bool => is_string($ip) && $this->isPublicIp($ip));
-        throw_unless(is_string($address), UnexpectedValueException::class, 'The option source hostname has no public address.');
+        $address = Arr::first(
+            $addresses,
+            fn (mixed $ip): bool => is_string($ip) && $this->isPublicIp($ip),
+        );
+        throw_unless(
+            is_string($address),
+            UnexpectedValueException::class,
+            'The option source hostname has no public address.',
+        );
 
         return sprintf('%s:443:%s', $host, $address);
     }
@@ -127,12 +152,18 @@ final class VariableOptionsService
                 $value = $this->withoutSuffix($value, $stripSuffix);
                 $label = $this->withoutSuffix($label, $stripSuffix);
             }
-            if ($value === null || $label === null || array_key_exists($value, $options)) {
+            if ($value === null || $label === null) {
+                continue;
+            }
+            if (array_key_exists($value, $options)) {
                 continue;
             }
 
-            $options[$value] = ['label' => $label, 'value' => $value];
-            if (count($options) >= self::MAX_OPTIONS) {
+            $options[$value] = [
+                'label' => $label,
+                'value' => $value,
+            ];
+            if (count($options) === self::MAX_OPTIONS) {
                 break;
             }
         }
@@ -193,7 +224,10 @@ final class VariableOptionsService
             $expected = Arr::string($filter, 'value');
             $operator = Arr::string($filter, 'operator');
 
-            if ($actual === null || ! $this->compare($actual, $operator, $expected)) {
+            if ($actual === null) {
+                return false;
+            }
+            if (! $this->compare($actual, $operator, $expected)) {
                 return false;
             }
         }
