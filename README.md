@@ -20,15 +20,17 @@ UI to end users.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
 
-## Pterodactyl v2 is coming soon
+## Pterodactyl v2 Beta is Out!
 
-The next major version of Pterodactyl is on the way: a fully modernized tech stack, a brand new admin area, and an
-extension SDK built into the panel. It is still 100% free and open source under the MIT license.
+Pterodactyl v2.0.0-beta.1 is now available! The next major version introduces a modernized tech stack, a redesigned admin area, and an extension SDK built into the panel. It remains 100% free and open source under the MIT license.
 
 [![Watch: Introducing Pterodactyl v2](.github/assets/v2-video.jpg)](https://www.youtube.com/watch?v=1ER4kv0jVEU)
 
-Development happens on the [`2.0-develop`](https://github.com/pterodactyl/panel/tree/2.0-develop) branch. This branch
-(`1.0-develop`) remains the current stable release line.
+- [Get started with v2](https://docs.pterodactyl.io/v2/panel/getting-started)
+- [Upgrade from v1](https://docs.pterodactyl.io/v2/upgrading/upgrading-from-v1)
+- [Release notes](https://github.com/pterodactyl/panel/releases/tag/v2.0.0-beta.1)
+
+Development happens on the [`2.0-develop`](https://github.com/pterodactyl/panel/tree/2.0-develop) branch. The v2 branch is currently in beta, while `1.0-develop` remains the current stable release line.
 
 ![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
 
