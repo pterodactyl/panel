@@ -137,23 +137,6 @@ const scrollOptions = (event: React.WheelEvent<HTMLElement>) => {
     event.currentTarget.scrollTop += event.deltaY;
 };
 
-const preserveScrollbarInteraction = (event: React.PointerEvent<HTMLElement>) => {
-    const element = event.currentTarget;
-    const scrollbarWidth = element.offsetWidth - element.clientWidth;
-
-    if (scrollbarWidth <= 0) {
-        return;
-    }
-
-    const scrollbarStart = element.getBoundingClientRect().right - scrollbarWidth;
-
-    if (event.clientX < scrollbarStart) {
-        return;
-    }
-
-    event.stopPropagation();
-};
-
 const ComboboxOptionsList = ({
     ui,
     groups,
@@ -164,7 +147,7 @@ const ComboboxOptionsList = ({
     showIndicator: boolean;
 }) =>
     groups ? (
-        <Combobox.List {...ui('list')} onWheel={scrollOptions} onPointerDown={preserveScrollbarInteraction}>
+        <Combobox.List {...ui('list')} onWheel={scrollOptions}>
             {(group: ComboboxGroupItem) => (
                 <Combobox.Group key={group.value} items={group.items} {...ui('group')}>
                     <Combobox.GroupLabel {...ui('groupLabel')}>{group.label}</Combobox.GroupLabel>
@@ -182,7 +165,7 @@ const ComboboxOptionsList = ({
             )}
         </Combobox.List>
     ) : (
-        <Combobox.List {...ui('list')} onWheel={scrollOptions} onPointerDown={preserveScrollbarInteraction}>
+        <Combobox.List {...ui('list')} onWheel={scrollOptions}>
             {(option: SelectOption) => (
                 <ComboboxOptionItem key={optionKey(option)} ui={ui} option={option} showIndicator={showIndicator} />
             )}
