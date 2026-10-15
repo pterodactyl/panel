@@ -5,17 +5,15 @@ import type { ViewProps } from '@/sdk/theme';
 export default function StartupCommand({ model, className }: ViewProps<'server.startup.command'>) {
     return (
         <TitledGreyBox
-            title={
-                <div className='flex items-center justify-between'>
-                    <span>Startup Command</span>
-                    {model.command && (
-                        <CopyOnClick text={model.command}>
-                            <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy startup command'>
-                                <Icon icon={Copy} className='h-3.5 w-3.5' />
-                            </Button.Text>
-                        </CopyOnClick>
-                    )}
-                </div>
+            title='Startup Command'
+            actions={
+                model.command && (
+                    <CopyOnClick text={model.command}>
+                        <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy startup command'>
+                            <Icon icon={Copy} className='h-3.5 w-3.5' />
+                        </Button.Text>
+                    </CopyOnClick>
+                )
             }
             className={className}
         >
