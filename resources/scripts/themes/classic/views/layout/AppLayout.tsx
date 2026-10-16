@@ -16,7 +16,7 @@ function LinkIcon({ link, user }: { link: AppLayoutLink; user: AppLayoutModel['u
     if (link.id === 'account') {
         return (
             <span className='flex items-center w-5 h-5'>
-                <Avatar name={user.uuid} />
+                <Avatar name={user.uuid} image={user.avatar} />
             </span>
         );
     }

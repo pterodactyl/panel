@@ -817,6 +817,7 @@ export type AdminUserAttributes = {
     root_admin: boolean;
     '2fa': boolean;
     image: string;
+    avatar?: string | null;
     servers_count: number;
     subuser_of_count: number;
     created_at: string;
@@ -1580,6 +1581,8 @@ export type ClientUserAttributes = {
     first_name: string;
     last_name: string;
     language: string;
+    avatar: string | null;
+    image: string;
 };
 
 export type ClientUserResource = {

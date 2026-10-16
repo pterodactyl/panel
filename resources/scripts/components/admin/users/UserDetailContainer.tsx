@@ -17,6 +17,7 @@ import {
     useUpdateAdminUser,
 } from '@/api/admin/users/queries';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
+import UserAvatarCard from './UserAvatarCard';
 import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -297,6 +298,7 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
                     />
 
                     <div className='flex flex-col gap-4'>
+                        <UserAvatarCard user={user} />
                         <PasswordCard form={form} />
                         <DeleteUserCard disabled={ownsServers} email={user.attributes.email} onDelete={onDelete} />
                     </div>

@@ -22,6 +22,7 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
+use Pterodactyl\Services\Users\UserAvatarService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 /**
@@ -40,6 +41,7 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
     'totp_secret',
     'totp_authenticated_at',
     'gravatar',
+    'avatar',
     'root_admin',
 ])]
 #[Hidden(['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'])]
@@ -104,7 +106,11 @@ class User extends Authenticatable implements Identifiable
         $attributes = $this->toArray();
         unset($attributes['id'], $attributes['external_id']);
 
-        return [...$attributes, 'identifier' => $this->identifier];
+        return [
+            ...$attributes,
+            'avatar' => app(UserAvatarService::class)->url($this->avatar),
+            'identifier' => $this->identifier,
+        ];
     }
 
     /**

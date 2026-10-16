@@ -135,6 +135,8 @@ Route::prefix('/users')->name('api.admin.users')->group(function (): void {
     Route::post('/', [UserController::class, 'store'])->name('.store');
     Route::post('/{user:id}/disable-2fa', DisableTwoFactorController::class)->name('.disable-2fa');
     Route::put('/{user:id}', [UserController::class, 'update'])->name('.update');
+    Route::post('/{user:id}/avatar', [UserController::class, 'updateAvatar'])->name('.avatar.update');
+    Route::delete('/{user:id}/avatar', [UserController::class, 'deleteAvatar'])->name('.avatar.delete');
 
     Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('.delete');
 });

@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useField, useForm, useStore } from '@tanstack/react-form';
 import { useLocation } from '@tanstack/react-router';
-import { useCurrentUser, useUpdateAccountEmail, useUpdateAccountPassword } from '@/api/account/queries';
+import {
+    useCurrentUser,
+    useDeleteAccountAvatar,
+    useUpdateAccountAvatar,
+    useUpdateAccountEmail,
+    useUpdateAccountPassword,
+} from '@/api/account/queries';
 import {
     useAccountTwoFactorToken,
     useDisableAccountTwoFactor,
@@ -12,6 +18,7 @@ import { boundField, fixtureField, stateField, type FieldAttributes } from '../f
 import { implementViews } from '../registry';
 import type {
     AccountEmailModel,
+    AccountAvatarModel,
     AccountOverviewModel,
     AccountPasswordModel,
     AccountTwoFactorModel,
@@ -135,6 +142,29 @@ function useAccountEmailModel(): AccountEmailModel {
         submit: () => void form.handleSubmit(),
         canSubmit: canSubmit && !updateEmail.isPending,
         submitting: submitting || updateEmail.isPending,
+    };
+}
+
+function useAccountAvatarModel(): AccountAvatarModel {
+    const user = useCurrentUser();
+    const update = useUpdateAccountAvatar();
+    const remove = useDeleteAccountAvatar();
+    const [selected, setSelected] = useState<File | null>(null);
+
+    return {
+        avatar: user.avatar ?? null,
+        selected,
+        select: setSelected,
+        submit: () => {
+            if (selected === null) {
+                return;
+            }
+
+            void update.mutateAsync(selected).then(() => setSelected(null));
+        },
+        remove: () => void remove.mutateAsync(),
+        canSubmit: selected !== null && !update.isPending,
+        submitting: update.isPending || remove.isPending,
     };
 }
 
@@ -286,6 +316,7 @@ implementViews({
         use: useAccountEmailModel,
         fixtures: { default: () => emailFixture(), submitting: () => emailFixture(true) },
     },
+    'account.avatar': { use: useAccountAvatarModel },
     'account.twoFactor': {
         use: useAccountTwoFactorModel,
         fixtures: {
