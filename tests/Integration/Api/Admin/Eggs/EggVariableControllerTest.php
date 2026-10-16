@@ -38,15 +38,24 @@ test('unknown include is ignored', function (): void {
 });
 test('create variable', function (): void {
     $egg = createEgg();
-    $response = $this->postJson(url($egg), ['name' => 'Test Variable', 'description' => 'A brand new variable.', 'env_variable' => 'TEST_VARIABLE', 'options' => ['user_viewable', 'user_editable'], 'rules' => 'required|string', 'default_value' => 'default']);
+    $source = [
+        'url' => 'https://example.com/versions.json',
+        'data_path' => 'versions',
+        'value_path' => 'id',
+        'label_path' => 'name',
+        'filters' => [['path' => 'type', 'operator' => 'not_equals', 'value' => 'snapshot']],
+        'allow_manual_input' => true,
+    ];
+    $response = $this->postJson(url($egg), ['name' => 'Test Variable', 'description' => 'A brand new variable.', 'env_variable' => 'TEST_VARIABLE', 'options' => ['user_viewable', 'user_editable'], 'rules' => 'required|string', 'default_value' => 'default', 'options_source' => $source]);
     $response->assertStatus(Response::HTTP_CREATED);
     $response->assertJsonStructure(['object', 'attributes' => ['id', 'egg_id', 'name', 'env_variable', 'default_value', 'user_viewable', 'user_editable', 'rules', 'created_at', 'updated_at']]);
     $this->assertDatabaseHas('egg_variables', ['egg_id' => $egg->id, 'env_variable' => 'TEST_VARIABLE']);
     $variable = EggVariable::query()->where('egg_id', $egg->id)->firstOrFail();
     expect($variable->user_viewable)->toBeTrue();
     expect($variable->user_editable)->toBeTrue();
+    expect($variable->options_source)->toBe($source);
 
-    $response->assertJson(['object' => 'egg_variable', 'attributes' => ['id' => $variable->id, 'egg_id' => $variable->egg_id, 'name' => $variable->name, 'description' => $variable->description, 'env_variable' => $variable->env_variable, 'default_value' => $variable->default_value, 'user_viewable' => $variable->user_viewable, 'user_editable' => $variable->user_editable, 'rules' => $variable->rules]]);
+    $response->assertJson(['object' => 'egg_variable', 'attributes' => ['id' => $variable->id, 'egg_id' => $variable->egg_id, 'name' => $variable->name, 'description' => $variable->description, 'env_variable' => $variable->env_variable, 'default_value' => $variable->default_value, 'user_viewable' => $variable->user_viewable, 'user_editable' => $variable->user_editable, 'rules' => $variable->rules, 'options_source' => $source]]);
 });
 test('update variable', function (): void {
     $egg = createEgg();

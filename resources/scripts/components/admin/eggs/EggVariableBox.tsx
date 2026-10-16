@@ -11,6 +11,7 @@ import {
     type EggVariableValues,
     validateEnvVariable,
     validateVariableName,
+    validateOptionsSource,
 } from '@/components/admin/eggs/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Button from '@/components/elements/Button';
@@ -30,6 +31,9 @@ const variableToFormValues = (variable: AdminEggVariable): EggVariableValues => 
     userViewable: variable.attributes.user_viewable,
     userEditable: variable.attributes.user_editable,
     rules: variable.attributes.rules,
+    optionsSource: variable.attributes.options_source
+        ? JSON.stringify(variable.attributes.options_source, null, 2)
+        : '',
 });
 
 export default function EggVariableBox({ eggId, variable }: Props) {
@@ -138,6 +142,21 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                                 id={`rules_${variable.attributes.id}`}
                                 label='Input Rules'
                                 description='Standard Laravel validation rules used to validate this variable.'
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-4'>
+                    <form.AppField
+                        name='optionsSource'
+                        validators={{ onChange: ({ value }) => validateOptionsSource(value) }}
+                    >
+                        {(field) => (
+                            <field.TextAreaField
+                                id={`options_source_${variable.attributes.id}`}
+                                label='API Options Source'
+                                rows={4}
+                                description='Optional JSON configuration for loading suggestions from a public HTTPS API. Users can still type a value when allow_manual_input is true.'
                             />
                         )}
                     </form.AppField>

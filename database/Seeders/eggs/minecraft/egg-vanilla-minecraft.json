@@ -55,7 +55,21 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|between:3,15",
-            "field_type": "text"
+            "field_type": "text",
+            "options_source": {
+                "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+                "data_path": "versions",
+                "value_path": "id",
+                "label_path": "id",
+                "allow_manual_input": true,
+                "filters": [
+                    {
+                        "path": "type",
+                        "operator": "equals",
+                        "value": "release"
+                    }
+                ]
+            }
         }
     ]
 }

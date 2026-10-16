@@ -278,6 +278,7 @@ export type AdminEggVariableAttributes = {
     user_viewable: boolean;
     user_editable: boolean;
     rules: string;
+    options_source: EggVariableOptionsSource | null;
     sort_order: number | null;
     created_at: string;
     updated_at: string;
@@ -654,6 +655,7 @@ export type AdminServerVariableAttributes = {
     user_viewable: boolean;
     user_editable: boolean;
     rules: string;
+    options_source: EggVariableOptionsSource | null;
     required?: boolean;
     sort_order: number | null;
     created_at: string;
@@ -1278,6 +1280,28 @@ export type ClientEggVariableAttributes = {
     server_value: string | null;
     is_editable: boolean;
     rules: string;
+    options: Array<EggVariableOption>;
+    has_options_source: boolean;
+    allow_manual_input: boolean;
+};
+
+export type EggVariableOption = {
+    label: string;
+    value: string;
+};
+
+export type EggVariableOptionsSource = {
+    url: string;
+    data_path: string;
+    value_path: string;
+    label_path?: string | null;
+    strip_suffix?: string | null;
+    filters?: Array<{
+        path: string;
+        operator: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with';
+        value: string;
+    }>;
+    allow_manual_input?: boolean;
 };
 
 export type ClientEggVariableListResponse = {
@@ -2316,6 +2340,7 @@ export type AdminCreateEggVariableRequest = {
      */
     default_value?: string;
     options?: Array<string>;
+    options_source?: EggVariableOptionsSource | null;
 };
 
 export type AdminReorderEggVariablesRequest = {
@@ -2344,6 +2369,7 @@ export type AdminUpdateEggVariableRequest = {
      */
     default_value?: string;
     options?: Array<string>;
+    options_source?: EggVariableOptionsSource | null;
 };
 
 export type AdminUpdateEggInstallScriptRequest = {

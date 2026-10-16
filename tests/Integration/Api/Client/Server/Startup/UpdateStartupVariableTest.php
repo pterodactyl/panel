@@ -34,6 +34,9 @@ test('startup variable can be updated', function (array $permissions): void {
         'server_value' => '123',
         'is_editable' => true,
         'rules' => $variable->rules,
+        'options' => [],
+        'has_options_source' => false,
+        'allow_manual_input' => true,
     ]);
     $this->assertDatabaseHas('server_variables', ['server_id' => $server->id, 'variable_id' => $variable->id, 'variable_value' => '123']);
     $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version 123');
