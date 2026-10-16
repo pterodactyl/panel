@@ -11,7 +11,9 @@ use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
 final class BrandingLogoService
 {
     private const string SETTING_KEY = 'settings::app:logo';
+
     private const string FILE_GROUP = 'branding';
+
     private const int MAX_KILOBYTES = 10240;
 
     public function __construct(private readonly ExtensionSettingFiles $files) {}
