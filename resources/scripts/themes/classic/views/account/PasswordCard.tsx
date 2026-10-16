@@ -1,6 +1,6 @@
 import { Button, ContentBox, Form, SpinnerOverlay } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
-import { TextField } from '../shared/fields';
+import { PasswordField, TextField } from '../shared/fields';
 
 export default function PasswordCard({ model, className }: ViewProps<'account.password'>) {
     const { fields } = model;
@@ -11,7 +11,7 @@ export default function PasswordCard({ model, className }: ViewProps<'account.pa
             <Form form={{ handleSubmit: model.submit }} className='m-0'>
                 <TextField field={fields.current} id='current_password' label='Current Password' />
                 <div className='mt-6'>
-                    <TextField
+                    <PasswordField
                         field={fields.password}
                         id='new_password'
                         label='New Password'

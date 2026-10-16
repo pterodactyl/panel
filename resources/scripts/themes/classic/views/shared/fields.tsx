@@ -1,5 +1,7 @@
-import { useId } from 'react';
-import { Input, Label, TextArea, type FieldModel } from '@/sdk';
+import { useId, useState, type ChangeEvent } from 'react';
+import { Clipboard, Eye, EyeOff, RotateCcwKey } from 'lucide-react';
+import { Button, CopyOnClick, Icon, Input, Label, TextArea, Tooltip, type FieldModel } from '@/sdk';
+import { generateSecurePassword } from '@/lib/passwords';
 
 interface FieldProps {
     field: FieldModel;
@@ -64,6 +66,95 @@ export function TextField({
                 $hasError={!!field.error}
                 $isLight={light}
             />
+            <HelpText id={helpId} error={field.error} description={description} />
+        </div>
+    );
+}
+
+export function PasswordField({ field, label, description, light, id, className }: FieldProps) {
+    const { fieldId, helpId, describedBy } = useFieldIds(field, id, description);
+    const [visible, setVisible] = useState(false);
+    const [generated, setGenerated] = useState(false);
+    const toggleLabel = (visible ? 'Hide' : 'Show') + ' ' + (label?.toLowerCase() ?? 'password');
+
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        field.fieldProps.onChange(event);
+        setGenerated(false);
+    };
+
+    const generate = () => {
+        const value = generateSecurePassword();
+
+        field.fieldProps.onChange({ currentTarget: { value } } as ChangeEvent<HTMLInputElement>);
+        setGenerated(true);
+    };
+
+    return (
+        <div>
+            {label && (
+                <Label htmlFor={fieldId} isLight={light}>
+                    {label}
+                </Label>
+            )}
+            <div className='relative'>
+                <Input
+                    {...field.fieldProps}
+                    id={fieldId}
+                    type={visible ? 'text' : 'password'}
+                    onChange={handleChange}
+                    className={['pr-24', className].filter(Boolean).join(' ')}
+                    aria-invalid={field.error ? true : undefined}
+                    aria-describedby={describedBy}
+                    $hasError={!!field.error}
+                    $isLight={light}
+                />
+                <div className='absolute inset-y-0 right-2 flex items-center gap-1'>
+                    <Tooltip content='Generate secure password'>
+                        <span className='inline-flex'>
+                            <Button.Text
+                                type='button'
+                                size='xsmall'
+                                isSecondary
+                                aria-label='Generate secure password'
+                                onClick={generate}
+                            >
+                                <Icon icon={RotateCcwKey} className='h-3.5 w-3.5' />
+                            </Button.Text>
+                        </span>
+                    </Tooltip>
+                    <Tooltip content={toggleLabel}>
+                        <span className='inline-flex'>
+                            <Button.Text
+                                type='button'
+                                size='xsmall'
+                                isSecondary
+                                aria-label={toggleLabel}
+                                aria-pressed={visible}
+                                disabled={!field.fieldProps.value}
+                                onClick={() => setVisible((current) => !current)}
+                            >
+                                <Icon icon={visible ? EyeOff : Eye} className='h-3.5 w-3.5' />
+                            </Button.Text>
+                        </span>
+                    </Tooltip>
+                    {generated && (
+                        <Tooltip content='Copy password'>
+                            <span className='inline-flex'>
+                                <CopyOnClick text={field.fieldProps.value} showInNotification={false}>
+                                    <Button.Text
+                                        type='button'
+                                        size='xsmall'
+                                        isSecondary
+                                        aria-label='Copy password'
+                                    >
+                                        <Icon icon={Clipboard} className='h-3.5 w-3.5' />
+                                    </Button.Text>
+                                </CopyOnClick>
+                            </span>
+                        </Tooltip>
+                    )}
+                </div>
+            </div>
             <HelpText id={helpId} error={field.error} description={description} />
         </div>
     );
