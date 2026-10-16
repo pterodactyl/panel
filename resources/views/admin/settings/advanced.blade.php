@@ -52,13 +52,14 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="alert alert-warning no-margin">
-                                        You are currently using reCAPTCHA keys that were shipped with this Panel. For improved security it is recommended to <a href="https://www.google.com/recaptcha/admin">generate new invisible reCAPTCHA keys</a> that tied specifically to your website.
+                                        You are currently using reCAPTCHA keys that were shipped with this Panel. For improved security it is recommended to <a href="https://www.google.com/recaptcha/admin">generate new invisible reCAPTCHA keys</a> that are tied specifically to your website.
                                     </div>
                                 </div>
                             </div>
                         @endif
                     </div>
                 </div>
+
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">HTTP Connections</h3>
@@ -82,6 +83,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">Automatic Allocation Creation</h3>
@@ -115,13 +117,141 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Trusted Proxies</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="control-label" for="trusted-proxies">Proxy IP Addresses</label>
+
+                            <input
+                                type="hidden"
+                                id="trusted-proxies-value"
+                                name="trustedproxy:proxies"
+                                value="{{ old('trustedproxy:proxies', $trustedProxies) }}"
+                            >
+
+                            <select id="trusted-proxies" class="form-control" multiple>
+                                @foreach(array_filter(explode(',', old('trustedproxy:proxies', $trustedProxies) ?? '')) as $proxy)
+                                    <option value="{{ trim($proxy) }}" selected>{{ trim($proxy) }}</option>
+                                @endforeach
+                            </select>
+
+                            <div style="margin-top: 10px;">
+                                <button type="button" id="set-cloudflare-proxies" class="btn btn-sm btn-default">
+                                    Set to Cloudflare IPs
+                                </button>
+                                <button type="button" id="clear-trusted-proxies" class="btn btn-sm btn-default">
+                                    Clear
+                                </button>
+                            </div>
+
+                            <p class="text-muted small">Type an IPv4 or IPv6 address or CIDR range and press Enter to add it. Click the × to remove an entry. Leave empty to trust no proxies, or enter * alone to trust all proxies. Click Save to apply changes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Debug Mode</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="app-debug" class="control-label">Status</label>
+                            <select id="app-debug" name="app:debug" class="form-control">
+                                <option value="false" @if(old('app:debug', config('app.debug') ? 'true' : 'false') === 'false') selected @endif>Disabled</option>
+                                <option value="true" @if(old('app:debug', config('app.debug') ? 'true' : 'false') === 'true') selected @endif>Enabled</option>
+                            </select>
+                            <p class="text-muted small">Show detailed Laravel error pages when enabled. Keep disabled in production because error pages can expose sensitive configuration and stack traces. Click Save to apply changes.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="box box-primary">
                     <div class="box-footer">
                         {{ csrf_field() }}
-                        <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
+                        <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">
+                            Save
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>
+        $(function () {
+            var trustedProxies = $('#trusted-proxies');
+
+            trustedProxies.select2({
+                tags: true,
+                selectOnClose: true,
+                tokenSeparators: [',', ' '],
+            });
+
+            function syncTrustedProxies() {
+                $('#trusted-proxies-value').val(
+                    (trustedProxies.val() || []).join(',')
+                );
+            }
+
+// These Cloudflare IPV4/6's should be up to date. They will be updated if not.
+            $('#set-cloudflare-proxies').on('click', function () {
+                var cloudflareProxies = [
+                    '173.245.48.0/20',
+                    '103.21.244.0/22',
+                    '103.22.200.0/22',
+                    '103.31.4.0/22',
+                    '141.101.64.0/18',
+                    '108.162.192.0/18',
+                    '190.93.240.0/20',
+                    '188.114.96.0/20',
+                    '197.234.240.0/22',
+                    '198.41.128.0/17',
+                    '162.158.0.0/15',
+                    '104.16.0.0/13',
+                    '104.24.0.0/14',
+                    '172.64.0.0/13',
+                    '131.0.72.0/22',
+                    '2400:cb00::/32',
+                    '2606:4700::/32',
+                    '2803:f800::/32',
+                    '2405:b500::/32',
+                    '2405:8100::/32',
+                    '2a06:98c0::/29',
+                    '2c0f:f248::/32',
+                ];
+
+                trustedProxies.select2('close');
+                trustedProxies.empty();
+
+                cloudflareProxies.forEach(function (proxy) {
+                    trustedProxies.append(
+                        new Option(proxy, proxy, true, true)
+                    );
+                });
+
+                trustedProxies.trigger('change');
+            });
+
+            $('#clear-trusted-proxies').on('click', function () {
+                trustedProxies.select2('close');
+                trustedProxies.empty().trigger('change');
+            });
+
+            trustedProxies.on('change', syncTrustedProxies);
+
+            trustedProxies.closest('form').on('submit', function () {
+                trustedProxies.select2('close');
+                syncTrustedProxies();
+            });
+
+            syncTrustedProxies();
+        });
+    </script>
 @endsection
