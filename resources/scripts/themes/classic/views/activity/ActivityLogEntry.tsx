@@ -52,7 +52,7 @@ export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
         <div className='grid grid-cols-10 py-4 border-b-2 border-border last:rounded-b-sm last:border-0 group'>
             <div className='hidden sm:flex sm:col-span-1 items-center justify-center select-none'>
                 <div className='flex items-center w-10 h-10 rounded-full bg-popover overflow-hidden'>
-                    <Avatar name={actor?.username || actor?.email || 'system'} />
+                    <Avatar name={actor?.username || actor?.email || 'system'} image={actor?.image} />
                 </div>
             </div>
             <div className='col-span-10 sm:col-span-9 flex'>

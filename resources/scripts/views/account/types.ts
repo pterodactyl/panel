@@ -9,6 +9,16 @@ export interface AccountOverviewModel {
 export type AccountPasswordModel = FormModel<'current' | 'password' | 'confirmPassword'>;
 export type AccountEmailModel = FormModel<'email' | 'password'>;
 
+export interface AccountAvatarModel {
+    readonly avatar: string | null;
+    readonly selected: File | null;
+    readonly select: (file: File | null) => void;
+    readonly submit: () => void;
+    readonly remove: () => void;
+    readonly canSubmit: boolean;
+    readonly submitting: boolean;
+}
+
 export type TwoFactorDialog = 'enable' | 'disable';
 export interface TwoFactorSetupModel extends FormModel<'code' | 'password'> {
     /** The secret to enter by hand, once loaded. */
@@ -76,6 +86,7 @@ declare module '../registry' {
         'page.account.ssh': PageStatusModel;
         'account.password': AccountPasswordModel;
         'account.email': AccountEmailModel;
+        'account.avatar': AccountAvatarModel;
         'account.twoFactor': AccountTwoFactorModel;
         'account.apiKeys.list': ApiKeyListModel;
         'account.apiKeys.create': ApiKeyCreateModel;

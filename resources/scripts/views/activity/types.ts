@@ -11,7 +11,11 @@ export interface ActivityEntry {
     /** For example `server:power.start`. */
     readonly event: string;
     /** Null for actions the panel took on its own. */
-    readonly actor: { readonly username: string | null; readonly email: string | null } | null;
+    readonly actor: {
+        readonly username: string | null;
+        readonly email: string | null;
+        readonly image?: string | null;
+    } | null;
     readonly properties: ActivityProperties;
     /** The properties hold more than the description shows. */
     readonly hasMetadata: boolean;

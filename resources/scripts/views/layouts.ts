@@ -46,6 +46,7 @@ export interface AppLayoutModel {
         readonly uuid: string;
         readonly username: string;
         readonly email: string;
+        readonly avatar?: string | null;
         readonly rootAdmin: boolean;
     };
     /** The scheme in use. */
@@ -253,7 +254,7 @@ function useAppArea(): AppArea {
 
 function useAppLayoutModel(): AppLayoutModel {
     const brand = useBrand();
-    const { uuid, username, email, rootAdmin } = useCurrentUser();
+    const { uuid, username, email, avatar, rootAdmin } = useCurrentUser();
     const { scheme, preference, schemes, setScheme } = useTheme();
     const { mutate, isPending } = useLogout();
     const area = useAppArea();
@@ -263,7 +264,7 @@ function useAppLayoutModel(): AppLayoutModel {
             brand,
             links: appLinks(rootAdmin),
             area,
-            user: { uuid, username, email, rootAdmin },
+            user: { uuid, username, email, avatar, rootAdmin },
             scheme,
             preference,
             schemes,
@@ -271,7 +272,21 @@ function useAppLayoutModel(): AppLayoutModel {
             signOut: () => mutate({}),
             signingOut: isPending,
         }),
-        [brand, area, uuid, username, email, rootAdmin, scheme, preference, schemes, setScheme, mutate, isPending]
+        [
+            brand,
+            area,
+            uuid,
+            username,
+            email,
+            avatar,
+            rootAdmin,
+            scheme,
+            preference,
+            schemes,
+            setScheme,
+            mutate,
+            isPending,
+        ]
     );
 }
 
