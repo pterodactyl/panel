@@ -92,6 +92,9 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
             ['control.start', 'control.stop', 'websocket.connect'],
             $subuser->permissions
         );
+        // A duplicate in the request must not leave a gap in the keys, otherwise the
+        // permissions are stored as a JSON object instead of an array.
+        $this->assertTrue(array_is_list($subuser->permissions));
 
         Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($server, $subuser) {
             return $job->user === $subuser->user->uuid && $job->target->is($server);
