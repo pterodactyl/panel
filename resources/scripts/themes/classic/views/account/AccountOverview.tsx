@@ -18,7 +18,9 @@ export default function AccountOverview({ model, className }: ViewProps<'page.ac
                 <View name='account.email' className={cn(CARD_WIDTH, 'mt-8 sm:mt-0 sm:ml-8')} />
                 <View name='account.twoFactor' className={cn(CARD_WIDTH, 'mt-8 md:mt-0 md:ml-8')} />
             </div>
-            <View name='account.avatar' className='w-full mb-10' />
+            <div className='flex flex-wrap lg:grid lg:grid-cols-3 mb-10'>
+                <View name='account.avatar' className={CARD_WIDTH} />
+            </div>
             <Slot name='account.overview.after' />
         </PageContentBlock>
     );

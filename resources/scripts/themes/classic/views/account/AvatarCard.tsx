@@ -25,10 +25,12 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
             <SpinnerOverlay size='large' visible={model.submitting} />
             <div className='flex flex-col gap-4'>
                 <div className='flex items-start gap-4'>
-                    <Avatar name='profile' image={preview} size={72} />
-                    <p className='input-help m-0'>
-                        You may select a custom avatar for your personal account. Avatars are not required and the
-                        default one will always be used if none is set.
+                    <div className='h-[72px] w-[72px] shrink-0'>
+                        <Avatar name='profile' image={preview} size='100%' />
+                    </div>
+                    <p className='m-0 text-sm'>
+                        You may select a custom avatar for your personal account. PNG, JPEG, SVG, WebP, AVIF, and ICO
+                        files are supported.
                     </p>
                 </div>
                 <div className='flex flex-wrap gap-2'>

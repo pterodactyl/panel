@@ -38,10 +38,12 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
         <TitledGreyBox title='Avatar'>
             <div className='flex flex-col gap-4'>
                 <div className='flex items-start gap-4'>
-                    <Avatar name={user.attributes.username} image={preview} size={72} />
+                    <div className='h-[72px] w-[72px] shrink-0'>
+                        <Avatar name={user.attributes.username} image={preview} size='100%' />
+                    </div>
                     <p className='m-0 text-sm text-muted-foreground'>
-                        The avatar which will appear under the user&apos;s personal account. You may set a custom one or
-                        use the default one provided by the Panel automatically.
+                        The avatar which will appear under the user&apos;s personal account. PNG, JPEG, SVG, WebP, AVIF,
+                        and ICO files are supported.
                     </p>
                 </div>
                 <input
