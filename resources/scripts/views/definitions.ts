@@ -90,6 +90,7 @@ defineView('page.account.overview', {
 });
 defineView('account.password', { context: 'account', ...overview });
 defineView('account.email', { context: 'account', ...overview });
+defineView('account.avatar', { context: 'account', ...overview });
 defineView('account.twoFactor', { context: 'account', ...overview });
 defineView('page.account.api', { ...VIEW_PAGES['page.account.api'], ...keys });
 defineView('page.account.ssh', { ...VIEW_PAGES['page.account.ssh'], ...keys });

@@ -23,8 +23,16 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
     return (
         <ContentBox className={className} title='Update Avatar'>
             <SpinnerOverlay size='large' visible={model.submitting} />
-            <div className='flex items-center gap-4'>
-                <Avatar name='profile' image={preview} size={72} />
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-start gap-4'>
+                    <div className='h-[72px] w-[72px] shrink-0'>
+                        <Avatar name='profile' image={preview} size='100%' />
+                    </div>
+                    <p className='m-0 text-sm'>
+                        You may select a custom avatar for your personal account. PNG, JPEG, SVG, WebP, AVIF, and ICO
+                        files are supported.
+                    </p>
+                </div>
                 <div className='flex flex-wrap gap-2'>
                     <input
                         ref={input}
@@ -33,19 +41,16 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
                         className='hidden'
                         onChange={(event) => model.select(event.target.files?.[0] ?? null)}
                     />
-                    <Button type='button' onClick={() => input.current?.click()}>
-                        Choose Avatar
+                    <Button
+                        type='button'
+                        onClick={() => (model.selected ? model.submit() : input.current?.click())}
+                        disabled={model.selected ? !model.canSubmit : false}
+                    >
+                        {model.selected ? 'Save Changes' : 'Update Avatar'}
                     </Button>
-                    {model.avatar && !model.selected && (
-                        <Button type='button' isSecondary onClick={model.remove}>
-                            Remove Avatar
-                        </Button>
-                    )}
-                    {model.selected && (
-                        <Button type='button' onClick={model.submit} disabled={!model.canSubmit}>
-                            Update Avatar
-                        </Button>
-                    )}
+                    <Button.Danger type='button' disabled={!model.avatar || !!model.selected} onClick={model.remove}>
+                        Remove Avatar
+                    </Button.Danger>
                 </div>
             </div>
         </ContentBox>
