@@ -14,7 +14,7 @@ export interface ActivityEntry {
     readonly actor: {
         readonly username: string | null;
         readonly email: string | null;
-        readonly image?: string | null;
+        readonly avatar?: string | null;
     } | null;
     readonly properties: ActivityProperties;
     /** The properties hold more than the description shows. */

@@ -44,6 +44,7 @@ class UserResource extends ApplicationResource
             'root_admin' => (bool) $user->root_admin,
             '2fa' => (bool) $user->use_totp,
             'image' => app(UserAvatarService::class)->url($user->avatar),
+            'avatar' => app(UserAvatarService::class)->url($user->avatar),
             'relationships' => [],
             'created_at' => $this->formatTimestamp($user->created_at),
             'updated_at' => $this->formatTimestamp($user->updated_at),

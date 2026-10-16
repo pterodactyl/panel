@@ -1582,6 +1582,7 @@ export type ClientUserAttributes = {
     last_name: string;
     language: string;
     avatar: string | null;
+    image: string;
 };
 
 export type ClientUserResource = {
