@@ -39,19 +39,16 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
                         className='hidden'
                         onChange={(event) => model.select(event.target.files?.[0] ?? null)}
                     />
-                    <Button type='button' onClick={() => input.current?.click()}>
-                        Update Avatar
+                    <Button
+                        type='button'
+                        onClick={() => (model.selected ? model.submit() : input.current?.click())}
+                        disabled={model.selected ? !model.canSubmit : false}
+                    >
+                        {model.selected ? 'Save Changes' : 'Update Avatar'}
                     </Button>
-                    {model.avatar && !model.selected && (
-                        <Button.Danger type='button' onClick={model.remove}>
-                            Remove Avatar
-                        </Button.Danger>
-                    )}
-                    {model.selected && (
-                        <Button type='button' onClick={model.submit} disabled={!model.canSubmit}>
-                            Update Avatar
-                        </Button>
-                    )}
+                    <Button.Danger type='button' disabled={!model.avatar || !!model.selected} onClick={model.remove}>
+                        Remove Avatar
+                    </Button.Danger>
                 </div>
             </div>
         </ContentBox>

@@ -27,7 +27,8 @@ function CoreAvatar({ variant = 'beam', className, ...props }: AvatarProps) {
                 alt={props.title ? props.name : ''}
                 width={props.size}
                 height={props.size}
-                className={`rounded-full object-cover ${className ?? ''}`}
+                style={{ width: props.size, height: props.size }}
+                className={`shrink-0 rounded-full object-cover ${className ?? ''}`}
             />
         );
     }

@@ -38,14 +38,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
         <TitledGreyBox title='Avatar'>
             <div className='flex flex-col gap-4'>
                 <div className='flex items-start gap-4'>
-                    <button
-                        type='button'
-                        className='cursor-pointer rounded-full border-0 bg-transparent p-0'
-                        aria-label='Select avatar'
-                        onClick={() => input.current?.click()}
-                    >
-                        <Avatar name={user.attributes.username} image={preview} size={72} />
-                    </button>
+                    <Avatar name={user.attributes.username} image={preview} size={72} />
                     <p className='m-0 text-sm text-muted-foreground'>
                         The avatar which will appear under the user&apos;s personal account. You may set a custom one or
                         use the default one provided by the Panel automatically.
@@ -62,14 +55,18 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
                     }}
                 />
                 <div className='flex justify-end gap-2'>
-                    <Button type='button' disabled={!selected} isLoading={update.isPending} onClick={() => void save()}>
-                        Save Changes
+                    <Button
+                        type='button'
+                        isLoading={update.isPending}
+                        onClick={() => (selected ? void save() : input.current?.click())}
+                    >
+                        {selected ? 'Save Changes' : 'Update Avatar'}
                     </Button>
                     <Button.Danger
                         type='button'
-                        disabled={!image}
+                        disabled={!image || !!selected}
                         isLoading={remove.isPending}
-                        onClick={() => void remove.mutateAsync(user.attributes.id)}
+                        onClick={() => void remove.mutateAsync(user.attributes.id).then(() => setSelected(null))}
                     >
                         Remove Avatar
                     </Button.Danger>
