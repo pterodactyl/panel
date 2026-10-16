@@ -24,6 +24,7 @@ vi.mock('@/api/admin/languages/queries', () => ({
 
 const settings: AdminSettings = {
     general: { 'app:name': 'Panel', 'pterodactyl:auth:2fa_required': 0, 'app:locale': 'en' },
+    logo: null,
     mail: {
         'mail:default': 'smtp',
         'mail:mailers:smtp:host': 'localhost',

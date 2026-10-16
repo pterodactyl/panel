@@ -11,6 +11,7 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
 use Pterodactyl\Http\Requests\Api\Admin\Settings\GetSettingsRequest;
+use Pterodactyl\Services\Helpers\BrandingLogoService;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
 #[Subgroup('Settings', 'View and update global panel settings.')]
@@ -22,6 +23,7 @@ class SettingsController extends AdminApiController
             'pterodactyl:auth:2fa_required' => 0,
             'app:locale' => 'en',
         ],
+        'logo' => null,
         'mail' => [
             'mail:default' => 'smtp',
             'mail:mailers:smtp:host' => 'mail.example.com',
@@ -51,9 +53,9 @@ class SettingsController extends AdminApiController
     /**
      * Return current panel settings.
      */
-    #[Endpoint('Get settings', 'Returns current general, mail, advanced, and metadata settings.')]
+    #[Endpoint('Get settings', 'Returns current general, logo, mail, advanced, and metadata settings.')]
     #[ScribeResponse(self::SETTINGS_EXAMPLE, description: 'Settings returned.')]
-    public function index(GetSettingsRequest $request): JsonResponse
+    public function index(GetSettingsRequest $request, BrandingLogoService $brandingLogo): JsonResponse
     {
         return new JsonResponse([
             'general' => [
@@ -61,6 +63,7 @@ class SettingsController extends AdminApiController
                 'pterodactyl:auth:2fa_required' => config('pterodactyl.auth.2fa_required'),
                 'app:locale' => config('app.locale'),
             ],
+            'logo' => $brandingLogo->url(),
             'mail' => [
                 'mail:default' => config('mail.default'),
                 'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),
