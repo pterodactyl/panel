@@ -23,8 +23,14 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
     return (
         <ContentBox className={className} title='Update Avatar'>
             <SpinnerOverlay size='large' visible={model.submitting} />
-            <div className='flex items-center gap-4'>
-                <Avatar name='profile' image={preview} size={72} />
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-start gap-4'>
+                    <Avatar name='profile' image={preview} size={72} />
+                    <p className='m-0 text-sm text-muted-foreground'>
+                        You may select a custom avatar for your personal account. Avatars are not required and the
+                        default one will always be used if none is set.
+                    </p>
+                </div>
                 <div className='flex flex-wrap gap-2'>
                     <input
                         ref={input}
@@ -34,12 +40,12 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
                         onChange={(event) => model.select(event.target.files?.[0] ?? null)}
                     />
                     <Button type='button' onClick={() => input.current?.click()}>
-                        Choose Avatar
+                        Update Avatar
                     </Button>
                     {model.avatar && !model.selected && (
-                        <Button type='button' isSecondary onClick={model.remove}>
+                        <Button.Danger type='button' onClick={model.remove}>
                             Remove Avatar
-                        </Button>
+                        </Button.Danger>
                     )}
                     {model.selected && (
                         <Button type='button' onClick={model.submit} disabled={!model.canSubmit}>
