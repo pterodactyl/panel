@@ -26,7 +26,7 @@ export default function AvatarCard({ model, className }: ViewProps<'account.avat
             <div className='flex flex-col gap-4'>
                 <div className='flex items-start gap-4'>
                     <Avatar name='profile' image={preview} size={72} />
-                    <p className='m-0 text-sm text-muted-foreground'>
+                    <p className='input-help m-0'>
                         You may select a custom avatar for your personal account. Avatars are not required and the
                         default one will always be used if none is set.
                     </p>
