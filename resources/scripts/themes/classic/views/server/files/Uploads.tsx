@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloudUpload, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button, Code, Dialog, NewButton, Portal, Tooltip } from '@/sdk';
 import type { FileManagerModel } from '@/sdk/theme';
 
@@ -53,10 +54,17 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                             event.stopPropagation();
 
                             setDropping(false);
+                            if (
+                                Array.from(event.dataTransfer.items).some(
+                                    (item) => item.kind === 'file' && item.webkitGetAsEntry?.()?.isDirectory
+                                )
+                            ) {
+                                toast.error('Folder uploads are not supported.');
+                                return;
+                            }
                             if (!event.dataTransfer?.files.length) {
                                 return;
                             }
-
                             upload(event.dataTransfer.files);
                         }}
                     >
