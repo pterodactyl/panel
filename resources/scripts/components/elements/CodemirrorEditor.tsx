@@ -1,8 +1,8 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { basicSetup } from 'codemirror';
-import { Compartment, EditorState, Prec } from '@codemirror/state';
-import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
-import { EditorView, keymap, type Panel, type ViewUpdate } from '@codemirror/view';
+import { Compartment, EditorState, Prec, type Extension, type Range } from '@codemirror/state';
+import { HighlightStyle, indentUnit, syntaxHighlighting, syntaxTree } from '@codemirror/language';
+import { Decoration, EditorView, ViewPlugin, keymap, type DecorationSet, type Panel, type ViewUpdate } from '@codemirror/view';
 import {
     search,
     SearchQuery,
@@ -10,6 +10,7 @@ import {
     findNext,
     findPrevious,
     getSearchQuery,
+    searchPanelOpen,
     replaceAll,
     replaceNext,
     selectMatches,
@@ -69,8 +70,11 @@ const panelEditorTheme = EditorView.theme(
         '.cm-line': {
             padding: '0 calc(var(--spacing) * 3)',
         },
-        '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
-            backgroundColor: 'var(--editor-selection)',
+        '& > .cm-scroller > .cm-layer.cm-selectionLayer .cm-selectionBackground': {
+            background: 'var(--editor-selection) !important',
+        },
+        '&.cm-focused > .cm-scroller > .cm-layer.cm-selectionLayer .cm-selectionBackground': {
+            background: 'var(--editor-selection) !important',
         },
         '.cm-cursor': {
             borderLeftColor: 'var(--editor-caret)',
@@ -93,7 +97,10 @@ const panelEditorTheme = EditorView.theme(
             color: 'var(--editor-foreground)',
             margin: '0 var(--spacing)',
         },
-        '.cm-activeLine, .cm-activeLineGutter': {
+        '.cm-activeLine': {
+            backgroundColor: 'color-mix(in srgb, var(--editor-active-line) 45%, transparent)',
+        },
+        '.cm-activeLineGutter': {
             backgroundColor: 'var(--editor-active-line)',
         },
         '.cm-matchingBracket, .cm-nonmatchingBracket': {
@@ -105,6 +112,36 @@ const panelEditorTheme = EditorView.theme(
         },
         '.cm-searchMatch.cm-searchMatch-selected': {
             backgroundColor: 'var(--editor-search-match-selected)',
+        },
+        '.cm-search-scrollbar-markers': {
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            width: '7px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            zIndex: '150',
+        },
+        '.cm-search-scrollbar-marker': {
+            position: 'absolute',
+            left: '1px',
+            right: '1px',
+            height: '3px',
+            borderRadius: '2px',
+            backgroundColor: 'var(--editor-search-match)',
+        },
+        '.cm-search-scrollbar-marker-selected': {
+            backgroundColor: 'var(--editor-search-match-selected)',
+        },
+        '.cm-yaml-boolean': {
+            color: 'var(--editor-syntax-keyword)',
+        },
+        '.cm-yaml-number': {
+            color: 'var(--editor-syntax-type)',
+        },
+        '.cm-yaml-null': {
+            color: 'var(--editor-syntax-constant)',
         },
         '.cm-tooltip, .cm-tooltip.cm-tooltip-autocomplete': {
             backgroundColor: 'var(--editor-tooltip)',
@@ -431,6 +468,7 @@ const panelEditorTheme = EditorView.theme(
 
 const panelHighlightStyle = HighlightStyle.define([
     { tag: tags.keyword, color: 'var(--editor-syntax-keyword)' },
+    { tag: tags.definition(tags.propertyName), color: 'var(--editor-syntax-definition)' },
     {
         tag: [tags.name, tags.deleted, tags.character, tags.macroName],
         color: 'var(--editor-syntax-name)',
@@ -474,6 +512,128 @@ const panelHighlightStyle = HighlightStyle.define([
     },
     { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
 ]);
+
+const yamlScalarHighlighting = ViewPlugin.fromClass(
+    class {
+        decorations: DecorationSet;
+
+        constructor(view: EditorView) {
+            this.decorations = this.buildDecorations(view);
+        }
+
+        update(update: ViewUpdate) {
+            if (update.docChanged || update.viewportChanged) {
+                this.decorations = this.buildDecorations(update.view);
+            }
+        }
+
+        private buildDecorations(view: EditorView): DecorationSet {
+            const decorations: Range<Decoration>[] = [];
+
+            syntaxTree(view.state).iterate({
+                enter: (node) => {
+                    if (node.name !== 'Literal' || node.node.parent?.name === 'Key') {
+                        return;
+                    }
+
+                    const value = view.state.doc.sliceString(node.from, node.to).trim();
+                    let className: string | undefined;
+
+                    if (/^(?:true|false|yes|no|on|off)$/i.test(value)) {
+                        className = 'cm-yaml-boolean';
+                    } else if (/^(?:null|~)$/i.test(value)) {
+                        className = 'cm-yaml-null';
+                    } else if (
+                        /^[+-]?(?:(?:[0-9][0-9_]*)(?:\.[0-9_]*)?|\.[0-9_]+)(?:[eE][+-]?[0-9]+)?$/.test(value) ||
+                        /^[+-]?0x[0-9a-f_]+$/i.test(value) ||
+                        /^[+-]?0o[0-7_]+$/i.test(value) ||
+                        /^[+-]?0b[01_]+$/i.test(value)
+                    ) {
+                        className = 'cm-yaml-number';
+                    }
+
+                    if (className) {
+                        decorations.push(Decoration.mark({ class: className }).range(node.from, node.to));
+                    }
+                },
+            });
+
+            return Decoration.set(decorations, true);
+        }
+    },
+    { decorations: (plugin) => plugin.decorations }
+);
+
+const resolveEditorLanguage = (mime: string): Extension => {
+    const language = resolveCodemirrorLanguage(mime);
+
+    return mime === 'text/x-yaml' || mime === 'text/yaml' ? [language, yamlScalarHighlighting] : language;
+};
+
+const searchScrollbarMarkers = ViewPlugin.fromClass(
+    class {
+        private readonly dom = document.createElement('div');
+
+        constructor(view: EditorView) {
+            this.dom.className = 'cm-search-scrollbar-markers';
+            view.dom.appendChild(this.dom);
+            this.refresh(view);
+        }
+
+        update(update: ViewUpdate) {
+            const queryChanged = update.transactions.some((transaction) =>
+                transaction.effects.some((effect) => effect.is(setSearchQuery))
+            );
+
+            if (update.docChanged || update.selectionSet || update.viewportChanged || queryChanged) {
+                this.refresh(update.view);
+            }
+        }
+
+        private refresh(view: EditorView) {
+            this.dom.replaceChildren();
+
+            if (!searchPanelOpen(view.state)) {
+                return;
+            }
+
+            const query = getSearchQuery(view.state);
+            if (!query.valid) {
+                return;
+            }
+
+            const contentHeight = Math.max(view.contentHeight, 1);
+            const cursor = query.getCursor(view.state);
+            let count = 0;
+
+            while (count < 1000) {
+                const result = cursor.next();
+                if (result.done) {
+                    break;
+                }
+
+                const { from, to } = result.value;
+                const block = view.lineBlockAt(from);
+                const marker = document.createElement('span');
+                const selected = view.state.selection.ranges.some(
+                    (range) => range.from === from && range.to === to
+                );
+
+                marker.className = selected
+                    ? 'cm-search-scrollbar-marker cm-search-scrollbar-marker-selected'
+                    : 'cm-search-scrollbar-marker';
+                marker.style.top = `${Math.min(100, Math.max(0, (block.top / contentHeight) * 100))}%`;
+                this.dom.appendChild(marker);
+                count++;
+            }
+        }
+
+        destroy() {
+            this.dom.remove();
+        }
+    },
+    {}
+);
 
 class CustomSearchPanel implements Panel {
     dom: HTMLElement;
@@ -782,6 +942,11 @@ class CustomSearchPanel implements Panel {
         if (!query.eq(this.query)) {
             this.query = query;
             this.view.dispatch({ effects: setSearchQuery.of(query) });
+
+            // Select the first matching occurrence so the active result is visible.
+            if (query.valid) {
+                findNext(this.view);
+            }
         }
     }
 
@@ -888,6 +1053,7 @@ const createEditorState = (
         extensions: [
             basicSetup,
             search({ createPanel: (view) => new CustomSearchPanel(view), top: true }),
+            searchScrollbarMarkers,
             panelEditorTheme,
             syntaxHighlighting(panelHighlightStyle),
             EditorState.tabSize.of(4),
@@ -911,7 +1077,7 @@ const createEditorState = (
                     },
                 ])
             ),
-            languageCompartment.of(resolveCodemirrorLanguage(mode)),
+            languageCompartment.of(resolveEditorLanguage(mode)),
             EditorView.updateListener.of((update) => {
                 if (update.docChanged) {
                     onContentChanged.current?.(update.state.doc.toString());
@@ -972,7 +1138,7 @@ export default function CodemirrorEditor({
 
     useEffect(() => {
         editor.current?.dispatch({
-            effects: languageCompartment.reconfigure(resolveCodemirrorLanguage(mode)),
+            effects: languageCompartment.reconfigure(resolveEditorLanguage(mode)),
         });
     }, [languageCompartment, mode]);
 
