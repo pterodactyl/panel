@@ -1,8 +1,8 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { basicSetup } from 'codemirror';
-import { Compartment, EditorState, Prec, type Extension, type Range } from '@codemirror/state';
-import { HighlightStyle, indentUnit, syntaxHighlighting, syntaxTree } from '@codemirror/language';
-import { Decoration, EditorView, ViewPlugin, keymap, type DecorationSet, type Panel, type ViewUpdate } from '@codemirror/view';
+import { Compartment, EditorState, Prec, type Extension } from '@codemirror/state';
+import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
+import { EditorView, keymap, type Panel, type ViewUpdate } from '@codemirror/view';
 import {
     search,
     SearchQuery,
@@ -10,14 +10,14 @@ import {
     findNext,
     findPrevious,
     getSearchQuery,
-    searchPanelOpen,
     replaceAll,
     replaceNext,
     selectMatches,
     setSearchQuery,
 } from '@codemirror/search';
 import { tags } from '@lezer/highlight';
-import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
+import { searchScrollbarMarkers } from '@/components/elements/codemirror/searchMarkers';
+import { resolveEditorLanguage } from '@/components/elements/codemirror/yamlHighlighting';
 import { editorContainerClass } from '@/components/elements/codemirror/layout';
 import { cn } from '@/lib/cn';
 
@@ -513,127 +513,6 @@ const panelHighlightStyle = HighlightStyle.define([
     { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
 ]);
 
-const yamlScalarHighlighting = ViewPlugin.fromClass(
-    class {
-        decorations: DecorationSet;
-
-        constructor(view: EditorView) {
-            this.decorations = this.buildDecorations(view);
-        }
-
-        update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged) {
-                this.decorations = this.buildDecorations(update.view);
-            }
-        }
-
-        private buildDecorations(view: EditorView): DecorationSet {
-            const decorations: Range<Decoration>[] = [];
-
-            syntaxTree(view.state).iterate({
-                enter: (node) => {
-                    if (node.name !== 'Literal' || node.node.parent?.name === 'Key') {
-                        return;
-                    }
-
-                    const value = view.state.doc.sliceString(node.from, node.to).trim();
-                    let className: string | undefined;
-
-                    if (/^(?:true|false|yes|no|on|off)$/i.test(value)) {
-                        className = 'cm-yaml-boolean';
-                    } else if (/^(?:null|~)$/i.test(value)) {
-                        className = 'cm-yaml-null';
-                    } else if (
-                        /^[+-]?(?:(?:[0-9][0-9_]*)(?:\.[0-9_]*)?|\.[0-9_]+)(?:[eE][+-]?[0-9]+)?$/.test(value) ||
-                        /^[+-]?0x[0-9a-f_]+$/i.test(value) ||
-                        /^[+-]?0o[0-7_]+$/i.test(value) ||
-                        /^[+-]?0b[01_]+$/i.test(value)
-                    ) {
-                        className = 'cm-yaml-number';
-                    }
-
-                    if (className) {
-                        decorations.push(Decoration.mark({ class: className }).range(node.from, node.to));
-                    }
-                },
-            });
-
-            return Decoration.set(decorations, true);
-        }
-    },
-    { decorations: (plugin) => plugin.decorations }
-);
-
-const resolveEditorLanguage = (mime: string): Extension => {
-    const language = resolveCodemirrorLanguage(mime);
-
-    return mime === 'text/x-yaml' || mime === 'text/yaml' ? [language, yamlScalarHighlighting] : language;
-};
-
-const searchScrollbarMarkers = ViewPlugin.fromClass(
-    class {
-        private readonly dom = document.createElement('div');
-
-        constructor(view: EditorView) {
-            this.dom.className = 'cm-search-scrollbar-markers';
-            view.dom.appendChild(this.dom);
-            this.refresh(view);
-        }
-
-        update(update: ViewUpdate) {
-            const queryChanged = update.transactions.some((transaction) =>
-                transaction.effects.some((effect) => effect.is(setSearchQuery))
-            );
-
-            if (update.docChanged || update.selectionSet || update.viewportChanged || queryChanged) {
-                this.refresh(update.view);
-            }
-        }
-
-        private refresh(view: EditorView) {
-            this.dom.replaceChildren();
-
-            if (!searchPanelOpen(view.state)) {
-                return;
-            }
-
-            const query = getSearchQuery(view.state);
-            if (!query.valid) {
-                return;
-            }
-
-            const contentHeight = Math.max(view.contentHeight, 1);
-            const cursor = query.getCursor(view.state);
-            let count = 0;
-
-            while (count < 1000) {
-                const result = cursor.next();
-                if (result.done) {
-                    break;
-                }
-
-                const { from, to } = result.value;
-                const block = view.lineBlockAt(from);
-                const marker = document.createElement('span');
-                const selected = view.state.selection.ranges.some(
-                    (range) => range.from === from && range.to === to
-                );
-
-                marker.className = selected
-                    ? 'cm-search-scrollbar-marker cm-search-scrollbar-marker-selected'
-                    : 'cm-search-scrollbar-marker';
-                marker.style.top = `${Math.min(100, Math.max(0, (block.top / contentHeight) * 100))}%`;
-                this.dom.appendChild(marker);
-                count++;
-            }
-        }
-
-        destroy() {
-            this.dom.remove();
-        }
-    },
-    {}
-);
 
 class CustomSearchPanel implements Panel {
     dom: HTMLElement;
