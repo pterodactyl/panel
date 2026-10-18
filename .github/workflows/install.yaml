@@ -75,6 +75,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          - ubuntu:26.04
           - ubuntu:24.04
           - ubuntu:22.04
           - debian:13
@@ -87,14 +88,15 @@ jobs:
         shell: bash
     steps:
       - name: Add repositories (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu') && matrix.os != 'ubuntu:26.04'
         run: |
           apt-get update
           apt -y install software-properties-common curl
           LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 
-      - name: Add repositories (Debian)
-        if: startsWith(matrix.os, 'debian')
+      # The PHP PPA has no Ubuntu 26.04 build, so it uses Sury's repository like Debian.
+      - name: Add repositories (Debian and Ubuntu 26.04)
+        if: startsWith(matrix.os, 'debian') || matrix.os == 'ubuntu:26.04'
         run: |
           apt-get update
           apt -y install curl ca-certificates gnupg2 lsb-release
