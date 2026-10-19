@@ -14,6 +14,7 @@ import {
     useEnableAccountTwoFactor,
 } from '@/api/account/two-factor/queries';
 import { httpErrorToHuman } from '@/api/http';
+import { useSiteSettings } from '@/api/settings/queries';
 import { boundField, fixtureField, stateField, type FieldAttributes } from '../forms';
 import { implementViews } from '../registry';
 import type {
@@ -37,8 +38,12 @@ const totpCode: FieldAttributes = {
 
 function useAccountOverviewModel(): AccountOverviewModel {
     const state = useLocation().state;
+    const { userAvatarsEnabled } = useSiteSettings();
 
-    return { twoFactorRequired: 'twoFactorRedirect' in state && state.twoFactorRedirect === true };
+    return {
+        twoFactorRequired: 'twoFactorRedirect' in state && state.twoFactorRedirect === true,
+        userAvatarsEnabled,
+    };
 }
 
 function useAccountPasswordModel(): AccountPasswordModel {
@@ -301,8 +306,8 @@ implementViews({
     'page.account.overview': {
         use: useAccountOverviewModel,
         fixtures: {
-            default: () => ({ twoFactorRequired: false }),
-            twoFactorRequired: () => ({ twoFactorRequired: true }),
+            default: () => ({ twoFactorRequired: false, userAvatarsEnabled: false }),
+            twoFactorRequired: () => ({ twoFactorRequired: true, userAvatarsEnabled: false }),
         },
     },
     'account.password': {

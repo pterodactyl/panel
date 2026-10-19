@@ -15,6 +15,7 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
         defaultValues: {
             name: settings.general['app:name'],
             twoFactorRequired: settings.general['pterodactyl:auth:2fa_required'],
+            userAvatarsEnabled: settings.general['pterodactyl:client_features:avatars:enabled'],
             locale: settings.general['app:locale'],
         },
         onSubmit: async ({ value }) => {
@@ -44,6 +45,17 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         />
                     )}
                 </form.AppField>
+                <div className='mt-6'>
+                    <form.AppField name='userAvatarsEnabled'>
+                        {(field) => (
+                            <field.SwitchField
+                                label='User Avatars'
+                                description='Should users be allowed to use custom avatars on their profiles?'
+                                disabled={readOnly}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
                 <div className='mt-4'>
                     <form.AppField name='twoFactorRequired'>
                         {(field) => (

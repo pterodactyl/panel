@@ -134,6 +134,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
         options.siteSettings ?? {
             name: 'Test panel',
             locale: 'en',
+            userAvatarsEnabled: false,
             recaptcha: { enabled: false, siteKey: '' },
         }
     );

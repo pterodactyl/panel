@@ -43,7 +43,12 @@ describe('session queries', () => {
             created_at: '2026-01-01T00:00:00Z',
             updated_at: '2026-01-01T00:00:00Z',
         };
-        bootstrap.SiteConfiguration = { name: 'Panel', locale: 'en', recaptcha: { enabled: false, siteKey: '' } };
+        bootstrap.SiteConfiguration = {
+            name: 'Panel',
+            locale: 'en',
+            userAvatarsEnabled: false,
+            recaptcha: { enabled: false, siteKey: '' },
+        };
     });
 
     afterEach(() => {
@@ -143,7 +148,12 @@ describe('session queries', () => {
 
         await act(async () => {
             await general.result.current.mutateAsync(
-                updateAdminGeneralSettingsInput({ name: 'Renamed Panel', twoFactorRequired: 0, locale: 'de' })
+                updateAdminGeneralSettingsInput({
+                    name: 'Renamed Panel',
+                    twoFactorRequired: 0,
+                    userAvatarsEnabled: false,
+                    locale: 'de',
+                })
             );
             await advanced.result.current.mutateAsync(
                 updateAdminAdvancedSettingsInput({
@@ -164,6 +174,7 @@ describe('session queries', () => {
             expect(settings.result.current).toEqual({
                 name: 'Renamed Panel',
                 locale: 'de',
+                userAvatarsEnabled: false,
                 recaptcha: { enabled: true, siteKey: 'site-key' },
             })
         );

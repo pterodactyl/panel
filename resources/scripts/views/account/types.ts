@@ -4,6 +4,7 @@ import type { PageStatusModel } from '../pageStatus';
 export interface AccountOverviewModel {
     /** The panel sent the user here because their account must enable two-step verification. */
     readonly twoFactorRequired: boolean;
+    readonly userAvatarsEnabled: boolean;
 }
 
 export type AccountPasswordModel = FormModel<'current' | 'password' | 'confirmPassword'>;
