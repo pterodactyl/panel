@@ -12,10 +12,10 @@ const createTerminal = (rows: string[], scrollbackLength = rows.length, wrapped:
                 const text = rows[y];
 
                 if (text === undefined) {
-                    return undefined;
+                    return;
                 }
 
-                const cells = Array.from(text.padEnd(COLS, '\0'));
+                const cells = [...text.padEnd(COLS, '\0')];
 
                 return {
                     length: COLS,

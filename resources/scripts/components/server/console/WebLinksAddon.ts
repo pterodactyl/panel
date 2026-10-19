@@ -40,12 +40,15 @@ export class WebLinksAddon implements ITerminalAddon {
             detector.invalidateCache?.();
         }
 
-        this.providers.forEach((provider) => provider.dispose?.());
+        for (const provider of this.providers) {
+            provider.dispose?.();
+        }
+
         this.providers = [];
         this.replaced = [];
     }
 
     private linkDetector() {
-        return (this.terminal as unknown as { linkDetector?: LinkDetector }).linkDetector;
+        return Reflect.get(this.terminal, 'linkDetector') as LinkDetector | undefined;
     }
 }

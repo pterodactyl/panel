@@ -102,7 +102,7 @@ export class ConsoleSelectionAddon implements ITerminalAddon {
     };
 
     private selectionManager() {
-        return (this.terminal as unknown as { selectionManager?: SelectionManager }).selectionManager;
+        return Reflect.get(this.terminal, 'selectionManager') as SelectionManager | undefined;
     }
 
     private drawnLineIndex(row: number) {
