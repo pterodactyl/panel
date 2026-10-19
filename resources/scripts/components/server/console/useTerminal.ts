@@ -125,7 +125,9 @@ type InternalFitAddon = {
 
 const toInternalTerminal = (term: Pick<Terminal, keyof Terminal>): InternalTerminal => term as InternalTerminal;
 
-const toInternalFitAddon = (fit: Pick<FitAddon, keyof FitAddon>): InternalFitAddon => fit as InternalFitAddon;
+const toInternalFitAddon = (
+    fit: Pick<GhosttyWeb.FitAddon, keyof GhosttyWeb.FitAddon>
+): InternalFitAddon => fit as InternalFitAddon;
 
 const prefixNewline = (data: string | Uint8Array): string | Uint8Array => {
     if (!(data instanceof Uint8Array)) {
@@ -191,7 +193,7 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
 };
 
 // Ghostty's FitAddon locks _isResizing for 50ms via setTimeout, which drops immediate post-layout re-fits.
-const unlockFitResize = (fit: FitAddon) => {
+const unlockFitResize = (fit: GhosttyWeb.FitAddon) => {
     const internalFit = toInternalFitAddon(fit);
     const originalFit = fit.fit.bind(fit);
 
