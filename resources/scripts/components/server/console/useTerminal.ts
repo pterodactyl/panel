@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type * as GhosttyWeb from 'ghostty-web';
-import type { ILinkProvider, ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
+import type { ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
 import { toRgbColor } from '@/lib/color';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
-import { ClickableLinkProvider } from '@/components/server/console/ClickableLinkProvider';
+import { ConsoleSelectionAddon } from '@/components/server/console/ConsoleSelectionAddon';
 import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
 import { TouchScrollAddon } from '@/components/server/console/TouchScrollAddon';
-import { WrappedUrlProvider } from '@/components/server/console/WrappedUrlProvider';
-import { continuesPreviousRow, wrappedRowsAround } from '@/components/server/console/wrappedRows';
+import { WebLinksAddon } from '@/components/server/console/WebLinksAddon';
 
 // Ghostty reads a slot that resolves to pure black (#000000) as unset.
 const TERMINAL_COLOR_VARS = {
@@ -356,156 +355,6 @@ const copySelectionOnShortcut = (term: Terminal) => {
     });
 };
 
-type BufferCell = NonNullable<ReturnType<NonNullable<ReturnType<Terminal['buffer']['active']['getLine']>>['getCell']>>;
-
-type SelectionPoint = { col: number; absoluteRow: number };
-
-type SelectionManager = {
-    selectionStart: SelectionPoint | null;
-    selectionEnd: SelectionPoint | null;
-    selectionChangedEmitter: { fire: () => void };
-    getWordAtCell: (col: number, row: number) => { startCol: number; endCol: number } | null;
-    getSelection: () => string;
-    copyToClipboard: (text: string) => Promise<void>;
-    markCurrentSelectionDirty: () => void;
-    requestRender: () => void;
-};
-
-const WORD_SEPARATOR = /[\s()[\]{}<>'"`|,;]/;
-const WORD_TRAILING_PUNCTUATION = /[.:!?]/;
-
-const selectionManagerOf = (term: Terminal) =>
-    (term as unknown as { selectionManager?: SelectionManager }).selectionManager;
-
-const drawnLineIndex = (term: Terminal, row: number) =>
-    term.getScrollbackLength() + row - Math.floor(term.getViewportY());
-
-const isWordCell = (cell: BufferCell | undefined) =>
-    cell !== undefined &&
-    (cell.getWidth() === 0 || (cell.getCodepoint() !== 0 && !WORD_SEPARATOR.test(cell.getChars())));
-
-const selectLinesOnTripleClick = (term: Terminal, mount: HTMLElement, signal: AbortSignal) => {
-    mount.addEventListener(
-        'mousedown',
-        (event) => {
-            const selection = selectionManagerOf(term);
-            const metrics = term.renderer?.getMetrics();
-
-            if (
-                event.button !== 0 ||
-                event.detail < 3 ||
-                !(event.target instanceof HTMLCanvasElement) ||
-                !selection ||
-                !metrics
-            ) {
-                return;
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const row = Math.max(0, Math.min(term.rows - 1, Math.floor(event.offsetY / metrics.height)));
-            const { first, last } = wrappedRowsAround(term, drawnLineIndex(term, row));
-
-            selection.markCurrentSelectionDirty();
-            selection.selectionStart = { col: 0, absoluteRow: first };
-            selection.selectionEnd = { col: term.cols - 1, absoluteRow: last };
-            selection.markCurrentSelectionDirty();
-            selection.requestRender();
-
-            const text = selection.getSelection();
-
-            if (text) {
-                void selection.copyToClipboard(text);
-                selection.selectionChangedEmitter.fire();
-            }
-        },
-        { capture: true, signal }
-    );
-};
-
-const selectWordsOnDrawnLine = (term: Terminal) => {
-    const selection = selectionManagerOf(term);
-
-    if (!selection) {
-        return;
-    }
-
-    selection.getWordAtCell = (col, row) => {
-        const line = term.buffer.active.getLine(drawnLineIndex(term, row));
-
-        if (!line || !isWordCell(line.getCell(col))) {
-            return null;
-        }
-
-        let startCol = col;
-        let endCol = col;
-
-        while (startCol > 0 && isWordCell(line.getCell(startCol - 1))) {
-            startCol--;
-        }
-
-        while (endCol < line.length - 1 && isWordCell(line.getCell(endCol + 1))) {
-            endCol++;
-        }
-
-        while (endCol > startCol && WORD_TRAILING_PUNCTUATION.test(line.getCell(endCol)?.getChars() ?? '')) {
-            endCol--;
-        }
-
-        return { startCol, endCol };
-    };
-};
-
-const rowSeparator = (term: Terminal, y: number) => {
-    if (!continuesPreviousRow(term, y)) {
-        return '\n';
-    }
-
-    const previous = term.buffer.active.getLine(y - 1);
-
-    return previous?.getCell(previous.length - 1)?.getCodepoint() === 32 ? ' ' : '';
-};
-
-const joinWrappedRowsInSelection = (term: Terminal) => {
-    const selection = selectionManagerOf(term);
-
-    if (!selection) {
-        return;
-    }
-
-    const getSelection = selection.getSelection.bind(selection);
-
-    selection.getSelection = () => {
-        const text = getSelection();
-        const { selectionStart: start, selectionEnd: end } = selection;
-
-        if (!text || !start || !end) {
-            return text;
-        }
-
-        const first = Math.min(start.absoluteRow, end.absoluteRow);
-        const rows = text.split('\n');
-
-        if (rows.length !== Math.abs(end.absoluteRow - start.absoluteRow) + 1) {
-            return text;
-        }
-
-        return rows.reduce((joined, row, index) => joined + rowSeparator(term, first + index) + row);
-    };
-};
-
-const replaceLinkProviders = (term: Terminal, replacements: ILinkProvider[]) => {
-    const providers = (term as unknown as { linkDetector?: { providers?: ILinkProvider[] } }).linkDetector?.providers;
-
-    if (!providers) {
-        return;
-    }
-
-    providers.splice(0).forEach((provider) => provider.dispose?.());
-    replacements.forEach((provider) => term.registerLinkProvider(provider));
-};
-
 /** Opens a read-only console terminal in `mount`, sized to fill it; `signal` removes its listeners on the mount. */
 const openTerminal = (
     { FitAddon, OSC8LinkProvider, Terminal: GhosttyTerminal }: typeof GhosttyWeb,
@@ -531,20 +380,16 @@ const openTerminal = (
 
     term.loadAddon(fit);
     term.loadAddon(new TouchScrollAddon(term));
+    term.loadAddon(new WebLinksAddon(term, new OSC8LinkProvider(term)));
+    term.loadAddon(new ConsoleSelectionAddon(term));
+    
     unlockFitResize(fit);
     preserveScrollPositionOnWrite(term);
     adjustRendering(term);
     fit.fit();
     fit.observeResize();
 
-    replaceLinkProviders(term, [
-        new ClickableLinkProvider(term, new OSC8LinkProvider(term)),
-        new ClickableLinkProvider(term, new WrappedUrlProvider(term)),
-    ]);
     copySelectionOnShortcut(term);
-    selectWordsOnDrawnLine(term);
-    joinWrappedRowsInSelection(term);
-    selectLinesOnTripleClick(term, mount, signal);
 
     return { term, fit };
 };
