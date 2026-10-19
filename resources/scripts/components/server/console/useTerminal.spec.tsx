@@ -42,6 +42,7 @@ vi.mock('ghostty-web', () => ({
         observeResize() {}
         dispose() {}
     },
+    OSC8LinkProvider: class {},
     UrlRegexProvider: class {},
     Terminal: class {
         dispose = vi.fn();
@@ -219,6 +220,22 @@ describe('useTerminal', () => {
 
         expect(container.firstElementChild).toHaveAttribute('inputmode', 'none');
         expect(container.querySelector('textarea')).toHaveAttribute('inputmode', 'none');
+    });
+
+    it('keeps the page where it is when a press focuses the terminal', async () => {
+        const focus = vi.spyOn(HTMLElement.prototype, 'focus');
+        const { container } = render(<Harness />);
+
+        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
+
+        const mount = container.firstElementChild as HTMLElement;
+        const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+
+        mount.focus();
+        textarea.focus();
+
+        expect(focus.mock.contexts).toEqual([mount, textarea]);
+        expect(focus.mock.calls).toEqual([[{ preventScroll: true }], [{ preventScroll: true }]]);
     });
 
     it('scrolls the history with a vertical swipe', async () => {
