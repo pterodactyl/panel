@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { useCurrentServerUuid } from '@/api/server/queries';
 import { useUploadFiles } from '@/api/server/files/queries';
 import { useFileUploadActions, useServerDirectory } from '@/state/server';
+import type { UploadSource } from '@/views/server/files';
 
 const UPLOADED_DISPLAY_MS = 500;
 
-/** Uploads into the current directory; rejects when any file failed, after its error toast. */
-export default function useFileUploader(): (files: readonly File[]) => Promise<void> {
+// A dropped folder arrives as a File too; only its entry says it is a directory.
+const holdsFolder = (source: DataTransfer) =>
+    [...source.items].some((item) => item.kind === 'file' && item.webkitGetAsEntry()?.isDirectory);
+
+/** Uploads into the current directory; rejects when a folder was dropped or any file failed, after its error toast. */
+export default function useFileUploader(): (source: UploadSource) => Promise<void> {
     const removals = useRef(new Map<string, ReturnType<typeof setTimeout>>());
     const { mutateAsync } = useUploadFiles();
     const uuid = useCurrentServerUuid()!;
@@ -27,11 +33,24 @@ export default function useFileUploader(): (files: readonly File[]) => Promise<v
     }, [removeFileUpload]);
 
     return useCallback(
-        async (files) => {
+        async (source) => {
+            const dropped = 'items' in source;
+
+            if (dropped && holdsFolder(source)) {
+                toast.error('Folder uploads are not supported.');
+                throw new Error('Folder uploads are not supported.');
+            }
+
+            const files = dropped ? [...source.files] : [...source];
+
+            if (files.length === 0) {
+                return;
+            }
+
             const { failed } = await mutateAsync({
                 uuid,
                 directory,
-                files: [...files],
+                files,
                 callbacks: {
                     onFileQueued: (id, file, abort) => {
                         pushFileUpload({ id, data: { name: file.name, abort, loaded: 0, total: file.size } });
