@@ -1,0 +1,70 @@
+app/Http/Requests/Api/Admin/Users/DeleteAvatarRequest.php
+  s_182ca596eb9d89::t_bac4c564418af7 1-16
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_182ca596eb9d89::t_631e6a6614b892 160,162
+  s_182ca596eb9d89::t_a2fb66f7032a08 170,172
+  s_182ca596eb9d89::t_09f018842a6c28 18
+  s_182ca596eb9d89::t_3c86ac9382e335 25
+app/Contracts/Users/ReplacesUserAvatars.php
+  s_182ca596eb9d89::t_fd24afb9f29a7d 1-16
+resources/scripts/api/generated/types.gen.ts
+  s_182ca596eb9d89::t_561feafc14bd42 6562-6564
+  s_182ca596eb9d89::t_dc089c53ba90b9 6561
+app/Providers/ActionServiceProvider.php
+  s_182ca596eb9d89::t_ef41b8ea6bedfb 356
+  s_182ca596eb9d89::t_cf8e00a9c4ad98 242
+  s_182ca596eb9d89::t_edd41c80a3d7b4 122
+app/Models/User.php
+  s_182ca596eb9d89::t_03ecb4f7e4eb3a 69-71
+  s_182ca596eb9d89::t_c7cf9587a0bcef 25
+  s_182ca596eb9d89::t_194260b511f959 115
+  s_182ca596eb9d89::t_24ad83be0d4fc8 241-252
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_182ca596eb9d89::t_f10b42fdb2d620 5774-5776
+  s_182ca596eb9d89::t_11313660acae06 5773
+app/Http/Resources/Api/Client/UserResource.php
+  s_182ca596eb9d89::t_91add60e07e86d 28-29
+app/Actions/Users/ReplaceUserAvatar.php
+  s_182ca596eb9d89::t_9ae165452183fd 1-50
+app/Http/Requests/Api/Client/Account/UpdateAvatarRequest.php
+  s_182ca596eb9d89::t_b532fbcd3a5c9a 7-8,10,22-24,27-35
+  s_182ca596eb9d89::t_6f06062a08e8cb 14-21
+app/Http/Requests/Api/Admin/Users/UpdateAvatarRequest.php
+  s_182ca596eb9d89::t_c85a5f60e5f930 7-8,10-11,13,20-23,25-33
+app/Http/Resources/Api/Application/UserResource.php
+  s_182ca596eb9d89::t_739c55793b4b09 45-46
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_182ca596eb9d89::t_17154397b6c316 8
+  s_182ca596eb9d89::t_c1b2acb0e916e0 11
+  s_182ca596eb9d89::t_32ec38046e5af1 27
+  s_182ca596eb9d89::t_306eed1dd7029d 25-26,28-31,33-34
+  s_182ca596eb9d89::t_ccd28bd2653b3d 32
+app/Http/Controllers/Api/Client/AccountController.php
+  s_182ca596eb9d89::t_bcda7e905d53e5 93,95,100,102
+  s_182ca596eb9d89::t_a49ab1b760e0cb 15
+app/Http/Resources/Api/Admin/UserResource.php
+  s_182ca596eb9d89::t_109be5f7036cc9 44-45
+app/Http/Resources/Api/Client/AccountResource.php
+  s_182ca596eb9d89::t_f7ec6f25198ab1 30
+app/Services/Extensions/ExtensionManifest.php
+  s_182ca596eb9d89::t_bfb6a49b5f13ab 7
+  s_182ca596eb9d89::t_39404f14610a60 34
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_182ca596eb9d89::t_9efa3ef3933c97 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a0a0bb99ab412fd9850e28fa01c75403360a04c8",
+  "prompts": {},
+  "sessions": {
+    "s_182ca596eb9d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e558b8-ecb2-4c19-a308-358b242af206",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
