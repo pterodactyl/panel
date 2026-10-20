@@ -1,0 +1,23 @@
+app/Services/Users/UserAvatarService.php
+  s_182ca596eb9d89::t_2a9a7dad674a2c 13-14
+packages/sdk/manifest.schema.json
+  s_182ca596eb9d89::t_2a9a7dad674a2c 22-23
+app/Services/Extensions/ExtensionManifest.php
+  s_182ca596eb9d89::t_2a9a7dad674a2c 9,33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "39c92c7eded5c2d6be20dec4603b6221003489a7",
+  "prompts": {},
+  "sessions": {
+    "s_182ca596eb9d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e558b8-ecb2-4c19-a308-358b242af206",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
