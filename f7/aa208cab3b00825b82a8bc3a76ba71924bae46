@@ -1,0 +1,167 @@
+tests/Fixtures/api/admin/users/external.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 19,45
+resources/scripts/extensions/nativeForm.spec.tsx
+  s_c84fd8d6d4ea16::t_e002f742dbd413 43
+tests/Fixtures/api/application/users.store.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19
+tests/Fixtures/api/application/acl/without-server-databases.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 154-155,200-201,292-293
+tests/Fixtures/api/client/servers/users.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 13,44
+tests/Fixtures/api/client/servers/users.update.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 13
+tests/Fixtures/api/application/users.update.body-include.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19
+tests/Integration/Api/Admin/Settings/SettingsControllerTest.php
+  s_c84fd8d6d4ea16::t_cf4761d41a2af4 22,44,98
+tests/Fixtures/api/application/users.update.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19
+tests/Fixtures/api/client/account/activity.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 100,132,320
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_c84fd8d6d4ea16::t_414b047eb9714b 153-158,166-170
+  s_c84fd8d6d4ea16::t_373cf77b4d2d43 29
+  s_c84fd8d6d4ea16::t_94be5dccf6233d 10
+resources/scripts/api/generated/types.gen.ts
+  s_c84fd8d6d4ea16::t_d05b6219123e83 821,1114-1115,1499,1764-1770,3385-3391,4210-4211,6544-6619,13124-13180
+  s_c84fd8d6d4ea16::t_1cc88ae9f82b08 13181
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_c84fd8d6d4ea16::t_c49622acf25e9a 746,1013-1014,1355,1594-1599,3153-3158,3895,5757-5822,11548-11595
+tests/Fixtures/api/client/account.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 14-15
+resources/scripts/components/elements/codemirror/searchMarkers.ts
+  s_c84fd8d6d4ea16::t_c1ebfc3154734e 2,31,42
+  s_c84fd8d6d4ea16::t_12f9f0f2163d85 50
+app/Http/Controllers/Api/Client/AccountController.php
+  s_c84fd8d6d4ea16::t_373cf77b4d2d43 18
+  s_c84fd8d6d4ea16::t_89dbf9a5f6c3f3 90-92,100-101,104
+tests/Fixtures/api/application/servers.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 257-258,572-573,781-782,1218-1219
+tests/Fixtures/api/admin/extension-fields.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 19,50,81,259,616,638,678
+resources/scripts/api/generated/sdk.gen.ts
+  s_c84fd8d6d4ea16::t_d05b6219123e83 6,449-476,2558-2584
+  s_c84fd8d6d4ea16::t_8e0e0ef14307c2 2585
+resources/scripts/extensions/formExtensions.spec.tsx
+  s_c84fd8d6d4ea16::t_e002f742dbd413 58
+resources/scripts/api/generated/index.ts
+  s_c84fd8d6d4ea16::t_d05b6219123e83 4-5
+tests/Fixtures/api/admin/users.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 22,44,66,88,110,151,228,352,379,406,470,513,577
+tests/Fixtures/api/client/servers/users.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 16,43
+resources/scripts/components/server/console/useTerminal.ts
+  s_c84fd8d6d4ea16::t_12f9f0f2163d85 128-129,386
+tests/Fixtures/api/admin/servers/external.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 161
+tests/Fixtures/api/application/users.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19,43-44,170-171,359-360,384-385
+resources/scripts/components/admin/users/UserAvatarCard.tsx
+  s_c84fd8d6d4ea16::t_a91de74cdc65cf 23,34,57,73-77
+tests/Fixtures/api/application/acl/without-database-hosts.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 154-155,200-201,292-293
+tests/Fixtures/api/application/users.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 21-22,41-42,61-62,81-82,101-102,140-141,215-216,337-338,362-363,387-388,449-450,490-491
+resources/scripts/api/admin/users/queries.ts
+  s_c84fd8d6d4ea16::t_a91de74cdc65cf 17,23,170-171,174,186-187,190
+tests/Fixtures/api/admin/eggs.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 774,846
+tests/Fixtures/api/admin/users.update.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 19
+app/Http/Resources/Api/Admin/UserResource.php
+  s_c84fd8d6d4ea16::t_ec6fe7d05f9ffb 45-46
+app/Http/Resources/Api/Application/UserResource.php
+  s_c84fd8d6d4ea16::t_ec6fe7d05f9ffb 46-47
+tests/Fixtures/api/admin/users.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 19,46,175,366,393
+tests/Fixtures/api/client/servers.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 358,385,537,564
+tests/Fixtures/api/application/servers/external.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 143-144
+app/Http/Resources/Api/Client/UserResource.php
+  s_c84fd8d6d4ea16::t_ec6fe7d05f9ffb 29-30
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_c84fd8d6d4ea16::t_cf4761d41a2af4 36
+tests/Fixtures/api/admin/servers.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 272,958
+tests/Fixtures/api/admin/nodes/allocations.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 1177,1264,1349
+tests/Fixtures/api/application/users/external.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19,42-43
+app/Http/Resources/Api/Client/AccountResource.php
+  s_c84fd8d6d4ea16::t_ec6fe7d05f9ffb 31
+tests/Fixtures/api/admin/servers.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 275,611,825,1267
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_c84fd8d6d4ea16::t_d05b6219123e83 8-9,780-823,4520-4562
+  s_c84fd8d6d4ea16::t_9c6ccb2ee80142 4563
+tests/Fixtures/api/client/servers/users.store.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 13
+tests/Fixtures/api/application/servers.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 199-200,917-918,1249-1250,1292-1293
+resources/scripts/components/elements/codemirror/yamlHighlighting.ts
+  s_c84fd8d6d4ea16::t_c1ebfc3154734e 3
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_c84fd8d6d4ea16::t_c1ebfc3154734e 3
+app/Models/User.php
+  s_c84fd8d6d4ea16::t_2388a52a9b4509 75
+  s_c84fd8d6d4ea16::t_ec6fe7d05f9ffb 112
+tests/Fixtures/api/client/servers/activity.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 134,163,199,231,262,424,455
+tests/Fixtures/api/application/eggs.view.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 848-849,918-919
+resources/scripts/api/account/queries.ts
+  s_c84fd8d6d4ea16::t_a91de74cdc65cf 6-7,84-86,98
+tests/Fixtures/api/application/extension-fields.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 18-19,47-48,76-77,252-253,447-448,485-486
+tests/Fixtures/api/application/acl/without-locations.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 428-429,474-475,566-567
+tests/Fixtures/api/application/acl/without-eggs.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 198-199,244-245,336-337
+tests/Fixtures/api/application/nodes/allocations.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 1126-1127,1209-1210,1290-1291
+tests/Fixtures/api/client/servers.as-limited-subuser.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 456,485,521,553,584
+app/Services/Users/UserAvatarService.php
+  s_c84fd8d6d4ea16::t_d9eda4abf1189b 29
+tests/Fixtures/api/client/servers.as-full-subuser.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 129,156,314,341,462,491,527,559,590,697,724
+tests/Fixtures/api/client/account.empty.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 32-33
+tests/Fixtures/api/application/acl/without-nodes.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 763-764,809-810,901-902
+tests/Fixtures/api/admin/activity.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 114,154,194,258,353,448,680
+tests/Fixtures/api/client/servers.as-admin.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 126,153,213,242,278,310,341
+resources/scripts/views/account/overview.ts
+  s_c84fd8d6d4ea16::t_a91de74cdc65cf 197,199
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_c84fd8d6d4ea16::t_cf4761d41a2af4 25
+tests/Fixtures/api/client/servers.index.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 336,363
+resources/scripts/views/server/users.spec.tsx
+  s_c84fd8d6d4ea16::t_c9421e6796e139 39
+tests/Fixtures/api/application/acl/without-allocations.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 281-282,327-328,419-420
+tests/Fixtures/api/application/acl/without-servers.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 659-660
+tests/Fixtures/api/admin/users.store.json
+  s_c84fd8d6d4ea16::t_1bce8510ab7c3f 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7aa208cab3b00825b82a8bc3a76ba71924bae46",
+  "prompts": {},
+  "sessions": {
+    "s_c84fd8d6d4ea16": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8f4c7d4-528c-4851-bd2b-0c35d8630303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
