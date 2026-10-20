@@ -10,7 +10,8 @@ use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
 
 class UserAvatarService
 {
-    private const string FILE_GROUP = 'user-avatars';
+    /** Stored with extension setting files under this id, which no extension may take. */
+    public const string FILE_GROUP = 'user-avatars';
 
     private const int MAX_KILOBYTES = 10240;
 
