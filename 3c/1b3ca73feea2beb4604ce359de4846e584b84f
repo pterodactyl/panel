@@ -1,0 +1,81 @@
+packages/sdk/types/views/layouts.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 35-36
+resources/scripts/views/account/types.ts
+  s_182ca596eb9d89::t_577eb3a03a7a62 7,14,16-18,20,22-25,28
+resources/scripts/components/Avatar.tsx
+  s_182ca596eb9d89::t_1d32f3013f5f26 17,21,24-25,28,30-37
+packages/sdk/types/views/account/types.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 7-8,12-30,95
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 613,746,1429-1430,2339-2342
+resources/scripts/themes/skins.spec.tsx
+  s_182ca596eb9d89::t_a38bad48510f7d 4
+  s_182ca596eb9d89::t_56821ad94f10fe 63
+  s_182ca596eb9d89::t_b92e4cd75243a6 155-168
+  s_39a3af2677c386::t_50109319fb626a 169-170
+resources/scripts/views/className.spec.tsx
+  s_182ca596eb9d89::t_86f18a3428b106 44-45
+  s_182ca596eb9d89::t_d4e9ab36254ad5 5
+  s_182ca596eb9d89::t_58ee9034170aac 38-39,41-43
+  s_182ca596eb9d89::t_ef7a5a5f0d4d74 29,33-37,40,46
+  s_182ca596eb9d89::t_38f5a0b334a2c6 47
+packages/sdk/views.json
+  s_182ca596eb9d89::t_52bf3757cfcd4c 31-44,354-355
+resources/scripts/themes/classic/skins/surfaces.ts
+  s_182ca596eb9d89::t_e1ced37fb355e6 5-6
+packages/sdk/types/api/settings/types.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 5
+packages/sdk/types/api/account/types.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 8
+resources/scripts/views/layouts.ts
+  s_182ca596eb9d89::t_29877e6a33fbe9 307-313
+  s_182ca596eb9d89::t_243f4784e7c652 49-50
+  s_182ca596eb9d89::t_bdfdb600a33a5c 268
+resources/scripts/views/activity/index.ts
+  s_182ca596eb9d89::t_d2a7cc8a1e0885 232
+  s_182ca596eb9d89::t_0efc30c068e36f 84-86
+resources/scripts/views/activity/types.ts
+  s_182ca596eb9d89::t_61213cbf7f2d63 17-18
+resources/scripts/views/account/overview.ts
+  s_182ca596eb9d89::t_c626a60c972463 357
+  s_182ca596eb9d89::t_68d2107724ed20 371-377
+  s_182ca596eb9d89::t_3798c73da91f7e 153-176,182-183,186-187,189-190
+  s_182ca596eb9d89::t_3c2f5496b9840c 304-319
+  s_182ca596eb9d89::t_96b2a9be87cd92 1
+  s_182ca596eb9d89::t_d8572baa5f8d7f 320,378
+resources/scripts/themes/classic/views/server/users/SubuserForm.tsx
+  s_182ca596eb9d89::t_c48a82c401f15d 221
+  s_182ca596eb9d89::t_764e50e91d2f14 120
+packages/sdk/THEMES.md
+  s_182ca596eb9d89::t_52bf3757cfcd4c 1498,1525
+packages/sdk/types/views/activity/types.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 16-17
+resources/scripts/themes/classic/views/account/AvatarCard.tsx
+  s_182ca596eb9d89::t_ccf7a23a4f8a52 1-2,14,25,27
+packages/sdk/types/components/Avatar.d.ts
+  s_182ca596eb9d89::t_52bf3757cfcd4c 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3c1b3ca73feea2beb4604ce359de4846e584b84f",
+  "prompts": {},
+  "sessions": {
+    "s_182ca596eb9d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9e558b8-ecb2-4c19-a308-358b242af206",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_39a3af2677c386": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce4735ce-60e4-4e96-8602-834a7632454a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
