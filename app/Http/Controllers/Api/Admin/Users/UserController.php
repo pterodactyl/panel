@@ -7,6 +7,7 @@ namespace Pterodactyl\Http\Controllers\Api\Admin\Users;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\QueryParam;
@@ -24,8 +25,8 @@ use Pterodactyl\Http\Requests\Api\Admin\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\StoreUserRequest;
-use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateAvatarRequest;
+use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateUserRequest;
 use Pterodactyl\Http\Resources\Api\Admin\UserResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Subuser;
@@ -149,6 +150,12 @@ class UserController extends AdminApiController
         return UserResource::make($user)->withExtensionFields();
     }
 
+    /**
+     * Update user avatar.
+     */
+    #[Endpoint('Update user avatar', "Stores the uploaded image as the user's avatar and deletes the one it replaces.")]
+    #[BodyParam('avatar', 'file', 'PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.', required: true)]
+    #[ResponseFromResource(UserResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
     public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars, User $user): UserResource
     {
         $avatars->replace($user, $request->file('avatar'));
@@ -156,6 +163,11 @@ class UserController extends AdminApiController
         return UserResource::make($user->refresh())->withExtensionFields();
     }
 
+    /**
+     * Delete user avatar.
+     */
+    #[Endpoint('Delete user avatar', "Deletes the user's avatar.")]
+    #[ScribeResponse(status: 204, description: 'Avatar deleted.')]
     public function deleteAvatar(UserAvatarService $avatars, User $user): Response
     {
         $avatars->clear($user);

@@ -20,6 +20,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
         }
 
         const url = URL.createObjectURL(selected);
+
         setPreview(url);
 
         return () => URL.revokeObjectURL(url);
@@ -30,7 +31,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
             return;
         }
 
-        await update.mutateAsync({ id: user.attributes.id, file: selected });
+        await update.mutateAsync({ path: { user_id: user.attributes.id }, body: { avatar: selected } });
         setSelected(null);
     };
 
@@ -53,6 +54,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
                     className='hidden'
                     onChange={(event) => {
                         const file = event.target.files?.[0];
+
                         setSelected(file ?? null);
                     }}
                 />
@@ -68,7 +70,11 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
                         type='button'
                         disabled={!image || !!selected}
                         isLoading={remove.isPending}
-                        onClick={() => void remove.mutateAsync(user.attributes.id).then(() => setSelected(null))}
+                        onClick={() =>
+                            void remove
+                                .mutateAsync({ path: { user_id: user.attributes.id } })
+                                .then(() => setSelected(null))
+                        }
                     >
                         Remove Avatar
                     </Button.Danger>

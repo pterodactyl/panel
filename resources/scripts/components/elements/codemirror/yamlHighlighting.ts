@@ -1,6 +1,6 @@
 import { syntaxTree } from '@codemirror/language';
 import type { Extension, Range } from '@codemirror/state';
-import { Decoration, EditorView, ViewPlugin, type DecorationSet, type ViewUpdate } from '@codemirror/view';
+import { Decoration, ViewPlugin, type DecorationSet, type EditorView, type ViewUpdate } from '@codemirror/view';
 import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
 
 class YamlScalarHighlightingPlugin {

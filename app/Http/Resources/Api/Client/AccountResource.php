@@ -28,7 +28,7 @@ class AccountResource extends ClientResource
             'first_name' => $this->resource->name_first,
             'last_name' => $this->resource->name_last,
             'language' => $this->resource->language,
-            'avatar' => app(UserAvatarService::class)->url($this->resource->avatar),
+            'avatar' => resolve(UserAvatarService::class)->url($this->resource->avatar),
         ];
     }
 }

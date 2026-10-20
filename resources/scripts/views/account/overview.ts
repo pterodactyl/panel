@@ -194,9 +194,9 @@ function useAccountAvatarModel(): AccountAvatarModel {
                 return;
             }
 
-            void update.mutateAsync(selected).then(() => setSelected(null));
+            void update.mutateAsync({ body: { avatar: selected } }).then(() => setSelected(null));
         },
-        remove: () => void remove.mutateAsync(),
+        remove: () => void remove.mutateAsync({}),
         canSubmit: selected !== null && !update.isPending,
         submitting: update.isPending || remove.isPending,
     };

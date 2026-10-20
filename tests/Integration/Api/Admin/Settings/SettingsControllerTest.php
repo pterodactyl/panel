@@ -19,7 +19,7 @@ dataset('settingsEndpointsDataProvider', function () {
 test('get settings', function () {
     $response = $this->getJson(route('api.admin.settings'));
     $response->assertStatus(Response::HTTP_OK);
-    $response->assertJsonStructure(['general' => ['app:name', 'pterodactyl:auth:2fa_required', 'app:locale'], 'mail' => ['mail:mailers:smtp:host', 'mail:mailers:smtp:port', 'mail:mailers:smtp:encryption', 'mail:mailers:smtp:username', 'mail:from:address', 'mail:from:name'], 'advanced' => ['recaptcha:enabled', 'recaptcha:secret_key', 'recaptcha:website_key', 'pterodactyl:guzzle:timeout', 'pterodactyl:guzzle:connect_timeout', 'pterodactyl:client_features:allocations:enabled'], 'meta' => ['load_environment_only', 'show_recaptcha_warning']]);
+    $response->assertJsonStructure(['general' => ['app:name', 'pterodactyl:auth:2fa_required', 'pterodactyl:client_features:avatars:enabled', 'app:locale'], 'mail' => ['mail:mailers:smtp:host', 'mail:mailers:smtp:port', 'mail:mailers:smtp:encryption', 'mail:mailers:smtp:username', 'mail:from:address', 'mail:from:name'], 'advanced' => ['recaptcha:enabled', 'recaptcha:secret_key', 'recaptcha:website_key', 'pterodactyl:guzzle:timeout', 'pterodactyl:guzzle:connect_timeout', 'pterodactyl:client_features:allocations:enabled'], 'meta' => ['load_environment_only', 'show_recaptcha_warning']]);
     // The SMTP password must always be redacted to an empty string.
     $response->assertJsonPath('mail.mail:mailers:smtp:password', '');
 });
@@ -41,6 +41,7 @@ test('update general', function () {
     $this->assertDatabaseHas('settings', ['key' => 'settings::app:name', 'value' => 'Test Panel']);
     expect(Setting::fetch('settings::app:name'))->toBe('Test Panel');
     expect((string) Setting::fetch('settings::pterodactyl:auth:2fa_required'))->toBe('1');
+    expect(Setting::fetch('settings::pterodactyl:client_features:avatars:enabled'))->toBe('true');
     expect(Setting::fetch('settings::app:locale'))->toBe('en');
 });
 test('update mail', function () {
@@ -94,7 +95,7 @@ test('non admin forbidden', function (string $method, string $routeName) {
 /** Return a valid payload for updating the general Panel settings. */
 function validGeneralPayload(): array
 {
-    return ['branding' => ['name' => 'Test Panel'], 'misc' => ['required_2fa' => 1], 'default_locale' => 'en'];
+    return ['branding' => ['name' => 'Test Panel'], 'misc' => ['required_2fa' => 1, 'user_avatars_enabled' => 'true'], 'default_locale' => 'en'];
 }
 /** Return a valid payload for updating the SMTP mail settings (nested smtp shape). */
 function validMailPayload(): array

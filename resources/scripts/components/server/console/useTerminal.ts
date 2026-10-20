@@ -125,9 +125,8 @@ type InternalFitAddon = {
 
 const toInternalTerminal = (term: Pick<Terminal, keyof Terminal>): InternalTerminal => term as InternalTerminal;
 
-const toInternalFitAddon = (
-    fit: Pick<GhosttyWeb.FitAddon, keyof GhosttyWeb.FitAddon>
-): InternalFitAddon => fit as InternalFitAddon;
+const toInternalFitAddon = (fit: Pick<GhosttyWeb.FitAddon, keyof GhosttyWeb.FitAddon>): InternalFitAddon =>
+    fit as InternalFitAddon;
 
 const prefixNewline = (data: string | Uint8Array): string | Uint8Array => {
     if (!(data instanceof Uint8Array)) {
@@ -384,7 +383,7 @@ const openTerminal = (
     term.loadAddon(new TouchScrollAddon(term));
     term.loadAddon(new WebLinksAddon(term, new OSC8LinkProvider(term)));
     term.loadAddon(new ConsoleSelectionAddon(term));
-    
+
     unlockFitResize(fit);
     preserveScrollPositionOnWrite(term);
     adjustRendering(term);

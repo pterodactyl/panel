@@ -14,11 +14,13 @@ import { currentUserQueryKey, setCurrentUserQueryData } from '@/api/account/quer
 import type { UserData } from '@/api/account/types';
 import {
     adminCreateUserMutation,
+    adminDeleteUserAvatarMutation,
     adminDeleteUserMutation,
     adminGetUserOptions,
     adminGetUserQueryKey,
     adminListUsersOptions,
     adminListUsersQueryKey,
+    adminUpdateUserAvatarMutation,
     adminUpdateUserMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import {
@@ -34,7 +36,6 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
-import http from '@/api/http';
 
 import type { UserValues } from './types';
 export type { UserValues } from './types';
@@ -166,16 +167,11 @@ export const useUpdateAdminUserAvatar = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, file }: { id: number; file: File }) => {
-            const body = new FormData();
-            body.append('avatar', file);
-
-            return http.post(`/api/admin/users/${id}/avatar`, body);
-        },
-        onSuccess: async (_response, variables) => {
+        ...adminUpdateUserAvatarMutation(),
+        onSuccess: async (_user, variables) => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
-                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.id) }),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
             toast.success('Avatar updated');
         },
@@ -187,11 +183,11 @@ export const useDeleteAdminUserAvatar = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id: number) => http.delete(`/api/admin/users/${id}/avatar`),
-        onSuccess: async (_response, id) => {
+        ...adminDeleteUserAvatarMutation(),
+        onSuccess: async (_data, variables) => {
             await Promise.all([
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
-                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(id) }),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
             toast.success('Avatar removed');
         },

@@ -3,12 +3,13 @@ import { toast } from 'sonner';
 import type { UserData } from '@/api/account/types';
 import { getBootstrapUser } from '@/bootstrap';
 import {
+    clientDeleteAccountAvatarMutation,
+    clientUpdateAccountAvatarMutation,
     clientUpdateAccountEmailMutation,
     clientUpdateAccountPasswordMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import { clientGetAccount, type ClientUserResource } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
-import http from '@/api/http';
 
 export const currentUserQueryKey = ['account', 'current-user'] as const;
 
@@ -80,14 +81,9 @@ export const useUpdateAccountAvatar = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (file: File) => {
-            const body = new FormData();
-            body.append('avatar', file);
-
-            return http.post('/api/client/account/avatar', body);
-        },
-        onSuccess: async ({ data }) => {
-            setCurrentUserQueryData(queryClient, { avatar: data.attributes.avatar });
+        ...clientUpdateAccountAvatarMutation(),
+        onSuccess: async ({ attributes }) => {
+            setCurrentUserQueryData(queryClient, { avatar: attributes.avatar });
             await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
             toast.success('Avatar updated');
         },
@@ -99,7 +95,7 @@ export const useDeleteAccountAvatar = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: () => http.delete('/api/client/account/avatar'),
+        ...clientDeleteAccountAvatarMutation(),
         onSuccess: async () => {
             setCurrentUserQueryData(queryClient, { avatar: null });
             await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });

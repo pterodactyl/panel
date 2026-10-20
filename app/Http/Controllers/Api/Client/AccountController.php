@@ -15,9 +15,9 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
-use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Users\UserAvatarService;
@@ -87,6 +87,9 @@ class AccountController extends ClientApiController
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
+    #[Endpoint('Update account avatar', "Stores the uploaded image as the authenticated user's avatar and deletes the one it replaces.")]
+    #[BodyParam('avatar', 'file', 'PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.', required: true)]
+    #[ResponseFromResource(AccountResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
     public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars): AccountResource
     {
         $avatars->replace($request->user(), $request->file('avatar'));
@@ -94,9 +97,11 @@ class AccountController extends ClientApiController
         return AccountResource::make($request->user()->refresh());
     }
 
+    #[Endpoint('Delete account avatar', "Deletes the authenticated user's avatar.")]
+    #[ScribeResponse(status: 204, description: 'Avatar deleted.')]
     public function deleteAvatar(Request $request, UserAvatarService $avatars): JsonResponse
     {
-        $avatars->clear($request->user());
+        $avatars->clear($this->authenticatedUser($request));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

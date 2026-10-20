@@ -26,7 +26,7 @@ class UserAvatarService
 
     public function __construct(private readonly ExtensionSettingFiles $files) {}
 
-    public function replace(User $user, UploadedFile $upload): string
+    public function replace(User $user, UploadedFile $upload): void
     {
         $previous = $user->avatar;
         $file = $this->files->store(self::FILE_GROUP, $upload, self::MIME_TYPES, self::MAX_KILOBYTES);
@@ -36,8 +36,6 @@ class UserAvatarService
         if ($previous !== null) {
             $this->files->delete(self::FILE_GROUP, $previous);
         }
-
-        return $this->url($file);
     }
 
     public function clear(User $user): void

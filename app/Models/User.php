@@ -72,6 +72,7 @@ class User extends Authenticatable implements Identifiable
         'language' => 'en',
         'use_totp' => false,
         'totp_secret' => null,
+        'avatar' => null,
     ];
 
     /**
@@ -108,7 +109,7 @@ class User extends Authenticatable implements Identifiable
 
         return [
             ...$attributes,
-            'avatar' => app(UserAvatarService::class)->url($this->avatar),
+            'avatar' => resolve(UserAvatarService::class)->url($this->avatar),
             'identifier' => $this->identifier,
         ];
     }
