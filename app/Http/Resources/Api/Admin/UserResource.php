@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserAvatarService;
 
 /**
  * @extends AdminResource<User>
@@ -42,8 +41,8 @@ class UserResource extends AdminResource
             'language' => $user->language,
             'root_admin' => (bool) $user->root_admin,
             '2fa' => (bool) $user->use_totp,
-            'image' => resolve(UserAvatarService::class)->url($user->avatar) ?? 'https://gravatar.com/avatar/'.md5(Str::lower($user->email)),
-            'avatar' => resolve(UserAvatarService::class)->url($user->avatar),
+            'image' => $user->avatar_url ?? 'https://gravatar.com/avatar/'.md5(Str::lower($user->email)),
+            'avatar' => $user->avatar_url,
             'servers_count' => (int) ($user->servers_count ?? 0),
             'subuser_of_count' => (int) ($user->subuser_of_count ?? 0),
             'created_at' => $this->formatTimestamp($user->created_at),

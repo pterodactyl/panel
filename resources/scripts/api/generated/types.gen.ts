@@ -6559,6 +6559,10 @@ export type AdminDeleteUserAvatarErrors = {
      */
     401: ErrorEnvelope;
     /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
      * The requested resource could not be found.
      */
     404: ErrorEnvelope;

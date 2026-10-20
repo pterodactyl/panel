@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Services\Extensions;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Themes\ThemeDefinition;
 use Pterodactyl\Services\Themes\ThemeRepository;
-use Pterodactyl\Services\Users\UserAvatarService;
 
 /**
  * The parsed, validated extension.json of a single extension package.
@@ -31,7 +31,7 @@ class ExtensionManifest
     public const string ICON_FILE_REGEX = '/^(?:[A-Za-z0-9_-][A-Za-z0-9_.-]*\/)*[A-Za-z0-9_-][A-Za-z0-9_.-]*\.(?:png|jpe?g|webp)$/D';
 
     /** Identifiers that would collide with core routes/assets, the built-in theme, or core's own setting files. */
-    public const array RESERVED_IDS = ['pterodactyl', 'panel', 'core', ThemeRepository::CLASSIC, UserAvatarService::FILE_GROUP];
+    public const array RESERVED_IDS = ['pterodactyl', 'panel', 'core', ThemeRepository::CLASSIC, User::AVATAR_FILES];
 
     /** A PSR-4 prefix under `autoload`: PHP identifiers, each followed by a backslash. */
     public const string NAMESPACE_REGEX = '/^(?:[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*\\\\)+$/D';

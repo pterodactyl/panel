@@ -18,7 +18,7 @@ const ADMIN_USER_ATTRIBUTES = ['id', 'external_id', 'uuid', 'username', 'email',
 dataset('userSearchDataProvider', fn (): array => [['username'], ['email'], ['uuid']]);
 dataset('userListSortsDataProvider', fn (): array => [['email'], ['-email'], ['username'], ['-username'], ['created_at'], ['-created_at']]);
 /** Endpoints that should return a 403 error when accessed by a non-root-admin user. */
-dataset('userEndpointsDataProvider', fn (): array => [['getJson', 'api.admin.users'], ['getJson', 'api.admin.users.view'], ['getJson', 'api.admin.users.external'], ['postJson', 'api.admin.users.store'], ['postJson', 'api.admin.users.disable-2fa'], ['putJson', 'api.admin.users.update'], ['delete', 'api.admin.users.delete']]);
+dataset('userEndpointsDataProvider', fn (): array => [['getJson', 'api.admin.users'], ['getJson', 'api.admin.users.view'], ['getJson', 'api.admin.users.external'], ['postJson', 'api.admin.users.store'], ['postJson', 'api.admin.users.disable-2fa'], ['putJson', 'api.admin.users.update'], ['delete', 'api.admin.users.delete'], ['postJson', 'api.admin.users.avatar.update'], ['delete', 'api.admin.users.avatar.delete']]);
 test('returns paginated users with relationship counts', function (): void {
     $admin = $this->getAdminUser();
     $admin->forceFill(['username' => 'admin-list-contract-admin', 'email' => 'admin-list-contract-admin@example.test'])->save();

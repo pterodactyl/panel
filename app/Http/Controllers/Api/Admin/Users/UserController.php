@@ -15,12 +15,14 @@ use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\CreatesUsers;
 use Pterodactyl\Contracts\Users\DeletesUsers;
+use Pterodactyl\Contracts\Users\ReplacesUserAvatars;
 use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Scribe\Attributes\ExtensionFieldsParam;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Controllers\Api\Admin\AdminApiController;
+use Pterodactyl\Http\Requests\Api\Admin\Users\DeleteAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUsersRequest;
@@ -31,7 +33,6 @@ use Pterodactyl\Http\Resources\Api\Admin\UserResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserAvatarService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -156,11 +157,9 @@ class UserController extends AdminApiController
     #[Endpoint('Update user avatar', "Stores the uploaded image as the user's avatar and deletes the one it replaces.")]
     #[BodyParam('avatar', 'file', 'PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.', required: true)]
     #[ResponseFromResource(UserResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
-    public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars, User $user): UserResource
+    public function updateAvatar(UpdateAvatarRequest $request, ReplacesUserAvatars $avatars, User $user): UserResource
     {
-        $avatars->replace($user, $request->file('avatar'));
-
-        return UserResource::make($user->refresh())->withExtensionFields();
+        return UserResource::make($avatars->replace($user, $request->avatar()))->withExtensionFields();
     }
 
     /**
@@ -168,9 +167,9 @@ class UserController extends AdminApiController
      */
     #[Endpoint('Delete user avatar', "Deletes the user's avatar.")]
     #[ScribeResponse(status: 204, description: 'Avatar deleted.')]
-    public function deleteAvatar(UserAvatarService $avatars, User $user): Response
+    public function deleteAvatar(DeleteAvatarRequest $request, ReplacesUserAvatars $avatars, User $user): Response
     {
-        $avatars->clear($user);
+        $avatars->replace($user, null);
 
         return response()->noContent();
     }

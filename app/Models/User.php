@@ -22,7 +22,7 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
-use Pterodactyl\Services\Users\UserAvatarService;
+use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 /**
@@ -65,6 +65,9 @@ class User extends Authenticatable implements Identifiable
     public const int USER_LEVEL_ADMIN = 1;
 
     public const string RESOURCE_NAME = 'user';
+
+    /** Avatars are stored with extension setting files under this id, which no extension may take. */
+    public const string AVATAR_FILES = 'user-avatars';
 
     protected $attributes = [
         'external_id' => null,
@@ -109,7 +112,7 @@ class User extends Authenticatable implements Identifiable
 
         return [
             ...$attributes,
-            'avatar' => resolve(UserAvatarService::class)->url($this->avatar),
+            'avatar' => $this->avatar_url,
             'identifier' => $this->identifier,
         ];
     }
@@ -233,6 +236,18 @@ class User extends Authenticatable implements Identifiable
     {
         return Attribute::make(
             get: fn (): string => mb_trim($this->name_first.' '.$this->name_last),
+        );
+    }
+
+    /**
+     * Where the uploaded avatar is served from; null while the user has none.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->avatar === null ? null : ExtensionSettingFiles::url(self::AVATAR_FILES, $this->avatar),
         );
     }
 }

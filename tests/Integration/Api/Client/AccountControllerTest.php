@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Client\AccountControllerTest;
 
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Subuser;
@@ -20,6 +22,16 @@ test('account details are returned', function (): void {
     $response = $this->actingAs($user)->get('/api/client/account');
     $response->assertOk()->assertJson(['object' => 'user', 'attributes' => ['id' => $user->id, 'admin' => false, 'username' => $user->username, 'email' => $user->email, 'first_name' => $user->name_first, 'last_name' => $user->name_last, 'language' => $user->language]]);
 });
+test('avatars can only be uploaded while the panel allows them', function (bool $enabled): void {
+    config()->set('pterodactyl.client_features.avatars.enabled', $enabled);
+    Storage::fake(config()->string('extensions.files_disk'));
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post('/api/client/account/avatar', ['avatar' => UploadedFile::fake()->image('avatar.png')], ['Accept' => 'application/json']);
+
+    $response->assertStatus($enabled ? Response::HTTP_OK : Response::HTTP_FORBIDDEN);
+    expect($user->fresh()->avatar !== null)->toBe($enabled);
+})->with([true, false]);
 test('email is updated', function (): void {
     $user = User::factory()->create();
     $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $email = Str::random().'@example.com', 'password' => 'password'])->assertNoContent();
