@@ -32,6 +32,7 @@ type AdminSettingsSection = 'Advanced' | 'General' | 'Mail';
 export interface GeneralSettingsValues {
     name: string;
     twoFactorRequired: NonNullable<AdminGeneralSettingsBody['misc']>['required_2fa'];
+    userAvatarsEnabled: boolean;
     locale: string;
 }
 
@@ -78,7 +79,10 @@ export const updateAdminGeneralSettingsInput = (
 ): Options<AdminUpdateGeneralSettingsData> => ({
     body: {
         branding: { name: values.name },
-        misc: { required_2fa: values.twoFactorRequired },
+        misc: {
+            required_2fa: values.twoFactorRequired,
+            user_avatars_enabled: values.userAvatarsEnabled ? 'true' : 'false',
+        },
         default_locale: values.locale,
     },
 });
@@ -127,6 +131,7 @@ export const useUpdateAdminGeneralSettings = () => {
                 ...settings,
                 name: body.branding?.name ?? settings.name,
                 locale: body.default_locale,
+                userAvatarsEnabled: body.misc?.user_avatars_enabled === 'true',
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             const notification = adminSettingsUpdateToast('General');

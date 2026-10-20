@@ -17,9 +17,10 @@ import {
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
 import { View } from '../View';
 
-const mocks = vi.hoisted(() => ({ error: vi.fn() }));
+const mocks = vi.hoisted(() => ({ error: vi.fn(), copy: vi.fn<(text: string) => Promise<boolean>>() }));
 
 vi.mock('@/plugins/notifications', () => ({ notifyHttpError: mocks.error }));
+vi.mock('@/lib/clipboard', () => ({ default: mocks.copy }));
 vi.mock('@/components/elements/InputSpinner', () => ({
     default: ({ visible, children }: PropsWithChildren<{ visible: boolean }>) => (
         <div>
@@ -52,6 +53,7 @@ let imageChanges: { image: string; finish: () => void }[];
 beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     vi.clearAllMocks();
+    mocks.copy.mockResolvedValue(true);
     saves = [];
     imageChanges = [];
     http.defaults.adapter = ((config) =>
@@ -174,6 +176,18 @@ describe('startup variables', () => {
         await advance(500);
 
         expect(saves.map((save) => save.value)).toEqual(['1']);
+    });
+});
+
+describe('startup command', () => {
+    it('copies the rendered command', async () => {
+        renderStartup();
+
+        fireEvent.click(await screen.findByRole('button', { name: 'Copy startup command' }));
+        await advance();
+
+        expect(mocks.copy).toHaveBeenCalledWith('start original');
+        expect(screen.getByText('Copied text to clipboard.')).toBeVisible();
     });
 });
 

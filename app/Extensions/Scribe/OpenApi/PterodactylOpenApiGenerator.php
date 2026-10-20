@@ -2396,10 +2396,16 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'properties' => [
                 'general' => [
                     'type' => 'object',
-                    'required' => ['app:name', 'pterodactyl:auth:2fa_required', 'app:locale'],
+                    'required' => [
+                        'app:name',
+                        'pterodactyl:auth:2fa_required',
+                        'pterodactyl:client_features:avatars:enabled',
+                        'app:locale',
+                    ],
                     'properties' => [
                         'app:name' => ['type' => 'string', 'example' => 'Pterodactyl'],
                         'pterodactyl:auth:2fa_required' => ['type' => 'integer', 'enum' => [0, 1, 2], 'example' => 0],
+                        'pterodactyl:client_features:avatars:enabled' => ['type' => 'boolean', 'example' => false],
                         'app:locale' => ['type' => 'string', 'example' => 'en'],
                     ],
                 ],

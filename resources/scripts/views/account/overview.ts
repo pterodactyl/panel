@@ -1,17 +1,25 @@
 import { useState } from 'react';
 import { useField, useForm, useStore } from '@tanstack/react-form';
 import { useLocation } from '@tanstack/react-router';
-import { useCurrentUser, useUpdateAccountEmail, useUpdateAccountPassword } from '@/api/account/queries';
+import {
+    useCurrentUser,
+    useDeleteAccountAvatar,
+    useUpdateAccountAvatar,
+    useUpdateAccountEmail,
+    useUpdateAccountPassword,
+} from '@/api/account/queries';
 import {
     useAccountTwoFactorToken,
     useDisableAccountTwoFactor,
     useEnableAccountTwoFactor,
 } from '@/api/account/two-factor/queries';
 import { httpErrorToHuman } from '@/api/http';
+import { useSiteSettings } from '@/api/settings/queries';
 import { boundField, fixtureField, stateField, type FieldAttributes } from '../forms';
 import { implementViews } from '../registry';
 import type {
     AccountEmailModel,
+    AccountAvatarModel,
     AccountOverviewModel,
     AccountPasswordModel,
     AccountTwoFactorModel,
@@ -30,8 +38,12 @@ const totpCode: FieldAttributes = {
 
 function useAccountOverviewModel(): AccountOverviewModel {
     const state = useLocation().state;
+    const { userAvatarsEnabled } = useSiteSettings();
 
-    return { twoFactorRequired: 'twoFactorRedirect' in state && state.twoFactorRedirect === true };
+    return {
+        twoFactorRequired: 'twoFactorRedirect' in state && state.twoFactorRedirect === true,
+        userAvatarsEnabled,
+    };
 }
 
 function useAccountPasswordModel(): AccountPasswordModel {
@@ -135,6 +147,29 @@ function useAccountEmailModel(): AccountEmailModel {
         submit: () => void form.handleSubmit(),
         canSubmit: canSubmit && !updateEmail.isPending,
         submitting: submitting || updateEmail.isPending,
+    };
+}
+
+function useAccountAvatarModel(): AccountAvatarModel {
+    const user = useCurrentUser();
+    const update = useUpdateAccountAvatar();
+    const remove = useDeleteAccountAvatar();
+    const [selected, setSelected] = useState<File | null>(null);
+
+    return {
+        avatar: user.avatar ?? null,
+        selected,
+        select: setSelected,
+        submit: () => {
+            if (selected === null) {
+                return;
+            }
+
+            void update.mutateAsync(selected).then(() => setSelected(null));
+        },
+        remove: () => void remove.mutateAsync(),
+        canSubmit: selected !== null && !update.isPending,
+        submitting: update.isPending || remove.isPending,
     };
 }
 
@@ -271,8 +306,8 @@ implementViews({
     'page.account.overview': {
         use: useAccountOverviewModel,
         fixtures: {
-            default: () => ({ twoFactorRequired: false }),
-            twoFactorRequired: () => ({ twoFactorRequired: true }),
+            default: () => ({ twoFactorRequired: false, userAvatarsEnabled: false }),
+            twoFactorRequired: () => ({ twoFactorRequired: true, userAvatarsEnabled: false }),
         },
     },
     'account.password': {
@@ -286,6 +321,7 @@ implementViews({
         use: useAccountEmailModel,
         fixtures: { default: () => emailFixture(), submitting: () => emailFixture(true) },
     },
+    'account.avatar': { use: useAccountAvatarModel },
     'account.twoFactor': {
         use: useAccountTwoFactorModel,
         fixtures: {

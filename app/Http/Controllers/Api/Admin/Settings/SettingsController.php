@@ -21,6 +21,7 @@ class SettingsController extends AdminApiController
         'general' => [
             'app:name' => 'Pterodactyl',
             'pterodactyl:auth:2fa_required' => 0,
+            'pterodactyl:client_features:avatars:enabled' => false,
             'app:locale' => 'en',
         ],
         'logo' => null,
@@ -61,6 +62,7 @@ class SettingsController extends AdminApiController
             'general' => [
                 'app:name' => config('app.name'),
                 'pterodactyl:auth:2fa_required' => config('pterodactyl.auth.2fa_required'),
+                'pterodactyl:client_features:avatars:enabled' => config('pterodactyl.client_features.avatars.enabled'),
                 'app:locale' => config('app.locale'),
             ],
             'logo' => $brandingLogo->url(),

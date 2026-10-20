@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { basicSetup } from 'codemirror';
-import { Compartment, EditorState, Prec } from '@codemirror/state';
+import { Compartment, EditorState, Prec, type Extension } from '@codemirror/state';
 import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { EditorView, keymap, type Panel, type ViewUpdate } from '@codemirror/view';
 import {
@@ -16,7 +16,8 @@ import {
     setSearchQuery,
 } from '@codemirror/search';
 import { tags } from '@lezer/highlight';
-import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
+import { searchScrollbarMarkers } from '@/components/elements/codemirror/searchMarkers';
+import { resolveEditorLanguage } from '@/components/elements/codemirror/yamlHighlighting';
 import { editorContainerClass } from '@/components/elements/codemirror/layout';
 import { cn } from '@/lib/cn';
 
@@ -69,8 +70,11 @@ const panelEditorTheme = EditorView.theme(
         '.cm-line': {
             padding: '0 calc(var(--spacing) * 3)',
         },
-        '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
-            backgroundColor: 'var(--editor-selection)',
+        '& > .cm-scroller > .cm-layer.cm-selectionLayer .cm-selectionBackground': {
+            background: 'var(--editor-selection) !important',
+        },
+        '&.cm-focused > .cm-scroller > .cm-layer.cm-selectionLayer .cm-selectionBackground': {
+            background: 'var(--editor-selection) !important',
         },
         '.cm-cursor': {
             borderLeftColor: 'var(--editor-caret)',
@@ -93,7 +97,10 @@ const panelEditorTheme = EditorView.theme(
             color: 'var(--editor-foreground)',
             margin: '0 var(--spacing)',
         },
-        '.cm-activeLine, .cm-activeLineGutter': {
+        '.cm-activeLine': {
+            backgroundColor: 'color-mix(in srgb, var(--editor-active-line) 45%, transparent)',
+        },
+        '.cm-activeLineGutter': {
             backgroundColor: 'var(--editor-active-line)',
         },
         '.cm-matchingBracket, .cm-nonmatchingBracket': {
@@ -105,6 +112,36 @@ const panelEditorTheme = EditorView.theme(
         },
         '.cm-searchMatch.cm-searchMatch-selected': {
             backgroundColor: 'var(--editor-search-match-selected)',
+        },
+        '.cm-search-scrollbar-markers': {
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            width: '7px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            zIndex: '150',
+        },
+        '.cm-search-scrollbar-marker': {
+            position: 'absolute',
+            left: '1px',
+            right: '1px',
+            height: '3px',
+            borderRadius: '2px',
+            backgroundColor: 'var(--editor-search-match)',
+        },
+        '.cm-search-scrollbar-marker-selected': {
+            backgroundColor: 'var(--editor-search-match-selected)',
+        },
+        '.cm-yaml-boolean': {
+            color: 'var(--editor-syntax-keyword)',
+        },
+        '.cm-yaml-number': {
+            color: 'var(--editor-syntax-type)',
+        },
+        '.cm-yaml-null': {
+            color: 'var(--editor-syntax-constant)',
         },
         '.cm-tooltip, .cm-tooltip.cm-tooltip-autocomplete': {
             backgroundColor: 'var(--editor-tooltip)',
@@ -431,6 +468,7 @@ const panelEditorTheme = EditorView.theme(
 
 const panelHighlightStyle = HighlightStyle.define([
     { tag: tags.keyword, color: 'var(--editor-syntax-keyword)' },
+    { tag: tags.definition(tags.propertyName), color: 'var(--editor-syntax-definition)' },
     {
         tag: [tags.name, tags.deleted, tags.character, tags.macroName],
         color: 'var(--editor-syntax-name)',
@@ -474,6 +512,7 @@ const panelHighlightStyle = HighlightStyle.define([
     },
     { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
 ]);
+
 
 class CustomSearchPanel implements Panel {
     dom: HTMLElement;
@@ -782,6 +821,11 @@ class CustomSearchPanel implements Panel {
         if (!query.eq(this.query)) {
             this.query = query;
             this.view.dispatch({ effects: setSearchQuery.of(query) });
+
+            // Select the first matching occurrence so the active result is visible.
+            if (query.valid) {
+                findNext(this.view);
+            }
         }
     }
 
@@ -888,6 +932,7 @@ const createEditorState = (
         extensions: [
             basicSetup,
             search({ createPanel: (view) => new CustomSearchPanel(view), top: true }),
+            searchScrollbarMarkers,
             panelEditorTheme,
             syntaxHighlighting(panelHighlightStyle),
             EditorState.tabSize.of(4),
@@ -911,7 +956,7 @@ const createEditorState = (
                     },
                 ])
             ),
-            languageCompartment.of(resolveCodemirrorLanguage(mode)),
+            languageCompartment.of(resolveEditorLanguage(mode)),
             EditorView.updateListener.of((update) => {
                 if (update.docChanged) {
                     onContentChanged.current?.(update.state.doc.toString());
@@ -972,7 +1017,7 @@ export default function CodemirrorEditor({
 
     useEffect(() => {
         editor.current?.dispatch({
-            effects: languageCompartment.reconfigure(resolveCodemirrorLanguage(mode)),
+            effects: languageCompartment.reconfigure(resolveEditorLanguage(mode)),
         });
     }, [languageCompartment, mode]);
 

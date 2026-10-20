@@ -4,10 +4,11 @@ import type { LucideIcon } from 'lucide-react';
 interface Props {
     icon?: LucideIcon;
     title: string | React.ReactNode;
+    actions?: React.ReactNode;
     className?: string;
     contentClassName?: string;
     children: React.ReactNode;
 }
 /** A `Card` with a header. */
-declare const TitledGreyBox: ({ icon, title, children, className, contentClassName }: Props) => React.JSX.Element;
+declare const TitledGreyBox: ({ icon, title, actions, children, className, contentClassName }: Props) => React.JSX.Element;
 export default TitledGreyBox;

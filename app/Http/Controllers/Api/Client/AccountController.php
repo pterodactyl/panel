@@ -17,8 +17,10 @@ use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Users\UserAvatarService;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -81,6 +83,20 @@ class AccountController extends ClientApiController
     public function updatePassword(UpdatePasswordRequest $request, UpdatesUserPasswords $passwords): JsonResponse
     {
         $passwords->update($request->user(), $request->string('password')->toString());
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars): AccountResource
+    {
+        $avatars->replace($request->user(), $request->file('avatar'));
+
+        return AccountResource::make($request->user()->refresh());
+    }
+
+    public function deleteAvatar(Request $request, UserAvatarService $avatars): JsonResponse
+    {
+        $avatars->clear($request->user());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -8,6 +8,7 @@ import {
 } from '@/api/generated/@tanstack/react-query.gen';
 import { clientGetAccount, type ClientUserResource } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
+import http from '@/api/http';
 
 export const currentUserQueryKey = ['account', 'current-user'] as const;
 
@@ -30,6 +31,7 @@ const withAccount = (user: UserData, { attributes }: ClientUserResource): UserDa
     email: attributes.email,
     language: attributes.language,
     rootAdmin: attributes.admin,
+    avatar: attributes.avatar,
 });
 
 export const currentUserQueryOptions = () =>
@@ -73,3 +75,36 @@ export const useUpdateAccountPassword = () =>
         onSuccess: () => window.location.assign('/auth/login'),
         onError: (error) => notifyHttpError(error, 'Unable to update password'),
     });
+
+export const useUpdateAccountAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (file: File) => {
+            const body = new FormData();
+            body.append('avatar', file);
+
+            return http.post('/api/client/account/avatar', body);
+        },
+        onSuccess: async ({ data }) => {
+            setCurrentUserQueryData(queryClient, { avatar: data.attributes.avatar });
+            await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
+            toast.success('Avatar updated');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+    });
+};
+
+export const useDeleteAccountAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => http.delete('/api/client/account/avatar'),
+        onSuccess: async () => {
+            setCurrentUserQueryData(queryClient, { avatar: null });
+            await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
+            toast.success('Avatar removed');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
+    });
+};

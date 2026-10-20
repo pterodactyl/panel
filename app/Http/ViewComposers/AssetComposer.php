@@ -43,6 +43,7 @@ class AssetComposer
             'name' => config('app.name', 'Pterodactyl'),
             'logo' => $this->brandingLogo->url(),
             'locale' => config('app.locale', 'en'),
+            'userAvatarsEnabled' => config('pterodactyl.client_features.avatars.enabled', false),
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key', ''),

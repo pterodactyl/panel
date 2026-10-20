@@ -34,6 +34,7 @@ import {
     type Options,
 } from '@/api/generated';
 import { notifyHttpError } from '@/plugins/notifications';
+import http from '@/api/http';
 
 import type { UserValues } from './types';
 export type { UserValues } from './types';
@@ -158,6 +159,43 @@ export const useUpdateAdminUser = () => {
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'update').errorTitle),
+    });
+};
+
+export const useUpdateAdminUserAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, file }: { id: number; file: File }) => {
+            const body = new FormData();
+            body.append('avatar', file);
+
+            return http.post(`/api/admin/users/${id}/avatar`, body);
+        },
+        onSuccess: async (_response, variables) => {
+            await Promise.all([
+                invalidateGeneratedOperations(queryClient, ['adminListUsers']),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.id) }),
+            ]);
+            toast.success('Avatar updated');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+    });
+};
+
+export const useDeleteAdminUserAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: number) => http.delete(`/api/admin/users/${id}/avatar`),
+        onSuccess: async (_response, id) => {
+            await Promise.all([
+                invalidateGeneratedOperations(queryClient, ['adminListUsers']),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(id) }),
+            ]);
+            toast.success('Avatar removed');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
     });
 };
 
