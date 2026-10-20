@@ -71,7 +71,7 @@ const userOptions = ({ users }: ActivityFacets): ActivityFilterOption[] =>
         label: option.email ? `${option.username} (${option.email})` : option.username,
     }));
 
-type ActorAttributes = { username?: string; email?: string };
+type ActorAttributes = { username?: string; email?: string; avatar?: string | null };
 
 function toEntry(activity: ActivityLog, filter: (event: string) => CorePanelDestination): ActivityEntry {
     const { attributes } = activity;
@@ -81,7 +81,7 @@ function toEntry(activity: ActivityLog, filter: (event: string) => CorePanelDest
     return {
         id: attributes.id,
         event: attributes.event,
-        actor: actor ? { username: actor.username ?? null, email: actor.email ?? null } : null,
+        actor: actor ? { username: actor.username ?? null, email: actor.email ?? null, avatar: actor.avatar } : null,
         properties: attributes.properties,
         hasMetadata: attributes.has_additional_metadata,
         ip: attributes.ip,

@@ -25,10 +25,12 @@ use Pterodactyl\Http\Requests\Api\Admin\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateUserRequest;
+use Pterodactyl\Http\Requests\Api\Admin\Users\UpdateAvatarRequest;
 use Pterodactyl\Http\Resources\Api\Admin\UserResource;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Users\UserAvatarService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -145,6 +147,20 @@ class UserController extends AdminApiController
             ->log();
 
         return UserResource::make($user)->withExtensionFields();
+    }
+
+    public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars, User $user): UserResource
+    {
+        $avatars->replace($user, $request->file('avatar'));
+
+        return UserResource::make($user->refresh())->withExtensionFields();
+    }
+
+    public function deleteAvatar(UserAvatarService $avatars, User $user): Response
+    {
+        $avatars->clear($user);
+
+        return response()->noContent();
     }
 
     /**

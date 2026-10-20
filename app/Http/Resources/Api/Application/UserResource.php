@@ -10,6 +10,7 @@ use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Http\Resources\Api\NullResource;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Services\Users\UserAvatarService;
 
 /**
  * @extends ApplicationResource<User>
@@ -42,6 +43,8 @@ class UserResource extends ApplicationResource
             'language' => $user->language,
             'root_admin' => (bool) $user->root_admin,
             '2fa' => (bool) $user->use_totp,
+            'image' => app(UserAvatarService::class)->url($user->avatar),
+            'avatar' => app(UserAvatarService::class)->url($user->avatar),
             'relationships' => [],
             'created_at' => $this->formatTimestamp($user->created_at),
             'updated_at' => $this->formatTimestamp($user->updated_at),
