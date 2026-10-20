@@ -1495,7 +1495,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | --- | --- | --- | --- | --- | --- | --- |
 | `page.account.activity` | account | `ActivityPageModel` |  |  | `account.activity.before` `account.activity.after` | default |
 | `page.account.api` | account | `PageStatusModel` |  |  | `account.api.before` `account.api.after` | default, loading, error |
-| `page.account.overview` | account | `AccountOverviewModel` |  | `account.overview.before` `account.overview.after` |  | default, twoFactorRequired |
+| `page.account.overview` | account | `AccountOverviewModel` |  | `account.overview.before` `account.overview.after` |  | default, twoFactorRequired, avatars |
 | `page.account.ssh` | account | `PageStatusModel` |  |  | `account.ssh.before` `account.ssh.after` | default, loading, error |
 | `page.auth.checkpoint` | auth | `CheckpointFormModel` |  |  | `auth.checkpoint.before` `auth.checkpoint.after` | code, recovery |
 | `page.auth.login` | auth | `LoginFormModel` |  | `auth.login.form.after` | `auth.login.before` `auth.login.after` | default, invalid, submitting |
@@ -1522,6 +1522,7 @@ the view's layers; a page's **engine slots** are rendered around it by the engin
 | --- | --- | --- | --- | --- | --- |
 | `account.apiKeys.create` | account | `ApiKeyCreateModel` |  |  | default, invalid, created |
 | `account.apiKeys.list` | account | `ApiKeyListModel` |  |  | keys, empty, loading, deleting |
+| `account.avatar` | account | `AccountAvatarModel` |  |  | default, uploaded, picked |
 | `account.email` | account | `AccountEmailModel` |  |  | default, submitting |
 | `account.password` | account | `AccountPasswordModel` |  |  | default, invalid |
 | `account.sshKeys.create` | account | `SshKeyCreateModel` |  |  | default, submitting |

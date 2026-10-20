@@ -2,7 +2,8 @@ import type { CompleteSkin, UiTone } from '@/sdk/theme';
 
 export const card = {
     root: {
-        base: 'bg-card rounded-sm',
+        // A dialog is a card too, so a card on one gets an outline to stand apart from it.
+        base: 'bg-card rounded-sm in-data-[ui=dialog]:ring-1 in-data-[ui=dialog]:ring-border',
         variants: {
             titled: { true: 'shadow-md', false: 'p-4 shadow-lg relative' },
             loading: { true: 'relative' },

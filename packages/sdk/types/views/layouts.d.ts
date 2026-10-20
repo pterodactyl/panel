@@ -32,6 +32,8 @@ export interface AppLayoutModel {
         readonly uuid: string;
         readonly username: string;
         readonly email: string;
+        /** The user's uploaded picture, for `Avatar`'s `image`; null draws the pattern `uuid` seeds. */
+        readonly avatar: string | null;
         readonly rootAdmin: boolean;
     };
     /** The scheme in use. */

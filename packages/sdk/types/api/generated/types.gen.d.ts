@@ -610,6 +610,7 @@ export type AdminSettingsResponse = {
     general: {
         'app:name': string;
         'pterodactyl:auth:2fa_required': 0 | 1 | 2;
+        'pterodactyl:client_features:avatars:enabled': boolean;
         'app:locale': string;
     };
     mail: {
@@ -742,6 +743,7 @@ export type AdminUserAttributes = {
     root_admin: boolean;
     '2fa': boolean;
     image: string;
+    avatar?: string | null;
     servers_count: number;
     subuser_of_count: number;
     created_at: string;
@@ -1424,6 +1426,8 @@ export type ClientUserAttributes = {
     first_name: string;
     last_name: string;
     language: string;
+    avatar: string | null;
+    image: string;
 };
 export type ClientUserResource = {
     object: string;
@@ -2332,6 +2336,10 @@ export type AdminUpdateGeneralSettingsRequest = {
          * The misc required 2fa.
          */
         required_2fa: 0 | 1 | 2;
+        /**
+         * The misc user avatars enabled.
+         */
+        user_avatars_enabled: 'true' | 'false';
     };
     /**
      * The default locale.

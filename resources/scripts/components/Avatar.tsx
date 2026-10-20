@@ -14,21 +14,27 @@ export interface AvatarProps {
     square?: boolean;
     title?: boolean;
     className?: string;
+    /** An uploaded picture drawn in place of the pattern, such as a user's `avatar`. */
     image?: string | null;
 }
 
-function CoreAvatar({ variant = 'beam', className, ...props }: AvatarProps) {
+function CoreAvatar({ variant = 'beam', image, className, ...props }: AvatarProps) {
     const ui = useSkin('Avatar', { variant });
 
-    if (props.image) {
+    if (image) {
+        // Shaped and sized like the pattern: round unless `square`, and as wide as its box without a `size`.
         return (
             <img
-                src={props.image}
+                src={image}
                 alt={props.title ? props.name : ''}
-                width={props.size}
-                height={props.size}
-                style={{ width: props.size, height: props.size }}
-                className={`shrink-0 rounded-full object-cover ${className ?? ''}`}
+                style={{
+                    width: props.size ?? '100%',
+                    height: props.size,
+                    aspectRatio: '1',
+                    objectFit: 'cover',
+                    borderRadius: props.square ? undefined : '50%',
+                }}
+                {...ui('root', className)}
             />
         );
     }

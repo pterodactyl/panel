@@ -4,9 +4,30 @@ import type { PageStatusModel } from "../pageStatus.js";
 export interface AccountOverviewModel {
     /** The panel sent the user here because their account must enable two-step verification. */
     readonly twoFactorRequired: boolean;
+    /** Users may upload their own avatar, so the page places `account.avatar`. */
+    readonly userAvatarsEnabled: boolean;
 }
 export type AccountPasswordModel = FormModel<'current' | 'password' | 'confirmPassword'>;
 export type AccountEmailModel = FormModel<'email' | 'password'>;
+/** The user's avatar: a file is picked with `select`, shown in `preview`, and saved with `submit`. */
+export interface AccountAvatarModel {
+    /** Seeds the generated pattern, as `Avatar`'s `name`. */
+    readonly uuid: string;
+    /** The saved picture; null while the user has none. */
+    readonly avatar: string | null;
+    /** The file picked and not yet saved. */
+    readonly selected: File | null;
+    /** What to show, as `Avatar`'s `image`: the picked file, else the saved picture. */
+    readonly preview: string | null;
+    /** The `accept` of a file input that picks one. */
+    readonly accept: string;
+    readonly select: (file: File | null) => void;
+    readonly submit: () => void;
+    /** Deletes the saved picture. */
+    readonly remove: () => void;
+    readonly canSubmit: boolean;
+    readonly submitting: boolean;
+}
 export type TwoFactorDialog = 'enable' | 'disable';
 export interface TwoFactorSetupModel extends FormModel<'code' | 'password'> {
     /** The secret to enter by hand, once loaded. */
@@ -71,6 +92,7 @@ declare module '../registry' {
         'page.account.ssh': PageStatusModel;
         'account.password': AccountPasswordModel;
         'account.email': AccountEmailModel;
+        'account.avatar': AccountAvatarModel;
         'account.twoFactor': AccountTwoFactorModel;
         'account.apiKeys.list': ApiKeyListModel;
         'account.apiKeys.create': ApiKeyCreateModel;
