@@ -27,16 +27,6 @@ type MockTerminal = {
     };
     canvas: HTMLCanvasElement;
     canvasPressed: ReturnType<typeof vi.fn>;
-    selectionPressed: ReturnType<typeof vi.fn>;
-    lines: string[];
-    wrappedLines: Set<number>;
-    selectionManager: {
-        selectionStart: { col: number; absoluteRow: number } | null;
-        selectionEnd: { col: number; absoluteRow: number } | null;
-        copyToClipboard: ReturnType<typeof vi.fn>;
-        getWordAtCell: (col: number, row: number) => { startCol: number; endCol: number } | null;
-        getSelection: () => string;
-    };
     write: (data: string) => void;
     writeln: (data: string) => void;
 };
@@ -81,51 +71,6 @@ vi.mock('ghostty-web', () => ({
         canvas = document.createElement('canvas');
         // Stands in for Ghostty's own capture listener, which hit-tests its scrollbar.
         canvasPressed = vi.fn();
-        // Stands in for Ghostty's selection listener on the canvas.
-        selectionPressed = vi.fn();
-        lines: string[] = [];
-        wrappedLines = new Set<number>();
-        selectionManager = {
-            selectionStart: null as { col: number; absoluteRow: number } | null,
-            selectionEnd: null as { col: number; absoluteRow: number } | null,
-            selectionChangedEmitter: { fire: () => {} },
-            copyToClipboard: vi.fn(async () => {}),
-            getWordAtCell: (): { startCol: number; endCol: number } | null => null,
-            getSelection: () => {
-                const { selectionStart: start, selectionEnd: end } = this.selectionManager;
-
-                return start && end
-                    ? this.lines
-                          .slice(start.absoluteRow, end.absoluteRow + 1)
-                          .map((line) => line.replaceAll('\0', ' ').trimEnd())
-                          .join('\n')
-                    : '';
-            },
-            markCurrentSelectionDirty: () => {},
-            requestRender: () => {},
-        };
-        buffer = {
-            active: {
-                getLine: (y: number) => {
-                    const text = this.lines[y];
-
-                    return text === undefined
-                        ? undefined
-                        : {
-                              length: this.cols,
-                              isWrapped: this.wrappedLines.has(y),
-                              getCell: (x: number) =>
-                                  x < 0 || x >= this.cols
-                                      ? undefined
-                                      : {
-                                            getChars: () => (text[x] ?? '\0').replace('\0', ''),
-                                            getCodepoint: () => text.codePointAt(x) ?? 0,
-                                            getWidth: () => 1,
-                                        },
-                          };
-                },
-            },
-        };
         constructor(public options: ITerminalOptions) {
             terminals.push(this);
         }
@@ -133,7 +78,6 @@ vi.mock('ghostty-web', () => ({
             this.element = element;
             element.addEventListener('mousedown', this.canvasPressed, { capture: true });
             element.appendChild(this.canvas);
-            this.canvas.addEventListener('mousedown', this.selectionPressed);
             this.textarea = element.appendChild(document.createElement('textarea'));
         }
         onResize() {}
@@ -379,108 +323,6 @@ describe('useTerminal', () => {
 
         press(300);
         expect(canvasPressed).toHaveBeenCalledOnce();
-    });
-
-    it('selects the whole word under a double-click on the line drawn there', async () => {
-        const { container } = render(<Harness />);
-
-        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
-
-        const term = terminals[0];
-        const wordAt = (col: number, row: number) => {
-            const word = term.selectionManager.getWordAtCell(col, row);
-
-            return (
-                word &&
-                term.lines[term.scrollbackLength + row - Math.floor(term.viewportY)].slice(
-                    word.startCol,
-                    word.endCol + 1
-                )
-            );
-        };
-
-        term.scrollbackLength = 2;
-        term.lines = [
-            '[12:00:01 INFO]: Joined 127.0.0.1:25565.',
-            '<Steve_99> see https://example.com/a-b!',
-            'live screen line\0\0\0',
-        ];
-
-        expect(wordAt(2, 0)).toBe('live');
-        expect(wordAt(14, 0)).toBe('line');
-        expect(wordAt(11, 0)).toBeNull();
-        expect(wordAt(17, 0)).toBeNull();
-
-        term.viewportY = 2.6;
-
-        expect(wordAt(3, 0)).toBe('12:00:01');
-        expect(wordAt(11, 0)).toBe('INFO');
-        expect(wordAt(30, 0)).toBe('127.0.0.1:25565');
-        expect(wordAt(3, 1)).toBe('Steve_99');
-        expect(wordAt(20, 1)).toBe('https://example.com/a-b');
-        expect(wordAt(9, 1)).toBeNull();
-    });
-
-    it('selects and copies the whole line, wrapped rows included, on a triple-click', async () => {
-        const { container } = render(<Harness />);
-
-        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
-
-        const term = terminals[0];
-        const press = (offsetY: number, detail: number) => {
-            const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true, detail });
-
-            Object.defineProperty(event, 'offsetX', { value: 40 });
-            Object.defineProperty(event, 'offsetY', { value: offsetY });
-            term.canvas.dispatchEvent(event);
-
-            return event;
-        };
-
-        Object.defineProperty(term.canvas, 'clientWidth', { value: 640 });
-        const head = `long line start ${'-'.repeat(64)}`;
-
-        term.scrollbackLength = 4;
-        term.lines = ['before', head, 'and its wrapped end', 'after', 'live'];
-        term.viewportY = 3.5;
-
-        press(15, 1);
-        press(15, 2);
-        expect(term.selectionPressed).toHaveBeenCalledTimes(2);
-        expect(term.selectionManager.selectionStart).toBeNull();
-
-        const tripleClick = press(15, 3);
-
-        expect(tripleClick.defaultPrevented).toBe(true);
-        expect(term.selectionPressed).toHaveBeenCalledTimes(2);
-        expect(term.selectionManager.selectionStart).toEqual({ col: 0, absoluteRow: 1 });
-        expect(term.selectionManager.selectionEnd).toEqual({ col: 79, absoluteRow: 2 });
-        expect(term.selectionManager.copyToClipboard).toHaveBeenCalledWith(`${head}and its wrapped end`);
-    });
-
-    it('copies a selection without breaking lines where they only wrapped', async () => {
-        const { container } = render(<Harness />);
-
-        await waitFor(() => expect(container.firstElementChild).toHaveAttribute('data-ready', 'true'));
-
-        const term = terminals[0];
-        const history = `history ${'a'.repeat(72)}`;
-
-        term.scrollbackLength = 2;
-        term.lines = [
-            history,
-            'continues here',
-            'screen line'.padEnd(80, ' '),
-            'wrapped onto the next row',
-            'own line',
-        ];
-        term.wrappedLines.add(3);
-        term.selectionManager.selectionStart = { col: 0, absoluteRow: 0 };
-        term.selectionManager.selectionEnd = { col: 79, absoluteRow: 4 };
-
-        expect(term.selectionManager.getSelection()).toBe(
-            `${history}continues here\nscreen line wrapped onto the next row\nown line`
-        );
     });
 
     it('follows new output when the viewport is at the bottom', async () => {

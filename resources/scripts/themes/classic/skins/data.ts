@@ -3,7 +3,7 @@ import type { CompleteSkin, UiTone } from '@/sdk/theme';
 const fading = { fetching: { true: 'opacity-55' } };
 
 export const table = {
-    root: '@container overflow-hidden rounded-sm border border-border bg-card',
+    root: '@container relative overflow-hidden rounded-sm border border-border bg-card',
     empty: { base: 'flex transition-opacity', variants: fading },
     scroller: 'overflow-x-auto scrollbar-thin scrollbar-thumb-(--scrollbar-thumb)',
     table: 'w-full border-collapse text-left text-sm',

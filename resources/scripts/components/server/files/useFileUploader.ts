@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { toast } from 'sonner';
 import { useCurrentServerUuid } from '@/api/server/queries';
 import { useUploadFiles } from '@/api/server/files/queries';
 import { useFileUploadActions, useServerDirectory } from '@/state/server';
@@ -29,11 +28,6 @@ export default function useFileUploader(): (files: readonly File[]) => Promise<v
 
     return useCallback(
         async (files) => {
-            if (files.some((file) => !file.type && (!file.size || file.size === 4096))) {
-                toast.error('Folder uploads are not supported.');
-                throw new Error('Folder uploads are not supported.');
-            }
-
             const { failed } = await mutateAsync({
                 uuid,
                 directory,

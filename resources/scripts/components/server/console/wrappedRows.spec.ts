@@ -58,7 +58,10 @@ describe('wrappedRowsAround', () => {
     });
 
     it('stops 64 rows either side of the starting row', () => {
-        const terminal = createTerminal(Array.from({ length: 200 }, () => '=========='), 200);
+        const terminal = createTerminal(
+            Array.from({ length: 200 }, () => '=========='),
+            200
+        );
 
         expect(wrappedRowsAround(terminal as never, 100)).toEqual({ first: 36, last: 164 });
     });

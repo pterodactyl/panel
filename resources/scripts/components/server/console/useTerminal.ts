@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type * as GhosttyWeb from 'ghostty-web';
-import type { ILinkProvider, ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
+import type { ITerminalOptions, ITheme, Terminal } from 'ghostty-web';
 import { toRgbColor } from '@/lib/color';
 import { getObjectKeys } from '@/lib/objects';
 import { onThemeChange } from '@/lib/theme';
-import { ClickableLinkProvider } from '@/components/server/console/ClickableLinkProvider';
+import { ConsoleSelectionAddon } from '@/components/server/console/ConsoleSelectionAddon';
 import { TerminalScrollStore } from '@/components/server/console/TerminalScrollStore';
 import { TouchScrollAddon } from '@/components/server/console/TouchScrollAddon';
-import { WrappedUrlProvider } from '@/components/server/console/WrappedUrlProvider';
-import { continuesPreviousRow, wrappedRowsAround } from '@/components/server/console/wrappedRows';
+import { WebLinksAddon } from '@/components/server/console/WebLinksAddon';
 
 // Ghostty reads a slot that resolves to pure black (#000000) as unset.
 const TERMINAL_COLOR_VARS = {
@@ -78,14 +77,98 @@ const terminalProps: ITerminalOptions = {
 const countLineFeeds = (data: string | Uint8Array) =>
     (data instanceof Uint8Array ? data : new TextEncoder().encode(data)).filter((byte) => byte === 0x0a).length;
 
+type InternalWasmTerm = {
+    write?: (data: string | Uint8Array) => void;
+    resize?: (cols: number, rows: number) => void;
+    getLine?: (row: number) => unknown[] | null;
+    getScrollbackLine?: (offset: number) => unknown[] | null;
+    getScrollbackLength?: () => number;
+};
+
+type InternalScrollbackProvider = {
+    getScrollbackLine?: (offset: number) => unknown[] | null;
+    getScrollbackLength?: () => number;
+};
+
+type InternalRenderer = {
+    ctx?: CanvasRenderingContext2D;
+    theme?: ITheme;
+    fontSize?: number;
+    fontFamily?: string;
+    devicePixelRatio?: number;
+    cursorVisible?: boolean;
+    getMetrics?: () => { width: number; height: number; baseline: number };
+    measureFont?: () => { width: number; height: number; baseline: number };
+    remeasureFont?: () => void;
+    resize?: (cols: number, rows: number) => void;
+    clear?: () => void;
+    render: (
+        buffer: InternalWasmTerm,
+        forceAll?: boolean,
+        viewportY?: number,
+        scrollbackProvider?: InternalScrollbackProvider,
+        scrollbarOpacity?: number
+    ) => void;
+};
+
+type InternalTerminal = {
+    wasmTerm?: InternalWasmTerm;
+    renderer?: InternalRenderer;
+    viewportY?: number;
+    targetViewportY?: number;
+    resizeEmitter?: { fire: (size: { cols: number; rows: number }) => void };
+};
+
+type InternalFitAddon = {
+    _isResizing?: boolean;
+};
+
+const toInternalTerminal = (term: Pick<Terminal, keyof Terminal>): InternalTerminal => term as InternalTerminal;
+
+const toInternalFitAddon = (fit: Pick<FitAddon, keyof FitAddon>): InternalFitAddon => fit as InternalFitAddon;
+
+const prefixNewline = (data: string | Uint8Array): string | Uint8Array => {
+    if (!(data instanceof Uint8Array)) {
+        return `\r\n${data}`;
+    }
+
+    const prefixed = new Uint8Array(data.length + 2);
+
+    prefixed[0] = 0x0d;
+    prefixed[1] = 0x0a;
+    prefixed.set(data, 2);
+
+    return prefixed;
+};
+
 /** Ghostty jumps to the bottom on every write; keep a reader who scrolled up on the same lines, even as old history is trimmed. */
 const preserveScrollPositionOnWrite = (term: Terminal) => {
+    const internalTerm = toInternalTerminal(term);
     const write = term.write.bind(term);
+    const clear = term.clear?.bind(term);
+    let hasOutput = false;
+
+    term.clear = () => {
+        hasOutput = false;
+
+        if (!internalTerm.wasmTerm?.write) {
+            clear?.();
+
+            return;
+        }
+
+        internalTerm.wasmTerm.write('\x1b[2J\x1b[3J\x1b[H');
+        term.scrollToBottom?.();
+        internalTerm.viewportY = 0;
+        internalTerm.targetViewportY = 0;
+        internalTerm.renderer?.clear?.();
+    };
 
     term.write = (data, callback) => {
-        const viewportY = term.getViewportY();
+        hasOutput ||= (data instanceof Uint8Array ? data.byteLength : data.length) > 0;
+        const viewportY = Math.floor(term.getViewportY());
 
-        if (viewportY === 0) {
+        if (viewportY <= 0) {
             write(data, callback);
 
             return;
@@ -98,6 +181,87 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
 
         term.scrollLines(-(viewportY + (grown < 0 ? countLineFeeds(data) : grown)));
     };
+
+    term.writeln = (data, callback) => {
+        const payload = hasOutput || term.getScrollbackLength() > 0 ? prefixNewline(data) : data;
+
+        hasOutput = true;
+        term.write(payload, callback);
+    };
+};
+
+// Ghostty's FitAddon locks _isResizing for 50ms via setTimeout, which drops immediate post-layout re-fits.
+const unlockFitResize = (fit: FitAddon) => {
+    const internalFit = toInternalFitAddon(fit);
+    const originalFit = fit.fit.bind(fit);
+
+    fit.fit = () => {
+        internalFit._isResizing = false;
+        originalFit();
+        internalFit._isResizing = false;
+    };
+};
+
+const measureTerminalFont = (fontSize = 12, fontFamily = 'monospace') => {
+    const ctx = document.createElement('canvas').getContext('2d');
+
+    if (!ctx) {
+        return {
+            width: Math.ceil(fontSize * 0.6),
+            height: Math.ceil(fontSize * 1.35),
+            baseline: Math.ceil(fontSize),
+        };
+    }
+
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    const width = Math.max(1, Math.ceil(ctx.measureText('M').width));
+    const box = ctx.measureText('Mgjpqy[]()_|');
+    const ascent = box.actualBoundingBoxAscent || fontSize * 0.8;
+    const descent = box.actualBoundingBoxDescent || fontSize * 0.2;
+
+    return {
+        width,
+        height: Math.ceil(ascent + descent) + 2,
+        baseline: Math.ceil(ascent) + 1,
+    };
+};
+
+const patchWasmTerminal = (term: Terminal, internalTerm: InternalTerminal, renderer: InternalRenderer) => {
+    const wasmTerm = internalTerm.wasmTerm;
+
+    if (!wasmTerm) {
+        return;
+    }
+
+    const getLine = wasmTerm.getLine?.bind(wasmTerm);
+    const getScrollbackLine = wasmTerm.getScrollbackLine?.bind(wasmTerm);
+
+    wasmTerm.getLine = getLine ? (row) => getLine(row) ?? [] : wasmTerm.getLine;
+    wasmTerm.getScrollbackLine = getScrollbackLine
+        ? (offset) => getScrollbackLine(offset) ?? []
+        : wasmTerm.getScrollbackLine;
+
+    if (!wasmTerm.resize || !renderer.resize) {
+        return;
+    }
+
+    term.resize = (newCols, newRows) => {
+        if (newCols === term.cols && newRows === term.rows) {
+            return;
+        }
+
+        term.cols = newCols;
+        term.rows = newRows;
+        wasmTerm.resize?.(newCols, newRows);
+        renderer.resize?.(newCols, newRows);
+
+        const clampedViewportY = Math.min(term.getViewportY(), term.getScrollbackLength());
+
+        internalTerm.viewportY = clampedViewportY;
+        internalTerm.targetViewportY = clampedViewportY;
+        internalTerm.resizeEmitter?.fire({ cols: newCols, rows: newRows });
+        renderer.render(wasmTerm, true, clampedViewportY, term, 0);
+    };
 };
 
 /**
@@ -106,16 +270,38 @@ const preserveScrollPositionOnWrite = (term: Terminal) => {
  * the gutter FitAddon reserves, so ConsoleScrollbar draws one in the gutter instead.
  */
 const adjustRendering = (term: Terminal) => {
-    const renderer = term.renderer;
+    const internalTerm = toInternalTerminal(term);
+    const renderer = internalTerm.renderer;
 
     if (!renderer) {
         return;
     }
 
-    const render = renderer.render.bind(renderer);
+    renderer.cursorVisible = false;
+    renderer.devicePixelRatio = Math.max(1, Math.round(window.devicePixelRatio || 1));
+    renderer.measureFont = () => measureTerminalFont(renderer.fontSize, renderer.fontFamily);
+    renderer.remeasureFont?.();
 
-    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider) =>
-        render(buffer, forceAll, Math.floor(viewportY), scrollbackProvider, 0);
+    patchWasmTerminal(term, internalTerm, renderer);
+
+    const render = renderer.render.bind(renderer);
+    let lastViewportY = 0;
+
+    renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider) => {
+        const maxScrollback = scrollbackProvider?.getScrollbackLength?.() ?? Number.POSITIVE_INFINITY;
+        const wholeViewportY = Math.max(0, Math.min(maxScrollback, Math.floor(viewportY)));
+        const forceRedraw = Boolean(forceAll) || wholeViewportY !== lastViewportY;
+        const metrics = renderer.getMetrics?.();
+
+        lastViewportY = wholeViewportY;
+
+        if (forceRedraw && renderer.ctx && renderer.theme?.background && metrics) {
+            renderer.ctx.fillStyle = renderer.theme.background;
+            renderer.ctx.fillRect(0, 0, term.cols * metrics.width, term.rows * metrics.height);
+        }
+
+        return render(buffer, forceRedraw, wholeViewportY, scrollbackProvider, 0);
+    };
 };
 
 // Ghostty's scrollbar hit area: the canvas's right 12px (an 8px bar inset 4px from the edge).
@@ -169,156 +355,6 @@ const copySelectionOnShortcut = (term: Terminal) => {
     });
 };
 
-type BufferCell = NonNullable<ReturnType<NonNullable<ReturnType<Terminal['buffer']['active']['getLine']>>['getCell']>>;
-
-type SelectionPoint = { col: number; absoluteRow: number };
-
-type SelectionManager = {
-    selectionStart: SelectionPoint | null;
-    selectionEnd: SelectionPoint | null;
-    selectionChangedEmitter: { fire: () => void };
-    getWordAtCell: (col: number, row: number) => { startCol: number; endCol: number } | null;
-    getSelection: () => string;
-    copyToClipboard: (text: string) => Promise<void>;
-    markCurrentSelectionDirty: () => void;
-    requestRender: () => void;
-};
-
-const WORD_SEPARATOR = /[\s()[\]{}<>'"`|,;]/;
-const WORD_TRAILING_PUNCTUATION = /[.:!?]/;
-
-const selectionManagerOf = (term: Terminal) =>
-    (term as unknown as { selectionManager?: SelectionManager }).selectionManager;
-
-const drawnLineIndex = (term: Terminal, row: number) =>
-    term.getScrollbackLength() + row - Math.floor(term.getViewportY());
-
-const isWordCell = (cell: BufferCell | undefined) =>
-    cell !== undefined &&
-    (cell.getWidth() === 0 || (cell.getCodepoint() !== 0 && !WORD_SEPARATOR.test(cell.getChars())));
-
-const selectLinesOnTripleClick = (term: Terminal, mount: HTMLElement, signal: AbortSignal) => {
-    mount.addEventListener(
-        'mousedown',
-        (event) => {
-            const selection = selectionManagerOf(term);
-            const metrics = term.renderer?.getMetrics();
-
-            if (
-                event.button !== 0 ||
-                event.detail < 3 ||
-                !(event.target instanceof HTMLCanvasElement) ||
-                !selection ||
-                !metrics
-            ) {
-                return;
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const row = Math.max(0, Math.min(term.rows - 1, Math.floor(event.offsetY / metrics.height)));
-            const { first, last } = wrappedRowsAround(term, drawnLineIndex(term, row));
-
-            selection.markCurrentSelectionDirty();
-            selection.selectionStart = { col: 0, absoluteRow: first };
-            selection.selectionEnd = { col: term.cols - 1, absoluteRow: last };
-            selection.markCurrentSelectionDirty();
-            selection.requestRender();
-
-            const text = selection.getSelection();
-
-            if (text) {
-                void selection.copyToClipboard(text);
-                selection.selectionChangedEmitter.fire();
-            }
-        },
-        { capture: true, signal }
-    );
-};
-
-const selectWordsOnDrawnLine = (term: Terminal) => {
-    const selection = selectionManagerOf(term);
-
-    if (!selection) {
-        return;
-    }
-
-    selection.getWordAtCell = (col, row) => {
-        const line = term.buffer.active.getLine(drawnLineIndex(term, row));
-
-        if (!line || !isWordCell(line.getCell(col))) {
-            return null;
-        }
-
-        let startCol = col;
-        let endCol = col;
-
-        while (startCol > 0 && isWordCell(line.getCell(startCol - 1))) {
-            startCol--;
-        }
-
-        while (endCol < line.length - 1 && isWordCell(line.getCell(endCol + 1))) {
-            endCol++;
-        }
-
-        while (endCol > startCol && WORD_TRAILING_PUNCTUATION.test(line.getCell(endCol)?.getChars() ?? '')) {
-            endCol--;
-        }
-
-        return { startCol, endCol };
-    };
-};
-
-const rowSeparator = (term: Terminal, y: number) => {
-    if (!continuesPreviousRow(term, y)) {
-        return '\n';
-    }
-
-    const previous = term.buffer.active.getLine(y - 1);
-
-    return previous?.getCell(previous.length - 1)?.getCodepoint() === 32 ? ' ' : '';
-};
-
-const joinWrappedRowsInSelection = (term: Terminal) => {
-    const selection = selectionManagerOf(term);
-
-    if (!selection) {
-        return;
-    }
-
-    const getSelection = selection.getSelection.bind(selection);
-
-    selection.getSelection = () => {
-        const text = getSelection();
-        const { selectionStart: start, selectionEnd: end } = selection;
-
-        if (!text || !start || !end) {
-            return text;
-        }
-
-        const first = Math.min(start.absoluteRow, end.absoluteRow);
-        const rows = text.split('\n');
-
-        if (rows.length !== Math.abs(end.absoluteRow - start.absoluteRow) + 1) {
-            return text;
-        }
-
-        return rows.reduce((joined, row, index) => joined + rowSeparator(term, first + index) + row);
-    };
-};
-
-const replaceLinkProviders = (term: Terminal, replacements: ILinkProvider[]) => {
-    const providers = (term as unknown as { linkDetector?: { providers?: ILinkProvider[] } }).linkDetector?.providers;
-
-    if (!providers) {
-        return;
-    }
-
-    providers.splice(0).forEach((provider) => provider.dispose?.());
-    replacements.forEach((provider) => term.registerLinkProvider(provider));
-};
-
 /** Opens a read-only console terminal in `mount`, sized to fill it; `signal` removes its listeners on the mount. */
 const openTerminal = (
     { FitAddon, OSC8LinkProvider, Terminal: GhosttyTerminal }: typeof GhosttyWeb,
@@ -344,19 +380,16 @@ const openTerminal = (
 
     term.loadAddon(fit);
     term.loadAddon(new TouchScrollAddon(term));
+    term.loadAddon(new WebLinksAddon(term, new OSC8LinkProvider(term)));
+    term.loadAddon(new ConsoleSelectionAddon(term));
+    
+    unlockFitResize(fit);
+    preserveScrollPositionOnWrite(term);
+    adjustRendering(term);
     fit.fit();
     fit.observeResize();
 
-    replaceLinkProviders(term, [
-        new ClickableLinkProvider(term, new OSC8LinkProvider(term)),
-        new ClickableLinkProvider(term, new WrappedUrlProvider(term)),
-    ]);
-    preserveScrollPositionOnWrite(term);
-    adjustRendering(term);
     copySelectionOnShortcut(term);
-    selectWordsOnDrawnLine(term);
-    joinWrappedRowsInSelection(term);
-    selectLinesOnTripleClick(term, mount, signal);
 
     return { term, fit };
 };
@@ -433,12 +466,12 @@ export const useTerminal = () => {
                 });
             })
             .catch((error) => {
-                if (!cancelled) {
-                    console.error('Failed to load the console terminal.', error);
-                    setTerminalError(
-                        error instanceof Error ? error : new Error('Failed to load the console terminal.')
-                    );
+                if (cancelled) {
+                    return;
                 }
+
+                console.error('Failed to load the console terminal.', error);
+                setTerminalError(error instanceof Error ? error : new Error('Failed to load the console terminal.'));
             });
 
         return () => {
