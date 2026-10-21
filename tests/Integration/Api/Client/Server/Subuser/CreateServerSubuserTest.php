@@ -33,6 +33,7 @@ test('subuser can be created', function (array $permissions): void {
         'username' => $subuser->username,
         'email' => $email,
         'image' => 'https://gravatar.com/avatar/'.md5(Str::lower($email)),
+        'avatar' => null,
         '2fa_enabled' => false,
         'created_at' => $subuser->created_at->toAtomString(),
         'permissions' => [Permissions::UserCreate->value, Permissions::WebsocketConnect->value],

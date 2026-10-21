@@ -8,6 +8,8 @@ export interface AvatarProps {
     square?: boolean;
     title?: boolean;
     className?: string;
+    /** An uploaded picture drawn in place of the pattern, such as a user's `avatar`. */
+    image?: string | null;
 }
 declare const Avatar: ((props: AvatarProps) => import("react").ReactElement) & {
     User: {

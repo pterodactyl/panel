@@ -1,5 +1,5 @@
 import { getSearchQuery, searchPanelOpen, setSearchQuery } from '@codemirror/search';
-import { EditorView, ViewPlugin, type ViewUpdate } from '@codemirror/view';
+import { ViewPlugin, type EditorView, type ViewUpdate } from '@codemirror/view';
 
 class SearchScrollbarMarkersPlugin {
     readonly dom = document.createElement('div');
@@ -28,6 +28,7 @@ class SearchScrollbarMarkersPlugin {
         }
 
         const query = getSearchQuery(view.state);
+
         if (!query.valid) {
             return;
         }
@@ -38,6 +39,7 @@ class SearchScrollbarMarkersPlugin {
 
         while (count < 1000) {
             const result = cursor.next();
+
             if (result.done) {
                 break;
             }
@@ -45,9 +47,7 @@ class SearchScrollbarMarkersPlugin {
             const { from, to } = result.value;
             const block = view.lineBlockAt(from);
             const marker = document.createElement('span');
-            const selected = view.state.selection.ranges.some(
-                (range) => range.from === from && range.to === to
-            );
+            const selected = view.state.selection.ranges.some((range) => range.from === from && range.to === to);
 
             marker.className = selected
                 ? 'cm-search-scrollbar-marker cm-search-scrollbar-marker-selected'

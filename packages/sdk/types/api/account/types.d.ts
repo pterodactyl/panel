@@ -5,6 +5,7 @@ export interface UserData {
     email: string;
     language: string;
     rootAdmin: boolean;
+    avatar?: string | null;
     useTotp: boolean;
     createdAt: Date;
     updatedAt: Date;

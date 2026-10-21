@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloudUpload, X } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button, Code, Dialog, NewButton, Portal, Tooltip } from '@/sdk';
-import type { FileManagerModel } from '@/sdk/theme';
+import type { FileManagerModel, UploadSource } from '@/sdk/theme';
 
 const isFileOrDirectory = (event: DragEvent): boolean =>
     event.dataTransfer?.types.some((value) => value.toLowerCase() === 'files') ?? false;
@@ -40,7 +39,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
     const input = useRef<HTMLInputElement>(null);
     const [dropping, setDropping] = useDropOverlay();
     // Failures have already been reported with error toasts.
-    const upload = (files: FileList) => void model.actions.upload([...files]).catch(() => {});
+    const upload = (source: UploadSource) => void model.actions.upload(source).catch(() => {});
 
     return (
         <>
@@ -54,18 +53,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                             event.stopPropagation();
 
                             setDropping(false);
-                            if (
-                                Array.from(event.dataTransfer.items).some(
-                                    (item) => item.kind === 'file' && item.webkitGetAsEntry?.()?.isDirectory
-                                )
-                            ) {
-                                toast.error('Folder uploads are not supported.');
-                                return;
-                            }
-                            if (!event.dataTransfer?.files.length) {
-                                return;
-                            }
-                            upload(event.dataTransfer.files);
+                            upload(event.dataTransfer);
                         }}
                     >
                         <div className='w-full flex items-center justify-center pointer-events-none'>
@@ -89,7 +77,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                         return;
                     }
 
-                    upload(event.currentTarget.files);
+                    upload([...event.currentTarget.files]);
                     event.currentTarget.value = '';
                 }}
                 multiple

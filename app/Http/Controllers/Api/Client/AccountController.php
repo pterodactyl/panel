@@ -12,15 +12,15 @@ use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Response as ScribeResponse;
 use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Users\ReplacesUserAvatars;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
-use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserAvatarService;
 use Throwable;
 
 #[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
@@ -87,16 +87,19 @@ class AccountController extends ClientApiController
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
-    public function updateAvatar(UpdateAvatarRequest $request, UserAvatarService $avatars): AccountResource
+    #[Endpoint('Update account avatar', "Stores the uploaded image as the authenticated user's avatar and deletes the one it replaces.")]
+    #[BodyParam('avatar', 'file', 'PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.', required: true)]
+    #[ResponseFromResource(AccountResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
+    public function updateAvatar(UpdateAvatarRequest $request, ReplacesUserAvatars $avatars): AccountResource
     {
-        $avatars->replace($request->user(), $request->file('avatar'));
-
-        return AccountResource::make($request->user()->refresh());
+        return AccountResource::make($avatars->replace($request->user(), $request->avatar()));
     }
 
-    public function deleteAvatar(Request $request, UserAvatarService $avatars): JsonResponse
+    #[Endpoint('Delete account avatar', "Deletes the authenticated user's avatar.")]
+    #[ScribeResponse(status: 204, description: 'Avatar deleted.')]
+    public function deleteAvatar(Request $request, ReplacesUserAvatars $avatars): JsonResponse
     {
-        $avatars->clear($request->user());
+        $avatars->replace($this->authenticatedUser($request), null);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

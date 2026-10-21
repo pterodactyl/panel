@@ -610,6 +610,7 @@ export type AdminSettingsResponse = {
     general: {
         'app:name': string;
         'pterodactyl:auth:2fa_required': 0 | 1 | 2;
+        'pterodactyl:client_features:avatars:enabled': boolean;
         'app:locale': string;
     };
     mail: {
@@ -742,6 +743,7 @@ export type AdminUserAttributes = {
     root_admin: boolean;
     '2fa': boolean;
     image: string;
+    avatar: string | null;
     servers_count: number;
     subuser_of_count: number;
     created_at: string;
@@ -1008,6 +1010,8 @@ export type ApplicationUserAttributes = {
     language: string;
     root_admin: boolean;
     '2fa': boolean;
+    image: string | null;
+    avatar: string | null;
     created_at: string;
     updated_at: string;
     extensions?: ExtensionFields;
@@ -1348,6 +1352,7 @@ export type ClientServerSubuserAttributes = {
     username: string;
     email: string;
     image: string;
+    avatar: string | null;
     '2fa_enabled': boolean;
     created_at: string;
     permissions: Array<'websocket.connect' | 'control.console' | 'control.start' | 'control.stop' | 'control.restart' | 'user.create' | 'user.read' | 'user.update' | 'user.delete' | 'file.create' | 'file.read' | 'file.read-content' | 'file.update' | 'file.delete' | 'file.archive' | 'file.sftp' | 'backup.create' | 'backup.read' | 'backup.delete' | 'backup.download' | 'backup.restore' | 'allocation.read' | 'allocation.create' | 'allocation.update' | 'allocation.delete' | 'startup.read' | 'startup.update' | 'startup.docker-image' | 'database.create' | 'database.read' | 'database.update' | 'database.delete' | 'database.view_password' | 'schedule.create' | 'schedule.read' | 'schedule.update' | 'schedule.delete' | 'settings.rename' | 'settings.reinstall' | 'activity.read' | string>;
@@ -1424,6 +1429,7 @@ export type ClientUserAttributes = {
     first_name: string;
     last_name: string;
     language: string;
+    avatar: string | null;
 };
 export type ClientUserResource = {
     object: string;
@@ -1584,6 +1590,12 @@ export type AdminUpdateUserRequest = {
         language?: string;
     };
     extensions?: ExtensionFields;
+};
+export type AdminUpdateUserAvatarRequest = {
+    /**
+     * PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.
+     */
+    avatar: Blob | File;
 };
 export type AdminAttachServerMountRequest = {
     /**
@@ -2332,6 +2344,10 @@ export type AdminUpdateGeneralSettingsRequest = {
          * The misc required 2fa.
          */
         required_2fa: 0 | 1 | 2;
+        /**
+         * The misc user avatars enabled.
+         */
+        user_avatars_enabled: 'true' | 'false';
     };
     /**
      * The default locale.
@@ -3134,6 +3150,12 @@ export type ClientUpdateAccountPasswordRequest = {
      */
     password_confirmation: string;
 };
+export type ClientUpdateAccountAvatarRequest = {
+    /**
+     * PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.
+     */
+    avatar: Blob | File;
+};
 export type ClientCreateAccountApiKeyRequest = {
     /**
      * A description for this resource. Must not be greater than 500 characters.
@@ -3870,6 +3892,7 @@ export type AdminGetUserByExternalIdExternalIdPathParameter = string;
 export type AdminGetUserIncludeQueryParameter = string;
 export type AdminGetUserUserIdPathParameter = number;
 export type AdminDisableUserTwoFactorAuthenticationUserIdPathParameter = number;
+export type AdminUpdateUserAvatarUserIdPathParameter = number;
 export type AdminGetNodeSystemInformationNodeIdPathParameter = number;
 export type AdminCreateNodeDeployTokenNodeIdPathParameter = number;
 export type AdminGetNodeUtilizationNodeIdPathParameter = number;
@@ -5731,6 +5754,76 @@ export type AdminDisableUserTwoFactorAuthenticationResponses = {
     204: void;
 };
 export type AdminDisableUserTwoFactorAuthenticationResponse = AdminDisableUserTwoFactorAuthenticationResponses[keyof AdminDisableUserTwoFactorAuthenticationResponses];
+export type AdminDeleteUserAvatarData = {
+    body?: never;
+    path: {
+        /**
+         * The user ID.
+         */
+        user_id: AdminUpdateUserAvatarUserIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}/avatar';
+};
+export type AdminDeleteUserAvatarErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+};
+export type AdminDeleteUserAvatarError = AdminDeleteUserAvatarErrors[keyof AdminDeleteUserAvatarErrors];
+export type AdminDeleteUserAvatarResponses = {
+    /**
+     * Avatar deleted.
+     */
+    204: void;
+};
+export type AdminDeleteUserAvatarResponse = AdminDeleteUserAvatarResponses[keyof AdminDeleteUserAvatarResponses];
+export type AdminUpdateUserAvatarData = {
+    body: AdminUpdateUserAvatarRequest;
+    path: {
+        /**
+         * The user ID.
+         */
+        user_id: AdminUpdateUserAvatarUserIdPathParameter;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}/avatar';
+};
+export type AdminUpdateUserAvatarErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The requested resource could not be found.
+     */
+    404: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type AdminUpdateUserAvatarError = AdminUpdateUserAvatarErrors[keyof AdminUpdateUserAvatarErrors];
+export type AdminUpdateUserAvatarResponses = {
+    /**
+     * Avatar updated.
+     */
+    200: AdminUserResource;
+};
+export type AdminUpdateUserAvatarResponse = AdminUpdateUserAvatarResponses[keyof AdminUpdateUserAvatarResponses];
 export type AdminGetNodeSystemInformationData = {
     body?: never;
     path: {
@@ -11456,6 +11549,54 @@ export type ClientUpdateAccountPasswordResponses = {
     204: void;
 };
 export type ClientUpdateAccountPasswordResponse = ClientUpdateAccountPasswordResponses[keyof ClientUpdateAccountPasswordResponses];
+export type ClientDeleteAccountAvatarData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/client/account/avatar';
+};
+export type ClientDeleteAccountAvatarErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+};
+export type ClientDeleteAccountAvatarError = ClientDeleteAccountAvatarErrors[keyof ClientDeleteAccountAvatarErrors];
+export type ClientDeleteAccountAvatarResponses = {
+    /**
+     * Avatar deleted.
+     */
+    204: void;
+};
+export type ClientDeleteAccountAvatarResponse = ClientDeleteAccountAvatarResponses[keyof ClientDeleteAccountAvatarResponses];
+export type ClientUpdateAccountAvatarData = {
+    body: ClientUpdateAccountAvatarRequest;
+    path?: never;
+    query?: never;
+    url: '/api/client/account/avatar';
+};
+export type ClientUpdateAccountAvatarErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type ClientUpdateAccountAvatarError = ClientUpdateAccountAvatarErrors[keyof ClientUpdateAccountAvatarErrors];
+export type ClientUpdateAccountAvatarResponses = {
+    /**
+     * Avatar updated.
+     */
+    200: ClientUserResource;
+};
+export type ClientUpdateAccountAvatarResponse = ClientUpdateAccountAvatarResponses[keyof ClientUpdateAccountAvatarResponses];
 export type ClientListAccountActivityData = {
     body?: never;
     path?: never;

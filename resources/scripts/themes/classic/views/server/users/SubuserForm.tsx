@@ -117,7 +117,7 @@ function PermissionGroup({
 
     return (
         <Card
-            className={cn('border border-border ring-1 ring-border/60 shadow-lg', className)}
+            className={className}
             title={
                 <div className='flex items-center'>
                     <p className='text-sm uppercase flex-1'>{group.name}</p>
@@ -218,7 +218,7 @@ function FormContent({
                             data={model.permissionSlot(selected, submitting, selection.select)}
                         />
                         <Card
-                            className='mt-6 border border-border ring-1 ring-border/60 shadow-lg'
+                            className='mt-6'
                             title={
                                 <div className='flex items-center justify-between'>
                                     <span className='text-sm uppercase'>All Permissions</span>

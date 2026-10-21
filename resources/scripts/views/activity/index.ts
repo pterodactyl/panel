@@ -81,7 +81,9 @@ function toEntry(activity: ActivityLog, filter: (event: string) => CorePanelDest
     return {
         id: attributes.id,
         event: attributes.event,
-        actor: actor ? { username: actor.username ?? null, email: actor.email ?? null, avatar: actor.avatar } : null,
+        actor: actor
+            ? { username: actor.username ?? null, email: actor.email ?? null, avatar: actor.avatar ?? null }
+            : null,
         properties: attributes.properties,
         hasMetadata: attributes.has_additional_metadata,
         ip: attributes.ip,
@@ -227,7 +229,7 @@ function entry(
     return {
         id,
         event,
-        actor: { username: 'alex', email: 'alex@example.test' },
+        actor: { username: 'alex', email: 'alex@example.test', avatar: null },
         properties,
         hasMetadata: false,
         ip: '203.0.113.10',

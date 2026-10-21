@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useField, useForm, useStore } from '@tanstack/react-form';
 import { useLocation } from '@tanstack/react-router';
 import {
@@ -150,24 +150,53 @@ function useAccountEmailModel(): AccountEmailModel {
     };
 }
 
+/** A URL for the file while it is set, revoked when it changes. */
+function useObjectUrl(file: File | null): string | null {
+    const [url, setUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!file) {
+            setUrl(null);
+
+            return;
+        }
+
+        const created = URL.createObjectURL(file);
+
+        setUrl(created);
+
+        return () => URL.revokeObjectURL(created);
+    }, [file]);
+
+    return url;
+}
+
+const avatarTypes =
+    '.png,.jpg,.jpeg,.svg,.webp,.avif,.ico,image/png,image/jpeg,image/svg+xml,image/webp,image/avif,image/x-icon';
+
 function useAccountAvatarModel(): AccountAvatarModel {
     const user = useCurrentUser();
     const update = useUpdateAccountAvatar();
     const remove = useDeleteAccountAvatar();
     const [selected, setSelected] = useState<File | null>(null);
+    const avatar = user.avatar ?? null;
+    const picked = useObjectUrl(selected);
 
     return {
-        avatar: user.avatar ?? null,
+        uuid: user.uuid,
+        avatar,
         selected,
+        preview: selected ? picked : avatar,
+        accept: avatarTypes,
         select: setSelected,
         submit: () => {
             if (selected === null) {
                 return;
             }
 
-            void update.mutateAsync(selected).then(() => setSelected(null));
+            void update.mutateAsync({ body: { avatar: selected } }).then(() => setSelected(null));
         },
-        remove: () => void remove.mutateAsync(),
+        remove: () => void remove.mutateAsync({}),
         canSubmit: selected !== null && !update.isPending,
         submitting: update.isPending || remove.isPending,
     };
@@ -272,6 +301,23 @@ const emailFixture = (submitting = false): AccountEmailModel => ({
     submitting,
 });
 
+const picture = '/favicons/android-chrome-192x192.png';
+
+function avatarFixture(avatar: string | null, selected: File | null = null): AccountAvatarModel {
+    return {
+        uuid: '11111111-1111-4111-8111-111111111111',
+        avatar,
+        selected,
+        preview: selected ? picture : avatar,
+        accept: avatarTypes,
+        select: noop,
+        submit: noop,
+        remove: noop,
+        canSubmit: selected !== null,
+        submitting: false,
+    };
+}
+
 const SECRET = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
 
 function twoFactorFixture(overrides: Partial<AccountTwoFactorModel> = {}): AccountTwoFactorModel {
@@ -308,6 +354,7 @@ implementViews({
         fixtures: {
             default: () => ({ twoFactorRequired: false, userAvatarsEnabled: false }),
             twoFactorRequired: () => ({ twoFactorRequired: true, userAvatarsEnabled: false }),
+            avatars: () => ({ twoFactorRequired: false, userAvatarsEnabled: true }),
         },
     },
     'account.password': {
@@ -321,7 +368,14 @@ implementViews({
         use: useAccountEmailModel,
         fixtures: { default: () => emailFixture(), submitting: () => emailFixture(true) },
     },
-    'account.avatar': { use: useAccountAvatarModel },
+    'account.avatar': {
+        use: useAccountAvatarModel,
+        fixtures: {
+            default: () => avatarFixture(null),
+            uploaded: () => avatarFixture(picture),
+            picked: () => avatarFixture(null, new File(['avatar'], 'avatar.png', { type: 'image/png' })),
+        },
+    },
     'account.twoFactor': {
         use: useAccountTwoFactorModel,
         fixtures: {

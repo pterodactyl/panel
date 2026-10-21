@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { basicSetup } from 'codemirror';
-import { Compartment, EditorState, Prec, type Extension } from '@codemirror/state';
+import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { EditorView, keymap, type Panel, type ViewUpdate } from '@codemirror/view';
 import {
@@ -512,7 +512,6 @@ const panelHighlightStyle = HighlightStyle.define([
     },
     { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
 ]);
-
 
 class CustomSearchPanel implements Panel {
     dom: HTMLElement;

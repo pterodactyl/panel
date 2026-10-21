@@ -6,7 +6,6 @@ namespace Pterodactyl\Http\Resources\Api\Client;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserAvatarService;
 
 /**
  * @extends ClientResource<User>
@@ -28,7 +27,7 @@ class AccountResource extends ClientResource
             'first_name' => $this->resource->name_first,
             'last_name' => $this->resource->name_last,
             'language' => $this->resource->language,
-            'avatar' => app(UserAvatarService::class)->url($this->resource->avatar),
+            'avatar' => $this->resource->avatar_url,
         ];
     }
 }

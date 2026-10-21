@@ -46,7 +46,8 @@ export interface AppLayoutModel {
         readonly uuid: string;
         readonly username: string;
         readonly email: string;
-        readonly avatar?: string | null;
+        /** The user's uploaded picture, for `Avatar`'s `image`; null draws the pattern `uuid` seeds. */
+        readonly avatar: string | null;
         readonly rootAdmin: boolean;
     };
     /** The scheme in use. */
@@ -264,7 +265,7 @@ function useAppLayoutModel(): AppLayoutModel {
             brand,
             links: appLinks(rootAdmin),
             area,
-            user: { uuid, username, email, avatar, rootAdmin },
+            user: { uuid, username, email, avatar: avatar ?? null, rootAdmin },
             scheme,
             preference,
             schemes,
@@ -303,7 +304,13 @@ const appLayoutFixture = (
     brand,
     links: appLinks(rootAdmin),
     area,
-    user: { uuid: '11111111-1111-4111-8111-111111111111', username: 'alex', email: 'alex@example.test', rootAdmin },
+    user: {
+        uuid: '11111111-1111-4111-8111-111111111111',
+        username: 'alex',
+        email: 'alex@example.test',
+        avatar: null,
+        rootAdmin,
+    },
     scheme: schemes[0] ?? 'dark',
     preference: schemes[0] ?? 'dark',
     schemes,
