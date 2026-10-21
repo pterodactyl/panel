@@ -31,7 +31,7 @@
     <div class="col-sm-8">
         <div class="row">
             <div class="col-xs-12">
-                <div class="box box-primary">
+                <div class="box {{ $is_latest ? 'box-primary' : 'box-danger' }}">
                     <div class="box-header with-border">
                         <h3 class="box-title">Information</h3>
                     </div>
@@ -39,7 +39,13 @@
                         <table class="table table-hover">
                             <tr>
                                 <td>Daemon Version</td>
-                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ $version->getDaemon() }}</code>)</td>
+                                <td>
+                                    <code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code>
+                                    @unless($is_latest)
+                                    <strong>Wings is not up-to-date!</strong>
+                                    @endunless
+                                    (Latest: <code>{{ $version->getDaemon() }}</code>)
+                                </td>
                             </tr>
                             <tr>
                                 <td>System Information</td>

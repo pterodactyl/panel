@@ -77,7 +77,21 @@ class SoftwareVersionService
             return true;
         }
 
-        return version_compare($version, $this->getDaemon()) >= 0;
+        $current = $this->normalize($version);
+        $latest = $this->normalize($this->getDaemon());
+
+        return version_compare($current, $latest, '>=');
+    }
+
+    /**
+     * Removes the "v" prefix to easily read the software version.
+     */
+    private function normalize(string $version): string
+    {
+        $version = trim($version);
+        $version = ltrim($version, "vV");
+        
+        return preg_replace('/[^0-9\.]/', '', $version);
     }
 
     /**
