@@ -6,6 +6,7 @@ namespace Pterodactyl\Data;
 
 final readonly class EggImportVariable
 {
+    /** @param array<string, mixed>|null $optionsSource */
     public function __construct(
         public string $name,
         public string $description,
@@ -14,10 +15,11 @@ final readonly class EggImportVariable
         public bool $userViewable,
         public bool $userEditable,
         public string $rules,
+        public ?array $optionsSource,
     ) {}
 
     /**
-     * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}
+     * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string, options_source: array<string, mixed>|null}
      */
     public function attributes(): array
     {
@@ -29,11 +31,12 @@ final readonly class EggImportVariable
             'user_viewable' => $this->userViewable,
             'user_editable' => $this->userEditable,
             'rules' => $this->rules,
+            'options_source' => $this->optionsSource,
         ];
     }
 
     /**
-     * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string, egg_id: int}
+     * @return array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string, options_source: array<string, mixed>|null, egg_id: int}
      */
     public function attributesForEgg(int $eggId): array
     {

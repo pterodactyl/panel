@@ -23,14 +23,20 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
     const value = draft ?? variable.value;
     const editable = model.canEdit && variable.editable;
     const { control } = variable;
+    const optionListId = `startup-variable-options-${variable.key.toLowerCase().replace(/[^a-z0-9_-]/g, '-')}`;
     // The update of the edit's own model, so an edit flushed after the server changes saves to its server.
     const save = useDebouncedCallback((update: StartupVariablesModel['update'], next: string) => {
-        const saved = update(variable.key, next);
+        const shouldUseDefault =
+            control.kind === 'suggest' &&
+            control.allowManualInput &&
+            !control.options.some((option) => option.value === next);
+        const valueToSave = shouldUseDefault ? variable.defaultValue : next;
+        const saved = update(variable.key, valueToSave);
 
         track(saved);
         // A newer draft keeps showing until it has saved too.
         void saved.then(
-            () => setDraft((current) => (current === next ? null : current)),
+            () => setDraft((current) => (current === valueToSave ? null : current)),
             () => {}
         );
     }, 500);
@@ -39,6 +45,13 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
         save(model.update, next);
     };
 
+    const suggestionOptions =
+        control.kind !== 'suggest'
+            ? []
+            : [
+                  ...(variable.defaultValue ? [{ label: variable.defaultValue, value: variable.defaultValue }] : []),
+                  ...control.options.filter((option) => option.value !== variable.defaultValue),
+              ];
     return (
         <InputSpinner visible={saving}>
             {control.kind === 'switch' && (
@@ -66,6 +79,41 @@ function VariableControl({ model, variable }: { model: StartupVariablesModel; va
                     placeholder={variable.defaultValue}
                 />
             )}
+            {control.kind === 'suggest' &&
+                (control.options.length === 0 ? (
+                    <>
+                        <Input
+                            list={optionListId}
+                            onChange={(event) => editable && change(event.currentTarget.value)}
+                            onBlur={save.flush}
+                            readOnly={!editable}
+                            name={variable.key}
+                            value={value}
+                            placeholder={variable.defaultValue}
+                        />
+                        <datalist id={optionListId}>
+                            {control.options.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </datalist>
+                    </>
+                ) : (
+                    <Select
+                        value={value}
+                        onChange={(selected) => change(String(selected))}
+                        onSearchChange={(query) => {
+                            if (control.allowManualInput && query !== '') {
+                                change(query);
+                            }
+                        }}
+                        onBlur={save.flush}
+                        filterOptions
+                        disabled={!editable}
+                        options={suggestionOptions}
+                    />
+                ))}
         </InputSpinner>
     );
 }

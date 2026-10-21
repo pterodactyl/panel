@@ -28,10 +28,12 @@ interface BaseSelectProps {
     searchPlaceholder?: string;
     emptyMessage?: string;
     hasError?: boolean;
+    /** Keeps the supplied options available while using the built-in search filter. */
+    filterOptions?: boolean;
     'aria-describedby'?: string;
     'aria-invalid'?: boolean;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    /** Hands the typed query to the caller and turns off client-side filtering. */
+    /** Hands the typed query to the caller. */
     onSearchChange?: (value: string) => void;
 }
 
@@ -223,9 +225,11 @@ const resolveRichSelection = (selectedOption: SelectOption | null): React.ReactN
 function useSelectSearch({
     onBlur,
     onSearchChange,
+    filterOptions = false,
 }: {
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
     onSearchChange?: (value: string) => void;
+    filterOptions?: boolean;
 }) {
     const [searchValue, setSearchValue] = React.useState('');
     const [inputFocused, setInputFocused] = React.useState(false);
@@ -270,7 +274,7 @@ function useSelectSearch({
         handleInputValueChange,
         handleFocus,
         handleBlur,
-        externalFilter: onSearchChange ? null : undefined,
+        externalFilter: filterOptions || !onSearchChange ? undefined : null,
     };
 }
 
@@ -453,13 +457,14 @@ export default function Select(props: SelectProps) {
         searchPlaceholder = 'Search...',
         emptyMessage = 'No results found.',
         hasError,
+        filterOptions = false,
         onBlur,
         onSearchChange,
     } = props;
     const flatOptions = getOptions(options, groups);
     const groupedItems = getGroups(groups);
     const items = groupedItems ?? flatOptions;
-    const search = useSelectSearch({ onBlur, onSearchChange });
+    const search = useSelectSearch({ onBlur, onSearchChange, filterOptions });
     const selectedValues = props.multiple ? props.value : singleSelectedValues(props.value);
     const selectedOptions = useSelectedOptions(flatOptions, selectedValues);
     const inputAria: InputAriaProps = {
