@@ -3,6 +3,7 @@ import type { FormAsyncValidateOrFn, FormValidateOrFn } from '@tanstack/form-cor
 import { fieldContext, formContext } from './context';
 import {
     TextField,
+    PasswordField,
     TextAreaField,
     NumberField,
     SelectField,
@@ -14,6 +15,7 @@ import { SubmitButton } from './SubmitButton';
 
 const fieldComponents = {
     TextField,
+    PasswordField,
     TextAreaField,
     NumberField,
     SelectField,
