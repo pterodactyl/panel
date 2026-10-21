@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use NunoMaduro\Collision\Provider;
 use Illuminate\Contracts\Console\Kernel;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Illuminate\Foundation\Bootstrap\HandleExceptions;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -43,3 +44,9 @@ if (!env('SKIP_MIGRATIONS')) {
 } else {
     $output->writeln(PHP_EOL . '<comment>Skipping database migrations...</comment>' . PHP_EOL);
 }
+
+/*
+ * Flush the exception handler state so that PHPUnit's default exception
+ * and error handlers are restored before tests start.
+ */
+HandleExceptions::flushState();
