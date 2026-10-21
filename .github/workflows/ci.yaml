@@ -32,7 +32,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
-          extensions: bcmath, cli, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          extensions: bcmath, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
       - uses: actions/setup-node@v7
@@ -113,7 +113,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: bcmath, cli, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          extensions: bcmath, curl, gd, intl, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
       - run: cp .env.ci .env
