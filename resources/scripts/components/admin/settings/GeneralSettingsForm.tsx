@@ -123,7 +123,12 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                 <div className='flex justify-end mt-4'>
                     <form.AppForm>
                         <form.SubmitButton
-                            disabled={readOnly || updateGeneralSettings.isPending || uploadLogo.isPending || clearLogo.isPending}
+                            disabled={
+                                readOnly ||
+                                updateGeneralSettings.isPending ||
+                                uploadLogo.isPending ||
+                                clearLogo.isPending
+                            }
                         >
                             Save Changes
                         </form.SubmitButton>

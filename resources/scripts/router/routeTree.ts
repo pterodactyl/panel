@@ -854,10 +854,10 @@ const panelChildren = [
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
-        component: adminPage(() => import('@/components/admin/settings/SettingsContainer'), {
-            before: 'panel.settings.before',
-            after: 'panel.settings.after',
-        }),
+        component: componentRoute(
+            () => import('@/components/admin/settings/SettingsContainer'),
+            ['panel.settings.before', 'panel.settings.after']
+        ),
     }),
     createRoute({
         getParentRoute: () => panelRoute,
