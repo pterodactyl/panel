@@ -1,10 +1,12 @@
 import { createContext, memo, use, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { join } from 'pathe';
 import {
     Copy,
     CornerLeftUp,
     FileArchive,
     FileCode,
     FileDown,
+    ImageIcon,
     MoreHorizontal,
     PackageOpen,
     Pencil,
@@ -22,19 +24,23 @@ import {
     SpinnerOverlay,
     type FileManagerSlotData,
 } from '@/sdk';
+import { isFileObjectImageType, useFileDownloadUrl } from '@/api/server/files/queries';
+import { useCurrentServerUuid } from '@/api/server/queries';
 import { Slot, View, type FileManagerEntry, type FileManagerModel } from '@/sdk/theme';
 import { usePending } from '../usePending';
 import { ChmodDialog, RenameDialog } from './FileDialogs';
+import ImagePreviewModal from '@/components/server/files/ImagePreviewModal';
 
 const fileRowClass =
     'flex items-center cursor-pointer bg-card rounded-xs mb-px text-sm no-underline hover:text-foreground hover:bg-popover';
 const detailsClass = 'flex flex-1 items-center text-muted-foreground no-underline px-4 py-2 overflow-hidden truncate';
 
-type RowDialog = 'rename' | 'move' | 'chmod' | 'delete';
+type RowDialog = 'rename' | 'move' | 'chmod' | 'delete' | 'image';
 
 interface RowActions {
     readonly permissions: FileManagerModel['permissions'];
     readonly open: (dialog: RowDialog, entry: FileManagerEntry) => void;
+    readonly openImage: (entry: FileManagerEntry) => void;
     readonly run: (action: Promise<void>) => void;
     readonly actions: FileManagerModel['actions'];
     readonly toggle: (name: string, selected: boolean) => void;
@@ -58,13 +64,27 @@ function useRowActions(): RowActions {
 export function RowActionsProvider({ model, children }: { model: FileManagerModel; children: ReactNode }) {
     const [dialog, setDialog] = useState<RowDialog | null>(null);
     const [target, setTarget] = useState<FileManagerEntry | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [pending, run] = usePending();
     const selection = useRef(model.selection);
     const { actions, permissions } = model;
+    const uuid = useCurrentServerUuid()!;
+    const { mutateAsync: download } = useFileDownloadUrl();
 
     useEffect(() => {
         selection.current = model.selection;
     });
+
+    const openImage = (entry: FileManagerEntry) => {
+        setTarget(entry);
+        setImageUrl(null);
+        setDialog('image');
+        run(
+            download({ uuid, file: join(model.directory, entry.name) })
+                .then(setImageUrl)
+                .catch(() => setDialog(null))
+        );
+    };
 
     const value = useMemo<RowActions>(
         () => ({
@@ -74,6 +94,7 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
                 setTarget(entry);
                 setDialog(next);
             },
+            openImage,
             run,
             toggle: (name, selected) =>
                 actions.select(
@@ -82,9 +103,12 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
                         : selection.current.filter((file) => file !== name)
                 ),
         }),
-        [actions, permissions, run]
+        [actions, openImage, permissions, run]
     );
-    const close = () => setDialog(null);
+    const close = () => {
+        setDialog(null);
+        setImageUrl(null);
+    };
     const name = target?.name ?? '';
 
     return (
@@ -123,6 +147,7 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
                         onClose={close}
                     />
                 )}
+                <ImagePreviewModal open={dialog === 'image'} name={name} src={imageUrl} onClose={close} />
                 <SpinnerOverlay visible={pending} fixed size='large' />
             </SlotContext.Provider>
         </RowActionsContext.Provider>
@@ -130,11 +155,16 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
 }
 
 function ActionItems({ entry }: { entry: FileManagerEntry }) {
-    const { permissions, actions, open, run } = useRowActions();
+    const { permissions, actions, open, openImage, run } = useRowActions();
     const isFile = entry.kind !== 'directory';
 
     return (
         <>
+            {isFileObjectImageType(entry.file) && (
+                <DropdownMenuItem onClick={() => openImage(entry)} icon={ImageIcon} description='Preview image'>
+                    Open Image
+                </DropdownMenuItem>
+            )}
             {permissions.update && (
                 <>
                     <DropdownMenuItem
