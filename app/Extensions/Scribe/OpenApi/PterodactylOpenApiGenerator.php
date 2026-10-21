@@ -2392,7 +2392,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     {
         return [
             'type' => 'object',
-            'required' => ['general', 'mail', 'advanced', 'meta'],
+            'required' => ['general', 'logo', 'mail', 'advanced', 'meta'],
             'properties' => [
                 'general' => [
                     'type' => 'object',
@@ -2409,6 +2409,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                         'app:locale' => ['type' => 'string', 'example' => 'en'],
                     ],
                 ],
+                'logo' => ['type' => 'string', 'nullable' => true, 'example' => null],
                 'mail' => [
                     'type' => 'object',
                     'required' => [
