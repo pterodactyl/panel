@@ -1,0 +1,21 @@
+.github/docker/smoke-test.sh
+  s_221891998fd55d::t_5a7e6c0d9c15ab 170
+.github/docker/php.ini
+  s_221891998fd55d::t_4cce893b1813b3 13-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3824a0a0dea88fd1f53e76618a6df75e91d1b57c",
+  "prompts": {},
+  "sessions": {
+    "s_221891998fd55d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb6f0120-a0bd-4b9f-88ea-ec20481c3655",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
