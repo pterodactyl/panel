@@ -12,13 +12,10 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class SettingsServiceProvider extends ServiceProvider
 {
-    /**
-     * An array of configuration keys to override with database values
-     * if they exist.
-     */
     protected array $keys = [
         'app:name',
         'app:locale',
+        'app:debug',
         'recaptcha:enabled',
         'recaptcha:secret_key',
         'recaptcha:website_key',
@@ -32,10 +29,6 @@ class SettingsServiceProvider extends ServiceProvider
         'pterodactyl:client_features:allocations:range_end',
     ];
 
-    /**
-     * Keys specific to the mail driver that are only grabbed from the database
-     * when using the SMTP driver.
-     */
     protected array $emailKeys = [
         'mail:mailers:smtp:host',
         'mail:mailers:smtp:port',
@@ -46,21 +39,16 @@ class SettingsServiceProvider extends ServiceProvider
         'mail:from:name',
     ];
 
-    /**
-     * Keys that are encrypted and should be decrypted when set in the
-     * configuration array.
-     */
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
     ];
 
-    /**
-     * Boot the service provider.
-     */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
-    {
-        // Only set the email driver settings from the database if we
-        // are configured using SMTP as the driver.
+    public function boot(
+        ConfigRepository $config,
+        Encrypter $encrypter,
+        Log $log,
+        SettingsRepositoryInterface $settings
+    ): void {
         if ($config->get('mail.default') === 'smtp') {
             $this->keys = array_merge($this->keys, $this->emailKeys);
         }
@@ -70,36 +58,62 @@ class SettingsServiceProvider extends ServiceProvider
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
+            $log->notice(
+                'A query exception was encountered while trying to load settings from the database: '
+                . $exception->getMessage()
+            );
 
             return;
         }
 
+        $proxyKey = 'settings::trustedproxy:proxies';
+
+        if (array_key_exists($proxyKey, $values)) {
+            $raw = trim((string) $values[$proxyKey]);
+
+            $proxies = in_array($raw, ['*', '**'], true)
+                ? $raw
+                : array_values(array_filter(
+                    array_map('trim', explode(',', $raw)),
+                    static fn (string $proxy): bool => $proxy !== ''
+                ));
+
+            $config->set('trustedproxy.proxies', $proxies);
+        }
+
         foreach ($this->keys as $key) {
-            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
-            if (in_array($key, self::$encrypted)) {
+            $value = array_get(
+                $values,
+                'settings::' . $key,
+                $config->get(str_replace(':', '.', $key))
+            );
+
+            if (in_array($key, self::$encrypted, true)) {
                 try {
                     $value = $encrypter->decrypt($value);
                 } catch (DecryptException $exception) {
                 }
             }
 
-            switch (strtolower($value)) {
-                case 'true':
-                case '(true)':
-                    $value = true;
-                    break;
-                case 'false':
-                case '(false)':
-                    $value = false;
-                    break;
-                case 'empty':
-                case '(empty)':
-                    $value = '';
-                    break;
-                case 'null':
-                case '(null)':
-                    $value = null;
+            if (is_string($value)) {
+                switch (strtolower($value)) {
+                    case 'true':
+                    case '(true)':
+                        $value = true;
+                        break;
+                    case 'false':
+                    case '(false)':
+                        $value = false;
+                        break;
+                    case 'empty':
+                    case '(empty)':
+                        $value = '';
+                        break;
+                    case 'null':
+                    case '(null)':
+                        $value = null;
+                        break;
+                }
             }
 
             $config->set(str_replace(':', '.', $key), $value);
