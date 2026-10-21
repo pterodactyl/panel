@@ -1,0 +1,19 @@
+.github/docker/www.conf
+  s_221891998fd55d::t_6918b9ac16387d 16-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90b2aa87469da4fffd941b3c99f3c1ca48a01b78",
+  "prompts": {},
+  "sessions": {
+    "s_221891998fd55d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb6f0120-a0bd-4b9f-88ea-ec20481c3655",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
