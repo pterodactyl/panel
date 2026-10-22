@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $identifier
  * @property string $token
  * @property array|null $allowed_ips
+ * @property array|null $permissions
+ * @property array|null $allowed_servers
  * @property string|null $memo
  * @property \Illuminate\Support\Carbon|null $last_used_at
  * @property \Illuminate\Support\Carbon|null $expires_at
@@ -102,6 +104,8 @@ class ApiKey extends Model implements HasAbilities
      */
     protected $casts = [
         'allowed_ips' => 'array',
+        'permissions' => 'array',
+        'allowed_servers' => 'array',
         'user_id' => 'int',
         'last_used_at' => 'datetime',
         'expires_at' => 'datetime',
@@ -125,6 +129,8 @@ class ApiKey extends Model implements HasAbilities
         'identifier',
         'token',
         'allowed_ips',
+        'permissions',
+        'allowed_servers',
         'memo',
         'last_used_at',
         'expires_at',
@@ -147,6 +153,10 @@ class ApiKey extends Model implements HasAbilities
         'memo' => 'required|nullable|string|max:500',
         'allowed_ips' => 'nullable|array',
         'allowed_ips.*' => 'string',
+        'permissions' => 'nullable|array',
+        'permissions.*' => 'string',
+        'allowed_servers' => 'nullable|array',
+        'allowed_servers.*' => 'uuid',
         'last_used_at' => 'nullable|date',
         'expires_at' => 'nullable|date',
         'r_' . AdminAcl::RESOURCE_USERS => 'integer|min:0|max:3',
@@ -162,14 +172,40 @@ class ApiKey extends Model implements HasAbilities
 
     public function can($ability)
     {
-        // todo: this was never initially implemented and only became obvious once
-        //  internal tooling was updated and started catching this mistake.
-        return false;
+        return $this->allowsAbility($ability);
     }
 
     public function cant($ability)
     {
         return ! $this->can($ability);
+    }
+
+    /**
+     * Determines if this key has any scoping restrictions applied to it. Keys
+     * created before scoping existed (or created without scopes) have NULL for
+     * both columns and remain unrestricted.
+     */
+    public function isRestricted(): bool
+    {
+        return !is_null($this->permissions) || !is_null($this->allowed_servers);
+    }
+
+    /**
+     * Determines if this key is allowed to perform the given ability. A NULL
+     * permissions value imposes no restriction.
+     */
+    public function allowsAbility(string $ability): bool
+    {
+        return is_null($this->permissions) || in_array($ability, $this->permissions, true);
+    }
+
+    /**
+     * Determines if this key is allowed to interact with the given server. A
+     * NULL allowed_servers value imposes no restriction.
+     */
+    public function allowsServer(Server $server): bool
+    {
+        return is_null($this->allowed_servers) || in_array($server->uuid, $this->allowed_servers, true);
     }
 
     /**

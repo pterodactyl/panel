@@ -25,6 +25,15 @@ class ServerPolicy
      */
     public function before(User $user, string $ability, Server $server): bool
     {
+        // If the request was authenticated using a scoped API key the key's own
+        // restrictions are applied first, before any user-level permissions are
+        // considered. A key can never grant more access than the user that owns
+        // it, so the standard checks below still run afterwards.
+        $token = $user->currentApiKey();
+        if (!is_null($token) && (!$token->allowsServer($server) || !$token->allowsAbility($ability))) {
+            return false;
+        }
+
         if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
         }

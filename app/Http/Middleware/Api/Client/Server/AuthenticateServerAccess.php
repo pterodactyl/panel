@@ -46,6 +46,13 @@ class AuthenticateServerAccess
             }
         }
 
+        // If this request is authenticated with an API key that is scoped to
+        // specific servers, respond with a 404 for any server outside of that
+        // scope, exactly as if the key's user had no access at all.
+        if ($user->currentApiKey()?->allowsServer($server) === false) {
+            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
+        }
+
         try {
             $server->validateCurrentState();
         } catch (ServerStateConflictException $exception) {
