@@ -429,4 +429,20 @@ class Server extends Model implements Identifiable
             throw new ServerStateConflictException($this);
         }
     }
+
+    /**
+     * Overriding getRules to add custom memory validation
+     */
+    public static function getRules(): array
+    {
+        $rules = parent::getRules();
+
+        $rules['memory'][] = function ($attribute, $value, $fail) {
+            if ($value != 0 && $value < 6) {
+                $fail('The ' . $attribute . ' must be either 0 or at least 6!');
+            }
+        };
+
+        return $rules;
+    }
 }
