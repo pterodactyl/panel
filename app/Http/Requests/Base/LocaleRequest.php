@@ -10,7 +10,7 @@ class LocaleRequest extends FormRequest
     {
         return [
             'locale' => ['required', 'string', 'regex:/^[a-z][a-z]$/'],
-            'namespace' => ['required', 'string', 'regex:/^[a-z]{1,191}$/'],
+            'namespace' => ['required', 'string', 'regex:/^[a-z][a-z\/]*$/'],
         ];
     }
 }
