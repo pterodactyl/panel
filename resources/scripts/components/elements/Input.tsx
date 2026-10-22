@@ -34,6 +34,10 @@ const checkboxStyle = css<Props>`
         ${tw`outline-none border-primary-300`};
         box-shadow: 0 0 0 1px rgba(9, 103, 210, 0.25);
     }
+
+    &:disabled {
+        ${tw`opacity-50 cursor-default border-transparent`};
+    }
 `;
 
 const inputStyle = css<Props>`
