@@ -306,6 +306,13 @@
             }
         },
         {
+            "files": ["resources/scripts/**", "packages/hello-world/src/client/**"],
+            "excludeFiles": ["**/generated/**", "**/*.spec.{ts,tsx}", "resources/scripts/sdk/localization.ts"],
+            "rules": {
+                "rules/literal-translation-keys": "error"
+            }
+        },
+        {
             // ESTree literals are discriminated only by the runtime type of `value`; this helper is that decoder.
             "files": ["tools/oxlint/rules/shared/literals.ts"],
             "rules": {

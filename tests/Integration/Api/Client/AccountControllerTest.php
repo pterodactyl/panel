@@ -157,3 +157,26 @@ test('malformed account credentials return 422 without changing the account', fu
     'null password credential' => ['password', 'current_password', ['current_password' => null]],
     'array password credential' => ['password', 'current_password', ['current_password' => []]],
 ]);
+test('the account language can be chosen and cleared', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->putJson('/api/client/account/language', ['language' => 'en'])
+        ->assertOk()
+        ->assertJsonPath('attributes.language', 'en');
+    expect($user->fresh()->language)->toBe('en');
+    $this->assertActivityFor('user:account.language-changed', $user, $user);
+
+    $this->putJson('/api/client/account/language', ['language' => null])->assertOk()->assertJsonPath('attributes.language', null);
+    expect($user->fresh()->language)->toBeNull();
+});
+test('the account language must be one the panel offers', function (array $body): void {
+    $user = User::factory()->create(['language' => 'en']);
+
+    $this->actingAs($user)->putJson('/api/client/account/language', $body)
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'language');
+    expect($user->fresh()->language)->toBe('en');
+})->with([
+    'unknown' => [['language' => 'fr']],
+    'missing' => [[]],
+]);

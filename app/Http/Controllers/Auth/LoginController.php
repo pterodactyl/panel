@@ -34,7 +34,7 @@ class LoginController extends AbstractLoginController
                 'email' => 'admin@example.com',
                 'name_first' => 'Admin',
                 'name_last' => 'User',
-                'language' => 'en',
+                'language' => null,
                 'root_admin' => true,
                 'use_totp' => false,
                 'created_at' => '2026-06-29T12:00:00+00:00',

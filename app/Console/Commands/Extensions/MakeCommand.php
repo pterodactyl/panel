@@ -11,7 +11,7 @@ use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Extensions\Scaffolding\ExtensionScaffolder;
 
-#[Description('Scaffold a new extension package (manifest, provider, a client API route with Scribe attributes, and an SDK frontend) or, with --theme, a theme.')]
+#[Description('Scaffold a new extension package (manifest, provider, a client API route with Scribe attributes, and an SDK frontend), with --theme a theme, or with --language a language pack.')]
 #[Signature('p:extension:make
                             {id : The extension identifier (lowercase slug, e.g. my-extension).}
                             {--name= : Display name (defaults to the id in headline case).}
@@ -22,6 +22,7 @@ use Pterodactyl\Services\Extensions\Scaffolding\ExtensionScaffolder;
                             {--theme : Scaffold a theme: stylesheet, a layout override, a skin, settings and a test.}
                             {--css-only : With --theme: a theme of CSS alone, with no JavaScript entry.}
                             {--extends= : With --theme: the theme to build on. Scaffolds a child that inherits its views, skins, stylesheet and settings.}
+                            {--language= : Scaffold a language pack for this locale, such as de or pt_BR: a manifest and a copy of the English translations to translate.}
                             {--out= : Parent directory: the package is created in <out>/<id> (defaults to the extensions directory).}
                             {--force : Overwrite the target directory if it already exists.}')]
 class MakeCommand extends Command implements PromptsForMissingInput
@@ -41,6 +42,7 @@ class MakeCommand extends Command implements PromptsForMissingInput
                 theme: (bool) $this->option('theme'),
                 cssOnly: (bool) $this->option('css-only'),
                 extends: $this->option('extends'),
+                language: $this->option('language'),
             );
         } catch (InvalidExtensionException $invalidExtensionException) {
             $this->components->error($invalidExtensionException->getMessage());
@@ -57,10 +59,12 @@ class MakeCommand extends Command implements PromptsForMissingInput
         $this->line('');
         $this->components->info('Next steps:');
         // p:extension:dev builds, installs and enables the package where it is; p:extension:install takes archives.
+        $language = $this->option('language');
         $this->components->bulletList(array_filter([
-            $this->option('no-ui') && ! $this->option('theme') ? null : "cd {$target} && npm install",
+            ($this->option('no-ui') && ! $this->option('theme')) || $language !== null ? null : "cd {$target} && npm install",
             "php artisan p:extension:dev {$target} --enable",
             $this->option('theme') ? "php artisan p:theme:activate {$this->argument('id')}" : null,
+            $language !== null ? "php artisan p:lang:coverage {$language} --extension={$this->argument('id')}" : null,
         ]));
 
         return self::SUCCESS;

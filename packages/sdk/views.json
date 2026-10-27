@@ -55,6 +55,20 @@
             "export": "default"
         }
     },
+    "account.language": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "chosen",
+            "saving"
+        ],
+        "classic": {
+            "file": "views/account/LanguageCard.tsx",
+            "export": "default"
+        }
+    },
     "account.password": {
         "kind": "block",
         "context": "account",
@@ -352,7 +366,8 @@
         "fixtures": [
             "default",
             "twoFactorRequired",
-            "avatars"
+            "avatars",
+            "languages"
         ],
         "classic": {
             "file": "views/account/AccountOverview.tsx",

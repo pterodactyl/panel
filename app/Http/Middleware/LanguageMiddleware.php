@@ -8,18 +8,13 @@ use Closure;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
 class LanguageMiddleware
 {
-    /**
-     * LanguageMiddleware constructor.
-     */
-    public function __construct(private readonly Application $app) {}
+    public function __construct(private readonly Application $app, private readonly LanguageRegistry $languages) {}
 
-    /**
-     * Handle an incoming request and set the user's preferred language.
-     */
     /**
      * @param  Closure(Request):Response  $next
      * @return Response
@@ -27,7 +22,7 @@ class LanguageMiddleware
     public function handle(Request $request, Closure $next): mixed
     {
         $user = $request->user();
-        $this->app->setLocale($user instanceof User ? $user->language : config()->string('app.locale', 'en'));
+        $this->app->setLocale($this->languages->resolveFor($user instanceof User ? $user : null));
 
         return $next($request);
     }

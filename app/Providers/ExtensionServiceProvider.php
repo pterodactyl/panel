@@ -27,6 +27,7 @@ use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
 use Pterodactyl\Services\Themes\ThemeRepository;
 use Pterodactyl\Services\Themes\ThemeResolver;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Throwable;
 
 class ExtensionServiceProvider extends ServiceProvider
@@ -45,6 +46,7 @@ class ExtensionServiceProvider extends ServiceProvider
         $this->app->singleton(ExtensionConsoleRegistry::class);
         $this->app->singleton(ExtensionHeadTags::class);
         $this->app->singleton(ExtensionFailureAttributor::class);
+        $this->app->singleton(LanguageRegistry::class);
         // Remembers the active theme for one request or job at a time.
         $this->app->scoped(ThemeRepository::class);
         $this->app->scoped(ThemeResolver::class);

@@ -254,3 +254,22 @@ test('force overwrites an existing scaffold', function (): void {
     $this->assertFileDoesNotExist($target.'/leftover.txt');
     expect($target.'/extension.json')->toBeFile();
 });
+
+test('scaffolds a language pack with a copy of the english translations', function (): void {
+    $target = $this->scaffolder->scaffold(id: 'language-pt-br', outDir: $this->directory, language: 'pt_BR');
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($target);
+
+    expect($manifest->languages)->toBe(['pt_BR'])
+        ->and($manifest->provider)->toBeNull()
+        ->and($manifest->hasUi())->toBeFalse()
+        ->and($this->scaffolder->files())->toContain('extension.json', 'resources/languages/pt_BR/auth.php', 'resources/languages/pt_BR/validation.php', 'README.md')
+        ->and(File::get($target.'/resources/languages/pt_BR/auth.php'))->toBe(File::get(lang_path('en/auth.php')))
+        ->and(File::get($target.'/README.md'))->toContain('p:lang:coverage pt_BR --extension=language-pt-br', '`{{user}}` in the JSON file')->not->toContain('{{language}}', '{{id}}', '{{artisan}}');
+});
+
+test('rejects a language pack locale that is malformed or combined with a theme', function (array $options, string $message): void {
+    expect(fn (): string => $this->scaffolder->scaffold(...['id' => 'language', 'outDir' => $this->directory, ...$options]))->toThrow(InvalidExtensionException::class, $message);
+})->with([
+    'malformed' => [['language' => 'pt-br'], 'locale such as'],
+    'theme' => [['language' => 'de', 'theme' => true], 'cannot also be a theme'],
+]);

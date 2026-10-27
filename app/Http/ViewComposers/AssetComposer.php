@@ -11,6 +11,7 @@ use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
 use Pterodactyl\Services\Themes\ThemeResolver;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Throwable;
 
 class AssetComposer
@@ -24,6 +25,7 @@ class AssetComposer
         private readonly ExtensionHeadTags $extensionHeadTags,
         private readonly ThemeResolver $themes,
         private readonly Request $request,
+        private readonly LanguageRegistry $languages,
     ) {}
 
     /**
@@ -39,7 +41,9 @@ class AssetComposer
         $view->with('theme', $theme);
         $view->with('siteConfiguration', [
             'name' => config('app.name', 'Pterodactyl'),
-            'locale' => config('app.locale', 'en'),
+            'locale' => rescue(fn (): string => $this->languages->panelDefault(), LanguageRegistry::FALLBACK, report: false),
+            'languages' => rescue(fn (): array => $this->languages->available(true), [LanguageRegistry::FALLBACK => 'English'], report: false),
+            'translations' => rescue(fn (): ?string => $this->languages->revision(), report: false),
             'userAvatarsEnabled' => config('pterodactyl.client_features.avatars.enabled', false),
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),

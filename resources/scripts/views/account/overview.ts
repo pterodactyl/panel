@@ -6,6 +6,7 @@ import {
     useDeleteAccountAvatar,
     useUpdateAccountAvatar,
     useUpdateAccountEmail,
+    useUpdateAccountLanguage,
     useUpdateAccountPassword,
 } from '@/api/account/queries';
 import {
@@ -20,6 +21,8 @@ import { implementViews } from '../registry';
 import type {
     AccountEmailModel,
     AccountAvatarModel,
+    AccountLanguageModel,
+    AccountLanguageOption,
     AccountOverviewModel,
     AccountPasswordModel,
     AccountTwoFactorModel,
@@ -38,11 +41,36 @@ const totpCode: FieldAttributes = {
 
 function useAccountOverviewModel(): AccountOverviewModel {
     const state = useLocation().state;
-    const { userAvatarsEnabled } = useSiteSettings();
+    const { userAvatarsEnabled, languages = {} } = useSiteSettings();
 
     return {
         twoFactorRequired: 'twoFactorRedirect' in state && state.twoFactorRedirect === true,
         userAvatarsEnabled,
+        languagesEnabled: Object.keys(languages).length > 1,
+    };
+}
+
+const PANEL_DEFAULT = '';
+
+const languageOptions = (languages: Record<string, string>, panelDefault: string): AccountLanguageOption[] => [
+    { value: PANEL_DEFAULT, label: `Panel default (${languages[panelDefault] ?? panelDefault})` },
+    ...Object.entries(languages).map(([value, label]) => ({ value, label })),
+];
+
+function useAccountLanguageModel(): AccountLanguageModel {
+    const user = useCurrentUser();
+    const update = useUpdateAccountLanguage();
+    const { languages = {}, locale } = useSiteSettings();
+
+    return {
+        value: user.language ?? PANEL_DEFAULT,
+        options: languageOptions(languages, locale),
+        change: (value) => {
+            if (value !== (user.language ?? PANEL_DEFAULT)) {
+                update.mutate({ body: { language: value === PANEL_DEFAULT ? null : value } });
+            }
+        },
+        submitting: update.isPending,
     };
 }
 
@@ -318,6 +346,15 @@ function avatarFixture(avatar: string | null, selected: File | null = null): Acc
     };
 }
 
+function languageFixture(value = PANEL_DEFAULT, submitting = false): AccountLanguageModel {
+    return {
+        value,
+        options: languageOptions({ de: 'Deutsch', en: 'English', pt_BR: 'Português (Brasil)' }, 'en'),
+        change: noop,
+        submitting,
+    };
+}
+
 const SECRET = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
 
 function twoFactorFixture(overrides: Partial<AccountTwoFactorModel> = {}): AccountTwoFactorModel {
@@ -352,9 +389,10 @@ implementViews({
     'page.account.overview': {
         use: useAccountOverviewModel,
         fixtures: {
-            default: () => ({ twoFactorRequired: false, userAvatarsEnabled: false }),
-            twoFactorRequired: () => ({ twoFactorRequired: true, userAvatarsEnabled: false }),
-            avatars: () => ({ twoFactorRequired: false, userAvatarsEnabled: true }),
+            default: () => ({ twoFactorRequired: false, userAvatarsEnabled: false, languagesEnabled: false }),
+            twoFactorRequired: () => ({ twoFactorRequired: true, userAvatarsEnabled: false, languagesEnabled: false }),
+            avatars: () => ({ twoFactorRequired: false, userAvatarsEnabled: true, languagesEnabled: false }),
+            languages: () => ({ twoFactorRequired: false, userAvatarsEnabled: false, languagesEnabled: true }),
         },
     },
     'account.password': {
@@ -374,6 +412,14 @@ implementViews({
             default: () => avatarFixture(null),
             uploaded: () => avatarFixture(picture),
             picked: () => avatarFixture(null, new File(['avatar'], 'avatar.png', { type: 'image/png' })),
+        },
+    },
+    'account.language': {
+        use: useAccountLanguageModel,
+        fixtures: {
+            default: () => languageFixture(),
+            chosen: () => languageFixture('de'),
+            saving: () => languageFixture('de', true),
         },
     },
     'account.twoFactor': {

@@ -7,13 +7,12 @@ namespace Pterodactyl\Services\Extensions;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Pterodactyl\Events\Extensions\ExtensionLoadFailed;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Models\Extension;
-use Symfony\Component\Finder\SplFileInfo;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Throwable;
 
 class ExtensionRepository
@@ -272,13 +271,15 @@ class ExtensionRepository
             return null;
         }
 
-        $files = array_map(
-            fn (SplFileInfo $file): string => implode("\0", [$file->getRelativePathname(), $file->getSize(), $file->getMTime()]),
-            File::allFiles($directory),
-        );
-        sort($files);
+        $overrides = [];
+        foreach ($this->enabled() as $pack) {
+            $files = $pack->hasLanguages() ? LanguageRegistry::fingerprint($pack->languagesPath('vendor', 'ext-'.$manifest->id)) : [];
+            if ($files !== []) {
+                $overrides[] = implode("\0", [$pack->id, $pack->version, ...$files]);
+            }
+        }
 
-        return hash('xxh128', $manifest->version."\0".implode("\0", $files));
+        return hash('xxh128', implode("\0", [$manifest->version, ...LanguageRegistry::fingerprint($directory), ...$overrides]));
     }
 
     /**

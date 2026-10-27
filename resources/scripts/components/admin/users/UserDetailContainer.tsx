@@ -100,12 +100,7 @@ const IdentityCard = ({
             </div>
         </div>
         <div className='mt-6'>
-            <form.AppField
-                name='language'
-                validators={{
-                    onChange: ({ value }) => (value.length >= 1 ? undefined : 'A language must be provided.'),
-                }}
-            >
+            <form.AppField name='language'>
                 {(field) => (
                     <field.SelectField
                         id='language'
@@ -262,7 +257,7 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
     const deleteUser = useDeleteAdminUser();
 
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
-    const languagesList = languageOptions(languages, user.attributes.language);
+    const languagesList = languageOptions(languages, user.attributes.language, true);
 
     const { withExtensionPayload } = useExtensionPayload('admin.user');
     const form = useAppForm({

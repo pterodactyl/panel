@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pterodactyl\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\RouteKey;
@@ -23,6 +24,7 @@ use Pterodactyl\Models\Traits\HasAccessTokens;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 use Pterodactyl\Services\Extensions\ExtensionSettingFiles;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 /**
@@ -46,7 +48,7 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
 ])]
 #[Hidden(['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'])]
 #[RouteKey('uuid')]
-class User extends Authenticatable implements Identifiable
+class User extends Authenticatable implements HasLocalePreference, Identifiable
 {
     use AvailableLanguages;
 
@@ -72,7 +74,7 @@ class User extends Authenticatable implements Identifiable
     protected $attributes = [
         'external_id' => null,
         'root_admin' => false,
-        'language' => 'en',
+        'language' => null,
         'use_totp' => false,
         'totp_secret' => null,
         'avatar' => null,
@@ -115,6 +117,14 @@ class User extends Authenticatable implements Identifiable
             'avatar' => $this->avatar_url,
             'identifier' => $this->identifier,
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function preferredLocale(): string
+    {
+        return resolve(LanguageRegistry::class)->resolveFor($this);
     }
 
     /**

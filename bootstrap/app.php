@@ -95,6 +95,7 @@ $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR_
         $middleware->group('api', [
             EnsureStatefulRequests::class,
             'auth:sanctum',
+            LanguageMiddleware::class,
             IsValidJson::class,
             TrackAPIKey::class,
             RequireTwoFactorAuthentication::class,

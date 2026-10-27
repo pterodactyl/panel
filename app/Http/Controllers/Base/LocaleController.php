@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Base\LocaleRequest;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use UnexpectedValueException;
 
 class LocaleController extends Controller
@@ -25,13 +26,24 @@ class LocaleController extends Controller
      */
     public function __invoke(LocaleRequest $request): JsonResponse
     {
-        $locale = $request->string('locale')->toString();
-        $namespace = $request->string('namespace')->toString();
-        $segments = explode('::', $namespace, 2);
-        $translations = count($segments) === 2
-            ? $this->loader->load($locale, $segments[1], $segments[0])
-            : $this->loader->load($locale, $namespace);
-        $response[$locale][$namespace] = $this->i18n($translations);
+        $response = [];
+        $extensions = false;
+        foreach ($request->locales() as $locale) {
+            foreach ($request->namespaces() as $namespace) {
+                if ($namespace === LanguageRegistry::JSON_NAMESPACE) {
+                    $response[$locale][$namespace] = (object) array_filter($this->loader->load($locale, '*', '*'), is_string(...));
+
+                    continue;
+                }
+
+                $segments = explode('::', $namespace, 2);
+                $extensions = $extensions || count($segments) === 2;
+                $translations = count($segments) === 2
+                    ? $this->loader->load($locale, $segments[1], $segments[0])
+                    : $this->loader->load($locale, $namespace);
+                $response[$locale][$namespace] = $this->i18n($translations);
+            }
+        }
 
         $json = new JsonResponse($response, 200, [
             // Core translations only change with a panel build, and the frontend puts the
@@ -41,7 +53,7 @@ class LocaleController extends Controller
             // An extension's translations change whenever it is installed or upgraded, so
             // the frontend adds their revision to the URL and they are cached the same way.
             // Without it the URL would stay the same, and the browser has to revalidate.
-            'Cache-Control' => count($segments) === 2 && ! $request->has('revision')
+            'Cache-Control' => $extensions && ! $request->has('revision')
                 ? 'no-cache'
                 : 'public, max-age=3600, stale-while-revalidate=86400',
         ]);

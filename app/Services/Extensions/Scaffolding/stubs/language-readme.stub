@@ -1,0 +1,36 @@
+# {{name}}
+
+A Pterodactyl panel language pack for `{{language}}`, scaffolded by `p:extension:make --language={{language}}`.
+It has no PHP provider and no frontend build: the panel reads its translation files directly.
+
+## Files
+
+| File | |
+| --- | --- |
+| `extension.json` | The manifest. `"languages": ["{{language}}"]` lists the locales this pack provides. |
+| `resources/languages/{{language}}.json` | The panel's interface text, keyed by the English. Translate the values and keep the keys. |
+| `resources/languages/{{language}}/*.php` | Copies of the panel's English server messages (validation, emails, activity log). Translate the values and keep the keys. |
+
+Placeholders must be kept as they are: `{{user}}` in the JSON file, `:user` in the PHP files. Plural forms use
+`_one` and `_other` suffixes (`{{count}} file_one`, `{{count}} file_other`); add the other forms the language
+needs, such as `_few` or `_many`.
+
+Any key left out falls back to English, so a pack can translate part of the panel and grow over time. A
+file only needs the keys it translates. Extensions add their interface text to the same JSON catalogue, so
+`{{language}}.json` translates them too. To translate another extension's server messages, add
+`resources/languages/vendor/ext-<id>/{{language}}/<group>.php` with that extension's keys.
+
+When two enabled packs provide the same key for a locale, the one loaded later wins: a pack listed under
+`requires.extensions` loads first, and unrelated packs load in alphabetical order. The extension page in
+the admin area and `p:lang:coverage` list such conflicts.
+
+## Develop
+
+```sh
+php {{artisan}} p:extension:dev . --enable
+php {{artisan}} p:lang:coverage {{language}} --extension={{id}}
+php {{artisan}} p:extension:pack .
+```
+
+`p:lang:coverage` lists missing and stale keys and placeholder mistakes, and exits non-zero when keys are
+missing or a translation uses a placeholder English does not.

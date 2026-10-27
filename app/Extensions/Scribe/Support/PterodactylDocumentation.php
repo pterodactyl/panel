@@ -140,7 +140,7 @@ class PterodactylDocumentation
         'ip' => 'The IP address.',
         'is_active' => 'Whether the resource is active.',
         'is_locked' => 'Whether the resource is locked.',
-        'language' => 'The locale code.',
+        'language' => 'The locale code, such as en or pt_BR. Null follows the panel default.',
         'location_id' => 'The location ID.',
         'max_connections' => 'The maximum number of connections allowed.',
         'memory' => 'The memory limit in megabytes.',

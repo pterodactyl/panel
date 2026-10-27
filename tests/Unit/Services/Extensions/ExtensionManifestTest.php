@@ -523,3 +523,60 @@ test('rejects icons that are neither a lucide name nor an image inside the packa
     'not a string' => [['icon.png']],
     'too long' => [str_repeat('a', 252).'.png'],
 ]);
+
+test('reads the locales a language pack declares', function (): void {
+    writeManifest(['id' => 'german', 'name' => 'German', 'version' => '1.0.0', 'languages' => ['de', 'pt_BR']]);
+    File::ensureDirectoryExists($this->directory.'/resources/languages/de');
+    File::ensureDirectoryExists($this->directory.'/resources/languages/vendor/ext-notes/pt_BR');
+
+    $manifest = (new ExtensionManifestValidator)->fromDirectory($this->directory);
+
+    expect($manifest->languages)->toBe(['de', 'pt_BR'])
+        ->and($manifest->hasLanguages())->toBeTrue()
+        ->and($manifest->languagesPath('de'))->toBe($this->directory.'/resources/languages/de');
+});
+
+test('rejects language packs whose locales and directories disagree', function (array $languages, array $directories, string $message): void {
+    writeManifest(['id' => 'german', 'name' => 'German', 'version' => '1.0.0', 'languages' => $languages]);
+    foreach ($directories as $directory) {
+        File::ensureDirectoryExists($this->directory.'/resources/languages/'.$directory);
+    }
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, $message);
+})->with([
+    'a malformed locale' => [['de-DE'], ['de-DE'], 'locale codes'],
+    'a lowercase region' => [['pt_br'], ['pt_br'], 'locale codes'],
+    'a duplicate locale' => [['de', 'de'], ['de'], 'twice'],
+    'a locale without files' => [['de'], [], 'declares "de"'],
+    'an undeclared locale' => [['de'], ['de', 'fr'], 'resources/languages/fr is not declared'],
+    'an undeclared extension locale' => [['de'], ['de', 'vendor/ext-notes/fr'], 'resources/languages/vendor/ext-notes/fr is not declared'],
+    'a vendor directory that is no extension' => [['de'], ['de', 'vendor/laravel/de'], 'ext-<id>'],
+    'files without a declaration' => [[], ['de'], 'is not declared'],
+]);
+
+test('a language pack can ship only an interface catalogue', function (): void {
+    writeManifest(['id' => 'german', 'name' => 'German', 'version' => '1.0.0', 'languages' => ['de']]);
+    File::ensureDirectoryExists($this->directory.'/resources/languages');
+    File::put($this->directory.'/resources/languages/de.json', '{"Login": "Anmelden"}');
+
+    expect((new ExtensionManifestValidator)->fromDirectory($this->directory)->languages)->toBe(['de']);
+});
+
+test('rejects interface catalogues the panel could not load', function (array $languages, string $file, string $contents, string $message): void {
+    writeManifest(['id' => 'german', 'name' => 'German', 'version' => '1.0.0', 'languages' => $languages]);
+    File::ensureDirectoryExists($this->directory.'/resources/languages');
+    File::put($this->directory.'/resources/languages/'.$file, $contents);
+
+    expect(fn (): ExtensionManifest => (new ExtensionManifestValidator)->fromDirectory($this->directory))->toThrow(InvalidExtensionException::class, $message);
+})->with([
+    'invalid json' => [['de'], 'de.json', '{"Login": ', 'must be a JSON object'],
+    'a list' => [['de'], 'de.json', '["Anmelden"]', 'must be a JSON object'],
+    'a nested value' => [['de'], 'de.json', '{"Login": {"de": "Anmelden"}}', 'translated string'],
+    'an undeclared locale' => [['de'], 'fr.json', '{"Login": "Connexion"}', 'resources/languages/fr.json is not declared'],
+]);
+
+test('the locale pattern matches the SDK manifest schema', function (): void {
+    $schema = File::json(base_path('packages/sdk/manifest.schema.json'));
+
+    expect('/'.$schema['properties']['languages']['items']['pattern'].'/D')->toBe(ExtensionManifest::LOCALE_REGEX);
+});

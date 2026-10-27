@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Pterodactyl\Http\Resources\Api\Client;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\User;
 
 /**
  * @extends ClientResource<User>
  */
+#[ResponseField('language', 'string', 'The locale the user chose, or null to follow the panel default.', example: 'en', nullable: true)]
 class AccountResource extends ClientResource
 {
     public function resourceName(): string

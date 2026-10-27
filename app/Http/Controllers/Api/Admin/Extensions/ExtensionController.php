@@ -33,6 +33,7 @@ use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Extensions\ExtensionSettingDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingsDefinition;
 use Pterodactyl\Services\Extensions\ExtensionSettingsRegistry;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Pterodactyl\Support\JsonEmptyObject;
 
 #[Group('Admin API', 'Root administrator endpoints for managing panel configuration and resources.')]
@@ -46,6 +47,8 @@ use Pterodactyl\Support\JsonEmptyObject;
 #[ResponseField('icon_url', nullable: true)]
 #[ResponseField('error_phase', 'string', 'Where the last failure happened: register, boot or compatibility while loading, manifest for an invalid package, or a runtime phase such as event, action, command, schedule or runtime.', nullable: true)]
 #[ResponseField('errored_at', 'string', 'When the last failure was recorded.', nullable: true)]
+#[ResponseField('languages', 'string[]', 'Locales the package translates the panel into.')]
+#[ResponseField('language_conflicts', 'object[]', 'For a language pack: per locale and other enabled pack, how many keys both define without one requiring the other, and which pack wins.')]
 class ExtensionController extends AdminApiController
 {
     private const array EXTENSION_EXAMPLE = [
@@ -61,6 +64,8 @@ class ExtensionController extends AdminApiController
         'ui_entry' => 'dist/client.js',
         'ui_mode' => 'native',
         'frontend_entry' => '/assets/extensions/example-extension/client.js?v=100',
+        'languages' => ['de'],
+        'language_conflicts' => [['locale' => 'de', 'extension' => 'german-community', 'winner' => 'example-extension', 'keys' => 12]],
         'installed' => true,
         'enabled' => true,
         'state' => 'enabled',
@@ -96,6 +101,11 @@ class ExtensionController extends AdminApiController
             ],
         ],
     ];
+
+    /** @var list<array{locale: string, key: string, providers: list<string>, winner: string}>|null */
+    private ?array $languageConflicts = null;
+
+    public function __construct(private readonly LanguageRegistry $languages) {}
 
     #[Endpoint('List extensions', 'Returns discovered extensions, invalid manifests, and their install state.')]
     #[ScribeResponse(self::LIST_EXAMPLE, description: 'Extensions returned.')]
@@ -267,6 +277,8 @@ class ExtensionController extends AdminApiController
                 'ui_entry' => null,
                 'ui_mode' => null,
                 'frontend_entry' => null,
+                'languages' => [],
+                'language_conflicts' => [],
                 'installed' => false,
                 'enabled' => false,
                 'compatible' => false,
@@ -311,6 +323,8 @@ class ExtensionController extends AdminApiController
             'ui_entry' => $manifest->uiEntry,
             'ui_mode' => $manifest->uiMode,
             'frontend_entry' => $manifest->hasUi() ? $assets->entryUrl($manifest) : null,
+            'languages' => $manifest->languages,
+            'language_conflicts' => $manifest->hasLanguages() && ($record->enabled ?? false) ? $this->languages->conflictSummary($manifest->id, $this->languageConflicts()) : [],
             'installed' => $record instanceof Extension,
             'enabled' => (bool) ($record->enabled ?? false),
             'state' => $this->state($record),
@@ -318,6 +332,14 @@ class ExtensionController extends AdminApiController
             'error_phase' => $record?->error_phase,
             'errored_at' => $record?->errored_at?->toAtomString(),
         ];
+    }
+
+    /**
+     * @return list<array{locale: string, key: string, providers: list<string>, winner: string}>
+     */
+    private function languageConflicts(): array
+    {
+        return $this->languageConflicts ??= rescue(fn (): array => $this->languages->conflicts(), [], report: false);
     }
 
     private function state(?Extension $record): string

@@ -41,6 +41,7 @@ use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use Pterodactyl\Tests\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -416,6 +417,7 @@ function extensions(string ...$identifiers): void
             $this->failures[] = [$identifier, $reason, $phase];
         });
         $this->app->instance(ExtensionRepository::class, $repository);
+        $this->app->instance(LanguageRegistry::class, new LanguageRegistry(Mockery::mock(ExtensionRepository::class, ['enabled' => collect()])));
         $this->app->instance('extension-test.repository', true);
     })->call(pterodactylTestCase());
 }

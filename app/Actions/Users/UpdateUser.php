@@ -22,11 +22,15 @@ final readonly class UpdateUser implements UpdatesUsers
         $validated = Validator::validate($input, $rules);
         $extensions = ValidatedExtensionValues::of($input['extensions'] ?? null);
 
-        // Blank fields change nothing, a blank password included, apart from a blank external id,
-        // which clears it.
+        // Blank fields change nothing, a blank password included, apart from a blank external id or
+        // language, which clears it.
         $attributes = array_filter($validated, filled(...));
         if (array_key_exists('external_id', $validated)) {
             $attributes['external_id'] ??= null;
+        }
+
+        if (array_key_exists('language', $validated)) {
+            $attributes['language'] ??= null;
         }
 
         DB::transaction(function () use ($user, $attributes, $extensions): void {

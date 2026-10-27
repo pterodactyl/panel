@@ -124,6 +124,16 @@
                 }
             }
         },
+        "languages": {
+            "type": "array",
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "pattern": "^[a-z]{2}(?:_[A-Z]{2})?$"
+            },
+            "description": "Locales this package translates the panel into, such as de or pt_BR. Each one is a directory under resources/languages holding PHP files for core translation groups, which merge over the panel's own; resources/languages/vendor/ext-<id>/<locale> translates another extension. Packages that declare the same locale merge key by key, a package listed in requires.extensions loading first."
+        },
         "routes": {
             "type": "object",
             "additionalProperties": false,

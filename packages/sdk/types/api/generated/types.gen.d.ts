@@ -739,7 +739,10 @@ export type AdminUserAttributes = {
     email: string;
     first_name: string;
     last_name: string;
-    language: string;
+    /**
+     * The locale the user chose, or null to follow the panel default.
+     */
+    language: string | null;
     root_admin: boolean;
     '2fa': boolean;
     image: string;
@@ -1007,7 +1010,10 @@ export type ApplicationUserAttributes = {
     email: string;
     first_name: string;
     last_name: string;
-    language: string;
+    /**
+     * The locale the user chose, or null to follow the panel default.
+     */
+    language: string | null;
     root_admin: boolean;
     '2fa': boolean;
     image: string | null;
@@ -1058,7 +1064,7 @@ export type AuthUser = {
     email: string;
     name_first: string | null;
     name_last: string | null;
-    language: string;
+    language: string | null;
     root_admin: boolean;
     use_totp: boolean;
     gravatar: boolean;
@@ -1428,7 +1434,10 @@ export type ClientUserAttributes = {
     email: string;
     first_name: string;
     last_name: string;
-    language: string;
+    /**
+     * The locale the user chose, or null to follow the panel default.
+     */
+    language: string | null;
     avatar: string | null;
 };
 export type ClientUserResource = {
@@ -1550,7 +1559,7 @@ export type AdminCreateUserRequest = {
         /**
          * The preferences language.
          */
-        language?: string;
+        language?: string | null;
     };
     extensions?: ExtensionFields;
 };
@@ -1587,7 +1596,7 @@ export type AdminUpdateUserRequest = {
         /**
          * The preferences language.
          */
-        language?: string;
+        language?: string | null;
     };
     extensions?: ExtensionFields;
 };
@@ -2568,9 +2577,9 @@ export type ApplicationCreateUserRequest = {
      */
     password?: string | null;
     /**
-     * The locale code.
+     * The locale code, such as en or pt_BR. Null follows the panel default.
      */
-    language?: 'en';
+    language?: string | null;
     /**
      * Whether the user has administrator privileges.
      */
@@ -2603,9 +2612,9 @@ export type ApplicationUpdateUserRequest = {
      */
     password?: string | null;
     /**
-     * The locale code.
+     * The locale code, such as en or pt_BR. Null follows the panel default.
      */
-    language?: 'en';
+    language?: string | null;
     /**
      * Whether the user has administrator privileges.
      */
@@ -3150,6 +3159,12 @@ export type ClientUpdateAccountPasswordRequest = {
      */
     password_confirmation: string;
 };
+export type ClientUpdateAccountLanguageRequest = {
+    /**
+     * The locale code, such as en or pt_BR. Null follows the panel default.
+     */
+    language?: string | null;
+};
 export type ClientUpdateAccountAvatarRequest = {
     /**
      * PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.
@@ -3512,6 +3527,19 @@ export type AdminListExtensionsResponseBody = {
         ui_entry: string | null;
         ui_mode?: string;
         frontend_entry: string | null;
+        /**
+         * Locales the package translates the panel into.
+         */
+        languages: Array<string>;
+        /**
+         * For a language pack: per locale and other enabled pack, how many keys both define without one requiring the other, and which pack wins.
+         */
+        language_conflicts: Array<{
+            locale?: string;
+            extension?: string;
+            winner?: string;
+            keys?: number;
+        }>;
         installed?: boolean;
         enabled?: boolean;
         state?: string;
@@ -3544,6 +3572,19 @@ export type AdminInstallExtensionResponseBody = {
         ui_entry: string | null;
         ui_mode?: string;
         frontend_entry: string | null;
+        /**
+         * Locales the package translates the panel into.
+         */
+        languages: Array<string>;
+        /**
+         * For a language pack: per locale and other enabled pack, how many keys both define without one requiring the other, and which pack wins.
+         */
+        language_conflicts: Array<{
+            locale?: string;
+            extension?: string;
+            winner?: string;
+            keys?: number;
+        }>;
         installed?: boolean;
         enabled?: boolean;
         state?: string;
@@ -3608,6 +3649,19 @@ export type AdminEnableExtensionResponseBody = {
         ui_entry: string | null;
         ui_mode?: string;
         frontend_entry: string | null;
+        /**
+         * Locales the package translates the panel into.
+         */
+        languages: Array<string>;
+        /**
+         * For a language pack: per locale and other enabled pack, how many keys both define without one requiring the other, and which pack wins.
+         */
+        language_conflicts: Array<{
+            locale?: string;
+            extension?: string;
+            winner?: string;
+            keys?: number;
+        }>;
         installed?: boolean;
         enabled?: boolean;
         state?: string;
@@ -3636,6 +3690,19 @@ export type AdminDisableExtensionResponseBody = {
         ui_entry: string | null;
         ui_mode?: string;
         frontend_entry: string | null;
+        /**
+         * Locales the package translates the panel into.
+         */
+        languages: Array<string>;
+        /**
+         * For a language pack: per locale and other enabled pack, how many keys both define without one requiring the other, and which pack wins.
+         */
+        language_conflicts: Array<{
+            locale?: string;
+            extension?: string;
+            winner?: string;
+            keys?: number;
+        }>;
         installed?: boolean;
         enabled?: boolean;
         state?: string;
@@ -11549,6 +11616,34 @@ export type ClientUpdateAccountPasswordResponses = {
     204: void;
 };
 export type ClientUpdateAccountPasswordResponse = ClientUpdateAccountPasswordResponses[keyof ClientUpdateAccountPasswordResponses];
+export type ClientUpdateAccountLanguageData = {
+    body?: ClientUpdateAccountLanguageRequest;
+    path?: never;
+    query?: never;
+    url: '/api/client/account/language';
+};
+export type ClientUpdateAccountLanguageErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+export type ClientUpdateAccountLanguageError = ClientUpdateAccountLanguageErrors[keyof ClientUpdateAccountLanguageErrors];
+export type ClientUpdateAccountLanguageResponses = {
+    /**
+     * Language updated.
+     */
+    200: ClientUserResource;
+};
+export type ClientUpdateAccountLanguageResponse = ClientUpdateAccountLanguageResponses[keyof ClientUpdateAccountLanguageResponses];
 export type ClientDeleteAccountAvatarData = {
     body?: never;
     path?: never;

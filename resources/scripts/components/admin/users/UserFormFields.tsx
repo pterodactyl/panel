@@ -62,12 +62,7 @@ const AuthenticationFields = ({ form, languageOptions, languagesLoading }: Props
                 />
             )}
         </form.AppField>
-        <form.AppField
-            name='language'
-            validators={{
-                onChange: ({ value }) => (value.length >= 1 ? undefined : 'A language must be provided.'),
-            }}
-        >
+        <form.AppField name='language'>
             {(field) => (
                 <field.SelectField
                     id='language'

@@ -6,6 +6,19 @@ export interface AccountOverviewModel {
     readonly twoFactorRequired: boolean;
     /** Users may upload their own avatar, so the page places `account.avatar`. */
     readonly userAvatarsEnabled: boolean;
+    readonly languagesEnabled: boolean;
+}
+
+export interface AccountLanguageOption {
+    readonly value: string;
+    readonly label: string;
+}
+
+export interface AccountLanguageModel {
+    readonly value: string;
+    readonly options: readonly AccountLanguageOption[];
+    readonly change: (value: string) => void;
+    readonly submitting: boolean;
 }
 
 export type AccountPasswordModel = FormModel<'current' | 'password' | 'confirmPassword'>;
@@ -99,6 +112,7 @@ declare module '../registry' {
         'account.password': AccountPasswordModel;
         'account.email': AccountEmailModel;
         'account.avatar': AccountAvatarModel;
+        'account.language': AccountLanguageModel;
         'account.twoFactor': AccountTwoFactorModel;
         'account.apiKeys.list': ApiKeyListModel;
         'account.apiKeys.create': ApiKeyCreateModel;

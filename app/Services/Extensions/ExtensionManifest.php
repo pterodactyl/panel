@@ -17,6 +17,10 @@ class ExtensionManifest
 
     public const string UI_ENTRY = 'dist/client.js';
 
+    public const string LANGUAGES_DIRECTORY = 'resources/languages';
+
+    public const string LOCALE_REGEX = '/^[a-z]{2}(?:_[A-Z]{2})?$/D';
+
     public const array TYPES = ['extension', 'theme'];
 
     /** A view name such as `server.power` or `page.server.backups`. */
@@ -108,6 +112,8 @@ class ExtensionManifest
         /** @var 'extension'|'theme' */
         public readonly string $type = 'extension',
         public readonly ?ThemeDefinition $theme = null,
+        /** @var list<string> */
+        public readonly array $languages = [],
     ) {}
 
     /**
@@ -142,6 +148,7 @@ class ExtensionManifest
             icon: is_string($data['icon'] ?? null) ? $data['icon'] : null,
             type: $data['type'] ?? 'extension',
             theme: ($data['type'] ?? null) === 'theme' ? ThemeDefinition::fromValidatedData($data['theme'] ?? []) : null,
+            languages: $data['languages'] ?? [],
         );
     }
 
@@ -190,6 +197,11 @@ class ExtensionManifest
         return $this->uiEntry !== null;
     }
 
+    public function hasLanguages(): bool
+    {
+        return $this->languages !== [];
+    }
+
     /** @phpstan-assert-if-true !null $this->theme */
     public function isTheme(): bool
     {
@@ -225,6 +237,11 @@ class ExtensionManifest
     public function iconFile(): ?string
     {
         return $this->icon !== null && preg_match(self::ICON_FILE_REGEX, $this->icon) === 1 ? $this->icon : null;
+    }
+
+    public function languagesPath(string ...$parts): string
+    {
+        return $this->path(...explode('/', self::LANGUAGES_DIRECTORY), ...$parts);
     }
 
     public function path(string ...$parts): string

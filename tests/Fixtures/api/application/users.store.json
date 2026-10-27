@@ -12,7 +12,7 @@
                 "email": "created@example.test",
                 "first_name": "Cre",
                 "last_name": "Ated",
-                "language": "en",
+                "language": null,
                 "root_admin": false,
                 "2fa": false,
                 "image": null,

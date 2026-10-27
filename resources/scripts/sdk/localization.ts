@@ -1,11 +1,20 @@
 import { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation as useI18nextTranslation } from 'react-i18next';
 import { ExtensionContext } from '@/extensions/context';
 
 export interface ExtensionTranslation {
     locale: string;
     ready: boolean;
     t(key: string, values?: Record<string, string | number>): string;
+}
+
+export type Translation = ExtensionTranslation;
+
+/** Interface text keyed by its English, from resources/lang/<locale>.json and the language packs. */
+export function useTranslation(): Translation {
+    const { t, i18n, ready } = useI18nextTranslation('translation', { useSuspense: false });
+
+    return { locale: i18n.language, ready, t: (key, values) => t(key, values) };
 }
 
 /** resources/lang/<locale>/<group>.php, registered with loadExtensionTranslations(). */
@@ -21,7 +30,7 @@ export function useExtensionTranslation(group = 'messages'): ExtensionTranslatio
     }
 
     const namespace = `ext-${mount.extensionId}::${group}`;
-    const { t, i18n, ready } = useTranslation(namespace, { useSuspense: false });
+    const { t, i18n, ready } = useI18nextTranslation(namespace, { useSuspense: false });
 
     return { locale: i18n.language, ready, t: (key, values) => t(key, { ...values, nsSeparator: false }) };
 }

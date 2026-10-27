@@ -6,6 +6,7 @@ namespace Pterodactyl\Http\Resources\Api\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Http\Resources\Api\ApiResourceCollection;
 use Pterodactyl\Http\Resources\Api\Includes\IncludedResource;
 use Pterodactyl\Models\User;
@@ -13,6 +14,7 @@ use Pterodactyl\Models\User;
 /**
  * @extends AdminResource<User>
  */
+#[ResponseField('language', 'string', 'The locale the user chose, or null to follow the panel default.', example: 'en', nullable: true)]
 class UserResource extends AdminResource
 {
     protected array $includeRelations = [

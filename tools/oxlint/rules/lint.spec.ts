@@ -152,6 +152,18 @@ it.each([
         'export const View = () => <svg fill="black" />;',
         'design-tokens',
     ],
+    [
+        'rejects translation keys built at runtime',
+        classic,
+        "import { useTranslation } from '@/sdk';\nexport const Probe = ({ name }: { name: string }) => useTranslation().t(`Hello ${name}`);",
+        'literal-translation-keys',
+    ],
+    [
+        'rejects translation keys passed in variables',
+        components,
+        "declare const t: (key: string) => string;\nconst key = 'Save';\nexport const label = t(key);",
+        'literal-translation-keys',
+    ],
 ])('%s', (_name, path, source, rule) => {
     const result = lint(path, source);
 
@@ -185,6 +197,11 @@ it.each([
         'allows the classic theme its public imports',
         classic,
         "import { lazy } from 'react';\nimport { Layers } from 'lucide-react';\nimport { Button } from '@/sdk';\nimport { View } from '@/sdk/theme';\nimport { classicSkins } from '../skins';\nexport const views = { lazy, Layers, Button, View, classicSkins, load: () => import('./dashboard') };",
+    ],
+    [
+        'allows english translation keys',
+        classic,
+        "import { useTranslation } from '@/sdk';\nexport const Probe = () => useTranslation().t('Welcome back, {{name}}', { name: 'Alex' });",
     ],
     [
         'ignores examples in comments',

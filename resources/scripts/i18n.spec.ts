@@ -10,7 +10,7 @@ vi.mock('i18next-multiload-backend-adapter', () => ({
 
 type BootstrapWindow = Window & { PterodactylUser?: unknown; SiteConfiguration?: unknown };
 
-const user = (language: string) => ({
+const user = (language: string | null) => ({
     uuid: 'user',
     username: 'alex',
     email: 'alex@example.com',
@@ -39,6 +39,30 @@ it('starts in the signed-in user language, then the site locale, then English', 
 
     (window as BootstrapWindow).PterodactylUser = user('de');
     expect(initialLanguage()).toBe('de');
+
+    (window as BootstrapWindow).PterodactylUser = user(null);
+    expect(initialLanguage()).toBe('fr');
+});
+
+it('uses the language a user chose while it is available, else the panel default', async () => {
+    const { resolveLanguage } = await import('@/i18n');
+    const settings = { locale: 'de', languages: { de: 'Deutsch', en: 'English', pt_BR: 'Português (Brasil)' } };
+
+    expect(resolveLanguage(null, settings)).toBe('de');
+    expect(resolveLanguage('en', settings)).toBe('en');
+    expect(resolveLanguage('pt_BR', settings)).toBe('pt-BR');
+    expect(resolveLanguage('fr', settings)).toBe('de');
+    expect(resolveLanguage(null, undefined)).toBe('en');
+});
+
+it('converts between i18next languages and panel locales', async () => {
+    const { toI18nLanguage, toPanelLocale } = await import('@/i18n');
+
+    expect(toI18nLanguage('pt_BR')).toBe('pt-BR');
+    expect(toI18nLanguage('de')).toBe('de');
+    expect(toPanelLocale('pt-BR')).toBe('pt_BR');
+    expect(toPanelLocale('pt-br')).toBe('pt_BR');
+    expect(toPanelLocale('de')).toBe('de');
 });
 
 it('follows language changes of the cached current user', async () => {
@@ -58,13 +82,16 @@ it('follows language changes of the cached current user', async () => {
     setCurrentUserQueryData(client, { language: 'nl' });
     await vi.waitFor(() => expect(instance.language).toBe('nl'));
 
+    setCurrentUserQueryData(client, { language: 'pt_BR' });
+    await vi.waitFor(() => expect(instance.language).toBe('pt-BR'));
+
     client.setQueryData<Pick<UserData, 'language'>>(['unrelated'], { language: 'fi' });
-    expect(instance.language).toBe('nl');
-    expect(client.getQueryData<UserData>(currentUserQueryKey)?.language).toBe('nl');
+    expect(instance.language).toBe('pt-BR');
+    expect(client.getQueryData<UserData>(currentUserQueryKey)?.language).toBe('pt_BR');
 
     stop();
     setCurrentUserQueryData(client, { language: 'es' });
-    expect(instance.language).toBe('nl');
+    expect(instance.language).toBe('pt-BR');
     client.clear();
 });
 
@@ -84,4 +111,31 @@ it('adds the revision of an extension to the URL of its translations only', asyn
     expect(localeLoadPath(['ext-missing::messages'])).toBe(core);
     // One request for several namespaces has no single revision to carry.
     expect(localeLoadPath(['ext-notes::messages', 'strings'])).toBe(core);
+});
+
+it('adds the revision of the enabled language packs to the URL of core translations', async () => {
+    (window as BootstrapWindow).SiteConfiguration = {
+        translations: 'c3d4',
+        extensions: [{ id: 'notes', entry: '/notes.js', translations: 'a1b2' }],
+    };
+    const { localeLoadPath } = await import('@/i18n');
+
+    expect(localeLoadPath(['auth'])).toBe('/locales/locale.json?locale={{lng}}&namespace={{ns}}&revision=c3d4');
+    expect(localeLoadPath(['translation'])).toBe('/locales/locale.json?locale={{lng}}&namespace={{ns}}&revision=c3d4');
+    expect(localeLoadPath(['auth', 'activity'])).toBe(
+        '/locales/locale.json?locale={{lng}}&namespace={{ns}}&revision=c3d4'
+    );
+    expect(localeLoadPath(['ext-notes::messages'])).toBe(
+        '/locales/locale.json?locale={{lng}}&namespace={{ns}}&revision=a1b2'
+    );
+    expect(localeLoadPath(['ext-notes::messages', 'auth'])).toBe(
+        '/locales/locale.json?locale={{lng}}&namespace={{ns}}'
+    );
+});
+
+it('requests panel locales for the languages i18next loads', async () => {
+    const { localeLoadPath } = await import('@/i18n');
+
+    expect(localeLoadPath(['auth'], ['pt-BR'])).toBe('/locales/locale.json?locale=pt_BR&namespace={{ns}}');
+    expect(localeLoadPath(['auth'], ['de', 'en'])).toBe('/locales/locale.json?locale=de+en&namespace={{ns}}');
 });

@@ -839,7 +839,8 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
                 ],
                 'language' => [
                     'type' => 'string',
-                    'example' => 'en',
+                    'nullable' => true,
+                    'example' => null,
                 ],
                 'root_admin' => [
                     'type' => 'boolean',
@@ -1462,9 +1463,19 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         if (isset($endpoint->bodyParameters['preferences.language']) && is_array(data_get($properties, 'preferences.properties'))) {
             Arr::set($properties, 'preferences.properties.language', [
                 'type' => 'string',
+                'nullable' => true,
                 'description' => PterodactylDocumentation::fieldDescription('preferences.language'),
                 'example' => 'en',
             ]);
+        }
+
+        if (isset($endpoint->bodyParameters['language'])) {
+            $properties['language'] = [
+                'type' => 'string',
+                'nullable' => true,
+                'description' => PterodactylDocumentation::fieldDescription('language'),
+                'example' => 'en',
+            ];
         }
 
         if (isset($properties['extensions'])) {

@@ -6,6 +6,7 @@ import I18NextHttpBackend from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 import { currentUserQueryKey } from '@/api/account/queries';
 import type { UserData } from '@/api/account/types';
+import type { SiteSettings } from '@/api/settings/types';
 import { getBootstrapExtensions, getBootstrapSiteSettings, getBootstrapUser } from '@/bootstrap';
 
 interface MultiloadHttpBackendOptions extends HttpBackendOptions {
@@ -15,22 +16,50 @@ interface MultiloadHttpBackendOptions extends HttpBackendOptions {
 // Busts the locale cache on every reload under HMR, otherwise once per build.
 const hash = import.meta.hot ? Date.now().toString(16) : import.meta.env.WEBPACK_BUILD_HASH;
 
-const localePath = '/locales/locale.json?locale={{lng}}&namespace={{ns}}';
+export const toI18nLanguage = (locale: string): string => locale.replace('_', '-');
+
+export const toPanelLocale = (language: string): string => {
+    const [code, region] = language.split('-');
+
+    return region ? `${code}_${region.toUpperCase()}` : code!;
+};
 
 /**
- * Extension translations change when the extension is upgraded, not with the panel build,
- * so their URL also carries the revision the panel reported for that extension.
+ * Extension and language pack translations change when they are upgraded, not with the panel
+ * build, so their URL also carries the revision the panel reported for them.
  */
-export function localeLoadPath(namespaces: string[]): string {
+function translationsRevision(namespaces: string[]): string | null | undefined {
     const extensionId = namespaces.length === 1 ? /^ext-(.+)::/.exec(namespaces[0]!)?.[1] : undefined;
-    const revision = extensionId
-        ? getBootstrapExtensions().find((extension) => extension.id === extensionId)?.translations
-        : undefined;
 
-    return revision ? `${localePath}&revision=${revision}` : localePath;
+    if (extensionId) {
+        return getBootstrapExtensions().find((extension) => extension.id === extensionId)?.translations;
+    }
+
+    if (namespaces.length > 0 && namespaces.every((namespace) => !namespace.startsWith('ext-'))) {
+        return getBootstrapSiteSettings()?.translations;
+    }
+
+    return undefined;
 }
 
-export const initialLanguage = (): string => getBootstrapUser()?.language || getBootstrapSiteSettings()?.locale || 'en';
+export function localeLoadPath(namespaces: string[], languages: readonly string[] = []): string {
+    const locale = languages.length > 0 ? languages.map(toPanelLocale).join('+') : '{{lng}}';
+    const path = `/locales/locale.json?locale=${locale}&namespace={{ns}}`;
+    const revision = translationsRevision(namespaces);
+
+    return revision ? `${path}&revision=${revision}` : path;
+}
+
+export function resolveLanguage(
+    language: string | null | undefined,
+    settings: Pick<SiteSettings, 'locale' | 'languages'> | undefined = getBootstrapSiteSettings()
+): string {
+    const available = !settings?.languages || (!!language && language in settings.languages);
+
+    return toI18nLanguage(language && available ? language : settings?.locale || 'en');
+}
+
+export const initialLanguage = (): string => resolveLanguage(getBootstrapUser()?.language);
 
 export function followCurrentUserLanguage(queryClient: QueryClient, instance: I18n = i18n): () => void {
     const currentUserHash = hashKey(currentUserQueryKey);
@@ -44,9 +73,15 @@ export function followCurrentUserLanguage(queryClient: QueryClient, instance: I1
             return;
         }
 
-        const language = (event.query.state.data as UserData | undefined)?.language;
+        const user = event.query.state.data as UserData | undefined;
 
-        if (language && language !== instance.language) {
+        if (!user) {
+            return;
+        }
+
+        const language = resolveLanguage(user.language);
+
+        if (language !== instance.language) {
             void instance.changeLanguage(language);
         }
     });
@@ -59,11 +94,14 @@ void i18n
         debug: import.meta.env.DEV,
         lng: initialLanguage(),
         fallbackLng: 'en',
+        ns: ['translation'],
+        defaultNS: 'translation',
         keySeparator: '.',
+        nsSeparator: false,
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {
-                loadPath: (_languages, namespaces) => localeLoadPath(namespaces),
+                loadPath: (languages, namespaces) => localeLoadPath(namespaces, languages),
                 queryStringParams: { hash },
                 allowMultiLoading: true,
             } satisfies MultiloadHttpBackendOptions,

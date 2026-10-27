@@ -58,7 +58,8 @@ class StoreUserRequest extends AdminApiRequest
 
         $validated = $this->safe();
         if ($validated->has('preferences.language')) {
-            $input['language'] = $validated->string('preferences.language')->toString();
+            $language = data_get($validated->all(), 'preferences.language');
+            $input['language'] = is_string($language) ? $language : null;
         }
 
         return $input;

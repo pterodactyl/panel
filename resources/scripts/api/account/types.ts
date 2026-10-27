@@ -2,7 +2,7 @@ export interface UserData {
     uuid: string;
     username: string;
     email: string;
-    language: string;
+    language: string | null;
     rootAdmin: boolean;
     avatar?: string | null;
     useTotp: boolean;

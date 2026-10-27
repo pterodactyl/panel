@@ -34,7 +34,7 @@ interface ExtendedWindow extends Window {
         email: string;
         root_admin: boolean;
         use_totp: boolean;
-        language: string;
+        language: string | null;
         avatar?: string | null;
         updated_at: string;
         created_at: string;

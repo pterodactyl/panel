@@ -143,3 +143,24 @@ test('a key with full write access can create administrators', function (): void
         ->assertCreated()
         ->assertJsonPath('attributes.root_admin', true);
 });
+test('a user created without a language follows the panel default', function (): void {
+    $this->postJson('/api/application/users', ['username' => 'nolang', 'email' => 'nolang@example.com', 'first_name' => 'No', 'last_name' => 'Language'])
+        ->assertCreated()
+        ->assertJsonPath('attributes.language', null);
+
+    $this->assertDatabaseHas('users', ['username' => 'nolang', 'language' => null]);
+});
+test('a language can be set and cleared through the application api', function (): void {
+    $user = User::factory()->create();
+    $body = ['username' => $user->username, 'email' => $user->email, 'first_name' => $user->name_first, 'last_name' => $user->name_last];
+
+    $this->patchJson('/api/application/users/'.$user->id, [...$body, 'language' => 'en'])->assertOk()->assertJsonPath('attributes.language', 'en');
+    expect($user->fresh()->language)->toBe('en');
+
+    $this->patchJson('/api/application/users/'.$user->id, [...$body, 'language' => null])->assertOk()->assertJsonPath('attributes.language', null);
+    expect($user->fresh()->language)->toBeNull();
+
+    $this->patchJson('/api/application/users/'.$user->id, [...$body, 'language' => 'fr'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.source_field', 'language');
+});

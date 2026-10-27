@@ -25,6 +25,38 @@ test('serves namespaced extension translations and rejects path traversal', func
     }
 });
 
+test('locale rules accept regional locales', function (string $locale, bool $passes): void {
+    $rules = (new \Pterodactyl\Http\Requests\Base\LocaleRequest)->rules();
+
+    expect(\Illuminate\Support\Facades\Validator::make(['locale' => $locale, 'namespace' => 'auth'], $rules)->passes())->toBe($passes);
+})->with([
+    'language' => ['de', true],
+    'language and region' => ['pt_BR', true],
+    'lowercase region' => ['pt_br', false],
+    'hyphenated' => ['pt-BR', false],
+    'three letters' => ['deu', false],
+]);
+
+test('serves the interface catalogue keyed by its english as it is written', function (): void {
+    $this->getJson('/locales/locale.json?locale=en&namespace=translation')
+        ->assertOk()
+        ->assertJsonPath('en.translation.Login to Continue', 'Login to Continue');
+
+    $this->getJson('/locales/locale.json?locale=de&namespace=translation')->assertOk()->assertExactJson(['de' => ['translation' => []]]);
+});
+
+test('serves every locale and namespace of a batched request', function (): void {
+    $this->getJson('/locales/locale.json?locale=de+en&namespace=auth+pagination')
+        ->assertOk()
+        ->assertJsonPath('en.auth.sign_in', 'Sign In')
+        ->assertJsonPath('en.pagination.next', 'Next &raquo;')
+        ->assertJsonPath('de.auth', [])
+        ->assertJsonPath('de.pagination', []);
+
+    $this->getJson('/locales/locale.json?locale=de%2Ben&namespace=auth')->assertOk()->assertJsonPath('en.auth.sign_in', 'Sign In');
+    $this->getJson('/locales/locale.json?locale=de&namespace=auth++pagination')->assertUnprocessable();
+});
+
 test('locale rules reject values with a trailing newline', function (array $query): void {
     $rules = (new \Pterodactyl\Http\Requests\Base\LocaleRequest)->rules();
 

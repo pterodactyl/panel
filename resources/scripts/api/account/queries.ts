@@ -6,6 +6,7 @@ import {
     clientDeleteAccountAvatarMutation,
     clientUpdateAccountAvatarMutation,
     clientUpdateAccountEmailMutation,
+    clientUpdateAccountLanguageMutation,
     clientUpdateAccountPasswordMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import { clientGetAccount, type ClientUserResource } from '@/api/generated';
@@ -76,6 +77,19 @@ export const useUpdateAccountPassword = () =>
         onSuccess: () => window.location.assign('/auth/login'),
         onError: (error) => notifyHttpError(error, 'Unable to update password'),
     });
+
+export const useUpdateAccountLanguage = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...clientUpdateAccountLanguageMutation(),
+        onSuccess: ({ attributes }) => {
+            setCurrentUserQueryData(queryClient, { language: attributes.language });
+            toast.success('Language updated');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to update language'),
+    });
+};
 
 export const useUpdateAccountAvatar = () => {
     const queryClient = useQueryClient();

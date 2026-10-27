@@ -15,9 +15,12 @@ use Knuckles\Scribe\Attributes\Subgroup;
 use Pterodactyl\Contracts\Users\ReplacesUserAvatars;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
+use Pterodactyl\Contracts\Users\UpdatesUsers;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateLanguageRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 use Pterodactyl\Http\Resources\Api\Client\AccountResource;
 use Pterodactyl\Models\User;
@@ -85,6 +88,24 @@ class AccountController extends ClientApiController
         $passwords->update($request->user(), $request->string('password')->toString());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    #[Endpoint('Update account language', "Sets the authenticated user's language, or clears it so the panel default applies.")]
+    #[ResponseFromResource(AccountResource::class, User::class, description: 'Language updated.', resourceKey: 'user')]
+    public function updateLanguage(UpdateLanguageRequest $request, UpdatesUsers $users): AccountResource
+    {
+        $user = $this->authenticatedUser($request);
+        $original = $user->language;
+        $user = $users->update($user, ['language' => $request->language()]);
+
+        if ($original !== $user->language) {
+            Activity::event('user:account.language-changed')
+                ->subject($user)
+                ->property(['old' => $original ?? 'default', 'new' => $user->language ?? 'default'])
+                ->log();
+        }
+
+        return AccountResource::make($user);
     }
 
     #[Endpoint('Update account avatar', "Stores the uploaded image as the authenticated user's avatar and deletes the one it replaces.")]

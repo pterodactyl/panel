@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'name_last' => fake()->lastName(),
             'password' => $password ?: $password = bcrypt('password'),
             'remember_token' => Str::random(10),
-            'language' => 'en',
+            'language' => null,
             'root_admin' => false,
             'use_totp' => false,
             'created_at' => Date::now(),

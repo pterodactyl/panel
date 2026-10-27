@@ -73,7 +73,7 @@ const userValuesToBody = (values: UserValues): AdminCreateUserData['body'] => ({
     name_last: values.nameLast,
     password: values.password || undefined,
     root_admin: values.rootAdmin,
-    preferences: { language: values.language },
+    preferences: { language: values.language || null },
     extensions: values.extensions,
 });
 

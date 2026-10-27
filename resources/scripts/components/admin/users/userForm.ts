@@ -1,6 +1,7 @@
 import type { AdminUser, UserValues } from '@/api/admin/users/queries';
 import { requiredWithMaxLength } from '@/components/form/validators';
 import { initialExtensionValues } from '@/extensions/forms';
+import { PANEL_DEFAULT_LANGUAGE } from '@/components/admin/languageOptions';
 
 export const userFormValues = (user: AdminUser): UserValues => ({
     email: user.attributes.email,
@@ -9,7 +10,7 @@ export const userFormValues = (user: AdminUser): UserValues => ({
     nameLast: user.attributes.last_name ?? '',
     password: '',
     rootAdmin: user.attributes.root_admin,
-    language: user.attributes.language,
+    language: user.attributes.language ?? PANEL_DEFAULT_LANGUAGE,
     extensions: initialExtensionValues(),
 });
 

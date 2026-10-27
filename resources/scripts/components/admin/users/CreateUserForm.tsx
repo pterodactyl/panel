@@ -9,16 +9,16 @@ import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFiel
 import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
-import { languageOptions } from '@/components/admin/languageOptions';
+import { languageOptions, PANEL_DEFAULT_LANGUAGE } from '@/components/admin/languageOptions';
 
-const initialValues = (language: string): UserValues => ({
+const initialValues = (): UserValues => ({
     email: '',
     username: '',
     nameFirst: '',
     nameLast: '',
     password: '',
     rootAdmin: false,
-    language,
+    language: PANEL_DEFAULT_LANGUAGE,
     extensions: initialExtensionValues(),
 });
 
@@ -26,9 +26,8 @@ export default function CreateUserForm() {
     const navigate = useNavigate();
     const createUser = useCreateAdminUser();
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
-    const defaultLanguage = globalThis.document?.documentElement.lang.replace('-', '_') || 'en';
-    const defaults = initialValues(defaultLanguage);
-    const languagesList = languageOptions(languages, defaults.language);
+    const defaults = initialValues();
+    const languagesList = languageOptions(languages, defaults.language, true);
 
     const { withExtensionPayload } = useExtensionPayload('admin.user');
     const form = useAppForm({

@@ -146,6 +146,10 @@ DropdownMenu, and Pagination complement the existing form and dialog primitives.
 (with `EmptyHeader`, `EmptyMedia`, `EmptyTitle`, `EmptyDescription`, `EmptyContent`)
 matches the panel's empty states; pass it as a `Table`'s `emptyState`.
 
+`useTranslation()` translates interface text keyed by its English: `t('Save changes')`,
+`t('Welcome back, {{name}}', { name })`. Ship `resources/lang/en.json` (written by the panel's
+`lang:extract` script) and any translations as `resources/lang/<locale>.json`; they join the panel's
+own catalogue, so a language pack's `<locale>.json` can translate your text too.
 `useExtensionTranslation('messages')` loads the provider's registered
 `resources/lang/<locale>/messages.php` group. Extension CSS is built with the extension's own
 Tailwind prefix (see [Styling](#styling)). The Vite preset waits for entry CSS before setup.

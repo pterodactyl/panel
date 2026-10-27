@@ -91,6 +91,8 @@ class ExtensionManifestValidator
             $this->validateTheme($id, $data['theme'] ?? []);
         }
 
+        $this->validateLanguages($directory, $data['languages'] ?? []);
+
         return ExtensionManifest::fromValidatedData(
             directory: $directory,
             data: $data,
@@ -156,6 +158,8 @@ class ExtensionManifestValidator
             'ui.screens.*.when.runtime' => ['sometimes', 'boolean:strict'],
             'ui.screens.*.permission' => ['sometimes', 'prohibited_unless:ui.screens.*.area,server', 'array', 'list'],
             'ui.screens.*.permission.*' => ['required', 'string', 'max:100'],
+            'languages' => ['sometimes', 'array', 'list', 'max:64'],
+            'languages.*' => ['required', 'string', 'distinct:strict', 'regex:'.ExtensionManifest::LOCALE_REGEX],
             'routes' => ['sometimes', 'array:root'],
             'routes.root' => ['sometimes', 'array', 'list', 'max:8'],
             'routes.root.*' => ['required', 'string', 'distinct:strict', 'regex:'.ExtensionManifest::ROOT_PREFIX_REGEX],
@@ -212,6 +216,12 @@ class ExtensionManifestValidator
             'ui.screens.*.nav.icon.regex' => 'Navigation "icon" must be a lucide icon name such as "life-buoy".',
             'ui.screens.*.when.eggFeatures.prohibited_unless' => 'Screen "when" egg rules are only supported on server screens.',
             'ui.screens.*.when.eggTags.prohibited_unless' => 'Screen "when" egg rules are only supported on server screens.',
+            'languages.array' => 'Manifest "languages" must be a list of locale codes such as "de" or "pt_BR".',
+            'languages.list' => 'Manifest "languages" must be a list of locale codes such as "de" or "pt_BR".',
+            'languages.max' => 'Manifest "languages" must not declare more than 64 locales.',
+            'languages.*.string' => 'Manifest "languages" must be a list of locale codes such as "de" or "pt_BR".',
+            'languages.*.regex' => 'Manifest "languages" must be a list of locale codes such as "de" or "pt_BR".',
+            'languages.*.distinct' => 'Manifest "languages" must not list a locale twice.',
             'routes.array' => 'Manifest "routes" must be an object with a "root" list.',
             'routes.root.*.regex' => 'Manifest "routes.root" prefixes must match '.ExtensionManifest::ROOT_PREFIX_REGEX.'.',
             'routes.root.*.distinct' => 'Manifest "routes.root" prefixes must be unique.',
@@ -219,6 +229,45 @@ class ExtensionManifestValidator
 
         if ($validator->fails()) {
             throw new InvalidExtensionException($validator->errors()->first());
+        }
+    }
+
+    /**
+     * @param  list<string>  $languages
+     */
+    private function validateLanguages(string $directory, array $languages): void
+    {
+        $root = mb_rtrim($directory, '/\\').DIRECTORY_SEPARATOR.ExtensionManifest::LANGUAGES_DIRECTORY;
+        $found = [];
+        foreach (glob($root.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [] as $path) {
+            if (basename($path) !== 'vendor') {
+                $found[basename($path)] = ExtensionManifest::LANGUAGES_DIRECTORY.'/'.basename($path);
+
+                continue;
+            }
+
+            foreach (glob($path.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [] as $namespace) {
+                throw_unless(preg_match('/^ext-[a-z][a-z0-9-]{0,47}$/D', basename($namespace)) === 1, InvalidExtensionException::class, ExtensionManifest::LANGUAGES_DIRECTORY.'/vendor may only hold ext-<id> directories, not "'.basename($namespace).'".');
+                foreach (glob($namespace.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [] as $localePath) {
+                    $found[basename($localePath)] ??= ExtensionManifest::LANGUAGES_DIRECTORY.'/vendor/'.basename($namespace).'/'.basename($localePath);
+                }
+            }
+        }
+
+        foreach (glob($root.DIRECTORY_SEPARATOR.'*.json') ?: [] as $file) {
+            $relative = ExtensionManifest::LANGUAGES_DIRECTORY.'/'.basename($file);
+            $lines = json_decode((string) file_get_contents($file), true);
+            throw_unless(is_array($lines) && ! array_is_list($lines) || $lines === [], InvalidExtensionException::class, "{$relative} must be a JSON object of English strings mapped to their translations.");
+            throw_if(array_any($lines, fn (mixed $value): bool => ! is_string($value)), InvalidExtensionException::class, "{$relative} must map every English string to a translated string.");
+            $found[basename($file, '.json')] ??= $relative;
+        }
+
+        foreach ($found as $locale => $path) {
+            throw_unless(in_array($locale, $languages, true), InvalidExtensionException::class, "{$path} is not declared in the manifest \"languages\".");
+        }
+
+        foreach ($languages as $locale) {
+            throw_unless(isset($found[$locale]), InvalidExtensionException::class, "Manifest \"languages\" declares \"{$locale}\", but none of ".ExtensionManifest::LANGUAGES_DIRECTORY."/{$locale}.json, ".ExtensionManifest::LANGUAGES_DIRECTORY."/{$locale} or ".ExtensionManifest::LANGUAGES_DIRECTORY."/vendor/ext-<id>/{$locale} exists.");
         }
     }
 

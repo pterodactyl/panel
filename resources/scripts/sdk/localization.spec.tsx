@@ -5,7 +5,7 @@ import { createInstance } from 'i18next';
 import { afterEach, expect, it } from 'vitest';
 import type { ReactNode } from 'react';
 import { ExtensionContext } from '@/extensions/context';
-import { useExtensionTranslation } from './localization';
+import { useExtensionTranslation, useTranslation } from './localization';
 
 const mount = { extensionId: 'probe', context: 'translation test' };
 
@@ -32,4 +32,38 @@ it('uses the mount namespace and host locale without reading another extension t
     expect(result.current.ready).toBe(true);
     expect(result.current.locale).toBe('en');
     expect(result.current.t('greeting', { name: 'Alex' })).toBe('Hello Alex');
+});
+
+it('translates interface text keyed by its english, falling back to the english itself', async () => {
+    const i18n = createInstance();
+
+    await i18n.init({
+        lng: 'de',
+        fallbackLng: 'en',
+        nsSeparator: false,
+        interpolation: { escapeValue: false },
+        resources: {
+            de: {
+                translation: {
+                    'Login to Continue': 'Anmelden, um fortzufahren',
+                    'Welcome back, {{name}}': 'Willkommen zurück, {{name}}',
+                    'Error: try again.': 'Fehler: erneut versuchen.',
+                    '{{count}} file_one': '{{count}} Datei',
+                    '{{count}} file_other': '{{count}} Dateien',
+                },
+            },
+        },
+    });
+    function Wrapper({ children }: { children: ReactNode }) {
+        return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+    }
+
+    const { result } = renderHook(() => useTranslation(), { wrapper: Wrapper });
+
+    expect(result.current.locale).toBe('de');
+    expect(result.current.t('Login to Continue')).toBe('Anmelden, um fortzufahren');
+    expect(result.current.t('Welcome back, {{name}}', { name: 'Alex' })).toBe('Willkommen zurück, Alex');
+    expect(result.current.t('Error: try again.')).toBe('Fehler: erneut versuchen.');
+    expect(result.current.t('{{count}} file', { count: 2 })).toBe('2 Dateien');
+    expect(result.current.t('Not translated yet.')).toBe('Not translated yet.');
 });

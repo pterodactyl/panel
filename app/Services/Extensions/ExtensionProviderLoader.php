@@ -10,6 +10,7 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
+use Illuminate\Translation\Translator;
 use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Extensions\ExtensionProvider;
 use Throwable;
@@ -26,6 +27,9 @@ class ExtensionProviderLoader
 
     /** @var array<string, true> */
     private array $migrationPaths = [];
+
+    /** @var array<string, true> */
+    private array $translationPaths = [];
 
     public function __construct(
         private readonly Application $app,
@@ -65,6 +69,7 @@ class ExtensionProviderLoader
                 }
 
                 $this->registerMigrations($manifest);
+                $this->registerTranslations($manifest);
                 $registered[] = $manifest->id;
             } catch (Throwable $exception) {
                 $provider?->discardRegistration();
@@ -145,6 +150,45 @@ class ExtensionProviderLoader
         });
         if ($this->app->resolved('migrator')) {
             $this->app->make(Migrator::class)->path($path);
+        }
+    }
+
+    private function registerTranslations(ExtensionManifest $manifest): void
+    {
+        $own = $manifest->path('resources', 'lang');
+        $languages = $manifest->languagesPath();
+        $namespace = is_dir($own) && ! isset($this->translationPaths[$own]) ? 'ext-'.$manifest->id : null;
+        $path = $manifest->hasLanguages() && is_dir($languages) && ! isset($this->translationPaths[$languages]) ? $languages : null;
+        if ($namespace === null && $path === null) {
+            return;
+        }
+
+        if ($namespace !== null) {
+            $this->translationPaths[$own] = true;
+        }
+
+        if ($path !== null) {
+            $this->translationPaths[$path] = true;
+        }
+
+        $json = $namespace !== null && (glob($own.DIRECTORY_SEPARATOR.'*.json') ?: []) !== [];
+        $register = function (Translator $translator) use ($namespace, $own, $path, $json): void {
+            if ($namespace !== null) {
+                $translator->addNamespace($namespace, $own);
+            }
+
+            if ($json) {
+                $translator->addJsonPath($own);
+            }
+
+            if ($path !== null) {
+                $translator->addPath($path);
+            }
+        };
+
+        $this->app->afterResolving('translator', $register);
+        if ($this->app->resolved('translator')) {
+            $register($this->app->make(Translator::class));
         }
     }
 

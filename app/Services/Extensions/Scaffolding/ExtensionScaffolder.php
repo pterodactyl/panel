@@ -11,6 +11,7 @@ use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Extensions\ExtensionManifestValidator;
 use Pterodactyl\Services\Themes\ThemeDefinition;
 use Pterodactyl\Services\Themes\ThemeRepository;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 
 /**
  * Scaffolds a new extension package the way `php artisan make:*` scaffolds core
@@ -42,6 +43,7 @@ class ExtensionScaffolder
         bool $theme = false,
         bool $cssOnly = false,
         ?string $extends = null,
+        ?string $language = null,
     ): string {
         $this->files = [];
 
@@ -54,6 +56,10 @@ class ExtensionScaffolder
         throw_if($extends !== null && ! $theme, InvalidExtensionException::class, '--extends scaffolds a theme: pass it with --theme.');
 
         throw_if($extends !== null && (preg_match(ExtensionManifest::ID_REGEX, $extends) !== 1 || $extends === $id), InvalidExtensionException::class, "--extends names the theme to build on, such as \"aurora\": \"{$extends}\" is not one.");
+
+        throw_if($language !== null && $theme, InvalidExtensionException::class, '--language scaffolds a language pack, which cannot also be a theme.');
+
+        throw_if($language !== null && preg_match(ExtensionManifest::LOCALE_REGEX, $language) !== 1, InvalidExtensionException::class, "--language takes a locale such as \"de\" or \"pt_BR\": \"{$language}\" is not one.");
 
         $prefix ??= ExtensionManifest::defaultUiPrefix($id);
         throw_unless($theme || ExtensionManifest::isUsableUiPrefix($prefix), InvalidExtensionException::class, "Tailwind prefix \"{$prefix}\" must match ".ExtensionManifest::UI_PREFIX_REGEX.' and must not be a Tailwind variant, theme namespace or panel name.');
@@ -75,6 +81,13 @@ class ExtensionScaffolder
             '{{sdkDependency}}' => $this->sdkDependency($target),
             '{{prefix}}' => $prefix,
         ];
+
+        if ($language !== null) {
+            $this->scaffoldLanguagePack($target, $id, $language, $replacements);
+            $this->validator->fromDirectory($target);
+
+            return $target;
+        }
 
         if ($theme) {
             if ($extends === null || $extends === ThemeRepository::CLASSIC) {
@@ -152,6 +165,47 @@ class ExtensionScaffolder
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n",
         );
         $this->files[] = ExtensionManifest::FILENAME;
+    }
+
+    /**
+     * @param  array<string, string>  $replacements
+     */
+    private function scaffoldLanguagePack(string $target, string $id, string $language, array $replacements): void
+    {
+        $manifest = array_filter([
+            'id' => $id,
+            'name' => $replacements['{{name}}'],
+            'version' => '1.0.0',
+            'requires' => ['panel' => '^2.0.0-dev'],
+            'description' => $replacements['{{description}}'] ?: null,
+            'author' => $replacements['{{author}}'] ?: null,
+            'icon' => 'languages',
+            'languages' => [$language],
+        ], fn (array|string|null $value): bool => $value !== null);
+
+        File::put($target.DIRECTORY_SEPARATOR.ExtensionManifest::FILENAME, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+        $this->files[] = ExtensionManifest::FILENAME;
+
+        $catalogue = lang_path(LanguageRegistry::FALLBACK.'.json');
+        if (is_file($catalogue)) {
+            $relative = ExtensionManifest::LANGUAGES_DIRECTORY.'/'.$language.'.json';
+            File::ensureDirectoryExists(dirname($target.DIRECTORY_SEPARATOR.$relative));
+            File::copy($catalogue, $target.DIRECTORY_SEPARATOR.$relative);
+            $this->files[] = $relative;
+        }
+
+        $source = lang_path(LanguageRegistry::FALLBACK);
+        foreach (File::allFiles($source) as $file) {
+            $relative = ExtensionManifest::LANGUAGES_DIRECTORY.'/'.$language.'/'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
+            $path = $target.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative);
+            File::ensureDirectoryExists(dirname($path));
+            File::copy($file->getPathname(), $path);
+            $this->files[] = $relative;
+        }
+
+        $replacements['{{language}}'] = $language;
+        $replacements['{{artisan}}'] = $this->artisanPath($target);
+        $this->stub($target, 'language-readme.stub', 'README.md', $replacements);
     }
 
     /**

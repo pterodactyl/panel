@@ -122,7 +122,7 @@ export function createExtensionTestHost(options: ExtensionTestHostOptions = {}):
             uuid: 'test-user',
             username: 'Alex',
             email: 'alex@example.test',
-            language: 'en',
+            language: null,
             rootAdmin: false,
             useTotp: false,
             createdAt: new Date(0),
