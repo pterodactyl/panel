@@ -73,10 +73,10 @@ class StartupModificationService
             /** @var Egg $egg */
             $egg = Egg::query()->findOrFail($data['egg_id']);
 
-            $server = $server->forceFill([
+            $server->forceFill([
                 'egg_id' => $egg->id,
                 'nest_id' => $egg->nest_id,
-            ]);
+            ])->save();
         }
 
         $server->fill([
