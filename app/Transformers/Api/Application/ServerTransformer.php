@@ -85,6 +85,7 @@ class ServerTransformer extends BaseTransformer
                 // This field is deprecated, please use "status".
                 'installed' => $server->isInstalled() ? 1 : 0,
                 'environment' => $this->environmentService->handle($server),
+                'skip_scripts' => $server->skip_scripts,
             ],
             $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
             $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),

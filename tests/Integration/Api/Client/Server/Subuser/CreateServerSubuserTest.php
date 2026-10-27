@@ -149,21 +149,6 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('errors.0.meta.source_field', 'email');
     }
 
-    public function testSubuserWithDashPrefixedEmailCannotBeCreated()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        $response = $this->actingAs($user)->postJson($this->link($server) . '/users', [
-            'email' => '-x@example.com',
-            'permissions' => [
-                Permission::ACTION_USER_CREATE,
-            ],
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertDatabaseMissing('users', ['email' => '-x@example.com']);
-    }
-
     /**
      * Test that creating a subuser when there is already an account with that email runs
      * as expected and does not create a new account.

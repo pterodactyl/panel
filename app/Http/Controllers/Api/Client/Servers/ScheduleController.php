@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Task;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
@@ -12,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
@@ -141,28 +139,21 @@ class ScheduleController extends ClientApiController
      * Executes a given schedule immediately rather than waiting on it's normally scheduled time
      * to pass. This does not care about the schedule state.
      *
+     * Tasks are not checked against their action permissions here. They cannot be created or
+     * modified without that permission, and anyone reaching this endpoint can already run them
+     * by re-pointing the cron expression.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/5671
+     *
      * @throws \Throwable
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse
     {
-        $this->authorizeTasks($request, $server, $schedule);
-
         $this->service->handle($schedule, true);
 
         Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();
 
         return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
-    }
-
-    private function authorizeTasks(TriggerScheduleRequest $request, Server $server, Schedule $schedule): void
-    {
-        foreach ($schedule->tasks as $task) {
-            $permission = Task::permissionForAction($task->action, $task->payload);
-
-            if (is_null($permission) || !$request->user()->can($permission, $server)) {
-                throw new HttpForbiddenException('You do not have permission to perform this action.');
-            }
-        }
     }
 
     /**

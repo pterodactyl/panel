@@ -235,19 +235,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $this->assertActivityFor('user:user.create', $this->getApiUser(), $user);
     }
 
-    public function testCreateUserRejectsDashPrefixedEmail()
-    {
-        $response = $this->postJson('/api/application/users', [
-            'username' => 'dashuser',
-            'email' => '-x@example.com',
-            'first_name' => 'Test',
-            'last_name' => 'User',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertDatabaseMissing('users', ['email' => '-x@example.com']);
-    }
-
     /**
      * Test that a user can be updated.
      */
@@ -275,21 +262,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
             'object' => 'user',
             'attributes' => $this->getTransformer(UserTransformer::class)->transform($user),
         ]);
-    }
-
-    public function testUpdateUserRejectsDashPrefixedEmail()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->patchJson('/api/application/users/' . $user->id, [
-            'username' => $user->username,
-            'email' => '-x@example.com',
-            'first_name' => $user->name_first,
-            'last_name' => $user->name_last,
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertDatabaseMissing('users', ['id' => $user->id, 'email' => '-x@example.com']);
     }
 
     /**

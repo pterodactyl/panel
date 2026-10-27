@@ -4,6 +4,7 @@ return [
     'exceptions' => [
         'no_new_default_allocation' => 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.',
         'marked_as_failed' => 'This server was marked as having failed a previous installation. Current status cannot be toggled in this state.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
         'bad_variable' => 'There was a validation error with the :name variable.',
         'daemon_exception' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged. (request id: :request_id)',
         'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
