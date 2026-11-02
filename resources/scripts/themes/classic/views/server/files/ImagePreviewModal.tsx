@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import Spinner from '@/components/elements/Spinner';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog, Spinner } from '@/sdk';
 
 interface Props {
     open: boolean;
@@ -42,7 +41,7 @@ export default function ImagePreviewModal({ open, name, src, onClose }: Props) {
                 objectUrl = URL.createObjectURL(new Blob([blob], { type: 'image/svg+xml' }));
                 setPreviewSrc(objectUrl);
             })
-            .catch((error: unknown) => {
+            .catch((error) => {
                 if (error instanceof DOMException && error.name === 'AbortError') {
                     return;
                 }

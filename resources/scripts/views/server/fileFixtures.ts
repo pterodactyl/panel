@@ -92,6 +92,7 @@ export function createTestFileManagerEntry(options: Partial<FileManagerEntry> = 
         modeBits: file.attributes.mode_bits ?? '',
         openable: true,
         extractable: kind === 'archive',
+        previewable: false,
         destination:
             kind === 'directory'
                 ? { to: '/server/$id/files', params: { id: TEST_SERVER }, hash: path }
@@ -148,6 +149,7 @@ export function createTestFileManager(options: Partial<FileManagerModel> = {}): 
             extract: async () => {},
             chmod: async () => {},
             download: async () => {},
+            downloadUrl: async () => '',
             upload: async () => {},
             move: async () => {},
             cancelUpload: () => {},

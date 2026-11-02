@@ -11,6 +11,7 @@ import {
     fileObjectKind,
     isFileObjectArchiveType,
     isFileObjectEditable,
+    isFileObjectImageType,
     renameFilesInput,
     useChmodFiles,
     useCompressFiles,
@@ -144,7 +145,7 @@ export default function useFileManagerModel(): FileManagerModel {
     const { mutateAsync: compressFiles } = useCompressFiles();
     const { mutateAsync: decompressFile } = useDecompressFile();
     const { mutateAsync: chmodFiles } = useChmodFiles();
-    const { mutateAsync: downloadUrl } = useFileDownloadUrl();
+    const { mutateAsync: fetchDownloadUrl } = useFileDownloadUrl();
     const upload = useFileUploader();
     const { uploads, cancelUpload, clearUploads } = useUploads();
 
@@ -166,6 +167,7 @@ export default function useFileManagerModel(): FileManagerModel {
                     modifiedAt: file.attributes.modified_at,
                     openable,
                     extractable: isFileObjectArchiveType(file),
+                    previewable: isFileObjectImageType(file),
                     destination: entryDestination(id, file, path, openable),
                     file,
                 };
@@ -263,8 +265,9 @@ export default function useFileManagerModel(): FileManagerModel {
                 clearSelectedFiles();
             },
             download: async (name) => {
-                window.location.assign(await downloadUrl({ uuid, file: join(directory, name) }));
+                window.location.assign(await fetchDownloadUrl({ uuid, file: join(directory, name) }));
             },
+            downloadUrl: async (name) => fetchDownloadUrl({ uuid, file: join(directory, name) }),
             upload: async (uploaded) => {
                 allow(canCreate, 'file.create');
                 allow(canUpdate, 'file.update');
@@ -294,7 +297,7 @@ export default function useFileManagerModel(): FileManagerModel {
         compressFiles,
         decompressFile,
         chmodFiles,
-        downloadUrl,
+        fetchDownloadUrl,
         upload,
         cancelUpload,
         clearUploads,
