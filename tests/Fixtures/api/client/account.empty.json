@@ -29,7 +29,8 @@
                 "email": "Spare.User@Example.test",
                 "first_name": "Spare",
                 "last_name": "User",
-                "language": "en"
+                "language": "en",
+                "avatar": null
             }
         }
     },

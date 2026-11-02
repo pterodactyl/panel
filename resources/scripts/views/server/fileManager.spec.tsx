@@ -117,6 +117,7 @@ function Custom({ model }: ViewProps<'server.files.manager'>) {
             <button onClick={() => run(actions.remove(['b.txt']))}>Remove</button>
             <button onClick={() => actions.select([...manyNames, 'a.zip', 'b.txt'])}>Select all</button>
             <button onClick={() => run(actions.refresh())}>Refresh</button>
+            <div data-testid='drop' onDrop={(event) => run(actions.upload(event.dataTransfer))} />
             <span>{error}</span>
         </div>
     );
@@ -173,6 +174,22 @@ it('refuses a mutation the user has no permission for before any request is sent
 
     expect(await screen.findByText('This action requires the file.delete permission.')).toBeVisible();
     expect(deletes()).toEqual([]);
+});
+
+it('refuses a dropped folder in core, whatever view the drop came through', async () => {
+    override('server.files.manager', Custom);
+    open();
+
+    await waitFor(() => expect(state().loading).toBe(false));
+    fireEvent.drop(screen.getByTestId('drop'), {
+        dataTransfer: {
+            items: [{ kind: 'file', webkitGetAsEntry: () => ({ isDirectory: true }) }],
+            files: [new File([''], 'plugins')],
+        },
+    });
+
+    expect(await screen.findByText('Folder uploads are not supported.')).toBeVisible();
+    expect(requests.filter((request) => request.path.includes('/files/upload'))).toEqual([]);
 });
 
 it('replaces one nested view and keeps the native browser when a replacement fails', async () => {

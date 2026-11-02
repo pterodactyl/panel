@@ -2,7 +2,7 @@
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import http from '@/api/http';
 import { renderView, type RenderedView } from '@/sdk/testing';
-import { getViewChain, getViewDefinitions, type ViewName } from './registry';
+import { getViewChain, getViewDefinitions, modelFromInput, type ViewName } from './registry';
 
 const requests: string[] = [];
 const adapter = http.defaults.adapter;
@@ -26,12 +26,24 @@ afterAll(() => {
     http.defaults.adapter = adapter;
 });
 
-// Every fixture of every view classic draws.
-const cases = getViewDefinitions().flatMap((definition) =>
+const classicViews = getViewDefinitions().filter((definition) =>
     getViewChain(definition.name).some((layer) => layer.source === 'classic')
-        ? Object.keys(definition.fixtures ?? {}).map((fixture) => [definition.name, fixture] as const)
-        : []
 );
+
+// Every fixture of every view classic draws.
+const cases = classicViews.flatMap((definition) =>
+    Object.keys(definition.fixtures ?? {}).map((fixture) => [definition.name, fixture] as const)
+);
+
+// Themes test a view from its fixtures, and the cases above skip a view that has none. A piece of a view
+// renders from its parent's fixtures.
+it('gives every view classic draws a fixture', () => {
+    const missing = classicViews.filter(
+        (definition) => definition.use !== modelFromInput && Object.keys(definition.fixtures ?? {}).length === 0
+    );
+
+    expect(missing.map((definition) => definition.name)).toEqual([]);
+});
 
 it.each(cases)('%s (%s) renders without a backend, its className on its outermost element', async (name, fixture) => {
     rendered = renderView(name as ViewName, { fixture, className: 'probe-root' });

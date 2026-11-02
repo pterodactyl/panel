@@ -1,6 +1,7 @@
 export { default as AccountOverview } from './AccountOverview';
 export { default as PasswordCard } from './PasswordCard';
 export { default as EmailCard } from './EmailCard';
+export { default as AvatarCard } from './AvatarCard';
 export { default as TwoFactorCard } from './TwoFactorCard';
 export { default as ApiKeysPage } from './ApiKeysPage';
 export { default as ApiKeyList } from './ApiKeyList';

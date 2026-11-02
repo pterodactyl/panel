@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import http from '@/api/http';
 import { toast } from 'sonner';
 
 import {
@@ -31,6 +32,7 @@ type AdminSettingsSection = 'Advanced' | 'General' | 'Mail';
 export interface GeneralSettingsValues {
     name: string;
     twoFactorRequired: NonNullable<AdminGeneralSettingsBody['misc']>['required_2fa'];
+    userAvatarsEnabled: boolean;
     locale: string;
 }
 
@@ -77,7 +79,10 @@ export const updateAdminGeneralSettingsInput = (
 ): Options<AdminUpdateGeneralSettingsData> => ({
     body: {
         branding: { name: values.name },
-        misc: { required_2fa: values.twoFactorRequired },
+        misc: {
+            required_2fa: values.twoFactorRequired,
+            user_avatars_enabled: values.userAvatarsEnabled ? 'true' : 'false',
+        },
         default_locale: values.locale,
     },
 });
@@ -126,6 +131,7 @@ export const useUpdateAdminGeneralSettings = () => {
                 ...settings,
                 name: body.branding?.name ?? settings.name,
                 locale: body.default_locale,
+                userAvatarsEnabled: body.misc?.user_avatars_enabled === 'true',
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             const notification = adminSettingsUpdateToast('General');
@@ -133,6 +139,47 @@ export const useUpdateAdminGeneralSettings = () => {
             toast.success(notification.title, { description: notification.description });
         },
         onError: (error) => notifyHttpError(error, 'Unable to update general settings'),
+    });
+};
+
+export const useUploadAdminLogo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (file: File) => {
+            const form = new FormData();
+            form.append('file', file);
+
+            const { data } = await http.post<{ logo: string }>('/api/admin/settings/logo', form);
+
+            return data.logo;
+        },
+        onSuccess: async (logo) => {
+            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
+                settings ? { ...settings, logo } : settings
+            );
+            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo }));
+            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to upload logo'),
+    });
+};
+
+export const useClearAdminLogo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async () => {
+            await http.delete('/api/admin/settings/logo');
+        },
+        onSuccess: async () => {
+            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
+                settings ? { ...settings, logo: null } : settings
+            );
+            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo: null }));
+            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove logo'),
     });
 };
 

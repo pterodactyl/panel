@@ -36,6 +36,7 @@ const subuser = (uuid: string, email: string, granted: string[]): Subuser => ({
         username: email.split('@')[0],
         email,
         image: `https://www.gravatar.com/avatar/${uuid}`,
+        avatar: null,
         '2fa_enabled': false,
         created_at: '2026-10-01T00:00:00Z',
         permissions: granted,

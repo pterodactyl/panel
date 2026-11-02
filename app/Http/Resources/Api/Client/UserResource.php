@@ -25,7 +25,8 @@ class UserResource extends ClientResource
             'identifier' => $this->resource->identifier,
             'username' => $this->resource->username,
             'email' => $this->resource->email,
-            'image' => 'https://gravatar.com/avatar/'.md5(Str::lower($this->resource->email)),
+            'image' => $this->resource->avatar_url ?? 'https://gravatar.com/avatar/'.md5(Str::lower($this->resource->email)),
+            'avatar' => $this->resource->avatar_url,
             '2fa_enabled' => $this->resource->use_totp,
             'created_at' => $this->formatTimestamp($this->resource->created_at),
         ];

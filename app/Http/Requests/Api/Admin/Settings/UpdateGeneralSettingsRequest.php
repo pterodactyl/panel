@@ -28,6 +28,7 @@ class UpdateGeneralSettingsRequest extends AdminApiRequest
         return [
             'branding.name' => ['required', 'string', 'max:191'],
             'misc.required_2fa' => ['required', 'integer', 'in:0,1,2'],
+            'misc.user_avatars_enabled' => ['required', 'in:true,false'],
             'default_locale' => ['required', 'string', Rule::in(array_keys($this->getAvailableLanguages()))],
         ];
     }
@@ -38,6 +39,7 @@ class UpdateGeneralSettingsRequest extends AdminApiRequest
         return [
             'branding.name' => 'Company Name',
             'misc.required_2fa' => 'Require 2-Factor Authentication',
+            'misc.user_avatars_enabled' => 'User Avatars',
             'default_locale' => 'Default Language',
         ];
     }
@@ -53,6 +55,7 @@ class UpdateGeneralSettingsRequest extends AdminApiRequest
         return [
             'app:name' => $this->string('branding.name')->toString(),
             'pterodactyl:auth:2fa_required' => $this->integer('misc.required_2fa'),
+            'pterodactyl:client_features:avatars:enabled' => $this->string('misc.user_avatars_enabled')->toString(),
             'app:locale' => $this->string('default_locale')->toString(),
         ];
     }

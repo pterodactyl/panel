@@ -1,13 +1,24 @@
+import { useState } from 'react';
 import { useAppForm, Form } from '@/components/form';
 import type { AdminSettings } from '@/api/admin/settings/queries';
 import { useAdminLanguages } from '@/api/admin/languages/queries';
-import { updateAdminGeneralSettingsInput, useUpdateAdminGeneralSettings } from '@/api/admin/settings/queries';
+import {
+    updateAdminGeneralSettingsInput,
+    useClearAdminLogo,
+    useUpdateAdminGeneralSettings,
+    useUploadAdminLogo,
+} from '@/api/admin/settings/queries';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { languageOptions } from '@/components/admin/languageOptions';
+import LogoSettingsForm from '@/components/admin/settings/LogoSettingsForm';
 
 export default function GeneralSettingsForm({ settings }: { settings: AdminSettings }) {
     const readOnly = settings.meta.load_environment_only;
     const updateGeneralSettings = useUpdateAdminGeneralSettings();
+    const uploadLogo = useUploadAdminLogo();
+    const clearLogo = useClearAdminLogo();
+    const [pendingLogo, setPendingLogo] = useState<File | null>(null);
+    const [removeLogo, setRemoveLogo] = useState(false);
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
     const languagesList = languageOptions(languages, settings.general['app:locale']);
 
@@ -15,6 +26,7 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
         defaultValues: {
             name: settings.general['app:name'],
             twoFactorRequired: settings.general['pterodactyl:auth:2fa_required'],
+            userAvatarsEnabled: settings.general['pterodactyl:client_features:avatars:enabled'],
             locale: settings.general['app:locale'],
         },
         onSubmit: async ({ value }) => {
@@ -24,8 +36,17 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
 
             try {
                 await updateGeneralSettings.mutateAsync(updateAdminGeneralSettingsInput(value));
+
+                if (pendingLogo) {
+                    await uploadLogo.mutateAsync(pendingLogo);
+                    setPendingLogo(null);
+                    setRemoveLogo(false);
+                } else if (removeLogo) {
+                    await clearLogo.mutateAsync();
+                    setRemoveLogo(false);
+                }
             } catch {
-                // Error toast is handled by the mutation.
+                // Error toasts are handled by the mutations.
             }
         },
     });
@@ -44,6 +65,20 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         />
                     )}
                 </form.AppField>
+                <LogoSettingsForm
+                    settings={settings}
+                    pendingFile={pendingLogo}
+                    removePending={removeLogo}
+                    disabled={uploadLogo.isPending || clearLogo.isPending}
+                    onFileSelected={(file) => {
+                        setPendingLogo(file ?? null);
+                        setRemoveLogo(false);
+                    }}
+                    onRemove={() => {
+                        setPendingLogo(null);
+                        setRemoveLogo(true);
+                    }}
+                />
                 <div className='mt-4'>
                     <form.AppField name='twoFactorRequired'>
                         {(field) => (
@@ -74,9 +109,29 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         )}
                     </form.AppField>
                 </div>
+                <div className='mt-6'>
+                    <form.AppField name='userAvatarsEnabled'>
+                        {(field) => (
+                            <field.SwitchField
+                                label='User Avatars'
+                                description='Should users be allowed to use custom avatars on their profiles?'
+                                disabled={readOnly}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
                 <div className='flex justify-end mt-4'>
                     <form.AppForm>
-                        <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
+                        <form.SubmitButton
+                            disabled={
+                                readOnly ||
+                                updateGeneralSettings.isPending ||
+                                uploadLogo.isPending ||
+                                clearLogo.isPending
+                            }
+                        >
+                            Save Changes
+                        </form.SubmitButton>
                     </form.AppForm>
                 </div>
             </TitledGreyBox>

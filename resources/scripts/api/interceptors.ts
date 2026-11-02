@@ -1,12 +1,23 @@
 import http from '@/api/http';
 import type { AxiosError } from 'axios';
+import { endBootstrapSession, hasBootstrapSession } from '@/bootstrap';
 import { router } from '@/router/router';
+import { parseRedirectSearch } from '@/router/redirect';
 import { isObject } from '@/lib/objects';
 
 export const setupInterceptors = () => {
     http.interceptors.response.use(
         (resp) => resp,
         (error: AxiosError) => {
+            if (error.response?.status === 401 && hasBootstrapSession()) {
+                endBootstrapSession();
+                void router.navigate({
+                    to: '/auth/login',
+                    search: parseRedirectSearch({ redirect: router.latestLocation.href }),
+                    replace: true,
+                });
+            }
+
             if (error.response?.status === 400) {
                 const data = error.response.data;
                 const firstError =

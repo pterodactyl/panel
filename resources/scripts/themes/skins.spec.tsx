@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import Avatar from '@/components/Avatar';
 import Button, { type ButtonProps } from '@/components/elements/Button';
 import Badge, { type BadgeProps } from '@/components/elements/Badge';
 import Card from '@/components/elements/Card';
@@ -59,7 +60,7 @@ describe('skin layers', () => {
         registerSkins('aurora', { Card: { root: (state, below) => below('ring-1') } });
 
         expect(getSkin('Card', { titled: true, actions: false, loading: false }).classes('root')).toBe(
-            'bg-card shadow-md rounded-lg ring-1'
+            'bg-card in-data-[ui=dialog]:ring-1 in-data-[ui=dialog]:ring-border shadow-md rounded-lg ring-1'
         );
     });
 
@@ -149,6 +150,22 @@ describe('primitive attributes', () => {
         expect(button).toHaveAttribute('data-loading', '');
         expect(screen.getByText('Delete')).toHaveAttribute('data-part', 'label');
         expect(screen.getByText('Delete')).not.toHaveAttribute('data-color');
+    });
+
+    it('skins an uploaded avatar picture like the generated pattern', () => {
+        registerSkins('aurora', { Avatar: { root: 'ring-2' } });
+        render(
+            <>
+                <Avatar name='alex' title />
+                <Avatar name='sam' image='/sam.png' title />
+            </>
+        );
+
+        for (const avatar of [screen.getByRole('img', { name: 'alex' }), screen.getByRole('img', { name: 'sam' })]) {
+            expect(avatar).toHaveAttribute('data-ui', 'avatar');
+            expect(avatar).toHaveAttribute('data-variant', 'beam');
+            expect(avatar).toHaveClass('ring-2');
+        }
     });
 
     it('leaves false state off and renders a part state on its own part', () => {

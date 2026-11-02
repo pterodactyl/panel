@@ -40,6 +40,7 @@ it('extension controls participate in native validation, submission, and shared 
             root_admin: false,
             '2fa': false,
             image: '',
+            avatar: null,
             servers_count: 0,
             subuser_of_count: 0,
             created_at: '2026-10-02T00:00:00Z',

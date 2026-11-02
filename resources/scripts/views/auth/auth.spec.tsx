@@ -66,6 +66,7 @@ async function renderAuth(path: string, recaptcha = false) {
     queryClient.setQueryData(siteSettingsQueryKey, {
         name: 'Panel',
         locale: 'en',
+        userAvatarsEnabled: false,
         recaptcha: { enabled: recaptcha, siteKey: recaptcha ? 'site-key' : '' },
     });
     router = createAuthRouter(path);

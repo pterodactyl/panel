@@ -131,6 +131,7 @@
                                     "username": "admin",
                                     "email": "admin@example.test",
                                     "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -159,6 +160,7 @@
                                     "username": "helper",
                                     "email": "helper@example.test",
                                     "image": "https://gravatar.com/avatar/db133fd5a01229dc12009a42eaa2e3c3",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -194,6 +196,7 @@
                                     "username": "owner",
                                     "email": "owner@example.test",
                                     "image": "https://gravatar.com/avatar/f17712239715b86f1dfd9ba550b7f607",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -225,6 +228,7 @@
                                     "username": "admin",
                                     "email": "admin@example.test",
                                     "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -255,6 +259,7 @@
                                     "username": "limited",
                                     "email": "limited@example.test",
                                     "image": "https://gravatar.com/avatar/6a005a5825ef8aa17b476a64d40e7aab",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -416,6 +421,7 @@
                                     "username": "admin",
                                     "email": "admin@example.test",
                                     "image": "https://gravatar.com/avatar/51965088c5db83c3fd307f308d25198a",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }
@@ -446,6 +452,7 @@
                                     "username": "limited",
                                     "email": "limited@example.test",
                                     "image": "https://gravatar.com/avatar/6a005a5825ef8aa17b476a64d40e7aab",
+                                    "avatar": null,
                                     "2fa_enabled": false,
                                     "created_at": "2026-01-02T03:04:05+00:00"
                                 }

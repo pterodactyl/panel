@@ -3,6 +3,8 @@ import { toast } from 'sonner';
 import type { UserData } from '@/api/account/types';
 import { getBootstrapUser } from '@/bootstrap';
 import {
+    clientDeleteAccountAvatarMutation,
+    clientUpdateAccountAvatarMutation,
     clientUpdateAccountEmailMutation,
     clientUpdateAccountPasswordMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
@@ -30,6 +32,7 @@ const withAccount = (user: UserData, { attributes }: ClientUserResource): UserDa
     email: attributes.email,
     language: attributes.language,
     rootAdmin: attributes.admin,
+    avatar: attributes.avatar,
 });
 
 export const currentUserQueryOptions = () =>
@@ -73,3 +76,31 @@ export const useUpdateAccountPassword = () =>
         onSuccess: () => window.location.assign('/auth/login'),
         onError: (error) => notifyHttpError(error, 'Unable to update password'),
     });
+
+export const useUpdateAccountAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...clientUpdateAccountAvatarMutation(),
+        onSuccess: async ({ attributes }) => {
+            setCurrentUserQueryData(queryClient, { avatar: attributes.avatar });
+            await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
+            toast.success('Avatar updated');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+    });
+};
+
+export const useDeleteAccountAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...clientDeleteAccountAvatarMutation(),
+        onSuccess: async () => {
+            setCurrentUserQueryData(queryClient, { avatar: null });
+            await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
+            toast.success('Avatar removed');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
+    });
+};

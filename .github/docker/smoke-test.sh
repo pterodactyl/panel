@@ -167,6 +167,7 @@ docker exec "$dynamic" /bin/ash -ec '
   php-fpm -tt 2>&1 | grep -q "pm.max_children = 3"
   php -r '\''exit(ini_get("opcache.memory_consumption") === "192" ? 0 : 1);'\''
   php -r '\''exit(ini_get("opcache.revalidate_freq") === "5" ? 0 : 1);'\''
+  php -r '\''exit(ini_get("session.upload_progress.enabled") === "0" ? 0 : 1);'\''
 '
 for name in 'First live name' 'Second live name'; do
   docker exec -i -e SMOKE_NAME="$name" "$dynamic" php <<'PHP'

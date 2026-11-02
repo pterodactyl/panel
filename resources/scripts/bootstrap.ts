@@ -35,6 +35,7 @@ interface ExtendedWindow extends Window {
         root_admin: boolean;
         use_totp: boolean;
         language: string;
+        avatar?: string | null;
         updated_at: string;
         created_at: string;
     };
@@ -49,6 +50,7 @@ export const getBootstrapUser = (): UserData | undefined => {
               username: user.username,
               email: user.email,
               language: user.language,
+              avatar: user.avatar ?? null,
               rootAdmin: user.root_admin,
               useTotp: user.use_totp,
               createdAt: new Date(user.created_at),

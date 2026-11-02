@@ -14,11 +14,13 @@ import { currentUserQueryKey, setCurrentUserQueryData } from '@/api/account/quer
 import type { UserData } from '@/api/account/types';
 import {
     adminCreateUserMutation,
+    adminDeleteUserAvatarMutation,
     adminDeleteUserMutation,
     adminGetUserOptions,
     adminGetUserQueryKey,
     adminListUsersOptions,
     adminListUsersQueryKey,
+    adminUpdateUserAvatarMutation,
     adminUpdateUserMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import {
@@ -158,6 +160,38 @@ export const useUpdateAdminUser = () => {
             toast.success(messages.success.title, { description: messages.success.description });
         },
         onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'update').errorTitle),
+    });
+};
+
+export const useUpdateAdminUserAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...adminUpdateUserAvatarMutation(),
+        onSuccess: async (_user, variables) => {
+            await Promise.all([
+                invalidateGeneratedOperations(queryClient, ['adminListUsers']),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
+            ]);
+            toast.success('Avatar updated');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+    });
+};
+
+export const useDeleteAdminUserAvatar = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        ...adminDeleteUserAvatarMutation(),
+        onSuccess: async (_data, variables) => {
+            await Promise.all([
+                invalidateGeneratedOperations(queryClient, ['adminListUsers']),
+                queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
+            ]);
+            toast.success('Avatar removed');
+        },
+        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
     });
 };
 

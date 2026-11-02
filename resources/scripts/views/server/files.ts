@@ -111,6 +111,8 @@ export interface FileUpload {
     readonly loaded: number;
     readonly total: number;
 }
+/** What `upload` takes: picked files, or a drop's `event.dataTransfer`, which tells a dropped folder apart. */
+export type UploadSource = readonly File[] | DataTransfer;
 /** Names are entries of the current directory. Core has already shown a toast for a rejection. */
 export interface FileManagerActions {
     /** Enter a directory or open a text file in the editor. */
@@ -135,7 +137,8 @@ export interface FileManagerActions {
     /** Change modes; clears the selection. */
     readonly chmod: (files: readonly { readonly file: string; readonly mode: string }[]) => Promise<void>;
     readonly download: (name: string) => Promise<void>;
-    readonly upload: (files: readonly File[]) => Promise<void>;
+    /** Refuses a drop holding a folder, which cannot be uploaded. */
+    readonly upload: (source: UploadSource) => Promise<void>;
     readonly cancelUpload: (id: string) => void;
     /** Cancel every upload in progress. */
     readonly clearUploads: () => void;

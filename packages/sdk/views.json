@@ -28,6 +28,20 @@
             "export": "default"
         }
     },
+    "account.avatar": {
+        "kind": "block",
+        "context": "account",
+        "slots": [],
+        "fixtures": [
+            "default",
+            "uploaded",
+            "picked"
+        ],
+        "classic": {
+            "file": "views/account/AvatarCard.tsx",
+            "export": "default"
+        }
+    },
     "account.email": {
         "kind": "block",
         "context": "account",
@@ -337,7 +351,8 @@
         ],
         "fixtures": [
             "default",
-            "twoFactorRequired"
+            "twoFactorRequired",
+            "avatars"
         ],
         "classic": {
             "file": "views/account/AccountOverview.tsx",

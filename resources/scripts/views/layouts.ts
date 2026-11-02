@@ -46,6 +46,8 @@ export interface AppLayoutModel {
         readonly uuid: string;
         readonly username: string;
         readonly email: string;
+        /** The user's uploaded picture, for `Avatar`'s `image`; null draws the pattern `uuid` seeds. */
+        readonly avatar: string | null;
         readonly rootAdmin: boolean;
     };
     /** The scheme in use. */
@@ -253,7 +255,7 @@ function useAppArea(): AppArea {
 
 function useAppLayoutModel(): AppLayoutModel {
     const brand = useBrand();
-    const { uuid, username, email, rootAdmin } = useCurrentUser();
+    const { uuid, username, email, avatar, rootAdmin } = useCurrentUser();
     const { scheme, preference, schemes, setScheme } = useTheme();
     const { mutate, isPending } = useLogout();
     const area = useAppArea();
@@ -263,7 +265,7 @@ function useAppLayoutModel(): AppLayoutModel {
             brand,
             links: appLinks(rootAdmin),
             area,
-            user: { uuid, username, email, rootAdmin },
+            user: { uuid, username, email, avatar: avatar ?? null, rootAdmin },
             scheme,
             preference,
             schemes,
@@ -271,7 +273,21 @@ function useAppLayoutModel(): AppLayoutModel {
             signOut: () => mutate({}),
             signingOut: isPending,
         }),
-        [brand, area, uuid, username, email, rootAdmin, scheme, preference, schemes, setScheme, mutate, isPending]
+        [
+            brand,
+            area,
+            uuid,
+            username,
+            email,
+            avatar,
+            rootAdmin,
+            scheme,
+            preference,
+            schemes,
+            setScheme,
+            mutate,
+            isPending,
+        ]
     );
 }
 
@@ -288,7 +304,13 @@ const appLayoutFixture = (
     brand,
     links: appLinks(rootAdmin),
     area,
-    user: { uuid: '11111111-1111-4111-8111-111111111111', username: 'alex', email: 'alex@example.test', rootAdmin },
+    user: {
+        uuid: '11111111-1111-4111-8111-111111111111',
+        username: 'alex',
+        email: 'alex@example.test',
+        avatar: null,
+        rootAdmin,
+    },
     scheme: schemes[0] ?? 'dark',
     preference: schemes[0] ?? 'dark',
     schemes,
