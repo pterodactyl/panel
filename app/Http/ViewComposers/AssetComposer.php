@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use Pterodactyl\Services\Extensions\ExtensionHeadTags;
 use Pterodactyl\Services\Extensions\ExtensionRepository;
 use Pterodactyl\Services\Helpers\AssetHashService;
+use Pterodactyl\Services\Helpers\BrandingLogoService;
 use Pterodactyl\Services\Themes\ThemeResolver;
 use Throwable;
 
@@ -22,6 +23,7 @@ class AssetComposer
         private readonly AssetHashService $assetHashService,
         private readonly ExtensionRepository $extensions,
         private readonly ExtensionHeadTags $extensionHeadTags,
+        private readonly BrandingLogoService $brandingLogo,
         private readonly ThemeResolver $themes,
         private readonly Request $request,
     ) {}
@@ -39,6 +41,7 @@ class AssetComposer
         $view->with('theme', $theme);
         $view->with('siteConfiguration', [
             'name' => config('app.name', 'Pterodactyl'),
+            'logo' => $this->brandingLogo->url(),
             'locale' => config('app.locale', 'en'),
             'userAvatarsEnabled' => config('pterodactyl.client_features.avatars.enabled', false),
             'recaptcha' => [
