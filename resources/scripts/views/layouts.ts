@@ -128,10 +128,10 @@ declare module './registry' {
 }
 
 function useBrand(): LayoutBrand {
-    const { name } = useSiteSettings();
+    const { name, logo } = useSiteSettings();
     const logoUrl = useBrandLogo();
 
-    return useMemo(() => ({ name, logoUrl }), [name, logoUrl]);
+    return useMemo(() => ({ name, logoUrl: logo || logoUrl }), [name, logo, logoUrl]);
 }
 
 function useAuthLayoutModel(): AuthLayoutModel {
