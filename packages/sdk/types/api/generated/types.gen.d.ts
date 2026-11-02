@@ -613,6 +613,7 @@ export type AdminSettingsResponse = {
         'pterodactyl:client_features:avatars:enabled': boolean;
         'app:locale': string;
     };
+    logo: string | null;
     mail: {
         'mail:default': string;
         'mail:mailers:smtp:host': string;

@@ -93,6 +93,8 @@ export interface FileManagerEntry {
     readonly openable: boolean;
     /** An archive extract() can unpack, symbolic links to one included. */
     readonly extractable: boolean;
+    /** An image that can be previewed in the browser. */
+    readonly previewable: boolean;
     /** Where opening it leads; null when it cannot be opened. */
     readonly destination: CorePanelDestination | null;
     /** The file as the API returns it, which `server.files.details` and the row slots receive. */
@@ -137,6 +139,8 @@ export interface FileManagerActions {
     /** Change modes; clears the selection. */
     readonly chmod: (files: readonly { readonly file: string; readonly mode: string }[]) => Promise<void>;
     readonly download: (name: string) => Promise<void>;
+    /** Signed URL for reading the file in the browser. */
+    readonly downloadUrl: (name: string) => Promise<string>;
     /** Refuses a drop holding a folder, which cannot be uploaded. */
     readonly upload: (source: UploadSource) => Promise<void>;
     readonly cancelUpload: (id: string) => void;
