@@ -9,11 +9,20 @@ import GeneralSettingsForm from './GeneralSettingsForm';
 import AdvancedSettingsForm from './AdvancedSettingsForm';
 import MailSettingsForm from './MailSettingsForm';
 
-const mutations = vi.hoisted(() => ({ general: vi.fn(), advanced: vi.fn(), mail: vi.fn(), testMail: vi.fn() }));
+const mutations = vi.hoisted(() => ({
+    general: vi.fn(),
+    advanced: vi.fn(),
+    mail: vi.fn(),
+    testMail: vi.fn(),
+    uploadLogo: vi.fn(),
+    clearLogo: vi.fn(),
+}));
 
 vi.mock('@/api/admin/settings/queries', async (importOriginal) => ({
     ...(await importOriginal<typeof SettingsQueries>()),
     useUpdateAdminGeneralSettings: () => ({ mutateAsync: mutations.general }),
+    useUploadAdminLogo: () => ({ isPending: false, mutateAsync: mutations.uploadLogo }),
+    useClearAdminLogo: () => ({ isPending: false, mutateAsync: mutations.clearLogo }),
     useUpdateAdminAdvancedSettings: () => ({ mutateAsync: mutations.advanced }),
     useUpdateAdminMailSettings: () => ({ mutateAsync: mutations.mail }),
     useSendTestAdminMail: () => ({ mutateAsync: mutations.testMail }),
@@ -29,6 +38,7 @@ const settings: AdminSettings = {
         'pterodactyl:client_features:avatars:enabled': false,
         'app:locale': 'en',
     },
+    logo: null,
     mail: {
         'mail:default': 'smtp',
         'mail:mailers:smtp:host': 'localhost',
