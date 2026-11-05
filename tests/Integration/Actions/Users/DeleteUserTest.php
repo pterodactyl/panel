@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Actions\Users\DeleteUserTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Storage;
 use Pterodactyl\Contracts\Users\DeletesUsers;
+use Pterodactyl\Contracts\Users\ReplacesUserAvatars;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Models\Subuser;
@@ -41,4 +44,14 @@ test('user is deleted and access revoked', function () {
     $this->assertModelMissing($user);
     Bus::assertDispatchedTimes(RevokeSftpAccessJob::class);
     Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server1->node));
+});
+test('deleting a user removes their avatar', function () {
+    $disk = Storage::fake(config()->string('extensions.files_disk'));
+    $user = $this->app->make(ReplacesUserAvatars::class)->replace(User::factory()->create(), UploadedFile::fake()->image('avatar.png'));
+    $disk->assertExists("extension-files/user-avatars/{$user->avatar}");
+
+    $this->app->make(DeletesUsers::class)->delete($user);
+
+    $this->assertModelMissing($user);
+    expect($disk->allFiles())->toBe([]);
 });

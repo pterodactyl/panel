@@ -513,6 +513,12 @@ const panelHighlightStyle = HighlightStyle.define([
     { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
 ]);
 
+const sameSearch = (a: SearchQuery, b: SearchQuery): boolean =>
+    a.search === b.search &&
+    a.caseSensitive === b.caseSensitive &&
+    a.regexp === b.regexp &&
+    a.wholeWord === b.wholeWord;
+
 class CustomSearchPanel implements Panel {
     dom: HTMLElement;
     top = true;
@@ -818,13 +824,30 @@ class CustomSearchPanel implements Panel {
         });
 
         if (!query.eq(this.query)) {
+            const previous = this.query;
+
             this.query = query;
             this.view.dispatch({ effects: setSearchQuery.of(query) });
 
-            // Select the first matching occurrence so the active result is visible.
-            if (query.valid) {
-                findNext(this.view);
+            // A new search selects the first match at or after the cursor; editing only the
+            // replacement leaves the selection where it is.
+            if (query.valid && !sameSearch(previous, query)) {
+                this.selectMatchFromCursor(query);
             }
+        }
+    }
+
+    selectMatchFromCursor(query: SearchQuery) {
+        const { state } = this.view;
+        const next = query.getCursor(state, state.selection.main.from).next();
+        const match = next.done ? query.getCursor(state).next() : next;
+
+        if (!match.done) {
+            this.view.dispatch({
+                selection: { anchor: match.value.from, head: match.value.to },
+                scrollIntoView: true,
+                userEvent: 'select.search',
+            });
         }
     }
 

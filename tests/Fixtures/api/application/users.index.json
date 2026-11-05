@@ -18,7 +18,6 @@
                         "language": "en",
                         "root_admin": true,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -38,7 +37,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -58,7 +56,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -78,7 +75,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -98,7 +94,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": true,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -137,7 +132,6 @@
                         "language": "en",
                         "root_admin": true,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": {
                             "servers": {
@@ -212,7 +206,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": {
                             "servers": {
@@ -334,7 +327,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": {
                             "servers": {
@@ -359,7 +351,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": {
                             "servers": {
@@ -384,7 +375,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": true,
-                        "image": null,
                         "avatar": null,
                         "relationships": {
                             "servers": {
@@ -446,7 +436,6 @@
                         "language": "en",
                         "root_admin": true,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",
@@ -487,7 +476,6 @@
                         "language": "en",
                         "root_admin": false,
                         "2fa": false,
-                        "image": null,
                         "avatar": null,
                         "relationships": [],
                         "created_at": "2026-01-02T03:04:05+00:00",

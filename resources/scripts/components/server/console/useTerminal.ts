@@ -279,7 +279,6 @@ const adjustRendering = (term: Terminal) => {
     }
 
     renderer.cursorVisible = false;
-    renderer.devicePixelRatio = Math.max(1, Math.round(window.devicePixelRatio || 1));
     renderer.measureFont = () => measureTerminalFont(renderer.fontSize, renderer.fontFamily);
     renderer.remeasureFont?.();
 

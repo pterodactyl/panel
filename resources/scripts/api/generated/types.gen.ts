@@ -1112,7 +1112,6 @@ export type ApplicationUserAttributes = {
     language: string;
     root_admin: boolean;
     '2fa': boolean;
-    image: string | null;
     avatar: string | null;
     created_at: string;
     updated_at: string;
@@ -13211,6 +13210,10 @@ export type ClientDeleteAccountAvatarErrors = {
      * Authentication credentials were missing or invalid.
      */
     401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
 };
 
 export type ClientDeleteAccountAvatarError = ClientDeleteAccountAvatarErrors[keyof ClientDeleteAccountAvatarErrors];

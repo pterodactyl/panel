@@ -14,10 +14,11 @@ type BootstrapWindow = Window & { PterodactylUser?: unknown };
 
 /**
  * @param {number} status
+ * @param {typeof http} client
  * @returns {Promise<unknown>}
  */
-const request = (status: number): Promise<unknown> =>
-    http.get('/api/client/account', {
+const request = (status: number, client: typeof http = http): Promise<unknown> =>
+    client.get('/api/client/account', {
         adapter: (config: InternalAxiosRequestConfig) =>
             Promise.reject(
                 new AxiosError('Request failed', AxiosError.ERR_BAD_REQUEST, config, undefined, {
@@ -43,22 +44,30 @@ afterEach(() => {
     delete (window as BootstrapWindow).PterodactylUser;
 });
 
-it('ends the session and continues at sign in once a request is unauthenticated', async () => {
-    await expect(request(401)).rejects.toBeInstanceOf(AxiosError);
-    await expect(request(401)).rejects.toBeInstanceOf(AxiosError);
+it('leaves other failures alone', async () => {
+    await expect(request(403)).rejects.toBeInstanceOf(AxiosError);
+    await expect(request(500)).rejects.toBeInstanceOf(AxiosError);
 
-    expect(hasBootstrapSession()).toBe(false);
+    expect(hasBootstrapSession()).toBe(true);
+    expect(router.navigate).not.toHaveBeenCalled();
+});
+
+it.each([401, 419])('ends the session and continues at sign in after a %i', async (status) => {
+    vi.resetModules();
+    const { default: freshHttp } = await import('@/api/http');
+    const { setupInterceptors: setup } = await import('@/api/interceptors');
+    const { hasBootstrapSession: hasSession } = await import('@/bootstrap');
+
+    setup();
+
+    await expect(request(status, freshHttp)).rejects.toBeInstanceOf(AxiosError);
+    await expect(request(status, freshHttp)).rejects.toBeInstanceOf(AxiosError);
+
+    expect(hasSession()).toBe(false);
     expect(router.navigate).toHaveBeenCalledOnce();
     expect(router.navigate).toHaveBeenCalledWith({
         to: '/auth/login',
         search: { redirect: '/server/abc' },
         replace: true,
     });
-});
-
-it('leaves other failures alone', async () => {
-    await expect(request(403)).rejects.toBeInstanceOf(AxiosError);
-    await expect(request(500)).rejects.toBeInstanceOf(AxiosError);
-
-    expect(router.navigate).not.toHaveBeenCalled();
 });

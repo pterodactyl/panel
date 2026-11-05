@@ -29,6 +29,8 @@ return [
         'account' => [
             'email-changed' => 'Changed email from :old to :new',
             'password-changed' => 'Changed password',
+            'avatar-changed' => 'Changed avatar',
+            'avatar-deleted' => 'Removed avatar',
         ],
         'api-key' => [
             'create' => 'Created new API key :identifier',
@@ -238,6 +240,8 @@ return [
             'update' => 'Updated the user :email',
             'delete' => 'Deleted the user :email',
             'disable-2fa' => 'Disabled two-factor authentication for :email',
+            'avatar-changed' => 'Changed the avatar of :email',
+            'avatar-deleted' => 'Removed the avatar of :email',
         ],
     ],
 ];

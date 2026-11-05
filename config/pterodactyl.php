@@ -123,7 +123,7 @@ return [
         ],
 
         'avatars' => [
-            'enabled' => false,
+            'enabled' => (bool) env('PTERODACTYL_CLIENT_AVATARS_ENABLED', false),
         ],
     ],
 

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pterodactyl\Tests\Pest\Integration\Api\Admin\Users\UserControllerTest;
 
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Assert;
 use Pterodactyl\Contracts\Users\DisablesTwoFactor;
 use Pterodactyl\Models\ActivityLog;
@@ -193,4 +195,14 @@ test('invalid payloads return validation errors', function (): void {
         expect($error['meta']['rule'])->toBe('required');
         expect($error['detail'])->not->toBeEmpty();
     }
+});
+test('avatar changes are logged against the user', function (): void {
+    Storage::fake(config()->string('extensions.files_disk'));
+    $user = User::factory()->create();
+
+    $this->post(route('api.admin.users.avatar.update', ['user' => $user->id]), ['avatar' => UploadedFile::fake()->image('avatar.png')], ['Accept' => 'application/json'])->assertOk();
+    $this->delete(route('api.admin.users.avatar.delete', ['user' => $user->id]))->assertNoContent();
+
+    expect($user->fresh()->avatar)->toBeNull()
+        ->and(ActivityLog::query()->whereIn('event', ['admin:user.avatar-changed', 'admin:user.avatar-deleted'])->where('properties->email', $user->email)->count())->toBe(2);
 });
