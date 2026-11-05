@@ -1,0 +1,66 @@
+tests/Integration/Actions/Users/DeleteUserTest.php
+  s_59a8b713018fff::t_787985cde99486 8,10,48-56
+  s_59a8b713018fff::t_c2b8b9066cc3d9 12
+  s_59a8b713018fff::t_92a3550536f970 57
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_59a8b713018fff::t_787985cde99486 8-9,199-207
+  s_59a8b713018fff::t_de5d04c9fcd822 208
+resources/scripts/components/elements/codemirror/searchMarkers.ts
+  s_59a8b713018fff::t_5b392391055fbb 18-20
+app/Http/Resources/Api/Application/UserResource.php
+  s_59a8b713018fff::t_46fb0d7af32b55 45
+app/Http/Controllers/Api/Client/AccountController.php
+  s_59a8b713018fff::t_eb2f82e2665d6a 19-20,97-101,106,108-110
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_59a8b713018fff::t_787985cde99486 35-59
+resources/scripts/api/interceptors.ts
+  s_59a8b713018fff::t_873f894d8ef63c 14
+  s_59a8b713018fff::t_0e699f05e2dd39 12-13,15
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_59a8b713018fff::t_c2b8b9066cc3d9 11624-11627
+config/pterodactyl.php
+  s_59a8b713018fff::t_46fb0d7af32b55 126
+resources/scripts/api/generated/types.gen.ts
+  s_59a8b713018fff::t_c2b8b9066cc3d9 13213-13216
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_59a8b713018fff::t_5c66ee2f57b0c3 521
+  s_59a8b713018fff::t_5b392391055fbb 516,827-828,832-835,840-850
+  s_59a8b713018fff::t_18d0e9880d9d74 517-520
+  s_59a8b713018fff::t_d4f2d53bca08f6 851-853
+resources/scripts/components/elements/codemirror/yamlHighlighting.ts
+  s_59a8b713018fff::t_18d0e9880d9d74 14-15,23-53
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_59a8b713018fff::t_eb2f82e2665d6a 162-166,178
+  s_59a8b713018fff::t_7a7ffdd2f7f24d 179
+app/Actions/Users/DeleteUser.php
+  s_59a8b713018fff::t_eb2f82e2665d6a 10,12,14-15,22-28
+resources/lang/en/activity.php
+  s_59a8b713018fff::t_eb2f82e2665d6a 32-33,243-244
+app/Http/Requests/Api/Client/Account/DeleteAvatarRequest.php
+  s_59a8b713018fff::t_eb2f82e2665d6a 1-12
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_59a8b713018fff::t_46fb0d7af32b55 25
+resources/scripts/components/elements/CodemirrorEditor.spec.tsx
+  s_59a8b713018fff::t_72e596b0437d91 79-93,97,99-110
+  s_59a8b713018fff::t_5c66ee2f57b0c3 94-96,98
+resources/scripts/api/interceptors.spec.ts
+  s_59a8b713018fff::t_5c66ee2f57b0c3 60
+  s_59a8b713018fff::t_f0eca7a1400f91 17,20-21,63-64
+  s_59a8b713018fff::t_0e699f05e2dd39 47-59,61,65-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e467b4b5fff8eb8678ec8206380ef5bdedf48fcb",
+  "prompts": {},
+  "sessions": {
+    "s_59a8b713018fff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f16d1e0-82a9-4acb-8823-20227d0f5b5c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
