@@ -70,6 +70,7 @@ class ServerResource extends ClientResource
             'name' => $server->name,
             'node' => $server->node->name,
             'is_node_under_maintenance' => $server->node->isUnderMaintenance(),
+            'upload_size' => $server->node->upload_size,
             'sftp_details' => [
                 'ip' => $server->node->fqdn,
                 'port' => $server->node->daemonSFTP,

@@ -17,6 +17,7 @@
                         "name": "Survival",
                         "node": "node-alpha",
                         "is_node_under_maintenance": false,
+                        "upload_size": 100,
                         "sftp_details": {
                             "ip": "alpha.example.test",
                             "port": 2022
@@ -202,6 +203,7 @@
                 "name": "Survival",
                 "node": "node-alpha",
                 "is_node_under_maintenance": false,
+                "upload_size": 100,
                 "sftp_details": {
                     "ip": "alpha.example.test",
                     "port": 2022

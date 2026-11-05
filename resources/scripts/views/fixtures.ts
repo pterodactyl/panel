@@ -30,6 +30,7 @@ export function createTestServer(options: TestServerOptions = {}): Server {
             name: options.name ?? 'Test server',
             node: 'Test node',
             is_node_under_maintenance: false,
+            upload_size: 100,
             sftp_details: { ip: '127.0.0.1', port: 2022 },
             description: null,
             limits: { memory: 1024, swap: 0, disk: 1024, io: 500, cpu: 100, threads: null, oom_disabled: true },

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { useCurrentServerUuid } from '@/api/server/queries';
+import { useCurrentServer, useCurrentServerUuid, type Server } from '@/api/server/queries';
 import { useUploadFiles } from '@/api/server/files/queries';
 import { useFileUploadActions, useServerDirectory } from '@/state/server';
 import type { UploadSource } from '@/views/server/files';
@@ -11,11 +11,14 @@ const UPLOADED_DISPLAY_MS = 500;
 const holdsFolder = (source: DataTransfer) =>
     [...source.items].some((item) => item.kind === 'file' && item.webkitGetAsEntry()?.isDirectory);
 
-/** Uploads into the current directory; rejects when a folder was dropped or any file failed, after its error toast. */
+const selectUploadSize = (server: Server) => server.attributes.upload_size;
+
+/** Uploads into the current directory; rejects when a folder was dropped, a file is over the node's upload limit or any file failed, after its error toast. */
 export default function useFileUploader(): (source: UploadSource) => Promise<void> {
     const removals = useRef(new Map<string, ReturnType<typeof setTimeout>>());
     const { mutateAsync } = useUploadFiles();
     const uuid = useCurrentServerUuid()!;
+    const uploadSize = useCurrentServer(selectUploadSize)!;
     const directory = useServerDirectory();
     const { removeFileUpload, pushFileUpload, setUploadProgress } = useFileUploadActions();
 
@@ -45,6 +48,18 @@ export default function useFileUploader(): (source: UploadSource) => Promise<voi
 
             if (files.length === 0) {
                 return;
+            }
+
+            const oversized = files.filter((file) => file.size > uploadSize * 1024 * 1024);
+
+            if (oversized.length > 0) {
+                const message =
+                    oversized.length === 1
+                        ? `${oversized[0].name} is larger than the ${uploadSize} MiB upload limit.`
+                        : `${oversized.length} files are larger than the ${uploadSize} MiB upload limit.`;
+
+                toast.error(message);
+                throw new Error(message);
             }
 
             const { failed } = await mutateAsync({
@@ -81,6 +96,6 @@ export default function useFileUploader(): (source: UploadSource) => Promise<voi
                 );
             }
         },
-        [mutateAsync, uuid, directory, removeFileUpload, pushFileUpload, setUploadProgress]
+        [mutateAsync, uuid, uploadSize, directory, removeFileUpload, pushFileUpload, setUploadProgress]
     );
 }
