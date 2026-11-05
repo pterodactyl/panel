@@ -11,7 +11,10 @@
                 "default_value": "server.jar",
                 "server_value": "custom.jar",
                 "is_editable": true,
-                "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/"
+                "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
+                "options": [],
+                "has_options_source": false,
+                "allow_manual_input": true
             },
             "meta": {
                 "startup_command": "java -Xms128M -Xmx2048M -jar custom.jar",

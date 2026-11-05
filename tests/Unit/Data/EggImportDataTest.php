@@ -17,6 +17,11 @@ test('parses a v2 egg into typed import data', function () {
     expect($parsed->features)->toBe(['eula', 'java_version', 'pid_limit']);
     expect($parsed->variables[0]->environmentVariable)->toBe('MINECRAFT_VERSION');
     expect($parsed->variables[0]->userViewable)->toBeTrue();
+    expect($parsed->variables[0]->optionsSource)->toMatchArray([
+        'url' => 'https://fill.papermc.io/v3/projects/paper',
+        'data_path' => 'versions.*',
+        'value_path' => '$value',
+    ]);
 });
 test('normalizes a v1 image list', function () {
     $parsed = EggImportData::fromFile(fixture('source-engine/egg-garrys-mod.json'));
