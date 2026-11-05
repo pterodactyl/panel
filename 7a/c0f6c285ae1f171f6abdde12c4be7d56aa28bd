@@ -1,0 +1,117 @@
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_59a8b713018fff::t_6b5c8781660422 8-9,2836-2878
+  s_59a8b713018fff::t_9dc085b07203aa 2879
+resources/scripts/components/admin/settings/LogoSettingsCard.tsx
+  s_59a8b713018fff::t_f82052faed3426 1-3,6,8-13,16-17,22-24,27,29-36,39-45,51-53,57-67,70-72,74,76-83,86
+  s_59a8b713018fff::t_44ef48a5a5cb8d 46-50,54-56
+app/Providers/SettingsServiceProvider.php
+  s_59a8b713018fff::t_2ce9e2b98cca10 26
+packages/sdk/types/components/form/fields.d.ts
+  s_59a8b713018fff::t_6b5c8781660422 12-13
+resources/scripts/api/settings/types.ts
+  s_59a8b713018fff::t_4a353c9cd942fe 3-4
+resources/scripts/components/admin/settings/GeneralSettingsForm.tsx
+  s_59a8b713018fff::t_cacdb7276c351a 4,29,91
+resources/scripts/api/generated/index.ts
+  s_59a8b713018fff::t_6b5c8781660422 4-5
+CHANGELOG.md
+  s_59a8b713018fff::t_e1767bf532488c 19-21
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_59a8b713018fff::t_d60e37487a40c0 399-401
+config/app.php
+  s_59a8b713018fff::t_1fd9d53bb9b3c5 40-42,46
+  s_59a8b713018fff::t_c251887acfce26 36-39,43-45,47
+  s_59a8b713018fff::t_afdb9bae1cbc06 35
+resources/scripts/api/admin/settings/queries.ts
+  s_59a8b713018fff::t_94d8da42bdeb65 1,5,12,146-153,158-161,167,171,173-174
+resources/scripts/views/layouts.ts
+  s_59a8b713018fff::t_4a353c9cd942fe 22-25,134-135
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_59a8b713018fff::t_864fb7255f2e66 12,23,57,59,64
+packages/sdk/types/api/settings/types.d.ts
+  s_59a8b713018fff::t_44ef48a5a5cb8d 4-5
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_59a8b713018fff::t_6b5c8781660422 612,2336-2341,3694-3696,8983-9034
+packages/sdk/manifest.schema.json
+  s_59a8b713018fff::t_1fd9d53bb9b3c5 23-24
+app/Http/Requests/Api/Admin/Settings/UploadLogoRequest.php
+  s_59a8b713018fff::t_9eac7c562593e9 8,20-22,25,28,30
+app/Providers/ActionServiceProvider.php
+  s_59a8b713018fff::t_1fd9d53bb9b3c5 104,225,359
+packages/sdk/types/components/form/index.d.ts
+  s_59a8b713018fff::t_6b5c8781660422 4,8,21
+resources/scripts/components/admin/settings/SettingsForms.spec.tsx
+  s_59a8b713018fff::t_cacdb7276c351a 12
+  s_59a8b713018fff::t_5922784ddc9af7 28
+resources/scripts/themes/classic/views/auth/brand.ts
+  s_59a8b713018fff::t_25831a3e32680b 1-5
+resources/scripts/themes/classic/views/layout/AuthLayout.tsx
+  s_59a8b713018fff::t_475bb065462697 2,4,6-10
+packages/sdk/types/views/layouts.d.ts
+  s_59a8b713018fff::t_44ef48a5a5cb8d 10-13
+resources/views/templates/wrapper.blade.php
+  s_59a8b713018fff::t_08ac54ef6c4aa5 14-18,21-22
+  s_59a8b713018fff::t_3ecda2588622e2 20,26
+packages/sdk/types/lib/passwords.d.ts
+  s_59a8b713018fff::t_c89d7407e9c96e 1-7
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_59a8b713018fff::t_62f3908c2735be 2395,2401,2408
+resources/scripts/api/generated/sdk.gen.ts
+  s_59a8b713018fff::t_6b5c8781660422 6,1608-1634
+  s_59a8b713018fff::t_a6526d32c7a95d 1635
+resources/scripts/api/generated/types.gen.ts
+  s_59a8b713018fff::t_6b5c8781660422 676,2541-2547,3970-3973,10201-10261
+  s_59a8b713018fff::t_b7c39c77ca9f56 10262
+resources/scripts/components/form/fields.tsx
+  s_59a8b713018fff::t_092d52e6385564 187
+resources/scripts/sdk/navigation.tsx
+  s_59a8b713018fff::t_cacdb7276c351a 23
+resources/scripts/lib/passwords.ts
+  s_59a8b713018fff::t_1aa20efaaa5942 43
+packages/sdk/THEMES.md
+  s_59a8b713018fff::t_511a61cc4e1177 1008-1009
+resources/scripts/themes/classic/views/shared/fields.tsx
+  s_59a8b713018fff::t_1aa20efaaa5942 3-14,88,115
+  s_59a8b713018fff::t_092d52e6385564 154
+resources/scripts/sdk/index.ts
+  s_59a8b713018fff::t_1aa20efaaa5942 108
+resources/scripts/themes/classic/views/layout/AppLayout.tsx
+  s_59a8b713018fff::t_558b06f6deaaa1 67-71
+app/Http/Controllers/Api/Admin/Settings/LogoController.php
+  s_59a8b713018fff::t_e964d4c652282c 9,14,16,23-29,31,34-39,41
+app/Contracts/Settings/ReplacesBrandLogo.php
+  s_59a8b713018fff::t_48d26284497739 1-16
+app/Http/Requests/Api/Admin/Settings/DeleteLogoRequest.php
+  s_59a8b713018fff::t_9aeab3f45cea4c 1-16
+app/Actions/Settings/ReplaceBrandLogo.php
+  s_59a8b713018fff::t_c695863655622a 5,8,11-12,14,16-17,19,21,23-31,33-37,39,41,44,46-47,49-54,56,59,62,64-65,68,70
+app/Services/Extensions/ExtensionManifest.php
+  s_59a8b713018fff::t_1fd9d53bb9b3c5 7,35
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_59a8b713018fff::t_5922784ddc9af7 7,91-96
+tests/Integration/Api/Admin/Settings/LogoControllerTest.php
+  s_59a8b713018fff::t_68043d34a1d49d 64,73-74
+  s_59a8b713018fff::t_d8f4783c2f8d93 1-63,65-72,75-82
+packages/sdk/types/sdk/index.d.ts
+  s_59a8b713018fff::t_c89d7407e9c96e 61
+resources/scripts/themes/classic/views/auth/AuthCard.tsx
+  s_59a8b713018fff::t_4a353c9cd942fe 1,3,13,15,23,25-27
+app/Http/ViewComposers/AssetComposer.php
+  s_59a8b713018fff::t_5ccd61ca537554 10,43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ac0f6c285ae1f171f6abdde12c4be7d56aa28bd",
+  "prompts": {},
+  "sessions": {
+    "s_59a8b713018fff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f16d1e0-82a9-4acb-8823-20227d0f5b5c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
