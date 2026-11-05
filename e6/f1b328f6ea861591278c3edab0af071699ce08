@@ -1,0 +1,83 @@
+packages/sdk/types/sdk/index.d.ts
+  s_59a8b713018fff::t_1cb5a406af36f1 40
+resources/scripts/sdk/index.ts
+  s_59a8b713018fff::t_79c3245efd7d4e 77
+resources/scripts/components/elements/codemirror/searchMarkers.spec.ts
+  s_59a8b713018fff::t_ac0f24a6f71027 1-25
+resources/scripts/themes/classic/views/account/PasswordCard.tsx
+  s_59a8b713018fff::t_79c3245efd7d4e 18
+resources/scripts/themes/classic/views/shared/fields.tsx
+  s_59a8b713018fff::t_79c3245efd7d4e 72-80,82,91-103
+  s_59a8b713018fff::t_fb609c2c1dbbb5 1-2
+CHANGELOG.md
+  s_59a8b713018fff::t_ccec790c2f8ff5 21
+packages/sdk/THEMES.md
+  s_59a8b713018fff::t_ccec790c2f8ff5 1247
+resources/scripts/lib/images.ts
+  s_59a8b713018fff::t_dde17c5ee4875a 1-3
+resources/scripts/plugins/useObjectUrl.ts
+  s_59a8b713018fff::t_dde17c5ee4875a 1-22
+resources/scripts/views/account/overview.ts
+  s_59a8b713018fff::t_841a7789bf4738 1
+  s_59a8b713018fff::t_dde17c5ee4875a 17-18,169,176,178,291
+resources/scripts/lib/passwords.spec.ts
+  s_59a8b713018fff::t_80c4ac5c37c65f 1-25
+resources/scripts/components/form/PasswordInput.spec.tsx
+  s_59a8b713018fff::t_1cb5a406af36f1 1-36
+resources/scripts/components/server/console/useTerminal.spec.tsx
+  s_59a8b713018fff::t_1f15c4070f53a2 30-33,36-37,72-73,75-76,120-124,411-441
+packages/sdk/types/views/server/files.d.ts
+  s_59a8b713018fff::t_19bf9d99c6d8ba 100-103
+resources/scripts/views/forms.ts
+  s_59a8b713018fff::t_79c3245efd7d4e 22-23,56,76,87
+packages/sdk/types/lib/passwords.d.ts
+  s_59a8b713018fff::t_1cb5a406af36f1 3-4
+resources/scripts/lib/passwords.ts
+  s_59a8b713018fff::t_80c4ac5c37c65f 28-29
+resources/scripts/components/form/PasswordInput.tsx
+  s_59a8b713018fff::t_79c3245efd7d4e 1-20,29-97
+  s_59a8b713018fff::t_fb609c2c1dbbb5 21-28
+resources/scripts/components/elements/codemirror/yamlHighlighting.spec.ts
+  s_59a8b713018fff::t_ac0f24a6f71027 1-20,23-27
+  s_59a8b713018fff::t_bc537542ee94a8 21-22
+resources/scripts/themes/classic/views/server/console/Terminal.tsx
+  s_59a8b713018fff::t_831f5ba8eee6fa 51,68
+resources/scripts/views/server/files.ts
+  s_59a8b713018fff::t_19bf9d99c6d8ba 114-117
+resources/scripts/components/server/console/wrappedRows.ts
+  s_59a8b713018fff::t_4f0cedc9c996fe 19-21
+resources/scripts/components/form/fields.tsx
+  s_59a8b713018fff::t_79c3245efd7d4e 1,5,120-135
+resources/scripts/components/elements/codemirror/languages.ts
+  s_59a8b713018fff::t_04f13634cf3981 19,82-83
+resources/scripts/components/admin/settings/LogoSettingsCard.tsx
+  s_59a8b713018fff::t_dde17c5ee4875a 1,5-6,15-19,48,57,65
+resources/scripts/components/elements/codemirror/yamlHighlighting.ts
+  s_59a8b713018fff::t_04f13634cf3981 2
+resources/scripts/components/server/console/useTerminal.ts
+  s_59a8b713018fff::t_76a1cab4c8bf26 202-205,240-241,295
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_59a8b713018fff::t_04f13634cf3981 20,981,1042
+packages/sdk/types/views/forms.d.ts
+  s_59a8b713018fff::t_1cb5a406af36f1 20-21
+resources/scripts/components/admin/users/UserAvatarCard.tsx
+  s_59a8b713018fff::t_dde17c5ee4875a 1,6-7,15-22,31,41,53,61
+packages/sdk/types/components/form/PasswordInput.d.ts
+  s_59a8b713018fff::t_1cb5a406af36f1 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e6f1b328f6ea861591278c3edab0af071699ce08",
+  "prompts": {},
+  "sessions": {
+    "s_59a8b713018fff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f16d1e0-82a9-4acb-8823-20227d0f5b5c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
