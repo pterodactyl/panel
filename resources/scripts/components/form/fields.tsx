@@ -184,12 +184,7 @@ export function PasswordField({
                         <Tooltip content='Copy password'>
                             <span className='inline-flex'>
                                 <CopyOnClick text={field.state.value} showInNotification={false}>
-                                    <Button.Text
-                                        type='button'
-                                        size='xsmall'
-                                        isSecondary
-                                        aria-label='Copy password'
-                                    >
+                                    <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy password'>
                                         <Icon icon={Clipboard} className='h-3.5 w-3.5' />
                                     </Button.Text>
                                 </CopyOnClick>

@@ -1,14 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import http from '@/api/http';
+import { type QueryClient, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import {
+    adminDeleteLogoMutation,
     adminGetSettingsOptions,
     adminGetSettingsQueryKey,
     adminSendTestMailMutation,
     adminUpdateAdvancedSettingsMutation,
     adminUpdateGeneralSettingsMutation,
     adminUpdateMailSettingsMutation,
+    adminUploadLogoMutation,
 } from '@/api/generated/@tanstack/react-query.gen';
 import type {
     AdminGetSettingsResponse,
@@ -142,42 +143,35 @@ export const useUpdateAdminGeneralSettings = () => {
     });
 };
 
+const setAdminLogo = async (queryClient: QueryClient, logo: string | null) => {
+    queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
+        settings ? { ...settings, general: { ...settings.general, 'app:logo': logo } } : settings
+    );
+    setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo }));
+    await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+};
+
 export const useUploadAdminLogo = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (file: File) => {
-            const form = new FormData();
-            form.append('file', file);
-
-            const { data } = await http.post<{ logo: string }>('/api/admin/settings/logo', form);
-
-            return data.logo;
-        },
-        onSuccess: async (logo) => {
-            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
-                settings ? { ...settings, logo } : settings
-            );
-            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo }));
-            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+        ...adminUploadLogoMutation(),
+        onSuccess: async ({ logo }) => {
+            await setAdminLogo(queryClient, logo ?? null);
+            toast.success('Logo updated');
         },
         onError: (error) => notifyHttpError(error, 'Unable to upload logo'),
     });
 };
 
-export const useClearAdminLogo = () => {
+export const useDeleteAdminLogo = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async () => {
-            await http.delete('/api/admin/settings/logo');
-        },
+        ...adminDeleteLogoMutation(),
         onSuccess: async () => {
-            queryClient.setQueryData<AdminSettings>(adminGetSettingsQueryKey(), (settings) =>
-                settings ? { ...settings, logo: null } : settings
-            );
-            setSiteSettingsQueryData(queryClient, (settings) => ({ ...settings, logo: null }));
-            await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
+            await setAdminLogo(queryClient, null);
+            toast.success('Logo removed');
         },
         onError: (error) => notifyHttpError(error, 'Unable to remove logo'),
     });

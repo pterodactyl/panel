@@ -40,6 +40,7 @@ export const generateSecurePassword = (length = 17): string => {
 
     for (let index = password.length - 1; index > 0; index--) {
         const swapIndex = secureRandomIndex(index + 1);
+
         [password[index], password[swapIndex]] = [password[swapIndex], password[index]];
     }
 

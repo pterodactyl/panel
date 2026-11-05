@@ -1005,7 +1005,8 @@ theme does not offer falls back to its first scheme. The `layout.app` model carr
 ### Branding
 
 - **Logo.** An `image` setting that writes `--brand-logo` becomes `model.brand.logoUrl` of `layout.app`
-  and `layout.auth`. Classic shows it in place of the panel's name.
+  and `layout.auth`. Without one, `logoUrl` is the logo uploaded in the admin settings, if there is one.
+  Classic shows it in place of the panel's name and on the sign-in card.
 - **Icons.** `defineTheme({ icons: { server: Boxes } })` maps lucide icon names to components.
   `<NamedIcon>`, which draws navigation and extension icons by name, uses the theme's icon first.
 - **Browser colour.** The `--theme-color` token sets `<meta name="theme-color">`.

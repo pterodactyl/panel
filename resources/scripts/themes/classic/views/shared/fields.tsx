@@ -1,7 +1,17 @@
 import { useId, useState, type ChangeEvent } from 'react';
 import { Clipboard, Eye, EyeOff, RotateCcwKey } from 'lucide-react';
-import { Button, CopyOnClick, Icon, Input, Label, TextArea, Tooltip, type FieldModel } from '@/sdk';
-import { generateSecurePassword } from '@/lib/passwords';
+import {
+    Button,
+    cn,
+    CopyOnClick,
+    generateSecurePassword,
+    Icon,
+    Input,
+    Label,
+    TextArea,
+    Tooltip,
+    type FieldModel,
+} from '@/sdk';
 
 interface FieldProps {
     field: FieldModel;
@@ -75,7 +85,7 @@ export function PasswordField({ field, label, description, light, id, className 
     const { fieldId, helpId, describedBy } = useFieldIds(field, id, description);
     const [visible, setVisible] = useState(false);
     const [generated, setGenerated] = useState(false);
-    const toggleLabel = (visible ? 'Hide' : 'Show') + ' ' + (label?.toLowerCase() ?? 'password');
+    const toggleLabel = `${visible ? 'Hide' : 'Show'} ${label?.toLowerCase() ?? 'password'}`;
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         field.fieldProps.onChange(event);
@@ -102,7 +112,7 @@ export function PasswordField({ field, label, description, light, id, className 
                     id={fieldId}
                     type={visible ? 'text' : 'password'}
                     onChange={handleChange}
-                    className={['pr-24', className].filter(Boolean).join(' ')}
+                    className={cn('pr-24', className)}
                     aria-invalid={field.error ? true : undefined}
                     aria-describedby={describedBy}
                     $hasError={!!field.error}
@@ -141,12 +151,7 @@ export function PasswordField({ field, label, description, light, id, className 
                         <Tooltip content='Copy password'>
                             <span className='inline-flex'>
                                 <CopyOnClick text={field.fieldProps.value} showInNotification={false}>
-                                    <Button.Text
-                                        type='button'
-                                        size='xsmall'
-                                        isSecondary
-                                        aria-label='Copy password'
-                                    >
+                                    <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy password'>
                                         <Icon icon={Clipboard} className='h-3.5 w-3.5' />
                                     </Button.Text>
                                 </CopyOnClick>

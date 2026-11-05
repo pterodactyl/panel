@@ -11,21 +11,19 @@
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <meta name="robots" content="noindex">
             {{-- An extension that registers one of these elements (registerHeadTags)
-                 replaces the panel's default instead of adding a second one. --}}
-            @if (!empty($siteConfiguration['logo']))
-                <link rel="icon" href="{{ $siteConfiguration['logo'] }}">
-                <link rel="apple-touch-icon" href="{{ $siteConfiguration['logo'] }}">
-            @else
-                @unless ($extensionHead->replaces('link', 'apple-touch-icon'))
-                    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-                @endunless
-            @endif
+                 replaces the panel's default instead of adding a second one. An uploaded
+                 logo is the default icon. --}}
+            @unless ($extensionHead->replaces('link', 'apple-touch-icon'))
+                <link rel="apple-touch-icon" sizes="180x180" href="{{ $siteConfiguration['logo'] ?? '/favicons/apple-touch-icon.png' }}">
+            @endunless
             @unless ($extensionHead->replaces('link', 'icon'))
-                @if (empty($siteConfiguration['logo']))
+                @isset($siteConfiguration['logo'])
+                    <link rel="icon" href="{{ $siteConfiguration['logo'] }}">
+                @else
                     <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg">
                     <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
                     <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
-                @endif
+                @endisset
             @endunless
             @unless ($extensionHead->replaces('link', 'manifest'))
                 <link rel="manifest" href="/favicons/manifest.json">

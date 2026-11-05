@@ -58,6 +58,7 @@ export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
 export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
 export { formatDate, fromNow } from "../lib/dates.js";
+export { generateSecurePassword } from "../lib/passwords.js";
 export { useDebouncedCallback, type DebouncedCallback } from "../plugins/useDebouncedCallback.js";
 export { useShortcut, type Shortcut } from "../plugins/useShortcut.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";
