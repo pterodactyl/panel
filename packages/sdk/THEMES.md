@@ -1244,7 +1244,7 @@ leaves `*.map` files out unless `p:extension:pack` is given `--sourcemaps`.
   type error, and the panel keeps its own.
 - **Import CSS from JavaScript.** The build fails: the panel loads only `dist/theme.css`.
 - **Bypass the engine on forms.** A layer over a form spreads each field's `fieldProps` (name, type,
-  autocomplete, value and handlers) onto an input. A layer over `page.auth.login` also submits through
+  autocomplete, value and handlers) onto an input, or calls `setValue` to fill it without an input event. A layer over `page.auth.login` also submits through
   `model.submit`, renders `Captcha` when the panel requires one, and keeps the `auth.login.form.after`
   slot.
 

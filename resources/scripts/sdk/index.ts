@@ -74,6 +74,7 @@ export {
     type NumberInputProps,
     type FileInputProps,
 } from '@/components/form/controls';
+export { PasswordInput, type PasswordInputProps } from '@/components/form/PasswordInput';
 export {
     default as SubNavigation,
     type SubNavigationItemState,

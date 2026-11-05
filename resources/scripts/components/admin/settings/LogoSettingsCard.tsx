@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, TitledGreyBox } from '@/sdk';
 import { useDeleteAdminLogo, useUploadAdminLogo } from '@/api/admin/settings/queries';
 import type { AdminSettings } from '@/api/admin/settings/queries';
+import { imageUploadAccept } from '@/lib/images';
+import { useObjectUrl } from '@/plugins/useObjectUrl';
 
 export default function LogoSettingsCard({ settings }: { settings: AdminSettings }) {
     const readOnly = settings.meta.load_environment_only;
@@ -10,29 +12,12 @@ export default function LogoSettingsCard({ settings }: { settings: AdminSettings
     const remove = useDeleteAdminLogo();
     const logo = settings.general['app:logo'];
     const [selected, setSelected] = useState<File | null>(null);
-    const [preview, setPreview] = useState(logo);
-
-    useEffect(() => {
-        if (!selected) {
-            setPreview(logo);
-
-            return;
+    const picked = useObjectUrl(selected);
+    const preview = selected ? picked : logo;
+    const save = () => {
+        if (selected) {
+            upload.mutate({ body: { logo: selected } }, { onSuccess: () => setSelected(null) });
         }
-
-        const url = URL.createObjectURL(selected);
-
-        setPreview(url);
-
-        return () => URL.revokeObjectURL(url);
-    }, [logo, selected]);
-
-    const save = async () => {
-        if (!selected) {
-            return;
-        }
-
-        await upload.mutateAsync({ body: { logo: selected } });
-        setSelected(null);
     };
 
     return (
@@ -60,7 +45,7 @@ export default function LogoSettingsCard({ settings }: { settings: AdminSettings
                     ref={input}
                     type='file'
                     aria-label='Logo file'
-                    accept='.png,.jpg,.jpeg,.svg,.webp,.avif,.ico,image/png,image/jpeg,image/svg+xml,image/webp,image/avif,image/x-icon'
+                    accept={imageUploadAccept}
                     className='hidden'
                     onChange={(event) => setSelected(event.target.files?.[0] ?? null)}
                 />
@@ -69,7 +54,7 @@ export default function LogoSettingsCard({ settings }: { settings: AdminSettings
                         type='button'
                         disabled={readOnly}
                         isLoading={upload.isPending}
-                        onClick={() => (selected ? void save() : input.current?.click())}
+                        onClick={() => (selected ? save() : input.current?.click())}
                     >
                         {selected ? 'Save Logo' : 'Upload Logo'}
                     </Button>
@@ -77,7 +62,7 @@ export default function LogoSettingsCard({ settings }: { settings: AdminSettings
                         type='button'
                         disabled={readOnly || !logo || !!selected}
                         isLoading={remove.isPending}
-                        onClick={() => void remove.mutateAsync({}).then(() => setSelected(null))}
+                        onClick={() => remove.mutate({})}
                     >
                         Remove Logo
                     </Button.Danger>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useField, useForm, useStore } from '@tanstack/react-form';
 import { useLocation } from '@tanstack/react-router';
 import {
@@ -14,6 +14,8 @@ import {
     useEnableAccountTwoFactor,
 } from '@/api/account/two-factor/queries';
 import { httpErrorToHuman } from '@/api/http';
+import { imageUploadAccept } from '@/lib/images';
+import { useObjectUrl } from '@/plugins/useObjectUrl';
 import { useSiteSettings } from '@/api/settings/queries';
 import { boundField, fixtureField, stateField, type FieldAttributes } from '../forms';
 import { implementViews } from '../registry';
@@ -151,29 +153,6 @@ function useAccountEmailModel(): AccountEmailModel {
 }
 
 /** A URL for the file while it is set, revoked when it changes. */
-function useObjectUrl(file: File | null): string | null {
-    const [url, setUrl] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!file) {
-            setUrl(null);
-
-            return;
-        }
-
-        const created = URL.createObjectURL(file);
-
-        setUrl(created);
-
-        return () => URL.revokeObjectURL(created);
-    }, [file]);
-
-    return url;
-}
-
-const avatarTypes =
-    '.png,.jpg,.jpeg,.svg,.webp,.avif,.ico,image/png,image/jpeg,image/svg+xml,image/webp,image/avif,image/x-icon';
-
 function useAccountAvatarModel(): AccountAvatarModel {
     const user = useCurrentUser();
     const update = useUpdateAccountAvatar();
@@ -187,16 +166,16 @@ function useAccountAvatarModel(): AccountAvatarModel {
         avatar,
         selected,
         preview: selected ? picked : avatar,
-        accept: avatarTypes,
+        accept: imageUploadAccept,
         select: setSelected,
         submit: () => {
             if (selected === null) {
                 return;
             }
 
-            void update.mutateAsync({ body: { avatar: selected } }).then(() => setSelected(null));
+            update.mutate({ body: { avatar: selected } }, { onSuccess: () => setSelected(null) });
         },
-        remove: () => void remove.mutateAsync({}),
+        remove: () => remove.mutate({}),
         canSubmit: selected !== null && !update.isPending,
         submitting: update.isPending || remove.isPending,
     };
@@ -309,7 +288,7 @@ function avatarFixture(avatar: string | null, selected: File | null = null): Acc
         avatar,
         selected,
         preview: selected ? picture : avatar,
-        accept: avatarTypes,
+        accept: imageUploadAccept,
         select: noop,
         submit: noop,
         remove: noop,

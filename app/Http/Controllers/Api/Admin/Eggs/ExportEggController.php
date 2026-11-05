@@ -41,7 +41,6 @@ class ExportEggController extends AdminApiController
     #[ScribeResponse(self::EXPORT_EXAMPLE, description: 'Egg share file returned.')]
     public function __invoke(GetEggRequest $request, ExportsEggs $eggs, Egg $egg): Response
     {
-
         $filename = mb_trim(preg_replace('/\W/', '-', Str::kebab($egg->name)), '-');
 
         return new Response($eggs->export($egg), Response::HTTP_OK, [

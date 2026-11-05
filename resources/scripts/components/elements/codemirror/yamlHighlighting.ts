@@ -1,7 +1,6 @@
 import { syntaxTree } from '@codemirror/language';
-import type { Extension, Range } from '@codemirror/state';
+import type { Range } from '@codemirror/state';
 import { Decoration, ViewPlugin, type DecorationSet, type EditorView, type ViewUpdate } from '@codemirror/view';
-import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
 
 class YamlScalarHighlightingPlugin {
     decorations: DecorationSet;
@@ -60,9 +59,3 @@ export const yamlScalarHighlighting: ViewPlugin<YamlScalarHighlightingPlugin> = 
     YamlScalarHighlightingPlugin,
     { decorations: (plugin) => plugin.decorations }
 );
-
-export const resolveEditorLanguage = (mime: string): Extension => {
-    const language = resolveCodemirrorLanguage(mime);
-
-    return mime === 'text/x-yaml' || mime === 'text/yaml' ? [language, yamlScalarHighlighting] : language;
-};

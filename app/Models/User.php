@@ -41,7 +41,6 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
     'totp_secret',
     'totp_authenticated_at',
     'gravatar',
-    'avatar',
     'root_admin',
 ])]
 #[Hidden(['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'])]

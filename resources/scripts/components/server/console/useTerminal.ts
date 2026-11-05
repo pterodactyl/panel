@@ -91,13 +91,9 @@ type InternalScrollbackProvider = {
 };
 
 type InternalRenderer = {
-    ctx?: CanvasRenderingContext2D;
-    theme?: ITheme;
     fontSize?: number;
     fontFamily?: string;
-    devicePixelRatio?: number;
     cursorVisible?: boolean;
-    getMetrics?: () => { width: number; height: number; baseline: number };
     measureFont?: () => { width: number; height: number; baseline: number };
     remeasureFont?: () => void;
     resize?: (cols: number, rows: number) => void;
@@ -203,6 +199,10 @@ const unlockFitResize = (fit: GhosttyWeb.FitAddon) => {
     };
 };
 
+/**
+ * Ghostty's own measurement, except the height also covers descenders and brackets: measuring
+ * only "M" made rows short enough to clip the bottom of g, j, p, q and y.
+ */
 const measureTerminalFont = (fontSize = 12, fontFamily = 'monospace') => {
     const ctx = document.createElement('canvas').getContext('2d');
 
@@ -237,6 +237,8 @@ const patchWasmTerminal = (term: Terminal, internalTerm: InternalTerminal, rende
     const getLine = wasmTerm.getLine?.bind(wasmTerm);
     const getScrollbackLine = wasmTerm.getScrollbackLine?.bind(wasmTerm);
 
+    // Ghostty skips drawing a row it gets no line for, which leaves the previous frame's text in it;
+    // an empty line still paints the row's background.
     wasmTerm.getLine = getLine ? (row) => getLine(row) ?? [] : wasmTerm.getLine;
     wasmTerm.getScrollbackLine = getScrollbackLine
         ? (offset) => getScrollbackLine(offset) ?? []
@@ -285,22 +287,12 @@ const adjustRendering = (term: Terminal) => {
     patchWasmTerminal(term, internalTerm, renderer);
 
     const render = renderer.render.bind(renderer);
-    let lastViewportY = 0;
 
     renderer.render = (buffer, forceAll, viewportY = 0, scrollbackProvider) => {
         const maxScrollback = scrollbackProvider?.getScrollbackLength?.() ?? Number.POSITIVE_INFINITY;
         const wholeViewportY = Math.max(0, Math.min(maxScrollback, Math.floor(viewportY)));
-        const forceRedraw = Boolean(forceAll) || wholeViewportY !== lastViewportY;
-        const metrics = renderer.getMetrics?.();
 
-        lastViewportY = wholeViewportY;
-
-        if (forceRedraw && renderer.ctx && renderer.theme?.background && metrics) {
-            renderer.ctx.fillStyle = renderer.theme.background;
-            renderer.ctx.fillRect(0, 0, term.cols * metrics.width, term.rows * metrics.height);
-        }
-
-        return render(buffer, forceRedraw, wholeViewportY, scrollbackProvider, 0);
+        return render(buffer, forceAll, wholeViewportY, scrollbackProvider, 0);
     };
 };
 

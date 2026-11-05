@@ -16,6 +16,7 @@ import * as sqlDialect from '@codemirror/lang-sql';
 import { vue } from '@codemirror/lang-vue';
 import { xml } from '@codemirror/lang-xml';
 import { yaml } from '@codemirror/lang-yaml';
+import { yamlScalarHighlighting } from '@/components/elements/codemirror/yamlHighlighting';
 import { c, csharp } from '@codemirror/legacy-modes/mode/clike';
 import { diff } from '@codemirror/legacy-modes/mode/diff';
 import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
@@ -78,8 +79,8 @@ const languageByMime = new Map<string, LanguageFactory>(
         'text/x-vue': () => vue(),
         'application/xml': () => xml(),
         'text/xml': () => xml(),
-        'text/x-yaml': () => yaml(),
-        'text/yaml': () => yaml(),
+        'text/x-yaml': () => [yaml(), yamlScalarHighlighting],
+        'text/yaml': () => [yaml(), yamlScalarHighlighting],
     })
 );
 

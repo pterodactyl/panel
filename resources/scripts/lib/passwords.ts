@@ -25,7 +25,8 @@ const secureRandomIndex = (length: number): number => {
 const randomCharacter = (characters: string): string => characters[secureRandomIndex(characters.length)];
 
 /**
- * Generates a secure password using the defined random character sets.
+ * Generates a secure password with at least one character from each set, so it is never shorter
+ * than the number of sets.
  *
  * @param length The requested password length.
  */
