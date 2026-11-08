@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { useSiteSettings } from '@/api/settings/queries';
+import { use, type ReactNode } from 'react';
 import { cn, Form } from '@/sdk';
+import { AuthBrandContext } from './brand';
 import PterodactylMark from './PterodactylMark';
 
 interface Props {
@@ -10,8 +10,9 @@ interface Props {
     children: ReactNode;
 }
 
+/** The sign-in card: the form beside the logo, under a title and above the copyright. */
 export default function AuthCard({ title, submit, className, children }: Props) {
-    const { logo } = useSiteSettings();
+    const brand = use(AuthBrandContext);
 
     return (
         <div className={cn('sm:mx-auto sm:w-4/5 md:p-10 lg:w-3/5 xl:w-full xl:max-w-auth', className)}>
@@ -19,11 +20,11 @@ export default function AuthCard({ title, submit, className, children }: Props) 
             <Form form={{ handleSubmit: submit }} className='w-full flex'>
                 <div className='md:flex w-full bg-card text-card-foreground shadow-lg rounded-lg p-6 md:pl-0 mx-1'>
                     <div className='flex-none select-none mb-6 md:mb-0 self-center'>
-                        {logo ? (
+                        {brand?.logoUrl ? (
                             <img
-                                src={logo}
-                                alt=''
-                                className='block w-32 md:w-56 h-32 md:h-56 object-contain mx-auto md:px-12'
+                                src={brand.logoUrl}
+                                alt={brand.name}
+                                className='block w-32 md:w-56 max-h-56 object-contain mx-auto md:px-12'
                             />
                         ) : (
                             <PterodactylMark className='block w-32 md:w-56 h-auto mx-auto md:px-12' />

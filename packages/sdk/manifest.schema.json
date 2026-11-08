@@ -20,7 +20,8 @@
                     "panel",
                     "core",
                     "classic",
-                    "user-avatars"
+                    "user-avatars",
+                    "panel-logo"
                 ]
             }
         },

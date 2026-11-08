@@ -74,6 +74,7 @@ export {
     type NumberInputProps,
     type FileInputProps,
 } from '@/components/form/controls';
+export { PasswordInput, type PasswordInputProps } from '@/components/form/PasswordInput';
 export {
     default as SubNavigation,
     type SubNavigationItemState,
@@ -105,6 +106,7 @@ export * from './progress';
 export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
 export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 export { formatDate, fromNow } from '@/lib/dates';
+export { generateSecurePassword } from '@/lib/passwords';
 export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
 export { useShortcut, type Shortcut } from '@/plugins/useShortcut';
 export { useCurrentResource, type ExtensionResourceContext } from '@/extensions/resourceContext';

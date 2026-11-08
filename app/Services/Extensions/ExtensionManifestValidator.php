@@ -17,7 +17,6 @@ use Pterodactyl\Exceptions\Extensions\InvalidExtensionException;
 use Pterodactyl\Services\Themes\ThemeDefinition;
 use Pterodactyl\Services\Themes\ThemeRepository;
 use Pterodactyl\Services\Themes\ThemeSetting;
-use ReflectionClass;
 use UnexpectedValueException;
 
 class ExtensionManifestValidator
@@ -397,10 +396,9 @@ class ExtensionManifestValidator
             return $this->panelNamespaces;
         }
 
-        // Extensions register Composer loaders of their own; the panel's is the one in the
-        // vendor directory this ClassLoader class was loaded from.
-        $file = (new ReflectionClass(ClassLoader::class))->getFileName();
-        $loader = $file === false ? null : ClassLoader::getRegisteredLoaders()[dirname($file, 2)] ?? null;
+        // Extensions and tools such as Herd's dump helper register Composer loaders of their
+        // own; the panel's is the one that loads the panel namespace, which no extension may claim.
+        $loader = array_find(ClassLoader::getRegisteredLoaders(), fn (ClassLoader $loader): bool => isset($loader->getPrefixesPsr4()['Pterodactyl\\']));
 
         return $this->panelNamespaces = array_values(array_unique([
             ...ExtensionManifest::RESERVED_NAMESPACES,

@@ -7,7 +7,10 @@ import { type ThemeScheme, type ThemeSchemePreference } from "./theme.js";
 export interface LayoutBrand {
     /** The panel's name. */
     readonly name: string;
-    /** The image the active theme's setting mapped to `--brand-logo` holds, if it has one. */
+    /**
+     * The logo: the image the active theme's setting mapped to `--brand-logo` holds, else the one uploaded in
+     * the admin settings, if either is set.
+     */
     readonly logoUrl: string | null;
 }
 export interface AuthLayoutModel {

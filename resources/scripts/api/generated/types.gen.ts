@@ -673,11 +673,11 @@ export type AdminServerVariableResource = {
 export type AdminSettingsResponse = {
     general: {
         'app:name': string;
+        'app:logo': string | null;
         'pterodactyl:auth:2fa_required': 0 | 1 | 2;
         'pterodactyl:client_features:avatars:enabled': boolean;
         'app:locale': string;
     };
-    logo: string | null;
     mail: {
         'mail:default': string;
         'mail:mailers:smtp:host': string;
@@ -1112,7 +1112,6 @@ export type ApplicationUserAttributes = {
     language: string;
     root_admin: boolean;
     '2fa': boolean;
-    image: string | null;
     avatar: string | null;
     created_at: string;
     updated_at: string;
@@ -2538,6 +2537,13 @@ export type AdminUpdateTagRequest = {
     color?: string | null;
 };
 
+export type AdminUploadLogoRequest = {
+    /**
+     * PNG, JPEG, SVG, WebP, AVIF or ICO image of at most 10 MiB.
+     */
+    logo: Blob | File;
+};
+
 export type AdminUpdateGeneralSettingsRequest = {
     branding?: {
         /**
@@ -3959,6 +3965,10 @@ export type AdminListEggCatalogResponseBody = {
  * Raw egg export JSON document returned as a text download.
  */
 export type AdminExportEggResponseBody = string;
+
+export type AdminUploadLogoResponseBody = {
+    logo?: string;
+};
 
 export type ApplicationGetNodeConfigurationResponseBody = {
     debug?: boolean;
@@ -10187,6 +10197,68 @@ export type AdminGetSettingsResponses = {
 
 export type AdminGetSettingsResponse = AdminGetSettingsResponses[keyof AdminGetSettingsResponses];
 
+export type AdminDeleteLogoData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/settings/logo';
+};
+
+export type AdminDeleteLogoErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+};
+
+export type AdminDeleteLogoError = AdminDeleteLogoErrors[keyof AdminDeleteLogoErrors];
+
+export type AdminDeleteLogoResponses = {
+    /**
+     * Logo deleted.
+     */
+    204: void;
+};
+
+export type AdminDeleteLogoResponse = AdminDeleteLogoResponses[keyof AdminDeleteLogoResponses];
+
+export type AdminUploadLogoData = {
+    body: AdminUploadLogoRequest;
+    path?: never;
+    query?: never;
+    url: '/api/admin/settings/logo';
+};
+
+export type AdminUploadLogoErrors = {
+    /**
+     * Authentication credentials were missing or invalid.
+     */
+    401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
+    /**
+     * The submitted data is invalid.
+     */
+    422: ValidationErrorEnvelope;
+};
+
+export type AdminUploadLogoError = AdminUploadLogoErrors[keyof AdminUploadLogoErrors];
+
+export type AdminUploadLogoResponses = {
+    /**
+     * Logo uploaded.
+     */
+    200: AdminUploadLogoResponseBody;
+};
+
+export type AdminUploadLogoResponse = AdminUploadLogoResponses[keyof AdminUploadLogoResponses];
+
 export type AdminUpdateGeneralSettingsData = {
     body: AdminUpdateGeneralSettingsRequest;
     path?: never;
@@ -13138,6 +13210,10 @@ export type ClientDeleteAccountAvatarErrors = {
      * Authentication credentials were missing or invalid.
      */
     401: ErrorEnvelope;
+    /**
+     * The API key does not have permission to perform this action.
+     */
+    403: ErrorEnvelope;
 };
 
 export type ClientDeleteAccountAvatarError = ClientDeleteAccountAvatarErrors[keyof ClientDeleteAccountAvatarErrors];

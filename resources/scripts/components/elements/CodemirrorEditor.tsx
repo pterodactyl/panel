@@ -7,7 +7,7 @@ import { search } from '@codemirror/search';
 import { tags } from '@lezer/highlight';
 import { searchScrollbarMarkers } from '@/components/elements/codemirror/searchMarkers';
 import { CustomSearchPanel } from '@/components/elements/codemirror/searchPanel';
-import { resolveEditorLanguage } from '@/components/elements/codemirror/yamlHighlighting';
+import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
 import { editorContainerClass } from '@/components/elements/codemirror/layout';
 import { cn } from '@/lib/cn';
 
@@ -540,7 +540,7 @@ const createEditorState = (
                     },
                 ])
             ),
-            languageCompartment.of(resolveEditorLanguage(mode)),
+            languageCompartment.of(resolveCodemirrorLanguage(mode)),
             EditorView.updateListener.of((update) => {
                 if (update.docChanged) {
                     onContentChanged.current?.(update.state.doc.toString());
@@ -601,7 +601,7 @@ export default function CodemirrorEditor({
 
     useEffect(() => {
         editor.current?.dispatch({
-            effects: languageCompartment.reconfigure(resolveEditorLanguage(mode)),
+            effects: languageCompartment.reconfigure(resolveCodemirrorLanguage(mode)),
         });
     }, [languageCompartment, mode]);
 

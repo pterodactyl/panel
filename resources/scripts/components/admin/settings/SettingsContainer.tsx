@@ -4,6 +4,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import AdvancedSettingsForm from '@/components/admin/settings/AdvancedSettingsForm';
 import GeneralSettingsForm from '@/components/admin/settings/GeneralSettingsForm';
+import LogoSettingsCard from '@/components/admin/settings/LogoSettingsCard';
 import MailSettingsForm from '@/components/admin/settings/MailSettingsForm';
 import SettingsTabButton from '@/components/admin/settings/SettingsTabButton';
 import { httpErrorToHuman } from '@/api/http';
@@ -87,7 +88,12 @@ export default function SettingsContainer() {
             </div>
             {settings ? (
                 <div aria-busy={isFetching}>
-                    {tab === 'general' && <GeneralSettingsForm settings={settings} />}
+                    {tab === 'general' && (
+                        <>
+                            <GeneralSettingsForm settings={settings} />
+                            <LogoSettingsCard settings={settings} />
+                        </>
+                    )}
                     {tab === 'mail' && <MailSettingsForm settings={settings} />}
                     {tab === 'advanced' && <AdvancedSettingsForm settings={settings} />}
                 </div>

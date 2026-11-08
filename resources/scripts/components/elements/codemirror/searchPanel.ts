@@ -11,6 +11,12 @@ import {
 } from '@codemirror/search';
 import { EditorView, type Panel, type ViewUpdate } from '@codemirror/view';
 
+const sameSearch = (a: SearchQuery, b: SearchQuery): boolean =>
+    a.search === b.search &&
+    a.caseSensitive === b.caseSensitive &&
+    a.regexp === b.regexp &&
+    a.wholeWord === b.wholeWord;
+
 export class CustomSearchPanel implements Panel {
     dom: HTMLElement;
     top = true;
@@ -98,6 +104,7 @@ export class CustomSearchPanel implements Panel {
         this.searchField.value = query.search;
         this.searchField.onchange = this.commit;
         this.searchField.oninput = this.commit;
+        this.searchField.onkeyup = this.commit;
 
         const togglesWrap = document.createElement('div');
 
@@ -192,6 +199,7 @@ export class CustomSearchPanel implements Panel {
             this.replaceField.value = query.replace;
             this.replaceField.onchange = this.commit;
             this.replaceField.oninput = this.commit;
+            this.replaceField.onkeyup = this.commit;
 
             replaceWrap.appendChild(this.replaceField);
 
@@ -316,8 +324,30 @@ export class CustomSearchPanel implements Panel {
         });
 
         if (!query.eq(this.query)) {
+            const previous = this.query;
+
             this.query = query;
             this.view.dispatch({ effects: setSearchQuery.of(query) });
+
+            // A new search selects the first match at or after the cursor; editing only the
+            // replacement leaves the selection where it is.
+            if (query.valid && !sameSearch(previous, query)) {
+                this.selectMatchFromCursor(query);
+            }
+        }
+    }
+
+    selectMatchFromCursor(query: SearchQuery) {
+        const { state } = this.view;
+        const next = query.getCursor(state, state.selection.main.from).next();
+        const match = next.done ? query.getCursor(state).next() : next;
+
+        if (!match.done) {
+            this.view.dispatch({
+                selection: { anchor: match.value.from, head: match.value.to },
+                scrollIntoView: true,
+                userEvent: 'select.search',
+            });
         }
     }
 

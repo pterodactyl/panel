@@ -1,19 +1,13 @@
-import React, { useId, useState } from 'react';
-import { Clipboard, Eye, EyeOff, RotateCcwKey } from 'lucide-react';
+import React, { useId } from 'react';
 import { useFieldContext } from './context';
 import Label from '@/components/elements/Label';
 import { TextInput, TextArea, NumberInput } from './controls';
+import { PasswordInput } from './PasswordInput';
 import { firstError } from './errors';
 import { capitalize } from '@/lib/strings';
 import Select, { type SelectOption } from '@/components/ui/Select';
 import Switch, { type SwitchProps } from '@/components/ui/Switch';
 import Checkbox from '@/components/ui/Checkbox';
-import Button from '@/components/elements/Button';
-import CopyOnClick from '@/components/elements/CopyOnClick';
-import Icon from '@/components/elements/Icon';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { cn } from '@/lib/cn';
-import { generateSecurePassword } from '@/lib/passwords';
 
 type BaseProps = {
     label?: string;
@@ -115,14 +109,6 @@ export function PasswordField({
     ...props
 }: PasswordFieldProps) {
     const { field, error, fieldId, helpId, describedById } = useFieldState<string>(id, description);
-    const [visible, setVisible] = useState(false);
-    const [generated, setGenerated] = useState(false);
-    const toggleLabel = `${visible ? 'Hide' : 'Show'} ${label?.toLowerCase() ?? 'password'}`;
-
-    const generate = () => {
-        field.handleChange(generateSecurePassword());
-        setGenerated(true);
-    };
 
     return (
         <div>
@@ -131,73 +117,22 @@ export function PasswordField({
                     {label}
                 </Label>
             )}
-            <div className='relative'>
-                <TextInput
-                    {...props}
-                    id={fieldId}
-                    type={visible ? 'text' : 'password'}
-                    value={field.state.value ?? ''}
-                    onValueChange={(value: string) => {
-                        field.handleChange(value);
-                        setGenerated(false);
-                    }}
-                    onBlur={(event) => {
-                        field.handleBlur();
-                        onBlur?.(event);
-                    }}
-                    aria-invalid={error ? true : ariaInvalid}
-                    aria-describedby={describedBy(ariaDescribedBy, describedById)}
-                    $hasError={!!error}
-                    $isLight={light}
-                    className={cn('pr-24', className)}
-                />
-                <div className='absolute inset-y-0 right-2 flex items-center gap-1'>
-                    <Tooltip content='Generate secure password'>
-                        <span className='inline-flex'>
-                            <Button.Text
-                                type='button'
-                                size='xsmall'
-                                isSecondary
-                                aria-label='Generate secure password'
-                                onClick={generate}
-                            >
-                                <Icon icon={RotateCcwKey} className='h-3.5 w-3.5' />
-                            </Button.Text>
-                        </span>
-                    </Tooltip>
-                    <Tooltip content={toggleLabel}>
-                        <span className='inline-flex'>
-                            <Button.Text
-                                type='button'
-                                size='xsmall'
-                                isSecondary
-                                aria-label={toggleLabel}
-                                aria-pressed={visible}
-                                disabled={!field.state.value}
-                                onClick={() => setVisible((current) => !current)}
-                            >
-                                <Icon icon={visible ? EyeOff : Eye} className='h-3.5 w-3.5' />
-                            </Button.Text>
-                        </span>
-                    </Tooltip>
-                    {generated && (
-                        <Tooltip content='Copy password'>
-                            <span className='inline-flex'>
-                                <CopyOnClick text={field.state.value} showInNotification={false}>
-                                    <Button.Text
-                                        type='button'
-                                        size='xsmall'
-                                        isSecondary
-                                        aria-label='Copy password'
-                                    >
-                                        <Icon icon={Clipboard} className='h-3.5 w-3.5' />
-                                    </Button.Text>
-                                </CopyOnClick>
-                            </span>
-                        </Tooltip>
-                    )}
-                </div>
-            </div>
+            <PasswordInput
+                {...props}
+                id={fieldId}
+                noun={label?.toLowerCase()}
+                value={field.state.value ?? ''}
+                onValueChange={field.handleChange}
+                onBlur={(event) => {
+                    field.handleBlur();
+                    onBlur?.(event);
+                }}
+                aria-invalid={error ? true : ariaInvalid}
+                aria-describedby={describedBy(ariaDescribedBy, describedById)}
+                $hasError={!!error}
+                $isLight={light}
+                className={className}
+            />
             <HelpText id={helpId} error={error} description={description} />
         </div>
     );

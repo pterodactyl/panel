@@ -15,7 +15,6 @@
                 "language": "en",
                 "root_admin": false,
                 "2fa": false,
-                "image": null,
                 "avatar": null,
                 "relationships": [],
                 "created_at": "2026-03-04T05:06:07+00:00",

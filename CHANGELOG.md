@@ -16,6 +16,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Adds custom user avatars, managed from the account page and by admins.
 * Adds a copy button for the startup command.
 * Adds the `ReplacesUserAvatars` action contract. `user-avatars` is a reserved extension id.
+* Adds a panel logo, uploaded from the general settings, shown as the favicon, on the login page and in place of the company name. A theme's own logo takes its place.
+* Adds the `ReplacesBrandLogo` action contract. `panel-logo` is a reserved extension id.
+* Adds a button to generate a secure password, and `generateSecurePassword`, `PasswordInput` and `FieldModel.setValue` to the SDK.
 
 ### Changed
 * Subuser permission cards are easier to scan.

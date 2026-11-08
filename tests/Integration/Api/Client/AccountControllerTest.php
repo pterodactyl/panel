@@ -32,6 +32,31 @@ test('avatars can only be uploaded while the panel allows them', function (bool 
     $response->assertStatus($enabled ? Response::HTTP_OK : Response::HTTP_FORBIDDEN);
     expect($user->fresh()->avatar !== null)->toBe($enabled);
 })->with([true, false]);
+test('avatar changes are logged and the old file is removed', function (): void {
+    config()->set('pterodactyl.client_features.avatars.enabled', true);
+    $disk = Storage::fake(config()->string('extensions.files_disk'));
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->post('/api/client/account/avatar', ['avatar' => UploadedFile::fake()->image('avatar.png')], ['Accept' => 'application/json'])->assertOk();
+    $first = $user->fresh()->avatar;
+    $this->actingAs($user)->post('/api/client/account/avatar', ['avatar' => UploadedFile::fake()->image('avatar.png')], ['Accept' => 'application/json'])->assertOk();
+
+    $disk->assertMissing("extension-files/user-avatars/{$first}");
+    $disk->assertExists("extension-files/user-avatars/{$user->fresh()->avatar}");
+    $this->assertActivityLogged('user:account.avatar-changed');
+});
+test('avatars can be removed after the panel stops accepting them', function (): void {
+    $disk = Storage::fake(config()->string('extensions.files_disk'));
+    config()->set('pterodactyl.client_features.avatars.enabled', true);
+    $user = User::factory()->create();
+    $this->actingAs($user)->post('/api/client/account/avatar', ['avatar' => UploadedFile::fake()->image('avatar.png')], ['Accept' => 'application/json'])->assertOk();
+    config()->set('pterodactyl.client_features.avatars.enabled', false);
+
+    $this->actingAs($user)->deleteJson('/api/client/account/avatar')->assertNoContent();
+
+    expect($user->fresh()->avatar)->toBeNull()->and($disk->allFiles())->toBe([]);
+    $this->assertActivityFor('user:account.avatar-deleted', $user, $user);
+});
 test('email is updated', function (): void {
     $user = User::factory()->create();
     $this->actingAs($user)->putJson('/api/client/account/email', ['email' => $email = Str::random().'@example.com', 'password' => 'password'])->assertNoContent();

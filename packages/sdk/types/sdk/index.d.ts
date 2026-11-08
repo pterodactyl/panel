@@ -37,6 +37,7 @@ export { default as ErrorBoundary } from "../components/elements/ErrorBoundary.j
 export { default as Portal } from "../components/elements/Portal.js";
 export { default as InputSpinner } from "../components/elements/InputSpinner.js";
 export { TextInput as Input, TextArea, NumberInput, FileInput, type TextInputProps as InputProps, type TextAreaProps, type NumberInputProps, type FileInputProps, } from "../components/form/controls.js";
+export { PasswordInput, type PasswordInputProps } from "../components/form/PasswordInput.js";
 export { default as SubNavigation, type SubNavigationItemState, type SubNavigationProps, } from "../components/elements/SubNavigation.js";
 export { default as SubNavigationLayout } from "../components/elements/SubNavigationLayout.js";
 export { default as NavigationLabel, type NavigationLabelProps } from "../extensions/NavigationLabel.js";
@@ -58,6 +59,7 @@ export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
 export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
 export { formatDate, fromNow } from "../lib/dates.js";
+export { generateSecurePassword } from "../lib/passwords.js";
 export { useDebouncedCallback, type DebouncedCallback } from "../plugins/useDebouncedCallback.js";
 export { useShortcut, type Shortcut } from "../plugins/useShortcut.js";
 export { useCurrentResource, type ExtensionResourceContext } from "../extensions/resourceContext.js";

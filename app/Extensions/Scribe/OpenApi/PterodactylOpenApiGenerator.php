@@ -2392,24 +2392,25 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
     {
         return [
             'type' => 'object',
-            'required' => ['general', 'logo', 'mail', 'advanced', 'meta'],
+            'required' => ['general', 'mail', 'advanced', 'meta'],
             'properties' => [
                 'general' => [
                     'type' => 'object',
                     'required' => [
                         'app:name',
+                        'app:logo',
                         'pterodactyl:auth:2fa_required',
                         'pterodactyl:client_features:avatars:enabled',
                         'app:locale',
                     ],
                     'properties' => [
                         'app:name' => ['type' => 'string', 'example' => 'Pterodactyl'],
+                        'app:logo' => ['type' => 'string', 'nullable' => true, 'example' => null],
                         'pterodactyl:auth:2fa_required' => ['type' => 'integer', 'enum' => [0, 1, 2], 'example' => 0],
                         'pterodactyl:client_features:avatars:enabled' => ['type' => 'boolean', 'example' => false],
                         'app:locale' => ['type' => 'string', 'example' => 'en'],
                     ],
                 ],
-                'logo' => ['type' => 'string', 'nullable' => true, 'example' => null],
                 'mail' => [
                     'type' => 'object',
                     'required' => [

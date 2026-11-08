@@ -17,6 +17,8 @@ export interface FieldProps extends FieldAttributes {
 }
 export interface FieldModel {
     readonly fieldProps: FieldProps;
+    /** Sets the value directly, for a control that fills the field without an input event. */
+    readonly setValue: (value: string) => void;
     /** The first validation error, shown in place of the description. */
     readonly error: string | null;
 }

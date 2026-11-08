@@ -16,6 +16,8 @@ use Pterodactyl\Contracts\Users\ReplacesUserAvatars;
 use Pterodactyl\Contracts\Users\UpdatesUserEmails;
 use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
 use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromResource;
+use Pterodactyl\Facades\Activity;
+use Pterodactyl\Http\Requests\Api\Client\Account\DeleteAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
@@ -92,14 +94,20 @@ class AccountController extends ClientApiController
     #[ResponseFromResource(AccountResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
     public function updateAvatar(UpdateAvatarRequest $request, ReplacesUserAvatars $avatars): AccountResource
     {
-        return AccountResource::make($avatars->replace($request->user(), $request->avatar()));
+        $user = $avatars->replace($request->user(), $request->avatar());
+
+        Activity::event('user:account.avatar-changed')->subject($user)->log();
+
+        return AccountResource::make($user);
     }
 
     #[Endpoint('Delete account avatar', "Deletes the authenticated user's avatar.")]
     #[ScribeResponse(status: 204, description: 'Avatar deleted.')]
-    public function deleteAvatar(Request $request, ReplacesUserAvatars $avatars): JsonResponse
+    public function deleteAvatar(DeleteAvatarRequest $request, ReplacesUserAvatars $avatars): JsonResponse
     {
-        $avatars->replace($this->authenticatedUser($request), null);
+        $user = $avatars->replace($request->user(), null);
+
+        Activity::event('user:account.avatar-deleted')->subject($user)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -15,7 +15,9 @@ class SearchScrollbarMarkersPlugin {
             transaction.effects.some((effect) => effect.is(setSearchQuery))
         );
 
-        if (update.docChanged || update.selectionSet || update.viewportChanged || queryChanged) {
+        const panelToggled = searchPanelOpen(update.startState) !== searchPanelOpen(update.state);
+
+        if (update.docChanged || update.selectionSet || update.viewportChanged || queryChanged || panelToggled) {
             this.refresh(update.view);
         }
     }

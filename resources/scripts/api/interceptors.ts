@@ -9,7 +9,10 @@ export const setupInterceptors = () => {
     http.interceptors.response.use(
         (resp) => resp,
         (error: AxiosError) => {
-            if (error.response?.status === 401 && hasBootstrapSession()) {
+            // 419 is the CSRF failure a stateful request gets once its session has expired.
+            const status = error.response?.status;
+
+            if ((status === 401 || status === 419) && hasBootstrapSession()) {
                 endBootstrapSession();
                 void router.navigate({
                     to: '/auth/login',

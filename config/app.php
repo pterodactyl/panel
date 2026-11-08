@@ -34,6 +34,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Logo
+    |--------------------------------------------------------------------------
+    |
+    | The stored name of the logo uploaded from the admin settings, which the
+    | panel shows as its favicon and on the login page and navigation bar.
+    | Empty while the panel uses its default branding.
+    |
+    */
+
+    'logo' => '',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

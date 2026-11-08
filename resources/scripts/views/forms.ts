@@ -19,6 +19,8 @@ export interface FieldProps extends FieldAttributes {
 }
 export interface FieldModel {
     readonly fieldProps: FieldProps;
+    /** Sets the value directly, for a control that fills the field without an input event. */
+    readonly setValue: (value: string) => void;
     /** The first validation error, shown in place of the description. */
     readonly error: string | null;
 }
@@ -51,6 +53,7 @@ export function boundField(field: BoundField, attributes: FieldAttributes = {}):
             onChange: (event) => field.handleChange(event.currentTarget.value),
             onBlur: field.handleBlur,
         },
+        setValue: field.handleChange,
         error: error ? capitalize(error) : null,
     };
 }
@@ -70,6 +73,7 @@ export function stateField(
             onChange: (event) => setValue(event.currentTarget.value),
             onBlur: noop,
         },
+        setValue,
         error: null,
     };
 }
@@ -80,5 +84,5 @@ export function fixtureField(
     value = '',
     error: string | null = null
 ): FieldModel {
-    return { fieldProps: { ...attributes, name, value, onChange: noop, onBlur: noop }, error };
+    return { fieldProps: { ...attributes, name, value, onChange: noop, onBlur: noop }, setValue: noop, error };
 }

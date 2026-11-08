@@ -159,7 +159,11 @@ class UserController extends AdminApiController
     #[ResponseFromResource(UserResource::class, User::class, description: 'Avatar updated.', resourceKey: 'user')]
     public function updateAvatar(UpdateAvatarRequest $request, ReplacesUserAvatars $avatars, User $user): UserResource
     {
-        return UserResource::make($avatars->replace($user, $request->avatar()))->withExtensionFields();
+        $user = $avatars->replace($user, $request->avatar());
+
+        Activity::event('admin:user.avatar-changed')->subject($user)->property('email', $user->email)->log();
+
+        return UserResource::make($user)->withExtensionFields();
     }
 
     /**
@@ -170,6 +174,8 @@ class UserController extends AdminApiController
     public function deleteAvatar(DeleteAvatarRequest $request, ReplacesUserAvatars $avatars, User $user): Response
     {
         $avatars->replace($user, null);
+
+        Activity::event('admin:user.avatar-deleted')->subject($user)->property('email', $user->email)->log();
 
         return response()->noContent();
     }

@@ -64,16 +64,11 @@ function NavigationBar({ model }: { model: AppLayoutModel }) {
                         destination={{ to: '/' }}
                         className='block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
                     >
-                        <span className='flex min-w-0 items-center gap-2 sm:gap-3'>
-                            {model.brand.logoUrl && (
-                                <img
-                                    src={model.brand.logoUrl}
-                                    alt=''
-                                    className='h-6 w-6 shrink-0 object-contain sm:h-7 sm:w-7'
-                                />
-                            )}
-                            <span className='min-w-0 truncate'>{model.brand.name}</span>
-                        </span>
+                        {model.brand.logoUrl ? (
+                            <img src={model.brand.logoUrl} alt={model.brand.name} className='h-8 w-auto' />
+                        ) : (
+                            model.brand.name
+                        )}
                     </PanelLink>
                 </div>
                 <div className='flex h-full shrink-0 items-center justify-center'>

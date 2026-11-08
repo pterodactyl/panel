@@ -111,7 +111,10 @@ export interface FileUpload {
     readonly loaded: number;
     readonly total: number;
 }
-/** What `upload` takes: picked files, or a drop's `event.dataTransfer`, which tells a dropped folder apart. */
+/**
+ * What `upload` takes: picked files, or a drop's `event.dataTransfer`, which tells a dropped folder
+ * apart. Pass the drop from inside the drop handler: the browser empties it once the handler returns.
+ */
 export type UploadSource = readonly File[] | DataTransfer;
 /** Names are entries of the current directory. Core has already shown a toast for a rejection. */
 export interface FileManagerActions {

@@ -15,6 +15,7 @@ export default function PasswordCard({ model, className }: ViewProps<'account.pa
                         field={fields.password}
                         id='new_password'
                         label='New Password'
+                        onGenerate={fields.confirmPassword.setValue}
                         description='Your new password should be at least 8 characters in length and unique to this website.'
                     />
                 </div>

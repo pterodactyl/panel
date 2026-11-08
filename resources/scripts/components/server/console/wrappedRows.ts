@@ -16,6 +16,9 @@ export const continuesPreviousRow = (terminal: WrappedRowSource, y: number) => {
         return line.isWrapped;
     }
 
+    // Ghostty keeps no wrap flag for scrollback, so a row is taken to continue the one before it when
+    // that row ends in a printable character. A line that exactly fills the width is joined to the
+    // next one, and a line that wrapped at a space is not joined.
     const previous = buffer.getLine(y - 1);
 
     return (previous?.getCell(previous.length - 1)?.getCodepoint() ?? 0) > 32;

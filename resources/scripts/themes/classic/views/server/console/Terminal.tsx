@@ -3,8 +3,6 @@ import { ChevronsDown, ChevronsRight } from 'lucide-react';
 import { Button, cn, SpinnerOverlay } from '@/sdk';
 import type { ServerConsoleCommand, ViewProps } from '@/sdk/theme';
 
-const overflowsContainerClass = 'w-full';
-
 const terminalContainerClass =
     'relative min-h-[16rem] flex-1 overflow-hidden rounded-t-sm bg-terminal px-2 pt-2 pb-0 font-mono text-sm caret-transparent';
 
@@ -50,7 +48,7 @@ export default function Terminal({ model, className }: ViewProps<'server.termina
                     </Button.Text>
                 </div>
             )}
-            <div className={cn(terminalContainerClass, overflowsContainerClass, !command.allowed && 'rounded-b-sm')}>
+            <div className={cn(terminalContainerClass, !command.allowed && 'rounded-b-sm')}>
                 <model.Terminal />
                 {model.scrolledUp && (
                     <button
@@ -67,7 +65,7 @@ export default function Terminal({ model, className }: ViewProps<'server.termina
                 )}
             </div>
             {command.allowed && (
-                <div className={cn('relative', overflowsContainerClass)}>
+                <div className='relative'>
                     <input
                         className={commandInputClass}
                         type='text'

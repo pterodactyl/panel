@@ -1,6 +1,7 @@
 export interface SiteSettings {
     name: string;
-    logo?: string | null;
+    /** Where the logo uploaded in the admin settings is served from, if there is one. */
+    logo: string | null;
     locale: string;
     userAvatarsEnabled: boolean;
     recaptcha: {
