@@ -1,5 +1,6 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { basicSetup } from 'codemirror';
+import { indentWithTab } from '@codemirror/commands';
 import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { EditorView, keymap, type Panel, type ViewUpdate } from '@codemirror/view';
@@ -978,6 +979,7 @@ const createEditorState = (
                     },
                 ])
             ),
+            keymap.of([indentWithTab]),
             languageCompartment.of(resolveCodemirrorLanguage(mode)),
             EditorView.updateListener.of((update) => {
                 if (update.docChanged) {

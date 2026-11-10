@@ -61,6 +61,26 @@ it('runs the latest save handler for Mod-s', () => {
     expect(latest).toHaveBeenCalledOnce();
 });
 
+it('indents with Tab and outdents with Shift-Tab', () => {
+    const { container } = render(
+        <CodemirrorEditor initialContent='alpha' mode='text/plain' onContentSaved={vi.fn()} />
+    );
+    const view = viewOf(container);
+    const content = container.querySelector('.cm-content')!;
+
+    act(() => view.dispatch({ selection: { anchor: 0 } }));
+
+    act(() => {
+        content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    });
+    expect(view.state.doc.toString()).toBe('    alpha');
+
+    act(() => {
+        content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
+    });
+    expect(view.state.doc.toString()).toBe('alpha');
+});
+
 it('renders the search and replace panel with theme controls', () => {
     const { container } = render(<CodemirrorEditor mode='text/plain' onContentSaved={vi.fn()} />);
 
