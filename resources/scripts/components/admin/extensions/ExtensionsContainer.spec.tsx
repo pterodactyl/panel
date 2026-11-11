@@ -122,7 +122,7 @@ describe('extension install dialog', () => {
         expect(mocks.toastSuccess).toHaveBeenCalledWith('Extension installed', expect.anything());
     });
 
-    it('asks again when a different package is chosen', async () => {
+    it('adds packages picked one at a time and drops the prompt when its package is removed', async () => {
         const user = setup();
 
         upload.mockImplementation(async (config) => {
@@ -139,8 +139,58 @@ describe('extension install dialog', () => {
 
         await user.upload(input, new File(['zip'], 'other.pteroext'));
 
+        expect(within(dialog).getByText('votes.pteroext')).toBeInTheDocument();
+        expect(within(dialog).getByText('other.pteroext')).toBeInTheDocument();
+        expect(within(dialog).getByRole('button', { name: 'Replace votes' })).toBeEnabled();
+
+        await user.click(within(dialog).getByRole('button', { name: 'Remove votes.pteroext' }));
+
         expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
+        expect(within(dialog).queryByText('votes.pteroext')).not.toBeInTheDocument();
         expect(within(dialog).getByRole('button', { name: 'Install' })).toBeEnabled();
+    });
+
+    it('installs several packages in order and resumes after a replacement prompt', async () => {
+        const user = setup();
+        const created = async (config: InternalAxiosRequestConfig) => ({
+            data: { data: installed },
+            status: 201,
+            statusText: 'Created',
+            headers: {},
+            config,
+        });
+
+        upload
+            .mockImplementationOnce(created)
+            .mockImplementationOnce(async (config) => {
+                throw conflict(config);
+            })
+            .mockImplementation(created);
+
+        await user.click(screen.getAllByRole('button', { name: 'Install' })[0]!);
+        const dialog = await screen.findByRole('dialog', { name: 'Install extension' });
+
+        const input = within(dialog).getByLabelText('Extension package');
+
+        await user.upload(input, [new File(['zip'], 'first.pteroext'), new File(['zip'], 'votes.pteroext')]);
+        await user.upload(input, new File(['zip'], 'last.pteroext'));
+        await user.click(within(dialog).getByRole('button', { name: 'Install 3' }));
+        await user.click(await within(dialog).findByRole('button', { name: 'Replace votes' }));
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+        const sent = upload.mock.calls.map(([config]) => {
+            const body = config.data as FormData;
+
+            return [(body.get('package') as File | null)?.name, body.get('replace')];
+        });
+
+        expect(sent).toEqual([
+            ['first.pteroext', 'false'],
+            ['votes.pteroext', 'false'],
+            ['votes.pteroext', 'true'],
+            ['last.pteroext', 'false'],
+        ]);
     });
 });
 
