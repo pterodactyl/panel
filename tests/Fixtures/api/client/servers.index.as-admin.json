@@ -17,6 +17,7 @@
                         "name": "Admin Lab",
                         "node": "node-beta",
                         "is_node_under_maintenance": true,
+                        "upload_size": 256,
                         "sftp_details": {
                             "ip": "beta.example.test",
                             "port": 2222
@@ -131,6 +132,7 @@
                         "name": "Survival",
                         "node": "node-alpha",
                         "is_node_under_maintenance": false,
+                        "upload_size": 100,
                         "sftp_details": {
                             "ip": "alpha.example.test",
                             "port": 2022
@@ -237,6 +239,7 @@
                         "name": "Creative",
                         "node": "node-alpha",
                         "is_node_under_maintenance": false,
+                        "upload_size": 100,
                         "sftp_details": {
                             "ip": "alpha.example.test",
                             "port": 2022
@@ -338,6 +341,7 @@
                         "name": "Survival",
                         "node": "node-alpha",
                         "is_node_under_maintenance": false,
+                        "upload_size": 100,
                         "sftp_details": {
                             "ip": "alpha.example.test",
                             "port": 2022
@@ -451,6 +455,7 @@
                         "name": "Creative",
                         "node": "node-alpha",
                         "is_node_under_maintenance": false,
+                        "upload_size": 100,
                         "sftp_details": {
                             "ip": "alpha.example.test",
                             "port": 2022
@@ -561,6 +566,7 @@
                         "name": "Admin Lab",
                         "node": "node-beta",
                         "is_node_under_maintenance": true,
+                        "upload_size": 256,
                         "sftp_details": {
                             "ip": "beta.example.test",
                             "port": 2222
