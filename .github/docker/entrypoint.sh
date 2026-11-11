@@ -109,6 +109,12 @@ EOF
   grep -qF 'location ^~ /assets/extensions/' /etc/nginx/http.d/panel.conf \
     || echo 'warning: /etc/nginx/http.d/panel.conf has no PHP location; add the /assets/extensions/ block from .github/docker/default.conf by hand.' >&2
 fi
+# Configs persisted by older images set upload limits per request through PHP_VALUE, a
+# CVE-2026-109619 trigger; php.ini now sets them for every request.
+if grep -q 'fastcgi_param PHP_VALUE' /etc/nginx/http.d/panel.conf; then
+  awk '!/fastcgi_param PHP_VALUE/' /etc/nginx/http.d/panel.conf > /etc/nginx/http.d/panel.conf.tmp
+  mv /etc/nginx/http.d/panel.conf.tmp /etc/nginx/http.d/panel.conf
+fi
 rm -f /etc/nginx/http.d/default.conf
 cp .github/docker/health.conf /etc/nginx/http.d/health.conf
 
