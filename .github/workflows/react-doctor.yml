@@ -30,13 +30,13 @@ jobs:
       CAN_WRITE: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       # Full history so pull requests can diff against the merge base and only report new issues.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
       # Pull requests fail on new error-level findings; pushes only record the score.
-      - uses: millionco/react-doctor@v2
+      - uses: millionco/react-doctor@695e46eee203a5d1855020191aa7e9c010a1250e # v2.4.0
         with:
           blocking: error
           comment: ${{ env.CAN_WRITE }}

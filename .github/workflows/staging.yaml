@@ -5,6 +5,8 @@ on:
     branches:
       - 2.0-develop
 
+permissions: {}
+
 concurrency:
   group: staging-dispatch
 

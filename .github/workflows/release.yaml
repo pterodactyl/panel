@@ -17,8 +17,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
           cache: npm
@@ -43,7 +43,7 @@ jobs:
       - name: write changelog
         run: |
           sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
-      - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
+      - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
