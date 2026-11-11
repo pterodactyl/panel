@@ -605,8 +605,7 @@ class CustomSearchPanel implements Panel {
         this.searchField.setAttribute('aria-label', 'Find');
         this.searchField.setAttribute('main-field', 'true');
         this.searchField.value = query.search;
-        this.searchField.onchange = this.commit;
-        this.searchField.onkeyup = this.commit;
+        this.searchField.oninput = this.commit;
 
         const togglesWrap = document.createElement('div');
 
@@ -699,8 +698,7 @@ class CustomSearchPanel implements Panel {
             this.replaceField.placeholder = 'Replace';
             this.replaceField.setAttribute('aria-label', 'Replace');
             this.replaceField.value = query.replace;
-            this.replaceField.onchange = this.commit;
-            this.replaceField.onkeyup = this.commit;
+            this.replaceField.oninput = this.commit;
 
             replaceWrap.appendChild(this.replaceField);
 

@@ -112,7 +112,7 @@ it('searches incrementally from the cursor and keeps the match while typing a re
 
         field.value = value;
         act(() => {
-            field.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+            field.dispatchEvent(new Event('input', { bubbles: true }));
         });
     };
 
