@@ -47,10 +47,6 @@ class ServerConfigurationStructureService
             ],
             'container' => [
                 'image' => $server->image,
-                // This field is deprecated - use the value in the "build" block.
-                //
-                // TODO: remove this key in V2.
-                'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
             ],
             'allocations' => [

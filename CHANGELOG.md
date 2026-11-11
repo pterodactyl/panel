@@ -23,6 +23,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Subuser permission cards are easier to scan.
 
+### Removed
+* The server configuration sent to Wings drops `container.oom_disabled`. Wings reads `build.oom_disabled`.
+
 ## v2.0.0-beta.2
 ### Fixed
 * Exporting an egg from the admin area downloads the egg file instead of a quoted JSON string.
