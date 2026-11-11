@@ -11,6 +11,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * The console resizes, selects words and opens links reliably.
 * The file editor highlights nested YAML, selections and search matches correctly.
 * Modals on narrow screens keep the page layout intact.
+* Files over the node's upload limit are refused before the upload starts.
+* The file editor's find and replace fields update on paste and every other edit, not only on key presses.
 
 ### Added
 * Adds custom user avatars, managed from the account page and by admins.
