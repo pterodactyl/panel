@@ -1,0 +1,26 @@
+.github/docker/smoke-test.sh
+  s_59a8b713018fff::t_888180ea298ab3 239-242
+  s_59a8b713018fff::t_c8ec73d6d7556a 171,226-230
+.github/docker/entrypoint.sh
+  s_59a8b713018fff::t_5850683680fe22 112-117
+.github/docker/php.ini
+  s_59a8b713018fff::t_5850683680fe22 17-21
+.github/workflows/docker-refresh.yaml
+  s_59a8b713018fff::t_6d9eafd8b5e319 1-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "882ffd3eee8dd3ae6bc8e8fc53204706551c5575",
+  "prompts": {},
+  "sessions": {
+    "s_59a8b713018fff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f16d1e0-82a9-4acb-8823-20227d0f5b5c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
