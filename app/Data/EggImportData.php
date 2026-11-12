@@ -171,6 +171,9 @@ final readonly class EggImportData
                 userViewable: self::boolean($variable['user_viewable'] ?? null, "variables.$index.user_viewable"),
                 userEditable: self::boolean($variable['user_editable'] ?? null, "variables.$index.user_editable"),
                 rules: self::string($variable['rules'] ?? null, "variables.$index.rules"),
+                optionsSource: isset($variable['options_source'])
+                    ? self::object($variable['options_source'], "variables.$index.options_source")
+                    : null,
             );
         }
 
@@ -305,9 +308,14 @@ final readonly class EggImportData
             'tags.*' => SyncTags::TEXT,
         ];
 
-        $variable = Arr::only(CreateEggVariable::rules(), ['name', 'description', 'env_variable', 'rules', 'default_value']);
+        $variable = Arr::except(CreateEggVariable::rules(), ['options', 'options.*']);
         foreach ($variable as $field => $fieldRules) {
-            $rules["variables.*.{$field}"] = $fieldRules;
+            $rules["variables.*.{$field}"] = array_map(
+                fn (mixed $rule): mixed => $rule === 'required_with:options_source'
+                    ? 'required_with:variables.*.options_source'
+                    : $rule,
+                $fieldRules,
+            );
         }
 
         $rules['variables.*.env_variable'][] = 'distinct';

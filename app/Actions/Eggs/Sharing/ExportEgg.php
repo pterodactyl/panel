@@ -25,6 +25,7 @@ final class ExportEgg implements ExportsEggs
                 'user_editable' => $item->user_editable,
                 'rules' => $item->rules,
                 'field_type' => 'text',
+                ...($item->options_source === null ? [] : ['options_source' => $item->options_source]),
             ];
         }
 

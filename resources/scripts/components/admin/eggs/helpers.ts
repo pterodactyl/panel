@@ -24,6 +24,7 @@ export interface EggVariableValues {
     userViewable: boolean;
     userEditable: boolean;
     rules: string;
+    optionsSource: string;
 }
 
 const envVariableRegex = /^[\w]{1,191}$/;
@@ -156,4 +157,21 @@ export const eggVariableBodyFromFormValues = (values: EggVariableValues): EggVar
     default_value: values.defaultValue,
     options: eggVariableOptions(values),
     rules: values.rules,
+    options_source: values.optionsSource.trim() === '' ? null : JSON.parse(values.optionsSource),
 });
+
+export const validateOptionsSource = (value: string): string | undefined => {
+    if (value.trim() === '') {
+        return undefined;
+    }
+
+    try {
+        const parsed: unknown = JSON.parse(value);
+
+        return parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? undefined
+            : 'The API options source must be a JSON object.';
+    } catch {
+        return 'The API options source must contain valid JSON.';
+    }
+};

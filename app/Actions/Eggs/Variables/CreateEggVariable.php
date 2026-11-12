@@ -36,6 +36,18 @@ final class CreateEggVariable implements CreatesEggVariables
             'default_value' => ['present', 'string'],
             'options' => ['sometimes', 'required', 'array', 'list'],
             'options.*' => ['string'],
+            'options_source' => ['sometimes', 'nullable', 'array:url,data_path,value_path,label_path,strip_suffix,filters,allow_manual_input'],
+            'options_source.url' => ['required_with:options_source', 'url:https', 'max:2048'],
+            'options_source.data_path' => ['required_with:options_source', 'string', 'max:255'],
+            'options_source.value_path' => ['required_with:options_source', 'string', 'max:255'],
+            'options_source.label_path' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'options_source.strip_suffix' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'options_source.allow_manual_input' => ['sometimes', 'boolean'],
+            'options_source.filters' => ['sometimes', 'array', 'list', 'max:10'],
+            'options_source.filters.*' => ['array:path,operator,value'],
+            'options_source.filters.*.path' => ['required', 'string', 'max:255'],
+            'options_source.filters.*.operator' => ['required', Rule::in(['equals', 'not_equals', 'contains', 'not_contains', 'starts_with', 'ends_with'])],
+            'options_source.filters.*.value' => ['required', 'string', 'max:255'],
         ];
     }
 
