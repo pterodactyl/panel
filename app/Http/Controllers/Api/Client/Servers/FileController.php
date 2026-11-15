@@ -81,7 +81,7 @@ class FileController extends ClientApiController
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
             ->setUser($request->user())
             ->setClaims([
-                'file_path' => rawurldecode($request->get('file')),
+                'file_path' => $request->get('file'),
                 'server_uuid' => $server->uuid,
             ])
             ->setScopes(JwtScope::FileDownload)
