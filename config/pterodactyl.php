@@ -42,6 +42,23 @@ return [
             'window' => env('APP_2FA_WINDOW', 4),
             'verify_newer' => true,
         ],
+        /*
+        |------------------------------------------------------------------
+        | Remote user (proxy header) authentication
+        |------------------------------------------------------------------
+        |
+        | When enabled, requests carrying a trusted username header (set by an
+        | authenticating reverse proxy such as Authelia or Authentik) are logged
+        | in automatically. Only enable behind a proxy that strips these headers
+        | from outside traffic — direct exposure lets anyone impersonate users.
+        |
+        */
+        'remote_user' => [
+            'enabled' => env('APP_REMOTE_USER_AUTH', false),
+            'user_header' => env('APP_REMOTE_USER_HEADER', 'X-Remote-User'),
+            'email_header' => env('APP_REMOTE_USER_EMAIL', 'X-Remote-Email'),
+            'create_users' => env('APP_REMOTE_USER_CREATE_USERS', true),
+        ],
     ],
 
     /*
