@@ -36,8 +36,8 @@ Development happens on the [`2.0-develop`](https://github.com/pterodactyl/panel/
 
 ## Documentation
 
-* [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
-* [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
+* [Panel Documentation](https://docs.pterodactyl.io/v1/panel/getting-started)
+* [Wings Documentation](https://docs.pterodactyl.io/v1/wings/installing)
 * [Community Guides](https://pterodactyl.io/community/about.html)
 * Or, get additional help [via Discord](https://discord.gg/pterodactyl)
 
