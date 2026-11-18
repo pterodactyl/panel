@@ -13,6 +13,7 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
+use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 
 class NodeViewController extends Controller
 {
@@ -26,6 +27,7 @@ class NodeViewController extends Controller
         private NodeRepository $repository,
         private ServerRepository $serverRepository,
         private SoftwareVersionService $versionService,
+        private DaemonConfigurationRepository $daemonRepository,
     ) {
     }
 
@@ -36,11 +38,26 @@ class NodeViewController extends Controller
     {
         $node = $this->repository->loadLocationAndServerCount($node);
 
+        $system = $this->getDaemonSystem($node);
+        $daemonVersion = $system['version'] ?? '';
+        
         return view('admin.nodes.view.index', [
             'node' => $node,
             'stats' => $this->repository->getUsageStats($node),
             'version' => $this->versionService,
+            'is_latest' => $daemonVersion !== '' && $this->versionService->isLatestDaemon($daemonVersion),
         ]);
+    }
+
+    /**
+     * Returns information about the dameon.
+     */
+    private function getDaemonSystem(Node $node): array
+    {
+
+    return $this->daemonRepository
+        ->setNode($node)
+        ->getSystemInformation();
     }
 
     /**
