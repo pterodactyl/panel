@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v2.0.0-beta.3
 ### Fixed
 * The Docker image builds on PHP 8.4.27 and runs PHP-FPM with `session.upload_progress.enabled=0` (CVE-2026-109618, CVE-2026-109619).
+* The Docker image builds on Alpine 3.24, which ships nginx 1.30.7 (CVE-2026-123007, CVE-2026-123633).
 * An expired session, such as after a password change, sends you to the login page and back to where you were.
 * Files with an empty MIME type and a size of 0 or 4096 bytes upload instead of being rejected as folders.
 * The console resizes, selects words and opens links reliably.

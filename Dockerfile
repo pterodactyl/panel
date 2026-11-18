@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=$BUILDPLATFORM node:22-alpine3.23 AS assets
+FROM --platform=$BUILDPLATFORM node:22-alpine3.24 AS assets
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build:force
 
-FROM php:8.4-fpm-alpine3.23 AS php-base
+FROM php:8.4-fpm-alpine3.24 AS php-base
 WORKDIR /app
 
 RUN apk add --no-cache \
