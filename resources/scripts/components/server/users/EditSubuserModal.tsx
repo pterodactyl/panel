@@ -17,6 +17,8 @@ import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
 import ModalContext from '@/context/ModalContext';
+import AllPermissionsButton from '@/components/server/users/AllPermissionsButton';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 type Props = {
     subuser?: Subuser;
@@ -135,6 +137,18 @@ const EditSubuserModal = ({ subuser }: Props) => {
                         />
                     </div>
                 )}
+                <TitledGreyBox css={tw`mt-6`}
+                title={
+                <div css={tw`flex items-center justify-between`}>
+                    <span css={tw`text-sm uppercase text-neutral-200`}>All Permissions</span>
+                    
+                    <AllPermissionsButton editablePermissions={editablePermissions} />
+                </div>
+            }>
+                <p css={tw`m-0 text-sm text-neutral-400`}>
+                    Only select this if you <strong>entirely trust the user you are inviting</strong> with all available permissions!
+                </p>
+                </TitledGreyBox>
                 <div css={tw`my-6`}>
                     {Object.keys(permissions)
                         .filter((key) => key !== 'websocket')
