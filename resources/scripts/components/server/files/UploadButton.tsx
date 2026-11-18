@@ -106,8 +106,8 @@ export default ({ className }: WithClassname) => {
                 <Fade appear in={visible.value} timeout={75} key={'upload_modal_mask'} unmountOnExit>
                     <ModalMask
                         onClick={() => (visible.value = false)}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
+                        onDragOver={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
+                        onDrop={(e: React.DragEvent<HTMLDivElement>) => {
                             e.preventDefault();
                             e.stopPropagation();
 

@@ -85,6 +85,8 @@ class BuildModificationService
             return;
         }
 
+        $freshlyAllocated = null;
+
         // Handle the addition of allocations to this server. Only assign allocations that are not currently
         // assigned to a different server, and only allocations on the same node as the server.
         if (!empty($data['add_allocations'])) {
