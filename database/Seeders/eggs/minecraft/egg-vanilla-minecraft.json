@@ -54,7 +54,7 @@
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|between:3,15",
+            "rules": "required|string|between:3,20",
             "field_type": "text"
         }
     ]
