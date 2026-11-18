@@ -1,5 +1,6 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
+import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import React, { useEffect, useRef } from 'react';
@@ -11,8 +12,13 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
-import { CloudUploadIcon } from '@heroicons/react/outline';
+import { CloudUploadIcon, DocumentIcon, FolderIcon } from '@heroicons/react/outline';
 import { useSignal } from '@preact/signals-react';
+
+interface FileWithPath {
+    file: File;
+    relativePath: string;
+}
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -22,14 +28,51 @@ function isFileOrDirectory(event: DragEvent): boolean {
     return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
 }
 
+async function getAllFilesFromEntry(entry: FileSystemEntry, path = ''): Promise<FileWithPath[]> {
+    if (entry.isFile) {
+        return new Promise((resolve, reject) => {
+            (entry as FileSystemFileEntry).file((file) => resolve([{ file, relativePath: path + file.name }]), reject);
+        });
+    }
+
+    if (entry.isDirectory) {
+        const dirEntry = entry as FileSystemDirectoryEntry;
+        const reader = dirEntry.createReader();
+        const allEntries: FileSystemEntry[] = [];
+
+        await new Promise<void>((resolve, reject) => {
+            const readBatch = () => {
+                reader.readEntries((entries) => {
+                    if (!entries.length) {
+                        resolve();
+                    } else {
+                        allEntries.push(...entries);
+                        readBatch();
+                    }
+                }, reject);
+            };
+
+            readBatch();
+        });
+
+        const results = await Promise.all(allEntries.map((e) => getAllFilesFromEntry(e, `${path}${dirEntry.name}/`)));
+        return results.flat();
+    }
+
+    return [];
+}
+
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
+    const folderUploadInput = useRef<HTMLInputElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const visible = useSignal(false);
+    const showDropdown = useSignal(false);
     const timeouts = useSignal<NodeJS.Timeout[]>([]);
 
     const { mutate } = useFileManagerSwr();
-    const { addError, clearAndAddHttpError } = useFlashKey('files');
+    const { clearAndAddHttpError } = useFlashKey('files');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -51,7 +94,25 @@ export default ({ className }: WithClassname) => {
 
     useEventListener('dragexit', () => (visible.value = false), { capture: true });
 
-    useEventListener('keydown', () => (visible.value = false));
+    useEventListener('keydown', () => {
+        visible.value = false;
+        showDropdown.value = false;
+    });
+
+    useEffect(() => {
+        folderUploadInput.current?.setAttribute('webkitdirectory', '');
+    }, []);
+
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                showDropdown.value = false;
+            }
+        };
+
+        document.addEventListener('click', handler);
+        return () => document.removeEventListener('click', handler);
+    }, []);
 
     useEffect(() => {
         return () => timeouts.value.forEach(clearTimeout);
@@ -61,43 +122,75 @@ export default ({ className }: WithClassname) => {
         setUploadProgress({ name, loaded: data.loaded });
     };
 
-    const onFileSubmission = (files: FileList) => {
+    const uploadFilesWithPaths = async (filesWithPaths: FileWithPath[]) => {
         clearAndAddHttpError();
-        const list = Array.from(files);
-        if (list.some((file) => !file.type && (!file.size || file.size === 4096))) {
-            return addError('Folder uploads are not supported.', 'Error');
+
+        // Collect unique subdirectory paths, shallowest first, so parents exist before children.
+        const dirSet = new Set<string>();
+        for (const { relativePath } of filesWithPaths) {
+            const parts = relativePath.split('/');
+            for (let i = 1; i < parts.length; i++) {
+                dirSet.add(parts.slice(0, i).join('/'));
+            }
         }
 
-        const uploads = list.map((file) => {
+        const base = directory.replace(/\/$/, '');
+        const dirsToCreate = Array.from(dirSet).sort((a, b) => a.split('/').length - b.split('/').length);
+        for (const subDir of dirsToCreate) {
+            const lastSlash = subDir.lastIndexOf('/');
+            const dirRoot = lastSlash < 0 ? directory : `${base}/${subDir.substring(0, lastSlash)}`;
+            const dirName = lastSlash < 0 ? subDir : subDir.substring(lastSlash + 1);
+
+            try {
+                await createDirectory(uuid, dirRoot, dirName);
+            } catch {
+                // Directory may already exist — creation failures here shouldn't block the upload.
+            }
+        }
+
+        for (const { file, relativePath } of filesWithPaths) {
             const controller = new AbortController();
+            const lastSlash = relativePath.lastIndexOf('/');
+            const subDir = lastSlash > 0 ? relativePath.substring(0, lastSlash) : '';
+            const targetDirectory = subDir ? `${base}/${subDir}` : directory;
+
             pushFileUpload({
-                name: file.name,
+                name: relativePath,
                 data: { abort: controller, loaded: 0, total: file.size },
             });
 
-            return () =>
-                getFileUploadUrl(uuid).then((url) =>
-                    axios
-                        .post(
-                            url,
-                            { files: file },
-                            {
-                                signal: controller.signal,
-                                headers: { 'Content-Type': 'multipart/form-data' },
-                                params: { directory },
-                                onUploadProgress: (data) => onUploadProgress(data, file.name),
-                            }
-                        )
-                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500)))
+            try {
+                const url = await getFileUploadUrl(uuid);
+                await axios.post(
+                    url,
+                    { files: file },
+                    {
+                        signal: controller.signal,
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        params: { directory: targetDirectory },
+                        onUploadProgress: (data) => onUploadProgress(data, relativePath),
+                    }
                 );
-        });
 
-        Promise.all(uploads.map((fn) => fn()))
-            .then(() => mutate())
-            .catch((error) => {
+                timeouts.value.push(setTimeout(() => removeFileUpload(relativePath), 500));
+            } catch (error: unknown) {
                 clearFileUploads();
-                clearAndAddHttpError(error);
-            });
+                clearAndAddHttpError(error instanceof Error ? error : String(error));
+                return;
+            }
+        }
+
+        mutate();
+    };
+
+    const handleDropItems = async (items: DataTransferItemList) => {
+        const entries = Array.from(items)
+            .filter((item) => item.kind === 'file')
+            .map((item) => item.webkitGetAsEntry())
+            .filter((entry): entry is FileSystemEntry => entry !== null);
+
+        const results = await Promise.all(entries.map((entry) => getAllFilesFromEntry(entry)));
+        uploadFilesWithPaths(results.flat());
     };
 
     return (
@@ -112,9 +205,9 @@ export default ({ className }: WithClassname) => {
                             e.stopPropagation();
 
                             visible.value = false;
-                            if (!e.dataTransfer?.files.length) return;
-
-                            onFileSubmission(e.dataTransfer.files);
+                            if (e.dataTransfer?.items.length) {
+                                handleDropItems(e.dataTransfer.items);
+                            }
                         }}
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
@@ -125,7 +218,7 @@ export default ({ className }: WithClassname) => {
                             >
                                 <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
                                 <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
-                                    Drag and drop files to upload.
+                                    Drag and drop files or folders to upload.
                                 </p>
                             </div>
                         </div>
@@ -139,16 +232,61 @@ export default ({ className }: WithClassname) => {
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 
-                    onFileSubmission(e.currentTarget.files);
-                    if (fileUploadInput.current) {
-                        fileUploadInput.current.files = null;
-                    }
+                    const list = Array.from(e.currentTarget.files);
+                    uploadFilesWithPaths(list.map((file) => ({ file, relativePath: file.name })));
+                    e.currentTarget.value = '';
                 }}
                 multiple
             />
-            <Button className={className} onClick={() => fileUploadInput.current && fileUploadInput.current.click()}>
-                Upload
-            </Button>
+            <input
+                type={'file'}
+                ref={folderUploadInput}
+                css={tw`hidden`}
+                onChange={(e) => {
+                    if (!e.currentTarget.files) return;
+
+                    const list = Array.from(e.currentTarget.files);
+                    uploadFilesWithPaths(list.map((file) => ({ file, relativePath: file.webkitRelativePath || file.name })));
+                    e.currentTarget.value = '';
+                }}
+            />
+            <div ref={dropdownRef} className={'relative'}>
+                <Button className={className} onClick={() => (showDropdown.value = !showDropdown.value)}>
+                    Upload
+                </Button>
+                {showDropdown.value && (
+                    <div
+                        className={
+                            'absolute right-0 top-full mt-1 bg-neutral-800 border border-neutral-700 rounded shadow-lg z-50 min-w-max overflow-hidden'
+                        }
+                    >
+                        <button
+                            className={
+                                'flex items-center space-x-2 w-full px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700'
+                            }
+                            onClick={() => {
+                                showDropdown.value = false;
+                                fileUploadInput.current?.click();
+                            }}
+                        >
+                            <DocumentIcon className={'w-4 h-4'} />
+                            <span>Files</span>
+                        </button>
+                        <button
+                            className={
+                                'flex items-center space-x-2 w-full px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700'
+                            }
+                            onClick={() => {
+                                showDropdown.value = false;
+                                folderUploadInput.current?.click();
+                            }}
+                        >
+                            <FolderIcon className={'w-4 h-4'} />
+                            <span>Folder</span>
+                        </button>
+                    </div>
+                )}
+            </div>
         </>
     );
 };
