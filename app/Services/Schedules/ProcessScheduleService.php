@@ -10,6 +10,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Models\Task;
 
 class ProcessScheduleService
 {
@@ -42,9 +43,9 @@ class ProcessScheduleService
         });
 
         $job = new RunTaskJob($task, $now);
-        if ($schedule->only_when_online) {
+        if (!$now && $schedule->only_when_online) {
             // Check that the server is currently in a starting or running state before executing
-            // this schedule if this option has been set.
+            // this schedule if this option has been set. Skipped if manually ran.
             try {
                 $details = $this->serverRepository->setServer($schedule->server)->getDetails();
                 $state = $details['state'] ?? 'offline';
@@ -74,8 +75,18 @@ class ProcessScheduleService
             // so we need to manually trigger it and then continue with the exception throw.
             //
             // @see https://github.com/pterodactyl/panel/issues/2550
+            //
+            // When forcing a run now, if a schedule is set to only run when the server is online
+            // it will not run and will fail silently, added logic to allow force runs.
             try {
-                $this->dispatcher->dispatchNow($job);
+                $details = $this->serverRepository->setServer($schedule->server)->getDetails();
+                $state = $details['state'] ?? 'offline';
+
+                if (in_array($state, ['offline', 'stopping']) && $task->action === Task::ACTION_COMMAND) {
+                    $job->skip();
+                } else {
+                    $this->dispatcher->dispatchNow($job);
+                }
             } catch (\Exception $exception) {
                 $job->failed($exception);
 
