@@ -3,6 +3,7 @@
 namespace Pterodactyl\Extensions;
 
 use Pterodactyl\Models\DatabaseHost;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
@@ -18,6 +19,7 @@ class DynamicDatabaseConnection
      */
     public function __construct(
         protected ConfigRepository $config,
+        protected DatabaseManager $databaseManager,
         protected Encrypter $encrypter,
         protected DatabaseHostRepositoryInterface $repository,
     ) {
@@ -33,6 +35,10 @@ class DynamicDatabaseConnection
         if (!$host instanceof DatabaseHost) {
             $host = $this->repository->find($host);
         }
+
+        // DatabaseManager caches connections by name. Remove any previous connection so the
+        // next query uses the configuration for this host.
+        $this->databaseManager->purge($connection);
 
         $this->config->set('database.connections.' . $connection, [
             'driver' => self::DB_DRIVER,
