@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $password
  * @property int|null $max_databases
  * @property int|null $node_id
+ * @property bool $enabled
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  */
@@ -45,7 +46,7 @@ class DatabaseHost extends Model
      * Fields that are mass assignable.
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id', 'enabled',
     ];
 
     /**
@@ -55,6 +56,7 @@ class DatabaseHost extends Model
         'id' => 'integer',
         'max_databases' => 'integer',
         'node_id' => 'integer',
+        'enabled' => 'boolean',
     ];
 
     /**
@@ -67,6 +69,7 @@ class DatabaseHost extends Model
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
         'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
+        'enabled' => 'sometimes|boolean',
     ];
 
     /**
