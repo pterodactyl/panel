@@ -27,13 +27,9 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
-        // If the APP_URL value is set with https:// make sure we force it here. Theoretically
-        // this should just work with the proxy logic, but there are a lot of cases where it
-        // doesn't, and it triggers a lot of support requests, so lets just head it off here.
-        //
-        // @see https://github.com/pterodactyl/panel/issues/3623
-        if (Str::startsWith(config('app.url') ?? '', 'https://')) {
-            URL::forceScheme('https');
+        if ($url = config('app.url')) {
+            URL::forceRootUrl(config('app.url'));
+            URL::forceScheme(parse_url(config('app.url'), PHP_URL_SCHEME));
         }
 
         Relation::enforceMorphMap([
