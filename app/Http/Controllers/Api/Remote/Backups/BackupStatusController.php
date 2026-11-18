@@ -102,7 +102,7 @@ class BackupStatusController extends Controller
 
         $model->server->update(['status' => null]);
 
-        Activity::event($request->boolean('successful') ? 'server:backup.restore-complete' : 'server.backup.restore-failed')
+        Activity::event($request->boolean('successful') ? 'server:backup.restore-complete' : 'server:backup.restore-failed')
             ->subject($model, $model->server)
             ->property('name', $model->name)
             ->log();
