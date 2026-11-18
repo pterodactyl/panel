@@ -13,9 +13,6 @@ use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 
 class AdvancedController extends Controller
 {
-    /**
-     * AdvancedController constructor.
-     */
     public function __construct(
         private AlertsMessageBag $alert,
         private ConfigRepository $config,
@@ -24,12 +21,10 @@ class AdvancedController extends Controller
     ) {
     }
 
-    /**
-     * Render advanced Panel settings UI.
-     */
     public function index(): View
     {
         $showRecaptchaWarning = false;
+
         if (
             $this->config->get('recaptcha._shipped_secret_key') === $this->config->get('recaptcha.secret_key')
             || $this->config->get('recaptcha._shipped_website_key') === $this->config->get('recaptcha.website_key')
@@ -37,8 +32,17 @@ class AdvancedController extends Controller
             $showRecaptchaWarning = true;
         }
 
+        $proxies = $this->config->get('trustedproxy.proxies', []);
+        $defaultProxies = is_array($proxies)
+            ? implode(',', $proxies)
+            : (string) $proxies;
+
         return view('admin.settings.advanced', [
             'showRecaptchaWarning' => $showRecaptchaWarning,
+            'trustedProxies' => $this->settings->get(
+                'settings::trustedproxy:proxies',
+                $defaultProxies
+            ),
         ]);
     }
 
@@ -53,7 +57,10 @@ class AdvancedController extends Controller
         }
 
         $this->kernel->call('queue:restart');
-        $this->alert->success('Advanced settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
+
+        $this->alert->success(
+            'Advanced settings have been updated successfully and the queue worker was restarted to apply these changes.'
+        )->flash();
 
         return redirect()->route('admin.settings.advanced');
     }
