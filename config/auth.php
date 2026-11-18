@@ -19,6 +19,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Reverse-proxy header authentication
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the web panel can authenticate users from HTTP headers
+    | injected by a trusted reverse proxy (e.g. Authelia / Authentik). Only
+    | enable this behind a proxy that strips client-supplied copies of these
+    | headers, and configure TRUSTED_PROXIES accordingly.
+    |
+    */
+
+    'header' => [
+        'enabled' => (bool) env('AUTH_HEADER_ENABLED', false),
+        'auto_create' => (bool) env('AUTH_HEADER_AUTO_CREATE', false),
+        'username_header' => env('AUTH_HEADER_USERNAME', 'X-Auth-Username'),
+        'email_header' => env('AUTH_HEADER_EMAIL', 'X-Auth-Email'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
