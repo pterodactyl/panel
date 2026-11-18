@@ -327,7 +327,7 @@
 
                 @if (old('environment'))
                     @foreach (old('environment') as $key => $value)
-                        $('#' + ids['{{ $key }}']).val('{{ $value }}');
+                        $('#' + ids[@json($key)]).val(@json($value));
                     @endforeach
                 @endif
             @endif
