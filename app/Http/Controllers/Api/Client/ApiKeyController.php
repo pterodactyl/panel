@@ -37,7 +37,9 @@ class ApiKeyController extends ClientApiController
 
             return $request->user()->createToken(
                 $request->input('description'),
-                $request->input('allowed_ips')
+                $request->input('allowed_ips'),
+                $request->input('permissions'),
+                $request->input('allowed_servers')
             );
         });
 

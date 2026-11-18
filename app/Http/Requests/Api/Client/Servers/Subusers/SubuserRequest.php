@@ -55,6 +55,16 @@ abstract class SubuserRequest extends ClientApiRequest
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->route()->parameter('server');
 
+        // A permission-scoped API key may never assign permissions beyond its own
+        // set — without this, a key holding only user.create could mint a subuser
+        // with every permission and escalate out of its scope entirely.
+        $token = $user->currentApiKey();
+        if (!is_null($token) && !is_null($token->permissions)) {
+            if (count(array_diff($permissions, $token->permissions)) > 0) {
+                throw new HttpForbiddenException('Cannot assign permissions to a subuser that this API key does not possess.');
+            }
+        }
+
         // If we are a root admin or the server owner, no need to perform these checks.
         if ($user->root_admin || $user->id === $server->owner_id) {
             return;
