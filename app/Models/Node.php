@@ -245,6 +245,6 @@ class Node extends Model implements Identifiable
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
         // @phpstan-ignore-next-line property.notFound, property.notFound
-        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
+        return (($this->sum_memory + $memory) <= $memoryLimit || $this->memory_overallocate < 0) && (($this->sum_disk + $disk) <= $diskLimit || $this->disk_overallocate < 0);
     }
 }
