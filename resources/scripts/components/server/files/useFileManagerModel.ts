@@ -48,6 +48,12 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
     );
 };
 
+const newestFirst = (files: readonly FileObject[]): FileObject[] =>
+    [...files].sort((a, b) => {
+        if (a.attributes.is_file !== b.attributes.is_file) return a.attributes.is_file ? 1 : -1;
+        return new Date(b.attributes.modified_at).getTime() - new Date(a.attributes.modified_at).getTime();
+    });
+
 function allow(granted: boolean, permission: string): void {
     if (!granted) {
         throw new Error(`This action requires the ${permission} permission.`);
@@ -148,7 +154,7 @@ export default function useFileManagerModel(): FileManagerModel {
     const upload = useFileUploader();
     const { uploads, cancelUpload, clearUploads } = useUploads();
 
-    const files = useMemo(() => sortFiles(slot.files.slice(0, FILE_LIST_LIMIT)), [slot.files]);
+    const files = useMemo(() => sortFiles(newestFirst(slot.files).slice(0, FILE_LIST_LIMIT)), [slot.files]);
     const entries = useMemo(
         () =>
             files.map<FileManagerEntry>((file) => {
