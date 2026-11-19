@@ -55,7 +55,22 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|max:9",
-            "field_type": "text"
+            "field_type": "text",
+            "options_source": {
+                "url": "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json",
+                "data_path": "promos",
+                "value_path": "$key",
+                "label_path": "$key",
+                "strip_suffix": "-latest",
+                "allow_manual_input": true,
+                "filters": [
+                    {
+                        "path": "$key",
+                        "operator": "ends_with",
+                        "value": "-latest"
+                    }
+                ]
+            }
         },
         {
             "name": "Build Type",

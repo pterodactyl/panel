@@ -38,6 +38,9 @@ test('startup variables are returned for server', function (array $permissions):
         'server_value' => null,
         'is_editable' => true,
         'rules' => $variable->rules,
+        'options' => [],
+        'has_options_source' => false,
+        'allow_manual_input' => true,
     ]);
 })->with('permissionsDataProvider');
 test('startup data is not returned without permission', function (): void {

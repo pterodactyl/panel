@@ -5,6 +5,7 @@ import {
     eggVariableBodyFromFormValues,
     validateEnvVariable,
     validateVariableName,
+    validateOptionsSource,
 } from '@/components/admin/eggs/helpers';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -28,6 +29,7 @@ const initialValues = {
     userViewable: true,
     userEditable: true,
     rules: 'required|string|max:20',
+    optionsSource: '',
 };
 
 function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDialogProps) {
@@ -107,6 +109,21 @@ function CreateEggVariableDialog({ eggId, open, onClose }: CreateEggVariableDial
                                 id='create_rules'
                                 label='Input Rules'
                                 description='Standard Laravel validation rules used to validate this variable.'
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField
+                        name='optionsSource'
+                        validators={{ onChange: ({ value }) => validateOptionsSource(value) }}
+                    >
+                        {(field) => (
+                            <field.TextAreaField
+                                id='create_options_source'
+                                label='API Options Source'
+                                rows={4}
+                                description='Optional JSON configuration for loading suggestions from a public HTTPS API.'
                             />
                         )}
                     </form.AppField>

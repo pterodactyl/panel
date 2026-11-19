@@ -580,6 +580,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
             'user_viewable' => true,
             'user_editable' => true,
             'rules' => 'required|string',
+            'options_source' => null,
             'required' => true,
             'sort_order' => 1,
             'created_at' => '2026-01-01T00:00:00+00:00',
@@ -587,6 +588,7 @@ class PterodactylOpenApiGenerator extends OpenApiGenerator
         ]);
 
         Arr::set($schema, 'properties.server_value.nullable', true);
+        Arr::set($schema, 'properties.options_source', ['type' => 'object', 'nullable' => true, 'additionalProperties' => true]);
         Arr::set($schema, 'properties.sort_order.nullable', true);
         $schema['required'] = array_values(array_filter(Arr::array($schema, 'required'), fn (mixed $field): bool => $field !== 'required'));
 

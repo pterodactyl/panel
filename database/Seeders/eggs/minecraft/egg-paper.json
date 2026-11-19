@@ -45,7 +45,14 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "nullable|string|max:20",
-            "field_type": "text"
+            "field_type": "text",
+            "options_source": {
+                "url": "https://fill.papermc.io/v3/projects/paper",
+                "data_path": "versions.*",
+                "value_path": "$value",
+                "allow_manual_input": true,
+                "filters": []
+            }
         },
         {
             "name": "Server Jar File",

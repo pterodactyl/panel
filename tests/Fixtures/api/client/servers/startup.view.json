@@ -14,7 +14,10 @@
                         "default_value": "server.jar",
                         "server_value": "paper.jar",
                         "is_editable": true,
-                        "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/"
+                        "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
+                        "options": [],
+                        "has_options_source": false,
+                        "allow_manual_input": true
                     }
                 },
                 {
@@ -26,7 +29,10 @@
                         "default_value": "latest",
                         "server_value": null,
                         "is_editable": false,
-                        "rules": "required|string|max:20"
+                        "rules": "required|string|max:20",
+                        "options": [],
+                        "has_options_source": false,
+                        "allow_manual_input": true
                     }
                 }
             ],
