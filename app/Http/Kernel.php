@@ -23,6 +23,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\EnsureStatefulRequests;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
+use Pterodactyl\Http\Middleware\AuthenticateFromTrustedHeader;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             LanguageMiddleware::class,
+            AuthenticateFromTrustedHeader::class,
         ],
         'api' => [
             EnsureStatefulRequests::class,
