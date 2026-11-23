@@ -1,10 +1,6 @@
 import { QueryClient, QueryObserver } from '@tanstack/react-query';
 import { describe, expect, it, vi } from 'vitest';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 
 describe('mutation utilities', () => {
     it('invalidates all requested generated operations in one cache scan', () => {
@@ -59,22 +55,5 @@ describe('mutation utilities', () => {
         expect(queryClient.getQueryData(observedKey)).toBeUndefined();
         expect(queryClient.getQueryData(otherKey)).toBe('cached');
         expect(queryFn).not.toHaveBeenCalled();
-    });
-
-    it('builds consistent resource mutation copy with and without a resource name', () => {
-        expect(resourceMutationMessages('database host', 'update', 'primary')).toEqual({
-            errorTitle: 'Unable to update database host',
-            success: {
-                title: 'Database host updated',
-                description: 'primary has been updated.',
-            },
-        });
-        expect(resourceMutationMessages('egg', 'delete')).toEqual({
-            errorTitle: 'Unable to delete egg',
-            success: {
-                title: 'Egg deleted',
-                description: 'The egg has been deleted.',
-            },
-        });
     });
 });

@@ -13,6 +13,7 @@ const source = argument('--src', resolve(root, 'resources/scripts'));
 const output = argument('--out', resolve(root, 'resources/lang/en.json'));
 const ignored = /(?:\.spec\.tsx?|\.d\.ts)$|\/(?:generated|node_modules|testing-runtime)\//;
 const plurals = ['one', 'other'];
+const countPlaceholder = /\{\{\s*count\s*\}\}/;
 
 const literal = (node) => (node && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) ? node.text : null);
 
@@ -47,7 +48,7 @@ const isTranslateCall = (node, file, skipped) => {
     const callee = node.expression;
 
     if (ts.isIdentifier(callee)) {
-        return callee.text === 't' && !skipped.has('t');
+        return (callee.text === 't' && !skipped.has('t')) || callee.text === 'translatable';
     }
 
     return ts.isPropertyAccessExpression(callee) && callee.name.text === 't' && !skipped.has(callee.expression.getText(file));
@@ -74,7 +75,7 @@ function collect(filename, keys) {
             const options = node.arguments[1];
 
             if (key !== null && !property(options, 'ns')) {
-                keys.set(key, keys.get(key) || !!property(options, 'count'));
+                keys.set(key, keys.get(key) || !!property(options, 'count') || countPlaceholder.test(key));
             }
         }
 
@@ -82,7 +83,7 @@ function collect(filename, keys) {
             const key = translateElementKey(node);
 
             if (key !== null) {
-                keys.set(key, keys.get(key) || !!node.attributes.properties.some((attribute) => attribute.name?.getText(file) === 'count'));
+                keys.set(key, keys.get(key) || countPlaceholder.test(key));
             }
         }
 

@@ -11,7 +11,7 @@ function isLiteralKey(node: ESTree.Node | undefined): boolean {
 
 function isTranslateCallee(node: ESTree.Node): boolean {
     if (node.type === 'Identifier') {
-        return node.name === 't';
+        return node.name === 't' || node.name === 'translatable';
     }
 
     return (
@@ -25,7 +25,9 @@ function isTranslateCallee(node: ESTree.Node): boolean {
 export const literalTranslationKeysRule = defineRule({
     meta: {
         type: 'problem',
-        messages: { literal: 'Pass the English text to t() as a string literal so lang:extract can find it.' },
+        messages: {
+            literal: 'Pass the English text to t() or translatable() as a string literal so lang:extract can find it.',
+        },
     },
     create(context) {
         return {

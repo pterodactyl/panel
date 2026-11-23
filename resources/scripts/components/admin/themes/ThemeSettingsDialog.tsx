@@ -20,13 +20,14 @@ import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Alert } from '@/components/elements/alert';
 import { Dialog } from '@/components/elements/dialog';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 /** The extension settings form renders theme settings too; an image is its file field. */
-export const settingField = (setting: AdminThemeSetting): AdminExtensionSettingField => ({
+export const settingField = (setting: AdminThemeSetting, t: Translation['t']): AdminExtensionSettingField => ({
     input: setting.key,
     label: setting.label,
     help:
-        [setting.help, setting.type === 'number' && setting.unit ? `In ${setting.unit}.` : null]
+        [setting.help, setting.type === 'number' && setting.unit ? t('In {{unit}}.', { unit: setting.unit }) : null]
             .filter(Boolean)
             .join(' ') || null,
     tab: setting.tab,
@@ -60,6 +61,7 @@ export default function ThemeSettingsDialog({
     open: boolean;
     onClose: () => void;
 }) {
+    const { t } = useTranslation();
     const { data, error, isFetching } = useAdminThemeSettings(theme.id, { enabled: open });
     const update = useUpdateAdminThemeSettings();
     const upload = useUploadAdminThemeImage();
@@ -107,7 +109,7 @@ export default function ThemeSettingsDialog({
             setting && (
                 <SettingField
                     key={setting.key}
-                    field={settingField(setting)}
+                    field={settingField(setting, t)}
                     value={setting.key in values ? values[setting.key] : setting.value}
                     onChange={change(setting)}
                     file={setting.type === 'image' ? fileActions(setting) : undefined}
@@ -119,7 +121,7 @@ export default function ThemeSettingsDialog({
     return (
         <Dialog
             open={open}
-            title={`${theme.name} settings`}
+            title={t('{{name}} settings', { name: theme.name })}
             preventExternalClose={update.isPending}
             hideCloseIcon={update.isPending}
             onClose={cancel}
@@ -129,7 +131,7 @@ export default function ThemeSettingsDialog({
             {!error && !data && isFetching && <Spinner size='large' centered />}
             {!error && data && settings.some((setting) => setting.tab) && (
                 <SettingsSections
-                    schema={settings.map(settingField)}
+                    schema={settings.map((setting) => settingField(setting, t))}
                     renderField={(field) => renderSetting(field.input)}
                 />
             )}
@@ -144,7 +146,7 @@ export default function ThemeSettingsDialog({
                     disabled={update.isPending}
                     onClick={cancel}
                 >
-                    Cancel
+                    {t('Cancel')}
                 </Button>
                 <Button
                     type='button'
@@ -153,7 +155,7 @@ export default function ThemeSettingsDialog({
                     isLoading={update.isPending}
                     onClick={() => void save()}
                 >
-                    Save Settings
+                    {t('Save Settings')}
                 </Button>
             </div>
         </Dialog>

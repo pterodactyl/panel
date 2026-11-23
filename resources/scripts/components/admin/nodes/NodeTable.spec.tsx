@@ -3,6 +3,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getCoreRowModel, useReactTable, type SortingState } from '@tanstack/react-table';
+import i18next from 'i18next';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { AdminNode } from '@/api/admin/nodes/queries';
 import DataTable from '@/components/elements/table/DataTable';
@@ -11,8 +12,9 @@ import { NodeStatusBadge } from './NodeStatusBadge';
 
 afterEach(cleanup);
 
+const columns = nodeColumns(i18next.t);
 const resourceRows = [{ attributes: { memory: 60_000, disk: 450_000 } }] as AdminNode[];
-const resourceColumnsOnly = Object.fromEntries(nodeColumns.map((column) => [column.id, column.id === 'resources']));
+const resourceColumnsOnly = Object.fromEntries(columns.map((column) => [column.id, column.id === 'resources']));
 
 const HeaderTable = ({
     sorting,
@@ -23,7 +25,7 @@ const HeaderTable = ({
 }) => {
     const table = useReactTable<AdminNode>({
         data: resourceRows,
-        columns: nodeColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         manualSorting: true,
         enableMultiSort: false,
@@ -48,7 +50,7 @@ describe('NodeTable', () => {
     });
 
     it('only enables sorting for node-backed sort columns', () => {
-        expect(nodeColumns.filter((column) => column.enableSorting).map((column) => column.id)).toEqual([
+        expect(columns.filter((column) => column.enableSorting).map((column) => column.id)).toEqual([
             'name',
             'memory',
             'disk',

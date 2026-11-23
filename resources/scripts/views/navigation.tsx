@@ -15,6 +15,7 @@ import { ScreenBadge, ScreenGate } from '@/extensions/screenNavigation';
 import { hasPermission } from '@/plugins/usePermissions';
 import { getAreaNav, type AreaNavEntry } from '@/router/nav';
 import { useServerRouteId } from '@/router/params';
+import { useTranslation } from '@/sdk/localization';
 import {
     PanelLink,
     resolvePanelDestination,
@@ -65,9 +66,15 @@ export const navItemDestination = (
     hash?: string
 ): PanelDestination => ({ to, params, hash }) as CorePanelDestination;
 
-const toNavItem = (area: NavArea, entry: AreaNavEntry, order: number, params: Record<string, string>): NavItem => ({
+const toNavItem = (
+    area: NavArea,
+    entry: AreaNavEntry,
+    order: number,
+    params: Record<string, string>,
+    t: (text: string) => string
+): NavItem => ({
     id: entry.screen?.id ?? (entry.segment || 'index'),
-    label: entry.label,
+    label: t(entry.label),
     destination: navItemDestination(
         entry.segment ? `${SCREEN_ROOTS[area]}/${entry.segment}` : SCREEN_ROOTS[area],
         params,
@@ -99,16 +106,17 @@ export function useNavigation(area: NavArea): NavigationModel {
     const id = useServerRouteId();
     const serverId = area === 'server' ? (id ?? '') : '';
     const server = useServerQuery(serverId).data;
+    const { t } = useTranslation();
 
     return useMemo(() => {
         const params: Record<string, string> = serverId ? { id: serverId } : {};
         const items = getAreaNav(area)
-            .map((entry, order) => ({ entry, item: toNavItem(area, entry, order, params) }))
+            .map((entry, order) => ({ entry, item: toNavItem(area, entry, order, params, t) }))
             .filter(({ entry }) => area !== 'server' || isListed(entry, server))
             .map(({ item }) => item);
 
         return { items };
-    }, [area, serverId, server]);
+    }, [area, serverId, server, t]);
 }
 
 export interface ResourceTab {

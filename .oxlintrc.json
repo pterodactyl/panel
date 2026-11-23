@@ -307,7 +307,12 @@
         },
         {
             "files": ["resources/scripts/**", "packages/hello-world/src/client/**"],
-            "excludeFiles": ["**/generated/**", "**/*.spec.{ts,tsx}", "resources/scripts/sdk/localization.ts"],
+            "excludeFiles": [
+                "**/generated/**",
+                "**/*.spec.{ts,tsx}",
+                "resources/scripts/sdk/localization.ts",
+                "resources/scripts/views/navigation.tsx"
+            ],
             "rules": {
                 "rules/literal-translation-keys": "error"
             }

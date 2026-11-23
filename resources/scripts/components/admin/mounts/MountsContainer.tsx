@@ -16,7 +16,8 @@ import {
 } from '@/api/admin/mounts/queries';
 import { useMountListSearch } from '@/router/search';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import CreateMountButton from '@/components/admin/mounts/CreateMountButton';
 import { mountColumns } from '@/components/admin/mounts/MountTable';
 import Spinner from '@/components/elements/Spinner';
@@ -26,6 +27,7 @@ import { TextInput } from '@/components/form/controls';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Icon from '@/components/elements/Icon';
 import { FolderInput, Search } from 'lucide-react';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyMounts: AdminMount[] = [];
 const sortingFromSearch = (sort?: AdminMountListSort): SortingState => {
@@ -47,7 +49,9 @@ const sortingToSearch = (sorting: SortingState): AdminMountListSort | null => {
 };
 
 export default function MountsContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useMountListSearch();
+    const columns = useMemo(() => mountColumns(t), [t]);
 
     const {
         data: mounts,
@@ -81,7 +85,7 @@ export default function MountsContainer() {
     );
     const table = useReactTable({
         data: mounts?.data ?? emptyMounts,
-        columns: mountColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (mount) => String(mount.attributes.id),
         manualPagination: true,
@@ -99,9 +103,9 @@ export default function MountsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Mounts'
-            heading='Mounts'
-            description='Manage additional directories that can be mounted into server containers.'
+            title={t('Admin · Mounts')}
+            heading={t('Mounts')}
+            description={t('Manage additional directories that can be mounted into server containers.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -121,9 +125,9 @@ export default function MountsContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search mounts'
+                        aria-label={t('Search mounts')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search mounts…'
+                        placeholder={t('Search mounts…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -137,10 +141,18 @@ export default function MountsContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={FolderInput}
-                                noun='mounts'
+                                empty={t('No mounts yet')}
+                                noMatch={t('No matching mounts')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No mounts match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create a mount to share a host directory with server containers.'
+                                description={t('Create a mount to share a host directory with server containers.')}
                                 action={<CreateMountButton />}
                             />
                         }
@@ -149,7 +161,12 @@ export default function MountsContainer() {
                         table={table}
                         total={mounts.meta.pagination.total}
                         count={mounts.meta.pagination.count}
-                        itemLabel='mounts'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> mounts',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

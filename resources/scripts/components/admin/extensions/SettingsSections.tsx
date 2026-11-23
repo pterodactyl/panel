@@ -3,6 +3,7 @@ import type { AdminExtensionSettingField } from '@/api/admin/extensions/queries'
 import Label from '@/components/elements/Label';
 import Select from '@/components/ui/Select';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
 
 export const GENERAL_SECTION = 'General';
 
@@ -40,6 +41,7 @@ export default function SettingsSections({
     schema: AdminExtensionSettingField[];
     renderField: (field: AdminExtensionSettingField) => ReactNode;
 }) {
+    const { t } = useTranslation();
     const id = useId();
     const scrollRef = useRef<HTMLDivElement>(null);
     const sections = groupSettingsBySection(schema);
@@ -50,11 +52,14 @@ export default function SettingsSections({
         <div className={settingsBodyClass}>
             {sections.length > 1 && (
                 <div className='shrink-0 pb-4 mb-1 border-b border-border'>
-                    <Label htmlFor={id}>Section</Label>
+                    <Label htmlFor={id}>{t('Section')}</Label>
                     <Select
                         id={id}
                         value={current.name}
-                        options={sections.map((section) => ({ value: section.name, label: section.name }))}
+                        options={sections.map((section) => ({
+                            value: section.name,
+                            label: section.name === GENERAL_SECTION ? t('General') : section.name,
+                        }))}
                         onChange={(value) => {
                             setSelected(String(value));
                             if (scrollRef.current) {

@@ -16,7 +16,8 @@ import {
 } from '@/api/admin/database-hosts/queries';
 import { useDatabaseHostListSearch } from '@/router/search';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import CreateDatabaseHostButton from '@/components/admin/databases/CreateDatabaseHostButton';
 import { databaseHostColumns } from '@/components/admin/databases/DatabaseHostTable';
 import Spinner from '@/components/elements/Spinner';
@@ -26,6 +27,7 @@ import { TextInput } from '@/components/form/controls';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Icon from '@/components/elements/Icon';
 import { Database, Search } from 'lucide-react';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyHosts: AdminDatabaseHost[] = [];
 
@@ -56,6 +58,7 @@ const sortingToSearch = (sorting: SortingState): AdminDatabaseHostListSort | nul
 };
 
 export default function DatabaseHostsContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useDatabaseHostListSearch();
 
     const {
@@ -72,6 +75,7 @@ export default function DatabaseHostsContainer() {
         [page, paginationMetadata?.per_page]
     );
     const sorting = useMemo(() => sortingFromSearch(sort), [sort]);
+    const columns = useMemo(() => databaseHostColumns(t), [t]);
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
@@ -92,7 +96,7 @@ export default function DatabaseHostsContainer() {
     );
     const table = useReactTable({
         data: hosts?.data ?? emptyHosts,
-        columns: databaseHostColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (host) => String(host.attributes.id),
         manualPagination: true,
@@ -110,9 +114,9 @@ export default function DatabaseHostsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Database Hosts'
-            heading='Database Hosts'
-            description='Manage the database hosts available to your servers.'
+            title={t('Admin · Database Hosts')}
+            heading={t('Database Hosts')}
+            description={t('Manage the database hosts available to your servers.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -132,9 +136,9 @@ export default function DatabaseHostsContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search database hosts'
+                        aria-label={t('Search database hosts')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search database hosts…'
+                        placeholder={t('Search database hosts…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -148,10 +152,18 @@ export default function DatabaseHostsContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={Database}
-                                noun='database hosts'
+                                empty={t('No database hosts yet')}
+                                noMatch={t('No matching database hosts')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No database hosts match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Add a MySQL or MariaDB host so servers can create databases.'
+                                description={t('Add a MySQL or MariaDB host so servers can create databases.')}
                                 action={<CreateDatabaseHostButton />}
                             />
                         }
@@ -160,7 +172,12 @@ export default function DatabaseHostsContainer() {
                         table={table}
                         total={hosts.meta.pagination.total}
                         count={hosts.meta.pagination.count}
-                        itemLabel='database hosts'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> database hosts',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

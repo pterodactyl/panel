@@ -39,6 +39,8 @@ it('collects the english keys of t() calls and Translate elements', () => {
             "i18n.t('Welcome back, {{name}}', { name });",
             "t('{{count}} file', { count });",
             "t('greeting', { ns: 'activity' });",
+            "export const nav = { label: translatable('Servers') };",
+            "t('Showing {{start}} of {{count}} servers', range);",
             "export const Probe = () => <><Translate i18nKey='Save changes' /><Translate ns='activity' i18nKey='auth.fail' /></>;",
         ].join('\n')
     );
@@ -54,6 +56,9 @@ it('collects the english keys of t() calls and Translate elements', () => {
         'Login to Continue': 'Login to Continue',
         Password: 'Password',
         'Save changes': 'Save changes',
+        Servers: 'Servers',
+        'Showing {{start}} of {{count}} servers_one': 'Showing {{start}} of {{count}} servers',
+        'Showing {{start}} of {{count}} servers_other': 'Showing {{start}} of {{count}} servers',
         'Welcome back, {{name}}': 'Welcome back, {{name}}',
         '{{count}} file_one': '{{count}} file',
         '{{count}} file_other': '{{count}} file',

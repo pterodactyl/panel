@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import type { AdminLanguages } from '@/api/admin/languages/queries';
 import type { SelectOption } from '@/components/ui/Select';
 import { getBootstrapSiteSettings } from '@/bootstrap';
@@ -12,7 +13,12 @@ export const languageOptions = (
     const options = Object.entries(languages ?? {}).map(([value, label]) => ({ value, label }));
     const panelDefault = getBootstrapSiteSettings()?.locale ?? 'en';
     const defaults = withPanelDefault
-        ? [{ value: PANEL_DEFAULT_LANGUAGE, label: `Panel default (${languages?.[panelDefault] ?? panelDefault})` }]
+        ? [
+              {
+                  value: PANEL_DEFAULT_LANGUAGE,
+                  label: i18next.t('Panel default ({{name}})', { name: languages?.[panelDefault] ?? panelDefault }),
+              },
+          ]
         : [];
 
     if (current && !options.some((option) => option.value === current)) {

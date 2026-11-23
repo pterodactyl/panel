@@ -15,17 +15,19 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { ExtensionResourceProvider, type ExtensionResourceContext } from '@/extensions/resourceContext';
 import Slot from '@/extensions/Slot';
 import { resourceNavigation, type ResourceTab } from '@/views/navigation';
+import { type Translation, useTranslation } from '@/sdk/localization';
 
-const tabs: ResourceTab[] = [
-    { id: 'configuration', label: 'Configuration', to: '/panel/eggs/$eggId', exact: true },
-    { id: 'tags', label: 'Tags', to: '/panel/eggs/$eggId/tags' },
-    { id: 'variables', label: 'Variables', to: '/panel/eggs/$eggId/variables' },
-    { id: 'script', label: 'Install Script', to: '/panel/eggs/$eggId/script' },
+const tabs = (t: Translation['t']): ResourceTab[] => [
+    { id: 'configuration', label: t('Configuration'), to: '/panel/eggs/$eggId', exact: true },
+    { id: 'tags', label: t('Tags'), to: '/panel/eggs/$eggId/tags' },
+    { id: 'variables', label: t('Variables'), to: '/panel/eggs/$eggId/variables' },
+    { id: 'script', label: t('Install Script'), to: '/panel/eggs/$eggId/script' },
 ];
 
 export default function EggDetailContainer() {
     const loadedEgg = eggDetailRoute.useLoaderData();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const eggId = loadedEgg.attributes.id;
 
     const { data: egg = loadedEgg, error } = useAdminEgg(eggId);
@@ -46,7 +48,7 @@ export default function EggDetailContainer() {
     return (
         <ExtensionResourceProvider.Provider value={resourceContext}>
             <AdminContentBlock
-                title={`Admin · ${egg.attributes.name}`}
+                title={t('Admin · {{name}}', { name: egg.attributes.name })}
                 heading={egg.attributes.name}
                 description={egg.attributes.description ?? undefined}
             >
@@ -56,7 +58,7 @@ export default function EggDetailContainer() {
                         className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground'
                     >
                         <Icon icon={ArrowLeft} className='mr-2' />
-                        Back to Eggs
+                        {t('Back to Eggs')}
                     </Link>
                     <div className='flex flex-wrap items-center gap-2'>
                         <ExportEggButton egg={egg} />
@@ -67,7 +69,7 @@ export default function EggDetailContainer() {
                 <Slot name='panel.eggs.detail.actions' data={resourceContext} />
                 <SubNavigation
                     className='mb-4 rounded-sm'
-                    items={resourceNavigation('admin.egg', { eggId: String(eggId) }, tabs)}
+                    items={resourceNavigation('admin.egg', { eggId: String(eggId) }, tabs(t))}
                 />
                 <Outlet />
             </AdminContentBlock>

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import {
     adminImportCatalogEggMutation,
@@ -32,9 +33,11 @@ export const useImportAdminCatalogEgg = () => {
         ...adminImportCatalogEggMutation(),
         onSuccess: async (egg) => {
             await invalidateGeneratedOperations(queryClient, ['adminListEggs']);
-            toast.success('Egg imported', { description: `${egg.attributes.name} has been added from the catalog.` });
+            toast.success(i18next.t('Egg imported'), {
+                description: i18next.t('{{name}} has been added from the catalog.', { name: egg.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to import catalog egg'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to import catalog egg')),
     });
 };
 
@@ -44,6 +47,6 @@ export const useRefreshAdminEggCatalog = () => {
     return useMutation({
         ...adminRefreshEggCatalogMutation(),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: adminListEggCatalogQueryKey() }),
-        onError: (error) => notifyHttpError(error, 'Unable to refresh egg catalog'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to refresh egg catalog')),
     });
 };

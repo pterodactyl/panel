@@ -1,26 +1,32 @@
 import { cn } from '@/lib/cn';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 export type NodeStatus = 'checking' | 'online' | 'offline';
 
 const statusStyles = {
     checking: {
-        label: 'Checking',
         dot: 'animate-pulse bg-muted-foreground',
         badge: 'border-border bg-muted text-muted-foreground',
     },
     online: {
-        label: 'Online',
         dot: 'bg-success',
         badge: 'border-success/25 bg-success/10 text-success',
     },
     offline: {
-        label: 'Offline',
         dot: 'bg-destructive',
         badge: 'border-destructive/25 bg-destructive/10 text-destructive',
     },
-} satisfies Record<NodeStatus, { badge: string; dot: string; label: string }>;
+} satisfies Record<NodeStatus, { badge: string; dot: string }>;
+
+const statusLabels = (t: Translation['t']) =>
+    ({
+        checking: t('Checking'),
+        online: t('Online'),
+        offline: t('Offline'),
+    }) satisfies Record<NodeStatus, string>;
 
 export const NodeStatusBadge = ({ status, title }: { status: NodeStatus; title: string }) => {
+    const { t } = useTranslation();
     const style = statusStyles[status];
 
     return (
@@ -34,7 +40,7 @@ export const NodeStatusBadge = ({ status, title }: { status: NodeStatus; title: 
             )}
         >
             <span aria-hidden='true' className={cn('h-1.5 w-1.5 rounded-full', style.dot)} />
-            {style.label}
+            {statusLabels(t)[status]}
         </span>
     );
 };

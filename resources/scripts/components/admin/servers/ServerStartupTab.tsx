@@ -24,6 +24,7 @@ import { TextInput } from '@/components/form/controls';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { relationshipData } from '@/api/relationships';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     server: AdminServer;
@@ -56,6 +57,8 @@ const serverToValues = (server: AdminServer): Values => {
 };
 
 const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values, TagCheckMeta>; egg: EggForServer | null }) => {
+    const { t } = useTranslation();
+
     if (!egg) {
         return null;
     }
@@ -64,14 +67,14 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values, TagCheckMet
 
     if (variables.length === 0) {
         return (
-            <TitledGreyBox title='Service Variables'>
+            <TitledGreyBox title={t('Service Variables')}>
                 <Empty size='compact'>
                     <EmptyHeader>
                         <EmptyMedia variant='icon'>
                             <Variable />
                         </EmptyMedia>
-                        <EmptyTitle>No variables</EmptyTitle>
-                        <EmptyDescription>This egg doesn&apos;t define any environment variables.</EmptyDescription>
+                        <EmptyTitle>{t('No variables')}</EmptyTitle>
+                        <EmptyDescription>{t("This egg doesn't define any environment variables.")}</EmptyDescription>
                     </EmptyHeader>
                 </Empty>
             </TitledGreyBox>
@@ -93,11 +96,12 @@ const EnvironmentVariables = ({ form, egg }: { form: AppForm<Values, TagCheckMet
                     </form.AppField>
                     <div className='mt-3 text-xs text-muted-foreground space-y-1'>
                         <p>
-                            <strong>Startup Variable:</strong> <Code>{attributes.env_variable}</Code>
+                            <strong>{t('Startup Variable:')}</strong> <Code>{attributes.env_variable}</Code>
                         </p>
                         {attributes.rules && (
                             <p>
-                                <strong>Input Rules:</strong> <Code className='break-all'>{attributes.rules}</Code>
+                                <strong>{t('Input Rules:')}</strong>{' '}
+                                <Code className='break-all'>{attributes.rules}</Code>
                             </p>
                         )}
                     </div>
@@ -120,6 +124,7 @@ const EggSelector = ({
     loading: boolean;
     onEggChange: (eggId: number) => void;
 }) => {
+    const { t } = useTranslation();
     const eggId = useStore(form.store, (state) => state.values.eggId);
     const image = useStore(form.store, (state) => state.values.image);
 
@@ -132,20 +137,21 @@ const EggSelector = ({
                   label: `${label} (${value})`,
               })),
               ...(hasPresetImages && !Object.values(dockerImages).includes(image)
-                  ? [{ value: image, label: `${image} (custom)` }]
+                  ? [{ value: image, label: t('{{image}} (custom)', { image }) }]
                   : []),
           ]
         : [];
 
     return (
         <>
-            <TitledGreyBox title='Service Configuration'>
+            <TitledGreyBox title={t('Service Configuration')}>
                 <p className='text-xs text-destructive mb-4'>
-                    Changing any of the values below will result in the server being reinstalled. The server will be
-                    stopped and will then proceed.
+                    {t(
+                        'Changing any of the values below will result in the server being reinstalled. The server will be stopped and will then proceed.'
+                    )}
                 </p>
                 <div>
-                    <Label htmlFor='eggId'>Egg</Label>
+                    <Label htmlFor='eggId'>{t('Egg')}</Label>
                     <Select
                         id='eggId'
                         value={eggId}
@@ -166,17 +172,17 @@ const EggSelector = ({
                     <form.AppField name='skipScripts'>
                         {(field) => (
                             <field.SwitchField
-                                label='Skip Egg Install Script'
-                                description='Skip the egg install script when reinstalling the server.'
+                                label={t('Skip Egg Install Script')}
+                                description={t('Skip the egg install script when reinstalling the server.')}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title='Docker Image Configuration' className='mt-6'>
+            <TitledGreyBox title={t('Docker Image Configuration')} className='mt-6'>
                 {hasPresetImages ? (
                     <>
-                        <Label htmlFor='image'>Image</Label>
+                        <Label htmlFor='image'>{t('Image')}</Label>
                         <Select
                             id='image'
                             value={image}
@@ -192,8 +198,8 @@ const EggSelector = ({
                                     <field.TextField
                                         type='text'
                                         id='custom_docker_image'
-                                        label='Custom Docker Image'
-                                        placeholder='Or enter a custom image...'
+                                        label={t('Custom Docker Image')}
+                                        placeholder={t('Or enter a custom image...')}
                                     />
                                 )}
                             </form.AppField>
@@ -205,14 +211,14 @@ const EggSelector = ({
                             <field.TextField
                                 type='text'
                                 id='image'
-                                label='Image'
-                                placeholder='Enter a docker image...'
+                                label={t('Image')}
+                                placeholder={t('Enter a docker image...')}
                             />
                         )}
                     </form.AppField>
                 )}
                 <p className='mt-1 text-xs text-muted-foreground'>
-                    Select an image from the dropdown or enter a custom Docker image.
+                    {t('Select an image from the dropdown or enter a custom Docker image.')}
                 </p>
             </TitledGreyBox>
         </>
@@ -220,6 +226,7 @@ const EggSelector = ({
 };
 
 function ServerStartupTabContent({ server }: Props) {
+    const { t } = useTranslation();
     const fetchEggForServer = useFetchAdminEggForServer();
     const updateServerStartup = useUpdateAdminServerStartup();
 
@@ -311,27 +318,31 @@ function ServerStartupTabContent({ server }: Props) {
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='Startup Command Modification'>
+            <TitledGreyBox title={t('Startup Command Modification')}>
                 <form.AppField name='startup'>
                     {(field) => (
                         <field.TextField
                             type='text'
                             id='startup'
-                            label='Startup Command'
-                            description={
-                                'The following variables are available by default: {{SERVER_MEMORY}}, ' +
-                                '{{SERVER_IP}}, and {{SERVER_PORT}}.'
-                            }
+                            label={t('Startup Command')}
+                            description={t(
+                                'The following variables are available by default: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.',
+                                {
+                                    SERVER_MEMORY: '{{SERVER_MEMORY}}',
+                                    SERVER_IP: '{{SERVER_IP}}',
+                                    SERVER_PORT: '{{SERVER_PORT}}',
+                                }
+                            )}
                         />
                     )}
                 </form.AppField>
                 <div className='mt-6'>
-                    <Label htmlFor='default_startup'>Default Service Start Command</Label>
+                    <Label htmlFor='default_startup'>{t('Default Service Start Command')}</Label>
                     <TextInput
                         id='default_startup'
                         type='text'
                         readOnly
-                        value={egg?.attributes.startup || 'Startup not defined'}
+                        value={egg?.attributes.startup || t('Startup not defined')}
                     />
                 </div>
             </TitledGreyBox>
@@ -351,7 +362,7 @@ function ServerStartupTabContent({ server }: Props) {
                 <div className='mt-6'>
                     <TagCheckAlert
                         message={rejection}
-                        action='Change anyway'
+                        action={t('Change anyway')}
                         pending={isSubmitting}
                         onAction={() => void form.handleSubmit({ ignoreTags: true })}
                     />
@@ -359,7 +370,7 @@ function ServerStartupTabContent({ server }: Props) {
             )}
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton>Save Modifications</form.SubmitButton>
+                    <form.SubmitButton>{t('Save Modifications')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>
@@ -367,10 +378,13 @@ function ServerStartupTabContent({ server }: Props) {
 }
 
 export default function ServerStartupTab() {
+    const { t } = useTranslation();
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
+        return (
+            <ServerError message={t('Access to this resource is not allowed due to the current installation state.')} />
+        );
     }
 
     return <ServerStartupTabContent key={server.attributes.id} server={server} />;

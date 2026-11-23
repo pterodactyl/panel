@@ -18,6 +18,8 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import SecretInput from '@/components/elements/SecretInput';
 import { DeleteAction, RowActionButton, RowActions } from '@/components/elements/table/RowActions';
 import { relationshipAttributes } from '@/api/relationships';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 export interface ServerDatabaseRowProps {
     serverId: number;
@@ -38,6 +40,8 @@ function DeleteDatabaseConfirmForm({
     databaseName: string;
     onCancel: () => void;
 }) {
+    const { t } = useTranslation();
+
     return (
         <Form form={form} className='m-0 mt-6'>
             <form.AppField
@@ -46,24 +50,24 @@ function DeleteDatabaseConfirmForm({
                     onChange: ({ value }) =>
                         value === databaseName || value === serverDatabaseShortName(databaseName)
                             ? undefined
-                            : 'The database name must be provided.',
+                            : t('The database name must be provided.'),
                 }}
             >
                 {(field) => (
                     <field.TextField
                         type='text'
                         id='confirm_name'
-                        label='Confirm Database Name'
-                        description='Enter the database name to confirm deletion.'
+                        label={t('Confirm Database Name')}
+                        description={t('Enter the database name to confirm deletion.')}
                     />
                 )}
             </form.AppField>
             <div className='mt-6 text-right'>
                 <Button type='button' isSecondary className='mr-2' onClick={onCancel}>
-                    Cancel
+                    {t('Cancel')}
                 </Button>
                 <form.AppForm>
-                    <form.SubmitButton color='red'>Delete Database</form.SubmitButton>
+                    <form.SubmitButton color='red'>{t('Delete Database')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>
@@ -71,6 +75,7 @@ function DeleteDatabaseConfirmForm({
 }
 
 function DeleteServerDatabaseDialog({ serverId, database, open, onClose }: ServerDatabaseDialogProps) {
+    const { t } = useTranslation();
     const deleteDatabase = useDeleteAdminServerDatabase();
     const databaseAttributes = database.attributes;
 
@@ -93,15 +98,18 @@ function DeleteServerDatabaseDialog({ serverId, database, open, onClose }: Serve
     return (
         <Dialog
             open={open}
-            title='Confirm database deletion'
+            title={t('Confirm database deletion')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
             <p className='text-sm'>
-                Deleting a database is a permanent action, it cannot be undone. This will permanently delete the{' '}
-                <strong>{databaseAttributes.name}</strong> database and remove all associated data.
+                <Translate
+                    i18nKey='Deleting a database is a permanent action, it cannot be undone. This will permanently delete the <bold>{{name}}</bold> database and remove all associated data.'
+                    values={{ name: databaseAttributes.name }}
+                    components={{ bold: <strong /> }}
+                />
             </p>
             <DeleteDatabaseConfirmForm form={form} databaseName={databaseAttributes.name} onCancel={onClose} />
         </Dialog>
@@ -109,6 +117,7 @@ function DeleteServerDatabaseDialog({ serverId, database, open, onClose }: Serve
 }
 
 function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: ServerDatabaseDialogProps) {
+    const { t } = useTranslation();
     const rotatePassword = useRotateAdminServerDatabasePassword();
     const databaseAttributes = database.attributes;
     const connectionString = `${databaseAttributes.host.address}:${databaseAttributes.host.port}`;
@@ -126,33 +135,33 @@ function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: S
     };
 
     return (
-        <Dialog open={open} title='Database connection details' onClose={onClose}>
+        <Dialog open={open} title={t('Database connection details')} onClose={onClose}>
             <div>
-                <Label>Endpoint</Label>
+                <Label>{t('Endpoint')}</Label>
                 <CopyOnClick text={connectionString}>
                     <TextInput type='text' readOnly value={connectionString} />
                 </CopyOnClick>
             </div>
             <div className='mt-6'>
-                <Label>Connections from</Label>
+                <Label>{t('Connections from')}</Label>
                 <TextInput type='text' readOnly value={databaseAttributes.connections_from} />
             </div>
             <div className='mt-6'>
-                <Label>Max Connections</Label>
-                <TextInput type='text' readOnly value={databaseAttributes.max_connections ?? 'Unlimited'} />
+                <Label>{t('Max Connections')}</Label>
+                <TextInput type='text' readOnly value={databaseAttributes.max_connections ?? t('Unlimited')} />
             </div>
             <div className='mt-6'>
-                <Label>Username</Label>
+                <Label>{t('Username')}</Label>
                 <CopyOnClick text={databaseAttributes.username}>
                     <TextInput type='text' readOnly value={databaseAttributes.username} />
                 </CopyOnClick>
             </div>
             <div className='mt-6'>
-                <Label>Password</Label>
-                <SecretInput value={password} label='Password' />
+                <Label>{t('Password')}</Label>
+                <SecretInput value={password} label={t('Password')} />
             </div>
             <div className='mt-6'>
-                <Label>JDBC Connection String</Label>
+                <Label>{t('JDBC Connection String')}</Label>
                 <CopyOnClick text={jdbcConnection} showInNotification={false}>
                     <TextInput type='text' readOnly value={jdbcConnection} />
                 </CopyOnClick>
@@ -165,10 +174,10 @@ function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: S
                     onClick={rotate}
                     isLoading={rotatePassword.isPending}
                 >
-                    Rotate Password
+                    {t('Rotate Password')}
                 </Button>
                 <Button isSecondary onClick={onClose}>
-                    Close
+                    {t('Close')}
                 </Button>
             </div>
         </Dialog>
@@ -176,6 +185,7 @@ function ServerDatabaseConnectionDialog({ serverId, database, open, onClose }: S
 }
 
 export function ServerDatabaseActions({ serverId, database }: ServerDatabaseRowProps) {
+    const { t } = useTranslation();
     const { name } = database.attributes;
 
     return (
@@ -184,8 +194,8 @@ export function ServerDatabaseActions({ serverId, database }: ServerDatabaseRowP
                 trigger={({ onClick }) => (
                     <RowActionButton
                         icon={Eye}
-                        label='Connection details'
-                        aria-label={`View ${name} connection details`}
+                        label={t('Connection details')}
+                        aria-label={t('View {{name}} connection details', { name })}
                         onClick={onClick}
                     />
                 )}
@@ -199,7 +209,11 @@ export function ServerDatabaseActions({ serverId, database }: ServerDatabaseRowP
                     />
                 )}
             </Dialog.Trigger>
-            <Dialog.Trigger trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}>
+            <Dialog.Trigger
+                trigger={({ onClick }) => (
+                    <DeleteAction aria-label={t('Delete {{name}}', { name })} onClick={onClick} />
+                )}
+            >
                 {({ open, onClose }) => (
                     <DeleteServerDatabaseDialog serverId={serverId} database={database} open={open} onClose={onClose} />
                 )}

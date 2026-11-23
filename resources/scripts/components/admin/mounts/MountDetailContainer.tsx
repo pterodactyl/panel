@@ -41,6 +41,8 @@ import ListToolbar from '@/components/elements/ListToolbar';
 import { NewButton } from '@/components/elements/NewButton';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { relationshipData } from '@/api/relationships';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 type MountForm = AppForm<MountValues>;
 
@@ -64,118 +66,124 @@ const MountDetailsCard = ({
     mount: AdminMountWithRelations;
     error: unknown;
     onDelete: () => void;
-}) => (
-    <TitledGreyBox title='Mount Details'>
-        <Form form={form} className='m-0'>
-            <form.AppField
-                name='name'
-                validators={{
-                    onChange: ({ value }) => validateMountName(value),
-                }}
-            >
-                {(field) => (
-                    <field.TextField
-                        type='text'
-                        id='name'
-                        label='Name'
-                        description='A unique name used to identify this mount.'
-                    />
-                )}
-            </form.AppField>
-            <div className='mt-6'>
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <TitledGreyBox title={t('Mount Details')}>
+            <Form form={form} className='m-0'>
                 <form.AppField
-                    name='description'
+                    name='name'
                     validators={{
-                        onChange: ({ value }) =>
-                            value.length <= 191 ? undefined : 'A description must not exceed 191 characters.',
+                        onChange: ({ value }) => validateMountName(value),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
-                            id='description'
-                            label='Description'
-                            description='A longer description for this mount.'
+                            id='name'
+                            label={t('Name')}
+                            description={t('A unique name used to identify this mount.')}
                         />
                     )}
                 </form.AppField>
-            </div>
-            <div className='mt-6'>
-                <form.AppField
-                    name='source'
-                    validators={{
-                        onChange: ({ value }) => (value.length >= 1 ? undefined : 'A source path must be provided.'),
-                    }}
-                >
-                    {(field) => (
-                        <field.TextField
-                            type='text'
-                            id='source'
-                            label='Source'
-                            description='The path on the host system to mount into the container.'
+                <div className='mt-6'>
+                    <form.AppField
+                        name='description'
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length <= 191 ? undefined : t('A description must not exceed 191 characters.'),
+                        }}
+                    >
+                        {(field) => (
+                            <field.TextField
+                                type='text'
+                                id='description'
+                                label={t('Description')}
+                                description={t('A longer description for this mount.')}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField
+                        name='source'
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length >= 1 ? undefined : t('A source path must be provided.'),
+                        }}
+                    >
+                        {(field) => (
+                            <field.TextField
+                                type='text'
+                                id='source'
+                                label={t('Source')}
+                                description={t('The path on the host system to mount into the container.')}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField
+                        name='target'
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length >= 1 ? undefined : t('A target path must be provided.'),
+                        }}
+                    >
+                        {(field) => (
+                            <field.TextField
+                                type='text'
+                                id='target'
+                                label={t('Target')}
+                                description={t('The path inside the container where the source will be mounted.')}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField name='readOnly'>
+                        {(field) => (
+                            <field.SwitchField
+                                label={t('Read Only')}
+                                description={t('Mount this volume as read only inside the container.')}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className='mt-6'>
+                    <form.AppField name='userMountable'>
+                        {(field) => (
+                            <field.SwitchField
+                                label={t('User Mountable')}
+                                description={t('Allow this mount to be added to servers by users.')}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <form.AppField name='extensions'>
+                    {() => (
+                        <ExtensionFormFields
+                            form='admin.mount'
+                            mode='edit'
+                            resource={mount}
+                            error={error}
+                            className='mt-6'
                         />
                     )}
                 </form.AppField>
-            </div>
-            <div className='mt-6'>
-                <form.AppField
-                    name='target'
-                    validators={{
-                        onChange: ({ value }) => (value.length >= 1 ? undefined : 'A target path must be provided.'),
-                    }}
-                >
-                    {(field) => (
-                        <field.TextField
-                            type='text'
-                            id='target'
-                            label='Target'
-                            description='The path inside the container where the source will be mounted.'
-                        />
-                    )}
-                </form.AppField>
-            </div>
-            <div className='mt-6'>
-                <form.AppField name='readOnly'>
-                    {(field) => (
-                        <field.SwitchField
-                            label='Read Only'
-                            description='Mount this volume as read only inside the container.'
-                        />
-                    )}
-                </form.AppField>
-            </div>
-            <div className='mt-6'>
-                <form.AppField name='userMountable'>
-                    {(field) => (
-                        <field.SwitchField
-                            label='User Mountable'
-                            description='Allow this mount to be added to servers by users.'
-                        />
-                    )}
-                </form.AppField>
-            </div>
-            <form.AppField name='extensions'>
-                {() => (
-                    <ExtensionFormFields
-                        form='admin.mount'
-                        mode='edit'
-                        resource={mount}
-                        error={error}
-                        className='mt-6'
-                    />
-                )}
-            </form.AppField>
-            <div className='flex justify-end mt-6'>
-                <Button type='button' color='red' isSecondary className='mr-2' onClick={onDelete}>
-                    Delete Mount
-                </Button>
-                <form.AppForm>
-                    <form.SubmitButton>Save Changes</form.SubmitButton>
-                </form.AppForm>
-            </div>
-        </Form>
-    </TitledGreyBox>
-);
+                <div className='flex justify-end mt-6'>
+                    <Button type='button' color='red' isSecondary className='mr-2' onClick={onDelete}>
+                        {t('Delete Mount')}
+                    </Button>
+                    <form.AppForm>
+                        <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Form>
+        </TitledGreyBox>
+    );
+};
 
 const AttachedEggsCard = ({
     eggs,
@@ -186,12 +194,13 @@ const AttachedEggsCard = ({
     onDetach: (egg: AdminMountEgg) => void;
     onAttach: () => void;
 }) => {
+    const { t } = useTranslation();
     const columns = useMemo(
         () =>
             [
                 {
                     id: 'name',
-                    header: 'Egg',
+                    header: t('Egg'),
                     cell: ({ row }) => (
                         <Link
                             to='/panel/eggs/$eggId'
@@ -204,7 +213,7 @@ const AttachedEggsCard = ({
                 },
                 {
                     id: 'id',
-                    header: 'ID',
+                    header: t('ID'),
                     cell: ({ row }) => (
                         <span className='text-xs text-muted-foreground'>{row.original.attributes.id}</span>
                     ),
@@ -216,17 +225,17 @@ const AttachedEggsCard = ({
                 actionsColumn<AdminMountEgg>(2, (egg) => (
                     <RowActions>
                         <EditLinkAction
-                            aria-label={`Edit ${egg.attributes.name}`}
+                            aria-label={t('Edit {{name}}', { name: egg.attributes.name })}
                             to='/panel/eggs/$eggId'
                             params={{ eggId: egg.attributes.id }}
                         />
                         <Dialog.ConfirmTrigger
-                            title='Detach egg'
-                            confirm='Detach Egg'
+                            title={t('Detach egg')}
+                            confirm={t('Detach Egg')}
                             trigger={({ onClick }) => (
                                 <DeleteAction
-                                    label='Detach'
-                                    aria-label={`Detach ${egg.attributes.name}`}
+                                    label={t('Detach')}
+                                    aria-label={t('Detach {{name}}', { name: egg.attributes.name })}
                                     onClick={onClick}
                                 />
                             )}
@@ -235,13 +244,16 @@ const AttachedEggsCard = ({
                                 onDetach(egg);
                             }}
                         >
-                            This will detach <strong>{egg.attributes.name}</strong> from this mount. Servers using that
-                            egg will no longer be offered this mount.
+                            <Translate
+                                i18nKey='This will detach <bold>{{name}}</bold> from this mount. Servers using that egg will no longer be offered this mount.'
+                                values={{ name: egg.attributes.name }}
+                                components={{ bold: <strong /> }}
+                            />
                         </Dialog.ConfirmTrigger>
                     </RowActions>
                 )),
             ] satisfies ColumnDef<AdminMountEgg>[],
-        [onDetach]
+        [t, onDetach]
     );
     const table = useReactTable({
         data: eggs,
@@ -251,9 +263,9 @@ const AttachedEggsCard = ({
     });
 
     return (
-        <TitledGreyBox title='Eggs'>
+        <TitledGreyBox title={t('Eggs')}>
             <ListToolbar>
-                <NewButton onClick={onAttach}>Attach eggs</NewButton>
+                <NewButton onClick={onAttach}>{t('Attach eggs')}</NewButton>
             </ListToolbar>
             <DataTable
                 table={table}
@@ -263,11 +275,13 @@ const AttachedEggsCard = ({
                             <EmptyMedia variant='icon'>
                                 <Egg />
                             </EmptyMedia>
-                            <EmptyTitle>No eggs attached</EmptyTitle>
-                            <EmptyDescription>Servers using an attached egg are offered this mount.</EmptyDescription>
+                            <EmptyTitle>{t('No eggs attached')}</EmptyTitle>
+                            <EmptyDescription>
+                                {t('Servers using an attached egg are offered this mount.')}
+                            </EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>
-                            <NewButton onClick={onAttach}>Attach eggs</NewButton>
+                            <NewButton onClick={onAttach}>{t('Attach eggs')}</NewButton>
                         </EmptyContent>
                     </Empty>
                 }
@@ -285,12 +299,13 @@ const AttachedNodesCard = ({
     onDetach: (node: AdminMountNode) => void;
     onAttach: () => void;
 }) => {
+    const { t } = useTranslation();
     const columns = useMemo(
         () =>
             [
                 {
                     id: 'name',
-                    header: 'Node',
+                    header: t('Node'),
                     cell: ({ row }) => (
                         <div className='min-w-0'>
                             <Link
@@ -309,17 +324,17 @@ const AttachedNodesCard = ({
                 actionsColumn<AdminMountNode>(2, (node) => (
                     <RowActions>
                         <EditLinkAction
-                            aria-label={`Edit ${node.attributes.name}`}
+                            aria-label={t('Edit {{name}}', { name: node.attributes.name })}
                             to='/panel/nodes/$id/settings'
                             params={{ id: node.attributes.id }}
                         />
                         <Dialog.ConfirmTrigger
-                            title='Detach node'
-                            confirm='Detach Node'
+                            title={t('Detach node')}
+                            confirm={t('Detach Node')}
                             trigger={({ onClick }) => (
                                 <DeleteAction
-                                    label='Detach'
-                                    aria-label={`Detach ${node.attributes.name}`}
+                                    label={t('Detach')}
+                                    aria-label={t('Detach {{name}}', { name: node.attributes.name })}
                                     onClick={onClick}
                                 />
                             )}
@@ -328,13 +343,16 @@ const AttachedNodesCard = ({
                                 onDetach(node);
                             }}
                         >
-                            This will detach <strong>{node.attributes.name}</strong> from this mount. Servers on that
-                            node will no longer be offered this mount.
+                            <Translate
+                                i18nKey='This will detach <bold>{{name}}</bold> from this mount. Servers on that node will no longer be offered this mount.'
+                                values={{ name: node.attributes.name }}
+                                components={{ bold: <strong /> }}
+                            />
                         </Dialog.ConfirmTrigger>
                     </RowActions>
                 )),
             ] satisfies ColumnDef<AdminMountNode>[],
-        [onDetach]
+        [t, onDetach]
     );
     const table = useReactTable({
         data: nodes,
@@ -344,9 +362,9 @@ const AttachedNodesCard = ({
     });
 
     return (
-        <TitledGreyBox title='Nodes'>
+        <TitledGreyBox title={t('Nodes')}>
             <ListToolbar>
-                <NewButton onClick={onAttach}>Attach nodes</NewButton>
+                <NewButton onClick={onAttach}>{t('Attach nodes')}</NewButton>
             </ListToolbar>
             <DataTable
                 table={table}
@@ -356,11 +374,13 @@ const AttachedNodesCard = ({
                             <EmptyMedia variant='icon'>
                                 <HardDrive />
                             </EmptyMedia>
-                            <EmptyTitle>No nodes attached</EmptyTitle>
-                            <EmptyDescription>Servers on an attached node are offered this mount.</EmptyDescription>
+                            <EmptyTitle>{t('No nodes attached')}</EmptyTitle>
+                            <EmptyDescription>
+                                {t('Servers on an attached node are offered this mount.')}
+                            </EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>
-                            <NewButton onClick={onAttach}>Attach nodes</NewButton>
+                            <NewButton onClick={onAttach}>{t('Attach nodes')}</NewButton>
                         </EmptyContent>
                     </Empty>
                 }
@@ -378,6 +398,7 @@ const DeleteMountDialog = ({
     onClose: () => void;
     onDeleted: () => Promise<void>;
 }) => {
+    const { t } = useTranslation();
     const deleteMount = useDeleteAdminMount();
     const deleteForm = useAppForm({
         defaultValues: { confirm: '' },
@@ -401,39 +422,42 @@ const DeleteMountDialog = ({
     return (
         <Dialog
             open
-            title='Confirm mount deletion'
+            title={t('Confirm mount deletion')}
             preventExternalClose={deleteSubmitting}
             hideCloseIcon={deleteSubmitting}
             onClose={close}
         >
             <SpinnerOverlay visible={deleteSubmitting} />
             <p className='text-sm'>
-                Deleting a mount is a permanent action, it cannot be undone. This will permanently delete the{' '}
-                <strong>{mount.attributes.name}</strong> mount and detach it from every egg and node.
+                <Translate
+                    i18nKey='Deleting a mount is a permanent action, it cannot be undone. This will permanently delete the <bold>{{name}}</bold> mount and detach it from every egg and node.'
+                    values={{ name: mount.attributes.name }}
+                    components={{ bold: <strong /> }}
+                />
             </p>
             <Form form={deleteForm} className='m-0 mt-6'>
                 <deleteForm.AppField
                     name='confirm'
                     validators={{
                         onChange: ({ value }) =>
-                            value === mount.attributes.name ? undefined : 'The mount name must be provided.',
+                            value === mount.attributes.name ? undefined : t('The mount name must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id='confirm_mount_name'
-                            label='Confirm Name'
-                            description='Enter the name of this mount to confirm deletion.'
+                            label={t('Confirm Name')}
+                            description={t('Enter the name of this mount to confirm deletion.')}
                         />
                     )}
                 </deleteForm.AppField>
                 <div className='mt-6 text-right'>
                     <Button type='button' isSecondary className='mr-2' onClick={close}>
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <deleteForm.AppForm>
-                        <deleteForm.SubmitButton color='red'>Delete Mount</deleteForm.SubmitButton>
+                        <deleteForm.SubmitButton color='red'>{t('Delete Mount')}</deleteForm.SubmitButton>
                     </deleteForm.AppForm>
                 </div>
             </Form>
@@ -443,6 +467,7 @@ const DeleteMountDialog = ({
 
 const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const mountId = mount.attributes.id;
 
     const updateMount = useUpdateAdminMount();
@@ -474,7 +499,7 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
 
     return (
         <AdminContentBlock
-            title={`Admin · Mount · ${attributes.name}`}
+            title={t('Admin · Mount · {{name}}', { name: attributes.name })}
             heading={attributes.name}
             description={attributes.uuid}
         >
@@ -483,7 +508,7 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
                 className='inline-flex items-center text-sm text-muted-foreground mb-4 hover:text-foreground'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Mounts
+                {t('Back to Mounts')}
             </Link>
 
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
@@ -552,6 +577,7 @@ const MountDetailContent = ({ mount }: { mount: AdminMountWithRelations }) => {
 };
 
 export default function MountDetailContainer() {
+    const { t } = useTranslation();
     const loadedMount = mountDetailRoute.useLoaderData();
     const mountId = loadedMount.attributes.id;
     const { data: mount = loadedMount, error } = useAdminMount(mountId);
@@ -562,7 +588,7 @@ export default function MountDetailContainer() {
 
     if (!mount) {
         return (
-            <AdminContentBlock title='Admin · Mount' heading='Mount'>
+            <AdminContentBlock title={t('Admin · Mount')} heading={t('Mount')}>
                 <Spinner size='large' centered />
             </AdminContentBlock>
         );

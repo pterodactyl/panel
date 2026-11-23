@@ -1,5 +1,8 @@
 import { NewLinkButton } from '@/components/elements/NewButton';
+import { useTranslation } from '@/sdk/localization';
 
 export default function CreateServerButton() {
-    return <NewLinkButton to='/panel/servers/new'>New server</NewLinkButton>;
+    const { t } = useTranslation();
+
+    return <NewLinkButton to='/panel/servers/new'>{t('New server')}</NewLinkButton>;
 }

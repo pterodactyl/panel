@@ -19,6 +19,8 @@ import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { Alert, type AlertType } from '@/components/elements/alert';
 import { isObject } from '@/lib/objects';
 import { canReinstallServer, SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 interface Props {
     server: AdminServer;
@@ -61,9 +63,9 @@ const ActionTrigger = ({ reason, children }: { reason?: string; children: React.
     </Tooltip>
 );
 
-const reinstallBlockedReasonFor = (attributes: AdminServer['attributes']): string | undefined => {
+const reinstallBlockedReasonFor = (attributes: AdminServer['attributes'], t: Translation['t']): string | undefined => {
     if (attributes.container.installed !== 1) {
-        return 'This action is disabled until the server is installed.';
+        return t('This action is disabled until the server is installed.');
     }
 
     if (canReinstallServer(attributes.status, attributes.container.skip_scripts)) {
@@ -74,6 +76,7 @@ const reinstallBlockedReasonFor = (attributes: AdminServer['attributes']): strin
 };
 
 function ServerManageContent({ server }: Props) {
+    const { t } = useTranslation();
     const { attributes } = server;
     const reinstallServer = useReinstallAdminServer();
     const toggleInstallState = useToggleAdminServerInstallState();
@@ -86,13 +89,15 @@ function ServerManageContent({ server }: Props) {
     const loading = reinstallServer.isPending || toggleInstallState.isPending || updateSuspension.isPending;
     const activeTransfer = isObject(transfer);
     const canTransfer = (nodes?.meta.pagination.total ?? 0) > 1;
-    const reinstallBlockedReason = reinstallBlockedReasonFor(attributes);
+    const reinstallBlockedReason = reinstallBlockedReasonFor(attributes, t);
 
     if (attributes.status === 'install_failed') {
         return (
-            <TitledGreyBox title='Server Cannot Be Managed'>
+            <TitledGreyBox title={t('Server Cannot Be Managed')}>
                 <p className={descriptionClass}>
-                    This server is in a failed install state and cannot be recovered. Delete and re-create the server.
+                    {t(
+                        'This server is in a failed install state and cannot be recovered. Delete and re-create the server.'
+                    )}
                 </p>
             </TitledGreyBox>
         );
@@ -101,13 +106,13 @@ function ServerManageContent({ server }: Props) {
     return (
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
             <ManageActionCard
-                title='Reinstall Server'
-                alert={{ type: 'danger', title: 'Danger!', message: 'This could overwrite server data.' }}
-                description='This will reinstall the server with the assigned service scripts.'
+                title={t('Reinstall Server')}
+                alert={{ type: 'danger', title: t('Danger!'), message: t('This could overwrite server data.') }}
+                description={t('This will reinstall the server with the assigned service scripts.')}
                 action={
                     <Dialog.ConfirmTrigger
-                        title='Reinstall Server'
-                        confirm='Reinstall'
+                        title={t('Reinstall Server')}
+                        confirm={t('Reinstall')}
                         pending={reinstallServer.isPending}
                         trigger={({ onClick }) => (
                             <ActionTrigger reason={reinstallBlockedReason}>
@@ -117,7 +122,7 @@ function ServerManageContent({ server }: Props) {
                                     disabled={loading || reinstallBlockedReason !== undefined}
                                     onClick={onClick}
                                 >
-                                    Reinstall Server
+                                    {t('Reinstall Server')}
                                 </Button>
                             </ActionTrigger>
                         )}
@@ -125,23 +130,27 @@ function ServerManageContent({ server }: Props) {
                             reinstallServer.mutate(reinstallAdminServerInput(attributes.id), mutationOptions(close))
                         }
                     >
-                        This will reinstall the server with its assigned service scripts.{' '}
-                        <strong>This could overwrite server data.</strong>
+                        <Translate
+                            i18nKey='This will reinstall the server with its assigned service scripts. <bold>This could overwrite server data.</bold>'
+                            components={{ bold: <strong /> }}
+                        />
                     </Dialog.ConfirmTrigger>
                 }
             />
 
             <ManageActionCard
-                title='Install Status'
-                description='If you need to change the install status from uninstalled to installed, or vice versa, you may do so with the button below.'
+                title={t('Install Status')}
+                description={t(
+                    'If you need to change the install status from uninstalled to installed, or vice versa, you may do so with the button below.'
+                )}
                 action={
                     <Dialog.ConfirmTrigger
-                        title='Toggle Install Status'
-                        confirm='Toggle'
+                        title={t('Toggle Install Status')}
+                        confirm={t('Toggle')}
                         pending={toggleInstallState.isPending}
                         trigger={({ onClick }) => (
                             <Button className={actionButtonClass} disabled={loading} onClick={onClick}>
-                                Toggle Install Status
+                                {t('Toggle Install Status')}
                             </Button>
                         )}
                         onConfirmed={(_event, close) =>
@@ -151,19 +160,19 @@ function ServerManageContent({ server }: Props) {
                             )
                         }
                     >
-                        This will flip the install status between installed and installing for this server.
+                        {t('This will flip the install status between installed and installing for this server.')}
                     </Dialog.ConfirmTrigger>
                 }
             />
 
             {attributes.suspended ? (
                 <ManageActionCard
-                    title='Unsuspend Server'
-                    description='This will unsuspend the server and restore normal user access.'
+                    title={t('Unsuspend Server')}
+                    description={t('This will unsuspend the server and restore normal user access.')}
                     action={
                         <Dialog.ConfirmTrigger
-                            title='Unsuspend Server'
-                            confirm='Unsuspend'
+                            title={t('Unsuspend Server')}
+                            confirm={t('Unsuspend')}
                             pending={updateSuspension.isPending}
                             trigger={({ onClick }) => (
                                 <Button
@@ -172,7 +181,7 @@ function ServerManageContent({ server }: Props) {
                                     disabled={loading}
                                     onClick={onClick}
                                 >
-                                    Unsuspend Server
+                                    {t('Unsuspend Server')}
                                 </Button>
                             )}
                             onConfirmed={(_event, close) =>
@@ -182,24 +191,26 @@ function ServerManageContent({ server }: Props) {
                                 )
                             }
                         >
-                            This will unsuspend the server and restore normal user access.
+                            {t('This will unsuspend the server and restore normal user access.')}
                         </Dialog.ConfirmTrigger>
                     }
                 />
             ) : (
                 <ManageActionCard
-                    title='Suspend Server'
-                    description='This will suspend the server, stop any running processes, and immediately block the user from accessing their files or managing the server.'
+                    title={t('Suspend Server')}
+                    description={t(
+                        'This will suspend the server, stop any running processes, and immediately block the user from accessing their files or managing the server.'
+                    )}
                     action={
                         <Dialog.ConfirmTrigger
-                            title='Suspend Server'
-                            confirm='Suspend'
+                            title={t('Suspend Server')}
+                            confirm={t('Suspend')}
                             pending={updateSuspension.isPending}
                             trigger={({ onClick }) => (
                                 <ActionTrigger
                                     reason={
                                         activeTransfer
-                                            ? 'This server is being transferred and cannot be suspended.'
+                                            ? t('This server is being transferred and cannot be suspended.')
                                             : undefined
                                     }
                                 >
@@ -209,7 +220,7 @@ function ServerManageContent({ server }: Props) {
                                         disabled={loading || activeTransfer}
                                         onClick={onClick}
                                     >
-                                        Suspend Server
+                                        {t('Suspend Server')}
                                     </Button>
                                 </ActionTrigger>
                             )}
@@ -220,24 +231,25 @@ function ServerManageContent({ server }: Props) {
                                 )
                             }
                         >
-                            This will suspend the server, stop any running processes, and block the user from accessing
-                            their files or managing the server.
+                            {t(
+                                'This will suspend the server, stop any running processes, and block the user from accessing their files or managing the server.'
+                            )}
                         </Dialog.ConfirmTrigger>
                     }
                 />
             )}
 
             <ManageActionCard
-                title='Transfer Server'
+                title={t('Transfer Server')}
                 alert={
                     activeTransfer
                         ? undefined
-                        : { type: 'warning', title: 'Warning!', message: 'This feature may have bugs.' }
+                        : { type: 'warning', title: t('Warning!'), message: t('This feature may have bugs.') }
                 }
                 description={
                     activeTransfer
-                        ? 'This server is currently being transferred to another node.'
-                        : 'Transfer this server to another node connected to this panel.'
+                        ? t('This server is currently being transferred to another node.')
+                        : t('Transfer this server to another node connected to this panel.')
                 }
                 action={
                     <Dialog.Trigger
@@ -245,7 +257,9 @@ function ServerManageContent({ server }: Props) {
                             <ActionTrigger
                                 reason={
                                     !activeTransfer && !canTransfer
-                                        ? 'Transferring a server requires more than one node to be configured on this panel.'
+                                        ? t(
+                                              'Transferring a server requires more than one node to be configured on this panel.'
+                                          )
                                         : undefined
                                 }
                             >
@@ -255,7 +269,7 @@ function ServerManageContent({ server }: Props) {
                                     disabled={loading || activeTransfer || !canTransfer}
                                     onClick={onClick}
                                 >
-                                    Transfer Server
+                                    {t('Transfer Server')}
                                 </Button>
                             </ActionTrigger>
                         )}

@@ -14,8 +14,10 @@ import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { useAppForm, Form } from '@/components/form';
+import { useTranslation } from '@/sdk/localization';
 
 export default function CreateDatabaseHostForm() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const createDatabaseHost = useCreateAdminDatabaseHost();
 
@@ -39,28 +41,28 @@ export default function CreateDatabaseHostForm() {
 
     return (
         <AdminContentBlock
-            title='Admin · Create Database Host'
-            heading='Create Database Host'
-            description='Add a database host for server databases.'
+            title={t('Admin · Create Database Host')}
+            heading={t('Create Database Host')}
+            description={t('Add a database host for server databases.')}
         >
             <Link
                 to='/panel/databases'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Database Hosts
+                {t('Back to Database Hosts')}
             </Link>
             <Form form={form}>
                 <div className='space-y-6'>
-                    <TitledGreyBox title='Host Details'>
+                    <TitledGreyBox title={t('Host Details')}>
                         <div className='space-y-6'>
                             <form.AppField name='name' validators={databaseHostValidators.name}>
                                 {(field) => (
                                     <field.TextField
                                         type='text'
                                         id='name'
-                                        label='Name'
-                                        description='A short, human-readable name used to identify this host.'
+                                        label={t('Name')}
+                                        description={t('A short, human-readable name used to identify this host.')}
                                     />
                                 )}
                             </form.AppField>
@@ -70,13 +72,15 @@ export default function CreateDatabaseHostForm() {
                                         <field.TextField
                                             type='text'
                                             id='host'
-                                            label='Host'
-                                            description='The hostname or IP address that this database server is reachable on.'
+                                            label={t('Host')}
+                                            description={t(
+                                                'The hostname or IP address that this database server is reachable on.'
+                                            )}
                                         />
                                     )}
                                 </form.AppField>
                                 <form.AppField name='port' validators={databaseHostValidators.port}>
-                                    {(field) => <field.NumberField id='port' label='Port' />}
+                                    {(field) => <field.NumberField id='port' label={t('Port')} />}
                                 </form.AppField>
                             </div>
                             <DatabaseHostNodeSelect
@@ -86,14 +90,16 @@ export default function CreateDatabaseHostForm() {
                             />
                         </div>
                     </TitledGreyBox>
-                    <TitledGreyBox title='Credentials'>
+                    <TitledGreyBox title={t('Credentials')}>
                         <form.AppField name='username' validators={databaseHostValidators.username}>
                             {(field) => (
                                 <field.TextField
                                     type='text'
                                     id='username'
-                                    label='Username'
-                                    description='A user on the database server with permission to create users and databases.'
+                                    label={t('Username')}
+                                    description={t(
+                                        'A user on the database server with permission to create users and databases.'
+                                    )}
                                 />
                             )}
                         </form.AppField>
@@ -103,8 +109,8 @@ export default function CreateDatabaseHostForm() {
                                     <field.TextField
                                         type='password'
                                         id='password'
-                                        label='Password'
-                                        description='The password for the account used to connect to this host.'
+                                        label={t('Password')}
+                                        description={t('The password for the account used to connect to this host.')}
                                     />
                                 )}
                             </form.AppField>
@@ -122,7 +128,7 @@ export default function CreateDatabaseHostForm() {
                     </form.AppField>
                     <div className='flex justify-end'>
                         <form.AppForm>
-                            <form.SubmitButton>Create Host</form.SubmitButton>
+                            <form.SubmitButton>{t('Create Host')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>

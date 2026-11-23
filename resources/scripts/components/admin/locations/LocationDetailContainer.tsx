@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
 import { ArrowLeft, HardDrive, Trash2 } from 'lucide-react';
+import { useMemo } from 'react';
 import { useAppForm, Form } from '@/components/form';
 import { httpErrorToHuman } from '@/api/http';
 import type { AdminLocation } from '@/api/admin/locations/queries';
@@ -28,6 +29,8 @@ import { actionsColumn, EditLinkAction, RowActions } from '@/components/elements
 import { relationshipData } from '@/api/relationships';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { cardTitleClass } from '@/components/ui/typography';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 const locationToValues = (location: AdminLocation): LocationValues => ({
     short: location.attributes.short,
@@ -40,50 +43,56 @@ type LocationNode = Extract<
     { data: unknown[] }
 >['data'][number];
 
-const locationNodeColumns = [
-    {
-        id: 'name',
-        header: 'Node',
-        cell: ({ row }) => (
-            <div className='min-w-0'>
-                <Link
-                    to='/panel/nodes/$id'
-                    params={{ id: row.original.attributes.id }}
-                    className='block truncate text-sm text-foreground hover:text-accent'
-                >
-                    {row.original.attributes.name}
-                </Link>
-                <p className='mt-1 truncate text-xs text-muted-foreground'>
-                    ID {row.original.attributes.id} · {row.original.attributes.fqdn}
-                </p>
-            </div>
-        ),
-    },
-    {
-        id: 'servers',
-        header: 'Servers',
-        cell: ({ row }) => (
-            <span className='text-xs text-muted-foreground'>{row.original.attributes.servers_count}</span>
-        ),
-        meta: { headerClassName: 'w-20 text-right', cellClassName: 'w-20 text-right' },
-    },
-    actionsColumn<LocationNode>(1, (node) => (
-        <RowActions>
-            <EditLinkAction
-                aria-label={`Edit ${node.attributes.name}`}
-                to='/panel/nodes/$id/settings'
-                params={{ id: node.attributes.id }}
-            />
-        </RowActions>
-    )),
-] satisfies ColumnDef<LocationNode>[];
+const locationNodeColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            header: t('Node'),
+            cell: ({ row }) => (
+                <div className='min-w-0'>
+                    <Link
+                        to='/panel/nodes/$id'
+                        params={{ id: row.original.attributes.id }}
+                        className='block truncate text-sm text-foreground hover:text-accent'
+                    >
+                        {row.original.attributes.name}
+                    </Link>
+                    <p className='mt-1 truncate text-xs text-muted-foreground'>
+                        {t('ID {{id}} · {{fqdn}}', {
+                            id: row.original.attributes.id,
+                            fqdn: row.original.attributes.fqdn,
+                        })}
+                    </p>
+                </div>
+            ),
+        },
+        {
+            id: 'servers',
+            header: t('Servers'),
+            cell: ({ row }) => (
+                <span className='text-xs text-muted-foreground'>{row.original.attributes.servers_count}</span>
+            ),
+            meta: { headerClassName: 'w-20 text-right', cellClassName: 'w-20 text-right' },
+        },
+        actionsColumn<LocationNode>(1, (node) => (
+            <RowActions>
+                <EditLinkAction
+                    aria-label={t('Edit {{name}}', { name: node.attributes.name })}
+                    to='/panel/nodes/$id/settings'
+                    params={{ id: node.attributes.id }}
+                />
+            </RowActions>
+        )),
+    ] satisfies ColumnDef<LocationNode>[];
 
 function LocationDetailForm({ location }: { location: AdminLocation }) {
+    const { t } = useTranslation();
     const { attributes } = location;
     const nodes = relationshipData(attributes.relationships?.nodes);
+    const columns = useMemo(() => locationNodeColumns(t), [t]);
     const nodeTable = useReactTable({
         data: nodes,
-        columns: locationNodeColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (node) => String(node.attributes.id),
     });
@@ -118,7 +127,7 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
 
     return (
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-            <TitledGreyBox title='Location Details'>
+            <TitledGreyBox title={t('Location Details')}>
                 <Form form={form} className='m-0'>
                     <form.AppField
                         name='short'
@@ -130,8 +139,8 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                             <field.TextField
                                 type='text'
                                 id='short'
-                                label='Short Code'
-                                description='A short identifier used to distinguish this location from others.'
+                                label={t('Short Code')}
+                                description={t('A short identifier used to distinguish this location from others.')}
                             />
                         )}
                     </form.AppField>
@@ -142,15 +151,15 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                                 onChange: ({ value }) =>
                                     (value?.length ?? 0) <= 191
                                         ? undefined
-                                        : 'The description must not exceed 191 characters.',
+                                        : t('The description must not exceed 191 characters.'),
                             }}
                         >
                             {(field) => (
                                 <field.TextField
                                     type='text'
                                     id='long'
-                                    label='Description'
-                                    description='A longer description of this location.'
+                                    label={t('Description')}
+                                    description={t('A longer description of this location.')}
                                 />
                             )}
                         </form.AppField>
@@ -168,22 +177,25 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                     </form.AppField>
                     <div className='flex justify-end mt-6'>
                         <Dialog.ConfirmTrigger
-                            title='Delete location'
-                            confirm='Delete Location'
+                            title={t('Delete location')}
+                            confirm={t('Delete Location')}
                             pending={deleteLocation.isPending}
                             onConfirmed={(_event, close) => onDelete(close)}
                             trigger={({ onClick }) => (
                                 <Button type='button' color='red' isSecondary className='mr-2' onClick={onClick}>
                                     <Icon icon={Trash2} />
-                                    Delete Location
+                                    {t('Delete Location')}
                                 </Button>
                             )}
                         >
-                            Deleting <strong>{attributes.short}</strong> is permanent and cannot be undone. Locations
-                            with assigned nodes cannot be deleted.
+                            <Translate
+                                i18nKey='Deleting <bold>{{name}}</bold> is permanent and cannot be undone. Locations with assigned nodes cannot be deleted.'
+                                values={{ name: attributes.short }}
+                                components={{ bold: <strong /> }}
+                            />
                         </Dialog.ConfirmTrigger>
                         <form.AppForm>
-                            <form.SubmitButton>Save Changes</form.SubmitButton>
+                            <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </Form>
@@ -192,9 +204,12 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
             <TitledGreyBox
                 title={
                     <div className='flex items-center justify-between gap-3'>
-                        <h2 className={cardTitleClass}>Nodes</h2>
+                        <h2 className={cardTitleClass}>{t('Nodes')}</h2>
                         <span className='text-xs text-muted-foreground'>
-                            {attributes.nodes_count} nodes · {attributes.servers_count} servers
+                            {t('{{nodes}} nodes · {{servers}} servers', {
+                                nodes: attributes.nodes_count,
+                                servers: attributes.servers_count,
+                            })}
                         </span>
                     </div>
                 }
@@ -207,8 +222,10 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                                 <EmptyMedia variant='icon'>
                                     <HardDrive />
                                 </EmptyMedia>
-                                <EmptyTitle>No nodes</EmptyTitle>
-                                <EmptyDescription>Nodes assigned to this location will appear here.</EmptyDescription>
+                                <EmptyTitle>{t('No nodes')}</EmptyTitle>
+                                <EmptyDescription>
+                                    {t('Nodes assigned to this location will appear here.')}
+                                </EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                     }
@@ -219,6 +236,7 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
 }
 
 export default function LocationDetailContainer() {
+    const { t } = useTranslation();
     const loadedLocation = locationDetailRoute.useLoaderData();
     const locationId = loadedLocation.attributes.id;
 
@@ -230,7 +248,7 @@ export default function LocationDetailContainer() {
 
     if (!location) {
         return (
-            <AdminContentBlock title='Admin · Location' heading='Location'>
+            <AdminContentBlock title={t('Admin · Location')} heading={t('Location')}>
                 <Spinner size='large' centered />
             </AdminContentBlock>
         );
@@ -238,16 +256,16 @@ export default function LocationDetailContainer() {
 
     return (
         <AdminContentBlock
-            title={`Admin · Location · ${location.attributes.short}`}
+            title={t('Admin · Location · {{name}}', { name: location.attributes.short })}
             heading={location.attributes.short}
-            description={location.attributes.long ?? 'No description provided.'}
+            description={location.attributes.long ?? t('No description provided.')}
         >
             <Link
                 to='/panel/locations'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-accent mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Locations
+                {t('Back to Locations')}
             </Link>
 
             <LocationDetailForm

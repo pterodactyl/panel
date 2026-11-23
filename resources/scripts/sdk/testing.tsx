@@ -38,6 +38,7 @@ import {
     type HistoryState,
 } from '@tanstack/react-router';
 import { queryClient } from '@/api/queryClient';
+import { initTestTranslations } from '@/i18nTesting';
 import { currentUserQueryKey } from '@/api/account/queries';
 import { siteSettingsQueryKey } from '@/api/settings/queries';
 import { serverQueryOptions } from '@/api/server/queries';
@@ -114,6 +115,7 @@ export interface ExtensionTestHost {
 
 /** Create one host per test; call dispose after unmounting its Wrapper. */
 export function createExtensionTestHost(options: ExtensionTestHostOptions = {}): ExtensionTestHost {
+    initTestTranslations();
     registerClassPrefixes([options.prefix]);
     queryClient.clear();
     queryClient.setQueryData(

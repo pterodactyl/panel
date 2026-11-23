@@ -8,12 +8,14 @@ import { eggToFormValues, toApiValues } from '@/components/admin/eggs/helpers';
 import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFields';
 import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     egg: AdminEgg;
 }
 
 function EggConfigurationForm({ egg }: Props) {
+    const { t } = useTranslation();
     const logsEditor = useRef<CodemirrorEditorHandle | null>(null);
     const filesEditor = useRef<CodemirrorEditorHandle | null>(null);
     const startupEditor = useRef<CodemirrorEditorHandle | null>(null);
@@ -76,7 +78,7 @@ function EggConfigurationForm({ egg }: Props) {
             </form.AppField>
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton>Save Changes</form.SubmitButton>
+                    <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>

@@ -9,17 +9,24 @@ import Label from '@/components/elements/Label';
 import Button from '@/components/elements/Button';
 import { NewButton } from '@/components/elements/NewButton';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 // AdminAcl bitmask values (Read = 1, Write = 2).
 const PERMISSION_NONE = 0;
 const PERMISSION_READ = 1;
 const PERMISSION_READ_WRITE = 3;
 
-const labelFor = (resource: ApiKeyResource): string =>
-    resource
-        .split('_')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ');
+const resourceLabels = (t: Translation['t']) =>
+    ({
+        servers: t('Servers'),
+        nodes: t('Nodes'),
+        allocations: t('Allocations'),
+        users: t('Users'),
+        locations: t('Locations'),
+        eggs: t('Eggs'),
+        database_hosts: t('Database Hosts'),
+        server_databases: t('Server Databases'),
+    }) satisfies Record<ApiKeyResource, string>;
 
 const initialPermissions = {
     servers: PERMISSION_NONE,
@@ -32,13 +39,13 @@ const initialPermissions = {
     server_databases: PERMISSION_NONE,
 } satisfies Record<ApiKeyResource, number>;
 
-const validateMemo = (value: string): string | undefined => {
+const validateMemo = (t: Translation['t'], value: string): string | undefined => {
     if (value.length < 1) {
-        return 'A description must be provided.';
+        return t('A description must be provided.');
     }
 
     if (value.length > 500) {
-        return 'The description must not exceed 500 characters.';
+        return t('The description must not exceed 500 characters.');
     }
 
     return undefined;
@@ -51,7 +58,9 @@ type CreateApiKeyDialogProps = {
 };
 
 function CreateApiKeyDialog({ open, onClose, onCreatedSecret }: CreateApiKeyDialogProps) {
+    const { t } = useTranslation();
     const createApiKey = useCreateAdminApiKey();
+    const labels = resourceLabels(t);
 
     const form = useAppForm({
         defaultValues: { memo: '', permissions: initialPermissions },
@@ -72,7 +81,7 @@ function CreateApiKeyDialog({ open, onClose, onCreatedSecret }: CreateApiKeyDial
     return (
         <Dialog
             open={open}
-            title='Create application API key'
+            title={t('Create application API key')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
@@ -82,33 +91,35 @@ function CreateApiKeyDialog({ open, onClose, onCreatedSecret }: CreateApiKeyDial
                 <form.AppField
                     name='memo'
                     validators={{
-                        onChange: ({ value }) => validateMemo(value),
+                        onChange: ({ value }) => validateMemo(t, value),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id='memo'
-                            label='Description'
-                            description='A short note describing what this key is used for. You cannot edit a key after creating it.'
+                            label={t('Description')}
+                            description={t(
+                                'A short note describing what this key is used for. You cannot edit a key after creating it.'
+                            )}
                         />
                     )}
                 </form.AppField>
                 <div className='mt-6'>
-                    <Label>Permissions</Label>
+                    <Label>{t('Permissions')}</Label>
                     <div className='mt-2 space-y-3'>
                         {API_KEY_RESOURCES.map((resource) => (
                             <div key={resource} className='flex items-center'>
-                                <p className='flex-1 text-sm text-foreground'>{labelFor(resource)}</p>
+                                <p className='flex-1 text-sm text-foreground'>{labels[resource]}</p>
                                 <div className='w-48'>
                                     <form.AppField name={`permissions.${resource}`}>
                                         {(field) => (
                                             <field.SelectField
                                                 id={`r_${resource}`}
                                                 options={[
-                                                    { value: PERMISSION_NONE, label: 'None' },
-                                                    { value: PERMISSION_READ, label: 'Read' },
-                                                    { value: PERMISSION_READ_WRITE, label: 'Read & Write' },
+                                                    { value: PERMISSION_NONE, label: t('None') },
+                                                    { value: PERMISSION_READ, label: t('Read') },
+                                                    { value: PERMISSION_READ_WRITE, label: t('Read & Write') },
                                                 ]}
                                             />
                                         )}
@@ -120,10 +131,12 @@ function CreateApiKeyDialog({ open, onClose, onCreatedSecret }: CreateApiKeyDial
                 </div>
                 <div className='flex flex-wrap justify-end mt-6'>
                     <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>Create Key</form.SubmitButton>
+                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>
+                            {t('Create Key')}
+                        </form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
@@ -132,14 +145,16 @@ function CreateApiKeyDialog({ open, onClose, onCreatedSecret }: CreateApiKeyDial
 }
 
 export default function CreateApiKeyButton() {
+    const { t } = useTranslation();
     const [secret, setSecret] = useState('');
 
     return (
         <>
-            <Dialog open={secret.length > 0} title='Your new API key' onClose={() => setSecret('')}>
+            <Dialog open={secret.length > 0} title={t('Your new API key')} onClose={() => setSecret('')}>
                 <p className='text-sm mb-6'>
-                    The application API key shown below will not be displayed again. Store it somewhere safe before
-                    closing this dialog.
+                    {t(
+                        'The application API key shown below will not be displayed again. Store it somewhere safe before closing this dialog.'
+                    )}
                 </p>
                 <pre className='text-sm bg-muted rounded-sm py-2 px-4 font-mono'>
                     <CopyOnClick text={secret}>
@@ -148,11 +163,11 @@ export default function CreateApiKeyButton() {
                 </pre>
                 <div className='flex justify-end mt-6'>
                     <Button type='button' onClick={() => setSecret('')}>
-                        Close
+                        {t('Close')}
                     </Button>
                 </div>
             </Dialog>
-            <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New API key</NewButton>}>
+            <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New API key')}</NewButton>}>
                 {({ open, onClose }) => (
                     <CreateApiKeyDialog open={open} onClose={onClose} onCreatedSecret={setSecret} />
                 )}

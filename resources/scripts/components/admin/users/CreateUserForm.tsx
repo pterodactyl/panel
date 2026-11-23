@@ -10,6 +10,7 @@ import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms'
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
 import { languageOptions, PANEL_DEFAULT_LANGUAGE } from '@/components/admin/languageOptions';
+import { useTranslation } from '@/sdk/localization';
 
 const initialValues = (): UserValues => ({
     email: '',
@@ -23,6 +24,7 @@ const initialValues = (): UserValues => ({
 });
 
 export default function CreateUserForm() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const createUser = useCreateAdminUser();
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
@@ -45,16 +47,16 @@ export default function CreateUserForm() {
 
     return (
         <AdminContentBlock
-            title='Admin · Create User'
-            heading='Create User'
-            description='Create a panel account and configure its access.'
+            title={t('Admin · Create User')}
+            heading={t('Create User')}
+            description={t('Create a panel account and configure its access.')}
         >
             <Link
                 to='/panel/users'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Users
+                {t('Back to Users')}
             </Link>
             <Form form={form}>
                 <div className='space-y-6'>
@@ -68,7 +70,7 @@ export default function CreateUserForm() {
                     </form.AppField>
                     <div className='flex justify-end'>
                         <form.AppForm>
-                            <form.SubmitButton>Create User</form.SubmitButton>
+                            <form.SubmitButton>{t('Create User')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>

@@ -10,6 +10,8 @@ import {
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Button from '@/components/elements/Button';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 type MailSubmitAction = 'save' | 'test';
 
@@ -32,6 +34,7 @@ const mailSettingsFormValues = (settings: AdminSettings): MailSettingsFormValues
 });
 
 export default function MailSettingsForm({ settings }: { settings: AdminSettings }) {
+    const { t } = useTranslation();
     const disabled = settings.mail['mail:default'] !== 'smtp';
     const readOnly = settings.meta.load_environment_only;
     const updateMailSettings = useUpdateAdminMailSettings();
@@ -69,11 +72,13 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
 
     if (disabled) {
         return (
-            <TitledGreyBox title='Mail Configuration'>
+            <TitledGreyBox title={t('Mail Configuration')}>
                 <div className='rounded-sm border border-border bg-popover px-4 py-3 text-sm text-foreground'>
-                    This interface is limited to instances using SMTP as the mail driver. Use{' '}
-                    <code>php artisan p:environment:mail</code> to update mail settings, or set{' '}
-                    <code>MAIL_DRIVER=smtp</code> in the environment file.
+                    <Translate
+                        i18nKey='This interface is limited to instances using SMTP as the mail driver. Use <code>{{command}}</code> to update mail settings, or set <code>{{variable}}</code> in the environment file.'
+                        values={{ command: 'php artisan p:environment:mail', variable: 'MAIL_DRIVER=smtp' }}
+                        components={{ code: <code /> }}
+                    />
                 </div>
             </TitledGreyBox>
         );
@@ -81,18 +86,18 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='Mail Configuration'>
+            <TitledGreyBox title={t('Mail Configuration')}>
                 <div className='grid grid-cols-2 gap-4'>
                     <form.AppField name='host'>
                         {(field) => (
-                            <field.TextField type='text' id='mail_host' label='SMTP Host' disabled={readOnly} />
+                            <field.TextField type='text' id='mail_host' label={t('SMTP Host')} disabled={readOnly} />
                         )}
                     </form.AppField>
                     <form.AppField
                         name='port'
-                        validators={{ onChange: requiredNumber('An SMTP port must be provided.') }}
+                        validators={{ onChange: requiredNumber(t('An SMTP port must be provided.')) }}
                     >
-                        {(field) => <field.NumberField id='mail_port' label='SMTP Port' disabled={readOnly} />}
+                        {(field) => <field.NumberField id='mail_port' label={t('SMTP Port')} disabled={readOnly} />}
                     </form.AppField>
                 </div>
                 <div className='mt-6'>
@@ -100,11 +105,11 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                         {(field) => (
                             <field.SelectField
                                 id='mail_encryption'
-                                label='Encryption'
+                                label={t('Encryption')}
                                 options={[
-                                    { value: '', label: 'None' },
-                                    { value: 'tls', label: 'Transport Layer Security (TLS)' },
-                                    { value: 'ssl', label: 'Secure Sockets Layer (SSL)' },
+                                    { value: '', label: t('None') },
+                                    { value: 'tls', label: t('Transport Layer Security (TLS)') },
+                                    { value: 'ssl', label: t('Secure Sockets Layer (SSL)') },
                                 ]}
                                 disabled={readOnly}
                             />
@@ -114,7 +119,7 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                 <div className='mt-6'>
                     <form.AppField name='username'>
                         {(field) => (
-                            <field.TextField type='text' id='mail_username' label='Username' disabled={readOnly} />
+                            <field.TextField type='text' id='mail_username' label={t('Username')} disabled={readOnly} />
                         )}
                     </form.AppField>
                 </div>
@@ -124,8 +129,10 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                             <field.TextField
                                 type='password'
                                 id='mail_password'
-                                label='Password'
-                                description='Leave blank to keep the existing password. Enter !e to clear the password.'
+                                label={t('Password')}
+                                description={t(
+                                    'Leave blank to keep the existing password. Enter !e to clear the password.'
+                                )}
                                 disabled={readOnly}
                             />
                         )}
@@ -137,14 +144,19 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                             <field.TextField
                                 type='text'
                                 id='mail_from_address'
-                                label='From Address'
+                                label={t('From Address')}
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                     <form.AppField name='fromName'>
                         {(field) => (
-                            <field.TextField type='text' id='mail_from_name' label='From Name' disabled={readOnly} />
+                            <field.TextField
+                                type='text'
+                                id='mail_from_name'
+                                label={t('From Name')}
+                                disabled={readOnly}
+                            />
                         )}
                     </form.AppField>
                 </div>
@@ -161,12 +173,12 @@ export default function MailSettingsForm({ settings }: { settings: AdminSettings
                                 isLoading={isSubmitting}
                                 onClick={sendTestEmail}
                             >
-                                Send Test Email
+                                {t('Send Test Email')}
                             </Button>
                         )}
                     </form.Subscribe>
                     <form.AppForm>
-                        <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
+                        <form.SubmitButton disabled={readOnly}>{t('Save Changes')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </TitledGreyBox>

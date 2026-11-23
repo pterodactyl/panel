@@ -16,10 +16,13 @@ import Icon from '@/components/elements/Icon';
 import { Alert } from '@/components/elements/alert';
 import { httpErrorToHuman } from '@/api/http';
 import { toYaml } from '@/components/admin/nodes/nodeConfigurationYaml';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 type NodeConfigurationQuery = ReturnType<typeof useAdminNodeConfiguration>;
 
 const ConfigurationFile = ({ query }: { query: NodeConfigurationQuery }) => {
+    const { t } = useTranslation();
     const { data: config, error, isFetching, refetch } = query;
 
     if (error && !isFetching) {
@@ -27,7 +30,7 @@ const ConfigurationFile = ({ query }: { query: NodeConfigurationQuery }) => {
             <div className='space-y-4'>
                 <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
                 <Button.Text type='button' onClick={() => refetch()}>
-                    Retry
+                    {t('Retry')}
                 </Button.Text>
             </div>
         );
@@ -44,7 +47,7 @@ const ConfigurationFile = ({ query }: { query: NodeConfigurationQuery }) => {
             <div className='flex items-center justify-between border-b border-border py-1.5 pr-1.5 pl-4 text-xs text-muted-foreground'>
                 <span className='font-mono'>config.yml</span>
                 <CopyOnClick text={yaml} showInNotification={false}>
-                    <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy configuration file'>
+                    <Button.Text type='button' size='xsmall' isSecondary aria-label={t('Copy configuration file')}>
                         <Icon icon={Copy} className='h-3.5 w-3.5' />
                     </Button.Text>
                 </CopyOnClick>
@@ -55,6 +58,7 @@ const ConfigurationFile = ({ query }: { query: NodeConfigurationQuery }) => {
 };
 
 export default function NodeConfigurationTab() {
+    const { t } = useTranslation();
     const { node } = useNodeDetail();
     const { attributes } = node;
     const [token, setToken] = useState<DeployToken | null>(null);
@@ -75,9 +79,11 @@ export default function NodeConfigurationTab() {
 
     return (
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-            <Dialog open={token !== null} title='Auto-deploy command generated' onClose={() => setToken(null)}>
+            <Dialog open={token !== null} title={t('Auto-deploy command generated')} onClose={() => setToken(null)}>
                 <p className='text-sm text-muted-foreground mb-4'>
-                    Run the following command on the target machine to automatically configure Wings for this node.
+                    {t(
+                        'Run the following command on the target machine to automatically configure Wings for this node.'
+                    )}
                 </p>
                 <div className='relative'>
                     <CopyOnClick text={command} showInNotification={false}>
@@ -85,7 +91,7 @@ export default function NodeConfigurationTab() {
                             type='button'
                             size='xsmall'
                             isSecondary
-                            aria-label='Copy auto-deploy command'
+                            aria-label={t('Copy auto-deploy command')}
                             className='absolute right-2 top-2'
                         >
                             <Icon icon={Copy} className='h-3.5 w-3.5' />
@@ -97,19 +103,22 @@ export default function NodeConfigurationTab() {
                 </div>
             </Dialog>
             <div className='lg:col-span-2'>
-                <TitledGreyBox title='Configuration File'>
+                <TitledGreyBox title={t('Configuration File')}>
                     <ConfigurationFile query={query} />
                     <p className='text-xs text-muted-foreground mt-3'>
-                        Place this file in your daemon&apos;s root directory (usually <code>/etc/pterodactyl</code>) in
-                        a file called <code>config.yml</code>.
+                        <Translate
+                            i18nKey="Place this file in your daemon's root directory (usually <code>/etc/pterodactyl</code>) in a file called <code>config.yml</code>."
+                            components={{ code: <code /> }}
+                        />
                     </p>
                 </TitledGreyBox>
             </div>
             <div>
-                <TitledGreyBox title='Auto-Deploy'>
+                <TitledGreyBox title={t('Auto-Deploy')}>
                     <p className='text-sm text-muted-foreground mb-4'>
-                        Generate a custom deployment command that configures Wings on the target server with a single
-                        command.
+                        {t(
+                            'Generate a custom deployment command that configures Wings on the target server with a single command.'
+                        )}
                     </p>
                     <Button
                         color='green'
@@ -118,7 +127,7 @@ export default function NodeConfigurationTab() {
                         onClick={generate}
                         className='w-full'
                     >
-                        Generate Token
+                        {t('Generate Token')}
                     </Button>
                 </TitledGreyBox>
             </div>

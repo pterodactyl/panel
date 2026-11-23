@@ -18,7 +18,8 @@ import {
 import CreateApiKeyButton from '@/components/admin/api/CreateApiKeyButton';
 import { apiKeyColumns } from '@/components/admin/api/ApiKeyTable';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import Icon from '@/components/elements/Icon';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -26,6 +27,7 @@ import DataTable from '@/components/elements/table/DataTable';
 import DataTablePagination from '@/components/elements/table/DataTablePagination';
 import { TextInput } from '@/components/form/controls';
 import { useApiKeyListSearch } from '@/router/search';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyApiKeys: AdminApiKey[] = [];
 const sortingFromSearch = (sort?: ApiKeyListSort): SortingState => {
@@ -54,6 +56,7 @@ const sortingToSearch = (sorting: SortingState): ApiKeyListSort | null => {
 };
 
 export default function ApiKeysContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useApiKeyListSearch();
     const {
         data: apiKeys,
@@ -67,6 +70,7 @@ export default function ApiKeysContainer() {
         [metadata?.per_page, page]
     );
     const sorting = useMemo(() => sortingFromSearch(sort), [sort]);
+    const columns = useMemo(() => apiKeyColumns(t), [t]);
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
@@ -87,7 +91,7 @@ export default function ApiKeysContainer() {
     );
     const table = useReactTable({
         data: apiKeys?.data ?? emptyApiKeys,
-        columns: apiKeyColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (apiKey) => apiKey.attributes.identifier,
         manualPagination: true,
@@ -105,9 +109,9 @@ export default function ApiKeysContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Application API'
-            heading='Application API'
-            description='Manage application API keys used to automate panel administration.'
+            title={t('Admin · Application API')}
+            heading={t('Application API')}
+            description={t('Manage application API keys used to automate panel administration.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -127,9 +131,9 @@ export default function ApiKeysContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search application API keys'
+                        aria-label={t('Search application API keys')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search API keys…'
+                        placeholder={t('Search API keys…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -143,10 +147,18 @@ export default function ApiKeysContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={KeyRound}
-                                noun='API keys'
+                                empty={t('No API keys yet')}
+                                noMatch={t('No matching API keys')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No API keys match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create an application API key to automate panel administration.'
+                                description={t('Create an application API key to automate panel administration.')}
                             />
                         }
                     />
@@ -154,7 +166,12 @@ export default function ApiKeysContainer() {
                         table={table}
                         total={apiKeys.meta.pagination.total}
                         count={apiKeys.meta.pagination.count}
-                        itemLabel='API keys'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> API keys',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

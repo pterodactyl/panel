@@ -1,6 +1,7 @@
 import type { AdminTag } from '@/api/admin/tags/queries';
 import { cn } from '@/lib/cn';
 import { isString } from '@/lib/objects';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     /** A tag, or the name of one that saving will create. */
@@ -10,7 +11,8 @@ interface Props {
 }
 
 export default function TagBadge({ tag, className, showSlug = false }: Props) {
-    const { color, name, slug } = isString(tag) ? { color: null, name: tag, slug: 'new' } : tag.attributes;
+    const { t } = useTranslation();
+    const { color, name, slug } = isString(tag) ? { color: null, name: tag, slug: t('new') } : tag.attributes;
 
     return (
         <span

@@ -13,7 +13,9 @@ describe('AdminListEmpty', () => {
         render(
             <AdminListEmpty
                 icon={Server}
-                noun='servers'
+                empty='No servers yet'
+                noMatch='No matching servers'
+                noMatchDescription='No servers match minecraft.'
                 onClearFilter={vi.fn()}
                 description='Create a server to get started.'
                 action={<button type='button'>New server</button>}
@@ -31,7 +33,9 @@ describe('AdminListEmpty', () => {
         render(
             <AdminListEmpty
                 icon={Server}
-                noun='servers'
+                empty='No servers yet'
+                noMatch='No matching servers'
+                noMatchDescription='No servers match minecraft.'
                 filter='minecraft'
                 onClearFilter={onClearFilter}
                 description='Create a server to get started.'
@@ -40,7 +44,7 @@ describe('AdminListEmpty', () => {
         );
 
         expect(screen.getByText('No matching servers')).toBeInTheDocument();
-        expect(screen.getByText('minecraft')).toBeInTheDocument();
+        expect(screen.getByText('No servers match minecraft.')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'New server' })).not.toBeInTheDocument();
 
         await userEvent.setup().click(screen.getByRole('button', { name: 'Clear search' }));

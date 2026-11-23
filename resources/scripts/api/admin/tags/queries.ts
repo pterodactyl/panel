@@ -1,9 +1,10 @@
 import { queryOptions, useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 import { listQuery, listSorts } from '@/api/queryParameters';
 
-import { invalidateGeneratedOperations, resourceMutationMessages } from '@/api/mutationUtils';
+import { invalidateGeneratedOperations } from '@/api/mutationUtils';
 import { fetchAllPages, MAX_PER_PAGE } from '@/api/pagination';
 import { adminNodeDetailKey } from '@/api/admin/nodes/invalidation';
 import {
@@ -117,11 +118,11 @@ export const useCreateAdminTag = () => {
         ...adminCreateTagMutation(),
         onSuccess: async (tag) => {
             await invalidateGeneratedOperations(queryClient, tagListOperations);
-            const messages = resourceMutationMessages('tag', 'create', tag.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Tag created'), {
+                description: i18next.t('{{name}} has been created.', { name: tag.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create tag')),
     });
 };
 
@@ -132,11 +133,11 @@ export const useUpdateAdminTag = () => {
         ...adminUpdateTagMutation(),
         onSuccess: async (tag) => {
             await invalidateGeneratedOperations(queryClient, assignedTagOperations);
-            const messages = resourceMutationMessages('tag', 'update', tag.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Tag updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: tag.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update tag')),
     });
 };
 
@@ -147,11 +148,15 @@ export const useDeleteAdminTag = () => {
         ...adminDeleteTagMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateGeneratedOperations(queryClient, assignedTagOperations);
-            const messages = resourceMutationMessages('tag', 'delete', variables.meta?.name);
+            const name = variables.meta?.name;
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Tag deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The tag has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('tag', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete tag')),
     });
 };
 
@@ -162,9 +167,11 @@ export const useSyncAdminEggTags = () => {
         ...adminSyncEggTagsMutation(),
         onSuccess: async () => {
             await invalidateGeneratedOperations(queryClient, ['adminGetEgg', 'adminListEggs', 'adminListTags']);
-            toast.success('Egg tags updated', { description: 'The egg tag assignments have been saved.' });
+            toast.success(i18next.t('Egg tags updated'), {
+                description: i18next.t('The egg tag assignments have been saved.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update egg tags'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update egg tags')),
     });
 };
 
@@ -174,9 +181,9 @@ const onNodeTagsSynced = async (queryClient: QueryClient, nodeId: number) => {
         invalidateGeneratedOperations(queryClient, ['adminListNodes', 'adminListTags']),
     ]);
     // Games and reservations save together, so both syncs update one toast.
-    toast.success('Node tags updated', {
+    toast.success(i18next.t('Node tags updated'), {
         id: `admin-node-tags-${nodeId}`,
-        description: 'The node tag assignments have been saved.',
+        description: i18next.t('The node tag assignments have been saved.'),
     });
 };
 
@@ -186,7 +193,7 @@ export const useSyncAdminNodeGameTags = () => {
     return useMutation({
         ...adminSyncNodeGameTagsMutation(),
         onSuccess: (_tags, variables) => onNodeTagsSynced(queryClient, variables.path.node_id),
-        onError: (error) => notifyHttpError(error, 'Unable to update node tags'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update node tags')),
     });
 };
 
@@ -196,6 +203,6 @@ export const useSyncAdminNodeDeploymentTags = () => {
     return useMutation({
         ...adminSyncNodeDeploymentTagsMutation(),
         onSuccess: (_tags, variables) => onNodeTagsSynced(queryClient, variables.path.node_id),
-        onError: (error) => notifyHttpError(error, 'Unable to update node tags'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update node tags')),
     });
 };

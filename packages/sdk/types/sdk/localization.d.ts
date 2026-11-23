@@ -5,7 +5,7 @@ export interface ExtensionTranslation {
     t(key: string, values?: Record<string, string | number>): string;
 }
 export type Translation = ExtensionTranslation;
-/** Interface text keyed by its English, from resources/lang/<locale>.json and the language packs. */
+export declare const translatable: (text: string) => string;
 export declare function useTranslation(): Translation;
 /** resources/lang/<locale>/<group>.php, registered with loadExtensionTranslations(). */
 export declare function useExtensionTranslation(group?: string): ExtensionTranslation;

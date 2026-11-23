@@ -16,6 +16,7 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { relationshipAttributes } from '@/api/relationships';
 import { useDebouncedValue } from '@/plugins/useDebouncedValue';
 import type { SelectOption } from '@/components/ui/Select';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     server: AdminServer;
@@ -63,6 +64,7 @@ const ownerSelectOption = (user: OwnerOption): SelectOption => ({
 });
 
 function ServerDetailsForm({ server }: Props) {
+    const { t } = useTranslation();
     const { attributes } = server;
     const [search, setSearch] = useState('');
     const [pickedOwner, setPickedOwner] = useState<OwnerOption | null>(null);
@@ -125,19 +127,19 @@ function ServerDetailsForm({ server }: Props) {
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='Base Information'>
+            <TitledGreyBox title={t('Base Information')}>
                 <form.AppField
                     name='name'
                     validators={{
-                        onChange: ({ value }) => (value.length >= 1 ? undefined : 'A server name must be provided.'),
+                        onChange: ({ value }) => (value.length >= 1 ? undefined : t('A server name must be provided.')),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id='name'
-                            label='Server Name'
-                            description='Character limits: a-zA-Z0-9_- and [Space].'
+                            label={t('Server Name')}
+                            description={t('Character limits: a-zA-Z0-9_- and [Space].')}
                         />
                     )}
                 </form.AppField>
@@ -147,11 +149,10 @@ function ServerDetailsForm({ server }: Props) {
                             <field.TextField
                                 type='text'
                                 id='external_id'
-                                label='External Identifier'
-                                description={
-                                    'Leave empty to not assign an external identifier for this server. The external ID ' +
-                                    'should be unique to this server and not be in use by any other server.'
-                                }
+                                label={t('External Identifier')}
+                                description={t(
+                                    'Leave empty to not assign an external identifier for this server. The external ID should be unique to this server and not be in use by any other server.'
+                                )}
                             />
                         )}
                     </form.AppField>
@@ -161,17 +162,19 @@ function ServerDetailsForm({ server }: Props) {
                         {(field) => (
                             <field.SelectField
                                 id='user'
-                                label='Server Owner'
-                                placeholder='Search users by name, username or email…'
+                                label={t('Server Owner')}
+                                placeholder={t('Search users by name, username or email…')}
                                 emptyMessage={
                                     isSearching || search !== debouncedSearch
-                                        ? 'Searching…'
-                                        : 'No matching users found.'
+                                        ? t('Searching…')
+                                        : t('No matching users found.')
                                 }
                                 options={users.map(ownerSelectOption)}
                                 onChange={pickOwner}
                                 onSearchChange={setSearch}
-                                description='Changing the owner will generate a new daemon security token automatically.'
+                                description={t(
+                                    'Changing the owner will generate a new daemon security token automatically.'
+                                )}
                             />
                         )}
                     </form.AppField>
@@ -182,8 +185,8 @@ function ServerDetailsForm({ server }: Props) {
                             <field.TextField
                                 type='text'
                                 id='description'
-                                label='Server Description'
-                                description='A brief description of this server.'
+                                label={t('Server Description')}
+                                description={t('A brief description of this server.')}
                             />
                         )}
                     </form.AppField>
@@ -201,7 +204,7 @@ function ServerDetailsForm({ server }: Props) {
                 </form.AppField>
                 <div className='flex justify-end mt-6'>
                     <form.AppForm>
-                        <form.SubmitButton>Update Details</form.SubmitButton>
+                        <form.SubmitButton>{t('Update Details')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </TitledGreyBox>
@@ -210,10 +213,13 @@ function ServerDetailsForm({ server }: Props) {
 }
 
 export default function ServerDetailsTab() {
+    const { t } = useTranslation();
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
+        return (
+            <ServerError message={t('Access to this resource is not allowed due to the current installation state.')} />
+        );
     }
 
     return <ServerDetailsForm key={`${server.attributes.id}:${server.attributes.updated_at}`} server={server} />;

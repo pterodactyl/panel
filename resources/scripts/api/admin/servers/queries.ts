@@ -1,15 +1,12 @@
 import { queryOptions, useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
 import { fetchAllPages, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import { invalidateAdminNodeAllocations } from '@/api/admin/nodes/invalidation';
 import {
     adminAttachServerMountMutation,
@@ -441,11 +438,11 @@ export const useCreateAdminServer = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListServers']),
                 invalidateAdminNodeAllocations(queryClient, [server.attributes.node]),
             ]);
-            const messages = resourceMutationMessages('server', 'create', server.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Server created'), {
+                description: i18next.t('{{name}} has been created.', { name: server.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create server')),
     });
 };
 
@@ -461,9 +458,11 @@ export const useUpdateAdminServerDetails = () => {
                     queryKey: adminServerDetailKey(variables.path.server_admin_identifier),
                 }),
             ]);
-            toast.success('Server details updated', { description: `${server.attributes.name} has been updated.` });
+            toast.success(i18next.t('Server details updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: server.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update server details'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update server details')),
     });
 };
 
@@ -478,11 +477,11 @@ export const useUpdateAdminServerBuild = () => {
                 queryClient.invalidateQueries({ queryKey: adminServerDetailKey(server.attributes.id) }),
                 invalidateAdminNodeAllocations(queryClient, [server.attributes.node]),
             ]);
-            toast.success('Build configuration updated', {
-                description: `${server.attributes.name} has updated build settings.`,
+            toast.success(i18next.t('Build configuration updated'), {
+                description: i18next.t('{{name}} has updated build settings.', { name: server.attributes.name }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update build configuration'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update build configuration')),
     });
 };
 
@@ -498,11 +497,11 @@ export const useUpdateAdminServerStartup = () => {
                     queryKey: adminServerDetailKey(variables.path.server_admin_identifier),
                 }),
             ]);
-            toast.success('Startup configuration updated', {
-                description: `${server.attributes.name} has updated startup settings.`,
+            toast.success(i18next.t('Startup configuration updated'), {
+                description: i18next.t('{{name}} has updated startup settings.', { name: server.attributes.name }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update startup configuration'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update startup configuration')),
     });
 };
 
@@ -527,11 +526,14 @@ export const useDeleteAdminServer = () => {
         onSuccess: async (_data, variables) => {
             await onAdminServerDeleted(queryClient, variables.path.server_admin_identifier);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('server', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Server deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The server has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete server')),
     });
 };
 
@@ -543,11 +545,14 @@ export const useForceDeleteAdminServer = () => {
         onSuccess: async (_data, variables) => {
             await onAdminServerDeleted(queryClient, variables.path.server_admin_identifier);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('server', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Server deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The server has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('server', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete server')),
     });
 };
 
@@ -571,11 +576,11 @@ export const useTransferAdminServer = () => {
                     sourceNodeId === undefined ? undefined : [sourceNodeId, variables.body.node_id]
                 ),
             ]);
-            toast.success('Server transfer started', {
-                description: 'The server will move to the selected node and allocation.',
+            toast.success(i18next.t('Server transfer started'), {
+                description: i18next.t('The server will move to the selected node and allocation.'),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to transfer server'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to transfer server')),
     });
 };
 
@@ -591,11 +596,11 @@ export const useCreateAdminServerDatabase = () => {
                 }),
                 invalidateGeneratedOperations(queryClient, ['adminListDatabaseHostDatabases']),
             ]);
-            const messages = resourceMutationMessages('database', 'create', database.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Database created'), {
+                description: i18next.t('{{name}} has been created.', { name: database.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('database', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create database')),
     });
 };
 
@@ -612,11 +617,14 @@ export const useDeleteAdminServerDatabase = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListDatabaseHostDatabases']),
             ]);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('database', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Database deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The database has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('database', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete database')),
     });
 };
 
@@ -629,11 +637,11 @@ export const useRotateAdminServerDatabasePassword = () => {
             await queryClient.invalidateQueries({
                 queryKey: adminServerDatabaseListQueryKey(variables.path.server_admin_identifier),
             });
-            toast.success('Database password rotated', {
-                description: `${database.attributes.name} has a new password.`,
+            toast.success(i18next.t('Database password rotated'), {
+                description: i18next.t('{{name}} has a new password.', { name: database.attributes.name }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to rotate database password'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to rotate database password')),
     });
 };
 
@@ -648,13 +656,13 @@ export const useAttachAdminServerMount = () => {
             });
             const name = variables.meta?.name;
 
-            toast.success('Mount attached', {
+            toast.success(i18next.t('Mount attached'), {
                 description: name
-                    ? `${name} has been mounted to this server.`
-                    : 'The mount has been attached to this server.',
+                    ? i18next.t('{{name}} has been mounted to this server.', { name })
+                    : i18next.t('The mount has been attached to this server.'),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to attach mount'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to attach mount')),
     });
 };
 
@@ -669,13 +677,13 @@ export const useDetachAdminServerMount = () => {
             });
             const name = variables.meta?.name;
 
-            toast.success('Mount detached', {
+            toast.success(i18next.t('Mount detached'), {
                 description: name
-                    ? `${name} has been unmounted from this server.`
-                    : 'The mount has been detached from this server.',
+                    ? i18next.t('{{name}} has been unmounted from this server.', { name })
+                    : i18next.t('The mount has been detached from this server.'),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to detach mount'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to detach mount')),
     });
 };
 
@@ -691,9 +699,9 @@ export const useReinstallAdminServer = () => {
                     queryKey: adminServerDetailKey(variables.path.server_admin_identifier),
                 }),
             ]);
-            toast.success('Server is being reinstalled.');
+            toast.success(i18next.t('Server is being reinstalled.'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to reinstall server'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to reinstall server')),
     });
 };
 
@@ -709,9 +717,9 @@ export const useToggleAdminServerInstallState = () => {
                     queryKey: adminServerDetailKey(variables.path.server_admin_identifier),
                 }),
             ]);
-            toast.success('Install status has been toggled.');
+            toast.success(i18next.t('Install status has been toggled.'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to toggle install status'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to toggle install status')),
     });
 };
 
@@ -728,13 +736,17 @@ export const useUpdateAdminServerSuspension = () => {
                 }),
             ]);
             toast.success(
-                variables.body?.suspended === true ? 'Server has been suspended.' : 'Server has been unsuspended.'
+                variables.body?.suspended === true
+                    ? i18next.t('Server has been suspended.')
+                    : i18next.t('Server has been unsuspended.')
             );
         },
         onError: (error, variables) =>
             notifyHttpError(
                 error,
-                variables.body?.suspended === true ? 'Unable to suspend server' : 'Unable to unsuspend server'
+                variables.body?.suspended === true
+                    ? i18next.t('Unable to suspend server')
+                    : i18next.t('Unable to unsuspend server')
             ),
     });
 };

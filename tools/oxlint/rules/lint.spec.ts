@@ -159,6 +159,12 @@ it.each([
         'literal-translation-keys',
     ],
     [
+        'rejects translatable text that is not a literal',
+        components,
+        "import { translatable } from '@/sdk/localization';\nconst name = 'Servers';\nexport const nav = { label: translatable(name) };",
+        'literal-translation-keys',
+    ],
+    [
         'rejects translation keys passed in variables',
         components,
         "declare const t: (key: string) => string;\nconst key = 'Save';\nexport const label = t(key);",

@@ -45,6 +45,8 @@ import Checkbox from '@/components/ui/Checkbox';
 import Switch from '@/components/ui/Switch';
 import { FileInput } from '@/components/form/controls';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 type ExtensionState = NonNullable<AdminExtension['state']>;
 
@@ -60,25 +62,27 @@ type ActionButtonProps = {
 // A failure in any other phase happened while the extension was running, not while it loaded.
 const LOAD_PHASES = new Set(['register', 'boot', 'compatibility']);
 
-const stateBadge = (state: ExtensionState = '', errorPhase?: string | null) => {
+const stateBadge = (t: Translation['t'], state: ExtensionState = '', errorPhase?: string | null) => {
     switch (state) {
         case 'not_registered':
-            return { label: 'Not set up', className: 'bg-accent/10 text-accent' };
+            return { label: t('Not set up'), className: 'bg-accent/10 text-accent' };
         case 'error':
             return {
-                label: !errorPhase || LOAD_PHASES.has(errorPhase) ? 'Failed to load' : 'Runtime error',
+                label: !errorPhase || LOAD_PHASES.has(errorPhase) ? t('Failed to load') : t('Runtime error'),
                 className: 'bg-destructive/15 text-destructive',
             };
         case 'invalid':
-            return { label: 'Invalid package', className: 'bg-destructive/15 text-destructive' };
+            return { label: t('Invalid package'), className: 'bg-destructive/15 text-destructive' };
         default:
             return null;
     }
 };
 
-const extensionName = (extension: AdminExtension): string => extension.name || extension.id || 'Unknown extension';
+const extensionName = (extension: AdminExtension, t: Translation['t']): string =>
+    extension.name || extension.id || t('Unknown extension');
 
-const extensionId = (extension: AdminExtension): string => extension.id || extensionName(extension);
+const extensionId = (extension: AdminExtension, t: Translation['t']): string =>
+    extension.id || extensionName(extension, t);
 
 const canRemove = (extension: AdminExtension): boolean => extension.state !== 'invalid' && !!extension.id;
 
@@ -87,8 +91,8 @@ const canEnable = (extension: AdminExtension): boolean =>
 
 const canDisable = (extension: AdminExtension): boolean => extension.enabled === true && !!extension.id;
 
-const extensionInitials = (extension: AdminExtension): string =>
-    extensionName(extension)
+const extensionInitials = (extension: AdminExtension, t: Translation['t']): string =>
+    extensionName(extension, t)
         .split(/[\s_-]+/)
         .filter(Boolean)
         .slice(0, 2)
@@ -96,6 +100,7 @@ const extensionInitials = (extension: AdminExtension): string =>
         .join('') || 'EX';
 
 function ExtensionMarkContent({ extension }: { extension: AdminExtension }) {
+    const { t } = useTranslation();
     const [failedUrl, setFailedUrl] = useState<string | null>(null);
     const iconUrl = extension.icon_url;
 
@@ -116,7 +121,7 @@ function ExtensionMarkContent({ extension }: { extension: AdminExtension }) {
         return <NamedIcon name={extension.icon} size={20} />;
     }
 
-    return <>{extensionInitials(extension)}</>;
+    return <>{extensionInitials(extension, t)}</>;
 }
 
 export function ExtensionMark({ extension }: { extension: AdminExtension }) {
@@ -147,20 +152,42 @@ function ActionButton({ label, icon, disabled, color = 'grey', isLoading, onClic
 }
 
 function ReplacementNotice({ replacement }: { replacement: AdminExtensionReplacement }) {
-    const installed = replacement.installedVersion ? `v${replacement.installedVersion}` : 'a copy';
+    const { t } = useTranslation();
+    const components = { code: <code className='font-mono' /> };
 
     return (
-        <Alert type='warning' title='Replace an installed extension?'>
-            This package is <code className='font-mono'>{replacement.id}</code> v{replacement.version}, and {installed}{' '}
-            of <code className='font-mono'>{replacement.id}</code> is already installed. Installing it replaces the
-            installed files.
-            {replacement.enabled &&
-                ' The extension is enabled and stays enabled, so the new version runs its migrations and code right away.'}
+        <Alert type='warning' title={t('Replace an installed extension?')}>
+            {replacement.installedVersion ? (
+                <Translate
+                    i18nKey='This package is <code>{{id}}</code> v{{version}}, and v{{installedVersion}} of <code>{{id}}</code> is already installed. Installing it replaces the installed files.'
+                    values={{
+                        id: replacement.id,
+                        version: replacement.version,
+                        installedVersion: replacement.installedVersion,
+                    }}
+                    components={components}
+                />
+            ) : (
+                <Translate
+                    i18nKey='This package is <code>{{id}}</code> v{{version}}, and a copy of <code>{{id}}</code> is already installed. Installing it replaces the installed files.'
+                    values={{ id: replacement.id, version: replacement.version }}
+                    components={components}
+                />
+            )}
+            {replacement.enabled && (
+                <>
+                    {' '}
+                    {t(
+                        'The extension is enabled and stays enabled, so the new version runs its migrations and code right away.'
+                    )}
+                </>
+            )}
         </Alert>
     );
 }
 
 function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+    const { t } = useTranslation();
     const [file, setFile] = useState<File | null>(null);
     const [enable, setEnable] = useState(false);
     const [replacement, setReplacement] = useState<AdminExtensionReplacement | null>(null);
@@ -188,7 +215,7 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
     return (
         <Dialog
             open={open}
-            title='Install extension'
+            title={t('Install extension')}
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
@@ -196,11 +223,11 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
             <SpinnerOverlay visible={submitting} />
             <div className='space-y-5'>
                 <div>
-                    <Label htmlFor='extension_package'>Package</Label>
+                    <Label htmlFor='extension_package'>{t('Package')}</Label>
                     <FileInput
                         id='extension_package'
                         accept='.pteroext,.zip,application/zip'
-                        aria-label='Extension package'
+                        aria-label={t('Extension package')}
                         disabled={submitting}
                         onChange={(event) => {
                             setFile(event.currentTarget.files?.[0] ?? null);
@@ -210,7 +237,7 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                 </div>
                 <label className='flex items-center gap-3 text-sm text-foreground'>
                     <Checkbox checked={enable} onChange={setEnable} disabled={submitting} />
-                    Enable after install
+                    {t('Enable after install')}
                 </label>
                 {replacement && <ReplacementNotice replacement={replacement} />}
             </div>
@@ -222,7 +249,7 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                     disabled={submitting}
                     onClick={onClose}
                 >
-                    Cancel
+                    {t('Cancel')}
                 </Button>
                 <Button
                     type='button'
@@ -232,7 +259,7 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
                     isLoading={submitting}
                     onClick={() => void submit()}
                 >
-                    {replacement ? `Replace ${replacement.id}` : 'Install'}
+                    {replacement ? t('Replace {{id}}', { id: replacement.id }) : t('Install')}
                 </Button>
             </div>
         </Dialog>
@@ -240,11 +267,13 @@ function InstallExtensionDialog({ open, onClose }: { open: boolean; onClose: () 
 }
 
 function InstallExtensionButton() {
+    const { t } = useTranslation();
+
     return (
         <Dialog.Trigger
             trigger={({ onClick }) => (
                 <NewButton icon={UploadCloud} onClick={onClick}>
-                    Install
+                    {t('Install')}
                 </NewButton>
             )}
         >
@@ -262,25 +291,27 @@ function ExtensionToolbar({
     isFetching: boolean;
     onRefresh: () => void;
 }) {
+    const { t } = useTranslation();
+
     return (
         <ListToolbar
             summary={
                 failedCount > 0 && (
                     <span className='inline-flex items-center gap-1.5 text-warning'>
                         <Icon icon={AlertCircle} />
-                        {failedCount === 1 ? '1 extension needs attention' : `${failedCount} extensions need attention`}
+                        {t('{{count}} extensions need attention', { count: failedCount })}
                     </span>
                 )
             }
         >
             <div className='flex items-center gap-2'>
-                <Tooltip content='Refresh'>
+                <Tooltip content={t('Refresh')}>
                     <span className='inline-flex'>
                         <Button
                             type='button'
                             color='grey'
                             isSecondary
-                            aria-label='Refresh extensions'
+                            aria-label={t('Refresh extensions')}
                             disabled={isFetching}
                             isLoading={isFetching}
                             className='inline-flex h-9 w-9 items-center justify-center p-0'
@@ -338,17 +369,19 @@ const buildSettingsPayload = (
 };
 
 function SettingsEmptyState({ extensionEnabled }: { extensionEnabled: boolean | undefined }) {
+    const { t } = useTranslation();
+
     return (
         <Empty size='compact'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <Settings2 />
                 </EmptyMedia>
-                <EmptyTitle>{extensionEnabled ? 'No settings' : 'Settings unavailable'}</EmptyTitle>
+                <EmptyTitle>{extensionEnabled ? t('No settings') : t('Settings unavailable')}</EmptyTitle>
                 <EmptyDescription>
                     {extensionEnabled
-                        ? "This extension doesn't register any settings."
-                        : 'Enable the extension to load its settings.'}
+                        ? t("This extension doesn't register any settings.")
+                        : t('Enable the extension to load its settings.')}
                 </EmptyDescription>
             </EmptyHeader>
         </Empty>
@@ -427,6 +460,8 @@ function SettingsDialogActions({
     onCancel: () => void;
     onSubmit: () => void;
 }) {
+    const { t } = useTranslation();
+
     return (
         <div className='flex flex-wrap justify-end mt-6'>
             <Button
@@ -436,7 +471,7 @@ function SettingsDialogActions({
                 disabled={submitting}
                 onClick={onCancel}
             >
-                Cancel
+                {t('Cancel')}
             </Button>
             <Button
                 type='button'
@@ -445,7 +480,7 @@ function SettingsDialogActions({
                 isLoading={submitting}
                 onClick={onSubmit}
             >
-                Save Settings
+                {t('Save Settings')}
             </Button>
         </div>
     );
@@ -460,6 +495,7 @@ function SettingsDialog({
     open: boolean;
     onClose: () => void;
 }) {
+    const { t } = useTranslation();
     const id = extension.id ?? '';
     const { data, error, isFetching } = useAdminExtensionSettings(id, { enabled: open && id.length > 0 });
     const updateSettings = useUpdateAdminExtensionSettings();
@@ -498,7 +534,7 @@ function SettingsDialog({
     return (
         <Dialog
             open={open}
-            title={`${extensionName(extension)} settings`}
+            title={t('{{name}} settings', { name: extensionName(extension, t) })}
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
@@ -532,14 +568,18 @@ type ExtensionMutationState = {
 const isPendingFor = (mutation: ExtensionMutationState, extension: AdminExtension): boolean =>
     mutation.isPending && mutation.variables?.path.extension === extension.id;
 
-const extensionSubtitle = (extension: AdminExtension): string =>
-    [extension.version ? `v${extension.version}` : null, extension.author && `by ${extension.author}`]
+const extensionSubtitle = (extension: AdminExtension, t: Translation['t']): string =>
+    [
+        extension.version ? `v${extension.version}` : null,
+        extension.author && t('by {{author}}', { author: extension.author }),
+    ]
         .filter(Boolean)
         .join(' · ');
 
 function ExtensionCardHeader({ extension, name, id }: { extension: AdminExtension; name: string; id: string }) {
-    const subtitle = extensionSubtitle(extension);
-    const badge = stateBadge(extension.state as ExtensionState | undefined, extension.error_phase);
+    const { t } = useTranslation();
+    const subtitle = extensionSubtitle(extension, t);
+    const badge = stateBadge(t, extension.state as ExtensionState | undefined, extension.error_phase);
 
     return (
         <div className='flex min-w-0 items-start gap-3'>
@@ -565,18 +605,20 @@ function ExtensionCardHeader({ extension, name, id }: { extension: AdminExtensio
 }
 
 function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
+    const { t } = useTranslation();
+
     return (
         <>
             <p
                 className='mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'
                 title={extension.description || undefined}
             >
-                {extension.description || 'No description provided.'}
+                {extension.description || t('No description provided.')}
             </p>
 
             {extension.state === 'not_registered' && (
                 <p className='mt-3 text-sm text-muted-foreground'>
-                    Found in the extensions folder. Turn it on to finish setting it up.
+                    {t('Found in the extensions folder. Turn it on to finish setting it up.')}
                 </p>
             )}
 
@@ -585,8 +627,12 @@ function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
                     <p className='break-words text-sm text-destructive'>{extension.error}</p>
                     {extension.errored_at && (
                         <p className='mt-1 text-xs text-destructive/80'>
-                            {extension.error_phase && <>In {extension.error_phase}, </>}
-                            {new Date(extension.errored_at).toLocaleString()}
+                            {extension.error_phase
+                                ? t('In {{phase}}, {{date}}', {
+                                      phase: extension.error_phase,
+                                      date: new Date(extension.errored_at).toLocaleString(),
+                                  })
+                                : new Date(extension.errored_at).toLocaleString()}
                         </p>
                     )}
                 </div>
@@ -596,6 +642,7 @@ function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
 }
 
 function ExtensionToggle({ extension, name }: { extension: AdminExtension; name: string }) {
+    const { t } = useTranslation();
     const enableExtension = useEnableAdminExtension();
     const disableExtension = useDisableAdminExtension();
     const pending = isPendingFor(enableExtension, extension) || isPendingFor(disableExtension, extension);
@@ -615,7 +662,7 @@ function ExtensionToggle({ extension, name }: { extension: AdminExtension; name:
 
     return (
         <Switch
-            aria-label={`Enable ${name}`}
+            aria-label={t('Enable {{name}}', { name })}
             className='mr-auto'
             checked={extension.enabled === true}
             disabled={pending || !allowed}
@@ -625,6 +672,7 @@ function ExtensionToggle({ extension, name }: { extension: AdminExtension; name:
 }
 
 function RemoveExtensionButton({ extension, name }: { extension: AdminExtension; name: string }) {
+    const { t } = useTranslation();
     const removeExtension = useRemoveAdminExtension();
     const removePending = isPendingFor(removeExtension, extension);
 
@@ -640,14 +688,14 @@ function RemoveExtensionButton({ extension, name }: { extension: AdminExtension;
 
     return (
         <Dialog.ConfirmTrigger
-            title='Remove extension'
-            confirm='Remove'
+            title={t('Remove extension')}
+            confirm={t('Remove')}
             preventExternalClose={removePending}
             hideCloseIcon={removePending}
             pending={removePending}
             trigger={({ onClick }) => (
                 <ActionButton
-                    label='Remove'
+                    label={t('Remove')}
                     icon={Trash2}
                     color='red'
                     disabled={!canRemove(extension) || removePending}
@@ -658,15 +706,19 @@ function RemoveExtensionButton({ extension, name }: { extension: AdminExtension;
             onConfirmed={(_event, close) => submitRemove(close)}
         >
             <SpinnerOverlay visible={removePending} />
-            Removing <strong>{name}</strong> deletes the extension files, published assets, settings, subuser
-            permissions it added, and install record.
+            <Translate
+                i18nKey='Removing <bold>{{name}}</bold> deletes the extension files, published assets, settings, subuser permissions it added, and install record.'
+                values={{ name }}
+                components={{ bold: <strong /> }}
+            />
         </Dialog.ConfirmTrigger>
     );
 }
 
 function ExtensionCard({ extension }: { extension: AdminExtension }) {
-    const id = extensionId(extension);
-    const name = extensionName(extension);
+    const { t } = useTranslation();
+    const id = extensionId(extension, t);
+    const name = extensionName(extension, t);
 
     return (
         <article className='flex h-full flex-col rounded-sm border border-border bg-card p-4'>
@@ -679,7 +731,7 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
                     {extension.enabled && (
                         <Dialog.Trigger
                             trigger={({ onClick }) => (
-                                <ActionButton label='Settings' icon={Settings2} onClick={onClick} />
+                                <ActionButton label={t('Settings')} icon={Settings2} onClick={onClick} />
                             )}
                         >
                             {({ open, onClose }) => (
@@ -695,15 +747,17 @@ function ExtensionCard({ extension }: { extension: AdminExtension }) {
 }
 
 function EmptyExtensionsState() {
+    const { t } = useTranslation();
+
     return (
         <Empty className='border bg-card'>
             <EmptyHeader>
                 <EmptyMedia variant='icon'>
                     <FileArchive />
                 </EmptyMedia>
-                <EmptyTitle>No extensions installed</EmptyTitle>
+                <EmptyTitle>{t('No extensions installed')}</EmptyTitle>
                 <EmptyDescription>
-                    Install an extension package to add features and integrations to this panel.
+                    {t('Install an extension package to add features and integrations to this panel.')}
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
@@ -728,6 +782,7 @@ function ExtensionGrid({ extensions }: { extensions: AdminExtension[] }) {
 }
 
 export default function ExtensionsContainer() {
+    const { t } = useTranslation();
     const runtimeStates = useExtensionRegistry(getExtensionStates);
     const runtimeFailures = runtimeStates.filter((state) => state.status === 'failed');
     const { data, error, isFetching, refetch } = useAdminExtensions();
@@ -740,9 +795,9 @@ export default function ExtensionsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Extensions'
-            heading='Extensions'
-            description='Manage extensions that add features and integrations to your panel.'
+            title={t('Admin · Extensions')}
+            heading={t('Extensions')}
+            description={t('Manage extensions that add features and integrations to your panel.')}
         >
             {runtimeFailures.length > 0 && (
                 <Alert type='danger' className='mb-4'>
@@ -755,9 +810,11 @@ export default function ExtensionsContainer() {
             )}
             {data?.meta?.enabled === false && (
                 <Alert type='warning' className='mb-4'>
-                    Extensions are turned off on this panel, so installed extensions won&apos;t load. Set{' '}
-                    <code className='font-mono'>PTERODACTYL_EXTENSIONS_ENABLED=true</code> in your{' '}
-                    <code className='font-mono'>.env</code> to turn them on.
+                    <Translate
+                        i18nKey="Extensions are turned off on this panel, so installed extensions won't load. Set <code>{{variable}}</code> in your <code>{{file}}</code> to turn them on."
+                        values={{ variable: 'PTERODACTYL_EXTENSIONS_ENABLED=true', file: '.env' }}
+                        components={{ code: <code className='font-mono' /> }}
+                    />
                 </Alert>
             )}
             {data && <ExtensionToolbar failedCount={failedCount} isFetching={isFetching} onRefresh={() => refetch()} />}

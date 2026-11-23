@@ -12,17 +12,19 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import { ExtensionResourceProvider, type ExtensionResourceContext } from '@/extensions/resourceContext';
 import Slot from '@/extensions/Slot';
 import { resourceNavigation, type ResourceTab } from '@/views/navigation';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
-const tabs: ResourceTab[] = [
-    { id: 'about', label: 'About', to: '/panel/nodes/$id', exact: true },
-    { id: 'settings', label: 'Settings', to: '/panel/nodes/$id/settings' },
-    { id: 'configuration', label: 'Configuration', to: '/panel/nodes/$id/configuration' },
-    { id: 'allocation', label: 'Allocation', to: '/panel/nodes/$id/allocation' },
-    { id: 'tags', label: 'Tags', to: '/panel/nodes/$id/tags' },
-    { id: 'servers', label: 'Servers', to: '/panel/nodes/$id/servers' },
+const tabs = (t: Translation['t']): ResourceTab[] => [
+    { id: 'about', label: t('About'), to: '/panel/nodes/$id', exact: true },
+    { id: 'settings', label: t('Settings'), to: '/panel/nodes/$id/settings' },
+    { id: 'configuration', label: t('Configuration'), to: '/panel/nodes/$id/configuration' },
+    { id: 'allocation', label: t('Allocation'), to: '/panel/nodes/$id/allocation' },
+    { id: 'tags', label: t('Tags'), to: '/panel/nodes/$id/tags' },
+    { id: 'servers', label: t('Servers'), to: '/panel/nodes/$id/servers' },
 ];
 
 export default function NodeDetailContainer() {
+    const { t } = useTranslation();
     const loadedNode = nodeDetailRoute.useLoaderData();
     const nodeId = loadedNode.attributes.id;
 
@@ -46,7 +48,7 @@ export default function NodeDetailContainer() {
     return (
         <ExtensionResourceProvider.Provider value={resourceContext}>
             <AdminContentBlock
-                title={`Admin · ${attributes.name}`}
+                title={t('Admin · {{name}}', { name: attributes.name })}
                 heading={attributes.name}
                 description={attributes.fqdn}
             >
@@ -55,12 +57,12 @@ export default function NodeDetailContainer() {
                     className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
                 >
                     <Icon icon={ArrowLeft} className='mr-2' />
-                    Back to Nodes
+                    {t('Back to Nodes')}
                 </Link>
                 <Slot name='panel.nodes.detail.actions' data={resourceContext} />
                 <SubNavigation
                     className='mb-6 rounded-sm'
-                    items={resourceNavigation('admin.node', { id: String(attributes.id) }, tabs)}
+                    items={resourceNavigation('admin.node', { id: String(attributes.id) }, tabs(t))}
                 />
                 <Outlet />
             </AdminContentBlock>

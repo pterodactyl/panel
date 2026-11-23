@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 
 import {
     adminClearExtensionSettingFileMutation,
@@ -162,11 +163,16 @@ export const useUpdateAdminExtensionSettings = () => {
                     path: { extension: variables.path.extension },
                 }),
             });
-            const name = variables.meta?.name ?? 'the extension';
+            const name = variables.meta?.name;
 
-            toast.success('Settings saved', { description: `Settings for ${name} have been updated.` });
+            toast.success(i18next.t('Settings saved'), {
+                description:
+                    name === undefined
+                        ? i18next.t('Settings for the extension have been updated.')
+                        : i18next.t('Settings for {{name}} have been updated.', { name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update extension settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update extension settings')),
     });
 };
 
@@ -180,9 +186,9 @@ export const useUploadAdminExtensionSettingFile = () => {
                 adminGetExtensionSettingsQueryKey({ path: { extension: variables.path.extension } }),
                 data
             );
-            toast.success('File uploaded');
+            toast.success(i18next.t('File uploaded'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to upload the file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to upload the file')),
     });
 };
 
@@ -196,16 +202,16 @@ export const useClearAdminExtensionSettingFile = () => {
                 adminGetExtensionSettingsQueryKey({ path: { extension: variables.path.extension } }),
                 data
             );
-            toast.success('File removed');
+            toast.success(i18next.t('File removed'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to remove the file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove the file')),
     });
 };
 
 const notifyReloadToApply = (title: string, description: string) =>
     toast.success(title, {
-        description: `${description} Reload the page to apply it.`,
-        action: { label: 'Reload', onClick: () => window.location.reload() },
+        description,
+        action: { label: i18next.t('Reload'), onClick: () => window.location.reload() },
     });
 
 export const useInstallAdminExtension = () => {
@@ -215,18 +221,28 @@ export const useInstallAdminExtension = () => {
         ...adminInstallExtensionMutation(),
         onSuccess: async (data) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
-            const description = `${data.data?.name ?? 'The extension'} has been installed.`;
+            const name = data.data?.name;
 
             if (data.data?.enabled) {
-                notifyReloadToApply('Extension installed', description);
+                notifyReloadToApply(
+                    i18next.t('Extension installed'),
+                    name === undefined
+                        ? i18next.t('The extension has been installed. Reload the page to apply it.')
+                        : i18next.t('{{name}} has been installed. Reload the page to apply it.', { name })
+                );
             } else {
-                toast.success('Extension installed', { description });
+                toast.success(i18next.t('Extension installed'), {
+                    description:
+                        name === undefined
+                            ? i18next.t('The extension has been installed.')
+                            : i18next.t('{{name}} has been installed.', { name }),
+                });
             }
         },
         onError: (error) => {
             // The install dialog asks the admin to confirm a replacement instead.
             if (!extensionReplacement(error)) {
-                notifyHttpError(error, 'Unable to install extension');
+                notifyHttpError(error, i18next.t('Unable to install extension'));
             }
         },
     });
@@ -239,11 +255,16 @@ export const useEnableAdminExtension = () => {
         ...adminEnableExtensionMutation(),
         onSuccess: async (data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
-            const fallback = variables.meta?.name ?? 'The extension';
+            const name = data.data?.name ?? variables.meta?.name;
 
-            notifyReloadToApply('Extension enabled', `${data.data?.name ?? fallback} has been enabled.`);
+            notifyReloadToApply(
+                i18next.t('Extension enabled'),
+                name === undefined
+                    ? i18next.t('The extension has been enabled. Reload the page to apply it.')
+                    : i18next.t('{{name}} has been enabled. Reload the page to apply it.', { name })
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to enable extension'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to enable extension')),
     });
 };
 
@@ -254,11 +275,16 @@ export const useDisableAdminExtension = () => {
         ...adminDisableExtensionMutation(),
         onSuccess: async (data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
-            const fallback = variables.meta?.name ?? 'The extension';
+            const name = data.data?.name ?? variables.meta?.name;
 
-            notifyReloadToApply('Extension disabled', `${data.data?.name ?? fallback} has been disabled.`);
+            notifyReloadToApply(
+                i18next.t('Extension disabled'),
+                name === undefined
+                    ? i18next.t('The extension has been disabled. Reload the page to apply it.')
+                    : i18next.t('{{name}} has been disabled. Reload the page to apply it.', { name })
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to disable extension'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to disable extension')),
     });
 };
 
@@ -269,10 +295,15 @@ export const useRemoveAdminExtension = () => {
         ...adminRemoveExtensionMutation(),
         onSuccess: async (_data, variables) => {
             await queryClient.invalidateQueries({ queryKey: adminListExtensionsQueryKey() });
-            const name = variables.meta?.name ?? 'The extension';
+            const name = variables.meta?.name;
 
-            notifyReloadToApply('Extension removed', `${name} has been removed.`);
+            notifyReloadToApply(
+                i18next.t('Extension removed'),
+                name === undefined
+                    ? i18next.t('The extension has been removed. Reload the page to apply it.')
+                    : i18next.t('{{name}} has been removed. Reload the page to apply it.', { name })
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to remove extension'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove extension')),
     });
 };

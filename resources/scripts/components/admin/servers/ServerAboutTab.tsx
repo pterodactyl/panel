@@ -6,6 +6,7 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Code from '@/components/elements/Code';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { relationshipAttributes, relationshipData } from '@/api/relationships';
+import { useTranslation } from '@/sdk/localization';
 
 type ServerAttributes = AdminServer['attributes'];
 type AllocationAttributes = {
@@ -40,7 +41,7 @@ const AssignmentRow = ({ label, children }: { label: string; children: React.Rea
 
 const assignmentLinkClass = 'block truncate text-sm font-medium text-foreground transition-colors hover:text-accent';
 
-const formatLimit = (value: number, unit: string, unlimited = 'Unlimited') =>
+const formatLimit = (value: number, unit: string, unlimited: string) =>
     value === 0 ? <Code>{unlimited}</Code> : <Code>{`${value}${unit}`}</Code>;
 
 const getDefaultAllocation = (
@@ -58,16 +59,20 @@ const hasConnectionAlias = (allocation: AllocationAttributes | undefined): alloc
     !!allocation?.alias && allocation.alias !== allocation.ip;
 
 function ExternalIdentifierValue({ externalId }: { externalId: string | null | undefined }) {
+    const { t } = useTranslation();
+
     if (!externalId) {
-        return <span className='text-muted-foreground'>Not Set</span>;
+        return <span className='text-muted-foreground'>{t('Not Set')}</span>;
     }
 
     return <Code>{externalId}</Code>;
 }
 
 function EggValue({ egg }: { egg: NamedRef | undefined }) {
+    const { t } = useTranslation();
+
     if (!egg) {
-        return <span className='text-muted-foreground'>Unknown</span>;
+        return <span className='text-muted-foreground'>{t('Unknown')}</span>;
     }
 
     return (
@@ -78,36 +83,44 @@ function EggValue({ egg }: { egg: NamedRef | undefined }) {
 }
 
 function CpuPinningValue({ threads }: { threads: string | null | undefined }) {
+    const { t } = useTranslation();
+
     if (!threads) {
-        return <span className='text-muted-foreground'>Not Set</span>;
+        return <span className='text-muted-foreground'>{t('Not Set')}</span>;
     }
 
     return <Code>{threads}</Code>;
 }
 
 function SwapValue({ swap }: { swap: number }) {
+    const { t } = useTranslation();
+
     if (swap === 0) {
-        return <Code>Not Set</Code>;
+        return <Code>{t('Not Set')}</Code>;
     }
 
     if (swap === -1) {
-        return <Code>Unlimited</Code>;
+        return <Code>{t('Unlimited')}</Code>;
     }
 
     return <Code>{`${swap}MiB`}</Code>;
 }
 
 function DefaultConnectionValue({ allocation }: { allocation: AllocationAttributes | undefined }) {
+    const { t } = useTranslation();
+
     if (!allocation) {
-        return <span className='text-muted-foreground'>Unknown</span>;
+        return <span className='text-muted-foreground'>{t('Unknown')}</span>;
     }
 
     return <Code>{`${allocation.ip}:${allocation.port}`}</Code>;
 }
 
 function ConnectionAliasValue({ allocation }: { allocation: AllocationAttributes | undefined }) {
+    const { t } = useTranslation();
+
     if (!hasConnectionAlias(allocation)) {
-        return <span className='text-muted-foreground'>No Alias Assigned</span>;
+        return <span className='text-muted-foreground'>{t('No Alias Assigned')}</span>;
     }
 
     return <Code>{`${allocation.alias}:${allocation.port}`}</Code>;
@@ -122,40 +135,42 @@ function InformationCard({
     allocation: AllocationAttributes | undefined;
     egg: NamedRef | undefined;
 }) {
+    const { t } = useTranslation();
+
     return (
-        <TitledGreyBox title='Information'>
-            <Row label='Internal Identifier'>
+        <TitledGreyBox title={t('Information')}>
+            <Row label={t('Internal Identifier')}>
                 <Code>{attributes.id}</Code>
             </Row>
-            <Row label='External Identifier'>
+            <Row label={t('External Identifier')}>
                 <ExternalIdentifierValue externalId={attributes.external_id} />
             </Row>
-            <Row label='UUID / Docker Container ID'>
+            <Row label={t('UUID / Docker Container ID')}>
                 <CopyOnClick text={attributes.uuid}>
                     <Code>{attributes.uuid}</Code>
                 </CopyOnClick>
             </Row>
-            <Row label='Current Egg'>
+            <Row label={t('Current Egg')}>
                 <EggValue egg={egg} />
             </Row>
-            <Row label='Server Name'>{attributes.name}</Row>
-            <Row label='CPU Limit'>{formatLimit(attributes.limits.cpu, '%')}</Row>
-            <Row label='CPU Pinning'>
+            <Row label={t('Server Name')}>{attributes.name}</Row>
+            <Row label={t('CPU Limit')}>{formatLimit(attributes.limits.cpu, '%', t('Unlimited'))}</Row>
+            <Row label={t('CPU Pinning')}>
                 <CpuPinningValue threads={attributes.limits.threads} />
             </Row>
-            <Row label='Memory'>
-                {formatLimit(attributes.limits.memory, 'MiB')}
+            <Row label={t('Memory')}>
+                {formatLimit(attributes.limits.memory, 'MiB', t('Unlimited'))}
                 {' / '}
                 <SwapValue swap={attributes.limits.swap} />
             </Row>
-            <Row label='Disk Space'>{formatLimit(attributes.limits.disk, 'MiB')}</Row>
-            <Row label='Block IO Weight'>
+            <Row label={t('Disk Space')}>{formatLimit(attributes.limits.disk, 'MiB', t('Unlimited'))}</Row>
+            <Row label={t('Block IO Weight')}>
                 <Code>{attributes.limits.io}</Code>
             </Row>
-            <Row label='Default Connection'>
+            <Row label={t('Default Connection')}>
                 <DefaultConnectionValue allocation={allocation} />
             </Row>
-            <Row label='Connection Alias'>
+            <Row label={t('Connection Alias')}>
                 <ConnectionAliasValue allocation={allocation} />
             </Row>
         </TitledGreyBox>
@@ -163,26 +178,32 @@ function InformationCard({
 }
 
 function StatusCard({ attributes }: { attributes: ServerAttributes }) {
+    const { t } = useTranslation();
+
     if (!attributes.suspended && !attributes.status) {
         return null;
     }
 
     return (
-        <TitledGreyBox title='Status'>
-            {attributes.suspended && <p className='text-sm text-warning mb-2'>This server is currently suspended.</p>}
+        <TitledGreyBox title={t('Status')}>
+            {attributes.suspended && (
+                <p className='text-sm text-warning mb-2'>{t('This server is currently suspended.')}</p>
+            )}
             {attributes.container.installed === 0 && (
-                <p className='text-sm text-accent mb-2'>This server is currently installing.</p>
+                <p className='text-sm text-accent mb-2'>{t('This server is currently installing.')}</p>
             )}
             {attributes.status === 'install_failed' && (
-                <p className='text-sm text-destructive'>This server failed to install.</p>
+                <p className='text-sm text-destructive'>{t('This server failed to install.')}</p>
             )}
         </TitledGreyBox>
     );
 }
 
 function OwnerValue({ user, ownerName }: { user: UserRef | undefined; ownerName: string }) {
+    const { t } = useTranslation();
+
     if (!user) {
-        return <span className='text-sm text-muted-foreground'>Unknown</span>;
+        return <span className='text-sm text-muted-foreground'>{t('Unknown')}</span>;
     }
 
     return (
@@ -196,8 +217,10 @@ function OwnerValue({ user, ownerName }: { user: UserRef | undefined; ownerName:
 }
 
 function NodeValue({ node }: { node: NodeRef | undefined }) {
+    const { t } = useTranslation();
+
     if (!node) {
-        return <span className='text-sm text-muted-foreground'>Unknown</span>;
+        return <span className='text-sm text-muted-foreground'>{t('Unknown')}</span>;
     }
 
     return (
@@ -211,8 +234,10 @@ function NodeValue({ node }: { node: NodeRef | undefined }) {
 }
 
 function LocationValue({ location }: { location: LocationRef | undefined }) {
+    const { t } = useTranslation();
+
     if (!location) {
-        return <span className='text-sm text-muted-foreground'>Unknown</span>;
+        return <span className='text-sm text-muted-foreground'>{t('Unknown')}</span>;
     }
 
     return (
@@ -236,16 +261,18 @@ function AssignmentCard({
     location: LocationRef | undefined;
     ownerName: string;
 }) {
+    const { t } = useTranslation();
+
     return (
-        <TitledGreyBox title='Server Assignment'>
+        <TitledGreyBox title={t('Server Assignment')}>
             <dl>
-                <AssignmentRow label='Owner'>
+                <AssignmentRow label={t('Owner')}>
                     <OwnerValue user={user} ownerName={ownerName} />
                 </AssignmentRow>
-                <AssignmentRow label='Node'>
+                <AssignmentRow label={t('Node')}>
                     <NodeValue node={node} />
                 </AssignmentRow>
-                <AssignmentRow label='Location'>
+                <AssignmentRow label={t('Location')}>
                     <LocationValue location={location} />
                 </AssignmentRow>
             </dl>

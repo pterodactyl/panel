@@ -21,11 +21,13 @@ import PaginationFooter from '@/components/elements/table/PaginationFooter';
 import { TextInput } from '@/components/form/controls';
 import Select from '@/components/ui/Select';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { useTranslation } from '@/sdk/localization';
 
 const perPage = 24;
 
 export default function EggCatalogContainer() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { data, error, isPending, isFetching, refetch } = useAdminEggCatalog();
     const refreshCatalog = useRefreshAdminEggCatalog();
     const importEgg = useImportAdminCatalogEgg();
@@ -77,8 +79,8 @@ export default function EggCatalogContainer() {
                             <EmptyMedia variant='icon'>
                                 <SearchX />
                             </EmptyMedia>
-                            <EmptyTitle>No matching eggs</EmptyTitle>
-                            <EmptyDescription>No eggs match your search.</EmptyDescription>
+                            <EmptyTitle>{t('No matching eggs')}</EmptyTitle>
+                            <EmptyDescription>{t('No eggs match your search.')}</EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>
                             <NewButton
@@ -90,7 +92,7 @@ export default function EggCatalogContainer() {
                                     setPage(1);
                                 }}
                             >
-                                Clear search
+                                {t('Clear search')}
                             </NewButton>
                         </EmptyContent>
                     </Empty>
@@ -103,9 +105,9 @@ export default function EggCatalogContainer() {
                         <EmptyMedia variant='icon'>
                             <Egg />
                         </EmptyMedia>
-                        <EmptyTitle>The catalog is empty</EmptyTitle>
+                        <EmptyTitle>{t('The catalog is empty')}</EmptyTitle>
                         <EmptyDescription>
-                            Refresh the catalog to download the latest eggs from eggs.pterodactyl.io.
+                            {t('Refresh the catalog to download the latest eggs from eggs.pterodactyl.io.')}
                         </EmptyDescription>
                     </EmptyHeader>
                     <EmptyContent>
@@ -116,7 +118,7 @@ export default function EggCatalogContainer() {
                             isLoading={refreshCatalog.isPending}
                             onClick={() => refreshCatalog.mutate({})}
                         >
-                            Refresh catalog
+                            {t('Refresh catalog')}
                         </NewButton>
                     </EmptyContent>
                 </Empty>
@@ -140,7 +142,7 @@ export default function EggCatalogContainer() {
                                 </h2>
                             </div>
                             <p className='line-clamp-3 text-sm leading-relaxed text-muted-foreground'>
-                                {entry.description || 'No description provided.'}
+                                {entry.description || t('No description provided.')}
                             </p>
                             <div className='mt-auto flex flex-wrap items-center justify-between gap-3 pt-2'>
                                 <a
@@ -149,11 +151,11 @@ export default function EggCatalogContainer() {
                                     rel='noopener noreferrer'
                                     className='inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground'
                                 >
-                                    View source <Icon icon={ArrowUpRight} />
+                                    {t('View source')} <Icon icon={ArrowUpRight} />
                                 </a>
                                 <Button size='small' onClick={() => setSelected(entry)}>
                                     <Icon icon={Download} />
-                                    Import
+                                    {t('Import')}
                                 </Button>
                             </div>
                         </article>
@@ -176,9 +178,9 @@ export default function EggCatalogContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Egg Catalog'
-            heading='Egg Catalog'
-            description='Find and import server templates from eggs.pterodactyl.io.'
+            title={t('Admin · Egg Catalog')}
+            heading={t('Egg Catalog')}
+            description={t('Find and import server templates from eggs.pterodactyl.io.')}
         >
             <div className='mb-6 flex flex-wrap items-center justify-between gap-3'>
                 <Link
@@ -186,7 +188,7 @@ export default function EggCatalogContainer() {
                     className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground'
                 >
                     <Icon icon={ArrowLeft} className='mr-2' />
-                    Back to Eggs
+                    {t('Back to Eggs')}
                 </Link>
                 <Button
                     isSecondary
@@ -195,7 +197,7 @@ export default function EggCatalogContainer() {
                     onClick={() => refreshCatalog.mutate({})}
                 >
                     <Icon icon={RefreshCw} />
-                    Refresh Catalog
+                    {t('Refresh Catalog')}
                 </Button>
             </div>
 
@@ -204,7 +206,7 @@ export default function EggCatalogContainer() {
                     <div className='flex flex-wrap items-center justify-between gap-3'>
                         <span>{httpErrorToHuman(error)}</span>
                         <Button isSecondary size='xsmall' disabled={isFetching} onClick={() => void refetch()}>
-                            Retry
+                            {t('Retry')}
                         </Button>
                     </div>
                 </Alert>
@@ -212,11 +214,11 @@ export default function EggCatalogContainer() {
 
             <div className='mb-6 grid gap-4 sm:grid-cols-3'>
                 <div className='sm:col-span-2'>
-                    <Label htmlFor='catalog-search'>Search eggs</Label>
+                    <Label htmlFor='catalog-search'>{t('Search eggs')}</Label>
                     <TextInput
                         id='catalog-search'
                         type='search'
-                        placeholder='Search by name or description…'
+                        placeholder={t('Search by name or description…')}
                         value={search}
                         onChange={(event) => {
                             setSearch(event.currentTarget.value);
@@ -225,12 +227,12 @@ export default function EggCatalogContainer() {
                     />
                 </div>
                 <div>
-                    <Label htmlFor='catalog-category'>Category</Label>
+                    <Label htmlFor='catalog-category'>{t('Category')}</Label>
                     <Select
                         id='catalog-category'
                         value={category}
                         options={[
-                            { value: '', label: 'All categories' },
+                            { value: '', label: t('All categories') },
                             ...categories.map((value) => ({ value, label: value })),
                         ]}
                         onChange={(value) => {
@@ -245,22 +247,22 @@ export default function EggCatalogContainer() {
 
             <Dialog
                 open={selected !== null}
-                title={selected ? `Import ${selected.name}` : 'Import egg'}
-                description='Add this egg’s configuration, variables, and install script to your panel.'
+                title={selected ? t('Import {{name}}', { name: selected.name }) : t('Import egg')}
+                description={t('Add this egg’s configuration, variables, and install script to your panel.')}
                 preventExternalClose={importEgg.isPending}
                 hideCloseIcon={importEgg.isPending}
                 onClose={() => setSelected(null)}
             >
                 <div className='flex justify-end gap-3'>
                     <Button isSecondary disabled={importEgg.isPending} onClick={() => setSelected(null)}>
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <Button
                         disabled={importEgg.isPending}
                         isLoading={importEgg.isPending}
                         onClick={() => void submit()}
                     >
-                        Import Egg
+                        {t('Import Egg')}
                     </Button>
                 </div>
             </Dialog>

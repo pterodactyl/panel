@@ -22,12 +22,14 @@ import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     server: AdminServer;
 }
 
 function ServerMountsContent({ server }: Props) {
+    const { t } = useTranslation();
     const { attributes } = server;
     const [updatingId, setUpdatingId] = useState<number | null>(null);
     const { mutate: attachMount } = useAttachAdminServerMount();
@@ -62,7 +64,7 @@ function ServerMountsContent({ server }: Props) {
             [
                 {
                     id: 'name',
-                    header: 'Mount',
+                    header: t('Mount'),
                     cell: ({ row }) => (
                         <div className='min-w-0'>
                             <Link
@@ -82,7 +84,7 @@ function ServerMountsContent({ server }: Props) {
                 },
                 {
                     id: 'status',
-                    header: 'Status',
+                    header: t('Status'),
                     cell: ({ row }) => (
                         <span
                             className={
@@ -91,7 +93,7 @@ function ServerMountsContent({ server }: Props) {
                                     : 'text-xs uppercase text-muted-foreground'
                             }
                         >
-                            {row.original.attributes.mounted ? 'Mounted' : 'Unmounted'}
+                            {row.original.attributes.mounted ? t('Mounted') : t('Unmounted')}
                         </span>
                     ),
                     meta: { headerClassName: 'hidden sm:table-cell w-24', cellClassName: 'hidden sm:table-cell w-24' },
@@ -101,7 +103,7 @@ function ServerMountsContent({ server }: Props) {
                     (mount) => (
                         <RowActions>
                             <EditLinkAction
-                                aria-label={`Edit ${mount.attributes.name}`}
+                                aria-label={t('Edit {{name}}', { name: mount.attributes.name })}
                                 to='/panel/mounts/$id'
                                 params={{ id: mount.attributes.id }}
                             />
@@ -113,14 +115,14 @@ function ServerMountsContent({ server }: Props) {
                                 isLoading={updatingId === mount.attributes.id}
                                 onClick={() => toggle(mount)}
                             >
-                                {mount.attributes.mounted ? 'Unmount' : 'Mount'}
+                                {mount.attributes.mounted ? t('Unmount') : t('Mount')}
                             </Button>
                         </RowActions>
                     ),
                     'w-36'
                 ),
             ] satisfies ColumnDef<AdminServerMount>[],
-        [toggle, updatingId]
+        [t, toggle, updatingId]
     );
     const table = useReactTable({
         data,
@@ -135,7 +137,7 @@ function ServerMountsContent({ server }: Props) {
 
     return (
         <div>
-            <TitledGreyBox title='Available Mounts'>
+            <TitledGreyBox title={t('Available Mounts')}>
                 {mounts ? (
                     <DataTable
                         table={table}
@@ -146,15 +148,16 @@ function ServerMountsContent({ server }: Props) {
                                     <EmptyMedia variant='icon'>
                                         <FolderInput />
                                     </EmptyMedia>
-                                    <EmptyTitle>No mounts available</EmptyTitle>
+                                    <EmptyTitle>{t('No mounts available')}</EmptyTitle>
                                     <EmptyDescription>
-                                        A mount appears here once it is attached to both this server&apos;s egg and its
-                                        node.
+                                        {t(
+                                            "A mount appears here once it is attached to both this server's egg and its node."
+                                        )}
                                     </EmptyDescription>
                                 </EmptyHeader>
                                 <EmptyContent>
                                     <NewLinkButton to='/panel/mounts' isSecondary icon={FolderInput}>
-                                        Manage mounts
+                                        {t('Manage mounts')}
                                     </NewLinkButton>
                                 </EmptyContent>
                             </Empty>
@@ -169,10 +172,13 @@ function ServerMountsContent({ server }: Props) {
 }
 
 export default function ServerMountsTab() {
+    const { t } = useTranslation();
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
+        return (
+            <ServerError message={t('Access to this resource is not allowed due to the current installation state.')} />
+        );
     }
 
     return <ServerMountsContent server={server} />;

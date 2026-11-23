@@ -16,6 +16,8 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Button from '@/components/elements/Button';
 import Code from '@/components/elements/Code';
 import { Dialog } from '@/components/elements/dialog';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     eggId: number;
@@ -33,6 +35,7 @@ const variableToFormValues = (variable: AdminEggVariable): EggVariableValues => 
 });
 
 export default function EggVariableBox({ eggId, variable }: Props) {
+    const { t } = useTranslation();
     const updateEggVariable = useUpdateAdminEggVariable();
     const deleteEggVariable = useDeleteAdminEggVariable();
 
@@ -72,8 +75,8 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                         <field.TextField
                             type='text'
                             id={`name_${variable.attributes.id}`}
-                            label='Name'
-                            description='A human-readable name for this variable.'
+                            label={t('Name')}
+                            description={t('A human-readable name for this variable.')}
                         />
                     )}
                 </form.AppField>
@@ -82,7 +85,7 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                         {(field) => (
                             <field.TextAreaField
                                 id={`description_${variable.attributes.id}`}
-                                label='Description'
+                                label={t('Description')}
                                 rows={3}
                             />
                         )}
@@ -99,7 +102,7 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                             <field.TextField
                                 type='text'
                                 id={`env_${variable.attributes.id}`}
-                                label='Environment Variable'
+                                label={t('Environment Variable')}
                             />
                         )}
                     </form.AppField>
@@ -108,20 +111,24 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                             <field.TextField
                                 type='text'
                                 id={`default_${variable.attributes.id}`}
-                                label='Default Value'
+                                label={t('Default Value')}
                             />
                         )}
                     </form.AppField>
                 </div>
                 <p className='text-xs text-muted-foreground mt-2'>
-                    Access this variable in the startup command with <Code>{variable.attributes.env_variable}</Code>.
+                    <Translate
+                        i18nKey='Access this variable in the startup command with <code>{{name}}</code>.'
+                        values={{ name: variable.attributes.env_variable }}
+                        components={{ code: <Code>{null}</Code> }}
+                    />
                 </p>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
                     <form.AppField name='userViewable'>
-                        {(field) => <field.SwitchField label='Users Can View' />}
+                        {(field) => <field.SwitchField label={t('Users Can View')} />}
                     </form.AppField>
                     <form.AppField name='userEditable'>
-                        {(field) => <field.SwitchField label='Users Can Edit' />}
+                        {(field) => <field.SwitchField label={t('Users Can Edit')} />}
                     </form.AppField>
                 </div>
                 <div className='mt-4'>
@@ -129,35 +136,38 @@ export default function EggVariableBox({ eggId, variable }: Props) {
                         name='rules'
                         validators={{
                             onChange: ({ value }) =>
-                                value.length >= 1 ? undefined : 'Validation rules must be provided.',
+                                value.length >= 1 ? undefined : t('Validation rules must be provided.'),
                         }}
                     >
                         {(field) => (
                             <field.TextField
                                 type='text'
                                 id={`rules_${variable.attributes.id}`}
-                                label='Input Rules'
-                                description='Standard Laravel validation rules used to validate this variable.'
+                                label={t('Input Rules')}
+                                description={t('Standard Laravel validation rules used to validate this variable.')}
                             />
                         )}
                     </form.AppField>
                 </div>
                 <div className='flex items-center justify-between mt-6'>
                     <Dialog.ConfirmTrigger
-                        title={`Delete ${variable.attributes.name}`}
-                        confirm='Delete Variable'
+                        title={t('Delete {{name}}', { name: variable.attributes.name })}
+                        confirm={t('Delete Variable')}
                         onConfirmed={confirmDelete}
                         trigger={({ onClick }) => (
                             <Button type='button' color='red' isSecondary onClick={onClick}>
-                                Delete
+                                {t('Delete')}
                             </Button>
                         )}
                     >
-                        This will permanently remove the <strong>{variable.attributes.name}</strong> variable from this
-                        egg.
+                        <Translate
+                            i18nKey='This will permanently remove the <bold>{{name}}</bold> variable from this egg.'
+                            values={{ name: variable.attributes.name }}
+                            components={{ bold: <strong /> }}
+                        />
                     </Dialog.ConfirmTrigger>
                     <form.AppForm>
-                        <form.SubmitButton>Save</form.SubmitButton>
+                        <form.SubmitButton>{t('Save')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </TitledGreyBox>

@@ -1,6 +1,7 @@
 import { useAdminNodesGroupedByLocation } from '@/api/admin/nodes/queries';
 import Select from '@/components/ui/Select';
 import Label from '@/components/elements/Label';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     id: string;
@@ -9,12 +10,13 @@ interface Props {
 }
 
 export default function DatabaseHostNodeSelect({ id, value, onChange }: Props) {
+    const { t } = useTranslation();
     const { data: locations } = useAdminNodesGroupedByLocation();
 
     const groups = [
         {
-            label: 'Global',
-            options: [{ value: '', label: 'None' }],
+            label: t('Global'),
+            options: [{ value: '', label: t('None') }],
         },
         ...(locations ?? []).map((group) => ({
             label: `${group.location.attributes.long || group.location.attributes.short} (${group.location.attributes.short})`,
@@ -27,17 +29,17 @@ export default function DatabaseHostNodeSelect({ id, value, onChange }: Props) {
 
     return (
         <div>
-            <Label htmlFor={id}>Linked Node</Label>
+            <Label htmlFor={id}>{t('Linked Node')}</Label>
             <Select
                 id={id}
                 value={value}
-                placeholder='None'
+                placeholder={t('None')}
                 groups={groups}
                 disabled={locations === undefined}
                 onChange={(value) => onChange(String(value))}
             />
             <p className='input-help'>
-                Default to this database host when adding databases to servers on selected node.
+                {t('Default to this database host when adding databases to servers on selected node.')}
             </p>
         </div>
     );

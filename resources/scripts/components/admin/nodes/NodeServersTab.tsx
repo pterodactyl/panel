@@ -18,93 +18,99 @@ import Button from '@/components/elements/Button';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { httpErrorToHuman } from '@/api/http';
 import { relationshipAttributes } from '@/api/relationships';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
-const nodeServerColumns = [
-    {
-        id: 'name',
-        header: 'Server',
-        cell: ({ row }) => (
-            <div className='w-0 min-w-full'>
-                <Link
-                    to='/panel/servers/$id'
-                    params={{ id: row.original.attributes.id }}
-                    title={row.original.attributes.name}
-                    className='block truncate text-sm font-medium text-foreground hover:text-accent'
-                >
-                    {row.original.attributes.name}
-                </Link>
-                <p
-                    className='mt-1 truncate text-xs text-muted-foreground'
-                    title={row.original.attributes.description || undefined}
-                >
-                    {row.original.attributes.description || 'No description'}
-                </p>
-            </div>
-        ),
-        meta: { headerClassName: 'min-w-48', cellClassName: 'min-w-48' },
-    },
-    {
-        id: 'owner',
-        header: 'Owner',
-        cell: ({ row }) => {
-            const owner = relationshipAttributes(row.original.attributes.relationships?.user);
-
-            return owner ? (
+const nodeServerColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            header: t('Server'),
+            cell: ({ row }) => (
                 <div className='w-0 min-w-full'>
                     <Link
-                        to='/panel/users/$id'
-                        params={{ id: owner.id }}
-                        title={owner.username}
-                        className='block truncate text-sm text-foreground hover:text-accent'
+                        to='/panel/servers/$id'
+                        params={{ id: row.original.attributes.id }}
+                        title={row.original.attributes.name}
+                        className='block truncate text-sm font-medium text-foreground hover:text-accent'
                     >
-                        {owner.username}
+                        {row.original.attributes.name}
                     </Link>
-                    <p className='mt-1 truncate text-xs text-muted-foreground' title={owner.email}>
-                        {owner.email}
+                    <p
+                        className='mt-1 truncate text-xs text-muted-foreground'
+                        title={row.original.attributes.description || undefined}
+                    >
+                        {row.original.attributes.description || t('No description')}
                     </p>
                 </div>
-            ) : (
-                <span className='text-sm text-muted-foreground'>User #{row.original.attributes.user}</span>
-            );
+            ),
+            meta: { headerClassName: 'min-w-48', cellClassName: 'min-w-48' },
         },
-        meta: { headerClassName: 'hidden w-44 @xl:table-cell', cellClassName: 'hidden w-44 @xl:table-cell' },
-    },
-    {
-        id: 'service',
-        header: 'Service',
-        cell: ({ row }) => {
-            const attributes = row.original.attributes;
-            const egg = relationshipAttributes(attributes.relationships?.egg);
-            const service = egg?.name ?? `Egg #${attributes.egg}`;
+        {
+            id: 'owner',
+            header: t('Owner'),
+            cell: ({ row }) => {
+                const owner = relationshipAttributes(row.original.attributes.relationships?.user);
 
-            return (
-                <span className='block w-0 min-w-full truncate text-sm' title={service}>
-                    {service}
-                </span>
-            );
+                return owner ? (
+                    <div className='w-0 min-w-full'>
+                        <Link
+                            to='/panel/users/$id'
+                            params={{ id: owner.id }}
+                            title={owner.username}
+                            className='block truncate text-sm text-foreground hover:text-accent'
+                        >
+                            {owner.username}
+                        </Link>
+                        <p className='mt-1 truncate text-xs text-muted-foreground' title={owner.email}>
+                            {owner.email}
+                        </p>
+                    </div>
+                ) : (
+                    <span className='text-sm text-muted-foreground'>
+                        {t('User #{{id}}', { id: row.original.attributes.user })}
+                    </span>
+                );
+            },
+            meta: { headerClassName: 'hidden w-44 @xl:table-cell', cellClassName: 'hidden w-44 @xl:table-cell' },
         },
-        meta: { headerClassName: 'hidden w-40 @2xl:table-cell', cellClassName: 'hidden w-40 @2xl:table-cell' },
-    },
-    {
-        id: 'identifier',
-        header: 'Identifier',
-        cell: ({ row }) => (
-            <div className='text-right'>
-                <Code>{row.original.attributes.identifier}</Code>
-                <p className='mt-1 text-xs text-muted-foreground'>ID {row.original.attributes.id}</p>
-            </div>
-        ),
-        meta: {
-            headerClassName: 'hidden w-28 text-right @sm:table-cell',
-            cellClassName: 'hidden w-28 text-right @sm:table-cell',
+        {
+            id: 'service',
+            header: t('Service'),
+            cell: ({ row }) => {
+                const attributes = row.original.attributes;
+                const egg = relationshipAttributes(attributes.relationships?.egg);
+                const service = egg?.name ?? t('Egg #{{id}}', { id: attributes.egg });
+
+                return (
+                    <span className='block w-0 min-w-full truncate text-sm' title={service}>
+                        {service}
+                    </span>
+                );
+            },
+            meta: { headerClassName: 'hidden w-40 @2xl:table-cell', cellClassName: 'hidden w-40 @2xl:table-cell' },
         },
-    },
-    actionsColumn<AdminServer>(1, (server) => (
-        <RowActions>
-            <ServerEditAction server={server} />
-        </RowActions>
-    )),
-] satisfies ColumnDef<AdminServer>[];
+        {
+            id: 'identifier',
+            header: t('Identifier'),
+            cell: ({ row }) => (
+                <div className='text-right'>
+                    <Code>{row.original.attributes.identifier}</Code>
+                    <p className='mt-1 text-xs text-muted-foreground'>
+                        {t('ID {{id}}', { id: row.original.attributes.id })}
+                    </p>
+                </div>
+            ),
+            meta: {
+                headerClassName: 'hidden w-28 text-right @sm:table-cell',
+                cellClassName: 'hidden w-28 text-right @sm:table-cell',
+            },
+        },
+        actionsColumn<AdminServer>(1, (server) => (
+            <RowActions>
+                <ServerEditAction server={server} />
+            </RowActions>
+        )),
+    ] satisfies ColumnDef<AdminServer>[];
 
 type NodeServersQuery = ReturnType<typeof useAdminNodeServers>;
 
@@ -114,6 +120,7 @@ interface NodeServerListProps {
 }
 
 const NodeServerList = ({ query, table }: NodeServerListProps) => {
+    const { t } = useTranslation();
     const { data: servers, error, isFetching: loading, refetch } = query;
 
     if (error && !loading) {
@@ -121,7 +128,7 @@ const NodeServerList = ({ query, table }: NodeServerListProps) => {
             <div className='space-y-4'>
                 <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
                 <Button.Text type='button' onClick={() => refetch()}>
-                    Retry
+                    {t('Retry')}
                 </Button.Text>
             </div>
         );
@@ -142,8 +149,8 @@ const NodeServerList = ({ query, table }: NodeServerListProps) => {
                             <EmptyMedia variant='icon'>
                                 <Server />
                             </EmptyMedia>
-                            <EmptyTitle>No servers</EmptyTitle>
-                            <EmptyDescription>No servers are running on this node yet.</EmptyDescription>
+                            <EmptyTitle>{t('No servers')}</EmptyTitle>
+                            <EmptyDescription>{t('No servers are running on this node yet.')}</EmptyDescription>
                         </EmptyHeader>
                     </Empty>
                 }
@@ -152,13 +159,19 @@ const NodeServerList = ({ query, table }: NodeServerListProps) => {
                 table={table}
                 total={servers.meta.pagination.total}
                 count={servers.meta.pagination.count}
-                itemLabel='servers'
+                summary={(range) =>
+                    t(
+                        'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> servers',
+                        range
+                    )
+                }
             />
         </>
     );
 };
 
 export default function NodeServersTab() {
+    const { t } = useTranslation();
     const { node } = useNodeDetail();
     const { attributes } = node;
     const navigate = useNavigate();
@@ -168,9 +181,10 @@ export default function NodeServersTab() {
     const servers = query.data;
     const pagination = { pageIndex: Math.max(page - 1, 0), pageSize: servers?.meta.pagination.per_page ?? 50 };
     const data = useMemo(() => servers?.data ?? [], [servers?.data]);
+    const columns = useMemo(() => nodeServerColumns(t), [t]);
     const table = useReactTable({
         data,
-        columns: nodeServerColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (server) => String(server.attributes.id),
         manualPagination: true,
@@ -193,7 +207,7 @@ export default function NodeServersTab() {
 
     return (
         <div>
-            <TitledGreyBox title='Server List'>
+            <TitledGreyBox title={t('Server List')}>
                 <NodeServerList query={query} table={table} />
             </TitledGreyBox>
         </div>

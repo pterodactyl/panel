@@ -4,6 +4,7 @@ import TagBadge from '@/components/admin/tags/TagBadge';
 import { tagValueForName } from '@/components/admin/tags/helpers';
 import { useFieldContext } from '@/components/form';
 import { MultiSelectField } from '@/components/form/fields';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     tags: AdminTag[];
@@ -16,6 +17,7 @@ interface Props {
 
 /** A `string[]` field of tag ids and new tag names, with the selection shown as badges. */
 export default function TagsField({ tags, label, description, emptyText, exclude }: Props) {
+    const { t } = useTranslation();
     const field = useFieldContext<string[]>();
     const values = field.state.value;
     const excluded = new Set(exclude);
@@ -26,9 +28,9 @@ export default function TagsField({ tags, label, description, emptyText, exclude
         const value = tagValueForName(tags, name);
 
         if (value === null) {
-            toast.error('A tag name cannot be only a number.');
+            toast.error(t('A tag name cannot be only a number.'));
         } else if (excluded.has(value)) {
-            toast.error(`${name} is already in the other list.`);
+            toast.error(t('{{name}} is already in the other list.', { name }));
         } else if (!values.includes(value)) {
             field.handleChange([...values, value]);
         }
@@ -39,8 +41,8 @@ export default function TagsField({ tags, label, description, emptyText, exclude
             <MultiSelectField
                 label={label}
                 description={description}
-                placeholder='Select or type tags'
-                searchPlaceholder='Search or create tags…'
+                placeholder={t('Select or type tags')}
+                searchPlaceholder={t('Search or create tags…')}
                 onCreate={create}
                 options={[
                     ...tags
@@ -49,7 +51,7 @@ export default function TagsField({ tags, label, description, emptyText, exclude
                             value: String(tag.attributes.id),
                             label: `${tag.attributes.name} (${tag.attributes.slug})`,
                         })),
-                    ...newNames.map((name) => ({ value: name, label: `${name} (new)` })),
+                    ...newNames.map((name) => ({ value: name, label: t('{{name}} (new)', { name }) })),
                 ]}
             />
             <div className='mt-4 min-h-8'>

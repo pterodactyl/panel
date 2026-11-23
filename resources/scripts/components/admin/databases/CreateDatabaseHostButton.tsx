@@ -1,5 +1,8 @@
 import { NewLinkButton } from '@/components/elements/NewButton';
+import { useTranslation } from '@/sdk/localization';
 
 export default function CreateDatabaseHostButton() {
-    return <NewLinkButton to='/panel/databases/new'>New database host</NewLinkButton>;
+    const { t } = useTranslation();
+
+    return <NewLinkButton to='/panel/databases/new'>{t('New database host')}</NewLinkButton>;
 }

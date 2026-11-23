@@ -8,8 +8,10 @@ import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFiel
 import { useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
+import { useTranslation } from '@/sdk/localization';
 
 export default function CreateNodeForm() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const createNode = useCreateAdminNode();
     const requiresSslScheme = globalThis.window?.location.protocol === 'https:';
@@ -32,16 +34,16 @@ export default function CreateNodeForm() {
 
     return (
         <AdminContentBlock
-            title='Admin · Create Node'
-            heading='Create Node'
-            description='Add a Wings node to your panel.'
+            title={t('Admin · Create Node')}
+            heading={t('Create Node')}
+            description={t('Add a Wings node to your panel.')}
         >
             <Link
                 to='/panel/nodes'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Nodes
+                {t('Back to Nodes')}
             </Link>
             <Form form={form}>
                 <div className='space-y-6'>
@@ -51,7 +53,7 @@ export default function CreateNodeForm() {
                     </form.AppField>
                     <div className='flex justify-end'>
                         <form.AppForm>
-                            <form.SubmitButton>Create Node</form.SubmitButton>
+                            <form.SubmitButton>{t('Create Node')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>

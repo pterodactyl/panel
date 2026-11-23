@@ -1,14 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import {
     adminAttachEggsToMountMutation,
     adminAttachNodesToMountMutation,
@@ -170,11 +167,11 @@ export const useCreateAdminMount = () => {
         ...adminCreateMountMutation(),
         onSuccess: async (mount) => {
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
-            const messages = resourceMutationMessages('mount', 'create', mount.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Mount created'), {
+                description: i18next.t('{{name}} has been created.', { name: mount.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create mount')),
     });
 };
 
@@ -188,11 +185,11 @@ export const useUpdateAdminMount = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListMounts']),
                 queryClient.invalidateQueries({ queryKey: adminMountDetailKey(variables.path.mount_id) }),
             ]);
-            const messages = resourceMutationMessages('mount', 'update', mount.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Mount updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: mount.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update mount')),
     });
 };
 
@@ -205,11 +202,14 @@ export const useDeleteAdminMount = () => {
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminMountDetailKey(variables.path.mount_id) });
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('mount', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Mount deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The mount has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('mount', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete mount')),
     });
 };
 
@@ -222,9 +222,11 @@ export const useAttachAdminMountEggs = () => {
             await queryClient.cancelQueries({ queryKey: adminMountQueryKey(mount.attributes.id) });
             queryClient.setQueryData(adminMountQueryKey(mount.attributes.id), mount);
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
-            toast.success('Eggs attached', { description: 'The selected eggs have been attached to this mount.' });
+            toast.success(i18next.t('Eggs attached'), {
+                description: i18next.t('The selected eggs have been attached to this mount.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to attach eggs'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to attach eggs')),
     });
 };
 
@@ -237,9 +239,11 @@ export const useAttachAdminMountNodes = () => {
             await queryClient.cancelQueries({ queryKey: adminMountQueryKey(mount.attributes.id) });
             queryClient.setQueryData(adminMountQueryKey(mount.attributes.id), mount);
             await invalidateGeneratedOperations(queryClient, ['adminListMounts']);
-            toast.success('Nodes attached', { description: 'The selected nodes have been attached to this mount.' });
+            toast.success(i18next.t('Nodes attached'), {
+                description: i18next.t('The selected nodes have been attached to this mount.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to attach nodes'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to attach nodes')),
     });
 };
 
@@ -255,13 +259,13 @@ export const useDetachAdminMountEgg = () => {
             ]);
             const name = variables.meta?.name;
 
-            toast.success('Egg detached', {
+            toast.success(i18next.t('Egg detached'), {
                 description: name
-                    ? `${name} has been detached from this mount.`
-                    : 'The egg has been detached from this mount.',
+                    ? i18next.t('{{name}} has been detached from this mount.', { name })
+                    : i18next.t('The egg has been detached from this mount.'),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to detach egg'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to detach egg')),
     });
 };
 
@@ -277,12 +281,12 @@ export const useDetachAdminMountNode = () => {
             ]);
             const name = variables.meta?.name;
 
-            toast.success('Node detached', {
+            toast.success(i18next.t('Node detached'), {
                 description: name
-                    ? `${name} has been detached from this mount.`
-                    : 'The node has been detached from this mount.',
+                    ? i18next.t('{{name}} has been detached from this mount.', { name })
+                    : i18next.t('The node has been detached from this mount.'),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to detach node'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to detach node')),
     });
 };

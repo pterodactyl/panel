@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 
 import {
     adminActivateThemeMutation,
@@ -76,8 +77,8 @@ export const useAdminThemeSettings = (theme: string, options?: { enabled?: boole
 /** A theme applies from the next page load on, so changing it offers a reload. */
 const notifyReloadToApply = (title: string, description: string) =>
     toast.success(title, {
-        description: `${description} Reload the page to see it.`,
-        action: { label: 'Reload', onClick: () => window.location.reload() },
+        description,
+        action: { label: i18next.t('Reload'), onClick: () => window.location.reload() },
     });
 
 const useThemeListMutation = () => {
@@ -93,9 +94,16 @@ export const useActivateAdminTheme = () => {
         ...adminActivateThemeMutation(),
         onSuccess: async (_data, variables) => {
             await invalidate();
-            notifyReloadToApply('Theme activated', `${String(variables.meta?.name ?? 'The theme')} is now active.`);
+            const name = variables.meta?.name;
+
+            notifyReloadToApply(
+                i18next.t('Theme activated'),
+                name === undefined
+                    ? i18next.t('The theme is now active. Reload the page to see it.')
+                    : i18next.t('{{name}} is now active. Reload the page to see it.', { name })
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to activate the theme'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to activate the theme')),
     });
 };
 
@@ -106,12 +114,21 @@ export const usePreviewAdminTheme = () => {
         ...adminPreviewThemeMutation(),
         onSuccess: async (_data, variables) => {
             await invalidate();
+            const name = variables.meta?.name;
+
             notifyReloadToApply(
-                'Previewing theme',
-                `You see ${String(variables.meta?.name ?? 'the theme')} until you stop the preview; nobody else does.`
+                i18next.t('Previewing theme'),
+                name === undefined
+                    ? i18next.t(
+                          'You see the theme until you stop the preview; nobody else does. Reload the page to see it.'
+                      )
+                    : i18next.t(
+                          'You see {{name}} until you stop the preview; nobody else does. Reload the page to see it.',
+                          { name }
+                      )
             );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to preview the theme'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to preview the theme')),
     });
 };
 
@@ -122,9 +139,12 @@ export const useStopAdminThemePreview = () => {
         ...adminStopThemePreviewMutation(),
         onSuccess: async () => {
             await invalidate();
-            notifyReloadToApply('Preview stopped', 'You see the active theme again.');
+            notifyReloadToApply(
+                i18next.t('Preview stopped'),
+                i18next.t('You see the active theme again. Reload the page to see it.')
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to stop the preview'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to stop the preview')),
     });
 };
 
@@ -143,9 +163,12 @@ export const useUpdateAdminThemeSettings = () => {
         ...adminUpdateThemeSettingsMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            notifyReloadToApply('Theme settings saved', 'Pages render with them from now on.');
+            notifyReloadToApply(
+                i18next.t('Theme settings saved'),
+                i18next.t('Pages render with them from now on. Reload the page to see it.')
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save the theme settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save the theme settings')),
     });
 };
 
@@ -156,9 +179,12 @@ export const useUploadAdminThemeImage = () => {
         ...adminUploadThemeImageMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            notifyReloadToApply('Image uploaded', 'Pages render with it from now on.');
+            notifyReloadToApply(
+                i18next.t('Image uploaded'),
+                i18next.t('Pages render with it from now on. Reload the page to see it.')
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to upload the image'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to upload the image')),
     });
 };
 
@@ -169,8 +195,11 @@ export const useClearAdminThemeImage = () => {
         ...adminClearThemeImageMutation(),
         onSuccess: (data, variables) => {
             store(data, variables.path.theme);
-            notifyReloadToApply('Image removed', 'Pages render without it from now on.');
+            notifyReloadToApply(
+                i18next.t('Image removed'),
+                i18next.t('Pages render without it from now on. Reload the page to see it.')
+            );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to remove the image'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove the image')),
     });
 };

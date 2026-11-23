@@ -1,15 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
 import { allPagesQueryOptions, listItems, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import {
     adminCreateDatabaseHostMutation,
     adminDeleteDatabaseHostMutation,
@@ -142,11 +139,12 @@ export const useCreateAdminDatabaseHost = () => {
         ...adminCreateDatabaseHostMutation(),
         onSuccess: async (host) => {
             await invalidateGeneratedOperations(queryClient, ['adminListDatabaseHosts']);
-            const messages = resourceMutationMessages('database host', 'create', host.attributes.name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Database host created'), {
+                description: i18next.t('{{name}} has been created.', { name: host.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create database host')),
     });
 };
 
@@ -162,11 +160,12 @@ export const useUpdateAdminDatabaseHost = () => {
                     queryKey: adminDatabaseHostDetailKey(variables.path.databaseHost_id),
                 }),
             ]);
-            const messages = resourceMutationMessages('database host', 'update', host.attributes.name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Database host updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: host.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update database host')),
     });
 };
 
@@ -182,10 +181,13 @@ export const useDeleteAdminDatabaseHost = () => {
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminDatabaseHostDatabasesKey(id) });
             await invalidateGeneratedOperations(queryClient, ['adminListDatabaseHosts']);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('database host', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Database host deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The database host has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('database host', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete database host')),
     });
 };

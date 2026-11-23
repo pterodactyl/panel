@@ -5,9 +5,10 @@ export type TranslationValue = string | number | boolean | null | readonly Trans
 };
 export type TranslationValues = Record<string, TranslationValue>;
 interface Props {
-    ns: string;
+    ns?: string;
     i18nKey: string;
     values?: TranslationValues;
+    components?: Readonly<Record<string, React.ReactElement>>;
     children?: React.ReactNode;
 }
 export default function Translate({ ns, children, ...props }: Props): React.JSX.Element;

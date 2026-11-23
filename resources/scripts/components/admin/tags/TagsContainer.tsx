@@ -11,7 +11,8 @@ import { Search, Tags } from 'lucide-react';
 import { httpErrorToHuman } from '@/api/http';
 import { adminTagListQueryParams, type AdminTag, type AdminTagListSort, useAdminTags } from '@/api/admin/tags/queries';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import CreateTagButton from '@/components/admin/tags/CreateTagButton';
 import { tagColumns } from '@/components/admin/tags/TagTable';
 import Icon from '@/components/elements/Icon';
@@ -21,6 +22,7 @@ import DataTable from '@/components/elements/table/DataTable';
 import DataTablePagination from '@/components/elements/table/DataTablePagination';
 import { TextInput } from '@/components/form/controls';
 import { useTagListSearch } from '@/router/search';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyTags: AdminTag[] = [];
 
@@ -50,6 +52,7 @@ const sortingToSearch = (sorting: SortingState): AdminTagListSort | null => {
 };
 
 export default function TagsContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useTagListSearch();
     const {
         data: tags,
@@ -63,6 +66,7 @@ export default function TagsContainer() {
         [metadata?.per_page, page]
     );
     const sorting = useMemo(() => sortingFromSearch(sort), [sort]);
+    const columns = useMemo(() => tagColumns(t), [t]);
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
@@ -83,7 +87,7 @@ export default function TagsContainer() {
     );
     const table = useReactTable({
         data: tags?.data ?? emptyTags,
-        columns: tagColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (tag) => String(tag.attributes.id),
         manualPagination: true,
@@ -101,9 +105,9 @@ export default function TagsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Tags'
-            heading='Tags'
-            description='Organize eggs and control which nodes can run them.'
+            title={t('Admin · Tags')}
+            heading={t('Tags')}
+            description={t('Organize eggs and control which nodes can run them.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -123,9 +127,9 @@ export default function TagsContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search tags'
+                        aria-label={t('Search tags')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search tags…'
+                        placeholder={t('Search tags…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -140,10 +144,18 @@ export default function TagsContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={Tags}
-                                noun='tags'
+                                empty={t('No tags yet')}
+                                noMatch={t('No matching tags')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No tags match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create a tag to organize eggs and match them with nodes.'
+                                description={t('Create a tag to organize eggs and match them with nodes.')}
                                 action={<CreateTagButton />}
                             />
                         }
@@ -152,7 +164,12 @@ export default function TagsContainer() {
                         table={table}
                         total={tags.meta.pagination.total}
                         count={tags.meta.pagination.count}
-                        itemLabel='tags'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> tags',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

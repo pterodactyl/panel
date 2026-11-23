@@ -3,12 +3,14 @@ import { updateAdminEggFromFileInput, useUpdateAdminEggFromFile } from '@/api/ad
 import EggFileDialog from '@/components/admin/eggs/EggFileDialog';
 import { Dialog } from '@/components/elements/dialog';
 import Button from '@/components/elements/Button';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     egg: AdminEgg;
 }
 
 export default function UpdateEggFromFileButton({ egg }: Props) {
+    const { t } = useTranslation();
     const updateEggFromFile = useUpdateAdminEggFromFile();
 
     const submit = async (file: File) => {
@@ -19,7 +21,7 @@ export default function UpdateEggFromFileButton({ egg }: Props) {
         <Dialog.Trigger
             trigger={({ onClick }) => (
                 <Button isSecondary onClick={onClick}>
-                    Update From File
+                    {t('Update From File')}
                 </Button>
             )}
         >
@@ -27,9 +29,11 @@ export default function UpdateEggFromFileButton({ egg }: Props) {
                 <EggFileDialog
                     open={open}
                     onClose={onClose}
-                    title='Update egg from file'
-                    description="Upload a new egg JSON file to replace this egg's settings. This will not change any existing startup strings or docker images for servers already using this egg."
-                    submitLabel='Update Egg'
+                    title={t('Update egg from file')}
+                    description={t(
+                        "Upload a new egg JSON file to replace this egg's settings. This will not change any existing startup strings or docker images for servers already using this egg."
+                    )}
+                    submitLabel={t('Update Egg')}
                     submitColor='red'
                     submitting={updateEggFromFile.isPending}
                     onSubmit={submit}

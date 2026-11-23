@@ -4,8 +4,10 @@ import { useAdminLanguages } from '@/api/admin/languages/queries';
 import { updateAdminGeneralSettingsInput, useUpdateAdminGeneralSettings } from '@/api/admin/settings/queries';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { languageOptions } from '@/components/admin/languageOptions';
+import { useTranslation } from '@/sdk/localization';
 
 export default function GeneralSettingsForm({ settings }: { settings: AdminSettings }) {
+    const { t } = useTranslation();
     const readOnly = settings.meta.load_environment_only;
     const updateGeneralSettings = useUpdateAdminGeneralSettings();
     const { data: languages, isLoading: languagesLoading } = useAdminLanguages();
@@ -33,14 +35,14 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='General'>
+            <TitledGreyBox title={t('General')}>
                 <form.AppField name='name'>
                     {(field) => (
                         <field.TextField
                             type='text'
                             id='app_name'
-                            label='Company Name'
-                            description='The name of your company, used throughout the Panel.'
+                            label={t('Company Name')}
+                            description={t('The name of your company, used throughout the Panel.')}
                             disabled={readOnly}
                         />
                     )}
@@ -50,11 +52,11 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         {(field) => (
                             <field.SelectField
                                 id='twoFactorRequired'
-                                label='Require 2-Factor Authentication'
+                                label={t('Require 2-Factor Authentication')}
                                 options={[
-                                    { value: 0, label: 'Not Required' },
-                                    { value: 1, label: 'Required for Admins' },
-                                    { value: 2, label: 'Required for All Users' },
+                                    { value: 0, label: t('Not Required') },
+                                    { value: 1, label: t('Required for Admins') },
+                                    { value: 2, label: t('Required for All Users') },
                                 ]}
                                 disabled={readOnly}
                             />
@@ -66,11 +68,11 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                         {(field) => (
                             <field.SelectField
                                 id='app_locale'
-                                label='Default Language'
+                                label={t('Default Language')}
                                 options={languagesList}
                                 disabled={readOnly || (languagesLoading && !languages)}
-                                placeholder='Select a language'
-                                description='The default language used for the Panel.'
+                                placeholder={t('Select a language')}
+                                description={t('The default language used for the Panel.')}
                             />
                         )}
                     </form.AppField>
@@ -79,8 +81,8 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                     <form.AppField name='userAvatarsEnabled'>
                         {(field) => (
                             <field.SwitchField
-                                label='User Avatars'
-                                description='Should users be allowed to use custom avatars on their profiles?'
+                                label={t('User Avatars')}
+                                description={t('Should users be allowed to use custom avatars on their profiles?')}
                                 disabled={readOnly}
                             />
                         )}
@@ -88,7 +90,7 @@ export default function GeneralSettingsForm({ settings }: { settings: AdminSetti
                 </div>
                 <div className='flex justify-end mt-4'>
                     <form.AppForm>
-                        <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
+                        <form.SubmitButton disabled={readOnly}>{t('Save Changes')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </TitledGreyBox>

@@ -8,6 +8,8 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import DataTableColumnHeader from '@/components/elements/table/DataTableColumnHeader';
 import { actionsColumn, DeleteAction, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
 import { Form, useAppForm } from '@/components/form';
+import Translate from '@/components/elements/Translate';
+import { type Translation, useTranslation } from '@/sdk/localization';
 
 interface MountDialogProps {
     mount: AdminMount;
@@ -16,6 +18,7 @@ interface MountDialogProps {
 }
 
 function DeleteMountDialog({ mount, open, onClose }: MountDialogProps) {
+    const { t } = useTranslation();
     const { attributes } = mount;
     const deleteMount = useDeleteAdminMount();
     const deleteForm = useAppForm({
@@ -34,39 +37,42 @@ function DeleteMountDialog({ mount, open, onClose }: MountDialogProps) {
     return (
         <Dialog
             open={open}
-            title='Confirm mount deletion'
+            title={t('Confirm mount deletion')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
             <p className='text-sm'>
-                Deleting a mount is permanent. This will permanently delete <strong>{attributes.name}</strong> and
-                remove it from attached eggs and nodes.
+                <Translate
+                    i18nKey='Deleting a mount is permanent. This will permanently delete <bold>{{name}}</bold> and remove it from attached eggs and nodes.'
+                    values={{ name: attributes.name }}
+                    components={{ bold: <strong /> }}
+                />
             </p>
             <Form form={deleteForm} className='m-0 mt-6'>
                 <deleteForm.AppField
                     name='confirm'
                     validators={{
                         onChange: ({ value }) =>
-                            value === attributes.name ? undefined : 'The mount name must be provided.',
+                            value === attributes.name ? undefined : t('The mount name must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id={`confirm_${attributes.uuid}`}
-                            label='Confirm mount name'
-                            description='Enter the name of this mount to confirm deletion.'
+                            label={t('Confirm mount name')}
+                            description={t('Enter the name of this mount to confirm deletion.')}
                         />
                     )}
                 </deleteForm.AppField>
                 <div className='mt-6 flex justify-end gap-2'>
                     <Button.Text type='button' isSecondary onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button.Text>
                     <deleteForm.AppForm>
-                        <deleteForm.SubmitButton color='red'>Delete mount</deleteForm.SubmitButton>
+                        <deleteForm.SubmitButton color='red'>{t('Delete mount')}</deleteForm.SubmitButton>
                     </deleteForm.AppForm>
                 </div>
             </Form>
@@ -98,57 +104,67 @@ const MountPathCell = ({ path }: { path: string }) => (
     </code>
 );
 
-const MountActionsCell = ({ mount }: { mount: AdminMount }) => (
-    <RowActions>
-        <EditLinkAction
-            aria-label={`Edit ${mount.attributes.name}`}
-            to='/panel/mounts/$id'
-            params={{ id: mount.attributes.id }}
-        />
-        <Dialog.Trigger
-            trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${mount.attributes.name}`} onClick={onClick} />}
-        >
-            {({ open, onClose }) => <DeleteMountDialog mount={mount} open={open} onClose={onClose} />}
-        </Dialog.Trigger>
-    </RowActions>
-);
+const MountActionsCell = ({ mount }: { mount: AdminMount }) => {
+    const { t } = useTranslation();
 
-export const mountColumns = [
-    {
-        id: 'name',
-        accessorFn: (mount) => mount.attributes.name,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='Mount' />,
-        cell: ({ row }) => <MountIdentityCell mount={row.original} />,
-        enableSorting: true,
-        meta: { headerClassName: 'min-w-48', cellClassName: 'min-w-48' },
-    },
-    {
-        id: 'source',
-        header: 'Source',
-        cell: ({ row }) => <MountPathCell path={row.original.attributes.source} />,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-44 @2xl:table-cell', cellClassName: 'hidden w-44 @2xl:table-cell' },
-    },
-    {
-        id: 'target',
-        header: 'Target',
-        cell: ({ row }) => <MountPathCell path={row.original.attributes.target} />,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-44 @4xl:table-cell', cellClassName: 'hidden w-44 @4xl:table-cell' },
-    },
-    {
-        id: 'eggs_count',
-        header: 'Eggs',
-        cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.eggs_count}</span>,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-20 @sm:table-cell', cellClassName: 'hidden w-20 @sm:table-cell' },
-    },
-    {
-        id: 'nodes_count',
-        header: 'Nodes',
-        cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.nodes_count}</span>,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-20 @xl:table-cell', cellClassName: 'hidden w-20 @xl:table-cell' },
-    },
-    actionsColumn<AdminMount>(2, (mount) => <MountActionsCell mount={mount} />),
-] satisfies ColumnDef<AdminMount>[];
+    return (
+        <RowActions>
+            <EditLinkAction
+                aria-label={t('Edit {{name}}', { name: mount.attributes.name })}
+                to='/panel/mounts/$id'
+                params={{ id: mount.attributes.id }}
+            />
+            <Dialog.Trigger
+                trigger={({ onClick }) => (
+                    <DeleteAction
+                        aria-label={t('Delete {{name}}', { name: mount.attributes.name })}
+                        onClick={onClick}
+                    />
+                )}
+            >
+                {({ open, onClose }) => <DeleteMountDialog mount={mount} open={open} onClose={onClose} />}
+            </Dialog.Trigger>
+        </RowActions>
+    );
+};
+
+export const mountColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            accessorFn: (mount) => mount.attributes.name,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('Mount')} />,
+            cell: ({ row }) => <MountIdentityCell mount={row.original} />,
+            enableSorting: true,
+            meta: { headerClassName: 'min-w-48', cellClassName: 'min-w-48' },
+        },
+        {
+            id: 'source',
+            header: t('Source'),
+            cell: ({ row }) => <MountPathCell path={row.original.attributes.source} />,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-44 @2xl:table-cell', cellClassName: 'hidden w-44 @2xl:table-cell' },
+        },
+        {
+            id: 'target',
+            header: t('Target'),
+            cell: ({ row }) => <MountPathCell path={row.original.attributes.target} />,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-44 @4xl:table-cell', cellClassName: 'hidden w-44 @4xl:table-cell' },
+        },
+        {
+            id: 'eggs_count',
+            header: t('Eggs'),
+            cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.eggs_count}</span>,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-20 @sm:table-cell', cellClassName: 'hidden w-20 @sm:table-cell' },
+        },
+        {
+            id: 'nodes_count',
+            header: t('Nodes'),
+            cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.nodes_count}</span>,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-20 @xl:table-cell', cellClassName: 'hidden w-20 @xl:table-cell' },
+        },
+        actionsColumn<AdminMount>(2, (mount) => <MountActionsCell mount={mount} />),
+    ] satisfies ColumnDef<AdminMount>[];

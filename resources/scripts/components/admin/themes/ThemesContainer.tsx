@@ -22,6 +22,8 @@ import { Alert } from '@/components/elements/alert';
 import { Dialog } from '@/components/elements/dialog';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { cn } from '@/lib/cn';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 import ThemeSettingsDialog from './ThemeSettingsDialog';
 
 const actionClass = 'h-8 px-2.5 text-sm';
@@ -49,15 +51,16 @@ function ThemeMark({ theme }: { theme: AdminTheme }) {
     );
 }
 
-const badges = (theme: AdminTheme): { label: string; className: string }[] =>
+const badges = (theme: AdminTheme, t: Translation['t']): { label: string; className: string }[] =>
     [
-        theme.active && { label: 'Active', className: 'bg-success/15 text-success' },
-        theme.previewing && { label: 'Previewing', className: 'bg-accent/15 text-accent' },
-        theme.builtin && { label: 'Built in', className: 'bg-secondary text-secondary-foreground' },
-        !theme.enabled && { label: 'Disabled', className: 'bg-warning/15 text-warning' },
+        theme.active && { label: t('Active'), className: 'bg-success/15 text-success' },
+        theme.previewing && { label: t('Previewing'), className: 'bg-accent/15 text-accent' },
+        theme.builtin && { label: t('Built in'), className: 'bg-secondary text-secondary-foreground' },
+        !theme.enabled && { label: t('Disabled'), className: 'bg-warning/15 text-warning' },
     ].filter((badge) => badge !== false);
 
 function ThemeCard({ theme }: { theme: AdminTheme }) {
+    const { t } = useTranslation();
     const activate = useActivateAdminTheme();
     const preview = usePreviewAdminTheme();
     const usable = theme.problem === null;
@@ -69,7 +72,7 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
                 <div className='min-w-0 flex-1'>
                     <div className='flex flex-wrap items-center gap-2'>
                         <h2 className='truncate text-base font-semibold text-foreground'>{theme.name}</h2>
-                        {badges(theme).map((badge) => (
+                        {badges(theme, t).map((badge) => (
                             <span
                                 key={badge.label}
                                 className={cn('rounded-sm px-1.5 py-0.5 text-xs font-medium', badge.className)}
@@ -79,18 +82,26 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
                         ))}
                     </div>
                     <p className='mt-0.5 truncate text-xs text-muted-foreground'>
-                        {[theme.version && `v${theme.version}`, theme.author && `by ${theme.author}`, theme.id]
+                        {[
+                            theme.version && `v${theme.version}`,
+                            theme.author && t('by {{author}}', { author: theme.author }),
+                            theme.id,
+                        ]
                             .filter(Boolean)
                             .join(' · ')}
                     </p>
                 </div>
             </div>
             <p className='mt-3 line-clamp-3 text-sm leading-relaxed text-card-foreground/80'>
-                {theme.description || 'No description provided.'}
+                {theme.description || t('No description provided.')}
             </p>
             {theme.extends && (
                 <p className='mt-2 text-xs text-muted-foreground'>
-                    Built on <span className='font-mono'>{theme.extends}</span>
+                    <Translate
+                        i18nKey='Built on <mono>{{theme}}</mono>'
+                        values={{ theme: theme.extends }}
+                        components={{ mono: <span className='font-mono' /> }}
+                    />
                 </p>
             )}
             {theme.problem && (
@@ -107,7 +118,7 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
                         isLoading={activate.isPending}
                         onClick={() => activate.mutate(activateAdminThemeInput(theme.id, theme.name))}
                     >
-                        {theme.active ? 'Active' : 'Activate'}
+                        {theme.active ? t('Active') : t('Activate')}
                     </NewButton>
                     <NewButton
                         icon={Eye}
@@ -118,7 +129,7 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
                         isLoading={preview.isPending}
                         onClick={() => preview.mutate(previewAdminThemeInput(theme.id, theme.name))}
                     >
-                        Preview for me
+                        {t('Preview for me')}
                     </NewButton>
                     {theme.settings_count > 0 && (
                         <Dialog.Trigger
@@ -130,7 +141,7 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
                                     className={actionClass}
                                     onClick={onClick}
                                 >
-                                    Settings
+                                    {t('Settings')}
                                 </NewButton>
                             )}
                         >
@@ -144,6 +155,7 @@ function ThemeCard({ theme }: { theme: AdminTheme }) {
 }
 
 function ThemeToolbar({ meta }: { meta?: AdminThemesMeta }) {
+    const { t } = useTranslation();
     const stopPreview = useStopAdminThemePreview();
 
     return (
@@ -157,7 +169,7 @@ function ThemeToolbar({ meta }: { meta?: AdminThemesMeta }) {
                         isLoading={stopPreview.isPending}
                         onClick={() => stopPreview.mutate({})}
                     >
-                        Stop preview
+                        {t('Stop preview')}
                     </NewButton>
                 )}
                 <LinkButton
@@ -166,7 +178,7 @@ function ThemeToolbar({ meta }: { meta?: AdminThemesMeta }) {
                     className='inline-flex h-9 items-center gap-2'
                 >
                     <Icon icon={LifeBuoy} className='h-4 w-4' />
-                    {meta?.safe_mode ? 'Leave safe mode' : 'Safe mode'}
+                    {meta?.safe_mode ? t('Leave safe mode') : t('Safe mode')}
                 </LinkButton>
             </div>
         </ListToolbar>
@@ -174,6 +186,7 @@ function ThemeToolbar({ meta }: { meta?: AdminThemesMeta }) {
 }
 
 export default function ThemesContainer() {
+    const { t } = useTranslation();
     const { data, error, refetch } = useAdminThemes();
     const themes = (data?.data ?? []).map((item) => item.attributes);
 
@@ -183,13 +196,13 @@ export default function ThemesContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Themes'
-            heading='Themes'
-            description='Choose the theme every visitor sees, try one on yourself first, and adjust its settings.'
+            title={t('Admin · Themes')}
+            heading={t('Themes')}
+            description={t('Choose the theme every visitor sees, try one on yourself first, and adjust its settings.')}
         >
             {data?.meta?.safe_mode && (
                 <Alert type='warning' className='mb-4'>
-                    Safe mode is on for your session: you see the classic theme without any extension bundles.
+                    {t('Safe mode is on for your session: you see the classic theme without any extension bundles.')}
                 </Alert>
             )}
             {data ? (

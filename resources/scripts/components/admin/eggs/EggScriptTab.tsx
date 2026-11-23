@@ -8,6 +8,8 @@ import { useEggDetail } from '@/components/admin/eggs/useEggDetail';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
 import CodemirrorEditor from '@/components/elements/LazyCodemirrorEditor';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     egg: AdminEgg;
@@ -28,6 +30,7 @@ const eggToFormValues = (egg: AdminEgg): Values => ({
 });
 
 function EggScriptForm({ egg }: Props) {
+    const { t } = useTranslation();
     const scriptEditor = useRef<CodemirrorEditorHandle | null>(null);
 
     const { data: eggsResponse } = useAdminEggs();
@@ -64,27 +67,28 @@ function EggScriptForm({ egg }: Props) {
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='Install Script'>
+            <TitledGreyBox title={t('Install Script')}>
                 {Number(copyScriptFrom) > 0 && (
                     <p className='text-xs text-warning mb-4'>
-                        This egg is copying its install script
                         {copiedFromEgg ? (
-                            <>
-                                {' '}
-                                from{' '}
-                                <Link
-                                    to='/panel/eggs/$eggId/script'
-                                    params={{ eggId: copiedFromEgg.attributes.id }}
-                                    className='text-accent transition-colors duration-150 hover:text-accent/80'
-                                >
-                                    {copiedFromEgg.attributes.name}
-                                </Link>
-                            </>
+                            <Translate
+                                i18nKey='This egg is copying its install script from <link>{{name}}</link>. Changes made to the script below will not apply unless you select "None" from the "Copy Script From" dropdown.'
+                                values={{ name: copiedFromEgg.attributes.name }}
+                                components={{
+                                    link: (
+                                        <Link
+                                            to='/panel/eggs/$eggId/script'
+                                            params={{ eggId: copiedFromEgg.attributes.id }}
+                                            className='text-accent transition-colors duration-150 hover:text-accent/80'
+                                        />
+                                    ),
+                                }}
+                            />
                         ) : (
-                            ' from another egg'
+                            t(
+                                'This egg is copying its install script from another egg. Changes made to the script below will not apply unless you select "None" from the "Copy Script From" dropdown.'
+                            )
                         )}
-                        . Changes made to the script below will not apply unless you select &quot;None&quot; from the
-                        &quot;Copy Script From&quot; dropdown.
                     </p>
                 )}
                 <CodemirrorEditor
@@ -95,16 +99,18 @@ function EggScriptForm({ egg }: Props) {
                     onContentSaved={() => {}}
                 />
             </TitledGreyBox>
-            <TitledGreyBox title='Script Configuration' className='mt-6'>
+            <TitledGreyBox title={t('Script Configuration')} className='mt-6'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                     <form.AppField name='copyScriptFrom'>
                         {(field) => (
                             <field.SelectField
                                 id='copyScriptFrom'
-                                label='Copy Script From'
-                                description='If selected, the script above is ignored and the chosen egg’s script is used.'
+                                label={t('Copy Script From')}
+                                description={t(
+                                    'If selected, the script above is ignored and the chosen egg’s script is used.'
+                                )}
                                 options={[
-                                    { value: 0, label: 'None' },
+                                    { value: 0, label: t('None') },
                                     ...copyableEggs.map((option) => ({
                                         value: option.attributes.id,
                                         label: option.attributes.name,
@@ -118,8 +124,8 @@ function EggScriptForm({ egg }: Props) {
                             <field.TextField
                                 type='text'
                                 id='scriptContainer'
-                                label='Script Container'
-                                description='Docker container used when running this script for the server.'
+                                label={t('Script Container')}
+                                description={t('Docker container used when running this script for the server.')}
                             />
                         )}
                     </form.AppField>
@@ -128,8 +134,8 @@ function EggScriptForm({ egg }: Props) {
                             <field.TextField
                                 type='text'
                                 id='scriptEntry'
-                                label='Script Entrypoint Command'
-                                description='The entrypoint command to use for this script.'
+                                label={t('Script Entrypoint Command')}
+                                description={t('The entrypoint command to use for this script.')}
                             />
                         )}
                     </form.AppField>
@@ -138,20 +144,19 @@ function EggScriptForm({ egg }: Props) {
                     <form.AppField name='scriptIsPrivileged'>
                         {(field) => (
                             <field.SwitchField
-                                label='Privileged Installation Script'
-                                description={
-                                    'Run the installation script with elevated privileges, granting access to the ' +
-                                    "node's docker socket. Only enable this when you trust the script."
-                                }
+                                label={t('Privileged Installation Script')}
+                                description={t(
+                                    "Run the installation script with elevated privileges, granting access to the node's docker socket. Only enable this when you trust the script."
+                                )}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
             {dependentEggs.length > 0 && (
-                <TitledGreyBox title='Eggs Using This Script' className='mt-6'>
+                <TitledGreyBox title={t('Eggs Using This Script')} className='mt-6'>
                     <p className='text-sm text-muted-foreground mb-4'>
-                        Changes to this install script affect these eggs because they copy from this one.
+                        {t('Changes to this install script affect these eggs because they copy from this one.')}
                     </p>
                     <div className='space-y-2'>
                         {dependentEggs.map((dependent) => (
@@ -169,7 +174,7 @@ function EggScriptForm({ egg }: Props) {
             )}
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton>Save Changes</form.SubmitButton>
+                    <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>

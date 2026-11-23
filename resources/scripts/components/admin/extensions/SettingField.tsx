@@ -8,6 +8,7 @@ import Select from '@/components/ui/Select';
 import Switch from '@/components/ui/Switch';
 import { FileInput, NumberInput, TextArea, TextInput } from '@/components/form/controls';
 import { isString } from '@/lib/objects';
+import { useTranslation } from '@/sdk/localization';
 
 export type SettingValue = AdminExtensionSettingValue | undefined;
 
@@ -64,6 +65,7 @@ export const submittedItems = (value: SettingValue): string[] =>
         .filter((item) => item !== '');
 
 function ColorControl({ field, value, onChange }: ControlProps) {
+    const { t } = useTranslation();
     const color = asText(value);
 
     return (
@@ -74,7 +76,7 @@ function ColorControl({ field, value, onChange }: ControlProps) {
             >
                 <input
                     type='color'
-                    aria-label={`${field.label} picker`}
+                    aria-label={t('{{label}} picker', { label: field.label })}
                     className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
                     value={pickerColor(color) ?? pickerFallback}
                     onChange={(event) => onChange(event.currentTarget.value)}
@@ -84,7 +86,7 @@ function ColorControl({ field, value, onChange }: ControlProps) {
                 aria-label={field.label}
                 value={color}
                 spellCheck={false}
-                placeholder='Hex or oklch() colour'
+                placeholder={t('Hex or oklch() colour')}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
             />
         </div>
@@ -141,6 +143,7 @@ function RowButton({
 }
 
 function ListControl({ field, value, onChange }: ControlProps) {
+    const { t } = useTranslation();
     const items = asItems(value);
     const maxItems = field.constraints?.max_items ?? undefined;
     const [keys, setKeys] = useState<number[]>([]);
@@ -180,25 +183,29 @@ function ListControl({ field, value, onChange }: ControlProps) {
             {items.map((item, index) => (
                 <div key={rowKeys[index]} className='flex items-center gap-2'>
                     <TextInput
-                        aria-label={`${field.label} item ${index + 1}`}
+                        aria-label={t('{{label}} item {{number}}', { label: field.label, number: index + 1 })}
                         value={item}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                             replace(index, event.currentTarget.value)
                         }
                     />
                     <RowButton
-                        label={`Move item ${index + 1} up`}
+                        label={t('Move item {{number}} up', { number: index + 1 })}
                         icon={ArrowUp}
                         disabled={index === 0}
                         onClick={() => move(index, -1)}
                     />
                     <RowButton
-                        label={`Move item ${index + 1} down`}
+                        label={t('Move item {{number}} down', { number: index + 1 })}
                         icon={ArrowDown}
                         disabled={index === items.length - 1}
                         onClick={() => move(index, 1)}
                     />
-                    <RowButton label={`Remove item ${index + 1}`} icon={X} onClick={() => remove(index)} />
+                    <RowButton
+                        label={t('Remove item {{number}}', { number: index + 1 })}
+                        icon={X}
+                        onClick={() => remove(index)}
+                    />
                 </div>
             ))}
             <Button
@@ -210,7 +217,7 @@ function ListControl({ field, value, onChange }: ControlProps) {
             >
                 <span className='inline-flex items-center gap-1.5'>
                     <Icon icon={Plus} />
-                    Add item
+                    {t('Add item')}
                 </span>
             </Button>
             {maxItems !== undefined && (
@@ -223,11 +230,15 @@ function ListControl({ field, value, onChange }: ControlProps) {
 }
 
 function FileControl({ field, file }: { field: AdminExtensionSettingField; file?: SettingFileActions }) {
+    const { t } = useTranslation();
     const url = asText(field.value);
     const accept = field.constraints?.accept ?? [];
     const maxKilobytes = field.constraints?.max_kilobytes;
     const isImage = accept.every((type) => type.startsWith('image/'));
-    const limits = [accept.length > 0 ? accept.join(', ') : null, maxKilobytes ? `up to ${maxKilobytes} KB` : null]
+    const limits = [
+        accept.length > 0 ? accept.join(', ') : null,
+        maxKilobytes ? t('up to {{size}} KB', { size: maxKilobytes }) : null,
+    ]
         .filter(Boolean)
         .join(' · ');
 
@@ -259,7 +270,7 @@ function FileControl({ field, file }: { field: AdminExtensionSettingField; file?
                             disabled={!file || file.pending}
                             onClick={() => file?.onClear()}
                         >
-                            Remove
+                            {t('Remove')}
                         </Button>
                     )}
                 </div>
@@ -279,13 +290,17 @@ function FileControl({ field, file }: { field: AdminExtensionSettingField; file?
                 }}
             />
             <p className='text-xs text-muted-foreground'>
-                {limits !== '' && `${limits}. `}Uploads are stored as soon as they are chosen.
+                {limits === ''
+                    ? t('Uploads are stored as soon as they are chosen.')
+                    : t('{{limits}}. Uploads are stored as soon as they are chosen.', { limits })}
             </p>
         </div>
     );
 }
 
 function Control({ field, value, onChange, file }: ControlProps & { file?: SettingFileActions }) {
+    const { t } = useTranslation();
+
     switch (field.field) {
         case 'select':
             return (
@@ -318,7 +333,9 @@ function Control({ field, value, onChange, file }: ControlProps & { file?: Setti
                     type='password'
                     value={asText(value)}
                     placeholder={
-                        field.value ? `Stored: ${String(field.value)} - enter a new value to replace it` : undefined
+                        field.value
+                            ? t('Stored: {{value}} - enter a new value to replace it', { value: String(field.value) })
+                            : undefined
                     }
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
                 />
@@ -350,6 +367,8 @@ export default function SettingField({
 }: ControlProps & {
     file?: SettingFileActions;
 }) {
+    const { t } = useTranslation();
+
     if (field.field === 'toggle') {
         return (
             <Switch checked={!!value} onChange={onChange} label={field.label} description={field.help ?? undefined} />
@@ -363,9 +382,9 @@ export default function SettingField({
                 {field.visibility === 'public' && (
                     <span
                         className='rounded-sm bg-accent/10 px-1.5 py-0.5 text-xs font-medium text-accent'
-                        title='This value is sent to every visitor, including those who are not signed in.'
+                        title={t('This value is sent to every visitor, including those who are not signed in.')}
                     >
-                        Visible to guests
+                        {t('Visible to guests')}
                     </span>
                 )}
             </Label>

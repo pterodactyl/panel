@@ -1,4 +1,4 @@
-import i18n, { type i18n as I18n } from 'i18next';
+import i18n, { type i18n as I18n, type Resource } from 'i18next';
 import { hashKey, type QueryClient } from '@tanstack/react-query';
 import { initReactI18next } from 'react-i18next';
 import type { HttpBackendOptions } from 'i18next-http-backend';
@@ -8,6 +8,7 @@ import { currentUserQueryKey } from '@/api/account/queries';
 import type { UserData } from '@/api/account/types';
 import type { SiteSettings } from '@/api/settings/types';
 import { getBootstrapExtensions, getBootstrapSiteSettings, getBootstrapUser } from '@/bootstrap';
+import { translationOptions } from '@/i18nConfig';
 
 interface MultiloadHttpBackendOptions extends HttpBackendOptions {
     allowMultiLoading: boolean;
@@ -50,6 +51,11 @@ export function localeLoadPath(namespaces: string[], languages: readonly string[
     return revision ? `${path}&revision=${revision}` : path;
 }
 
+export const parseLocaleResponse = (data: string): Resource =>
+    Object.fromEntries(
+        Object.entries(JSON.parse(data) as Resource).map(([locale, namespaces]) => [toI18nLanguage(locale), namespaces])
+    );
+
 export function resolveLanguage(
     language: string | null | undefined,
     settings: Pick<SiteSettings, 'locale' | 'languages'> | undefined = getBootstrapSiteSettings()
@@ -91,23 +97,17 @@ void i18n
     .use(I18NextMultiloadBackendAdapter)
     .use(initReactI18next)
     .init({
+        ...translationOptions,
         debug: import.meta.env.DEV,
         lng: initialLanguage(),
-        fallbackLng: 'en',
-        ns: ['translation'],
-        defaultNS: 'translation',
-        keySeparator: '.',
-        nsSeparator: false,
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {
                 loadPath: (languages, namespaces) => localeLoadPath(namespaces, languages),
+                parse: parseLocaleResponse,
                 queryStringParams: { hash },
                 allowMultiLoading: true,
             } satisfies MultiloadHttpBackendOptions,
-        },
-        interpolation: {
-            escapeValue: false,
         },
     });
 

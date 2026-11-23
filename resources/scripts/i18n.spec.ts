@@ -139,3 +139,11 @@ it('requests panel locales for the languages i18next loads', async () => {
     expect(localeLoadPath(['auth'], ['pt-BR'])).toBe('/locales/locale.json?locale=pt_BR&namespace={{ns}}');
     expect(localeLoadPath(['auth'], ['de', 'en'])).toBe('/locales/locale.json?locale=de+en&namespace={{ns}}');
 });
+
+it('files translations under the i18next language they were requested for', async () => {
+    const { parseLocaleResponse } = await import('@/i18n');
+
+    expect(
+        parseLocaleResponse(JSON.stringify({ en_AU: { translation: { Servers: 'Ships' } }, en: { translation: {} } }))
+    ).toEqual({ 'en-AU': { translation: { Servers: 'Ships' } }, en: { translation: {} } });
+});

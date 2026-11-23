@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import Avatar from '@/components/Avatar';
-import { Button, TitledGreyBox } from '@/sdk';
+import { Button, TitledGreyBox, useTranslation } from '@/sdk';
 import { useDeleteAdminUserAvatar, useUpdateAdminUserAvatar } from '@/api/admin/users/queries';
 import type { AdminUser } from '@/api/admin/users/queries';
 
 export default function UserAvatarCard({ user }: { user: AdminUser }) {
+    const { t } = useTranslation();
     const input = useRef<HTMLInputElement>(null);
     const update = useUpdateAdminUserAvatar();
     const remove = useDeleteAdminUserAvatar();
@@ -36,15 +37,16 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
     };
 
     return (
-        <TitledGreyBox title='Avatar'>
+        <TitledGreyBox title={t('Avatar')}>
             <div className='flex flex-col gap-4'>
                 <div className='flex items-start gap-4'>
                     <div className='h-[72px] w-[72px] shrink-0'>
                         <Avatar name={user.attributes.username} image={preview} size='100%' />
                     </div>
                     <p className='m-0 text-sm text-muted-foreground'>
-                        The avatar which will appear under the user&apos;s personal account. PNG, JPEG, SVG, WebP, AVIF,
-                        and ICO files are supported.
+                        {t(
+                            "The avatar which will appear under the user's personal account. PNG, JPEG, SVG, WebP, AVIF, and ICO files are supported."
+                        )}
                     </p>
                 </div>
                 <input
@@ -64,7 +66,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
                         isLoading={update.isPending}
                         onClick={() => (selected ? void save() : input.current?.click())}
                     >
-                        {selected ? 'Save Changes' : 'Update Avatar'}
+                        {selected ? t('Save Changes') : t('Update Avatar')}
                     </Button>
                     <Button.Danger
                         type='button'
@@ -76,7 +78,7 @@ export default function UserAvatarCard({ user }: { user: AdminUser }) {
                                 .then(() => setSelected(null))
                         }
                     >
-                        Remove Avatar
+                        {t('Remove Avatar')}
                     </Button.Danger>
                 </div>
             </div>

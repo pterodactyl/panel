@@ -11,27 +11,33 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import Slot from '@/extensions/Slot';
 import { interactiveSurfaceClass } from '@/components/ui/styles';
 import { cn } from '@/lib/cn';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
-const sections: { to: LinkProps['to']; label: string; description: string }[] = [
-    { to: '/panel/users', label: 'Users', description: 'Create, edit, and remove user accounts.' },
-    { to: '/panel/locations', label: 'Locations', description: 'Group nodes into physical locations.' },
-    { to: '/panel/nodes', label: 'Nodes', description: 'Manage Wings daemons and allocations.' },
-    { to: '/panel/servers', label: 'Servers', description: 'Provision and manage game servers.' },
-    { to: '/panel/databases', label: 'Database Hosts', description: 'Configure MySQL hosts for server databases.' },
-    { to: '/panel/mounts', label: 'Mounts', description: 'Define host → container mount points.' },
-    { to: '/panel/eggs', label: 'Eggs', description: 'Manage server templates and variables.' },
-    { to: '/panel/settings', label: 'Settings', description: 'General, mail, and advanced configuration.' },
-    { to: '/panel/api', label: 'API Keys', description: 'Issue application API credentials.' },
+const sections = (t: Translation['t']): { to: LinkProps['to']; label: string; description: string }[] => [
+    { to: '/panel/users', label: t('Users'), description: t('Create, edit, and remove user accounts.') },
+    { to: '/panel/locations', label: t('Locations'), description: t('Group nodes into physical locations.') },
+    { to: '/panel/nodes', label: t('Nodes'), description: t('Manage Wings daemons and allocations.') },
+    { to: '/panel/servers', label: t('Servers'), description: t('Provision and manage game servers.') },
+    {
+        to: '/panel/databases',
+        label: t('Database Hosts'),
+        description: t('Configure MySQL hosts for server databases.'),
+    },
+    { to: '/panel/mounts', label: t('Mounts'), description: t('Define host → container mount points.') },
+    { to: '/panel/eggs', label: t('Eggs'), description: t('Manage server templates and variables.') },
+    { to: '/panel/settings', label: t('Settings'), description: t('General, mail, and advanced configuration.') },
+    { to: '/panel/api', label: t('API Keys'), description: t('Issue application API credentials.') },
 ];
 
-const externalLinks = (version: AdminVersion) => [
-    { href: version.discord, label: 'Get Help', icon: LifeBuoy },
-    { href: 'https://pterodactyl.io', label: 'Documentation', icon: BookOpen },
+const externalLinks = (version: AdminVersion, t: Translation['t']) => [
+    { href: version.discord, label: t('Get Help'), icon: LifeBuoy },
+    { href: 'https://pterodactyl.io', label: t('Documentation'), icon: BookOpen },
     { href: 'https://github.com/pterodactyl/panel', label: 'GitHub', icon: Code2 },
-    { href: version.donations, label: 'Support Project', icon: HeartHandshake },
+    { href: version.donations, label: t('Support Project'), icon: HeartHandshake },
 ];
 
 export default function OverviewContainer() {
+    const { t } = useTranslation();
     const { data: version, error, refetch } = useAdminVersion();
 
     if (error && !version) {
@@ -40,16 +46,16 @@ export default function OverviewContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin Overview'
-            heading='Administration'
-            description='Manage your users, infrastructure, servers, and panel settings.'
+            title={t('Admin Overview')}
+            heading={t('Administration')}
+            description={t('Manage your users, infrastructure, servers, and panel settings.')}
         >
             <Slot name='panel.overview.before' />
             {version ? (
                 <>
                     <OverviewVersionCard version={version} />
                     <div className='mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
-                        {externalLinks(version).map((link) => (
+                        {externalLinks(version, t).map((link) => (
                             <a
                                 key={link.href}
                                 href={link.href}
@@ -70,7 +76,7 @@ export default function OverviewContainer() {
                 <Spinner size='large' centered />
             )}
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {sections.map((s) => (
+                {sections(t).map((s) => (
                     <Link
                         key={s.to}
                         to={s.to}

@@ -3,14 +3,35 @@ import type { RowData, Table as TanStackTable } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import Button from '@/components/elements/Button';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
+
+export type PaginationRange = {
+    start: number;
+    end: number;
+    count: number;
+};
 
 interface Props<TData extends RowData> {
     table: TanStackTable<TData>;
     total: number;
     count: number;
     itemLabel?: string;
+    summary?: (range: PaginationRange) => string;
     className?: string;
 }
+
+const valuePattern = /<value>(.*?)<\/value>/g;
+
+const plainSummary = (summary: string) => summary.replace(valuePattern, '$1');
+
+const highlightedSummary = (summary: string) =>
+    React.Children.toArray(
+        summary
+            .split(valuePattern)
+            .map((part, index) =>
+                index % 2 === 1 ? <span className='font-medium text-foreground'>{part}</span> : part
+            )
+    );
 
 const PageButton = ({ label, children, ...props }: React.ComponentProps<typeof Button> & { label: string }) => (
     <Button.Text
@@ -30,9 +51,11 @@ export default function DataTablePagination<TData extends RowData>({
     table,
     total,
     count,
-    itemLabel = 'items',
+    itemLabel,
+    summary,
     className,
 }: Props<TData>) {
+    const { t } = useTranslation();
     const { pageIndex, pageSize } = table.getState().pagination;
     const pageCount = table.getPageCount();
     const start = total === 0 ? 0 : pageIndex * pageSize + 1;
@@ -43,45 +66,57 @@ export default function DataTablePagination<TData extends RowData>({
         return null;
     }
 
+    const range = { start, end, count: total };
+    const pageText = t('Page <value>{{page}}</value> of <value>{{pages}}</value>', {
+        page: pageIndex + 1,
+        pages: Math.max(pageCount, 1),
+    });
+    const text = summary
+        ? summary(range)
+        : t('Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{total}}</value> {{items}}', {
+              start,
+              end,
+              total,
+              items: itemLabel ?? t('items'),
+          });
+
     return (
         <div className={cn('mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', className)}>
-            <p
-                aria-label={`Showing ${start} to ${end} of ${total} ${itemLabel}`}
-                className='text-xs text-muted-foreground'
-            >
-                Showing <span className='font-medium text-foreground'>{start}</span>–
-                <span className='font-medium text-foreground'>{end}</span> of{' '}
-                <span className='font-medium text-foreground'>{total}</span> {itemLabel}
+            <p aria-label={plainSummary(text)} className='text-xs text-muted-foreground'>
+                {highlightedSummary(text)}
             </p>
             {showPager ? (
                 <div className='flex items-center gap-1'>
                     <PageButton
-                        label='First page'
+                        label={t('First page')}
                         disabled={!table.getCanPreviousPage()}
                         onClick={() => table.setPageIndex(0)}
                     >
                         <ChevronsLeft aria-hidden='true' className='h-3.5 w-3.5' />
                     </PageButton>
                     <PageButton
-                        label='Previous page'
+                        label={t('Previous page')}
                         disabled={!table.getCanPreviousPage()}
                         onClick={() => table.previousPage()}
                     >
                         <ChevronLeft aria-hidden='true' className='h-3.5 w-3.5' />
                     </PageButton>
                     <span
-                        aria-label={`Page ${pageIndex + 1} of ${Math.max(pageCount, 1)}`}
+                        aria-label={plainSummary(pageText)}
                         aria-live='polite'
                         className='min-w-24 px-2 text-center text-xs text-muted-foreground'
                     >
-                        Page <span className='font-medium text-foreground'>{pageIndex + 1}</span> of{' '}
-                        <span className='font-medium text-foreground'>{Math.max(pageCount, 1)}</span>
+                        {highlightedSummary(pageText)}
                     </span>
-                    <PageButton label='Next page' disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}>
+                    <PageButton
+                        label={t('Next page')}
+                        disabled={!table.getCanNextPage()}
+                        onClick={() => table.nextPage()}
+                    >
                         <ChevronRight aria-hidden='true' className='h-3.5 w-3.5' />
                     </PageButton>
                     <PageButton
-                        label='Last page'
+                        label={t('Last page')}
                         disabled={!table.getCanNextPage()}
                         onClick={() => table.setPageIndex(Math.max(pageCount - 1, 0))}
                     >

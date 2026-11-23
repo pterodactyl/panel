@@ -2,6 +2,7 @@ import type { AdminEgg } from '@/api/admin/eggs/queries';
 import { useExportAdminEgg } from '@/api/admin/eggs/queries';
 import Button from '@/components/elements/Button';
 import { notifyHttpError } from '@/plugins/notifications';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     egg: AdminEgg;
@@ -15,6 +16,7 @@ const kebab = (value: string): string =>
         .replaceAll(/^-+|-+$/g, '');
 
 export default function ExportEggButton({ egg }: Props) {
+    const { t } = useTranslation();
     const exportEgg = useExportAdminEgg(egg.attributes.id);
 
     const download = async () => {
@@ -36,13 +38,13 @@ export default function ExportEggButton({ egg }: Props) {
             link.remove();
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            notifyHttpError(error, 'Unable to export egg');
+            notifyHttpError(error, t('Unable to export egg'));
         }
     };
 
     return (
         <Button isSecondary disabled={exportEgg.isFetching} isLoading={exportEgg.isFetching} onClick={download}>
-            Export
+            {t('Export')}
         </Button>
     );
 }

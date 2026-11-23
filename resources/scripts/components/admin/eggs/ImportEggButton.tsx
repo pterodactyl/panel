@@ -4,9 +4,11 @@ import { importAdminEggInput, useImportAdminEgg } from '@/api/admin/eggs/queries
 import EggFileDialog from '@/components/admin/eggs/EggFileDialog';
 import { Dialog } from '@/components/elements/dialog';
 import { NewButton } from '@/components/elements/NewButton';
+import { useTranslation } from '@/sdk/localization';
 
 export default function ImportEggButton() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const importEgg = useImportAdminEgg();
 
     const submit = async (file: File) => {
@@ -19,7 +21,7 @@ export default function ImportEggButton() {
         <Dialog.Trigger
             trigger={({ onClick }) => (
                 <NewButton isSecondary icon={Upload} onClick={onClick}>
-                    Import egg
+                    {t('Import egg')}
                 </NewButton>
             )}
         >
@@ -27,9 +29,9 @@ export default function ImportEggButton() {
                 <EggFileDialog
                     open={open}
                     onClose={onClose}
-                    title='Import egg'
-                    description='Upload an egg JSON file to add a server template.'
-                    submitLabel='Import Egg'
+                    title={t('Import egg')}
+                    description={t('Upload an egg JSON file to add a server template.')}
+                    submitLabel={t('Import Egg')}
                     submitting={importEgg.isPending}
                     onSubmit={submit}
                 />

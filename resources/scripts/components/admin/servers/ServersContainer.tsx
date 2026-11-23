@@ -16,7 +16,8 @@ import {
 } from '@/api/admin/servers/queries';
 import { useServerListSearch } from '@/router/search';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import { serverColumns } from '@/components/admin/servers/ServerTable';
 import Spinner from '@/components/elements/Spinner';
 import DataTable from '@/components/elements/table/DataTable';
@@ -27,6 +28,7 @@ import { Search, Server } from 'lucide-react';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import CreateServerButton from '@/components/admin/servers/CreateServerButton';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyServers: AdminServer[] = [];
 
@@ -64,6 +66,7 @@ const sortingToSearch = (sorting: SortingState): AdminServerListSort | null => {
 };
 
 export default function ServersContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useServerListSearch();
 
     const {
@@ -101,7 +104,7 @@ export default function ServersContainer() {
     );
 
     const extensionColumns = useExtensionTableColumns('admin.servers');
-    const columns = useMemo(() => [...serverColumns, ...extensionColumns], [extensionColumns]);
+    const columns = useMemo(() => [...serverColumns(t), ...extensionColumns], [extensionColumns, t]);
     const table = useReactTable({
         data: servers?.data ?? emptyServers,
         columns,
@@ -122,9 +125,9 @@ export default function ServersContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Servers'
-            heading='Servers'
-            description='Create and manage game servers across your nodes.'
+            title={t('Admin · Servers')}
+            heading={t('Servers')}
+            description={t('Create and manage game servers across your nodes.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -146,9 +149,9 @@ export default function ServersContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search servers'
+                        aria-label={t('Search servers')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search servers…'
+                        placeholder={t('Search servers…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -162,10 +165,18 @@ export default function ServersContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={Server}
-                                noun='servers'
+                                empty={t('No servers yet')}
+                                noMatch={t('No matching servers')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No servers match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create a server to deploy it on one of your nodes.'
+                                description={t('Create a server to deploy it on one of your nodes.')}
                                 action={<CreateServerButton />}
                             />
                         }
@@ -174,7 +185,12 @@ export default function ServersContainer() {
                         table={table}
                         total={servers.meta.pagination.total}
                         count={servers.meta.pagination.count}
-                        itemLabel='servers'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> servers',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

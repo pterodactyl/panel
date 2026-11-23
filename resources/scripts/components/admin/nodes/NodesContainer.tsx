@@ -18,7 +18,8 @@ import {
 import CreateNodeButton from '@/components/admin/nodes/CreateNodeButton';
 import { nodeColumns, nodeColumnVisibility } from '@/components/admin/nodes/NodeTable';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import Icon from '@/components/elements/Icon';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -27,6 +28,7 @@ import DataTablePagination from '@/components/elements/table/DataTablePagination
 import { TextInput } from '@/components/form/controls';
 import { useNodeListSearch } from '@/router/search';
 import { HardDrive, Search } from 'lucide-react';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyNodes: AdminNode[] = [];
 
@@ -80,6 +82,7 @@ const sortingToSearch = (sorting: SortingState): AdminNodeListSort | null => {
 };
 
 export default function NodesContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useNodeListSearch();
     const {
         data: nodes,
@@ -116,7 +119,7 @@ export default function NodesContainer() {
     );
 
     const extensionColumns = useExtensionTableColumns('admin.nodes');
-    const columns = useMemo(() => [...nodeColumns, ...extensionColumns], [extensionColumns]);
+    const columns = useMemo(() => [...nodeColumns(t), ...extensionColumns], [extensionColumns, t]);
     const table = useReactTable({
         data: nodes?.data ?? emptyNodes,
         columns,
@@ -138,9 +141,9 @@ export default function NodesContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Nodes'
-            heading='Nodes'
-            description='Manage Wings nodes, connectivity, allocations, and server capacity.'
+            title={t('Admin · Nodes')}
+            heading={t('Nodes')}
+            description={t('Manage Wings nodes, connectivity, allocations, and server capacity.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -160,9 +163,9 @@ export default function NodesContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search nodes'
+                        aria-label={t('Search nodes')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search nodes…'
+                        placeholder={t('Search nodes…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -176,10 +179,18 @@ export default function NodesContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={HardDrive}
-                                noun='nodes'
+                                empty={t('No nodes yet')}
+                                noMatch={t('No matching nodes')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No nodes match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Add a node running Wings to start hosting servers.'
+                                description={t('Add a node running Wings to start hosting servers.')}
                                 action={<CreateNodeButton />}
                             />
                         }
@@ -188,7 +199,12 @@ export default function NodesContainer() {
                         table={table}
                         total={nodes.meta.pagination.total}
                         count={nodes.meta.pagination.count}
-                        itemLabel='nodes'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> nodes',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

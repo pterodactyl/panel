@@ -7,6 +7,7 @@ import ExtensionFormFields from '@/components/admin/extensions/ExtensionFormFiel
 import { initialExtensionValues, useExtensionPayload } from '@/extensions/forms';
 import Icon from '@/components/elements/Icon';
 import { useAppForm, Form } from '@/components/form';
+import { useTranslation } from '@/sdk/localization';
 
 const initialValues = (): MountValues => ({
     name: '',
@@ -20,6 +21,7 @@ const initialValues = (): MountValues => ({
 
 export default function CreateMountForm() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const createMount = useCreateAdminMount();
 
     const { withExtensionPayload } = useExtensionPayload('admin.mount');
@@ -38,16 +40,16 @@ export default function CreateMountForm() {
 
     return (
         <AdminContentBlock
-            title='Admin · Create Mount'
-            heading='Create Mount'
-            description='Create a directory mount that can be attached to servers.'
+            title={t('Admin · Create Mount')}
+            heading={t('Create Mount')}
+            description={t('Create a directory mount that can be attached to servers.')}
         >
             <Link
                 to='/panel/mounts'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Mounts
+                {t('Back to Mounts')}
             </Link>
             <Form form={form}>
                 <div className='space-y-6'>
@@ -57,7 +59,7 @@ export default function CreateMountForm() {
                     </form.AppField>
                     <div className='flex justify-end'>
                         <form.AppForm>
-                            <form.SubmitButton>Create Mount</form.SubmitButton>
+                            <form.SubmitButton>{t('Create Mount')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </div>

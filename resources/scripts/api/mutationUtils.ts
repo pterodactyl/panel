@@ -1,16 +1,6 @@
 import type { Query, QueryClient, QueryFilters } from '@tanstack/react-query';
 import { hasGeneratedOperationId } from '@/api/queryKeyGuards';
 
-export type ResourceMutationAction = 'create' | 'update' | 'delete';
-
-const resourceMutationCopy = {
-    create: { verb: 'create', pastTense: 'created' },
-    update: { verb: 'update', pastTense: 'updated' },
-    delete: { verb: 'delete', pastTense: 'deleted' },
-} satisfies Record<ResourceMutationAction, { verb: string; pastTense: string }>;
-
-const sentenceCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
-
 export const invalidateGeneratedOperations = (
     queryClient: QueryClient,
     operationIds: readonly string[]
@@ -54,16 +44,4 @@ export const removeQueriesWhenUnobserved = (queryClient: QueryClient, filters: Q
             }
         }
     });
-};
-
-export const resourceMutationMessages = (resource: string, action: ResourceMutationAction, name?: string) => {
-    const copy = resourceMutationCopy[action];
-
-    return {
-        errorTitle: `Unable to ${copy.verb} ${resource}`,
-        success: {
-            title: `${sentenceCase(resource)} ${copy.pastTense}`,
-            description: name ? `${name} has been ${copy.pastTense}.` : `The ${resource} has been ${copy.pastTense}.`,
-        },
-    };
 };

@@ -18,10 +18,12 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
 import { Form, useAppForm } from '@/components/form';
 import { nodeDetailRoute } from '@/router/routeTree';
+import { useTranslation } from '@/sdk/localization';
 
 const tagIds = (tags: AdminTag[]): string[] => tags.map((tag) => String(tag.attributes.id));
 
 export default function NodeTagsTab() {
+    const { t } = useTranslation();
     const { id } = nodeDetailRoute.useParams();
     const { data: node } = useSuspenseQuery(adminNodeTagsQueryOptions(id));
     const { data: tags = [], error, refetch, isPending } = useAllAdminTags();
@@ -71,7 +73,7 @@ export default function NodeTagsTab() {
     }
 
     return (
-        <TitledGreyBox title='Node Tags'>
+        <TitledGreyBox title={t('Node Tags')}>
             {tags.length === 0 && <NoTagsYet />}
             <Form form={form} className='m-0'>
                 <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
@@ -81,9 +83,11 @@ export default function NodeTagsTab() {
                                 <TagsField
                                     tags={tags}
                                     exclude={reservations}
-                                    label='Games'
-                                    description='An egg runs here when it has one of these tags. Leave this empty to accept every egg.'
-                                    emptyText='This node accepts every egg.'
+                                    label={t('Games')}
+                                    description={t(
+                                        'An egg runs here when it has one of these tags. Leave this empty to accept every egg.'
+                                    )}
+                                    emptyText={t('This node accepts every egg.')}
                                 />
                             )}
                         </form.AppField>
@@ -94,9 +98,11 @@ export default function NodeTagsTab() {
                                 <TagsField
                                     tags={tags}
                                     exclude={games}
-                                    label='Reservations'
-                                    description='A reserved node only takes deployments that name every one of these tags.'
-                                    emptyText='This node is not reserved.'
+                                    label={t('Reservations')}
+                                    description={t(
+                                        'A reserved node only takes deployments that name every one of these tags.'
+                                    )}
+                                    emptyText={t('This node is not reserved.')}
                                 />
                             )}
                         </form.AppField>
@@ -104,7 +110,7 @@ export default function NodeTagsTab() {
                 </div>
                 <div className='mt-6 flex justify-end'>
                     <form.AppForm>
-                        <form.SubmitButton>Save tags</form.SubmitButton>
+                        <form.SubmitButton>{t('Save tags')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>

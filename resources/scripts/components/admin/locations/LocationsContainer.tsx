@@ -18,7 +18,8 @@ import {
 import CreateLocationButton from '@/components/admin/locations/CreateLocationButton';
 import { locationColumns } from '@/components/admin/locations/LocationTable';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import Icon from '@/components/elements/Icon';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -26,6 +27,7 @@ import DataTable from '@/components/elements/table/DataTable';
 import DataTablePagination from '@/components/elements/table/DataTablePagination';
 import { TextInput } from '@/components/form/controls';
 import { useLocationListSearch } from '@/router/search';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyLocations: AdminLocation[] = [];
 const sortingFromSearch = (sort?: LocationListSort): SortingState => {
@@ -54,6 +56,7 @@ const sortingToSearch = (sorting: SortingState): LocationListSort | null => {
 };
 
 export default function LocationsContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useLocationListSearch();
     const {
         data: locations,
@@ -67,6 +70,7 @@ export default function LocationsContainer() {
         [metadata?.per_page, page]
     );
     const sorting = useMemo(() => sortingFromSearch(sort), [sort]);
+    const columns = useMemo(() => locationColumns(t), [t]);
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
@@ -87,7 +91,7 @@ export default function LocationsContainer() {
     );
     const table = useReactTable({
         data: locations?.data ?? emptyLocations,
-        columns: locationColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (location) => String(location.attributes.id),
         manualPagination: true,
@@ -105,9 +109,9 @@ export default function LocationsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Locations'
-            heading='Locations'
-            description='Organize nodes by the regions and facilities where they run.'
+            title={t('Admin · Locations')}
+            heading={t('Locations')}
+            description={t('Organize nodes by the regions and facilities where they run.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -127,9 +131,9 @@ export default function LocationsContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search locations'
+                        aria-label={t('Search locations')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search locations…'
+                        placeholder={t('Search locations…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -143,10 +147,18 @@ export default function LocationsContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={MapPin}
-                                noun='locations'
+                                empty={t('No locations yet')}
+                                noMatch={t('No matching locations')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No locations match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create a location to group nodes by region or data center.'
+                                description={t('Create a location to group nodes by region or data center.')}
                                 action={<CreateLocationButton />}
                             />
                         }
@@ -155,7 +167,12 @@ export default function LocationsContainer() {
                         table={table}
                         total={locations.meta.pagination.total}
                         count={locations.meta.pagination.count}
-                        itemLabel='locations'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> locations',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

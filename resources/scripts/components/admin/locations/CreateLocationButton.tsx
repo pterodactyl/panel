@@ -8,6 +8,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Button from '@/components/elements/Button';
 import { NewButton } from '@/components/elements/NewButton';
 import { validateShortCode } from '@/components/admin/locations/locationForm';
+import { useTranslation } from '@/sdk/localization';
 
 type CreateLocationDialogProps = {
     open: boolean;
@@ -15,6 +16,7 @@ type CreateLocationDialogProps = {
 };
 
 function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
+    const { t } = useTranslation();
     const createLocation = useCreateAdminLocation();
 
     const { withExtensionPayload } = useExtensionPayload('admin.location');
@@ -35,7 +37,7 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
     return (
         <Dialog
             open={open}
-            title='Create new location'
+            title={t('Create new location')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
@@ -52,8 +54,8 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
                         <field.TextField
                             type='text'
                             id='short'
-                            label='Short Code'
-                            description='A short identifier used to distinguish this location from others.'
+                            label={t('Short Code')}
+                            description={t('A short identifier used to distinguish this location from others.')}
                         />
                     )}
                 </form.AppField>
@@ -62,15 +64,15 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
                         name='long'
                         validators={{
                             onChange: ({ value }) =>
-                                value.length <= 191 ? undefined : 'The description must not exceed 191 characters.',
+                                value.length <= 191 ? undefined : t('The description must not exceed 191 characters.'),
                         }}
                     >
                         {(field) => (
                             <field.TextField
                                 type='text'
                                 id='long'
-                                label='Description'
-                                description='A longer description of this location.'
+                                label={t('Description')}
+                                description={t('A longer description of this location.')}
                             />
                         )}
                     </form.AppField>
@@ -87,10 +89,12 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
                 </form.AppField>
                 <div className='flex flex-wrap justify-end mt-6'>
                     <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <form.AppForm>
-                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>Create Location</form.SubmitButton>
+                        <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>
+                            {t('Create Location')}
+                        </form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
@@ -99,8 +103,10 @@ function CreateLocationDialog({ open, onClose }: CreateLocationDialogProps) {
 }
 
 export default function CreateLocationButton() {
+    const { t } = useTranslation();
+
     return (
-        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New location</NewButton>}>
+        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New location')}</NewButton>}>
             {({ open, onClose }) => <CreateLocationDialog open={open} onClose={onClose} />}
         </Dialog.Trigger>
     );

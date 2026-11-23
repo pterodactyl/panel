@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { useTranslation as useI18nextTranslation } from 'react-i18next';
 import { ExtensionContext } from '@/extensions/context';
 
@@ -10,11 +10,13 @@ export interface ExtensionTranslation {
 
 export type Translation = ExtensionTranslation;
 
-/** Interface text keyed by its English, from resources/lang/<locale>.json and the language packs. */
+export const translatable = (text: string): string => text;
+
 export function useTranslation(): Translation {
     const { t, i18n, ready } = useI18nextTranslation('translation', { useSuspense: false });
+    const translate = useCallback((key: string, values?: Record<string, string | number>) => t(key, values), [t]);
 
-    return { locale: i18n.language, ready, t: (key, values) => t(key, values) };
+    return { locale: i18n.language, ready, t: translate };
 }
 
 /** resources/lang/<locale>/<group>.php, registered with loadExtensionTranslations(). */

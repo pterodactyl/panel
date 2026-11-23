@@ -4,6 +4,7 @@ import { updateAdminAdvancedSettingsInput, useUpdateAdminAdvancedSettings } from
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { Alert } from '@/components/elements/alert';
+import { useTranslation } from '@/sdk/localization';
 
 interface AdvancedSettingsFormValues {
     recaptchaEnabled: boolean;
@@ -28,6 +29,7 @@ const advancedSettingsFormValues = (settings: AdminSettings): AdvancedSettingsFo
 });
 
 export default function AdvancedSettingsForm({ settings }: { settings: AdminSettings }) {
+    const { t } = useTranslation();
     const readOnly = settings.meta.load_environment_only;
     const updateAdvancedSettings = useUpdateAdminAdvancedSettings();
 
@@ -61,20 +63,21 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
 
     return (
         <Form form={form}>
-            <TitledGreyBox title='reCAPTCHA'>
+            <TitledGreyBox title={t('reCAPTCHA')}>
                 {settings.meta.show_recaptcha_warning && (
                     <Alert type='warning' className='mb-6 text-sm'>
                         <span>
-                            You are using reCAPTCHA keys that shipped with this Panel. Generate new invisible reCAPTCHA
-                            keys for this website to improve security.
+                            {t(
+                                'You are using reCAPTCHA keys that shipped with this Panel. Generate new invisible reCAPTCHA keys for this website to improve security.'
+                            )}
                         </span>
                     </Alert>
                 )}
                 <form.AppField name='recaptchaEnabled'>
                     {(field) => (
                         <field.SwitchField
-                            label='reCAPTCHA Enabled'
-                            description='Protect login and registration forms with reCAPTCHA.'
+                            label={t('reCAPTCHA Enabled')}
+                            description={t('Protect login and registration forms with reCAPTCHA.')}
                             disabled={readOnly}
                         />
                     )}
@@ -85,7 +88,7 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                             <field.TextField
                                 type='text'
                                 id='recaptcha_website_key'
-                                label='reCAPTCHA Website Key'
+                                label={t('reCAPTCHA Website Key')}
                                 disabled={readOnly}
                             />
                         )}
@@ -97,44 +100,48 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                             <field.TextField
                                 type='password'
                                 id='recaptcha_secret_key'
-                                label='reCAPTCHA Secret Key'
-                                description='Leave blank to keep the existing secret key.'
+                                label={t('reCAPTCHA Secret Key')}
+                                description={t('Leave blank to keep the existing secret key.')}
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title='HTTP Connections' className='mt-6'>
+            <TitledGreyBox title={t('HTTP Connections')} className='mt-6'>
                 <div className='grid grid-cols-2 gap-4'>
                     <form.AppField
                         name='guzzleTimeout'
-                        validators={{ onChange: requiredNumber('An HTTP request timeout must be provided.') }}
+                        validators={{ onChange: requiredNumber(t('An HTTP request timeout must be provided.')) }}
                     >
                         {(field) => (
-                            <field.NumberField id='guzzle_timeout' label='HTTP Request Timeout' disabled={readOnly} />
+                            <field.NumberField
+                                id='guzzle_timeout'
+                                label={t('HTTP Request Timeout')}
+                                disabled={readOnly}
+                            />
                         )}
                     </form.AppField>
                     <form.AppField
                         name='guzzleConnectTimeout'
-                        validators={{ onChange: requiredNumber('An HTTP connection timeout must be provided.') }}
+                        validators={{ onChange: requiredNumber(t('An HTTP connection timeout must be provided.')) }}
                     >
                         {(field) => (
                             <field.NumberField
                                 id='guzzle_connect_timeout'
-                                label='HTTP Connection Timeout'
+                                label={t('HTTP Connection Timeout')}
                                 disabled={readOnly}
                             />
                         )}
                     </form.AppField>
                 </div>
             </TitledGreyBox>
-            <TitledGreyBox title='Automatic Allocation Creation' className='mt-6'>
+            <TitledGreyBox title={t('Automatic Allocation Creation')} className='mt-6'>
                 <form.AppField name='allocationsEnabled'>
                     {(field) => (
                         <field.SwitchField
-                            label='Auto Create Allocations Enabled'
-                            description='Allow users to automatically create new allocations for their server.'
+                            label={t('Auto Create Allocations Enabled')}
+                            description={t('Allow users to automatically create new allocations for their server.')}
                             disabled={readOnly}
                         />
                     )}
@@ -145,7 +152,7 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                             <field.TextField
                                 type='number'
                                 id='allocations_range_start'
-                                label='Starting Port'
+                                label={t('Starting Port')}
                                 disabled={readOnly}
                             />
                         )}
@@ -155,7 +162,7 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
                             <field.TextField
                                 type='number'
                                 id='allocations_range_end'
-                                label='Ending Port'
+                                label={t('Ending Port')}
                                 disabled={readOnly}
                             />
                         )}
@@ -164,7 +171,7 @@ export default function AdvancedSettingsForm({ settings }: { settings: AdminSett
             </TitledGreyBox>
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton disabled={readOnly}>Save Changes</form.SubmitButton>
+                    <form.SubmitButton disabled={readOnly}>{t('Save Changes')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>

@@ -10,8 +10,10 @@ import { httpErrorToHuman } from '@/api/http';
 import { Alert } from '@/components/elements/alert';
 import Button from '@/components/elements/Button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { useTranslation } from '@/sdk/localization';
 
 export default function EggVariablesTab() {
+    const { t } = useTranslation();
     const egg = useEggDetail();
     const { data: variables, error, isFetching, refetch } = useAdminEggVariables(egg.attributes.id);
 
@@ -22,7 +24,7 @@ export default function EggVariablesTab() {
                     <div className='space-y-4'>
                         <Alert type='danger'>{httpErrorToHuman(error)}</Alert>
                         <Button.Text type='button' onClick={() => refetch()}>
-                            Retry
+                            {t('Retry')}
                         </Button.Text>
                     </div>
                 );
@@ -33,15 +35,15 @@ export default function EggVariablesTab() {
 
         if (variables.data.length === 0) {
             return (
-                <TitledGreyBox title='Egg Variables'>
+                <TitledGreyBox title={t('Egg Variables')}>
                     <Empty size='compact'>
                         <EmptyHeader>
                             <EmptyMedia variant='icon'>
                                 <Variable />
                             </EmptyMedia>
-                            <EmptyTitle>No variables</EmptyTitle>
+                            <EmptyTitle>{t('No variables')}</EmptyTitle>
                             <EmptyDescription>
-                                Variables let server owners configure the startup command and environment.
+                                {t('Variables let server owners configure the startup command and environment.')}
                             </EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>

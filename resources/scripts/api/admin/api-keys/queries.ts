@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
-import { invalidateGeneratedOperations, resourceMutationMessages } from '@/api/mutationUtils';
+import { invalidateGeneratedOperations } from '@/api/mutationUtils';
 import {
     adminCreateApiKeyMutation,
     adminDeleteApiKeyMutation,
@@ -101,12 +102,12 @@ export const useCreateAdminApiKey = () => {
         ...adminCreateApiKeyMutation(),
         onSuccess: async (apiKey) => {
             await invalidateGeneratedOperations(queryClient, ['adminListApiKeys']);
-            const messages = resourceMutationMessages('application API key', 'create', apiKey.attributes.identifier);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Application API key created'), {
+                description: i18next.t('{{name}} has been created.', { name: apiKey.attributes.identifier }),
+            });
         },
-        onError: (error) =>
-            notifyHttpError(error, resourceMutationMessages('application API key', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create application API key')),
     });
 };
 
@@ -117,11 +118,11 @@ export const useDeleteAdminApiKey = () => {
         ...adminDeleteApiKeyMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateGeneratedOperations(queryClient, ['adminListApiKeys']);
-            const messages = resourceMutationMessages('application API key', 'delete', variables.path.identifier);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Application API key deleted'), {
+                description: i18next.t('{{name}} has been deleted.', { name: variables.path.identifier }),
+            });
         },
-        onError: (error) =>
-            notifyHttpError(error, resourceMutationMessages('application API key', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete application API key')),
     });
 };

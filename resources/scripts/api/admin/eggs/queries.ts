@@ -1,11 +1,8 @@
 import { queryOptions, useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import { fetchAllPages, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
 import {
@@ -170,11 +167,13 @@ export const useImportAdminEgg = () => {
         ...adminImportEggMutation(),
         onSuccess: async (egg) => {
             await invalidateGeneratedOperations(queryClient, adminEggListOperations);
-            toast.success('Egg imported', {
-                description: `${egg.attributes.name} has been imported from the uploaded file.`,
+            toast.success(i18next.t('Egg imported'), {
+                description: i18next.t('{{name}} has been imported from the uploaded file.', {
+                    name: egg.attributes.name,
+                }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to import egg'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to import egg')),
     });
 };
 
@@ -188,11 +187,11 @@ export const useCreateAdminEgg = () => {
                 invalidateGeneratedOperations(queryClient, adminEggListOperations),
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
-            const messages = resourceMutationMessages('egg', 'create', egg.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Egg created'), {
+                description: i18next.t('{{name}} has been created.', { name: egg.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create egg')),
     });
 };
 
@@ -206,11 +205,11 @@ export const useUpdateAdminEgg = () => {
                 invalidateGeneratedOperations(queryClient, adminEggListOperations),
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
-            const messages = resourceMutationMessages('egg', 'update', egg.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Egg updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: egg.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update egg')),
     });
 };
 
@@ -224,11 +223,11 @@ export const useUpdateAdminEggScript = () => {
                 invalidateGeneratedOperations(queryClient, adminEggListOperations),
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
-            toast.success('Install script updated', {
-                description: `${egg.attributes.name} has a new install script.`,
+            toast.success(i18next.t('Install script updated'), {
+                description: i18next.t('{{name}} has a new install script.', { name: egg.attributes.name }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update install script'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update install script')),
     });
 };
 
@@ -242,11 +241,13 @@ export const useUpdateAdminEggFromFile = () => {
                 invalidateGeneratedOperations(queryClient, adminEggListOperations),
                 queryClient.invalidateQueries({ queryKey: adminEggDetailKey(egg.attributes.id) }),
             ]);
-            toast.success('Egg updated', {
-                description: `${egg.attributes.name} has been updated from the uploaded file.`,
+            toast.success(i18next.t('Egg updated'), {
+                description: i18next.t('{{name}} has been updated from the uploaded file.', {
+                    name: egg.attributes.name,
+                }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update egg from file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update egg from file')),
     });
 };
 
@@ -265,11 +266,14 @@ export const useDeleteAdminEgg = () => {
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminExportEggQueryKey({ path: { egg_id: eggId } }) });
             await invalidateGeneratedOperations(queryClient, adminEggListOperations);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('egg', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Egg deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The egg has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('egg', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete egg')),
     });
 };
 
@@ -280,11 +284,11 @@ export const useCreateAdminEggVariable = () => {
         ...adminCreateEggVariableMutation(),
         onSuccess: async (variable, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
-            const messages = resourceMutationMessages('variable', 'create', variable.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Variable created'), {
+                description: i18next.t('{{name}} has been created.', { name: variable.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create variable')),
     });
 };
 
@@ -295,11 +299,11 @@ export const useUpdateAdminEggVariable = () => {
         ...adminUpdateEggVariableMutation(),
         onSuccess: async (variable, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
-            const messages = resourceMutationMessages('variable', 'update', variable.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Variable updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: variable.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update variable')),
     });
 };
 
@@ -311,10 +315,13 @@ export const useDeleteAdminEggVariable = () => {
         onSuccess: async (_data, variables) => {
             await invalidateAdminEggVariables(queryClient, variables.path.egg_id);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('variable', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Variable deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The variable has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('variable', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete variable')),
     });
 };

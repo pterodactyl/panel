@@ -1,15 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import { type ListSort, type QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
 import { allPagesQueryOptions, listItems, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import { currentUserQueryKey, setCurrentUserQueryData } from '@/api/account/queries';
 import type { UserData } from '@/api/account/types';
 import {
@@ -133,11 +130,12 @@ export const useCreateAdminUser = () => {
         ...adminCreateUserMutation(),
         onSuccess: async (user) => {
             await invalidateGeneratedOperations(queryClient, ['adminListUsers']);
-            const messages = resourceMutationMessages('user', 'create', user.attributes.email);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('User created'), {
+                description: i18next.t('{{name}} has been created.', { name: user.attributes.email }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create user')),
     });
 };
 
@@ -155,11 +153,12 @@ export const useUpdateAdminUser = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
                 queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
-            const messages = resourceMutationMessages('user', 'update', user.attributes.email);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('User updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: user.attributes.email }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update user')),
     });
 };
 
@@ -173,9 +172,9 @@ export const useUpdateAdminUserAvatar = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
                 queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
-            toast.success('Avatar updated');
+            toast.success(i18next.t('Avatar updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update avatar')),
     });
 };
 
@@ -189,9 +188,9 @@ export const useDeleteAdminUserAvatar = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListUsers']),
                 queryClient.invalidateQueries({ queryKey: adminUserDetailKey(variables.path.user_id) }),
             ]);
-            toast.success('Avatar removed');
+            toast.success(i18next.t('Avatar removed'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove avatar')),
     });
 };
 
@@ -204,10 +203,13 @@ export const useDeleteAdminUser = () => {
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminUserDetailKey(variables.path.user_id) });
             await invalidateGeneratedOperations(queryClient, ['adminListUsers']);
             const name = variables.meta?.email;
-            const messages = resourceMutationMessages('user', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('User deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The user has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('user', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete user')),
     });
 };

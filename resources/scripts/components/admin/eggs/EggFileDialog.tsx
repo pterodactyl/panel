@@ -4,6 +4,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Label from '@/components/elements/Label';
 import Button from '@/components/elements/Button';
 import { FileInput } from '@/components/form/controls';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     open: boolean;
@@ -26,6 +27,7 @@ export default function EggFileDialog({
     submitting,
     onSubmit,
 }: Props) {
+    const { t } = useTranslation();
     const fileId = useId();
     const [file, setFile] = useState<File | null>(null);
 
@@ -58,7 +60,7 @@ export default function EggFileDialog({
                     void submit();
                 }}
             >
-                <Label htmlFor={fileId}>Egg File</Label>
+                <Label htmlFor={fileId}>{t('Egg File')}</Label>
                 <FileInput
                     id={fileId}
                     accept='application/json,.json'
@@ -73,7 +75,7 @@ export default function EggFileDialog({
                         disabled={submitting}
                         onClick={onClose}
                     >
-                        Cancel
+                        {t('Cancel')}
                     </Button>
                     <Button
                         type='submit'

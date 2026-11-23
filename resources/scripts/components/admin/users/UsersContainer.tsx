@@ -13,7 +13,8 @@ import { adminUserListQueryParams, type AdminUser, type UserListSort, useAdminUs
 import CreateUserButton from '@/components/admin/users/CreateUserButton';
 import { userColumns } from '@/components/admin/users/UserTable';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import AdminListEmpty from '@/components/admin/AdminListEmpty';
+import AdminListEmpty, { filterHighlight } from '@/components/admin/AdminListEmpty';
+import Translate from '@/components/elements/Translate';
 import Icon from '@/components/elements/Icon';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -21,6 +22,7 @@ import DataTable from '@/components/elements/table/DataTable';
 import DataTablePagination from '@/components/elements/table/DataTablePagination';
 import { TextInput } from '@/components/form/controls';
 import { useUserListSearch } from '@/router/search';
+import { useTranslation } from '@/sdk/localization';
 
 const emptyUsers: AdminUser[] = [];
 
@@ -54,6 +56,7 @@ const sortingToSearch = (sorting: SortingState): UserListSort | null => {
 };
 
 export default function UsersContainer() {
+    const { t } = useTranslation();
     const { page, filter, sort, navigateToSearch } = useUserListSearch();
     const {
         data: users,
@@ -67,6 +70,7 @@ export default function UsersContainer() {
         [metadata?.per_page, page]
     );
     const sorting = useMemo(() => sortingFromSearch(sort), [sort]);
+    const columns = useMemo(() => userColumns(t), [t]);
     const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
         (updater) => {
             const next = updater instanceof Function ? updater(pagination) : updater;
@@ -87,7 +91,7 @@ export default function UsersContainer() {
     );
     const table = useReactTable({
         data: users?.data ?? emptyUsers,
-        columns: userColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (user) => user.attributes.uuid,
         manualPagination: true,
@@ -105,9 +109,9 @@ export default function UsersContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Users'
-            heading='Users'
-            description='Manage panel accounts, permissions, and account access.'
+            title={t('Admin · Users')}
+            heading={t('Users')}
+            description={t('Manage panel accounts, permissions, and account access.')}
         >
             <form
                 className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
@@ -127,9 +131,9 @@ export default function UsersContainer() {
                     <TextInput
                         key={filter}
                         name='filter'
-                        aria-label='Search users'
+                        aria-label={t('Search users')}
                         className='h-9 border-border bg-card pl-10'
-                        placeholder='Search users…'
+                        placeholder={t('Search users…')}
                         defaultValue={filter}
                     />
                 </div>
@@ -143,10 +147,18 @@ export default function UsersContainer() {
                         emptyState={
                             <AdminListEmpty
                                 icon={Users}
-                                noun='users'
+                                empty={t('No users yet')}
+                                noMatch={t('No matching users')}
+                                noMatchDescription={
+                                    <Translate
+                                        i18nKey='No users match <filter>{{filter}}</filter>.'
+                                        values={{ filter }}
+                                        components={filterHighlight}
+                                    />
+                                }
                                 filter={filter}
                                 onClearFilter={() => navigateToSearch({ page: 1, filter: '' })}
-                                description='Create an account for each person who should sign in to the panel.'
+                                description={t('Create an account for each person who should sign in to the panel.')}
                                 action={<CreateUserButton />}
                             />
                         }
@@ -155,7 +167,12 @@ export default function UsersContainer() {
                         table={table}
                         total={users.meta.pagination.total}
                         count={users.meta.pagination.count}
-                        itemLabel='users'
+                        summary={(range) =>
+                            t(
+                                'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> users',
+                                range
+                            )
+                        }
                     />
                 </>
             ) : (

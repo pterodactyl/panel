@@ -20,6 +20,8 @@ import { cn } from '@/lib/cn';
 import dayjs from '@/lib/dayjs';
 import { bytesToString, mbToBytes } from '@/lib/formatters';
 import { relationshipAttributes } from '@/api/relationships';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 interface NodeDialogProps {
     node: AdminNode;
@@ -28,23 +30,30 @@ interface NodeDialogProps {
 }
 
 const NodeLiveness = ({ node }: { node: AdminNode }) => {
+    const { t } = useTranslation();
     const { data, error } = useAdminNodeSystemInformation(node.attributes.id, {
         refetchInterval: 60_000,
         retry: false,
     });
 
     if (data) {
-        return <NodeStatusBadge status={error ? 'offline' : 'online'} title={`Wings ${data.version}`} />;
+        return (
+            <NodeStatusBadge
+                status={error ? 'offline' : 'online'}
+                title={t('Wings {{version}}', { version: data.version })}
+            />
+        );
     }
 
     if (error) {
         return <NodeStatusBadge status='offline' title={error.message} />;
     }
 
-    return <NodeStatusBadge status='checking' title='Checking node status' />;
+    return <NodeStatusBadge status='checking' title={t('Checking node status')} />;
 };
 
 function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
+    const { t } = useTranslation();
     const { attributes } = node;
     const deleteNode = useDeleteAdminNode();
     const deleteForm = useAppForm({
@@ -63,7 +72,7 @@ function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
     return (
         <Dialog
             open={open}
-            title='Confirm node deletion'
+            title={t('Confirm node deletion')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={() => {
@@ -73,31 +82,35 @@ function DeleteNodeDialog({ node, open, onClose }: NodeDialogProps) {
         >
             <SpinnerOverlay visible={isSubmitting} />
             <p className='text-sm'>
-                Deleting a node is permanent. This will remove <strong>{attributes.name}</strong>.
+                <Translate
+                    i18nKey='Deleting a node is permanent. This will remove <bold>{{name}}</bold>.'
+                    values={{ name: attributes.name }}
+                    components={{ bold: <strong /> }}
+                />
             </p>
             <Form form={deleteForm} className='m-0 mt-6'>
                 <deleteForm.AppField
                     name='confirm'
                     validators={{
                         onChange: ({ value }) =>
-                            value === attributes.name ? undefined : 'The node name must be provided.',
+                            value === attributes.name ? undefined : t('The node name must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id={`confirm_${attributes.id}`}
-                            label='Confirm Node Name'
-                            description='Enter the name of this node to confirm deletion.'
+                            label={t('Confirm Node Name')}
+                            description={t('Enter the name of this node to confirm deletion.')}
                         />
                     )}
                 </deleteForm.AppField>
                 <div className='mt-6 flex justify-end gap-2'>
                     <Button.Text type='button' isSecondary onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button.Text>
                     <deleteForm.AppForm>
-                        <deleteForm.SubmitButton color='red'>Delete node</deleteForm.SubmitButton>
+                        <deleteForm.SubmitButton color='red'>{t('Delete node')}</deleteForm.SubmitButton>
                     </deleteForm.AppForm>
                 </div>
             </Form>
@@ -125,17 +138,21 @@ const NodeIdentityCell = ({ node }: { node: AdminNode }) => {
     );
 };
 
-const NodeStatusCell = ({ node }: { node: AdminNode }) => (
-    <div className='flex flex-col items-start gap-1'>
-        <NodeLiveness node={node} />
-        {node.attributes.maintenance_mode ? (
-            <span className='inline-flex items-center gap-1 text-xs font-medium text-warning'>
-                <Icon icon={Wrench} aria-hidden='true' className='h-3 w-3' />
-                Maintenance
-            </span>
-        ) : null}
-    </div>
-);
+const NodeStatusCell = ({ node }: { node: AdminNode }) => {
+    const { t } = useTranslation();
+
+    return (
+        <div className='flex flex-col items-start gap-1'>
+            <NodeLiveness node={node} />
+            {node.attributes.maintenance_mode ? (
+                <span className='inline-flex items-center gap-1 text-xs font-medium text-warning'>
+                    <Icon icon={Wrench} aria-hidden='true' className='h-3 w-3' />
+                    {t('Maintenance')}
+                </span>
+            ) : null}
+        </div>
+    );
+};
 
 const LocationCell = ({ node }: { node: AdminNode }) => {
     const location = relationshipAttributes(node.attributes.relationships?.location);
@@ -164,17 +181,18 @@ const LocationCell = ({ node }: { node: AdminNode }) => {
 };
 
 const ResourcesHeader = ({ table }: { table: Table<AdminNode> }) => {
+    const { t } = useTranslation();
     const memory = table.getColumn('memory');
     const disk = table.getColumn('disk');
 
     if (!memory || !disk) {
-        return <span>Resources</span>;
+        return <span>{t('Resources')}</span>;
     }
 
     return (
         <span className='inline-flex items-center gap-1'>
-            <DataTableColumnHeader column={memory} title='Memory' />
-            <DataTableColumnHeader column={disk} title='Disk' />
+            <DataTableColumnHeader column={memory} title={t('Memory')} />
+            <DataTableColumnHeader column={disk} title={t('Disk')} />
         </span>
     );
 };
@@ -182,15 +200,24 @@ const ResourcesHeader = ({ table }: { table: Table<AdminNode> }) => {
 const ResourcesCell = ({ node }: { node: AdminNode }) => (
     <div className='whitespace-nowrap text-xs tabular-nums'>
         <p className='text-muted-foreground'>
-            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.memory), 0)}</span> memory
+            <Translate
+                i18nKey='<value>{{amount}}</value> memory'
+                values={{ amount: bytesToString(mbToBytes(node.attributes.memory), 0) }}
+                components={{ value: <span className='text-foreground' /> }}
+            />
         </p>
         <p className='mt-0.5 text-muted-foreground'>
-            <span className='text-foreground'>{bytesToString(mbToBytes(node.attributes.disk), 0)}</span> disk
+            <Translate
+                i18nKey='<value>{{amount}}</value> disk'
+                values={{ amount: bytesToString(mbToBytes(node.attributes.disk), 0) }}
+                components={{ value: <span className='text-foreground' /> }}
+            />
         </p>
     </div>
 );
 
 const AccessCell = ({ node }: { node: AdminNode }) => {
+    const { t } = useTranslation();
     const { attributes } = node;
     const secure = attributes.scheme === 'https';
 
@@ -202,101 +229,107 @@ const AccessCell = ({ node }: { node: AdminNode }) => {
             </span>
             <span className='inline-flex items-center gap-1 text-muted-foreground'>
                 <Icon icon={attributes.public ? Eye : EyeOff} aria-hidden='true' className='h-3 w-3' />
-                {attributes.public ? 'Public' : 'Private'}
+                {attributes.public ? t('Public') : t('Private')}
             </span>
         </div>
     );
 };
 
 const NodeActionsCell = ({ node }: { node: AdminNode }) => {
+    const { t } = useTranslation();
     const { id, name } = node.attributes;
 
     return (
         <RowActions>
-            <EditLinkAction aria-label={`Edit ${name}`} to='/panel/nodes/$id/settings' params={{ id }} />
-            <Dialog.Trigger trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}>
+            <EditLinkAction aria-label={t('Edit {{name}}', { name })} to='/panel/nodes/$id/settings' params={{ id }} />
+            <Dialog.Trigger
+                trigger={({ onClick }) => (
+                    <DeleteAction aria-label={t('Delete {{name}}', { name })} onClick={onClick} />
+                )}
+            >
                 {({ open, onClose }) => <DeleteNodeDialog node={node} open={open} onClose={onClose} />}
             </Dialog.Trigger>
         </RowActions>
     );
 };
 
-export const nodeColumns = [
-    {
-        id: 'name',
-        accessorFn: (node) => node.attributes.name,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='Node' />,
-        cell: ({ row }) => <NodeIdentityCell node={row.original} />,
-        enableSorting: true,
-        meta: { headerClassName: 'min-w-40', cellClassName: 'min-w-40' },
-    },
-    {
-        id: 'status',
-        header: 'Status',
-        cell: ({ row }) => <NodeStatusCell node={row.original} />,
-        enableSorting: false,
-        meta: { headerClassName: 'w-28', cellClassName: 'w-28' },
-    },
-    {
-        id: 'location',
-        header: 'Location',
-        cell: ({ row }) => <LocationCell node={row.original} />,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-32 @4xl:table-cell', cellClassName: 'hidden w-32 @4xl:table-cell' },
-    },
-    {
-        id: 'servers_count',
-        accessorFn: (node) => node.attributes.servers_count,
-        header: 'Servers',
-        cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.servers_count}</span>,
-        enableSorting: false,
-        meta: { headerClassName: 'w-20', cellClassName: 'w-20' },
-    },
-    {
-        id: 'resources',
-        header: ({ table }) => <ResourcesHeader table={table} />,
-        cell: ({ row }) => <ResourcesCell node={row.original} />,
-        enableSorting: false,
-        meta: { headerClassName: 'w-40', cellClassName: 'w-40', sortColumnIds: ['memory', 'disk'] },
-    },
-    {
-        id: 'memory',
-        accessorFn: (node) => node.attributes.memory,
-        header: 'Memory',
-        enableSorting: true,
-        sortDescFirst: true,
-    },
-    {
-        id: 'disk',
-        accessorFn: (node) => node.attributes.disk,
-        header: 'Disk',
-        enableSorting: true,
-        sortDescFirst: true,
-    },
-    {
-        id: 'access',
-        header: 'Access',
-        cell: ({ row }) => <AccessCell node={row.original} />,
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-20 @2xl:table-cell', cellClassName: 'hidden w-20 @2xl:table-cell' },
-    },
-    {
-        id: 'created_at',
-        accessorFn: (node) => node.attributes.created_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='Created' />,
-        cell: ({ row }) => (
-            <time
-                dateTime={row.original.attributes.created_at}
-                className='whitespace-nowrap text-xs text-muted-foreground'
-            >
-                {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
-            </time>
-        ),
-        enableSorting: true,
-        sortDescFirst: true,
-        meta: { headerClassName: 'hidden w-28 @4xl:table-cell', cellClassName: 'hidden w-28 @4xl:table-cell' },
-    },
-    actionsColumn<AdminNode>(2, (node) => <NodeActionsCell node={node} />),
-] satisfies ColumnDef<AdminNode>[];
+export const nodeColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            accessorFn: (node) => node.attributes.name,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('Node')} />,
+            cell: ({ row }) => <NodeIdentityCell node={row.original} />,
+            enableSorting: true,
+            meta: { headerClassName: 'min-w-40', cellClassName: 'min-w-40' },
+        },
+        {
+            id: 'status',
+            header: t('Status'),
+            cell: ({ row }) => <NodeStatusCell node={row.original} />,
+            enableSorting: false,
+            meta: { headerClassName: 'w-28', cellClassName: 'w-28' },
+        },
+        {
+            id: 'location',
+            header: t('Location'),
+            cell: ({ row }) => <LocationCell node={row.original} />,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-32 @4xl:table-cell', cellClassName: 'hidden w-32 @4xl:table-cell' },
+        },
+        {
+            id: 'servers_count',
+            accessorFn: (node) => node.attributes.servers_count,
+            header: t('Servers'),
+            cell: ({ row }) => <span className='tabular-nums'>{row.original.attributes.servers_count}</span>,
+            enableSorting: false,
+            meta: { headerClassName: 'w-20', cellClassName: 'w-20' },
+        },
+        {
+            id: 'resources',
+            header: ({ table }) => <ResourcesHeader table={table} />,
+            cell: ({ row }) => <ResourcesCell node={row.original} />,
+            enableSorting: false,
+            meta: { headerClassName: 'w-40', cellClassName: 'w-40', sortColumnIds: ['memory', 'disk'] },
+        },
+        {
+            id: 'memory',
+            accessorFn: (node) => node.attributes.memory,
+            header: t('Memory'),
+            enableSorting: true,
+            sortDescFirst: true,
+        },
+        {
+            id: 'disk',
+            accessorFn: (node) => node.attributes.disk,
+            header: t('Disk'),
+            enableSorting: true,
+            sortDescFirst: true,
+        },
+        {
+            id: 'access',
+            header: t('Access'),
+            cell: ({ row }) => <AccessCell node={row.original} />,
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-20 @2xl:table-cell', cellClassName: 'hidden w-20 @2xl:table-cell' },
+        },
+        {
+            id: 'created_at',
+            accessorFn: (node) => node.attributes.created_at,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('Created')} />,
+            cell: ({ row }) => (
+                <time
+                    dateTime={row.original.attributes.created_at}
+                    className='whitespace-nowrap text-xs text-muted-foreground'
+                >
+                    {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
+                </time>
+            ),
+            enableSorting: true,
+            sortDescFirst: true,
+            meta: { headerClassName: 'hidden w-28 @4xl:table-cell', cellClassName: 'hidden w-28 @4xl:table-cell' },
+        },
+        actionsColumn<AdminNode>(2, (node) => <NodeActionsCell node={node} />),
+    ] satisfies ColumnDef<AdminNode>[];
 
 export const nodeColumnVisibility: VisibilityState = { memory: false, disk: false };

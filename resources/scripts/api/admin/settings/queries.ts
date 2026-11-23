@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 
 import {
     adminGetSettingsOptions,
@@ -26,7 +27,6 @@ type AdminMailSettingsBody = NonNullable<AdminUpdateMailSettingsData['body']>;
 type AdminMailSmtpSettingsBody = NonNullable<AdminMailSettingsBody['smtp']>;
 type AdminAdvancedSettingsBody = AdminUpdateAdvancedSettingsData['body'];
 type UpdateAdminMailSettingsOptions = { successNotification?: boolean };
-type AdminSettingsSection = 'Advanced' | 'General' | 'Mail';
 
 export interface GeneralSettingsValues {
     name: string;
@@ -112,10 +112,6 @@ export const testAdminMailInput = (): Options<AdminSendTestMailData> => ({});
 export const adminSettingsQueryOptions = () => adminGetSettingsOptions();
 
 type AdminSettingsQueryOptions = { enabled?: boolean };
-const adminSettingsUpdateToast = (section: AdminSettingsSection) => ({
-    title: `${section} settings updated`,
-    description: `${section} settings have been updated.`,
-});
 
 export const useAdminSettings = (options?: AdminSettingsQueryOptions) =>
     useQuery({ ...adminSettingsQueryOptions(), ...options });
@@ -133,11 +129,12 @@ export const useUpdateAdminGeneralSettings = () => {
                 userAvatarsEnabled: body.misc?.user_avatars_enabled === 'true',
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
-            const notification = adminSettingsUpdateToast('General');
 
-            toast.success(notification.title, { description: notification.description });
+            toast.success(i18next.t('General settings updated'), {
+                description: i18next.t('General settings have been updated.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update general settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update general settings')),
     });
 };
 
@@ -149,12 +146,12 @@ export const useUpdateAdminMailSettings = ({ successNotification = true }: Updat
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
             if (successNotification) {
-                const notification = adminSettingsUpdateToast('Mail');
-
-                toast.success(notification.title, { description: notification.description });
+                toast.success(i18next.t('Mail settings updated'), {
+                    description: i18next.t('Mail settings have been updated.'),
+                });
             }
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update mail settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update mail settings')),
     });
 };
 
@@ -162,10 +159,10 @@ export const useSendTestAdminMail = () =>
     useMutation({
         ...adminSendTestMailMutation(),
         onSuccess: () =>
-            toast.success('Mail settings tested', {
-                description: 'Mail settings have been saved and a test email has been sent to your account.',
+            toast.success(i18next.t('Mail settings tested'), {
+                description: i18next.t('Mail settings have been saved and a test email has been sent to your account.'),
             }),
-        onError: (error) => notifyHttpError(error, 'Unable to test mail settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to test mail settings')),
     });
 
 export const useUpdateAdminAdvancedSettings = () => {
@@ -182,10 +179,11 @@ export const useUpdateAdminAdvancedSettings = () => {
                 },
             }));
             await queryClient.invalidateQueries({ queryKey: adminGetSettingsQueryKey() });
-            const notification = adminSettingsUpdateToast('Advanced');
 
-            toast.success(notification.title, { description: notification.description });
+            toast.success(i18next.t('Advanced settings updated'), {
+                description: i18next.t('Advanced settings have been updated.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update advanced settings'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update advanced settings')),
     });
 };

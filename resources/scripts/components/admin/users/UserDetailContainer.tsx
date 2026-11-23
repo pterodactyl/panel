@@ -50,10 +50,14 @@ import ServerEditAction from '@/components/admin/servers/ServerEditAction';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { relationshipData } from '@/api/relationships';
 import { resourceNavigation, type ResourceTab } from '@/views/navigation';
+import Translate from '@/components/elements/Translate';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 type UserForm = AppForm<UserValues>;
 
-const tabs: ResourceTab[] = [{ id: 'about', label: 'About', to: '/panel/users/$id', exact: true }];
+const tabs = (t: Translation['t']): ResourceTab[] => [
+    { id: 'about', label: t('About'), to: '/panel/users/$id', exact: true },
+];
 
 const IdentityCard = ({
     form,
@@ -63,97 +67,104 @@ const IdentityCard = ({
     form: UserForm;
     languageOptions: SelectOption[];
     languagesLoading: boolean;
-}) => (
-    <TitledGreyBox title='Identity'>
-        <form.AppField name='email' validators={{ onChange: validateUserEmail }}>
-            {(field) => (
-                <field.TextField
-                    type='email'
-                    id='email'
-                    label='Email Address'
-                    description='The email address this user will sign in and receive notifications with.'
-                />
-            )}
-        </form.AppField>
-        <div className='mt-6'>
-            <form.AppField name='username' validators={{ onChange: validateUsername }}>
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <TitledGreyBox title={t('Identity')}>
+            <form.AppField name='email' validators={{ onChange: validateUserEmail }}>
                 {(field) => (
                     <field.TextField
-                        type='text'
-                        id='username'
-                        label='Username'
-                        description='A unique username used to identify this account.'
+                        type='email'
+                        id='email'
+                        label={t('Email Address')}
+                        description={t('The email address this user will sign in and receive notifications with.')}
                     />
                 )}
             </form.AppField>
-        </div>
-        <div className='mt-6 flex flex-wrap'>
-            <div className='w-full sm:w-1/2 sm:pr-2'>
-                <form.AppField name='nameFirst' validators={{ onChange: validateFirstName }}>
-                    {(field) => <field.TextField type='text' id='name_first' label='First Name' />}
+            <div className='mt-6'>
+                <form.AppField name='username' validators={{ onChange: validateUsername }}>
+                    {(field) => (
+                        <field.TextField
+                            type='text'
+                            id='username'
+                            label={t('Username')}
+                            description={t('A unique username used to identify this account.')}
+                        />
+                    )}
                 </form.AppField>
             </div>
-            <div className='w-full mt-6 sm:w-1/2 sm:mt-0 sm:pl-2'>
-                <form.AppField name='nameLast' validators={{ onChange: validateLastName }}>
-                    {(field) => <field.TextField type='text' id='name_last' label='Last Name' />}
+            <div className='mt-6 flex flex-wrap'>
+                <div className='w-full sm:w-1/2 sm:pr-2'>
+                    <form.AppField name='nameFirst' validators={{ onChange: validateFirstName }}>
+                        {(field) => <field.TextField type='text' id='name_first' label={t('First Name')} />}
+                    </form.AppField>
+                </div>
+                <div className='w-full mt-6 sm:w-1/2 sm:mt-0 sm:pl-2'>
+                    <form.AppField name='nameLast' validators={{ onChange: validateLastName }}>
+                        {(field) => <field.TextField type='text' id='name_last' label={t('Last Name')} />}
+                    </form.AppField>
+                </div>
+            </div>
+            <div className='mt-6'>
+                <form.AppField name='language'>
+                    {(field) => (
+                        <field.SelectField
+                            id='language'
+                            label={t('Language')}
+                            options={languageOptions}
+                            disabled={languagesLoading}
+                            placeholder={t('Select a language')}
+                            description={t('The default language to use when rendering the Panel.')}
+                        />
+                    )}
                 </form.AppField>
             </div>
-        </div>
-        <div className='mt-6'>
-            <form.AppField name='language'>
-                {(field) => (
-                    <field.SelectField
-                        id='language'
-                        label='Language'
-                        options={languageOptions}
-                        disabled={languagesLoading}
-                        placeholder='Select a language'
-                        description='The default language to use when rendering the Panel.'
-                    />
-                )}
-            </form.AppField>
-        </div>
-        <div className='mt-6'>
-            <form.AppField name='rootAdmin'>
-                {(field) => (
-                    <field.SwitchField
-                        label='Administrator'
-                        description='Grant this account full administrative access to the Panel.'
-                    />
-                )}
-            </form.AppField>
-        </div>
-        <div className='flex justify-end mt-6'>
-            <form.AppForm>
-                <form.SubmitButton>Save Changes</form.SubmitButton>
-            </form.AppForm>
-        </div>
-    </TitledGreyBox>
-);
+            <div className='mt-6'>
+                <form.AppField name='rootAdmin'>
+                    {(field) => (
+                        <field.SwitchField
+                            label={t('Administrator')}
+                            description={t('Grant this account full administrative access to the Panel.')}
+                        />
+                    )}
+                </form.AppField>
+            </div>
+            <div className='flex justify-end mt-6'>
+                <form.AppForm>
+                    <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
+                </form.AppForm>
+            </div>
+        </TitledGreyBox>
+    );
+};
 
-const PasswordCard = ({ form }: { form: UserForm }) => (
-    <TitledGreyBox title='Password'>
-        <form.AppField name='password' validators={{ onChange: validateUserPassword }}>
-            {(field) => (
-                <field.TextField
-                    type='password'
-                    id='password'
-                    label='Password'
-                    description={
-                        "Leave blank to keep this user's password the same. The user will not " +
-                        'receive any notification if their password is changed.'
-                    }
-                    autoComplete='new-password'
-                />
-            )}
-        </form.AppField>
-        <div className='flex justify-end mt-6'>
-            <form.AppForm>
-                <form.SubmitButton>Save Changes</form.SubmitButton>
-            </form.AppForm>
-        </div>
-    </TitledGreyBox>
-);
+const PasswordCard = ({ form }: { form: UserForm }) => {
+    const { t } = useTranslation();
+
+    return (
+        <TitledGreyBox title={t('Password')}>
+            <form.AppField name='password' validators={{ onChange: validateUserPassword }}>
+                {(field) => (
+                    <field.TextField
+                        type='password'
+                        id='password'
+                        label={t('Password')}
+                        description={t(
+                            "Leave blank to keep this user's password the same. The user will not receive any notification if their password is changed."
+                        )}
+                        autoComplete='new-password'
+                    />
+                )}
+            </form.AppField>
+            <div className='flex justify-end mt-6'>
+                <form.AppForm>
+                    <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
+                </form.AppForm>
+            </div>
+        </TitledGreyBox>
+    );
+};
 
 const DeleteUserCard = ({
     disabled,
@@ -163,74 +174,84 @@ const DeleteUserCard = ({
     disabled: boolean;
     email: string;
     onDelete: (close: () => void) => Promise<void>;
-}) => (
-    <TitledGreyBox title='Delete User'>
-        <p className='text-sm text-muted-foreground'>
-            There must be no servers associated with this account in order for it to be deleted.
-        </p>
-        <div className='flex justify-end mt-6'>
-            <Dialog.ConfirmTrigger
-                title='Delete user'
-                confirm='Delete User'
-                trigger={({ onClick }) => (
-                    <Button type='button' color='red' disabled={disabled} onClick={onClick}>
-                        Delete User
-                    </Button>
-                )}
-                onConfirmed={(_event, close) => onDelete(close)}
-            >
-                Deleting <strong>{email}</strong> is a permanent action and cannot be undone. This will remove the
-                account and all of its associated data.
-            </Dialog.ConfirmTrigger>
-        </div>
-    </TitledGreyBox>
-);
+}) => {
+    const { t } = useTranslation();
 
-const ownedServerColumns = [
-    {
-        id: 'name',
-        header: 'Server',
-        cell: ({ row }) => (
-            <div className='min-w-0'>
-                <Link
-                    to='/panel/servers/$id'
-                    params={{ id: row.original.attributes.id }}
-                    className='block truncate text-sm text-foreground hover:text-accent'
+    return (
+        <TitledGreyBox title={t('Delete User')}>
+            <p className='text-sm text-muted-foreground'>
+                {t('There must be no servers associated with this account in order for it to be deleted.')}
+            </p>
+            <div className='flex justify-end mt-6'>
+                <Dialog.ConfirmTrigger
+                    title={t('Delete user')}
+                    confirm={t('Delete User')}
+                    trigger={({ onClick }) => (
+                        <Button type='button' color='red' disabled={disabled} onClick={onClick}>
+                            {t('Delete User')}
+                        </Button>
+                    )}
+                    onConfirmed={(_event, close) => onDelete(close)}
                 >
-                    {row.original.attributes.name}
-                </Link>
-                <p className='mt-1 font-mono text-xs text-muted-foreground'>
-                    {row.original.attributes.identifier}
-                    {row.original.attributes.suspended ? (
-                        <span className='ml-2 text-destructive'>suspended</span>
-                    ) : null}
-                </p>
+                    <Translate
+                        i18nKey='Deleting <bold>{{email}}</bold> is a permanent action and cannot be undone. This will remove the account and all of its associated data.'
+                        values={{ email }}
+                        components={{ bold: <strong /> }}
+                    />
+                </Dialog.ConfirmTrigger>
             </div>
-        ),
-    },
-    {
-        id: 'id',
-        header: 'ID',
-        cell: ({ row }) => <span className='text-xs text-muted-foreground'>{row.original.attributes.id}</span>,
-        meta: { headerClassName: 'w-16 text-right', cellClassName: 'w-16 text-right' },
-    },
-    actionsColumn<AdminUserServer>(1, (server) => (
-        <RowActions>
-            <ServerEditAction server={server} />
-        </RowActions>
-    )),
-] satisfies ColumnDef<AdminUserServer>[];
+        </TitledGreyBox>
+    );
+};
+
+const ownedServerColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            header: t('Server'),
+            cell: ({ row }) => (
+                <div className='min-w-0'>
+                    <Link
+                        to='/panel/servers/$id'
+                        params={{ id: row.original.attributes.id }}
+                        className='block truncate text-sm text-foreground hover:text-accent'
+                    >
+                        {row.original.attributes.name}
+                    </Link>
+                    <p className='mt-1 font-mono text-xs text-muted-foreground'>
+                        {row.original.attributes.identifier}
+                        {row.original.attributes.suspended ? (
+                            <span className='ml-2 text-destructive'>{t('suspended')}</span>
+                        ) : null}
+                    </p>
+                </div>
+            ),
+        },
+        {
+            id: 'id',
+            header: t('ID'),
+            cell: ({ row }) => <span className='text-xs text-muted-foreground'>{row.original.attributes.id}</span>,
+            meta: { headerClassName: 'w-16 text-right', cellClassName: 'w-16 text-right' },
+        },
+        actionsColumn<AdminUserServer>(1, (server) => (
+            <RowActions>
+                <ServerEditAction server={server} />
+            </RowActions>
+        )),
+    ] satisfies ColumnDef<AdminUserServer>[];
 
 const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
+    const { t } = useTranslation();
+    const columns = useMemo(() => ownedServerColumns(t), [t]);
     const table = useReactTable({
         data: servers,
-        columns: ownedServerColumns,
+        columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (server) => server.attributes.uuid,
     });
 
     return (
-        <TitledGreyBox title='Servers' className='mt-4'>
+        <TitledGreyBox title={t('Servers')} className='mt-4'>
             <DataTable
                 table={table}
                 emptyState={
@@ -239,8 +260,8 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
                             <EmptyMedia variant='icon'>
                                 <Server />
                             </EmptyMedia>
-                            <EmptyTitle>No servers</EmptyTitle>
-                            <EmptyDescription>This user doesn&apos;t own any servers.</EmptyDescription>
+                            <EmptyTitle>{t('No servers')}</EmptyTitle>
+                            <EmptyDescription>{t("This user doesn't own any servers.")}</EmptyDescription>
                         </EmptyHeader>
                     </Empty>
                 }
@@ -250,6 +271,7 @@ const OwnedServersCard = ({ servers }: { servers: AdminUserServer[] }) => {
 };
 
 const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const userId = user.attributes.id;
 
@@ -306,7 +328,7 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
                             resource={user}
                             error={updateUser.error}
                             boxed
-                            submitLabel='Save Changes'
+                            submitLabel={t('Save Changes')}
                             className='mt-4'
                         />
                     )}
@@ -319,6 +341,7 @@ const UserDetailContent = ({ user }: { user: AdminUserWithServers }) => {
 };
 
 export function UserDetailLayout() {
+    const { t } = useTranslation();
     const loadedUser = userDetailRoute.useLoaderData();
     const userId = loadedUser.attributes.id;
     const { data: user = loadedUser, error } = useAdminUserWithServers(userId);
@@ -334,7 +357,7 @@ export function UserDetailLayout() {
 
     if (!user) {
         return (
-            <AdminContentBlock title='Admin · User' heading='User'>
+            <AdminContentBlock title={t('Admin · User')} heading={t('User')}>
                 <Spinner size='large' centered />
             </AdminContentBlock>
         );
@@ -343,7 +366,7 @@ export function UserDetailLayout() {
     return (
         <ExtensionResourceProvider.Provider value={resourceContext}>
             <AdminContentBlock
-                title={`Admin · User · ${user.attributes.email}`}
+                title={t('Admin · User · {{name}}', { name: user.attributes.email })}
                 heading={user.attributes.email}
                 description={
                     `${user.attributes.first_name ?? ''} ${user.attributes.last_name ?? ''}`.trim() ||
@@ -355,12 +378,12 @@ export function UserDetailLayout() {
                     className='inline-flex items-center text-sm text-muted-foreground mb-4 hover:text-accent'
                 >
                     <Icon icon={ArrowLeft} className='mr-2' />
-                    Back to Users
+                    {t('Back to Users')}
                 </Link>
                 <Slot name='panel.users.detail.actions' data={resourceContext} />
                 <SubNavigation
                     className='mb-6 rounded-sm'
-                    items={resourceNavigation('admin.user', { id: String(user.attributes.id) }, tabs)}
+                    items={resourceNavigation('admin.user', { id: String(user.attributes.id) }, tabs(t))}
                 />
                 <Outlet />
             </AdminContentBlock>

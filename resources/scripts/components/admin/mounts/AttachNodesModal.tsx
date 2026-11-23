@@ -15,6 +15,7 @@ import Spinner from '@/components/elements/Spinner';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { relationshipData } from '@/api/relationships';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     mount: AdminMountWithRelations;
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export default function AttachNodesModal({ mount, open, onClose, onAttached }: Props) {
+    const { t } = useTranslation();
     const [selected, setSelected] = useState<number[]>([]);
     const attachNodes = useAttachAdminMountNodes();
     const submitting = attachNodes.isPending;
@@ -70,7 +72,7 @@ export default function AttachNodesModal({ mount, open, onClose, onAttached }: P
     return (
         <Dialog
             open={open}
-            title='Attach nodes'
+            title={t('Attach nodes')}
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
@@ -86,20 +88,20 @@ export default function AttachNodesModal({ mount, open, onClose, onAttached }: P
                                 <EmptyMedia variant='icon'>
                                     <HardDrive />
                                 </EmptyMedia>
-                                <EmptyTitle>{hasNodes ? 'All nodes attached' : 'No nodes yet'}</EmptyTitle>
+                                <EmptyTitle>{hasNodes ? t('All nodes attached') : t('No nodes yet')}</EmptyTitle>
                                 <EmptyDescription>
                                     {hasNodes
-                                        ? 'Every node is already attached to this mount.'
-                                        : 'Create a node before attaching it to this mount.'}
+                                        ? t('Every node is already attached to this mount.')
+                                        : t('Create a node before attaching it to this mount.')}
                                 </EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                     ) : (
                         <>
-                            <Label>Nodes</Label>
+                            <Label>{t('Nodes')}</Label>
                             <Select
                                 multiple
-                                placeholder='Select one or more nodes…'
+                                placeholder={t('Select one or more nodes…')}
                                 value={selected}
                                 onChange={(value) => setSelected((value as (string | number)[]).map(Number))}
                                 groups={groups.map((group) => ({
@@ -116,7 +118,7 @@ export default function AttachNodesModal({ mount, open, onClose, onAttached }: P
                             className={cn('w-full sm:w-auto', groups.length > 0 && 'sm:mr-2')}
                             onClick={onClose}
                         >
-                            {groups.length > 0 ? 'Cancel' : 'Close'}
+                            {groups.length > 0 ? t('Cancel') : t('Close')}
                         </Button>
                         {groups.length > 0 && (
                             <Button
@@ -125,7 +127,7 @@ export default function AttachNodesModal({ mount, open, onClose, onAttached }: P
                                 disabled={selected.length === 0}
                                 onClick={submit}
                             >
-                                Attach Nodes
+                                {t('Attach Nodes')}
                             </Button>
                         )}
                     </div>

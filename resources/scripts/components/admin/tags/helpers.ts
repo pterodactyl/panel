@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { httpValidationErrors } from '@/api/http';
 import type { AdminTag } from '@/api/admin/tags/queries';
 
@@ -27,7 +28,10 @@ export const nodeAcceptsEgg = (nodeTags: AdminTag[], eggTags: AdminTag[]): boole
 };
 
 export const nodeRejectsEggMessage = (nodeName: string, nodeTags: AdminTag[]): string =>
-    `${nodeName} only accepts eggs tagged ${nodeTags.map((tag) => tag.attributes.name).join(', ')}.`;
+    i18next.t('{{node}} only accepts eggs tagged {{tags}}.', {
+        node: nodeName,
+        tags: nodeTags.map((tag) => tag.attributes.name).join(', '),
+    });
 
 /** Submit meta of a form that can repeat its request with `ignore_tags`. */
 export interface TagCheckMeta {

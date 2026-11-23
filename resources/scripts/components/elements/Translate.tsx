@@ -12,13 +12,14 @@ export type TranslationValue =
 export type TranslationValues = Record<string, TranslationValue>;
 
 interface Props {
-    ns: string;
+    ns?: string;
     i18nKey: string;
     values?: TranslationValues;
+    components?: Readonly<Record<string, React.ReactElement>>;
     children?: React.ReactNode;
 }
 
-export default function Translate({ ns, children, ...props }: Props) {
+export default function Translate({ ns = 'translation', children, ...props }: Props) {
     const { t } = useTranslation(ns);
 
     return (

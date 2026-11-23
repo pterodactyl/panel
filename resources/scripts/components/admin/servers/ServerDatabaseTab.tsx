@@ -15,8 +15,10 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import ListToolbar from '@/components/elements/ListToolbar';
 import { NewLinkButton } from '@/components/elements/NewButton';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { useTranslation } from '@/sdk/localization';
 
 function ServerDatabaseContent({ server }: { server: AdminServer }) {
+    const { t } = useTranslation();
     const { attributes } = server;
     const { data: databases, error, isFetching, refetch } = useAdminServerDatabases(attributes.id);
     const data = useMemo(() => databases?.data ?? [], [databases?.data]);
@@ -25,7 +27,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
             [
                 {
                     id: 'name',
-                    header: 'Database',
+                    header: t('Database'),
                     cell: ({ row }) => (
                         <CopyOnClick text={row.original.attributes.name}>
                             <span className='font-mono text-sm'>{row.original.attributes.name}</span>
@@ -34,7 +36,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                 },
                 {
                     id: 'endpoint',
-                    header: 'Endpoint',
+                    header: t('Endpoint'),
                     cell: ({ row }) => (
                         <CopyOnClick
                             text={`${row.original.attributes.host.address}:${row.original.attributes.host.port}`}
@@ -48,7 +50,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                 },
                 {
                     id: 'username',
-                    header: 'Username',
+                    header: t('Username'),
                     cell: ({ row }) => (
                         <CopyOnClick text={row.original.attributes.username}>
                             <span className='text-xs'>{row.original.attributes.username}</span>
@@ -58,9 +60,9 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                 },
                 {
                     id: 'max',
-                    header: 'Max',
+                    header: t('Max'),
                     cell: ({ row }) => (
-                        <span className='text-xs'>{row.original.attributes.max_connections ?? 'Unlimited'}</span>
+                        <span className='text-xs'>{row.original.attributes.max_connections ?? t('Unlimited')}</span>
                     ),
                     meta: {
                         headerClassName: 'hidden xl:table-cell w-20 text-right',
@@ -71,7 +73,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                     <ServerDatabaseActions serverId={attributes.id} database={database} />
                 )),
             ] satisfies ColumnDef<AdminServerDatabase>[],
-        [attributes.id]
+        [attributes.id, t]
     );
     const table = useReactTable({
         data,
@@ -88,12 +90,15 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
     const canCreate = databaseLimit > 0 && data.length < databaseLimit;
     const usage =
         databaseLimit > 0 && data.length > 0
-            ? `${data.length} of ${databaseLimit} databases have been allocated to this server.`
+            ? t('{{used}} of {{limit}} databases have been allocated to this server.', {
+                  used: data.length,
+                  limit: databaseLimit,
+              })
             : null;
 
     return (
         <div>
-            <TitledGreyBox title='Databases'>
+            <TitledGreyBox title={t('Databases')}>
                 {databases ? (
                     <>
                         {(canCreate || usage) && (
@@ -110,11 +115,13 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                                         <EmptyMedia variant='icon'>
                                             <Database />
                                         </EmptyMedia>
-                                        <EmptyTitle>No databases</EmptyTitle>
+                                        <EmptyTitle>{t('No databases')}</EmptyTitle>
                                         <EmptyDescription>
                                             {databaseLimit > 0
-                                                ? "This server doesn't have any databases yet."
-                                                : "This server's database limit is 0. Raise it in the build settings to create databases."}
+                                                ? t("This server doesn't have any databases yet.")
+                                                : t(
+                                                      "This server's database limit is 0. Raise it in the build settings to create databases."
+                                                  )}
                                         </EmptyDescription>
                                     </EmptyHeader>
                                     <EmptyContent>
@@ -126,7 +133,7 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
                                                 isSecondary
                                                 icon={SlidersHorizontal}
                                             >
-                                                Build settings
+                                                {t('Build settings')}
                                             </NewLinkButton>
                                         )}
                                     </EmptyContent>
@@ -143,10 +150,13 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
 }
 
 export default function ServerDatabaseTab() {
+    const { t } = useTranslation();
     const { server } = useServerDetail();
 
     if (server.attributes.container.installed !== 1) {
-        return <ServerError message='Access to this resource is not allowed due to the current installation state.' />;
+        return (
+            <ServerError message={t('Access to this resource is not allowed due to the current installation state.')} />
+        );
     }
 
     return <ServerDatabaseContent server={server} />;

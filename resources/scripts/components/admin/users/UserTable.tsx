@@ -10,8 +10,10 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import DataTableColumnHeader from '@/components/elements/table/DataTableColumnHeader';
 import { actionsColumn, DeleteAction, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
 import { Form, useAppForm } from '@/components/form';
+import Translate from '@/components/elements/Translate';
 import { cn } from '@/lib/cn';
 import dayjs from '@/lib/dayjs';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 interface UserDialogProps {
     user: AdminUser;
@@ -20,6 +22,7 @@ interface UserDialogProps {
 }
 
 function DeleteUserDialog({ user, open, onClose }: UserDialogProps) {
+    const { t } = useTranslation();
     const { attributes } = user;
     const deleteUser = useDeleteAdminUser();
     const form = useAppForm({
@@ -42,39 +45,42 @@ function DeleteUserDialog({ user, open, onClose }: UserDialogProps) {
     return (
         <Dialog
             open={open}
-            title='Confirm user deletion'
+            title={t('Confirm user deletion')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
         >
             <SpinnerOverlay visible={isSubmitting} />
             <p className='text-sm'>
-                Deleting a user is permanent. This will permanently delete <strong>{attributes.email}</strong> and all
-                associated data.
+                <Translate
+                    i18nKey='Deleting a user is permanent. This will permanently delete <bold>{{email}}</bold> and all associated data.'
+                    values={{ email: attributes.email }}
+                    components={{ bold: <strong /> }}
+                />
             </p>
             <Form form={form} className='m-0 mt-6'>
                 <form.AppField
                     name='confirm'
                     validators={{
                         onChange: ({ value }) =>
-                            value === attributes.email ? undefined : 'The email address must be provided.',
+                            value === attributes.email ? undefined : t('The email address must be provided.'),
                     }}
                 >
                     {(field) => (
                         <field.TextField
                             type='text'
                             id={`confirm_${attributes.uuid}`}
-                            label='Confirm email address'
-                            description='Enter the email address to confirm deletion.'
+                            label={t('Confirm email address')}
+                            description={t('Enter the email address to confirm deletion.')}
                         />
                     )}
                 </form.AppField>
                 <div className='mt-6 flex justify-end gap-2'>
                     <Button.Text type='button' isSecondary onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button.Text>
                     <form.AppForm>
-                        <form.SubmitButton color='red'>Delete user</form.SubmitButton>
+                        <form.SubmitButton color='red'>{t('Delete user')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>
@@ -83,6 +89,7 @@ function DeleteUserDialog({ user, open, onClose }: UserDialogProps) {
 }
 
 const UserIdentityCell = ({ user }: { user: AdminUser }) => {
+    const { t } = useTranslation();
     const { attributes } = user;
     const name = [attributes.first_name, attributes.last_name].filter(Boolean).join(' ') || attributes.username;
 
@@ -91,7 +98,7 @@ const UserIdentityCell = ({ user }: { user: AdminUser }) => {
             <img
                 className='hidden h-9 w-9 shrink-0 rounded-full border border-border bg-background sm:block'
                 src={`${attributes.image}?s=100`}
-                alt={`${attributes.email} avatar`}
+                alt={t('{{email}} avatar', { email: attributes.email })}
             />
             <div className='min-w-0'>
                 {attributes.id === undefined ? (
@@ -110,7 +117,7 @@ const UserIdentityCell = ({ user }: { user: AdminUser }) => {
                         {attributes.root_admin ? (
                             <Icon
                                 icon={Star}
-                                aria-label='Root administrator'
+                                aria-label={t('Root administrator')}
                                 className='h-3.5 w-3.5 shrink-0 text-warning'
                             />
                         ) : null}
@@ -125,17 +132,18 @@ const UserIdentityCell = ({ user }: { user: AdminUser }) => {
 };
 
 const UserActionsCell = ({ user }: { user: AdminUser }) => {
+    const { t } = useTranslation();
     const { id, email } = user.attributes;
 
     return (
         <RowActions>
-            <EditLinkAction aria-label={`Edit ${email}`} to='/panel/users/$id' params={{ id }} />
+            <EditLinkAction aria-label={t('Edit {{name}}', { name: email })} to='/panel/users/$id' params={{ id }} />
             <Dialog.Trigger
                 trigger={({ onClick }) => (
                     <DeleteAction
-                        aria-label={`Delete ${email}`}
+                        aria-label={t('Delete {{name}}', { name: email })}
                         disabled={user.attributes.servers_count > 0}
-                        disabledReason='Users who own servers cannot be deleted.'
+                        disabledReason={t('Users who own servers cannot be deleted.')}
                         onClick={onClick}
                     />
                 )}
@@ -146,84 +154,88 @@ const UserActionsCell = ({ user }: { user: AdminUser }) => {
     );
 };
 
-export const userColumns = [
-    {
-        id: 'email',
-        accessorFn: (user) => user.attributes.email,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='User' />,
-        cell: ({ row }) => <UserIdentityCell user={row.original} />,
-        enableSorting: true,
-        meta: { headerClassName: 'min-w-52', cellClassName: 'min-w-52' },
-    },
-    {
-        id: 'username',
-        accessorFn: (user) => user.attributes.username,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,
-        cell: ({ row }) => (
-            <span className='block w-0 min-w-full truncate font-mono text-xs' title={row.original.attributes.username}>
-                {row.original.attributes.username}
-            </span>
-        ),
-        enableSorting: true,
-        meta: { headerClassName: 'hidden w-36 @xl:table-cell', cellClassName: 'hidden w-36 @xl:table-cell' },
-    },
-    {
-        id: 'security',
-        header: 'Security',
-        cell: ({ row }) => {
-            const enabled = row.original.attributes['2fa'];
-
-            return (
+export const userColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'email',
+            accessorFn: (user) => user.attributes.email,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('User')} />,
+            cell: ({ row }) => <UserIdentityCell user={row.original} />,
+            enableSorting: true,
+            meta: { headerClassName: 'min-w-52', cellClassName: 'min-w-52' },
+        },
+        {
+            id: 'username',
+            accessorFn: (user) => user.attributes.username,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('Username')} />,
+            cell: ({ row }) => (
                 <span
-                    className={cn(
-                        'inline-flex items-center gap-1.5 text-xs',
-                        enabled ? 'text-success' : 'text-destructive'
-                    )}
+                    className='block w-0 min-w-full truncate font-mono text-xs'
+                    title={row.original.attributes.username}
                 >
-                    <Icon icon={enabled ? UserLock : LockOpen} aria-hidden='true' className='h-3.5 w-3.5' />
-                    {enabled ? '2FA on' : '2FA off'}
+                    {row.original.attributes.username}
                 </span>
-            );
+            ),
+            enableSorting: true,
+            meta: { headerClassName: 'hidden w-36 @xl:table-cell', cellClassName: 'hidden w-36 @xl:table-cell' },
         },
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-24 @2xl:table-cell', cellClassName: 'hidden w-24 @2xl:table-cell' },
-    },
-    {
-        id: 'servers_count',
-        header: 'Servers',
-        cell: ({ row }) => {
-            const { id, servers_count } = row.original.attributes;
+        {
+            id: 'security',
+            header: t('Security'),
+            cell: ({ row }) => {
+                const enabled = row.original.attributes['2fa'];
 
-            return id === undefined ? (
-                <span className='tabular-nums'>{servers_count}</span>
-            ) : (
-                <Link
-                    to='/panel/servers'
-                    search={{ filter: `owner_id:${id}` }}
-                    className='tabular-nums text-accent hover:text-accent/80'
-                >
-                    {servers_count}
-                </Link>
-            );
+                return (
+                    <span
+                        className={cn(
+                            'inline-flex items-center gap-1.5 text-xs',
+                            enabled ? 'text-success' : 'text-destructive'
+                        )}
+                    >
+                        <Icon icon={enabled ? UserLock : LockOpen} aria-hidden='true' className='h-3.5 w-3.5' />
+                        {enabled ? t('2FA on') : t('2FA off')}
+                    </span>
+                );
+            },
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-24 @2xl:table-cell', cellClassName: 'hidden w-24 @2xl:table-cell' },
         },
-        enableSorting: false,
-        meta: { headerClassName: 'hidden w-20 @md:table-cell', cellClassName: 'hidden w-20 @md:table-cell' },
-    },
-    {
-        id: 'created_at',
-        accessorFn: (user) => user.attributes.created_at,
-        header: ({ column }) => <DataTableColumnHeader column={column} title='Created' />,
-        cell: ({ row }) => (
-            <time
-                className='whitespace-nowrap text-xs text-muted-foreground'
-                dateTime={row.original.attributes.created_at}
-            >
-                {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
-            </time>
-        ),
-        enableSorting: true,
-        sortDescFirst: true,
-        meta: { headerClassName: 'hidden w-28 @3xl:table-cell', cellClassName: 'hidden w-28 @3xl:table-cell' },
-    },
-    actionsColumn<AdminUser>(2, (user) => <UserActionsCell user={user} />),
-] satisfies ColumnDef<AdminUser>[];
+        {
+            id: 'servers_count',
+            header: t('Servers'),
+            cell: ({ row }) => {
+                const { id, servers_count } = row.original.attributes;
+
+                return id === undefined ? (
+                    <span className='tabular-nums'>{servers_count}</span>
+                ) : (
+                    <Link
+                        to='/panel/servers'
+                        search={{ filter: `owner_id:${id}` }}
+                        className='tabular-nums text-accent hover:text-accent/80'
+                    >
+                        {servers_count}
+                    </Link>
+                );
+            },
+            enableSorting: false,
+            meta: { headerClassName: 'hidden w-20 @md:table-cell', cellClassName: 'hidden w-20 @md:table-cell' },
+        },
+        {
+            id: 'created_at',
+            accessorFn: (user) => user.attributes.created_at,
+            header: ({ column }) => <DataTableColumnHeader column={column} title={t('Created')} />,
+            cell: ({ row }) => (
+                <time
+                    className='whitespace-nowrap text-xs text-muted-foreground'
+                    dateTime={row.original.attributes.created_at}
+                >
+                    {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
+                </time>
+            ),
+            enableSorting: true,
+            sortDescFirst: true,
+            meta: { headerClassName: 'hidden w-28 @3xl:table-cell', cellClassName: 'hidden w-28 @3xl:table-cell' },
+        },
+        actionsColumn<AdminUser>(2, (user) => <UserActionsCell user={user} />),
+    ] satisfies ColumnDef<AdminUser>[];

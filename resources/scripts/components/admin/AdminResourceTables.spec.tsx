@@ -3,6 +3,7 @@
 import type { ComponentProps } from 'react';
 import { getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
 import { cleanup, render, screen } from '@testing-library/react';
+import i18next from 'i18next';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type * as NodeQueries from '@/api/admin/nodes/queries';
 import type { AdminDatabaseHost } from '@/api/admin/database-hosts/queries';
@@ -128,29 +129,49 @@ function SingleRowTable<TData>({ row, columns }: { row: TData; columns: ColumnDe
 
 describe('admin resource tables', () => {
     it('only enables database-host sorting for API-backed columns', () => {
-        expect(databaseHostColumns.filter((column) => column.enableSorting).map((column) => column.id)).toEqual([
-            'name',
-            'created_at',
-        ]);
+        expect(
+            databaseHostColumns(i18next.t)
+                .filter((column) => column.enableSorting)
+                .map((column) => column.id)
+        ).toEqual(['name', 'created_at']);
     });
 
     it('only enables mount sorting for API-backed columns', () => {
-        expect(mountColumns.filter((column) => column.enableSorting).map((column) => column.id)).toEqual(['name']);
+        expect(
+            mountColumns((key) => key)
+                .filter((column) => column.enableSorting)
+                .map((column) => column.id)
+        ).toEqual(['name']);
     });
 
     it.each([
-        ['node', () => <SingleRowTable row={node} columns={nodeColumns} />, 'Edit Node One', '/panel/nodes/3/settings'],
-        ['user', () => <SingleRowTable row={user} columns={userColumns} />, 'Edit admin@example.com', '/panel/users/5'],
+        [
+            'node',
+            () => <SingleRowTable row={node} columns={nodeColumns(i18next.t)} />,
+            'Edit Node One',
+            '/panel/nodes/3/settings',
+        ],
+        [
+            'user',
+            () => <SingleRowTable row={user} columns={userColumns(i18next.t)} />,
+            'Edit admin@example.com',
+            '/panel/users/5',
+        ],
         [
             'location',
-            () => <SingleRowTable row={location} columns={locationColumns} />,
+            () => <SingleRowTable row={location} columns={locationColumns(i18next.t)} />,
             'Edit us-east',
             '/panel/locations/2',
         ],
-        ['mount', () => <SingleRowTable row={mount} columns={mountColumns} />, 'Edit Shared Maps', '/panel/mounts/9'],
+        [
+            'mount',
+            () => <SingleRowTable row={mount} columns={mountColumns((key) => key)} />,
+            'Edit Shared Maps',
+            '/panel/mounts/9',
+        ],
         [
             'database host',
-            () => <SingleRowTable row={host} columns={databaseHostColumns} />,
+            () => <SingleRowTable row={host} columns={databaseHostColumns(i18next.t)} />,
             'Edit Primary MySQL',
             '/panel/databases/4',
         ],

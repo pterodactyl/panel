@@ -8,8 +8,10 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
 import { Form, useAppForm } from '@/components/form';
 import { eggDetailRoute } from '@/router/routeTree';
+import { useTranslation } from '@/sdk/localization';
 
 export default function EggTagsTab() {
+    const { t } = useTranslation();
     const loadedEgg = eggDetailRoute.useLoaderData();
     const eggId = loadedEgg.attributes.id;
     const { data: egg = loadedEgg, error: eggError, refetch } = useAdminEgg(eggId);
@@ -52,22 +54,22 @@ export default function EggTagsTab() {
     }
 
     return (
-        <ContentBox title='Egg Tags'>
+        <ContentBox title={t('Egg Tags')}>
             {tags.length === 0 && <NoTagsYet />}
             <Form form={form} className='m-0'>
                 <form.AppField name='tags'>
                     {() => (
                         <TagsField
                             tags={tags}
-                            label='Assigned Tags'
-                            description='Tags organize eggs and match them with nodes configured to accept them.'
-                            emptyText='No tags are assigned to this egg.'
+                            label={t('Assigned Tags')}
+                            description={t('Tags organize eggs and match them with nodes configured to accept them.')}
+                            emptyText={t('No tags are assigned to this egg.')}
                         />
                     )}
                 </form.AppField>
                 <div className='mt-6 flex justify-end'>
                     <form.AppForm>
-                        <form.SubmitButton>Save tags</form.SubmitButton>
+                        <form.SubmitButton>{t('Save tags')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>

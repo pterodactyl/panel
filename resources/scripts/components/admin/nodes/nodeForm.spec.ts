@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { describe, expect, it } from 'vitest';
 import { newNodeFormValues, nodeNumberValidators, nodeValuesFromForm } from './nodeForm';
 
@@ -9,16 +10,20 @@ describe('node form', () => {
     });
 
     it('rejects emptied number inputs', () => {
-        expect(nodeNumberValidators.memory.onChange({ value: null })).toBe('A memory limit must be provided.');
-        expect(nodeNumberValidators.memoryOverallocate.onChange({ value: null })).toBe(
+        expect(nodeNumberValidators(i18next.t).memory.onChange({ value: null })).toBe(
+            'A memory limit must be provided.'
+        );
+        expect(nodeNumberValidators(i18next.t).memoryOverallocate.onChange({ value: null })).toBe(
             'A memory overallocation must be provided.'
         );
-        expect(nodeNumberValidators.daemonSftp.onChange({ value: null })).toBe('A daemon SFTP port must be provided.');
+        expect(nodeNumberValidators(i18next.t).daemonSftp.onChange({ value: null })).toBe(
+            'A daemon SFTP port must be provided.'
+        );
     });
 
     it('keeps the existing range checks for entered numbers', () => {
-        expect(nodeNumberValidators.disk.onChange({ value: 0 })).toBe('A disk limit must be provided.');
-        expect(nodeNumberValidators.disk.onChange({ value: 1 })).toBeUndefined();
-        expect(nodeNumberValidators.memoryOverallocate.onChange({ value: -1 })).toBeUndefined();
+        expect(nodeNumberValidators(i18next.t).disk.onChange({ value: 0 })).toBe('A disk limit must be provided.');
+        expect(nodeNumberValidators(i18next.t).disk.onChange({ value: 1 })).toBeUndefined();
+        expect(nodeNumberValidators(i18next.t).memoryOverallocate.onChange({ value: -1 })).toBeUndefined();
     });
 });

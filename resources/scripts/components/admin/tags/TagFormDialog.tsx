@@ -1,4 +1,5 @@
 import { useStore } from '@tanstack/react-form';
+import i18next from 'i18next';
 import {
     createAdminTagInput,
     type AdminTag,
@@ -11,6 +12,7 @@ import Button from '@/components/elements/Button';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, useAppForm } from '@/components/form';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     open: boolean;
@@ -36,29 +38,40 @@ const toRequestValues = (values: TagFormValues): AdminTagValues => ({
     color: values.color.trim() || null,
 });
 
-const validateRequired = (label: string, value: string): string | undefined => {
+const validateRequired = (value: string, missing: () => string, tooLong: () => string): string | undefined => {
     const length = value.trim().length;
 
     if (length === 0) {
-        return `${label} is required.`;
+        return missing();
     }
 
     if (length > 191) {
-        return `${label} must not exceed 191 characters.`;
+        return tooLong();
     }
 
     return undefined;
 };
 
+const validateName = (value: string): string | undefined =>
+    validateRequired(
+        value,
+        () => i18next.t('Name is required.'),
+        () => i18next.t('Name must not exceed 191 characters.')
+    );
+
 const validateSlug = (value: string): string | undefined => {
-    const requiredError = validateRequired('Slug', value);
+    const requiredError = validateRequired(
+        value,
+        () => i18next.t('Slug is required.'),
+        () => i18next.t('Slug must not exceed 191 characters.')
+    );
 
     if (requiredError) {
         return requiredError;
     }
 
     if (/^\d+$/.test(value.trim())) {
-        return 'A slug cannot contain only numbers.';
+        return i18next.t('A slug cannot contain only numbers.');
     }
 
     return undefined;
@@ -77,10 +90,11 @@ const validateColor = (value: string): string | undefined => {
 
     return color.startsWith('#') && hasValidLength && isHexadecimal
         ? undefined
-        : 'Use a hexadecimal color with 3, 4, 6, or 8 digits.';
+        : i18next.t('Use a hexadecimal color with 3, 4, 6, or 8 digits.');
 };
 
 export default function TagFormDialog({ open, onClose, tag }: Props) {
+    const { t } = useTranslation();
     const createTag = useCreateAdminTag();
     const updateTag = useUpdateAdminTag();
     const form = useAppForm({
@@ -104,7 +118,7 @@ export default function TagFormDialog({ open, onClose, tag }: Props) {
     return (
         <Dialog
             open={open}
-            title={tag ? 'Update tag' : 'Create tag'}
+            title={tag ? t('Update tag') : t('Create tag')}
             preventExternalClose={isSubmitting}
             hideCloseIcon={isSubmitting}
             onClose={onClose}
@@ -112,15 +126,12 @@ export default function TagFormDialog({ open, onClose, tag }: Props) {
             <SpinnerOverlay visible={isSubmitting} />
             <Form form={form} className='m-0'>
                 <div className='grid gap-5'>
-                    <form.AppField
-                        name='name'
-                        validators={{ onChange: ({ value }) => validateRequired('Name', value) }}
-                    >
+                    <form.AppField name='name' validators={{ onChange: ({ value }) => validateName(value) }}>
                         {(field) => (
                             <field.TextField
                                 type='text'
-                                label='Name'
-                                description='The readable label shown throughout the panel.'
+                                label={t('Name')}
+                                description={t('The readable label shown throughout the panel.')}
                                 autoComplete='off'
                             />
                         )}
@@ -129,8 +140,8 @@ export default function TagFormDialog({ open, onClose, tag }: Props) {
                         {(field) => (
                             <field.TextField
                                 type='text'
-                                label='Slug'
-                                description='A stable identifier used by deployments and API integrations.'
+                                label={t('Slug')}
+                                description={t('A stable identifier used by deployments and API integrations.')}
                                 autoComplete='off'
                                 spellCheck={false}
                             />
@@ -140,9 +151,9 @@ export default function TagFormDialog({ open, onClose, tag }: Props) {
                         {(field) => (
                             <field.TextField
                                 type='text'
-                                label='Color'
-                                description='Optional hexadecimal color used for the tag indicator.'
-                                placeholder='Hex color'
+                                label={t('Color')}
+                                description={t('Optional hexadecimal color used for the tag indicator.')}
+                                placeholder={t('Hex color')}
                                 autoComplete='off'
                                 spellCheck={false}
                             />
@@ -151,10 +162,10 @@ export default function TagFormDialog({ open, onClose, tag }: Props) {
                 </div>
                 <div className='mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end'>
                     <Button.Text type='button' isSecondary onClick={onClose}>
-                        Cancel
+                        {t('Cancel')}
                     </Button.Text>
                     <form.AppForm>
-                        <form.SubmitButton>{tag ? 'Save changes' : 'Create tag'}</form.SubmitButton>
+                        <form.SubmitButton>{tag ? t('Save changes') : t('Create tag')}</form.SubmitButton>
                     </form.AppForm>
                 </div>
             </Form>

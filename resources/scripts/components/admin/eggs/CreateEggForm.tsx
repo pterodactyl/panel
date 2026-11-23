@@ -13,9 +13,11 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import EggConfigurationFields from '@/components/admin/eggs/EggConfigurationForm';
 import { emptyEggFormValues, toApiValues } from '@/components/admin/eggs/helpers';
 import type { CodemirrorEditorHandle } from '@/components/elements/LazyCodemirrorEditor';
+import { useTranslation } from '@/sdk/localization';
 
 export default function CreateEggForm() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const logsEditor = useRef<CodemirrorEditorHandle | null>(null);
     const filesEditor = useRef<CodemirrorEditorHandle | null>(null);
@@ -58,16 +60,16 @@ export default function CreateEggForm() {
 
     return (
         <AdminContentBlock
-            title='Admin · Create Egg'
-            heading='Create Egg'
-            description='Create a reusable server template and startup configuration.'
+            title={t('Admin · Create Egg')}
+            heading={t('Create Egg')}
+            description={t('Create a reusable server template and startup configuration.')}
         >
             <Link
                 to='/panel/eggs'
                 className='inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4'
             >
                 <Icon icon={ArrowLeft} className='mr-2' />
-                Back to Eggs
+                {t('Back to Eggs')}
             </Link>
             {eggsFetching ? (
                 <Spinner size='large' centered />
@@ -96,7 +98,7 @@ export default function CreateEggForm() {
                     </form.AppField>
                     <div className='flex justify-end mt-6'>
                         <form.AppForm>
-                            <form.SubmitButton>Create Egg</form.SubmitButton>
+                            <form.SubmitButton>{t('Create Egg')}</form.SubmitButton>
                         </form.AppForm>
                     </div>
                 </Form>

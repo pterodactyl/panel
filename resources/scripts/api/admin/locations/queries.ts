@@ -1,15 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import type { ListSort, QueryBuilderParams } from '@/api/queryParameters';
 
 import { listQuery, listSorts } from '@/api/queryParameters';
 import { allPagesQueryOptions, listItems, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import {
     adminCreateLocationMutation,
     adminDeleteLocationMutation,
@@ -111,11 +108,11 @@ export const useCreateAdminLocation = () => {
         ...adminCreateLocationMutation(),
         onSuccess: async (location) => {
             await invalidateGeneratedOperations(queryClient, ['adminListLocations']);
-            const messages = resourceMutationMessages('location', 'create', location.attributes.short);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Location created'), {
+                description: i18next.t('{{name}} has been created.', { name: location.attributes.short }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('location', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create location')),
     });
 };
 
@@ -129,11 +126,11 @@ export const useUpdateAdminLocation = () => {
                 invalidateGeneratedOperations(queryClient, ['adminListLocations']),
                 queryClient.invalidateQueries({ queryKey: adminLocationDetailKey(variables.path.location_id) }),
             ]);
-            const messages = resourceMutationMessages('location', 'update', location.attributes.short);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Location updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: location.attributes.short }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('location', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update location')),
     });
 };
 
@@ -146,10 +143,13 @@ export const useDeleteAdminLocation = () => {
             removeQueriesWhenUnobserved(queryClient, { queryKey: adminLocationDetailKey(variables.path.location_id) });
             await invalidateGeneratedOperations(queryClient, ['adminListLocations']);
             const name = variables.meta?.short;
-            const messages = resourceMutationMessages('location', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Location deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The location has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('location', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete location')),
     });
 };

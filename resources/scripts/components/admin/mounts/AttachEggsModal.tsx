@@ -15,6 +15,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { relationshipData } from '@/api/relationships';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props {
     mount: AdminMountWithRelations;
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export default function AttachEggsModal({ mount, open, onClose, onAttached }: Props) {
+    const { t } = useTranslation();
     const [selected, setSelected] = useState<number[]>([]);
     const attachEggs = useAttachAdminMountEggs();
     const submitting = attachEggs.isPending;
@@ -53,7 +55,7 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
     return (
         <Dialog
             open={open}
-            title='Attach eggs'
+            title={t('Attach eggs')}
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
@@ -69,20 +71,22 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                                 <EmptyMedia variant='icon'>
                                     <Egg />
                                 </EmptyMedia>
-                                <EmptyTitle>{eggs.data.length === 0 ? 'No eggs yet' : 'All eggs attached'}</EmptyTitle>
+                                <EmptyTitle>
+                                    {eggs.data.length === 0 ? t('No eggs yet') : t('All eggs attached')}
+                                </EmptyTitle>
                                 <EmptyDescription>
                                     {eggs.data.length === 0
-                                        ? 'Create or import an egg before attaching it to this mount.'
-                                        : 'Every egg is already attached to this mount.'}
+                                        ? t('Create or import an egg before attaching it to this mount.')
+                                        : t('Every egg is already attached to this mount.')}
                                 </EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                     ) : (
                         <>
-                            <Label>Eggs</Label>
+                            <Label>{t('Eggs')}</Label>
                             <Select
                                 multiple
-                                placeholder='Select one or more eggs…'
+                                placeholder={t('Select one or more eggs…')}
                                 value={selected}
                                 onChange={(value) => setSelected((value as (string | number)[]).map(Number))}
                                 options={availableEggs.map((egg) => ({
@@ -99,7 +103,7 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                             className={cn('w-full sm:w-auto', availableEggs.length > 0 && 'sm:mr-2')}
                             onClick={onClose}
                         >
-                            {availableEggs.length > 0 ? 'Cancel' : 'Close'}
+                            {availableEggs.length > 0 ? t('Cancel') : t('Close')}
                         </Button>
                         {availableEggs.length > 0 && (
                             <Button
@@ -108,7 +112,7 @@ export default function AttachEggsModal({ mount, open, onClose, onAttached }: Pr
                                 disabled={selected.length === 0}
                                 onClick={submit}
                             >
-                                Attach Eggs
+                                {t('Attach Eggs')}
                             </Button>
                         )}
                     </div>

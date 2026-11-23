@@ -1,6 +1,8 @@
 import type { AdminNode, NodeValues } from '@/api/admin/nodes/queries';
 import { type NumberInputValue, requiredNumber, submittedNumber } from '@/components/admin/numberInput';
+import i18next from 'i18next';
 import { initialExtensionValues } from '@/extensions/forms';
+import type { Translation } from '@/sdk/localization';
 
 export interface NodeFormValues extends Omit<
     NodeValues,
@@ -77,30 +79,30 @@ export const nodeValuesFromForm = ({
 
 export const validateNodeName = (value: string): string | undefined => {
     if (value.length < 1) {
-        return 'A name must be provided.';
+        return i18next.t('A name must be provided.');
     }
 
     if (value.length > 100) {
-        return 'A name must not exceed 100 characters.';
+        return i18next.t('A name must not exceed 100 characters.');
     }
 
     return undefined;
 };
 
-export const nodeNumberValidators = {
+export const nodeNumberValidators = (t: Translation['t']) => ({
     memory: {
-        onChange: requiredNumber('A memory limit must be provided.', (value) =>
-            value >= 1 ? undefined : 'A memory limit must be provided.'
+        onChange: requiredNumber(t('A memory limit must be provided.'), (value) =>
+            value >= 1 ? undefined : t('A memory limit must be provided.')
         ),
     },
-    memoryOverallocate: { onChange: requiredNumber('A memory overallocation must be provided.') },
+    memoryOverallocate: { onChange: requiredNumber(t('A memory overallocation must be provided.')) },
     disk: {
-        onChange: requiredNumber('A disk limit must be provided.', (value) =>
-            value >= 1 ? undefined : 'A disk limit must be provided.'
+        onChange: requiredNumber(t('A disk limit must be provided.'), (value) =>
+            value >= 1 ? undefined : t('A disk limit must be provided.')
         ),
     },
-    diskOverallocate: { onChange: requiredNumber('A disk overallocation must be provided.') },
-    uploadSize: { onChange: requiredNumber('An upload size limit must be provided.') },
-    daemonListen: { onChange: requiredNumber('A daemon port must be provided.') },
-    daemonSftp: { onChange: requiredNumber('A daemon SFTP port must be provided.') },
-};
+    diskOverallocate: { onChange: requiredNumber(t('A disk overallocation must be provided.')) },
+    uploadSize: { onChange: requiredNumber(t('An upload size limit must be provided.')) },
+    daemonListen: { onChange: requiredNumber(t('A daemon port must be provided.')) },
+    daemonSftp: { onChange: requiredNumber(t('A daemon SFTP port must be provided.')) },
+});

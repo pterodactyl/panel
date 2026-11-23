@@ -49,6 +49,7 @@ export interface TablePagination {
     count: number;
     /** Names the rows in the summary, such as "backups". */
     itemLabel?: string;
+    summary?(range: { start: number; end: number; count: number }): string;
     onPageSelect(page: number): void;
 }
 export interface TableProps<TRow> {
@@ -150,6 +151,7 @@ export function Table<TRow>({ rows, columns, keyOf, pagination, ...props }: Tabl
                 total={pagination.total}
                 count={pagination.count}
                 itemLabel={pagination.itemLabel}
+                summary={pagination.summary}
             />
         </>
     );

@@ -7,15 +7,12 @@ import {
     type UseQueryResult,
 } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 
 import { listQuery, listSorts, type ListSort } from '@/api/queryParameters';
 import { allPagesQueryOptions, MAX_PER_PAGE } from '@/api/pagination';
 import { withQueryOverrides, type ResourceQueryOverrides } from '@/api/resourceQuery';
-import {
-    invalidateGeneratedOperations,
-    removeQueriesWhenUnobserved,
-    resourceMutationMessages,
-} from '@/api/mutationUtils';
+import { invalidateGeneratedOperations, removeQueriesWhenUnobserved } from '@/api/mutationUtils';
 import { adminServersQueryOptions } from '@/api/admin/servers/queries';
 import { allAdminLocationsQueryOptions, type AdminLocation } from '@/api/admin/locations/queries';
 import {
@@ -398,11 +395,11 @@ export const useCreateAdminNode = () => {
         ...adminCreateNodeMutation(),
         onSuccess: async (node) => {
             await invalidateGeneratedOperations(queryClient, ['adminListNodes']);
-            const messages = resourceMutationMessages('node', 'create', node.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Node created'), {
+                description: i18next.t('{{name}} has been created.', { name: node.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'create').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create node')),
     });
 };
 
@@ -419,11 +416,11 @@ export const useUpdateAdminNode = () => {
                     queryKey: adminGetNodeConfigurationQueryKey({ path: { node_id: variables.path.node_id } }),
                 }),
             ]);
-            const messages = resourceMutationMessages('node', 'update', node.attributes.name);
-
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Node updated'), {
+                description: i18next.t('{{name}} has been updated.', { name: node.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'update').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update node')),
     });
 };
 
@@ -439,18 +436,21 @@ export const useDeleteAdminNode = () => {
 
             await invalidateGeneratedOperations(queryClient, ['adminListNodes']);
             const name = variables.meta?.name;
-            const messages = resourceMutationMessages('node', 'delete', name);
 
-            toast.success(messages.success.title, { description: messages.success.description });
+            toast.success(i18next.t('Node deleted'), {
+                description: name
+                    ? i18next.t('{{name}} has been deleted.', { name })
+                    : i18next.t('The node has been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, resourceMutationMessages('node', 'delete').errorTitle),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete node')),
     });
 };
 
 export const useGenerateAdminNodeDeployToken = () =>
     useMutation({
         ...adminCreateNodeDeployTokenMutation(),
-        onError: (error) => notifyHttpError(error, 'Unable to generate deploy token'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to generate deploy token')),
     });
 
 export const useCreateAdminNodeAllocations = () => {
@@ -460,9 +460,11 @@ export const useCreateAdminNodeAllocations = () => {
         ...adminCreateNodeAllocationsMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]);
-            toast.success('Allocations assigned', { description: 'New allocations have been assigned.' });
+            toast.success(i18next.t('Allocations assigned'), {
+                description: i18next.t('New allocations have been assigned.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to assign allocations'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to assign allocations')),
     });
 };
 
@@ -472,7 +474,7 @@ export const useUpdateAdminNodeAllocationAlias = () => {
     return useMutation({
         ...adminUpdateNodeAllocationMutation(),
         onSuccess: (_data, variables) => invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]),
-        onError: (error) => notifyHttpError(error, 'Unable to update allocation alias'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update allocation alias')),
     });
 };
 
@@ -482,7 +484,7 @@ export const useDeleteAdminNodeAllocation = () => {
     return useMutation({
         ...adminDeleteNodeAllocationMutation(),
         onSuccess: (_data, variables) => invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]),
-        onError: (error) => notifyHttpError(error, 'Unable to delete allocation'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete allocation')),
     });
 };
 
@@ -493,9 +495,11 @@ export const useBulkDeleteAdminNodeAllocations = () => {
         ...adminBulkDeleteNodeAllocationsMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]);
-            toast.success('Allocations deleted', { description: 'Selected allocations have been deleted.' });
+            toast.success(i18next.t('Allocations deleted'), {
+                description: i18next.t('Selected allocations have been deleted.'),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete allocations'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete allocations')),
     });
 };
 
@@ -506,10 +510,12 @@ export const useDeleteAdminNodeIpBlockAllocations = () => {
         ...adminDeleteNodeAllocationIpBlockMutation(),
         onSuccess: async (_data, variables) => {
             await invalidateAdminNodeAllocations(queryClient, [variables.path.node_id]);
-            toast.success('Allocations deleted', {
-                description: `All unassigned allocations for ${variables.body.ip} have been deleted.`,
+            toast.success(i18next.t('Allocations deleted'), {
+                description: i18next.t('All unassigned allocations for {{ip}} have been deleted.', {
+                    ip: variables.body.ip,
+                }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete allocations'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete allocations')),
     });
 };

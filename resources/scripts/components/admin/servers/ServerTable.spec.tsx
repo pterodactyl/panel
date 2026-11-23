@@ -27,9 +27,10 @@ describe('ServerTable', () => {
     });
 
     it('only enables sorting for server-backed sort columns', () => {
-        expect(serverColumns.filter((column) => column.enableSorting).map((column) => column.id)).toEqual([
-            'name',
-            'created_at',
-        ]);
+        expect(
+            serverColumns((key) => key)
+                .filter((column) => column.enableSorting)
+                .map((column) => column.id)
+        ).toEqual(['name', 'created_at']);
     });
 });

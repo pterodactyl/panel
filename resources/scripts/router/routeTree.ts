@@ -2,6 +2,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import type { AnyRoute } from '@tanstack/react-router';
 import { createRootRouteWithContext, createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router';
 import { publishAreaNav, type AreaNavEntry } from '@/router/nav';
+import { translatable } from '@/sdk/localization';
 import {
     getExtensionScreens,
     prepareExtensions,
@@ -784,7 +785,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: '/',
-        staticData: { nav: { label: 'Overview', exact: true, icon: 'layout-dashboard' } },
+        staticData: { nav: { label: translatable('Overview'), exact: true, icon: 'layout-dashboard' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminVersionQueryOptions(), revalidateIfStale: true });
         },
@@ -793,7 +794,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'activity',
-        staticData: { nav: { label: 'Activity', icon: 'history' } },
+        staticData: { nav: { label: translatable('Activity'), icon: 'history' } },
         validateSearch: parseActivitySearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, event: search.event, user: search.user }),
         loader: async ({ context, deps }) => {
@@ -817,7 +818,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'settings',
-        staticData: { nav: { label: 'Settings', icon: 'settings' } },
+        staticData: { nav: { label: translatable('Settings'), icon: 'settings' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminSettingsQueryOptions(), revalidateIfStale: true });
         },
@@ -851,7 +852,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'users',
-        staticData: { nav: { label: 'Users', icon: 'users' } },
+        staticData: { nav: { label: translatable('Users'), icon: 'users' } },
         validateSearch: parseUserListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -876,7 +877,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'locations',
-        staticData: { nav: { label: 'Locations', icon: 'map-pin' } },
+        staticData: { nav: { label: translatable('Locations'), icon: 'map-pin' } },
         validateSearch: parseLocationListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -894,7 +895,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'nodes',
-        staticData: { nav: { label: 'Nodes', icon: 'network' } },
+        staticData: { nav: { label: translatable('Nodes'), icon: 'network' } },
         validateSearch: parseNodeListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -919,7 +920,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'servers',
-        staticData: { nav: { label: 'Servers', icon: 'server' } },
+        staticData: { nav: { label: translatable('Servers'), icon: 'server' } },
         validateSearch: parseServerListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -961,7 +962,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'databases',
-        staticData: { nav: { label: 'Database Hosts', icon: 'database' } },
+        staticData: { nav: { label: translatable('Database Hosts'), icon: 'database' } },
         validateSearch: parseDatabaseHostListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -987,7 +988,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'mounts',
-        staticData: { nav: { label: 'Mounts', icon: 'folder-tree' } },
+        staticData: { nav: { label: translatable('Mounts'), icon: 'folder-tree' } },
         validateSearch: parseMountListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -1013,7 +1014,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'eggs',
-        staticData: { nav: { label: 'Eggs', icon: 'egg' } },
+        staticData: { nav: { label: translatable('Eggs'), icon: 'egg' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminEggsQueryOptions(), revalidateIfStale: true });
         },
@@ -1041,7 +1042,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'tags',
-        staticData: { nav: { label: 'Tags', icon: 'tag' } },
+        staticData: { nav: { label: translatable('Tags'), icon: 'tag' } },
         validateSearch: parseTagListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {
@@ -1058,7 +1059,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'extensions',
-        staticData: { nav: { label: 'Extensions', icon: 'blocks' } },
+        staticData: { nav: { label: translatable('Extensions'), icon: 'blocks' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminExtensionsQueryOptions(), revalidateIfStale: true });
         },
@@ -1070,7 +1071,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'themes',
-        staticData: { nav: { label: 'Themes', icon: 'palette' } },
+        staticData: { nav: { label: translatable('Themes'), icon: 'palette' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...adminThemesQueryOptions(), revalidateIfStale: true });
         },
@@ -1082,7 +1083,7 @@ const panelChildren = [
     createRoute({
         getParentRoute: () => panelRoute,
         path: 'api',
-        staticData: { nav: { label: 'API Keys', icon: 'key-round' } },
+        staticData: { nav: { label: translatable('API Keys'), icon: 'key-round' } },
         validateSearch: parseApiKeyListSearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, filter: search.filter ?? '', sort: search.sort }),
         loader: async ({ context, deps }) => {

@@ -14,61 +14,64 @@ import DataTable from '@/components/elements/table/DataTable';
 import { actionsColumn, EditLinkAction, RowActions } from '@/components/elements/table/RowActions';
 import { Alert } from '@/components/elements/alert';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { type Translation, useTranslation } from '@/sdk/localization';
 
-const eggColumns = [
-    {
-        id: 'name',
-        header: 'Egg',
-        cell: ({ row }) => (
-            <div className='min-w-0'>
-                <Link
+const eggColumns = (t: Translation['t']) =>
+    [
+        {
+            id: 'name',
+            header: t('Egg'),
+            cell: ({ row }) => (
+                <div className='min-w-0'>
+                    <Link
+                        to='/panel/eggs/$eggId'
+                        params={{ eggId: row.original.attributes.id }}
+                        className='block truncate font-medium text-foreground no-underline hover:text-accent'
+                    >
+                        {row.original.attributes.name}
+                    </Link>
+                    {row.original.attributes.description ? (
+                        <p className='mt-1 line-clamp-2 whitespace-normal break-words text-xs leading-relaxed text-muted-foreground md:line-clamp-none'>
+                            {row.original.attributes.description}
+                        </p>
+                    ) : null}
+                </div>
+            ),
+            meta: { headerClassName: 'w-auto', cellClassName: 'w-auto' },
+        },
+        {
+            id: 'author',
+            header: t('Author'),
+            cell: ({ row }) => (
+                <span className='block max-w-64 truncate text-sm' title={row.original.attributes.author}>
+                    {row.original.attributes.author}
+                </span>
+            ),
+            meta: { headerClassName: 'hidden w-64 md:table-cell', cellClassName: 'hidden w-64 md:table-cell' },
+        },
+        {
+            id: 'id',
+            header: t('ID'),
+            cell: ({ row }) => <span className='tabular-nums text-sm'>{row.original.attributes.id}</span>,
+            meta: { headerClassName: 'w-20 text-right', cellClassName: 'w-20 text-right' },
+        },
+        actionsColumn<AdminEggListItem>(1, (egg) => (
+            <RowActions>
+                <EditLinkAction
+                    aria-label={t('Edit {{name}}', { name: egg.attributes.name })}
                     to='/panel/eggs/$eggId'
-                    params={{ eggId: row.original.attributes.id }}
-                    className='block truncate font-medium text-foreground no-underline hover:text-accent'
-                >
-                    {row.original.attributes.name}
-                </Link>
-                {row.original.attributes.description ? (
-                    <p className='mt-1 line-clamp-2 whitespace-normal break-words text-xs leading-relaxed text-muted-foreground md:line-clamp-none'>
-                        {row.original.attributes.description}
-                    </p>
-                ) : null}
-            </div>
-        ),
-        meta: { headerClassName: 'w-auto', cellClassName: 'w-auto' },
-    },
-    {
-        id: 'author',
-        header: 'Author',
-        cell: ({ row }) => (
-            <span className='block max-w-64 truncate text-sm' title={row.original.attributes.author}>
-                {row.original.attributes.author}
-            </span>
-        ),
-        meta: { headerClassName: 'hidden w-64 md:table-cell', cellClassName: 'hidden w-64 md:table-cell' },
-    },
-    {
-        id: 'id',
-        header: 'ID',
-        cell: ({ row }) => <span className='tabular-nums text-sm'>{row.original.attributes.id}</span>,
-        meta: { headerClassName: 'w-20 text-right', cellClassName: 'w-20 text-right' },
-    },
-    actionsColumn<AdminEggListItem>(1, (egg) => (
-        <RowActions>
-            <EditLinkAction
-                aria-label={`Edit ${egg.attributes.name}`}
-                to='/panel/eggs/$eggId'
-                params={{ eggId: egg.attributes.id }}
-            />
-        </RowActions>
-    )),
-] satisfies ColumnDef<AdminEggListItem>[];
+                    params={{ eggId: egg.attributes.id }}
+                />
+            </RowActions>
+        )),
+    ] satisfies ColumnDef<AdminEggListItem>[];
 
 export default function EggsContainer() {
+    const { t } = useTranslation();
     const { data: eggs, error, refetch } = useAdminEggs();
     const data = useMemo(() => eggs?.data ?? [], [eggs?.data]);
     const extensionColumns = useExtensionTableColumns('admin.eggs');
-    const columns = useMemo(() => [...eggColumns, ...extensionColumns], [extensionColumns]);
+    const columns = useMemo(() => [...eggColumns(t), ...extensionColumns], [t, extensionColumns]);
     const table = useReactTable({
         data,
         columns,
@@ -82,20 +85,21 @@ export default function EggsContainer() {
 
     return (
         <AdminContentBlock
-            title='Admin · Eggs'
-            heading='Eggs'
-            description='Manage server templates, startup configuration, variables, and install scripts.'
+            title={t('Admin · Eggs')}
+            heading={t('Eggs')}
+            description={t('Manage server templates, startup configuration, variables, and install scripts.')}
         >
             <Alert type='danger' className='mb-6 text-sm'>
-                Eggs are powerful and can break servers when edited incorrectly. Avoid editing official eggs unless you
-                are certain of the change.
+                {t(
+                    'Eggs are powerful and can break servers when edited incorrectly. Avoid editing official eggs unless you are certain of the change.'
+                )}
             </Alert>
             <ListToolbar>
                 <NewLinkButton to='/panel/eggs/catalog' isSecondary icon={Search}>
-                    Browse catalog
+                    {t('Browse catalog')}
                 </NewLinkButton>
                 <ImportEggButton />
-                <NewLinkButton to='/panel/eggs/new'>New egg</NewLinkButton>
+                <NewLinkButton to='/panel/eggs/new'>{t('New egg')}</NewLinkButton>
             </ListToolbar>
             <DataTable
                 table={table}
@@ -106,14 +110,15 @@ export default function EggsContainer() {
                             <EmptyMedia variant='icon'>
                                 <Egg />
                             </EmptyMedia>
-                            <EmptyTitle>No eggs yet</EmptyTitle>
+                            <EmptyTitle>{t('No eggs yet')}</EmptyTitle>
                             <EmptyDescription>
-                                Eggs are the templates servers are built from. Browse the catalog for ready-made eggs or
-                                create your own.
+                                {t(
+                                    'Eggs are the templates servers are built from. Browse the catalog for ready-made eggs or create your own.'
+                                )}
                             </EmptyDescription>
                         </EmptyHeader>
                         <EmptyContent>
-                            <NewLinkButton to='/panel/eggs/new'>New egg</NewLinkButton>
+                            <NewLinkButton to='/panel/eggs/new'>{t('New egg')}</NewLinkButton>
                         </EmptyContent>
                     </Empty>
                 }
