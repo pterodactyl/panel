@@ -6,6 +6,7 @@ namespace Pterodactyl\Http\Resources\Api\Concerns;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\ActivityLog;
+use Pterodactyl\Services\Translations\LanguageRegistry;
 use stdClass;
 
 trait FormatsActivityLogs
@@ -59,6 +60,10 @@ trait FormatsActivityLogs
                 return [$key => $value];
             });
 
+        if ($model->event === 'user:account.language-changed') {
+            $properties = $properties->merge(array_map($this->languageLabel(...), $properties->only(['old', 'new'])->all()));
+        }
+
         $keys = $properties->keys()->filter(fn (int|string $key): bool => Str::endsWith((string) $key, '_count'))->values();
         if ($keys->containsOneItem()) {
             $countKey = $keys->first();
@@ -97,5 +102,12 @@ trait FormatsActivityLogs
         }
 
         return false;
+    }
+
+    private function languageLabel(mixed $locale): string
+    {
+        return is_string($locale) && $locale !== '' && $locale !== 'default'
+            ? LanguageRegistry::displayName($locale, app()->getLocale())
+            : __('activity.values.panel-default');
     }
 }

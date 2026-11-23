@@ -76,7 +76,7 @@ export const apiKeyColumns = (t: Translation['t']) =>
             header: t('Permissions'),
             cell: ({ row }) => (
                 <span className='whitespace-nowrap text-xs'>
-                    {t('{{total}} granted', { total: grantedCount(row.original) })}
+                    {t('{{count}} granted', { count: grantedCount(row.original) })}
                 </span>
             ),
             enableSorting: false,

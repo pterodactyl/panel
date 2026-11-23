@@ -63,6 +63,11 @@ it('converts between i18next languages and panel locales', async () => {
     expect(toPanelLocale('pt-BR')).toBe('pt_BR');
     expect(toPanelLocale('pt-br')).toBe('pt_BR');
     expect(toPanelLocale('de')).toBe('de');
+    expect(toI18nLanguage('zh_Hant_TW')).toBe('zh-Hant-TW');
+    expect(toPanelLocale('zh-hant-tw')).toBe('zh_Hant_TW');
+    expect(toPanelLocale('sr-Latn')).toBe('sr_Latn');
+    expect(toPanelLocale('es-419')).toBe('es_419');
+    expect(toPanelLocale('fil')).toBe('fil');
 });
 
 it('follows language changes of the cached current user', async () => {
@@ -93,6 +98,49 @@ it('follows language changes of the cached current user', async () => {
     setCurrentUserQueryData(client, { language: 'es' });
     expect(instance.language).toBe('pt-BR');
     client.clear();
+});
+
+it('refetches cached server text when the language changes', async () => {
+    (window as BootstrapWindow).PterodactylUser = user('en');
+    const { followCurrentUserLanguage } = await import('@/i18n');
+    const { currentUserQueryKey, currentUserQueryOptions, setCurrentUserQueryData } =
+        await import('@/api/account/queries');
+    const instance = createInstance();
+
+    await instance.init({ lng: 'en', resources: {} });
+    const client = new QueryClient();
+    const stop = followCurrentUserLanguage(client, instance);
+
+    await client.ensureQueryData(currentUserQueryOptions());
+    client.setQueryData(['permissions'], { description: 'Start the server' });
+    expect(client.getQueryState(['permissions'])?.isInvalidated).toBe(false);
+
+    setCurrentUserQueryData(client, { language: 'de' });
+    await vi.waitFor(() => expect(client.getQueryState(['permissions'])?.isInvalidated).toBe(true));
+    expect(client.getQueryState(currentUserQueryKey)?.isInvalidated).toBe(false);
+
+    stop();
+    client.clear();
+});
+
+it('re-renders once the date locale of a new language has loaded', async () => {
+    const { DATE_LOCALE_LOADED, followDateLocale } = await import('@/i18n');
+    const { default: dayjs } = await import('@/lib/dayjs');
+    const instance = createInstance();
+
+    await instance.init({ lng: 'en', resources: {} });
+    const stop = followDateLocale(instance);
+    const loaded = vi.fn();
+
+    instance.on(DATE_LOCALE_LOADED, loaded);
+
+    await instance.changeLanguage('de');
+    await vi.waitFor(() => expect(loaded).toHaveBeenCalledWith('de'));
+    expect(dayjs.locale()).toBe('de');
+
+    stop();
+    await instance.changeLanguage('fr');
+    expect(loaded).toHaveBeenCalledTimes(1);
 });
 
 it('adds the revision of an extension to the URL of its translations only', async () => {

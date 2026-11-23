@@ -109,6 +109,8 @@ return [
         'fqdn_ip_with_https' => 'The :attribute must not be an IP address when HTTPS is enabled.',
         'path_within' => 'The :field path cannot be or reside within [:path].',
         'path_reserved' => 'The :field path cannot be [:path].',
+        'tag_reference' => 'The :attribute field must be a tag ID or slug.',
+        'setting_step' => 'The :attribute must be in steps of :step.',
         'tag_slug_numeric' => 'A tag slug cannot be purely numeric (reserved for tag and legacy nest IDs).',
         'docker_images_empty' => 'The :attribute field must list at least one image.',
         'docker_image_invalid' => 'The :attribute entry ":image" is not a valid Docker image.',

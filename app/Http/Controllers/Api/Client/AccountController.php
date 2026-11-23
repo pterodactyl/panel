@@ -101,7 +101,7 @@ class AccountController extends ClientApiController
         if ($original !== $user->language) {
             Activity::event('user:account.language-changed')
                 ->subject($user)
-                ->property(['old' => $original ?? 'default', 'new' => $user->language ?? 'default'])
+                ->property(['old' => $original, 'new' => $user->language])
                 ->log();
         }
 

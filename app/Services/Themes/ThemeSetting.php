@@ -190,7 +190,7 @@ final readonly class ThemeSetting
         return function (string $attribute, mixed $value, Closure $fail) use ($step, $base): void {
             $steps = is_numeric($value) ? ((float) $value - $base) / $step : 0.5;
             if (abs($steps - round($steps)) > 1e-9) {
-                $fail("The :attribute must be in steps of {$this->step}.");
+                $fail(__('validation.internal.setting_step', ['step' => $this->step]));
             }
         };
     }

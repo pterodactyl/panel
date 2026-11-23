@@ -19,7 +19,9 @@ class ExtensionManifest
 
     public const string LANGUAGES_DIRECTORY = 'resources/languages';
 
-    public const string LOCALE_REGEX = '/^[a-z]{2}(?:_[A-Z]{2})?$/D';
+    public const string LOCALE_PATTERN = '[a-z]{2,3}(?:_[A-Z][a-z]{3})?(?:_(?:[A-Z]{2}|[0-9]{3}))?';
+
+    public const string LOCALE_REGEX = '/^'.self::LOCALE_PATTERN.'$/D';
 
     public const array TYPES = ['extension', 'theme'];
 

@@ -9,7 +9,10 @@ interface Props {
     i18nKey: string;
     values?: TranslationValues;
     components?: Readonly<Record<string, React.ReactElement>>;
+    valueComponent?: React.ReactElement<{
+        children?: React.ReactNode;
+    }>;
     children?: React.ReactNode;
 }
-export default function Translate({ ns, children, ...props }: Props): React.JSX.Element;
+export default function Translate({ ns, children, values, components, valueComponent, ...props }: Props): React.JSX.Element;
 export {};

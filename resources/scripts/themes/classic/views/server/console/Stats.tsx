@@ -1,5 +1,5 @@
 import { Clock, CloudDownload, CloudUpload, Cpu, HardDrive, MemoryStick, Wifi } from 'lucide-react';
-import { bytesToString, cn, CopyOnClick, Stat, useTranslation, type Translation } from '@/sdk';
+import { bytesToString, cn, CopyOnClick, percentageToString, Stat, useTranslation, type Translation } from '@/sdk';
 import type { ServerRunState, ServerStatMetric, UiTone, ViewProps } from '@/sdk/theme';
 
 const tile = 'col-span-3 md:col-span-2 lg:col-span-6';
@@ -76,7 +76,7 @@ export default function Stats({ model, className }: ViewProps<'server.stats'>) {
             <Stat
                 icon={Cpu}
                 label={t('CPU Load')}
-                value={offline ? t('Offline') : `${cpu.value.toFixed(2)}%`}
+                value={offline ? t('Offline') : percentageToString(cpu.value)}
                 limit={offline ? undefined : limitText(cpu.limit ? `${cpu.limit}%` : null)}
                 tone={tone(cpu)}
                 unavailable={offline}

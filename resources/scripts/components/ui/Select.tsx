@@ -347,7 +347,7 @@ function MultiSelectCombobox({
                     {(value: SelectOption[]) => (
                         <>
                             {value.length > 0 && (
-                                <span {...ui('summary')}>{t('{{total}} selected', { total: value.length })}</span>
+                                <span {...ui('summary')}>{t('{{count}} selected', { count: value.length })}</span>
                             )}
                             <Combobox.Input
                                 {...ui('input')}

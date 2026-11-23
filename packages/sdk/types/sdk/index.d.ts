@@ -56,7 +56,7 @@ export * from "./navigation.js";
 export * from "./localization.js";
 export * from "./progress.js";
 export { onThemeChange, notifyThemeChange, readThemeToken } from "./theme.js";
-export { bytesToString, ip, mbToBytes } from "../lib/formatters.js";
+export { bytesToString, ip, mbToBytes, percentageToString } from "../lib/formatters.js";
 export { formatDate, fromNow } from "../lib/dates.js";
 export { useDebouncedCallback, type DebouncedCallback } from "../plugins/useDebouncedCallback.js";
 export { useShortcut, type Shortcut } from "../plugins/useShortcut.js";

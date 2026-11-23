@@ -21,10 +21,12 @@ const activityIconClass =
 const activityDescriptionClass =
     'mt-1 text-sm break-words line-clamp-2 pr-4 [&_strong]:break-all [&_strong]:font-semibold [&_strong]:text-foreground';
 
-/** Emphasises every value the description interpolates, apart from the counts its plurals read. */
-function wrapProperty(value: TranslationValue): TranslationValue {
+const isCount = (key: string): boolean => key === 'count' || key.endsWith('_count');
+
+// Every value is emphasised as text, apart from the counts the plurals read.
+function textProperty(value: TranslationValue): TranslationValue {
     if (Array.isArray(value)) {
-        return value.map(wrapProperty);
+        return value.map(textProperty);
     }
 
     if (value === true || value === false) {
@@ -33,18 +35,17 @@ function wrapProperty(value: TranslationValue): TranslationValue {
 
     if (value instanceof Object) {
         return Object.fromEntries(
-            Object.entries(value).map(([key, item]) => [
-                key,
-                key === 'count' || key.endsWith('_count') ? item : wrapProperty(item),
-            ])
+            Object.entries(value).map(([key, item]) => [key, isCount(key) ? item : textProperty(item)])
         );
     }
 
-    return `<strong>${String(value)}</strong>`;
+    return String(value);
 }
 
-const wrapProperties = (properties: ActivityProperties): TranslationValues =>
-    Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, wrapProperty(value)]));
+const textProperties = (properties: ActivityProperties): TranslationValues =>
+    Object.fromEntries(
+        Object.entries(properties).map(([key, value]) => [key, isCount(key) ? value : textProperty(value)])
+    );
 
 export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
     const { actor } = entry;
@@ -94,7 +95,8 @@ export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
                     <p className={activityDescriptionClass}>
                         <Translate
                             ns='activity'
-                            values={wrapProperties(entry.properties)}
+                            values={textProperties(entry.properties)}
+                            valueComponent={<strong />}
                             i18nKey={entry.event.replace(':', '.')}
                         />
                     </p>

@@ -206,9 +206,9 @@ function LocationDetailForm({ location }: { location: AdminLocation }) {
                     <div className='flex items-center justify-between gap-3'>
                         <h2 className={cardTitleClass}>{t('Nodes')}</h2>
                         <span className='text-xs text-muted-foreground'>
-                            {t('{{nodes}} nodes · {{servers}} servers', {
-                                nodes: attributes.nodes_count,
-                                servers: attributes.servers_count,
+                            {t('{{nodes}} · {{servers}}', {
+                                nodes: t('{{count}} nodes', { count: attributes.nodes_count }),
+                                servers: t('{{count}} servers', { count: attributes.servers_count }),
                             })}
                         </span>
                     </div>

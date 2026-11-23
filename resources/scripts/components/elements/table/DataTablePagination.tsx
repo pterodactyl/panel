@@ -71,14 +71,16 @@ export default function DataTablePagination<TData extends RowData>({
         page: pageIndex + 1,
         pages: Math.max(pageCount, 1),
     });
-    const text = summary
-        ? summary(range)
-        : t('Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{total}}</value> {{items}}', {
-              start,
-              end,
-              total,
-              items: itemLabel ?? t('items'),
-          });
+    const defaultSummary = (shown: PaginationRange): string =>
+        itemLabel
+            ? t('Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{total}}</value> {{items}}', {
+                  start: shown.start,
+                  end: shown.end,
+                  total: shown.count,
+                  items: itemLabel,
+              })
+            : t('Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> items', shown);
+    const text = (summary ?? defaultSummary)(range);
 
     return (
         <div className={cn('mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', className)}>

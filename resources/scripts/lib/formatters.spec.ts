@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import { afterEach, describe, expect, it } from 'vitest';
-import { bytesRatioToString, bytesToString, ip, mbToBytes } from '@/lib/formatters';
+import { bytesRatioToString, bytesToString, ip, mbToBytes, percentageToString } from '@/lib/formatters';
 
 describe('@/lib/formatters.ts', () => {
     describe('mbToBytes()', () => {
@@ -84,6 +84,15 @@ describe('@/lib/formatters.ts', () => {
             expect(bytesToString(5068)).toBe('4,95 KiB');
             expect(bytesToString(100)).toBe('100 Byte');
             expect(bytesRatioToString(1_356_000, 2_097_152)).toBe('1,29 / 2 MiB');
+        });
+
+        it('formats percentages the way the language writes them', async () => {
+            expect(percentageToString(12.3456)).toBe('12.35%');
+
+            await i18next.changeLanguage('de');
+
+            expect(percentageToString(12.3456)).toBe('12,35 %');
+            expect(percentageToString(1234.5, 0)).toBe('1235 %');
         });
     });
 });

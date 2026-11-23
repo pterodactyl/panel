@@ -56,6 +56,7 @@ class CoverageCommand extends Command
         $this->components->info(sprintf('%s%s: %d of %d keys translated (%s%%).', $locale, $pack instanceof ExtensionManifest ? " ({$pack->id})" : '', $report['translated'], $report['total'], $percentage));
 
         $this->section('Missing', $report['missing']);
+        $this->section('Same as English', $report['unchanged']);
         $this->section('Not strings', $report['invalid']);
         $this->section('Placeholders English does not have', $this->describe($report['unknown_placeholders']));
         $this->section('Placeholders left out', $this->describe($report['dropped_placeholders']));

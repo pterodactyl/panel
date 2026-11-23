@@ -202,7 +202,7 @@ it('composes the native server card using the real SDK fixture', () => {
     });
 
     expect(screen.getByText('Survival')).toBeTruthy();
-    expect(screen.getByText('12.00 %')).toBeTruthy();
+    expect(screen.getByText('12.00%')).toBeTruthy();
     // The prefixed utility replaces the native card's own gap instead of sitting beside it.
     const card = screen.getByText('Survival').closest('.grid');
 

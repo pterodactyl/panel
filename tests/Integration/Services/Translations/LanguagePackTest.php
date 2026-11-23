@@ -180,6 +180,21 @@ test('coverage treats plural forms of an english plural as translations', functi
         ->and($report['unknown_placeholders'])->toBe([]);
 });
 
+test('coverage does not count a value left in english as translated', function (): void {
+    writeExtension('notes', ['en.json' => ['Note saved.' => 'Note saved.', 'Notes' => 'Notes', 'Delete note' => 'Delete note']]);
+    writePack('german', ['de'], ['de.json' => ['Note saved.' => 'Notiz gespeichert.', 'Notes' => 'Notes']]);
+    boot();
+
+    $report = app(TranslationCoverage::class)->report('de', app(LanguageRegistry::class)->packs()->get('german'));
+
+    expect($report['unchanged'])->toContain('json:Notes')->not->toContain('json:Note saved.')
+        ->and($report['missing'])->toContain('json:Delete note')->not->toContain('json:Notes')
+        ->and($report['translated'])->toBe($report['total'] - count($report['missing']) - count($report['unchanged']));
+
+    expect(Artisan::call('p:lang:coverage', ['locale' => 'de', '--extension' => 'german']))->toBe(1)
+        ->and(Artisan::output())->toContain('Same as English')->toContain('json:Notes');
+});
+
 test('the coverage command fails while keys are missing', function (): void {
     writePack('german', ['de'], ['de/auth.php' => ['sign_in' => 'Anmelden']]);
     boot();

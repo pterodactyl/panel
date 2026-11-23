@@ -159,9 +159,9 @@ export default function Allocations({ model, className }: ViewProps<'server.allo
             <SpinnerOverlay visible={creating} />
             {model.canManage && (
                 <ListToolbar
-                    summary={t('You are currently using {{used}} of {{limit}} allowed allocations for this server.', {
+                    summary={t('You are currently using {{used}} of {{count}} allowed allocations for this server.', {
                         used: model.allocations.length,
-                        limit: model.limit,
+                        count: model.limit,
                     })}
                 >
                     {model.canCreate && newAllocationButton}

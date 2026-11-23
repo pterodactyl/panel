@@ -100,6 +100,13 @@ class LanguageRegistry
         return $entries;
     }
 
+    public static function displayName(string $locale, string $in): string
+    {
+        $name = Locale::getDisplayName($locale, $in);
+
+        return Str::title($name === false ? $locale : $name);
+    }
+
     /**
      * @return Collection<string, ExtensionManifest>
      */
@@ -147,8 +154,7 @@ class LanguageRegistry
     {
         $languages = [];
         foreach (array_keys($this->sources()) as $locale) {
-            $name = Locale::getDisplayName($locale, $localize ? $locale : self::FALLBACK);
-            $languages[$locale] = Str::title($name === false ? $locale : $name);
+            $languages[$locale] = self::displayName($locale, $localize ? $locale : self::FALLBACK);
         }
 
         return $languages;

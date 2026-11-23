@@ -103,7 +103,7 @@ export * from './navigation';
 export * from './localization';
 export * from './progress';
 export { onThemeChange, notifyThemeChange, readThemeToken } from './theme';
-export { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+export { bytesToString, ip, mbToBytes, percentageToString } from '@/lib/formatters';
 export { formatDate, fromNow } from '@/lib/dates';
 export { useDebouncedCallback, type DebouncedCallback } from '@/plugins/useDebouncedCallback';
 export { useShortcut, type Shortcut } from '@/plugins/useShortcut';

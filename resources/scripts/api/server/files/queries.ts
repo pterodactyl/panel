@@ -356,7 +356,7 @@ export const useDeleteFiles = () => {
                 );
             }
 
-            toast.success(body?.files?.length === 1 ? i18next.t('File deleted') : i18next.t('Files deleted'));
+            toast.success(i18next.t('Files deleted', { count: body?.files?.length ?? 0 }));
         },
         onError: (error) => notifyHttpError(error, i18next.t('Unable to delete files')),
     });

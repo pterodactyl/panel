@@ -34,7 +34,13 @@ test('locale rules accept regional locales', function (string $locale, bool $pas
     'language and region' => ['pt_BR', true],
     'lowercase region' => ['pt_br', false],
     'hyphenated' => ['pt-BR', false],
-    'three letters' => ['deu', false],
+    'three letter language' => ['fil', true],
+    'four letter language' => ['deut', false],
+    'script' => ['zh_Hant', true],
+    'script and region' => ['zh_Hant_TW', true],
+    'numeric region' => ['es_419', true],
+    'lowercase script' => ['zh_hant', false],
+    'region before script' => ['zh_TW_Hant', false],
 ]);
 
 test('serves the interface catalogue keyed by its english as it is written', function (): void {

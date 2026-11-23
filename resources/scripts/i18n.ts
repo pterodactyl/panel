@@ -18,12 +18,15 @@ interface MultiloadHttpBackendOptions extends HttpBackendOptions {
 // Busts the locale cache on every reload under HMR, otherwise once per build.
 const hash = import.meta.hot ? Date.now().toString(16) : import.meta.env.WEBPACK_BUILD_HASH;
 
-export const toI18nLanguage = (locale: string): string => locale.replace('_', '-');
+export const toI18nLanguage = (locale: string): string => locale.replaceAll('_', '-');
+
+const panelSubtag = (subtag: string): string =>
+    subtag.length === 4 ? `${subtag[0]!.toUpperCase()}${subtag.slice(1).toLowerCase()}` : subtag.toUpperCase();
 
 export const toPanelLocale = (language: string): string => {
-    const [code, region] = language.split('-');
+    const [code, ...subtags] = language.split('-');
 
-    return region ? `${code}_${region.toUpperCase()}` : code!;
+    return [code!.toLowerCase(), ...subtags.map(panelSubtag)].join('_');
 };
 
 /**
@@ -89,12 +92,32 @@ export function followCurrentUserLanguage(queryClient: QueryClient, instance: I1
         const language = resolveLanguage(user.language);
 
         if (language !== instance.language) {
-            void instance.changeLanguage(language);
+            // Cached responses can hold text the server translated, such as permissions and activity.
+            void instance
+                .changeLanguage(language)
+                .then(() =>
+                    queryClient.invalidateQueries({ predicate: (query) => query.queryHash !== currentUserHash })
+                );
         }
     });
 }
 
-i18n.on('languageChanged', (language) => void setDateLocale(language));
+export const DATE_LOCALE_LOADED = 'dateLocaleLoaded';
+
+export function followDateLocale(instance: I18n = i18n): () => void {
+    const load = (language: string) =>
+        void setDateLocale(language).then(() => {
+            if (instance.language === language) {
+                instance.emit(DATE_LOCALE_LOADED, language);
+            }
+        });
+
+    instance.on('languageChanged', load);
+
+    return () => instance.off('languageChanged', load);
+}
+
+followDateLocale();
 
 void i18n
     .use(I18NextMultiloadBackendAdapter)
@@ -103,7 +126,7 @@ void i18n
         ...translationOptions,
         debug: import.meta.env.DEV,
         lng: initialLanguage(),
-        react: { bindI18n: 'languageChanged loaded' },
+        react: { bindI18n: `languageChanged loaded ${DATE_LOCALE_LOADED}` },
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {

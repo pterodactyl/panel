@@ -154,7 +154,7 @@ export function UploadStatus({ model }: { model: FileManagerModel }) {
     return (
         <Dialog.Trigger
             trigger={({ onClick }) => (
-                <Tooltip content={t('{{number}} files are uploading, click to view', { number: count })}>
+                <Tooltip content={t('{{count}} files are uploading, click to view', { count })}>
                     <button type='button' className='flex items-center justify-center w-10 h-10' onClick={onClick}>
                         <Progress progress={percent(uploaded, total)} className='w-8 h-8' />
                         <CloudUpload className='h-3 absolute mx-auto animate-pulse' />

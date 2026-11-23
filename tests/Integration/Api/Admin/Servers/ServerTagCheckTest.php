@@ -81,6 +81,19 @@ function acceptingNodes(): array
     ];
 }
 
+test('the node and tags in the egg check message are filled in once, in the casing the translation uses', function (): void {
+    app('translator')->addLines(['validation.node_accepts_egg' => ':Node: :TAGS.'], 'en');
+    $egg = taggedEgg(bungeecord(), 'tag-check-game');
+    $node = taggedNode('tag-check-other');
+    $node->forceFill(['name' => 'box :tags'])->save();
+    $allocation = Allocation::factory()->for($node)->create();
+
+    $this->postJson(route('api.admin.servers.store'), serverPayload($egg, $allocation))
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.meta.rule', 'node_accepts_egg')
+        ->assertJsonPath('errors.0.detail', 'Box :tags: TAG CHECK OTHER.');
+});
+
 test('server create refuses a node that does not accept the egg unless tags are ignored', function (): void {
     $egg = taggedEgg(bungeecord(), 'tag-check-game');
     $node = taggedNode('tag-check-other');

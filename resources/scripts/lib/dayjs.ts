@@ -8,29 +8,42 @@ dayjs.extend(advancedFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
+// The panel has always shown English times on a 24-hour clock.
+dayjs.Ls.en!.formats = {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'MM/DD/YYYY',
+    LL: 'MMMM D, YYYY',
+    LLL: 'MMMM D, YYYY HH:mm',
+    LLLL: 'dddd, MMMM D, YYYY HH:mm',
+};
+
 const locales = import.meta.glob<{ default: ILocale }>('../../../node_modules/dayjs/esm/locale/*.js');
 
 const localeLoader = (code: string) => locales[`../../../node_modules/dayjs/esm/locale/${code}.js`];
 
-export async function setDateLocale(language: string): Promise<string> {
-    const code = language.toLowerCase().replace('_', '-');
+let latest = 0;
 
-    const load = [code, code.split('-')[0]!]
+export async function setDateLocale(language: string): Promise<string> {
+    const request = ++latest;
+    const code = language.toLowerCase().replaceAll('_', '-');
+    const [base, ...subtags] = code.split('-');
+    const region = subtags.find((subtag) => subtag.length !== 4);
+
+    const load = [code, region ? `${base}-${region}` : code, base!]
         .filter((candidate) => candidate !== 'en')
         .map(localeLoader)
         .find((loader) => loader !== undefined);
 
-    if (!load) {
-        dayjs.locale('en');
+    const locale = load ? (await load()).default : null;
 
-        return 'en';
+    if (request !== latest) {
+        return dayjs.locale();
     }
 
-    const { default: locale } = await load();
+    dayjs.locale(locale ?? 'en');
 
-    dayjs.locale(locale);
-
-    return locale.name;
+    return locale?.name ?? 'en';
 }
 
 export default dayjs;

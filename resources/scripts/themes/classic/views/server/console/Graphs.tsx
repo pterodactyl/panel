@@ -1,5 +1,14 @@
 import { CloudDownload, CloudUpload } from 'lucide-react';
-import { AreaChart, bytesToString, ChartCard, cn, Tooltip, useTranslation, type ChartSeries } from '@/sdk';
+import {
+    AreaChart,
+    bytesToString,
+    ChartCard,
+    cn,
+    percentageToString,
+    Tooltip,
+    useTranslation,
+    type ChartSeries,
+} from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 const CYAN = 'var(--chart-1)';
@@ -24,7 +33,7 @@ export default function Graphs({ model, className }: ViewProps<'server.graphs'>)
                     live={live}
                     windowMs={windowMs}
                     suggestedMax={model.cpu.limit}
-                    tickFormatter={(value) => `${value.toFixed(2)}%`}
+                    tickFormatter={(value) => percentageToString(value)}
                 />
             </ChartCard>
             <ChartCard title={t('Memory')}>

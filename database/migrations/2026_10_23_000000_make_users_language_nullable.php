@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
-            $table->char('language', 5)->nullable()->default(null)->change();
+            $table->string('language', 16)->nullable()->default(null)->change();
         });
 
         DB::table('users')->where('language', 'en')->update(['language' => null]);
@@ -20,6 +20,7 @@ return new class extends Migration
 
     public function down(): void
     {
+        DB::table('users')->whereRaw('LENGTH(language) > 5')->update(['language' => null]);
         DB::table('users')->whereNull('language')->update(['language' => 'en']);
 
         Schema::table('users', function (Blueprint $table): void {

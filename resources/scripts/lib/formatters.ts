@@ -43,10 +43,19 @@ function bytesRatioToString(used: number, total: number, decimals = 2): string {
     return `${formatNumber(scaleBytes(Math.max(0, used), i, decimals))} / ${formatNumber(scaleBytes(total, i, decimals))} ${unitLabel(i)}`;
 }
 
+function percentageToString(value: number, decimals = 2): string {
+    return new Intl.NumberFormat(i18next.language || 'en', {
+        style: 'percent',
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+        useGrouping: false,
+    }).format(value / 100);
+}
+
 /** Wraps IPv6 addresses in brackets. */
 function ip(value: string): string {
     // noinspection RegExpSimplifiable
     return /([a-f0-9:]+:+)+[a-f0-9]+/.test(value) ? `[${value}]` : value;
 }
 
-export { ip, mbToBytes, bytesToString, bytesRatioToString };
+export { ip, mbToBytes, bytesToString, bytesRatioToString, percentageToString };

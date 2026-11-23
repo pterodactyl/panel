@@ -241,4 +241,7 @@ return [
             'disable-2fa' => 'Disabled two-factor authentication for :email',
         ],
     ],
+    'values' => [
+        'panel-default' => 'the panel default',
+    ],
 ];

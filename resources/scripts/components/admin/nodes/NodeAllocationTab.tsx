@@ -336,7 +336,7 @@ const ExistingAllocationsSummary = ({ selectedCount, total, onBulkDelete }: Exis
         return (
             <div className='-my-1 flex items-center gap-3'>
                 <span className='text-xs text-muted-foreground'>
-                    {t('{{selected}} selected', { selected: selectedCount })}
+                    {t('{{count}} selected', { count: selectedCount })}
                 </span>
                 <Dialog.ConfirmTrigger
                     title={t('Delete selected allocations?')}
@@ -352,8 +352,10 @@ const ExistingAllocationsSummary = ({ selectedCount, total, onBulkDelete }: Exis
                     }}
                 >
                     {t(
-                        'This will permanently delete the {{selected}} selected allocation(s). This action cannot be undone.',
-                        { selected: selectedCount }
+                        'This will permanently delete the {{count}} selected allocations. This action cannot be undone.',
+                        {
+                            count: selectedCount,
+                        }
                     )}
                 </Dialog.ConfirmTrigger>
             </div>

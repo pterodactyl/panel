@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pterodactyl\Http\Requests\Concerns;
 
+use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
@@ -22,12 +23,14 @@ trait ValidatesNodeAcceptsEgg
             return;
         }
 
-        $tags = $node->eggTags->map(fn (Tag $tag): string => $tag->effectiveName())->implode(', ');
+        $replacements = [];
+        foreach (['node' => $node->name, 'tags' => $node->eggTags->map(fn (Tag $tag): string => $tag->effectiveName())->implode(', ')] as $key => $value) {
+            $replacements[':'.$key] = $value;
+            $replacements[':'.Str::ucfirst($key)] = Str::ucfirst($value);
+            $replacements[':'.Str::upper($key)] = Str::upper($value);
+        }
 
-        $validator->addReplacer(
-            'node_accepts_egg',
-            fn (string $message): string => str_replace([':node', ':tags'], [$node->name, $tags], $message),
-        );
+        $validator->addReplacer('node_accepts_egg', fn (string $message): string => strtr($message, $replacements));
 
         $validator->addFailure($field, 'NodeAcceptsEgg');
     }

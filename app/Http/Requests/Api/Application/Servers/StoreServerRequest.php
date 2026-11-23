@@ -153,7 +153,7 @@ class StoreServerRequest extends ApplicationApiRequest
     private function validateDeployTagReference(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_int($value) && ! is_string($value)) {
-            $fail("The {$attribute} field must be a tag ID or slug.");
+            $fail(__('validation.internal.tag_reference'));
         }
     }
 }

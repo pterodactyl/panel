@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AlertCircle, FileArchive, RefreshCw, Settings2, Trash2, UploadCloud } from 'lucide-react';
 import { getExtensionStates, useExtensionRegistry } from '@/extensions/registry';
 import { cn } from '@/lib/cn';
+import { formatDate } from '@/lib/dates';
 import { httpErrorToHuman } from '@/api/http';
 import {
     disableAdminExtensionInput,
@@ -630,9 +631,9 @@ function ExtensionCardDetails({ extension }: { extension: AdminExtension }) {
                             {extension.error_phase
                                 ? t('In {{phase}}, {{date}}', {
                                       phase: extension.error_phase,
-                                      date: new Date(extension.errored_at).toLocaleString(),
+                                      date: formatDate(extension.errored_at, 'll LTS'),
                                   })
-                                : new Date(extension.errored_at).toLocaleString()}
+                                : formatDate(extension.errored_at, 'll LTS')}
                         </p>
                     )}
                 </div>

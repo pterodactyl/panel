@@ -73,8 +73,8 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
         <div className={cn('flex items-center justify-between my-2', className)}>
             <p className='text-sm text-muted-foreground'>
                 <Translate
-                    i18nKey='Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{total}}</value> results.'
-                    values={{ start, end, total: normalized.total }}
+                    i18nKey='Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> results.'
+                    values={{ start, end, count: normalized.total }}
                     components={{ value: <span className='font-semibold text-muted-foreground' /> }}
                 />
             </p>

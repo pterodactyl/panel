@@ -34,7 +34,7 @@ class ViewScheduleRequest extends ClientApiRequest implements ClientPermissionsR
         // error if the task being requested does not belong to the associated schedule.
         if ($schedule instanceof Schedule) {
             $task = $route->parameter('task');
-            throw_if($schedule->server_id !== $server->id || ($task instanceof Task && $task->schedule_id !== $schedule->id), NotFoundHttpException::class, 'The requested resource does not exist on the system.');
+            throw_if($schedule->server_id !== $server->id || ($task instanceof Task && $task->schedule_id !== $schedule->id), NotFoundHttpException::class, __('exceptions.api.resource_not_on_system'));
         }
 
         return true;

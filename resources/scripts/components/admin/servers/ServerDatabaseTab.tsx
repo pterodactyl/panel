@@ -90,9 +90,9 @@ function ServerDatabaseContent({ server }: { server: AdminServer }) {
     const canCreate = databaseLimit > 0 && data.length < databaseLimit;
     const usage =
         databaseLimit > 0 && data.length > 0
-            ? t('{{used}} of {{limit}} databases have been allocated to this server.', {
+            ? t('{{used}} of {{count}} databases have been allocated to this server.', {
                   used: data.length,
-                  limit: databaseLimit,
+                  count: databaseLimit,
               })
             : null;
 

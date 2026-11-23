@@ -36,7 +36,10 @@ const backupUsage = (model: BackupListModel, t: Translation['t']): string | null
     }
 
     if (model.permissions.create && limit > 0 && count > 0) {
-        return t('{{created}} of {{limit}} backups have been created for this server.', { created: count, limit });
+        return t('{{created}} of {{count}} backups have been created for this server.', {
+            created: count,
+            count: limit,
+        });
     }
 
     return null;
@@ -174,7 +177,15 @@ export default function BackupList({ model, className }: ViewProps<'server.backu
                 emptyState={<EmptyBackups model={model} />}
                 pagination={{
                     ...model.pagination,
-                    itemLabel: t('backups'),
+                    summary: ({ start, end, count }) =>
+                        t(
+                            'Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{count}}</value> backups',
+                            {
+                                start,
+                                end,
+                                count,
+                            }
+                        ),
                     onPageSelect: model.actions.setPage,
                 }}
             />

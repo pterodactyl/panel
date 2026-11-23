@@ -60,7 +60,7 @@ class StartupController extends ClientApiController
     public function update(UpdateStartupVariableRequest $request, UpdatesServerVariable $variables, Server $server): EggVariableResource
     {
         $variable = $request->variable();
-        throw_if(! $variable instanceof EggVariable || ! $variable->user_viewable, BadRequestHttpException::class, 'The environment variable you are trying to edit does not exist.');
+        throw_if(! $variable instanceof EggVariable || ! $variable->user_viewable, BadRequestHttpException::class, __('exceptions.server.variable_not_found'));
 
         throw_unless($variable->user_editable, BadRequestHttpException::class, __('exceptions.server.variable_read_only'));
 

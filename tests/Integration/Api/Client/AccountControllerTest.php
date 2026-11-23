@@ -168,6 +168,15 @@ test('the account language can be chosen and cleared', function (): void {
 
     $this->putJson('/api/client/account/language', ['language' => null])->assertOk()->assertJsonPath('attributes.language', null);
     expect($user->fresh()->language)->toBeNull();
+
+    $properties = collect($this->getJson('/api/client/account/activity')->assertOk()->json('data'))
+        ->pluck('attributes.properties')
+        ->map(fn (array $properties): string => "{$properties['old']} > {$properties['new']}")
+        ->sort()
+        ->values()
+        ->all();
+
+    expect($properties)->toBe(['English > the panel default', 'the panel default > English']);
 });
 test('the account language must be one the panel offers', function (array $body): void {
     $user = User::factory()->create(['language' => 'en']);

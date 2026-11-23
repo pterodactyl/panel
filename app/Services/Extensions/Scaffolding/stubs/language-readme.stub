@@ -21,8 +21,8 @@ file only needs the keys it translates. Extensions add their interface text to t
 `resources/languages/vendor/ext-<id>/{{language}}/<group>.php` with that extension's keys.
 
 When two enabled packs provide the same key for a locale, the one loaded later wins: a pack listed under
-`requires.extensions` loads first, and unrelated packs load in alphabetical order. The extension page in
-the admin area and `p:lang:coverage` list such conflicts.
+`requires.extensions` loads first, and unrelated packs load in alphabetical order.
+`p:lang:coverage` and the Admin API's extension listing (`language_conflicts`) report such conflicts.
 
 ## Develop
 
@@ -32,5 +32,7 @@ php {{artisan}} p:lang:coverage {{language}} --extension={{id}}
 php {{artisan}} p:extension:pack .
 ```
 
-`p:lang:coverage` lists missing and stale keys and placeholder mistakes, and exits non-zero when keys are
-missing or a translation uses a placeholder English does not.
+`p:lang:coverage` lists missing and stale keys, values still the same as the English, and placeholder
+mistakes. It exits non-zero when keys are missing or a translation uses a placeholder English does not. The
+scaffolded files start as copies of the English, so every key is listed as the same as English until it is
+translated.

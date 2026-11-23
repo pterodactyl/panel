@@ -2,6 +2,7 @@
 declare function mbToBytes(megabytes: number): number;
 declare function bytesToString(bytes: number, decimals?: number): string;
 declare function bytesRatioToString(used: number, total: number, decimals?: number): string;
+declare function percentageToString(value: number, decimals?: number): string;
 /** Wraps IPv6 addresses in brackets. */
 declare function ip(value: string): string;
-export { ip, mbToBytes, bytesToString, bytesRatioToString };
+export { ip, mbToBytes, bytesToString, bytesRatioToString, percentageToString };

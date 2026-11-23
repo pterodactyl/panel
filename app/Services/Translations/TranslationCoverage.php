@@ -25,7 +25,7 @@ class TranslationCoverage
     ) {}
 
     /**
-     * @return array{locale: string, extension: string|null, total: int, translated: int, missing: list<string>, stale: list<string>, invalid: list<string>, unknown_placeholders: array<string, list<string>>, dropped_placeholders: array<string, list<string>>, conflicts: list<array{locale: string, key: string, providers: list<string>, winner: string}>}
+     * @return array{locale: string, extension: string|null, total: int, translated: int, missing: list<string>, unchanged: list<string>, stale: list<string>, invalid: list<string>, unknown_placeholders: array<string, list<string>>, dropped_placeholders: array<string, list<string>>, conflicts: list<array{locale: string, key: string, providers: list<string>, winner: string}>}
      */
     public function report(string $locale, ?ExtensionManifest $pack = null): array
     {
@@ -41,6 +41,7 @@ class TranslationCoverage
         }
 
         $missing = [];
+        $unchanged = [];
         $unknown = [];
         $dropped = [];
         foreach ($base as $key => $english) {
@@ -50,6 +51,10 @@ class TranslationCoverage
                 $missing[] = $key;
 
                 continue;
+            }
+
+            if ($value === $english) {
+                $unchanged[] = $key;
             }
 
             $expected = $this->placeholders($key, $english);
@@ -98,8 +103,9 @@ class TranslationCoverage
             'locale' => $locale,
             'extension' => $pack?->id,
             'total' => count($base),
-            'translated' => count($base) - count($missing),
+            'translated' => count($base) - count($missing) - count($unchanged),
             'missing' => $missing,
+            'unchanged' => $unchanged,
             'stale' => $stale,
             'invalid' => $invalid,
             'unknown_placeholders' => $unknown,

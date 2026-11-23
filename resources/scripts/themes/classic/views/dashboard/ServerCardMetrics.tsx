@@ -1,5 +1,5 @@
 import { Cpu, HardDrive, MemoryStick } from 'lucide-react';
-import { Badge, bytesToString, cn, Spinner, Stat, useTranslation, type Translation } from '@/sdk';
+import { Badge, bytesToString, cn, percentageToString, Spinner, Stat, useTranslation, type Translation } from '@/sdk';
 import type { ServerCardState, ServerStatMetric, ServerUnavailableReason, UiTone, ViewProps } from '@/sdk/theme';
 
 const unavailableLabels = (t: Translation['t']) =>
@@ -54,7 +54,7 @@ function MetricsContent({ state }: { state: ServerCardState }) {
                     label: t('CPU'),
                     icon: Cpu,
                     metric: state.cpu,
-                    value: `${state.cpu.value.toFixed(2)} %`,
+                    value: percentageToString(state.cpu.value),
                     limit: state.cpu.limit === 0 ? t('Unlimited') : `${state.cpu.limit} %`,
                 },
                 {

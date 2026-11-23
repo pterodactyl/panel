@@ -361,9 +361,9 @@ export default function Databases({ model, className }: ViewProps<'server.databa
     const count = model.databases.length;
     const usage =
         model.permissions.create && model.limit > 0 && count > 0
-            ? t('{{allocated}} of {{limit}} databases have been allocated to this server.', {
-                  allocated: count,
-                  limit: model.limit,
+            ? t('{{used}} of {{count}} databases have been allocated to this server.', {
+                  used: count,
+                  count: model.limit,
               })
             : null;
 

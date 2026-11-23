@@ -45,8 +45,8 @@ function MassActions({ model, className }: { model: FileManagerModel; className?
                             >
                                 <p className='mb-2'>
                                     <Translate
-                                        i18nKey='Are you sure you want to delete <bold>{{number}} files</bold>? This is a permanent action and the files cannot be recovered.'
-                                        values={{ number: selection.length }}
+                                        i18nKey='Are you sure you want to delete <bold>{{count}} files</bold>? This is a permanent action and the files cannot be recovered.'
+                                        values={{ count: selection.length }}
                                         components={{ bold: <span className='font-semibold text-foreground' /> }}
                                     />
                                 </p>
@@ -55,7 +55,7 @@ function MassActions({ model, className }: { model: FileManagerModel; className?
                                         <li key={file}>{file}</li>
                                     ))}
                                     {selection.length > 15 && (
-                                        <li>{t('and {{number}} others', { number: selection.length - 15 })}</li>
+                                        <li>{t('and {{count}} others', { count: selection.length - 15 })}</li>
                                     )}
                                 </ul>
                             </Dialog.ConfirmTrigger>
