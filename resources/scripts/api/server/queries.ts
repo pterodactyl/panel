@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { useServerRouteId } from '@/router/params';
 import { useCallback } from 'react';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import { invalidateGeneratedOperations } from '@/api/mutationUtils';
 import { hasGeneratedOperationId, hasPathParam } from '@/api/queryKeyGuards';
@@ -133,15 +134,15 @@ export const useRenameServer = (serverIdentifier: string) => {
                 },
             }));
             await invalidateGeneratedOperations(queryClient, ['clientListClientServers']);
-            toast.success('Server details updated');
+            toast.success(i18next.t('Server details updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update server details'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update server details')),
     });
 };
 
 export const useReinstallServer = () =>
     useMutation({
         ...clientReinstallServerMutation(),
-        onSuccess: () => toast.success('Server reinstall started'),
-        onError: (error) => notifyHttpError(error, 'Unable to reinstall server'),
+        onSuccess: () => toast.success(i18next.t('Server reinstall started')),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to reinstall server')),
     });

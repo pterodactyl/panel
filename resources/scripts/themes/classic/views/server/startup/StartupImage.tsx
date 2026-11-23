@@ -1,9 +1,11 @@
-import { Input, InputSpinner, Select, TitledGreyBox } from '@/sdk';
+import { Input, InputSpinner, Select, TitledGreyBox, useTranslation } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 export default function StartupImage({ model, className }: ViewProps<'server.startup.image'>) {
+    const { t } = useTranslation();
+
     return (
-        <TitledGreyBox title='Docker Image' className={className}>
+        <TitledGreyBox title={t('Docker Image')} className={className}>
             {model.images.length > 1 && !model.custom ? (
                 <>
                     <InputSpinner visible={model.pending}>
@@ -15,8 +17,9 @@ export default function StartupImage({ model, className }: ViewProps<'server.sta
                         />
                     </InputSpinner>
                     <p className='text-xs text-muted-foreground mt-2'>
-                        This is an advanced feature allowing you to select a Docker image to use when running this
-                        server instance.
+                        {t(
+                            'This is an advanced feature allowing you to select a Docker image to use when running this server instance.'
+                        )}
                     </p>
                 </>
             ) : (
@@ -24,8 +27,9 @@ export default function StartupImage({ model, className }: ViewProps<'server.sta
                     <Input disabled readOnly value={model.image} />
                     {model.custom && (
                         <p className='text-xs text-muted-foreground mt-2'>
-                            This server's Docker image has been manually set by an administrator and cannot be changed
-                            through this UI.
+                            {t(
+                                "This server's Docker image has been manually set by an administrator and cannot be changed through this UI."
+                            )}
                         </p>
                     )}
                 </>

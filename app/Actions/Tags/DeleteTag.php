@@ -15,7 +15,7 @@ final readonly class DeleteTag implements DeletesTags
     {
         // The cascading pivot cleanup would discard every egg and node assignment of a built-in
         // tag, and recreating the tag later cannot restore them.
-        throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, 'Built-in game tags cannot be deleted.');
+        throw_if(EggSpecificTags::isSpecial($tag->slug), DisplayException::class, __('exceptions.tags.builtin_delete'));
 
         $tag->delete();
     }

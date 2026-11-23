@@ -62,7 +62,7 @@ class StartupController extends ClientApiController
         $variable = $request->variable();
         throw_if(! $variable instanceof EggVariable || ! $variable->user_viewable, BadRequestHttpException::class, 'The environment variable you are trying to edit does not exist.');
 
-        throw_unless($variable->user_editable, BadRequestHttpException::class, 'The environment variable you are trying to edit is read-only.');
+        throw_unless($variable->user_editable, BadRequestHttpException::class, __('exceptions.server.variable_read_only'));
 
         $value = $request->filled('value') ? $request->string('value')->toString() : null;
 

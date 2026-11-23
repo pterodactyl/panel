@@ -7,13 +7,16 @@ import {
     QrCode,
     Spinner,
     Tooltip,
+    useTranslation,
     type AccountTwoFactorModel,
     type TwoFactorSetupModel,
 } from '@/sdk';
 
 function SecretQrCode({ setup }: { setup: TwoFactorSetupModel }) {
+    const { t } = useTranslation();
+
     if (setup.error) {
-        return <span className='text-sm text-muted-foreground text-center'>Unable to load QR code.</span>;
+        return <span className='text-sm text-muted-foreground text-center'>{t('Unable to load QR code.')}</span>;
     }
 
     return setup.qrCode === null ? <Spinner /> : <QrCode value={setup.qrCode} className='w-full h-full shadow-none' />;
@@ -21,6 +24,7 @@ function SecretQrCode({ setup }: { setup: TwoFactorSetupModel }) {
 
 function SetupForm({ setup, onClose }: { setup: TwoFactorSetupModel; onClose: () => void }) {
     const { code, password } = setup.fields;
+    const { t } = useTranslation();
     const complete = password.fieldProps.value.length > 0 && code.fieldProps.value.length === 6;
 
     return (
@@ -37,34 +41,35 @@ function SetupForm({ setup, onClose }: { setup: TwoFactorSetupModel; onClose: ()
             </div>
             <CopyOnClick text={setup.secret ?? undefined}>
                 <p className='font-mono text-sm text-foreground text-center mt-2'>
-                    {setup.secret?.match(/.{1,4}/g)?.join(' ') || 'Loading...'}
+                    {setup.secret?.match(/.{1,4}/g)?.join(' ') || t('Loading...')}
                 </p>
             </CopyOnClick>
             {setup.error && (
                 <div className='mt-4 space-y-3'>
                     <Alert type='danger'>{setup.error}</Alert>
                     <Button.Text type='button' onClick={setup.retry}>
-                        Retry
+                        {t('Retry')}
                     </Button.Text>
                 </div>
             )}
             <p id='totp-code-description' className='mt-6'>
-                Scan the QR code above using the two-step authentication app of your choice. Then, enter the 6-digit
-                code generated into the field below.
+                {t(
+                    'Scan the QR code above using the two-step authentication app of your choice. Then, enter the 6-digit code generated into the field below.'
+                )}
             </p>
             <Input {...code.fieldProps} aria-labelledby='totp-code-description' className='mt-3' placeholder='000000' />
             <label htmlFor='totp-password' className='block mt-3'>
-                Account Password
+                {t('Account Password')}
             </label>
             <Input {...password.fieldProps} id='totp-password' className='mt-1' />
             <Dialog.Footer>
-                <Button.Text onClick={onClose}>Cancel</Button.Text>
+                <Button.Text onClick={onClose}>{t('Cancel')}</Button.Text>
                 <Tooltip
                     disabled={complete}
                     content={
                         setup.secret
-                            ? 'You must enter the 6-digit code and your password to continue.'
-                            : 'Waiting for QR code to load...'
+                            ? t('You must enter the 6-digit code and your password to continue.')
+                            : t('Waiting for QR code to load...')
                     }
                     delay={100}
                 >
@@ -74,7 +79,7 @@ function SetupForm({ setup, onClose }: { setup: TwoFactorSetupModel; onClose: ()
                         type='submit'
                         form='enable-totp-form'
                     >
-                        Enable
+                        {t('Enable')}
                     </Button>
                 </Tooltip>
             </Dialog.Footer>
@@ -83,14 +88,18 @@ function SetupForm({ setup, onClose }: { setup: TwoFactorSetupModel; onClose: ()
 }
 
 export default function SetupTwoFactorDialog({ model }: { model: AccountTwoFactorModel }) {
+    const { t } = useTranslation();
+
     return (
         <Dialog
             open={model.dialog === 'enable'}
             onClose={model.closeDialog}
             preventExternalClose={model.setup.submitting}
             hideCloseIcon={model.setup.submitting}
-            title='Enable Two-Step Verification'
-            description="Help protect your account from unauthorized access. You'll be prompted for a verification code each time you sign in."
+            title={t('Enable Two-Step Verification')}
+            description={t(
+                "Help protect your account from unauthorized access. You'll be prompted for a verification code each time you sign in."
+            )}
         >
             <SetupForm setup={model.setup} onClose={model.closeDialog} />
         </Dialog>

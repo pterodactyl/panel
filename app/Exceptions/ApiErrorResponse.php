@@ -89,14 +89,14 @@ final class ApiErrorResponse
             'status' => (string) self::status($e),
             'detail' => $e instanceof HttpExceptionInterface || self::mappedStatus($e) !== null
                 ? $e->getMessage()
-                : 'An unexpected error was encountered while processing this request, please try again.',
+                : __('exceptions.api.unexpected_error'),
         ];
 
         if ($e instanceof ModelNotFoundException || $e->getPrevious() instanceof ModelNotFoundException) {
             // Show a nicer error message compared to the standard "No query results for model"
             // response that is normally returned. If we are in debug mode this will get overwritten
             // with a more specific error message to help narrow down things.
-            $error['detail'] = 'The requested resource could not be found on the server.';
+            $error['detail'] = __('exceptions.api.model_not_found');
         }
 
         if (config('app.debug')) {

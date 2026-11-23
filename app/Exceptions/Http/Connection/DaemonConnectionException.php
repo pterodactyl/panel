@@ -61,10 +61,10 @@ class DaemonConnectionException extends HttpException
     private function messageFor(?ClientResponse $response, int $statusCode): string
     {
         if (! $response instanceof ClientResponse) {
-            return 'Could not establish a connection to the machine running this server. Please try again.';
+            return __('exceptions.daemon.unreachable');
         }
 
-        $message = sprintf('There was an error while communicating with the machine running this server. This error has been logged, please try again. (code: %s) (request_id: %s)', $response->status(), $this->requestId ?? '<nil>');
+        $message = __('exceptions.daemon.communication_error', ['code' => $response->status(), 'request_id' => $this->requestId ?? '<nil>']);
         if ($statusCode >= 500) {
             return $message;
         }
@@ -72,6 +72,6 @@ class DaemonConnectionException extends HttpException
         $body = $response->json();
         $remoteError = is_array($body) && is_string($body['error'] ?? null) ? $body['error'] : $message;
 
-        return sprintf('An error occurred on the remote host: %s. (request id: %s)', $remoteError, $this->requestId ?? '<nil>');
+        return __('exceptions.daemon.remote_error', ['error' => $remoteError, 'request_id' => $this->requestId ?? '<nil>']);
     }
 }

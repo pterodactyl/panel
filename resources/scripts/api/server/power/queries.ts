@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import i18next from 'i18next';
 
 import {
     clientSendPowerActionMutation,
@@ -28,11 +29,11 @@ export const sendServerCommandInput = (uuid: string, command: string): Options<C
 export const useSendPowerAction = () =>
     useMutation({
         ...clientSendPowerActionMutation(),
-        onError: (error) => notifyHttpError(error, 'Unable to send power action'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to send power action')),
     });
 
 export const useSendServerCommand = () =>
     useMutation({
         ...clientSendServerCommandMutation(),
-        onError: (error) => notifyHttpError(error, 'Unable to send command'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to send command')),
     });

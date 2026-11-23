@@ -20,7 +20,7 @@ beforeEach(function () {
 test('exception returned if user assigned to servers', function () {
     $server = $this->createServerModel();
     $this->expectException(DisplayException::class);
-    $this->expectExceptionMessage(__('admin/user.exceptions.user_has_servers'));
+    $this->expectExceptionMessage(__('exceptions.users.has_servers'));
     $this->app->make(DeletesUsers::class)->delete($server->user);
     $this->assertModelExists($server->user);
     Bus::assertNotDispatched(RevokeSftpAccessJob::class);

@@ -170,6 +170,24 @@ it.each([
         "declare const t: (key: string) => string;\nconst key = 'Save';\nexport const label = t(key);",
         'literal-translation-keys',
     ],
+    [
+        'rejects untranslated interface text',
+        classic,
+        'export const Probe = () => <p>Save changes</p>;',
+        'no-literal-text',
+    ],
+    [
+        'rejects untranslated text props',
+        classic,
+        'export const Probe = () => <input placeholder="Search servers" />;',
+        'no-literal-text',
+    ],
+    [
+        'rejects untranslated toasts',
+        classic,
+        "declare const toast: (title: string) => void;\nexport const notify = () => toast('Server saved');",
+        'no-literal-text',
+    ],
 ])('%s', (_name, path, source, rule) => {
     const result = lint(path, source);
 
@@ -208,6 +226,11 @@ it.each([
         'allows english translation keys',
         classic,
         "import { useTranslation } from '@/sdk';\nexport const Probe = () => useTranslation().t('Welcome back, {{name}}', { name: 'Alex' });",
+    ],
+    [
+        'allows html entities and code-like text',
+        classic,
+        'export const Probe = () => <p>&nbsp;&mdash;&copy; <code>config.yml</code></p>;',
     ],
     [
         'ignores examples in comments',

@@ -1,5 +1,14 @@
 import { Layers, LogOut, Moon, Sun, UserCog } from 'lucide-react';
-import { Avatar, DropdownMenu, Icon, PanelLink, SpinnerOverlay, Tooltip } from '@/sdk';
+import {
+    Avatar,
+    DropdownMenu,
+    Icon,
+    PanelLink,
+    SpinnerOverlay,
+    Tooltip,
+    useTranslation,
+    type Translation,
+} from '@/sdk';
 import { Main, Slot, View, type AppLayoutLink, type AppLayoutModel, type ViewProps } from '@/sdk/theme';
 
 const navItemClass = [
@@ -10,7 +19,7 @@ const navItemClass = [
     'data-[status=active]:shadow-navigation-active',
 ].join(' ');
 
-const schemeLabels = { dark: 'Dark', light: 'Light' } as const;
+const schemeLabels = (t: Translation['t']) => ({ dark: t('Dark'), light: t('Light') });
 
 function LinkIcon({ link, user }: { link: AppLayoutLink; user: AppLayoutModel['user'] }) {
     if (link.id === 'account') {
@@ -32,29 +41,34 @@ function SchemeMenu({
     model: AppLayoutModel;
     setScheme: NonNullable<AppLayoutModel['setScheme']>;
 }) {
+    const { t } = useTranslation();
+    const labels = schemeLabels(t);
+
     return (
         <DropdownMenu
             triggerClassName={navItemClass}
             triggerContent={
                 <>
                     <Icon icon={model.scheme === 'light' ? Sun : Moon} aria-hidden />
-                    <span className='sr-only'>Color scheme</span>
+                    <span className='sr-only'>{t('Color scheme')}</span>
                 </>
             }
         >
             {model.schemes.map((scheme) => (
                 <DropdownMenu.Item key={scheme} checked={scheme === model.preference} onClick={() => setScheme(scheme)}>
-                    {schemeLabels[scheme]}
+                    {labels[scheme]}
                 </DropdownMenu.Item>
             ))}
             <DropdownMenu.Item checked={model.preference === 'system'} onClick={() => setScheme('system')}>
-                System
+                {t('System')}
             </DropdownMenu.Item>
         </DropdownMenu>
     );
 }
 
 function NavigationBar({ model }: { model: AppLayoutModel }) {
+    const { t } = useTranslation();
+
     return (
         <div className='w-full bg-background shadow-md overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden'>
             <SpinnerOverlay visible={model.signingOut} />
@@ -87,8 +101,13 @@ function NavigationBar({ model }: { model: AppLayoutModel }) {
                         </Tooltip>
                     ))}
                     {model.setScheme && <SchemeMenu model={model} setScheme={model.setScheme} />}
-                    <Tooltip placement='bottom' content='Sign Out'>
-                        <button type='button' aria-label='Sign Out' onClick={model.signOut} className={navItemClass}>
+                    <Tooltip placement='bottom' content={t('Sign Out')}>
+                        <button
+                            type='button'
+                            aria-label={t('Sign Out')}
+                            onClick={model.signOut}
+                            className={navItemClass}
+                        >
                             <Icon icon={LogOut} />
                         </button>
                     </Tooltip>

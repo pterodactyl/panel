@@ -7,6 +7,8 @@ import DropdownMenu from '@/components/elements/dropdown/DropdownMenu';
 import Icon from '@/components/elements/Icon';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { useSkin } from '@/themes/skins';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 const iconClassName = 'h-3.5 w-3.5';
 /** Links and menu triggers look like the row's icon buttons. */
@@ -26,7 +28,11 @@ export function actionsColumn<TData>(
 
     return {
         id: 'actions',
-        header: () => <span className='sr-only'>Actions</span>,
+        header: () => (
+            <span className='sr-only'>
+                <Translate i18nKey='Actions' />
+            </span>
+        ),
         cell: ({ row }) => cell(row.original),
         enableSorting: false,
         meta: { headerClassName: className, cellClassName: className },
@@ -72,11 +78,17 @@ export function RowActionButton({ icon, label, danger, disabled, disabledReason,
     );
 }
 
-export const EditAction = (props: PresetActionProps) => <RowActionButton icon={Pencil} label='Edit' {...props} />;
+export const EditAction = (props: PresetActionProps) => {
+    const { t } = useTranslation();
 
-export const DeleteAction = ({ label = 'Delete', ...props }: PresetActionProps & { label?: string }) => (
-    <RowActionButton icon={Trash2} label={label} danger {...props} />
-);
+    return <RowActionButton icon={Pencil} label={t('Edit')} {...props} />;
+};
+
+export const DeleteAction = ({ label, ...props }: PresetActionProps & { label?: string }) => {
+    const { t } = useTranslation();
+
+    return <RowActionButton icon={Trash2} label={label ?? t('Delete')} danger {...props} />;
+};
 
 /** `EditAction` for resources edited on another page. */
 export function EditLinkAction<
@@ -87,9 +99,10 @@ export function EditLinkAction<
     const TMaskTo extends string = '',
 >(props: LinkComponentProps<'a', TRouter, TFrom, TTo, TMaskFrom, TMaskTo> & { 'aria-label': string }) {
     const button = useActionButton();
+    const { t } = useTranslation();
 
     return (
-        <ActionTooltip content='Edit'>
+        <ActionTooltip content={t('Edit')}>
             <Link {...props} {...button('root')}>
                 <Icon icon={Pencil} className={iconClassName} />
             </Link>

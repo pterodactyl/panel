@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
@@ -92,9 +93,11 @@ export const useCreateServerDatabase = () => {
         ...clientCreateServerDatabaseMutation(),
         onSuccess: async (database, { path }) => {
             await upsertDatabase(queryClient, path.server_uuid, database);
-            toast.success('Database created', { description: `${database.attributes.name} is ready to use.` });
+            toast.success(i18next.t('Database created'), {
+                description: i18next.t('{{name}} is ready to use.', { name: database.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create database'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create database')),
     });
 };
 
@@ -107,9 +110,11 @@ export const useDeleteServerDatabase = () => {
             await removeDatabase(queryClient, variables.path.server_uuid, variables.path.database_id);
             const name = variables.meta?.name;
 
-            toast.success('Database deleted', { description: name ? `${name} has been removed.` : undefined });
+            toast.success(i18next.t('Database deleted'), {
+                description: name ? i18next.t('{{name}} has been removed.', { name }) : undefined,
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete database'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete database')),
     });
 };
 
@@ -120,10 +125,10 @@ export const useRotateDatabasePassword = () => {
         ...clientRotateServerDatabasePasswordMutation(),
         onSuccess: async (database, { path }) => {
             await upsertDatabase(queryClient, path.server_uuid, database);
-            toast.success('Database password rotated', {
-                description: `${database.attributes.name} has a new password.`,
+            toast.success(i18next.t('Database password rotated'), {
+                description: i18next.t('{{name}} has a new password.', { name: database.attributes.name }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to rotate database password'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to rotate database password')),
     });
 };

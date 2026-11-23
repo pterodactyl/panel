@@ -9,6 +9,7 @@ import type { Server } from '@/api/server/types';
 import { useSiteSettings } from '@/api/settings/queries';
 import { SCREEN_ROOTS } from '@/extensions/registry';
 import type { CorePanelDestination } from '@/sdk/navigation';
+import { useTranslation, type Translation } from '@/sdk/localization';
 import { useBrandLogo } from './brand';
 import { createTestServer } from './fixtures';
 import { navItemDestination, useNavigation, type NavArea, type NavigationModel, type NavItem } from './navigation';
@@ -146,9 +147,9 @@ function useAccountLayoutModel(): AccountLayoutModel {
     return useMemo(() => ({ nav }), [nav]);
 }
 
-const adminLink = (internalId: number, order: number): NavItem => ({
+const adminLink = (t: Translation['t'], internalId: number, order: number): NavItem => ({
     id: 'admin',
-    label: 'Open Admin Area',
+    label: t('Open Admin Area'),
     destination: { to: '/panel/servers/$id', params: { id: String(internalId) } },
     icon: 'external-link',
     group: null,
@@ -174,6 +175,7 @@ function useServerFrame(): ServerLayoutModel | null {
     const { rootAdmin } = useCurrentUser();
     const nav = useNavigation('server');
     const state = useServerRunState(server?.attributes.uuid ?? '');
+    const { t } = useTranslation();
 
     return useMemo(() => {
         if (!server) {
@@ -189,11 +191,11 @@ function useServerFrame(): ServerLayoutModel | null {
             internalId,
             state,
             conflict: serverConflict(server),
-            adminLink: rootAdmin ? adminLink(internalId, nav.items.length) : null,
+            adminLink: rootAdmin ? adminLink(t, internalId, nav.items.length) : null,
             nav,
             server,
         };
-    }, [server, rootAdmin, nav, state]);
+    }, [server, rootAdmin, nav, state, t]);
 }
 
 function useServerLayoutModel(): ServerLayoutModel {
@@ -213,12 +215,12 @@ function useAdminLayoutModel(): AdminLayoutModel {
     return useMemo(() => ({ nav, user: { uuid, username, email } }), [nav, uuid, username, email]);
 }
 
-const appLinks = (rootAdmin: boolean): AppLayoutLink[] => [
-    { id: 'dashboard', label: 'Dashboard', destination: { to: '/' }, exact: true, icon: 'layers' },
+const appLinks = (t: Translation['t'], rootAdmin: boolean): AppLayoutLink[] => [
+    { id: 'dashboard', label: t('Dashboard'), destination: { to: '/' }, exact: true, icon: 'layers' },
     ...(rootAdmin
-        ? [{ id: 'admin', label: 'Admin', destination: { to: '/panel' }, exact: false, icon: 'user-cog' } as const]
+        ? [{ id: 'admin', label: t('Admin'), destination: { to: '/panel' }, exact: false, icon: 'user-cog' } as const]
         : []),
-    { id: 'account', label: 'Account Settings', destination: { to: '/account' }, exact: false, icon: 'user-round' },
+    { id: 'account', label: t('Account Settings'), destination: { to: '/account' }, exact: false, icon: 'user-round' },
 ];
 
 const DASHBOARD: AppArea = Object.freeze({ kind: 'dashboard' });
@@ -259,11 +261,12 @@ function useAppLayoutModel(): AppLayoutModel {
     const { scheme, preference, schemes, setScheme } = useTheme();
     const { mutate, isPending } = useLogout();
     const area = useAppArea();
+    const { t } = useTranslation();
 
     return useMemo(
         () => ({
             brand,
-            links: appLinks(rootAdmin),
+            links: appLinks(t, rootAdmin),
             area,
             user: { uuid, username, email, avatar: avatar ?? null, rootAdmin },
             scheme,
@@ -287,11 +290,14 @@ function useAppLayoutModel(): AppLayoutModel {
             setScheme,
             mutate,
             isPending,
+            t,
         ]
     );
 }
 
 const noop = () => {};
+
+const untranslated: Translation['t'] = (key) => key;
 
 const brand: LayoutBrand = { name: 'Pterodactyl', logoUrl: null };
 const logo: LayoutBrand = { ...brand, logoUrl: '/favicons/android-chrome-192x192.png' };
@@ -302,7 +308,7 @@ const appLayoutFixture = (
     area: AppArea = DASHBOARD
 ): AppLayoutModel => ({
     brand,
-    links: appLinks(rootAdmin),
+    links: appLinks(untranslated, rootAdmin),
     area,
     user: {
         uuid: '11111111-1111-4111-8111-111111111111',
@@ -394,7 +400,7 @@ function serverLayoutFixture(
         internalId: server.attributes.internal_id,
         state: options.state === undefined ? 'running' : options.state,
         conflict: serverConflict(server),
-        adminLink: options.rootAdmin ? adminLink(server.attributes.internal_id, nav.items.length) : null,
+        adminLink: options.rootAdmin ? adminLink(untranslated, server.attributes.internal_id, nav.items.length) : null,
         nav,
         server,
     };

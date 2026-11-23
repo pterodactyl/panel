@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, Form, Switch, useAppForm, type ScheduleFormValues } from '@/sdk';
+import { Dialog, Form, Switch, useAppForm, useTranslation, type ScheduleFormValues } from '@/sdk';
 import ScheduleCheatsheet from './ScheduleCheatsheet';
 
 interface Props {
@@ -19,6 +19,7 @@ const cronFieldsClass = [
 ].join(' ');
 
 function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'>) {
+    const { t } = useTranslation();
     const [showCheatsheet, setShowCheatsheet] = useState(false);
     const form = useAppForm({
         defaultValues: { ...values },
@@ -34,26 +35,31 @@ function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'
             <form.AppField name='name'>
                 {(field) => (
                     <field.TextField
-                        label='Schedule name'
-                        description='A human readable identifier for this schedule.'
+                        label={t('Schedule name')}
+                        description={t('A human readable identifier for this schedule.')}
                     />
                 )}
             </form.AppField>
             <div className={cronFieldsClass}>
-                <form.AppField name='minute'>{(field) => <field.TextField label='Minute' />}</form.AppField>
-                <form.AppField name='hour'>{(field) => <field.TextField label='Hour' />}</form.AppField>
-                <form.AppField name='dayOfMonth'>{(field) => <field.TextField label='Day of month' />}</form.AppField>
-                <form.AppField name='month'>{(field) => <field.TextField label='Month' />}</form.AppField>
-                <form.AppField name='dayOfWeek'>{(field) => <field.TextField label='Day of week' />}</form.AppField>
+                <form.AppField name='minute'>{(field) => <field.TextField label={t('Minute')} />}</form.AppField>
+                <form.AppField name='hour'>{(field) => <field.TextField label={t('Hour')} />}</form.AppField>
+                <form.AppField name='dayOfMonth'>
+                    {(field) => <field.TextField label={t('Day of month')} />}
+                </form.AppField>
+                <form.AppField name='month'>{(field) => <field.TextField label={t('Month')} />}</form.AppField>
+                <form.AppField name='dayOfWeek'>
+                    {(field) => <field.TextField label={t('Day of week')} />}
+                </form.AppField>
             </div>
             <p className='text-muted-foreground text-xs mt-2'>
-                The schedule system supports the use of Cronjob syntax when defining when tasks should begin running.
-                Use the fields above to specify when these tasks should begin running.
+                {t(
+                    'The schedule system supports the use of Cronjob syntax when defining when tasks should begin running. Use the fields above to specify when these tasks should begin running.'
+                )}
             </p>
             <div className='mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'>
                 <Switch
-                    label='Show Cheatsheet'
-                    description='Show the cron cheatsheet for some examples.'
+                    label={t('Show Cheatsheet')}
+                    description={t('Show the cron cheatsheet for some examples.')}
                     checked={showCheatsheet}
                     onChange={() => setShowCheatsheet((shown) => !shown)}
                 />
@@ -63,8 +69,8 @@ function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'
                 <form.AppField name='onlyWhenOnline'>
                     {(field) => (
                         <field.SwitchField
-                            description='Only execute this schedule when the server is in a running state.'
-                            label='Only When Server Is Online'
+                            description={t('Only execute this schedule when the server is in a running state.')}
+                            label={t('Only When Server Is Online')}
                         />
                     )}
                 </form.AppField>
@@ -73,8 +79,8 @@ function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'
                 <form.AppField name='enabled'>
                     {(field) => (
                         <field.SwitchField
-                            description='This schedule will be executed automatically if enabled.'
-                            label='Schedule Enabled'
+                            description={t('This schedule will be executed automatically if enabled.')}
+                            label={t('Schedule Enabled')}
                         />
                     )}
                 </form.AppField>
@@ -82,7 +88,7 @@ function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'
             <div className='mt-6 text-right'>
                 <form.AppForm>
                     <form.SubmitButton className='w-full sm:w-auto'>
-                        {editing ? 'Save changes' : 'Create schedule'}
+                        {editing ? t('Save changes') : t('Create schedule')}
                     </form.SubmitButton>
                 </form.AppForm>
             </div>
@@ -92,8 +98,10 @@ function ScheduleForm({ values, editing, onSubmit, onClose }: Omit<Props, 'open'
 
 /** Creates a schedule, or edits one, with its name, cron fields and switches. */
 export default function ScheduleDialog({ open, onClose, ...props }: Props) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog open={open} title={props.editing ? 'Edit schedule' : 'Create schedule'} onClose={onClose}>
+        <Dialog open={open} title={props.editing ? t('Edit schedule') : t('Create schedule')} onClose={onClose}>
             <ScheduleForm {...props} onClose={onClose} />
         </Dialog>
     );

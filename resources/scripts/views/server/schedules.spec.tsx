@@ -233,7 +233,7 @@ describe('page.server.schedules.detail', () => {
 });
 
 describe('the task form', () => {
-    const form = scheduleTaskForm(0);
+    const form = scheduleTaskForm((key) => key, 0);
     const restart = {
         id: 3,
         sequence: 2,
@@ -265,6 +265,6 @@ describe('the task form', () => {
         expect(form.validateTimeOffset(901)).toBe('The time offset must be less than 900 seconds.');
         expect(form.validateTimeOffset(null)).toBe('A time offset must be provided.');
         expect(form.validate({ ...form.values(), action: 'backup' })).toContain('backup limit is set to 0');
-        expect(scheduleTaskForm(2).validate({ ...form.values(), action: 'backup' })).toBeNull();
+        expect(scheduleTaskForm((key) => key, 2).validate({ ...form.values(), action: 'backup' })).toBeNull();
     });
 });

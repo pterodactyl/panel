@@ -8,6 +8,7 @@ import { ip } from '@/lib/formatters';
 import { useDebouncedValue } from '@/plugins/useDebouncedValue';
 import { describeShortcut, useShortcut, type Shortcut } from '@/plugins/useShortcut';
 import type { CorePanelDestination } from '@/sdk/navigation';
+import { useTranslation } from '@/sdk/localization';
 import { createTestServer } from './fixtures';
 import { fixtureField, stateField, type FieldModel } from './forms';
 import { implementViews } from './registry';
@@ -48,8 +49,6 @@ declare module './registry' {
     }
 }
 
-const SHORT = 'Please enter at least three characters to begin searching.';
-
 const searchResult = ({ attributes }: Server): AppSearchResult => ({
     identifier: attributes.identifier,
     uuid: attributes.uuid,
@@ -74,6 +73,8 @@ function useAppSearchModel(): AppSearchModel {
         enabled
     );
 
+    const { t } = useTranslation();
+
     useShortcut('mod+/', () => setOpen(true), { when: !open });
 
     return useMemo(() => {
@@ -87,13 +88,19 @@ function useAppSearchModel(): AppSearchModel {
                 setTerm('');
             },
             shortcut,
-            field: { ...field, error: term.length > 0 && term.length < 3 ? SHORT : null },
+            field: {
+                ...field,
+                error:
+                    term.length > 0 && term.length < 3
+                        ? t('Please enter at least three characters to begin searching.')
+                        : null,
+            },
             results: enabled ? (data?.data.slice(0, 5) ?? []).map(searchResult) : [],
             loading: enabled && isFetching,
             searched: enabled && !isFetching && !error && data !== undefined,
             error: enabled && error && !isFetching ? httpErrorToHuman(error) : null,
         };
-    }, [open, term, enabled, data, error, isFetching]);
+    }, [open, term, enabled, data, error, isFetching, t]);
 }
 
 const noop = () => {};
@@ -124,7 +131,12 @@ implementViews({
             results: () => searchFixture(),
             loading: () => searchFixture({ results: [], loading: true, searched: false }),
             none: () => searchFixture({ field: fixtureField('term', {}, 'zzz'), results: [] }),
-            short: () => searchFixture({ field: fixtureField('term', {}, 'su', SHORT), results: [], searched: false }),
+            short: () =>
+                searchFixture({
+                    field: fixtureField('term', {}, 'su', 'Please enter at least three characters to begin searching.'),
+                    results: [],
+                    searched: false,
+                }),
             error: () => searchFixture({ results: [], searched: false, error: 'Request failed with status code 500.' }),
         },
     },

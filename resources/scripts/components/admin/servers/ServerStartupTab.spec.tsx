@@ -117,7 +117,10 @@ const tagCheckFailure = new AxiosError('Unprocessable', '422', undefined, undefi
     config: { headers: new AxiosHeaders() },
     data: {
         errors: [
-            { detail: 'node-alpha only accepts eggs tagged Minecraft.', meta: { source_field: 'egg_id', rule: '' } },
+            {
+                detail: 'node-alpha only accepts eggs tagged Minecraft.',
+                meta: { source_field: 'egg_id', rule: 'node_accepts_egg' },
+            },
         ],
     },
 });

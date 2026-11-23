@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { setCurrentUserQueryData } from '@/api/account/queries';
@@ -18,9 +19,9 @@ export const useEnableAccountTwoFactor = () => {
         ...clientEnableTwoFactorAuthenticationMutation(),
         onSuccess: () => {
             setCurrentUserQueryData(queryClient, { useTotp: true });
-            toast.success('Two-step verification enabled');
+            toast.success(i18next.t('Two-step verification enabled'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to enable two-step verification'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to enable two-step verification')),
     });
 };
 
@@ -31,8 +32,8 @@ export const useDisableAccountTwoFactor = () => {
         ...clientDisableTwoFactorAuthenticationMutation(),
         onSuccess: () => {
             setCurrentUserQueryData(queryClient, { useTotp: false });
-            toast.success('Two-step verification disabled');
+            toast.success(i18next.t('Two-step verification disabled'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to disable two-step verification'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to disable two-step verification')),
     });
 };

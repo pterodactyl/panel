@@ -1,4 +1,4 @@
-import { Dialog, NewButton, type ScheduleTaskForm, type ScheduleTaskValues } from '@/sdk';
+import { Dialog, NewButton, useTranslation, type ScheduleTaskForm, type ScheduleTaskValues } from '@/sdk';
 import TaskDialog from './TaskDialog';
 
 interface Props {
@@ -8,11 +8,13 @@ interface Props {
 }
 
 export default function NewTaskButton({ form, onSubmit, className }: Props) {
+    const { t } = useTranslation();
+
     return (
         <Dialog.Trigger
             trigger={({ onClick }) => (
                 <NewButton onClick={onClick} className={className}>
-                    New task
+                    {t('New task')}
                 </NewButton>
             )}
         >

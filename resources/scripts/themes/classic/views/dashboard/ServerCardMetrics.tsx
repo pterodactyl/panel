@@ -1,16 +1,17 @@
 import { Cpu, HardDrive, MemoryStick } from 'lucide-react';
-import { Badge, bytesToString, cn, Spinner, Stat } from '@/sdk';
+import { Badge, bytesToString, cn, Spinner, Stat, useTranslation, type Translation } from '@/sdk';
 import type { ServerCardState, ServerStatMetric, ServerUnavailableReason, UiTone, ViewProps } from '@/sdk/theme';
 
-const unavailableLabels = {
-    suspended: 'Suspended',
-    'connection-error': 'Connection Error',
-    maintenance: 'Under Maintenance',
-    transferring: 'Transferring',
-    installing: 'Installing',
-    'restoring-backup': 'Restoring Backup',
-    unavailable: 'Unavailable',
-} as const;
+const unavailableLabels = (t: Translation['t']) =>
+    ({
+        suspended: t('Suspended'),
+        'connection-error': t('Connection Error'),
+        maintenance: t('Under Maintenance'),
+        transferring: t('Transferring'),
+        installing: t('Installing'),
+        'restoring-backup': t('Restoring Backup'),
+        unavailable: t('Unavailable'),
+    }) satisfies Record<ServerUnavailableReason, string>;
 
 const unavailableTones = {
     suspended: 'danger',
@@ -23,9 +24,11 @@ const unavailableTones = {
 } satisfies Record<ServerUnavailableReason, UiTone>;
 
 function UnavailableBadge({ reason }: { reason: ServerUnavailableReason }) {
+    const { t } = useTranslation();
+
     return (
         <div className='flex-1 text-center'>
-            <Badge tone={unavailableTones[reason]}>{unavailableLabels[reason]}</Badge>
+            <Badge tone={unavailableTones[reason]}>{unavailableLabels(t)[reason]}</Badge>
         </div>
     );
 }
@@ -34,6 +37,8 @@ function UnavailableBadge({ reason }: { reason: ServerUnavailableReason }) {
 const tone = ({ alarm }: ServerStatMetric): UiTone => (alarm === 'danger' ? 'danger' : 'neutral');
 
 function MetricsContent({ state }: { state: ServerCardState }) {
+    const { t } = useTranslation();
+
     if (state.kind === 'loading') {
         return <Spinner size='small' />;
     }
@@ -46,25 +51,25 @@ function MetricsContent({ state }: { state: ServerCardState }) {
         <>
             {[
                 {
-                    label: 'CPU',
+                    label: t('CPU'),
                     icon: Cpu,
                     metric: state.cpu,
                     value: `${state.cpu.value.toFixed(2)} %`,
-                    limit: state.cpu.limit === 0 ? 'Unlimited' : `${state.cpu.limit} %`,
+                    limit: state.cpu.limit === 0 ? t('Unlimited') : `${state.cpu.limit} %`,
                 },
                 {
-                    label: 'Memory',
+                    label: t('Memory'),
                     icon: MemoryStick,
                     metric: state.memory,
                     value: bytesToString(state.memory.value),
-                    limit: state.memory.limit === 0 ? 'Unlimited' : bytesToString(state.memory.limit),
+                    limit: state.memory.limit === 0 ? t('Unlimited') : bytesToString(state.memory.limit),
                 },
                 {
-                    label: 'Disk',
+                    label: t('Disk'),
                     icon: HardDrive,
                     metric: state.disk,
                     value: bytesToString(state.disk.value),
-                    limit: state.disk.limit === 0 ? 'Unlimited' : bytesToString(state.disk.limit),
+                    limit: state.disk.limit === 0 ? t('Unlimited') : bytesToString(state.disk.limit),
                 },
             ].map(({ label, icon, metric, value, limit }) => (
                 <Stat
@@ -73,7 +78,7 @@ function MetricsContent({ state }: { state: ServerCardState }) {
                     icon={icon}
                     label={label}
                     value={value}
-                    limit={`of ${limit}`}
+                    limit={t('of {{limit}}', { limit })}
                     tone={tone(metric)}
                     className='flex-1 ml-4 hidden sm:flex'
                 />

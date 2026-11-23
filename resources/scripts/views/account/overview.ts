@@ -16,6 +16,7 @@ import {
 } from '@/api/account/two-factor/queries';
 import { httpErrorToHuman } from '@/api/http';
 import { useSiteSettings } from '@/api/settings/queries';
+import { useTranslation } from '@/sdk/localization';
 import { boundField, fixtureField, stateField, type FieldAttributes } from '../forms';
 import { implementViews } from '../registry';
 import type {
@@ -52,8 +53,8 @@ function useAccountOverviewModel(): AccountOverviewModel {
 
 const PANEL_DEFAULT = '';
 
-const languageOptions = (languages: Record<string, string>, panelDefault: string): AccountLanguageOption[] => [
-    { value: PANEL_DEFAULT, label: `Panel default (${languages[panelDefault] ?? panelDefault})` },
+const languageOptions = (languages: Record<string, string>, panelDefaultLabel: string): AccountLanguageOption[] => [
+    { value: PANEL_DEFAULT, label: panelDefaultLabel },
     ...Object.entries(languages).map(([value, label]) => ({ value, label })),
 ];
 
@@ -61,10 +62,11 @@ function useAccountLanguageModel(): AccountLanguageModel {
     const user = useCurrentUser();
     const update = useUpdateAccountLanguage();
     const { languages = {}, locale } = useSiteSettings();
+    const { t } = useTranslation();
 
     return {
         value: user.language ?? PANEL_DEFAULT,
-        options: languageOptions(languages, locale),
+        options: languageOptions(languages, t('Panel default ({{name}})', { name: languages[locale] ?? locale })),
         change: (value) => {
             if (value !== (user.language ?? PANEL_DEFAULT)) {
                 update.mutate({ body: { language: value === PANEL_DEFAULT ? null : value } });
@@ -76,6 +78,7 @@ function useAccountLanguageModel(): AccountLanguageModel {
 
 function useAccountPasswordModel(): AccountPasswordModel {
     const updatePassword = useUpdateAccountPassword();
+    const { t } = useTranslation();
     const form = useForm({
         defaultValues: { current: '', password: '', confirmPassword: '' },
         onSubmit: async ({ value }) => {
@@ -96,7 +99,7 @@ function useAccountPasswordModel(): AccountPasswordModel {
         form,
         name: 'current',
         validators: {
-            onChange: ({ value }) => (value.length >= 1 ? undefined : 'You must provide your current password.'),
+            onChange: ({ value }) => (value.length >= 1 ? undefined : t('You must provide your current password.')),
         },
     });
     const password = useField({
@@ -104,7 +107,7 @@ function useAccountPasswordModel(): AccountPasswordModel {
         name: 'password',
         validators: {
             onChange: ({ value }) =>
-                value.length >= 8 ? undefined : 'Your new password should be at least 8 characters in length.',
+                value.length >= 8 ? undefined : t('Your new password should be at least 8 characters in length.'),
         },
     });
     const confirmPassword = useField({
@@ -115,7 +118,7 @@ function useAccountPasswordModel(): AccountPasswordModel {
             onChange: ({ value, fieldApi }) =>
                 value === fieldApi.form.getFieldValue('password')
                     ? undefined
-                    : 'Password confirmation does not match the password you entered.',
+                    : t('Password confirmation does not match the password you entered.'),
         },
     });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);
@@ -136,6 +139,7 @@ function useAccountPasswordModel(): AccountPasswordModel {
 function useAccountEmailModel(): AccountEmailModel {
     const user = useCurrentUser();
     const updateEmail = useUpdateAccountEmail();
+    const { t } = useTranslation();
     const form = useForm({
         defaultValues: { email: user.email, password: '' },
         onSubmit: async ({ value, formApi }) => {
@@ -153,7 +157,7 @@ function useAccountEmailModel(): AccountEmailModel {
         form,
         name: 'email',
         validators: {
-            onChange: ({ value }) => (isEmail(value) ? undefined : 'A valid email address must be provided.'),
+            onChange: ({ value }) => (isEmail(value) ? undefined : t('A valid email address must be provided.')),
         },
     });
     const password = useField({
@@ -161,7 +165,7 @@ function useAccountEmailModel(): AccountEmailModel {
         name: 'password',
         validators: {
             onChange: ({ value }) =>
-                value.length >= 1 ? undefined : 'You must provide your current account password.',
+                value.length >= 1 ? undefined : t('You must provide your current account password.'),
         },
     });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);
@@ -349,7 +353,10 @@ function avatarFixture(avatar: string | null, selected: File | null = null): Acc
 function languageFixture(value = PANEL_DEFAULT, submitting = false): AccountLanguageModel {
     return {
         value,
-        options: languageOptions({ de: 'Deutsch', en: 'English', pt_BR: 'Português (Brasil)' }, 'en'),
+        options: languageOptions(
+            { de: 'Deutsch', en: 'English', pt_BR: 'Português (Brasil)' },
+            'Panel default (English)'
+        ),
         change: noop,
         submitting,
     };

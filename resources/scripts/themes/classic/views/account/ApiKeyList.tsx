@@ -15,15 +15,18 @@ import {
     Spinner,
     SpinnerOverlay,
     Table,
+    Translate,
+    useTranslation,
     type ApiKeyItem,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
-const apiKeyColumns = (onDelete: (identifier: string) => void): TableColumn<ApiKeyItem>[] => [
+const apiKeyColumns = (t: Translation['t'], onDelete: (identifier: string) => void): TableColumn<ApiKeyItem>[] => [
     {
         id: 'description',
-        label: 'Description',
+        label: t('Description'),
         sortValue: (key) => key.description,
         cell: (key) => (
             <div className='min-w-40'>
@@ -34,7 +37,7 @@ const apiKeyColumns = (onDelete: (identifier: string) => void): TableColumn<ApiK
     },
     {
         id: 'identifier',
-        label: 'Identifier',
+        label: t('Identifier'),
         sortValue: (key) => key.identifier,
         cell: (key) => <code className='font-mono text-xs text-muted-foreground'>{key.identifier}</code>,
         headerClassName: 'hidden md:table-cell',
@@ -42,11 +45,11 @@ const apiKeyColumns = (onDelete: (identifier: string) => void): TableColumn<ApiK
     },
     {
         id: 'last_used_at',
-        label: 'Last used',
+        label: t('Last used'),
         sortValue: (key) => key.lastUsedAt,
         cell: (key) => (
             <span className='whitespace-nowrap text-xs text-muted-foreground'>
-                {key.lastUsedAt ? formatDate(key.lastUsedAt, 'MMM D, YYYY HH:mm') : 'Never'}
+                {key.lastUsedAt ? formatDate(key.lastUsedAt, 'lll') : t('Never')}
             </span>
         ),
         headerClassName: 'hidden lg:table-cell w-40',
@@ -54,11 +57,11 @@ const apiKeyColumns = (onDelete: (identifier: string) => void): TableColumn<ApiK
     },
     {
         id: 'actions',
-        label: <span className='sr-only'>Actions</span>,
+        label: <span className='sr-only'>{t('Actions')}</span>,
         cell: (key) => (
             <RowActions>
                 <DeleteAction
-                    aria-label={`Delete ${key.description} API key`}
+                    aria-label={t('Delete {{name}} API key', { name: key.description })}
                     onClick={() => onDelete(key.identifier)}
                 />
             </RowActions>
@@ -70,20 +73,25 @@ const apiKeyColumns = (onDelete: (identifier: string) => void): TableColumn<ApiK
 
 export default function ApiKeyList({ model, className }: ViewProps<'account.apiKeys.list'>) {
     const [deleteIdentifier, setDeleteIdentifier] = useState('');
-    const columns = useMemo(() => apiKeyColumns(setDeleteIdentifier), []);
+    const { t } = useTranslation();
+    const columns = useMemo(() => apiKeyColumns(t, setDeleteIdentifier), [t]);
 
     return (
-        <ContentBox title='API Keys' className={className}>
+        <ContentBox title={t('API Keys')} className={className}>
             <SpinnerOverlay visible={model.deleting} />
             <Dialog.Confirm
-                title='Delete API Key'
-                confirm='Delete Key'
+                title={t('Delete API Key')}
+                confirm={t('Delete Key')}
                 open={!!deleteIdentifier}
                 pending={model.deleting}
                 onClose={() => setDeleteIdentifier('')}
                 onConfirmed={() => void model.remove(deleteIdentifier).then(() => setDeleteIdentifier(''))}
             >
-                All requests using the <Code>{deleteIdentifier}</Code> key will be invalidated.
+                <Translate
+                    i18nKey='All requests using the <code>{{identifier}}</code> key will be invalidated.'
+                    values={{ identifier: deleteIdentifier }}
+                    components={{ code: <Code>{null}</Code> }}
+                />
             </Dialog.Confirm>
             {model.loading ? (
                 <Spinner size='large' centered />
@@ -98,9 +106,9 @@ export default function ApiKeyList({ model, className }: ViewProps<'account.apiK
                                 <EmptyMedia variant='icon'>
                                     <KeyRound />
                                 </EmptyMedia>
-                                <EmptyTitle>No API keys</EmptyTitle>
+                                <EmptyTitle>{t('No API keys')}</EmptyTitle>
                                 <EmptyDescription>
-                                    Create a key to use the client API from your own scripts and tools.
+                                    {t('Create a key to use the client API from your own scripts and tools.')}
                                 </EmptyDescription>
                             </EmptyHeader>
                         </Empty>

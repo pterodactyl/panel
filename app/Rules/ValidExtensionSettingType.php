@@ -35,10 +35,10 @@ final readonly class ValidExtensionSettingType implements ValidationRule
 
         if (! $valid) {
             $fail(match ($this->field) {
-                'number' => 'The :attribute must be a number.',
-                'toggle' => 'The :attribute must be true or false.',
-                'select' => 'The selected :attribute is not one of the options.',
-                default => 'The :attribute must be text.',
+                'number' => __('validation.internal.extension_setting.number'),
+                'toggle' => __('validation.internal.extension_setting.toggle'),
+                'select' => __('validation.internal.extension_setting.select'),
+                default => __('validation.internal.extension_setting.text'),
             });
         }
     }

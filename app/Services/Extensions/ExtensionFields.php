@@ -79,7 +79,7 @@ final readonly class ExtensionFields
     public function authorize(Model|string $model, array $submitted, bool $applicationApi = false): void
     {
         foreach (array_intersect_key($this->for($this->modelClass($model), $applicationApi), array_flip($submitted)) as $extension => $fields) {
-            throw_unless($this->authorized($fields, $model), AuthorizationException::class, sprintf('You are not allowed to change the %s fields.', $extension));
+            throw_unless($this->authorized($fields, $model), AuthorizationException::class, __('exceptions.extensions.fields_forbidden', ['extension' => $extension]));
         }
     }
 

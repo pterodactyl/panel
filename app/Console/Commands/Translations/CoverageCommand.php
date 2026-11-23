@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Pterodactyl\Services\Extensions\ExtensionManifest;
 use Pterodactyl\Services\Translations\LanguageRegistry;
 use Pterodactyl\Services\Translations\TranslationCoverage;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 
 #[Description('Compare a locale with the English translations: missing and stale keys, placeholder mistakes and conflicts between language packs.')]
 #[Signature('p:lang:coverage
@@ -75,7 +76,8 @@ class CoverageCommand extends Command
     {
         $lines = [];
         foreach ($placeholders as $key => $names) {
-            $lines[] = $key.': '.implode(', ', array_map(fn (string $name): string => ':'.$name, $names));
+            $json = str_starts_with($key, LanguageRegistry::JSON_PREFIX);
+            $lines[] = $key.': '.implode(', ', array_map(fn (string $name): string => $json ? '{{'.$name.'}}' : ':'.$name, $names));
         }
 
         return $lines;
@@ -92,6 +94,9 @@ class CoverageCommand extends Command
 
         $this->newLine();
         $this->components->twoColumnDetail("<fg=yellow>{$title}</>", (string) count($lines));
-        $this->components->bulletList($lines);
+        // bulletList() strips trailing punctuation, which is part of a JSON key.
+        foreach ($lines as $line) {
+            $this->line('  <fg=gray>⇂</> '.OutputFormatter::escape($line));
+        }
     }
 }

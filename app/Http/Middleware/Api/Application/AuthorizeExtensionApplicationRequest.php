@@ -40,7 +40,7 @@ final readonly class AuthorizeExtensionApplicationRequest
 
         $permission = in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true) ? AdminAcl::READ : AdminAcl::WRITE;
         foreach (AdminAcl::getResourceList() as $resource) {
-            throw_unless(AdminAcl::check($token, $resource, $permission), AccessDeniedHttpException::class, 'This API key does not have permission to access this resource.');
+            throw_unless(AdminAcl::check($token, $resource, $permission), AccessDeniedHttpException::class, __('exceptions.api.key_forbidden'));
         }
 
         return $next($request);

@@ -1,4 +1,5 @@
 import { replaceable, useSkin } from '@/themes/skins';
+import Translate from '@/components/elements/Translate';
 
 export interface PageFooterProps {
     className?: string;
@@ -11,10 +12,21 @@ function CorePageFooter({ className }: PageFooterProps) {
     return (
         <div {...ui('root', className)}>
             <p {...ui('text')}>
-                <a rel='noopener nofollow noreferrer' href='https://pterodactyl.io' target='_blank' {...ui('link')}>
-                    Pterodactyl&reg;
-                </a>
-                &nbsp;&copy; 2015 - <span suppressHydrationWarning>{new Date().getFullYear()}</span>
+                <Translate
+                    i18nKey='<link>Pterodactyl®</link> © 2015 - <year>{{year}}</year>'
+                    values={{ year: new Date().getFullYear() }}
+                    components={{
+                        link: (
+                            <a
+                                rel='noopener nofollow noreferrer'
+                                href='https://pterodactyl.io'
+                                target='_blank'
+                                {...ui('link')}
+                            />
+                        ),
+                        year: <span suppressHydrationWarning />,
+                    }}
+                />
             </p>
         </div>
     );

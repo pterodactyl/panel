@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useBlocker, type ShouldBlockFn } from '@tanstack/react-router';
+import i18next from 'i18next';
 import { routeParamStrings } from '@/router/params';
 
 export interface NavigationBlockerLocation {
@@ -21,7 +22,8 @@ export interface NavigationBlockerOptions {
     confirm?: (transition: NavigationTransition) => boolean | Promise<boolean>;
 }
 
-export const UNSAVED_CHANGES_MESSAGE = 'You have unsaved changes. Leave this page and discard them?';
+export const unsavedChangesMessage = (): string =>
+    i18next.t('You have unsaved changes. Leave this page and discard them?');
 
 /** Asks before leaving while `shouldBlock` holds, including back/forward and tab close. */
 export function useNavigationBlocker(
@@ -44,7 +46,7 @@ export function useNavigationBlocker(
                 return false;
             }
 
-            const { confirm, message = UNSAVED_CHANGES_MESSAGE } = latest.current.options;
+            const { confirm, message = unsavedChangesMessage() } = latest.current.options;
 
             if (!confirm) {
                 return !window.confirm(message);

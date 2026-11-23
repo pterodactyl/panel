@@ -186,7 +186,7 @@ export const databaseHostColumns = (t: Translation['t']) =>
                     dateTime={row.original.attributes.created_at}
                     className='whitespace-nowrap text-xs text-muted-foreground'
                 >
-                    {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
+                    {dayjs(row.original.attributes.created_at).format('ll')}
                 </time>
             ),
             enableSorting: true,

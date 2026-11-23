@@ -14,7 +14,7 @@ trait ResolvesRequestContext
 {
     protected function authenticatedUser(Request $request): User
     {
-        return $request->user() ?? throw new AuthenticationException('This endpoint requires an authenticated user.');
+        return $request->user() ?? throw new AuthenticationException(__('exceptions.api.unauthenticated'));
     }
 
     /**

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
@@ -32,9 +33,9 @@ export const useCreateSSHKey = () => {
             queryClient.setQueryData<ClientListSshKeysResponse>(clientListSshKeysQueryKey(), (current) =>
                 upsertListItem(current, key, (item) => item.attributes.fingerprint === key.attributes.fingerprint)
             );
-            toast.success('SSH key created');
+            toast.success(i18next.t('SSH key created'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create SSH key'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create SSH key')),
     });
 };
 
@@ -57,7 +58,7 @@ export const useDeleteSSHKey = () => {
             };
         },
         onSuccess: () => {
-            toast.success('SSH key deleted');
+            toast.success(i18next.t('SSH key deleted'));
         },
         onSettled: () => {
             if (queryClient.isMutating({ mutationKey: clientDeleteSshKeyMutation().mutationKey }) === 1) {
@@ -79,7 +80,7 @@ export const useDeleteSSHKey = () => {
                 );
             }
 
-            notifyHttpError(error, 'Unable to delete SSH key');
+            notifyHttpError(error, i18next.t('Unable to delete SSH key'));
         },
     });
 };

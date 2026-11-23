@@ -2,6 +2,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import type { AnyRoute } from '@tanstack/react-router';
 import { createRootRouteWithContext, createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router';
 import { publishAreaNav, type AreaNavEntry } from '@/router/nav';
+import i18next from 'i18next';
 import { translatable } from '@/sdk/localization';
 import {
     getExtensionScreens,
@@ -190,13 +191,13 @@ const accountChildren = [
     createRoute({
         getParentRoute: () => accountRoute,
         path: '/',
-        staticData: { nav: { label: 'Account', exact: true, icon: 'user-round' } },
+        staticData: { nav: { label: translatable('Account'), exact: true, icon: 'user-round' } },
         component: pageRoute('page.account.overview'),
     }),
     createRoute({
         getParentRoute: () => accountRoute,
         path: 'api',
-        staticData: { nav: { label: 'API Credentials', icon: 'key-round' } },
+        staticData: { nav: { label: translatable('API Credentials'), icon: 'key-round' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...accountApiKeysQueryOptions(), revalidateIfStale: true });
         },
@@ -205,7 +206,7 @@ const accountChildren = [
     createRoute({
         getParentRoute: () => accountRoute,
         path: 'ssh',
-        staticData: { nav: { label: 'SSH Keys', icon: 'terminal' } },
+        staticData: { nav: { label: translatable('SSH Keys'), icon: 'terminal' } },
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({ ...accountSshKeysQueryOptions(), revalidateIfStale: true });
         },
@@ -214,7 +215,7 @@ const accountChildren = [
     createRoute({
         getParentRoute: () => accountRoute,
         path: 'activity',
-        staticData: { nav: { label: 'Activity', icon: 'history' } },
+        staticData: { nav: { label: translatable('Activity'), icon: 'history' } },
         validateSearch: parseActivitySearch,
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, event: search.event, user: search.user }),
         loader: async ({ context, deps }) => {
@@ -265,13 +266,13 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: '/',
-        staticData: { nav: { label: 'Console', exact: true, icon: 'square-terminal' } },
+        staticData: { nav: { label: translatable('Console'), exact: true, icon: 'square-terminal' } },
         component: () => null,
     }),
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'files',
-        staticData: { nav: { label: 'Files', permission: 'file.*', hash: '/', icon: 'folder' } },
+        staticData: { nav: { label: translatable('Files'), permission: 'file.*', hash: '/', icon: 'folder' } },
         beforeLoad: requireServerPermission('file.*'),
         component: pageRoute('page.server.files', 'file.*'),
     }),
@@ -284,7 +285,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'databases',
-        staticData: { nav: { label: 'Databases', permission: 'database.*', icon: 'database' } },
+        staticData: { nav: { label: translatable('Databases'), permission: 'database.*', icon: 'database' } },
         beforeLoad: requireServerPermission('database.*'),
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({
@@ -297,7 +298,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'schedules',
-        staticData: { nav: { label: 'Schedules', permission: 'schedule.*', icon: 'calendar-clock' } },
+        staticData: { nav: { label: translatable('Schedules'), permission: 'schedule.*', icon: 'calendar-clock' } },
         beforeLoad: requireServerPermission('schedule.*'),
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({
@@ -332,7 +333,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'users',
-        staticData: { nav: { label: 'Users', permission: 'user.*', icon: 'users' } },
+        staticData: { nav: { label: translatable('Users'), permission: 'user.*', icon: 'users' } },
         beforeLoad: requireServerPermission('user.*'),
         loader: async ({ context }) => {
             await Promise.all([
@@ -348,7 +349,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'backups',
-        staticData: { nav: { label: 'Backups', permission: 'backup.*', icon: 'archive' } },
+        staticData: { nav: { label: translatable('Backups'), permission: 'backup.*', icon: 'archive' } },
         validateSearch: parsePageSearch,
         beforeLoad: requireServerPermission('backup.*'),
         loaderDeps: ({ search }) => ({ page: search.page ?? 1 }),
@@ -363,7 +364,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'network',
-        staticData: { nav: { label: 'Network', permission: 'allocation.*', icon: 'network' } },
+        staticData: { nav: { label: translatable('Network'), permission: 'allocation.*', icon: 'network' } },
         beforeLoad: requireServerPermission('allocation.*'),
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({
@@ -376,7 +377,7 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'startup',
-        staticData: { nav: { label: 'Startup', permission: 'startup.*', icon: 'rocket' } },
+        staticData: { nav: { label: translatable('Startup'), permission: 'startup.*', icon: 'rocket' } },
         beforeLoad: requireServerPermission('startup.*'),
         loader: async ({ context }) => {
             await context.queryClient.ensureQueryData({
@@ -389,14 +390,16 @@ const serverChildren = [
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'settings',
-        staticData: { nav: { label: 'Settings', permission: ['settings.*', 'file.sftp'], icon: 'settings' } },
+        staticData: {
+            nav: { label: translatable('Settings'), permission: ['settings.*', 'file.sftp'], icon: 'settings' },
+        },
         beforeLoad: requireServerPermission(['settings.*', 'file.sftp']),
         component: pageRoute('page.server.settings', ['settings.*', 'file.sftp']),
     }),
     createRoute({
         getParentRoute: () => serverRoute,
         path: 'activity',
-        staticData: { nav: { label: 'Activity', permission: 'activity.*', icon: 'history' } },
+        staticData: { nav: { label: translatable('Activity'), permission: 'activity.*', icon: 'history' } },
         validateSearch: parseActivitySearch,
         beforeLoad: requireServerPermission('activity.*'),
         loaderDeps: ({ search }) => ({ page: search.page ?? 1, event: search.event, user: search.user }),
@@ -427,7 +430,7 @@ const panelRoute = createRoute({
         const user = await context.queryClient.ensureQueryData(currentUserQueryOptions());
 
         if (!user.rootAdmin) {
-            throw new RouteAccessDenied('You do not have permission to access the administrative area.');
+            throw new RouteAccessDenied(i18next.t('You do not have permission to access the administrative area.'));
         }
     },
     component: layoutRoute('layout.admin'),

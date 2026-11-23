@@ -1,9 +1,11 @@
 import { Component, Suspense, useEffect, useMemo, type ReactNode } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import Button from '@/components/elements/Button';
 import { clearExtensionError, ExtensionImportError, reportExtensionError } from '@/extensions/registry';
 import { ExtensionContext } from '@/extensions/context';
+import { useTranslation } from '@/sdk/localization';
 
 interface BoundaryProps {
     extensionId: string;
@@ -58,22 +60,22 @@ const failureNotificationId = (extensionId: string, context: string) => `extensi
 function showFailureNotice(notificationId: string, extensionId: string, mounts: Set<FailedMount>) {
     const retryable = [...mounts].some((mount) => mount.retry);
 
-    toast.error(`The "${extensionId}" extension could not display this content.`, {
+    toast.error(i18next.t('The "{{extensionId}}" extension could not display this content.', { extensionId }), {
         id: notificationId,
         duration: Infinity,
         action: retryable
             ? {
-                  label: 'Retry extension',
+                  label: i18next.t('Retry extension'),
                   onClick: () => {
                       for (const mount of mounts) {
                           mount.retry?.();
                       }
                   },
               }
-            : { label: 'Reload page', onClick: () => window.location.reload() },
+            : { label: i18next.t('Reload page'), onClick: () => window.location.reload() },
         description: retryable ? (
             <Button type='button' onClick={() => window.location.reload()}>
-                Reload page
+                {i18next.t('Reload page')}
             </Button>
         ) : undefined,
     });
@@ -89,6 +91,8 @@ export function ExtensionFailure({
     retry?: () => void;
     notificationId?: string;
 }) {
+    const { t } = useTranslation();
+
     useEffect(() => {
         if (!notificationId) {
             return;
@@ -119,14 +123,14 @@ export function ExtensionFailure({
 
     return (
         <div role='alert'>
-            <p>The "{extensionId}" extension could not display this content.</p>
+            <p>{t('The "{{extensionId}}" extension could not display this content.', { extensionId })}</p>
             {retry && (
                 <Button type='button' onClick={retry}>
-                    Retry extension
+                    {t('Retry extension')}
                 </Button>
             )}
             <Button type='button' onClick={() => window.location.reload()}>
-                Reload page
+                {t('Reload page')}
             </Button>
         </div>
     );

@@ -30,8 +30,6 @@ use UnexpectedValueException;
 #[Group('Authentication', 'Browser session authentication endpoints used by the panel frontend.', authenticated: false)]
 class LoginCheckpointController extends AbstractLoginController
 {
-    private const string TOKEN_EXPIRED_MESSAGE = 'The authentication token provided has expired, please refresh the page and try again.';
-
     private const array LOGIN_COMPLETE_EXAMPLE = [
         'data' => [
             'complete' => true,
@@ -88,7 +86,7 @@ class LoginCheckpointController extends AbstractLoginController
 
         $checkpoint = $logins->pendingCheckpoint();
         if (! $checkpoint instanceof LoginCheckpoint) {
-            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+            $this->sendFailedLoginResponse($request, null, __('auth.two_factor.checkpoint_expired'));
         }
 
         if (! $checkpoint->matches($request->string('confirmation_token')->toString())) {
@@ -98,7 +96,7 @@ class LoginCheckpointController extends AbstractLoginController
         try {
             $user = User::query()->findOrFail($checkpoint->userId);
         } catch (ModelNotFoundException) {
-            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+            $this->sendFailedLoginResponse($request, null, __('auth.two_factor.checkpoint_expired'));
         }
 
         // Recovery tokens go through a slightly different pathway for usage.
@@ -111,7 +109,7 @@ class LoginCheckpointController extends AbstractLoginController
         } else {
             $totpSecret = $user->totp_secret;
             if ($totpSecret === null) {
-                $this->sendFailedLoginResponse($request, $user, self::TOKEN_EXPIRED_MESSAGE);
+                $this->sendFailedLoginResponse($request, $user, __('auth.two_factor.checkpoint_expired'));
             }
 
             $decrypted = Crypt::decrypt($totpSecret);
@@ -136,7 +134,11 @@ class LoginCheckpointController extends AbstractLoginController
             }
         }
 
-        $this->sendFailedLoginResponse($request, $user, ! empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+        if (! empty($recoveryToken)) {
+            $this->sendFailedLoginResponse($request, $user, __('auth.two_factor.recovery_token_invalid'));
+        }
+
+        $this->sendFailedLoginResponse($request, $user);
     }
 
     /**

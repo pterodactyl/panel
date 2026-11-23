@@ -157,7 +157,7 @@ export const locationColumns = (t: Translation['t']) =>
                     className='whitespace-nowrap text-xs text-muted-foreground'
                     dateTime={row.original.attributes.created_at}
                 >
-                    {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
+                    {dayjs(row.original.attributes.created_at).format('ll')}
                 </time>
             ),
             enableSorting: true,

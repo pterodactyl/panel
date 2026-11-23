@@ -77,7 +77,7 @@ final readonly class InitiateTransfer implements InitiatesTransfers
 
         $transfer = DB::transaction(function () use ($server, $node, $allocationId, $additionalAllocations): ServerTransfer {
             $server = $server->newQuery()->whereKey($server->getKey())->lockForUpdate()->firstOrFail();
-            throw_unless($node->isViable($server->memory, $server->disk), DisplayException::class, trans('admin/server.alerts.transfer_not_viable'));
+            throw_unless($node->isViable($server->memory, $server->disk), DisplayException::class, __('exceptions.server.transfer_not_viable'));
             $server->validateTransferState();
 
             $allocationIds = array_values(array_unique([$allocationId, ...$additionalAllocations]));
@@ -89,7 +89,7 @@ final readonly class InitiateTransfer implements InitiatesTransfers
                 ->lockForUpdate()
                 ->get();
 
-            throw_unless($allocations->count() === count($allocationIds), DisplayException::class, 'The selected allocations are no longer available on the target node.');
+            throw_unless($allocations->count() === count($allocationIds), DisplayException::class, __('exceptions.server.transfer_allocations_unavailable'));
 
             $transfer = ServerTransfer::query()->create([
                 'server_id' => $server->id,

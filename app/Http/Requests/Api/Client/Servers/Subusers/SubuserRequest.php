@@ -91,7 +91,7 @@ abstract class SubuserRequest extends ClientApiRequest implements ClientPermissi
             $allowed = array_merge($allowed, $target->permissions);
         }
 
-        throw_if(count(array_diff($permissions, $allowed)) > 0, HttpForbiddenException::class, 'Cannot assign permissions to a subuser that your account does not actively possess.');
+        throw_if(count(array_diff($permissions, $allowed)) > 0, HttpForbiddenException::class, __('exceptions.subusers.assign_exceeding_permissions'));
     }
 
     /**

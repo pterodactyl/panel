@@ -19,7 +19,7 @@ export default function FileDetails({ className, model }: ViewProps<'server.file
                 <div className='w-1/6 text-right mr-4 hidden sm:block'>{bytesToString(model.size)}</div>
             )}
             <div className='w-1/5 text-right mr-4 hidden md:block' title={model.modifiedAt}>
-                {Math.abs(hours) > 48 ? formatDate(model.modifiedAt, 'MMM Do, YYYY h:mmA') : fromNow(model.modifiedAt)}
+                {Math.abs(hours) > 48 ? formatDate(model.modifiedAt, 'lll') : fromNow(model.modifiedAt)}
             </div>
         </div>
     );

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import i18next from 'i18next';
+import { afterEach, describe, expect, it } from 'vitest';
 import { bytesRatioToString, bytesToString, ip, mbToBytes } from '@/lib/formatters';
 
 describe('@/lib/formatters.ts', () => {
@@ -70,6 +71,19 @@ describe('@/lib/formatters.ts', () => {
             expect(ip('1')).toBe('1');
             expect(ip('foobar')).toBe('foobar');
             expect(ip('127.0.0.1:25565')).toBe('[127.0.0.1:25565]');
+        });
+    });
+
+    describe('in another language', () => {
+        afterEach(() => i18next.changeLanguage('en'));
+
+        it('uses its decimal separator and translates Bytes', async () => {
+            await i18next.changeLanguage('de');
+            i18next.addResource('de', 'translation', 'Bytes', 'Byte');
+
+            expect(bytesToString(5068)).toBe('4,95 KiB');
+            expect(bytesToString(100)).toBe('100 Byte');
+            expect(bytesRatioToString(1_356_000, 2_097_152)).toBe('1,29 / 2 MiB');
         });
     });
 });

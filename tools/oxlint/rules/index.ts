@@ -16,6 +16,7 @@ import { generatedApiMutationsRule } from './rules/generated-api-mutations.ts';
 import { designTokensRule } from './rules/design-tokens.ts';
 import { classicThemeImportsRule } from './rules/classic-theme-imports.ts';
 import { literalTranslationKeysRule } from './rules/literal-translation-keys.ts';
+import { noLiteralTextRule } from './rules/no-literal-text.ts';
 
 /** Generic Oxlint rules that reject low-evidence and low-signal implementation patterns. */
 const rulesPlugin = definePlugin({
@@ -27,6 +28,7 @@ const rulesPlugin = definePlugin({
         'design-tokens': designTokensRule,
         'classic-theme-imports': classicThemeImportsRule,
         'literal-translation-keys': literalTranslationKeysRule,
+        'no-literal-text': noLiteralTextRule,
         'no-chained-type-assertions': noChainedTypeAssertionsRule,
         'no-conditional-empty-object-spread': noConditionalEmptyObjectSpreadRule,
         'no-known-value-widening': noKnownValueWideningRule,

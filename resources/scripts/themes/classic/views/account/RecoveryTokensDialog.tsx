@@ -1,6 +1,7 @@
-import { Alert, Button, CopyOnClick, Dialog } from '@/sdk';
+import { Alert, Button, CopyOnClick, Dialog, useTranslation } from '@/sdk';
 
 export default function RecoveryTokensDialog({ tokens, onClose }: { tokens: readonly string[]; onClose: () => void }) {
+    const { t } = useTranslation();
     const grouped: [string, string][] = [];
 
     for (const [index, token] of tokens.entries()) {
@@ -13,8 +14,10 @@ export default function RecoveryTokensDialog({ tokens, onClose }: { tokens: read
         <Dialog
             open={tokens.length > 0}
             onClose={onClose}
-            title='Two-Step Authentication Enabled'
-            description='Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
+            title={t('Two-Step Authentication Enabled')}
+            description={t(
+                'Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
+            )}
             hideCloseIcon
             preventExternalClose
         >
@@ -32,10 +35,10 @@ export default function RecoveryTokensDialog({ tokens, onClose }: { tokens: read
                 </pre>
             </CopyOnClick>
             <Alert type='danger' className='mt-3'>
-                These codes will not be shown again.
+                {t('These codes will not be shown again.')}
             </Alert>
             <Dialog.Footer>
-                <Button.Text onClick={onClose}>Done</Button.Text>
+                <Button.Text onClick={onClose}>{t('Done')}</Button.Text>
             </Dialog.Footer>
         </Dialog>
     );

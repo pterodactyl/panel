@@ -46,12 +46,12 @@ class AuthenticateIPAccess
         }
 
         $requestIp = $request->ip();
-        throw_if($requestIp === null, AccessDeniedHttpException::class, 'The request did not contain a valid IP address.');
+        throw_if($requestIp === null, AccessDeniedHttpException::class, __('exceptions.api.invalid_ip'));
 
         try {
             $find = new IP($requestIp);
         } catch (IpException) {
-            throw new AccessDeniedHttpException('The request did not contain a valid IP address.');
+            throw new AccessDeniedHttpException(__('exceptions.api.invalid_ip'));
         }
 
         foreach ($token->allowed_ips as $ip) {
@@ -71,6 +71,6 @@ class AuthenticateIPAccess
             ->property('identifier', $token->identifier)
             ->log();
 
-        throw new AccessDeniedHttpException('This IP address ('.$request->ip().') does not have permission to access the API using these credentials.');
+        throw new AccessDeniedHttpException(__('exceptions.api.ip_forbidden', ['ip' => $request->ip()]));
     }
 }

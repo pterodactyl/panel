@@ -1,5 +1,5 @@
 import { CircleHelp } from 'lucide-react';
-import { cn, Icon, Tooltip } from '@/sdk';
+import { cn, Icon, Tooltip, useTranslation, type Translation } from '@/sdk';
 
 interface Row {
     token: string;
@@ -7,36 +7,36 @@ interface Row {
     detail?: string;
 }
 
-const examples: Row[] = [
-    { token: '*/5 * * * *', meaning: 'every 5 minutes' },
-    { token: '0 */1 * * *', meaning: 'every hour' },
-    { token: '0 8-12 * * *', meaning: 'hour range' },
-    { token: '0,30 * * * *', meaning: 'on the hour and half past' },
-    { token: '0 0 * * *', meaning: 'once a day' },
-    { token: '0 0 * * MON', meaning: 'every Monday' },
-    { token: '0 0 * * MON,FRI', meaning: 'every Monday and Friday' },
+const examples = (t: Translation['t']): Row[] => [
+    { token: '*/5 * * * *', meaning: t('every 5 minutes') },
+    { token: '0 */1 * * *', meaning: t('every hour') },
+    { token: '0 8-12 * * *', meaning: t('hour range') },
+    { token: '0,30 * * * *', meaning: t('on the hour and half past') },
+    { token: '0 0 * * *', meaning: t('once a day') },
+    { token: '0 0 * * MON', meaning: t('every Monday') },
+    { token: '0 0 * * MON,FRI', meaning: t('every Monday and Friday') },
 ];
 
-const specialCharacters: Row[] = [
+const specialCharacters = (t: Translation['t']): Row[] => [
     {
         token: '*',
-        meaning: 'any value',
-        detail: 'Matches every value in that field. An hour of * runs the task every hour.',
+        meaning: t('any value'),
+        detail: t('Matches every value in that field. An hour of * runs the task every hour.'),
     },
     {
         token: ',',
-        meaning: 'value list separator',
-        detail: 'Picks several exact values. A minute of 0,30 runs on the hour and at half past.',
+        meaning: t('value list separator'),
+        detail: t('Picks several exact values. A minute of 0,30 runs on the hour and at half past.'),
     },
     {
         token: '-',
-        meaning: 'range values',
-        detail: 'Covers everything between two values. An hour of 8-12 runs at 8, 9, 10, 11 and 12.',
+        meaning: t('range values'),
+        detail: t('Covers everything between two values. An hour of 8-12 runs at 8, 9, 10, 11 and 12.'),
     },
     {
         token: '/',
-        meaning: 'step values',
-        detail: 'Repeats every nth value. A minute of */15 runs four times an hour.',
+        meaning: t('step values'),
+        detail: t('Repeats every nth value. A minute of */15 runs four times an hour.'),
     },
 ];
 
@@ -81,10 +81,12 @@ const CheatsheetCard = ({ title, rows, tokenClass }: { title: string; rows: Row[
 
 /** Examples of cron syntax and what its special characters mean. */
 export default function ScheduleCheatsheet() {
+    const { t } = useTranslation();
+
     return (
         <div className='mt-4 grid items-start gap-4 sm:grid-cols-2'>
-            <CheatsheetCard title='Examples' rows={examples} tokenClass='w-32' />
-            <CheatsheetCard title='Special characters' rows={specialCharacters} tokenClass='w-6 text-center' />
+            <CheatsheetCard title={t('Examples')} rows={examples(t)} tokenClass='w-32' />
+            <CheatsheetCard title={t('Special characters')} rows={specialCharacters(t)} tokenClass='w-6 text-center' />
         </div>
     );
 }

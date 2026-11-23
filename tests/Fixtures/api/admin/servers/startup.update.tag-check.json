@@ -10,7 +10,7 @@
                     "detail": "node-alpha only accepts eggs tagged Minecraft.",
                     "meta": {
                         "source_field": "egg_id",
-                        "rule": ""
+                        "rule": "node_accepts_egg"
                     }
                 }
             ]

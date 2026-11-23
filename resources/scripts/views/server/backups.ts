@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import {
     backupDownloadUrlInput,
@@ -107,7 +108,7 @@ const backupSummary = ({ attributes }: ServerBackup): BackupSummary => ({
 });
 
 const validateName = (name: string): string | undefined =>
-    name.length <= 191 ? undefined : 'The backup name must not exceed 191 characters.';
+    name.length <= 191 ? undefined : i18next.t('The backup name must not exceed 191 characters.');
 
 const useBackupsPageModel = () => pageStatus(useServerBackups(useLoadedServer().attributes.uuid, usePageSearch()));
 
@@ -169,13 +170,15 @@ function useBackupListModel(): BackupListModel {
             remove: (backupUuid: string) =>
                 withBackup(backupUuid, async (backup) => {
                     await deleteBackup(deleteServerBackupInput(uuid, backup));
-                    toast.success('Backup deleted', { description: `${backup.attributes.name} has been removed.` });
+                    toast.success(i18next.t('Backup deleted'), {
+                        description: i18next.t('{{name}} has been removed.', { name: backup.attributes.name }),
+                    });
                 }),
             restore: (backupUuid: string, truncate: boolean) =>
                 withBackup(backupUuid, async (backup) => {
                     await restoreBackup(restoreServerBackupInput(uuid, backup, truncate));
-                    toast.success('Backup restore started', {
-                        description: `${backup.attributes.name} is being restored.`,
+                    toast.success(i18next.t('Backup restore started'), {
+                        description: i18next.t('{{name}} is being restored.', { name: backup.attributes.name }),
                     });
                 }),
             toggleLock: (backupUuid: string) =>

@@ -1,15 +1,20 @@
-import { Alert, cn, PageContentBlock, PageHeading } from '@/sdk';
+import { Alert, cn, PageContentBlock, PageHeading, useTranslation } from '@/sdk';
 import { Slot, View, type ViewProps } from '@/sdk/theme';
 
 const CARD_WIDTH = 'w-full sm:w-[calc(50%_-_1rem)] md:w-auto md:flex-1';
 
 export default function AccountOverview({ model, className }: ViewProps<'page.account.overview'>) {
+    const { t } = useTranslation();
+
     return (
-        <PageContentBlock title='Account Overview' className={className}>
-            <PageHeading title='Account' description='Manage your profile, credentials, and account security.' />
+        <PageContentBlock title={t('Account Overview')} className={className}>
+            <PageHeading
+                title={t('Account')}
+                description={t('Manage your profile, credentials, and account security.')}
+            />
             {model.twoFactorRequired && (
-                <Alert title='2-Factor Required' type='danger'>
-                    Your account must have two-factor authentication enabled in order to continue.
+                <Alert title={t('2-Factor Required')} type='danger'>
+                    {t('Your account must have two-factor authentication enabled in order to continue.')}
                 </Alert>
             )}
             <Slot name='account.overview.before' />

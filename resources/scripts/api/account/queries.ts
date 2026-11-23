@@ -1,4 +1,5 @@
 import { queryOptions, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import type { UserData } from '@/api/account/types';
 import { getBootstrapUser } from '@/bootstrap';
@@ -65,9 +66,9 @@ export const useUpdateAccountEmail = () => {
         ...clientUpdateAccountEmailMutation(),
         onSuccess: (_data, variables) => {
             setCurrentUserQueryData(queryClient, { email: variables.body.email });
-            toast.success('Email address updated');
+            toast.success(i18next.t('Email address updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update email address'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update email address')),
     });
 };
 
@@ -75,7 +76,7 @@ export const useUpdateAccountPassword = () =>
     useMutation({
         ...clientUpdateAccountPasswordMutation(),
         onSuccess: () => window.location.assign('/auth/login'),
-        onError: (error) => notifyHttpError(error, 'Unable to update password'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update password')),
     });
 
 export const useUpdateAccountLanguage = () => {
@@ -85,9 +86,9 @@ export const useUpdateAccountLanguage = () => {
         ...clientUpdateAccountLanguageMutation(),
         onSuccess: ({ attributes }) => {
             setCurrentUserQueryData(queryClient, { language: attributes.language });
-            toast.success('Language updated');
+            toast.success(i18next.t('Language updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update language'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update language')),
     });
 };
 
@@ -99,9 +100,9 @@ export const useUpdateAccountAvatar = () => {
         onSuccess: async ({ attributes }) => {
             setCurrentUserQueryData(queryClient, { avatar: attributes.avatar });
             await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
-            toast.success('Avatar updated');
+            toast.success(i18next.t('Avatar updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update avatar'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update avatar')),
     });
 };
 
@@ -113,8 +114,8 @@ export const useDeleteAccountAvatar = () => {
         onSuccess: async () => {
             setCurrentUserQueryData(queryClient, { avatar: null });
             await queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
-            toast.success('Avatar removed');
+            toast.success(i18next.t('Avatar removed'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to remove avatar'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove avatar')),
     });
 };

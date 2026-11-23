@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import Button from '@/components/elements/Button';
 import { Check, Info, ShieldAlert, TriangleAlert, X } from 'lucide-react';
+import { useTranslation } from '@/sdk/localization';
 import { useSkin, type SkinBinding } from '@/themes/skins';
 import { DialogContext } from './context';
 import DialogFooter from './DialogFooter';
@@ -41,6 +42,7 @@ export default function DialogComponent({
     const popupRef = React.useRef<HTMLDivElement>(null);
     const described = !!description;
     const ui = useSkin('Dialog', { described });
+    const { t } = useTranslation();
 
     const initialFocus = (interactionType: string) => {
         if (interactionType === 'touch') {
@@ -104,6 +106,7 @@ export default function DialogComponent({
                                             type='button'
                                             size='xsmall'
                                             onClick={onClose}
+                                            aria-label={t('Close dialog')}
                                             className={ui.classes('closeButton')}
                                         >
                                             <X {...ui('closeIcon')} />

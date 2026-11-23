@@ -318,6 +318,13 @@
             }
         },
         {
+            "files": ["resources/scripts/**"],
+            "excludeFiles": ["**/generated/**", "**/*.spec.{ts,tsx}", "resources/scripts/sdk/testing.tsx"],
+            "rules": {
+                "rules/no-literal-text": "error"
+            }
+        },
+        {
             // ESTree literals are discriminated only by the runtime type of `value`; this helper is that decoder.
             "files": ["tools/oxlint/rules/shared/literals.ts"],
             "rules": {

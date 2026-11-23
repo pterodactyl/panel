@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { mapListItems, removeListItems, upsertListItem } from '@/api/queryData';
@@ -87,11 +88,13 @@ export const useCreateServerAllocation = () => {
         ...clientCreateServerAllocationMutation(),
         onSuccess: async (allocation, { path }) => {
             await upsertAllocation(queryClient, path.server_uuid, allocation);
-            toast.success('Allocation created', {
-                description: `${allocation.attributes.ip}:${allocation.attributes.port} is available.`,
+            toast.success(i18next.t('Allocation created'), {
+                description: i18next.t('{{address}} is available.', {
+                    address: `${allocation.attributes.ip}:${allocation.attributes.port}`,
+                }),
             });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create allocation'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create allocation')),
     });
 };
 
@@ -101,7 +104,7 @@ export const useUpdateAllocationNotes = () => {
     return useMutation({
         ...clientUpdateAllocationNotesMutation(),
         onSuccess: (allocation, { path }) => upsertAllocation(queryClient, path.server_uuid, allocation),
-        onError: (error) => notifyHttpError(error, 'Unable to update allocation notes'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update allocation notes')),
     });
 };
 
@@ -126,9 +129,9 @@ export const useSetPrimaryAllocation = () => {
                     }))
             );
             await queryClient.invalidateQueries(serverQueryFilters(path.server_uuid));
-            toast.success('Primary allocation updated');
+            toast.success(i18next.t('Primary allocation updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update primary allocation'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update primary allocation')),
     });
 };
 
@@ -139,8 +142,8 @@ export const useDeleteServerAllocation = () => {
         ...clientDeleteServerAllocationMutation(),
         onSuccess: async (_data, { path }) => {
             await removeAllocation(queryClient, path.server_uuid, path.allocation_id);
-            toast.success('Allocation deleted');
+            toast.success(i18next.t('Allocation deleted'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete allocation'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete allocation')),
     });
 };

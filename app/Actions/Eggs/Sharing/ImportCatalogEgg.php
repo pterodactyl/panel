@@ -30,12 +30,12 @@ final readonly class ImportCatalogEgg implements ImportsCatalogEggs
             try {
                 $parsed = EggImportData::fromJson($contents);
             } catch (JsonException|UnexpectedValueException|InvalidFileUploadException $exception) {
-                throw new HttpException(502, 'The selected catalog egg contains an invalid definition.', $exception);
+                throw new HttpException(502, __('exceptions.egg.catalog.invalid_definition'), $exception);
             }
 
             return $this->importer->importParsed($parsed);
         }
 
-        throw new NotFoundHttpException('The selected egg is no longer in the Pterodactyl catalog. Refresh the catalog and try again.');
+        throw new NotFoundHttpException(__('exceptions.egg.catalog.egg_missing'));
     }
 }

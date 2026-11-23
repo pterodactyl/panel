@@ -7,6 +7,7 @@ import { capitalize } from '@/lib/strings';
 import Select, { type SelectOption } from '@/components/ui/Select';
 import Switch, { type SwitchProps } from '@/components/ui/Switch';
 import Checkbox from '@/components/ui/Checkbox';
+import { useTranslation } from '@/sdk/localization';
 
 type BaseProps = {
     label?: string;
@@ -244,10 +245,11 @@ export function MultiSelectField({
     light,
     options,
     disabled,
-    placeholder = 'None selected',
+    placeholder,
     searchPlaceholder,
     onCreate,
 }: MultiSelectFieldProps) {
+    const { t } = useTranslation();
     const { field, error, fieldId, helpId, describedById } = useFieldState<(string | number)[]>(id, description);
     const selected = Array.isArray(field.state.value) ? field.state.value : [];
 
@@ -266,7 +268,7 @@ export function MultiSelectField({
                 onChange={(value) => field.handleChange(value)}
                 onCreate={onCreate}
                 disabled={disabled}
-                placeholder={placeholder}
+                placeholder={placeholder ?? t('None selected')}
                 searchPlaceholder={searchPlaceholder}
                 hasError={!!error}
                 aria-invalid={error ? true : undefined}

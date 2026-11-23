@@ -5,6 +5,7 @@ import { cn } from '@/lib/cn';
 import Icon from '@/components/elements/Icon';
 import DropdownMenu from '@/components/elements/dropdown/DropdownMenu';
 import NavigationLabel from '@/extensions/NavigationLabel';
+import { useTranslation } from '@/sdk/localization';
 import {
     Navigation,
     NavigationLink,
@@ -309,6 +310,7 @@ const SubNavigation = ({
     className,
     ...props
 }: SubNavigationProps) => {
+    const { t } = useTranslation();
     const rootRef = useRef<HTMLDivElement>(null);
     const rowRef = useRef<HTMLDivElement>(null);
     const moreRef = useRef<HTMLSpanElement>(null);
@@ -338,7 +340,7 @@ const SubNavigation = ({
                 className='mx-auto hidden w-full max-w-panel cursor-pointer items-center gap-3 px-6 py-3 text-sm text-foreground'
             >
                 <Icon icon={Menu} className='h-4 w-4 shrink-0' aria-hidden />
-                <span className='min-w-0 flex-1 truncate text-left'>{current?.label || 'Navigation'}</span>
+                <span className='min-w-0 flex-1 truncate text-left'>{current?.label || t('Navigation')}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-180')}
@@ -364,7 +366,7 @@ const SubNavigation = ({
                         )}
                         triggerContent={
                             <>
-                                More
+                                {t('More')}
                                 <Icon icon={ChevronDown} aria-hidden />
                             </>
                         }

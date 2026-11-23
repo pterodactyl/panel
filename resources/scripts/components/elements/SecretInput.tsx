@@ -5,6 +5,7 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import Icon from '@/components/elements/Icon';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { TextInput } from '@/components/form/controls';
+import { useTranslation } from '@/sdk/localization';
 
 interface SecretInputProps {
     id?: string;
@@ -13,9 +14,10 @@ interface SecretInputProps {
 }
 
 const SecretInput = ({ id, value, label }: SecretInputProps) => {
+    const { t } = useTranslation();
     const [visible, setVisible] = useState(false);
-    const toggleLabel = `${visible ? 'Hide' : 'Show'} ${label.toLowerCase()}`;
-    const copyLabel = `Copy ${label.toLowerCase()}`;
+    const toggleLabel = visible ? t('Hide {{name}}', { name: label }) : t('Show {{name}}', { name: label });
+    const copyLabel = t('Copy {{name}}', { name: label });
 
     return (
         <div className='relative'>

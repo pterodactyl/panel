@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloudUpload, X } from 'lucide-react';
-import { Button, Code, Dialog, NewButton, Portal, Tooltip } from '@/sdk';
+import { Button, Code, Dialog, NewButton, Portal, Tooltip, useTranslation } from '@/sdk';
 import type { FileManagerModel, UploadSource } from '@/sdk/theme';
 
 const isFileOrDirectory = (event: DragEvent): boolean =>
@@ -36,6 +36,7 @@ function useDropOverlay(): [boolean, (open: boolean) => void] {
 }
 
 export function UploadButton({ model }: { model: FileManagerModel }) {
+    const { t } = useTranslation();
     const input = useRef<HTMLInputElement>(null);
     const [dropping, setDropping] = useDropOverlay();
     // Failures have already been reported with error toasts.
@@ -60,7 +61,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                             <div className='flex items-center space-x-4 bg-muted w-full ring-4 ring-ring/50 rounded-sm p-6 mx-10 max-w-sm'>
                                 <CloudUpload className='w-10 h-10 shrink-0' />
                                 <p className='font-header flex-1 text-lg text-foreground text-center'>
-                                    Drag and drop files to upload.
+                                    {t('Drag and drop files to upload.')}
                                 </p>
                             </div>
                         </div>
@@ -71,7 +72,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                 type='file'
                 ref={input}
                 className='hidden'
-                aria-label='Upload files'
+                aria-label={t('Upload files')}
                 onChange={(event) => {
                     if (!event.currentTarget.files) {
                         return;
@@ -83,7 +84,7 @@ export function UploadButton({ model }: { model: FileManagerModel }) {
                 multiple
             />
             <NewButton icon={CloudUpload} onClick={() => input.current?.click()}>
-                Upload
+                {t('Upload')}
             </NewButton>
         </>
     );
@@ -107,6 +108,8 @@ const Progress = ({ progress, className }: { progress: number; className?: strin
 const percent = (loaded: number, total: number) => (total > 0 ? (loaded / total) * 100 : 0);
 
 function UploadList({ model, onClose }: { model: FileManagerModel; onClose: () => void }) {
+    const { t } = useTranslation();
+
     return (
         <div className='space-y-2 mt-6'>
             {model.uploads.map((file) => (
@@ -119,7 +122,7 @@ function UploadList({ model, onClose }: { model: FileManagerModel; onClose: () =
                     <Code className='flex-1 truncate'>{file.name}</Code>
                     <button
                         type='button'
-                        aria-label={`Cancel upload of ${file.name}`}
+                        aria-label={t('Cancel upload of {{name}}', { name: file.name })}
                         onClick={() => model.actions.cancelUpload(file.id)}
                         className='text-muted-foreground hover:text-foreground transition-colors duration-75'
                     >
@@ -129,15 +132,16 @@ function UploadList({ model, onClose }: { model: FileManagerModel; onClose: () =
             ))}
             <Dialog.Footer>
                 <Button.Danger isSecondary onClick={model.actions.clearUploads}>
-                    Cancel Uploads
+                    {t('Cancel Uploads')}
                 </Button.Danger>
-                <Button.Text onClick={onClose}>Close</Button.Text>
+                <Button.Text onClick={onClose}>{t('Close')}</Button.Text>
             </Dialog.Footer>
         </div>
     );
 }
 
 export function UploadStatus({ model }: { model: FileManagerModel }) {
+    const { t } = useTranslation();
     const count = model.uploads.length;
 
     if (count === 0) {
@@ -150,7 +154,7 @@ export function UploadStatus({ model }: { model: FileManagerModel }) {
     return (
         <Dialog.Trigger
             trigger={({ onClick }) => (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={t('{{number}} files are uploading, click to view', { number: count })}>
                     <button type='button' className='flex items-center justify-center w-10 h-10' onClick={onClick}>
                         <Progress progress={percent(uploaded, total)} className='w-8 h-8' />
                         <CloudUpload className='h-3 absolute mx-auto animate-pulse' />
@@ -162,8 +166,8 @@ export function UploadStatus({ model }: { model: FileManagerModel }) {
                 <Dialog
                     open={open}
                     onClose={onClose}
-                    title='File Uploads'
-                    description='The following files are being uploaded to your server.'
+                    title={t('File Uploads')}
+                    description={t('The following files are being uploaded to your server.')}
                 >
                     <UploadList model={model} onClose={onClose} />
                 </Dialog>

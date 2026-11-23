@@ -87,10 +87,10 @@ final readonly class ProcessSchedule implements ProcessesSchedules
     {
         return DB::transaction(function () use ($schedule, $now): array {
             $claimed = Schedule::query()->without('tasks')->lockForUpdate()->findOrFail($schedule->id);
-            throw_if($claimed->is_processing, DisplayException::class, 'This schedule is already being processed.');
+            throw_if($claimed->is_processing, DisplayException::class, __('exceptions.schedules.already_processing'));
 
             $task = $claimed->tasks()->orderBy('sequence_id')->first();
-            throw_if($task === null, DisplayException::class, 'Cannot process schedule for task execution: no tasks are registered.');
+            throw_if($task === null, DisplayException::class, __('exceptions.schedules.no_tasks'));
 
             $run = ['job' => new RunTaskJob($task->setRelation('schedule', $claimed), $now), 'next_run_at' => $claimed->next_run_at, 'last_run_at' => $claimed->last_run_at];
             $claimed->forceFill(['is_processing' => true, 'next_run_at' => $claimed->getNextRunDate()])->saveOrFail();

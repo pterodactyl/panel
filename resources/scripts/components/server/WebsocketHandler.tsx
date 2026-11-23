@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { serverResourceUsageQueryOptions } from '@/api/account/servers/queries';
 import { getServerWebsocketCredentials, useCurrentServer, useCurrentServerUuid } from '@/api/server/queries';
 import type { Server } from '@/api/server/queries';
@@ -9,6 +10,7 @@ import type { ServerStatus } from '@/state/server';
 import ContentContainer from '@/components/elements/ContentContainer';
 import Spinner from '@/components/elements/Spinner';
 import { dismissNotification, notifyHttpError, notifyServerError } from '@/plugins/notifications';
+import { useTranslation } from '@/sdk/localization';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
@@ -20,7 +22,7 @@ const serverErrorToasts = {
 };
 
 const daemonErrorMessage = (message: string) =>
-    message.trim() ? message : 'Wings reported an error without additional details.';
+    message.trim() ? message : i18next.t('Wings reported an error without additional details.');
 
 const serverStatuses = new Set<ServerStatus>(['offline', 'starting', 'stopping', 'running', null]);
 const isServerStatus = (value: string): value is NonNullable<ServerStatus> => serverStatuses.has(value as ServerStatus);
@@ -38,6 +40,7 @@ export default function WebsocketHandler() {
     const setServerStatus = useServerStore((state) => state.status.setServerStatus);
     const { setInstance, setConnectionState, setReconnecting } = useServerStore((state) => state.socket);
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
 
     const updateToken = useCallback((uuid: string, socket: Websocket) => {
         if (updatingToken.current || activeSocket.current !== socket || activeUuid.current !== uuid) {
@@ -55,7 +58,9 @@ export default function WebsocketHandler() {
             })
             .catch((error) => {
                 if (activeSocket.current === socket && activeUuid.current === uuid) {
-                    notifyHttpError(error, 'Failed to refresh server connection', { id: serverErrorToasts.token });
+                    notifyHttpError(error, i18next.t('Failed to refresh server connection'), {
+                        id: serverErrorToasts.token,
+                    });
                 }
             })
             .finally(() => {
@@ -78,10 +83,11 @@ export default function WebsocketHandler() {
             socket.on('SOCKET_CLOSE', () => setConnectionState(false));
             socket.on('SOCKET_CONNECT_ERROR', () => {
                 setReconnecting(false);
-                notifyServerError('Server connection failed', {
+                notifyServerError(i18next.t('Server connection failed'), {
                     id: serverErrorToasts.connection,
-                    description:
-                        'Failed to connect to the websocket after multiple attempts. Reconnecting resumes once your network or this tab is active again.',
+                    description: i18next.t(
+                        'Failed to connect to the websocket after multiple attempts. Reconnecting resumes once your network or this tab is active again.'
+                    ),
                 });
             });
             socket.on('SOCKET_RECONNECT', () => {
@@ -109,7 +115,7 @@ export default function WebsocketHandler() {
 
             socket.on('daemon error', (message) => {
                 console.warn('Got error message from daemon socket:', message);
-                notifyServerError('Server reported an error', {
+                notifyServerError(i18next.t('Server reported an error'), {
                     id: serverErrorToasts.daemon,
                     description: daemonErrorMessage(message),
                 });
@@ -125,10 +131,11 @@ export default function WebsocketHandler() {
                     updateToken(uuid, socket);
                 } else {
                     setReconnecting(false);
-                    notifyServerError('Server connection rejected', {
+                    notifyServerError(i18next.t('Server connection rejected'), {
                         id: serverErrorToasts.jwt,
-                        description:
-                            'There was an error validating the credentials provided for the websocket. Please refresh the page.',
+                        description: i18next.t(
+                            'There was an error validating the credentials provided for the websocket. Please refresh the page.'
+                        ),
                     });
                 }
             });
@@ -169,7 +176,7 @@ export default function WebsocketHandler() {
                 }
 
                 setReconnecting(false);
-                notifyHttpError(error, 'Failed to start server connection', { id: serverErrorToasts.token });
+                notifyHttpError(error, i18next.t('Failed to start server connection'), { id: serverErrorToasts.token });
             });
 
         return () => {
@@ -193,7 +200,7 @@ export default function WebsocketHandler() {
             <ContentContainer className='flex items-center justify-center'>
                 <Spinner size='small' />
                 <p className='ml-2 text-sm text-destructive-foreground'>
-                    We&apos;re having some trouble connecting to your server, please wait...
+                    {t("We're having some trouble connecting to your server, please wait...")}
                 </p>
             </ContentContainer>
         </div>

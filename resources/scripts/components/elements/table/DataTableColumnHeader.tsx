@@ -1,6 +1,7 @@
 import type { Column, RowData } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
 
 interface Props<TData extends RowData, TValue> {
     column: Column<TData, TValue>;
@@ -15,15 +16,19 @@ export default function DataTableColumnHeader<TData extends RowData, TValue>({
     title,
     className,
 }: Props<TData, TValue>) {
+    const { t } = useTranslation();
+
     if (!column.getCanSort()) {
         return <span className={className}>{title}</span>;
     }
 
     const direction = column.getIsSorted();
     const nextDirection = column.getNextSortingOrder();
-    const label = nextDirection
-        ? `Sort ${title} ${nextDirection === 'asc' ? 'ascending' : 'descending'}`
-        : `Clear ${title} sorting`;
+    const sortLabels = {
+        asc: t('Sort {{title}} ascending', { title }),
+        desc: t('Sort {{title}} descending', { title }),
+    };
+    const label = nextDirection ? sortLabels[nextDirection] : t('Clear {{title}} sorting', { title });
     const SortIcon = direction ? sortIcons[direction] : ArrowUpDown;
 
     return (

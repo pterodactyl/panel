@@ -14,8 +14,8 @@ final class UnassignAllocation implements UnassignsAllocations
 {
     public function unassign(Server $server, Allocation $allocation): Allocation
     {
-        throw_if(empty($server->allocation_limit), DisplayException::class, 'You cannot delete allocations for this server: no allocation limit is set.');
-        throw_if($allocation->id === $server->allocation_id, DisplayException::class, 'You cannot delete the primary allocation for this server.');
+        throw_if(empty($server->allocation_limit), DisplayException::class, __('exceptions.allocations.no_limit_set'));
+        throw_if($allocation->id === $server->allocation_id, DisplayException::class, __('exceptions.allocations.delete_primary'));
 
         Allocation::query()->where('id', $allocation->id)->update([
             'notes' => null,

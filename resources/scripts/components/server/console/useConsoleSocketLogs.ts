@@ -1,5 +1,6 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import type { Terminal } from 'ghostty-web';
+import i18next from 'i18next';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import { normalizeTransferStatus } from '@/components/server/transfer';
 import type { Websocket } from '@/plugins/Websocket';
@@ -52,7 +53,7 @@ export const useConsoleSocketLogs = ({
 
         const handleTransferStatus = (status: string) => {
             if (normalizeTransferStatus(status) === 'failed') {
-                writeTransferLine(`${TERMINAL_PRELUDE}Transfer has failed.\u001b[0m`);
+                writeTransferLine(`${TERMINAL_PRELUDE}${i18next.t('Transfer has failed.')}\u001b[0m`);
             }
         };
 
@@ -60,7 +61,7 @@ export const useConsoleSocketLogs = ({
             term.writeln(`${TERMINAL_PRELUDE}\u001b[1m\u001b[41m${formatLine(line)}`);
 
         const handlePowerChangeEvent = (state: string) =>
-            term.writeln(`${TERMINAL_PRELUDE}Server marked as ${state}...\u001b[0m`);
+            term.writeln(`${TERMINAL_PRELUDE}${i18next.t('Server marked as {{state}}...', { state })}\u001b[0m`);
 
         const listeners = [
             [SocketEvent.STATUS, handlePowerChangeEvent],

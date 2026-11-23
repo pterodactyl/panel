@@ -7,6 +7,7 @@ import {
     DropdownMenuItem,
     RowActions,
     RowActionsMenu,
+    useTranslation,
     type BackupListModel,
     type BackupSummary,
 } from '@/sdk';
@@ -15,6 +16,7 @@ type Confirming = '' | 'unlock' | 'restore' | 'delete';
 
 /** A backup's delete action and its menu of download, restore and lock. */
 export default function BackupActions({ model, backup }: { model: BackupListModel; backup: BackupSummary }) {
+    const { t } = useTranslation();
     const [confirming, setConfirming] = useState<Confirming>('');
     const [truncate, setTruncate] = useState(false);
     const { actions, pending, permissions } = model;
@@ -40,23 +42,24 @@ export default function BackupActions({ model, backup }: { model: BackupListMode
             <Dialog.Confirm
                 open={confirming === 'unlock'}
                 onClose={close}
-                title={`Unlock "${backup.name}"`}
+                title={t('Unlock "{{name}}"', { name: backup.name })}
                 pending={pending.lock}
                 onConfirmed={onLockToggle}
             >
-                This backup will no longer be protected from automated or accidental deletions.
+                {t('This backup will no longer be protected from automated or accidental deletions.')}
             </Dialog.Confirm>
             <Dialog.Confirm
                 open={confirming === 'restore'}
                 onClose={close}
-                confirm='Restore'
-                title={`Restore "${backup.name}"`}
+                confirm={t('Restore')}
+                title={t('Restore "{{name}}"', { name: backup.name })}
                 pending={pending.restore}
                 onConfirmed={() => void actions.restore(backup.uuid, truncate).then(closeOnSuccess)}
             >
                 <p>
-                    Your server will be stopped. You will not be able to control the power state, access the file
-                    manager, or create additional backups until completed.
+                    {t(
+                        'Your server will be stopped. You will not be able to control the power state, access the file manager, or create additional backups until completed.'
+                    )}
                 </p>
                 <p className='mt-4 -mb-2 bg-card p-3 rounded-sm'>
                     <label htmlFor='restore_truncate' className='text-base flex items-center cursor-pointer'>
@@ -67,44 +70,44 @@ export default function BackupActions({ model, backup }: { model: BackupListMode
                             checked={truncate}
                             onChange={() => setTruncate((checked) => !checked)}
                         />
-                        Delete all files before restoring backup.
+                        {t('Delete all files before restoring backup.')}
                     </label>
                 </p>
             </Dialog.Confirm>
             <Dialog.Confirm
-                title={`Delete "${backup.name}"`}
-                confirm='Continue'
+                title={t('Delete "{{name}}"', { name: backup.name })}
+                confirm={t('Continue')}
                 open={confirming === 'delete'}
                 pending={pending.remove}
                 onClose={close}
                 onConfirmed={() => void actions.remove(backup.uuid).then(closeOnSuccess)}
             >
-                This is a permanent operation. The backup cannot be recovered once deleted.
+                {t('This is a permanent operation. The backup cannot be recovered once deleted.')}
             </Dialog.Confirm>
             <RowActions>
                 {permissions.delete && (
                     <DeleteAction
-                        aria-label={`Delete ${backup.name}`}
+                        aria-label={t('Delete {{name}}', { name: backup.name })}
                         disabled={backup.locked}
-                        disabledReason='Unlock this backup before deleting it.'
+                        disabledReason={t('Unlock this backup before deleting it.')}
                         onClick={() => setConfirming('delete')}
                     />
                 )}
                 {backup.successful && (
-                    <RowActionsMenu label={`More actions for ${backup.name}`}>
+                    <RowActionsMenu label={t('More actions for {{name}}', { name: backup.name })}>
                         {permissions.download && (
                             <DropdownMenuItem onClick={() => void actions.download(backup.uuid)} icon={CloudDownload}>
-                                Download
+                                {t('Download')}
                             </DropdownMenuItem>
                         )}
                         {permissions.restore && (
                             <DropdownMenuItem onClick={() => setConfirming('restore')} icon={PackageOpen}>
-                                Restore
+                                {t('Restore')}
                             </DropdownMenuItem>
                         )}
                         {permissions.delete && (
                             <DropdownMenuItem onClick={onLockToggle} icon={backup.locked ? Unlock : Lock}>
-                                {backup.locked ? 'Unlock' : 'Lock'}
+                                {backup.locked ? t('Unlock') : t('Lock')}
                             </DropdownMenuItem>
                         )}
                     </RowActionsMenu>

@@ -1,7 +1,9 @@
-import { Button, cn } from '@/sdk';
+import { Button, cn, useTranslation } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 export default function FileEditorActions({ model, className }: ViewProps<'server.files.editor.actions'>) {
+    const { t } = useTranslation();
+
     return model.readOnly ? null : (
         <Button
             className={cn('w-full sm:w-auto', className)}
@@ -9,7 +11,7 @@ export default function FileEditorActions({ model, className }: ViewProps<'serve
             isLoading={model.saving}
             onClick={() => void model.save()}
         >
-            {model.isNew ? 'Create File' : 'Save Content'}
+            {model.isNew ? t('Create File') : t('Save Content')}
         </Button>
     );
 }

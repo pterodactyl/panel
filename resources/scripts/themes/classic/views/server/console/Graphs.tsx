@@ -1,5 +1,5 @@
 import { CloudDownload, CloudUpload } from 'lucide-react';
-import { AreaChart, bytesToString, ChartCard, cn, Tooltip, type ChartSeries } from '@/sdk';
+import { AreaChart, bytesToString, ChartCard, cn, Tooltip, useTranslation, type ChartSeries } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 const CYAN = 'var(--chart-1)';
@@ -12,11 +12,12 @@ const NETWORK_SERIES: ChartSeries[] = [
 ];
 
 export default function Graphs({ model, className }: ViewProps<'server.graphs'>) {
+    const { t } = useTranslation();
     const { live, windowMs } = model;
 
     return (
         <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4', className)}>
-            <ChartCard title='CPU Load'>
+            <ChartCard title={t('CPU Load')}>
                 <AreaChart
                     data={model.cpu.points}
                     series={VALUE_SERIES}
@@ -26,7 +27,7 @@ export default function Graphs({ model, className }: ViewProps<'server.graphs'>)
                     tickFormatter={(value) => `${value.toFixed(2)}%`}
                 />
             </ChartCard>
-            <ChartCard title='Memory'>
+            <ChartCard title={t('Memory')}>
                 <AreaChart
                     data={model.memory.points}
                     series={VALUE_SERIES}
@@ -37,13 +38,13 @@ export default function Graphs({ model, className }: ViewProps<'server.graphs'>)
                 />
             </ChartCard>
             <ChartCard
-                title='Network'
+                title={t('Network')}
                 legend={
                     <>
-                        <Tooltip arrow content='Inbound'>
+                        <Tooltip arrow content={t('Inbound')}>
                             <CloudDownload className='mr-2 w-4 h-4 text-chart-2' />
                         </Tooltip>
-                        <Tooltip arrow content='Outbound'>
+                        <Tooltip arrow content={t('Outbound')}>
                             <CloudUpload className='w-4 h-4 text-chart-1' />
                         </Tooltip>
                     </>

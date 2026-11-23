@@ -18,7 +18,7 @@ import { Dialog } from '@/components/elements/dialog';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { Alert, type AlertType } from '@/components/elements/alert';
 import { isObject } from '@/lib/objects';
-import { canReinstallServer, SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
+import { canReinstallServer, skippedInstallScriptMessage } from '@/lib/serverStatus';
 import Translate from '@/components/elements/Translate';
 import { useTranslation, type Translation } from '@/sdk/localization';
 
@@ -72,7 +72,7 @@ const reinstallBlockedReasonFor = (attributes: AdminServer['attributes'], t: Tra
         return undefined;
     }
 
-    return SKIPPED_INSTALL_SCRIPT_MESSAGE;
+    return skippedInstallScriptMessage();
 };
 
 function ServerManageContent({ server }: Props) {

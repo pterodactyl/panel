@@ -1,18 +1,21 @@
-import { Alert, ServerContentBlock } from '@/sdk';
+import { Alert, ServerContentBlock, useTranslation, type Translation } from '@/sdk';
 import { Slot, View, type ServerConsoleModel, type ViewProps } from '@/sdk/theme';
 
-const notices = {
-    maintenance: 'The node of this server is currently under maintenance and all actions are unavailable.',
-    installing: 'This server is currently running its installation process and most actions are unavailable.',
-    transferring: 'This server is currently being transferred to another node and all actions are unavailable.',
-} satisfies Record<NonNullable<ServerConsoleModel['notice']>, string>;
+const notices = (t: Translation['t']) =>
+    ({
+        maintenance: t('The node of this server is currently under maintenance and all actions are unavailable.'),
+        installing: t('This server is currently running its installation process and most actions are unavailable.'),
+        transferring: t('This server is currently being transferred to another node and all actions are unavailable.'),
+    }) satisfies Record<NonNullable<ServerConsoleModel['notice']>, string>;
 
 export default function ConsolePage({ model, active, className }: ViewProps<'page.server.console'>) {
+    const { t } = useTranslation();
+
     return (
-        <ServerContentBlock title={active ? 'Console' : undefined} className={className}>
+        <ServerContentBlock title={active ? t('Console') : undefined} className={className}>
             {model.notice && (
                 <Alert type='warning' className='mb-4'>
-                    {notices[model.notice]}
+                    {notices(t)[model.notice]}
                 </Alert>
             )}
             <Slot name='server.console.before' data={model.server} />

@@ -5,6 +5,7 @@ import { TextArea, TextInput } from '@/components/form/controls';
 import copyToClipboard from '@/lib/clipboard';
 import { cn } from '@/lib/cn';
 import { useSkin } from '@/themes/skins';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 export interface CopyOnClickProps {
     text: string | number | null | undefined;
@@ -35,16 +36,24 @@ const interactiveTypes = new Set<React.ReactElement['type']>([
     TextArea,
 ]);
 
-const copyStatusMessage = (status: CopyStatus, text: CopyOnClickProps['text'], showInNotification: boolean): string => {
+const copyStatusMessage = (
+    t: Translation['t'],
+    status: CopyStatus,
+    text: CopyOnClickProps['text'],
+    showInNotification: boolean
+): string => {
     if (status === 'failed') {
-        return 'Unable to copy text to clipboard.';
+        return t('Unable to copy text to clipboard.');
     }
 
-    return showInNotification ? `Copied "${String(text)}" to clipboard.` : 'Copied text to clipboard.';
+    return showInNotification
+        ? t('Copied "{{text}}" to clipboard.', { text: String(text) })
+        : t('Copied text to clipboard.');
 };
 
 /** Copies `text` when its single child is clicked; a non-interactive child becomes a focusable button. */
 const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClickProps) => {
+    const { t } = useTranslation();
     const [status, setStatus] = useState<CopyStatus | null>(null);
     const ui = useSkin('CopyOnClick', { status: status ?? undefined });
 
@@ -101,7 +110,7 @@ const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClick
                 <Portal>
                     <div {...ui('root')}>
                         <div role='status' {...ui('status')}>
-                            <p {...ui('message')}>{copyStatusMessage(status, text, showInNotification)}</p>
+                            <p {...ui('message')}>{copyStatusMessage(t, status, text, showInNotification)}</p>
                         </div>
                     </div>
                 </Portal>

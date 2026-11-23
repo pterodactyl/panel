@@ -1,5 +1,6 @@
 import { useQuery, queryOptions, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import axios, { type AxiosProgressEvent } from 'axios';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import { cleanDirectoryPath, fileBitsToString, newDirectoryDisplayName } from '@/helpers';
 
@@ -110,7 +111,9 @@ export const compressFilesInput = (
     path: { server_uuid: uuid },
     body: { root: directory, files },
     timeout: 60000,
-    timeoutErrorMessage: 'It looks like this archive is taking a long time to generate. It will appear once completed.',
+    timeoutErrorMessage: i18next.t(
+        'It looks like this archive is taking a long time to generate. It will appear once completed.'
+    ),
 });
 
 export const decompressFileInput = (
@@ -121,8 +124,9 @@ export const decompressFileInput = (
     path: { server_uuid: uuid },
     body: { root: directory, file },
     timeout: 300000,
-    timeoutErrorMessage:
-        'It looks like this archive is taking a long time to be unarchived. Once completed the unarchived files will appear.',
+    timeoutErrorMessage: i18next.t(
+        'It looks like this archive is taking a long time to be unarchived. Once completed the unarchived files will appear.'
+    ),
 });
 
 export const writeFileContentsInput = (
@@ -268,9 +272,9 @@ export const useCreateDirectory = () => {
                 }));
             }
 
-            toast.success('Directory created');
+            toast.success(i18next.t('Directory created'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create directory'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create directory')),
     });
 };
 
@@ -296,9 +300,9 @@ export const useRenameFiles = () => {
             }
 
             await queryClient.invalidateQueries({ queryKey: allServerFilesQueryKey(path.server_uuid) });
-            toast.success('Files updated');
+            toast.success(i18next.t('Files updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update files'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update files')),
     });
 };
 
@@ -332,9 +336,9 @@ export const useChmodFiles = () => {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
 
-            toast.success('Permissions updated');
+            toast.success(i18next.t('Permissions updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update permissions'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update permissions')),
     });
 };
 
@@ -352,9 +356,9 @@ export const useDeleteFiles = () => {
                 );
             }
 
-            toast.success(body?.files?.length === 1 ? 'File deleted' : 'Files deleted');
+            toast.success(body?.files?.length === 1 ? i18next.t('File deleted') : i18next.t('Files deleted'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete files'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete files')),
     });
 };
 
@@ -368,9 +372,9 @@ export const useCopyFile = (directory: string) => {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, directory) });
             }
 
-            toast.success('File copied');
+            toast.success(i18next.t('File copied'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to copy file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to copy file')),
     });
 };
 
@@ -384,9 +388,9 @@ export const useCompressFiles = () => {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
 
-            toast.success('Archive started');
+            toast.success(i18next.t('Archive started'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to archive files'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to archive files')),
     });
 };
 
@@ -400,16 +404,16 @@ export const useDecompressFile = () => {
                 await queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(path.server_uuid, body.root) });
             }
 
-            toast.success('Unarchive started');
+            toast.success(i18next.t('Unarchive started'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to unarchive file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to unarchive file')),
     });
 };
 
 export const useFileDownloadUrl = () =>
     useMutation({
         mutationFn: ({ uuid, file }: { uuid: string; file: string }) => getFileDownloadUrl(uuid, file),
-        onError: (error) => notifyHttpError(error, 'Unable to create file download'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create file download')),
     });
 
 export const useSaveFileContent = () => {
@@ -419,9 +423,9 @@ export const useSaveFileContent = () => {
         ...clientWriteFileContentsMutation(),
         onSuccess: async (_data, { path, query, body }) => {
             await updateServerFileContent(queryClient, path.server_uuid, query.file, body);
-            toast.success('File saved');
+            toast.success(i18next.t('File saved'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save file'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save file')),
     });
 };
 
@@ -499,7 +503,7 @@ export const useUploadFiles = () => {
                     } catch (error) {
                         if (!controller.signal.aborted && !axios.isCancel(error)) {
                             outcome = 'failed';
-                            notifyHttpError(error, `Unable to upload ${file.name}`);
+                            notifyHttpError(error, i18next.t('Unable to upload {{name}}', { name: file.name }));
                         }
                     }
                 }
@@ -512,10 +516,10 @@ export const useUploadFiles = () => {
         },
         onSuccess: ({ uploaded, failed }) => {
             if (uploaded.length > 0 && failed.length === 0) {
-                toast.success('Upload complete');
+                toast.success(i18next.t('Upload complete'));
             }
         },
-        onError: (error) => notifyHttpError(error, 'Unable to upload files'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to upload files')),
         onSettled: (_data, _error, { uuid, directory }) =>
             queryClient.invalidateQueries({ queryKey: serverFilesQueryKey(uuid, directory) }),
     });

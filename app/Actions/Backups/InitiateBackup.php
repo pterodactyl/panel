@@ -73,7 +73,7 @@ final class InitiateBackup implements InitiatesBackups
                     ->lockForUpdate()
                     ->count();
                 if ($previousCount >= $limit) {
-                    $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
+                    $message = __('exceptions.backups.throttled', ['limit' => $limit, 'period' => $period]);
                     $latest = $server->backups()
                         ->withTrashed()
                         ->nonFailed()

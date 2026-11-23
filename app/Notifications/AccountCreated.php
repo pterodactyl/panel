@@ -38,13 +38,14 @@ class AccountCreated extends Notification implements ShouldQueue
     public function toMail(): MailMessage
     {
         $message = (new MailMessage)
-            ->greeting('Hello '.$this->user->name.'!')
-            ->line('You are receiving this email because an account has been created for you on '.config()->string('app.name').'.')
-            ->line('Username: '.$this->user->username)
-            ->line('Email: '.$this->user->email);
+            ->subject(__('notifications.account_created.subject'))
+            ->greeting(__('notifications.account_created.greeting', ['name' => $this->user->name]))
+            ->line(__('notifications.account_created.intro', ['app' => config()->string('app.name')]))
+            ->line(__('notifications.account_created.username', ['username' => $this->user->username]))
+            ->line(__('notifications.account_created.email', ['email' => $this->user->email]));
 
         if (($this->token) !== null) {
-            return $message->action('Setup Your Account', url('/auth/password/reset/'.$this->token.'?email='.urlencode($this->user->email)));
+            return $message->action(__('notifications.account_created.action'), url('/auth/password/reset/'.$this->token.'?email='.urlencode($this->user->email)));
         }
 
         return $message;

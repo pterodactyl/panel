@@ -40,14 +40,14 @@ class WebsocketController extends ClientApiController
     public function __invoke(ClientApiRequest $request, NodeJwt $jwt, Server $server): JsonResponse
     {
         $user = $request->user();
-        throw_if($user->cannot(Permissions::WebsocketConnect->value, $server), HttpForbiddenException::class, "You do not have permission to connect to this server's websocket.");
+        throw_if($user->cannot(Permissions::WebsocketConnect->value, $server), HttpForbiddenException::class, __('exceptions.server.websocket_forbidden'));
 
         $permissions = $user->permissionsOn($server);
 
         $node = $server->node;
         if (($server->transfer) !== null) {
             // Check if the user has permissions to receive transfer logs.
-            throw_unless(in_array('admin.websocket.transfer', $permissions), HttpForbiddenException::class, 'You do not have permission to view server transfer logs.');
+            throw_unless(in_array('admin.websocket.transfer', $permissions), HttpForbiddenException::class, __('exceptions.server.transfer_logs_forbidden'));
 
             // Redirect the websocket request to the new node if the server has been archived.
             if ($server->transfer->archived) {

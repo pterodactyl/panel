@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react';
 import { ChevronsDown, ChevronsRight } from 'lucide-react';
-import { Button, cn, SpinnerOverlay } from '@/sdk';
+import { Button, cn, SpinnerOverlay, useTranslation } from '@/sdk';
 import type { ServerConsoleCommand, ViewProps } from '@/sdk/theme';
 
 const overflowsContainerClass = 'w-full';
@@ -34,6 +34,7 @@ function onCommandKey(command: ServerConsoleCommand, event: KeyboardEvent<HTMLIn
 }
 
 export default function Terminal({ model, className }: ViewProps<'server.terminal'>) {
+    const { t } = useTranslation();
     const { command } = model;
 
     return (
@@ -44,9 +45,9 @@ export default function Terminal({ model, className }: ViewProps<'server.termina
                     role='alert'
                     className='absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-sm bg-terminal p-4 text-center text-sm text-foreground'
                 >
-                    <p>The console could not be loaded.</p>
+                    <p>{t('The console could not be loaded.')}</p>
                     <Button.Text size='small' onClick={model.retry}>
-                        Try again
+                        {t('Try again')}
                     </Button.Text>
                 </div>
             )}
@@ -56,7 +57,7 @@ export default function Terminal({ model, className }: ViewProps<'server.termina
                     <button
                         type='button'
                         onClick={model.scrollToBottom}
-                        aria-label='Scroll to bottom'
+                        aria-label={t('Scroll to bottom')}
                         className={
                             // right-5 clears the scrollbar in the terminal's right gutter.
                             'absolute bottom-3 right-5 z-10 rounded-full bg-popover/90 p-2 text-foreground shadow-lg transition-colors hover:bg-popover'
@@ -71,8 +72,8 @@ export default function Terminal({ model, className }: ViewProps<'server.termina
                     <input
                         className={commandInputClass}
                         type='text'
-                        placeholder='Type a command...'
-                        aria-label='Console command input.'
+                        placeholder={t('Type a command...')}
+                        aria-label={t('Console command input.')}
                         disabled={command.disabled}
                         value={command.value}
                         onChange={(event) => command.setValue(event.currentTarget.value)}

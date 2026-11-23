@@ -24,6 +24,11 @@ trait ValidatesNodeAcceptsEgg
 
         $tags = $node->eggTags->map(fn (Tag $tag): string => $tag->effectiveName())->implode(', ');
 
-        $validator->errors()->add($field, "{$node->name} only accepts eggs tagged {$tags}.");
+        $validator->addReplacer(
+            'node_accepts_egg',
+            fn (string $message): string => str_replace([':node', ':tags'], [$node->name, $tags], $message),
+        );
+
+        $validator->addFailure($field, 'NodeAcceptsEgg');
     }
 }

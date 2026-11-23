@@ -21,7 +21,7 @@ final readonly class GenerateBackupDownloadLink implements GeneratesBackupDownlo
 
     public function generate(Backup $backup, User $user): string
     {
-        throw_if($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS, BadRequestHttpException::class, 'The backup requested references an unknown disk driver type and cannot be downloaded.');
+        throw_if($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS, BadRequestHttpException::class, __('exceptions.backups.unknown_disk'));
 
         if ($backup->disk === Backup::ADAPTER_AWS_S3) {
             return $this->getS3BackupUrl($backup);

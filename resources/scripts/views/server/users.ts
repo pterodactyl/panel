@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import { useCurrentUser } from '@/api/account/queries';
 import { useCurrentServerPermissions } from '@/api/server/queries';
@@ -133,10 +134,10 @@ const subuserSummary = ({ attributes }: Subuser, viewer: string): SubuserSummary
 
 const validateEmail = (value: string): string | undefined => {
     if (value.length > 191) {
-        return 'Email addresses must not exceed 191 characters.';
+        return i18next.t('Email addresses must not exceed 191 characters.');
     }
 
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'A valid email address must be provided.';
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : i18next.t('A valid email address must be provided.');
 };
 
 /** The subusers, and the permission catalogue their forms list. */
@@ -157,8 +158,10 @@ function useSubuserListModel(): SubuserListModel {
                 !!subuser &&
                 attempt(async () => {
                     await mutateAsync(deleteServerSubuserInput(uuid, subuserUuid));
-                    toast.success('Subuser removed', {
-                        description: `${subuser.attributes.email} no longer has access to this server.`,
+                    toast.success(i18next.t('Subuser removed'), {
+                        description: i18next.t('{{email}} no longer has access to this server.', {
+                            email: subuser.attributes.email,
+                        }),
                     });
                 })
             );
@@ -240,7 +243,9 @@ function useSubuserFormModel({ subuser, onClose }: SubuserFormInput): SubuserFor
 
                 const invited = await invite(createServerSubuserInput(uuid, body));
 
-                toast.success('Subuser invited', { description: `${invited.attributes.email} has been invited.` });
+                toast.success(i18next.t('Subuser invited'), {
+                    description: i18next.t('{{email}} has been invited.', { email: invited.attributes.email }),
+                });
                 void navigate({ to: '/server/$id/users', params: { id: identifier } });
             });
         },

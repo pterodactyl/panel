@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { cn } from '@/lib/cn';
+import { useTranslation } from '@/sdk/localization';
 
 const InsideMain = createContext(false);
 
@@ -27,6 +28,8 @@ export function Main({ className, children }: { className?: string; children?: R
 }
 
 export function SkipLink() {
+    const { t } = useTranslation();
+
     return (
         <a
             href='#main'
@@ -37,7 +40,7 @@ export function SkipLink() {
             }}
             className='sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-card focus:px-4 focus:py-2 focus:text-foreground'
         >
-            Skip to content
+            {t('Skip to content')}
         </a>
     );
 }

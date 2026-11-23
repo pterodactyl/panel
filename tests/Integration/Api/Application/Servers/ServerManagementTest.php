@@ -255,7 +255,7 @@ test('a server that skips its install script cannot be reinstalled', function ()
     $this->getJson("/api/application/servers/{$server->id}")->assertOk()->assertJsonPath('attributes.container.skip_scripts', true);
     $this->postJson("/api/application/servers/{$server->id}/reinstall")
         ->assertStatus(Response::HTTP_BAD_REQUEST)
-        ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
+        ->assertJsonPath('errors.0.detail', trans('exceptions.server.skipping_install_script'));
 
     expect($server->refresh()->status)->toBeNull()
         ->and($fake->callsFor('reinstall'))->toBeEmpty();
@@ -266,7 +266,7 @@ test('a blocked reinstall returns an error to clients not requesting json', func
 
     $this->post("/api/application/servers/{$server->id}/reinstall", [], ['Accept' => '*/*'])
         ->assertStatus(Response::HTTP_BAD_REQUEST)
-        ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
+        ->assertJsonPath('errors.0.detail', trans('exceptions.server.skipping_install_script'));
 
     expect($fake->callsFor('reinstall'))->toBeEmpty();
 });

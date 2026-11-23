@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import { useUpdateCurrentServer } from '@/api/server/queries';
 
@@ -100,9 +101,11 @@ export const useCreateServerBackup = () => {
             await queryClient.invalidateQueries({
                 queryKey: clientListServerBackupsQueryKey({ path: { server_uuid: path.server_uuid } }),
             });
-            toast.success('Backup started', { description: `${backup.attributes.name} is being created.` });
+            toast.success(i18next.t('Backup started'), {
+                description: i18next.t('{{name}} is being created.', { name: backup.attributes.name }),
+            });
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create backup'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create backup')),
     });
 };
 
@@ -116,7 +119,7 @@ export const useDeleteServerBackup = () => {
             queryClient.invalidateQueries({
                 queryKey: clientListServerBackupsQueryKey({ path: { server_uuid: path.server_uuid } }),
             }),
-        onError: (error) => notifyHttpError(error, 'Unable to delete backup'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete backup')),
     });
 };
 
@@ -132,7 +135,7 @@ export const useRestoreServerBackup = () => {
                 attributes: { ...server.attributes, status: 'restoring_backup' },
             }));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to restore backup'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to restore backup')),
     });
 };
 
@@ -143,9 +146,9 @@ export const useToggleServerBackupLock = (page: number) => {
         ...clientToggleBackupLockMutation(),
         onSuccess: (updated, { path }) => {
             updateServerBackup(queryClient, path.server_uuid, page, path.backup_uuid, () => updated);
-            toast.success(updated.attributes.is_locked ? 'Backup locked' : 'Backup unlocked');
+            toast.success(updated.attributes.is_locked ? i18next.t('Backup locked') : i18next.t('Backup unlocked'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update backup lock'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update backup lock')),
     });
 };
 
@@ -160,5 +163,5 @@ export const useBackupDownloadUrl = () =>
 
             return data.attributes.url;
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create backup download'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create backup download')),
     });

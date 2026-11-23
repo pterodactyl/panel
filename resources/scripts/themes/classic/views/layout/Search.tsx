@@ -12,6 +12,7 @@ import {
     InputSpinner,
     PanelLink,
     Tooltip,
+    useTranslation,
 } from '@/sdk';
 import type { AppSearchModel, ViewProps } from '@/sdk/theme';
 import { TextField } from '../shared/fields';
@@ -23,6 +24,8 @@ const resultClass = [
 ].join(' ');
 
 function Results({ model }: { model: AppSearchModel }) {
+    const { t } = useTranslation();
+
     if (model.error) {
         return (
             <div className='mt-4'>
@@ -38,8 +41,10 @@ function Results({ model }: { model: AppSearchModel }) {
                     <EmptyMedia variant='icon'>
                         <SearchX />
                     </EmptyMedia>
-                    <EmptyTitle>No servers found</EmptyTitle>
-                    <EmptyDescription>No servers match your search. Try a different name or address.</EmptyDescription>
+                    <EmptyTitle>{t('No servers found')}</EmptyTitle>
+                    <EmptyDescription>
+                        {t('No servers match your search. Try a different name or address.')}
+                    </EmptyDescription>
                 </EmptyHeader>
             </Empty>
         );
@@ -74,16 +79,18 @@ function Results({ model }: { model: AppSearchModel }) {
 }
 
 export default function Search({ model, className }: ViewProps<'app.search'>) {
+    const { t } = useTranslation();
+
     return (
         <>
             {model.open && (
-                <Dialog title='Search servers' open onClose={model.close}>
+                <Dialog title={t('Search servers')} open onClose={model.close}>
                     <form noValidate onSubmit={(event) => event.preventDefault()}>
                         <InputSpinner visible={model.loading}>
                             <TextField
                                 field={model.field}
-                                label='Search term'
-                                description='Enter a server name, uuid, or allocation to begin searching.'
+                                label={t('Search term')}
+                                description={t('Enter a server name, uuid, or allocation to begin searching.')}
                                 autoFocus
                             />
                         </InputSpinner>
@@ -91,10 +98,10 @@ export default function Search({ model, className }: ViewProps<'app.search'>) {
                     <Results model={model} />
                 </Dialog>
             )}
-            <Tooltip placement='bottom' content='Search'>
+            <Tooltip placement='bottom' content={t('Search')}>
                 <button
                     type='button'
-                    aria-label='Search'
+                    aria-label={t('Search')}
                     aria-keyshortcuts={model.shortcut.aria}
                     className={cn('navigation-link', className)}
                     onClick={model.show}

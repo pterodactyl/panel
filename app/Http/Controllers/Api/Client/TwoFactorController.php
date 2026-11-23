@@ -74,7 +74,7 @@ class TwoFactorController extends ClientApiController
     public function index(Request $request, SetsUpTwoFactor $twoFactor): JsonResponse
     {
         $user = $this->authenticatedUser($request);
-        throw_if($user->use_totp, BadRequestHttpException::class, 'Two-factor authentication is already enabled on this account.');
+        throw_if($user->use_totp, BadRequestHttpException::class, __('exceptions.account.two_factor_enabled'));
 
         return new JsonResponse([
             'data' => $twoFactor->setup($user),

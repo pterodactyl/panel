@@ -78,7 +78,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
             if (isset($attributes['allocation_id']) && $attributes['allocation_id'] !== $server->allocation_id) {
                 $allocationExists = Allocation::query()->where('id', $attributes['allocation_id'])
                     ->where('server_id', $server->id)->exists();
-                throw_if(! $allocationExists, DisplayException::class, 'The requested default allocation is not currently assigned to this server.');
+                throw_if(! $allocationExists, DisplayException::class, __('exceptions.server.default_allocation_not_assigned'));
             }
 
             $server->forceFill($attributes)->saveOrFail();
@@ -122,7 +122,7 @@ final readonly class UpdateServerBuild implements UpdatesServerBuild
         if ($remove !== []) {
             foreach ($remove as $allocation) {
                 if ($allocation === ($attributes['allocation_id'] ?? $server->allocation_id)) {
-                    throw_if(empty($freshlyAllocated), DisplayException::class, 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.');
+                    throw_if(empty($freshlyAllocated), DisplayException::class, __('exceptions.server.no_new_default_allocation'));
                     $attributes['allocation_id'] = $freshlyAllocated;
                 }
             }

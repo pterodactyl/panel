@@ -1,15 +1,17 @@
 import { ExternalLink } from 'lucide-react';
-import { Icon, SubNavigation, SubNavigationLayout } from '@/sdk';
+import { Icon, SubNavigation, SubNavigationLayout, useTranslation } from '@/sdk';
 import { Main, Slot, type NavItem, type ViewProps } from '@/sdk/theme';
 import { tabLabel } from './tabLabel';
 
 /** An icon in the row; it is named once the navigation collapses or moves it into the menu. */
 function AdminLinkLabel({ placement }: { placement: 'row' | 'menu' }) {
+    const { t } = useTranslation();
+
     return (
-        <span className='inline-flex items-center gap-2 align-top' title='Open server administration'>
+        <span className='inline-flex items-center gap-2 align-top' title={t('Open server administration')}>
             <Icon icon={ExternalLink} aria-hidden />
             <span className={placement === 'row' ? 'sr-only in-data-collapsed:not-sr-only' : undefined}>
-                Open Admin Area
+                {t('Open Admin Area')}
             </span>
         </span>
     );

@@ -1,6 +1,8 @@
 import { cn } from '@/lib/cn';
 import Button from '@/components/elements/Button';
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import Translate from '@/components/elements/Translate';
+import { useTranslation } from '@/sdk/localization';
 
 interface PaginationDataSet {
     total: number;
@@ -25,6 +27,7 @@ interface Props {
 }
 
 const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
+    const { t } = useTranslation();
     const normalized =
         'per_page' in pagination
             ? {
@@ -69,15 +72,15 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
     return (
         <div className={cn('flex items-center justify-between my-2', className)}>
             <p className='text-sm text-muted-foreground'>
-                Showing&nbsp;
-                <span className='font-semibold text-muted-foreground'>{start}</span>
-                &nbsp;to&nbsp;
-                <span className='font-semibold text-muted-foreground'>{end}</span> of&nbsp;
-                <span className='font-semibold text-muted-foreground'>{normalized.total}</span> results.
+                <Translate
+                    i18nKey='Showing <value>{{start}}</value> to <value>{{end}}</value> of <value>{{total}}</value> results.'
+                    values={{ start, end, total: normalized.total }}
+                    components={{ value: <span className='font-semibold text-muted-foreground' /> }}
+                />
             </p>
             {(total > 1 || current > 1) && (
                 <div className='flex space-x-1'>
-                    <Button.Text {...buttonProps(1)} aria-label='First page' disabled={previousPages.length !== 2}>
+                    <Button.Text {...buttonProps(1)} aria-label={t('First page')} disabled={previousPages.length !== 2}>
                         <ChevronsLeft className='w-3 h-3' />
                     </Button.Text>
                     {previousPages.reverse().map((value) => (
@@ -98,7 +101,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                             {value}
                         </Button.Text>
                     ))}
-                    <Button.Text {...buttonProps(total)} aria-label='Last page' disabled={nextPages.length !== 2}>
+                    <Button.Text {...buttonProps(total)} aria-label={t('Last page')} disabled={nextPages.length !== 2}>
                         <ChevronsRight className='w-3 h-3' />
                     </Button.Text>
                 </div>

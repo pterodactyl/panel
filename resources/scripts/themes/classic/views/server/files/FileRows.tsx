@@ -20,6 +20,8 @@ import {
     Icon,
     PanelLink,
     SpinnerOverlay,
+    Translate,
+    useTranslation,
     type FileManagerSlotData,
 } from '@/sdk';
 import { Slot, View, type FileManagerEntry, type FileManagerModel } from '@/sdk/theme';
@@ -56,6 +58,7 @@ function useRowActions(): RowActions {
 
 /** Renders the row dialogs once for every row below it. */
 export function RowActionsProvider({ model, children }: { model: FileManagerModel; children: ReactNode }) {
+    const { t } = useTranslation();
     const [dialog, setDialog] = useState<RowDialog | null>(null);
     const [target, setTarget] = useState<FileManagerEntry | null>(null);
     const [pending, run] = usePending();
@@ -94,15 +97,18 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
                 <Dialog.Confirm
                     open={dialog === 'delete'}
                     onClose={close}
-                    title={`Delete ${target?.kind === 'directory' ? 'Directory' : 'File'}`}
-                    confirm='Delete'
+                    title={target?.kind === 'directory' ? t('Delete Directory') : t('Delete File')}
+                    confirm={t('Delete')}
                     onConfirmed={() => {
                         close();
                         void actions.remove([name]).catch(() => {});
                     }}
                 >
-                    You will not be able to recover the contents of&nbsp;
-                    <span className='font-semibold text-foreground'>{name}</span> once deleted.
+                    <Translate
+                        i18nKey='You will not be able to recover the contents of <bold>{{name}}</bold> once deleted.'
+                        values={{ name }}
+                        components={{ bold: <span className='font-semibold text-foreground' /> }}
+                    />
                 </Dialog.Confirm>
                 {target && dialog === 'chmod' && (
                     <ChmodDialog
@@ -130,6 +136,7 @@ export function RowActionsProvider({ model, children }: { model: FileManagerMode
 }
 
 function ActionItems({ entry }: { entry: FileManagerEntry }) {
+    const { t } = useTranslation();
     const { permissions, actions, open, run } = useRowActions();
     const isFile = entry.kind !== 'directory';
 
@@ -140,19 +147,23 @@ function ActionItems({ entry }: { entry: FileManagerEntry }) {
                     <DropdownMenuItem
                         onClick={() => open('rename', entry)}
                         icon={Pencil}
-                        description='Change item name'
+                        description={t('Change item name')}
                     >
-                        Rename
+                        {t('Rename')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => open('move', entry)}
                         icon={CornerLeftUp}
-                        description='Move to a path'
+                        description={t('Move to a path')}
                     >
-                        Move
+                        {t('Move')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => open('chmod', entry)} icon={FileCode} description='Edit mode bits'>
-                        Permissions
+                    <DropdownMenuItem
+                        onClick={() => open('chmod', entry)}
+                        icon={FileCode}
+                        description={t('Edit mode bits')}
+                    >
+                        {t('Permissions')}
                     </DropdownMenuItem>
                 </>
             )}
@@ -160,9 +171,9 @@ function ActionItems({ entry }: { entry: FileManagerEntry }) {
                 <DropdownMenuItem
                     onClick={() => run(actions.copy(entry.name))}
                     icon={Copy}
-                    description='Duplicate in place'
+                    description={t('Duplicate in place')}
                 >
-                    Copy
+                    {t('Copy')}
                 </DropdownMenuItem>
             )}
             {entry.extractable
@@ -171,27 +182,27 @@ function ActionItems({ entry }: { entry: FileManagerEntry }) {
                       <DropdownMenuItem
                           onClick={() => run(actions.extract(entry.name))}
                           icon={PackageOpen}
-                          description='Extract contents'
+                          description={t('Extract contents')}
                       >
-                          Unarchive
+                          {t('Unarchive')}
                       </DropdownMenuItem>
                   )
                 : permissions.archive && (
                       <DropdownMenuItem
                           onClick={() => run(actions.archive([entry.name]))}
                           icon={FileArchive}
-                          description='Compress item'
+                          description={t('Compress item')}
                       >
-                          Archive
+                          {t('Archive')}
                       </DropdownMenuItem>
                   )}
             {isFile && (
                 <DropdownMenuItem
                     onClick={() => run(actions.download(entry.name))}
                     icon={FileDown}
-                    description='Save locally'
+                    description={t('Save locally')}
                 >
-                    Download
+                    {t('Download')}
                 </DropdownMenuItem>
             )}
             {permissions.delete && (
@@ -199,10 +210,10 @@ function ActionItems({ entry }: { entry: FileManagerEntry }) {
                     onClick={() => open('delete', entry)}
                     icon={Trash2}
                     danger
-                    description='Permanently remove'
+                    description={t('Permanently remove')}
                     className='mt-1 border-t border-border/70 pt-3'
                 >
-                    Delete
+                    {t('Delete')}
                 </DropdownMenuItem>
             )}
         </>
@@ -228,6 +239,7 @@ function Clickable({ entry, children }: { entry: FileManagerEntry; children: Rea
 }
 
 export const FileRow = memo(({ entry, selected }: { entry: FileManagerEntry; selected: boolean }) => {
+    const { t } = useTranslation();
     const { toggle } = useRowActions();
     const items = (
         <>
@@ -242,7 +254,7 @@ export const FileRow = memo(({ entry, selected }: { entry: FileManagerEntry; sel
                 <Checkbox
                     name='selectedFiles'
                     value={entry.name}
-                    aria-label={`Select ${entry.name}`}
+                    aria-label={t('Select {{name}}', { name: entry.name })}
                     checked={selected}
                     onChange={(checked) => toggle(entry.name, checked)}
                 />
@@ -256,7 +268,7 @@ export const FileRow = memo(({ entry, selected }: { entry: FileManagerEntry; sel
                 triggerContent={
                     <>
                         <Icon icon={MoreHorizontal} className='h-4 w-4' />
-                        <span className='sr-only'>Open file options</span>
+                        <span className='sr-only'>{t('Open file options')}</span>
                     </>
                 }
             >

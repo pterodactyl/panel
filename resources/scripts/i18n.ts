@@ -9,6 +9,7 @@ import type { UserData } from '@/api/account/types';
 import type { SiteSettings } from '@/api/settings/types';
 import { getBootstrapExtensions, getBootstrapSiteSettings, getBootstrapUser } from '@/bootstrap';
 import { translationOptions } from '@/i18nConfig';
+import { setDateLocale } from '@/lib/dayjs';
 
 interface MultiloadHttpBackendOptions extends HttpBackendOptions {
     allowMultiLoading: boolean;
@@ -93,6 +94,8 @@ export function followCurrentUserLanguage(queryClient: QueryClient, instance: I1
     });
 }
 
+i18n.on('languageChanged', (language) => void setDateLocale(language));
+
 void i18n
     .use(I18NextMultiloadBackendAdapter)
     .use(initReactI18next)
@@ -100,6 +103,7 @@ void i18n
         ...translationOptions,
         debug: import.meta.env.DEV,
         lng: initialLanguage(),
+        react: { bindI18n: 'languageChanged loaded' },
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {

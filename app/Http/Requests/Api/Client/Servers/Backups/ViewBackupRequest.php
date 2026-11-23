@@ -26,7 +26,7 @@ class ViewBackupRequest extends ClientApiRequest implements ClientPermissionsReq
 
         $backup = $route->parameter('backup');
         if ($backup instanceof Backup) {
-            throw_if($backup->server_id !== $server->id, NotFoundHttpException::class, 'The requested resource does not exist on the system.');
+            throw_if($backup->server_id !== $server->id, NotFoundHttpException::class, __('exceptions.api.resource_not_on_system'));
         }
 
         return true;

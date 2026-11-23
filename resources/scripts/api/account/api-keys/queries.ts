@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
@@ -32,9 +33,9 @@ export const useCreateAccountApiKey = () => {
             queryClient.setQueryData<ClientListAccountApiKeysResponse>(clientListAccountApiKeysQueryKey(), (current) =>
                 upsertListItem(current, created, (key) => key.attributes.identifier === created.attributes.identifier)
             );
-            toast.success('API key created');
+            toast.success(i18next.t('API key created'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to create API key'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to create API key')),
     });
 };
 
@@ -55,7 +56,7 @@ export const useDeleteAccountApiKey = () => {
             return { removed: previous?.data.find((item) => item.attributes.identifier === variables.path.identifier) };
         },
         onSuccess: () => {
-            toast.success('API key deleted');
+            toast.success(i18next.t('API key deleted'));
         },
         onSettled: () => {
             if (queryClient.isMutating({ mutationKey: clientDeleteAccountApiKeyMutation().mutationKey }) === 1) {
@@ -77,7 +78,7 @@ export const useDeleteAccountApiKey = () => {
                 );
             }
 
-            notifyHttpError(error, 'Unable to delete API key');
+            notifyHttpError(error, i18next.t('Unable to delete API key'));
         },
     });
 };

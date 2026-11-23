@@ -19,7 +19,7 @@ import {
     Users,
     type LucideIcon,
 } from 'lucide-react';
-import { cn, Icon, NavigationLabel, usePanelLocation } from '@/sdk';
+import { cn, Icon, NavigationLabel, usePanelLocation, useTranslation } from '@/sdk';
 import {
     Main,
     Navigation,
@@ -79,6 +79,7 @@ function AdminSidebar({ nav }: { nav: NavigationModel }) {
     const [open, setOpen] = useState(false);
     const { pathname } = usePanelLocation();
     const current = useActiveNavItem(nav.items);
+    const { t } = useTranslation();
 
     useEffect(() => setOpen(false), [pathname]);
 
@@ -95,7 +96,7 @@ function AdminSidebar({ nav }: { nav: NavigationModel }) {
                 )}
             >
                 <Icon icon={Menu} className='w-4 h-4 shrink-0' />
-                <span className='flex-1 min-w-0 truncate text-left'>{current?.label ?? 'Administration'}</span>
+                <span className='flex-1 min-w-0 truncate text-left'>{current?.label ?? t('Administration')}</span>
                 <Icon
                     icon={ChevronDown}
                     className={cn('w-4 h-4 shrink-0 transition-transform', open && 'rotate-180')}
@@ -103,7 +104,7 @@ function AdminSidebar({ nav }: { nav: NavigationModel }) {
             </button>
             <nav
                 id='admin-sidebar-nav'
-                aria-label='Administration'
+                aria-label={t('Administration')}
                 className={cn(
                     'mt-2 flex-col gap-0.5',
                     'lg:sticky lg:top-0 lg:mt-0 lg:flex lg:max-h-dvh lg:overflow-y-auto lg:px-4 lg:py-6',

@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react';
+import i18next from 'i18next';
 import { useCurrentUser } from '@/api/account/queries';
 import { useReinstallServer, useRenameServer } from '@/api/server/queries';
-import { canReinstallServer, SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
+import { canReinstallServer, skippedInstallScriptMessage } from '@/lib/serverStatus';
 import { usePermissions } from '@/plugins/usePermissions';
 import { implementViews } from '../registry';
 import { attempt } from './attempt';
@@ -74,7 +75,7 @@ function useDebugModel(): ServerDebugModel {
     return useMemo(() => ({ node, uuid }), [node, uuid]);
 }
 
-const validateName = (name: string): string | undefined => (name.length >= 1 ? undefined : 'Required');
+const validateName = (name: string): string | undefined => (name.length >= 1 ? undefined : i18next.t('Required'));
 
 function useRenameModel(): ServerRenameModel {
     const { identifier, uuid, name, description } = useLoadedServer().attributes;
@@ -105,7 +106,7 @@ function useReinstallModel(): ServerReinstallModel {
         () => attempt(() => mutateAsync({ path: { server_uuid: uuid } })),
         [mutateAsync, uuid]
     );
-    const unavailable = canReinstallServer(status, skipScripts) ? null : SKIPPED_INSTALL_SCRIPT_MESSAGE;
+    const unavailable = canReinstallServer(status, skipScripts) ? null : skippedInstallScriptMessage();
 
     return useMemo(() => ({ allowed, unavailable, reinstall }), [allowed, unavailable, reinstall]);
 }
@@ -157,7 +158,7 @@ implementViews({
         use: useReinstallModel,
         fixtures: {
             default: () => ({ allowed: true, unavailable: null, reinstall: succeeded }),
-            skipped: () => ({ allowed: true, unavailable: SKIPPED_INSTALL_SCRIPT_MESSAGE, reinstall: succeeded }),
+            skipped: () => ({ allowed: true, unavailable: skippedInstallScriptMessage(), reinstall: succeeded }),
             denied: () => ({ allowed: false, unavailable: null, reinstall: succeeded }),
         },
     },

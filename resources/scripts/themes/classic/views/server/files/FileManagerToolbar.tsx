@@ -1,4 +1,4 @@
-import { Checkbox, cn, ErrorBoundary, NewButton, PanelLink } from '@/sdk';
+import { Checkbox, cn, ErrorBoundary, NewButton, PanelLink, useTranslation } from '@/sdk';
 import { Slot, type ViewProps } from '@/sdk/theme';
 import Breadcrumbs from './Breadcrumbs';
 import { NewDirectoryButton } from './FileDialogs';
@@ -11,6 +11,7 @@ const managerActionsClass = [
 ].join(' ');
 
 export default function FileManagerToolbar({ model, className }: ViewProps<'server.files.manager.toolbar'>) {
+    const { t } = useTranslation();
     const { entries, selection } = model;
 
     return (
@@ -19,7 +20,7 @@ export default function FileManagerToolbar({ model, className }: ViewProps<'serv
                 <Breadcrumbs crumbs={model.breadcrumbs}>
                     <Checkbox
                         className='mx-4'
-                        aria-label='Select all files'
+                        aria-label={t('Select all files')}
                         checked={entries.length > 0 && selection.length === entries.length}
                         indeterminate={selection.length > 0 && selection.length < entries.length}
                         onChange={(checked) => model.actions.select(checked ? entries.map((entry) => entry.name) : [])}
@@ -31,7 +32,7 @@ export default function FileManagerToolbar({ model, className }: ViewProps<'serv
                         <NewDirectoryButton model={model} />
                         {model.permissions.update && <UploadButton model={model} />}
                         <PanelLink destination={model.newFileDestination}>
-                            <NewButton>New file</NewButton>
+                            <NewButton>{t('New file')}</NewButton>
                         </PanelLink>
                     </div>
                 )}

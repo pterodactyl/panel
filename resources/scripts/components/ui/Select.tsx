@@ -3,6 +3,7 @@ import { Combobox } from '@base-ui/react/combobox';
 import { Check, ChevronDown } from 'lucide-react';
 import { isNumber, isString } from '@/lib/objects';
 import { useSkin, type SkinBinding } from '@/themes/skins';
+import { useTranslation, type Translation } from '@/sdk/localization';
 
 export type SelectValue = string | number;
 
@@ -79,14 +80,14 @@ const isTextLabel = (label: React.ReactNode): boolean => isString(label) || isNu
 
 const createValue = '\u0000create';
 
-const createOption = (text: string, options: SelectOption[]): SelectOption | null => {
+const createOption = (t: Translation['t'], text: string, options: SelectOption[]): SelectOption | null => {
     const query = text.trim();
 
     if (query === '' || options.some((option) => optionLabel(option).toLowerCase() === query.toLowerCase())) {
         return null;
     }
 
-    return { value: createValue, label: `Create "${query}"`, textLabel: query };
+    return { value: createValue, label: t('Create "{{query}}"', { query }), textLabel: query };
 };
 
 const sameValue = (left: SelectValue, right: SelectValue): boolean => Object.is(left, right);
@@ -309,6 +310,8 @@ function MultiSelectCombobox({
     onChange: (value: SelectValue[]) => void;
     onCreate: ((text: string) => void) | undefined;
 }) {
+    const { t } = useTranslation();
+
     return (
         <Combobox.Root<SelectOption, true>
             multiple
@@ -343,7 +346,9 @@ function MultiSelectCombobox({
                 <Combobox.Value>
                     {(value: SelectOption[]) => (
                         <>
-                            {value.length > 0 && <span {...ui('summary')}>{`${value.length} selected`}</span>}
+                            {value.length > 0 && (
+                                <span {...ui('summary')}>{t('{{total}} selected', { total: value.length })}</span>
+                            )}
                             <Combobox.Input
                                 {...ui('input')}
                                 {...inputAria}
@@ -355,7 +360,7 @@ function MultiSelectCombobox({
                         </>
                     )}
                 </Combobox.Value>
-                <Combobox.Trigger {...ui('trigger')} aria-label='Open popup'>
+                <Combobox.Trigger {...ui('trigger')} aria-label={t('Open popup')}>
                     <ChevronIcon />
                 </Combobox.Trigger>
             </Combobox.InputGroup>
@@ -395,6 +400,8 @@ function SingleSelectCombobox({
     onChange: (value: SelectValue) => void;
     onSelectLabel: (label: string) => void;
 }) {
+    const { t } = useTranslation();
+
     return (
         <Combobox.Root<SelectOption>
             items={items}
@@ -429,7 +436,7 @@ function SingleSelectCombobox({
                     onFocus={search.handleFocus}
                     onBlur={search.handleBlur}
                 />
-                <Combobox.Trigger {...ui('trigger')} aria-label='Open popup'>
+                <Combobox.Trigger {...ui('trigger')} aria-label={t('Open popup')}>
                     <ChevronIcon />
                 </Combobox.Trigger>
             </Combobox.InputGroup>
@@ -450,12 +457,13 @@ export default function Select(props: SelectProps) {
         groups,
         disabled,
         placeholder,
-        searchPlaceholder = 'Search...',
-        emptyMessage = 'No results found.',
+        searchPlaceholder,
+        emptyMessage,
         hasError,
         onBlur,
         onSearchChange,
     } = props;
+    const { t } = useTranslation();
     const flatOptions = getOptions(options, groups);
     const groupedItems = getGroups(groups);
     const items = groupedItems ?? flatOptions;
@@ -477,15 +485,15 @@ export default function Select(props: SelectProps) {
 
     if (props.multiple) {
         const inputValue = search.inputFocused ? search.searchValue : '';
-        const creatable = props.onCreate && !groupedItems ? createOption(inputValue, flatOptions) : null;
+        const creatable = props.onCreate && !groupedItems ? createOption(t, inputValue, flatOptions) : null;
 
         return (
             <MultiSelectCombobox
                 ui={ui}
                 id={id}
                 placeholder={placeholder}
-                searchPlaceholder={searchPlaceholder}
-                emptyMessage={emptyMessage}
+                searchPlaceholder={searchPlaceholder ?? t('Search...')}
+                emptyMessage={emptyMessage ?? t('No results found.')}
                 disabled={disabled}
                 items={creatable ? [...flatOptions, creatable] : items}
                 groupedItems={groupedItems}
@@ -508,7 +516,7 @@ export default function Select(props: SelectProps) {
             ui={ui}
             id={id}
             placeholder={placeholder}
-            emptyMessage={emptyMessage}
+            emptyMessage={emptyMessage ?? t('No results found.')}
             disabled={disabled}
             items={items}
             groupedItems={groupedItems}

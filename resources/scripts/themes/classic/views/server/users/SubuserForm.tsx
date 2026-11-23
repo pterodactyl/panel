@@ -8,7 +8,9 @@ import {
     Label,
     setPermissionsSelected,
     SpinnerOverlay,
+    Translate,
     useAppForm,
+    useTranslation,
     type AppForm,
     type SubuserFormModel,
     type SubuserPermission,
@@ -113,6 +115,7 @@ function PermissionGroup({
     selection: Selection;
     className?: string;
 }) {
+    const { t } = useTranslation();
     const editable = group.permissions.filter((permission) => permission.editable).map((permission) => permission.key);
 
     return (
@@ -125,7 +128,7 @@ function PermissionGroup({
                         <SelectAll
                             permissions={editable}
                             selection={selection}
-                            label={`Select all ${group.name} permissions`}
+                            label={t('Select all {{group}} permissions', { group: group.name })}
                         />
                     )}
                 </div>
@@ -145,9 +148,13 @@ function PermissionGroup({
 }
 
 function SubmitButton({ form, model }: { form: SubuserAppForm; model: SubuserFormModel }) {
+    const { t } = useTranslation();
+
     return (
         <form.AppForm>
-            <form.SubmitButton className='w-full sm:w-auto'>{model.subuser ? 'Save' : 'Invite User'}</form.SubmitButton>
+            <form.SubmitButton className='w-full sm:w-auto'>
+                {model.subuser ? t('Save') : t('Invite User')}
+            </form.SubmitButton>
         </form.AppForm>
     );
 }
@@ -161,6 +168,8 @@ function FormContent({
     model: SubuserFormModel;
     submitting: boolean;
 }) {
+    const { t } = useTranslation();
+
     if (model.loading) {
         return <SpinnerOverlay visible />;
     }
@@ -177,9 +186,13 @@ function FormContent({
                     select: (permissions) => form.setFieldValue('permissions', permissions),
                     enabled: model.canEdit && !submitting && !model.saving,
                 };
-                const title = model.subuser
-                    ? `${model.canEdit ? 'Modify' : 'View'} permissions for ${model.subuser.email}`
-                    : 'Create new subuser';
+                let title = t('Create new subuser');
+
+                if (model.subuser) {
+                    title = model.canEdit
+                        ? t('Modify permissions for {{email}}', { email: model.subuser.email })
+                        : t('View permissions for {{email}}', { email: model.subuser.email });
+                }
 
                 return (
                     <Form form={form}>
@@ -193,8 +206,9 @@ function FormContent({
                         {model.restricted && (
                             <div className='mt-4 pl-4 py-2 border-l-4 border-accent'>
                                 <p className='text-sm text-muted-foreground'>
-                                    Only permissions which your account is currently assigned may be selected when
-                                    creating or modifying other users.
+                                    {t(
+                                        'Only permissions which your account is currently assigned may be selected when creating or modifying other users.'
+                                    )}
                                 </p>
                             </div>
                         )}
@@ -206,8 +220,10 @@ function FormContent({
                                 >
                                     {(field) => (
                                         <field.TextField
-                                            label='User Email'
-                                            description='Enter the email address of the user you wish to invite as a subuser for this server.'
+                                            label={t('User Email')}
+                                            description={t(
+                                                'Enter the email address of the user you wish to invite as a subuser for this server.'
+                                            )}
                                         />
                                     )}
                                 </form.AppField>
@@ -221,13 +237,13 @@ function FormContent({
                             className='mt-6'
                             title={
                                 <div className='flex items-center justify-between'>
-                                    <span className='text-sm uppercase'>All Permissions</span>
+                                    <span className='text-sm uppercase'>{t('All Permissions')}</span>
                                     {model.editable.length > 0 && (
                                         <div className='flex items-center gap-2 text-sm'>
                                             <SelectAll
                                                 permissions={model.editable}
                                                 selection={selection}
-                                                label='Select all permissions'
+                                                label={t('Select all permissions')}
                                                 disabled={!selection.enabled}
                                             />
                                         </div>
@@ -236,8 +252,10 @@ function FormContent({
                             }
                         >
                             <p className='m-0 text-sm text-muted-foreground'>
-                                Only select this if <strong>you entirely trust the user you are inviting</strong> with
-                                all available permissions!
+                                <Translate
+                                    i18nKey='Only select this if <bold>you entirely trust the user you are inviting</bold> with all available permissions!'
+                                    components={{ bold: <strong /> }}
+                                />
                             </p>
                         </Card>
                         <div className='my-6'>

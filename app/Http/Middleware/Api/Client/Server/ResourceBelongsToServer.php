@@ -43,7 +43,7 @@ class ResourceBelongsToServer
         throw_if(! isset($params['server']) || ! $params['server'] instanceof Server, InvalidArgumentException::class, 'This middleware cannot be used in a context that is missing a server in the parameters.');
 
         $server = $params['server'];
-        $exception = new NotFoundHttpException('The requested resource was not found for this server.');
+        $exception = new NotFoundHttpException(__('exceptions.api.resource_not_on_server'));
         foreach ($params as $key => $model) {
             // Specifically skip the server, we're just trying to see if all of the
             // other resources are assigned to this server. Also skip anything that

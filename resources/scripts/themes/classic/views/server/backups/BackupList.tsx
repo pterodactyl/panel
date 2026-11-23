@@ -18,23 +18,25 @@ import {
     Spinner,
     SpinnerOverlay,
     Table,
+    useTranslation,
     type BackupListModel,
     type BackupSummary,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 import BackupActions from './BackupActions';
 import CreateBackupButton from './CreateBackupButton';
 
-const backupUsage = (model: BackupListModel): string | null => {
+const backupUsage = (model: BackupListModel, t: Translation['t']): string | null => {
     const { limit, count } = model;
 
     if (limit === 0 && model.backups.length > 0) {
-        return 'Backups cannot be created for this server because the backup limit is set to 0.';
+        return t('Backups cannot be created for this server because the backup limit is set to 0.');
     }
 
     if (model.permissions.create && limit > 0 && count > 0) {
-        return `${count} of ${limit} backups have been created for this server.`;
+        return t('{{created}} of {{limit}} backups have been created for this server.', { created: count, limit });
     }
 
     return null;
@@ -43,6 +45,8 @@ const backupUsage = (model: BackupListModel): string | null => {
 const canAddBackup = (model: BackupListModel): boolean => model.permissions.create && model.limit > model.count;
 
 function BackupIdentity({ backup }: { backup: BackupSummary }) {
+    const { t } = useTranslation();
+
     return (
         <div className='flex min-w-44 items-center gap-3'>
             {backup.completedAt === null ? (
@@ -57,7 +61,7 @@ function BackupIdentity({ backup }: { backup: BackupSummary }) {
                 <div className='flex items-center gap-2'>
                     {backup.completedAt !== null && !backup.successful ? (
                         <Badge tone='danger' size='sm'>
-                            Failed
+                            {t('Failed')}
                         </Badge>
                     ) : null}
                     <p className='truncate font-medium'>{backup.name}</p>
@@ -68,15 +72,15 @@ function BackupIdentity({ backup }: { backup: BackupSummary }) {
     );
 }
 
-function columns(model: BackupListModel): TableColumn<BackupSummary>[] {
+function columns(model: BackupListModel, t: Translation['t']): TableColumn<BackupSummary>[] {
     const { permissions } = model;
     const hasActions = permissions.download || permissions.restore || permissions.delete;
 
     return [
-        { id: 'name', label: 'Backup', cell: (backup) => <BackupIdentity backup={backup} /> },
+        { id: 'name', label: t('Backup'), cell: (backup) => <BackupIdentity backup={backup} /> },
         {
             id: 'bytes',
-            label: 'Size',
+            label: t('Size'),
             cell: (backup) => (
                 <span className='whitespace-nowrap text-xs'>
                     {backup.completedAt && backup.successful ? bytesToString(backup.bytes) : '-'}
@@ -87,11 +91,11 @@ function columns(model: BackupListModel): TableColumn<BackupSummary>[] {
         },
         {
             id: 'created_at',
-            label: 'Created',
+            label: t('Created'),
             cell: (backup) => (
                 <time
                     dateTime={backup.createdAt}
-                    title={formatDate(backup.createdAt, 'ddd, MMMM D, YYYY HH:mm:ss')}
+                    title={formatDate(backup.createdAt, 'ddd, LL LTS')}
                     className='whitespace-nowrap text-xs text-muted-foreground'
                 >
                     {fromNow(backup.createdAt)}
@@ -107,6 +111,8 @@ function columns(model: BackupListModel): TableColumn<BackupSummary>[] {
 }
 
 function EmptyBackups({ model }: { model: BackupListModel }) {
+    const { t } = useTranslation();
+
     if (model.pagination.page > 1) {
         return (
             <Empty size='compact'>
@@ -114,12 +120,12 @@ function EmptyBackups({ model }: { model: BackupListModel }) {
                     <EmptyMedia variant='icon'>
                         <Archive />
                     </EmptyMedia>
-                    <EmptyTitle>No backups on this page</EmptyTitle>
-                    <EmptyDescription>This page is past the end of the backup list.</EmptyDescription>
+                    <EmptyTitle>{t('No backups on this page')}</EmptyTitle>
+                    <EmptyDescription>{t('This page is past the end of the backup list.')}</EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
                     <NewButton isSecondary icon={ArrowLeft} onClick={() => model.actions.setPage(1)}>
-                        First page
+                        {t('First page')}
                     </NewButton>
                 </EmptyContent>
             </Empty>
@@ -132,11 +138,11 @@ function EmptyBackups({ model }: { model: BackupListModel }) {
                 <EmptyMedia variant='icon'>
                     <Archive />
                 </EmptyMedia>
-                <EmptyTitle>No backups</EmptyTitle>
+                <EmptyTitle>{t('No backups')}</EmptyTitle>
                 <EmptyDescription>
                     {model.limit > 0
-                        ? "This server doesn't have any backups yet."
-                        : "Backups can't be created because this server's backup limit is 0."}
+                        ? t("This server doesn't have any backups yet.")
+                        : t("Backups can't be created because this server's backup limit is 0.")}
                 </EmptyDescription>
             </EmptyHeader>
             {canAddBackup(model) && (
@@ -149,8 +155,9 @@ function EmptyBackups({ model }: { model: BackupListModel }) {
 }
 
 export default function BackupList({ model, className }: ViewProps<'server.backups'>) {
-    const tableColumns = useMemo(() => columns(model), [model]);
-    const usage = backupUsage(model);
+    const { t } = useTranslation();
+    const tableColumns = useMemo(() => columns(model, t), [model, t]);
+    const usage = backupUsage(model, t);
     const canAdd = canAddBackup(model);
     const { pending } = model;
 
@@ -167,7 +174,7 @@ export default function BackupList({ model, className }: ViewProps<'server.backu
                 emptyState={<EmptyBackups model={model} />}
                 pagination={{
                     ...model.pagination,
-                    itemLabel: 'backups',
+                    itemLabel: t('backups'),
                     onPageSelect: model.actions.setPage,
                 }}
             />

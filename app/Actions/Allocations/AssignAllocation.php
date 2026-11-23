@@ -18,7 +18,7 @@ final readonly class AssignAllocation implements AssignsAllocations
     public function assign(Server $server): Allocation
     {
         return DB::transaction(function () use ($server): Allocation {
-            throw_if($server->allocations()->lockForUpdate()->count() >= $server->allocation_limit, DisplayException::class, 'Cannot assign additional allocations to this server: limit has been reached.');
+            throw_if($server->allocations()->lockForUpdate()->count() >= $server->allocation_limit, DisplayException::class, __('exceptions.allocations.limit_reached'));
 
             return $this->assignable->assignAvailable($server);
         });

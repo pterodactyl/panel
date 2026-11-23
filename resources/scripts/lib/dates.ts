@@ -1,6 +1,6 @@
 import dayjs from '@/lib/dayjs';
 
-/** Formats a date with dayjs tokens, advanced ones included, such as `MMM Do [at] h:mmA`. */
+/** Formats a date with dayjs tokens, advanced ones included, such as `lll` for a localized date and time. */
 export function formatDate(date: string | Date, format: string): string {
     return dayjs(date).format(format);
 }

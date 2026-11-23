@@ -13,6 +13,7 @@ import {
     Pagination,
     Spinner,
     Switch,
+    useTranslation,
 } from '@/sdk';
 import { Slot, View, type ServerListItem, type ServerListModel, type UiTone, type ViewProps } from '@/sdk/theme';
 
@@ -47,6 +48,7 @@ function ServerRow({ item, className }: { item: ServerListItem; className?: stri
 
 function NoServers({ model }: { model: ServerListModel }) {
     const others = model.scope === 'others';
+    const { t } = useTranslation();
 
     return (
         <Empty className='border bg-card'>
@@ -54,16 +56,16 @@ function NoServers({ model }: { model: ServerListModel }) {
                 <EmptyMedia variant='icon'>
                     <ServerIcon />
                 </EmptyMedia>
-                <EmptyTitle>{others ? 'No other servers' : 'No servers yet'}</EmptyTitle>
+                <EmptyTitle>{others ? t('No other servers') : t('No servers yet')}</EmptyTitle>
                 <EmptyDescription>
                     {others
-                        ? 'There are no servers owned by other users.'
-                        : 'Servers you own or are invited to will appear here.'}
+                        ? t('There are no servers owned by other users.')
+                        : t('Servers you own or are invited to will appear here.')}
                 </EmptyDescription>
             </EmptyHeader>
             {model.canCreateServers && (
                 <EmptyContent>
-                    <NewLinkButton to='/panel/servers/new'>New server</NewLinkButton>
+                    <NewLinkButton to='/panel/servers/new'>{t('New server')}</NewLinkButton>
                 </EmptyContent>
             )}
         </Empty>
@@ -73,18 +75,19 @@ function NoServers({ model }: { model: ServerListModel }) {
 export default function ServerList({ model, className }: ViewProps<'dashboard.serverList'>) {
     const others = model.scope === 'others';
     const { pagination } = model;
+    const { t } = useTranslation();
 
     return (
         <div className={className}>
             <PageHeading
-                title='Servers'
+                title={t('Servers')}
                 className='mb-4'
                 actions={
                     model.canViewOthers && (
                         <Switch
                             checked={others}
                             onChange={() => model.actions.setScope(others ? 'mine' : 'others')}
-                            label={others ? "Showing others' servers" : 'Showing your servers'}
+                            label={others ? t("Showing others' servers") : t('Showing your servers')}
                             controlPosition='end'
                             className='gap-2'
                         />

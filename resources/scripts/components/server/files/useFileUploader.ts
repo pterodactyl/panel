@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 import { useCurrentServerUuid } from '@/api/server/queries';
 import { useUploadFiles } from '@/api/server/files/queries';
@@ -37,7 +38,7 @@ export default function useFileUploader(): (source: UploadSource) => Promise<voi
             const dropped = 'items' in source;
 
             if (dropped && holdsFolder(source)) {
-                toast.error('Folder uploads are not supported.');
+                toast.error(i18next.t('Folder uploads are not supported.'));
                 throw new Error('Folder uploads are not supported.');
             }
 

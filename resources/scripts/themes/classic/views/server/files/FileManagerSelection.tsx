@@ -1,9 +1,10 @@
-import { Button, cn, Dialog, Portal, SpinnerOverlay } from '@/sdk';
+import { Button, cn, Dialog, Portal, SpinnerOverlay, Translate, useTranslation } from '@/sdk';
 import { Slot, type FileManagerModel, type ViewProps } from '@/sdk/theme';
 import { usePending } from '../usePending';
 import { RenameDialog } from './FileDialogs';
 
 function MassActions({ model, className }: { model: FileManagerModel; className?: string }) {
+    const { t } = useTranslation();
     const [pending, run] = usePending();
     const { selection, actions } = model;
 
@@ -15,7 +16,7 @@ function MassActions({ model, className }: { model: FileManagerModel; className?
                     {selection.length > 0 && (
                         <div className='flex items-center space-x-4 pointer-events-auto rounded-sm p-4 bg-background/50'>
                             <Slot name='server.files.selectionActions' data={model.slot} />
-                            <Dialog.Trigger trigger={({ onClick }) => <Button onClick={onClick}>Move</Button>}>
+                            <Dialog.Trigger trigger={({ onClick }) => <Button onClick={onClick}>{t('Move')}</Button>}>
                                 {({ open, onClose }) =>
                                     open && (
                                         <RenameDialog
@@ -28,13 +29,13 @@ function MassActions({ model, className }: { model: FileManagerModel; className?
                                     )
                                 }
                             </Dialog.Trigger>
-                            <Button onClick={() => run(actions.archive(selection))}>Archive</Button>
+                            <Button onClick={() => run(actions.archive(selection))}>{t('Archive')}</Button>
                             <Dialog.ConfirmTrigger
-                                title='Delete Files'
-                                confirm='Delete'
+                                title={t('Delete Files')}
+                                confirm={t('Delete')}
                                 trigger={({ onClick }) => (
                                     <Button.Danger isSecondary onClick={onClick}>
-                                        Delete
+                                        {t('Delete')}
                                     </Button.Danger>
                                 )}
                                 onConfirmed={(_event, close) => {
@@ -43,15 +44,19 @@ function MassActions({ model, className }: { model: FileManagerModel; className?
                                 }}
                             >
                                 <p className='mb-2'>
-                                    Are you sure you want to delete&nbsp;
-                                    <span className='font-semibold text-foreground'>{selection.length} files</span>?
-                                    This is a permanent action and the files cannot be recovered.
+                                    <Translate
+                                        i18nKey='Are you sure you want to delete <bold>{{number}} files</bold>? This is a permanent action and the files cannot be recovered.'
+                                        values={{ number: selection.length }}
+                                        components={{ bold: <span className='font-semibold text-foreground' /> }}
+                                    />
                                 </p>
                                 <ul className='mt-2 mb-0 pl-6 list-disc list-outside'>
                                     {selection.slice(0, 15).map((file) => (
                                         <li key={file}>{file}</li>
                                     ))}
-                                    {selection.length > 15 && <li>and {selection.length - 15} others</li>}
+                                    {selection.length > 15 && (
+                                        <li>{t('and {{number}} others', { number: selection.length - 15 })}</li>
+                                    )}
                                 </ul>
                             </Dialog.ConfirmTrigger>
                         </div>

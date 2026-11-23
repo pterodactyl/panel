@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
 import {
@@ -84,7 +85,7 @@ export const useCreateSubuser = () => {
     return useMutation({
         ...clientCreateServerSubuserMutation(),
         onSuccess: (subuser, { path }) => upsertSubuser(queryClient, path.server_uuid, subuser),
-        onError: (error) => notifyHttpError(error, 'Unable to invite subuser'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to invite subuser')),
     });
 };
 
@@ -94,7 +95,7 @@ export const useUpdateSubuser = () => {
     return useMutation({
         ...clientUpdateServerSubuserMutation(),
         onSuccess: (subuser, { path }) => upsertSubuser(queryClient, path.server_uuid, subuser),
-        onError: (error) => notifyHttpError(error, 'Unable to update subuser'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update subuser')),
     });
 };
 
@@ -105,6 +106,6 @@ export const useDeleteSubuser = () => {
     return useMutation({
         ...clientDeleteServerSubuserMutation(),
         onSuccess: (_data, { path }) => removeSubuser(queryClient, path.server_uuid, path.user),
-        onError: (error) => notifyHttpError(error, 'Unable to remove subuser'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to remove subuser')),
     });
 };

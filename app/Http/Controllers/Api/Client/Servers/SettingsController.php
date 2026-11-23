@@ -84,7 +84,7 @@ class SettingsController extends ClientApiController
     public function dockerImage(SetDockerImageRequest $request, UpdatesServerDockerImage $dockerImage, Server $server): JsonResponse
     {
         $egg = $server->egg ?? throw new UnexpectedValueException('The server does not have an egg relationship.');
-        throw_unless(in_array($server->image, $egg->docker_images, true), BadRequestHttpException::class, "This server's Docker image has been manually set by an administrator and cannot be updated.");
+        throw_unless(in_array($server->image, $egg->docker_images, true), BadRequestHttpException::class, __('exceptions.server.docker_image_locked'));
 
         $dockerImage->update($server, $request->string('docker_image')->toString());
 

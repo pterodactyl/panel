@@ -7,6 +7,7 @@ import {
     type ApiKey,
 } from '@/api/account/api-keys/queries';
 import { useCreateSSHKey, useDeleteSSHKey, useSSHKeys, type SSHKey } from '@/api/account/ssh-keys/queries';
+import { useTranslation } from '@/sdk/localization';
 import { boundField, fixtureField } from '../forms';
 import { pageStatus, pageStatusFixtures } from '../pageStatus';
 import { implementViews } from '../registry';
@@ -56,6 +57,7 @@ function useApiKeyListModel(): ApiKeyListModel {
 function useApiKeyCreateModel(): ApiKeyCreateModel {
     const [createdKey, setCreatedKey] = useState<string | null>(null);
     const createApiKey = useCreateAccountApiKey();
+    const { t } = useTranslation();
     const form = useForm({
         defaultValues: { description: '', allowedIps: '' },
         onSubmit: async ({ value, formApi }) => {
@@ -79,7 +81,7 @@ function useApiKeyCreateModel(): ApiKeyCreateModel {
         name: 'description',
         validators: {
             onChange: ({ value }) =>
-                value.length >= 4 ? undefined : 'A description of at least 4 characters must be provided.',
+                value.length >= 4 ? undefined : t('A description of at least 4 characters must be provided.'),
         },
     });
     const allowedIps = useField({ form, name: 'allowedIps' });
@@ -112,6 +114,7 @@ function useSshKeyListModel(): SshKeyListModel {
 
 function useSshKeyCreateModel(): SshKeyCreateModel {
     const createSshKey = useCreateSSHKey();
+    const { t } = useTranslation();
     const form = useForm({
         defaultValues: { name: '', publicKey: '' },
         onSubmit: async ({ value, formApi }) => {
@@ -126,12 +129,12 @@ function useSshKeyCreateModel(): SshKeyCreateModel {
     const name = useField({
         form,
         name: 'name',
-        validators: { onChange: ({ value }) => (value.length >= 1 ? undefined : 'A key name must be provided.') },
+        validators: { onChange: ({ value }) => (value.length >= 1 ? undefined : t('A key name must be provided.')) },
     });
     const publicKey = useField({
         form,
         name: 'publicKey',
-        validators: { onChange: ({ value }) => (value.length >= 1 ? undefined : 'A public key must be provided.') },
+        validators: { onChange: ({ value }) => (value.length >= 1 ? undefined : t('A public key must be provided.')) },
     });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);
     const submitting = useStore(form.store, (state) => state.isSubmitting);

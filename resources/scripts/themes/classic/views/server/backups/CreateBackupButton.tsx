@@ -1,13 +1,7 @@
-import { Dialog, Form, NewButton, SpinnerOverlay, useAppForm, type BackupListModel } from '@/sdk';
-
-const ignoredDescription = [
-    'Enter the files or folders to ignore while generating this backup.',
-    'Leave blank to use the contents of the .pteroignore file in the root of the server directory if present.',
-    'Wildcard matching of files and folders is supported in addition to negating a rule by prefixing the path',
-    'with an exclamation point.',
-].join(' ');
+import { Dialog, Form, NewButton, SpinnerOverlay, useAppForm, useTranslation, type BackupListModel } from '@/sdk';
 
 function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClose: () => void }) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { name: '', ignored: '', isLocked: false },
         onSubmit: async ({ value }) => {
@@ -22,7 +16,7 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
             {(submitting) => (
                 <Dialog
                     open
-                    title='Create server backup'
+                    title={t('Create server backup')}
                     onClose={onClose}
                     preventExternalClose={submitting}
                     hideCloseIcon={submitting}
@@ -32,8 +26,10 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
                         <form.AppField name='name' validators={{ onChange: ({ value }) => model.validateName(value) }}>
                             {(field) => (
                                 <field.TextField
-                                    label='Backup name'
-                                    description='If provided, the name that should be used to reference this backup.'
+                                    label={t('Backup name')}
+                                    description={t(
+                                        'If provided, the name that should be used to reference this backup.'
+                                    )}
                                 />
                             )}
                         </form.AppField>
@@ -41,9 +37,12 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
                             <form.AppField name='ignored'>
                                 {(field) => (
                                     <field.TextAreaField
-                                        label='Ignored Files & Directories'
+                                        label={t('Ignored Files & Directories')}
                                         rows={6}
-                                        description={ignoredDescription}
+                                        description={t(
+                                            'Enter the files or folders to ignore while generating this backup. Leave blank to use the contents of the {{file}} file in the root of the server directory if present. Wildcard matching of files and folders is supported in addition to negating a rule by prefixing the path with an exclamation point.',
+                                            { file: '.pteroignore' }
+                                        )}
                                     />
                                 )}
                             </form.AppField>
@@ -53,8 +52,10 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
                                 <form.AppField name='isLocked'>
                                     {(field) => (
                                         <field.SwitchField
-                                            label='Locked'
-                                            description='Prevents this backup from being deleted until explicitly unlocked.'
+                                            label={t('Locked')}
+                                            description={t(
+                                                'Prevents this backup from being deleted until explicitly unlocked.'
+                                            )}
                                         />
                                     )}
                                 </form.AppField>
@@ -62,7 +63,7 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
                         )}
                         <div className='flex justify-end mt-6'>
                             <form.AppForm>
-                                <form.SubmitButton>Start backup</form.SubmitButton>
+                                <form.SubmitButton>{t('Start backup')}</form.SubmitButton>
                             </form.AppForm>
                         </div>
                     </Form>
@@ -73,8 +74,10 @@ function CreateBackupDialog({ model, onClose }: { model: BackupListModel; onClos
 }
 
 export default function CreateBackupButton({ model }: { model: BackupListModel }) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New backup</NewButton>}>
+        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New backup')}</NewButton>}>
             {({ open, onClose }) => open && <CreateBackupDialog model={model} onClose={onClose} />}
         </Dialog.Trigger>
     );

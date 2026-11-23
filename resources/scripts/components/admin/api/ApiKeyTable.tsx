@@ -112,7 +112,7 @@ export const apiKeyColumns = (t: Translation['t']) =>
 
                 return (
                     <span className='whitespace-nowrap text-xs text-muted-foreground'>
-                        {lastUsedAt ? dayjs(lastUsedAt).format('MMM D, YYYY') : t('Never')}
+                        {lastUsedAt ? dayjs(lastUsedAt).format('ll') : t('Never')}
                     </span>
                 );
             },
@@ -128,7 +128,7 @@ export const apiKeyColumns = (t: Translation['t']) =>
                     className='whitespace-nowrap text-xs text-muted-foreground'
                     dateTime={row.original.attributes.created_at}
                 >
-                    {dayjs(row.original.attributes.created_at).format('MMM D, YYYY')}
+                    {dayjs(row.original.attributes.created_at).format('ll')}
                 </time>
             ),
             enableSorting: true,

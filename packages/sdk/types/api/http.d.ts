@@ -7,3 +7,4 @@ export declare function httpErrorToHuman(cause: unknown): string;
 export type ValidationErrors = Record<string, string>;
 /** The first message for each field a validation (422) response rejected. */
 export declare function httpValidationErrors(cause: unknown): ValidationErrors;
+export declare function httpValidationFailure(cause: unknown, field: string, rule: string): string | null;

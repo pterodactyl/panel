@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import i18next from 'i18next';
 import { relationshipAttributes } from '@/api/relationships';
 import {
     createServerDatabaseInput,
@@ -73,26 +74,28 @@ const noDatabases: ServerDatabase[] = [];
 
 function validateName(value: string): string | undefined {
     if (value.length < 1) {
-        return 'A database name must be provided.';
+        return i18next.t('A database name must be provided.');
     }
 
     if (value.length < 3) {
-        return 'Database name must be at least 3 characters.';
+        return i18next.t('Database name must be at least 3 characters.');
     }
 
     if (value.length > 48) {
-        return 'Database name must not exceed 48 characters.';
+        return i18next.t('Database name must not exceed 48 characters.');
     }
 
     if (!/^[\w\-.]{3,48}$/.test(value)) {
-        return 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.';
+        return i18next.t(
+            'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'
+        );
     }
 
     return undefined;
 }
 
 const validateConnectionsFrom = (value: string): string | undefined =>
-    /^[\w\-/.%:]*$/.test(value) ? undefined : 'A valid host address must be provided.';
+    /^[\w\-/.%:]*$/.test(value) ? undefined : i18next.t('A valid host address must be provided.');
 
 function databaseItem({ attributes }: ServerDatabase): ServerDatabaseItem {
     const endpoint = `${attributes.host.address}:${attributes.host.port}`;

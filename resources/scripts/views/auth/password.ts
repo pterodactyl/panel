@@ -2,6 +2,7 @@ import { useField, useForm, useStore } from '@tanstack/react-form';
 import { useParams, useSearch } from '@tanstack/react-router';
 import { usePerformPasswordReset, useRequestPasswordResetEmail } from '@/api/auth/queries';
 import { parseEmailSearch } from '@/router/pageSearch';
+import { useTranslation } from '@/sdk/localization';
 import { boundField, fixtureField } from '../forms';
 import { implementViews } from '../registry';
 import { useCaptcha } from './captcha';
@@ -11,6 +12,7 @@ const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const newPassword = { type: 'password', autoComplete: 'new-password' } as const;
 
 function useForgotPasswordFormModel(): ForgotPasswordFormModel {
+    const { t } = useTranslation();
     const requestReset = useRequestPasswordResetEmail();
     const { Captcha, token } = useCaptcha();
     const form = useForm({
@@ -35,7 +37,7 @@ function useForgotPasswordFormModel(): ForgotPasswordFormModel {
         name: 'email',
         validators: {
             onChange: ({ value }) =>
-                isEmail(value) ? undefined : 'A valid email address must be provided to continue.',
+                isEmail(value) ? undefined : t('A valid email address must be provided to continue.'),
         },
     });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);
@@ -55,6 +57,7 @@ function useResetPasswordFormModel(): ResetPasswordFormModel {
     const { token: resetToken = '' } = useParams({ strict: false });
     const { email = '' } = parseEmailSearch(useSearch({ strict: false }));
     const resetPassword = usePerformPasswordReset();
+    const { t } = useTranslation();
     const { Captcha, token } = useCaptcha();
     const form = useForm({
         defaultValues: { password: '', passwordConfirmation: '' },
@@ -86,7 +89,7 @@ function useResetPasswordFormModel(): ResetPasswordFormModel {
         name: 'password',
         validators: {
             onChange: ({ value }) =>
-                value.length >= 8 ? undefined : 'Your new password should be at least 8 characters in length.',
+                value.length >= 8 ? undefined : t('Your new password should be at least 8 characters in length.'),
         },
     });
     const confirmation = useField({
@@ -95,7 +98,7 @@ function useResetPasswordFormModel(): ResetPasswordFormModel {
         validators: {
             onChangeListenTo: ['password'],
             onChange: ({ value, fieldApi }) =>
-                value === fieldApi.form.getFieldValue('password') ? undefined : 'Your new password does not match.',
+                value === fieldApi.form.getFieldValue('password') ? undefined : t('Your new password does not match.'),
         },
     });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);

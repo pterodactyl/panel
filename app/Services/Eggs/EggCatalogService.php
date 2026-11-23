@@ -44,10 +44,10 @@ class EggCatalogService
         try {
             $response = Http::acceptJson()->connectTimeout(3)->timeout(10)->withoutRedirecting()->get($url);
         } catch (ConnectionException $connectionException) {
-            throw new HttpException(502, 'Could not reach the Pterodactyl egg catalog. Please try again.', $connectionException);
+            throw new HttpException(502, __('exceptions.egg.catalog.unreachable'), $connectionException);
         }
 
-        throw_unless($response->successful(), HttpException::class, 502, 'Could not download from the Pterodactyl egg catalog. Please try again.');
+        throw_unless($response->successful(), HttpException::class, 502, __('exceptions.egg.catalog.download_failed'));
 
         return $response->body();
     }

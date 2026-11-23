@@ -86,6 +86,7 @@ return [
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
+    'node_accepts_egg' => ':node only accepts eggs tagged :tags.',
 
     /*
     |--------------------------------------------------------------------------
@@ -104,5 +105,23 @@ return [
     'internal' => [
         'variable_value' => ':env variable',
         'invalid_password' => 'The password provided was invalid for this account.',
+        'fqdn_unresolvable' => 'The :attribute could not be resolved to a valid IP address.',
+        'fqdn_ip_with_https' => 'The :attribute must not be an IP address when HTTPS is enabled.',
+        'path_within' => 'The :field path cannot be or reside within [:path].',
+        'path_reserved' => 'The :field path cannot be [:path].',
+        'tag_slug_numeric' => 'A tag slug cannot be purely numeric (reserved for tag and legacy nest IDs).',
+        'docker_images_empty' => 'The :attribute field must list at least one image.',
+        'docker_image_invalid' => 'The :attribute entry ":image" is not a valid Docker image.',
+        'username' => 'The :attribute must start and end with alpha-numeric characters and contain only letters, numbers, dashes, underscores, and periods.',
+        'email_leading_dash' => 'The :attribute must not start with a dash.',
+        'database_name_in_use' => 'The database name you have selected is already in use by this server.',
+        'extension_field_value' => 'The :attribute field must be a string, number, boolean, or a list of them.',
+        'extension_setting' => [
+            'color' => 'The :attribute must be a hex colour such as #1f2933 or an oklch() colour such as oklch(0.62 0.19 259.8).',
+            'number' => 'The :attribute must be a number.',
+            'toggle' => 'The :attribute must be true or false.',
+            'select' => 'The selected :attribute is not one of the options.',
+            'text' => 'The :attribute must be text.',
+        ],
     ],
 ];

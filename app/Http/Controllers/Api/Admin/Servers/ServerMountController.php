@@ -122,6 +122,6 @@ class ServerMountController extends AdminApiController
 
     private function assertServerInstalled(Server $server): void
     {
-        throw_unless($server->isInstalled(), HttpException::class, Response::HTTP_FORBIDDEN, 'Access to this resource is not allowed due to the current installation state.');
+        throw_unless($server->isInstalled(), HttpException::class, Response::HTTP_FORBIDDEN, __('exceptions.server.installation_state'));
     }
 }

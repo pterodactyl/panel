@@ -7,7 +7,7 @@ import http from '@/api/http';
 import { serverQueryOptions } from '@/api/server/queries';
 import type { Server } from '@/api/server/types';
 import { createExtensionTestHost, createTestServer, type ExtensionTestHost } from '@/sdk/testing';
-import { SKIPPED_INSTALL_SCRIPT_MESSAGE } from '@/lib/serverStatus';
+import { skippedInstallScriptMessage } from '@/lib/serverStatus';
 import { View } from '@/views/View';
 
 let host: ExtensionTestHost | undefined;
@@ -98,7 +98,7 @@ describe('server settings', () => {
     it('explains why a server skipping its install script cannot be reinstalled', async () => {
         await renderInServer(<View name='server.reinstall' />, { skip_scripts: true });
 
-        expect(screen.getByText(SKIPPED_INSTALL_SCRIPT_MESSAGE)).toBeVisible();
+        expect(screen.getByText(skippedInstallScriptMessage())).toBeVisible();
         expect(screen.getByRole('button', { name: 'Reinstall Server' })).toBeDisabled();
     });
 

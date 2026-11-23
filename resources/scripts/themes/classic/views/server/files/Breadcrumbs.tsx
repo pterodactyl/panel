@@ -2,6 +2,8 @@ import { Fragment, type ReactNode } from 'react';
 import { PanelLink } from '@/sdk';
 import type { FileBreadcrumb } from '@/sdk/theme';
 
+const homeSegment = 'home';
+
 const linkClass = 'px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent';
 
 interface Props {
@@ -15,7 +17,7 @@ interface Props {
 export default function Breadcrumbs({ crumbs, file, children }: Props) {
     return (
         <div className='flex grow-0 items-center text-sm text-muted-foreground overflow-x-hidden'>
-            {children || <div className='w-12' />}/<span className='px-1 text-muted-foreground'>home</span>/
+            {children || <div className='w-12' />}/<span className='px-1 text-muted-foreground'>{homeSegment}</span>/
             {crumbs.map(({ name, path, destination }) =>
                 destination ? (
                     <Fragment key={path}>

@@ -23,6 +23,7 @@ import {
     RowActionsMenu as PanelRowActionsMenu,
 } from '@/components/elements/table/RowActions';
 import { resolvePanelDestination, type PanelDestination } from './navigation';
+import Translate from '@/components/elements/Translate';
 
 type TableColumnBase<TRow> = {
     id: string;
@@ -199,7 +200,11 @@ export function actionsColumn<TRow>(
 
     return {
         id: 'actions',
-        label: <span className='sr-only'>Actions</span>,
+        label: (
+            <span className='sr-only'>
+                <Translate i18nKey='Actions' />
+            </span>
+        ),
         cell,
         headerClassName: className,
         cellClassName: className,

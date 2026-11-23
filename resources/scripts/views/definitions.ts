@@ -1,5 +1,6 @@
 import { createElement } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import { useTranslation } from '@/sdk/localization';
 import { VIEW_PAGES, viewPage } from './pages';
 import { defineView } from './registry';
 
@@ -26,6 +27,24 @@ const startup = { load: () => import('./server/startup') };
 const users = { load: () => import('./server/users') };
 
 const spinner = createElement(Spinner, { size: 'large', centered: true });
+
+function ServerCardPlaceholder() {
+    const { t } = useTranslation();
+
+    return createElement('div', {
+        className: 'h-12 animate-pulse rounded-sm bg-muted',
+        'aria-label': t('Loading server card'),
+    });
+}
+
+function FileDetailsPlaceholder() {
+    const { t } = useTranslation();
+
+    return createElement('div', {
+        className: 'h-5 w-full animate-pulse rounded-sm bg-muted',
+        'aria-label': t('Loading file details'),
+    });
+}
 
 defineView('layout.auth', { context: 'auth', ...layouts });
 defineView('layout.app', { context: 'app', slots: ['nav.items.before', 'nav.items.after'], ...layouts });
@@ -60,10 +79,7 @@ defineView('dashboard.serverList', {
 });
 defineView('dashboard.serverCard', {
     context: 'app',
-    placeholder: createElement('div', {
-        className: 'h-12 animate-pulse rounded-sm bg-muted',
-        'aria-label': 'Loading server card',
-    }),
+    placeholder: createElement(ServerCardPlaceholder),
     ...dashboard,
 });
 defineView('dashboard.serverCard.identity', {
@@ -137,10 +153,7 @@ defineView('server.files.manager.list', { context: 'server', slots: ['server.fil
 defineView('server.files.manager.selection', { context: 'server', slots: ['server.files.selectionActions'], ...files });
 defineView('server.files.details', {
     context: 'server',
-    placeholder: createElement('div', {
-        className: 'h-5 w-full animate-pulse rounded-sm bg-muted',
-        'aria-label': 'Loading file details',
-    }),
+    placeholder: createElement(FileDetailsPlaceholder),
     ...files,
 });
 defineView('page.server.files.editor', { ...viewPage('page.server.files.editor'), ...files });

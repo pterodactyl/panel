@@ -1,11 +1,13 @@
 import { FolderOpen } from 'lucide-react';
-import { cn, Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle, Spinner } from '@/sdk';
+import { cn, Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle, Spinner, useTranslation } from '@/sdk';
 import type { FileManagerEntry, ViewProps } from '@/sdk/theme';
 import { FileRow, RowActionsProvider } from './FileRows';
 
 const entryKey = ({ kind, name }: FileManagerEntry) => `${kind === 'directory' ? 'dir' : 'file'}_${name}`;
 
 export default function FileManagerList({ model, className }: ViewProps<'server.files.manager.list'>) {
+    const { t } = useTranslation();
+
     if (model.loading) {
         return <Spinner size='large' centered />;
     }
@@ -17,11 +19,11 @@ export default function FileManagerList({ model, className }: ViewProps<'server.
                     <EmptyMedia variant='icon'>
                         <FolderOpen />
                     </EmptyMedia>
-                    <EmptyTitle>This folder is empty</EmptyTitle>
+                    <EmptyTitle>{t('This folder is empty')}</EmptyTitle>
                     <EmptyDescription>
                         {model.permissions.create
-                            ? 'Upload files or create a new file or folder to get started.'
-                            : 'There are no files in this folder.'}
+                            ? t('Upload files or create a new file or folder to get started.')
+                            : t('There are no files in this folder.')}
                     </EmptyDescription>
                 </EmptyHeader>
             </Empty>
@@ -35,7 +37,9 @@ export default function FileManagerList({ model, className }: ViewProps<'server.
             {model.truncated && (
                 <div className='rounded-sm bg-warning mb-px p-3'>
                     <p className='text-warning-foreground text-sm text-center'>
-                        This directory is too large to display in the browser, limiting output to first 250 files.
+                        {t(
+                            'This directory is too large to display in the browser, limiting output to first 250 files.'
+                        )}
                     </p>
                 </div>
             )}

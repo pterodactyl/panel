@@ -66,7 +66,7 @@ final readonly class SyncTags implements SyncsTags
             // A node holds each tag either as a game or as a reservation, never both.
             $clashing = $otherKind?->whereKey($resolved->modelKeys())->pluck('tags.name') ?? collect();
             if ($clashing->isNotEmpty()) {
-                throw ValidationException::withMessages(['tags' => "These tags are already on the node as the other kind: {$clashing->implode(', ')}."]);
+                throw ValidationException::withMessages(['tags' => __('exceptions.tags.kind_clash', ['tags' => $clashing->implode(', ')])]);
             }
 
             $tags->sync($resolved);

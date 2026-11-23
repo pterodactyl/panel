@@ -106,7 +106,7 @@ function DatabaseHostDetailForm({ host }: { host: AdminDatabaseHost }) {
                         />
                     </div>
                     <div className='mt-6 text-sm text-muted-foreground'>
-                        <p>{t('{{total}} databases', { total: host.attributes.databases_count })}</p>
+                        <p>{t('{{count}} databases', { count: host.attributes.databases_count })}</p>
                         <p>
                             {(() => {
                                 const node = relationshipAttributes(host.attributes.relationships?.node);

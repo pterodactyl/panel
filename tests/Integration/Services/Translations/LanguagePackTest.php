@@ -193,6 +193,17 @@ test('the coverage command fails while keys are missing', function (): void {
         ->and(Artisan::call('p:lang:coverage', ['locale' => 'en_gb']))->toBe(2);
 });
 
+test('the coverage command prints interface keys exactly', function (): void {
+    writeExtension('notes', ['en.json' => ['Delete <bold>{{name}}</bold>?' => 'Delete <bold>{{name}}</bold>?', 'Note saved.' => 'Note saved.']]);
+    writePack('german', ['de'], ['de.json' => ['Delete <bold>{{name}}</bold>?' => '<bold>{{note}}</bold> löschen?']]);
+    boot();
+
+    Artisan::call('p:lang:coverage', ['locale' => 'de', '--extension' => 'german']);
+
+    expect(Artisan::output())->toContain('json:Note saved.')
+        ->toContain('json:Delete <bold>{{name}}</bold>?: {{note}}');
+});
+
 test('the interface catalogue merges extensions under the packs that translate them', function (): void {
     writeExtension('notes', ['en.json' => ['Add note' => 'Add note', 'Notes' => 'Notes'], 'de.json' => ['Add note' => 'Notiz hinzufügen', 'Notes' => 'Notizen']]);
     writePack('german', ['de'], ['de.json' => ['Login to Continue' => 'Anmelden, um fortzufahren', 'Notes' => 'Vermerke', 'Welcome back, {{name}}' => 'Willkommen zurück, {{name}}']]);

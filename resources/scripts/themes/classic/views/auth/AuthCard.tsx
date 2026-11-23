@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn, Form } from '@/sdk';
+import { cn, Form, useTranslation } from '@/sdk';
 import PterodactylMark from './PterodactylMark';
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
 
 /** The sign-in card: the form beside the mark, under a title and above the copyright. */
 export default function AuthCard({ title, submit, className, children }: Props) {
+    const { t } = useTranslation();
+
     return (
         <div className={cn('sm:mx-auto sm:w-4/5 md:p-10 lg:w-3/5 xl:w-full xl:max-w-auth', className)}>
             <h2 className='text-3xl text-center text-foreground font-medium py-4'>{title}</h2>
@@ -31,7 +33,7 @@ export default function AuthCard({ title, submit, className, children }: Props) 
                     target='_blank'
                     className='no-underline text-muted-foreground hover:text-muted-foreground'
                 >
-                    Pterodactyl Software
+                    {t('Pterodactyl Software')}
                 </a>
             </p>
         </div>

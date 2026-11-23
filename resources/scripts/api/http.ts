@@ -1,5 +1,6 @@
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
+import i18next from 'i18next';
 import { completeHttpProgress, startHttpProgress } from '@/state/httpProgress';
 import { isObject, isString } from '@/lib/objects';
 
@@ -87,37 +88,66 @@ export function httpErrorToHuman(cause: unknown): string {
         }
     }
 
-    return cause instanceof Error ? cause.message : 'An unexpected error occurred.';
+    return cause instanceof Error ? cause.message : i18next.t('An unexpected error occurred.');
 }
 
 /** Validation messages keyed by the request path of the field they are about. */
 export type ValidationErrors = Record<string, string>;
 
-/** The first message for each field a validation (422) response rejected. */
-export function httpValidationErrors(cause: unknown): ValidationErrors {
+type ValidationFailure = {
+    field: string;
+    rule: string;
+    detail: string;
+};
+
+function responseErrors(cause: unknown): unknown[] {
     if (!axios.isAxiosError(cause) || cause.response?.status !== 422) {
-        return {};
+        return [];
     }
 
     const data: unknown = cause.response.data;
 
-    if (!isObject(data) || !('errors' in data) || !Array.isArray(data.errors)) {
-        return {};
-    }
+    return isObject(data) && 'errors' in data && Array.isArray(data.errors) ? data.errors : [];
+}
 
-    const errors: ValidationErrors = {};
+function validationFailures(cause: unknown): ValidationFailure[] {
+    const failures: ValidationFailure[] = [];
 
-    for (const error of data.errors) {
+    for (const error of responseErrors(cause)) {
         if (!isObject(error) || !('detail' in error) || !isString(error.detail)) {
             continue;
         }
 
-        const field = 'meta' in error && isObject(error.meta) ? error.meta.source_field : undefined;
+        const meta = 'meta' in error && isObject(error.meta) ? error.meta : {};
+        const field = 'source_field' in meta ? meta.source_field : undefined;
 
-        if (isString(field) && !(field in errors)) {
-            errors[field] = error.detail;
+        if (isString(field)) {
+            failures.push({
+                field,
+                rule: 'rule' in meta && isString(meta.rule) ? meta.rule : '',
+                detail: error.detail,
+            });
+        }
+    }
+
+    return failures;
+}
+
+/** The first message for each field a validation (422) response rejected. */
+export function httpValidationErrors(cause: unknown): ValidationErrors {
+    const errors: ValidationErrors = {};
+
+    for (const { field, detail } of validationFailures(cause)) {
+        if (!(field in errors)) {
+            errors[field] = detail;
         }
     }
 
     return errors;
+}
+
+export function httpValidationFailure(cause: unknown, field: string, rule: string): string | null {
+    return (
+        validationFailures(cause).find((failure) => failure.field === field && failure.rule === rule)?.detail ?? null
+    );
 }

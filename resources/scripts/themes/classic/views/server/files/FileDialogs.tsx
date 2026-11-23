@@ -1,4 +1,15 @@
-import { Button, cn, Code, Dialog, Form, NewButton, SpinnerOverlay, useAppForm } from '@/sdk';
+import {
+    Button,
+    cn,
+    Code,
+    Dialog,
+    Form,
+    NewButton,
+    SpinnerOverlay,
+    Translate,
+    useAppForm,
+    useTranslation,
+} from '@/sdk';
 import type { FileManagerModel } from '@/sdk/theme';
 
 interface DialogProps {
@@ -9,6 +20,7 @@ interface DialogProps {
 
 /** Renames one file, or moves files to a path relative to the current directory. */
 export function RenameDialog({ model, files, move, ...props }: DialogProps & { files: string[]; move?: boolean }) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { name: files.length > 1 ? '' : files[0] || '' },
         onSubmit: async ({ value: { name } }) => {
@@ -35,10 +47,12 @@ export function RenameDialog({ model, files, move, ...props }: DialogProps & { f
                                         <field.TextField
                                             type='string'
                                             id='file_name'
-                                            label='File Name'
+                                            label={t('File Name')}
                                             description={
                                                 move
-                                                    ? 'Enter the new name and directory of this file or folder, relative to the current directory.'
+                                                    ? t(
+                                                          'Enter the new name and directory of this file or folder, relative to the current directory.'
+                                                      )
                                                     : undefined
                                             }
                                             autoFocus
@@ -48,7 +62,9 @@ export function RenameDialog({ model, files, move, ...props }: DialogProps & { f
                             </div>
                             <div className='w-full sm:w-auto mt-4 sm:mt-0'>
                                 <form.AppForm>
-                                    <form.SubmitButton className='w-full'>{move ? 'Move' : 'Rename'}</form.SubmitButton>
+                                    <form.SubmitButton className='w-full'>
+                                        {move ? t('Move') : t('Rename')}
+                                    </form.SubmitButton>
                                 </form.AppForm>
                             </div>
                         </div>
@@ -56,8 +72,11 @@ export function RenameDialog({ model, files, move, ...props }: DialogProps & { f
                             <form.Subscribe selector={(state) => state.values.name}>
                                 {(name) => (
                                     <p className='text-xs mt-2 text-muted-foreground'>
-                                        <strong className='text-foreground'>New location:</strong>
-                                        &nbsp;/home/container/{model.resolve(name)}
+                                        <Translate
+                                            i18nKey='<bold>New location:</bold> {{path}}'
+                                            values={{ path: `/home/container/${model.resolve(name)}` }}
+                                            components={{ bold: <strong className='text-foreground' /> }}
+                                        />
                                     </p>
                                 )}
                             </form.Subscribe>
@@ -70,6 +89,7 @@ export function RenameDialog({ model, files, move, ...props }: DialogProps & { f
 }
 
 export function ChmodDialog({ model, files, ...props }: DialogProps & { files: { file: string; mode: string }[] }) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { mode: files.length > 1 ? '' : files[0].mode || '' },
         onSubmit: async ({ value: { mode } }) => {
@@ -89,13 +109,18 @@ export function ChmodDialog({ model, files, ...props }: DialogProps & { files: {
                             <div className='w-full sm:flex-1 sm:mr-4'>
                                 <form.AppField name='mode'>
                                     {(field) => (
-                                        <field.TextField type='string' id='file_mode' label='File Mode' autoFocus />
+                                        <field.TextField
+                                            type='string'
+                                            id='file_mode'
+                                            label={t('File Mode')}
+                                            autoFocus
+                                        />
                                     )}
                                 </form.AppField>
                             </div>
                             <div className='w-full sm:w-auto mt-4 sm:mt-0'>
                                 <form.AppForm>
-                                    <form.SubmitButton className='w-full'>Update</form.SubmitButton>
+                                    <form.SubmitButton className='w-full'>{t('Update')}</form.SubmitButton>
                                 </form.AppForm>
                             </div>
                         </div>
@@ -107,6 +132,7 @@ export function ChmodDialog({ model, files, ...props }: DialogProps & { files: {
 }
 
 function NewDirectoryForm({ model, onClose }: { model: FileManagerModel; onClose: () => void }) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { directoryName: '' },
         onSubmit: async ({ value }) => {
@@ -126,27 +152,34 @@ function NewDirectoryForm({ model, onClose }: { model: FileManagerModel; onClose
                     name='directoryName'
                     validators={{
                         onChange: ({ value }) =>
-                            value.length >= 1 ? undefined : 'A valid directory name must be provided.',
+                            value.length >= 1 ? undefined : t('A valid directory name must be provided.'),
                     }}
                 >
-                    {(field) => <field.TextField autoFocus id='directoryName' label='Name' />}
+                    {(field) => <field.TextField autoFocus id='directoryName' label={t('Name')} />}
                 </form.AppField>
                 <p className='mt-2 text-sm md:text-base break-all'>
-                    <span className='text-foreground'>This directory will be created as&nbsp;</span>
-                    <Code>
-                        /home/container/
-                        <form.Subscribe selector={(state) => state.values.directoryName}>
-                            {(name) => <span className='text-accent'>{model.resolve(name)}</span>}
-                        </form.Subscribe>
-                    </Code>
+                    <Translate
+                        i18nKey='<text>This directory will be created as</text> <path />'
+                        components={{
+                            text: <span className='text-foreground' />,
+                            path: (
+                                <Code>
+                                    /home/container/
+                                    <form.Subscribe selector={(state) => state.values.directoryName}>
+                                        {(name) => <span className='text-accent'>{model.resolve(name)}</span>}
+                                    </form.Subscribe>
+                                </Code>
+                            ),
+                        }}
+                    />
                 </p>
             </Form>
             <Dialog.Footer>
                 <Button.Text className='w-full sm:w-auto' onClick={onClose}>
-                    Cancel
+                    {t('Cancel')}
                 </Button.Text>
                 <Button className='w-full sm:w-auto' onClick={() => form.handleSubmit()}>
-                    Create
+                    {t('Create')}
                 </Button>
             </Dialog.Footer>
         </>
@@ -154,10 +187,12 @@ function NewDirectoryForm({ model, onClose }: { model: FileManagerModel; onClose
 }
 
 export function NewDirectoryButton({ model }: { model: FileManagerModel }) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New folder</NewButton>}>
+        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New folder')}</NewButton>}>
             {({ open, onClose }) => (
-                <Dialog open={open} onClose={onClose} title='Create folder'>
+                <Dialog open={open} onClose={onClose} title={t('Create folder')}>
                     <NewDirectoryForm model={model} onClose={onClose} />
                 </Dialog>
             )}

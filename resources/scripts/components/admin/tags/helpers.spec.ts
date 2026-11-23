@@ -24,13 +24,13 @@ const premium = tag(2, 'Premium', 'premium');
 const minecraft = tag(3, 'Minecraft', 'minecraft');
 const tags = [srcds, premium];
 
-const unprocessable = (field: string, detail: string) =>
+const unprocessable = (field: string, detail: string, rule = '') =>
     new AxiosError('Unprocessable', '422', undefined, undefined, {
         status: 422,
         statusText: 'Unprocessable Content',
         headers: {},
         config: { headers: new AxiosHeaders() },
-        data: { errors: [{ code: 'ValidationException', detail, meta: { source_field: field, rule: '' } }] },
+        data: { errors: [{ code: 'ValidationException', detail, meta: { source_field: field, rule } }] },
     });
 
 describe('tagValueForName', () => {
@@ -70,15 +70,20 @@ describe('nodeAcceptsEgg', () => {
 });
 
 describe('tagCheckError', () => {
-    it('returns the tag check message for the field', () => {
-        const message = 'node-alpha only accepts eggs tagged Minecraft.';
+    it('returns the tag check message for the field, in any language', () => {
+        const message = 'node-alpha akzeptiert nur Eggs mit den Tags Minecraft.';
 
-        expect(tagCheckError(unprocessable('node_id', message), 'node_id')).toBe(message);
+        expect(tagCheckError(unprocessable('node_id', message, 'node_accepts_egg'), 'node_id')).toBe(message);
     });
 
     it('ignores other validation errors and other fields', () => {
-        expect(tagCheckError(unprocessable('node_id', 'The node id field is required.'), 'node_id')).toBeNull();
-        expect(tagCheckError(unprocessable('egg_id', 'n only accepts eggs tagged A.'), 'node_id')).toBeNull();
+        expect(
+            tagCheckError(unprocessable('node_id', 'The node id field is required.', 'required'), 'node_id')
+        ).toBeNull();
+        expect(tagCheckError(unprocessable('node_id', 'n only accepts eggs tagged A.'), 'node_id')).toBeNull();
+        expect(
+            tagCheckError(unprocessable('egg_id', 'n only accepts eggs tagged A.', 'node_accepts_egg'), 'node_id')
+        ).toBeNull();
         expect(tagCheckError(new Error('offline'), 'node_id')).toBeNull();
     });
 });

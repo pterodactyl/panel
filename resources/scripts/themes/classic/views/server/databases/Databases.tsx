@@ -23,8 +23,11 @@ import {
     Spinner,
     SpinnerOverlay,
     Table,
+    Translate,
     useAppForm,
+    useTranslation,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ServerDatabaseItem, ServerDatabasesModel, ViewProps } from '@/sdk/theme';
 
@@ -36,6 +39,7 @@ interface DatabaseDialogProps {
 }
 
 function CreateDatabaseDialog({ model, onClose }: { model: ServerDatabasesModel; onClose: () => void }) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { databaseName: '', connectionsFrom: '' },
         onSubmit: async ({ value }) => {
@@ -53,7 +57,7 @@ function CreateDatabaseDialog({ model, onClose }: { model: ServerDatabasesModel;
             {(isSubmitting) => (
                 <Dialog
                     open
-                    title='Create new database'
+                    title={t('Create new database')}
                     preventExternalClose={isSubmitting}
                     hideCloseIcon={isSubmitting}
                     onClose={() => {
@@ -71,8 +75,8 @@ function CreateDatabaseDialog({ model, onClose }: { model: ServerDatabasesModel;
                                 <field.TextField
                                     type='string'
                                     id='database_name'
-                                    label='Database Name'
-                                    description='A descriptive name for your database instance.'
+                                    label={t('Database Name')}
+                                    description={t('A descriptive name for your database instance.')}
                                 />
                             )}
                         </form.AppField>
@@ -85,19 +89,21 @@ function CreateDatabaseDialog({ model, onClose }: { model: ServerDatabasesModel;
                                     <field.TextField
                                         type='string'
                                         id='connections_from'
-                                        label='Connections From'
-                                        description='Where connections should be allowed from. Leave blank to allow connections from anywhere.'
+                                        label={t('Connections From')}
+                                        description={t(
+                                            'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
+                                        )}
                                     />
                                 )}
                             </form.AppField>
                         </div>
                         <div className='flex flex-wrap justify-end mt-6'>
                             <Button type='button' isSecondary className='w-full sm:w-auto sm:mr-2' onClick={onClose}>
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <form.AppForm>
                                 <form.SubmitButton className='w-full mt-4 sm:w-auto sm:mt-0'>
-                                    Create Database
+                                    {t('Create Database')}
                                 </form.SubmitButton>
                             </form.AppForm>
                         </div>
@@ -108,13 +114,18 @@ function CreateDatabaseDialog({ model, onClose }: { model: ServerDatabasesModel;
     );
 }
 
-const CreateDatabaseButton = ({ model }: { model: ServerDatabasesModel }) => (
-    <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New database</NewButton>}>
-        {({ open, onClose }) => open && <CreateDatabaseDialog model={model} onClose={onClose} />}
-    </Dialog.Trigger>
-);
+function CreateDatabaseButton({ model }: { model: ServerDatabasesModel }) {
+    const { t } = useTranslation();
+
+    return (
+        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New database')}</NewButton>}>
+            {({ open, onClose }) => open && <CreateDatabaseDialog model={model} onClose={onClose} />}
+        </Dialog.Trigger>
+    );
+}
 
 function DeleteDatabaseDialog({ model, database, open, onClose }: DatabaseDialogProps) {
+    const { t } = useTranslation();
     const form = useAppForm({
         defaultValues: { confirm: '' },
         onSubmit: async () => {
@@ -137,15 +148,18 @@ function DeleteDatabaseDialog({ model, database, open, onClose }: DatabaseDialog
             {(isSubmitting) => (
                 <Dialog
                     open={open}
-                    title='Confirm database deletion'
+                    title={t('Confirm database deletion')}
                     preventExternalClose={isSubmitting}
                     hideCloseIcon={isSubmitting}
                     onClose={close}
                 >
                     <SpinnerOverlay visible={isSubmitting} />
                     <p className='text-sm'>
-                        Deleting a database is permanent. This will delete <strong>{database.name}</strong> and all
-                        associated data.
+                        <Translate
+                            i18nKey='Deleting a database is permanent. This will delete <bold>{{name}}</bold> and all associated data.'
+                            values={{ name: database.name }}
+                            components={{ bold: <strong /> }}
+                        />
                     </p>
                     <Form form={form} className='m-0 mt-6'>
                         <form.AppField
@@ -154,24 +168,24 @@ function DeleteDatabaseDialog({ model, database, open, onClose }: DatabaseDialog
                                 onChange: ({ value }) =>
                                     value === database.name || value === database.shortName
                                         ? undefined
-                                        : 'The database name must be provided.',
+                                        : t('The database name must be provided.'),
                             }}
                         >
                             {(field) => (
                                 <field.TextField
                                     type='text'
                                     id='confirm_name'
-                                    label='Confirm Database Name'
-                                    description='Enter the database name to confirm deletion.'
+                                    label={t('Confirm Database Name')}
+                                    description={t('Enter the database name to confirm deletion.')}
                                 />
                             )}
                         </form.AppField>
                         <div className='mt-6 text-right'>
                             <Button type='button' isSecondary className='mr-2' onClick={close}>
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <form.AppForm>
-                                <form.SubmitButton color='red'>Delete Database</form.SubmitButton>
+                                <form.SubmitButton color='red'>{t('Delete Database')}</form.SubmitButton>
                             </form.AppForm>
                         </div>
                     </Form>
@@ -182,32 +196,34 @@ function DeleteDatabaseDialog({ model, database, open, onClose }: DatabaseDialog
 }
 
 function ConnectionDialog({ model, database, open, onClose }: DatabaseDialogProps) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog open={open} title='Database connection details' onClose={onClose}>
+        <Dialog open={open} title={t('Database connection details')} onClose={onClose}>
             <div>
-                <Label>Endpoint</Label>
+                <Label>{t('Endpoint')}</Label>
                 <CopyOnClick text={database.endpoint}>
                     <Input type='text' readOnly value={database.endpoint} />
                 </CopyOnClick>
             </div>
             <div className='mt-6'>
-                <Label>Connections from</Label>
+                <Label>{t('Connections from')}</Label>
                 <Input type='text' readOnly value={database.connectionsFrom} />
             </div>
             <div className='mt-6'>
-                <Label>Username</Label>
+                <Label>{t('Username')}</Label>
                 <CopyOnClick text={database.username}>
                     <Input type='text' readOnly value={database.username} />
                 </CopyOnClick>
             </div>
             {model.permissions.viewPassword && (
                 <div className='mt-6'>
-                    <Label>Password</Label>
-                    <SecretInput value={database.password} label='Password' />
+                    <Label>{t('Password')}</Label>
+                    <SecretInput value={database.password} label={t('Password')} />
                 </div>
             )}
             <div className='mt-6'>
-                <Label>JDBC Connection String</Label>
+                <Label>{t('JDBC Connection String')}</Label>
                 <CopyOnClick text={database.jdbc} showInNotification={false}>
                     <Input type='text' readOnly value={database.jdbc} />
                 </CopyOnClick>
@@ -221,11 +237,11 @@ function ConnectionDialog({ model, database, open, onClose }: DatabaseDialogProp
                         onClick={() => void model.actions.rotatePassword(database.id).catch(() => {})}
                         isLoading={model.rotating.includes(database.id)}
                     >
-                        Rotate Password
+                        {t('Rotate Password')}
                     </Button>
                 )}
                 <Button isSecondary onClick={onClose}>
-                    Close
+                    {t('Close')}
                 </Button>
             </div>
         </Dialog>
@@ -233,14 +249,16 @@ function ConnectionDialog({ model, database, open, onClose }: DatabaseDialogProp
 }
 
 function DatabaseActions({ model, database }: { model: ServerDatabasesModel; database: ServerDatabaseItem }) {
+    const { t } = useTranslation();
+
     return (
         <RowActions>
             <Dialog.Trigger
                 trigger={({ onClick }) => (
                     <RowActionButton
                         icon={Eye}
-                        label='Connection details'
-                        aria-label={`View ${database.name} connection details`}
+                        label={t('Connection details')}
+                        aria-label={t('View {{name}} connection details', { name: database.name })}
                         onClick={onClick}
                     />
                 )}
@@ -251,7 +269,9 @@ function DatabaseActions({ model, database }: { model: ServerDatabasesModel; dat
             </Dialog.Trigger>
             {model.permissions.delete && (
                 <Dialog.Trigger
-                    trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${database.name}`} onClick={onClick} />}
+                    trigger={({ onClick }) => (
+                        <DeleteAction aria-label={t('Delete {{name}}', { name: database.name })} onClick={onClick} />
+                    )}
                 >
                     {({ open, onClose }) => (
                         <DeleteDatabaseDialog model={model} database={database} open={open} onClose={onClose} />
@@ -262,11 +282,11 @@ function DatabaseActions({ model, database }: { model: ServerDatabasesModel; dat
     );
 }
 
-function databaseColumns(model: ServerDatabasesModel): TableColumn<ServerDatabaseItem>[] {
+function databaseColumns(model: ServerDatabasesModel, t: Translation['t']): TableColumn<ServerDatabaseItem>[] {
     return [
         {
             id: 'name',
-            label: 'Database',
+            label: t('Database'),
             sortValue: (database) => database.name,
             cell: (database) => (
                 <CopyOnClick text={database.name}>
@@ -276,7 +296,7 @@ function databaseColumns(model: ServerDatabasesModel): TableColumn<ServerDatabas
         },
         {
             id: 'endpoint',
-            label: 'Endpoint',
+            label: t('Endpoint'),
             sortValue: (database) => database.endpoint,
             cell: (database) => (
                 <CopyOnClick text={database.endpoint}>
@@ -288,7 +308,7 @@ function databaseColumns(model: ServerDatabasesModel): TableColumn<ServerDatabas
         },
         {
             id: 'connections_from',
-            label: 'Connections from',
+            label: t('Connections from'),
             sortValue: (database) => database.connectionsFrom,
             cell: (database) => database.connectionsFrom,
             headerClassName: 'hidden lg:table-cell',
@@ -296,7 +316,7 @@ function databaseColumns(model: ServerDatabasesModel): TableColumn<ServerDatabas
         },
         {
             id: 'username',
-            label: 'Username',
+            label: t('Username'),
             sortValue: (database) => database.username,
             cell: (database) => (
                 <CopyOnClick text={database.username}>
@@ -310,33 +330,41 @@ function databaseColumns(model: ServerDatabasesModel): TableColumn<ServerDatabas
     ];
 }
 
-const EmptyState = ({ model }: { model: ServerDatabasesModel }) => (
-    <Empty size='compact'>
-        <EmptyHeader>
-            <EmptyMedia variant='icon'>
-                <Database />
-            </EmptyMedia>
-            <EmptyTitle>No databases</EmptyTitle>
-            <EmptyDescription>
-                {model.limit > 0
-                    ? "This server doesn't have any databases yet."
-                    : "Databases can't be created because this server's database limit is 0."}
-            </EmptyDescription>
-        </EmptyHeader>
-        {model.canCreate && (
-            <EmptyContent>
-                <CreateDatabaseButton model={model} />
-            </EmptyContent>
-        )}
-    </Empty>
-);
+function EmptyState({ model }: { model: ServerDatabasesModel }) {
+    const { t } = useTranslation();
+
+    return (
+        <Empty size='compact'>
+            <EmptyHeader>
+                <EmptyMedia variant='icon'>
+                    <Database />
+                </EmptyMedia>
+                <EmptyTitle>{t('No databases')}</EmptyTitle>
+                <EmptyDescription>
+                    {model.limit > 0
+                        ? t("This server doesn't have any databases yet.")
+                        : t("Databases can't be created because this server's database limit is 0.")}
+                </EmptyDescription>
+            </EmptyHeader>
+            {model.canCreate && (
+                <EmptyContent>
+                    <CreateDatabaseButton model={model} />
+                </EmptyContent>
+            )}
+        </Empty>
+    );
+}
 
 export default function Databases({ model, className }: ViewProps<'server.databases'>) {
-    const columns = useMemo(() => databaseColumns(model), [model]);
+    const { t } = useTranslation();
+    const columns = useMemo(() => databaseColumns(model, t), [model, t]);
     const count = model.databases.length;
     const usage =
         model.permissions.create && model.limit > 0 && count > 0
-            ? `${count} of ${model.limit} databases have been allocated to this server.`
+            ? t('{{allocated}} of {{limit}} databases have been allocated to this server.', {
+                  allocated: count,
+                  limit: model.limit,
+              })
             : null;
 
     if (model.loading) {

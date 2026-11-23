@@ -5,6 +5,7 @@ import { useLogin, useLoginCheckpoint } from '@/api/auth/queries';
 import { isString } from '@/lib/objects';
 import { parseRedirectSearch } from '@/router/redirect';
 import { useRouteSlotData } from '@/router/routeSlots';
+import { useTranslation } from '@/sdk/localization';
 import { useOpenLoginCheckpoint } from '@/sdk/navigation';
 import { boundField, fixtureField } from '../forms';
 import { implementViews } from '../registry';
@@ -17,6 +18,7 @@ const required = (message: string) => ({
 
 function useLoginFormModel(): LoginFormModel {
     const { redirect } = parseRedirectSearch(useSearch({ strict: false }));
+    const { t } = useTranslation();
     const openCheckpoint = useOpenLoginCheckpoint();
     const route = useRouteSlotData();
     const login = useLogin();
@@ -50,9 +52,13 @@ function useLoginFormModel(): LoginFormModel {
     const username = useField({
         form,
         name: 'username',
-        validators: required('A username or email must be provided.'),
+        validators: required(t('A username or email must be provided.')),
     });
-    const password = useField({ form, name: 'password', validators: required('Please enter your account password.') });
+    const password = useField({
+        form,
+        name: 'password',
+        validators: required(t('Please enter your account password.')),
+    });
     const canSubmit = useStore(form.store, (state) => state.canSubmit);
     const submitting = useStore(form.store, (state) => state.isSubmitting) || login.isPending;
 

@@ -2,6 +2,7 @@ import { createElement, useCallback, useMemo, useRef, type ComponentType, type R
 import { toast } from 'sonner';
 import { useSiteSettings } from '@/api/settings/queries';
 import InvisibleRecaptcha, { type InvisibleRecaptchaHandle } from '@/components/elements/InvisibleRecaptcha';
+import { useTranslation } from '@/sdk/localization';
 
 function captchaLeaf(ref: RefObject<InvisibleRecaptchaHandle | null>, siteKey: string): ComponentType {
     return function Captcha() {
@@ -18,6 +19,7 @@ interface AuthCaptcha {
 
 export function useCaptcha(): AuthCaptcha {
     const ref = useRef<InvisibleRecaptchaHandle>(null);
+    const { t } = useTranslation();
     const { enabled, siteKey } = useSiteSettings().recaptcha;
     const Captcha = useMemo(() => (enabled ? captchaLeaf(ref, siteKey || '') : null), [enabled, siteKey]);
     const token = useCallback(async () => {
@@ -28,13 +30,13 @@ export function useCaptcha(): AuthCaptcha {
         const value = (await ref.current?.execute()) ?? '';
 
         if (!value) {
-            toast.error('Captcha verification failed, please try again.');
+            toast.error(t('Captcha verification failed, please try again.'));
 
             return null;
         }
 
         return value;
-    }, [enabled]);
+    }, [enabled, t]);
 
     return { Captcha, token };
 }

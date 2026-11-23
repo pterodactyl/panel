@@ -22,7 +22,7 @@ class AuthenticateApplicationUser
     public function handle(Request $request, Closure $next): mixed
     {
         $user = $request->user();
-        throw_if(! $user || ! $user->root_admin, AccessDeniedHttpException::class, 'This account does not have permission to access the API.');
+        throw_if(! $user || ! $user->root_admin, AccessDeniedHttpException::class, __('exceptions.api.account_forbidden'));
 
         return $next($request);
     }

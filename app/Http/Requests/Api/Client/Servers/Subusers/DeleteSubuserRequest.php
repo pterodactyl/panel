@@ -26,7 +26,7 @@ class DeleteSubuserRequest extends SubuserRequest
 
         $exceeding = array_diff($this->subuser()->permissions, $this->requesterPermissions(), [Permissions::WebsocketConnect->value]);
 
-        throw_if(count($exceeding) > 0, HttpForbiddenException::class, 'Cannot remove a subuser that has permissions your account does not actively possess.');
+        throw_if(count($exceeding) > 0, HttpForbiddenException::class, __('exceptions.subusers.remove_exceeding_permissions'));
 
         return true;
     }

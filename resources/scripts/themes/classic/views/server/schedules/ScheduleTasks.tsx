@@ -16,29 +16,32 @@ import {
     RowActions,
     SpinnerOverlay,
     Table,
+    useTranslation,
     type ScheduleTask,
     type ScheduleTasksModel,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 import NewTaskButton from './NewTaskButton';
 import TaskDialog from './TaskDialog';
 
-const actionDetails = (action: string): [string, LucideIcon] => {
+const actionDetails = (action: string, t: Translation['t']): [string, LucideIcon] => {
     switch (action) {
         case 'command':
-            return ['Send Command', Code];
+            return [t('Send Command'), Code];
         case 'power':
-            return ['Send Power Action', ToggleRight];
+            return [t('Send Power Action'), ToggleRight];
         case 'backup':
-            return ['Create Backup', FileArchive];
+            return [t('Create Backup'), FileArchive];
         default:
-            return ['Unknown Action', Code];
+            return [t('Unknown Action'), Code];
     }
 };
 
 function TaskIdentity({ task }: { task: ScheduleTask }) {
-    const [title, icon] = actionDetails(task.action);
+    const { t } = useTranslation();
+    const [title, icon] = actionDetails(task.action, t);
 
     return (
         <div className='flex min-w-48 items-start gap-3'>
@@ -56,14 +59,20 @@ function TaskIdentity({ task }: { task: ScheduleTask }) {
 }
 
 function TaskActions({ model, task }: { model: ScheduleTasksModel; task: ScheduleTask }) {
-    const name = `task ${task.sequence} (${actionDetails(task.action)[0]})`;
+    const { t } = useTranslation();
+    const values = { sequence: task.sequence, action: actionDetails(task.action, t)[0] };
 
     return (
         <RowActions>
             {model.canUpdate && (
                 <>
                     <Dialog.Trigger
-                        trigger={({ onClick }) => <EditAction aria-label={`Edit ${name}`} onClick={onClick} />}
+                        trigger={({ onClick }) => (
+                            <EditAction
+                                aria-label={t('Edit task {{sequence}} ({{action}})', values)}
+                                onClick={onClick}
+                            />
+                        )}
                     >
                         {(dialog) => (
                             <TaskDialog
@@ -75,16 +84,21 @@ function TaskActions({ model, task }: { model: ScheduleTasksModel; task: Schedul
                         )}
                     </Dialog.Trigger>
                     <Dialog.ConfirmTrigger
-                        title='Confirm task deletion'
-                        confirm='Delete Task'
+                        title={t('Confirm task deletion')}
+                        confirm={t('Delete Task')}
                         onConfirmed={async (_event, close) => {
                             if (await model.actions.remove(task.id)) {
                                 close();
                             }
                         }}
-                        trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${name}`} onClick={onClick} />}
+                        trigger={({ onClick }) => (
+                            <DeleteAction
+                                aria-label={t('Delete task {{sequence}} ({{action}})', values)}
+                                onClick={onClick}
+                            />
+                        )}
                     >
-                        Are you sure you want to delete this task? This action cannot be undone.
+                        {t('Are you sure you want to delete this task? This action cannot be undone.')}
                     </Dialog.ConfirmTrigger>
                 </>
             )}
@@ -92,23 +106,23 @@ function TaskActions({ model, task }: { model: ScheduleTasksModel; task: Schedul
     );
 }
 
-function columns(model: ScheduleTasksModel): TableColumn<ScheduleTask>[] {
+function columns(model: ScheduleTasksModel, t: Translation['t']): TableColumn<ScheduleTask>[] {
     return [
         {
             id: 'action',
-            label: 'Task',
-            sortValue: (task) => actionDetails(task.action)[0],
+            label: t('Task'),
+            sortValue: (task) => actionDetails(task.action, t)[0],
             cell: (task) => <TaskIdentity task={task} />,
         },
         {
             id: 'delay',
-            label: 'Delay',
+            label: t('Delay'),
             sortValue: (task) => task.timeOffset,
             cell: (task) =>
                 task.sequence > 1 && task.timeOffset > 0 ? (
                     <span className='inline-flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground'>
                         <Icon icon={Clock} className='h-3.5 w-3.5' />
-                        {task.timeOffset}s later
+                        {t('{{seconds}}s later', { seconds: task.timeOffset })}
                     </span>
                 ) : (
                     '-'
@@ -118,15 +132,15 @@ function columns(model: ScheduleTasksModel): TableColumn<ScheduleTask>[] {
         },
         {
             id: 'continue_on_failure',
-            label: 'Failure behavior',
+            label: t('Failure behavior'),
             cell: (task) =>
                 task.continueOnFailure ? (
                     <Badge tone='warning' className='inline-flex items-center gap-1.5 whitespace-nowrap rounded-full'>
                         <Icon icon={ArrowDownCircle} className='h-3.5 w-3.5' />
-                        Continues
+                        {t('Continues')}
                     </Badge>
                 ) : (
-                    <span className='text-xs text-muted-foreground'>Stops</span>
+                    <span className='text-xs text-muted-foreground'>{t('Stops')}</span>
                 ),
             headerClassName: 'hidden lg:table-cell w-36',
             cellClassName: 'hidden lg:table-cell w-36',
@@ -136,7 +150,8 @@ function columns(model: ScheduleTasksModel): TableColumn<ScheduleTask>[] {
 }
 
 export default function ScheduleTasks({ model, className }: ViewProps<'server.schedule.tasks'>) {
-    const tableColumns = useMemo(() => columns(model), [model]);
+    const { t } = useTranslation();
+    const tableColumns = useMemo(() => columns(model, t), [model, t]);
 
     return (
         <>
@@ -152,9 +167,9 @@ export default function ScheduleTasks({ model, className }: ViewProps<'server.sc
                             <EmptyMedia variant='icon'>
                                 <ListTodo />
                             </EmptyMedia>
-                            <EmptyTitle>No tasks</EmptyTitle>
+                            <EmptyTitle>{t('No tasks')}</EmptyTitle>
                             <EmptyDescription>
-                                Add a task to tell this schedule what to do when it runs.
+                                {t('Add a task to tell this schedule what to do when it runs.')}
                             </EmptyDescription>
                         </EmptyHeader>
                         {model.canUpdate && (

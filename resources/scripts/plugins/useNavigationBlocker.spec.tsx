@@ -10,7 +10,7 @@ import {
     type RouterHistory,
 } from '@tanstack/react-router';
 import { afterEach, expect, it, vi } from 'vitest';
-import { UNSAVED_CHANGES_MESSAGE, useNavigationBlocker, type NavigationBlockerOptions } from './useNavigationBlocker';
+import { unsavedChangesMessage, useNavigationBlocker, type NavigationBlockerOptions } from './useNavigationBlocker';
 
 afterEach(() => {
     cleanup();
@@ -80,7 +80,7 @@ it('guards the back button and reads a lazy condition at navigation time', async
 
     dirty = true;
     window.history.back();
-    await waitFor(() => expect(confirm).toHaveBeenCalledWith(UNSAVED_CHANGES_MESSAGE));
+    await waitFor(() => expect(confirm).toHaveBeenCalledWith(unsavedChangesMessage()));
     await waitFor(() => expect(window.location.pathname).toBe('/edit/one'));
     expect(screen.getByText('Editor')).toBeVisible();
 

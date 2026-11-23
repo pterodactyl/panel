@@ -26,6 +26,6 @@ class Username implements ValidationRule
             return;
         }
 
-        $fail('The :attribute must start and end with alpha-numeric characters and contain only letters, numbers, dashes, underscores, and periods.');
+        $fail(__('validation.internal.username'));
     }
 }

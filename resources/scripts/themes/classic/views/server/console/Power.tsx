@@ -1,7 +1,8 @@
-import { Button, Dialog } from '@/sdk';
+import { Button, Dialog, useTranslation } from '@/sdk';
 import { Slot, type ViewProps } from '@/sdk/theme';
 
 export default function Power({ model, className }: ViewProps<'server.power'>) {
+    const { t } = useTranslation();
     const { permissions, enabled, actions } = model;
 
     return (
@@ -11,12 +12,12 @@ export default function Power({ model, className }: ViewProps<'server.power'>) {
                 <div className='flex sm:justify-end space-x-2'>
                     {permissions.start && (
                         <Button className='flex-1' disabled={!enabled.start} onClick={actions.start}>
-                            Start
+                            {t('Start')}
                         </Button>
                     )}
                     {permissions.restart && (
                         <Button.Text className='flex-1' disabled={!enabled.restart} onClick={actions.restart}>
-                            Restart
+                            {t('Restart')}
                         </Button.Text>
                     )}
                     {permissions.stop &&
@@ -24,11 +25,11 @@ export default function Power({ model, className }: ViewProps<'server.power'>) {
                             <Dialog.ConfirmTrigger
                                 key='killable'
                                 hideCloseIcon
-                                title='Forcibly Stop Process'
-                                confirm='Continue'
+                                title={t('Forcibly Stop Process')}
+                                confirm={t('Continue')}
                                 trigger={({ onClick }) => (
                                     <Button.Danger className='flex-1' disabled={!enabled.kill} onClick={onClick}>
-                                        Kill
+                                        {t('Kill')}
                                     </Button.Danger>
                                 )}
                                 onConfirmed={(_event, close) => {
@@ -36,7 +37,7 @@ export default function Power({ model, className }: ViewProps<'server.power'>) {
                                     actions.kill();
                                 }}
                             >
-                                Forcibly stopping a server can lead to data corruption.
+                                {t('Forcibly stopping a server can lead to data corruption.')}
                             </Dialog.ConfirmTrigger>
                         ) : (
                             <Button.Danger
@@ -45,7 +46,7 @@ export default function Power({ model, className }: ViewProps<'server.power'>) {
                                 disabled={!enabled.stop}
                                 onClick={actions.stop}
                             >
-                                Stop
+                                {t('Stop')}
                             </Button.Danger>
                         ))}
                 </div>

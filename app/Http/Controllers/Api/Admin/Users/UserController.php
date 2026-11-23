@@ -183,7 +183,7 @@ class UserController extends AdminApiController
     public function destroy(DeleteUserRequest $request, DeletesUsers $users, User $user): Response
     {
         if ($request->user()->is($user)) {
-            throw new DisplayException(__('admin/user.exceptions.delete_self'));
+            throw new DisplayException(__('exceptions.users.delete_self'));
         }
 
         $users->delete($user);

@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '@/components/elements/Icon';
 import { TriangleAlert } from 'lucide-react';
+import Translate from '@/components/elements/Translate';
 
 type ResetKey = string | number | boolean | null | undefined;
 
@@ -57,10 +58,10 @@ class ErrorBoundary extends React.Component<Props, State> {
                 <div role='alert' className='flex items-center bg-muted rounded-sm p-3 text-destructive'>
                     <Icon icon={TriangleAlert} className='h-4 w-auto mr-2' />
                     <p className='text-sm text-foreground'>
-                        An error was encountered by the application while rendering this view. Try refreshing the page.
+                        <Translate i18nKey='An error was encountered by the application while rendering this view. Try refreshing the page.' />
                     </p>
                     <button type='button' className={retryButtonClass} onClick={this.retry}>
-                        Retry
+                        <Translate i18nKey='Retry' />
                     </button>
                 </div>
             </div>

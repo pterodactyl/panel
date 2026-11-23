@@ -721,6 +721,20 @@ A few models hold an engine component: `model.Terminal` of `server.terminal` dra
 canvas, `model.Editor` of `server.files.editor` is the code editor, and `page.auth.login` carries `Captcha`.
 Give them a sized box and colour them with the [`--terminal-*` and `--editor-*` tokens](#console).
 
+### Text and translations
+
+Models already hold translated text (validation messages, labels, toasts). Text a view writes itself goes
+through `useTranslation()` from `@/sdk`, keyed by its English, so language packs translate it:
+`const { t } = useTranslation();` then `t('Create Backup')` or `t('Delete {{name}}?', { name })`. For a
+sentence with markup inside it, use `<Translate i18nKey='Delete <bold>{{name}}</bold>?' values={{ name }}
+components={{ bold: <strong /> }} />`. Views ejected from classic keep their `t()` calls, so they stay
+translated as long as their English is unchanged.
+
+Text your theme adds is listed in its own `resources/lang/en.json`, written by the panel's extractor:
+`node <panel>/scripts/extract-translations.mjs --src src --out resources/lang/en.json`. Ship translations
+as `resources/lang/<locale>.json`; they join the panel's catalogue, and a language pack can translate them
+too. Dates follow the language when formatted with localized tokens, such as `formatDate(date, 'lll')`.
+
 ### `Default`
 
 `<Default />` with no props renders the layer below as it would have rendered, so wrapping it adds a

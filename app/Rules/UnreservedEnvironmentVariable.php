@@ -17,7 +17,7 @@ class UnreservedEnvironmentVariable implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (is_string($value) && in_array(mb_strtoupper($value), explode(',', EggVariable::RESERVED_ENV_NAMES), true)) {
-            $fail(trans('exceptions.service.variables.reserved_name', ['name' => $value]));
+            $fail(__('exceptions.egg.variables.reserved_name', ['name' => $value]));
         }
     }
 

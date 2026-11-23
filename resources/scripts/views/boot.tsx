@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import i18next from 'i18next';
 import { getBootstrapTheme, getBootstrapUser } from '@/bootstrap';
 import { withImportTimeout } from '@/extensions/loader';
 import { failExtensionLoad } from '@/extensions/registry';
@@ -61,12 +62,17 @@ export function ThemeFailureNotice() {
             return;
         }
 
-        toast.error(`The "${failure.id}" theme could not load, so this page uses the classic theme.`, {
-            id: 'theme-failure',
-            description: failure.message,
-            duration: Infinity,
-            closeButton: true,
-        });
+        toast.error(
+            i18next.t('The "{{theme}}" theme could not load, so this page uses the classic theme.', {
+                theme: failure.id,
+            }),
+            {
+                id: 'theme-failure',
+                description: failure.message,
+                duration: Infinity,
+                closeButton: true,
+            }
+        );
     }, []);
 
     return null;

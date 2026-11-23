@@ -17,17 +17,23 @@ import {
     RowActions,
     SpinnerOverlay,
     Table,
+    useTranslation,
     type SubuserListModel,
     type SubuserSummary,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import { View, type ViewProps } from '@/sdk/theme';
 
-const NewUserButton = ({ model }: { model: SubuserListModel }) => (
-    <NewLinkButton to={`/server/${model.serverId}/users/new`}>New user</NewLinkButton>
-);
+function NewUserButton({ model }: { model: SubuserListModel }) {
+    const { t } = useTranslation();
+
+    return <NewLinkButton to={`/server/${model.serverId}/users/new`}>{t('New user')}</NewLinkButton>;
+}
 
 function SubuserActions({ model, subuser }: { model: SubuserListModel; subuser: SubuserSummary }) {
+    const { t } = useTranslation();
+
     if (subuser.self) {
         return null;
     }
@@ -36,7 +42,9 @@ function SubuserActions({ model, subuser }: { model: SubuserListModel; subuser: 
         <RowActions>
             {model.canUpdate && (
                 <Dialog.Trigger
-                    trigger={({ onClick }) => <EditAction aria-label={`Edit ${subuser.email}`} onClick={onClick} />}
+                    trigger={({ onClick }) => (
+                        <EditAction aria-label={t('Edit {{name}}', { name: subuser.email })} onClick={onClick} />
+                    )}
                 >
                     {({ open, onClose }) =>
                         open && <View name='server.subuserForm' subuser={subuser} onClose={onClose} />
@@ -45,29 +53,32 @@ function SubuserActions({ model, subuser }: { model: SubuserListModel; subuser: 
             )}
             {model.canDelete && (
                 <Dialog.ConfirmTrigger
-                    title='Delete this subuser?'
-                    confirm='Yes, remove subuser'
+                    title={t('Delete this subuser?')}
+                    confirm={t('Yes, remove subuser')}
                     preventExternalClose={model.deleting}
                     pending={model.deleting}
                     onConfirmed={(_event, close) => {
                         void model.remove(subuser.uuid).then(close);
                     }}
-                    trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${subuser.email}`} onClick={onClick} />}
+                    trigger={({ onClick }) => (
+                        <DeleteAction aria-label={t('Delete {{name}}', { name: subuser.email })} onClick={onClick} />
+                    )}
                 >
                     <SpinnerOverlay visible={model.deleting} />
-                    Are you sure you wish to remove this subuser? They will have all access to this server revoked
-                    immediately.
+                    {t(
+                        'Are you sure you wish to remove this subuser? They will have all access to this server revoked immediately.'
+                    )}
                 </Dialog.ConfirmTrigger>
             )}
         </RowActions>
     );
 }
 
-function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
+function columns(model: SubuserListModel, t: Translation['t']): TableColumn<SubuserSummary>[] {
     return [
         {
             id: 'email',
-            label: 'User',
+            label: t('User'),
             sortValue: (subuser) => subuser.email,
             cell: (subuser) => (
                 <div className='flex min-w-44 items-center gap-3'>
@@ -82,7 +93,7 @@ function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
         },
         {
             id: '2fa_enabled',
-            label: '2FA',
+            label: t('2FA'),
             sortValue: (subuser) => subuser.twoFactor,
             cell: (subuser) => (
                 <span className='inline-flex items-center gap-2 text-xs'>
@@ -90,7 +101,7 @@ function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
                         icon={subuser.twoFactor ? UserLock : LockOpen}
                         className={subuser.twoFactor ? 'text-success' : 'text-destructive'}
                     />
-                    {subuser.twoFactor ? 'Enabled' : 'Disabled'}
+                    {subuser.twoFactor ? t('Enabled') : t('Disabled')}
                 </span>
             ),
             headerClassName: 'hidden sm:table-cell w-28',
@@ -98,7 +109,7 @@ function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
         },
         {
             id: 'permissions',
-            label: 'Permissions',
+            label: t('Permissions'),
             sortValue: (subuser) => subuser.permissionCount,
             cell: (subuser) => String(subuser.permissionCount),
             headerClassName: 'hidden md:table-cell w-32',
@@ -109,7 +120,8 @@ function columns(model: SubuserListModel): TableColumn<SubuserSummary>[] {
 }
 
 export default function SubuserList({ model, className }: ViewProps<'server.subusers'>) {
-    const tableColumns = useMemo(() => columns(model), [model]);
+    const { t } = useTranslation();
+    const tableColumns = useMemo(() => columns(model, t), [model, t]);
 
     return (
         <div className={className}>
@@ -128,9 +140,9 @@ export default function SubuserList({ model, className }: ViewProps<'server.subu
                             <EmptyMedia variant='icon'>
                                 <Users />
                             </EmptyMedia>
-                            <EmptyTitle>No subusers</EmptyTitle>
+                            <EmptyTitle>{t('No subusers')}</EmptyTitle>
                             <EmptyDescription>
-                                Add users to give them access to this server with the permissions you choose.
+                                {t('Add users to give them access to this server with the permissions you choose.')}
                             </EmptyDescription>
                         </EmptyHeader>
                         {model.canCreate && (

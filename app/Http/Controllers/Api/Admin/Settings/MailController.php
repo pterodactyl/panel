@@ -40,7 +40,7 @@ class MailController extends AdminApiController
     #[ScribeResponse(self::SMTP_DRIVER_ERROR, status: 400, description: 'The panel is not configured to use SMTP mail.')]
     public function __invoke(UpdateMailSettingsRequest $request, Kernel $kernel): Response
     {
-        throw_if(config('mail.default') !== 'smtp', DisplayException::class, 'This feature is only available if SMTP is the selected email driver for the Panel.');
+        throw_if(config('mail.default') !== 'smtp', DisplayException::class, __('exceptions.mail.smtp_only'));
 
         $values = $request->normalize();
         if (Arr::get($values, 'mail:mailers:smtp:password') === '!e') {

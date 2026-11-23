@@ -7,6 +7,7 @@ import {
     PanelLink,
     Tooltip,
     Translate,
+    useTranslation,
     type ActivityEntry,
     type ActivityProperties,
     type TranslationValue,
@@ -47,6 +48,7 @@ const wrapProperties = (properties: ActivityProperties): TranslationValues =>
 
 export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
     const { actor } = entry;
+    const { t } = useTranslation();
 
     return (
         <div className='grid grid-cols-10 py-4 border-b-2 border-border last:rounded-b-sm last:border-0 group'>
@@ -58,8 +60,8 @@ export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
             <div className='col-span-10 sm:col-span-9 flex'>
                 <div className='flex-1 px-4 sm:px-0'>
                     <div className='flex items-center text-foreground'>
-                        <Tooltip placement='top' content={actor?.email || 'System User'}>
-                            <span>{actor?.username || 'System'}</span>
+                        <Tooltip placement='top' content={actor?.email || t('System User')}>
+                            <span>{actor?.username || t('System')}</span>
                         </Tooltip>
                         <span className='text-muted-foreground'>&nbsp;&mdash;&nbsp;</span>
                         <PanelLink
@@ -71,12 +73,12 @@ export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
                         </PanelLink>
                         <div className={cn(activityIconClass, 'group-hover:text-muted-foreground')}>
                             {entry.api && (
-                                <Tooltip placement='top' content='Using API Key'>
+                                <Tooltip placement='top' content={t('Using API Key')}>
                                     <Terminal />
                                 </Tooltip>
                             )}
                             {entry.sftp && (
-                                <Tooltip placement='top' content='Using SFTP'>
+                                <Tooltip placement='top' content={t('Using SFTP')}>
                                     <FolderOpen />
                                 </Tooltip>
                             )}
@@ -103,7 +105,7 @@ export default function ActivityLogEntry({ entry }: { entry: ActivityEntry }) {
                                 <span className='text-muted-foreground'>&nbsp;|&nbsp;</span>
                             </span>
                         )}
-                        <Tooltip placement='right' content={formatDate(entry.timestamp, 'MMM Do, YYYY H:mm:ss')}>
+                        <Tooltip placement='right' content={formatDate(entry.timestamp, 'll LTS')}>
                             <span>{fromNow(entry.timestamp)}</span>
                         </Tooltip>
                     </div>

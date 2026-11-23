@@ -1,4 +1,14 @@
-import { Badge, Button, cn, Dialog, formatDate, Spinner, SpinnerOverlay, type ScheduleSummary } from '@/sdk';
+import {
+    Badge,
+    Button,
+    cn,
+    Dialog,
+    formatDate,
+    Spinner,
+    SpinnerOverlay,
+    useTranslation,
+    type ScheduleSummary,
+} from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 import NewTaskButton from './NewTaskButton';
 import ScheduleCronRow from './ScheduleCronRow';
@@ -12,11 +22,13 @@ const CronBox = ({ title, value }: { title: string; value: string }) => (
 );
 
 function StatusBadge({ schedule }: { schedule: ScheduleSummary }) {
+    const { t } = useTranslation();
+
     if (schedule.processing) {
         return (
             <Badge className='ml-4 flex items-center rounded-full py-px uppercase'>
                 <Spinner />
-                Processing
+                {t('Processing')}
             </Badge>
         );
     }
@@ -26,16 +38,20 @@ function StatusBadge({ schedule }: { schedule: ScheduleSummary }) {
             tone={schedule.active ? 'success' : 'danger'}
             className={cn('ml-4 rounded-full py-px uppercase', schedule.active ? 'bg-success/90' : 'bg-destructive/90')}
         >
-            {schedule.active ? 'Active' : 'Inactive'}
+            {schedule.active ? t('Active') : t('Inactive')}
         </Badge>
     );
 }
 
-const RunTime = ({ at }: { at: string | null }) =>
-    at ? formatDate(at, 'MMM Do [at] h:mmA') : <span className='text-muted-foreground'>n/a</span>;
+function RunTime({ at }: { at: string | null }) {
+    const { t } = useTranslation();
+
+    return at ? formatDate(at, 'lll') : <span className='text-muted-foreground'>{t('n/a')}</span>;
+}
 
 /** The schedule's header, cron and actions; `children` (its tasks) render inside the box below the cron. */
 export default function ScheduleDetails({ model, className, children }: ViewProps<'server.schedule'>) {
+    const { t } = useTranslation();
     const { schedule, actions } = model;
 
     return (
@@ -49,10 +65,12 @@ export default function ScheduleDetails({ model, className, children }: ViewProp
                             <StatusBadge schedule={schedule} />
                         </h3>
                         <p className='mt-1 text-sm text-foreground'>
-                            Last run at:&nbsp;
+                            {t('Last run at:')}
+                            {'\u00a0'}
                             <RunTime at={schedule.lastRunAt} />
                             <span className='ml-4 pl-4 border-l-4 border-border py-px'>
-                                Next run at:&nbsp;
+                                {t('Next run at:')}
+                                {'\u00a0'}
                                 <RunTime at={schedule.nextRunAt} />
                             </span>
                         </p>
@@ -63,7 +81,7 @@ export default function ScheduleDetails({ model, className, children }: ViewProp
                                 <Dialog.Trigger
                                     trigger={({ onClick }) => (
                                         <Button.Text className='flex-1 mr-4' onClick={onClick}>
-                                            Edit
+                                            {t('Edit')}
                                         </Button.Text>
                                     )}
                                 >
@@ -82,19 +100,19 @@ export default function ScheduleDetails({ model, className, children }: ViewProp
                     </div>
                 </div>
                 <div className='hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4'>
-                    <CronBox title='Minute' value={schedule.cron.minute} />
-                    <CronBox title='Hour' value={schedule.cron.hour} />
-                    <CronBox title='Day (Month)' value={schedule.cron.dayOfMonth} />
-                    <CronBox title='Month' value={schedule.cron.month} />
-                    <CronBox title='Day (Week)' value={schedule.cron.dayOfWeek} />
+                    <CronBox title={t('Minute')} value={schedule.cron.minute} />
+                    <CronBox title={t('Hour')} value={schedule.cron.hour} />
+                    <CronBox title={t('Day (Month)')} value={schedule.cron.dayOfMonth} />
+                    <CronBox title={t('Month')} value={schedule.cron.month} />
+                    <CronBox title={t('Day (Week)')} value={schedule.cron.dayOfWeek} />
                 </div>
                 {children}
             </div>
             <div className='mt-6 flex sm:justify-end'>
                 {model.canDelete && (
                     <Dialog.ConfirmTrigger
-                        title='Delete Schedule'
-                        confirm='Delete'
+                        title={t('Delete Schedule')}
+                        confirm={t('Delete')}
                         onConfirmed={async (_event, close) => {
                             await actions.remove();
                             close();
@@ -105,12 +123,12 @@ export default function ScheduleDetails({ model, className, children }: ViewProp
                                 className='flex-1 sm:flex-none mr-4 border-transparent'
                                 onClick={onClick}
                             >
-                                Delete
+                                {t('Delete')}
                             </Button.Danger>
                         )}
                     >
                         <SpinnerOverlay visible={model.deleting} />
-                        All tasks will be removed and any running processes will be terminated.
+                        {t('All tasks will be removed and any running processes will be terminated.')}
                     </Dialog.ConfirmTrigger>
                 )}
                 {model.taskCount > 0 && model.canUpdate && (
@@ -122,7 +140,7 @@ export default function ScheduleDetails({ model, className, children }: ViewProp
                             disabled={schedule.processing || model.running}
                             onClick={() => void actions.run()}
                         >
-                            Run Now
+                            {t('Run Now')}
                         </Button>
                     </>
                 )}

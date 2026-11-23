@@ -1,15 +1,17 @@
 import { Copy } from 'lucide-react';
-import { Button, CopyOnClick, Icon, TitledGreyBox } from '@/sdk';
+import { Button, CopyOnClick, Icon, TitledGreyBox, useTranslation } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 export default function StartupCommand({ model, className }: ViewProps<'server.startup.command'>) {
+    const { t } = useTranslation();
+
     return (
         <TitledGreyBox
-            title='Startup Command'
+            title={t('Startup Command')}
             actions={
                 model.command && (
                     <CopyOnClick text={model.command}>
-                        <Button.Text type='button' size='xsmall' isSecondary aria-label='Copy startup command'>
+                        <Button.Text type='button' size='xsmall' isSecondary aria-label={t('Copy startup command')}>
                             <Icon icon={Copy} className='h-3.5 w-3.5' />
                         </Button.Text>
                     </CopyOnClick>

@@ -1,9 +1,11 @@
-import { ServerContentBlock } from '@/sdk';
+import { ServerContentBlock, useTranslation } from '@/sdk';
 import { View, type ViewProps } from '@/sdk/theme';
 
 export default function SettingsPage({ className }: ViewProps<'page.server.settings'>) {
+    const { t } = useTranslation();
+
     return (
-        <ServerContentBlock title='Settings' className={className}>
+        <ServerContentBlock title={t('Settings')} className={className}>
             <div className='md:flex'>
                 <div className='w-full md:flex-1 md:mr-10'>
                     <View name='server.sftp' className='mb-6 md:mb-10' />

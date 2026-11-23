@@ -17,7 +17,7 @@ final readonly class UpdateScheduleTask implements UpdatesScheduleTasks
     public function update(Schedule $schedule, Task $task, array $input): Task
     {
         $validated = Validator::make($input, CreateScheduleTask::rules(($input['action'] ?? null) === Task::ACTION_POWER))->safe();
-        throw_if($validated['action'] === Task::ACTION_BACKUP && $schedule->server->backup_limit === 0, HttpForbiddenException::class, "A backup task cannot be created when the server's backup limit is set to 0.");
+        throw_if($validated['action'] === Task::ACTION_BACKUP && $schedule->server->backup_limit === 0, HttpForbiddenException::class, __('exceptions.schedules.backup_limit_zero'));
 
         $attributes = [
             'action' => $validated['action'],

@@ -1,4 +1,5 @@
 import { useIsMutating, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { useUpdateCurrentServer } from '@/api/server/queries';
@@ -48,9 +49,9 @@ export const useSetSelectedDockerImage = (uuid: string) => {
                 ...server,
                 attributes: { ...server.attributes, docker_image: variables.body.docker_image },
             }));
-            toast.success('Docker image updated');
+            toast.success(i18next.t('Docker image updated'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update Docker image'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update Docker image')),
     });
 };
 
@@ -98,6 +99,6 @@ export const useUpdateStartupVariable = (uuid: string) => {
                 }
             );
         },
-        onError: (error) => notifyHttpError(error, 'Unable to update startup variable'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to update startup variable')),
     });
 };

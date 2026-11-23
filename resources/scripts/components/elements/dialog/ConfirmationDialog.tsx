@@ -3,6 +3,7 @@ import DialogComponent from './Dialog';
 import DialogFooter from './DialogFooter';
 import type { RenderDialogProps } from './types';
 import Button from '@/components/elements/Button';
+import { useTranslation } from '@/sdk/localization';
 
 type ConfirmationProps = Omit<RenderDialogProps, 'children'> & {
     children?: React.ReactNode;
@@ -13,7 +14,7 @@ type ConfirmationProps = Omit<RenderDialogProps, 'children'> & {
 };
 
 export default function ConfirmationDialog({
-    confirm = 'Okay',
+    confirm,
     pending = false,
     children,
     onConfirmed,
@@ -21,6 +22,7 @@ export default function ConfirmationDialog({
     hideCloseIcon,
     ...props
 }: ConfirmationProps) {
+    const { t } = useTranslation();
     // Blocks a second confirm until the caller has rendered its pending state.
     const confirmed = useRef(false);
 
@@ -39,7 +41,7 @@ export default function ConfirmationDialog({
             {children}
             <DialogFooter>
                 <Button.Text type='button' disabled={pending} onClick={props.onClose}>
-                    Cancel
+                    {t('Cancel')}
                 </Button.Text>
                 <Button.Danger
                     type='button'
@@ -51,7 +53,7 @@ export default function ConfirmationDialog({
                         }
                     }}
                 >
-                    {confirm}
+                    {confirm ?? t('Okay')}
                 </Button.Danger>
             </DialogFooter>
         </DialogComponent>

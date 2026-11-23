@@ -41,7 +41,7 @@ final readonly class DeployServerDatabase implements DeploysServerDatabases
         $validated = Validator::make($input, self::rules())->safe();
 
         return DB::transaction(function () use ($server, $validated): Database {
-            throw_if($server->databases()->lockForUpdate()->count() >= $server->database_limit, DisplayException::class, 'Cannot create additional databases on this server: limit has been reached.');
+            throw_if($server->databases()->lockForUpdate()->count() >= $server->database_limit, DisplayException::class, __('exceptions.databases.limit_reached'));
 
             $hosts = DatabaseHost::query()->get()->toBase();
             throw_if($hosts->isEmpty(), NoSuitableDatabaseHostException::class);

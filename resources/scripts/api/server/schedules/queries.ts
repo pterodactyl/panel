@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import i18next from 'i18next';
 import { toast } from 'sonner';
 
 import { removeListItems, upsertListItem } from '@/api/queryData';
@@ -232,9 +233,9 @@ export const useCreateServerSchedule = () => {
         ...clientCreateServerScheduleMutation(),
         onSuccess: async (schedule, { path }) => {
             await cacheServerSchedule(queryClient, path.server_uuid, schedule);
-            toast.success('Schedule created');
+            toast.success(i18next.t('Schedule created'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save schedule'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save schedule')),
     });
 };
 
@@ -245,9 +246,9 @@ export const useUpdateServerSchedule = () => {
         ...clientUpdateServerScheduleMutation(),
         onSuccess: async (schedule, { path }) => {
             await cacheServerSchedule(queryClient, path.server_uuid, schedule);
-            toast.success('Schedule saved');
+            toast.success(i18next.t('Schedule saved'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save schedule'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save schedule')),
     });
 };
 
@@ -261,9 +262,9 @@ export const useDeleteServerSchedule = () => {
                 queryKey: clientGetServerScheduleQueryKey(serverScheduleInput(path.server_uuid, path.schedule_id)),
             });
             await removeServerSchedule(queryClient, path.server_uuid, path.schedule_id);
-            toast.success('Schedule deleted');
+            toast.success(i18next.t('Schedule deleted'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete schedule'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete schedule')),
     });
 };
 
@@ -277,9 +278,9 @@ export const useTriggerServerScheduleExecution = (schedule: Schedule) => {
                 ...schedule,
                 attributes: { ...schedule.attributes, is_processing: true },
             });
-            toast.success('Schedule queued');
+            toast.success(i18next.t('Schedule queued'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to run schedule'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to run schedule')),
     });
 };
 
@@ -292,9 +293,9 @@ export const useCreateServerScheduleTask = (schedule: Schedule) => {
             await cacheServerSchedule(queryClient, path.server_uuid, schedule, (current) =>
                 cacheServerScheduleTask(current, task)
             );
-            toast.success('Task created');
+            toast.success(i18next.t('Task created'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save task'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save task')),
     });
 };
 
@@ -307,9 +308,9 @@ export const useUpdateServerScheduleTask = (schedule: Schedule) => {
             await cacheServerSchedule(queryClient, path.server_uuid, schedule, (current) =>
                 cacheServerScheduleTask(current, task)
             );
-            toast.success('Task saved');
+            toast.success(i18next.t('Task saved'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to save task'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to save task')),
     });
 };
 
@@ -322,8 +323,8 @@ export const useDeleteServerScheduleTask = (schedule: Schedule) => {
             await cacheServerSchedule(queryClient, path.server_uuid, schedule, (current) =>
                 removeServerScheduleTask(current, path.task_id)
             );
-            toast.success('Task deleted');
+            toast.success(i18next.t('Task deleted'));
         },
-        onError: (error) => notifyHttpError(error, 'Unable to delete task'),
+        onError: (error) => notifyHttpError(error, i18next.t('Unable to delete task')),
     });
 };

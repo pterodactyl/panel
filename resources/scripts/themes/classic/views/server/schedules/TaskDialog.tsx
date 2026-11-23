@@ -3,6 +3,7 @@ import {
     Dialog,
     Form,
     useAppForm,
+    useTranslation,
     type ScheduleTask,
     type ScheduleTaskAction,
     type ScheduleTaskForm,
@@ -19,6 +20,7 @@ interface Props {
 }
 
 function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>) {
+    const { t } = useTranslation();
     const [formError, setFormError] = useState<string | null>(null);
     const form = useAppForm({
         defaultValues: { ...config.values(task) },
@@ -55,7 +57,7 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
                     <form.AppField name='action'>
                         {(field) => (
                             <field.SelectField
-                                label='Action'
+                                label={t('Action')}
                                 options={[...config.actions]}
                                 onChange={(value) =>
                                     form.setFieldValue('payload', config.payloadFor(value as ScheduleTaskAction, task))
@@ -71,10 +73,12 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
                     >
                         {(field) => (
                             <field.NumberField
-                                label='Time offset (in seconds)'
+                                label={t('Time offset (in seconds)')}
                                 min={0}
                                 max={900}
-                                description='The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
+                                description={t(
+                                    'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
+                                )}
                             />
                         )}
                     </form.AppField>
@@ -86,13 +90,13 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
                         <>
                             {action === 'command' && (
                                 <form.AppField name='payload' validators={payloadValidators}>
-                                    {(field) => <field.TextAreaField label='Payload' rows={6} />}
+                                    {(field) => <field.TextAreaField label={t('Payload')} rows={6} />}
                                 </form.AppField>
                             )}
                             {action === 'power' && (
                                 <form.AppField name='payload' validators={payloadValidators}>
                                     {(field) => (
-                                        <field.SelectField label='Payload' options={[...config.powerSignals]} />
+                                        <field.SelectField label={t('Payload')} options={[...config.powerSignals]} />
                                     )}
                                 </form.AppField>
                             )}
@@ -100,9 +104,12 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
                                 <form.AppField name='payload' validators={payloadValidators}>
                                     {(field) => (
                                         <field.TextAreaField
-                                            label='Ignored Files'
+                                            label={t('Ignored Files')}
                                             rows={6}
-                                            description='Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
+                                            description={t(
+                                                'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your {{file}} file will be used. If you have reached your backup limit, the oldest backup will be rotated.',
+                                                { file: '.pteroignore' }
+                                            )}
                                         />
                                     )}
                                 </form.AppField>
@@ -115,15 +122,15 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
                 <form.AppField name='continueOnFailure'>
                     {(field) => (
                         <field.SwitchField
-                            description='Future tasks will be run when this task fails.'
-                            label='Continue on Failure'
+                            description={t('Future tasks will be run when this task fails.')}
+                            label={t('Continue on Failure')}
                         />
                     )}
                 </form.AppField>
             </div>
             <div className='flex justify-end mt-6'>
                 <form.AppForm>
-                    <form.SubmitButton>{task ? 'Save Changes' : 'Create Task'}</form.SubmitButton>
+                    <form.SubmitButton>{task ? t('Save Changes') : t('Create Task')}</form.SubmitButton>
                 </form.AppForm>
             </div>
         </Form>
@@ -132,8 +139,10 @@ function TaskForm({ form: config, task, onSubmit, onClose }: Omit<Props, 'open'>
 
 /** Creates a task, or edits one: its action, delay, payload and failure behaviour. */
 export default function TaskDialog({ open, onClose, ...props }: Props) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog open={open} title={props.task ? 'Edit task' : 'Create task'} onClose={onClose}>
+        <Dialog open={open} title={props.task ? t('Edit task') : t('Create task')} onClose={onClose}>
             <TaskForm key={props.task?.id ?? 'new'} {...props} onClose={onClose} />
         </Dialog>
     );

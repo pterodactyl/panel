@@ -25,10 +25,10 @@ final readonly class EggCatalogEntry
         try {
             $data = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $jsonException) {
-            throw new HttpException(502, 'Pterodactyl returned an invalid egg catalog. Please try again later.', $jsonException);
+            throw new HttpException(502, __('exceptions.egg.catalog.invalid_catalog'), $jsonException);
         }
 
-        throw_unless(is_array($data) && array_is_list($data), HttpException::class, 502, 'Pterodactyl returned an invalid egg catalog. Please try again later.');
+        throw_unless(is_array($data) && array_is_list($data), HttpException::class, 502, __('exceptions.egg.catalog.invalid_catalog'));
 
         $entries = [];
         foreach ($data as $value) {
@@ -38,7 +38,7 @@ final readonly class EggCatalogEntry
             }
         }
 
-        throw_if($data !== [] && $entries === [], HttpException::class, 502, 'Pterodactyl returned an invalid egg catalog. Please try again later.');
+        throw_if($data !== [] && $entries === [], HttpException::class, 502, __('exceptions.egg.catalog.invalid_catalog'));
 
         return $entries;
     }
@@ -64,12 +64,12 @@ final readonly class EggCatalogEntry
         try {
             $uri = new Uri($this->downloadUrl);
         } catch (InvalidArgumentException $invalidArgumentException) {
-            throw new HttpException(502, 'The catalog egg has an invalid download URL.', $invalidArgumentException);
+            throw new HttpException(502, __('exceptions.egg.catalog.invalid_download_url'), $invalidArgumentException);
         }
 
         throw_if($uri->getScheme() !== 'https' || $uri->getHost() !== 'raw.githubusercontent.com'
             || ! str_starts_with($uri->getPath(), '/pterodactyl/') || $uri->getUserInfo() !== ''
-            || $uri->getPort() !== null || $uri->getQuery() !== '' || $uri->getFragment() !== '', HttpException::class, 502, 'The catalog egg does not have an official Pterodactyl download URL.');
+            || $uri->getPort() !== null || $uri->getQuery() !== '' || $uri->getFragment() !== '', HttpException::class, 502, __('exceptions.egg.catalog.unofficial_download_url'));
 
         return $uri->__toString();
     }

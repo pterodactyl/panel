@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
+import i18next from 'i18next';
 import { relationshipData } from '@/api/relationships';
 import {
     createScheduleTaskInput,
@@ -25,6 +26,7 @@ import {
     type Task,
 } from '@/api/server/schedules/queries';
 import { usePermissions } from '@/plugins/usePermissions';
+import { useTranslation, type Translation } from '@/sdk/localization';
 import { pageStatus, pageStatusFixtures, type PageStatusModel } from '../pageStatus';
 import { implementViews } from '../registry';
 import { attempt } from './attempt';
@@ -215,35 +217,35 @@ const orderedTasks = (schedule: Schedule): ScheduleTask[] =>
 
 const validateTimeOffset = (value: number | null): string | undefined => {
     if (value === null) {
-        return 'A time offset must be provided.';
+        return i18next.t('A time offset must be provided.');
     }
 
     if (value < 0) {
-        return 'The time offset must be at least 0 seconds.';
+        return i18next.t('The time offset must be at least 0 seconds.');
     }
 
     if (value > 900) {
-        return 'The time offset must be less than 900 seconds.';
+        return i18next.t('The time offset must be less than 900 seconds.');
     }
 
     return undefined;
 };
 
 /** The task form for a server allowed `backupLimit` backups. */
-export function scheduleTaskForm(backupLimit: number | null): ScheduleTaskForm {
+export function scheduleTaskForm(t: Translation['t'], backupLimit: number | null): ScheduleTaskForm {
     const initialAction = (task?: ScheduleTask): ScheduleTaskAction => task?.action || 'command';
 
     return {
         actions: [
-            { value: 'command', label: 'Send command' },
-            { value: 'power', label: 'Send power action' },
-            { value: 'backup', label: 'Create backup' },
+            { value: 'command', label: t('Send command') },
+            { value: 'power', label: t('Send power action') },
+            { value: 'backup', label: t('Create backup') },
         ],
         powerSignals: [
-            { value: 'start', label: 'Start the server' },
-            { value: 'restart', label: 'Restart the server' },
-            { value: 'stop', label: 'Stop the server' },
-            { value: 'kill', label: 'Terminate the server' },
+            { value: 'start', label: t('Start the server') },
+            { value: 'restart', label: t('Restart the server') },
+            { value: 'stop', label: t('Stop the server') },
+            { value: 'kill', label: t('Terminate the server') },
         ],
         values: (task) => ({
             action: initialAction(task),
@@ -260,10 +262,10 @@ export function scheduleTaskForm(backupLimit: number | null): ScheduleTaskForm {
         },
         validateTimeOffset,
         validatePayload: (action, payload) =>
-            action !== 'command' || payload.length > 0 ? undefined : 'A task payload must be provided.',
+            action !== 'command' || payload.length > 0 ? undefined : t('A task payload must be provided.'),
         validate: ({ action }) =>
             backupLimit === 0 && action === 'backup'
-                ? "A backup task cannot be created when the server's backup limit is set to 0."
+                ? t("A backup task cannot be created when the server's backup limit is set to 0.")
                 : null,
     };
 }
@@ -295,8 +297,9 @@ function useLoadedSchedule(): Schedule {
 
 function useTaskForm(): ScheduleTaskForm {
     const backupLimit = useLoadedServer().attributes.feature_limits.backups;
+    const { t } = useTranslation();
 
-    return useMemo(() => scheduleTaskForm(backupLimit), [backupLimit]);
+    return useMemo(() => scheduleTaskForm(t, backupLimit), [t, backupLimit]);
 }
 
 /** Creates a task on the schedule; the time offset must have passed validation. */
@@ -483,7 +486,7 @@ const scheduleModelFixture = (options: Partial<ScheduleModel> = {}): ScheduleMod
     values: scheduleFormValues(scheduleFixture()),
     running: false,
     deleting: false,
-    taskForm: scheduleTaskForm(3),
+    taskForm: scheduleTaskForm(i18next.t, 3),
     actions: { update: resolved, run: resolved, remove: resolved, createTask: resolved },
     ...options,
 });
@@ -492,7 +495,7 @@ const tasksFixture = (options: Partial<ScheduleTasksModel> = {}): ScheduleTasksM
     tasks: taskFixtures,
     canUpdate: true,
     deleting: false,
-    form: scheduleTaskForm(3),
+    form: scheduleTaskForm(i18next.t, 3),
     actions: { create: resolved, update: resolved, remove: resolved },
     ...options,
 });
@@ -534,7 +537,7 @@ implementViews({
             tasks: () => tasksFixture(),
             empty: () => tasksFixture({ tasks: [] }),
             readOnly: () => tasksFixture({ canUpdate: false }),
-            noBackups: () => tasksFixture({ form: scheduleTaskForm(0) }),
+            noBackups: () => tasksFixture({ form: scheduleTaskForm(i18next.t, 0) }),
         },
     },
 });

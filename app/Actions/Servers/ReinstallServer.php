@@ -15,7 +15,7 @@ final readonly class ReinstallServer implements ReinstallsServers
 {
     public function reinstall(Server $server): Server
     {
-        throw_unless($server->canBeReinstalled(), DisplayException::class, trans('admin/server.exceptions.skipping_install_script'));
+        throw_unless($server->canBeReinstalled(), DisplayException::class, __('exceptions.server.skipping_install_script'));
 
         DB::transaction(function () use ($server): void {
             $server->fill(['status' => Server::STATUS_INSTALLING])->save();

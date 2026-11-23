@@ -1,10 +1,14 @@
+import { useTranslation } from '@/sdk';
+
 export default function PterodactylMark({ className }: { className?: string }) {
+    const { t } = useTranslation();
+
     return (
         <svg
             xmlns='http://www.w3.org/2000/svg'
             viewBox='1115 4684.52 122.47 110.97'
             role='img'
-            aria-label='Pterodactyl'
+            aria-label={t('Pterodactyl')}
             className={className}
         >
             <path

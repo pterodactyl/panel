@@ -34,8 +34,8 @@ final readonly class RestoreBackup implements RestoresBackups
 
     public function restore(Server $server, Backup $backup, User $user, bool $truncate): void
     {
-        throw_if(($server->status) !== null, BadRequestHttpException::class, 'This server is not currently in a state that allows for a backup to be restored.');
-        throw_if(! $backup->is_successful || ($backup->completed_at) === null, BadRequestHttpException::class, 'This backup cannot be restored at this time: not completed or failed.');
+        throw_if(($server->status) !== null, BadRequestHttpException::class, __('exceptions.backups.restore_unavailable'));
+        throw_if(! $backup->is_successful || ($backup->completed_at) === null, BadRequestHttpException::class, __('exceptions.backups.restore_incomplete'));
 
         DB::transaction(function () use ($server, $backup, $user, $truncate): void {
             $url = $backup->disk === Backup::ADAPTER_AWS_S3

@@ -41,14 +41,14 @@ class DockerImageList implements ValidationRule
 
         $images = self::lines($value);
         if ($images === []) {
-            $fail('The :attribute field must list at least one image.');
+            $fail(__('validation.internal.docker_images_empty'));
 
             return;
         }
 
         foreach ($images as $image) {
             if (Validator::make(['image' => $image], ['image' => CreateEgg::DOCKER_IMAGE])->fails()) {
-                $fail(sprintf('The :attribute entry "%s" is not a valid Docker image.', Str::limit($image, 64)));
+                $fail(__('validation.internal.docker_image_invalid', ['image' => Str::limit($image, 64)]));
 
                 return;
             }

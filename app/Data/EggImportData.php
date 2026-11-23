@@ -49,10 +49,10 @@ final readonly class EggImportData
      */
     public static function fromFile(UploadedFile $file): self
     {
-        throw_if($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile(), InvalidFileUploadException::class, 'The selected file is not valid and cannot be imported.');
+        throw_if($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile(), InvalidFileUploadException::class, __('exceptions.egg.importer.invalid_file'));
 
         $contents = $file->openFile()->fread($file->getSize());
-        throw_if($contents === false, InvalidFileUploadException::class, 'The selected file could not be read.');
+        throw_if($contents === false, InvalidFileUploadException::class, __('exceptions.egg.importer.unreadable_file'));
 
         return self::fromJson($contents);
     }
@@ -276,7 +276,7 @@ final readonly class EggImportData
 
     private static function invalid(string $field): InvalidFileUploadException
     {
-        return new InvalidFileUploadException(sprintf('The egg field "%s" is missing or invalid.', $field));
+        return new InvalidFileUploadException(__('exceptions.egg.importer.invalid_field', ['field' => $field]));
     }
 
     /**
@@ -338,7 +338,7 @@ final readonly class EggImportData
             $errors = $validator->errors();
             $field = $errors->keys()[0];
 
-            throw new InvalidFileUploadException(sprintf('The egg field "%s" is invalid: %s', $field, $errors->first($field)));
+            throw new InvalidFileUploadException(__('exceptions.egg.importer.field_error', ['field' => $field, 'error' => $errors->first($field)]));
         }
     }
 }

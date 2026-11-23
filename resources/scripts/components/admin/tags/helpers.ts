@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { httpValidationErrors } from '@/api/http';
+import { httpValidationFailure } from '@/api/http';
 import type { AdminTag } from '@/api/admin/tags/queries';
 
 /**
@@ -39,8 +39,5 @@ export interface TagCheckMeta {
 }
 
 /** The API's refusal of a node that does not accept the egg, which `ignore_tags` skips. */
-export const tagCheckError = (cause: unknown, field: string): string | null => {
-    const errors = httpValidationErrors(cause);
-
-    return field in errors && errors[field].includes(' only accepts eggs tagged ') ? errors[field] : null;
-};
+export const tagCheckError = (cause: unknown, field: string): string | null =>
+    httpValidationFailure(cause, field, 'node_accepts_egg');

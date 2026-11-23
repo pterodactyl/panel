@@ -14,29 +14,40 @@ import {
     RowActions,
     Spinner,
     Table,
+    Translate,
+    useTranslation,
     type SshKeyItem,
     type SshKeyListModel,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 
 function DeleteKeyButton({ item, remove }: { item: SshKeyItem; remove: SshKeyListModel['remove'] }) {
+    const { t } = useTranslation();
+
     return (
         <Dialog.ConfirmTrigger
-            title='Delete SSH Key'
-            confirm='Delete Key'
+            title={t('Delete SSH Key')}
+            confirm={t('Delete Key')}
             onConfirmed={(_event, close) => remove(item.fingerprint).then(close)}
-            trigger={({ onClick }) => <DeleteAction aria-label={`Delete ${item.name}`} onClick={onClick} />}
+            trigger={({ onClick }) => (
+                <DeleteAction aria-label={t('Delete {{name}}', { name: item.name })} onClick={onClick} />
+            )}
         >
-            Removing the <Code>{item.name}</Code> SSH key will invalidate its usage across the Panel.
+            <Translate
+                i18nKey='Removing the <code>{{name}}</code> SSH key will invalidate its usage across the Panel.'
+                values={{ name: item.name }}
+                components={{ code: <Code>{null}</Code> }}
+            />
         </Dialog.ConfirmTrigger>
     );
 }
 
-const sshKeyColumns = (remove: SshKeyListModel['remove']): TableColumn<SshKeyItem>[] => [
+const sshKeyColumns = (t: Translation['t'], remove: SshKeyListModel['remove']): TableColumn<SshKeyItem>[] => [
     {
         id: 'name',
-        label: 'Name',
+        label: t('Name'),
         sortValue: (key) => key.name,
         cell: (key) => (
             <div className='min-w-40'>
@@ -49,7 +60,7 @@ const sshKeyColumns = (remove: SshKeyListModel['remove']): TableColumn<SshKeyIte
     },
     {
         id: 'fingerprint',
-        label: 'Fingerprint',
+        label: t('Fingerprint'),
         sortValue: (key) => key.fingerprint,
         cell: (key) => <code className='font-mono text-xs text-muted-foreground'>SHA256:{key.fingerprint}</code>,
         headerClassName: 'hidden md:table-cell',
@@ -57,11 +68,11 @@ const sshKeyColumns = (remove: SshKeyListModel['remove']): TableColumn<SshKeyIte
     },
     {
         id: 'created_at',
-        label: 'Added',
+        label: t('Added'),
         sortValue: (key) => key.createdAt,
         cell: (key) => (
             <time dateTime={key.createdAt} className='whitespace-nowrap text-xs text-muted-foreground'>
-                {formatDate(key.createdAt, 'MMM D, YYYY HH:mm')}
+                {formatDate(key.createdAt, 'lll')}
             </time>
         ),
         headerClassName: 'hidden lg:table-cell w-40',
@@ -69,7 +80,7 @@ const sshKeyColumns = (remove: SshKeyListModel['remove']): TableColumn<SshKeyIte
     },
     {
         id: 'actions',
-        label: <span className='sr-only'>Actions</span>,
+        label: <span className='sr-only'>{t('Actions')}</span>,
         cell: (key) => (
             <RowActions>
                 <DeleteKeyButton item={key} remove={remove} />
@@ -82,10 +93,11 @@ const sshKeyColumns = (remove: SshKeyListModel['remove']): TableColumn<SshKeyIte
 
 export default function SshKeyList({ model, className }: ViewProps<'account.sshKeys.list'>) {
     const { remove } = model;
-    const columns = useMemo(() => sshKeyColumns(remove), [remove]);
+    const { t } = useTranslation();
+    const columns = useMemo(() => sshKeyColumns(t, remove), [t, remove]);
 
     return (
-        <ContentBox title='SSH Keys' className={className}>
+        <ContentBox title={t('SSH Keys')} className={className}>
             {model.loading ? (
                 <Spinner size='large' centered />
             ) : (
@@ -99,9 +111,9 @@ export default function SshKeyList({ model, className }: ViewProps<'account.sshK
                                 <EmptyMedia variant='icon'>
                                     <KeySquare />
                                 </EmptyMedia>
-                                <EmptyTitle>No SSH keys</EmptyTitle>
+                                <EmptyTitle>{t('No SSH keys')}</EmptyTitle>
                                 <EmptyDescription>
-                                    Add a public key to sign in to SFTP without a password.
+                                    {t('Add a public key to sign in to SFTP without a password.')}
                                 </EmptyDescription>
                             </EmptyHeader>
                         </Empty>

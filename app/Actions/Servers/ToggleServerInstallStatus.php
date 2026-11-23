@@ -13,7 +13,7 @@ final readonly class ToggleServerInstallStatus implements TogglesServerInstallSt
     public function toggle(Server $server): void
     {
         if ($server->status === Server::STATUS_INSTALL_FAILED) {
-            throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
+            throw new DisplayException(__('exceptions.server.marked_as_failed'));
         }
 
         $server->forceFill([

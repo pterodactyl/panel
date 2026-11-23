@@ -13,7 +13,7 @@ final class DeleteUser implements DeletesUsers
     public function delete(User $user): ?bool
     {
         if ($user->servers()->exists()) {
-            throw new DisplayException(trans('admin/user.exceptions.user_has_servers'));
+            throw new DisplayException(__('exceptions.users.has_servers'));
         }
 
         return $user->delete();

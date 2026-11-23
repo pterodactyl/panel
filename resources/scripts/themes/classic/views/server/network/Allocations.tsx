@@ -23,7 +23,9 @@ import {
     Table,
     TextArea,
     useDebouncedCallback,
+    useTranslation,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ServerAllocationItem, ServerAllocationsModel, ViewProps } from '@/sdk/theme';
 import { usePending } from '../usePending';
@@ -34,15 +36,16 @@ interface CellProps {
 }
 
 function NotesCell({ model, allocation }: CellProps) {
+    const { t } = useTranslation();
     const [saving, track] = usePending();
     const save = useDebouncedCallback((notes: string) => track(model.actions.setNotes(allocation.id, notes)), 750);
 
     return (
         <InputSpinner visible={saving}>
             <TextArea
-                aria-label={`Notes for ${allocation.ip}:${allocation.port}`}
+                aria-label={t('Notes for {{address}}', { address: `${allocation.ip}:${allocation.port}` })}
                 className='min-h-9 resize-y bg-input hover:border-input-border border-transparent'
-                placeholder='Notes'
+                placeholder={t('Notes')}
                 defaultValue={allocation.notes || undefined}
                 onChange={(event) => save(event.currentTarget.value)}
                 onBlur={save.flush}
@@ -52,30 +55,35 @@ function NotesCell({ model, allocation }: CellProps) {
 }
 
 function DeleteAllocationButton({ model, allocation }: CellProps) {
+    const { t } = useTranslation();
+
     return (
         <Dialog.ConfirmTrigger
-            title='Remove Allocation'
-            confirm='Delete'
+            title={t('Remove Allocation')}
+            confirm={t('Delete')}
             onConfirmed={(_event, close) => model.actions.remove(allocation.id).then(close)}
             trigger={({ onClick }) => (
                 <DeleteAction
-                    aria-label={`Delete allocation ${allocation.address}:${allocation.port}`}
+                    aria-label={t('Delete allocation {{address}}', {
+                        address: `${allocation.address}:${allocation.port}`,
+                    })}
                     onClick={onClick}
                 />
             )}
         >
-            This allocation will be immediately removed from your server.
+            {t('This allocation will be immediately removed from your server.')}
         </Dialog.ConfirmTrigger>
     );
 }
 
 function ActionsCell({ model, allocation }: CellProps) {
+    const { t } = useTranslation();
     const [settingPrimary, track] = usePending();
 
     if (allocation.primary) {
         return (
             <Badge tone='info' className='inline-flex rounded-full font-medium'>
-                Primary
+                {t('Primary')}
             </Badge>
         );
     }
@@ -88,7 +96,7 @@ function ActionsCell({ model, allocation }: CellProps) {
                     disabled={settingPrimary}
                     onClick={() => track(model.actions.setPrimary(allocation.id))}
                 >
-                    Make Primary
+                    {t('Make Primary')}
                 </Button.Text>
             )}
             {model.permissions.delete && <DeleteAllocationButton model={model} allocation={allocation} />}
@@ -96,11 +104,11 @@ function ActionsCell({ model, allocation }: CellProps) {
     );
 }
 
-function allocationColumns(model: ServerAllocationsModel): TableColumn<ServerAllocationItem>[] {
+function allocationColumns(model: ServerAllocationsModel, t: Translation['t']): TableColumn<ServerAllocationItem>[] {
     return [
         {
             id: 'address',
-            label: 'Address',
+            label: t('Address'),
             sortValue: (allocation) => allocation.address,
             cell: (allocation) => (
                 <CopyOnClick text={allocation.address}>
@@ -112,7 +120,7 @@ function allocationColumns(model: ServerAllocationsModel): TableColumn<ServerAll
         },
         {
             id: 'port',
-            label: 'Port',
+            label: t('Port'),
             sortValue: (allocation) => allocation.port,
             cell: (allocation) => <Code dark>{allocation.port}</Code>,
             headerClassName: 'w-24',
@@ -120,7 +128,7 @@ function allocationColumns(model: ServerAllocationsModel): TableColumn<ServerAll
         },
         {
             id: 'notes',
-            label: 'Notes',
+            label: t('Notes'),
             cell: (allocation) => <NotesCell model={model} allocation={allocation} />,
             headerClassName: 'hidden md:table-cell',
             cellClassName: 'hidden md:table-cell min-w-56',
@@ -130,8 +138,9 @@ function allocationColumns(model: ServerAllocationsModel): TableColumn<ServerAll
 }
 
 export default function Allocations({ model, className }: ViewProps<'server.allocations'>) {
+    const { t } = useTranslation();
     const [creating, track] = usePending();
-    const columns = useMemo(() => allocationColumns(model), [model]);
+    const columns = useMemo(() => allocationColumns(model, t), [model, t]);
 
     if (model.loading) {
         return (
@@ -141,14 +150,19 @@ export default function Allocations({ model, className }: ViewProps<'server.allo
         );
     }
 
-    const newAllocationButton = <NewButton onClick={() => track(model.actions.create())}>New allocation</NewButton>;
+    const newAllocationButton = (
+        <NewButton onClick={() => track(model.actions.create())}>{t('New allocation')}</NewButton>
+    );
 
     return (
         <div className={className}>
             <SpinnerOverlay visible={creating} />
             {model.canManage && (
                 <ListToolbar
-                    summary={`You are currently using ${model.allocations.length} of ${model.limit} allowed allocations for this server.`}
+                    summary={t('You are currently using {{used}} of {{limit}} allowed allocations for this server.', {
+                        used: model.allocations.length,
+                        limit: model.limit,
+                    })}
                 >
                     {model.canCreate && newAllocationButton}
                 </ListToolbar>
@@ -163,9 +177,9 @@ export default function Allocations({ model, className }: ViewProps<'server.allo
                             <EmptyMedia variant='icon'>
                                 <Network />
                             </EmptyMedia>
-                            <EmptyTitle>No allocations</EmptyTitle>
+                            <EmptyTitle>{t('No allocations')}</EmptyTitle>
                             <EmptyDescription>
-                                This server doesn&apos;t have any network allocations assigned.
+                                {t("This server doesn't have any network allocations assigned.")}
                             </EmptyDescription>
                         </EmptyHeader>
                         {model.canCreate && <EmptyContent>{newAllocationButton}</EmptyContent>}

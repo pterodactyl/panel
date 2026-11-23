@@ -21,7 +21,7 @@ class UserEmail implements ValidationRule
 
         $local = mb_trim(explode('@', $value, 2)[0], '"');
         if (str_starts_with($local, '-')) {
-            $fail('The :attribute must not start with a dash.');
+            $fail(__('validation.internal.email_leading_dash'));
         }
     }
 }

@@ -20,9 +20,11 @@ import {
     RowActions,
     Spinner,
     Table,
+    useTranslation,
     type ScheduleListModel,
     type ScheduleSummary,
     type TableColumn,
+    type Translation,
 } from '@/sdk';
 import type { ViewProps } from '@/sdk/theme';
 import ScheduleCronRow from './ScheduleCronRow';
@@ -42,11 +44,19 @@ const scheduleDestination = (model: ScheduleListModel, schedule: ScheduleSummary
         params: { id: model.serverId, scheduleId: String(schedule.id) },
     }) as const;
 
-function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
+const statusLabel = (status: string, t: Translation['t']): string => {
+    if (status === 'processing') {
+        return t('processing');
+    }
+
+    return status === 'active' ? t('active') : t('inactive');
+};
+
+function columns(model: ScheduleListModel, t: Translation['t']): TableColumn<ScheduleSummary>[] {
     return [
         {
             id: 'name',
-            label: 'Schedule',
+            label: t('Schedule'),
             sortValue: (schedule) => schedule.name,
             cell: (schedule) => (
                 <div className='min-w-40'>
@@ -57,25 +67,27 @@ function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
                         {schedule.name}
                     </PanelLink>
                     <p className='mt-0.5 text-xs text-muted-foreground md:hidden'>
-                        Last run {schedule.lastRunAt ? fromNow(schedule.lastRunAt) : 'never'}
+                        {schedule.lastRunAt
+                            ? t('Last run {{time}}', { time: fromNow(schedule.lastRunAt) })
+                            : t('Last run never')}
                     </p>
                 </div>
             ),
         },
         {
             id: 'cron',
-            label: 'Cron',
+            label: t('Cron'),
             cell: (schedule) => <ScheduleCronRow cron={schedule.cron} />,
             headerClassName: 'hidden lg:table-cell',
             cellClassName: 'hidden lg:table-cell',
         },
         {
             id: 'last_run_at',
-            label: 'Last run',
+            label: t('Last run'),
             sortValue: (schedule) => schedule.lastRunAt ?? '',
             cell: (schedule) => (
                 <span className='whitespace-nowrap text-xs text-muted-foreground'>
-                    {schedule.lastRunAt ? formatDate(schedule.lastRunAt, 'MMM D, YYYY HH:mm') : 'Never'}
+                    {schedule.lastRunAt ? formatDate(schedule.lastRunAt, 'lll') : t('Never')}
                 </span>
             ),
             headerClassName: 'hidden md:table-cell w-40',
@@ -83,7 +95,7 @@ function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
         },
         {
             id: 'status',
-            label: 'Status',
+            label: t('Status'),
             sortValue: scheduleStatus,
             cell: (schedule) => {
                 const status = scheduleStatus(schedule);
@@ -96,7 +108,7 @@ function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
                             status === 'active' && 'bg-success/90'
                         )}
                     >
-                        {status}
+                        {statusLabel(status, t)}
                     </Badge>
                 );
             },
@@ -107,7 +119,7 @@ function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
             model.canUpdate ? (
                 <RowActions>
                     <EditLinkAction
-                        aria-label={`Edit ${schedule.name}`}
+                        aria-label={t('Edit {{name}}', { name: schedule.name })}
                         destination={scheduleDestination(model, schedule)}
                     />
                 </RowActions>
@@ -117,15 +129,18 @@ function columns(model: ScheduleListModel): TableColumn<ScheduleSummary>[] {
 }
 
 function CreateScheduleButton({ model }: { model: ScheduleListModel }) {
+    const { t } = useTranslation();
+
     return (
-        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New schedule</NewButton>}>
+        <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>{t('New schedule')}</NewButton>}>
             {(dialog) => <ScheduleDialog {...dialog} values={model.defaults} editing={false} onSubmit={model.create} />}
         </Dialog.Trigger>
     );
 }
 
 export default function ScheduleList({ model, className }: ViewProps<'server.schedules'>) {
-    const tableColumns = useMemo(() => columns(model), [model]);
+    const { t } = useTranslation();
+    const tableColumns = useMemo(() => columns(model, t), [model, t]);
 
     if (model.loading) {
         return (
@@ -152,9 +167,9 @@ export default function ScheduleList({ model, className }: ViewProps<'server.sch
                             <EmptyMedia variant='icon'>
                                 <CalendarClock />
                             </EmptyMedia>
-                            <EmptyTitle>No schedules</EmptyTitle>
+                            <EmptyTitle>{t('No schedules')}</EmptyTitle>
                             <EmptyDescription>
-                                Schedules run commands, power actions and backups automatically.
+                                {t('Schedules run commands, power actions and backups automatically.')}
                             </EmptyDescription>
                         </EmptyHeader>
                         {model.canCreate && (
